@@ -12,5 +12,8 @@
   },
   "peerDependencies": {
     "@hyperledger/aries-askar-react-native": "^0.1.0-dev.8"
+  },
+  "devDependencies": {
+    "@hyperledger/aries-askar-react-native": "^0.1.0-dev.8"
   }
 }

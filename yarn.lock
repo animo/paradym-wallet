@@ -2512,6 +2512,7 @@ __metadata:
     "@aries-framework/openid4vc-client": ^0.4.0-alpha.120
     "@aries-framework/react-hooks": 0.4.2
     "@aries-framework/react-native": ^0.4.0-alpha.120
+    "@hyperledger/aries-askar-react-native": ^0.1.0-dev.8
   peerDependencies:
     "@hyperledger/aries-askar-react-native": ^0.1.0-dev.8
   languageName: unknown
@@ -7223,7 +7224,7 @@ __metadata:
     expo-system-ui: ~2.2.1
     expo-updates: ^0.16.3
     metro-minify-terser: ^0.74.1
-    react: 18.2.0
+    react: ^18.2.0
     react-dom: ^18.2.0
     react-native: 0.71.7
     react-native-fs: ^2.20.0
