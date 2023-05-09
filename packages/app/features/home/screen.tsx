@@ -8,7 +8,7 @@ import {
   XStack,
   YStack,
   useToastController,
-} from '@my/ui'
+} from '@internal/ui'
 import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons'
 import React, { useState } from 'react'
 import { useLink } from 'solito/link'
