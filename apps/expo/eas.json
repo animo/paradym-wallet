@@ -1,0 +1,46 @@
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true,
+        "image": "latest"
+      },
+      "env": {
+        "TAMAGUI_TARGET": "native",
+        "APP_VARIANT": "development"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "TAMAGUI_TARGET": "native",
+        "APP_VARIANT": "preview"
+      }
+    },
+    "production": {
+      "distribution": "store",
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "TAMAGUI_TARGET": "native"
+      }
+    }
+  },
+  "submit": {
+    "production": {},
+    "preview": {
+      "ios": {
+        "companyName": "Animo Solutions"
+      },
+      "android": {
+        "track": "internal"
+      }
+    }
+  }
+}
