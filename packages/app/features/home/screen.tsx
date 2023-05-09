@@ -1,3 +1,4 @@
+import { useW3cCredentialRecords } from '@internal/agent'
 import {
   Anchor,
   Button,
@@ -14,8 +15,9 @@ import React, { useState } from 'react'
 import { useLink } from 'solito/link'
 
 export function HomeScreen() {
+  const { w3cCredentialRecords } = useW3cCredentialRecords()
   const linkProps = useLink({
-    href: '/user/nate',
+    href: '/credentials/some-random-id',
   })
 
   return (
@@ -46,7 +48,11 @@ export function HomeScreen() {
       </YStack>
 
       <XStack>
-        <Button {...linkProps}>Link to user</Button>
+        <Paragraph>You have {w3cCredentialRecords.length} credentials.</Paragraph>
+      </XStack>
+
+      <XStack>
+        <Button {...linkProps}>Link to specific credential</Button>
       </XStack>
 
       <SheetDemo />

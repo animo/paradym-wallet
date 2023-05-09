@@ -8,6 +8,7 @@ import {
   PeerDidRegistrar,
   WebDidResolver,
 } from '@aries-framework/core'
+import { NativeModules } from 'react-native'
 import { agentDependencies } from '@aries-framework/react-native'
 import { OpenId4VcClientModule } from '@aries-framework/openid4vc-client'
 import { AskarModule } from '@aries-framework/askar'
@@ -17,6 +18,8 @@ import { ReactNativeAriesAskar } from '@hyperledger/aries-askar-react-native/bui
 import { useAgent as useAgentLib } from '@aries-framework/react-hooks'
 
 export const initializeAgent = async () => {
+  // FIXME: AW-39: Askar doesn't fully work in expo. iOS works with this hack, android is still broken
+  NativeModules.AriesAskar.install()
   registerAriesAskar({
     // @ts-ignore
     askar: new ReactNativeAriesAskar(_aries_askar),

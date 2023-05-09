@@ -9,10 +9,6 @@
 # expo
 **/.expo/*
 
-# next.js
-**/.next/*
-/out/
-
 # tamagui
 **/.tamagui/*
 

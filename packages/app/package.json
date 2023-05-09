@@ -7,6 +7,7 @@
     "*.css"
   ],
   "dependencies": {
+    "@internal/agent": "*",
     "@internal/ui": "*",
     "@tamagui/animations-react-native": "latest",
     "@tamagui/colors": "latest",

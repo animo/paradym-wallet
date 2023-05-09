@@ -4722,22 +4722,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unimodules/core@npm:*":
-  version: 7.2.0
-  resolution: "@unimodules/core@npm:7.2.0"
-  dependencies:
-    expo-modules-core: ~0.4.0
-  checksum: 789b30c8bdab258fbac8cae36b91c8c6d7a10379681499858eee41db9444c405ef0512dbe7674c8ba082e87e455438af3cf4c4ee48b7cd2b10cd1b0696a10b99
+"@unimodules/core@file:./noop::locator=paradym-wallet%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@unimodules/core@file:./noop#./noop::hash=43898f&locator=paradym-wallet%40workspace%3A."
+  checksum: 50b1951b31b5970fa656033f31e1fd615b40e646a71d4deccf3e65a11ef388ec9b932bb799a4c31798f198e4c99389656065acae597cff1485f9bddb792b07e6
   languageName: node
   linkType: hard
 
-"@unimodules/react-native-adapter@npm:*":
-  version: 6.5.0
-  resolution: "@unimodules/react-native-adapter@npm:6.5.0"
-  dependencies:
-    expo-modules-autolinking: ^0.3.2
-    expo-modules-core: ~0.4.0
-  checksum: bc47cb9b644ee3283a925df59018be2a6b410b8edf22072e5482830762b3806643148732ddc51b38001a5e4aa5da4bf0f5e1e289e09606d2ac9e36249d6d47cd
+"@unimodules/react-native-adapter@file:./noop::locator=paradym-wallet%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@unimodules/react-native-adapter@file:./noop#./noop::hash=01f31a&locator=paradym-wallet%40workspace%3A."
+  checksum: 9b42a5debdd787d8700b8aa36670dc05b67429818204ec5b587a811a3f70888f240233201b5f281579fd426866e46934bc25457a5cadb0702c4eb7e0b9d7829d
   languageName: node
   linkType: hard
 
@@ -4988,6 +4983,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
+    "@internal/agent": "*"
     "@internal/ui": "*"
     "@tamagui/animations-react-native": latest
     "@tamagui/colors": latest
@@ -7214,7 +7210,7 @@ __metadata:
     babel-plugin-module-resolver: ^4.1.0
     babel-plugin-transform-inline-environment-variables: ^0.4.4
     burnt: ^0.10.0
-    expo: ^48.0.7
+    expo: ~48.0.15
     expo-constants: ^14.2.1
     expo-dev-client: ^2.1.5
     expo-font: ^11.1.1
@@ -7222,18 +7218,20 @@ __metadata:
     expo-linear-gradient: ^12.1.2
     expo-linking: ^4.0.1
     expo-router: ^1.4.3
-    expo-splash-screen: ^0.18.1
+    expo-splash-screen: ~0.18.2
     expo-status-bar: ^1.4.4
+    expo-system-ui: ~2.2.1
     expo-updates: ^0.16.3
     metro-minify-terser: ^0.74.1
-    react: ^18.2.0
+    react: 18.2.0
     react-dom: ^18.2.0
-    react-native: ^0.71.4
+    react-native: 0.71.7
+    react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.9.0
+    react-native-get-random-values: ^1.8.0
     react-native-safe-area-context: ^4.5.2
     react-native-screens: ^3.20.0
     react-native-svg: 13.4.0
-    react-native-web: ^0.18.12
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
@@ -7438,38 +7436,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-modules-autolinking@npm:^0.3.2":
-  version: 0.3.4
-  resolution: "expo-modules-autolinking@npm:0.3.4"
-  dependencies:
-    chalk: ^4.1.0
-    commander: ^7.2.0
-    fast-glob: ^3.2.5
-    find-up: ~5.0.0
-    fs-extra: ^9.1.0
-  bin:
-    expo-modules-autolinking: bin/expo-modules-autolinking.js
-  checksum: e408aac6808ce3c8725da7ecef6bbf33b2fc0a3e7e8ae0b33dd1cb00c36d2b8e7678184f1d0215acb189a8e400a64f79920c57958f426143b8fd190c5891c904
-  languageName: node
-  linkType: hard
-
-"expo-modules-core@npm:1.2.6":
-  version: 1.2.6
-  resolution: "expo-modules-core@npm:1.2.6"
+"expo-modules-core@npm:1.2.7":
+  version: 1.2.7
+  resolution: "expo-modules-core@npm:1.2.7"
   dependencies:
     compare-versions: ^3.4.0
     invariant: ^2.2.4
-  checksum: 78e82167f73b77f0ae6224027601b4aa3c4cec46e6a2f01eebfd19ac94e63f19e7d03da8e06f67caa0c9323a6df7bb87d4de848349d29a6004741e5b401a00fe
-  languageName: node
-  linkType: hard
-
-"expo-modules-core@npm:~0.4.0":
-  version: 0.4.10
-  resolution: "expo-modules-core@npm:0.4.10"
-  dependencies:
-    compare-versions: ^3.4.0
-    invariant: ^2.2.4
-  checksum: 92bd05c15a6f1c65dbb89e993f6672e40e3d8f34702faf238a71eea15ca816d4aeb6216ff2eafb5151e7d14e1e373a823b90e085f421304751566f5e776855d8
+  checksum: e3f69a62ef3c8dd357e7e3c90d0009d0dd0cfeae93d86c5043580bd78d35c0be5fcd345bd9dfa7b6e58d0a945b823cb6cb8666ad00c86a06bb31fe409eaed7d5
   languageName: node
   linkType: hard
 
@@ -7521,7 +7494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:*, expo-splash-screen@npm:^0.18.1":
+"expo-splash-screen@npm:*, expo-splash-screen@npm:~0.18.2":
   version: 0.18.2
   resolution: "expo-splash-screen@npm:0.18.2"
   dependencies:
@@ -7544,6 +7517,18 @@ __metadata:
   version: 3.1.1
   resolution: "expo-structured-headers@npm:3.1.1"
   checksum: 7bba145baf588525b47b626875b38a9ca1e6279abc6526e106c3417e6256a5a7ed0a686cc75f0235228f9322d93521b894b36d93b4172ddafceb90adfd091693
+  languageName: node
+  linkType: hard
+
+"expo-system-ui@npm:~2.2.1":
+  version: 2.2.1
+  resolution: "expo-system-ui@npm:2.2.1"
+  dependencies:
+    "@react-native/normalize-color": ^2.0.0
+    debug: ^4.3.2
+  peerDependencies:
+    expo: "*"
+  checksum: 5ea05eac2468944459072b41cbe60675d8803dfe6617045a4e516dc5158665d40eb023c19e19fb593c7c4d4140ca3bd11790b357682ec61280ccddfc7d53dbf0
   languageName: node
   linkType: hard
 
@@ -7579,9 +7564,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:^48.0.7":
-  version: 48.0.15
-  resolution: "expo@npm:48.0.15"
+"expo@npm:~48.0.15":
+  version: 48.0.16
+  resolution: "expo@npm:48.0.16"
   dependencies:
     "@babel/runtime": ^7.20.0
     "@expo/cli": 0.7.1
@@ -7597,7 +7582,7 @@ __metadata:
     expo-font: ~11.1.1
     expo-keep-awake: ~12.0.1
     expo-modules-autolinking: 1.2.0
-    expo-modules-core: 1.2.6
+    expo-modules-core: 1.2.7
     fbemitter: ^3.0.0
     getenv: ^1.0.0
     invariant: ^2.2.4
@@ -7607,7 +7592,7 @@ __metadata:
     uuid: ^3.4.0
   bin:
     expo: bin/cli.js
-  checksum: afd0b5b13af37608bba0746ade8868cbd924bca7c8a017fe266ae466059938baa9c556ab3917d15e9f2cbe65e80b0517058bf78524311c4b9aea8dc51b0aa85e
+  checksum: e1d2f68501c8870449fd9c993859d32f37ed1695f6c18a4ad43785805e25fd600d5d1e267a851c961a7f83dea7c140bf62333b34832eed433131e50aaa00149b
   languageName: node
   linkType: hard
 
@@ -7643,6 +7628,13 @@ __metadata:
     snapdragon: ^0.8.1
     to-regex: ^3.0.1
   checksum: a41531b8934735b684cef5e8c5a01d0f298d7d384500ceca38793a9ce098125aab04ee73e2d75d5b2901bc5dddd2b64e1b5e3bf19139ea48bac52af4a92f1d00
+  languageName: node
+  linkType: hard
+
+"fast-base64-decode@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "fast-base64-decode@npm:1.0.0"
+  checksum: 4c59eb1775a7f132333f296c5082476fdcc8f58d023c42ed6d378d2e2da4c328c7a71562f271181a725dd17cdaa8f2805346cc330cdbad3b8e4b9751508bd0a3
   languageName: node
   linkType: hard
 
@@ -10562,22 +10554,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-expo-solito-monorepo@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "next-expo-solito-monorepo@workspace:."
-  dependencies:
-    "@babel/runtime": ^7.18.9
-    "@manypkg/cli": ^0.19.1
-    check-dependency-version-consistency: ^3.0.3
-    eslint: ^8.21.0
-    node-gyp: ^9.3.1
-    patch-package: ^7.0.0
-    prettier: ^2.7.1
-    turbo: ^1.8.3
-    typescript: ^4.7.4
-  languageName: unknown
-  linkType: soft
-
 "nice-try@npm:^1.0.4":
   version: 1.0.5
   resolution: "nice-try@npm:1.0.5"
@@ -11087,6 +11063,22 @@ __metadata:
   checksum: cc9f890d3667d7610e6184decf543278b87f657d1ace0deb4a9c9155feca738ef88f660c82200763d3348010f4e42e9c7adc91e96ab0f86a770955995b5351e2
   languageName: node
   linkType: hard
+
+"paradym-wallet@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "paradym-wallet@workspace:."
+  dependencies:
+    "@babel/runtime": ^7.18.9
+    "@manypkg/cli": ^0.19.1
+    check-dependency-version-consistency: ^3.0.3
+    eslint: ^8.21.0
+    node-gyp: ^9.3.1
+    patch-package: ^7.0.0
+    prettier: ^2.7.1
+    turbo: ^1.8.3
+    typescript: ^4.7.4
+  languageName: unknown
+  linkType: soft
 
 "parent-module@npm:^1.0.0":
   version: 1.0.1
@@ -11686,6 +11678,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-fs@npm:^2.20.0":
+  version: 2.20.0
+  resolution: "react-native-fs@npm:2.20.0"
+  dependencies:
+    base-64: ^0.1.0
+    utf8: ^3.0.0
+  peerDependencies:
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 0be9bb9a5c13b501d0a3006efc3aa5c0b5b211456ee04718297f4e522532f3527f1daa220bd67d3b82d819ed8fdab8f64b7d6e0d7b768c1fd1d8ec9122d94316
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:^2.9.0":
   version: 2.9.0
   resolution: "react-native-gesture-handler@npm:2.9.0"
@@ -11699,6 +11707,17 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 6bfdd9d23486193424dcfb0073dd821a216c2783dde746d73a3441e920602343f09efa10261c6f09fcbcb645d029a95305c86f61997053c01ad89751c8c6d236
+  languageName: node
+  linkType: hard
+
+"react-native-get-random-values@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "react-native-get-random-values@npm:1.8.0"
+  dependencies:
+    fast-base64-decode: ^1.0.0
+  peerDependencies:
+    react-native: ">=0.56"
+  checksum: 9163368ebd935d897f6ea0f9e95c476aa7608080e3848bb6c6f85db01b9de3498d857795c84df5492d6511a55aebf89492860ac886b652a9a7a3efdb19913f87
   languageName: node
   linkType: hard
 
@@ -11786,7 +11805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-web@npm:^0.18.12":
+"react-native-web@npm:^0.18.10":
   version: 0.18.12
   resolution: "react-native-web@npm:0.18.12"
   dependencies:
@@ -11804,7 +11823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:^0.71.4":
+"react-native@npm:0.71.7":
   version: 0.71.7
   resolution: "react-native@npm:0.71.7"
   dependencies:
@@ -13971,6 +13990,13 @@ __metadata:
   version: 3.1.1
   resolution: "use@npm:3.1.1"
   checksum: 08a130289f5238fcbf8f59a18951286a6e660d17acccc9d58d9b69dfa0ee19aa038e8f95721b00b432c36d1629a9e32a464bf2e7e0ae6a244c42ddb30bdd8b33
+  languageName: node
+  linkType: hard
+
+"utf8@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "utf8@npm:3.0.0"
+  checksum: cb89a69ad9ab393e3eae9b25305b3ff08bebca9adc839191a34f90777eb2942f86a96369d2839925fea58f8f722f7e27031d697f10f5f39690f8c5047303e62d
   languageName: node
   linkType: hard
 

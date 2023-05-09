@@ -1,5 +1,5 @@
 {
-  "name": "next-expo-solito-monorepo",
+  "name": "paradym-wallet",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -10,7 +10,7 @@
     "watch": "yarn workspaces foreach -pi run watch",
     "fix": "manypkg fix",
     "postinstall": "patch-package && yarn check-deps && yarn build",
-    "build": "yarn workspaces foreach --exclude next-app run build",
+    "build": "yarn workspaces foreach run build",
     "upgrade:tamagui": "yarn up '*tamagui*'@latest '@tamagui/*'@latest react-native-web-lite@latest",
     "upgrade:tamagui:canary": "yarn up '*tamagui*'@canary '@tamagui/*'@canary react-native-web-lite@canary",
     "check-deps": "check-dependency-version-consistency ."
@@ -21,7 +21,8 @@
     "react-dom": "^18.2.0",
     "react-refresh": "^0.14.0",
     "react-native-svg": "13.4.0",
-    "react-native-web": "^0.18.12"
+    "@unimodules/react-native-adapter": "./noop",
+    "@unimodules/core": "./noop"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
