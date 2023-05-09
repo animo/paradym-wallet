@@ -1,22 +1,18 @@
 # Paradym Wallet
 
-This repo hosts a mobile wallet for Paradym.
+This repo contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
 
-## 📦 Included packages
+## Structure
 
-- [Tamagui](https://tamagui.dev) 🪄
-- [solito](https://solito.dev) for cross-platform navigation
-- Expo SDK
-- React Navigation
+The project is a monorepo managed using **Yarn (v3)**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router, React Navigation and Solito**. For the Agent and SSI capabilities **Aries Framework JavaScript (AFJ)** is used.
 
-## 🗂 Folder layout
-
-The main apps are:
+The folder structure is as follows
 
 - `apps` top level applications
-  - `expo` native app for iOS & Android
-- `packages` shared packages across apps
-  - `ui` includes your custom UI kit that will be optimized by Tamagui
+  - `expo` react native app for iOS & Android
+- `packages` shared packages
+  - `ui` includes our custom UI kit that will be optimized by Tamagui
+  - `agent` includes the Aries Framework JavaScript (AFJ) agent and SSI capabilities
   - `app` you'll be importing most files from `app/`
     - `features` (don't use a `screens` folder. organize by feature.)
     - `provider` (all the providers that wrap the app, and some no-ops for Web.)
@@ -26,11 +22,24 @@ You can add other folders inside of `packages/` if you know what you're doing an
 
 ## 🏁 Start the app
 
-- Install dependencies: `yarn`
+First, start by installing all dependencies by running `yarn`.
 
-To see debug output to verify the compiler, add `// debug` as a comment to the top of any file.
+Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device.
+You can install this using the following commands:
 
-- Expo local dev: `yarn native`. Make sure you run prebuild the first time, or whenever a native dependency changes: `cd apps/expo && yarn expo prebuild`
+```
+cd apps/expo
+yarn expo prebuild
+yarn ios # or android
+```
+
+You only need to install the development when **native** dependencies change. If you're only working on JS, you can skip this step if you already have the development build installed.
+
+Once installed you can run `yarn native` from the root of the project to start your development server.
+
+## Releasing
+
+🚧 Soon documentation will be added on how to publish a new release to the Apple App Store and Google Play Stores. 🚧
 
 ## 🆕 Add new dependencies
 
