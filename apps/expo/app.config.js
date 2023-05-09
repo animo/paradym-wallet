@@ -25,7 +25,7 @@ if (!variant) {
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
-  name: 'Paradym Wallet',
+  name: 'Paradym Wallet' + variant.name,
   slug: 'paradym-wallet',
   owner: 'animo-id',
   version: '1.0.0',
@@ -43,14 +43,19 @@ const config = {
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'id.paradym.wallet',
+    bundleIdentifier: 'id.paradym.wallet' + variant.bundle,
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#FFFFFF',
     },
-    package: 'id.paradym.wallet',
+    package: 'id.paradym.wallet' + variant.bundle,
+  },
+  extra: {
+    eas: {
+      projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
+    },
   },
 }
 
