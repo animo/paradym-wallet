@@ -125,3 +125,7 @@ web-build/
 dist/
 
 # @end expo-cli
+
+# We don't want the output of prebuild to be committed
+ios
+android

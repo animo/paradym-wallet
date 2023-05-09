@@ -6,7 +6,10 @@ import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import { useColorScheme } from 'react-native'
 import { AgentProvider, initializeAgent } from '@internal/agent'
-import { AppAgent } from '@internal/agent/'
+import { AppAgent } from '@internal/agent'
+import * as SplashScreen from 'expo-splash-screen'
+
+SplashScreen.preventAutoHideAsync()
 
 export default function HomeLayout() {
   const [loaded] = useFonts({
@@ -16,13 +19,19 @@ export default function HomeLayout() {
   const [agent, setAgent] = useState<AppAgent>()
   const scheme = useColorScheme()
 
+  // Initialize agent
   useEffect(() => {
     if (agent) return
 
     initializeAgent().then((agent) => setAgent(agent))
   }, [])
 
-  // TODO: do something better here
+  // Hide splash screen when agent and fonts are loaded
+  useEffect(() => {
+    if (loaded && agent) SplashScreen.hideAsync()
+  }, [loaded, agent])
+
+  // The splash screen will be rendered on top of this
   if (!loaded || !agent) {
     return null
   }

@@ -26,6 +26,7 @@ if (!variant) {
  */
 const config = {
   name: 'Paradym Wallet' + variant.name,
+  scheme: 'paradym',
   slug: 'paradym-wallet',
   owner: 'animo-id',
   version: '1.0.0',
