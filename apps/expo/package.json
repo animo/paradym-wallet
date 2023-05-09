@@ -4,13 +4,15 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "TAMAGUI_TARGET=native expo start -c",
+    "start": "TAMAGUI_TARGET=native expo start -c --dev-client",
     "android": "TAMAGUI_TARGET=native yarn expo run:android",
     "ios": "TAMAGUI_TARGET=native yarn expo run:ios",
     "eject": "expo eject"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
+    "@hyperledger/aries-askar-react-native": "^0.1.0-dev.8",
+    "@internal/agent": "*",
     "@internal/ui": "*",
     "@react-navigation/native": "^6.1.6",
     "@types/react-native": "^0.71.3",

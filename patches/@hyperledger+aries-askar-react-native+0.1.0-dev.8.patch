@@ -1,0 +1,490 @@
+diff --git a/node_modules/@hyperledger/aries-askar-react-native/build/ReactNativeAriesAskar.js b/node_modules/@hyperledger/aries-askar-react-native/build/ReactNativeAriesAskar.js
+index 8808d27..4ae0a4a 100644
+--- a/node_modules/@hyperledger/aries-askar-react-native/build/ReactNativeAriesAskar.js
++++ b/node_modules/@hyperledger/aries-askar-react-native/build/ReactNativeAriesAskar.js
+@@ -5,7 +5,7 @@ const aries_askar_shared_1 = require("@hyperledger/aries-askar-shared");
+ const library_1 = require("./library");
+ const utils_1 = require("./utils");
+ class ReactNativeAriesAskar {
+-    constructor() {
++    constructor(bobby) {
+         this.promisify = (method) => {
+             return new Promise((resolve, reject) => {
+                 const _cb = ({ errorCode }) => {
+@@ -37,12 +37,14 @@ class ReactNativeAriesAskar {
+                 method(_cb);
+             });
+         };
++
++        this.bobby = bobby;
+     }
+     version() {
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)(library_1.ariesAskarReactNative.version({}));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)(this.bobby.version({}));
+     }
+     getCurrentError() {
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)(library_1.ariesAskarReactNative.getCurrentError({}));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)(this.bobby.getCurrentError({}));
+     }
+     clearCustomLogger() {
+         throw new Error('Method not implemented. clearCustomLogger');
+@@ -52,7 +54,7 @@ class ReactNativeAriesAskar {
+         throw new Error('Method not implemented. setCustomLogger');
+     }
+     setDefaultLogger() {
+-        library_1.ariesAskarReactNative.setDefaultLogger({});
++        this.bobby.setDefaultLogger({});
+     }
+     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     setMaxLogLevel(_) {
+@@ -60,225 +62,225 @@ class ReactNativeAriesAskar {
+     }
+     entryListCount(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.entryListCount(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.entryListCount(serializedOptions)));
+     }
+     entryListFree(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+         // null resopnse is expected as we're freeing the object
+-        (0, utils_1.handleError)(library_1.ariesAskarReactNative.entryListFree(serializedOptions));
++        (0, utils_1.handleError)(this.bobby.entryListFree(serializedOptions));
+     }
+     entryListGetCategory(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.entryListGetCategory(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.entryListGetCategory(serializedOptions)));
+     }
+     entryListGetName(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.entryListGetName(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.entryListGetName(serializedOptions)));
+     }
+     entryListGetTags(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, utils_1.handleError)(library_1.ariesAskarReactNative.entryListGetTags(serializedOptions));
++        return (0, utils_1.handleError)(this.bobby.entryListGetTags(serializedOptions));
+     }
+     entryListGetValue(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.entryListGetValue(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.entryListGetValue(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyAeadDecrypt(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyAeadDecrypt(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyAeadDecrypt(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyAeadEncrypt(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const ret = (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyAeadEncrypt(serializedOptions));
++        const ret = (0, utils_1.handleError)(this.bobby.keyAeadEncrypt(serializedOptions));
+         const { buffer, noncePos, tagPos } = (0, aries_askar_shared_1.handleInvalidNullResponse)(ret);
+         return new aries_askar_shared_1.EncryptedBuffer({ tagPos, noncePos, buffer: new Uint8Array(buffer) });
+     }
+     keyAeadGetPadding(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyAeadGetPadding(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyAeadGetPadding(serializedOptions)));
+     }
+     keyAeadGetParams(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const ret = (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyAeadGetParams(serializedOptions));
++        const ret = (0, utils_1.handleError)(this.bobby.keyAeadGetParams(serializedOptions));
+         const { tagLength, nonceLength } = (0, aries_askar_shared_1.handleInvalidNullResponse)(ret);
+         return new aries_askar_shared_1.AeadParams({ nonceLength, tagLength });
+     }
+     keyAeadRandomNonce(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyAeadRandomNonce(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyAeadRandomNonce(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyConvert(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyConvert(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyConvert(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyCryptoBox(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyCryptoBox(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyCryptoBox(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyCryptoBoxOpen(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyCryptoBoxOpen(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyCryptoBoxOpen(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyCryptoBoxRandomNonce() {
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyCryptoBoxRandomNonce({})));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyCryptoBoxRandomNonce({})));
+         return new Uint8Array(buf);
+     }
+     keyCryptoBoxSeal(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyCryptoBoxSeal(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyCryptoBoxSeal(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyCryptoBoxSealOpen(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyCryptoBoxSealOpen(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyCryptoBoxSealOpen(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyDeriveEcdh1pu(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyDeriveEcdh1pu(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyDeriveEcdh1pu(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyDeriveEcdhEs(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyDeriveEcdhEs(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyDeriveEcdhEs(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyEntryListCount(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyEntryListCount(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyEntryListCount(serializedOptions)));
+     }
+     keyEntryListFree(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+         // null resopnse is expected as we're freeing the object
+-        (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyEntryListFree(serializedOptions));
++        (0, utils_1.handleError)(this.bobby.keyEntryListFree(serializedOptions));
+     }
+     keyEntryListGetAlgorithm(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyEntryListGetAlgorithm(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyEntryListGetAlgorithm(serializedOptions)));
+     }
+     keyEntryListGetMetadata(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyEntryListGetMetadata(serializedOptions));
++        return (0, utils_1.handleError)(this.bobby.keyEntryListGetMetadata(serializedOptions));
+     }
+     keyEntryListGetName(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyEntryListGetName(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyEntryListGetName(serializedOptions)));
+     }
+     keyEntryListGetTags(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyEntryListGetTags(serializedOptions));
++        return (0, utils_1.handleError)(this.bobby.keyEntryListGetTags(serializedOptions));
+     }
+     keyEntryListLoadLocal(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyEntryListLoadLocal(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyEntryListLoadLocal(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyFree(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+         // null resopnse is expected as we're freeing the object
+-        (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyFree(serializedOptions));
++        (0, utils_1.handleError)(this.bobby.keyFree(serializedOptions));
+     }
+     keyFromJwk(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyFromJwk(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyFromJwk(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyFromKeyExchange(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyFromKeyExchange(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyFromKeyExchange(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyFromPublicBytes(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyFromPublicBytes(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyFromPublicBytes(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyFromSecretBytes(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyFromSecretBytes(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyFromSecretBytes(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyFromSeed(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyFromSeed(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyFromSeed(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyGenerate(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGenerate(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGenerate(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle((0, aries_askar_shared_1.handleInvalidNullResponse)(handle));
+     }
+     keyGetAlgorithm(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGetAlgorithm(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGetAlgorithm(serializedOptions)));
+     }
+     keyGetEphemeral(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGetEphemeral(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGetEphemeral(serializedOptions)));
+     }
+     keyGetJwkPublic(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGetJwkPublic(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGetJwkPublic(serializedOptions)));
+     }
+     keyGetJwkSecret(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGetJwkSecret(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGetJwkSecret(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyGetJwkThumbprint(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGetJwkThumbprint(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGetJwkThumbprint(serializedOptions)));
+     }
+     keyGetPublicBytes(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGetPublicBytes(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGetPublicBytes(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyGetSecretBytes(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyGetSecretBytes(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyGetSecretBytes(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keySignMessage(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keySignMessage(serializedOptions)));
++        const buf = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keySignMessage(serializedOptions)));
+         return new Uint8Array(buf);
+     }
+     keyUnwrapKey(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.keyUnwrapKey(serializedOptions)));
++        const handle = (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.keyUnwrapKey(serializedOptions)));
+         return new aries_askar_shared_1.LocalKeyHandle(handle);
+     }
+     keyVerifySignature(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const result = (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyVerifySignature(serializedOptions));
++        const result = (0, utils_1.handleError)(this.bobby.keyVerifySignature(serializedOptions));
+         return !!result;
+     }
+     keyWrapKey(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const ret = (0, utils_1.handleError)(library_1.ariesAskarReactNative.keyWrapKey(serializedOptions));
++        const ret = (0, utils_1.handleError)(this.bobby.keyWrapKey(serializedOptions));
+         const { buffer, noncePos, tagPos } = (0, aries_askar_shared_1.handleInvalidNullResponse)(ret);
+         return new aries_askar_shared_1.EncryptedBuffer({ tagPos, noncePos, buffer: new Uint8Array(buffer) });
+     }
+     scanFree(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+         // null resopnse is expected as we're freeing the object
+-        (0, utils_1.handleError)(library_1.ariesAskarReactNative.scanFree(serializedOptions));
++        (0, utils_1.handleError)(this.bobby.scanFree(serializedOptions));
+     }
+     async scanNext(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.scanNext(Object.assign({ cb }, serializedOptions))));
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.scanNext(Object.assign({ cb }, serializedOptions))));
+         return aries_askar_shared_1.EntryListHandle.fromHandle(handle);
+     }
+     async scanStart(options) {
+         const { category, storeHandle, limit, offset, profile, tagFilter } = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.scanStart({
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.scanStart({
+             cb,
+             category,
+             storeHandle,
+@@ -291,26 +293,26 @@ class ReactNativeAriesAskar {
+     }
+     sessionClose(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionClose(Object.assign({ cb }, serializedOptions))));
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.sessionClose(Object.assign({ cb }, serializedOptions))));
+     }
+     async sessionCount(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionCount(Object.assign({ cb }, serializedOptions))));
++        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.sessionCount(Object.assign({ cb }, serializedOptions))));
+         return (0, aries_askar_shared_1.handleInvalidNullResponse)(response);
+     }
+     async sessionFetch(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionFetch(Object.assign({ cb }, serializedOptions))));
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.sessionFetch(Object.assign({ cb }, serializedOptions))));
+         return aries_askar_shared_1.EntryListHandle.fromHandle(handle);
+     }
+     async sessionFetchAll(options) {
+         const { category, sessionHandle, forUpdate, limit, tagFilter } = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionFetchAll({ cb, category, sessionHandle, forUpdate, limit: limit || -1, tagFilter })));
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.sessionFetchAll({ cb, category, sessionHandle, forUpdate, limit: limit || -1, tagFilter })));
+         return aries_askar_shared_1.EntryListHandle.fromHandle(handle);
+     }
+     async sessionFetchAllKeys(options) {
+         const { sessionHandle, algorithm, forUpdate, limit, thumbprint, tagFilter } = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionFetchAllKeys({
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.sessionFetchAllKeys({
+             cb,
+             sessionHandle,
+             algorithm,
+@@ -323,12 +325,12 @@ class ReactNativeAriesAskar {
+     }
+     async sessionFetchKey(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionFetchKey(Object.assign({ cb }, serializedOptions))));
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.sessionFetchKey(Object.assign({ cb }, serializedOptions))));
+         return aries_askar_shared_1.KeyEntryListHandle.fromHandle(handle);
+     }
+     sessionInsertKey(options) {
+         const { sessionHandle, name, localKeyHandle, expiryMs, metadata, tags } = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionInsertKey({
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.sessionInsertKey({
+             cb,
+             sessionHandle,
+             name,
+@@ -340,21 +342,21 @@ class ReactNativeAriesAskar {
+     }
+     async sessionRemoveAll(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionRemoveAll(Object.assign({ cb }, serializedOptions))));
++        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.sessionRemoveAll(Object.assign({ cb }, serializedOptions))));
+         return (0, aries_askar_shared_1.handleInvalidNullResponse)(response);
+     }
+     sessionRemoveKey(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionRemoveKey(Object.assign({ cb }, serializedOptions))));
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.sessionRemoveKey(Object.assign({ cb }, serializedOptions))));
+     }
+     async sessionStart(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionStart(Object.assign({ cb }, serializedOptions))));
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.sessionStart(Object.assign({ cb }, serializedOptions))));
+         return aries_askar_shared_1.SessionHandle.fromHandle(handle);
+     }
+     sessionUpdate(options) {
+         const { category, name, operation, sessionHandle, expiryMs, tags, value } = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionUpdate({
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.sessionUpdate({
+             cb,
+             category,
+             name,
+@@ -367,53 +369,53 @@ class ReactNativeAriesAskar {
+     }
+     sessionUpdateKey(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.sessionUpdateKey(Object.assign({ cb }, serializedOptions))));
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.sessionUpdateKey(Object.assign({ cb }, serializedOptions))));
+     }
+     storeClose(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeClose(Object.assign({ cb }, serializedOptions))));
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.storeClose(Object.assign({ cb }, serializedOptions))));
+     }
+     async storeCreateProfile(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeCreateProfile(Object.assign({ cb }, serializedOptions))));
++        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.storeCreateProfile(Object.assign({ cb }, serializedOptions))));
+         return (0, aries_askar_shared_1.handleInvalidNullResponse)(response);
+     }
+     storeGenerateRawKey(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(library_1.ariesAskarReactNative.storeGenerateRawKey(serializedOptions)));
++        return (0, aries_askar_shared_1.handleInvalidNullResponse)((0, utils_1.handleError)(this.bobby.storeGenerateRawKey(serializedOptions)));
+     }
+     async storeGetProfileName(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeGetProfileName(Object.assign({ cb }, serializedOptions))));
++        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.storeGetProfileName(Object.assign({ cb }, serializedOptions))));
+         return (0, aries_askar_shared_1.handleInvalidNullResponse)(response);
+     }
+     async storeOpen(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeOpen(Object.assign({ cb }, serializedOptions))));
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.storeOpen(Object.assign({ cb }, serializedOptions))));
+         return aries_askar_shared_1.StoreHandle.fromHandle(handle);
+     }
+     async storeProvision(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeProvision(Object.assign({ cb }, serializedOptions))));
++        const handle = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.storeProvision(Object.assign({ cb }, serializedOptions))));
+         return aries_askar_shared_1.StoreHandle.fromHandle(handle);
+     }
+     storeRekey(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeRekey(Object.assign({ cb }, serializedOptions))));
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.storeRekey(Object.assign({ cb }, serializedOptions))));
+     }
+     async storeRemove(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeRemove(Object.assign({ cb }, serializedOptions))));
++        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.storeRemove(Object.assign({ cb }, serializedOptions))));
+         return (0, aries_askar_shared_1.handleInvalidNullResponse)(response);
+     }
+     async storeRemoveProfile(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.storeRemoveProfile(Object.assign({ cb }, serializedOptions))));
++        const response = await this.promisifyWithResponse((cb) => (0, utils_1.handleError)(this.bobby.storeRemoveProfile(Object.assign({ cb }, serializedOptions))));
+         return (0, aries_askar_shared_1.handleInvalidNullResponse)(response);
+     }
+     async migrateIndySdk(options) {
+         const serializedOptions = (0, utils_1.serializeArguments)(options);
+-        return this.promisify((cb) => (0, utils_1.handleError)(library_1.ariesAskarReactNative.migrateIndySdk(Object.assign({ cb }, serializedOptions))));
++        return this.promisify((cb) => (0, utils_1.handleError)(this.bobby.migrateIndySdk(Object.assign({ cb }, serializedOptions))));
+     }
+ }
+ exports.ReactNativeAriesAskar = ReactNativeAriesAskar;
+diff --git a/node_modules/@hyperledger/aries-askar-react-native/build/index.js b/node_modules/@hyperledger/aries-askar-react-native/build/index.js
+index cf169f5..83ecf01 100644
+--- a/node_modules/@hyperledger/aries-askar-react-native/build/index.js
++++ b/node_modules/@hyperledger/aries-askar-react-native/build/index.js
+@@ -14,11 +14,11 @@ exports.ariesAskarReactNative = void 0;
+ const aries_askar_shared_1 = require("@hyperledger/aries-askar-shared");
+ const react_native_1 = require("react-native");
+ const ReactNativeAriesAskar_1 = require("./ReactNativeAriesAskar");
+-const module = react_native_1.NativeModules.AriesAskar;
+-if (!module.install())
+-    throw Error('Unable to install the turboModule: ariesAskar');
++// const module = react_native_1.NativeModules.AriesAskar;
++// if (!module.install())
++//     throw Error('Unable to install the turboModule: ariesAskar');
+ // Reexport everything from shared
+ __exportStar(require("@hyperledger/aries-askar-shared"), exports);
+-exports.ariesAskarReactNative = new ReactNativeAriesAskar_1.ReactNativeAriesAskar();
++exports.ariesAskarReactNative = null;
+ (0, aries_askar_shared_1.registerAriesAskar)({ askar: exports.ariesAskarReactNative });
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/node_modules/@hyperledger/aries-askar-react-native/build/library/register.js b/node_modules/@hyperledger/aries-askar-react-native/build/library/register.js
+index eb6c940..a0ddf65 100644
+--- a/node_modules/@hyperledger/aries-askar-react-native/build/library/register.js
++++ b/node_modules/@hyperledger/aries-askar-react-native/build/library/register.js
+@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.ariesAskarReactNative = void 0;
+ // This can already check whether `_aries_askar` exists on global
+ // eslint-disable-next-line @typescript-eslint/no-use-before-define
+-if (!_aries_askar) {
+-    throw Error('_aries_askar has not been exposed on global. Something went wrong while installing the turboModule');
+-}
++// if (!_aries_askar) {
++//     throw Error('_aries_askar has not been exposed on global. Something went wrong while installing the turboModule');
++// }
+ // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+-exports.ariesAskarReactNative = _aries_askar;
++// exports.ariesAskarReactNative = _aries_askar;
+ //# sourceMappingURL=register.js.map
+\ No newline at end of file
