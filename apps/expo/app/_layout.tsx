@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react'
+import type { AppAgent } from '@internal/agent'
 
+import { AgentProvider, initializeAgent } from '@internal/agent'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Provider } from 'app/provider'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
-import { useColorScheme } from 'react-native'
-import { AgentProvider, initializeAgent } from '@internal/agent'
-import { AppAgent } from '@internal/agent'
 import * as SplashScreen from 'expo-splash-screen'
+import { useEffect, useState } from 'react'
+import { useColorScheme } from 'react-native'
 
-SplashScreen.preventAutoHideAsync()
+void SplashScreen.preventAutoHideAsync()
 
 export default function HomeLayout() {
   const [loaded] = useFonts({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   })
   const [agent, setAgent] = useState<AppAgent>()
@@ -23,12 +25,12 @@ export default function HomeLayout() {
   useEffect(() => {
     if (agent) return
 
-    initializeAgent().then((agent) => setAgent(agent))
+    void initializeAgent().then((agent) => setAgent(agent))
   }, [])
 
   // Hide splash screen when agent and fonts are loaded
   useEffect(() => {
-    if (loaded && agent) SplashScreen.hideAsync()
+    if (loaded && agent) void SplashScreen.hideAsync()
   }, [loaded, agent])
 
   // The splash screen will be rendered on top of this

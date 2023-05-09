@@ -1,3 +1,4 @@
+/* eslint-disable */
 const APP_VARIANT = process.env.APP_VARIANT || 'production'
 
 const variants = {

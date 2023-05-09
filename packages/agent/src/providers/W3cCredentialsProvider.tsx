@@ -1,4 +1,4 @@
-import type { Agent } from '@aries-framework/core'
+import type { AppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
 
 import { W3cCredentialRecord } from '@aries-framework/core'
@@ -9,7 +9,6 @@ import {
 } from '@aries-framework/react-hooks/build/recordUtils'
 import { useState, createContext, useContext, useEffect } from 'react'
 import * as React from 'react'
-import { AppAgent } from '../agent'
 
 type W3cCredentialRecordState = {
   w3cCredentialRecords: Array<W3cCredentialRecord>
@@ -85,23 +84,19 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
   })
 
   useEffect(() => {
-    agent.w3cCredentials
+    void agent.w3cCredentials
       .getAllCredentialRecords()
       .then((w3cCredentialRecords) => setState({ w3cCredentialRecords, loading: false }))
   }, [])
 
   useEffect(() => {
     if (!state.loading && agent) {
-      const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe(
-        async (record) => {
-          setState(addRecord(record, state))
-        }
+      const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
+        setState(addRecord(record, state))
       )
 
       const credentialUpdate$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe(
-        async (record) => {
-          setState(updateRecord(record, state))
-        }
+        (record) => setState(updateRecord(record, state))
       )
 
       const credentialRemove$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe(
