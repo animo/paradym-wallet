@@ -8,6 +8,7 @@
   ],
   "dependencies": {
     "@internal/agent": "*",
+    "@internal/scanner": "*",
     "@internal/ui": "*",
     "@tamagui/animations-react-native": "latest",
     "@tamagui/colors": "latest",

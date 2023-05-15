@@ -1,26 +1,21 @@
 import { createInterFont } from '@tamagui/font-inter'
-import { createMedia } from '@tamagui/react-native-media-driver'
 import { shorthands } from '@tamagui/shorthands'
-import { themes, tokens } from '@tamagui/themes'
-import { createTamagui } from 'tamagui'
+import { radius, space, zIndex, size } from '@tamagui/themes'
+import { createTamagui, createTokens } from 'tamagui'
 
 import { animations } from './animations'
 
+// FIXME: i don't think this is enforced.
 const headingFont = createInterFont({
   size: {
-    6: 15,
-  },
-  transform: {
-    6: 'uppercase',
-    7: 'none',
+    1: 18, // Heading 3
+    2: 20, // Heading 2
+    3: 24, // Heading 1
+    4: 38, // Page Title
   },
   weight: {
-    6: '400',
-    7: '700',
-  },
-  color: {
-    6: '$colorFocus',
-    7: '$color',
+    5: '500', // medium
+    6: '600', // semibold
   },
   letterSpacing: {
     5: 2,
@@ -33,22 +28,109 @@ const headingFont = createInterFont({
     14: -5,
     15: -6,
   },
-  face: {
-    700: { normal: 'InterBold' },
+})
+
+const bodyFont = createInterFont({
+  size: {
+    1: 12, // Annotation
+    2: 14, // Sub text
+    3: 16, // Body text
   },
 })
 
-const bodyFont = createInterFont(
-  {
-    face: {
-      700: { normal: 'InterBold' },
+export const absoluteFill = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+}
+
+export const paddingSizes = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+}
+
+export const borderRadiusSizes = {
+  xs: 2,
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 24,
+}
+
+export const paddingVariants = {
+  pad: {
+    xs: {
+      padding: paddingSizes.xs,
     },
+    sm: {
+      padding: paddingSizes.sm,
+    },
+    md: {
+      padding: paddingSizes.md,
+    },
+    lg: {
+      padding: paddingSizes.lg,
+    },
+    xl: {
+      padding: paddingSizes.xl,
+    },
+  } as const,
+}
+
+export const tokens = createTokens({
+  color: {
+    'grey-100': '#F8F8FA',
+    'grey-200': '#F2F4F6',
+    'grey-300': '#E0E3E8',
+    'grey-400': '#C6CED5',
+    'grey-500': '#9CA5AF',
+    'grey-600': '#6D7581',
+    'grey-700': '#2F3338',
+    'grey-800': '#1E1E1E',
+    'grey-900': '#111111',
+    'primary-100': '#EEF0FE',
+    'primary-200': '#DADEFF',
+    'primary-300': '#ACB4FB',
+    'primary-400': '#7A88FF',
+    'primary-500': '#5A33F6',
+    'primary-600': '#2233C9',
+    'primary-700': '#202EA7',
+    'primary-800': '#141E80',
+    'primary-900': '#131C66',
+    'feature-300': '#DBEAFE',
+    'feature-400': '#60A5FA',
+    'feature-500': '#3B82F6',
+    'feature-600': '#1D4ED8',
+    'feature-700': '#1E40AF',
+    'positive-300': '#E8FFF1',
+    'positive-400': '#7EE3A6',
+    'positive-500': '#31C66C',
+    'positive-600': '#34AA63',
+    'positive-700': '#1B7641',
+    'warning-300': '#FEF3C7',
+    'warning-400': '#FCD34D',
+    'warning-500': '#FBBF24',
+    'warning-600': '#D97706',
+    'warning-700': '#92400E',
+    'danger-300': '#FEE2E2',
+    'danger-400': '#F87171',
+    'danger-500': '#DC3130',
+    'danger-600': '#B8201F',
+    'danger-700': '#991B1B',
+    white: '#FFF',
+    black: '#000',
+    translucent: 'rgba(0,0,0,0.4)',
   },
-  {
-    sizeSize: (size) => Math.round(size * 1.1),
-    sizeLineHeight: (size) => Math.round(size * 1.1 + (size > 20 ? 10 : 10)),
-  }
-)
+  size,
+  radius,
+  zIndex,
+  space,
+})
 
 export const config = createTamagui({
   animations,
@@ -59,22 +141,13 @@ export const config = createTamagui({
     heading: headingFont,
     body: bodyFont,
   },
-  themes,
   tokens,
-  media: createMedia({
-    xs: { maxWidth: 660 },
-    sm: { maxWidth: 800 },
-    md: { maxWidth: 1020 },
-    lg: { maxWidth: 1280 },
-    xl: { maxWidth: 1420 },
-    xxl: { maxWidth: 1600 },
-    gtXs: { minWidth: 660 + 1 },
-    gtSm: { minWidth: 800 + 1 },
-    gtMd: { minWidth: 1020 + 1 },
-    gtLg: { minWidth: 1280 + 1 },
-    short: { maxHeight: 820 },
-    tall: { minHeight: 820 },
-    hoverNone: { hover: 'none' },
-    pointerCoarse: { pointer: 'coarse' },
-  }),
+  themes: {
+    dark: {
+      ...tokens.color, // use same scheme in dark mode for now
+    },
+    light: {
+      ...tokens.color,
+    },
+  },
 })

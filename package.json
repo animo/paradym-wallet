@@ -7,6 +7,8 @@
   ],
   "scripts": {
     "native": "cd apps/expo && yarn start",
+    "ios": "cd apps/expo && yarn ios",
+    "android": "cd apps/expo && yarn android",
     "watch": "yarn workspaces foreach -pi run watch",
     "fix": "manypkg fix",
     "postinstall": "patch-package && yarn check-deps && yarn build",

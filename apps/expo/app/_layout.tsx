@@ -42,7 +42,15 @@ export default function HomeLayout() {
     <Provider>
       <AgentProvider agent={agent}>
         <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack />
+          <Stack>
+            <Stack.Screen
+              name="scan"
+              options={{
+                headerShown: false,
+                presentation: 'modal',
+              }}
+            />
+          </Stack>
         </ThemeProvider>
       </AgentProvider>
     </Provider>

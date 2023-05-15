@@ -2518,6 +2518,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@internal/scanner@*, @internal/scanner@workspace:packages/scanner":
+  version: 0.0.0-use.local
+  resolution: "@internal/scanner@workspace:packages/scanner"
+  dependencies:
+    "@react-native-masked-view/masked-view": ^0.2.9
+    "@types/react": ^18.0.27
+    "@types/react-native": ^0.71.3
+    expo-barcode-scanner: ^12.3.2
+  peerDependencies:
+    "@internal/ui": "*"
+    "@react-native-masked-view/masked-view": ^0.2.9
+    expo-barcode-scanner: ^12.3.2
+  languageName: unknown
+  linkType: soft
+
 "@internal/ui@*, @internal/ui@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@internal/ui@workspace:packages/ui"
@@ -3108,6 +3123,16 @@ __metadata:
   bin:
     react-native: build/bin.js
   checksum: f3c498c8cc660c53a75cfb8522748a26b589fa087d13a03225cd207dad61c592dfa59ebc26e5d9caf8cb210b8802922bc4a3c907e180273027bc738ee7cc6038
+  languageName: node
+  linkType: hard
+
+"@react-native-masked-view/masked-view@npm:^0.2.9":
+  version: 0.2.9
+  resolution: "@react-native-masked-view/masked-view@npm:0.2.9"
+  peerDependencies:
+    react: ">=16"
+    react-native: ">=0.57"
+  checksum: 7eb6c370f000f630bf13ce9177964c430eda7057eb7036460d4e5d2bf2153ebd6a29bec0fb8dc6cd58bb5f9bbc8d1a3e0f13d40c798914a9224f164d4d46f896
   languageName: node
   linkType: hard
 
@@ -5141,6 +5166,7 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@internal/agent": "*"
+    "@internal/scanner": "*"
     "@internal/ui": "*"
     "@tamagui/animations-react-native": latest
     "@tamagui/colors": latest
@@ -7734,7 +7760,9 @@ __metadata:
     "@expo/metro-config": ^0.3.21
     "@hyperledger/aries-askar-react-native": ^0.1.0-dev.8
     "@internal/agent": "*"
+    "@internal/scanner": "*"
     "@internal/ui": "*"
+    "@react-native-masked-view/masked-view": ^0.2.9
     "@react-navigation/native": ^6.1.6
     "@tamagui/babel-plugin": latest
     "@types/react-native": ^0.71.3
@@ -7755,7 +7783,7 @@ __metadata:
     expo-system-ui: ~2.2.1
     expo-updates: ^0.16.3
     metro-minify-terser: ^0.74.1
-    react: ^18.2.0
+    react: 18.2.0
     react-dom: ^18.2.0
     react-native: 0.71.7
     react-native-fs: ^2.20.0
@@ -7789,6 +7817,17 @@ __metadata:
     path-browserify: ^1.0.0
     url-parse: ^1.5.9
   checksum: 1c3ea7959cd59d7d02716ca97732a1dc28729ba75c70b831dd129f06fd04b7c129e470c5c8cfb46b4df6ff629ca609234885bfddd375a9a17b1e29497edf4dde
+  languageName: node
+  linkType: hard
+
+"expo-barcode-scanner@npm:^12.3.2":
+  version: 12.4.0
+  resolution: "expo-barcode-scanner@npm:12.4.0"
+  dependencies:
+    expo-image-loader: ~4.2.0
+  peerDependencies:
+    expo: "*"
+  checksum: 61883171bf913090da8254bdba53e581da545590b36e2c43040486434ca0d02048e1da82f06b12ac7a7d01718adf455d676747792a10a516fb1973658112cfe6
   languageName: node
   linkType: hard
 
@@ -7894,6 +7933,15 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 01648dad7384b04c8eaee22c4b86653cc31230e5f3523bf2082924ccc659f61b031900c55f1f08befaaf1bd1616eecb05ae9767eb111ed9151dd619374581930
+  languageName: node
+  linkType: hard
+
+"expo-image-loader@npm:~4.2.0":
+  version: 4.2.0
+  resolution: "expo-image-loader@npm:4.2.0"
+  peerDependencies:
+    expo: "*"
+  checksum: eb35c46bf8da9115fc233b2c028b57e845e6921ea35cca3c9a800efbb63f7b0970c44f987c3934fffbcc9ec3d37403983cf8def06b72ad581793488461ee7aff
   languageName: node
   linkType: hard
 

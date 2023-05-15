@@ -46,6 +46,9 @@ const config = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'id.paradym.wallet' + variant.bundle,
+    infoPlist: {
+      NSCameraUsageDescription: 'This app uses the camera to scan QR-codes.',
+    },
   },
   android: {
     adaptiveIcon: {
