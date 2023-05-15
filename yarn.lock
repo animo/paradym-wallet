@@ -2644,6 +2644,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@internal/scanner@*, @internal/scanner@workspace:packages/scanner":
+  version: 0.0.0-use.local
+  resolution: "@internal/scanner@workspace:packages/scanner"
+  dependencies:
+    "@react-native-masked-view/masked-view": ^0.2.9
+    "@types/react": ^18.0.27
+    "@types/react-native": ^0.71.3
+    expo-barcode-scanner: ^12.3.2
+  peerDependencies:
+    "@internal/ui": "*"
+    "@react-native-masked-view/masked-view": ^0.2.9
+    expo-barcode-scanner: ^12.3.2
+  languageName: unknown
+  linkType: soft
+
 "@internal/ui@*, @internal/ui@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@internal/ui@workspace:packages/ui"
