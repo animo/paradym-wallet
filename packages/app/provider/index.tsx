@@ -1,7 +1,6 @@
 import type { TamaguiProviderProps } from '@internal/ui'
 
-import { TamaguiProvider, ToastProvider } from '@internal/ui'
-import { CustomToast } from '@internal/ui/src'
+import { CustomToast, TamaguiProvider, ToastProvider } from '@internal/ui'
 import { useColorScheme } from 'react-native'
 
 import config from '../tamagui.config'
