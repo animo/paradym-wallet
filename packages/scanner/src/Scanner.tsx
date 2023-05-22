@@ -11,7 +11,7 @@ import {
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Linking, StyleSheet } from 'react-native'
 
 interface BarcodeScannerProps {
@@ -32,6 +32,11 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
     void getBarCodeScannerPermissions()
   }, [])
 
+  const _openAppSetting = useCallback(async () => {
+    // Open the custom settings if the app has one
+    await Linking.openSettings()
+  }, [])
+
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
@@ -39,7 +44,7 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
         <Paragraph textAlign="center">
           This allows Paradym to scan QR codes that include credentials or data requests.
         </Paragraph>
-        <TextButton onPress={() => Linking.openSettings()}>Open settings</TextButton>
+        <TextButton onPress={() => _openAppSetting}>Open settings</TextButton>
       </Page>
     )
   }
