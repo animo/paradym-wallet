@@ -11,7 +11,7 @@ import {
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Linking, StyleSheet } from 'react-native'
 
 interface BarcodeScannerProps {
