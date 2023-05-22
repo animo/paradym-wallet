@@ -8,7 +8,7 @@ export default function Screen() {
       <Stack.Screen
         options={{
           header: () => (
-            <XStack pt="$10" bg="$grey-100">
+            <XStack pt="$10" bg="$grey-200">
               <H1>Credentials</H1>
             </XStack>
           ),
