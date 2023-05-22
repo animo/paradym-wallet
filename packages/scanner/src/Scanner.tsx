@@ -32,9 +32,8 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
     void getBarCodeScannerPermissions()
   }, [])
 
-  const _openAppSetting = useCallback(async () => {
-    // Open the custom settings if the app has one
-    await Linking.openSettings()
+  const _openAppSetting = useCallback(() => {
+    void Linking.openSettings()
   }, [])
 
   if (hasPermission === false) {
@@ -44,7 +43,7 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
         <Paragraph textAlign="center">
           This allows Paradym to scan QR codes that include credentials or data requests.
         </Paragraph>
-        <TextButton onPress={() => _openAppSetting}>Open settings</TextButton>
+        <TextButton onPress={() => _openAppSetting()}>Open settings</TextButton>
       </Page>
     )
   }
