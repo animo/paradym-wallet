@@ -1,6 +1,12 @@
-import { QrTypes, parseCredentialOffer, parseProofRequest } from '@internal/agent'
+import {
+  parseCredentialOffer,
+  parseProofRequest,
+  isOpenIdCredentialOffer,
+  isOpenIdProofRequest,
+} from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import { useToastController } from '@internal/ui'
+import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 
@@ -13,33 +19,61 @@ export function QrScannerScreen() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [helpText, setHelpText] = useState('')
 
+  const unsupportedUrlPrefixes = ['c_i=', 'd_m=', 'oob=', '_oob=']
+
   useEffect(() => {
     const onScan = async (data: string) => {
       // don't do anything if we already scanned the data
-      // and the helpText is shown
-      if (scannedData === readData && helpText) return
+      if (scannedData === readData) return
       setScannedData(data)
-      if (scannedData.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE)) {
+
+      if (isOpenIdCredentialOffer(scannedData)) {
         setIsProcessing(true)
         await parseCredentialOffer({ data })
-          .then(() => toast.show('Success!'))
-          .catch(() => toast.show('Fail!'))
+          .then(() => {
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+            toast.show('Success!')
+          })
+          .catch(() => {
+            toast.show('Fail!')
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+          })
           .finally(() => push('/'))
-      } else if (scannedData.startsWith(QrTypes.OPENID)) {
+      } else if (isOpenIdProofRequest(scannedData)) {
         setIsProcessing(true)
         await parseProofRequest({ data })
-          .then(() => toast.show('Success!'))
-          .catch(() => toast.show('Fail!'))
+          .then(() => {
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+            toast.show('Success!')
+          })
+          .catch(() => {
+            toast.show('Fail!')
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+          })
           .finally(() => push('/'))
       } else {
         setReadData(data)
-        setHelpText('That does not seem right. Try again.')
+        triggerHelpText(data)
       }
       setIsProcessing(false)
     }
 
     if (scannedData) void onScan(scannedData)
   }, [scannedData])
+
+  const triggerHelpText = (data: string) => {
+    const isUnsupportedUrl = unsupportedUrlPrefixes.find((f) => data.includes(f))
+    setHelpText(
+      isUnsupportedUrl
+        ? 'This QR-code is not supported yet. Try another.'
+        : 'This QR-code format can not be used. Try another.'
+    )
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+    //clear the help text after 3 seconds
+    setTimeout(() => {
+      setHelpText('')
+    }, 5000)
+  }
 
   return (
     <QrScanner

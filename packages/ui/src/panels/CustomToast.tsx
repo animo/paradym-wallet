@@ -1,6 +1,6 @@
 import { Toast, useToastState } from '@tamagui/toast'
 
-import { YStack, Paragraph } from '../base'
+import { ToastContainer } from './ToastContainer'
 
 export const CustomToast = () => {
   const currentToast = useToastState()
@@ -14,39 +14,10 @@ export const CustomToast = () => {
       key={currentToast.id}
       duration={currentToast.duration}
       viewportName={currentToast.viewportName}
-      enterStyle={{ opacity: 0, scale: 0.5, y: -25 }}
-      exitStyle={{ opacity: 0, scale: 1, y: -20 }}
-      y={0}
-      opacity={1}
-      scale={1}
-      animation="quick"
-      backgroundColor="$white"
-      margin="$4"
-      padding="$3"
-      borderRadius="$4"
+      p={0}
+      width="100%"
     >
-      <YStack p={0}>
-        {!!currentToast.title && <Toast.Title>{currentToast.title}</Toast.Title>}
-      </YStack>
+      <ToastContainer title={currentToast.title} />
     </Toast>
-  )
-}
-
-export const MockToast = ({ message }: { message: string }) => {
-  return (
-    <YStack
-      enterStyle={{ opacity: 0, scale: 0.5, y: -25 }}
-      exitStyle={{ opacity: 0, scale: 1, y: -20 }}
-      y={0}
-      opacity={1}
-      scale={1}
-      animation="quick"
-      backgroundColor="$white"
-      margin="$4"
-      padding="$3"
-      borderRadius="$4"
-    >
-      <Paragraph>{message}</Paragraph>
-    </YStack>
   )
 }

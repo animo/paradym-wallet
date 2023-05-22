@@ -1,6 +1,6 @@
 import {
   H3,
-  MockToast,
+  ToastContainer,
   Page,
   Paragraph,
   Spinner,
@@ -69,11 +69,11 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
         style={StyleSheet.absoluteFill}
         maskElement={
           <YStack f={1} p={0}>
-            <YStack f={1} bg="$black" />
-            <XStack f={2} p={0}>
-              <YStack w="$4" bg="$black" />
+            <YStack f={1} p={0} bg="$black" />
+            <XStack f={2} p={0} borderTopWidth="$8" borderBottomWidth="$8">
+              <YStack bg="$black" />
               <YStack f={1} />
-              <YStack w="$4" bg="$black" />
+              <YStack bg="$black" />
             </XStack>
             <YStack f={1} bg="$black" p={0} />
           </YStack>
@@ -81,7 +81,7 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
       >
         <XStack style={StyleSheet.absoluteFill} bg="$translucent" />
       </MaskedView>
-      {helpText && <MockToast message={helpText} />}
+      {helpText && <ToastContainer title={helpText} />}
     </Page>
   )
 }
