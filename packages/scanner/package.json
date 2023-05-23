@@ -1,0 +1,19 @@
+{
+  "name": "@internal/scanner",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@internal/ui": "*"
+  },
+  "devDependencies": {
+    "@react-native-masked-view/masked-view": "^0.2.9",
+    "@types/react": "^18.0.27",
+    "expo-barcode-scanner": "^12.3.2"
+  },
+  "peerDependencies": {
+    "@react-native-masked-view/masked-view": "^0.2.9",
+    "expo-barcode-scanner": "^12.3.2",
+    "react-native": "0.71.7"
+  }
+}

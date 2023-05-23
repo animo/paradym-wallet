@@ -42,7 +42,16 @@ export default function HomeLayout() {
     <Provider>
       <AgentProvider agent={agent}>
         <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack />
+          <Stack>
+            {/* Presentation type modal has to be manually defined */}
+            <Stack.Screen
+              name="scan"
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+              }}
+            />
+          </Stack>
         </ThemeProvider>
       </AgentProvider>
     </Provider>

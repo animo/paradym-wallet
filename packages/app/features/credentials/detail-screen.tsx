@@ -1,6 +1,5 @@
 import { useW3cCredentialRecordById } from '@internal/agent'
-import { Button, Paragraph, YStack } from '@internal/ui'
-import { ChevronLeft } from '@tamagui/lucide-icons'
+import { TextButton, Paragraph, YStack, Icon } from '@internal/ui/src'
 import React from 'react'
 import { createParam } from 'solito'
 import { useLink } from 'solito/link'
@@ -25,9 +24,9 @@ export function CredentialDetailScreen() {
     <YStack f={1} jc="center" ai="center" space>
       <Paragraph ta="center" fow="700">{`Credential Record id: ${id}`}</Paragraph>
       <Paragraph ta="center" fow="700">{`Record exists: ${record ? 'Yes' : 'No'}`}</Paragraph>
-      <Button {...link} icon={ChevronLeft}>
+      <TextButton {...link} icon={<Icon name="ChevronLeft" />}>
         Go Home
-      </Button>
+      </TextButton>
     </YStack>
   )
 }

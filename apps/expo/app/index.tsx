@@ -1,3 +1,4 @@
+import { H1, XStack } from '@internal/ui/src'
 import { HomeScreen } from 'app/features/home/screen'
 import { Stack } from 'expo-router'
 
@@ -6,7 +7,11 @@ export default function Screen() {
     <>
       <Stack.Screen
         options={{
-          title: 'Home',
+          header: () => (
+            <XStack pt="$10" bg="$grey-200">
+              <H1>Credentials</H1>
+            </XStack>
+          ),
         }}
       />
       <HomeScreen />
