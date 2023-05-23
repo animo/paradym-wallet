@@ -3,6 +3,7 @@ import { QrScanner } from '@internal/scanner'
 import { useToastController } from '@internal/ui'
 import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
+import { useLink } from 'solito/link'
 import { useRouter } from 'solito/router'
 
 export function QrScannerScreen() {
