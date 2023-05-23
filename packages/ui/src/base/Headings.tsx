@@ -31,6 +31,14 @@ const Heading = styled(Paragraph, {
 
 export type HeadingProps = GetProps<typeof Heading>
 
+export const PageTitle = styled(Heading, {
+  name: 'H1',
+  tag: 'h1',
+  size: '$10',
+  px: '$4',
+  py: '$12',
+})
+
 export const H1 = styled(Heading, {
   name: 'H1',
   tag: 'h1',

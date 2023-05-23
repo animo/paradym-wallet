@@ -3,14 +3,17 @@ import {
   parseProofRequest,
   isOpenIdCredentialOffer,
   isOpenIdProofRequest,
+  useAgent,
 } from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import { useToastController } from '@internal/ui'
 import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
+import { useLink } from 'solito/link'
 import { useRouter } from 'solito/router'
 
 export function QrScannerScreen() {
+  const { agent } = useAgent()
   const { push } = useRouter()
   const toast = useToastController()
 
@@ -29,12 +32,19 @@ export function QrScannerScreen() {
 
       if (isOpenIdCredentialOffer(scannedData)) {
         setIsProcessing(true)
-        await parseCredentialOffer({ data })
-          .then(() => {
+        await parseCredentialOffer({ agent, data })
+          .then((result) => {
+            if (!result) throw new Error('Wrong')
+            push(`/notification/credential/${result.id}`)
+
+            // eslint-disable-next-line no-console
+            console.log(result)
             void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
             toast.show('Success!')
           })
-          .catch(() => {
+          .catch((e) => {
+            // eslint-disable-next-line no-console
+            console.log(e)
             toast.show('Fail!')
             void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
           })
