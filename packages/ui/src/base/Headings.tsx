@@ -36,7 +36,7 @@ export const PageTitle = styled(Heading, {
   tag: 'h1',
   size: '$10',
   px: '$4',
-  py: '$12',
+  py: '$8',
 })
 
 export const H1 = styled(Heading, {

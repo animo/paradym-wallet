@@ -7,20 +7,21 @@ export default () => {
       screenOptions={{
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: 92,
+          height: '10%',
           display: 'flex',
           alignItems: 'center',
           backgroundColor: 'rgba(255, 255, 255, 0.4)',
           position: 'absolute',
           borderTopWidth: 0,
+          alignContent: 'center',
         },
         tabBarBackground: () => (
           <XStack
-            my="$2"
-            mx="$4"
+            f={1}
             backgroundColor="$grey-300"
             py={paddingSizes.xl}
-            br={borderRadiusSizes.xl}
+            borderTopRightRadius={borderRadiusSizes.xl}
+            borderTopLeftRadius={borderRadiusSizes.xl}
           />
         ),
       }}
