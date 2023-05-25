@@ -1,4 +1,4 @@
-import type { MattrW3cCredentialRecord, W3cCredential } from '@internal/agent/types'
+import type { MattrW3cCredentialRecord } from '@internal/agent/types'
 
 import { parseCredentialOffer, useAgent } from '@internal/agent'
 import {
