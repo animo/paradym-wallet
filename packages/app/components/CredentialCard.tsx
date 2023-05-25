@@ -29,7 +29,7 @@ export default function CredentialCard({
   const textColor = getTextColorBasedOnBg(bgColor ?? '#000')
 
   const icon = iconUrl ? (
-    <Image source={{ width: 48, height: 48, uri: iconUrl }} width={48} height={48} />
+    <Image src={iconUrl} width={48} height={48} />
   ) : (
     <XStack bg="rgba(255, 255, 255,  0.2)" ai="center" br={borderRadiusSizes.rounded} pad="md">
       <Icon name="FileBadge" color="$grey-100" />

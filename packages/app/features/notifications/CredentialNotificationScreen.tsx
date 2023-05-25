@@ -137,14 +137,7 @@ export function CredentialNotificationScreen() {
           />
           <CredentialAttributes subject={credential.credentialSubject} />
         </YStack>
-        <YStack
-          gap={gapSizes.md}
-          enterStyle={{ opacity: 0, y: 50 }}
-          exitStyle={{ opacity: 0, y: -20 }}
-          y={0}
-          opacity={1}
-          animation="lazyDelay100"
-        >
+        <YStack gap={gapSizes.md}>
           <Button.Solid onPress={onCredentialAccept}>Accept</Button.Solid>
           <Button.Outline
             onPress={() => {
