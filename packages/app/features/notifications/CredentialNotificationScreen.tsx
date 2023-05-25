@@ -1,6 +1,6 @@
-import type { MattrW3cCredentialRecord, W3cCredential } from '@internal/agent/types'
+import type { MattrW3cCredentialRecord } from '@internal/agent/types'
 
-import { parseCredentialOffer, useAgent, useW3cCredentialRecordById } from '@internal/agent'
+import { parseCredentialOffer, useAgent } from '@internal/agent'
 import {
   YStack,
   useToastController,
@@ -25,54 +25,29 @@ type Query = { uri: string }
 
 const { useParam } = createParam<Query>()
 
-type IncomingCredentialState = 'initial' | 'requesting' | 'failed' | 'saved'
-
 export function CredentialNotificationScreen() {
   const { agent } = useAgent()
   const router = useRouter()
   const toast = useToastController()
   const [uri] = useParam('uri')
 
-  const [state, setState] = useState<IncomingCredentialState>('initial')
-  const [credentialId, setCredentialId] = useState<string>()
-  const [credential, setCredential] = useState<W3cCredential>()
+  const [credentialRecord, setCredentialRecord] = useState<MattrW3cCredentialRecord>()
   const [isDeleting, setIsDeleting] = useState(false)
-
-  const record = useW3cCredentialRecordById(
-    credentialId as string
-  ) as unknown as MattrW3cCredentialRecord
-
-  useEffect(() => {
-    if (state === 'failed') {
-      toast.show('Credential information could not be extracted.')
-      router.back()
-    }
-  }, [state])
-
-  useEffect(() => {
-    if (!record && state === 'saved') {
-      router.back()
-      toast.show('Something went wrong. Try removing the credential manually.')
-    } else {
-      if (record) setCredential(record.credential)
-    }
-  }, [record])
 
   useEffect(() => {
     const requestCredential = async (uri: string) => {
       try {
-        setState('requesting')
         const record = await parseCredentialOffer({ agent, data: decodeURIComponent(uri) })
-        setState('saved')
-        setCredentialId(record.id)
+        setCredentialRecord(record as unknown as MattrW3cCredentialRecord)
       } catch (e) {
-        setState('failed')
+        toast.show('Credential information could not be extracted.')
+        router.back()
       }
     }
-    if (uri && state === 'initial') void requestCredential(uri)
+    if (uri) void requestCredential(uri)
   }, [uri])
 
-  if (!credential || !credentialId || state === 'requesting') {
+  if (!credentialRecord) {
     return (
       <Page
         jc="center"
@@ -98,18 +73,26 @@ export function CredentialNotificationScreen() {
   }
 
   const onCredentialDecline = async () => {
+    if (!credentialRecord.id) return
     setIsDeleting(true)
     await agent.w3cCredentials
-      .removeCredentialRecord(credentialId)
+      .removeCredentialRecord(credentialRecord.id)
       .then(() => {
         toast.show('Credential has been declined.')
       })
       .catch(() => {
         toast.show('Something went wrong. Try removing the credential manually.')
       })
+      .finally(() => router.back())
   }
 
-  if (!credential) return null
+  if (!credentialRecord.credential) {
+    toast.show('Credential information could not be extracted.')
+    router.back()
+    return null
+  }
+
+  const credential = credentialRecord.credential
 
   return (
     <ScrollView>
