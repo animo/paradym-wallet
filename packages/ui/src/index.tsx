@@ -1,6 +1,6 @@
 export * from './tamagui.config'
-export { TamaguiProviderProps, TamaguiProvider } from 'tamagui'
-export { ToastProvider, useToastController, ToastViewport } from '@tamagui/toast'
+export { TamaguiProviderProps, TamaguiProvider, ScrollView, Spacer } from 'tamagui'
+export { ToastProvider, useToastController, ToastViewport, useToastState } from '@tamagui/toast'
 export * from './panels'
 export * from './base'
 export * from './content'

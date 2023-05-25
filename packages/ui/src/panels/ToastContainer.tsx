@@ -2,9 +2,10 @@ import { Paragraph, YStack } from '../base'
 
 interface ToastContainerProps {
   title: string
+  safeAreaMargin?: boolean
 }
 
-export const ToastContainer = ({ title }: ToastContainerProps) => {
+export const ToastContainer = ({ title, safeAreaMargin = false }: ToastContainerProps) => {
   return (
     <YStack
       enterStyle={{ opacity: 0, scale: 0.5, y: -25 }}
@@ -14,7 +15,7 @@ export const ToastContainer = ({ title }: ToastContainerProps) => {
       scale={1}
       animation="quick"
       backgroundColor="$white"
-      margin="$4"
+      margin={safeAreaMargin ? '$4' : 0}
       padding="$3"
       borderRadius="$4"
     >

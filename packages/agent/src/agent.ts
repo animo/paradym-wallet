@@ -1,3 +1,5 @@
+import type { KeyDidCreateOptions } from '@aries-framework/core'
+
 import { AskarModule } from '@aries-framework/askar'
 import {
   Agent,
@@ -5,6 +7,7 @@ import {
   DidsModule,
   KeyDidRegistrar,
   KeyDidResolver,
+  KeyType,
   LogLevel,
   PeerDidRegistrar,
   WebDidResolver,
@@ -52,6 +55,18 @@ export const initializeAgent = async () => {
   })
 
   await agent.initialize()
+
+  // check for key DID
+  const hasKeyDid = (await agent.dids.getCreatedDids({ method: 'key' })).length !== 0
+
+  if (!hasKeyDid) {
+    await agent.dids.create<KeyDidCreateOptions>({
+      method: 'key',
+      options: {
+        keyType: KeyType.Ed25519,
+      },
+    })
+  }
 
   return agent
 }

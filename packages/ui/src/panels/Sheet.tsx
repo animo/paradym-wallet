@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Sheet as TSheet } from 'tamagui'
 
-import { TextButton } from '../base'
+import { Button } from '../base'
 import { Icon } from '../content'
 
 type Props = {
@@ -14,7 +14,7 @@ export const Sheet = ({ children }: Props) => {
 
   return (
     <>
-      <TextButton
+      <Button.Text
         size="$6"
         icon={<Icon name={open ? 'ChevronDown' : 'ChevronUp'} />}
         circular

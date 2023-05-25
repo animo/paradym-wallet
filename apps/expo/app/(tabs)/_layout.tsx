@@ -1,27 +1,28 @@
-import { Icon, PageTitle, XStack, borderRadiusSizes, paddingSizes } from '@internal/ui/src'
+import { Icon, Heading } from '@internal/ui'
+import { BlurView } from '@react-native-community/blur'
 import { Tabs } from 'expo-router'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default () => {
+  const { top } = useSafeAreaInsets()
   return (
     <Tabs
       screenOptions={{
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: '10%',
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.4)',
+          backgroundColor: 'transparent',
           position: 'absolute',
+          left: 0,
+          bottom: 0,
+          elevation: 0,
           borderTopWidth: 0,
-          alignContent: 'center',
         },
         tabBarBackground: () => (
-          <XStack
-            f={1}
-            backgroundColor="$grey-300"
-            py={paddingSizes.xl}
-            borderTopRightRadius={borderRadiusSizes.xl}
-            borderTopLeftRadius={borderRadiusSizes.xl}
+          <BlurView
+            blurAmount={25}
+            blurType="light"
+            reducedTransparencyFallbackColor="#fff"
+            style={{ height: '100%' }}
           />
         ),
       }}
@@ -29,7 +30,11 @@ export default () => {
       <Tabs.Screen
         options={{
           tabBarIcon: ({ focused }) => <Icon name="Wallet" filled={focused} />,
-          header: () => <PageTitle>Wallet</PageTitle>,
+          header: () => (
+            <Heading variant="title" t={top}>
+              Wallet
+            </Heading>
+          ),
         }}
         name="wallet"
       />
