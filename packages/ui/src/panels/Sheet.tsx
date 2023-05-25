@@ -29,7 +29,7 @@ export const Sheet = ({ children }: Props) => {
         onPositionChange={setPosition}
         dismissOnSnapToBottom
       >
-        <TSheet.Overlay backgroundColor="$translucent" />
+        <TSheet.Overlay backgroundColor="$darkTranslucent" />
         <TSheet.Frame jc="flex-end" backgroundColor="$grey-100" py="$8" px="$4">
           <TSheet.Handle backgroundColor="$grey-100" />
           {children}

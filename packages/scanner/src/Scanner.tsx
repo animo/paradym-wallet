@@ -3,7 +3,6 @@ import {
   ToastContainer,
   Page,
   Paragraph,
-  Spinner,
   Button,
   XStack,
   YStack,
@@ -17,11 +16,10 @@ import { Linking, StyleSheet } from 'react-native'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
-  isProcessing: boolean
   helpText?: string
 }
 
-export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProps) => {
+export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
   const [hasPermission, setHasPermission] = useState<boolean>()
 
   useEffect(() => {
@@ -57,11 +55,6 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
           onBarCodeScanned={({ data }) => onScan(data)}
         />
       )}
-      {isProcessing && (
-        <YStack jc="center" ai="center" bg="$translucent" style={StyleSheet.absoluteFill}>
-          <Spinner />
-        </YStack>
-      )}
       <YStack zi="$5">
         <Heading variant="h2" ta="center" dark p={paddingSizes['3xl']}>
           Use the camera to scan a QR code
@@ -70,18 +63,18 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
       <MaskedView
         style={StyleSheet.absoluteFill}
         maskElement={
-          <YStack f={1} p={0}>
-            <YStack f={1} p={0} bg="$black" />
-            <XStack f={2} p={0} borderTopWidth="$16" borderBottomWidth="$16">
+          <YStack f={1}>
+            <YStack f={1} bg="$black" />
+            <XStack f={2} borderTopWidth="$16" borderBottomWidth="$16">
               <YStack p={24} bg="$black" />
               <YStack f={1} />
               <YStack p={24} bg="$black" />
             </XStack>
-            <YStack f={1} bg="$black" p={0} />
+            <YStack f={1} bg="$black" />
           </YStack>
         }
       >
-        <XStack style={StyleSheet.absoluteFill} bg="$translucent" />
+        <XStack style={StyleSheet.absoluteFill} bg="$darkTranslucent" />
       </MaskedView>
       <YStack>
         {helpText && <ToastContainer title={helpText} />}

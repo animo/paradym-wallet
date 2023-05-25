@@ -5,7 +5,9 @@ import { sanitizeString } from 'app/utils/format'
 type CredentialAttributesProps = {
   subject: Record<string, string>
 }
-// FIXME: Record can be nested.
+
+// TODO: Attributes can be nested. We should make these collapsible
+// For now they render with JSON.stringify()
 export default function CredentialAttributes({ subject }: CredentialAttributesProps) {
   return (
     <YStack g="md">

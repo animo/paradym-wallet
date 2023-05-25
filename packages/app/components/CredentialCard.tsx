@@ -31,7 +31,7 @@ export default function CredentialCard({
   const icon = iconUrl ? (
     <Image src={iconUrl} width={48} height={48} />
   ) : (
-    <XStack bg="rgba(255, 255, 255,  0.2)" ai="center" br={borderRadiusSizes.rounded} pad="md">
+    <XStack bg="$lightTranslucent" ai="center" br={borderRadiusSizes.rounded} pad="md">
       <Icon name="FileBadge" color="$grey-100" />
     </XStack>
   )

@@ -12,7 +12,6 @@ export function QrScannerScreen() {
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
   const [helpText, setHelpText] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
 
   const unsupportedUrlPrefixes = ['c_i=', 'd_m=', 'oob=', '_oob=']
 
@@ -20,7 +19,7 @@ export function QrScannerScreen() {
     const onScan = (data: string) => {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
-      setIsProcessing(true)
+
       setScannedData(data)
       if (isOpenIdCredentialOffer(scannedData)) {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
@@ -38,7 +37,6 @@ export function QrScannerScreen() {
         setReadData(data)
         triggerHelpText(data)
       }
-      setIsProcessing(false)
     }
 
     if (scannedData) void onScan(scannedData)
@@ -58,11 +56,5 @@ export function QrScannerScreen() {
     }, 5000)
   }
 
-  return (
-    <QrScanner
-      onScan={(data) => setScannedData(data)}
-      isProcessing={isProcessing}
-      helpText={helpText}
-    />
-  )
+  return <QrScanner onScan={(data) => setScannedData(data)} helpText={helpText} />
 }

@@ -1,5 +1,7 @@
 import type { LinkedDataProof } from '@aries-framework/core'
 
+// Temp types to work with until we have the correct ones.
+
 export type W3cIssuer = {
   id: string
   name: string
@@ -10,6 +12,7 @@ export type W3cIssuer = {
 
 export type W3cCredentialSubject = {
   id?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
 

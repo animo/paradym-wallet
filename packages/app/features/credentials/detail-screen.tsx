@@ -1,10 +1,10 @@
 import type { W3cCredential } from '@internal/agent/types'
 
 import { useW3cCredentialRecordById } from '@internal/agent'
-import { YStack, ScrollView, paddingSizes } from '@internal/ui'
+import { YStack, ScrollView, paddingSizes, XStack, Button } from '@internal/ui'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { useLink } from 'solito/link'
+import { useRouter } from 'solito/router'
 
 import CredentialAttributes from 'app/components/CredentialAttributes'
 import CredentialCard from 'app/components/CredentialCard'
@@ -13,15 +13,13 @@ const { useParam } = createParam<{ id: string }>()
 
 export function CredentialDetailScreen() {
   const [id] = useParam('id')
-  const link = useLink({
-    href: '/',
-  })
+  const router = useRouter()
 
   const [credential, setCredential] = useState<W3cCredential>()
 
   // Go back home if no id is provided
   if (!id) {
-    link.onPress()
+    router.back()
     return null
   }
 
@@ -35,6 +33,11 @@ export function CredentialDetailScreen() {
 
   return (
     <ScrollView>
+      <XStack>
+        <Button.Text mt={paddingSizes.lg} onPress={() => router.back()}>
+          Done
+        </Button.Text>
+      </XStack>
       <YStack
         g="3xl"
         jc="space-between"
