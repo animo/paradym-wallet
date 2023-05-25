@@ -1,10 +1,4 @@
-import {
-  parseCredentialOffer,
-  parseProofRequest,
-  isOpenIdCredentialOffer,
-  isOpenIdProofRequest,
-  useAgent,
-} from '@internal/agent'
+import { isOpenIdCredentialOffer, isOpenIdProofRequest } from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import { useToastController } from '@internal/ui'
 import * as Haptics from 'expo-haptics'
@@ -12,49 +6,34 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 export function QrScannerScreen() {
-  const { agent } = useAgent()
   const { push, back } = useRouter()
   const toast = useToastController()
 
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
   const [helpText, setHelpText] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const unsupportedUrlPrefixes = ['c_i=', 'd_m=', 'oob=', '_oob=']
 
   useEffect(() => {
-    const onScan = async (data: string) => {
+    const onScan = (data: string) => {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
+      setIsProcessing(true)
       setScannedData(data)
-
       if (isOpenIdCredentialOffer(scannedData)) {
-        setIsProcessing(true)
-        await parseCredentialOffer({ agent, data })
-          .then((result) => {
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-            back()
-            push(`/notifications/credential/${result.id}`)
-          })
-          .catch((e) => {
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-            // eslint-disable-next-line no-console
-            console.log(e)
-            toast.show('Fail!')
-          })
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        back()
+        push({
+          pathname: '/notifications/credential',
+          query: {
+            uri: encodeURIComponent(scannedData),
+          },
+        })
       } else if (isOpenIdProofRequest(scannedData)) {
-        setIsProcessing(true)
-        await parseProofRequest({ data })
-          .then(() => {
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-            toast.show('Success!')
-          })
-          .catch(() => {
-            toast.show('Fail!')
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-          })
-          .finally(() => back())
+        toast.show('Fail!')
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       } else {
         setReadData(data)
         triggerHelpText(data)

@@ -11,6 +11,7 @@ export const animations = createAnimations({
     type: 'spring',
     damping: 20,
     stiffness: 60,
+    delay: 2,
   },
   quick: {
     type: 'spring',

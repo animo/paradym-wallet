@@ -1,6 +1,6 @@
-import type { MattrW3cCredentialRecord } from '@internal/agent/types'
+import type { MattrW3cCredentialRecord, W3cCredential } from '@internal/agent/types'
 
-import { useAgent, useW3cCredentialRecordById } from '@internal/agent'
+import { parseCredentialOffer, useAgent, useW3cCredentialRecordById } from '@internal/agent'
 import {
   YStack,
   useToastController,
@@ -11,61 +11,122 @@ import {
   ScrollView,
   Spinner,
   paddingSizes,
+  Page,
+  Paragraph,
 } from '@internal/ui'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
 import CredentialAttributes from 'app/components/CredentialAttributes'
 import CredentialCard from 'app/components/CredentialCard'
 
-const { useParam } = createParam<{ id: string }>()
+type Query = { uri: string }
+
+const { useParam } = createParam<Query>()
+
+type IncomingCredentialState = 'initial' | 'requesting' | 'failed' | 'saved'
 
 export function CredentialNotificationScreen() {
   const { agent } = useAgent()
   const router = useRouter()
   const toast = useToastController()
-  const [id] = useParam('id')
-  const record = useW3cCredentialRecordById(id as string) as unknown as MattrW3cCredentialRecord
+  const [uri] = useParam('uri')
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [state, setState] = useState<IncomingCredentialState>('initial')
+  const [credentialId, setCredentialId] = useState<string>()
+  const [credential, setCredential] = useState<W3cCredential>()
+  const [isDeleting, setIsDeleting] = useState(false)
 
-  // Go back home if no id/record is provided
-  if (!id || !record) {
-    toast.show('Credential could not be found.')
-    router.back()
-    return null
+  const record = useW3cCredentialRecordById(
+    credentialId as string
+  ) as unknown as MattrW3cCredentialRecord
+
+  useEffect(() => {
+    if (state === 'failed') {
+      toast.show('Credential information could not be extracted.')
+      router.back()
+    }
+  }, [state])
+
+  useEffect(() => {
+    if (!record && state === 'saved') {
+      router.back()
+      toast.show('Something went wrong. Try removing the credential manually.')
+    } else {
+      if (record) setCredential(record.credential)
+    }
+  }, [record])
+
+  useEffect(() => {
+    const requestCredential = async (uri: string) => {
+      try {
+        setState('requesting')
+        const record = await parseCredentialOffer({ agent, data: decodeURIComponent(uri) })
+        setState('saved')
+        setCredentialId(record.id)
+      } catch (e) {
+        setState('failed')
+      }
+    }
+    if (uri && state === 'initial') void requestCredential(uri)
+  }, [uri])
+
+  if (!credential || !credentialId || state === 'requesting') {
+    return (
+      <Page
+        jc="center"
+        ai="center"
+        g="md"
+        enterStyle={{ opacity: 0, y: 50 }}
+        exitStyle={{ opacity: 0, y: -20 }}
+        y={0}
+        opacity={1}
+        animation="lazy"
+      >
+        <Spinner />
+        <Paragraph variant="sub" textAlign="center">
+          Getting credential information
+        </Paragraph>
+      </Page>
+    )
   }
 
-  const { credential } = record
-
-  const onCredentialAccept = async () => {
-    setIsLoading(true)
-    // FIXME: this forces the screen to refresh after loading state changes
-    await new Promise((resolve) => setTimeout(resolve, 1))
+  const onCredentialAccept = () => {
     router.back()
-    toast.show('Credential has been successfully added to your wallet.')
+    toast.show('Credential has been added to your wallet.')
   }
 
   const onCredentialDecline = async () => {
+    setIsDeleting(true)
     await agent.w3cCredentials
-      .removeCredentialRecord(id)
+      .removeCredentialRecord(credentialId)
       .then(() => {
-        router.back()
         toast.show('Credential has been declined.')
       })
       .catch(() => {
-        router.back()
-        toast.show('Something went wrong. Try removing the credential from the wallet tab.')
+        toast.show('Something went wrong. Try removing the credential manually.')
       })
   }
 
+  if (!credential) return null
+
   return (
     <ScrollView>
-      <YStack g="3xl" jc="space-between" pad="lg" py={paddingSizes.xl}>
+      <YStack
+        g="3xl"
+        jc="space-between"
+        pad="lg"
+        py={paddingSizes.xl}
+        enterStyle={{ opacity: 0, y: 50 }}
+        exitStyle={{ opacity: 0, y: -20 }}
+        y={0}
+        opacity={1}
+        animation="lazy"
+      >
         <YStack g="3xl">
           <Heading variant="h2" ta="center" px={paddingSizes.xl}>
-            {credential.issuer.name} has send you the following credential:
+            You have received the following credential from {credential.issuer.name}:
           </Heading>
           <CredentialCard
             iconUrl={credential.issuer.iconUrl}
@@ -76,20 +137,21 @@ export function CredentialNotificationScreen() {
           />
           <CredentialAttributes subject={credential.credentialSubject} />
         </YStack>
-        <YStack gap={gapSizes.md}>
-          <Button.Solid
-            onPress={() => {
-              void onCredentialAccept()
-            }}
-          >
-            {isLoading ? <Spinner /> : 'Accept'}
-          </Button.Solid>
+        <YStack
+          gap={gapSizes.md}
+          enterStyle={{ opacity: 0, y: 50 }}
+          exitStyle={{ opacity: 0, y: -20 }}
+          y={0}
+          opacity={1}
+          animation="lazyDelay100"
+        >
+          <Button.Solid onPress={onCredentialAccept}>Accept</Button.Solid>
           <Button.Outline
             onPress={() => {
               void onCredentialDecline()
             }}
           >
-            Decline
+            {isDeleting ? <Spinner /> : 'Decline'}
           </Button.Outline>
         </YStack>
       </YStack>

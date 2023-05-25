@@ -44,11 +44,8 @@ export default function HomeLayout() {
         <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
-            <Stack.Screen
-              options={{ presentation: 'modal' }}
-              name="notifications/credential/[id]"
-            />
-            <Stack.Screen options={{ presentation: 'modal' }} name="notifications/proof/[id]" />
+            <Stack.Screen options={{ presentation: 'modal' }} name="notifications/credential" />
+            <Stack.Screen options={{ presentation: 'modal' }} name="credentials/[id]" />
           </Stack>
         </ThemeProvider>
       </AgentProvider>
