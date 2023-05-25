@@ -12,7 +12,6 @@ export function QrScannerScreen() {
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
   const [helpText, setHelpText] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
 
   const unsupportedUrlPrefixes = ['c_i=', 'd_m=', 'oob=', '_oob=']
 
