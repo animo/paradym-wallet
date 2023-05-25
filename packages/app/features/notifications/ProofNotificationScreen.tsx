@@ -1,4 +1,4 @@
-import { TextButton, Paragraph, YStack, Icon } from '@internal/ui/src'
+import { Paragraph, YStack, Icon, Button } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
 import { useLink } from 'solito/link'
@@ -25,9 +25,9 @@ export function ProofNotificationScreen() {
       <Paragraph ta="center" fow="700">
         {id}
       </Paragraph>
-      <TextButton {...link} icon={<Icon name="ChevronLeft" />}>
+      <Button.Text {...link} icon={<Icon name="ChevronLeft" />}>
         Go Home
-      </TextButton>
+      </Button.Text>
     </YStack>
   )
 }
