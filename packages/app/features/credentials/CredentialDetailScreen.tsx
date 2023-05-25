@@ -31,6 +31,12 @@ export function CredentialDetailScreen() {
 
   if (!credential) return null
 
+  useEffect(() => {
+    if (record) setCredential(record.credential as unknown as W3cCredential)
+  }, [record])
+
+  if (!credential) return null
+
   return (
     <ScrollView>
       <XStack>
