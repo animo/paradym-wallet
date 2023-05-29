@@ -7,7 +7,7 @@ import {
   Heading,
   Spacer,
   Icon,
-  config,
+  color,
 } from '@internal/ui'
 
 import { darken, getTextColorBasedOnBg } from 'app/utils/utils'
@@ -29,9 +29,7 @@ export default function CredentialCard({
   bgColor,
   shadow = true,
 }: CredentialCardProps) {
-  const textColor = getTextColorBasedOnBg(
-    bgColor ?? (config.themes.light.black as unknown as string)
-  )
+  const textColor = getTextColorBasedOnBg(bgColor ?? color.black)
 
   const icon = iconUrl ? (
     <Image src={iconUrl} width={48} height={48} />
@@ -50,10 +48,7 @@ export default function CredentialCard({
       shadow={shadow}
       width="100%"
       pressStyle={{
-        backgroundColor: darken(
-          bgColor ?? (config.themes.light['grey-900'] as unknown as string),
-          0.025
-        ),
+        backgroundColor: darken(bgColor ?? color['grey-900'], 0.025),
       }}
     >
       <XStack jc="space-between">

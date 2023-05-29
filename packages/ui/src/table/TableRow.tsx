@@ -1,4 +1,5 @@
-import { Paragraph, XStack, paddingSizes } from '@internal/ui'
+import { XStack, Paragraph } from '../base'
+import { paddingSizes } from '../tamagui.config'
 
 interface TableRowProps {
   attribute: string

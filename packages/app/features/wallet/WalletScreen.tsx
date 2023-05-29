@@ -18,7 +18,7 @@ import React from 'react'
 import { useRouter } from 'solito/router'
 
 import CredentialCard from 'app/components/CredentialCard'
-import { CredentialRowCard } from 'app/components/CredentialRowCard'
+import CredentialRowCard from 'app/components/CredentialRowCard'
 
 export function HomeScreen() {
   const { push } = useRouter()

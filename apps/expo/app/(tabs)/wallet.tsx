@@ -1,4 +1,4 @@
-import { HomeScreen } from 'app/features/home/screen'
+import { HomeScreen } from 'app/features/wallet/WalletScreen'
 
 export default function Screen() {
   return <HomeScreen />

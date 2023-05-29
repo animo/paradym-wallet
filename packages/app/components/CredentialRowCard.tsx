@@ -7,7 +7,12 @@ interface CredentialRowCardProps {
   bgColor?: string
 }
 
-export const CredentialRowCard = ({ name, issuer, bgColor, onPress }: CredentialRowCardProps) => {
+export default function CredentialRowCard({
+  name,
+  issuer,
+  bgColor,
+  onPress,
+}: CredentialRowCardProps) {
   return (
     <XStack
       onPress={onPress}

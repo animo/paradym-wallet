@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react'
 
-import { YStack, borderRadiusSizes } from '@internal/ui'
+import { YStack } from '../base'
+import { borderRadiusSizes } from '../tamagui.config'
 
 interface TableContainerProps {
   padY?: number
