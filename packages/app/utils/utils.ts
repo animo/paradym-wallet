@@ -1,10 +1,14 @@
-// used to dynamically change the text color based on a custom background color
+/**
+ * Get text color (white or black) for specific background color
+ */
 export function getTextColorBasedOnBg(bgColor: string) {
   return parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2 ? '$grey-900' : '$grey-100'
 }
 
-// darken the shade of a custom color based on the hex color and a percentage
-// used to dynamically create onPress styling for custom colors
+/**
+ * Darken the shade of a custom color based on the hex color and a percentage
+ * used to dynamically create onPress styling for custom colors
+ */
 export function darken(color: string, percent: number): string {
   const f = parseInt(color.slice(1), 16),
     t = percent < 0 ? 0 : 255,
