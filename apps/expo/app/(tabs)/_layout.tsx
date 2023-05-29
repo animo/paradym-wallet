@@ -1,10 +1,8 @@
-import { Icon, Heading } from '@internal/ui'
+import { Icon } from '@internal/ui'
 import { BlurView } from '@react-native-community/blur'
 import { Tabs } from 'expo-router'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default () => {
-  const { top } = useSafeAreaInsets()
   return (
     <Tabs
       screenOptions={{
@@ -30,11 +28,12 @@ export default () => {
       <Tabs.Screen
         options={{
           tabBarIcon: ({ focused }) => <Icon name="Wallet" filled={focused} />,
-          header: () => (
-            <Heading variant="title" t={top}>
-              Wallet
-            </Heading>
-          ),
+          headerTransparent: true,
+          headerTitle: '',
+          headerBackgroundContainerStyle: {
+            height: 56,
+            backgroundColor: '#F2F4F6',
+          },
         }}
         name="wallet"
       />

@@ -38,7 +38,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <Heading variant="h3">Please allow camera access</Heading>
+        <Heading variant="h2">Please allow camera access</Heading>
         <Paragraph textAlign="center">
           This allows Paradym to scan QR codes that include credentials or data requests.
         </Paragraph>

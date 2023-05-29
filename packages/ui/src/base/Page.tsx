@@ -1,4 +1,7 @@
-import { styled } from 'tamagui'
+import type { PropsWithChildren } from 'react'
+import type { GetProps } from 'tamagui'
+
+import { ScrollView, styled } from 'tamagui'
 
 import { paddingSizes } from '../tamagui.config'
 
@@ -14,3 +17,20 @@ export const Page = styled(Stack, {
   right: 0,
   bottom: 0,
 })
+
+// export type PageContainerProps = GetProps<typeof PageContainer>
+
+// export type PageProps = PageContainerProps & {
+//   scrollable: boolean
+// }
+
+// export const Page = ({ children, scrollable, ...props }: PropsWithChildren<PageProps>) => {
+//   if (scrollable)
+//     return (
+//       <ScrollView>
+//         <PageContainer {...props}>{children}</PageContainer>
+//       </ScrollView>
+//     )
+
+//   return <PageContainer {...props}>{children}</PageContainer>
+// }

@@ -4,3 +4,4 @@ export { ToastProvider, useToastController, ToastViewport, useToastState } from 
 export * from './panels'
 export * from './base'
 export * from './content'
+export * from './table'
