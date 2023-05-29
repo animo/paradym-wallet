@@ -1,4 +1,7 @@
-import { styled } from 'tamagui'
+import type { PropsWithChildren } from 'react'
+import type { GetProps } from 'tamagui'
+
+import { ScrollView, styled } from 'tamagui'
 
 import { paddingSizes } from '../tamagui.config'
 
