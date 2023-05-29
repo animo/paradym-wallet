@@ -1,6 +1,8 @@
-import { Icon } from '@internal/ui'
+import { Icon, config } from '@internal/ui'
 import { BlurView } from '@react-native-community/blur'
 import { Tabs } from 'expo-router'
+
+const HEADER_STATUS_BAR_HEIGHT = 56
 
 export default () => {
   return (
@@ -19,7 +21,7 @@ export default () => {
           <BlurView
             blurAmount={25}
             blurType="light"
-            reducedTransparencyFallbackColor="#fff"
+            reducedTransparencyFallbackColor={config.themes.light.white as unknown as string}
             style={{ height: '100%' }}
           />
         ),
@@ -31,8 +33,8 @@ export default () => {
           headerTransparent: true,
           headerTitle: '',
           headerBackgroundContainerStyle: {
-            height: 56,
-            backgroundColor: '#F2F4F6',
+            height: HEADER_STATUS_BAR_HEIGHT,
+            backgroundColor: config.themes.light['grey-200'] as unknown as string,
           },
         }}
         name="wallet"
