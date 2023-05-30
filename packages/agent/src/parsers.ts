@@ -1,5 +1,6 @@
 import type { AppAgent } from './agent'
 
+import { DidKey } from '@aries-framework/core'
 import { didKeyToInstanceOfKey } from '@aries-framework/core/build/modules/dids/helpers'
 import { IssuanceInitiation } from '@sphereon/openid4vci-client'
 
@@ -20,15 +21,15 @@ export const parseCredentialOffer = async ({ agent, data }: { agent: AppAgent; d
   if (!data.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE))
     throw new Error('URI does not start with OpenID issuance prefix.')
 
-  const dids = await agent.dids.getCreatedDids({ method: 'key' })
-  if (dids.length === 0)
+  const [didRecord] = await agent.dids.getCreatedDids({ method: 'key' })
+  if (!didRecord) {
     throw new Error('No key DID has been found on the agent. Make sure you have a DID registered.')
+  }
 
-  const keyInstance = didKeyToInstanceOfKey(dids[0].did)
-
+  const didKey = DidKey.fromDid(didRecord.did)
   const record = await agent.modules.openId4VcClient.requestCredentialUsingPreAuthorizedCode({
     issuerUri: data,
-    kid: `${dids[0].did}#${keyInstance.fingerprint}`,
+    kid: `${didKey.did}#${didKey.key.fingerprint}`,
     verifyRevocationState: false,
   })
 
