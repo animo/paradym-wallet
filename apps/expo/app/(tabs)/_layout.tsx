@@ -4,6 +4,7 @@ import { Tabs } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default () => {
+  // FIXME: As we only have one actual tab, and the scanner, it might be better to remove the tab bar for now.
   const { top } = useSafeAreaInsets()
   return (
     <Tabs

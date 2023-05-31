@@ -2,7 +2,7 @@ import type { W3cCredential } from '@internal/agent/types'
 
 import { useW3cCredentialRecordById } from '@internal/agent'
 import { YStack, ScrollView, paddingSizes, XStack, Button } from '@internal/ui'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
@@ -15,8 +15,6 @@ export function CredentialDetailScreen() {
   const [id] = useParam('id')
   const router = useRouter()
 
-  const [credential, setCredential] = useState<W3cCredential>()
-
   // Go back home if no id is provided
   if (!id) {
     router.back()
@@ -24,10 +22,7 @@ export function CredentialDetailScreen() {
   }
 
   const record = useW3cCredentialRecordById(id)
-
-  useEffect(() => {
-    if (record) setCredential(record.credential as unknown as W3cCredential)
-  }, [record])
+  const credential = record?.credential as unknown as W3cCredential | undefined
 
   if (!credential) return null
 

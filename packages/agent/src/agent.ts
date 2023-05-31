@@ -56,7 +56,7 @@ export const initializeAgent = async () => {
 
   await agent.initialize()
 
-  // check for key DID
+  // FIXME: We probably want to create a new did for each of the credentials we request to avoid correlation between the credentials.
   const hasKeyDid = (await agent.dids.getCreatedDids({ method: 'key' })).length !== 0
 
   if (!hasKeyDid) {
