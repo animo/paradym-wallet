@@ -13,6 +13,7 @@ import {
 import { darken, getTextColorBasedOnBg } from 'app/utils/utils'
 
 type CredentialCardProps = {
+  onPress?(): void
   name?: string
   issuerName?: string
   subtitle?: string
@@ -22,6 +23,7 @@ type CredentialCardProps = {
 }
 
 export default function CredentialCard({
+  onPress,
   iconUrl,
   name = 'Credential',
   subtitle,
@@ -47,9 +49,11 @@ export default function CredentialCard({
       bg={bgColor ?? '$grey-900'}
       shadow={shadow}
       width="100%"
+      border
       pressStyle={{
         backgroundColor: darken(bgColor ?? color['grey-900'], 0.025),
       }}
+      onPress={onPress}
     >
       <XStack jc="space-between">
         <XStack>{icon}</XStack>

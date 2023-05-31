@@ -65,7 +65,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
         maskElement={
           <YStack f={1}>
             <YStack f={1} bg="$black" />
-            <XStack f={2} borderTopWidth="$16" borderBottomWidth="$16">
+            <XStack f={2} borderTopWidth="$12" borderBottomWidth="$12">
               <YStack p={24} bg="$black" />
               <YStack f={1} />
               <YStack p={24} bg="$black" />
