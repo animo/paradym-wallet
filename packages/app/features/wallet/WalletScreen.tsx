@@ -58,6 +58,7 @@ export function HomeScreen() {
           <ZStack f={0} flexBasis="auto" height={352}>
             {records.slice(0, 3).map((x, idx) => {
               const credential = x.credential
+              // FIXME: card onPress is not firing
               return (
                 <XStack
                   key={x.id}
