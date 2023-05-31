@@ -20,7 +20,9 @@
     "format": "yarn prettier --write",
     "check-format": "yarn prettier --list-different",
     "check-types": "tsc --noEmit",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore .",
+    "maestro:test": "maestro test ./.maestro/App-Flow.yaml",
+    "maestro:studio": "maestro studio"
   },
   "resolutions": {
     "@unimodules/react-native-adapter": "./noop",

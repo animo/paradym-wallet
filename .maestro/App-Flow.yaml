@@ -1,0 +1,24 @@
+appId: id.paradym.wallet
+---
+- launchApp:
+    permissions: { all: allow }
+
+- runFlow:
+    when:
+      visible: 'Development servers'
+    file: 'Expo-App-Selector.yaml'
+
+## Open wallet
+- tapOn: 'Link to specific credential'
+- assertVisible: 'Credential Record id: .*'
+
+## Close
+- tapOn: 'Go Home'
+
+## Open qr code scanner
+- tapOn: 'Scan'
+- assertVisible: 'Use the camera to scan a QR code'
+
+## Close qr code scanner
+- swipe:
+    direction: 'DOWN'
