@@ -5,36 +5,29 @@ import { createTamagui, createTokens } from 'tamagui'
 
 import { animations } from './animations'
 
-// FIXME: i don't think this is enforced.
-const headingFont = createInterFont({
-  size: {
-    1: 18, // Heading 3
-    2: 20, // Heading 2
-    3: 24, // Heading 1
-    4: 38, // Page Title
-  },
+const font = createInterFont({
+  family: 'Inter',
   weight: {
-    5: '500', // medium
-    6: '600', // semibold
+    1: '400',
+    7: '600',
   },
-  letterSpacing: {
-    5: 2,
-    6: 1,
-    7: 0,
-    8: -1,
-    9: -2,
-    10: -3,
-    12: -4,
-    14: -5,
-    15: -6,
-  },
-})
-
-const bodyFont = createInterFont({
   size: {
     1: 12, // Annotation
     2: 14, // Sub text
     3: 16, // Body text
+    true: 16,
+    4: 18, // Heading 3
+    5: 20, // Heading 2
+    6: 24, // Heading 1
+    7: 38, // Page Title
+  },
+  letterSpacing: {
+    1: -1,
+    2: -0.5,
+    3: 0,
+    4: 1,
+    5: 2,
+    true: 0,
   },
 })
 
@@ -52,6 +45,9 @@ export const paddingSizes = {
   md: 12,
   lg: 16,
   xl: 24,
+  '2xl': 32,
+  '3xl': 48,
+  '4xl': 72,
 }
 
 export const borderRadiusSizes = {
@@ -60,26 +56,18 @@ export const borderRadiusSizes = {
   md: 8,
   lg: 12,
   xl: 24,
+  rounded: 999,
 }
 
-export const paddingVariants = {
-  pad: {
-    xs: {
-      padding: paddingSizes.xs,
-    },
-    sm: {
-      padding: paddingSizes.sm,
-    },
-    md: {
-      padding: paddingSizes.md,
-    },
-    lg: {
-      padding: paddingSizes.lg,
-    },
-    xl: {
-      padding: paddingSizes.xl,
-    },
-  } as const,
+export const gapSizes = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  '2xl': 32,
+  '3xl': 48,
+  '4xl': 72,
 }
 
 export const tokens = createTokens({
@@ -124,7 +112,8 @@ export const tokens = createTokens({
     'danger-700': '#991B1B',
     white: '#FFF',
     black: '#000',
-    translucent: 'rgba(0,0,0,0.4)',
+    darkTranslucent: 'rgba(0,0,0,0.4)',
+    lightTranslucent: 'rgba(255, 255, 255,  0.2)',
   },
   size,
   radius,
@@ -138,8 +127,7 @@ export const config = createTamagui({
   themeClassNameOnRoot: true,
   shorthands,
   fonts: {
-    heading: headingFont,
-    body: bodyFont,
+    body: font,
   },
   tokens,
   themes: {

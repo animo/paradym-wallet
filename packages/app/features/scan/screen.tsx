@@ -1,9 +1,4 @@
-import {
-  parseCredentialOffer,
-  parseProofRequest,
-  isOpenIdCredentialOffer,
-  isOpenIdProofRequest,
-} from '@internal/agent'
+import { isOpenIdCredentialOffer, isOpenIdProofRequest } from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import { useToastController } from '@internal/ui'
 import * as Haptics from 'expo-haptics'
@@ -11,51 +6,37 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 export function QrScannerScreen() {
-  const { push } = useRouter()
+  const { push, back } = useRouter()
   const toast = useToastController()
 
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
   const [helpText, setHelpText] = useState('')
 
   const unsupportedUrlPrefixes = ['c_i=', 'd_m=', 'oob=', '_oob=']
 
   useEffect(() => {
-    const onScan = async (data: string) => {
+    const onScan = (data: string) => {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
-      setScannedData(data)
 
+      setScannedData(data)
       if (isOpenIdCredentialOffer(scannedData)) {
-        setIsProcessing(true)
-        await parseCredentialOffer({ data })
-          .then(() => {
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-            toast.show('Success!')
-          })
-          .catch(() => {
-            toast.show('Fail!')
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-          })
-          .finally(() => push('/'))
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        back()
+        push({
+          pathname: '/notifications/credential',
+          query: {
+            uri: encodeURIComponent(scannedData),
+          },
+        })
       } else if (isOpenIdProofRequest(scannedData)) {
-        setIsProcessing(true)
-        await parseProofRequest({ data })
-          .then(() => {
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-            toast.show('Success!')
-          })
-          .catch(() => {
-            toast.show('Fail!')
-            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-          })
-          .finally(() => push('/'))
+        toast.show('Fail!')
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       } else {
         setReadData(data)
         triggerHelpText(data)
       }
-      setIsProcessing(false)
     }
 
     if (scannedData) void onScan(scannedData)
@@ -75,11 +56,5 @@ export function QrScannerScreen() {
     }, 5000)
   }
 
-  return (
-    <QrScanner
-      onScan={(data) => setScannedData(data)}
-      isProcessing={isProcessing}
-      helpText={helpText}
-    />
-  )
+  return <QrScanner onScan={(data) => setScannedData(data)} helpText={helpText} />
 }

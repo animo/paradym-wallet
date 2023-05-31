@@ -1,32 +1,60 @@
+import type { W3cCredential } from '@internal/agent/types'
+
 import { useW3cCredentialRecordById } from '@internal/agent'
-import { TextButton, Paragraph, YStack, Icon } from '@internal/ui/src'
+import { YStack, ScrollView, paddingSizes, XStack, Button } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
-import { useLink } from 'solito/link'
+import { useRouter } from 'solito/router'
+
+import CredentialAttributes from 'app/components/CredentialAttributes'
+import CredentialCard from 'app/components/CredentialCard'
 
 const { useParam } = createParam<{ id: string }>()
 
 export function CredentialDetailScreen() {
   const [id] = useParam('id')
-  const link = useLink({
-    href: '/',
-  })
+  const router = useRouter()
 
   // Go back home if no id is provided
   if (!id) {
-    link.onPress()
+    router.back()
     return null
   }
 
   const record = useW3cCredentialRecordById(id)
+  const credential = record?.credential as unknown as W3cCredential | undefined
+
+  if (!credential) return null
 
   return (
-    <YStack f={1} jc="center" ai="center" space>
-      <Paragraph ta="center" fow="700">{`Credential Record id: ${id}`}</Paragraph>
-      <Paragraph ta="center" fow="700">{`Record exists: ${record ? 'Yes' : 'No'}`}</Paragraph>
-      <TextButton {...link} icon={<Icon name="ChevronLeft" />}>
-        Go Home
-      </TextButton>
-    </YStack>
+    <ScrollView>
+      <XStack>
+        <Button.Text mt={paddingSizes.lg} onPress={() => router.back()}>
+          Done
+        </Button.Text>
+      </XStack>
+      <YStack
+        g="3xl"
+        jc="space-between"
+        pad="lg"
+        py={paddingSizes.xl}
+        enterStyle={{ opacity: 0, y: 50 }}
+        exitStyle={{ opacity: 0, y: -20 }}
+        y={0}
+        opacity={1}
+        animation="lazy"
+      >
+        <YStack g="3xl">
+          <CredentialCard
+            iconUrl={credential.issuer.iconUrl}
+            name={credential.name}
+            issuerName={credential.issuer.name}
+            subtitle={credential.description}
+            bgColor={credential?.credentialBranding?.backgroundColor}
+          />
+          <CredentialAttributes subject={credential.credentialSubject} />
+        </YStack>
+      </YStack>
+    </ScrollView>
   )
 }

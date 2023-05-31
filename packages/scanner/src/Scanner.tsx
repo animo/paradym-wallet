@@ -1,13 +1,13 @@
 import {
-  H3,
+  Heading,
   ToastContainer,
   Page,
   Paragraph,
-  Spinner,
-  TextButton,
+  Button,
   XStack,
   YStack,
   paddingSizes,
+  Spacer,
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
@@ -16,11 +16,10 @@ import { Linking, StyleSheet } from 'react-native'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
-  isProcessing: boolean
   helpText?: string
 }
 
-export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProps) => {
+export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
   const [hasPermission, setHasPermission] = useState<boolean>()
 
   useEffect(() => {
@@ -39,11 +38,11 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <H3>Please allow camera access</H3>
+        <Heading variant="h3">Please allow camera access</Heading>
         <Paragraph textAlign="center">
           This allows Paradym to scan QR codes that include credentials or data requests.
         </Paragraph>
-        <TextButton onPress={() => _openAppSetting()}>Open settings</TextButton>
+        <Button.Text onPress={() => _openAppSetting()}>Open settings</Button.Text>
       </Page>
     )
   }
@@ -56,33 +55,31 @@ export const QrScanner = ({ onScan, isProcessing, helpText }: BarcodeScannerProp
           onBarCodeScanned={({ data }) => onScan(data)}
         />
       )}
-      {isProcessing && (
-        <YStack jc="center" ai="center" bg="$translucent" style={StyleSheet.absoluteFill}>
-          <Spinner />
-        </YStack>
-      )}
       <YStack zi="$5">
-        <H3 ta="center" dark p={paddingSizes.xl}>
+        <Heading variant="h2" ta="center" dark p={paddingSizes['3xl']}>
           Use the camera to scan a QR code
-        </H3>
+        </Heading>
       </YStack>
       <MaskedView
         style={StyleSheet.absoluteFill}
         maskElement={
-          <YStack f={1} p={0}>
-            <YStack f={1} p={0} bg="$black" />
-            <XStack f={2} p={0} borderTopWidth="$8" borderBottomWidth="$8">
-              <YStack bg="$black" />
+          <YStack f={1}>
+            <YStack f={1} bg="$black" />
+            <XStack f={2} borderTopWidth="$16" borderBottomWidth="$16">
+              <YStack p={24} bg="$black" />
               <YStack f={1} />
-              <YStack bg="$black" />
+              <YStack p={24} bg="$black" />
             </XStack>
-            <YStack f={1} bg="$black" p={0} />
+            <YStack f={1} bg="$black" />
           </YStack>
         }
       >
-        <XStack style={StyleSheet.absoluteFill} bg="$translucent" />
+        <XStack style={StyleSheet.absoluteFill} bg="$darkTranslucent" />
       </MaskedView>
-      {helpText && <ToastContainer title={helpText} />}
+      <YStack>
+        {helpText && <ToastContainer title={helpText} />}
+        <Spacer size="$12" />
+      </YStack>
     </Page>
   )
 }

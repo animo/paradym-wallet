@@ -17,7 +17,7 @@ export const CustomToast = () => {
       p={0}
       width="100%"
     >
-      <ToastContainer title={currentToast.title} />
+      <ToastContainer title={currentToast.title} safeAreaMargin />
     </Toast>
   )
 }

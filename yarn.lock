@@ -27,24 +27,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/askar@npm:^0.4.0-alpha.120":
-  version: 0.4.0-alpha.120
-  resolution: "@aries-framework/askar@npm:0.4.0-alpha.120"
+"@aries-framework/askar@npm:^0.4.0-alpha.126":
+  version: 0.4.0-alpha.126
+  resolution: "@aries-framework/askar@npm:0.4.0-alpha.126"
   dependencies:
-    "@aries-framework/core": 0.4.0-alpha.120+61daf0cb
+    "@aries-framework/core": 0.4.0-alpha.126+11366e54
     "@hyperledger/aries-askar-shared": ^0.1.0-dev.8
     bn.js: ^5.2.1
     class-transformer: 0.5.1
     class-validator: 0.14.0
     rxjs: ^7.2.0
     tsyringe: ^4.7.0
-  checksum: 722a266c667a38745f7571f577bc35e6dfc3e23a954b3d3837a5e23509b7a71ffb24bcfe8dccee5c727686dab9591ac571bd256d078d580cc6cb1df5342befeb
+  checksum: 74dc83cd8305339ee1d5d772b92d5e60f9848501b22ba116fee73dec2d8a7dd2de7476256fa861a42f40034f89564808f014293a994a43fd01b76707b0b05b4f
   languageName: node
   linkType: hard
 
-"@aries-framework/core@npm:0.4.0-alpha.120+61daf0cb, @aries-framework/core@npm:^0.4.0-alpha.120":
-  version: 0.4.0-alpha.120
-  resolution: "@aries-framework/core@npm:0.4.0-alpha.120"
+"@aries-framework/core@npm:0.4.0-alpha.126+11366e54, @aries-framework/core@npm:^0.4.0-alpha.126":
+  version: 0.4.0-alpha.126
+  resolution: "@aries-framework/core@npm:0.4.0-alpha.126"
   dependencies:
     "@digitalcredentials/jsonld": ^5.2.1
     "@digitalcredentials/jsonld-signatures": ^9.3.1
@@ -55,6 +55,7 @@ __metadata:
     "@stablelib/sha256": ^1.0.1
     "@types/ws": ^8.5.4
     abort-controller: ^3.0.0
+    big-integer: ^1.6.51
     borc: ^3.0.0
     buffer: ^6.0.3
     class-transformer: 0.5.1
@@ -72,18 +73,18 @@ __metadata:
     uuid: ^9.0.0
     varint: ^6.0.0
     web-did-resolver: ^2.0.21
-  checksum: 5e5f5d59bf74e934af188a5aa56e085eac32b17a8ed0d77765d736d64f78d0e0ac13bf2e9a665ca8e6c58552656535d7807a15cd7ed1eac80a3d30dd8428980e
+  checksum: 3ea908b68f62e57eb06e954a89ec7325b2c7919b65a3eb9bc52ecd8757baabb1ff875077e7c8f8c4b6955a1254a4337e0a0048cb199d53bc9b8fc258ea763c1e
   languageName: node
   linkType: hard
 
-"@aries-framework/openid4vc-client@npm:^0.4.0-alpha.120":
-  version: 0.4.0-alpha.120
-  resolution: "@aries-framework/openid4vc-client@npm:0.4.0-alpha.120"
+"@aries-framework/openid4vc-client@npm:^0.4.0-alpha.126":
+  version: 0.4.0-alpha.126
+  resolution: "@aries-framework/openid4vc-client@npm:0.4.0-alpha.126"
   dependencies:
-    "@aries-framework/core": 0.4.0-alpha.120+61daf0cb
+    "@aries-framework/core": 0.4.0-alpha.126+11366e54
     "@sphereon/openid4vci-client": ^0.4.0
     "@stablelib/random": ^1.0.2
-  checksum: 6ea02222fca15e992fb3921210090ef4b8c40416a5918b439359cb6b96eea5678e31ec1b7f2f1eecfed0a9e4730e61c68e4f1564e2f6694bf7f47cd898f0a43b
+  checksum: 7dde1f42254ef45d68ca05884541257ecc7fdf9220709873c2083b75ceaeefb2bdc60f2fdca1cf617918d45c0973a30ce794493bdb251357a43e3237f01e1d86
   languageName: node
   linkType: hard
 
@@ -99,18 +100,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/react-native@npm:^0.4.0-alpha.120":
-  version: 0.4.0-alpha.120
-  resolution: "@aries-framework/react-native@npm:0.4.0-alpha.120"
+"@aries-framework/react-native@npm:^0.4.0-alpha.126":
+  version: 0.4.0-alpha.126
+  resolution: "@aries-framework/react-native@npm:0.4.0-alpha.126"
   dependencies:
-    "@aries-framework/core": 0.4.0-alpha.120+61daf0cb
+    "@aries-framework/core": 0.4.0-alpha.126+11366e54
     "@azure/core-asynciterator-polyfill": ^1.0.2
     events: ^3.3.0
   peerDependencies:
     react-native: ^0.71.4
     react-native-fs: ^2.20.0
     react-native-get-random-values: ^1.8.0
-  checksum: fd59ad60b6812f3c7bbe2214029c1976daa379500341d3c3b171022a950be5d633dc3d4dd4ca44b09380c3dd814458fff96e48a07dffb6d8b5f7085061a6db15
+  checksum: 639c4cb8ff992bfa867f6576c589198c6f819d7517954277a16e5f8ed6771d16b5cf4c28257b80e3db4dbe3b00a7241c1ed3739760a7486a4946bbb356b5db69
   languageName: node
   linkType: hard
 
@@ -2618,12 +2619,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/agent@workspace:packages/agent"
   dependencies:
-    "@aries-framework/askar": ^0.4.0-alpha.120
-    "@aries-framework/core": ^0.4.0-alpha.120
-    "@aries-framework/openid4vc-client": ^0.4.0-alpha.120
+    "@aries-framework/askar": ^0.4.0-alpha.126
+    "@aries-framework/core": ^0.4.0-alpha.126
+    "@aries-framework/openid4vc-client": ^0.4.0-alpha.126
     "@aries-framework/react-hooks": 0.4.2
-    "@aries-framework/react-native": ^0.4.0-alpha.120
+    "@aries-framework/react-native": ^0.4.0-alpha.126
     "@hyperledger/aries-askar-react-native": 0.1.0-dev.8
+    "@sphereon/openid4vci-client": ^0.4.0
   peerDependencies:
     "@hyperledger/aries-askar-react-native": 0.1.0-dev.8
   languageName: unknown
@@ -3046,6 +3048,16 @@ __metadata:
   peerDependencies:
     react: ^16.8 || ^17.0
   checksum: ca6d7fc397bb19a59fb06529c376fc0b4501fde29c390e9448dd381d05d25d7d2dbfde4c15a491851930cb62fec3cc15ecc413ff77e789a3139d8083db06bf21
+  languageName: node
+  linkType: hard
+
+"@react-native-community/blur@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "@react-native-community/blur@npm:4.3.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 4f7ed6a3bb58cd53346bb7d5755bb2733e8401fdae86334fde4f2fa0c554734e9bb52175c1f9ef1d99766aeb7a4991ac5dfe428c92da518d0353a1a6e5c3d39c
   languageName: node
   linkType: hard
 
@@ -5070,6 +5082,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yarnpkg/lockfile@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@yarnpkg/lockfile@npm:1.1.0"
+  checksum: 05b881b4866a3546861fee756e6d3812776ea47fa6eb7098f983d6d0eefa02e12b66c3fff931574120f196286a7ad4879ce02743c8bb2be36c6a576c7852083a
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:1, abbrev@npm:^1.0.0":
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
@@ -5763,7 +5782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"big-integer@npm:1.6.x, big-integer@npm:^1.6.44":
+"big-integer@npm:1.6.x, big-integer@npm:^1.6.44, big-integer@npm:^1.6.51":
   version: 1.6.51
   resolution: "big-integer@npm:1.6.51"
   checksum: 3d444173d1b2e20747e2c175568bedeebd8315b0637ea95d75fd27830d3b8e8ba36c6af40374f36bdaea7b5de376dcada1b07587cb2a79a928fccdb6e6e3c518
@@ -6285,7 +6304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ci-info@npm:^3.2.0, ci-info@npm:^3.3.0":
+"ci-info@npm:^3.2.0, ci-info@npm:^3.3.0, ci-info@npm:^3.7.0":
   version: 3.8.0
   resolution: "ci-info@npm:3.8.0"
   checksum: d0a4d3160497cae54294974a7246202244fff031b0a6ea20dd57b10ec510aa17399c41a1b0982142c105f3255aff2173e5c0dd7302ee1b2f28ba3debda375098
@@ -7867,6 +7886,7 @@ __metadata:
     "@internal/agent": "*"
     "@internal/scanner": "*"
     "@internal/ui": "*"
+    "@react-native-community/blur": ^4.3.2
     "@react-native-masked-view/masked-view": ^0.2.9
     "@react-navigation/native": ^6.1.6
     "@tamagui/babel-plugin": latest
@@ -8593,7 +8613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-yarn-workspace-root@npm:~2.0.0":
+"find-yarn-workspace-root@npm:^2.0.0, find-yarn-workspace-root@npm:~2.0.0":
   version: 2.0.0
   resolution: "find-yarn-workspace-root@npm:2.0.0"
   dependencies:
@@ -10440,6 +10460,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"klaw-sync@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "klaw-sync@npm:6.0.0"
+  dependencies:
+    graceful-fs: ^4.1.11
+  checksum: 0da397f8961313c3ef8f79fb63af9002cde5a8fb2aeb1a37351feff0dd6006129c790400c3f5c3b4e757bedcabb13d21ec0a5eaef5a593d59515d4f2c291e475
+  languageName: node
+  linkType: hard
+
 "kleur@npm:^3.0.3":
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
@@ -11939,6 +11968,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"open@npm:^7.4.2":
+  version: 7.4.2
+  resolution: "open@npm:7.4.2"
+  dependencies:
+    is-docker: ^2.0.0
+    is-wsl: ^2.1.1
+  checksum: 3333900ec0e420d64c23b831bc3467e57031461d843c801f569b2204a1acc3cd7b3ec3c7897afc9dde86491dfa289708eb92bba164093d8bd88fb2c231843c91
+  languageName: node
+  linkType: hard
+
 "open@npm:^8.0.4, open@npm:^8.3.0":
   version: 8.4.2
   resolution: "open@npm:8.4.2"
@@ -12134,6 +12173,7 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
     node-gyp: ^9.3.1
+    patch-package: ^7.0.0
     prettier: ^2.7.1
     turbo: ^1.8.3
     typescript: ^4.7.4
@@ -12198,6 +12238,30 @@ __metadata:
     ansi-escapes: ^3.1.0
     cross-spawn: ^6.0.5
   checksum: 4763ec1b48cb311d60df37186e31f1b85ec3249a21cc17bbf8407d66c5b55cffe34b4eb529ebd044ed4ced7f3ea3fad744fe15e30a5de31645433e94cd444266
+  languageName: node
+  linkType: hard
+
+"patch-package@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "patch-package@npm:7.0.0"
+  dependencies:
+    "@yarnpkg/lockfile": ^1.1.0
+    chalk: ^4.1.2
+    ci-info: ^3.7.0
+    cross-spawn: ^7.0.3
+    find-yarn-workspace-root: ^2.0.0
+    fs-extra: ^9.0.0
+    klaw-sync: ^6.0.0
+    minimist: ^1.2.6
+    open: ^7.4.2
+    rimraf: ^2.6.3
+    semver: ^5.6.0
+    slash: ^2.0.0
+    tmp: ^0.0.33
+    yaml: ^2.2.2
+  bin:
+    patch-package: index.js
+  checksum: 63f6589320f8953ac06b5c0c1549c82ef051aea81db91173157ab270a8f4910deb895e0b4d49ee1626a4a0a02d74f134bdbeb76052b639a2239e2df83c4a7ce6
   languageName: node
   linkType: hard
 
@@ -13397,7 +13461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^2.6.2":
+"rimraf@npm:^2.6.2, rimraf@npm:^2.6.3":
   version: 2.7.1
   resolution: "rimraf@npm:2.7.1"
   dependencies:
@@ -13794,6 +13858,13 @@ __metadata:
   version: 1.0.5
   resolution: "sisteransi@npm:1.0.5"
   checksum: aba6438f46d2bfcef94cf112c835ab395172c75f67453fe05c340c770d3c402363018ae1ab4172a1026a90c47eaccf3af7b6ff6fa749a680c2929bd7fa2b37a4
+  languageName: node
+  linkType: hard
+
+"slash@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "slash@npm:2.0.0"
+  checksum: 512d4350735375bd11647233cb0e2f93beca6f53441015eea241fe784d8068281c3987fbaa93e7ef1c38df68d9c60013045c92837423c69115297d6169aa85e6
   languageName: node
   linkType: hard
 
@@ -15671,6 +15742,13 @@ __metadata:
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: 343617202af32df2a15a3be36a5a8c0c8545208f3d3dfbc6bb7c3e3b7e8c6f8e7485432e4f3b88da3031a6e20afa7c711eded32ddfb122896ac5d914e75848d5
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.2.2":
+  version: 2.3.0
+  resolution: "yaml@npm:2.3.0"
+  checksum: 9c3d16c226472041fbdc9fb55e1645786d3a3e8d4fde67a502ed7bfbd9067b811e466679db590a0731b4405d4a3bef1f35d098fb650d2cf4bc24732fc829b961
   languageName: node
   linkType: hard
 

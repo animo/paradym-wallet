@@ -5,5 +5,5 @@ interface SpinnerProps {
 }
 
 export function Spinner({ size = 'small' }: SpinnerProps) {
-  return <TSpinner size={size} color="$grey-100" />
+  return <TSpinner size={size} color="$grey-900" />
 }
