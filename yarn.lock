@@ -2625,7 +2625,6 @@ __metadata:
     "@aries-framework/react-hooks": 0.4.2
     "@aries-framework/react-native": ^0.4.0-alpha.126
     "@hyperledger/aries-askar-react-native": 0.1.0-dev.8
-    "@sphereon/openid4vci-client": ^0.4.0
   peerDependencies:
     "@hyperledger/aries-askar-react-native": 0.1.0-dev.8
   languageName: unknown
@@ -3048,16 +3047,6 @@ __metadata:
   peerDependencies:
     react: ^16.8 || ^17.0
   checksum: ca6d7fc397bb19a59fb06529c376fc0b4501fde29c390e9448dd381d05d25d7d2dbfde4c15a491851930cb62fec3cc15ecc413ff77e789a3139d8083db06bf21
-  languageName: node
-  linkType: hard
-
-"@react-native-community/blur@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "@react-native-community/blur@npm:4.3.2"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 4f7ed6a3bb58cd53346bb7d5755bb2733e8401fdae86334fde4f2fa0c554734e9bb52175c1f9ef1d99766aeb7a4991ac5dfe428c92da518d0353a1a6e5c3d39c
   languageName: node
   linkType: hard
 
@@ -7886,7 +7875,6 @@ __metadata:
     "@internal/agent": "*"
     "@internal/scanner": "*"
     "@internal/ui": "*"
-    "@react-native-community/blur": ^4.3.2
     "@react-native-masked-view/masked-view": ^0.2.9
     "@react-navigation/native": ^6.1.6
     "@tamagui/babel-plugin": latest
