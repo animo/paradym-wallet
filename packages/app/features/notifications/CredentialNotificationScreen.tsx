@@ -1,6 +1,6 @@
 import type { MattrW3cCredentialRecord } from '@internal/agent/types'
 
-import { parseCredentialOffer, useAgent } from '@internal/agent'
+import { receiveCredentialFromOpenId4VciOffer, useAgent } from '@internal/agent'
 import {
   YStack,
   useToastController,
@@ -37,7 +37,10 @@ export function CredentialNotificationScreen() {
   useEffect(() => {
     const requestCredential = async (uri: string) => {
       try {
-        const record = await parseCredentialOffer({ agent, data: decodeURIComponent(uri) })
+        const record = await receiveCredentialFromOpenId4VciOffer({
+          agent,
+          data: decodeURIComponent(uri),
+        })
         setCredentialRecord(record as unknown as MattrW3cCredentialRecord)
       } catch (e) {
         toast.show('Credential information could not be extracted.')
@@ -111,7 +114,7 @@ export function CredentialNotificationScreen() {
       >
         <YStack g="3xl">
           <Heading variant="h2" ta="center" px={paddingSizes.xl}>
-            You have received the following credential from {credential.issuer.name}:
+            {credential.issuer.name} has send you a credential
           </Heading>
           <CredentialCard
             iconUrl={credential.issuer.iconUrl}

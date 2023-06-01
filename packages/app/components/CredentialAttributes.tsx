@@ -1,4 +1,4 @@
-import { YStack, Paragraph, TableContainer, TableRow } from '@internal/ui'
+import { YStack, Paragraph, XStack, borderRadiusSizes, paddingSizes } from '@internal/ui'
 
 import { sanitizeString } from 'app/utils/format'
 
@@ -12,18 +12,26 @@ export default function CredentialAttributes({ subject }: CredentialAttributesPr
   return (
     <YStack g="md">
       <Paragraph>Information</Paragraph>
-      <TableContainer>
+      <YStack border br={borderRadiusSizes.lg} bg="$white">
         {Object.keys(subject).map((x, index) => (
-          <TableRow
+          <XStack
+            pad="md"
+            px={paddingSizes.lg}
             key={x}
-            attribute={sanitizeString(x)}
-            value={
-              typeof subject[x] === 'string' ? (subject[x] as string) : JSON.stringify(subject[x])
-            }
-            isLastRow={index === Object.keys(subject).length - 1}
-          />
+            jc="center"
+            ai="center"
+            borderBottomWidth={index === Object.keys(subject).length - 1 ? 0 : 1}
+            borderBottomColor="$grey-300"
+          >
+            <Paragraph numberOfLines={1} f={1}>
+              {sanitizeString(x)}
+            </Paragraph>
+            <Paragraph secondary f={1} flexGrow={1} numberOfLines={1} textAlign="right">
+              {typeof subject[x] === 'string' ? subject[x] : JSON.stringify(subject[x])}
+            </Paragraph>
+          </XStack>
         ))}
-      </TableContainer>
+      </YStack>
     </YStack>
   )
 }
