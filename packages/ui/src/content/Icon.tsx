@@ -16,7 +16,7 @@ export const Icon = ({ name, color }: IconProps) => {
     case 'ChevronLeft':
       return <ChevronLeft color={color ?? '$grey-100'} />
     case 'Scan':
-      return <Scan color={color ?? '$grey-100'} />
+      return <Scan size="$2" color={color ?? '$grey-900'} />
     default:
       return null
   }

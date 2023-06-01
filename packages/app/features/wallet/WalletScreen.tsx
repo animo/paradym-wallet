@@ -55,12 +55,7 @@ export function WalletScreen() {
           <Heading variant="title" textAlign="left">
             Wallet
           </Heading>
-          <XStack
-            bg="$primary-500"
-            onPress={() => push('/scan')}
-            pad="md"
-            br={borderRadiusSizes.rounded}
-          >
+          <XStack onPress={() => push('/scan')} pad="md" br={borderRadiusSizes.rounded}>
             <Icon name="Scan" />
           </XStack>
         </XStack>
