@@ -1,0 +1,41 @@
+name: Continuous Deployment
+
+on:
+    ## To register the workflow in the list.
+    push:
+        branches:
+            - feature/AW-62-app-publishment
+    workflow_dispatch:
+        inputs:
+            channel:
+                description: 'Channel to deploy to'
+                required: true
+                options:
+                    - 'preview'
+                    - 'production'
+                default: 'preview'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: 🏗 Setup repo
+                uses: actions/checkout@v3
+
+            -   name: 🏗 Setup Node
+                uses: actions/setup-node@v3
+                with:
+                    node-version: 18.x
+                    cache: yarn
+
+            -   name: 🏗 Setup EAS
+                uses: expo/expo-github-action@v8
+                with:
+                    eas-version: latest
+                    token: ${{ secrets.EXPO_PUBLISHER_ACCESS_TOKEN }}
+
+            -   name: 📦 Install dependencies
+                run: yarn install
+
+            -   name: 🚀 Build app
+                run: (cd apps/expo && eas build --non-interactive --platform all --profile ${{ github.event.inputs.channel }})
