@@ -12,7 +12,7 @@ import * as React from 'react'
 
 type W3cCredentialRecordState = {
   w3cCredentialRecords: Array<W3cCredentialRecord>
-  loading: boolean
+  isLoading: boolean
 }
 
 const addRecord = (
@@ -22,7 +22,7 @@ const addRecord = (
   const newRecordsState = [...state.w3cCredentialRecords]
   newRecordsState.unshift(record)
   return {
-    loading: state.loading,
+    isLoading: state.isLoading,
     w3cCredentialRecords: newRecordsState,
   }
 }
@@ -37,7 +37,7 @@ const updateRecord = (
     newRecordsState[index] = record
   }
   return {
-    loading: state.loading,
+    isLoading: state.isLoading,
     w3cCredentialRecords: newRecordsState,
   }
 }
@@ -48,7 +48,7 @@ const removeRecord = (
 ): W3cCredentialRecordState => {
   const newRecordsState = state.w3cCredentialRecords.filter((r) => r.id !== record.id)
   return {
-    loading: state.loading,
+    isLoading: state.isLoading,
     w3cCredentialRecords: newRecordsState,
   }
 }
@@ -81,17 +81,17 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
 }) => {
   const [state, setState] = useState<W3cCredentialRecordState>({
     w3cCredentialRecords: [],
-    loading: true,
+    isLoading: true,
   })
 
   useEffect(() => {
     void agent.w3cCredentials
       .getAllCredentialRecords()
-      .then((w3cCredentialRecords) => setState({ w3cCredentialRecords, loading: false }))
+      .then((w3cCredentialRecords) => setState({ w3cCredentialRecords, isLoading: false }))
   }, [])
 
   useEffect(() => {
-    if (!state.loading && agent) {
+    if (!state.isLoading && agent) {
       const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
         setState(addRecord(record, state))
       )

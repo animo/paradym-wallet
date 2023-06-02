@@ -97,6 +97,8 @@ export function CredentialNotificationScreen() {
 
   const credential = credentialRecord.credential
 
+  if (!credential) return null
+
   return (
     <ScrollView>
       <YStack

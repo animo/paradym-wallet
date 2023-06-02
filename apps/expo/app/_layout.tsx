@@ -43,7 +43,7 @@ export default function HomeLayout() {
       <AgentProvider agent={agent}>
         <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
+            <Stack.Screen options={{ presentation: 'modal' }} name="(home)/scan" />
             <Stack.Screen options={{ presentation: 'modal' }} name="notifications/credential" />
             <Stack.Screen options={{ presentation: 'modal' }} name="credentials/[id]" />
           </Stack>

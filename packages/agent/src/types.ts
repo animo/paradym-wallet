@@ -31,7 +31,7 @@ export type W3cCredential = {
 }
 
 export type MattrW3cCredentialRecord = {
-  id?: string
+  id: string
   createdAt?: Date
   credential: W3cCredential
   updatedAt?: Date

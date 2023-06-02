@@ -21,7 +21,7 @@ export const Stack = styled(TStack, {
     },
     border: {
       true: {
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: '$grey-300',
       },
     },
