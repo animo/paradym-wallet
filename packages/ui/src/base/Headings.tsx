@@ -25,6 +25,7 @@ export const Heading = styled(THeading, {
         name: 'H1',
         tag: 'h1',
         size: '$7',
+        p: '$4',
       },
       h1: {
         name: 'H1',

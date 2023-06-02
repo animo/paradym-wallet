@@ -22,7 +22,7 @@ export function CredentialDetailScreen() {
   }
 
   const record = useW3cCredentialRecordById(id)
-  const credential = record?.credential as unknown as W3cCredential
+  const credential = record?.credential as unknown as W3cCredential | undefined
 
   if (!credential) return null
 

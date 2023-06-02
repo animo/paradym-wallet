@@ -12,6 +12,7 @@
     "@babel/runtime": "^7.18.9",
     "@hyperledger/aries-askar-react-native": "0.1.0-dev.8",
     "@internal/agent": "*",
+    "@internal/scanner": "*",
     "@internal/ui": "*",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-masked-view/masked-view": "^0.2.9",
@@ -51,5 +52,13 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "metro-minify-terser": "^0.74.1",
     "typescript": "^4.7.4"
+  },
+  "resolutions": {
+    "metro": "0.76.0",
+    "metro-resolver": "0.76.0"
+  },
+  "overrides": {
+    "metro": "0.76.0",
+    "metro-resolver": "0.76.0"
   }
 }

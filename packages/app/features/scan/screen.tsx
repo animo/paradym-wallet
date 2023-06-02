@@ -19,6 +19,7 @@ export function QrScannerScreen() {
     const onScan = (data: string) => {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
+
       setScannedData(data)
       if (isOpenIdCredentialOffer(scannedData)) {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)

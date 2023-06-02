@@ -1,6 +1,8 @@
 import type { AppAgent } from './agent'
 
 import { DidKey } from '@aries-framework/core'
+import { didKeyToInstanceOfKey } from '@aries-framework/core/build/modules/dids/helpers'
+import { IssuanceInitiation } from '@sphereon/openid4vci-client'
 
 export enum QrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance',

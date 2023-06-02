@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, ChevronLeft, Scan } from '@tamagui/lucide-icons'
+import { ChevronDown, ChevronUp, ChevronLeft, Scan, Wallet, FileBadge } from '@tamagui/lucide-icons'
 
 type IconProps = {
   name: 'ChevronDown' | 'ChevronUp' | 'ChevronLeft' | 'Scan' | 'Wallet' | 'FileBadge'
@@ -7,16 +7,20 @@ type IconProps = {
 }
 
 //FIXME: find a better implementation, but we'll probably switch icon set later
-export const Icon = ({ name, color }: IconProps) => {
+export const Icon = ({ name, color, filled = false }: IconProps) => {
   switch (name) {
     case 'ChevronDown':
-      return <ChevronDown color={color ?? '$grey-100'} />
+      return <ChevronDown />
     case 'ChevronUp':
-      return <ChevronUp color={color ?? '$grey-100'} />
+      return <ChevronUp />
     case 'ChevronLeft':
-      return <ChevronLeft color={color ?? '$grey-100'} />
+      return <ChevronLeft />
     case 'Scan':
-      return <Scan size="$2" color={color ?? '$grey-900'} />
+      return <Scan size="$2" color={color ?? '$grey-900'} opacity={filled ? 1 : 0.5} />
+    case 'Wallet':
+      return <Wallet size="$2" color={color ?? '$grey-900'} opacity={filled ? 1 : 0.5} />
+    case 'FileBadge':
+      return <FileBadge size="$2" color={color ?? '$grey-900'} />
     default:
       return null
   }
