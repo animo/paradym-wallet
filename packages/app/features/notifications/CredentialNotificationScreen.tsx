@@ -6,11 +6,9 @@ import {
   useToastController,
   Heading,
   Button,
-  gapSizes,
   Spacer,
   ScrollView,
   Spinner,
-  paddingSizes,
   Page,
   Paragraph,
 } from '@internal/ui'
@@ -105,7 +103,7 @@ export function CredentialNotificationScreen() {
         g="3xl"
         jc="space-between"
         pad="lg"
-        py={paddingSizes.xl}
+        py="$6"
         enterStyle={{ opacity: 0, y: 50 }}
         exitStyle={{ opacity: 0, y: -20 }}
         y={0}
@@ -113,7 +111,7 @@ export function CredentialNotificationScreen() {
         animation="lazy"
       >
         <YStack g="3xl">
-          <Heading variant="h2" ta="center" px={paddingSizes.xl}>
+          <Heading variant="h2" ta="center" px="$4">
             {credential.issuer.name} has send you a credential
           </Heading>
           <CredentialCard
@@ -125,7 +123,7 @@ export function CredentialNotificationScreen() {
           />
           <CredentialAttributes subject={credential.credentialSubject} />
         </YStack>
-        <YStack gap={gapSizes.md}>
+        <YStack gap="$2">
           <Button.Solid onPress={onCredentialAccept}>Accept</Button.Solid>
           <Button.Outline
             onPress={() => {

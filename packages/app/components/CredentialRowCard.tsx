@@ -1,4 +1,4 @@
-import { Heading, Paragraph, XStack, YStack, borderRadiusSizes, paddingSizes } from '@internal/ui'
+import { Heading, Paragraph, XStack, YStack } from '@internal/ui'
 
 interface CredentialRowCardProps {
   name: string
@@ -14,14 +14,8 @@ export default function CredentialRowCard({
   onPress,
 }: CredentialRowCardProps) {
   return (
-    <XStack
-      onPress={onPress}
-      pad="md"
-      py={paddingSizes.sm}
-      g="lg"
-      pressStyle={{ backgroundColor: '$grey-100' }}
-    >
-      <XStack bg={bgColor ?? '$feature-500'} h="100%" w="25%" br={borderRadiusSizes.md} border />
+    <XStack onPress={onPress} pad="md" py="$2" g="lg" pressStyle={{ backgroundColor: '$grey-100' }}>
+      <XStack bg={bgColor ?? '$feature-500'} h="100%" w="25%" br="$2" border />
       <YStack>
         <Heading variant="h3" numberOfLines={1}>
           {name}

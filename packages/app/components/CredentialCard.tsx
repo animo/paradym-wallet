@@ -2,12 +2,10 @@ import {
   XStack,
   YStack,
   Image,
-  borderRadiusSizes,
   Paragraph,
   Heading,
   Spacer,
   Icon,
-  paddingSizes,
   darken,
   getTextColorBasedOnBg,
 } from '@internal/ui'
@@ -36,7 +34,7 @@ export default function CredentialCard({
   const icon = iconUrl ? (
     <Image src={iconUrl} width={48} height={48} />
   ) : (
-    <XStack bg="$lightTranslucent" ai="center" br={borderRadiusSizes.rounded} pad="md">
+    <XStack bg="$lightTranslucent" ai="center" br="$2" pad="md">
       <Icon name="FileBadge" color="$grey-100" />
     </XStack>
   )
@@ -45,7 +43,7 @@ export default function CredentialCard({
     <YStack
       pad="lg"
       g="xl"
-      br={borderRadiusSizes.xl}
+      br="$8"
       bg={bgColor ?? '$grey-900'}
       shadow={shadow}
       width="100%"
@@ -57,7 +55,7 @@ export default function CredentialCard({
       onPress={onPress}
     >
       <XStack jc="space-between">
-        <XStack pr={paddingSizes.md}>{icon}</XStack>
+        <XStack pr="$4">{icon}</XStack>
         <YStack f={1}>
           <Heading variant="h3" textAlign="right" color={textColor} numberOfLines={1}>
             {name}

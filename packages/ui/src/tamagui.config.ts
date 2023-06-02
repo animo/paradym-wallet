@@ -39,37 +39,6 @@ export const absoluteFill = {
   bottom: 0,
 }
 
-export const paddingSizes = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 24,
-  '2xl': 32,
-  '3xl': 48,
-  '4xl': 72,
-}
-
-export const borderRadiusSizes = {
-  xs: 2,
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 24,
-  rounded: 999,
-}
-
-export const gapSizes = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 24,
-  '2xl': 32,
-  '3xl': 48,
-  '4xl': 72,
-}
-
 export const hexColors = {
   'grey-100': '#F8F8FA',
   'grey-200': '#F2F4F6',
