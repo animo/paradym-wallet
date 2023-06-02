@@ -15,6 +15,8 @@ import {
   ZStack,
   borderRadiusSizes,
   paddingSizes,
+  BASE_CREDENTIAL_CARD_HEIGHT,
+  CREDENTIAL_TOP_INFO_OFFSET,
 } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -26,7 +28,7 @@ export function WalletScreen() {
   const { push } = useRouter()
   const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
 
-  const records = w3cCredentialRecords.slice(0, 3) as unknown as MattrW3cCredentialRecord[]
+  const records = w3cCredentialRecords as unknown as MattrW3cCredentialRecord[]
 
   if (isLoading) {
     return (
@@ -48,6 +50,9 @@ export function WalletScreen() {
     )
   }
 
+  const navigateToCredentialDetail = (id: string) => push(`/credentials/${id}`)
+  const navigateToScanner = () => push('/scan')
+
   return (
     <ScrollView>
       <YStack jc="center" space pad="lg" pb={paddingSizes['3xl']}>
@@ -55,7 +60,7 @@ export function WalletScreen() {
           <Heading variant="title" textAlign="left">
             Wallet
           </Heading>
-          <XStack onPress={() => push('/scan')} pad="md" br={borderRadiusSizes.rounded}>
+          <XStack onPress={() => navigateToScanner()} pad="md" br={borderRadiusSizes.rounded}>
             <Icon name="Scan" />
           </XStack>
         </XStack>
@@ -63,7 +68,13 @@ export function WalletScreen() {
           <Heading variant="h3" textAlign="left">
             Recently added
           </Heading>
-          <ZStack f={0} flexBasis="auto" height={172 + records.slice(0, 3).length * 64}>
+          <ZStack
+            f={0}
+            flexBasis="auto"
+            height={
+              BASE_CREDENTIAL_CARD_HEIGHT + records.slice(0, 3).length * CREDENTIAL_TOP_INFO_OFFSET
+            }
+          >
             {records.slice(0, 3).map((x, idx) => {
               const credential = x.credential
               return (
@@ -75,7 +86,7 @@ export function WalletScreen() {
                   borderWidth={0.5}
                 >
                   <CredentialCard
-                    onPress={() => push(`/credentials/${x.id ?? ''}`)}
+                    onPress={() => navigateToCredentialDetail(x.id)}
                     iconUrl={credential.issuer.iconUrl}
                     name={credential.name}
                     issuerName={credential.issuer.name}
@@ -99,7 +110,7 @@ export function WalletScreen() {
                 name={x.credential.name}
                 issuer={x.credential.issuer.name}
                 bgColor={x.credential.credentialBranding?.backgroundColor}
-                onPress={() => push(`/credentials/${x.id ?? ''}`)}
+                onPress={() => navigateToCredentialDetail(x.id)}
               />
             )
           })}

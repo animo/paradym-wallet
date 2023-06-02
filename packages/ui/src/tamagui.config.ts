@@ -70,7 +70,7 @@ export const gapSizes = {
   '4xl': 72,
 }
 
-export const color = {
+export const hexColors = {
   'grey-100': '#F8F8FA',
   'grey-200': '#F2F4F6',
   'grey-300': '#E0E3E8',
@@ -113,10 +113,13 @@ export const color = {
   black: '#000',
   darkTranslucent: 'rgba(0,0,0,0.4)',
   lightTranslucent: 'rgba(255, 255, 255,  0.2)',
+  borderTranslucent: 'rgba(224, 227, 232, 0.5)', // grey-300 with opacity
 }
 
+export type Colors = keyof typeof hexColors
+
 export const tokens = createTokens({
-  color,
+  color: hexColors,
   size,
   radius,
   zIndex,

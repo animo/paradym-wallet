@@ -7,10 +7,10 @@ import {
   Heading,
   Spacer,
   Icon,
-  color,
+  paddingSizes,
+  darken,
+  getTextColorBasedOnBg,
 } from '@internal/ui'
-
-import { darken, getTextColorBasedOnBg } from 'app/utils/utils'
 
 type CredentialCardProps = {
   onPress?(): void
@@ -31,7 +31,7 @@ export default function CredentialCard({
   bgColor,
   shadow = true,
 }: CredentialCardProps) {
-  const textColor = getTextColorBasedOnBg(bgColor ?? color.black)
+  const textColor = getTextColorBasedOnBg(bgColor ?? '#000')
 
   const icon = iconUrl ? (
     <Image src={iconUrl} width={48} height={48} />
@@ -49,19 +49,20 @@ export default function CredentialCard({
       bg={bgColor ?? '$grey-900'}
       shadow={shadow}
       width="100%"
-      border
+      borderWidth={0.5}
+      borderColor="$borderTranslucent"
       pressStyle={{
-        backgroundColor: darken(bgColor ?? color['grey-900'], 0.025),
+        backgroundColor: darken(bgColor ?? '$grey-900', 0.025),
       }}
       onPress={onPress}
     >
       <XStack jc="space-between">
-        <XStack>{icon}</XStack>
-        <YStack>
-          <Heading variant="h3" textAlign="right" color={textColor}>
+        <XStack pr={paddingSizes.md}>{icon}</XStack>
+        <YStack f={1}>
+          <Heading variant="h3" textAlign="right" color={textColor} numberOfLines={1}>
             {name}
           </Heading>
-          <Paragraph textAlign="right" color={textColor}>
+          <Paragraph textAlign="right" color={textColor} numberOfLines={1}>
             {subtitle}
           </Paragraph>
         </YStack>

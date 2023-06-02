@@ -78,7 +78,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
       </MaskedView>
       <YStack>
         {helpText && <ToastContainer title={helpText} />}
-        <Spacer size="$12" />
+        <Spacer />
       </YStack>
     </Page>
   )

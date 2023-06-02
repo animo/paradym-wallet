@@ -1,3 +1,6 @@
+import type { Colors } from '../tamagui.config'
+
+import { hexColors } from '../tamagui.config'
 /**
  * Get text color (white or black) for specific background color
  */
@@ -9,8 +12,10 @@ export function getTextColorBasedOnBg(bgColor: string) {
  * Darken the shade of a custom color based on the hex color and a percentage
  * used to dynamically create onPress styling for custom colors
  */
-export function darken(color: string, percent: number): string {
-  const f = parseInt(color.slice(1), 16),
+export function darken(color: string | Colors, percent: number): string {
+  const hexColor = color.startsWith('#') ? color : (hexColors[color] as string)
+
+  const f = parseInt(hexColor.slice(1), 16),
     t = percent < 0 ? 0 : 255,
     p = percent < 0 ? percent * -1 : percent,
     R = f >> 16,
