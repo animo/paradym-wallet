@@ -15,6 +15,7 @@ import {
   ZStack,
   BASE_CREDENTIAL_CARD_HEIGHT,
   CREDENTIAL_TOP_INFO_OFFSET,
+  CREDENTIAL_TOP_INFO_HEIGHT,
 } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -78,7 +79,7 @@ export function WalletScreen() {
               return (
                 <XStack
                   key={x.id}
-                  mt={72 * idx}
+                  mt={CREDENTIAL_TOP_INFO_HEIGHT * idx}
                   br="$8"
                   borderColor="$lightTranslucent"
                   borderWidth={0.5}
