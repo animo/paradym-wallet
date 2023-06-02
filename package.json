@@ -24,7 +24,8 @@
   },
   "resolutions": {
     "@unimodules/react-native-adapter": "./noop",
-    "@unimodules/core": "./noop"
+    "@unimodules/core": "./noop",
+    "@hyperledger/aries-askar-shared": "0.1.0-dev.11"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",

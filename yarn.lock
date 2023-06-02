@@ -2721,15 +2721,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperledger/aries-askar-shared@npm:^0.1.0-dev.8":
-  version: 0.1.0-dev.12
-  resolution: "@hyperledger/aries-askar-shared@npm:0.1.0-dev.12"
-  dependencies:
-    fast-text-encoding: ^1.0.3
-  checksum: da56ee5d1f8aad2401ad304d6633684ae53c1b6cf553fb0d5381002008c933e12a87a2e438b19ccc36a3521db22cd28ac1d0d0c0cf39bea1a2976b7bb89c536b
-  languageName: node
-  linkType: hard
-
 "@internal/agent@*, @internal/agent@workspace:packages/agent":
   version: 0.0.0-use.local
   resolution: "@internal/agent@workspace:packages/agent"
