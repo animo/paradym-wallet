@@ -6,7 +6,6 @@ import {
   Button,
   XStack,
   YStack,
-  paddingSizes,
   Spacer,
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
@@ -56,7 +55,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
         />
       )}
       <YStack zi="$5">
-        <Heading variant="h2" ta="center" dark p={paddingSizes['3xl']}>
+        <Heading variant="h2" ta="center" dark py="$6" px="$12">
           Use the camera to scan a QR code
         </Heading>
       </YStack>

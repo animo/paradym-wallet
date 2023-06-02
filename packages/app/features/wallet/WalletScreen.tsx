@@ -13,10 +13,9 @@ import {
   XStack,
   YStack,
   ZStack,
-  borderRadiusSizes,
-  paddingSizes,
   BASE_CREDENTIAL_CARD_HEIGHT,
   CREDENTIAL_TOP_INFO_OFFSET,
+  CREDENTIAL_TOP_INFO_HEIGHT,
 } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -55,12 +54,12 @@ export function WalletScreen() {
 
   return (
     <ScrollView>
-      <YStack jc="center" space pad="lg" pb={paddingSizes['3xl']}>
+      <YStack jc="center" space pad="lg" pb="$10">
         <XStack jc="space-between" ai="center">
           <Heading variant="title" textAlign="left">
             Wallet
           </Heading>
-          <XStack onPress={() => navigateToScanner()} pad="md" br={borderRadiusSizes.rounded}>
+          <XStack onPress={() => navigateToScanner()} pad="md">
             <Icon name="Scan" />
           </XStack>
         </XStack>
@@ -80,8 +79,8 @@ export function WalletScreen() {
               return (
                 <XStack
                   key={x.id}
-                  mt={72 * idx}
-                  br={borderRadiusSizes.xl}
+                  mt={CREDENTIAL_TOP_INFO_HEIGHT * idx}
+                  br="$8"
                   borderColor="$lightTranslucent"
                   borderWidth={0.5}
                 >
@@ -102,7 +101,7 @@ export function WalletScreen() {
         <Heading variant="h3" textAlign="left">
           Credentials
         </Heading>
-        <TableContainer padY={paddingSizes.xs}>
+        <TableContainer padY="$2">
           {records.map((x) => {
             return (
               <CredentialRowCard

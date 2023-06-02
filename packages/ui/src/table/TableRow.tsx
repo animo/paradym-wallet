@@ -1,5 +1,4 @@
 import { XStack, Paragraph } from '../base'
-import { paddingSizes } from '../tamagui.config'
 
 interface TableRowProps {
   attribute: string
@@ -11,7 +10,7 @@ export const TableRow = ({ attribute, value, isLastRow }: TableRowProps) => {
   return (
     <XStack
       pad="md"
-      px={paddingSizes.lg}
+      px="$4"
       key={attribute}
       jc="center"
       ai="center"
