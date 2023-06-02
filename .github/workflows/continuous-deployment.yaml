@@ -1,10 +1,6 @@
 name: Continuous Deployment
 
 on:
-    ## To register the workflow in the list.
-    push:
-        branches:
-            - feature/AW-62-app-publishment
     workflow_dispatch:
         inputs:
             channel:
@@ -14,6 +10,14 @@ on:
                     - 'preview'
                     - 'production'
                 default: 'preview'
+            platform:
+                description: 'Platform to deploy to'
+                required: true
+                options:
+                    - 'android'
+                    - 'ios'
+                    - 'all'
+                default: 'all'
 
 jobs:
     build:
@@ -38,4 +42,4 @@ jobs:
                 run: yarn install
 
             -   name: 🚀 Build app
-                run: (cd apps/expo && eas build --non-interactive --platform all --profile ${{ github.event.inputs.channel }})
+                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.channel }} --no-wait)
