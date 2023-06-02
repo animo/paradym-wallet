@@ -26,7 +26,8 @@
     "@unimodules/react-native-adapter": "./noop",
     "@unimodules/core": "./noop",
     "metro": "0.76.0",
-    "metro-resolver": "0.76.0"
+    "metro-resolver": "0.76.0",
+    "@hyperledger/aries-askar-shared": "0.1.0-dev.12"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
