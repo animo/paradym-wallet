@@ -12,9 +12,9 @@
     "@sphereon/openid4vci-client": "^0.4.0"
   },
   "peerDependencies": {
-    "@hyperledger/aries-askar-react-native": "0.1.0-dev.11"
+    "@hyperledger/aries-askar-react-native": "0.1.0-dev.12"
   },
   "devDependencies": {
-    "@hyperledger/aries-askar-react-native": "0.1.0-dev.11"
+    "@hyperledger/aries-askar-react-native": "0.1.0-dev.12"
   }
 }
