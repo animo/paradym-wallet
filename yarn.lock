@@ -2340,6 +2340,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo/env@npm:~0.0.2":
+  version: 0.0.3
+  resolution: "@expo/env@npm:0.0.3"
+  dependencies:
+    chalk: ^4.0.0
+    debug: ^4.3.4
+    dotenv: ~16.0.3
+    dotenv-expand: ~10.0.0
+  checksum: 0d5ba26d1f1f2f39bc40f47a9f040d7bbb13e628e3ca5c4f49678432cb2f8886575c641c4efef7740fa2389f6808fd2901b6f8bfb2363bd507c798980a78468f
+  languageName: node
+  linkType: hard
+
 "@expo/image-utils@npm:0.3.22":
   version: 0.3.22
   resolution: "@expo/image-utils@npm:0.3.22"
@@ -2409,6 +2421,25 @@ __metadata:
     resolve-from: ^5.0.0
     sucrase: ^3.20.0
   checksum: 4140823d319cf82854044b3b5f5a80a48d727e6f39509a0cf5b4df9f4d6381f431b6b1191402bf921e298c9d452762e5f68a624051e243a10ec4b5e761184f57
+  languageName: node
+  linkType: hard
+
+"@expo/metro-config@npm:~0.8.0":
+  version: 0.8.0
+  resolution: "@expo/metro-config@npm:0.8.0"
+  dependencies:
+    "@expo/config": ~8.0.0
+    "@expo/env": ~0.0.2
+    "@expo/json-file": ~8.2.37
+    chalk: ^4.1.0
+    debug: ^4.3.2
+    find-yarn-workspace-root: ~2.0.0
+    getenv: ^1.0.0
+    lightningcss: ~1.19.0
+    postcss: ~8.4.21
+    resolve-from: ^5.0.0
+    sucrase: ^3.20.0
+  checksum: 11910fbc59d3429991d4df86645f58194699c19374fd74bd74bbe5f9b6770025eec1c8a72a9e9db806bcf669a76e3162b0198aba26e910f258f527ff1b10d32d
   languageName: node
   linkType: hard
 
@@ -7240,6 +7271,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-libc@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "detect-libc@npm:1.0.3"
+  bin:
+    detect-libc: ./bin/detect-libc.js
+  checksum: daaaed925ffa7889bd91d56e9624e6c8033911bb60f3a50a74a87500680652969dbaab9526d1e200a4c94acf80fc862a22131841145a0a8482d60a99c24f4a3e
+  languageName: node
+  linkType: hard
+
 "detect-libc@npm:^2.0.0":
   version: 2.0.1
   resolution: "detect-libc@npm:2.0.1"
@@ -7323,6 +7363,20 @@ __metadata:
     domelementtype: ^2.3.0
     domhandler: ^5.0.3
   checksum: e5757456ddd173caa411cfc02c2bb64133c65546d2c4081381a3bafc8a57411a41eed70494551aa58030be9e58574fcc489828bebd673863d39924fb4878f416
+  languageName: node
+  linkType: hard
+
+"dotenv-expand@npm:~10.0.0":
+  version: 10.0.0
+  resolution: "dotenv-expand@npm:10.0.0"
+  checksum: 2a38b470efe0abcb1ac8490421a55e1d764dc9440fd220942bce40965074f3fb00b585f4346020cb0f0f219966ee6b4ee5023458b3e2953fe5b3214de1b314ee
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:~16.0.3":
+  version: 16.0.3
+  resolution: "dotenv@npm:16.0.3"
+  checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
   languageName: node
   linkType: hard
 
@@ -8049,6 +8103,7 @@ __metadata:
     expo-splash-screen: ~0.18.2
     expo-status-bar: ^1.4.4
     expo-system-ui: ~2.2.1
+    expo-updates: ^0.17.0
     metro-minify-terser: ^0.74.1
     react: 18.2.0
     react-dom: ^18.2.0
@@ -8168,6 +8223,13 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 223dee3da8553e7b42ee23f79f4ab6974472944b547fcc4d0a7b950ecbd4020d213622e80b50a08503239f30458cb2e108ee377500e44bd4180c1fa26fbf1404
+  languageName: node
+  linkType: hard
+
+"expo-eas-client@npm:~0.5.0":
+  version: 0.5.1
+  resolution: "expo-eas-client@npm:0.5.1"
+  checksum: 46d0fa4380b8b6c6c764b373a9061e81750efbe083713862b09272742590daed8644c6dd99823577fb14d17abb11411f5661760bfb763ed8e8a27bacc7f74676
   languageName: node
   linkType: hard
 
@@ -8409,6 +8471,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-structured-headers@npm:~3.1.0":
+  version: 3.1.2
+  resolution: "expo-structured-headers@npm:3.1.2"
+  checksum: 73a867144c31341ceb487b1008d29fa53c989668836949da3315ebfd48b3ec8352733912f8e38f5d9ab32abe20fb52aa52d6bade5319986337c76a542827d6de
+  languageName: node
+  linkType: hard
+
 "expo-system-ui@npm:~2.2.1":
   version: 2.2.1
   resolution: "expo-system-ui@npm:2.2.1"
@@ -8427,6 +8496,29 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 02d4309811613d4d51a55de7db1ab78b17df2703e104cc9b562d3495ab56d3a719f733540643533e05f12dd78510bca6c8c6a29b8ebb213e4b42c59259421229
+  languageName: node
+  linkType: hard
+
+"expo-updates@npm:^0.17.0":
+  version: 0.17.0
+  resolution: "expo-updates@npm:0.17.0"
+  dependencies:
+    "@expo/code-signing-certificates": 0.0.5
+    "@expo/config": ~8.0.0
+    "@expo/config-plugins": ~7.0.0
+    "@expo/metro-config": ~0.8.0
+    arg: 4.1.0
+    expo-eas-client: ~0.5.0
+    expo-manifests: ~0.6.0
+    expo-structured-headers: ~3.1.0
+    expo-updates-interface: ~0.9.0
+    fbemitter: ^3.0.0
+    resolve-from: ^5.0.0
+  peerDependencies:
+    expo: "*"
+  bin:
+    expo-updates: bin/cli.js
+  checksum: 5a3c28c06b9eb08d8b50e450295e49960b5754cfd27cb0e1df5a95bb12499c6692af08aab5f6eee1bebf735928102e801be48f6a7c83c085a91a4aae6ef34ba9
   languageName: node
   linkType: hard
 
@@ -10676,6 +10768,96 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lightningcss-darwin-arm64@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-darwin-arm64@npm:1.19.0"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"lightningcss-darwin-x64@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-darwin-x64@npm:1.19.0"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lightningcss-linux-arm-gnueabihf@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-linux-arm-gnueabihf@npm:1.19.0"
+  conditions: os=linux & cpu=arm
+  languageName: node
+  linkType: hard
+
+"lightningcss-linux-arm64-gnu@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-linux-arm64-gnu@npm:1.19.0"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"lightningcss-linux-arm64-musl@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-linux-arm64-musl@npm:1.19.0"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"lightningcss-linux-x64-gnu@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-linux-x64-gnu@npm:1.19.0"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"lightningcss-linux-x64-musl@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-linux-x64-musl@npm:1.19.0"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"lightningcss-win32-x64-msvc@npm:1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss-win32-x64-msvc@npm:1.19.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"lightningcss@npm:~1.19.0":
+  version: 1.19.0
+  resolution: "lightningcss@npm:1.19.0"
+  dependencies:
+    detect-libc: ^1.0.3
+    lightningcss-darwin-arm64: 1.19.0
+    lightningcss-darwin-x64: 1.19.0
+    lightningcss-linux-arm-gnueabihf: 1.19.0
+    lightningcss-linux-arm64-gnu: 1.19.0
+    lightningcss-linux-arm64-musl: 1.19.0
+    lightningcss-linux-x64-gnu: 1.19.0
+    lightningcss-linux-x64-musl: 1.19.0
+    lightningcss-win32-x64-msvc: 1.19.0
+  dependenciesMeta:
+    lightningcss-darwin-arm64:
+      optional: true
+    lightningcss-darwin-x64:
+      optional: true
+    lightningcss-linux-arm-gnueabihf:
+      optional: true
+    lightningcss-linux-arm64-gnu:
+      optional: true
+    lightningcss-linux-arm64-musl:
+      optional: true
+    lightningcss-linux-x64-gnu:
+      optional: true
+    lightningcss-linux-x64-musl:
+      optional: true
+    lightningcss-win32-x64-msvc:
+      optional: true
+  checksum: c51de34b7379f9da391d0c1157893bb1484357d1ce2212a8c7943690d7a4fed7f2fa0d2dd7a92004b4444662011564ec7bf31f458a1638c856c529fe07285177
+  languageName: node
+  linkType: hard
+
 "lines-and-columns@npm:^1.1.6":
   version: 1.2.4
   resolution: "lines-and-columns@npm:1.2.4"
@@ -11643,7 +11825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.1.23":
+"nanoid@npm:^3.1.23, nanoid@npm:^3.3.6":
   version: 3.3.6
   resolution: "nanoid@npm:3.3.6"
   bin:
@@ -12571,6 +12753,17 @@ __metadata:
   version: 4.2.0
   resolution: "postcss-value-parser@npm:4.2.0"
   checksum: 819ffab0c9d51cf0acbabf8996dffbfafbafa57afc0e4c98db88b67f2094cb44488758f06e5da95d7036f19556a4a732525e84289a425f4f6fd8e412a9d7442f
+  languageName: node
+  linkType: hard
+
+"postcss@npm:~8.4.21":
+  version: 8.4.24
+  resolution: "postcss@npm:8.4.24"
+  dependencies:
+    nanoid: ^3.3.6
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.2
+  checksum: 814e2126dacfea313588eda09cc99a9b4c26ec55c059188aa7a916d20d26d483483106dc5ff9e560731b59f45c5bb91b945dfadc670aed875cc90ddbbf4e787d
   languageName: node
   linkType: hard
 
@@ -14145,6 +14338,13 @@ __metadata:
   version: 3.2.6
   resolution: "solito@npm:3.2.6"
   checksum: c8ff1732b969748b7be71037a284927d7e57965fca1b405d168a6bf288ea9810baa8e19413752d06d71edc51799879db657ec894ebb9a354d3cf57fa4d7c629a
+  languageName: node
+  linkType: hard
+
+"source-map-js@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "source-map-js@npm:1.0.2"
+  checksum: c049a7fc4deb9a7e9b481ae3d424cc793cb4845daa690bc5a05d428bf41bf231ced49b4cf0c9e77f9d42fdb3d20d6187619fc586605f5eabe995a316da8d377c
   languageName: node
   linkType: hard
 
