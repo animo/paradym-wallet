@@ -42,4 +42,4 @@ jobs:
                 run: yarn install
 
             -   name: 🚀 Build app
-                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.channel }} --no-wait)
+                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.channel }} --no-wait --auto-submit)
