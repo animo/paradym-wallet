@@ -1,7 +1,5 @@
 import { Stack as TStack, styled } from 'tamagui'
 
-import { borderRadiusSizes, gapSizes, paddingSizes } from '../tamagui.config'
-
 export const Stack = styled(TStack, {
   name: 'Stack',
   variants: {
@@ -21,71 +19,68 @@ export const Stack = styled(TStack, {
     },
     border: {
       true: {
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: '$grey-300',
       },
     },
     borderRad: {
       xs: {
-        borderRadius: borderRadiusSizes.xs,
+        borderRadius: '$1',
       },
       sm: {
-        borderRadiusSizes: borderRadiusSizes.sm,
+        borderRadiusSizes: '$2',
       },
       md: {
-        borderRadiusSizes: borderRadiusSizes.md,
+        borderRadiusSizes: '$3',
       },
       lg: {
-        borderRadiusSizes: borderRadiusSizes.lg,
+        borderRadiusSizes: '$4',
       },
       xl: {
-        borderRadiusSizes: borderRadiusSizes.xl,
-      },
-      rounded: {
-        borderRadiusSizes: borderRadiusSizes.rounded,
+        borderRadiusSizes: '$8',
       },
     },
     g: {
       xs: {
-        gap: gapSizes.xs,
+        gap: '$1',
       },
       sm: {
-        gap: gapSizes.sm,
+        gap: '$2',
       },
       md: {
-        gap: gapSizes.md,
+        gap: '$3',
       },
       lg: {
-        gap: gapSizes.lg,
+        gap: '$4',
       },
       xl: {
-        gap: gapSizes.xl,
+        gap: '$6',
       },
       '2xl': {
-        gap: gapSizes['2xl'],
+        gap: '$8',
       },
       '3xl': {
-        gap: gapSizes['3xl'],
+        gap: '$10',
       },
       '4xl': {
-        gap: gapSizes['4xl'],
+        gap: '$12',
       },
     },
     pad: {
       xs: {
-        padding: paddingSizes.xs,
+        padding: '$1',
       },
       sm: {
-        padding: paddingSizes.sm,
+        padding: '$2',
       },
       md: {
-        padding: paddingSizes.md,
+        padding: '$3',
       },
       lg: {
-        padding: paddingSizes.lg,
+        padding: '$4',
       },
       xl: {
-        padding: paddingSizes.xl,
+        padding: '$6',
       },
     },
   } as const,

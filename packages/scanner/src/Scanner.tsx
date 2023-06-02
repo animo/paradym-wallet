@@ -6,7 +6,6 @@ import {
   Button,
   XStack,
   YStack,
-  paddingSizes,
   Spacer,
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
@@ -38,7 +37,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <Heading variant="h3">Please allow camera access</Heading>
+        <Heading variant="h2">Please allow camera access</Heading>
         <Paragraph textAlign="center">
           This allows Paradym to scan QR codes that include credentials or data requests.
         </Paragraph>
@@ -56,7 +55,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
         />
       )}
       <YStack zi="$5">
-        <Heading variant="h2" ta="center" dark p={paddingSizes['3xl']}>
+        <Heading variant="h2" ta="center" dark py="$6" px="$12">
           Use the camera to scan a QR code
         </Heading>
       </YStack>
@@ -65,7 +64,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
         maskElement={
           <YStack f={1}>
             <YStack f={1} bg="$black" />
-            <XStack f={2} borderTopWidth="$16" borderBottomWidth="$16">
+            <XStack f={2} borderTopWidth="$12" borderBottomWidth="$12">
               <YStack p={24} bg="$black" />
               <YStack f={1} />
               <YStack p={24} bg="$black" />
@@ -78,7 +77,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
       </MaskedView>
       <YStack>
         {helpText && <ToastContainer title={helpText} />}
-        <Spacer size="$12" />
+        <Spacer />
       </YStack>
     </Page>
   )

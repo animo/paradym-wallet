@@ -1,7 +1,7 @@
 import type { W3cCredential } from '@internal/agent/types'
 
 import { useW3cCredentialRecordById } from '@internal/agent'
-import { YStack, ScrollView, paddingSizes, XStack, Button } from '@internal/ui'
+import { YStack, ScrollView, XStack, Button } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
@@ -22,14 +22,14 @@ export function CredentialDetailScreen() {
   }
 
   const record = useW3cCredentialRecordById(id)
-  const credential = record?.credential as unknown as W3cCredential | undefined
+  const credential = record?.credential as unknown as W3cCredential
 
   if (!credential) return null
 
   return (
     <ScrollView>
       <XStack>
-        <Button.Text mt={paddingSizes.lg} onPress={() => router.back()}>
+        <Button.Text mt="$4" onPress={() => router.back()}>
           Done
         </Button.Text>
       </XStack>
@@ -37,7 +37,8 @@ export function CredentialDetailScreen() {
         g="3xl"
         jc="space-between"
         pad="lg"
-        py={paddingSizes.xl}
+        py="$4"
+        pb="$8"
         enterStyle={{ opacity: 0, y: 50 }}
         exitStyle={{ opacity: 0, y: -20 }}
         y={0}
