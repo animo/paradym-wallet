@@ -41,6 +41,47 @@ jobs:
 
       - name: Compile
         run: yarn build
+
+  maestro-android:
+    runs-on: macos-latest
+    name: 🎭 Maestro Test
+    steps:
+      - name: 🛒 Checkout
+        uses: actions/checkout@v3
+
+      - name: 📦 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - name: 📥 Install dependencies
+        run: yarn install
+
+      - name: 🧩 Install Maestro
+        run: curl -Ls "https://get.maestro.mobile.dev" | bash
+
+      - name: ➕ Add Maestro to current shell
+        run: export PATH="$PATH":"$HOME/.maestro/bin"
+
+      - name: 📱 Start Android Emulator
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: echo "Emulator started"
+
+      - name: 🚀 Compile and run
+        run: yarn android
+
+      - name: 🎯 Run Maestro
+        run: maestro test --output ./.maestro/test-results.xml --format junit ./.maestro/app-flow.yaml
+
+      - name: 📄 Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: './.maestro/test-results.xml'
+
 ### This is to automate the integration tests. I think it will be slow and there are some things left to do to make it work
 # TODO: Add keychain to workflow so that we can build and run the app
 # TODO: Create a way to build -> install -> run the app on the simulator

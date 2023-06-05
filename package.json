@@ -21,7 +21,7 @@
     "check-format": "yarn prettier --list-different",
     "check-types": "tsc --noEmit",
     "lint": "eslint --ignore-path .gitignore .",
-    "maestro:test": "maestro test ./.maestro/App-Flow.yaml",
+    "maestro:test": "maestro test .maestro/app-flow.yaml",
     "maestro:studio": "maestro studio"
   },
   "resolutions": {
