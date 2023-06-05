@@ -1,6 +1,4 @@
-import type { MattrW3cCredentialRecord } from '@internal/agent/types'
-
-import { useW3cCredentialRecords } from '@internal/agent'
+import { getCredentialForDisplay, useW3cCredentialRecords } from '@internal/agent'
 import {
   Button,
   Heading,
@@ -26,8 +24,7 @@ import CredentialRowCard from 'app/components/CredentialRowCard'
 export function WalletScreen() {
   const { push } = useRouter()
   const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
-
-  const records = w3cCredentialRecords as unknown as MattrW3cCredentialRecord[]
+  const firstThreeRecords = w3cCredentialRecords.slice(0, 3)
 
   if (isLoading) {
     return (
@@ -37,7 +34,7 @@ export function WalletScreen() {
     )
   }
 
-  if (records.length === 0) {
+  if (w3cCredentialRecords.length === 0) {
     return (
       <Page justifyContent="center" alignItems="center">
         <Heading variant="h2">This is your Wallet.</Heading>
@@ -71,26 +68,27 @@ export function WalletScreen() {
             f={0}
             flexBasis="auto"
             height={
-              BASE_CREDENTIAL_CARD_HEIGHT + records.slice(0, 3).length * CREDENTIAL_TOP_INFO_OFFSET
+              BASE_CREDENTIAL_CARD_HEIGHT + firstThreeRecords.length * CREDENTIAL_TOP_INFO_OFFSET
             }
           >
-            {records.slice(0, 3).map((x, idx) => {
-              const credential = x.credential
+            {firstThreeRecords.map((credentialRecord, idx) => {
+              const { display } = getCredentialForDisplay(credentialRecord)
+
               return (
                 <XStack
-                  key={x.id}
+                  key={credentialRecord.id}
                   mt={CREDENTIAL_TOP_INFO_HEIGHT * idx}
                   br="$8"
                   borderColor="$lightTranslucent"
                   borderWidth={0.5}
                 >
                   <CredentialCard
-                    onPress={() => navigateToCredentialDetail(x.id)}
-                    iconUrl={credential.issuer.iconUrl}
-                    name={credential.name}
-                    issuerName={credential.issuer.name}
-                    subtitle={credential.description}
-                    bgColor={credential?.credentialBranding?.backgroundColor}
+                    onPress={() => navigateToCredentialDetail(credentialRecord.id)}
+                    iconUrl={display.issuer?.logo?.url}
+                    name={display.name}
+                    issuerName={display.issuer?.name}
+                    subtitle={display.description}
+                    bgColor={display.backgroundColor}
                     shadow={false}
                   />
                 </XStack>
@@ -102,14 +100,17 @@ export function WalletScreen() {
           Credentials
         </Heading>
         <TableContainer padY="$2">
-          {records.map((x) => {
+          {w3cCredentialRecords.map((credentialRecord) => {
+            const { display } = getCredentialForDisplay(credentialRecord)
             return (
               <CredentialRowCard
-                key={x.id}
-                name={x.credential.name}
-                issuer={x.credential.issuer.name}
-                bgColor={x.credential.credentialBranding?.backgroundColor}
-                onPress={() => navigateToCredentialDetail(x.id)}
+                key={credentialRecord.id}
+                // FIXME: what do we do if there's no name of the credential or the issuer?
+                // We can extract the name from the credential type maybe, but that's quite hacky.
+                name={display.name ?? ''}
+                issuer={display.issuer?.name ?? ''}
+                bgColor={display.backgroundColor}
+                onPress={() => navigateToCredentialDetail(credentialRecord.id)}
               />
             )
           })}

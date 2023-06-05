@@ -27,24 +27,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/askar@npm:^0.4.0-alpha.130":
-  version: 0.4.0-alpha.130
-  resolution: "@aries-framework/askar@npm:0.4.0-alpha.130"
+"@aries-framework/askar@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@aries-framework/askar@npm:0.4.0"
   dependencies:
-    "@aries-framework/core": 0.4.0-alpha.130+bd4932d3
-    "@hyperledger/aries-askar-shared": ^0.1.0-dev.8
+    "@aries-framework/core": 0.4.0
     bn.js: ^5.2.1
     class-transformer: 0.5.1
     class-validator: 0.14.0
     rxjs: ^7.2.0
     tsyringe: ^4.7.0
-  checksum: 6736829211e7eefca9a7521054d9f0bb70e22ab0dd0b5978290560cd4ff9edd0667fd5aa90b9ca414c4b38f2877c4c61f6d0cfa2e7f89d4cbfb31358f2604c71
+  peerDependencies:
+    "@hyperledger/aries-askar-shared": ^0.1.0
+  checksum: ffe23842b85acb263fd8f8f76e29047de0002ea1858840f6097845269c922992c7b5b84c3e517acfada0d2b81c8e05fe8d7a8c49be54340e47a487c23ae232a2
   languageName: node
   linkType: hard
 
-"@aries-framework/core@npm:0.4.0-alpha.130+bd4932d3, @aries-framework/core@npm:^0.4.0-alpha.130":
-  version: 0.4.0-alpha.130
-  resolution: "@aries-framework/core@npm:0.4.0-alpha.130"
+"@aries-framework/core@npm:0.4.0, @aries-framework/core@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@aries-framework/core@npm:0.4.0"
   dependencies:
     "@digitalcredentials/jsonld": ^5.2.1
     "@digitalcredentials/jsonld-signatures": ^9.3.1
@@ -73,18 +74,18 @@ __metadata:
     uuid: ^9.0.0
     varint: ^6.0.0
     web-did-resolver: ^2.0.21
-  checksum: 0d895a3ce3536791846989d360a42787d34b00c7aba6917efcf4e246cd7ff4f1b1c4f68255af047ec48507387063ce0c11ba0e1b824dfbd169c5b396d58ce5d2
+  checksum: c5e42dffcda45f54a3aaeedbba7e6426e32f1f58c1a25149d945b06282c6f9c0cfeba93417424fccf1cc09dabce94e9d30c4effd4ebaee8696ca041e16f550c6
   languageName: node
   linkType: hard
 
-"@aries-framework/openid4vc-client@npm:^0.4.0-alpha.130":
-  version: 0.4.0-alpha.130
-  resolution: "@aries-framework/openid4vc-client@npm:0.4.0-alpha.130"
+"@aries-framework/openid4vc-client@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@aries-framework/openid4vc-client@npm:0.4.0"
   dependencies:
-    "@aries-framework/core": 0.4.0-alpha.130+bd4932d3
+    "@aries-framework/core": 0.4.0
     "@sphereon/openid4vci-client": ^0.4.0
     "@stablelib/random": ^1.0.2
-  checksum: 3f3cfb36265faf8d966ba7bbf71319dab81806098bb7e69ef3819153c4a99f09d9f63c02e28ac934ef11012844542c726ed478068eca208dd0b0c14ec0194348
+  checksum: efbd8465c8507e411f419209b21fbfef6628f31e90ce2eff16f4ead97a25024f4199d72a413f90f248fc0c8182fd2202816b5ce748cfc149d50f541c16b88db0
   languageName: node
   linkType: hard
 
@@ -100,18 +101,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/react-native@npm:^0.4.0-alpha.130":
-  version: 0.4.0-alpha.130
-  resolution: "@aries-framework/react-native@npm:0.4.0-alpha.130"
+"@aries-framework/react-native@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@aries-framework/react-native@npm:0.4.0"
   dependencies:
-    "@aries-framework/core": 0.4.0-alpha.130+bd4932d3
+    "@aries-framework/core": 0.4.0
     "@azure/core-asynciterator-polyfill": ^1.0.2
     events: ^3.3.0
   peerDependencies:
     react-native: ^0.71.4
     react-native-fs: ^2.20.0
     react-native-get-random-values: ^1.8.0
-  checksum: 86bef13aebc18249f252ce805214001f88bd4ff6276abae5f82b96d2d97e4ad144c76d0d4b57501be56216be46ae7fb84c5ca498e04d8718d2f72a2da9adb0fc
+  checksum: 1e215acb07075f6b7e898e3bbd3d5b6e7bee030ce5b62f23d6c7ffaa6b5e8a8b1525b4bd3c03f18244e5fa16c8f407139aead06dd72ade312cca3175c237fdcf
   languageName: node
   linkType: hard
 
@@ -2616,16 +2617,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperledger/aries-askar-react-native@npm:0.1.0-dev.12":
-  version: 0.1.0-dev.12
-  resolution: "@hyperledger/aries-askar-react-native@npm:0.1.0-dev.12"
+"@hyperledger/aries-askar-react-native@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@hyperledger/aries-askar-react-native@npm:0.1.0"
   dependencies:
-    "@hyperledger/aries-askar-shared": 0.1.0-dev.12
+    "@hyperledger/aries-askar-shared": 0.1.0
     "@mapbox/node-pre-gyp": ^1.0.10
   peerDependencies:
     react: ">= 16"
     react-native: ">= 0.66.0"
-  checksum: 8e57885c094cc48f045300447fe9f5c592de68a3aec3cebbb0698e32dc069413386117577f1251c7f4ea45d81d485bcbcc2683df4a2dcc7c27841bf1f4dc7f93
+  checksum: aee362450a0758a03fb4074531ba2073f5a9d3a09069dc19f955dd7a6dad9871f9f0226302503fca54490f596b206766b3a7bceabe6a8355ab33b9f24a18464e
   languageName: node
   linkType: hard
 
@@ -2642,14 +2643,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/agent@workspace:packages/agent"
   dependencies:
-    "@aries-framework/askar": ^0.4.0-alpha.130
-    "@aries-framework/core": ^0.4.0-alpha.130
-    "@aries-framework/openid4vc-client": ^0.4.0-alpha.130
+    "@aries-framework/askar": ^0.4.0
+    "@aries-framework/core": ^0.4.0
+    "@aries-framework/openid4vc-client": ^0.4.0
     "@aries-framework/react-hooks": 0.4.2
-    "@aries-framework/react-native": ^0.4.0-alpha.130
-    "@hyperledger/aries-askar-react-native": 0.1.0-dev.12
+    "@aries-framework/react-native": ^0.4.0
+    "@hyperledger/aries-askar-react-native": 0.1.0
   peerDependencies:
-    "@hyperledger/aries-askar-react-native": 0.1.0-dev.12
+    "@hyperledger/aries-askar-react-native": 0.1.0
   languageName: unknown
   linkType: soft
 
@@ -7906,7 +7907,7 @@ __metadata:
     "@babel/core": ^7.17.9
     "@babel/runtime": ^7.18.9
     "@expo/metro-config": ^0.3.21
-    "@hyperledger/aries-askar-react-native": 0.1.0-dev.12
+    "@hyperledger/aries-askar-react-native": 0.1.0
     "@internal/agent": "*"
     "@internal/ui": "*"
     "@react-native-community/blur": ^4.3.2

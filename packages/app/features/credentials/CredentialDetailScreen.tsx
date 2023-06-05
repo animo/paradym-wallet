@@ -1,6 +1,4 @@
-import type { W3cCredential } from '@internal/agent/types'
-
-import { useW3cCredentialRecordById } from '@internal/agent'
+import { getCredentialForDisplay, useW3cCredentialRecordById } from '@internal/agent'
 import { YStack, ScrollView, XStack, Button } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
@@ -22,9 +20,9 @@ export function CredentialDetailScreen() {
   }
 
   const record = useW3cCredentialRecordById(id)
-  const credential = record?.credential as unknown as W3cCredential
+  if (!record) return null
 
-  if (!credential) return null
+  const { credential, display } = getCredentialForDisplay(record)
 
   return (
     <ScrollView>
@@ -47,13 +45,20 @@ export function CredentialDetailScreen() {
       >
         <YStack g="3xl">
           <CredentialCard
-            iconUrl={credential.issuer.iconUrl}
-            name={credential.name}
-            issuerName={credential.issuer.name}
-            subtitle={credential.description}
-            bgColor={credential?.credentialBranding?.backgroundColor}
+            iconUrl={display.issuer?.logo?.url}
+            name={display.name}
+            issuerName={display.issuer?.name}
+            subtitle={display.description}
+            bgColor={display.backgroundColor}
           />
-          <CredentialAttributes subject={credential.credentialSubject} />
+          <CredentialAttributes
+            subject={
+              // FIXME: support credential with multiple subjects
+              Array.isArray(credential.credentialSubject)
+                ? credential.credentialSubject[0] ?? {}
+                : credential.credentialSubject
+            }
+          />
         </YStack>
       </YStack>
     </ScrollView>

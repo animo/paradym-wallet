@@ -3,7 +3,7 @@ import { YStack, Paragraph, TableContainer, TableRow } from '@internal/ui'
 import { sanitizeString } from 'app/utils/format'
 
 type CredentialAttributesProps = {
-  subject: Record<string, string>
+  subject: Record<string, unknown>
 }
 
 // TODO: Attributes can be nested. We should make these collapsible
