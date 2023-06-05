@@ -16,19 +16,8 @@ import { OpenId4VcClientModule } from '@aries-framework/openid4vc-client'
 import { useAgent as useAgentLib } from '@aries-framework/react-hooks'
 import { agentDependencies } from '@aries-framework/react-native'
 import { ariesAskar, registerAriesAskar } from '@hyperledger/aries-askar-react-native'
-import { ReactNativeAriesAskar } from '@hyperledger/aries-askar-react-native/build/ReactNativeAriesAskar'
-import { NativeModules } from 'react-native'
 
 export const initializeAgent = async () => {
-  // FIXME: AW-39: Askar doesn't fully work in expo. iOS works with this hack, android is still broken
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-  NativeModules.AriesAskar.install()
-  registerAriesAskar({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    askar: new ReactNativeAriesAskar(_aries_askar),
-  })
-
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
