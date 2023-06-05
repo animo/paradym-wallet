@@ -20,13 +20,16 @@
     "format": "yarn prettier --write",
     "check-format": "yarn prettier --list-different",
     "check-types": "tsc --noEmit",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore .",
+    "maestro:test": "maestro test .maestro/app-flow.yaml",
+    "maestro:studio": "maestro studio"
   },
   "resolutions": {
     "@unimodules/react-native-adapter": "./noop",
     "@unimodules/core": "./noop",
     "metro": "0.76.0",
-    "metro-resolver": "0.76.0"
+    "metro-resolver": "0.76.0",
+    "@hyperledger/aries-askar-shared": "0.1.0-dev.12"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
