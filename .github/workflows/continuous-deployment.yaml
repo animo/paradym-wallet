@@ -7,8 +7,8 @@ on:
                 description: 'Channel to deploy to'
                 required: true
                 options:
-                    - 'preview'
-                    - 'production'
+                    - 'internal'
+                    - 'app-store'
                 default: 'preview'
             platform:
                 description: 'Platform to deploy to'
@@ -41,5 +41,10 @@ jobs:
             -   name: 📦 Install dependencies
                 run: yarn install
 
-            -   name: 🚀 Build app
-                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.channel }} --no-wait --auto-submit)
+            -   name: 🚀 Build internal
+                if: ${{ github.event.inputs.channel == 'internal' }}
+                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
+
+            -   name: 🚀 Build for App Store submission
+                if: ${{ github.event.inputs.channel == 'app-store' }}
+                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)

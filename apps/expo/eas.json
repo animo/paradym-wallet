@@ -33,7 +33,15 @@
     }
   },
   "submit": {
-    "production": {},
+    "production": {
+      "ios": {
+          "companyName": "Animo Solutions",
+          "ascAppId": "6449846111"
+      },
+      "android": {
+          "track": "alpha"
+      }
+    },
     "preview": {
       "ios": {
         "companyName": "Animo Solutions",
