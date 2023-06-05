@@ -7,10 +7,10 @@ appId: id.paradym.wallet
 ## Close qr code scanner
 # For some reason the conditions are only available in the runFlow command
 - runFlow:
-      when:
-          platform: iOS
-      file: './actions/exit-qr-code-ios.yaml'
+    when:
+      platform: iOS
+    file: './actions/exit-qr-code-ios.yaml'
 - runFlow:
-      when:
-          platform: android
-      file: './actions/exit-qr-code-android.yaml'
+    when:
+      platform: android
+    file: './actions/exit-qr-code-android.yaml'

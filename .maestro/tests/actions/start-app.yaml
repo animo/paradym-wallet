@@ -2,9 +2,9 @@ appId: id.paradym.wallet
 ---
 ### Sometimes the emulator is too slow to keep up with the tests
 - launchApp:
-      permissions: { all: allow }
+    permissions: { all: allow }
 
 - runFlow:
-      when:
-          visible: 'Development servers'
-      file: 'expo-app-selector.yaml'
+    when:
+      visible: 'Development servers'
+    file: 'expo-app-selector.yaml'
