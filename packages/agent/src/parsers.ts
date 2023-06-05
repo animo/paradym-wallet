@@ -31,10 +31,13 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 
   const didKey = DidKey.fromDid(didRecord.did)
+  const kid = `${didKey.did}#${didKey.key.fingerprint}`
+  const validationMethod = didKey.didDocument.dereferenceVerificationMethod(kid)
+
   const record = await agent.modules.openId4VcClient.requestCredentialUsingPreAuthorizedCode({
     issuerUri: data,
-    kid: `${didKey.did}#${didKey.key.fingerprint}`,
-    verifyRevocationState: false,
+    proofOfPossessionVerificationMethodResolver: () => validationMethod,
+    verifyCredentialStatus: false,
   })
 
   if (!record) throw new Error('Error storing credential using pre authorized flow.')

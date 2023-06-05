@@ -1,4 +1,4 @@
-import type { LinkedDataProof } from '@aries-framework/core'
+import type { LinkedDataProof } from '@aries-framework/core/build/modules/vc/data-integrity/models/LinkedDataProof'
 
 // Temp types to work with until we have the correct ones.
 
