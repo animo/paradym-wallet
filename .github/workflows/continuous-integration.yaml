@@ -44,10 +44,16 @@ jobs:
 
   maestro-android:
     runs-on: macos-latest
-    name: 🎭 Maestro Test
+    name: Maestro Test Android
     steps:
       - name: 🛒 Checkout
         uses: actions/checkout@v3
+
+      - name: 📚 Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
 
       - name: 📦 Setup Node
         uses: actions/setup-node@v3
