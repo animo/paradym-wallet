@@ -8,8 +8,8 @@ on:
                 required: true
                 options:
                     - 'internal'
-                    - 'app-store'
-                default: 'preview'
+                    - 'stores'
+                default: 'internal'
             platform:
                 description: 'Platform to deploy to'
                 required: true
@@ -41,10 +41,17 @@ jobs:
             -   name: 📦 Install dependencies
                 run: yarn install
 
-            -   name: 🚀 Build internal
-                if: ${{ github.event.inputs.channel == 'internal' }}
+            -   name: 🚀 Build internal iOS
+                # For the iOS build we want to have it as a AdHoc build so we can distribute it to our internal testers. So no submission to the App Store.
+                if: ${{ github.event.inputs.channel == 'internal' && github.event.inputs.platform == 'ios' }}
                 run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
 
-            -   name: 🚀 Build for App Store submission
-                if: ${{ github.event.inputs.channel == 'app-store' }}
+            -   name: 🚀 Build internal Android
+                # For the android build we want to automatically submit it to the Play Store to the internal track
+                if: ${{ github.event.inputs.channel == 'internal' && github.event.inputs.platform == 'android' }}
+                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait --auto-submit)
+
+            -   name: 🚀 Build for Stores submission
+                # For the stores build we want to automatically submit it to the Stores for Android and for iOS.
+                if: ${{ github.event.inputs.channel == 'stores' }}
                 run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
