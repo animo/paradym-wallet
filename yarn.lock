@@ -2649,6 +2649,7 @@ __metadata:
     "@aries-framework/react-hooks": 0.4.2
     "@aries-framework/react-native": ^0.4.0
     "@hyperledger/aries-askar-react-native": 0.1.0
+    "@internal/utils": "*"
   peerDependencies:
     "@hyperledger/aries-askar-react-native": 0.1.0
   languageName: unknown
@@ -2681,6 +2682,12 @@ __metadata:
     "@tamagui/themes": latest
     "@tamagui/toast": latest
     tamagui: latest
+  languageName: unknown
+  linkType: soft
+
+"@internal/utils@*, @internal/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@internal/utils@workspace:packages/utils"
   languageName: unknown
   linkType: soft
 
@@ -5307,6 +5314,7 @@ __metadata:
     "@internal/agent": "*"
     "@internal/scanner": "*"
     "@internal/ui": "*"
+    "@internal/utils": "*"
     "@tamagui/animations-react-native": latest
     "@tamagui/colors": latest
     "@tamagui/font-inter": latest

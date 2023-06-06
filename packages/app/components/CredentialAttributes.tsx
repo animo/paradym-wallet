@@ -1,6 +1,5 @@
 import { YStack, Paragraph, TableContainer, TableRow } from '@internal/ui'
-
-import { sanitizeString } from 'app/utils/format'
+import { sanitizeString } from '@internal/utils'
 
 type CredentialAttributesProps = {
   subject: Record<string, unknown>

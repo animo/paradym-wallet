@@ -99,6 +99,10 @@ export function CredentialNotificationScreen() {
 
   const { credential, display } = getCredentialForDisplay(credentialRecord)
 
+  console.log(
+    'subject', // FIXME: support credential with multiple subjects
+    credential
+  )
   return (
     <ScrollView>
       <YStack
@@ -114,7 +118,8 @@ export function CredentialNotificationScreen() {
       >
         <YStack g="3xl">
           <Heading variant="h2" ta="center" px="$4">
-            You have received a credential{display.name ? ` from ${display.name}` : ''}
+            You have received a credential
+            {display.issuer?.name ? ` from ${display.issuer.name}` : ''}
           </Heading>
           <CredentialCard
             iconUrl={display.issuer?.logo?.url}

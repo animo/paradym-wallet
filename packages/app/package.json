@@ -10,6 +10,7 @@
     "@internal/agent": "*",
     "@internal/scanner": "*",
     "@internal/ui": "*",
+    "@internal/utils": "*",
     "@tamagui/animations-react-native": "latest",
     "@tamagui/colors": "latest",
     "@tamagui/font-inter": "latest",
