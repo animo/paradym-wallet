@@ -29,7 +29,7 @@ You can install this using the following commands:
 
 ```
 cd apps/expo
-yarn expo prebuild
+yarn expo prebuild --no-install
 yarn ios # or android
 ```
 
@@ -37,9 +37,26 @@ You only need to install the development when **native** dependencies change. If
 
 Once installed you can run `yarn native` from the root of the project to start your development server.
 
-## Releasing
+## 📦 Releasing
 
 🚧 Soon documentation will be added on how to publish a new release to the Apple App Store and Google Play Stores. 🚧
+
+## 🧪 Integration Testing
+
+We use [Maestro](https://maestro.mobile.dev/) for integration testing. Maestro is a tool for writing integration tests for mobile apps. It allows you to write tests in YAML that run on real devices and interact with your app just like a real user would.
+
+The tests are located in the `.maestro` folder.
+
+You need to have the app running with `yarn ios/android` before running the tests.
+
+### Required dependencies
+
+- [Maestro CLI](https://maestro.mobile.dev/getting-started/installing-maestro)
+
+### Running tests
+
+- `yarn maestro:test` - Run all tests
+- `yarn maestro:studio` - A GUI for creating test actions
 
 ## 🆕 Add new dependencies
 
