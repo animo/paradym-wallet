@@ -86,7 +86,7 @@ export function WalletScreen() {
                     onPress={() => navigateToCredentialDetail(credentialRecord.id)}
                     iconUrl={display.issuer?.logo?.url}
                     name={display.name}
-                    issuerName={display.issuer?.name}
+                    issuerName={display.issuer.name}
                     subtitle={display.description}
                     bgColor={display.backgroundColor}
                     shadow={false}
@@ -105,10 +105,8 @@ export function WalletScreen() {
             return (
               <CredentialRowCard
                 key={credentialRecord.id}
-                // FIXME: what do we do if there's no name of the credential or the issuer?
-                // We can extract the name from the credential type maybe, but that's quite hacky.
-                name={display.name ?? ''}
-                issuer={display.issuer?.name ?? ''}
+                name={display.name}
+                issuer={display.issuer.name}
                 bgColor={display.backgroundColor}
                 onPress={() => navigateToCredentialDetail(credentialRecord.id)}
               />

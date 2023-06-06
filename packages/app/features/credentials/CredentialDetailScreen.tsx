@@ -47,7 +47,7 @@ export function CredentialDetailScreen() {
           <CredentialCard
             iconUrl={display.issuer?.logo?.url}
             name={display.name}
-            issuerName={display.issuer?.name}
+            issuerName={display.issuer.name}
             subtitle={display.description}
             bgColor={display.backgroundColor}
           />

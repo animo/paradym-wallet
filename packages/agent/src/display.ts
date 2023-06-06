@@ -22,7 +22,7 @@ type JffW3cCredentialJson = W3cCredentialJson & {
 }
 
 export interface W3cCredentialDisplay {
-  name?: string
+  name: string
   locale?: string
   description?: string
   textColor?: string
@@ -32,11 +32,11 @@ export interface W3cCredentialDisplay {
     altText?: string
   }
 
-  issuer?: W3cCredentialIssuerDisplay
+  issuer: W3cCredentialIssuerDisplay
 }
 
 export interface W3cCredentialIssuerDisplay {
-  name?: string
+  name: string
   locale?: string
   logo?: {
     url?: string
@@ -77,13 +77,19 @@ export function getCredentialForDisplay(w3cCredentialRecord: W3cCredentialRecord
     }
   }
 
+  // Last fallback, if there's really no name for the credential, we use a generic name
+  // TODO: use on-device AI to determine a name for the credential based on the credential data
+  if (!credentialName) {
+    credentialName = 'Credential'
+  }
+
   return {
     display: {
       backgroundColor: jffCredential.credentialBranding?.backgroundColor,
       description: jffCredential.description,
       name: credentialName,
       issuer: {
-        name: issuerJson?.name,
+        name: issuerJson?.name ?? 'Unknown',
         logo: {
           url: issuerLogoUrl,
         },
