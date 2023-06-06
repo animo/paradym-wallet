@@ -1,57 +1,57 @@
 name: Continuous Deployment
 
 on:
-    workflow_dispatch:
-        inputs:
-            channel:
-                description: 'Channel to deploy to'
-                required: true
-                options:
-                    - 'internal'
-                    - 'stores'
-                default: 'internal'
-            platform:
-                description: 'Platform to deploy to'
-                required: true
-                options:
-                    - 'android'
-                    - 'ios'
-                    - 'all'
-                default: 'all'
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Channel to deploy to'
+        required: true
+        options:
+          - 'internal'
+          - 'stores'
+        default: 'internal'
+      platform:
+        description: 'Platform to deploy to'
+        required: true
+        options:
+          - 'android'
+          - 'ios'
+          - 'all'
+        default: 'all'
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            -   name: 🏗 Setup repo
-                uses: actions/checkout@v3
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
 
-            -   name: 🏗 Setup Node
-                uses: actions/setup-node@v3
-                with:
-                    node-version: 18.x
-                    cache: yarn
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: yarn
 
-            -   name: 🏗 Setup EAS
-                uses: expo/expo-github-action@v8
-                with:
-                    eas-version: latest
-                    token: ${{ secrets.EXPO_PUBLISHER_ACCESS_TOKEN }}
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_PUBLISHER_ACCESS_TOKEN }}
 
-            -   name: 📦 Install dependencies
-                run: yarn install
+      - name: 📦 Install dependencies
+        run: yarn install
 
-            -   name: 🚀 Build internal iOS
-                # For the iOS build we want to have it as a AdHoc build so we can distribute it to our internal testers. So no submission to the App Store.
-                if: ${{ github.event.inputs.channel == 'internal' && github.event.inputs.platform == 'ios' }}
-                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
+      - name: 🚀 Build internal iOS
+        # For the iOS build we want to have it as a AdHoc build so we can distribute it to our internal testers. So no submission to the App Store.
+        if: ${{ github.event.inputs.channel == 'internal' && github.event.inputs.platform == 'ios' }}
+        run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
 
-            -   name: 🚀 Build internal Android
-                # For the android build we want to automatically submit it to the Play Store to the internal track
-                if: ${{ github.event.inputs.channel == 'internal' && github.event.inputs.platform == 'android' }}
-                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait --auto-submit)
+      - name: 🚀 Build internal Android
+        # For the android build we want to automatically submit it to the Play Store to the internal track
+        if: ${{ github.event.inputs.channel == 'internal' && github.event.inputs.platform == 'android' }}
+        run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait --auto-submit)
 
-            -   name: 🚀 Build for Stores submission
-                # For the stores build we want to automatically submit it to the Stores for Android and for iOS.
-                if: ${{ github.event.inputs.channel == 'stores' }}
-                run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
+      - name: 🚀 Build for Stores submission
+        # For the stores build we want to automatically submit it to the Stores for Android and for iOS.
+        if: ${{ github.event.inputs.channel == 'stores' }}
+        run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
