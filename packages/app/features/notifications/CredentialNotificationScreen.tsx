@@ -99,10 +99,6 @@ export function CredentialNotificationScreen() {
 
   const { credential, display } = getCredentialForDisplay(credentialRecord)
 
-  console.log(
-    'subject', // FIXME: support credential with multiple subjects
-    credential
-  )
   return (
     <ScrollView>
       <YStack
