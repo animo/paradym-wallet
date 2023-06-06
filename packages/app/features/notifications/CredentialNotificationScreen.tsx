@@ -1,6 +1,10 @@
-import type { MattrW3cCredentialRecord } from '@internal/agent/types'
+import type { W3cCredentialRecord } from '@internal/agent'
 
-import { receiveCredentialFromOpenId4VciOffer, useAgent } from '@internal/agent'
+import {
+  getCredentialForDisplay,
+  receiveCredentialFromOpenId4VciOffer,
+  useAgent,
+} from '@internal/agent'
 import {
   YStack,
   useToastController,
@@ -29,7 +33,7 @@ export function CredentialNotificationScreen() {
   const toast = useToastController()
   const [uri] = useParam('uri')
 
-  const [credentialRecord, setCredentialRecord] = useState<MattrW3cCredentialRecord>()
+  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord>()
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export function CredentialNotificationScreen() {
           agent,
           data: decodeURIComponent(uri),
         })
-        setCredentialRecord(record as unknown as MattrW3cCredentialRecord)
+        setCredentialRecord(record)
       } catch (e) {
         toast.show('Credential information could not be extracted.')
         router.back()
@@ -93,9 +97,7 @@ export function CredentialNotificationScreen() {
     return null
   }
 
-  const credential = credentialRecord.credential
-
-  if (!credential) return null
+  const { credential, display } = getCredentialForDisplay(credentialRecord)
 
   return (
     <ScrollView>
@@ -112,16 +114,24 @@ export function CredentialNotificationScreen() {
       >
         <YStack g="3xl">
           <Heading variant="h2" ta="center" px="$4">
-            {credential.issuer.name} has send you a credential
+            You have received a credential
+            {display.issuer?.name ? ` from ${display.issuer.name}` : ''}
           </Heading>
           <CredentialCard
-            iconUrl={credential.issuer.iconUrl}
-            name={credential.name}
-            issuerName={credential.issuer.name}
-            subtitle={credential.description}
-            bgColor={credential?.credentialBranding?.backgroundColor}
+            iconUrl={display.issuer?.logo?.url}
+            name={display.name}
+            issuerName={display.issuer.name}
+            subtitle={display.description}
+            bgColor={display.backgroundColor}
           />
-          <CredentialAttributes subject={credential.credentialSubject} />
+          <CredentialAttributes
+            subject={
+              // FIXME: support credential with multiple subjects
+              Array.isArray(credential.credentialSubject)
+                ? credential.credentialSubject[0] ?? {}
+                : credential.credentialSubject
+            }
+          />
         </YStack>
         <YStack gap="$2">
           <Button.Solid onPress={onCredentialAccept}>Accept</Button.Solid>

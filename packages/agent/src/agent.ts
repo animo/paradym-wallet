@@ -1,7 +1,9 @@
-import type { KeyDidCreateOptions } from '@aries-framework/core'
+import type { JwkDidCreateOptions } from '@aries-framework/core'
 
 import { AskarModule } from '@aries-framework/askar'
 import {
+  JwkDidRegistrar,
+  JwkDidResolver,
   Agent,
   ConsoleLogger,
   DidsModule,
@@ -9,7 +11,6 @@ import {
   KeyDidResolver,
   KeyType,
   LogLevel,
-  PeerDidRegistrar,
   WebDidResolver,
 } from '@aries-framework/core'
 import { OpenId4VcClientModule } from '@aries-framework/openid4vc-client'
@@ -34,10 +35,9 @@ export const initializeAgent = async () => {
       askar: new AskarModule({
         ariesAskar: ariesAskar,
       }),
-      // TODO: add did:jwk resolver and registrar
       dids: new DidsModule({
-        registrars: [new KeyDidRegistrar(), new PeerDidRegistrar()],
-        resolvers: [new WebDidResolver(), new KeyDidResolver()],
+        registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
+        resolvers: [new WebDidResolver(), new KeyDidResolver(), new JwkDidResolver()],
       }),
       openId4VcClient: new OpenId4VcClientModule(),
     },
@@ -46,11 +46,11 @@ export const initializeAgent = async () => {
   await agent.initialize()
 
   // FIXME: We probably want to create a new did for each of the credentials we request to avoid correlation between the credentials.
-  const hasKeyDid = (await agent.dids.getCreatedDids({ method: 'key' })).length !== 0
+  const hasKeyDid = (await agent.dids.getCreatedDids({ method: 'jwk' })).length !== 0
 
   if (!hasKeyDid) {
-    await agent.dids.create<KeyDidCreateOptions>({
-      method: 'key',
+    await agent.dids.create<JwkDidCreateOptions>({
+      method: 'jwk',
       options: {
         keyType: KeyType.Ed25519,
       },

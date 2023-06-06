@@ -1,6 +1,7 @@
 import type { AppAgent } from './agent'
+import type { JwkDidCreateOptions, KeyDidCreateOptions } from '@aries-framework/core'
 
-import { DidKey } from '@aries-framework/core'
+import { ClaimFormat, DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
 
 export enum QrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance',
@@ -25,24 +26,63 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   if (!data.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE))
     throw new Error('URI does not start with OpenID issuance prefix.')
 
-  const [didRecord] = await agent.dids.getCreatedDids({ method: 'key' })
-  if (!didRecord) {
-    throw new Error('No key DID has been found on the agent. Make sure you have a DID registered.')
-  }
-
-  const didKey = DidKey.fromDid(didRecord.did)
-  const kid = `${didKey.did}#${didKey.key.fingerprint}`
-  const validationMethod = didKey.didDocument.dereferenceVerificationMethod(kid)
-
-  const record = await agent.modules.openId4VcClient.requestCredentialUsingPreAuthorizedCode({
+  const records = await agent.modules.openId4VcClient.requestCredentialUsingPreAuthorizedCode({
     issuerUri: data,
-    proofOfPossessionVerificationMethodResolver: () => validationMethod,
+    proofOfPossessionVerificationMethodResolver: async ({
+      supportedDidMethods,
+      keyType,
+      supportsAllDidMethods,
+    }) => {
+      // Prefer did:jwk, otherwise use did:key, otherwise use undefined
+      const didMethod =
+        supportsAllDidMethods || supportedDidMethods.includes('did:jwk')
+          ? 'jwk'
+          : supportedDidMethods.includes('did:key')
+          ? 'key'
+          : undefined
+
+      if (!didMethod) {
+        throw new Error(
+          `No supported did method could be found. Supported methods are did:key and did:jwk. Issuer supports ${supportedDidMethods.join(
+            ', '
+          )}`
+        )
+      }
+
+      const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
+        method: didMethod,
+        options: {
+          keyType,
+        },
+      })
+
+      if (didResult.didState.state !== 'finished') {
+        throw new Error('DID creation failed.')
+      }
+
+      let verificationMethodId: string
+      if (didMethod === 'jwk') {
+        const didJwk = DidJwk.fromDid(didResult.didState.did)
+        verificationMethodId = didJwk.verificationMethodId
+      } else {
+        const didKey = DidKey.fromDid(didResult.didState.did)
+        verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
+      }
+
+      return didResult.didState.didDocument.dereferenceKey(verificationMethodId)
+    },
     verifyCredentialStatus: false,
+    allowedCredentialFormats: [ClaimFormat.JwtVc],
+    allowedProofOfPossessionSignatureAlgorithms: [
+      JwaSignatureAlgorithm.EdDSA,
+      JwaSignatureAlgorithm.ES256,
+    ],
   })
 
-  if (!record) throw new Error('Error storing credential using pre authorized flow.')
+  if (!records || !records.length)
+    throw new Error('Error storing credential using pre authorized flow.')
 
-  return record
+  return records[0]
 }
 
 export const parseProofRequest = async ({ data }: { data: string }) => {

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@hyperledger/aries-askar-react-native": "0.1.0-dev.12",
+    "@hyperledger/aries-askar-react-native": "0.1.0",
     "@internal/agent": "*",
     "@internal/ui": "*",
     "@react-native-community/blur": "^4.3.2",

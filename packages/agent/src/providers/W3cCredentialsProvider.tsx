@@ -10,6 +10,8 @@ import {
 import { useState, createContext, useContext, useEffect } from 'react'
 import * as React from 'react'
 
+export { W3cCredentialRecord } from '@aries-framework/core'
+
 type W3cCredentialRecordState = {
   w3cCredentialRecords: Array<W3cCredentialRecord>
   isLoading: boolean
