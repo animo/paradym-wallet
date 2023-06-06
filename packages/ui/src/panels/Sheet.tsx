@@ -2,36 +2,54 @@ import { useState } from 'react'
 import { Sheet as TSheet } from 'tamagui'
 
 import { Button } from '../base'
-import { Icon } from '../content'
+import { ChevronDown, ChevronUp } from '../content'
 
 type Props = {
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  showChevron?: boolean
+  snapPoints?: number[]
   children?: React.ReactNode
 }
 
-export const Sheet = ({ children }: Props) => {
-  const [open, setOpen] = useState(false)
+export const Sheet = ({
+  open,
+  setOpen,
+  showChevron = false,
+  snapPoints = [80],
+  children,
+}: Props) => {
   const [position, setPosition] = useState(0)
 
   return (
     <>
-      <Button.Text
-        size="$6"
-        icon={<Icon name={open ? 'ChevronDown' : 'ChevronUp'} />}
-        circular
-        onPress={() => setOpen((x) => !x)}
-      />
+      {showChevron && (
+        <Button.Text
+          size="$6"
+          icon={open ? <ChevronDown /> : <ChevronUp />}
+          circular
+          onPress={() => setOpen((x) => !x)}
+        />
+      )}
       <TSheet
         modal
         open={open}
         onOpenChange={setOpen}
-        snapPoints={[80]}
+        snapPoints={snapPoints}
         position={position}
         onPositionChange={setPosition}
         dismissOnSnapToBottom
       >
         <TSheet.Overlay backgroundColor="$darkTranslucent" />
-        <TSheet.Frame jc="flex-end" backgroundColor="$grey-100" py="$8" px="$4">
-          <TSheet.Handle backgroundColor="$grey-100" />
+        <TSheet.Handle backgroundColor="$black" h="$0.5" />
+        <TSheet.Frame
+          flex={1}
+          padding="$4"
+          justifyContent="center"
+          alignItems="center"
+          space="$5"
+          backgroundColor="$white"
+        >
           {children}
         </TSheet.Frame>
       </TSheet>

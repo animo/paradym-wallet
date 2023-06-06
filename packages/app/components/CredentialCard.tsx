@@ -5,7 +5,7 @@ import {
   Paragraph,
   Heading,
   Spacer,
-  Icon,
+  FileBadge,
   darken,
   getTextColorBasedOnBg,
 } from '@internal/ui'
@@ -35,7 +35,7 @@ export default function CredentialCard({
     <Image src={iconUrl} width={48} height={48} />
   ) : (
     <XStack bg="$lightTranslucent" ai="center" br="$2" pad="md">
-      <Icon name="FileBadge" color="$grey-100" />
+      <FileBadge color="$grey-100" />
     </XStack>
   )
 
