@@ -12,8 +12,8 @@ import {
 
 type CredentialCardProps = {
   onPress?(): void
-  name?: string
-  issuerName?: string
+  name: string
+  issuerName: string
   subtitle?: string
   iconUrl?: string
   bgColor?: string
@@ -23,9 +23,9 @@ type CredentialCardProps = {
 export default function CredentialCard({
   onPress,
   iconUrl,
-  name = 'Credential',
+  name,
   subtitle,
-  issuerName = 'Unknown',
+  issuerName,
   bgColor,
   shadow = true,
 }: CredentialCardProps) {
