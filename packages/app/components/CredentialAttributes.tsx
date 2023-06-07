@@ -8,9 +8,8 @@ import {
   CornerDownRight,
   XStack,
 } from '@internal/ui'
-import { useState } from 'react'
-
 import { formatCredentialSubject } from 'app/utils/format'
+import { useState } from 'react'
 
 type CredentialAttributesProps = {
   subject: Record<string, unknown>
