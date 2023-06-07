@@ -36,14 +36,14 @@ export function CredentialDetailScreen() {
         jc="space-between"
         pad="lg"
         py="$4"
-        pb="$8"
+        pb="$12"
         enterStyle={{ opacity: 0, y: 50 }}
         exitStyle={{ opacity: 0, y: -20 }}
         y={0}
         opacity={1}
         animation="lazy"
       >
-        <YStack g="3xl">
+        <YStack g="2xl">
           <CredentialCard
             iconUrl={display.issuer?.logo?.url}
             name={display.name}

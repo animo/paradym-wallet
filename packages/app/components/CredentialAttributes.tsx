@@ -3,10 +3,10 @@ import {
   Paragraph,
   TableContainer,
   TableRow,
-  Sheet,
   Heading,
   CornerDownRight,
   XStack,
+  Sheet,
 } from '@internal/ui'
 import { formatCredentialSubject } from '@internal/utils'
 import { useState } from 'react'
@@ -30,7 +30,7 @@ export default function CredentialAttributes({ subject }: CredentialAttributesPr
   return (
     <YStack g="md">
       {tables.map((table, index) => (
-        <YStack key={index} gap="$2" pt={table.parent ? '$2' : '$4'}>
+        <YStack key={index} g="md" pt={table.parent ? 0 : '$2'}>
           <XStack gap="$2">
             {table.depth > 1 && <CornerDownRight size="$1" />}
             <Paragraph>{table.title ?? 'Credential information'}</Paragraph>

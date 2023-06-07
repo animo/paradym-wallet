@@ -1,5 +1,5 @@
+import { Sheet as TSheet } from '@tamagui/sheet'
 import { useState } from 'react'
-import { Sheet as TSheet } from 'tamagui'
 
 import { Button } from '../base'
 import { ChevronDown, ChevronUp } from '../content'
@@ -47,7 +47,7 @@ export const Sheet = ({
           padding="$4"
           justifyContent="center"
           alignItems="center"
-          space="$5"
+          space="$4"
           backgroundColor="$white"
         >
           {children}
