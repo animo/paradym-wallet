@@ -1,15 +1,5 @@
-import {
-  YStack,
-  Paragraph,
-  TableContainer,
-  TableRow,
-  Heading,
-  CornerDownRight,
-  XStack,
-  Sheet,
-} from '@internal/ui'
+import { YStack, Paragraph, TableContainer, TableRow, CornerDownRight, XStack } from '@internal/ui'
 import { formatCredentialSubject } from '@internal/utils'
-import { useState } from 'react'
 
 type CredentialAttributesProps = {
   subject: Record<string, unknown>
@@ -17,15 +7,6 @@ type CredentialAttributesProps = {
 
 export default function CredentialAttributes({ subject }: CredentialAttributesProps) {
   const tables = formatCredentialSubject(subject)
-  const [modalValue, setModalValue] = useState<{ key: string; value: string } | undefined>(
-    undefined
-  )
-  const [open, setOpen] = useState(false)
-
-  const onOpenModal = (e: { key: string; value: string }) => {
-    setModalValue(e)
-    setOpen(true)
-  }
 
   return (
     <YStack g="md">
@@ -40,29 +21,22 @@ export default function CredentialAttributes({ subject }: CredentialAttributesPr
               </Paragraph>
             )}
           </XStack>
-
           <TableContainer>
             {table.rows.map((row, idx) => (
+              // TODO: We sheet create a bottom sheet overlay to show the full attribute and value
+              // as now it's sometimes cut off because the attribute value is too long for the view.
+              // however, we can't overlay a Tamagui Sheet over a modal screen
+              // so we probably need a custom implementation for this.
               <TableRow
                 key={row.key}
                 attribute={row.key}
                 value={row.value}
-                onPress={() => onOpenModal(row)}
                 isLastRow={idx === table.rows.length - 1}
               />
             ))}
           </TableContainer>
         </YStack>
       ))}
-
-      <Sheet open={open} setOpen={setOpen} snapPoints={[25]}>
-        {modalValue && (
-          <YStack ai="center" jc="flex-start" h="100%" gap="$4">
-            <Heading variant="h1">{modalValue.key}</Heading>
-            <Paragraph>{modalValue.value}</Paragraph>
-          </YStack>
-        )}
-      </Sheet>
     </YStack>
   )
 }
