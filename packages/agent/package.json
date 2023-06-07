@@ -9,12 +9,17 @@
     "@aries-framework/openid4vc-client": "^0.4.0",
     "@aries-framework/react-hooks": "0.4.2",
     "@aries-framework/react-native": "^0.4.0",
-    "@internal/utils": "*"
+    "@internal/utils": "*",
+    "@sphereon/pex": "^2.0.1",
+    "@sphereon/pex-models": "^2.0.2",
+    "@sphereon/ssi-types": "^0.11.0",
+    "jsonpath": "^1.1.1"
   },
   "peerDependencies": {
     "@hyperledger/aries-askar-react-native": "0.1.0"
   },
   "devDependencies": {
-    "@hyperledger/aries-askar-react-native": "0.1.0"
+    "@hyperledger/aries-askar-react-native": "0.1.0",
+    "@types/jsonpath": "^0.2.0"
   }
 }
