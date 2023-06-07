@@ -1,4 +1,11 @@
-import { getCredentialForDisplay, useW3cCredentialRecords } from '@internal/agent'
+import {
+  dbcPresentationDefinition,
+  getCredentialForDisplay,
+  multipleCredentialPresentationDefinition,
+  presentationExchangeService,
+  useAgent,
+  useW3cCredentialRecords,
+} from '@internal/agent'
 import {
   Heading,
   Page,
@@ -13,7 +20,7 @@ import {
   CREDENTIAL_TOP_INFO_HEIGHT,
   Scan,
 } from '@internal/ui'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'solito/router'
 
 import CredentialCard from 'app/components/CredentialCard'
@@ -24,6 +31,22 @@ export function WalletScreen() {
   const { push } = useRouter()
   const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
   const firstThreeRecords = w3cCredentialRecords.slice(0, 3)
+  const { agent } = useAgent()
+
+  // NOTE: Example selection of credentials
+  useEffect(() => {
+    void presentationExchangeService
+      .selectCredentialsForRequest(agent.context, multipleCredentialPresentationDefinition)
+      .then((selectedCredentials) => {
+        console.log(JSON.stringify(selectedCredentials, null, 2))
+      })
+
+    void presentationExchangeService
+      .selectCredentialsForRequest(agent.context, dbcPresentationDefinition)
+      .then((selectedCredentials) => {
+        console.log(JSON.stringify(selectedCredentials, null, 2))
+      })
+  }, [])
 
   if (isLoading) {
     return (
