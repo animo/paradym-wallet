@@ -1,5 +1,6 @@
 import { YStack, Paragraph, TableContainer, TableRow, CornerDownRight, XStack } from '@internal/ui'
-import { formatCredentialSubject } from '@internal/utils'
+
+import { formatCredentialSubject } from 'app/utils'
 
 type CredentialAttributesProps = {
   subject: Record<string, unknown>
@@ -23,7 +24,7 @@ export default function CredentialAttributes({ subject }: CredentialAttributesPr
           </XStack>
           <TableContainer>
             {table.rows.map((row, idx) => (
-              // TODO: We sheet create a bottom sheet overlay to show the full attribute and value
+              // TODO: We should create a bottom sheet overlay to show the full attribute and value
               // as now it's sometimes cut off because the attribute value is too long for the view.
               // however, we can't overlay a Tamagui Sheet over a modal screen
               // so we probably need a custom implementation for this.
