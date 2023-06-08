@@ -112,7 +112,7 @@ export function CredentialNotificationScreen() {
         opacity={1}
         animation="lazy"
       >
-        <YStack g="3xl">
+        <YStack g="2xl">
           <Heading variant="h2" ta="center" px="$4">
             You have received a credential
             {display.issuer?.name ? ` from ${display.issuer.name}` : ''}

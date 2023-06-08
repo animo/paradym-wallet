@@ -5,15 +5,15 @@ import {
   Paragraph,
   Heading,
   Spacer,
-  Icon,
+  FileBadge,
   darken,
   getTextColorBasedOnBg,
 } from '@internal/ui'
 
 type CredentialCardProps = {
   onPress?(): void
-  name?: string
-  issuerName?: string
+  name: string
+  issuerName: string
   subtitle?: string
   iconUrl?: string
   bgColor?: string
@@ -23,9 +23,9 @@ type CredentialCardProps = {
 export default function CredentialCard({
   onPress,
   iconUrl,
-  name = 'Credential',
+  name,
   subtitle,
-  issuerName = 'Unknown',
+  issuerName,
   bgColor,
   shadow = true,
 }: CredentialCardProps) {
@@ -34,8 +34,8 @@ export default function CredentialCard({
   const icon = iconUrl ? (
     <Image src={iconUrl} width={48} height={48} />
   ) : (
-    <XStack bg="$lightTranslucent" ai="center" br="$2" pad="md">
-      <Icon name="FileBadge" color="$grey-100" />
+    <XStack width={48} height={48} bg="$lightTranslucent" ai="center" br="$12" pad="md">
+      <FileBadge color="$grey-100" />
     </XStack>
   )
 
