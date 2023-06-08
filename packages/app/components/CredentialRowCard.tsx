@@ -3,7 +3,7 @@ import { Heading, Paragraph, XStack, YStack } from '@internal/ui'
 interface CredentialRowCardProps {
   name: string
   issuer: string
-  onPress(): void
+  onPress?(): void
   bgColor?: string
 }
 
@@ -14,7 +14,12 @@ export default function CredentialRowCard({
   onPress,
 }: CredentialRowCardProps) {
   return (
-    <XStack onPress={onPress} pad="md" py="$2" g="lg" pressStyle={{ backgroundColor: '$grey-100' }}>
+    <XStack
+      onPress={onPress}
+      py="$2"
+      g="lg"
+      pressStyle={{ backgroundColor: onPress && '$grey-100' }}
+    >
       <XStack bg={bgColor ?? '$feature-500'} h="100%" w="25%" br="$2" border />
       <YStack>
         <Heading variant="h3" numberOfLines={1}>

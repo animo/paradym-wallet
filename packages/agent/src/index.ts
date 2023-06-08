@@ -8,6 +8,7 @@ export { initializeAgent, useAgent, AppAgent } from './agent'
 export * from './providers'
 export * from './parsers'
 export * from './display'
+export type { PresentationDefinitionV1 } from '@sphereon/pex-models'
 
 // NOTE: this is temporary so we have some data to work with for proof requests
 const presentationExchangeService = new PresentationExchangeService()

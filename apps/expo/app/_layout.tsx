@@ -45,6 +45,7 @@ export default function HomeLayout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen options={{ presentation: 'modal' }} name="(home)/scan" />
             <Stack.Screen options={{ presentation: 'modal' }} name="notifications/credential" />
+            <Stack.Screen options={{ presentation: 'modal' }} name="notifications/presentation" />
             <Stack.Screen options={{ presentation: 'modal' }} name="credentials/[id]" />
           </Stack>
         </ThemeProvider>

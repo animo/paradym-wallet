@@ -98,7 +98,7 @@ export function WalletScreen() {
             <Heading variant="h3" textAlign="left">
               Credentials
             </Heading>
-            <TableContainer padY="$2">
+            <TableContainer padX="$3" padY="$2">
               {w3cCredentialRecords.map((credentialRecord) => {
                 const { display } = getCredentialForDisplay(credentialRecord)
                 return (

@@ -5,4 +5,5 @@ export {
   Scan,
   FileBadge,
   CornerDownRight,
+  AlertOctagon,
 } from '@tamagui/lucide-icons'

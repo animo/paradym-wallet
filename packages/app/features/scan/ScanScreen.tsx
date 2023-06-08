@@ -1,13 +1,15 @@
-import { isOpenIdCredentialOffer, isOpenIdProofRequest } from '@internal/agent'
+import {
+  isOpenIdCredentialOffer,
+  isOpenIdPresentationRequest,
+  parsePresentationFromOpenId,
+} from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
-import { useToastController } from '@internal/ui'
 import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 export function QrScannerScreen() {
   const { push, back } = useRouter()
-  const toast = useToastController()
 
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
@@ -16,7 +18,7 @@ export function QrScannerScreen() {
   const unsupportedUrlPrefixes = ['c_i=', 'd_m=', 'oob=', '_oob=']
 
   useEffect(() => {
-    const onScan = (data: string) => {
+    const onScan = async (data: string) => {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
       setScannedData(data)
@@ -29,9 +31,16 @@ export function QrScannerScreen() {
             uri: encodeURIComponent(scannedData),
           },
         })
-      } else if (isOpenIdProofRequest(scannedData)) {
-        toast.show('Fail!')
-        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+      } else if (isOpenIdPresentationRequest(scannedData)) {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        const presentationDefinition = await parsePresentationFromOpenId({ data: scannedData })
+        back()
+        push({
+          pathname: '/notifications/presentation',
+          query: {
+            uri: encodeURIComponent(JSON.stringify(presentationDefinition)),
+          },
+        })
       } else {
         setReadData(data)
         triggerHelpText(data)
