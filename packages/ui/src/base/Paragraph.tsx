@@ -24,6 +24,17 @@ export const Paragraph = styled(SizableText, {
         opacity: 0.6,
       },
     },
+    weight: {
+      regular: {
+        fontFamily: 'InterRegular',
+      },
+      medium: {
+        fontFamily: 'Inter',
+      },
+      bold: {
+        fontFamily: 'InterBold',
+      },
+    },
     variant: {
       normal: {
         size: '$3',
@@ -39,6 +50,7 @@ export const Paragraph = styled(SizableText, {
   defaultVariants: {
     light: true,
     variant: 'normal',
+    weight: 'medium',
   },
 })
 

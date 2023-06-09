@@ -3,10 +3,13 @@ import type {
   SubmissionEntry,
 } from '@internal/agent/presentations/selection'
 
+import { getCredentialForDisplay } from '@internal/agent'
+
 export interface FormattedSubmission {
   name: string
+  isSatisfied: boolean
   description?: string
-  credentialSubject?: Record<string, unknown>
+  requestedAttributes?: string[]
 }
 
 export function formatPresentationSubmission(
@@ -17,9 +20,12 @@ export function formatPresentationSubmission(
       return {
         name: submission.name ?? 'Unknown',
         description: submission.purpose,
-        credentialSubject:
-          (submission?.verifiableCredential?.credentialSubject as Record<string, unknown>) ??
-          undefined,
+        isSatisfied: submission?.verifiableCredential !== undefined,
+        requestedAttributes: submission?.verifiableCredential
+          ? Object.keys(
+              getCredentialForDisplay(submission.verifiableCredential).credential.credentialSubject
+            )
+          : [],
       }
     })
   })

@@ -89,7 +89,13 @@ export function PresentationNotificationScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ height: '100%' }}>
+    <ScrollView
+      fullscreen
+      space
+      contentContainerStyle={{
+        minHeight: '100%',
+      }}
+    >
       <YStack
         g="3xl"
         jc="space-between"
@@ -105,19 +111,15 @@ export function PresentationNotificationScreen() {
       >
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
-            <YStack ai="center" jc="center" gap="$2">
-              <XStack width={48} height={48} bg="$primary-500" jc="center" ai="center" br="$2">
-                <Heading p={0} color="$white">
-                  IN
-                </Heading>
-              </XStack>
-              <Heading variant="h1" ta="center" px="$4">
-                Issuer Name{' '}
-              </Heading>
-            </YStack>
-            <Paragraph ta="center">{purpose}</Paragraph>
+            <Heading variant="h1" ta="center" px="$4">
+              Verification request
+            </Heading>
+            {purpose && (
+              <Paragraph ta="center" numberOfLines={3}>
+                {purpose}
+              </Paragraph>
+            )}
           </YStack>
-
           <YStack gap="$4">
             {submissions.map((s) => (
               <YStack key={s.name}>
@@ -128,33 +130,36 @@ export function PresentationNotificationScreen() {
                   border
                   bg="$white"
                   gap="$2"
-                  borderColor={s.credentialSubject ? '$grey-300' : '$danger-500'}
+                  borderColor={s.isSatisfied ? '$grey-300' : '$danger-500'}
                 >
                   <YStack>
-                    {!s.credentialSubject && (
-                      <XStack gap="$2" ai="center">
+                    {!s.isSatisfied && (
+                      <XStack gap="$2" right={0} position="absolute">
                         <AlertOctagon size={16} color="$danger-500" />
-                        <Paragraph variant="sub" color="$danger-500">
-                          Credential is not present in your wallet.
-                        </Paragraph>
                       </XStack>
                     )}
                     <CredentialRowCard issuer="Issuer name" name={s.name} />
                   </YStack>
-                  <Paragraph variant="sub">{s.description}</Paragraph>
-                  {s.credentialSubject && (
+                  <Paragraph style={{ fontFamily: 'InterRegular' }} variant="sub">
+                    {s.description}
+                  </Paragraph>
+                  {s.isSatisfied && s.requestedAttributes ? (
                     <YStack>
                       <Paragraph variant="sub">
                         The following information will be presented:
                       </Paragraph>
                       <YStack flexDirection="row" flexWrap="wrap">
-                        {Object.keys(s.credentialSubject).map((k) => (
-                          <Paragraph flexBasis="50%" key={k} variant="annotation" secondary>
-                            {sanitizeString(k)}
+                        {s.requestedAttributes.map((a) => (
+                          <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
+                            • {sanitizeString(a)}
                           </Paragraph>
                         ))}
                       </YStack>
                     </YStack>
+                  ) : (
+                    <Paragraph variant="sub" color="$danger-500">
+                      This credential is not present in your wallet.
+                    </Paragraph>
                   )}
                 </YStack>
               </YStack>
@@ -173,7 +178,10 @@ export function PresentationNotificationScreen() {
             </Button.Outline>
           </YStack>
         ) : (
-          <YStack>
+          <YStack gap="$4">
+            <Paragraph variant="sub" ta="center">
+              You don't have the required credentials to satisfy this request.
+            </Paragraph>
             <Button.Solid
               onPress={() => {
                 void onProofDecline()
@@ -184,7 +192,6 @@ export function PresentationNotificationScreen() {
           </YStack>
         )}
       </YStack>
-      <Spacer />
     </ScrollView>
   )
 }
