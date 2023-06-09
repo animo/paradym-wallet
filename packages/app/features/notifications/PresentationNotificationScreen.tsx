@@ -79,12 +79,14 @@ export function PresentationNotificationScreen() {
 
   const onProofAccept = () => {
     router.back()
+    router.push('/wallet')
     toast.show('Information has been successfully shared.')
   }
 
   const onProofDecline = () => {
     if (!submissions) return
     router.back()
+    router.push('/wallet')
     toast.show('Information request has been declined.')
   }
 
@@ -124,8 +126,6 @@ export function PresentationNotificationScreen() {
             {submissions.map((s) => (
               <YStack key={s.name}>
                 <YStack
-                  pad="md"
-                  py="$2"
                   br="$4"
                   border
                   bg="$white"
@@ -138,13 +138,15 @@ export function PresentationNotificationScreen() {
                         <AlertOctagon size={16} color="$danger-500" />
                       </XStack>
                     )}
+                    {/** TODO: Fix these values*/}
                     <CredentialRowCard issuer="Issuer name" name={s.name} />
+                    <Paragraph px="$3" style={{ fontFamily: 'InterRegular' }} variant="sub">
+                      {s.description}
+                    </Paragraph>
                   </YStack>
-                  <Paragraph style={{ fontFamily: 'InterRegular' }} variant="sub">
-                    {s.description}
-                  </Paragraph>
+
                   {s.isSatisfied && s.requestedAttributes ? (
-                    <YStack>
+                    <YStack pad="md" gap="$2">
                       <Paragraph variant="sub">
                         The following information will be presented:
                       </Paragraph>

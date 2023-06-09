@@ -59,7 +59,7 @@ export function WalletScreen() {
       ) : (
         <YStack pb="$12">
           <YStack g="md" width="100%">
-            <Heading variant="h3" textAlign="left">
+            <Heading variant="h2" textAlign="left">
               Recently added
             </Heading>
             <ZStack
@@ -95,10 +95,10 @@ export function WalletScreen() {
             </ZStack>
           </YStack>
           <YStack g="md">
-            <Heading variant="h3" textAlign="left">
+            <Heading variant="h2" textAlign="left">
               Credentials
             </Heading>
-            <TableContainer padX="$3" padY="$2">
+            <TableContainer>
               {w3cCredentialRecords.map((credentialRecord) => {
                 const { display } = getCredentialForDisplay(credentialRecord)
                 return (

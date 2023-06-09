@@ -16,7 +16,7 @@ export default function CredentialRowCard({
   return (
     <XStack
       onPress={onPress}
-      py="$2"
+      pad="md"
       g="sm"
       pressStyle={{ backgroundColor: onPress && '$grey-100' }}
       overflow="hidden"

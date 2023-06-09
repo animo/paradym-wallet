@@ -3,7 +3,7 @@ import type { JwkDidCreateOptions, KeyDidCreateOptions } from '@aries-framework/
 
 import { ClaimFormat, DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
 
-import { multipleCredentialPresentationDefinition } from './presentations/fixtures'
+import { dbcPresentationDefinition } from './presentations/fixtures'
 
 export enum QrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance',
@@ -91,5 +91,5 @@ export const parsePresentationFromOpenId = async ({ data }: { data: string }) =>
   if (!data.startsWith(QrTypes.OPENID)) throw new Error('URI does not start with OpenID prefix.')
 
   // TODO: Handle implementation with SIOP library
-  return await Promise.resolve(multipleCredentialPresentationDefinition)
+  return await Promise.resolve(dbcPresentationDefinition)
 }

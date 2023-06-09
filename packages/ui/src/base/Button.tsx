@@ -15,7 +15,7 @@ export const SolidButton = styled(Btn, {
 })
 
 const OutlineButton = styled(Btn, {
-  backgroundColor: '$grey-100',
+  backgroundColor: '$white',
   color: '$grey-900',
   borderColor: '$grey-300',
 })

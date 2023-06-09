@@ -50,7 +50,7 @@ export default function CredentialCard({
       borderWidth={0.5}
       borderColor="$borderTranslucent"
       pressStyle={{
-        backgroundColor: darken(bgColor ?? '$grey-900', 0.025),
+        backgroundColor: onPress && darken(bgColor ?? '$grey-900', 0.05),
       }}
       onPress={onPress}
     >

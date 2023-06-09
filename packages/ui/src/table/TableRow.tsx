@@ -11,7 +11,6 @@ export const TableRow = ({ attribute, value, isLastRow, onPress }: TableRowProps
   return (
     <XStack
       pad="md"
-      px="$4"
       key={attribute}
       jc="center"
       ai="center"
