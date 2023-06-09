@@ -3,24 +3,49 @@ import type {
   PresentationSubmissionRequirement,
   SubmissionEntry,
 } from './types'
+import type { W3cCredentialRecord } from '@aries-framework/core'
 import type { SelectResults, SubmissionRequirementMatch } from '@sphereon/pex'
 import type {
   PresentationDefinitionV1,
   SubmissionRequirement,
   InputDescriptorV1,
 } from '@sphereon/pex-models'
-import type { W3CVerifiableCredential as SphereonW3cVerifiableCredential } from '@sphereon/ssi-types'
 
 import { AriesFrameworkError } from '@aries-framework/core'
+import { PEXv1 } from '@sphereon/pex'
 import { Rules } from '@sphereon/pex-models'
 import { default as jp } from 'jsonpath'
 
-import { getW3cVerifiableCredentialInstance } from '../transform'
+import { getSphereonW3cVerifiableCredential } from '../transform'
 
 export function selectCredentialsForRequest(
   presentationDefinition: PresentationDefinitionV1,
-  selectResults: SelectResults
+  credentialRecords: W3cCredentialRecord[]
 ): PresentationSubmission {
+  const pex = new PEXv1()
+
+  const encodedCredentials = credentialRecords.map((c) =>
+    getSphereonW3cVerifiableCredential(c.credential)
+  )
+
+  const selectResultsRaw = pex.selectFrom(presentationDefinition, encodedCredentials)
+
+  const selectResults = {
+    ...selectResultsRaw,
+    // Map the encoded credential to their respective w3c credential record
+    verifiableCredential: selectResultsRaw.verifiableCredential?.map(
+      (encoded): W3cCredentialRecord => {
+        const credentialIndex = encodedCredentials.indexOf(encoded)
+        const credentialRecord = credentialRecords[credentialIndex]
+        if (!credentialRecord) {
+          throw new AriesFrameworkError('Unable to find credential in credential records')
+        }
+
+        return credentialRecord
+      }
+    ),
+  }
+
   const presentationSubmission: PresentationSubmission = {
     areRequirementsSatisfied: false,
     requirements: [],
@@ -56,7 +81,7 @@ export function selectCredentialsForRequest(
 
 function getSubmissionRequirements(
   presentationDefinition: PresentationDefinitionV1,
-  selectResults: SelectResults
+  selectResults: W3cCredentialRecordSelectResults
 ): PresentationSubmissionRequirement[] {
   const submissionRequirements: PresentationSubmissionRequirement[] = []
 
@@ -100,7 +125,7 @@ function getSubmissionRequirements(
 
 function getSubmissionRequirementsAllInputDescriptors(
   presentationDefinition: PresentationDefinitionV1,
-  selectResults: SelectResults
+  selectResults: W3cCredentialRecordSelectResults
 ): PresentationSubmissionRequirement[] {
   const submissionRequirements: PresentationSubmissionRequirement[] = []
 
@@ -121,7 +146,7 @@ function getSubmissionRequirementsAllInputDescriptors(
 function getSubmissionRequirementRuleAll(
   submissionRequirement: SubmissionRequirement,
   presentationDefinition: PresentationDefinitionV1,
-  selectResults: SelectResults
+  selectResults: W3cCredentialRecordSelectResults
 ) {
   // Check if there's a 'from'. If not the structure is not as we expect it
   if (!submissionRequirement.from) {
@@ -160,7 +185,7 @@ function getSubmissionRequirementRuleAll(
 function getSubmissionRequirementRulePick(
   submissionRequirement: SubmissionRequirement,
   presentationDefinition: PresentationDefinitionV1,
-  selectResults: SelectResults
+  selectResults: W3cCredentialRecordSelectResults
 ) {
   // Check if there's a 'from'. If not the structure is not as we expect it
   if (!submissionRequirement.from) {
@@ -216,7 +241,7 @@ function getSubmissionRequirementRulePick(
 
 function getSubmissionForInputDescriptor(
   inputDescriptor: InputDescriptorV1,
-  selectResults: SelectResults
+  selectResults: W3cCredentialRecordSelectResults
 ): SubmissionEntry {
   // https://github.com/Sphereon-Opensource/PEX/issues/116
   // FIXME: the match.name is only the id if the input_descriptor has no name
@@ -247,17 +272,15 @@ function getSubmissionForInputDescriptor(
 
   return {
     ...submissionEntry,
-    verifiableCredential: verifiableCredential
-      ? getW3cVerifiableCredentialInstance(verifiableCredential)
-      : undefined,
+    verifiableCredential,
   }
 }
 
 function extractCredentialsFromMatch(
   match: SubmissionRequirementMatch,
-  availableCredentials?: SphereonW3cVerifiableCredential[]
+  availableCredentials?: W3cCredentialRecord[]
 ) {
-  const verifiableCredentials: SphereonW3cVerifiableCredential[] = []
+  const verifiableCredentials: W3cCredentialRecord[] = []
 
   for (const vcPath of match.vc_path) {
     const [verifiableCredential] = jp.query(
@@ -265,9 +288,16 @@ function extractCredentialsFromMatch(
         verifiableCredential: availableCredentials,
       },
       vcPath
-    ) as [SphereonW3cVerifiableCredential]
+    ) as [W3cCredentialRecord]
     verifiableCredentials.push(verifiableCredential)
   }
 
   return verifiableCredentials
+}
+
+/**
+ * Custom SelectResults that include the W3cCredentialRecord instead of the encoded verifiable credential
+ */
+export type W3cCredentialRecordSelectResults = Omit<SelectResults, 'verifiableCredential'> & {
+  verifiableCredential?: W3cCredentialRecord[]
 }
