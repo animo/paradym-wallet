@@ -21,18 +21,7 @@ export const Paragraph = styled(SizableText, {
     },
     secondary: {
       true: {
-        opacity: 0.6,
-      },
-    },
-    weight: {
-      regular: {
-        fontFamily: 'InterRegular',
-      },
-      medium: {
-        fontFamily: 'Inter',
-      },
-      bold: {
-        fontFamily: 'InterBold',
+        color: '$grey-600',
       },
     },
     variant: {
@@ -50,7 +39,6 @@ export const Paragraph = styled(SizableText, {
   defaultVariants: {
     light: true,
     variant: 'normal',
-    weight: 'medium',
   },
 })
 

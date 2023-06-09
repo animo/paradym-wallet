@@ -8,6 +8,8 @@ import { getCredentialForDisplay } from '@internal/agent'
 export interface FormattedSubmission {
   name: string
   isSatisfied: boolean
+  credentialName: string
+  issuerName: string
   description?: string
   requestedAttributes?: string[]
 }
@@ -17,15 +19,28 @@ export function formatPresentationSubmission(
 ): FormattedSubmission[] {
   return presentationSubmission.requirements.flatMap((requirement) => {
     return requirement.submission.map((submission: SubmissionEntry) => {
+      if (submission.verifiableCredential) {
+        // Credential can be satisfied
+        const { display, credential } = getCredentialForDisplay(submission.verifiableCredential)
+        // eslint-disable-next-line no-console
+        console.log(display)
+        return {
+          name: submission.name ?? 'Unknown',
+          description: submission.purpose,
+          isSatisfied: true,
+          credentialName: display.name,
+          issuerName: display.issuer.name,
+          requestedAttributes: Object.keys(credential.credentialSubject),
+        }
+      }
       return {
         name: submission.name ?? 'Unknown',
         description: submission.purpose,
-        isSatisfied: submission?.verifiableCredential !== undefined,
-        requestedAttributes: submission?.verifiableCredential
-          ? Object.keys(
-              getCredentialForDisplay(submission.verifiableCredential).credential.credentialSubject
-            )
-          : [],
+        isSatisfied: false,
+        // fallback to submission name because there is no credential
+        credentialName: submission.name ?? 'Credential name',
+        // i guess we just show 'Issuer' than?
+        issuerName: 'Issuer',
       }
     })
   })

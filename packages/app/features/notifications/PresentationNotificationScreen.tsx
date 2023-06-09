@@ -114,13 +114,11 @@ export function PresentationNotificationScreen() {
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
             <Heading variant="h1" ta="center" px="$4">
-              Verification request
+              Information request
             </Heading>
-            {purpose && (
-              <Paragraph ta="center" numberOfLines={3}>
-                {purpose}
-              </Paragraph>
-            )}
+            <Paragraph ta="center" numberOfLines={3} secondary>
+              {purpose}
+            </Paragraph>
           </YStack>
           <YStack gap="$4">
             {submissions.map((s) => (
@@ -134,13 +132,17 @@ export function PresentationNotificationScreen() {
                 >
                   <YStack>
                     {!s.isSatisfied && (
-                      <XStack gap="$2" right={0} position="absolute">
+                      <XStack pad="md" gap="$2" right={0} position="absolute">
                         <AlertOctagon size={16} color="$danger-500" />
                       </XStack>
                     )}
-                    {/** TODO: Fix these values*/}
-                    <CredentialRowCard issuer="Issuer name" name={s.name} />
-                    <Paragraph px="$3" style={{ fontFamily: 'InterRegular' }} variant="sub">
+                    <CredentialRowCard issuer={s.issuerName} name={s.credentialName ?? s.name} />
+                    <Paragraph
+                      secondary
+                      px="$3"
+                      style={{ fontFamily: 'InterRegular' }}
+                      variant="sub"
+                    >
                       {s.description}
                     </Paragraph>
                   </YStack>
@@ -159,7 +161,7 @@ export function PresentationNotificationScreen() {
                       </YStack>
                     </YStack>
                   ) : (
-                    <Paragraph variant="sub" color="$danger-500">
+                    <Paragraph px="$3" pb="$3" variant="sub" color="$danger-500">
                       This credential is not present in your wallet.
                     </Paragraph>
                   )}
