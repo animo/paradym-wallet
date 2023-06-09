@@ -4,7 +4,7 @@ import { AgentProvider, initializeAgent } from '@internal/agent'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Provider } from 'app/provider'
 import { useFonts } from 'expo-font'
-import { Stack } from 'expo-router'
+import { Stack, useRootNavigation } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useColorScheme } from 'react-native'
@@ -12,6 +12,7 @@ import { useColorScheme } from 'react-native'
 void SplashScreen.preventAutoHideAsync()
 
 export default function HomeLayout() {
+  const navigation = useRootNavigation()
   const [loaded] = useFonts({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),

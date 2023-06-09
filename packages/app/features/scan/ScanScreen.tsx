@@ -9,13 +9,16 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 export function QrScannerScreen() {
-  const { push, back } = useRouter()
+  const { push } = useRouter()
 
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
   const [helpText, setHelpText] = useState('')
+  const [isScanModalFocused, setIsScanModalFocused] = useState(true)
 
   const unsupportedUrlPrefixes = ['c_i=', 'd_m=', 'oob=', '_oob=']
+
+  // TODO: is there any other way we can detect a modal over modal?
 
   useEffect(() => {
     const onScan = async (data: string) => {
@@ -24,30 +27,30 @@ export function QrScannerScreen() {
       setScannedData(data)
       if (isOpenIdCredentialOffer(scannedData)) {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-        back()
         push({
           pathname: '/notifications/credential',
           query: {
             uri: encodeURIComponent(scannedData),
           },
         })
+        setIsScanModalFocused(false)
       } else if (isOpenIdPresentationRequest(scannedData)) {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         const presentationDefinition = await parsePresentationFromOpenId({ data: scannedData })
-        back()
         push({
           pathname: '/notifications/presentation',
           query: {
             uri: encodeURIComponent(JSON.stringify(presentationDefinition)),
           },
         })
+        setIsScanModalFocused(false)
       } else {
         setReadData(data)
         triggerHelpText(data)
       }
     }
 
-    if (scannedData) void onScan(scannedData)
+    if (scannedData && isScanModalFocused) void onScan(scannedData)
   }, [scannedData])
 
   const triggerHelpText = (data: string) => {
@@ -58,7 +61,7 @@ export function QrScannerScreen() {
         : 'This QR-code format can not be used. Try another.'
     )
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-    //clear the help text after 3 seconds
+    //clear the help text after 5 seconds
     setTimeout(() => {
       setHelpText('')
     }, 5000)

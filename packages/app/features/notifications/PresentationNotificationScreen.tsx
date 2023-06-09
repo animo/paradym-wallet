@@ -15,13 +15,13 @@ import {
   AlertOctagon,
   XStack,
 } from '@internal/ui'
+import { sanitizeString } from '@internal/utils'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
 import CredentialRowCard from 'app/components/CredentialRowCard'
 import { formatPresentationSubmission } from 'app/utils/formatPresentationSubmission'
-
 type Query = { uri: string }
 
 const { useParam } = createParam<Query>()
@@ -33,6 +33,7 @@ export function PresentationNotificationScreen() {
   const [uri] = useParam('uri')
 
   const [canSatisfyRequest, setCanSatisfyRequest] = useState(false)
+  const [purpose, setPurpose] = useState('')
   const [submissions, setSubmissions] = useState<FormattedSubmission[] | undefined>()
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export function PresentationNotificationScreen() {
           )
           .then((r) => {
             setCanSatisfyRequest(r.areRequirementsSatisfied)
+            setPurpose(r.purpose ?? '')
             setSubmissions(formatPresentationSubmission(r))
           })
       } catch (e) {
@@ -101,10 +103,21 @@ export function PresentationNotificationScreen() {
         height="100%"
         bg="$grey-200"
       >
-        <YStack g="2xl">
-          <Heading variant="h2" ta="center" px="$4">
-            The following credentials have been requested
-          </Heading>
+        <YStack g="xl">
+          <YStack ai="center" jc="center" gap="$4">
+            <YStack ai="center" jc="center" gap="$2">
+              <XStack width={48} height={48} bg="$primary-500" jc="center" ai="center" br="$2">
+                <Heading p={0} color="$white">
+                  IN
+                </Heading>
+              </XStack>
+              <Heading variant="h1" ta="center" px="$4">
+                Issuer Name{' '}
+              </Heading>
+            </YStack>
+            <Paragraph ta="center">{purpose}</Paragraph>
+          </YStack>
+
           <YStack gap="$4">
             {submissions.map((s) => (
               <YStack key={s.name}>
@@ -114,23 +127,35 @@ export function PresentationNotificationScreen() {
                   br="$4"
                   border
                   bg="$white"
+                  gap="$2"
                   borderColor={s.credentialSubject ? '$grey-300' : '$danger-500'}
                 >
-                  {!s.credentialSubject && (
-                    <XStack gap="$2" ai="center">
-                      <AlertOctagon size={16} color="$danger-500" />
-                      <Paragraph variant="sub" color="$danger-500">
-                        You don't have this credential.
+                  <YStack>
+                    {!s.credentialSubject && (
+                      <XStack gap="$2" ai="center">
+                        <AlertOctagon size={16} color="$danger-500" />
+                        <Paragraph variant="sub" color="$danger-500">
+                          Credential is not present in your wallet.
+                        </Paragraph>
+                      </XStack>
+                    )}
+                    <CredentialRowCard issuer="Issuer name" name={s.name} />
+                  </YStack>
+                  <Paragraph variant="sub">{s.description}</Paragraph>
+                  {s.credentialSubject && (
+                    <YStack>
+                      <Paragraph variant="sub">
+                        The following information will be presented:
                       </Paragraph>
-                    </XStack>
+                      <YStack flexDirection="row" flexWrap="wrap">
+                        {Object.keys(s.credentialSubject).map((k) => (
+                          <Paragraph flexBasis="50%" key={k} variant="annotation" secondary>
+                            {sanitizeString(k)}
+                          </Paragraph>
+                        ))}
+                      </YStack>
+                    </YStack>
                   )}
-                  <CredentialRowCard
-                    issuer="Dutch Blockchain Coalition"
-                    name="DBC Conference Attendee"
-                  />
-                  <Paragraph variant="sub" secondary>
-                    All attributes will be shared.
-                  </Paragraph>
                 </YStack>
               </YStack>
             ))}

@@ -17,10 +17,11 @@ export default function CredentialRowCard({
     <XStack
       onPress={onPress}
       py="$2"
-      g="lg"
+      g="md"
       pressStyle={{ backgroundColor: onPress && '$grey-100' }}
+      overflow="hidden"
     >
-      <XStack bg={bgColor ?? '$feature-500'} h="100%" w="25%" br="$2" border />
+      <XStack bg={bgColor ?? '$primary-500'} h="100%" w="24%" br="$2" border />
       <YStack>
         <Heading variant="h3" numberOfLines={1}>
           {name}

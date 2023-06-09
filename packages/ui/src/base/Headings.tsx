@@ -34,12 +34,12 @@ export const Heading = styled(THeading, {
       h2: {
         name: 'H2',
         tag: 'h2',
-        size: '$5',
+        size: '$4',
       },
       h3: {
         name: 'H2',
         tag: 'h2',
-        size: '$4',
+        size: '$3',
       },
     },
   } as const,
