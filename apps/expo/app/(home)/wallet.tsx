@@ -1,6 +1,7 @@
 import { XStack, HEADER_STATUS_BAR_HEIGHT } from '@internal/ui'
 import { WalletScreen } from 'app/features/wallet/WalletScreen'
 import { Stack } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 
 export default function Screen() {
   return (
@@ -13,6 +14,8 @@ export default function Screen() {
           },
         }}
       />
+      {/* Force dark status bar in dark mode */}
+      <StatusBar style="dark" />
       <WalletScreen />
     </>
   )
