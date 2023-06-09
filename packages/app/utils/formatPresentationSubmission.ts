@@ -22,8 +22,6 @@ export function formatPresentationSubmission(
       if (submission.verifiableCredential) {
         // Credential can be satisfied
         const { display, credential } = getCredentialForDisplay(submission.verifiableCredential)
-        // eslint-disable-next-line no-console
-        console.log(display)
         return {
           name: submission.name ?? 'Unknown',
           description: submission.purpose,
@@ -38,8 +36,8 @@ export function formatPresentationSubmission(
         description: submission.purpose,
         isSatisfied: false,
         // fallback to submission name because there is no credential
+        // We'll just show 'Issuer' for the issuer
         credentialName: submission.name ?? 'Credential name',
-        // i guess we just show 'Issuer' than?
         issuerName: 'Issuer',
       }
     })

@@ -7,7 +7,6 @@ import {
   useToastController,
   Heading,
   Button,
-  Spacer,
   ScrollView,
   Spinner,
   Page,
@@ -77,16 +76,18 @@ export function PresentationNotificationScreen() {
     )
   }
 
-  const onProofAccept = () => {
+  const pushToWallet = () => {
     router.back()
     router.push('/wallet')
+  }
+
+  const onProofAccept = () => {
+    pushToWallet()
     toast.show('Information has been successfully shared.')
   }
 
   const onProofDecline = () => {
-    if (!submissions) return
-    router.back()
-    router.push('/wallet')
+    pushToWallet()
     toast.show('Information request has been declined.')
   }
 
@@ -136,7 +137,7 @@ export function PresentationNotificationScreen() {
                         <AlertOctagon size={16} color="$danger-500" />
                       </XStack>
                     )}
-                    <CredentialRowCard issuer={s.issuerName} name={s.credentialName ?? s.name} />
+                    <CredentialRowCard issuer={s.issuerName} name={s.credentialName} />
                     <Paragraph
                       secondary
                       px="$3"
@@ -146,7 +147,6 @@ export function PresentationNotificationScreen() {
                       {s.description}
                     </Paragraph>
                   </YStack>
-
                   {s.isSatisfied && s.requestedAttributes ? (
                     <YStack pad="md" gap="$2">
                       <Paragraph variant="sub">
@@ -188,7 +188,7 @@ export function PresentationNotificationScreen() {
             </Paragraph>
             <Button.Solid
               onPress={() => {
-                void onProofDecline()
+                void pushToWallet()
               }}
             >
               Close
