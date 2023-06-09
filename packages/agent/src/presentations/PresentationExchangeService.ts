@@ -19,6 +19,7 @@ import {
   W3cCredentialService,
   W3cPresentation,
 } from '@aries-framework/core'
+import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
 import { PEXv1, Status } from '@sphereon/pex'
 
 import { selectCredentialsForRequest } from './selection/PexCredentialSelection'
@@ -66,17 +67,12 @@ export class PresentationExchangeService {
     agentContext: AgentContext,
     presentationDefinition: PresentationDefinitionV1
   ): Promise<PresentationSubmission> {
-    const credentials = await this.queryCredentialForPresentationDefinition(
+    const credentialRecords = await this.queryCredentialForPresentationDefinition(
       agentContext,
       presentationDefinition
     )
 
-    const selectResults = this.pex.selectFrom(
-      presentationDefinition,
-      credentials.map(getSphereonW3cVerifiableCredential)
-    )
-
-    return selectCredentialsForRequest(presentationDefinition, selectResults)
+    return selectCredentialsForRequest(presentationDefinition, credentialRecords)
   }
 
   public async createPresentation(
@@ -238,7 +234,7 @@ export class PresentationExchangeService {
     agentContext: AgentContext,
     presentationDefinition: PresentationDefinitionV1
   ) {
-    const w3cCredentialService = agentContext.dependencyManager.resolve(W3cCredentialService)
+    const w3cCredentialRepository = agentContext.dependencyManager.resolve(W3cCredentialRepository)
 
     const query: Array<Query<W3cCredentialRecord>> = []
 
@@ -258,10 +254,10 @@ export class PresentationExchangeService {
 
     // query the wallet ourselves first to avoid the need to query the pex library for all
     // credentials for every proof request
-    const credentials = await w3cCredentialService.findCredentialsByQuery(agentContext, {
+    const credentialRecords = await w3cCredentialRepository.findByQuery(agentContext, {
       $or: query,
     })
 
-    return credentials
+    return credentialRecords
   }
 }

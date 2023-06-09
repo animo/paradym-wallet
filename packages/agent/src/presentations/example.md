@@ -24,7 +24,7 @@ Each requirement represents a different group (not sure if we want to show this 
           "inputDescriptorId": "c2834d0e-3c95-4721-b21a-40e3d7ea2549",
           "name": "DBC Conference 2023 Attendee",
           "purpose": "To access this portal your DBC Conference 2023 attendance proof is required.",
-          "verifiableCredential": <w3cVerifiableCredential instance>
+          "verifiableCredential": <W3cCredentialRecord>
         }
       ]
     }
@@ -50,7 +50,7 @@ An example is a requirement that has `needsCount: 3`, but there's only 2 submiss
           "inputDescriptorId": "c2834d0e-3c95-4721-b21a-40e3d7ea2549",
           "name": "DBC Conference 2023 Attendee",
           "purpose": "To access this portal your DBC Conference 2023 attendance proof is required.",
-          "verifiableCredential": <w3cVerifiableCredential instance>
+          "verifiableCredential": <W3cCredentialRecord>
         },
         {
           "inputDescriptorId": "c2834d0e-3c95-4721-b21a-40e3d7ea2549",
