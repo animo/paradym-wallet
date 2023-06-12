@@ -8,6 +8,7 @@ export const Paragraph = styled(SizableText, {
   userSelect: 'auto',
   color: '$grey-900',
   letterSpacing: '$true',
+  fontFamily: '$medium',
   variants: {
     light: {
       true: {
@@ -21,7 +22,7 @@ export const Paragraph = styled(SizableText, {
     },
     secondary: {
       true: {
-        opacity: 0.6,
+        color: '$grey-600',
       },
     },
     variant: {
@@ -33,6 +34,10 @@ export const Paragraph = styled(SizableText, {
       },
       annotation: {
         size: '$1',
+      },
+      text: {
+        size: '$2',
+        fontFamily: '$regular',
       },
     },
   } as const,

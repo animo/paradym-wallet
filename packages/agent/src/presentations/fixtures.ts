@@ -29,8 +29,9 @@ export const multipleCredentialPresentationDefinition: PresentationDefinitionV1 
     },
     {
       id: 'c2834d0e-3c95-4721-b21a-40e3d7ea2549',
-      name: 'Not Present',
-      purpose: "We want a credential you don't have",
+      name: 'Drivers licence',
+      purpose:
+        'Your drivers license is needed to validate your birth date. We do this to prevent fraud with conference tickets.',
       group: ['A'],
       schema: [
         {

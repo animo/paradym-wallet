@@ -74,6 +74,7 @@ export function CredentialNotificationScreen() {
 
   const onCredentialAccept = () => {
     router.back()
+    router.push('/wallet')
     toast.show('Credential has been added to your wallet.')
   }
 
@@ -88,12 +89,16 @@ export function CredentialNotificationScreen() {
       .catch(() => {
         toast.show('Something went wrong. Try removing the credential manually.')
       })
-      .finally(() => router.back())
+      .finally(() => {
+        router.back()
+        router.push('/wallet')
+      })
   }
 
   if (!credentialRecord.credential) {
     toast.show('Credential information could not be extracted.')
     router.back()
+    router.push('/wallet')
     return null
   }
 
