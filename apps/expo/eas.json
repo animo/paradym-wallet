@@ -23,6 +23,7 @@
       }
     },
     "production": {
+      "autoIncrement": true,
       "distribution": "store",
       "android": {
         "buildType": "app-bundle"
@@ -32,11 +33,23 @@
       }
     }
   },
+  "cli": {
+    "appVersionSource": "remote"
+  },
   "submit": {
-    "production": {},
+    "production": {
+      "ios": {
+        "companyName": "Animo Solutions",
+        "ascAppId": "6449846111"
+      },
+      "android": {
+        "track": "alpha"
+      }
+    },
     "preview": {
       "ios": {
-        "companyName": "Animo Solutions"
+        "companyName": "Animo Solutions",
+        "ascAppId": "6449938864"
       },
       "android": {
         "track": "internal"

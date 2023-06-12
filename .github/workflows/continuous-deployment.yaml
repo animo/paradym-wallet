@@ -1,0 +1,50 @@
+name: Continuous Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Channel to deploy to'
+        required: true
+        options:
+          - 'preview'
+          - 'test-track'
+        default: 'preview'
+      platform:
+        description: 'Platform to deploy to'
+        required: true
+        options:
+          - 'android'
+          - 'ios'
+          - 'all'
+        default: 'all'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_PUBLISHER_ACCESS_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: yarn install
+
+      - name: 🚀 Build internal preview
+        if: ${{ github.event.inputs.channel == 'preview' }}
+        run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
+
+      - name: 🚀 Build and Submission to TestFlight / Alpha Track
+        if: ${{ github.event.inputs.channel == 'test-track' }}
+        run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
