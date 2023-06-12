@@ -55,7 +55,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
         />
       )}
       <YStack zi="$5" ai="center">
-        <Heading variant="h2" ta="center" dark py="$6" maxWidth="80%">
+        <Heading variant="h1" ta="center" dark py="$6" maxWidth="80%">
           Use the camera to scan a QR code
         </Heading>
       </YStack>

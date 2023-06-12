@@ -1,35 +1,10 @@
-import { createInterFont } from '@tamagui/font-inter'
 import { shorthands } from '@tamagui/shorthands'
 import { radius, space, zIndex, size } from '@tamagui/themes'
 import { createTamagui, createTokens } from 'tamagui'
 
-import { animations } from './animations'
+import { animations } from '../animations'
 
-const font = createInterFont({
-  family: 'Inter',
-  weight: {
-    1: '400',
-    7: '600',
-  },
-  size: {
-    1: 12, // Annotation
-    2: 14, // Sub text
-    3: 16, // Body text
-    true: 16,
-    4: 18, // Heading 3
-    5: 20, // Heading 2
-    6: 24, // Heading 1
-    7: 38, // Page Title
-  },
-  letterSpacing: {
-    1: -1,
-    2: -0.5,
-    3: 0,
-    4: 1,
-    5: 2,
-    true: 0,
-  },
-})
+import { fontRegular, fontMedium, fontSemiBold, fontBold } from './font'
 
 export const absoluteFill = {
   position: 'absolute',
@@ -101,7 +76,11 @@ export const config = createTamagui({
   themeClassNameOnRoot: true,
   shorthands,
   fonts: {
-    body: font,
+    body: fontMedium, // default to medium font
+    regular: fontRegular,
+    medium: fontMedium,
+    semiBold: fontSemiBold,
+    bold: fontBold,
   },
   tokens,
   themes: {

@@ -1,5 +1,12 @@
 import { CredentialNotificationScreen } from 'app/features/notifications'
+import { StatusBar } from 'expo-status-bar'
 
 export default function Screen() {
-  return <CredentialNotificationScreen />
+  return (
+    <>
+      {/* FIXME: iOS should set the correct colour, but it is not. So we manually overwrite it.*/}
+      <StatusBar style="light" />
+      <CredentialNotificationScreen />
+    </>
+  )
 }

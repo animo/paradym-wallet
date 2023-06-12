@@ -7,6 +7,11 @@ export const animations = createAnimations({
     mass: 0.9,
     stiffness: 100,
   },
+  normal: {
+    type: 'spring',
+    damping: 20,
+    stiffness: 60,
+  },
   lazy: {
     type: 'spring',
     damping: 20,
