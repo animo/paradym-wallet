@@ -10,6 +10,7 @@ export default function Screen() {
           title: 'Credential',
         }}
       />
+      {/* FIXME: iOS should set the correct colour, but it is not. So we manually overwrite it.*/}
       <StatusBar style="light" />
       <CredentialDetailScreen />
     </>
