@@ -82,7 +82,7 @@ export function WalletScreen() {
         ) : (
           <YStack pb="$12">
             <YStack g="md" width="100%">
-              <Heading variant="h2" textAlign="left" secondary>
+              <Heading variant="h3" textAlign="left" secondary>
                 Recently added
               </Heading>
               <ZStack
@@ -119,7 +119,7 @@ export function WalletScreen() {
               </ZStack>
             </YStack>
             <YStack g="md">
-              <Heading variant="h2" textAlign="left" secondary>
+              <Heading variant="h3" textAlign="left" secondary>
                 Credentials
               </Heading>
               <TableContainer>
