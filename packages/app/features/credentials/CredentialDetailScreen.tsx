@@ -6,14 +6,14 @@ import { useRouter } from 'solito/router'
 
 import CredentialAttributes from 'app/components/CredentialAttributes'
 import CredentialCard from 'app/components/CredentialCard'
-import useBorderScroll from 'app/hooks/useBorderScroll'
+import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
 
 const { useParam } = createParam<{ id: string }>()
 
 export function CredentialDetailScreen() {
   const [id] = useParam('id')
   const router = useRouter()
-  const { handleScroll, isBorderActive, scrollEventThrottle } = useBorderScroll()
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   // Go back home if no id is provided
   if (!id) {
@@ -28,7 +28,7 @@ export function CredentialDetailScreen() {
 
   return (
     <YStack>
-      <XStack border={isBorderActive}>
+      <XStack border borderColor={isScrolledByOffset ? '$grey-300' : '$grey-200'}>
         <Button.Text mt="$4" onPress={() => router.back()}>
           Done
         </Button.Text>

@@ -12,6 +12,8 @@ import {
   CREDENTIAL_TOP_INFO_OFFSET,
   CREDENTIAL_TOP_INFO_HEIGHT,
   Scan,
+  AnimatePresence,
+  Paragraph,
 } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -19,13 +21,13 @@ import { useRouter } from 'solito/router'
 import CredentialCard from 'app/components/CredentialCard'
 import CredentialRowCard from 'app/components/CredentialRowCard'
 import NoContentWallet from 'app/components/NoContentWallet'
-import useBorderScroll from 'app/hooks/useBorderScroll'
+import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
 
 export function WalletScreen() {
   const { push } = useRouter()
   const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
   const firstThreeRecords = w3cCredentialRecords.slice(0, 3)
-  const { handleScroll, isBorderActive, scrollEventThrottle } = useBorderScroll()
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(32)
 
   if (isLoading) {
     return (
@@ -40,23 +42,41 @@ export function WalletScreen() {
 
   return (
     <YStack>
-      <XStack pad="lg" jc="space-between" ai="center" border={isBorderActive} borderTopWidth={0}>
-        <Heading variant="title" textAlign="left">
-          Wallet
-        </Heading>
-        <XStack onPress={() => navigateToScanner()} pad="md">
-          <Scan />
-        </XStack>
+      <XStack h="$3" jc="center" border={isScrolledByOffset} borderTopWidth={0}>
+        <AnimatePresence>
+          {isScrolledByOffset && (
+            <Paragraph
+              size="$4"
+              key="wallet-mini-header"
+              textAlign="center"
+              enterStyle={{ opacity: 0, y: -30 }}
+              exitStyle={{ opacity: 0, y: -30 }}
+              y={0}
+              opacity={1}
+              animation="normal"
+            >
+              Wallet
+            </Paragraph>
+          )}
+        </AnimatePresence>
       </XStack>
       <ScrollView
-        scrollEventThrottle={scrollEventThrottle}
         onScroll={handleScroll}
+        scrollEventThrottle={scrollEventThrottle}
         space
         px="$4"
         contentContainerStyle={{
           minHeight: '100%',
         }}
       >
+        <XStack jc="space-between" ai="center">
+          <Heading variant="title" textAlign="left">
+            Wallet
+          </Heading>
+          <XStack onPress={() => navigateToScanner()} pad="md">
+            <Scan />
+          </XStack>
+        </XStack>
         {w3cCredentialRecords.length === 0 ? (
           <NoContentWallet />
         ) : (

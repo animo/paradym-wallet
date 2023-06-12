@@ -43,13 +43,13 @@ export const Heading = styled(THeading, {
       h2: {
         name: 'H2',
         tag: 'h2',
-        size: '$4',
-        fontFamily: '$semiBold',
+        size: '$5',
+        fontFamily: '$medium',
       },
       h3: {
         name: 'H3',
         tag: 'h3',
-        size: '$3',
+        size: '$4',
         fontFamily: '$medium',
       },
     },
