@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       channel:
+        type: choice
         description: 'Channel to deploy to'
         required: true
         options:
@@ -11,6 +12,7 @@ on:
           - 'test-track'
         default: 'preview'
       platform:
+        type: choice
         description: 'Platform to deploy to'
         required: true
         options:
