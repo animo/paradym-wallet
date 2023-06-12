@@ -18,6 +18,8 @@ export default function HomeLayout() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    InterSemiBold: require('@tamagui/font-inter/otf/Inter-SemiBold.otf'),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   })
   const [agent, setAgent] = useState<AppAgent>()

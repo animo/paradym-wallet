@@ -9,7 +9,7 @@ export interface FormattedSubmission {
   name: string
   isSatisfied: boolean
   credentialName: string
-  issuerName: string
+  issuerName?: string
   description?: string
   requestedAttributes?: string[]
 }
@@ -36,9 +36,7 @@ export function formatPresentationSubmission(
         description: submission.purpose,
         isSatisfied: false,
         // fallback to submission name because there is no credential
-        // We'll just show 'Issuer' for the issuer
         credentialName: submission.name ?? 'Credential name',
-        issuerName: 'Issuer',
       }
     })
   })

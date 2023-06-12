@@ -32,7 +32,7 @@ export function PresentationNotificationScreen() {
   const [uri] = useParam('uri')
 
   const [canSatisfyRequest, setCanSatisfyRequest] = useState(false)
-  const [purpose, setPurpose] = useState('')
+  const [purpose, setPurpose] = useState<string | undefined>('')
   const [submissions, setSubmissions] = useState<FormattedSubmission[] | undefined>()
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export function PresentationNotificationScreen() {
           )
           .then((r) => {
             setCanSatisfyRequest(r.areRequirementsSatisfied)
-            setPurpose(r.purpose ?? '')
+            setPurpose(r.purpose)
             setSubmissions(formatPresentationSubmission(r))
           })
       } catch (e) {
@@ -138,12 +138,7 @@ export function PresentationNotificationScreen() {
                       </XStack>
                     )}
                     <CredentialRowCard issuer={s.issuerName} name={s.credentialName} />
-                    <Paragraph
-                      secondary
-                      px="$3"
-                      style={{ fontFamily: 'InterRegular' }}
-                      variant="sub"
-                    >
+                    <Paragraph secondary px="$3" variant="text">
                       {s.description}
                     </Paragraph>
                   </YStack>

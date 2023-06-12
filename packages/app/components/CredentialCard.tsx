@@ -57,7 +57,7 @@ export default function CredentialCard({
       <XStack jc="space-between">
         <XStack pr="$4">{icon}</XStack>
         <YStack f={1}>
-          <Heading variant="h3" textAlign="right" color={textColor} numberOfLines={1}>
+          <Heading variant="h3" size="$4" textAlign="right" color={textColor} numberOfLines={1}>
             {name}
           </Heading>
           <Paragraph textAlign="right" color={textColor} numberOfLines={1}>
@@ -68,7 +68,7 @@ export default function CredentialCard({
       <Spacer />
       <XStack>
         <YStack>
-          <Paragraph variant="annotation" secondary color={textColor}>
+          <Paragraph variant="annotation" opacity={0.8} color={textColor}>
             Issuer
           </Paragraph>
           <Paragraph variant="sub" color={textColor}>
