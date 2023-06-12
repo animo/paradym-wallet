@@ -48,6 +48,7 @@ const config = {
     bundleIdentifier: 'id.paradym.wallet' + variant.bundle,
     infoPlist: {
       NSCameraUsageDescription: 'This app uses the camera to scan QR-codes.',
+      ITSAppUsesNonExemptEncryption: false,
     },
   },
   android: {
