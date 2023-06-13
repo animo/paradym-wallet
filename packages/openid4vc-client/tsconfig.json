@@ -2,6 +2,14 @@
   "extends": "../../tsconfig.base",
   "include": ["src/**/*"],
   "compilerOptions": {
-    "declaration": true
-  }
+    "composite": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "module": "commonjs",
+    "rootDir": "."
+  },
+  "references": []
 }
