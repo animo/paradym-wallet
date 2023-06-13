@@ -14,10 +14,10 @@ import {
   LogLevel,
   WebDidResolver,
 } from '@aries-framework/core'
-import { OpenId4VcClientModule } from '@aries-framework/openid4vc-client'
 import { useAgent as useAgentLib } from '@aries-framework/react-hooks'
 import { agentDependencies } from '@aries-framework/react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import { OpenId4VcClientModule } from '@internal/openid4vc-client';
 
 export const initializeAgent = async () => {
   const agent = new Agent({

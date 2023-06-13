@@ -6,9 +6,9 @@
   "dependencies": {
     "@aries-framework/askar": "^0.4.0",
     "@aries-framework/core": "^0.4.0",
-    "@aries-framework/openid4vc-client": "^0.4.0",
     "@aries-framework/react-hooks": "0.4.2",
     "@aries-framework/react-native": "^0.4.0",
+    "@internal/openid4vc-client": "*",
     "@internal/utils": "*",
     "@sphereon/pex": "^2.0.1",
     "@sphereon/pex-models": "^2.0.2",
