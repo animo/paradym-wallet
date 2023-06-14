@@ -15,10 +15,11 @@ import { Linking, StyleSheet } from 'react-native'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
+  onCancel?(): void
   helpText?: string
 }
 
-export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
+export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) => {
   const [hasPermission, setHasPermission] = useState<boolean>()
 
   useEffect(() => {
@@ -55,7 +56,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
         />
       )}
       <YStack zi="$5" ai="center">
-        <Heading variant="h1" ta="center" dark py="$6" maxWidth="80%">
+        <Heading variant="h1" ta="center" dark py="$8" maxWidth="80%">
           Use the camera to scan a QR code
         </Heading>
       </YStack>
@@ -76,6 +77,7 @@ export const QrScanner = ({ onScan, helpText }: BarcodeScannerProps) => {
         <XStack style={StyleSheet.absoluteFill} bg="$darkTranslucent" />
       </MaskedView>
       <YStack>
+        {onCancel && <Button.Text onPress={onCancel}>Cancel</Button.Text>}
         {helpText && <ToastContainer title={helpText} />}
         <Spacer />
       </YStack>

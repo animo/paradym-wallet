@@ -1,8 +1,10 @@
 import type { AppAgent } from '@internal/agent'
 
 import { AgentProvider, initializeAgent } from '@internal/agent'
+import { HEADER_STATUS_BAR_HEIGHT, XStack } from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Provider } from 'app/provider'
+import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -40,15 +42,41 @@ export default function HomeLayout() {
     return null
   }
 
+  // If the screen is a Modal, we push down the content on Android
+  // as Android phones don't support Modals.
+  const headerModalOptions = isAndroid() && {
+    headerShown: true,
+    header: () => {
+      return <XStack h={HEADER_STATUS_BAR_HEIGHT} />
+    },
+  }
+
   return (
     <Provider>
       <AgentProvider agent={agent}>
         <ThemeProvider value={DefaultTheme}>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen options={{ presentation: 'modal' }} name="(home)/scan" />
-            <Stack.Screen options={{ presentation: 'modal' }} name="notifications/credential" />
-            <Stack.Screen options={{ presentation: 'modal' }} name="notifications/presentation" />
-            <Stack.Screen options={{ presentation: 'modal' }} name="credentials/[id]" />
+            <Stack.Screen
+              options={{
+                presentation: 'modal',
+              }}
+              name="(home)/scan"
+            />
+            <Stack.Screen
+              options={{ presentation: 'modal', ...headerModalOptions }}
+              name="notifications/credential"
+            />
+            <Stack.Screen
+              options={{ presentation: 'modal', ...headerModalOptions }}
+              name="notifications/presentation"
+            />
+            <Stack.Screen
+              options={{
+                presentation: 'modal',
+                ...headerModalOptions,
+              }}
+              name="credentials/[id]"
+            />
           </Stack>
         </ThemeProvider>
       </AgentProvider>

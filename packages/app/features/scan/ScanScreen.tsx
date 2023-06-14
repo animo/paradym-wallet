@@ -8,8 +8,10 @@ import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 
+import { isAndroid } from 'app/utils/platform'
+
 export function QrScannerScreen() {
-  const { push } = useRouter()
+  const { push, back } = useRouter()
 
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
@@ -67,5 +69,10 @@ export function QrScannerScreen() {
     }, 5000)
   }
 
-  return <QrScanner onScan={(data) => setScannedData(data)} helpText={helpText} />
+  // Only show cancel button on Android
+  const onCancel = isAndroid() ? () => back() : undefined
+
+  return (
+    <QrScanner onScan={(data) => setScannedData(data)} onCancel={onCancel} helpText={helpText} />
+  )
 }
