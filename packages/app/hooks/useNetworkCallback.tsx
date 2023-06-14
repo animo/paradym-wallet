@@ -3,23 +3,20 @@ import { useCallback } from 'react'
 
 import { useHasInternetConnection } from './useHasInternetConnection'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useNetworkCallback<T extends (...args: C) => D, C extends any[] = any[], D = any>(
+export function useNetworkCallback<T extends (...args: unknown[]) => unknown>(
   callback: T
-): T | ((...args: C) => void) {
+): (...args: Parameters<T>) => void {
   const isInternetAvailable = useHasInternetConnection()
   const toast = useToastController()
 
-  return useCallback<T>(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+  return useCallback(
     (...args) => {
       if (!isInternetAvailable) {
         toast.show('No internet connection. Please check your network settings.')
         return
       }
 
-      return callback(...args)
+      callback(...args)
     },
     [isInternetAvailable, callback]
   )
