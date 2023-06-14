@@ -42,8 +42,8 @@ export default function HomeLayout() {
     return null
   }
 
-  // If the screen is a Modal, we push down the content on Android
-  // as Android phones don't support Modals.
+  // On Android, we push down the screen content when the presentation is a Modal
+  // This is because Android phones render Modals as full screen pages.
   const headerModalOptions = isAndroid() && {
     headerShown: true,
     header: () => {
@@ -59,6 +59,7 @@ export default function HomeLayout() {
             <Stack.Screen
               options={{
                 presentation: 'modal',
+                // Extra modal options not needed for QR Scanner
               }}
               name="(home)/scan"
             />
