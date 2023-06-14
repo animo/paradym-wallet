@@ -4,14 +4,16 @@ import type { JwkDidCreateOptions, KeyDidCreateOptions } from '@aries-framework/
 import { ClaimFormat, DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
 
 import { dbcPresentationDefinition } from './presentations/fixtures'
+import { OpenIdCredentialFormatProfile } from '@internal/openid4vc-client/dist/src/utils/claimFormatMapping'
 
 export enum QrTypes {
-  OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance',
-  OPENID = 'openid',
+  OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance:',
+  OPENID_CREDENTIAL_OFFER = 'openid-credential-offer:',
+  OPENID = 'openid:',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {
-  return url.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE)
+  return url.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE) || url.startsWith(QrTypes.OPENID_CREDENTIAL_OFFER)
 }
 
 export const isOpenIdPresentationRequest = (url: string) => {
@@ -25,11 +27,11 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   agent: AppAgent
   data: string
 }) => {
-  if (!data.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE))
+  if (!isOpenIdCredentialOffer(data))
     throw new Error('URI does not start with OpenID issuance prefix.')
 
   const records = await agent.modules.openId4VcClient.requestCredentialUsingPreAuthorizedCode({
-    issuerUri: data,
+    uri: data,
     proofOfPossessionVerificationMethodResolver: async ({
       supportedDidMethods,
       keyType,
@@ -74,7 +76,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       return didResult.didState.didDocument.dereferenceKey(verificationMethodId)
     },
     verifyCredentialStatus: false,
-    allowedCredentialFormats: [ClaimFormat.JwtVc],
+    allowedCredentialFormats: [OpenIdCredentialFormatProfile.JwtVcJson],
     allowedProofOfPossessionSignatureAlgorithms: [
       JwaSignatureAlgorithm.EdDSA,
       JwaSignatureAlgorithm.ES256,
