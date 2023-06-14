@@ -1,5 +1,5 @@
 import type { PresentationDefinitionV1 } from '@internal/agent'
-import type { FormattedSubmission } from 'app/utils/formatPresentationSubmission'
+import type { FormattedSubmission } from 'app/utils'
 
 import { presentationExchangeService, useAgent } from '@internal/agent'
 import {
@@ -20,7 +20,7 @@ import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
 import CredentialRowCard from 'app/components/CredentialRowCard'
-import { formatPresentationSubmission } from 'app/utils/formatPresentationSubmission'
+import { formatPresentationSubmission } from 'app/utils'
 type Query = { uri: string }
 
 const { useParam } = createParam<Query>()
@@ -114,6 +114,7 @@ export function PresentationNotificationScreen() {
       >
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
+            {/* FIXME: You have received a request from <DOMAIN> */}
             <Heading variant="h1" ta="center" px="$4">
               Information request
             </Heading>
