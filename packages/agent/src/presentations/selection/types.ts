@@ -1,4 +1,4 @@
-import type { W3cCredentialRecord, W3cVerifiableCredential } from '@aries-framework/core'
+import type { W3cCredentialRecord } from '@aries-framework/core'
 
 /**
  * A submission entry that satisfies a specific input descriptor from the

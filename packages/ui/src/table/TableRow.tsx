@@ -19,10 +19,10 @@ export const TableRow = ({ attribute, value, isLastRow, onPress }: TableRowProps
         opacity: 0.8,
       }}
     >
-      <Paragraph variant="sub" f={1}>
+      <Paragraph variant="text" secondary f={1}>
         {attribute}
       </Paragraph>
-      <Paragraph variant="text" secondary f={1} flexGrow={1}>
+      <Paragraph f={1} flexGrow={1}>
         {value}
       </Paragraph>
     </YStack>

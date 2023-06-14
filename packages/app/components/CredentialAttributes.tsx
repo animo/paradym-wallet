@@ -20,7 +20,7 @@ export default function CredentialAttributes({
           <XStack gap="$2">
             {table.depth > 1 && <CornerDownRight size="$1" />}
             {(!disableHeader || table.title) && (
-              <Paragraph>{table.title ?? 'Credential information'}</Paragraph>
+              <Paragraph pl="$2">{table.title ?? 'Credential information'}</Paragraph>
             )}
             {table.parent && (
               <Paragraph mt="$1" variant="sub" secondary>
