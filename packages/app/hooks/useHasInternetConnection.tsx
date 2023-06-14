@@ -1,17 +1,9 @@
-import { getNetworkStateAsync } from 'expo-network'
-import { useState, useEffect } from 'react'
+import { useNetInfo } from '@react-native-community/netinfo'
+
+export { fetch as getNetInfo } from '@react-native-community/netinfo'
 
 export const useHasInternetConnection = () => {
-  const [hasInternetConnection, setHasInternetConnection] = useState(false)
+  const { isConnected, isInternetReachable } = useNetInfo()
 
-  useEffect(() => {
-    const fetchNetworkState = async () => {
-      const { isConnected, isInternetReachable } = await getNetworkStateAsync()
-      setHasInternetConnection((isConnected && isInternetReachable) ?? false)
-    }
-
-    void fetchNetworkState()
-  }, [])
-
-  return hasInternetConnection
+  return (isConnected && isInternetReachable) ?? false
 }

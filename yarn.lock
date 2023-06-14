@@ -3284,6 +3284,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/netinfo@npm:^9.3.10":
+  version: 9.3.10
+  resolution: "@react-native-community/netinfo@npm:9.3.10"
+  peerDependencies:
+    react-native: ">=0.59"
+  checksum: b3d79a61de0b08d6174616facda21cdac35a07a8d63b7d1830212862eef208c204dec90d74b29e85a6e60adc89ea5b7adf19c612c39073cc8ad4050440b1085b
+  languageName: node
+  linkType: hard
+
 "@react-native-masked-view/masked-view@npm:^0.2.9":
   version: 0.2.9
   resolution: "@react-native-masked-view/masked-view@npm:0.2.9"
@@ -5382,6 +5391,7 @@ __metadata:
     "@internal/scanner": "*"
     "@internal/ui": "*"
     "@internal/utils": "*"
+    "@react-native-community/netinfo": ^9.3.10
     "@tamagui/animations-react-native": latest
     "@tamagui/colors": latest
     "@tamagui/font-inter": latest
@@ -5394,7 +5404,6 @@ __metadata:
     expo-constants: ^14.2.1
     expo-haptics: ^12.2.1
     expo-linking: ^4.0.1
-    expo-network: ^5.2.1
     react-native-safe-area-context: ^4.5.2
     solito: ^3.0.0
   languageName: unknown
@@ -8016,6 +8025,7 @@ __metadata:
     "@internal/agent": "*"
     "@internal/ui": "*"
     "@react-native-community/blur": ^4.3.2
+    "@react-native-community/netinfo": ^9.3.10
     "@react-native-masked-view/masked-view": ^0.2.9
     "@react-navigation/native": ^6.1.6
     "@tamagui/babel-plugin": latest
@@ -8033,7 +8043,6 @@ __metadata:
     expo-image: ^1.2.3
     expo-linear-gradient: ^12.1.2
     expo-linking: ^4.0.1
-    expo-network: ^5.2.1
     expo-router: ^1.4.3
     expo-splash-screen: ~0.18.2
     expo-status-bar: ^1.4.4
@@ -8289,15 +8298,6 @@ __metadata:
     compare-versions: ^3.4.0
     invariant: ^2.2.4
   checksum: e3f69a62ef3c8dd357e7e3c90d0009d0dd0cfeae93d86c5043580bd78d35c0be5fcd345bd9dfa7b6e58d0a945b823cb6cb8666ad00c86a06bb31fe409eaed7d5
-  languageName: node
-  linkType: hard
-
-"expo-network@npm:^5.2.1":
-  version: 5.3.0
-  resolution: "expo-network@npm:5.3.0"
-  peerDependencies:
-    expo: "*"
-  checksum: ea7d8161982d0106d95d7172f94df8316ccce7760c9f08b44e6f88ba52cbe20a8ee8ea1a9027484b37cbc47e19b303e02205e1fc7f7439eb425dbe22bc5b3211
   languageName: node
   linkType: hard
 
