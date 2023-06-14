@@ -8,6 +8,8 @@ import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 
+import { getSecureWalletKey } from '../utils/walletKeyStore'
+
 void SplashScreen.preventAutoHideAsync()
 
 export default function HomeLayout() {
@@ -27,7 +29,15 @@ export default function HomeLayout() {
   useEffect(() => {
     if (agent) return
 
-    void initializeAgent().then((agent) => setAgent(agent))
+    const startAgent = async () => {
+      const walletKey = await getSecureWalletKey()
+
+      const agent = await initializeAgent(walletKey)
+
+      setAgent(agent)
+    }
+
+    void startAgent()
   }, [])
 
   // Hide splash screen when agent and fonts are loaded
