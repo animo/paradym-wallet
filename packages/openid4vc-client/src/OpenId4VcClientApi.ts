@@ -5,7 +5,7 @@ import type {
 } from './OpenId4VcClientServiceOptions'
 import type { W3cCredentialRecord } from '@aries-framework/core'
 
-import { AgentContext, injectable } from '@aries-framework/core'
+import { injectable, AgentContext } from '@aries-framework/core'
 
 import { OpenId4VcClientService } from './OpenId4VcClientService'
 import { AuthFlowType } from './OpenId4VcClientServiceOptions'
@@ -36,7 +36,9 @@ export class OpenId4VcClientApi {
     })
   }
 
-  public async requestCredentialUsingAuthorizationCode(options: AuthCodeFlowOptions): Promise<W3cCredentialRecord[]> {
+  public async requestCredentialUsingAuthorizationCode(
+    options: AuthCodeFlowOptions
+  ): Promise<W3cCredentialRecord[]> {
     // set defaults
     const checkRevocationState = options.verifyCredentialStatus ?? true
 
