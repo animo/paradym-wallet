@@ -5,7 +5,10 @@ import { OpenIdCredentialFormatProfile } from './utils/claimFormatMapping'
 /**
  * The credential formats that are supported by the openid4vc client
  */
-export type SupportedCredentialFormats = OpenIdCredentialFormatProfile.JwtVcJson | OpenIdCredentialFormatProfile.LdpVc
+export type SupportedCredentialFormats =
+  | OpenIdCredentialFormatProfile.JwtVcJson
+  | OpenIdCredentialFormatProfile.LdpVc
+
 export const supportedCredentialFormats = [
   OpenIdCredentialFormatProfile.JwtVcJson,
   OpenIdCredentialFormatProfile.LdpVc,

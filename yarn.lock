@@ -2670,8 +2670,8 @@ __metadata:
   dependencies:
     "@aries-framework/core": ^0.4.0
     "@aries-framework/node": ^0.4.0
-    "@sphereon/oid4vci-client": 0.4.1-unstable.270
-    "@sphereon/oid4vci-common": 0.4.1-unstable.270
+    "@sphereon/oid4vci-client": 0.4.1-unstable.286
+    "@sphereon/oid4vci-common": 0.4.1-unstable.286
     "@stablelib/random": ^1.0.2
     nock: ^13.3.0
     rimraf: ^4.4.0
@@ -3491,27 +3491,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sphereon/oid4vci-client@npm:0.4.1-unstable.270":
-  version: 0.4.1-unstable.270
-  resolution: "@sphereon/oid4vci-client@npm:0.4.1-unstable.270"
+"@sphereon/oid4vci-client@npm:0.4.1-unstable.286":
+  version: 0.4.1-unstable.286
+  resolution: "@sphereon/oid4vci-client@npm:0.4.1-unstable.286"
   dependencies:
-    "@sphereon/oid4vci-common": 0.4.1-unstable.270+d9dae74
+    "@sphereon/oid4vci-common": 0.4.1-unstable.286+a3c2561
     "@sphereon/ssi-types": ^0.9.0
     cross-fetch: ^3.1.5
     debug: ^4.3.4
     uint8arrays: ^3.1.1
-  checksum: 56dfe8211d47ea303a67e942a370c2ec2a33a4f0f931895730ec97bd793c41ff4e4b4e45035bfbdebdb16aeea891ca75a64140621b3946e5d78764695aa31436
+  checksum: a88b25de0b171f2398bfb4deb1d4fe8bcc92aff76ee37c9c78a85fea4193a8a5d184e21621319ccd6a395e88f9eefa3950358ec10c425f4eb2f088773cb57dc9
   languageName: node
   linkType: hard
 
-"@sphereon/oid4vci-common@npm:0.4.1-unstable.270, @sphereon/oid4vci-common@npm:0.4.1-unstable.270+d9dae74":
-  version: 0.4.1-unstable.270
-  resolution: "@sphereon/oid4vci-common@npm:0.4.1-unstable.270"
+"@sphereon/oid4vci-common@npm:0.4.1-unstable.286, @sphereon/oid4vci-common@npm:0.4.1-unstable.286+a3c2561":
+  version: 0.4.1-unstable.286
+  resolution: "@sphereon/oid4vci-common@npm:0.4.1-unstable.286"
   dependencies:
     "@sphereon/ssi-types": ^0.9.0
     cross-fetch: ^3.1.6
     jwt-decode: ^3.1.2
-  checksum: 50f6d301854d1ca4b1b52c00cb1ffcb822285fae283ca77ae3aa14e4b9f17b18608c46c83b64cf1a71ad862e0d3049257f6554c42059d74673e457c10237262d
+  checksum: 891ce797b82e3f027abde562facfc67198a71fd7a64cfd39b1c670b2f1f6a7fc0875b7c0f5b54f6771824d8f1e4395691bd6cac6a98d8a207e239243884a36ab
   languageName: node
   linkType: hard
 

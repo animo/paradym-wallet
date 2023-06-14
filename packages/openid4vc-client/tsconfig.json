@@ -7,9 +7,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "outDir": "dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "module": "commonjs",
-    "rootDir": "."
+    "rootDir": "./src"
   },
   "references": []
 }

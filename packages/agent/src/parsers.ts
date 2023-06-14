@@ -1,19 +1,22 @@
 import type { AppAgent } from './agent'
 import type { JwkDidCreateOptions, KeyDidCreateOptions } from '@aries-framework/core'
 
-import { ClaimFormat, DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
+import { DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
+import { OpenIdCredentialFormatProfile } from '@internal/openid4vc-client/dist/utils/claimFormatMapping'
 
 import { dbcPresentationDefinition } from './presentations/fixtures'
-import { OpenIdCredentialFormatProfile } from '@internal/openid4vc-client/dist/src/utils/claimFormatMapping'
 
 export enum QrTypes {
-  OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance:',
-  OPENID_CREDENTIAL_OFFER = 'openid-credential-offer:',
-  OPENID = 'openid:',
+  OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
+  OPENID_CREDENTIAL_OFFER = 'openid-credential-offer://',
+  OPENID = 'openid://',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {
-  return url.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE) || url.startsWith(QrTypes.OPENID_CREDENTIAL_OFFER)
+  return (
+    url.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE) ||
+    url.startsWith(QrTypes.OPENID_CREDENTIAL_OFFER)
+  )
 }
 
 export const isOpenIdPresentationRequest = (url: string) => {

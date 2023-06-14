@@ -10,7 +10,9 @@
       "@internal/utils/*": ["./packages/utils/src/*"],
       "@internal/scanner/*": ["./packages/scanner/src/*"],
       "@internal/openid4vc-client/*": ["./packages/openid4vc-client/src/*"]
-    }
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     ".eslintrc.js",
