@@ -8,6 +8,9 @@ const generateNewWalletKey = (): string => {
 }
 
 export const getSecureWalletKey = async (): Promise<string> => {
+  const secureStoreAvailable = await SecureStore.isAvailableAsync()
+  if (!secureStoreAvailable) throw new Error('SecureStore is not available on this device.')
+
   const walletKey = await SecureStore.getItemAsync(STORE_KEY)
   if (walletKey) return walletKey
 

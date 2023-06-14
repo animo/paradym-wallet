@@ -1,6 +1,7 @@
 import type { AppAgent } from '@internal/agent'
 
 import { AgentProvider, initializeAgent } from '@internal/agent'
+import { useToastController } from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Provider } from 'app/provider'
 import { useFonts } from 'expo-font'
@@ -24,15 +25,22 @@ export default function HomeLayout() {
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   })
   const [agent, setAgent] = useState<AppAgent>()
+  const toast = useToastController()
 
   // Initialize agent
   useEffect(() => {
     if (agent) return
 
     const startAgent = async () => {
-      const walletKey = await getSecureWalletKey()
+      const walletKey = await getSecureWalletKey().catch(() => {
+        toast.show('Could not load wallet key from secure storage.')
+      })
+      if (!walletKey) return
 
-      const agent = await initializeAgent(walletKey)
+      const agent = await initializeAgent(walletKey).catch(() => {
+        toast.show('Could not initialize agent.')
+      })
+      if (!agent) return
 
       setAgent(agent)
     }
