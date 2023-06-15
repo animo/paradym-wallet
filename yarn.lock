@@ -2670,8 +2670,8 @@ __metadata:
   dependencies:
     "@aries-framework/core": ^0.4.0
     "@aries-framework/node": ^0.4.0
-    "@sphereon/oid4vci-client": 0.4.1-unstable.286
-    "@sphereon/oid4vci-common": 0.4.1-unstable.286
+    "@sphereon/oid4vci-client": "file:./sphereon-oid4vci-client-v0.5.1.tgz"
+    "@sphereon/oid4vci-common": "file:./sphereon-oid4vci-common-v0.5.0.tgz"
     "@stablelib/random": ^1.0.2
     nock: ^13.3.0
     rimraf: ^4.4.0
@@ -3491,27 +3491,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sphereon/oid4vci-client@npm:0.4.1-unstable.286":
-  version: 0.4.1-unstable.286
-  resolution: "@sphereon/oid4vci-client@npm:0.4.1-unstable.286"
+"@sphereon/oid4vci-client@file:./sphereon-oid4vci-client-v0.5.1.tgz::locator=%40internal%2Fopenid4vc-client%40workspace%3Apackages%2Fopenid4vc-client":
+  version: 0.5.1
+  resolution: "@sphereon/oid4vci-client@file:./sphereon-oid4vci-client-v0.5.1.tgz::locator=%40internal%2Fopenid4vc-client%40workspace%3Apackages%2Fopenid4vc-client"
   dependencies:
-    "@sphereon/oid4vci-common": 0.4.1-unstable.286+a3c2561
     "@sphereon/ssi-types": ^0.9.0
     cross-fetch: ^3.1.5
     debug: ^4.3.4
     uint8arrays: ^3.1.1
-  checksum: a88b25de0b171f2398bfb4deb1d4fe8bcc92aff76ee37c9c78a85fea4193a8a5d184e21621319ccd6a395e88f9eefa3950358ec10c425f4eb2f088773cb57dc9
+  checksum: b3f26686200fc1895f92bca411ececef4b9fbd37a473d7e4f4364e2a8ab1f86bb178db866c6ab340bf22f69f6f41caefcb6bad6d89fa319c28896d0e6a25b3b6
   languageName: node
   linkType: hard
 
-"@sphereon/oid4vci-common@npm:0.4.1-unstable.286, @sphereon/oid4vci-common@npm:0.4.1-unstable.286+a3c2561":
-  version: 0.4.1-unstable.286
-  resolution: "@sphereon/oid4vci-common@npm:0.4.1-unstable.286"
+"@sphereon/oid4vci-common@file:./sphereon-oid4vci-common-v0.5.0.tgz::locator=%40internal%2Fopenid4vc-client%40workspace%3Apackages%2Fopenid4vc-client":
+  version: 0.5.0
+  resolution: "@sphereon/oid4vci-common@file:./sphereon-oid4vci-common-v0.5.0.tgz::locator=%40internal%2Fopenid4vc-client%40workspace%3Apackages%2Fopenid4vc-client"
   dependencies:
     "@sphereon/ssi-types": ^0.9.0
     cross-fetch: ^3.1.6
     jwt-decode: ^3.1.2
-  checksum: 891ce797b82e3f027abde562facfc67198a71fd7a64cfd39b1c670b2f1f6a7fc0875b7c0f5b54f6771824d8f1e4395691bd6cac6a98d8a207e239243884a36ab
+  checksum: 7aca509fb3495608ae29a52ba25e4108b2d204475ce64bc93c65336bbead7d211e9a3f40768eebd58458ae69784419e961a7db62ed9e2e88eb72e5931577cd0a
   languageName: node
   linkType: hard
 

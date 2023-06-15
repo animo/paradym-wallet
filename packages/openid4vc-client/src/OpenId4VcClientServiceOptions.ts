@@ -12,7 +12,7 @@ export type SupportedCredentialFormats =
 export const supportedCredentialFormats = [
   OpenIdCredentialFormatProfile.JwtVcJson,
   OpenIdCredentialFormatProfile.LdpVc,
-] satisfies SupportedCredentialFormats[]
+] satisfies OpenIdCredentialFormatProfile[]
 
 /**
  * Options that are used for the pre-authorized code flow.
@@ -151,7 +151,6 @@ export type ProofOfPossessionVerificationMethodResolver = (
  * @internal
  */
 export interface ProofOfPossessionRequirements {
-  credentialFormat: SupportedCredentialFormats
   signatureAlgorithm: JwaSignatureAlgorithm
   supportedDidMethods: string[]
   supportsAllDidMethods: boolean
