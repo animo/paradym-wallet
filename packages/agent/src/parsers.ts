@@ -2,7 +2,7 @@ import type { AppAgent } from './agent'
 import type { JwkDidCreateOptions, KeyDidCreateOptions } from '@aries-framework/core'
 
 import { DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
-import { OpenIdCredentialFormatProfile } from '@internal/openid4vc-client/dist/utils/claimFormatMapping'
+import { OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
 
 import { dbcPresentationDefinition } from './presentations/fixtures'
 

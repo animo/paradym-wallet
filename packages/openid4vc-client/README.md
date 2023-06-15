@@ -30,6 +30,11 @@
 
 Open ID Connect For Verifiable Credentials Client Module for [Aries Framework JavaScript](https://github.com/hyperledger/aries-framework-javascript).
 
+> **Warning**
+> This package has been copied from the package inside aries framework javascript, as
+> it is based on an unstable version of the @sphereon/oid4vci-client package. Once
+> the package is stabilized, the changed will be contributed upstream again.
+
 ### Installation
 
 Make sure you have set up the correct version of Aries Framework JavaScript according to the AFJ repository.
@@ -87,7 +92,9 @@ if (
   !did.didState.didDocument.authentication ||
   did.didState.didDocument.authentication.length === 0
 ) {
-  throw new Error("Error creating did document, or did document has no 'authentication' verificationMethods")
+  throw new Error(
+    "Error creating did document, or did document has no 'authentication' verificationMethods"
+  )
 }
 
 const [verificationMethod] = did.didState.didDocument.authentication
@@ -147,7 +154,9 @@ const run = async () => {
     !did.didState.didDocument.authentication ||
     did.didState.didDocument.authentication.length === 0
   ) {
-    throw new Error("Error creating did document, or did document has no 'authentication' verificationMethods")
+    throw new Error(
+      "Error creating did document, or did document has no 'authentication' verificationMethods"
+    )
   }
 
   // Extract key identified (kid) for authentication verification method

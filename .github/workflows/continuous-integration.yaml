@@ -41,3 +41,6 @@ jobs:
 
       - name: Compile
         run: yarn build
+
+      - name: Unit Tests
+        run: yarn test:unit
