@@ -27,7 +27,7 @@ import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
 export function WalletScreen() {
   const { push } = useRouter()
   const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
-  const firstThreeRecords = w3cCredentialRecords.slice(0, 3)
+  const firstThreeRecords = [...w3cCredentialRecords, ...w3cCredentialRecords].slice(0, 3)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(32)
 
   const navigateToCredentialDetail = (id: string) => push(`/credentials/${id}`)
@@ -43,11 +43,10 @@ export function WalletScreen() {
 
   return (
     <YStack>
-      <XStack h="$3" jc="center" border={isScrolledByOffset} borderTopWidth={0}>
+      <XStack h="$2.5" jc="center" border={isScrolledByOffset} borderTopWidth={0}>
         <AnimatePresence>
           {isScrolledByOffset && (
             <Paragraph
-              size="$4"
               key="wallet-mini-header"
               textAlign="center"
               enterStyle={{ opacity: 0, y: -30 }}
@@ -96,7 +95,6 @@ export function WalletScreen() {
               >
                 {firstThreeRecords.map((credentialRecord, idx) => {
                   const { display } = getCredentialForDisplay(credentialRecord)
-
                   return (
                     <XStack
                       key={credentialRecord.id}
