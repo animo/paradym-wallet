@@ -21,6 +21,7 @@ import { useRouter } from 'solito/router'
 import CredentialCard from 'app/components/CredentialCard'
 import CredentialRowCard from 'app/components/CredentialRowCard'
 import NoContentWallet from 'app/components/NoContentWallet'
+import { useNetworkCallback } from 'app/hooks/useNetworkCallback'
 import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
 
 export function WalletScreen() {
@@ -29,6 +30,9 @@ export function WalletScreen() {
   const firstThreeRecords = w3cCredentialRecords.slice(0, 3)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(32)
 
+  const navigateToCredentialDetail = (id: string) => push(`/credentials/${id}`)
+  const navigateToScanner = useNetworkCallback(() => push('/scan'))
+
   if (isLoading) {
     return (
       <Page jc="center" ai="center">
@@ -36,9 +40,6 @@ export function WalletScreen() {
       </Page>
     )
   }
-
-  const navigateToCredentialDetail = (id: string) => push(`/credentials/${id}`)
-  const navigateToScanner = () => push('/scan')
 
   return (
     <YStack>

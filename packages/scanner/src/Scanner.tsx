@@ -1,12 +1,13 @@
 import {
   Heading,
-  ToastContainer,
+  AnimatePresence,
   Page,
   Paragraph,
   Button,
   XStack,
   YStack,
   Spacer,
+  AlertOctagon,
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
@@ -78,7 +79,29 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       </MaskedView>
       <YStack>
         {onCancel && <Button.Text onPress={onCancel}>Cancel</Button.Text>}
-        {helpText && <ToastContainer title={helpText} />}
+          {helpText && (
+            <XStack
+              key="scan-help-text"
+              enterStyle={{ opacity: 0, scale: 0.5, y: 25 }}
+              exitStyle={{ opacity: 0, scale: 1, y: 25 }}
+              y={0}
+              opacity={1}
+              scale={1}
+              animation="quick"
+              bg="$warning-500"
+              br="$12"
+              p="$2"
+              jc="center"
+              ai="center"
+              gap="$2"
+            >
+              <AlertOctagon size={16} />
+              <Paragraph variant="text" size="$2">
+                {helpText}
+              </Paragraph>
+            </XStack>
+          )}
+        </AnimatePresence>
         <Spacer />
       </YStack>
     </Page>

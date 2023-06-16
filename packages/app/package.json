@@ -11,6 +11,7 @@
     "@internal/scanner": "*",
     "@internal/ui": "*",
     "@internal/utils": "*",
+    "@react-native-community/netinfo": "^9.3.10",
     "@tamagui/animations-react-native": "latest",
     "@tamagui/colors": "latest",
     "@tamagui/font-inter": "latest",

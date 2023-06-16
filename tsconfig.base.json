@@ -30,7 +30,7 @@
     "types": ["node"],
     "lib": ["dom", "esnext"]
   },
-  "exclude": ["_"],
+  "exclude": ["_", "dist", "**/*.test.ts", "**/__tests__/*.ts", "**/__mocks__/*.ts", "**/dist/**"],
   "typeAcquisition": {
     "enable": true
   }

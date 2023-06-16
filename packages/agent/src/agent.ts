@@ -14,20 +14,19 @@ import {
   LogLevel,
   WebDidResolver,
 } from '@aries-framework/core'
-import { OpenId4VcClientModule } from '@aries-framework/openid4vc-client'
 import { useAgent as useAgentLib } from '@aries-framework/react-hooks'
 import { agentDependencies } from '@aries-framework/react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import { OpenId4VcClientModule } from '@internal/openid4vc-client'
 
-export const initializeAgent = async () => {
+export const initializeAgent = async (walletKey: string) => {
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
       label: 'Paradym Wallet',
-      // FIXME: AW-58: Store wallet key in secure enclave
       walletConfig: {
-        id: 'paradym-wallet',
-        key: 'a5fc4d22-5e0c-434b-abb5-c091815cf279',
+        id: 'paradym-wallet-secure',
+        key: walletKey,
       },
       autoUpdateStorageOnStartup: true,
       logger: new ConsoleLogger(LogLevel.debug),

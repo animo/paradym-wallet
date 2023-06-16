@@ -59,8 +59,8 @@ export function QrScannerScreen() {
     const isUnsupportedUrl = unsupportedUrlPrefixes.find((f) => data.includes(f))
     setHelpText(
       isUnsupportedUrl
-        ? 'This QR-code is not supported yet. Try another.'
-        : 'This QR-code format can not be used. Try another.'
+        ? 'This QR-code is not supported yet. Try scanning a different one.'
+        : 'Invalid QR code. Try scanning a different one.'
     )
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
     //clear the help text after 5 seconds
