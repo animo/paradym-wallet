@@ -47,9 +47,6 @@ export default function CredentialCard({
       </XStack>
     )
 
-  // if we have a background image we need to render that as the bg of the card
-  // - We need to only show the card once the image is downloaded
-
   return (
     <XStack shadow={shadow}>
       <Card
@@ -71,7 +68,13 @@ export default function CredentialCard({
               <Heading variant="h3" size="$4" textAlign="right" color={textColor} numberOfLines={1}>
                 {name}
               </Heading>
-              <Paragraph variant="sub" textAlign="right" color={textColor} numberOfLines={1}>
+              <Paragraph
+                variant="sub"
+                textAlign="right"
+                color={textColor}
+                numberOfLines={1}
+                opacity={0.8}
+              >
                 {subtitle}
               </Paragraph>
             </YStack>
@@ -90,7 +93,7 @@ export default function CredentialCard({
             </YStack>
           </XStack>
         </Card.Footer>
-        {backgroundImage && (
+        {backgroundImage && backgroundImage.url && (
           <Card.Background>
             <Image
               src={backgroundImage.url}
