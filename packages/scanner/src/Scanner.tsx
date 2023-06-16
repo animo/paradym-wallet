@@ -79,6 +79,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       </MaskedView>
       <YStack>
         {onCancel && <Button.Text onPress={onCancel}>Cancel</Button.Text>}
+        <AnimatePresence>
           {helpText && (
             <XStack
               key="scan-help-text"
