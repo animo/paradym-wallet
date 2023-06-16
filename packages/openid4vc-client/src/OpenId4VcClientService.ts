@@ -495,11 +495,11 @@ export class OpenId4VcClientService {
       )
     }
 
-    // if (!result || !result.isValid) {
-    //   throw new AriesFrameworkError(
-    //     `Failed to validate credential, error = ${result.error?.message ?? 'Unknown'}`
-    //   )
-    // }
+    if (!result || !result.isValid) {
+      throw new AriesFrameworkError(
+        `Failed to validate credential, error = ${result.error?.message ?? 'Unknown'}`
+      )
+    }
 
     const storedCredential = await this.w3cCredentialService.storeCredential(agentContext, {
       credential,
