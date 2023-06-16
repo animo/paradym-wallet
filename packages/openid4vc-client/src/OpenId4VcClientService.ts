@@ -44,6 +44,7 @@ import {
   Logger,
   W3cCredentialService,
 } from '@aries-framework/core'
+import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
 import {
   CredentialRequestClientBuilder,
   OpenID4VCIClient,
@@ -58,7 +59,10 @@ import {
 import { randomStringForEntropy } from '@stablelib/random'
 
 import { supportedCredentialFormats, AuthFlowType } from './OpenId4VcClientServiceOptions'
-import { fromOpenIdCredentialFormatProfileToDifClaimFormat } from './utils'
+import {
+  setOpenId4VcCredentialMetadata,
+  fromOpenIdCredentialFormatProfileToDifClaimFormat,
+} from './utils'
 
 const flowTypeMapping = {
   [AuthFlowType.AuthorizationCodeFlow]: AuthzFlowType.AUTHORIZATION_CODE_FLOW,
@@ -72,14 +76,17 @@ const flowTypeMapping = {
 export class OpenId4VcClientService {
   private logger: Logger
   private w3cCredentialService: W3cCredentialService
+  private w3cCredentialRepository: W3cCredentialRepository
   private jwsService: JwsService
 
   public constructor(
     @inject(InjectionSymbols.Logger) logger: Logger,
     w3cCredentialService: W3cCredentialService,
+    w3cCredentialRepository: W3cCredentialRepository,
     jwsService: JwsService
   ) {
     this.w3cCredentialService = w3cCredentialService
+    this.w3cCredentialRepository = w3cCredentialRepository
     this.jwsService = jwsService
     this.logger = logger
   }
@@ -248,6 +255,10 @@ export class OpenId4VcClientService {
           verifyCredentialStatus: options.verifyCredentialStatus,
         }
       )
+
+      // Set the OpenId4Vc credential metadata and update record
+      setOpenId4VcCredentialMetadata(storedCredential, supportedCredentialMetadata, serverMetadata)
+      await this.w3cCredentialRepository.update(agentContext, storedCredential)
 
       receivedCredentials.push(storedCredential)
     }
@@ -493,6 +504,7 @@ export class OpenId4VcClientService {
     const storedCredential = await this.w3cCredentialService.storeCredential(agentContext, {
       credential,
     })
+
     this.logger.info(`Stored credential with id: ${storedCredential.id}`)
     this.logger.debug('Full credential', storedCredential)
 
