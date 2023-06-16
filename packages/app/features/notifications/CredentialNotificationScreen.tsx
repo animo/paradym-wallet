@@ -123,7 +123,7 @@ export function CredentialNotificationScreen() {
             {display.issuer?.name ? ` from ${display.issuer.name}` : ''}
           </Heading>
           <CredentialCard
-            iconUrl={display.issuer?.logo?.url}
+            issuerImage={display.issuer.logo}
             name={display.name}
             issuerName={display.issuer.name}
             subtitle={display.description}

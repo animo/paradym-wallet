@@ -29,27 +29,25 @@ type JffW3cCredentialJson = W3cCredentialJson & {
       })
 }
 
+export interface DisplayImage {
+  url?: string
+  altText?: string
+}
+
 export interface W3cCredentialDisplay {
   name: string
   locale?: string
   description?: string
   textColor?: string
   backgroundColor?: string
-  backgroundImage?: {
-    url?: string
-    altText?: string
-  }
-
+  backgroundImage?: DisplayImage
   issuer: W3cCredentialIssuerDisplay
 }
 
 export interface W3cCredentialIssuerDisplay {
   name: string
   locale?: string
-  logo?: {
-    url?: string
-    altText?: string
-  }
+  logo?: DisplayImage
 }
 
 function findDisplay<Display extends { locale?: string }>(

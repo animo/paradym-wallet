@@ -1,3 +1,5 @@
+import type { DisplayImage } from '@internal/agent'
+
 import {
   XStack,
   YStack,
@@ -15,14 +17,14 @@ type CredentialCardProps = {
   name: string
   issuerName: string
   subtitle?: string
-  iconUrl?: string
   bgColor?: string
+  issuerImage?: DisplayImage
   shadow?: boolean
 }
 
 export default function CredentialCard({
   onPress,
-  iconUrl,
+  issuerImage,
   name,
   subtitle,
   issuerName,
@@ -31,13 +33,14 @@ export default function CredentialCard({
 }: CredentialCardProps) {
   const textColor = getTextColorBasedOnBg(bgColor ?? '#000')
 
-  const icon = iconUrl ? (
-    <Image src={iconUrl} width={48} height={48} />
-  ) : (
-    <XStack width={48} height={48} bg="$lightTranslucent" ai="center" br="$12" pad="md">
-      <FileBadge color="$grey-100" />
-    </XStack>
-  )
+  const icon =
+    issuerImage && issuerImage.url && issuerImage.altText ? (
+      <Image src={issuerImage.url} alt={issuerImage.altText} width={64} height={48} />
+    ) : (
+      <XStack width={48} height={48} bg="$lightTranslucent" ai="center" br="$12" pad="md">
+        <FileBadge color="$grey-100" />
+      </XStack>
+    )
 
   return (
     <YStack
