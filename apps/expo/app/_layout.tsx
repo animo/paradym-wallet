@@ -11,9 +11,11 @@ import {
   useToastController,
 } from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { useCredentialDataHandler } from 'app/hooks/useCredentialDataHandler'
 import { Provider } from 'app/provider'
 import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
+import * as Linking from 'expo-linking'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
@@ -38,6 +40,9 @@ export default function HomeLayout() {
   const [agentInitialisationFailed, setAgentInitialisationFailed] = useState(false)
   const toast = useToastController()
   const { top } = useSafeAreaInsets()
+  const url = Linking.useURL()
+  const [lastDeeplink, setLastDeeplink] = useState<string | null>(null)
+  const { handleCredentialData } = useCredentialDataHandler()
 
   // Initialize agent
   useEffect(() => {
@@ -61,6 +66,13 @@ export default function HomeLayout() {
 
     void startAgent()
   }, [])
+
+  useEffect(() => {
+    if (url && agent && fontLoaded && url !== lastDeeplink) {
+      setLastDeeplink(url)
+      void handleCredentialData(url)
+    }
+  }, [url, agent, fontLoaded])
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {

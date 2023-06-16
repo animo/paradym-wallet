@@ -14256,6 +14256,7 @@ __metadata:
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
+    expo-linking: ^4.0.1
     jest: ^29.5.0
     node-gyp: ^9.3.1
     patch-package: ^7.0.0

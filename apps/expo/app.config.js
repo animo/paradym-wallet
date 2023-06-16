@@ -22,6 +22,8 @@ if (!variant) {
   throw new Error('Invalid variant provided: ' + process.env.APP_VARIANT)
 }
 
+const openIdSchemes = ['openid', 'openid-initiate-issuance', 'openid-credential-offer']
+
 /**
  * @type {import('@expo/config-types').ExpoConfig}
  */
@@ -48,11 +50,17 @@ const config = {
   },
   assetBundlePatterns: ['**/*'],
   ios: {
-    supportsTablet: true,
+    supportsTablet: false,
     bundleIdentifier: 'id.paradym.wallet' + variant.bundle,
     infoPlist: {
       NSCameraUsageDescription: 'This app uses the camera to scan QR-codes.',
       ITSAppUsesNonExemptEncryption: false,
+      // Add schemes for deep linking
+      CFBundleURLTypes: [
+        {
+          CFBundleURLSchemes: openIdSchemes,
+        },
+      ],
     },
   },
   android: {
@@ -61,6 +69,18 @@ const config = {
       backgroundColor: '#FFFFFF',
     },
     package: 'id.paradym.wallet' + variant.bundle,
+    intentFilters: [
+      ...openIdSchemes.map((scheme) => ({
+        action: 'VIEW',
+        category: ['BROWSABLE', 'DEFAULT'],
+        data: {
+          scheme,
+          host: '*',
+          pathPrefix: '/',
+          pathPattern: '.*',
+        },
+      })),
+    ],
   },
   extra: {
     eas: {
