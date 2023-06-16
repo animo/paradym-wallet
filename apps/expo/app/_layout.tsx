@@ -17,6 +17,7 @@ import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { getSecureWalletKey } from '../utils/walletKeyStore'
 
@@ -36,6 +37,7 @@ export default function HomeLayout() {
   const [agent, setAgent] = useState<AppAgent>()
   const [agentInitialisationFailed, setAgentInitialisationFailed] = useState(false)
   const toast = useToastController()
+  const { top } = useSafeAreaInsets()
 
   // Initialize agent
   useEffect(() => {
@@ -92,7 +94,7 @@ export default function HomeLayout() {
     headerShown: true,
     header: () => {
       // Header is translucent by default. See configuration in app.json
-      return <XStack bg="$grey-200" h={HEADER_STATUS_BAR_HEIGHT} />
+      return <XStack bg="$grey-200" h={top} />
     },
   }
 
