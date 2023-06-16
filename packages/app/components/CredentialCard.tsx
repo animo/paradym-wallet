@@ -63,7 +63,7 @@ export default function CredentialCard({
           <Heading variant="h3" size="$4" textAlign="right" color={textColor} numberOfLines={1}>
             {name}
           </Heading>
-          <Paragraph textAlign="right" color={textColor} numberOfLines={1}>
+          <Paragraph variant="sub" textAlign="right" color={textColor} numberOfLines={1}>
             {subtitle}
           </Paragraph>
         </YStack>
