@@ -133,12 +133,6 @@ export function getCredentialDisplay(
 ) {
   const credentialDisplay: Partial<W3cCredentialDisplay> = {}
 
-  // FIXME: remove after testing
-  credentialDisplay.backgroundImage = {
-    url: 'https://i.imgur.com/pncxE6M.jpg',
-    altText: 'alt',
-  }
-
   if (openId4VcMetadata) {
     const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
 
