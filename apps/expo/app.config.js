@@ -33,7 +33,11 @@ const config = {
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
-  userInterfaceStyle: 'automatic',
+  userInterfaceStyle: 'light',
+  androidStatusBar: {
+    backgroundColor: '#F2F4F6',
+    translucent: false,
+  },
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',

@@ -1,13 +1,23 @@
 import type { AppAgent } from '@internal/agent'
 
 import { AgentProvider, initializeAgent } from '@internal/agent'
-import { Heading, Page, Paragraph, useToastController, YStack } from '@internal/ui'
+import {
+  HEADER_STATUS_BAR_HEIGHT,
+  Heading,
+  Page,
+  Paragraph,
+  XStack,
+  YStack,
+  useToastController,
+} from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Provider } from 'app/provider'
+import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { getSecureWalletKey } from '../utils/walletKeyStore'
 
@@ -27,6 +37,7 @@ export default function HomeLayout() {
   const [agent, setAgent] = useState<AppAgent>()
   const [agentInitialisationFailed, setAgentInitialisationFailed] = useState(false)
   const toast = useToastController()
+  const { top } = useSafeAreaInsets()
 
   // Initialize agent
   useEffect(() => {
@@ -77,15 +88,43 @@ export default function HomeLayout() {
     return null
   }
 
+  // On Android, we push down the screen content when the presentation is a Modal
+  // This is because Android phones render Modals as full screen pages.
+  const headerModalOptions = isAndroid() && {
+    headerShown: true,
+    header: () => {
+      // Header is translucent by default. See configuration in app.json
+      return <XStack bg="$grey-200" h={top} />
+    },
+  }
+
   return (
     <Provider>
       <AgentProvider agent={agent}>
         <ThemeProvider value={DefaultTheme}>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen options={{ presentation: 'modal' }} name="(home)/scan" />
-            <Stack.Screen options={{ presentation: 'modal' }} name="notifications/credential" />
-            <Stack.Screen options={{ presentation: 'modal' }} name="notifications/presentation" />
-            <Stack.Screen options={{ presentation: 'modal' }} name="credentials/[id]" />
+            <Stack.Screen
+              options={{
+                presentation: 'modal',
+                // Extra modal options not needed for QR Scanner
+              }}
+              name="(home)/scan"
+            />
+            <Stack.Screen
+              options={{ presentation: 'modal', ...headerModalOptions }}
+              name="notifications/credential"
+            />
+            <Stack.Screen
+              options={{ presentation: 'modal', ...headerModalOptions }}
+              name="notifications/presentation"
+            />
+            <Stack.Screen
+              options={{
+                presentation: 'modal',
+                ...headerModalOptions,
+              }}
+              name="credentials/[id]"
+            />
           </Stack>
         </ThemeProvider>
       </AgentProvider>
