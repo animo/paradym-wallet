@@ -124,7 +124,7 @@ export function WalletScreen() {
                 Credentials
               </Heading>
               <TableContainer>
-                {w3cCredentialRecords.map((credentialRecord) => {
+                {w3cCredentialRecords.map((credentialRecord, idx) => {
                   const { display } = getCredentialForDisplay(credentialRecord)
                   return (
                     <CredentialRowCard
@@ -133,6 +133,9 @@ export function WalletScreen() {
                       issuer={display.issuer.name}
                       bgColor={display.backgroundColor}
                       onPress={() => navigateToCredentialDetail(credentialRecord.id)}
+                      hideBorder={
+                        w3cCredentialRecords.length === 1 || idx === w3cCredentialRecords.length - 1
+                      }
                     />
                   )
                 })}

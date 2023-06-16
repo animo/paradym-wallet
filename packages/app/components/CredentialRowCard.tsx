@@ -5,6 +5,7 @@ interface CredentialRowCardProps {
   issuer?: string
   onPress?(): void
   bgColor?: string
+  hideBorder: boolean
 }
 
 export default function CredentialRowCard({
@@ -12,6 +13,7 @@ export default function CredentialRowCard({
   issuer,
   bgColor,
   onPress,
+  hideBorder = false,
 }: CredentialRowCardProps) {
   return (
     <YStack>
@@ -34,13 +36,15 @@ export default function CredentialRowCard({
           )}
         </YStack>
       </XStack>
-      <XStack
-        position="absolute"
-        right={0}
-        w="70%"
-        borderBottomWidth={1}
-        borderBottomColor="$grey-200"
-      />
+      {hideBorder && (
+        <XStack
+          position="absolute"
+          right={0}
+          w="70%"
+          borderBottomWidth={1}
+          borderBottomColor="$grey-200"
+        />
+      )}
     </YStack>
   )
 }
