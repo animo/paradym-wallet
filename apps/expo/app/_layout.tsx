@@ -91,7 +91,8 @@ export default function HomeLayout() {
   const headerModalOptions = isAndroid() && {
     headerShown: true,
     header: () => {
-      return <XStack h={HEADER_STATUS_BAR_HEIGHT} />
+      // Header is translucent by default. See configuration in app.json
+      return <XStack bg="$grey-200" h={HEADER_STATUS_BAR_HEIGHT} />
     },
   }
 

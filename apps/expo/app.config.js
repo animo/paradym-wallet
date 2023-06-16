@@ -34,6 +34,10 @@ const config = {
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
+  androidStatusBar: {
+    backgroundColor: '#F2F4F6',
+    translucent: false,
+  },
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
