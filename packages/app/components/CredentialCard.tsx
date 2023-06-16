@@ -34,7 +34,7 @@ export default function CredentialCard({
   const textColor = getTextColorBasedOnBg(bgColor ?? '#000')
 
   const icon =
-    issuerImage && issuerImage.url && issuerImage.altText ? (
+    issuerImage && issuerImage.url ? (
       <Image src={issuerImage.url} alt={issuerImage.altText} width={64} height={48} />
     ) : (
       <XStack width={48} height={48} bg="$lightTranslucent" ai="center" br="$12" pad="md">

@@ -5,7 +5,7 @@ import { XStack } from '../base'
 
 interface ImageProps {
   src: string
-  alt: string
+  alt?: string
   width: number
   height: number
 }
