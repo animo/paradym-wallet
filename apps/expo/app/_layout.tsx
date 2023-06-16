@@ -1,7 +1,15 @@
 import type { AppAgent } from '@internal/agent'
 
 import { AgentProvider, initializeAgent } from '@internal/agent'
-import { HEADER_STATUS_BAR_HEIGHT, XStack } from '@internal/ui'
+import {
+  HEADER_STATUS_BAR_HEIGHT,
+  Heading,
+  Page,
+  Paragraph,
+  XStack,
+  YStack,
+  useToastController,
+} from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Provider } from 'app/provider'
 import { isAndroid } from 'app/utils/platform'
