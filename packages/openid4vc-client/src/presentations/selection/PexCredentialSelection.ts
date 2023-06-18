@@ -69,6 +69,15 @@ export function selectCredentialsForRequest(
     )
   }
 
+  // There may be no requirements if we filter out all optional ones. To not makes things too complicated, we see it as an error
+  // for now if a request is made that has no required requirements (but only e.g. min: 0, which means we don't need to disclose anything)
+  // I see this more as the fault of the presentation definition, as it should have at least some requirements.
+  if (presentationSubmission.requirements.length === 0) {
+    throw new AriesFrameworkError(
+      'Presentation Definition does not require any credentials. Optional credentials are not included in the presentation submission.'
+    )
+  }
+
   return {
     ...presentationSubmission,
 
@@ -107,7 +116,13 @@ function getSubmissionRequirements(
         presentationDefinition,
         selectResults
       )
-      submissionRequirements.push(selectedSubmission)
+
+      // Submission may have requirement that doesn't require a credential to be submitted (e.g. min: 0)
+      // We use minimization strategy, and thus only disclose the minimum amount of information
+      // TODO: is this the right place to do this?
+      if (selectedSubmission.needsCount > 0) {
+        submissionRequirements.push(selectedSubmission)
+      }
     }
     // Rule is Pick
     else {
@@ -116,7 +131,13 @@ function getSubmissionRequirements(
         presentationDefinition,
         selectResults
       )
-      submissionRequirements.push(selectedSubmission)
+
+      // Submission may have requirement that doesn't require a credential to be submitted (e.g. min: 0)
+      // We use minimization strategy, and thus only disclose the minimum amount of information
+      // TODO: is this the right place to do this?
+      if (selectedSubmission.needsCount > 0) {
+        submissionRequirements.push(selectedSubmission)
+      }
     }
   }
 

@@ -2,9 +2,9 @@ import type { PresentationSubmission } from './selection/types'
 import type {
   AgentContext,
   Query,
+  VerificationMethod,
   W3cCredentialRecord,
   W3cVerifiableCredential,
-  W3cVerifiablePresentation,
 } from '@aries-framework/core'
 import type { PresentationSignCallBackParams } from '@sphereon/pex'
 import type { PresentationDefinitionV1 } from '@sphereon/pex-models'
@@ -14,8 +14,11 @@ import {
   AriesFrameworkError,
   ClaimFormat,
   DidsApi,
+  getJwkFromKey,
+  getKeyFromVerificationMethod,
+  injectable,
   JsonTransformer,
-  JwaSignatureAlgorithm,
+  utils,
   W3cCredentialService,
   W3cPresentation,
 } from '@aries-framework/core'
@@ -29,6 +32,7 @@ import {
   getW3cVerifiablePresentationInstance,
 } from './transform'
 
+@injectable()
 export class PresentationExchangeService {
   private pex = new PEXv1()
 
@@ -100,7 +104,7 @@ export class PresentationExchangeService {
     // FIXME
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const firstSubjectId = selectedCredentials[0].credentialSubject.id as string
+    const [firstSubjectId] = selectedCredentials[0]?.credentialSubjectIds ?? []
 
     // Credential is allowed to be presented without a subject id. In that case we can't prove ownership of credential
     // And it is more like a bearer token.
@@ -118,17 +122,19 @@ export class PresentationExchangeService {
       firstSubjectId
     )
 
+    if (!verificationMethod) {
+      throw new AriesFrameworkError(`No verification method found for subject id ${firstSubjectId}`)
+    }
+
     // Q1: is holder always subject id, what if there are multiple subjects???
     // Q2: What about proofType, proofPurpose verification method for multiple subjects?
     const verifiablePresentationResult = await this.pex.verifiablePresentationFrom(
       presentationDefinition,
       selectedCredentials.map(getSphereonW3cVerifiableCredential),
-      this.getPresentationSignCallback(agentContext),
+      this.getPresentationSignCallback(agentContext, verificationMethod),
       {
         holderDID: firstSubjectId,
         proofOptions: {
-          // type: proofType,
-          // proofPurpose: 'authentication',
           challenge,
           domain,
           // TODO: add nonce
@@ -148,18 +154,24 @@ export class PresentationExchangeService {
     }
   }
 
-  public getPresentationSignCallback(agentContext: AgentContext) {
+  public getPresentationSignCallback(
+    agentContext: AgentContext,
+    verificationMethod: VerificationMethod
+  ) {
     const w3cCredentialService = agentContext.dependencyManager.resolve(W3cCredentialService)
 
     return async (callBackParams: PresentationSignCallBackParams) => {
       // The created partial proof and presentation, as well as original supplied options
       const { presentation: presentationJson, options } = callBackParams
       const { challenge, domain, nonce } = options.proofOptions ?? {}
+      const { verificationMethod: verificationMethodId } = options.signatureOptions ?? {}
 
       const w3cPresentation = JsonTransformer.fromJSON(presentationJson, W3cPresentation)
 
-      if (!options.signatureOptions?.verificationMethod) {
-        throw new AriesFrameworkError('No verification method supplied for presentation')
+      if (verificationMethodId && verificationMethodId !== verificationMethod.id) {
+        throw new AriesFrameworkError(
+          `Verification method from signing options ${verificationMethodId} does not match verification method ${verificationMethod.id}.`
+        )
       }
 
       // NOTE: we currently don't support mixed presentations, where some credentials
@@ -167,33 +179,28 @@ export class PresentationExchangeService {
       // some JWT and some JSON-LD credentials. (for DDIP we only support JWT, so we should be fine)
       const isJwt = typeof presentationJson.verifiableCredential?.[0] === 'string'
 
-      let signedPresentation: W3cVerifiablePresentation
-      if (isJwt) {
-        signedPresentation = await w3cCredentialService.signPresentation(agentContext, {
-          format: ClaimFormat.JwtVp,
-          verificationMethod: options.signatureOptions.verificationMethod,
-          presentation: w3cPresentation,
-          // TODO: dynamic
-          alg: JwaSignatureAlgorithm.EdDSA,
-          // TODO: dynamic
-          challenge: 'd7509f93-ffec-4f80-baa5-da6a590baf5e',
-          // TODO: dynamic
-          domain: 'example.com',
-        })
-      } else {
-        signedPresentation = await w3cCredentialService.signPresentation(agentContext, {
-          format: ClaimFormat.LdpVp,
-          verificationMethod: options.signatureOptions.verificationMethod,
-          presentation: w3cPresentation,
-          proofPurpose: 'authentication',
-          // TODO: dynamic
-          proofType: 'Ed25519Signature2018',
-          // TODO: dynamic
-          challenge: 'd7509f93-ffec-4f80-baa5-da6a590baf5e',
-          // TODO: dynamic
-          domain: 'example.com',
-        })
+      if (!isJwt) {
+        throw new AriesFrameworkError(
+          `Only JWT credentials are supported for presentation exchange.`
+        )
       }
+
+      const key = getKeyFromVerificationMethod(verificationMethod)
+      const jwk = getJwkFromKey(key)
+
+      const alg = jwk.supportedSignatureAlgorithms[0]
+      if (!alg) {
+        throw new AriesFrameworkError(`No supported algs for key type: ${key.keyType}`)
+      }
+
+      const signedPresentation = await w3cCredentialService.signPresentation(agentContext, {
+        format: ClaimFormat.JwtVp,
+        verificationMethod: verificationMethod.id,
+        presentation: w3cPresentation,
+        alg,
+        challenge: challenge ?? nonce ?? utils.uuid(),
+        domain,
+      })
 
       return getSphereonW3cVerifiablePresentation(signedPresentation)
     }

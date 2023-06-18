@@ -1,8 +1,4 @@
-import {
-  isOpenIdCredentialOffer,
-  isOpenIdPresentationRequest,
-  parsePresentationFromOpenId,
-} from '@internal/agent'
+import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
@@ -38,11 +34,10 @@ export function QrScannerScreen() {
         setIsScanModalFocused(false)
       } else if (isOpenIdPresentationRequest(scannedData)) {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-        const presentationDefinition = await parsePresentationFromOpenId({ data: scannedData })
         push({
           pathname: '/notifications/presentation',
           query: {
-            uri: encodeURIComponent(JSON.stringify(presentationDefinition)),
+            uri: encodeURIComponent(scannedData),
           },
         })
         setIsScanModalFocused(false)
