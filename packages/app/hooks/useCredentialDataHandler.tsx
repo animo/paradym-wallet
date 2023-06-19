@@ -32,7 +32,7 @@ export const useCredentialDataHandler = () => {
       push({
         pathname: '/notifications/presentation',
         query: {
-          uri: encodeURIComponent(JSON.stringify(deeplinkData)),
+          uri: encodeURIComponent(deeplinkData),
         },
       })
 
