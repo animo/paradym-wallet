@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@aries-framework/core": "^0.4.1-alpha.4",
-    "@sphereon/did-auth-siop": "^0.3.2-unstable.1",
+    "@sphereon/did-auth-siop": "0.3.2-unstable.0",
     "@sphereon/oid4vci-client": "file:./sphereon-oid4vci-client-v0.5.1.tgz",
     "@sphereon/oid4vci-common": "file:./sphereon-oid4vci-common-v0.5.0.tgz",
     "@sphereon/pex": "^2.0.1",

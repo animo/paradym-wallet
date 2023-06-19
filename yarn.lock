@@ -2787,7 +2787,7 @@ __metadata:
     "@aries-framework/core": ^0.4.1-alpha.4
     "@aries-framework/node": ^0.4.1-alpha.4
     "@hyperledger/aries-askar-nodejs": ^0.1.0
-    "@sphereon/did-auth-siop": ^0.3.2-unstable.1
+    "@sphereon/did-auth-siop": 0.3.2-unstable.0
     "@sphereon/oid4vci-client": "file:./sphereon-oid4vci-client-v0.5.1.tgz"
     "@sphereon/oid4vci-common": "file:./sphereon-oid4vci-common-v0.5.0.tgz"
     "@sphereon/pex": ^2.0.1
@@ -3879,9 +3879,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sphereon/did-auth-siop@npm:^0.3.2-unstable.1":
-  version: 0.3.2-unstable.1
-  resolution: "@sphereon/did-auth-siop@npm:0.3.2-unstable.1"
+"@sphereon/did-auth-siop@npm:0.3.2-unstable.0":
+  version: 0.3.2-unstable.0
+  resolution: "@sphereon/did-auth-siop@npm:0.3.2-unstable.0"
   dependencies:
     "@sphereon/did-uni-client": ^0.6.0
     "@sphereon/pex": ^2.0.1
@@ -3897,7 +3897,7 @@ __metadata:
     querystring: ^0.2.1
     uint8arrays: ^3.1.1
     uuid: ^9.0.0
-  checksum: e8440da3c143e91d5afb733a494314a9441bdf50c66b682cda291a6acf993a0075dfe5355e8c91ffef1481fa6d69a853b3d90e0ad52c9554820d9f9d9847ef90
+  checksum: f4ee50dcf22af1275b347531186f0873846bac39bcb866ddceaac6e5793a09567902e03590986719315eccb14a8d004d644e49f40d4521657acf16e3fe28ac0f
   languageName: node
   linkType: hard
 
