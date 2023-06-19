@@ -5,7 +5,7 @@ interface CredentialRowCardProps {
   issuer?: string
   onPress?(): void
   bgColor?: string
-  hideBorder: boolean
+  hideBorder?: boolean
 }
 
 export default function CredentialRowCard({
