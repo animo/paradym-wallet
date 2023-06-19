@@ -10,7 +10,8 @@ import type {
 } from '@internal/openid4vc-client'
 
 import { DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
-import { OpenIdCredentialFormatProfile, OpenId4VpClientService } from '@internal/openid4vc-client'
+import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
+import { OpenId4VpClientService, OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
 import { getHostNameFromUrl } from '@internal/utils'
 
 export enum QrTypes {
@@ -149,4 +150,10 @@ export const shareProof = async ({
     verifiedAuthorizationRequest,
     selectedCredentials: credentials,
   })
+}
+
+export async function storeCredential(agent: Agent, w3cCredentialRecord: W3cCredentialRecord) {
+  const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
+
+  await w3cCredentialRepository.save(agent.context, w3cCredentialRecord)
 }

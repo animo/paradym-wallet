@@ -1,6 +1,7 @@
 import type { W3cCredentialRecord } from '@internal/agent'
 
 import {
+  storeCredential,
   getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
   useAgent,
@@ -34,7 +35,7 @@ export function CredentialNotificationScreen() {
   const [uri] = useParam('uri')
 
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord>()
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [isStoring, setIsStoring] = useState(false)
 
   const pushToWallet = () => {
     router.back()
@@ -77,31 +78,30 @@ export function CredentialNotificationScreen() {
     )
   }
 
-  const onCredentialAccept = () => {
+  if (!credentialRecord.credential) {
+    toast.show('Credential information could not be extracted.')
     pushToWallet()
-    toast.show('Credential has been added to your wallet.')
+    return null
   }
 
-  const onCredentialDecline = async () => {
-    if (!credentialRecord.id) return
-    setIsDeleting(true)
-    await agent.w3cCredentials
-      .removeCredentialRecord(credentialRecord.id)
+  const onCredentialAccept = async () => {
+    setIsStoring(true)
+
+    await storeCredential(agent, credentialRecord)
       .then(() => {
-        toast.show('Credential has been declined.')
+        toast.show('Credential has been added to your wallet.')
       })
       .catch(() => {
-        toast.show('Something went wrong. Try removing the credential manually.')
+        toast.show('Something went wrong while storing the credential.')
       })
       .finally(() => {
         pushToWallet()
       })
   }
 
-  if (!credentialRecord.credential) {
-    toast.show('Credential information could not be extracted.')
+  const onCredentialDecline = () => {
+    toast.show('Credential has been declined.')
     pushToWallet()
-    return null
   }
 
   const { credential, display } = getCredentialForDisplay(credentialRecord)
@@ -141,13 +141,16 @@ export function CredentialNotificationScreen() {
           />
         </YStack>
         <YStack gap="$2">
-          <Button.Solid onPress={onCredentialAccept}>Accept</Button.Solid>
-          <Button.Outline
+          <Button.Solid
+            disabled={isStoring}
             onPress={() => {
-              void onCredentialDecline()
+              void onCredentialAccept()
             }}
           >
-            {isDeleting ? <Spinner /> : 'Decline'}
+            {isStoring ? <Spinner /> : 'Accept'}
+          </Button.Solid>
+          <Button.Outline disabled={isStoring} onPress={onCredentialDecline}>
+            Decline
           </Button.Outline>
         </YStack>
       </YStack>
