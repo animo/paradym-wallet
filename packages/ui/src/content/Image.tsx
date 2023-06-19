@@ -1,8 +1,6 @@
 import { SvgUri } from 'react-native-svg'
 import { Image as TImage } from 'tamagui'
 
-import { XStack } from '../base'
-
 interface ImageProps {
   src: string
   alt?: string
@@ -17,8 +15,6 @@ export const Image = ({ src, alt, width, height, resizeMode = 'contain' }: Image
     return <SvgUri role="img" width={width} height={height} uri={src} aria-label={alt} />
 
   return (
-    <XStack style={{ width, height }}>
-      <TImage source={{ uri: src }} width="100%" height="100%" alt={alt} resizeMode={resizeMode} />
-    </XStack>
+    <TImage source={{ uri: src }} width={width} height={height} alt={alt} resizeMode={resizeMode} />
   )
 }
