@@ -1,7 +1,4 @@
-import type { PresentationDefinitionV1 } from '@internal/agent'
-import type { FormattedSubmission } from 'app/utils'
-
-import { presentationExchangeService, useAgent } from '@internal/agent'
+import { getCredentialsForProofRequest, shareProof, useAgent } from '@internal/agent'
 import {
   YStack,
   useToastController,
@@ -15,7 +12,7 @@ import {
   XStack,
 } from '@internal/ui'
 import { sanitizeString } from '@internal/utils'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
@@ -31,32 +28,37 @@ export function PresentationNotificationScreen() {
   const toast = useToastController()
   const [uri] = useParam('uri')
 
-  const [canSatisfyRequest, setCanSatisfyRequest] = useState(false)
-  const [purpose, setPurpose] = useState<string | undefined>('')
-  const [submissions, setSubmissions] = useState<FormattedSubmission[] | undefined>()
+  const [credentialsForRequest, setCredentialsForRequest] =
+    useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
+  const [isSharing, setIsSharing] = useState(false)
+
+  const submissions = useMemo(
+    () =>
+      credentialsForRequest
+        ? formatPresentationSubmission(credentialsForRequest.selectResults)
+        : undefined,
+    [credentialsForRequest]
+  )
+
+  const pushToWallet = () => {
+    router.back()
+    router.push('/wallet')
+  }
 
   useEffect(() => {
-    const requestProof = async (uri: string) => {
-      try {
-        await presentationExchangeService
-          .selectCredentialsForRequest(
-            agent.context,
-            JSON.parse(decodeURIComponent(uri)) as PresentationDefinitionV1
-          )
-          .then((r) => {
-            setCanSatisfyRequest(r.areRequirementsSatisfied)
-            setPurpose(r.purpose)
-            setSubmissions(formatPresentationSubmission(r))
-          })
-      } catch (e) {
-        toast.show('Credential information could not be extracted.')
-        router.back()
-      }
-    }
-    if (uri) void requestProof(uri)
+    if (!uri) return
+
+    getCredentialsForProofRequest({ agent, data: decodeURIComponent(uri) })
+      .then((r) => {
+        setCredentialsForRequest(r)
+      })
+      .catch(() => {
+        toast.show('Presentation information could not be extracted.')
+        pushToWallet()
+      })
   }, [uri])
 
-  if (!submissions) {
+  if (!submissions || !credentialsForRequest || isSharing) {
     return (
       <Page
         jc="center"
@@ -70,20 +72,24 @@ export function PresentationNotificationScreen() {
       >
         <Spinner />
         <Paragraph variant="sub" textAlign="center">
-          Getting verification information
+          {isSharing ? 'Sharing verification information' : 'Getting verification information'}
         </Paragraph>
       </Page>
     )
   }
 
-  const pushToWallet = () => {
-    router.back()
-    router.push('/wallet')
-  }
-
   const onProofAccept = () => {
-    pushToWallet()
-    toast.show('Information has been successfully shared.')
+    setIsSharing(true)
+    shareProof({ ...credentialsForRequest, agent })
+      .then(() => {
+        toast.show('Information has been successfully shared.')
+      })
+      .catch(() => {
+        toast.show('Presentation could not be shared.')
+      })
+      .finally(() => {
+        pushToWallet()
+      })
   }
 
   const onProofDecline = () => {
@@ -114,12 +120,12 @@ export function PresentationNotificationScreen() {
       >
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
-            {/* FIXME: You have received a request from <DOMAIN> */}
-            <Heading variant="h1" ta="center" px="$4">
-              Information request
+            <Heading variant="h2" ta="center" px="$4">
+              You have received an information request from {credentialsForRequest.verifierHostName}
+              .
             </Heading>
             <Paragraph ta="center" numberOfLines={3} secondary>
-              {purpose}
+              {credentialsForRequest.selectResults.purpose}
             </Paragraph>
           </YStack>
           <YStack gap="$4">
@@ -166,29 +172,17 @@ export function PresentationNotificationScreen() {
             ))}
           </YStack>
         </YStack>
-        {canSatisfyRequest ? (
+        {credentialsForRequest.selectResults.areRequirementsSatisfied ? (
           <YStack gap="$2">
             <Button.Solid onPress={onProofAccept}>Accept</Button.Solid>
-            <Button.Outline
-              onPress={() => {
-                void onProofDecline()
-              }}
-            >
-              Decline
-            </Button.Outline>
+            <Button.Outline onPress={onProofDecline}>Decline</Button.Outline>
           </YStack>
         ) : (
           <YStack gap="$4">
             <Paragraph variant="sub" ta="center">
               You don't have the required credentials to satisfy this request.
             </Paragraph>
-            <Button.Solid
-              onPress={() => {
-                void pushToWallet()
-              }}
-            >
-              Close
-            </Button.Solid>
+            <Button.Solid onPress={pushToWallet}>Close</Button.Solid>
           </YStack>
         )}
       </YStack>

@@ -1,15 +1,24 @@
 import type { AppAgent } from './agent'
-import type { JwkDidCreateOptions, KeyDidCreateOptions } from '@aries-framework/core'
+import type {
+  JwkDidCreateOptions,
+  KeyDidCreateOptions,
+  W3cCredentialRecord,
+} from '@aries-framework/core'
+import type {
+  PresentationSubmission,
+  VerifiedAuthorizationRequestWithPresentationDefinition,
+} from '@internal/openid4vc-client'
 
 import { DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
-import { OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
-
-import { dbcPresentationDefinition } from './presentations/fixtures'
+import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
+import { OpenId4VpClientService, OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
+import { getHostNameFromUrl } from '@internal/utils'
 
 export enum QrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer://',
   OPENID = 'openid://',
+  OPENID_VC = 'openid-vc://',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {
@@ -20,7 +29,7 @@ export const isOpenIdCredentialOffer = (url: string) => {
 }
 
 export const isOpenIdPresentationRequest = (url: string) => {
-  return url.startsWith(QrTypes.OPENID)
+  return url.startsWith(QrTypes.OPENID) || url.startsWith(QrTypes.OPENID_VC)
 }
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
@@ -92,9 +101,59 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   return records[0]
 }
 
-export const parsePresentationFromOpenId = async ({ data }: { data: string }) => {
-  if (!data.startsWith(QrTypes.OPENID)) throw new Error('URI does not start with OpenID prefix.')
+export const getCredentialsForProofRequest = async ({
+  data,
+  agent,
+}: {
+  data: string
+  agent: AppAgent
+}) => {
+  if (!isOpenIdPresentationRequest(data)) throw new Error('URI does not start with OpenID prefix.')
 
-  // TODO: Handle implementation with SIOP library
-  return await Promise.resolve(dbcPresentationDefinition)
+  const openId4VpClientService = agent.dependencyManager.resolve(OpenId4VpClientService)
+  const results = await openId4VpClientService.selectCredentialForProofRequest(agent.context, {
+    authorizationRequest: data,
+  })
+
+  return {
+    ...results,
+    verifierHostName: getHostNameFromUrl(results.verifiedAuthorizationRequest.redirectURI),
+  }
+}
+
+export const shareProof = async ({
+  agent,
+  verifiedAuthorizationRequest,
+  selectResults,
+}: {
+  agent: AppAgent
+  verifiedAuthorizationRequest: VerifiedAuthorizationRequestWithPresentationDefinition
+  selectResults: PresentationSubmission
+}) => {
+  const openId4VpClientService = agent.dependencyManager.resolve(OpenId4VpClientService)
+
+  if (!selectResults.areRequirementsSatisfied) {
+    throw new Error('Requirements are not satisfied.')
+  }
+
+  const credentialRecords = selectResults.requirements
+    .flatMap((requirement) =>
+      requirement.submission.flatMap((submission) => submission.verifiableCredential)
+    )
+    .filter(
+      (credentialRecord): credentialRecord is W3cCredentialRecord => credentialRecord !== undefined
+    )
+
+  const credentials = credentialRecords.map((credentialRecord) => credentialRecord.credential)
+
+  await openId4VpClientService.shareProof(agent.context, {
+    verifiedAuthorizationRequest,
+    selectedCredentials: credentials,
+  })
+}
+
+export async function storeCredential(agent: AppAgent, w3cCredentialRecord: W3cCredentialRecord) {
+  const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
+
+  await w3cCredentialRepository.save(agent.context, w3cCredentialRecord)
 }

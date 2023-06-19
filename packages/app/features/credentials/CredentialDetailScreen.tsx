@@ -48,7 +48,9 @@ export function CredentialDetailScreen() {
         >
           <YStack g="xl">
             <CredentialCard
-              iconUrl={display.issuer?.logo?.url}
+              issuerImage={display.issuer.logo}
+              backgroundImage={display.backgroundImage}
+              textColor={display.textColor}
               name={display.name}
               issuerName={display.issuer.name}
               subtitle={display.description}

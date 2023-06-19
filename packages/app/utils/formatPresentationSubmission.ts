@@ -1,7 +1,4 @@
-import type {
-  PresentationSubmission,
-  SubmissionEntry,
-} from '@internal/agent/presentations/selection'
+import type { PresentationSubmission, SubmissionEntry } from '@internal/openid4vc-client'
 
 import { getCredentialForDisplay } from '@internal/agent'
 

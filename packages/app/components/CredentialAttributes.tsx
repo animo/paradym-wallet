@@ -1,4 +1,12 @@
-import { YStack, Paragraph, TableContainer, TableRow, CornerDownRight, XStack } from '@internal/ui'
+import {
+  YStack,
+  Paragraph,
+  TableContainer,
+  TableRow,
+  CornerDownRight,
+  XStack,
+  Heading,
+} from '@internal/ui'
 
 import { formatCredentialSubject } from 'app/utils'
 
@@ -20,7 +28,9 @@ export default function CredentialAttributes({
           <XStack gap="$2">
             {table.depth > 1 && <CornerDownRight size="$1" />}
             {(!disableHeader || table.title) && (
-              <Paragraph pl="$2">{table.title ?? 'Credential information'}</Paragraph>
+              <Heading variant="h3" pl="$2" secondary>
+                {table.title ?? 'Credential information'}
+              </Heading>
             )}
             {table.parent && (
               <Paragraph mt="$1" variant="sub" secondary>

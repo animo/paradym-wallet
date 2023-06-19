@@ -1,0 +1,21 @@
+diff --git a/node_modules/@sphereon/did-auth-siop/dist/authorization-response/PresentationExchange.js b/node_modules/@sphereon/did-auth-siop/dist/authorization-response/PresentationExchange.js
+index 46e80f4..52629ac 100644
+--- a/node_modules/@sphereon/did-auth-siop/dist/authorization-response/PresentationExchange.js
++++ b/node_modules/@sphereon/did-auth-siop/dist/authorization-response/PresentationExchange.js
+@@ -216,10 +216,12 @@ class PresentationExchange {
+         }
+     }
+     static assertValidPresentationDefinition(presentationDefinition) {
+-        const validationResult = pex_1.PEX.validateDefinition(presentationDefinition);
+-        if (validationResult[0].message != 'ok') {
+-            throw new Error(`${types_1.SIOPErrors.REQUEST_CLAIMS_PRESENTATION_DEFINITION_NOT_VALID}`);
+-        }
++        // FIXME: enable validation. Currently it fails only in react native
++        // See issue: https://github.com/Sphereon-Opensource/PEX/issues/118
++        // const validationResult = pex_1.PEX.validateDefinition(presentationDefinition);
++        // if (validationResult[0].message != 'ok') {
++        //     throw new Error(`${types_1.SIOPErrors.REQUEST_CLAIMS_PRESENTATION_DEFINITION_NOT_VALID}`);
++        // }
+     }
+     static validatePresentationsAgainstDefinitions(definitions, vpPayloads, verifyPresentationCallback, opts) {
+         return __awaiter(this, void 0, void 0, function* () {

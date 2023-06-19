@@ -4,13 +4,7 @@ import type { OpenId4VcCredentialMetadata } from '@internal/openid4vc-client'
 
 import { ClaimFormat, JsonTransformer } from '@aries-framework/core'
 import { getOpenId4VcCredentialMetadata } from '@internal/openid4vc-client'
-import { sanitizeString } from '@internal/utils'
-
-const urlRegex = new RegExp('^(.*:)//([A-Za-z0-9-.]+)(:[0-9]+)?(.*)$')
-export function getHostName(url: string) {
-  const parts = urlRegex.exec(url)
-  return parts ? parts[2] : undefined
-}
+import { sanitizeString, getHostNameFromUrl } from '@internal/utils'
 
 type JffW3cCredentialJson = W3cCredentialJson & {
   name?: string
@@ -29,27 +23,25 @@ type JffW3cCredentialJson = W3cCredentialJson & {
       })
 }
 
+export interface DisplayImage {
+  url?: string
+  altText?: string
+}
+
 export interface W3cCredentialDisplay {
   name: string
   locale?: string
   description?: string
   textColor?: string
   backgroundColor?: string
-  backgroundImage?: {
-    url?: string
-    altText?: string
-  }
-
+  backgroundImage?: DisplayImage
   issuer: W3cCredentialIssuerDisplay
 }
 
 export interface W3cCredentialIssuerDisplay {
   name: string
   locale?: string
-  logo?: {
-    url?: string
-    altText?: string
-  }
+  logo?: DisplayImage
 }
 
 function findDisplay<Display extends { locale?: string }>(
@@ -119,8 +111,7 @@ function getIssuerDisplay(
 
   // Last fallback: use issuer id from openid4vc
   if (!issuerDisplay.name && openId4VcMetadata?.issuer.id) {
-    // FIXME: extract hostname from the issuer id
-    issuerDisplay.name = getHostName(openId4VcMetadata.issuer.id)
+    issuerDisplay.name = getHostNameFromUrl(openId4VcMetadata.issuer.id)
   }
 
   return {
