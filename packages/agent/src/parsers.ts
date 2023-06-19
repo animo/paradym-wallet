@@ -1,7 +1,13 @@
 import type { AppAgent } from './agent'
-import type { JwkDidCreateOptions, KeyDidCreateOptions } from '@aries-framework/core'
+import type {
+  JwkDidCreateOptions,
+  KeyDidCreateOptions,
+  Agent,
+  W3cCredentialRecord,
+} from '@aries-framework/core'
 
 import { DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
+import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
 import { OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
 
 import { dbcPresentationDefinition } from './presentations/fixtures'
@@ -97,4 +103,10 @@ export const parsePresentationFromOpenId = async ({ data }: { data: string }) =>
 
   // TODO: Handle implementation with SIOP library
   return await Promise.resolve(dbcPresentationDefinition)
+}
+
+export async function storeCredential(agent: Agent, w3cCredentialRecord: W3cCredentialRecord) {
+  const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
+
+  await w3cCredentialRepository.save(agent.context, w3cCredentialRecord)
 }
