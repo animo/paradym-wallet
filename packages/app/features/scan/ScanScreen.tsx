@@ -1,8 +1,3 @@
-import {
-  isOpenIdCredentialOffer,
-  isOpenIdPresentationRequest,
-  parsePresentationFromOpenId,
-} from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
@@ -12,7 +7,7 @@ import { useCredentialDataHandler } from 'app/hooks/useCredentialDataHandler'
 import { isAndroid } from 'app/utils/platform'
 
 export function QrScannerScreen() {
-  const { push, back } = useRouter()
+  const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
 
   const [scannedData, setScannedData] = useState('')
