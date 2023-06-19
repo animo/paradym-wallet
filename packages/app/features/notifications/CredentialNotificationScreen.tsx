@@ -1,6 +1,7 @@
 import type { W3cCredentialRecord } from '@internal/agent'
 
 import {
+  storeCredential,
   getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
   useAgent,
@@ -34,7 +35,7 @@ export function CredentialNotificationScreen() {
   const [uri] = useParam('uri')
 
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord>()
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [isStoring, setIsStoring] = useState(false)
 
   useEffect(() => {
     const requestCredential = async (uri: string) => {
@@ -72,34 +73,30 @@ export function CredentialNotificationScreen() {
     )
   }
 
-  const onCredentialAccept = () => {
-    router.back()
-    router.push('/wallet')
-    toast.show('Credential has been added to your wallet.')
-  }
-
-  const onCredentialDecline = async () => {
-    if (!credentialRecord.id) return
-    setIsDeleting(true)
-    await agent.w3cCredentials
-      .removeCredentialRecord(credentialRecord.id)
-      .then(() => {
-        toast.show('Credential has been declined.')
-      })
-      .catch(() => {
-        toast.show('Something went wrong. Try removing the credential manually.')
-      })
-      .finally(() => {
-        router.back()
-        router.push('/wallet')
-      })
-  }
-
   if (!credentialRecord.credential) {
     toast.show('Credential information could not be extracted.')
     router.back()
-    router.push('/wallet')
     return null
+  }
+
+  const onCredentialAccept = async () => {
+    setIsStoring(true)
+
+    await storeCredential(agent, credentialRecord)
+      .then(() => {
+        toast.show('Credential has been added to your wallet.')
+      })
+      .catch(() => {
+        toast.show('Something went wrong while storing the credential.')
+      })
+      .finally(() => {
+        router.back()
+      })
+  }
+
+  const onCredentialDecline = () => {
+    toast.show('Credential has been declined.')
+    router.back()
   }
 
   const { credential, display } = getCredentialForDisplay(credentialRecord)
@@ -139,14 +136,14 @@ export function CredentialNotificationScreen() {
           />
         </YStack>
         <YStack gap="$2">
-          <Button.Solid onPress={onCredentialAccept}>Accept</Button.Solid>
-          <Button.Outline
+          <Button.Solid
             onPress={() => {
-              void onCredentialDecline()
+              void onCredentialAccept()
             }}
           >
-            {isDeleting ? <Spinner /> : 'Decline'}
-          </Button.Outline>
+            {isStoring ? <Spinner /> : 'Accept'}
+          </Button.Solid>
+          <Button.Outline onPress={onCredentialDecline}>Decline</Button.Outline>
         </YStack>
       </YStack>
       <Spacer />

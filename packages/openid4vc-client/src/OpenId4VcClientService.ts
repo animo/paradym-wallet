@@ -11,7 +11,6 @@ import type {
   W3cVerifiableCredential,
   VerificationMethod,
   JwaSignatureAlgorithm,
-  W3cCredentialRecord,
   W3cVerifyCredentialResult,
 } from '@aries-framework/core'
 import type {
@@ -22,6 +21,7 @@ import type {
 } from '@sphereon/oid4vci-common'
 
 import {
+  W3cCredentialRecord,
   ClaimFormat,
   getJwkClassFromJwaSignatureAlgorithm,
   W3cJwtVerifiableCredential,
@@ -248,19 +248,23 @@ export class OpenId4VcClientService {
         credentialSupported: supportedCredentialMetadata,
       })
 
-      const storedCredential = await this.handleCredentialResponse(
-        agentContext,
-        credentialResponse,
-        {
-          verifyCredentialStatus: options.verifyCredentialStatus,
-        }
-      )
+      const credential = await this.handleCredentialResponse(agentContext, credentialResponse, {
+        verifyCredentialStatus: options.verifyCredentialStatus,
+      })
+
+      // Create credential record, but we don't store it yet (only after the user has accepted the credential)
+      const credentialRecord = new W3cCredentialRecord({
+        credential,
+        tags: {
+          expandedTypes: [],
+        },
+      })
+      this.logger.debug('Full credential', credentialRecord)
 
       // Set the OpenId4Vc credential metadata and update record
-      setOpenId4VcCredentialMetadata(storedCredential, supportedCredentialMetadata, serverMetadata)
-      await this.w3cCredentialRepository.update(agentContext, storedCredential)
+      setOpenId4VcCredentialMetadata(credentialRecord, supportedCredentialMetadata, serverMetadata)
 
-      receivedCredentials.push(storedCredential)
+      receivedCredentials.push(credentialRecord)
     }
 
     return receivedCredentials
@@ -501,14 +505,7 @@ export class OpenId4VcClientService {
       )
     }
 
-    const storedCredential = await this.w3cCredentialService.storeCredential(agentContext, {
-      credential,
-    })
-
-    this.logger.info(`Stored credential with id: ${storedCredential.id}`)
-    this.logger.debug('Full credential', storedCredential)
-
-    return storedCredential
+    return credential
   }
 
   private signCallback(agentContext: AgentContext, verificationMethod: VerificationMethod) {
