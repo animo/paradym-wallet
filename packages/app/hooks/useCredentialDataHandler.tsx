@@ -1,8 +1,4 @@
-import {
-  isOpenIdCredentialOffer,
-  isOpenIdPresentationRequest,
-  parsePresentationFromOpenId,
-} from '@internal/agent'
+import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@internal/agent'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'solito/router'
 
@@ -18,28 +14,25 @@ type CredentialDataOutputResult =
 export const useCredentialDataHandler = () => {
   const { push } = useRouter()
 
-  const handleCredentialData = async (
-    credentialData: string
-  ): Promise<CredentialDataOutputResult> => {
-    if (isOpenIdCredentialOffer(credentialData)) {
+  const handleCredentialData = (deeplinkData: string): CredentialDataOutputResult => {
+    if (isOpenIdCredentialOffer(deeplinkData)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
         pathname: '/notifications/credential',
         query: {
-          uri: encodeURIComponent(credentialData),
+          uri: encodeURIComponent(deeplinkData),
         },
       })
 
       return {
         result: 'success',
       }
-    } else if (isOpenIdPresentationRequest(credentialData)) {
+    } else if (isOpenIdPresentationRequest(deeplinkData)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      const presentationDefinition = await parsePresentationFromOpenId({ data: credentialData })
       push({
         pathname: '/notifications/presentation',
         query: {
-          uri: encodeURIComponent(JSON.stringify(presentationDefinition)),
+          uri: encodeURIComponent(JSON.stringify(deeplinkData)),
         },
       })
 
