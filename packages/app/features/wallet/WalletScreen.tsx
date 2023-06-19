@@ -14,6 +14,7 @@ import {
   Scan,
   AnimatePresence,
   Paragraph,
+  HEADER_TITLE_TEXT_HEIGHT,
 } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -28,7 +29,8 @@ export function WalletScreen() {
   const { push } = useRouter()
   const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
   const firstThreeRecords = w3cCredentialRecords.slice(0, 3)
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(32)
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } =
+    useScrollViewPosition(HEADER_TITLE_TEXT_HEIGHT)
 
   const navigateToCredentialDetail = (id: string) => push(`/credentials/${id}`)
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
@@ -66,7 +68,7 @@ export function WalletScreen() {
         space
         px="$4"
         contentContainerStyle={{
-          minHeight: '100%',
+          minHeight: '90%',
         }}
       >
         <XStack jc="space-between" ai="center">
