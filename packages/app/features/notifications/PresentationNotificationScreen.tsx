@@ -120,7 +120,7 @@ export function PresentationNotificationScreen() {
       >
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
-            <Heading variant="h1" ta="center" px="$4">
+            <Heading variant="h2" ta="center" px="$4">
               You have received an information request from {credentialsForRequest.verifierHostName}
               .
             </Heading>

@@ -15,8 +15,6 @@ import { agentDependencies } from '@aries-framework/react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { OpenId4VcClientModule } from '@internal/openid4vc-client'
 
-import { importDbcCredentialWithDid } from './fixtures'
-
 export const initializeAgent = async (walletKey: string) => {
   const agent = new Agent({
     dependencies: agentDependencies,
@@ -42,10 +40,6 @@ export const initializeAgent = async (walletKey: string) => {
   })
 
   await agent.initialize()
-
-  // FIXME: remove before release, but needed for now to test
-  // the SIOP flow
-  await importDbcCredentialWithDid(agent)
 
   return agent
 }
