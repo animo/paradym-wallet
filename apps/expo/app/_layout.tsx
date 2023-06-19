@@ -11,6 +11,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { DeeplinkHandler } from '../utils/DeeplinkHandler'
 import { getSecureWalletKey } from '../utils/walletKeyStore'
 
 void SplashScreen.preventAutoHideAsync()
@@ -94,30 +95,32 @@ export default function HomeLayout() {
     <Provider>
       <AgentProvider agent={agent}>
         <ThemeProvider value={DefaultTheme}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen
-              options={{
-                presentation: 'modal',
-                // Extra modal options not needed for QR Scanner
-              }}
-              name="(home)/scan"
-            />
-            <Stack.Screen
-              options={{ presentation: 'modal', ...headerModalOptions }}
-              name="notifications/credential"
-            />
-            <Stack.Screen
-              options={{ presentation: 'modal', ...headerModalOptions }}
-              name="notifications/presentation"
-            />
-            <Stack.Screen
-              options={{
-                presentation: 'modal',
-                ...headerModalOptions,
-              }}
-              name="credentials/[id]"
-            />
-          </Stack>
+          <DeeplinkHandler>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                  // Extra modal options not needed for QR Scanner
+                }}
+                name="(home)/scan"
+              />
+              <Stack.Screen
+                options={{ presentation: 'modal', ...headerModalOptions }}
+                name="notifications/credential"
+              />
+              <Stack.Screen
+                options={{ presentation: 'modal', ...headerModalOptions }}
+                name="notifications/presentation"
+              />
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                  ...headerModalOptions,
+                }}
+                name="credentials/[id]"
+              />
+            </Stack>
+          </DeeplinkHandler>
         </ThemeProvider>
       </AgentProvider>
     </Provider>

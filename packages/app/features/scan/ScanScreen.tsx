@@ -1,13 +1,14 @@
-import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 
+import { useCredentialDataHandler } from 'app/hooks/useCredentialDataHandler'
 import { isAndroid } from 'app/utils/platform'
 
 export function QrScannerScreen() {
-  const { push, back } = useRouter()
+  const { back } = useRouter()
+  const { handleCredentialData } = useCredentialDataHandler()
 
   const [scannedData, setScannedData] = useState('')
   const [readData, setReadData] = useState('')
@@ -23,25 +24,12 @@ export function QrScannerScreen() {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
       setScannedData(data)
-      if (isOpenIdCredentialOffer(scannedData)) {
+
+      const result = handleCredentialData(data)
+      if (result.result === 'success') {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-        push({
-          pathname: '/notifications/credential',
-          query: {
-            uri: encodeURIComponent(scannedData),
-          },
-        })
         setIsScanModalFocused(false)
-      } else if (isOpenIdPresentationRequest(scannedData)) {
-        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-        push({
-          pathname: '/notifications/presentation',
-          query: {
-            uri: encodeURIComponent(scannedData),
-          },
-        })
-        setIsScanModalFocused(false)
-      } else {
+      } else if (result.result === 'error') {
         setReadData(data)
         triggerHelpText(data)
       }
