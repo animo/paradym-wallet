@@ -1,3 +1,0 @@
-appId: id.paradym.wallet
----
-- openLink: exp+openid-initiate-issuance://?issuer=https%3A%2F%2Fjff.walt.id%2Fissuer-api%2Fdefault%2Foidc%2F&credential_type=OpenBadgeCredential&pre-authorized_code=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhMGQ5ZjhmMi0xMTI0LTQ4YmEtYmQwYy02OTg5N2Q0ZTI4MjkiLCJwcmUtYXV0aG9yaXplZCI6dHJ1ZX0.KKOqMe8CK06q6ARQOChWG2LcLoNymR-Wi6on1lE3v3I&user_pin_required=false

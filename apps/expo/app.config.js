@@ -22,7 +22,7 @@ if (!variant) {
   throw new Error('Invalid variant provided: ' + process.env.APP_VARIANT)
 }
 
-const openIdSchemes = ['openid', 'openid-initiate-issuance', 'openid-credential-offer']
+const openIdSchemes = ['openid', 'openid-initiate-issuance', 'openid-credential-offer', 'openid-vc']
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}
@@ -72,12 +72,9 @@ const config = {
     intentFilters: [
       ...openIdSchemes.map((scheme) => ({
         action: 'VIEW',
-        category: ['BROWSABLE', 'DEFAULT'],
+        category: ['DEFAULT', 'BROWSABLE'],
         data: {
           scheme,
-          host: '*',
-          pathPrefix: '/',
-          pathPattern: '.*',
         },
       })),
     ],

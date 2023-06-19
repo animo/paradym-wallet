@@ -1,26 +1,17 @@
 import type { AppAgent } from '@internal/agent'
 
 import { AgentProvider, initializeAgent } from '@internal/agent'
-import {
-  HEADER_STATUS_BAR_HEIGHT,
-  Heading,
-  Page,
-  Paragraph,
-  XStack,
-  YStack,
-  useToastController,
-} from '@internal/ui'
+import { Heading, Page, Paragraph, XStack, YStack, useToastController } from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useCredentialDataHandler } from 'app/hooks/useCredentialDataHandler'
 import { Provider } from 'app/provider'
 import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
-import * as Linking from 'expo-linking'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { DeeplinkHandler } from '../utils/DeeplinkHandler'
 import { getSecureWalletKey } from '../utils/walletKeyStore'
 
 void SplashScreen.preventAutoHideAsync()
@@ -40,9 +31,6 @@ export default function HomeLayout() {
   const [agentInitialisationFailed, setAgentInitialisationFailed] = useState(false)
   const toast = useToastController()
   const { top } = useSafeAreaInsets()
-  const url = Linking.useURL()
-  const [lastDeeplink, setLastDeeplink] = useState<string | null>(null)
-  const { handleCredentialData } = useCredentialDataHandler()
 
   // Initialize agent
   useEffect(() => {
@@ -66,13 +54,6 @@ export default function HomeLayout() {
 
     void startAgent()
   }, [])
-
-  useEffect(() => {
-    if (url && agent && fontLoaded && url !== lastDeeplink) {
-      setLastDeeplink(url)
-      void handleCredentialData(url)
-    }
-  }, [url, agent, fontLoaded])
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
@@ -114,30 +95,32 @@ export default function HomeLayout() {
     <Provider>
       <AgentProvider agent={agent}>
         <ThemeProvider value={DefaultTheme}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen
-              options={{
-                presentation: 'modal',
-                // Extra modal options not needed for QR Scanner
-              }}
-              name="(home)/scan"
-            />
-            <Stack.Screen
-              options={{ presentation: 'modal', ...headerModalOptions }}
-              name="notifications/credential"
-            />
-            <Stack.Screen
-              options={{ presentation: 'modal', ...headerModalOptions }}
-              name="notifications/presentation"
-            />
-            <Stack.Screen
-              options={{
-                presentation: 'modal',
-                ...headerModalOptions,
-              }}
-              name="credentials/[id]"
-            />
-          </Stack>
+          <DeeplinkHandler>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                  // Extra modal options not needed for QR Scanner
+                }}
+                name="(home)/scan"
+              />
+              <Stack.Screen
+                options={{ presentation: 'modal', ...headerModalOptions }}
+                name="notifications/credential"
+              />
+              <Stack.Screen
+                options={{ presentation: 'modal', ...headerModalOptions }}
+                name="notifications/presentation"
+              />
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                  ...headerModalOptions,
+                }}
+                name="credentials/[id]"
+              />
+            </Stack>
+          </DeeplinkHandler>
         </ThemeProvider>
       </AgentProvider>
     </Provider>
