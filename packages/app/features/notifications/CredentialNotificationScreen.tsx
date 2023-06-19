@@ -137,13 +137,16 @@ export function CredentialNotificationScreen() {
         </YStack>
         <YStack gap="$2">
           <Button.Solid
+            disabled={isStoring}
             onPress={() => {
               void onCredentialAccept()
             }}
           >
             {isStoring ? <Spinner /> : 'Accept'}
           </Button.Solid>
-          <Button.Outline onPress={onCredentialDecline}>Decline</Button.Outline>
+          <Button.Outline disabled={isStoring} onPress={onCredentialDecline}>
+            Decline
+          </Button.Outline>
         </YStack>
       </YStack>
       <Spacer />
