@@ -37,6 +37,11 @@ export function CredentialNotificationScreen() {
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord>()
   const [isStoring, setIsStoring] = useState(false)
 
+  const pushToWallet = () => {
+    router.back()
+    router.push('/wallet')
+  }
+
   useEffect(() => {
     const requestCredential = async (uri: string) => {
       try {
@@ -47,7 +52,7 @@ export function CredentialNotificationScreen() {
         setCredentialRecord(record)
       } catch (e) {
         toast.show('Credential information could not be extracted.')
-        router.back()
+        pushToWallet()
       }
     }
     if (uri) void requestCredential(uri)
@@ -75,7 +80,7 @@ export function CredentialNotificationScreen() {
 
   if (!credentialRecord.credential) {
     toast.show('Credential information could not be extracted.')
-    router.back()
+    pushToWallet()
     return null
   }
 
@@ -90,13 +95,13 @@ export function CredentialNotificationScreen() {
         toast.show('Something went wrong while storing the credential.')
       })
       .finally(() => {
-        router.back()
+        pushToWallet()
       })
   }
 
   const onCredentialDecline = () => {
     toast.show('Credential has been declined.')
-    router.back()
+    pushToWallet()
   }
 
   const { credential, display } = getCredentialForDisplay(credentialRecord)

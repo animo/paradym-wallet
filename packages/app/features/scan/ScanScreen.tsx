@@ -1,8 +1,4 @@
-import {
-  isOpenIdCredentialOffer,
-  isOpenIdPresentationRequest,
-  parsePresentationFromOpenId,
-} from '@internal/agent'
+import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@internal/agent'
 import { QrScanner } from '@internal/scanner'
 import * as Haptics from 'expo-haptics'
 import React, { useEffect, useState } from 'react'
@@ -23,7 +19,7 @@ export function QrScannerScreen() {
   // TODO: is there any other way we can detect a modal over modal?
 
   useEffect(() => {
-    const onScan = async (data: string) => {
+    const onScan = (data: string) => {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
       setScannedData(data)
@@ -38,11 +34,10 @@ export function QrScannerScreen() {
         setIsScanModalFocused(false)
       } else if (isOpenIdPresentationRequest(scannedData)) {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-        const presentationDefinition = await parsePresentationFromOpenId({ data: scannedData })
         push({
           pathname: '/notifications/presentation',
           query: {
-            uri: encodeURIComponent(JSON.stringify(presentationDefinition)),
+            uri: encodeURIComponent(scannedData),
           },
         })
         setIsScanModalFocused(false)
