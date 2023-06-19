@@ -4,6 +4,7 @@ import type { DependencyManager } from '@aries-framework/core'
 import { OpenId4VcClientApi } from '../OpenId4VcClientApi'
 import { OpenId4VcClientModule } from '../OpenId4VcClientModule'
 import { OpenId4VcClientService } from '../OpenId4VcClientService'
+import { OpenId4VpClientService, PresentationExchangeService } from '../presentations'
 
 const dependencyManager = {
   registerInstance: jest.fn(),
@@ -20,7 +21,9 @@ describe('OpenId4VcClientModule', () => {
     expect(dependencyManager.registerContextScoped).toHaveBeenCalledTimes(1)
     expect(dependencyManager.registerContextScoped).toHaveBeenCalledWith(OpenId4VcClientApi)
 
-    expect(dependencyManager.registerSingleton).toHaveBeenCalledTimes(1)
+    expect(dependencyManager.registerSingleton).toHaveBeenCalledTimes(3)
     expect(dependencyManager.registerSingleton).toHaveBeenCalledWith(OpenId4VcClientService)
+    expect(dependencyManager.registerSingleton).toHaveBeenCalledWith(OpenId4VpClientService)
+    expect(dependencyManager.registerSingleton).toHaveBeenCalledWith(PresentationExchangeService)
   })
 })
