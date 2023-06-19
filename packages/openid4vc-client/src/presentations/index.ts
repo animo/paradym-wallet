@@ -3,4 +3,4 @@ export {
   VerifiedAuthorizationRequestWithPresentationDefinition,
 } from './OpenId4VpClientService'
 export { PresentationExchangeService } from './PresentationExchangeService'
-export { PresentationSubmission } from './selection'
+export { PresentationSubmission, SubmissionEntry } from './selection'

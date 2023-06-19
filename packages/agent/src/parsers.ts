@@ -152,7 +152,7 @@ export const shareProof = async ({
   })
 }
 
-export async function storeCredential(agent: Agent, w3cCredentialRecord: W3cCredentialRecord) {
+export async function storeCredential(agent: AppAgent, w3cCredentialRecord: W3cCredentialRecord) {
   const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
 
   await w3cCredentialRepository.save(agent.context, w3cCredentialRecord)

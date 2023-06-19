@@ -19,7 +19,7 @@ export function QrScannerScreen() {
   // TODO: is there any other way we can detect a modal over modal?
 
   useEffect(() => {
-    const onScan = async (data: string) => {
+    const onScan = (data: string) => {
       // don't do anything if we already scanned the data
       if (scannedData === readData) return
       setScannedData(data)
