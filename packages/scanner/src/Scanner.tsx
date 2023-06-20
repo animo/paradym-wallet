@@ -10,7 +10,6 @@ import {
   YStack,
   Spacer,
   AlertOctagon,
-  absoluteFill,
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { isAndroid } from 'app/utils/platform'
