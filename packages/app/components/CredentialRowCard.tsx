@@ -36,10 +36,11 @@ export default function CredentialRowCard({
           )}
         </YStack>
       </XStack>
-      {hideBorder && (
+      {!hideBorder && (
         <XStack
           position="absolute"
           right={0}
+          bottom={1}
           w="70%"
           borderBottomWidth={1}
           borderBottomColor="$grey-200"

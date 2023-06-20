@@ -27,7 +27,7 @@ export function CredentialDetailScreen() {
   const { credential, display } = getCredentialForDisplay(record)
 
   return (
-    <YStack>
+    <YStack bg="$grey-200">
       <XStack border borderColor={isScrolledByOffset ? '$grey-300' : '$grey-200'}>
         <Button.Text mt="$4" onPress={() => router.back()}>
           Done

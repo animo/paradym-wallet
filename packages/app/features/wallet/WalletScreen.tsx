@@ -44,7 +44,7 @@ export function WalletScreen() {
   }
 
   return (
-    <YStack>
+    <YStack bg="$grey-200">
       <XStack h="$2.5" jc="center" border={isScrolledByOffset} borderTopWidth={0}>
         <AnimatePresence>
           {isScrolledByOffset && (
@@ -62,26 +62,18 @@ export function WalletScreen() {
           )}
         </AnimatePresence>
       </XStack>
-      <ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={scrollEventThrottle}
-        space
-        px="$4"
-        contentContainerStyle={{
-          minHeight: '90%',
-        }}
-      >
-        <XStack jc="space-between" ai="center">
-          <Heading variant="title" textAlign="left">
-            Wallet
-          </Heading>
-          <XStack onPress={() => navigateToScanner()} pad="md">
-            <Scan />
+      {w3cCredentialRecords.length === 0 ? (
+        <NoContentWallet />
+      ) : (
+        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle} space px="$4">
+          <XStack jc="space-between" ai="center">
+            <Heading variant="title" textAlign="left">
+              Wallet
+            </Heading>
+            <XStack onPress={() => navigateToScanner()} pad="md">
+              <Scan />
+            </XStack>
           </XStack>
-        </XStack>
-        {w3cCredentialRecords.length === 0 ? (
-          <NoContentWallet />
-        ) : (
           <YStack pb="$12">
             <YStack g="md" width="100%">
               <Heading variant="h3" textAlign="left" secondary>
@@ -144,8 +136,8 @@ export function WalletScreen() {
               </TableContainer>
             </YStack>
           </YStack>
-        )}
-      </ScrollView>
+        </ScrollView>
+      )}
     </YStack>
   )
 }

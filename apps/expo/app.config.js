@@ -38,12 +38,14 @@ const config = {
   userInterfaceStyle: 'light',
   androidStatusBar: {
     backgroundColor: '#F2F4F6',
-    translucent: false,
+  },
+  androidNavigationBar: {
+    backgroundColor: '#F2F4F6',
   },
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F2F4F6',
   },
   updates: {
     fallbackToCacheTimeout: 0,

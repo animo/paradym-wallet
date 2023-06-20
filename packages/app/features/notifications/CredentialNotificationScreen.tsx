@@ -107,7 +107,7 @@ export function CredentialNotificationScreen() {
   const { credential, display } = getCredentialForDisplay(credentialRecord)
 
   return (
-    <ScrollView>
+    <ScrollView bg="$grey-200">
       <YStack
         g="3xl"
         jc="space-between"
@@ -142,12 +142,12 @@ export function CredentialNotificationScreen() {
         </YStack>
         <YStack gap="$2">
           <Button.Solid
-            disabled={isStoring}
+            disabled={!isStoring}
             onPress={() => {
               void onCredentialAccept()
             }}
           >
-            {isStoring ? <Spinner /> : 'Accept'}
+            {isStoring ? <Spinner variant="dark" /> : 'Accept'}
           </Button.Solid>
           <Button.Outline disabled={isStoring} onPress={onCredentialDecline}>
             Decline

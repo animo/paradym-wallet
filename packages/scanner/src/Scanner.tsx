@@ -1,3 +1,5 @@
+import type { StyleProp, ViewStyle } from 'react-native'
+
 import {
   Heading,
   AnimatePresence,
@@ -10,9 +12,10 @@ import {
   AlertOctagon,
 } from '@internal/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
+import { isAndroid } from 'app/utils/platform'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
 import { useCallback, useEffect, useState } from 'react'
-import { Linking, StyleSheet } from 'react-native'
+import { Linking, StyleSheet, Dimensions } from 'react-native'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
@@ -36,6 +39,15 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
     void Linking.openSettings()
   }, [])
 
+  // Android has issues with aspect ratio
+  let cameraStyle: StyleProp<ViewStyle> = StyleSheet.absoluteFill
+  if (isAndroid()) {
+    const { width, height } = Dimensions.get('screen')
+    const cameraWidth = (height / 16) * 9
+    const widthOffset = -(cameraWidth - width) / 2
+    cameraStyle = { height, width: cameraWidth, left: widthOffset }
+  }
+
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
@@ -52,7 +64,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
     <Page f={1} fd="column" jc="space-between" bg="$black">
       {hasPermission && (
         <ExpoBarCodeScanner
-          style={StyleSheet.absoluteFill}
+          style={[cameraStyle, StyleSheet.absoluteFill]}
           onBarCodeScanned={({ data }) => onScan(data)}
         />
       )}
@@ -77,32 +89,38 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       >
         <XStack style={StyleSheet.absoluteFill} bg="$darkTranslucent" />
       </MaskedView>
-      <YStack>
-        {onCancel && <Button.Text onPress={onCancel}>Cancel</Button.Text>}
-        <AnimatePresence>
-          {helpText && (
-            <XStack
-              key="scan-help-text"
-              enterStyle={{ opacity: 0, scale: 0.5, y: 25 }}
-              exitStyle={{ opacity: 0, scale: 1, y: 25 }}
-              y={0}
-              opacity={1}
-              scale={1}
-              animation="quick"
-              bg="$warning-500"
-              br="$12"
-              p="$2"
-              jc="center"
-              ai="center"
-              gap="$2"
-            >
-              <AlertOctagon size={16} />
-              <Paragraph variant="text" size="$2">
-                {helpText}
-              </Paragraph>
-            </XStack>
-          )}
-        </AnimatePresence>
+      <YStack jc="center" ai="center" gap="$4">
+        {onCancel && (
+          <Button.Text bg="$darkTranslucent" h="$2" br="$12" onPress={onCancel}>
+            Cancel
+          </Button.Text>
+        )}
+        <XStack h="$2.5">
+          <AnimatePresence>
+            {helpText && (
+              <XStack
+                key="scan-help-text"
+                enterStyle={{ opacity: 0, scale: 0.5, y: 25 }}
+                exitStyle={{ opacity: 0, scale: 1, y: 25 }}
+                y={0}
+                opacity={1}
+                scale={1}
+                animation="quick"
+                bg="$warning-500"
+                br="$12"
+                px="$2"
+                jc="center"
+                ai="center"
+                gap="$2"
+              >
+                <AlertOctagon size={16} />
+                <Paragraph variant="text" size="$2">
+                  {helpText}
+                </Paragraph>
+              </XStack>
+            )}
+          </AnimatePresence>
+        </XStack>
         <Spacer />
       </YStack>
     </Page>

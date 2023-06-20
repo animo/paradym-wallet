@@ -99,6 +99,7 @@ export function PresentationNotificationScreen() {
 
   return (
     <ScrollView
+      bg="$grey-200"
       fullscreen
       space
       contentContainerStyle={{
@@ -174,7 +175,9 @@ export function PresentationNotificationScreen() {
         </YStack>
         {credentialsForRequest.selectResults.areRequirementsSatisfied ? (
           <YStack gap="$2">
-            <Button.Solid onPress={onProofAccept}>Accept</Button.Solid>
+            <Button.Solid onPress={onProofAccept}>
+              {isSharing ? <Spinner variant="dark" /> : 'Accept'}
+            </Button.Solid>
             <Button.Outline onPress={onProofDecline}>Decline</Button.Outline>
           </YStack>
         ) : (
