@@ -1,6 +1,6 @@
 import * as NavigationBar from 'expo-navigation-bar'
 
-export default function useTransparentNavigationBar() {
+export const useTransparentNavigationBar = () => {
   void NavigationBar.setPositionAsync('absolute')
   void NavigationBar.setBackgroundColorAsync('#ffffff01')
 }

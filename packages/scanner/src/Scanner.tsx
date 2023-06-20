@@ -65,7 +65,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
     <Page f={1} fd="column" jc="space-between" bg="$black">
       {hasPermission && (
         <ExpoBarCodeScanner
-          style={{ ...cameraStyle, ...absoluteFill }}
+          style={[cameraStyle, StyleSheet.absoluteFill]}
           onBarCodeScanned={({ data }) => onScan(data)}
         />
       )}
