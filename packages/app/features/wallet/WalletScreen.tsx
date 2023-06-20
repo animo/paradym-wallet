@@ -62,7 +62,7 @@ export function WalletScreen() {
           )}
         </AnimatePresence>
       </XStack>
-      {w3cCredentialRecords.length !== 0 ? (
+      {w3cCredentialRecords.length === 0 ? (
         <NoContentWallet />
       ) : (
         <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle} space px="$4">
@@ -128,7 +128,7 @@ export function WalletScreen() {
                       bgColor={display.backgroundColor}
                       onPress={() => navigateToCredentialDetail(credentialRecord.id)}
                       hideBorder={
-                        w3cCredentialRecords.length === 1 || idx === w3cCredentialRecords.length - 1
+                        w3cCredentialRecords.length === 1 || idx === w3cCredentialRecords.length
                       }
                     />
                   )
