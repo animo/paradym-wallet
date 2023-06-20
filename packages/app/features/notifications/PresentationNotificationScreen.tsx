@@ -99,6 +99,7 @@ export function PresentationNotificationScreen() {
 
   return (
     <ScrollView
+      bg="$grey-200"
       fullscreen
       space
       contentContainerStyle={{

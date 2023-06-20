@@ -107,7 +107,7 @@ export function CredentialNotificationScreen() {
   const { credential, display } = getCredentialForDisplay(credentialRecord)
 
   return (
-    <ScrollView>
+    <ScrollView bg="$grey-200">
       <YStack
         g="3xl"
         jc="space-between"

@@ -6294,6 +6294,7 @@ __metadata:
     expo-constants: ^14.2.1
     expo-haptics: ^12.2.1
     expo-linking: ^4.0.1
+    expo-navigation-bar: ^2.1.1
     react-native-safe-area-context: ^4.5.2
     solito: ^3.0.0
   languageName: unknown
@@ -9303,6 +9304,7 @@ __metadata:
     expo-image: ^1.2.3
     expo-linear-gradient: ^12.1.2
     expo-linking: ^4.0.1
+    expo-navigation-bar: ^2.1.1
     expo-router: ^1.4.3
     expo-secure-store: ^12.1.1
     expo-splash-screen: ~0.18.2
@@ -9559,6 +9561,18 @@ __metadata:
     compare-versions: ^3.4.0
     invariant: ^2.2.4
   checksum: e3f69a62ef3c8dd357e7e3c90d0009d0dd0cfeae93d86c5043580bd78d35c0be5fcd345bd9dfa7b6e58d0a945b823cb6cb8666ad00c86a06bb31fe409eaed7d5
+  languageName: node
+  linkType: hard
+
+"expo-navigation-bar@npm:^2.1.1":
+  version: 2.2.0
+  resolution: "expo-navigation-bar@npm:2.2.0"
+  dependencies:
+    "@react-native/normalize-color": ^2.0.0
+    debug: ^4.3.2
+  peerDependencies:
+    expo: "*"
+  checksum: b81cfc9197066968aa964a22ccdc607043a94358f13fbabacf5b82eb341ab24c2d57b5d18ffd167c46dce38d3d8a64b87786a41703391270e31c5b87b0f3cb55
   languageName: node
   linkType: hard
 
