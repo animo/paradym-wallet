@@ -1,6 +1,5 @@
 import { QrScanner } from '@internal/scanner'
 import * as Haptics from 'expo-haptics'
-import * as NavigationBar from 'expo-navigation-bar'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'solito/router'
 

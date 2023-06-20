@@ -128,7 +128,7 @@ export function WalletScreen() {
                       bgColor={display.backgroundColor}
                       onPress={() => navigateToCredentialDetail(credentialRecord.id)}
                       hideBorder={
-                        w3cCredentialRecords.length === 1 || idx === w3cCredentialRecords.length
+                        w3cCredentialRecords.length === 1 || idx === w3cCredentialRecords.length - 1
                       }
                     />
                   )
