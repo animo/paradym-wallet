@@ -116,8 +116,10 @@ export default function HomeLayout() {
               />
               <Stack.Screen
                 options={{
-                  presentation: 'modal',
-                  ...headerModalOptions,
+                  headerShown: true,
+                  headerTransparent: true,
+                  headerTintColor: '#5A33F6',
+                  headerTitle: '',
                 }}
                 name="credentials/[id]"
               />
