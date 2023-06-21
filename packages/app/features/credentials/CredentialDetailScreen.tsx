@@ -1,5 +1,5 @@
 import { getCredentialForDisplay, useW3cCredentialRecordById } from '@internal/agent'
-import { YStack, ScrollView, XStack, Button } from '@internal/ui'
+import { ScrollView, YStack, Spacer } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
@@ -13,7 +13,7 @@ const { useParam } = createParam<{ id: string }>()
 export function CredentialDetailScreen() {
   const [id] = useParam('id')
   const router = useRouter()
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+  const { handleScroll, scrollEventThrottle } = useScrollViewPosition()
 
   // Go back home if no id is provided
   if (!id) {
@@ -28,24 +28,9 @@ export function CredentialDetailScreen() {
 
   return (
     <YStack bg="$grey-200">
-      <XStack border borderColor={isScrolledByOffset ? '$grey-300' : '$grey-200'}>
-        <Button.Text mt="$4" onPress={() => router.back()}>
-          Done
-        </Button.Text>
-      </XStack>
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack
-          g="3xl"
-          jc="space-between"
-          pad="lg"
-          py="$4"
-          pb="$12"
-          enterStyle={{ opacity: 0, y: 50 }}
-          exitStyle={{ opacity: 0, y: -20 }}
-          y={0}
-          opacity={1}
-          animation="lazy"
-        >
+        <YStack g="3xl" jc="space-between" pad="lg" py="$4" pb="$12">
+          <Spacer size="$8" />
           <YStack g="xl">
             <CredentialCard
               issuerImage={display.issuer.logo}

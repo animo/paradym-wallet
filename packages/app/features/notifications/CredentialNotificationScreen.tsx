@@ -108,17 +108,7 @@ export function CredentialNotificationScreen() {
 
   return (
     <ScrollView bg="$grey-200">
-      <YStack
-        g="3xl"
-        jc="space-between"
-        pad="lg"
-        py="$6"
-        enterStyle={{ opacity: 0, y: 50 }}
-        exitStyle={{ opacity: 0, y: -20 }}
-        y={0}
-        opacity={1}
-        animation="lazy"
-      >
+      <YStack g="3xl" jc="space-between" pad="lg" py="$6">
         <YStack g="2xl">
           <Heading variant="h2" ta="center" px="$4">
             You have received a credential
@@ -142,7 +132,7 @@ export function CredentialNotificationScreen() {
         </YStack>
         <YStack gap="$2">
           <Button.Solid
-            disabled={!isStoring}
+            disabled={isStoring}
             onPress={() => {
               void onCredentialAccept()
             }}
