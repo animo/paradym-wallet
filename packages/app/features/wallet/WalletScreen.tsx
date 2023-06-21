@@ -68,7 +68,7 @@ export function WalletScreen() {
               <Scan />
             </XStack>
           </XStack>
-          <YStack pb="$12">
+          <YStack pt="$2" pb="$12">
             <TableContainer>
               {w3cCredentialRecords.map((credentialRecord, idx) => {
                 const { display } = getCredentialForDisplay(credentialRecord)

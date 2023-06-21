@@ -11,7 +11,7 @@ export default function NoContentWallet() {
     <YStack jc="space-between" px="$4" height="95%">
       <XStack jc="space-between" ai="center">
         <Heading variant="title" textAlign="left">
-          Wallet
+          Credentials
         </Heading>
         <XStack onPress={() => navigateToScanner()} pad="md">
           <Scan />
@@ -19,7 +19,7 @@ export default function NoContentWallet() {
       </XStack>
       <YStack>
         <YStack jc="center" ai="center" gap="$2">
-          <Heading variant="h2">This is your Wallet.</Heading>
+          <Heading variant="h2">This is your wallet</Heading>
           <Paragraph textAlign="center" secondary>
             Credentials will be shown here.
           </Paragraph>

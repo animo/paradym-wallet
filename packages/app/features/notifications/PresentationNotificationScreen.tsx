@@ -162,7 +162,7 @@ export function PresentationNotificationScreen() {
         </YStack>
         {credentialsForRequest.selectResults.areRequirementsSatisfied ? (
           <YStack gap="$2">
-            <Button.Solid onPress={onProofAccept}>
+            <Button.Solid disabled={isSharing} onPress={onProofAccept}>
               {isSharing ? <Spinner variant="dark" /> : 'Accept'}
             </Button.Solid>
             <Button.Outline onPress={onProofDecline}>Decline</Button.Outline>
