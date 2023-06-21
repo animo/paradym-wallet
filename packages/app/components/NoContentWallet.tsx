@@ -16,7 +16,7 @@ export default function NoContentWallet() {
         </YStack>
         <Button.Text onPress={() => push('/scan')}>Scan a QR code</Button.Text>
       </YStack>
-      <Spacer size="$8" />
+      <Spacer size="$12" />
     </YStack>
   )
 }

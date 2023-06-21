@@ -25,7 +25,7 @@ export default function CredentialAttributes({
     <YStack g="md">
       {tables.map((table, index) => (
         <YStack key={index} g="md" pt={table.parent ? 0 : '$2'}>
-          <XStack gap="$2">
+          <XStack gap="$2" px="$2">
             {table.depth > 1 && <CornerDownRight size="$1" />}
             {(!disableHeader || table.title) && (
               <Heading variant="h3" pl="$2" secondary>

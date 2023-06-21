@@ -37,15 +37,15 @@ const config = {
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
   androidStatusBar: {
-    backgroundColor: '#F2F4F6',
+    backgroundColor: '#F8F8FA',
   },
   androidNavigationBar: {
-    backgroundColor: '#F2F4F6',
+    backgroundColor: '#F8F8FA',
   },
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#F2F4F6',
+    backgroundColor: '#F8F8FA',
   },
   updates: {
     fallbackToCacheTimeout: 0,

@@ -13,7 +13,7 @@ export const TableContainer = ({
   padX,
 }: PropsWithChildren<TableContainerProps>) => {
   return (
-    <YStack border br="$4" bg="$white" width="100%" px={padX ?? 0} py={padY ?? 0} overflow="hidden">
+    <YStack border bg="$white" width="100%" px={padX ?? 0} py={padY ?? 0} overflow="hidden">
       {children}
     </YStack>
   )

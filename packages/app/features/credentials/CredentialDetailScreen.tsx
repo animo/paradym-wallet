@@ -1,5 +1,5 @@
 import { getCredentialForDisplay, useW3cCredentialRecordById } from '@internal/agent'
-import { ScrollView, YStack, Spacer } from '@internal/ui'
+import { ScrollView, YStack, Spacer, XStack, Button } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
@@ -31,17 +31,19 @@ export function CredentialDetailScreen() {
       <Spacer size="$13" />
       <YStack borderWidth={isScrolledByOffset ? 0.5 : 0} borderColor="$grey-300" />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack g="3xl" jc="space-between" pad="lg" py="$4" pb="$12">
+        <YStack g="3xl" jc="space-between" py="$4" pb="$12">
           <YStack g="xl">
-            <CredentialCard
-              issuerImage={display.issuer.logo}
-              backgroundImage={display.backgroundImage}
-              textColor={display.textColor}
-              name={display.name}
-              issuerName={display.issuer.name}
-              subtitle={display.description}
-              bgColor={display.backgroundColor}
-            />
+            <YStack px="$3">
+              <CredentialCard
+                issuerImage={display.issuer.logo}
+                backgroundImage={display.backgroundImage}
+                textColor={display.textColor}
+                name={display.name}
+                issuerName={display.issuer.name}
+                subtitle={display.description}
+                bgColor={display.backgroundColor}
+              />
+            </YStack>
             <CredentialAttributes
               subject={
                 // FIXME: support credential with multiple subjects

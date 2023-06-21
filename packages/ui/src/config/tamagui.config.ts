@@ -15,6 +15,7 @@ export const absoluteFill = {
 }
 
 export const hexColors = {
+  'grey-50': '#FCFCFC',
   'grey-100': '#F8F8FA',
   'grey-200': '#F2F4F6',
   'grey-300': '#E0E3E8',

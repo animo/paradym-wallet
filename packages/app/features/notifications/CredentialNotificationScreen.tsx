@@ -64,8 +64,8 @@ export function CredentialNotificationScreen() {
         jc="center"
         ai="center"
         g="md"
-        enterStyle={{ opacity: 0, y: 50 }}
-        exitStyle={{ opacity: 0, y: -20 }}
+        enterStyle={{ opacity: 0 }}
+        exitStyle={{ opacity: 0 }}
         y={0}
         opacity={1}
         animation="lazy"
@@ -107,22 +107,24 @@ export function CredentialNotificationScreen() {
   const { credential, display } = getCredentialForDisplay(credentialRecord)
 
   return (
-    <ScrollView bg="$grey-200">
-      <YStack g="3xl" jc="space-between" pad="lg" py="$6">
+    <ScrollView bg="$grey-100">
+      <YStack g="3xl" jc="space-between" py="$6">
         <YStack g="2xl">
           <Heading variant="h2" ta="center" px="$4">
             You have received a credential
             {display.issuer?.name ? ` from ${display.issuer.name}` : ''}
           </Heading>
-          <CredentialCard
-            issuerImage={display.issuer.logo}
-            textColor={display.textColor}
-            name={display.name}
-            issuerName={display.issuer.name}
-            backgroundImage={display.backgroundImage}
-            subtitle={display.description}
-            bgColor={display.backgroundColor}
-          />
+          <YStack px="$3">
+            <CredentialCard
+              issuerImage={display.issuer.logo}
+              textColor={display.textColor}
+              name={display.name}
+              issuerName={display.issuer.name}
+              backgroundImage={display.backgroundImage}
+              subtitle={display.description}
+              bgColor={display.backgroundColor}
+            />
+          </YStack>
           <CredentialAttributes
             subject={
               // FIXME: support credential with multiple subjects
@@ -132,7 +134,7 @@ export function CredentialNotificationScreen() {
             }
           />
         </YStack>
-        <YStack gap="$2">
+        <YStack gap="$2" px="$4">
           <Button.Solid
             disabled={isStoring}
             onPress={() => {

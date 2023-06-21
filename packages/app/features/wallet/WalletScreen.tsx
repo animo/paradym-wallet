@@ -1,9 +1,6 @@
 import { getCredentialForDisplay, useW3cCredentialRecords } from '@internal/agent'
 import {
   AnimatePresence,
-  BASE_CREDENTIAL_CARD_HEIGHT,
-  CREDENTIAL_TOP_INFO_HEIGHT,
-  CREDENTIAL_TOP_INFO_OFFSET,
   HEADER_TITLE_TEXT_HEIGHT,
   Heading,
   Logo,
@@ -15,11 +12,10 @@ import {
   TableContainer,
   XStack,
   YStack,
-  ZStack,
 } from '@internal/ui'
+import { CredentialCarousel } from 'app/components/CredentialCarousel'
 import { useRouter } from 'solito/router'
 
-import CredentialCard from 'app/components/CredentialCard'
 import CredentialRowCard from 'app/components/CredentialRowCard'
 import NoContentWallet from 'app/components/NoContentWallet'
 import { useNetworkCallback } from 'app/hooks/useNetworkCallback'
@@ -84,46 +80,15 @@ export function WalletScreen() {
       {w3cCredentialRecords.length === 0 ? (
         <NoContentWallet />
       ) : (
-        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle} px="$4">
-          <YStack g="md" width="100%">
+        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle} space>
+          <YStack g="md" pt="$2" px="$4">
             <Heading variant="h3" textAlign="left" secondary>
               Recently added
             </Heading>
-            <ZStack
-              f={0}
-              flexBasis="auto"
-              height={
-                BASE_CREDENTIAL_CARD_HEIGHT + firstThreeRecords.length * CREDENTIAL_TOP_INFO_OFFSET
-              }
-            >
-              {firstThreeRecords.map((credentialRecord, idx) => {
-                const { display } = getCredentialForDisplay(credentialRecord)
-                return (
-                  <XStack
-                    key={credentialRecord.id}
-                    mt={CREDENTIAL_TOP_INFO_HEIGHT * idx}
-                    br="$8"
-                    borderColor="$lightTranslucent"
-                    borderWidth={0.5}
-                  >
-                    <CredentialCard
-                      onPress={() => navigateToCredentialDetail(credentialRecord.id)}
-                      issuerImage={display.issuer.logo}
-                      backgroundImage={display.backgroundImage}
-                      textColor={display.textColor}
-                      name={display.name}
-                      issuerName={display.issuer.name}
-                      subtitle={display.description}
-                      bgColor={display.backgroundColor}
-                      shadow={false}
-                    />
-                  </XStack>
-                )
-              })}
-            </ZStack>
+            <CredentialCarousel credentials={firstThreeRecords} />
           </YStack>
-          <YStack g="md">
-            <Heading variant="h3" textAlign="left" secondary>
+          <YStack g="md" pt="$2" pb="$12">
+            <Heading variant="h3" textAlign="left" secondary px="$4">
               Credentials
             </Heading>
             <TableContainer>

@@ -10,8 +10,8 @@ interface TableRowProps {
 export const TableRow = ({ attribute, value, isLastRow, onPress }: TableRowProps) => {
   return (
     <YStack
-      px="$2.5"
-      py="$2"
+      px="$4"
+      py="$2.5"
       key={attribute}
       borderBottomWidth={isLastRow ? 0 : 1}
       borderBottomColor="$grey-200"

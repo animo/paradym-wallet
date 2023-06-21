@@ -67,9 +67,10 @@ export function PresentationNotificationScreen() {
     )
   }
 
-  const onProofAccept = () => {
+  const onProofAccept = async () => {
     setIsSharing(true)
-    shareProof({ ...credentialsForRequest, agent })
+
+    await shareProof({ ...credentialsForRequest, agent })
       .then(() => {
         toast.show('Information has been successfully shared.')
       })
@@ -95,7 +96,7 @@ export function PresentationNotificationScreen() {
         minHeight: '100%',
       }}
     >
-      <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$grey-200">
+      <YStack g="3xl" jc="space-between" py="$6" height="100%" bg="$grey-100">
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
             <Heading variant="h2" ta="center" px="$4">
@@ -110,7 +111,6 @@ export function PresentationNotificationScreen() {
             {submissions.map((s) => (
               <YStack key={s.name}>
                 <YStack
-                  br="$4"
                   border
                   bg="$white"
                   gap="$2"
@@ -123,12 +123,12 @@ export function PresentationNotificationScreen() {
                       hideBorder={true}
                       bgColor={s.backgroundColor}
                     />
-                    <Paragraph secondary px="$3" variant="text">
+                    <Paragraph secondary px="$4" variant="text">
                       {s.description}
                     </Paragraph>
                   </YStack>
                   {s.isSatisfied && s.requestedAttributes ? (
-                    <YStack pad="md" gap="$2">
+                    <YStack pad="lg" gap="$2">
                       <Paragraph variant="sub">
                         The following information will be presented:
                       </Paragraph>
@@ -151,14 +151,19 @@ export function PresentationNotificationScreen() {
           </YStack>
         </YStack>
         {credentialsForRequest.selectResults.areRequirementsSatisfied ? (
-          <YStack gap="$2">
-            <Button.Solid disabled={isSharing} onPress={onProofAccept}>
+          <YStack gap="$2" px="$4">
+            <Button.Solid
+              disabled={isSharing}
+              onPress={() => {
+                void onProofAccept()
+              }}
+            >
               {isSharing ? <Spinner variant="dark" /> : 'Accept'}
             </Button.Solid>
             <Button.Outline onPress={onProofDecline}>Decline</Button.Outline>
           </YStack>
         ) : (
-          <YStack gap="$4">
+          <YStack gap="$4" px="$4">
             <Paragraph variant="sub" ta="center">
               You don't have the required credentials to satisfy this request.
             </Paragraph>
