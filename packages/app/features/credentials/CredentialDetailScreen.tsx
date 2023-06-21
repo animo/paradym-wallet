@@ -1,5 +1,5 @@
 import { getCredentialForDisplay, useW3cCredentialRecordById } from '@internal/agent'
-import { YStack, ScrollView, XStack, Button, Spacer } from '@internal/ui'
+import { ScrollView, XStack, Spacer } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
