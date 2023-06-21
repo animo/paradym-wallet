@@ -8,8 +8,6 @@ import {
   Spinner,
   Page,
   Paragraph,
-  AlertOctagon,
-  XStack,
 } from '@internal/ui'
 import { sanitizeString } from '@internal/utils'
 import React, { useEffect, useState, useMemo } from 'react'
