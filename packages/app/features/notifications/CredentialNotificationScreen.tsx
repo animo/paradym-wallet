@@ -39,7 +39,7 @@ export function CredentialNotificationScreen() {
 
   const pushToWallet = () => {
     router.back()
-    router.push('/wallet')
+    router.push('/')
   }
 
   useEffect(() => {
