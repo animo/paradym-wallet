@@ -9,6 +9,7 @@ export interface FormattedSubmission {
   issuerName?: string
   description?: string
   requestedAttributes?: string[]
+  backgroundColor?: string
 }
 
 export function formatPresentationSubmission(
@@ -26,6 +27,7 @@ export function formatPresentationSubmission(
           credentialName: display.name,
           issuerName: display.issuer.name,
           requestedAttributes: Object.keys(credential.credentialSubject),
+          backgroundColor: display.backgroundColor,
         }
       }
       return {

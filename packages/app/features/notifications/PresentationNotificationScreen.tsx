@@ -130,6 +130,7 @@ export function PresentationNotificationScreen() {
                       issuer={s.issuerName}
                       name={s.credentialName}
                       hideBorder={true}
+                      bgColor={s.backgroundColor}
                     />
                     <Paragraph secondary px="$3" variant="text">
                       {s.description}

@@ -51,7 +51,7 @@ export function WalletScreen() {
               opacity={1}
               animation="normal"
             >
-              Wallet
+              Credentials
             </Paragraph>
           )}
         </AnimatePresence>
