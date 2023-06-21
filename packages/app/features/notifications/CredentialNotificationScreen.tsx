@@ -116,8 +116,10 @@ export function CredentialNotificationScreen() {
           </Heading>
           <CredentialCard
             issuerImage={display.issuer.logo}
+            textColor={display.textColor}
             name={display.name}
             issuerName={display.issuer.name}
+            backgroundImage={display.backgroundImage}
             subtitle={display.description}
             bgColor={display.backgroundColor}
           />
