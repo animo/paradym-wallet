@@ -56,21 +56,12 @@ export function PresentationNotificationScreen() {
       })
   }, [uri])
 
-  if (!submissions || !credentialsForRequest || isSharing) {
+  if (!submissions || !credentialsForRequest) {
     return (
-      <Page
-        jc="center"
-        ai="center"
-        g="md"
-        enterStyle={{ opacity: 0, y: 50 }}
-        exitStyle={{ opacity: 0, y: -20 }}
-        y={0}
-        opacity={1}
-        animation="lazy"
-      >
+      <Page jc="center" ai="center" g="md">
         <Spinner />
         <Paragraph variant="sub" textAlign="center">
-          {isSharing ? 'Sharing verification information' : 'Getting verification information'}
+          Getting verification information
         </Paragraph>
       </Page>
     )

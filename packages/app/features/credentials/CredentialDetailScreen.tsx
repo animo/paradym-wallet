@@ -13,7 +13,7 @@ const { useParam } = createParam<{ id: string }>()
 export function CredentialDetailScreen() {
   const [id] = useParam('id')
   const router = useRouter()
-  const { handleScroll, scrollEventThrottle } = useScrollViewPosition()
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   // Go back home if no id is provided
   if (!id) {
@@ -28,9 +28,10 @@ export function CredentialDetailScreen() {
 
   return (
     <YStack bg="$grey-200">
+      <Spacer size="$13" />
+      <YStack borderWidth={isScrolledByOffset ? 0.5 : 0} borderColor="$grey-300" />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack g="3xl" jc="space-between" pad="lg" py="$4" pb="$12">
-          <Spacer size="$8" />
           <YStack g="xl">
             <CredentialCard
               issuerImage={display.issuer.logo}
