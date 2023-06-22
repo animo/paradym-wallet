@@ -74,7 +74,7 @@ export function WalletScreen() {
           pos="absolute"
           right={0}
           mt="$-2"
-          mr="$2"
+          mr="$3"
           onPress={() => navigateToScanner()}
           pad="md"
         >
