@@ -1,11 +1,8 @@
-import { Paragraph, Button, Heading, YStack, XStack, Scan, Spacer } from '@internal/ui'
+import { Paragraph, Button, Heading, YStack, Spacer } from '@internal/ui'
 import { useRouter } from 'solito/router'
-
-import { useNetworkCallback } from 'app/hooks/useNetworkCallback'
 
 export default function NoContentWallet() {
   const { push } = useRouter()
-  const navigateToScanner = useNetworkCallback(() => push('/scan'))
 
   return (
     <YStack jc="space-between" px="$4" height="95%">
