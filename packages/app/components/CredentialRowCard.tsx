@@ -16,11 +16,12 @@ export default function CredentialRowCard({
   hideBorder = false,
 }: CredentialRowCardProps) {
   return (
-    <YStack px="$2">
+    <YStack>
       <XStack
         onPress={onPress}
         pad="md"
         g="md"
+        px="$4"
         pressStyle={{ backgroundColor: onPress && '$grey-200' }}
         overflow="hidden"
       >
