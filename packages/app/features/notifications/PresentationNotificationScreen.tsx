@@ -111,7 +111,9 @@ export function PresentationNotificationScreen() {
             {submissions.map((s) => (
               <YStack key={s.name}>
                 <YStack
-                  border
+                  borderColor="$grey-300"
+                  borderBottomWidth={0.5}
+                  borderTopWidth={0.5}
                   bg="$white"
                   gap="$2"
                   borderColor={s.isSatisfied ? '$grey-300' : '$danger-500'}
