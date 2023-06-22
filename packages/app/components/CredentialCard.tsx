@@ -63,7 +63,7 @@ export default function CredentialCard({
         borderWidth={0.5}
         borderColor="$borderTranslucent"
         onPress={onPress}
-        opacity={isBackgroundImageLoaded ? 1 : 0}
+        opacity={backgroundImage && isBackgroundImageLoaded ? 1 : 0}
       >
         <Card.Header>
           <XStack jc="space-between">
