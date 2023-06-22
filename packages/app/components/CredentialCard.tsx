@@ -12,7 +12,6 @@ import {
   getTextColorBasedOnBg,
   Card,
 } from '@internal/ui'
-import { useState } from 'react'
 
 import { useHasInternetConnection } from 'app/hooks/useHasInternetConnection'
 
