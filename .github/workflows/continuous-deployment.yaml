@@ -9,7 +9,7 @@ on:
         required: true
         options:
           - 'preview'
-          - 'test-track'
+          - 'production'
         default: 'preview'
       platform:
         type: choice
@@ -48,5 +48,5 @@ jobs:
         run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
-        if: ${{ github.event.inputs.channel == 'test-track' }}
+        if: ${{ github.event.inputs.channel == 'production' }}
         run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
