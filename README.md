@@ -29,11 +29,11 @@ You can install this using the following commands:
 
 ```
 cd apps/expo
-yarn expo prebuild --no-install
+yarn prebuild
 yarn ios # or android
 ```
 
-You only need to install the development when **native** dependencies change. If you're only working on JS, you can skip this step if you already have the development build installed.
+You only need to install the development build when **native** dependencies change. If you're only working on JS, you can skip this step if you already have the development build installed.
 
 Once installed you can run `yarn native` from the root of the project to start your development server.
 
