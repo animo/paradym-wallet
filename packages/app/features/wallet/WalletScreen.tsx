@@ -13,9 +13,9 @@ import {
   XStack,
   YStack,
 } from '@internal/ui'
-import { CredentialCarousel } from 'app/components/CredentialCarousel'
 import { useRouter } from 'solito/router'
 
+import { CredentialCarousel } from 'app/components/CredentialCarousel'
 import CredentialRowCard from 'app/components/CredentialRowCard'
 import NoContentWallet from 'app/components/NoContentWallet'
 import { useNetworkCallback } from 'app/hooks/useNetworkCallback'
