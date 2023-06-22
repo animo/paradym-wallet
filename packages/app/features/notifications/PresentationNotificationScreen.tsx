@@ -96,7 +96,7 @@ export function PresentationNotificationScreen() {
         minHeight: '100%',
       }}
     >
-      <YStack g="3xl" jc="space-between" py="$6" height="100%" bg="$grey-100">
+      <YStack g="3xl" jc="space-between" py="$6" height="100%">
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
             <Heading variant="h2" ta="center" px="$4">
@@ -111,7 +111,6 @@ export function PresentationNotificationScreen() {
             {submissions.map((s) => (
               <YStack key={s.name}>
                 <YStack
-                  borderColor="$grey-300"
                   borderBottomWidth={0.5}
                   borderTopWidth={0.5}
                   bg="$white"

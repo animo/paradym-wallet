@@ -89,7 +89,7 @@ export default function HomeLayout() {
     headerShown: true,
     header: () => {
       // Header is translucent by default. See configuration in app.json
-      return <XStack bg="$grey-50" h={top} />
+      return <XStack bg="$grey-200" h={top} />
     },
   }
 
