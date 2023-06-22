@@ -7,14 +7,29 @@ interface ImageProps {
   width: number | string
   height: number | string
   resizeMode?: 'cover' | 'contain'
+  isImageLoaded?(): void
 }
 
 // FIXME: tamagui image is not working for svg's
-export const Image = ({ src, alt, width, height, resizeMode = 'contain' }: ImageProps) => {
+export const Image = ({
+  src,
+  alt,
+  width,
+  height,
+  isImageLoaded,
+  resizeMode = 'contain',
+}: ImageProps) => {
   if (src.endsWith('.svg'))
     return <SvgUri role="img" width={width} height={height} uri={src} aria-label={alt} />
 
   return (
-    <TImage source={{ uri: src }} width={width} height={height} alt={alt} resizeMode={resizeMode} />
+    <TImage
+      source={{ uri: src }}
+      onLoad={isImageLoaded ? () => isImageLoaded() : undefined}
+      width={width}
+      height={height}
+      alt={alt}
+      resizeMode={resizeMode}
+    />
   )
 }

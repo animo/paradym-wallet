@@ -12,6 +12,7 @@ import {
   getTextColorBasedOnBg,
   Card,
 } from '@internal/ui'
+import { useState } from 'react'
 
 type CredentialCardProps = {
   onPress?(): void
@@ -36,6 +37,8 @@ export default function CredentialCard({
   backgroundImage,
   shadow = true,
 }: CredentialCardProps) {
+  const [isBackgroundImageLoaded, setIsBackgroundImageLoaded] = useState(false)
+
   textColor = textColor ? textColor : getTextColorBasedOnBg(bgColor ?? '#000')
 
   const icon =
@@ -60,6 +63,7 @@ export default function CredentialCard({
         borderWidth={0.5}
         borderColor="$borderTranslucent"
         onPress={onPress}
+        opacity={isBackgroundImageLoaded ? 1 : 0}
       >
         <Card.Header>
           <XStack jc="space-between">
@@ -101,6 +105,7 @@ export default function CredentialCard({
               resizeMode="cover"
               width="100%"
               height="100%"
+              isImageLoaded={() => setIsBackgroundImageLoaded(true)}
             />
           </Card.Background>
         )}

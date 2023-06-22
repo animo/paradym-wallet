@@ -24,4 +24,10 @@ export const animations = createAnimations({
     mass: 1.2,
     stiffness: 250,
   },
+  medium: {
+    type: 'spring',
+    damping: 10,
+    mass: 0.9,
+    stiffness: 100,
+  },
 })
