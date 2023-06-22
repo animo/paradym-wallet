@@ -11,6 +11,7 @@ import {
   darken,
   getTextColorBasedOnBg,
   Card,
+  Spinner,
 } from '@internal/ui'
 import { useState } from 'react'
 
@@ -51,7 +52,12 @@ export default function CredentialCard({
     )
 
   return (
-    <XStack shadow={shadow}>
+    <XStack shadow={shadow} position="relative">
+      {backgroundImage && !isBackgroundImageLoaded && (
+        <Card position="absolute" right="50%" top="50%">
+          <Spinner />
+        </Card>
+      )}
       <Card
         padded
         width="100%"
@@ -63,7 +69,7 @@ export default function CredentialCard({
         borderWidth={0.5}
         borderColor="$borderTranslucent"
         onPress={onPress}
-        opacity={backgroundImage && isBackgroundImageLoaded ? 1 : 0}
+        opacity={backgroundImage ? (isBackgroundImageLoaded ? 1 : 0) : 1}
       >
         <Card.Header>
           <XStack jc="space-between">
