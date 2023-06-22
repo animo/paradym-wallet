@@ -44,7 +44,26 @@ export function WalletScreen() {
   }
 
   return (
-    <YStack bg="$grey-200" height="100%">
+    <YStack bg="$grey-200" height="100%" position="relative">
+      {w3cCredentialRecords.length !== 0 && (
+        <YStack
+          zIndex="$5"
+          position="absolute"
+          right="$6"
+          bottom="$6"
+          bg="$grey-900"
+          br="$12"
+          p="$4"
+          pressStyle={{ backgroundColor: '$grey-800' }}
+          shadowOffset={{ width: 5, height: 5 }}
+          shadowColor="$grey-500"
+          shadowOpacity={0.5}
+          shadowRadius={10}
+          onPress={() => navigateToScanner()}
+        >
+          <Scan color="$grey-100" />
+        </YStack>
+      )}
       <XStack h="$4" jc="center" px="$4" py="$2" border={isScrolledByOffset} borderTopWidth={0}>
         <AnimatePresence exitBeforeEnter>
           {isScrolledByOffset ? (
@@ -70,16 +89,6 @@ export function WalletScreen() {
             </XStack>
           )}
         </AnimatePresence>
-        <XStack
-          pos="absolute"
-          right={0}
-          mt="$-2"
-          mr="$3"
-          onPress={() => navigateToScanner()}
-          pad="md"
-        >
-          <Scan />
-        </XStack>
       </XStack>
       {w3cCredentialRecords.length === 0 ? (
         <NoContentWallet />
