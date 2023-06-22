@@ -11,9 +11,10 @@ import {
   darken,
   getTextColorBasedOnBg,
   Card,
-  Spinner,
 } from '@internal/ui'
 import { useState } from 'react'
+
+import { useHasInternetConnection } from 'app/hooks/useHasInternetConnection'
 
 type CredentialCardProps = {
   onPress?(): void
@@ -38,7 +39,7 @@ export default function CredentialCard({
   backgroundImage,
   shadow = true,
 }: CredentialCardProps) {
-  const [isBackgroundImageLoaded, setIsBackgroundImageLoaded] = useState(false)
+  const hasInternet = useHasInternetConnection()
 
   textColor = textColor ? textColor : getTextColorBasedOnBg(bgColor ?? '#000')
 
@@ -53,11 +54,6 @@ export default function CredentialCard({
 
   return (
     <XStack shadow={shadow} position="relative">
-      {backgroundImage && !isBackgroundImageLoaded && (
-        <Card position="absolute" right="50%" top="50%">
-          <Spinner />
-        </Card>
-      )}
       <Card
         padded
         width="100%"
@@ -69,7 +65,6 @@ export default function CredentialCard({
         borderWidth={0.5}
         borderColor="$borderTranslucent"
         onPress={onPress}
-        opacity={backgroundImage ? (isBackgroundImageLoaded ? 1 : 0) : 1}
       >
         <Card.Header>
           <XStack jc="space-between">
@@ -105,14 +100,19 @@ export default function CredentialCard({
         </Card.Footer>
         {backgroundImage && backgroundImage.url && (
           <Card.Background>
-            <Image
-              src={backgroundImage.url}
-              alt={backgroundImage.altText}
-              resizeMode="cover"
-              width="100%"
-              height="100%"
-              isImageLoaded={() => setIsBackgroundImageLoaded(true)}
-            />
+            {hasInternet ? (
+              <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
+                <Image
+                  src={backgroundImage.url}
+                  alt={backgroundImage.altText}
+                  resizeMode="cover"
+                  width="100%"
+                  height="100%"
+                />
+              </YStack>
+            ) : (
+              <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'} />
+            )}
           </Card.Background>
         )}
       </Card>
