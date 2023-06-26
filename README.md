@@ -1,10 +1,16 @@
 # Paradym Wallet
 
-<p align="center">
+<div align="center">
+   <img src="assets/icon.png" alt="Animo Logo" height="176px" />
+</div>
+
+<h1 align="center"><b>Paradym Wallet</b></h1>
+
+<div align="center">
   <img src="assets/ios-1.jpg" width="30%" />
   <img src="assets/ios-2.jpg" width="30%" /> 
   <img src="assets/ios-3.jpg" width="30%" />
-</p>
+</div>
 
 This repo contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
 
