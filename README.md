@@ -1,24 +1,16 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="assets/paradym-light.png">
-    <source media="(prefers-color-scheme: dark)" srcset="assets/paradym-dark.png">
-    <img src="assets/paradym-default.png" alt="Logo of Paradym" height="250px" />
-  </picture>
-</p>
-
-<h1 align="center" ><b>Paradym Wallet</b></h1>
-
-This repo contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
-
-With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
-
-You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
+# Paradym Wallet
 
 <p align="center">
   <img src="assets/ios-1.jpg" width="30%" />
   <img src="assets/ios-2.jpg" width="30%" /> 
   <img src="assets/ios-3.jpg" width="30%" />
 </p>
+
+This repo contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
+
+With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
+
+You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
 
 ## Structure
 
