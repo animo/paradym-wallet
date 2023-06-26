@@ -5,11 +5,11 @@ on:
     inputs:
       channel:
         type: choice
-        description: 'Channel to deploy to'
+        description: 'Channel to deploy to. The preview channel creates an internal preview build and is available for download on Expo.dev. The production channel creates a production build and uploads this build to be released in the stores. It does not make a release in the stores yet.'
         required: true
         options:
           - 'preview'
-          - 'test-track'
+          - 'production'
         default: 'preview'
       platform:
         type: choice
@@ -48,5 +48,5 @@ jobs:
         run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
-        if: ${{ github.event.inputs.channel == 'test-track' }}
+        if: ${{ github.event.inputs.channel == 'production' }}
         run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
