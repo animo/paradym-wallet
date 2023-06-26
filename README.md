@@ -4,7 +4,6 @@
 
 <h1 align="center"><b>Paradym Wallet</b></h1>
 
-
 This repository contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
 
 With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
@@ -16,9 +15,6 @@ With Paradym Wallet, you can seamlessly manage and present your digital credenti
 </div>
 
 <p align="center"><i>Impression of Paradym Wallet</i></p>
-
-
-
 
 ## Try it out
 
