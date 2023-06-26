@@ -1,8 +1,32 @@
-# Paradym Wallet
+<div align="center">
+   <img src="assets/icon.png" alt="Animo Logo" height="176px" />
+</div>
 
-This repo contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
+<h1 align="center"><b>Paradym Wallet</b></h1>
 
-## Structure
+This repository contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
+
+With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
+
+<div align="center">
+  <img src="assets/ios-1.jpg" width="30%" />
+  <img src="assets/ios-2.jpg" width="30%" /> 
+  <img src="assets/ios-3.jpg" width="30%" />
+</div>
+
+<p align="center"><i>Impression of Paradym Wallet</i></p>
+
+## Try it out
+
+You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
+
+The wallet can be used in three environments:
+
+- Dutch Blockchain Coalition (DBC): Use your wallet to access the DBC zone where you can find extra resources related to DBC events. You can use [this link](https://ssi.dutchblockchaincoalition.org/demo/issuer) to receive your credential, and log in on the [DBC website](https://www.dutchblockchaincoalition.org/userlogin).
+- Triall: Log in to the Triall environment. Obtain your credential [here](https://ssi.triall.io/demo/issuer) and enter the environment on the [Trial website](https://ssi.triall.io/demo/issuer).
+- Future Mobility Alliance: Access the Future Mobility Data Marketplace by obtaining your credential [here](https://ssi.future-mobility-alliance.org/demo/issuer) and logging in via the [FMA website](https://marketplace.future-mobility-alliance.org/).
+
+## Project Structure
 
 The project is a monorepo managed using **Yarn (v3)**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router, React Navigation and Solito**. For the Agent and SSI capabilities **Aries Framework JavaScript (AFJ)** is used.
 
@@ -82,4 +106,4 @@ cd ..
 yarn
 ```
 
-You can also install the native library inside of `packages/app` if you want to get autoimport for that package inside of the `app` folder. However, you need to be careful and install the _exact_ same version in both packages. If the versions mismatch at all, you'll potentially get terrible bugs. This is a classic monorepo issue. I use `lerna-update-wizard` to help with this (you don't need to use Lerna to use that lib).
+You can also install the native library inside of `packages/app` if you want to get autoimport for that package inside of the `app` folder. However, you need to be careful and install the _exact_ same version in both packages. If the versions mismatch at all, you'll potentially get terrible bugs. This is a classic monorepo issue. You can use `lerna-update-wizard` to help with this (you don't need to use Lerna to use that lib).
