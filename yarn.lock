@@ -6004,15 +6004,15 @@ __metadata:
 
 "@unimodules/core@file:./noop::locator=paradym-wallet%40workspace%3A.":
   version: 0.0.0
-  resolution: "@unimodules/core@file:./noop#./noop::hash=43898f&locator=paradym-wallet%40workspace%3A."
-  checksum: 50b1951b31b5970fa656033f31e1fd615b40e646a71d4deccf3e65a11ef388ec9b932bb799a4c31798f198e4c99389656065acae597cff1485f9bddb792b07e6
+  resolution: "@unimodules/core@file:./noop#./noop::hash=1c09ac&locator=paradym-wallet%40workspace%3A."
+  checksum: b7310a3414bc79cdbf87d8f6593b2a0953db336b78d32c1cc04fba681c751c208e21aa8f89fcc63daa3b1ca6d32b324e9d561117c1158d571682b3f7940e85a9
   languageName: node
   linkType: hard
 
 "@unimodules/react-native-adapter@file:./noop::locator=paradym-wallet%40workspace%3A.":
   version: 0.0.0
-  resolution: "@unimodules/react-native-adapter@file:./noop#./noop::hash=01f31a&locator=paradym-wallet%40workspace%3A."
-  checksum: 9b42a5debdd787d8700b8aa36670dc05b67429818204ec5b587a811a3f70888f240233201b5f281579fd426866e46934bc25457a5cadb0702c4eb7e0b9d7829d
+  resolution: "@unimodules/react-native-adapter@file:./noop#./noop::hash=344d16&locator=paradym-wallet%40workspace%3A."
+  checksum: 20d9afa8e20df9b88963fd33278042579b8bc9ac73114f0d7597889fc31b3a0c50cb320383fadbe29f9cda1328aa3987c4432ee9e2c7ce1626d066d0c61175b8
   languageName: node
   linkType: hard
 
@@ -16139,7 +16139,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.x":
+"semver@npm:7.x, semver@npm:^7.3.5, semver@npm:^7.3.7":
   version: 7.5.1
   resolution: "semver@npm:7.5.1"
   dependencies:
@@ -16151,11 +16151,11 @@ __metadata:
   linkType: hard
 
 "semver@npm:^5.5.0, semver@npm:^5.6.0":
-  version: 5.7.1
-  resolution: "semver@npm:5.7.1"
+  version: 5.7.2
+  resolution: "semver@npm:5.7.2"
   bin:
-    semver: ./bin/semver
-  checksum: 57fd0acfd0bac382ee87cd52cd0aaa5af086a7dc8d60379dfe65fea491fb2489b6016400813930ecd61fd0952dae75c115287a1b16c234b1550887117744dfaf
+    semver: bin/semver
+  checksum: fb4ab5e0dd1c22ce0c937ea390b4a822147a9c53dbd2a9a0132f12fe382902beef4fbf12cf51bb955248d8d15874ce8cd89532569756384f994309825f10b686
   languageName: node
   linkType: hard
 
@@ -16165,17 +16165,6 @@ __metadata:
   bin:
     semver: ./bin/semver.js
   checksum: 1b26ecf6db9e8292dd90df4e781d91875c0dcc1b1909e70f5d12959a23c7eebb8f01ea581c00783bbee72ceeaad9505797c381756326073850dc36ed284b21b9
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.3.5, semver@npm:^7.3.7":
-  version: 7.5.0
-  resolution: "semver@npm:7.5.0"
-  dependencies:
-    lru-cache: ^6.0.0
-  bin:
-    semver: bin/semver.js
-  checksum: 2d266937756689a76f124ffb4c1ea3e1bbb2b263219f90ada8a11aebebe1280b13bb76cca2ca96bdee3dbc554cbc0b24752eb895b2a51577aa644427e9229f2b
   languageName: node
   linkType: hard
 
