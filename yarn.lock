@@ -6004,15 +6004,15 @@ __metadata:
 
 "@unimodules/core@file:./noop::locator=paradym-wallet%40workspace%3A.":
   version: 0.0.0
-  resolution: "@unimodules/core@file:./noop#./noop::hash=43898f&locator=paradym-wallet%40workspace%3A."
-  checksum: 50b1951b31b5970fa656033f31e1fd615b40e646a71d4deccf3e65a11ef388ec9b932bb799a4c31798f198e4c99389656065acae597cff1485f9bddb792b07e6
+  resolution: "@unimodules/core@file:./noop#./noop::hash=1c09ac&locator=paradym-wallet%40workspace%3A."
+  checksum: b7310a3414bc79cdbf87d8f6593b2a0953db336b78d32c1cc04fba681c751c208e21aa8f89fcc63daa3b1ca6d32b324e9d561117c1158d571682b3f7940e85a9
   languageName: node
   linkType: hard
 
 "@unimodules/react-native-adapter@file:./noop::locator=paradym-wallet%40workspace%3A.":
   version: 0.0.0
-  resolution: "@unimodules/react-native-adapter@file:./noop#./noop::hash=01f31a&locator=paradym-wallet%40workspace%3A."
-  checksum: 9b42a5debdd787d8700b8aa36670dc05b67429818204ec5b587a811a3f70888f240233201b5f281579fd426866e46934bc25457a5cadb0702c4eb7e0b9d7829d
+  resolution: "@unimodules/react-native-adapter@file:./noop#./noop::hash=344d16&locator=paradym-wallet%40workspace%3A."
+  checksum: 20d9afa8e20df9b88963fd33278042579b8bc9ac73114f0d7597889fc31b3a0c50cb320383fadbe29f9cda1328aa3987c4432ee9e2c7ce1626d066d0c61175b8
   languageName: node
   linkType: hard
 
@@ -18270,9 +18270,9 @@ __metadata:
   linkType: hard
 
 "word-wrap@npm:^1.2.3, word-wrap@npm:~1.2.3":
-  version: 1.2.3
-  resolution: "word-wrap@npm:1.2.3"
-  checksum: 30b48f91fcf12106ed3186ae4fa86a6a1842416df425be7b60485de14bec665a54a68e4b5156647dec3a70f25e84d270ca8bc8cd23182ed095f5c7206a938c1f
+  version: 1.2.4
+  resolution: "word-wrap@npm:1.2.4"
+  checksum: 8f1f2e0a397c0e074ca225ba9f67baa23f99293bc064e31355d426ae91b8b3f6b5f6c1fc9ae5e9141178bb362d563f55e62fd8d5c31f2a77e3ade56cb3e35bd1
   languageName: node
   linkType: hard
 
