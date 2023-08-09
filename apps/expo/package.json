@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
+    "@hyperledger/anoncreds-react-native": "^0.1.0",
     "@hyperledger/aries-askar-react-native": "0.1.0",
     "@internal/agent": "*",
     "@internal/ui": "*",
