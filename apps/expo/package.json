@@ -10,10 +10,9 @@
     "prebuild": "TAMAGUI_TARGET=native APP_VARIANT=development expo prebuild --no-install"
   },
   "dependencies": {
-    "@aries-framework/cheqd": "0.4.1-alpha.4",
     "@babel/runtime": "^7.18.9",
     "@hyperledger/anoncreds-react-native": "^0.1.0",
-    "@hyperledger/aries-askar-react-native": "0.1.0",
+    "@hyperledger/aries-askar-react-native": "^0.1.0",
     "@hyperledger/indy-vdr-react-native": "^0.1.0",
     "@internal/agent": "*",
     "@internal/ui": "*",

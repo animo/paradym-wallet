@@ -56,7 +56,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/askar@npm:0.4.1-alpha.4, @aries-framework/askar@npm:^0.4.1-alpha.4":
+"@aries-framework/askar@npm:0.4.1-alpha.4":
   version: 0.4.1-alpha.4
   resolution: "@aries-framework/askar@npm:0.4.1-alpha.4"
   dependencies:
@@ -91,7 +91,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/core@npm:0.4.1-alpha.4, @aries-framework/core@npm:0.4.1-alpha.4+38a05780, @aries-framework/core@npm:^0.4.1-alpha.4":
+"@aries-framework/core@npm:0.4.1-alpha.4, @aries-framework/core@npm:0.4.1-alpha.4+38a05780":
   version: 0.4.1-alpha.4
   resolution: "@aries-framework/core@npm:0.4.1-alpha.4"
   dependencies:
@@ -138,7 +138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/node@npm:^0.4.1-alpha.4":
+"@aries-framework/node@npm:0.4.1-alpha.4":
   version: 0.4.1-alpha.4
   resolution: "@aries-framework/node@npm:0.4.1-alpha.4"
   dependencies:
@@ -3193,16 +3193,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperledger/aries-askar-react-native@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@hyperledger/aries-askar-react-native@npm:0.1.0"
+"@hyperledger/aries-askar-react-native@npm:^0.1.0":
+  version: 0.1.1
+  resolution: "@hyperledger/aries-askar-react-native@npm:0.1.1"
   dependencies:
-    "@hyperledger/aries-askar-shared": 0.1.0
+    "@hyperledger/aries-askar-shared": 0.1.1
     "@mapbox/node-pre-gyp": ^1.0.10
   peerDependencies:
     react: ">= 16"
     react-native: ">= 0.66.0"
-  checksum: aee362450a0758a03fb4074531ba2073f5a9d3a09069dc19f955dd7a6dad9871f9f0226302503fca54490f596b206766b3a7bceabe6a8355ab33b9f24a18464e
+  checksum: c16d1bfb8fbc732e624944138c7a8a9b0c461aae6bd41db3cdb89382c8d750b384d056ef018a8bc5d26fa6dca6f7e3c59c6e8122deeac0c1c48e162e559cfeef
   languageName: node
   linkType: hard
 
@@ -3212,6 +3212,15 @@ __metadata:
   dependencies:
     fast-text-encoding: ^1.0.3
   checksum: 024d1fa121e923f60b297b565aed1ebf9c31a100f5487d687b5dadade99734a7c6f792c1a025dbaeed865570bffda473dc9355aa034d1169d52303f343ac13a1
+  languageName: node
+  linkType: hard
+
+"@hyperledger/aries-askar-shared@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@hyperledger/aries-askar-shared@npm:0.1.1"
+  dependencies:
+    fast-text-encoding: ^1.0.3
+  checksum: ffe150d5baedb4a9cf1b79e4482641bdd974e2ba17dd0fb0dee9e2b5950a4ba8a62f482cdb54335c67a77eaac2af15cb5dbf03eecdd2b05798101e920ce15e00
   languageName: node
   linkType: hard
 
@@ -3248,14 +3257,13 @@ __metadata:
     "@aries-framework/react-hooks": 0.4.2
     "@aries-framework/react-native": 0.4.1-alpha.4
     "@hyperledger/anoncreds-react-native": ^0.1.0
-    "@hyperledger/aries-askar-react-native": 0.1.0
+    "@hyperledger/aries-askar-react-native": ^0.1.0
     "@hyperledger/indy-vdr-react-native": ^0.1.0
     "@internal/openid4vc-client": "*"
     "@internal/utils": "*"
   peerDependencies:
-    "@aries-framework/cheqd": 0.4.1-alpha.4
     "@hyperledger/anoncreds-react-native": ^0.1.0
-    "@hyperledger/aries-askar-react-native": 0.1.0
+    "@hyperledger/aries-askar-react-native": ^0.1.0
     "@hyperledger/indy-vdr-react-native": ^0.1.0
   languageName: unknown
   linkType: soft
@@ -3264,9 +3272,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/openid4vc-client@workspace:packages/openid4vc-client"
   dependencies:
-    "@aries-framework/askar": ^0.4.1-alpha.4
-    "@aries-framework/core": ^0.4.1-alpha.4
-    "@aries-framework/node": ^0.4.1-alpha.4
+    "@aries-framework/askar": 0.4.1-alpha.4
+    "@aries-framework/core": 0.4.1-alpha.4
+    "@aries-framework/node": 0.4.1-alpha.4
     "@hyperledger/aries-askar-nodejs": ^0.1.0
     "@sphereon/did-auth-siop": 0.3.2-unstable.0
     "@sphereon/oid4vci-client": "file:./sphereon-oid4vci-client-v0.5.1.tgz"
@@ -9717,12 +9725,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expo-app@workspace:apps/expo"
   dependencies:
-    "@aries-framework/cheqd": 0.4.1-alpha.4
     "@babel/core": ^7.17.9
     "@babel/runtime": ^7.18.9
     "@expo/metro-config": ^0.3.21
     "@hyperledger/anoncreds-react-native": ^0.1.0
-    "@hyperledger/aries-askar-react-native": 0.1.0
+    "@hyperledger/aries-askar-react-native": ^0.1.0
     "@hyperledger/indy-vdr-react-native": ^0.1.0
     "@internal/agent": "*"
     "@internal/ui": "*"

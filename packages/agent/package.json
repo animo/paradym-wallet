@@ -7,6 +7,7 @@
     "@aries-framework/anoncreds": "0.4.1-alpha.4",
     "@aries-framework/anoncreds-rs": "0.4.1-alpha.4",
     "@aries-framework/askar": "0.4.1-alpha.4",
+    "@aries-framework/cheqd": "0.4.1-alpha.4",
     "@aries-framework/core": "0.4.1-alpha.4",
     "@aries-framework/indy-vdr": "0.4.1-alpha.4",
     "@aries-framework/react-hooks": "0.4.2",
@@ -15,15 +16,13 @@
     "@internal/utils": "*"
   },
   "peerDependencies": {
-    "@aries-framework/cheqd": "0.4.1-alpha.4",
     "@hyperledger/anoncreds-react-native": "^0.1.0",
-    "@hyperledger/aries-askar-react-native": "0.1.0",
+    "@hyperledger/aries-askar-react-native": "^0.1.0",
     "@hyperledger/indy-vdr-react-native": "^0.1.0"
   },
   "devDependencies": {
-    "@aries-framework/cheqd": "0.4.1-alpha.4",
     "@hyperledger/anoncreds-react-native": "^0.1.0",
-    "@hyperledger/aries-askar-react-native": "0.1.0",
+    "@hyperledger/aries-askar-react-native": "^0.1.0",
     "@hyperledger/indy-vdr-react-native": "^0.1.0"
   }
 }
