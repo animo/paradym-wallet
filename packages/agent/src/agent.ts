@@ -44,7 +44,6 @@ import {
 } from '@aries-framework/indy-vdr'
 import { useAgent as useAgentLib } from '@aries-framework/react-hooks'
 import { agentDependencies } from '@aries-framework/react-native'
-import { EnglishMnemonic as _ } from '@cosmjs/crypto'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'

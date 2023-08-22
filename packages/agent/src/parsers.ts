@@ -230,6 +230,8 @@ export async function receiveOutOfBandInvitation(
     }
   }
 
+  // The value is reassigned, but eslint doesn't know this.
+  // eslint-disable-next-line prefer-const
   let connectionId: string | undefined
 
   const credentialOffer = agent.events
