@@ -21,25 +21,25 @@ export const useCredentialDataHandler = () => {
   const { push } = useRouter()
   const { agent } = useAgent()
 
-  const handleCredentialData = async (qrData: string): Promise<CredentialDataOutputResult> => {
-    if (isOpenIdCredentialOffer(qrData)) {
+  const handleCredentialData = async (dataUrl: string): Promise<CredentialDataOutputResult> => {
+    if (isOpenIdCredentialOffer(dataUrl)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
         pathname: '/notifications/credential',
         query: {
-          uri: encodeURIComponent(qrData),
+          uri: encodeURIComponent(dataUrl),
         },
       })
 
       return {
         result: 'success',
       }
-    } else if (isOpenIdPresentationRequest(qrData)) {
+    } else if (isOpenIdPresentationRequest(dataUrl)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
         pathname: '/notifications/presentation',
         query: {
-          uri: encodeURIComponent(qrData),
+          uri: encodeURIComponent(dataUrl),
         },
       })
 
@@ -53,7 +53,7 @@ export const useCredentialDataHandler = () => {
     // So we use the parseMessage from AFJ and see if this returns a valid message.
     // Parse invitation supports legacy connection invitations, oob invitations, and
     // legacy connectionless invitations, and will all transform them into an OOB invitation.
-    const invitation = await tryParseDidCommInvitation(agent, qrData)
+    const invitation = await tryParseDidCommInvitation(agent, dataUrl)
 
     if (invitation) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
