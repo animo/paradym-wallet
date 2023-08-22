@@ -22,7 +22,13 @@ if (!variant) {
   throw new Error('Invalid variant provided: ' + process.env.APP_VARIANT)
 }
 
-const openIdSchemes = ['openid', 'openid-initiate-issuance', 'openid-credential-offer', 'openid-vc']
+const invitationSchemes = [
+  'openid',
+  'openid-initiate-issuance',
+  'openid-credential-offer',
+  'openid-vc',
+  'didcomm',
+]
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}
@@ -60,7 +66,7 @@ const config = {
       // Add schemes for deep linking
       CFBundleURLTypes: [
         {
-          CFBundleURLSchemes: openIdSchemes,
+          CFBundleURLSchemes: invitationSchemes,
         },
       ],
     },
@@ -72,7 +78,7 @@ const config = {
     },
     package: 'id.paradym.wallet' + variant.bundle,
     intentFilters: [
-      ...openIdSchemes.map((scheme) => ({
+      ...invitationSchemes.map((scheme) => ({
         action: 'VIEW',
         category: ['DEFAULT', 'BROWSABLE'],
         data: {

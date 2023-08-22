@@ -1,4 +1,10 @@
-import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@internal/agent'
+import {
+  isOpenIdCredentialOffer,
+  isOpenIdPresentationRequest,
+  receiveOutOfBandInvitation,
+  tryParseDidCommInvitation,
+  useAgent,
+} from '@internal/agent'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'solito/router'
 
@@ -13,31 +19,68 @@ type CredentialDataOutputResult =
 
 export const useCredentialDataHandler = () => {
   const { push } = useRouter()
+  const { agent } = useAgent()
 
-  const handleCredentialData = (deeplinkData: string): CredentialDataOutputResult => {
-    if (isOpenIdCredentialOffer(deeplinkData)) {
+  const handleCredentialData = async (dataUrl: string): Promise<CredentialDataOutputResult> => {
+    if (isOpenIdCredentialOffer(dataUrl)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
         pathname: '/notifications/credential',
         query: {
-          uri: encodeURIComponent(deeplinkData),
+          uri: encodeURIComponent(dataUrl),
         },
       })
 
       return {
         result: 'success',
       }
-    } else if (isOpenIdPresentationRequest(deeplinkData)) {
+    } else if (isOpenIdPresentationRequest(dataUrl)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
         pathname: '/notifications/presentation',
         query: {
-          uri: encodeURIComponent(deeplinkData),
+          uri: encodeURIComponent(dataUrl),
         },
       })
 
       return {
         result: 'success',
+      }
+    }
+
+    // If it is not an OpenID invitation, we assume the data is a DIDComm invitation.
+    // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
+    // So we use the parseMessage from AFJ and see if this returns a valid message.
+    // Parse invitation supports legacy connection invitations, oob invitations, and
+    // legacy connectionless invitations, and will all transform them into an OOB invitation.
+    const invitation = await tryParseDidCommInvitation(agent, dataUrl)
+
+    if (invitation) {
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+      const result = await receiveOutOfBandInvitation(agent, invitation)
+
+      // Error
+      if (result.result === 'error') {
+        return result
+      }
+
+      // Credential exchange
+      if ('credentialExchangeId' in result) {
+        push({
+          pathname: '/notifications/credential',
+          query: {
+            credentialExchangeId: result.credentialExchangeId,
+          },
+        })
+      }
+      // Proof Exchange
+      else if ('presentationExchangeId' in result) {
+        push({
+          pathname: '/notifications/presentation',
+          query: {
+            presentationExchangeId: result.presentationExchangeId,
+          },
+        })
       }
     }
 
