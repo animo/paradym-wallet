@@ -1,18 +1,37 @@
 import type { AppAgent } from './agent'
 import type {
+  CredentialStateChangedEvent,
   JwkDidCreateOptions,
   KeyDidCreateOptions,
+  OutOfBandInvitation,
+  ProofStateChangedEvent,
   W3cCredentialRecord,
 } from '@aries-framework/core'
+import type { PlaintextMessage } from '@aries-framework/core/build/types'
 import type {
   PresentationSubmission,
   VerifiedAuthorizationRequestWithPresentationDefinition,
 } from '@internal/openid4vc-client'
 
-import { DidJwk, DidKey, JwaSignatureAlgorithm } from '@aries-framework/core'
+import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@aries-framework/anoncreds'
+import {
+  CredentialEventTypes,
+  CredentialState,
+  OutOfBandRepository,
+  parseMessageType,
+  ProofEventTypes,
+  ProofState,
+  V2OfferCredentialMessage,
+  V2RequestPresentationMessage,
+  DidJwk,
+  DidKey,
+  JwaSignatureAlgorithm,
+} from '@aries-framework/core'
 import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
+import { supportsIncomingMessageType } from '@aries-framework/core/build/utils/messageType'
 import { OpenId4VpClientService, OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
 import { getHostNameFromUrl } from '@internal/utils'
+import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
 export enum QrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
@@ -156,4 +175,152 @@ export async function storeCredential(agent: AppAgent, w3cCredentialRecord: W3cC
   const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
 
   await w3cCredentialRepository.save(agent.context, w3cCredentialRecord)
+}
+
+/**
+ * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
+ */
+export async function receiveOutOfBandInvitation(
+  agent: AppAgent,
+  invitation: OutOfBandInvitation
+): Promise<
+  | { result: 'success'; credentialExchangeId: string }
+  | { result: 'success'; proofExchangeId: string }
+  | { result: 'error'; message: string }
+> {
+  const requestMessages = invitation.getRequests() ?? []
+
+  if (requestMessages.length > 1) {
+    const message =
+      'Message contains multiple requests. Invitation should only contain a single request.'
+    agent.config.logger.error(message)
+    return {
+      result: 'error',
+      message,
+    }
+  }
+
+  // In this case we probably need to create a connection first. We will do this here, as we don't allow to just
+  // create a connection
+  if (requestMessages.length === 0) {
+    if (!invitation.handshakeProtocols || invitation.handshakeProtocols.length === 0) {
+      agent.config.logger.error('No requests and no handshake protocols found in invitation.')
+      return {
+        result: 'error',
+        message: 'Invalid invitation.',
+      }
+    }
+  }
+  // Validate the type of the request message
+  else {
+    const requestMessage = requestMessages[0] as PlaintextMessage
+    const parsedMessageType = parseMessageType(requestMessage['@type'])
+    const isValidRequestMessage =
+      supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V1RequestPresentationMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type)
+
+    if (!isValidRequestMessage) {
+      agent.config.logger.error('Message request is not from supported protocol.')
+      return {
+        result: 'error',
+        message: 'Invalid invitation.',
+      }
+    }
+  }
+
+  let connectionId: string | undefined
+
+  const credentialOffer = agent.events
+    .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
+    .pipe(
+      filter((event) => event.payload.credentialRecord.state === CredentialState.OfferReceived),
+      filter((event) => event.payload.credentialRecord.connectionId === connectionId)
+    )
+
+  const proofRequest = agent.events
+    .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
+    .pipe(
+      filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
+      filter((event) => event.payload.proofRecord.connectionId === connectionId)
+    )
+
+  const eventPromise = firstValueFrom(
+    merge(credentialOffer, proofRequest).pipe(
+      first(),
+      // We allow 15 seconds to receive a credential offer or proof request
+      timeout(15 * 1000)
+    )
+  )
+
+  const { connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
+    reuseConnection: true,
+  })
+
+  // Assign connectionId so it can be used in the observables.
+  connectionId = connectionRecord?.id
+
+  try {
+    const event = await eventPromise
+    agent.config.logger.debug(`Received event ${event.type}`)
+
+    if (event.type === CredentialEventTypes.CredentialStateChanged) {
+      return {
+        result: 'success',
+        credentialExchangeId: event.payload.credentialRecord.id,
+      }
+    } else if (event.type === ProofEventTypes.ProofStateChanged) {
+      return {
+        result: 'success',
+        proofExchangeId: event.payload.proofRecord.id,
+      }
+    }
+  } catch (error) {
+    agent.config.logger.error(
+      `Error while waiting for credential offer or proof request. Deleting connection and records`
+    )
+    // Delete OOB record
+    const outOfBandRepository = agent.dependencyManager.resolve(OutOfBandRepository)
+    await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
+
+    // Delete connection record
+    // TODO: delete did and mediation stuff
+    if (connectionRecord) {
+      await agent.connections.deleteById(connectionRecord.id)
+    }
+
+    return {
+      result: 'error',
+      message: 'Invalid invitation.',
+    }
+  }
+
+  return {
+    result: 'error',
+    message: 'Invalid invitation.',
+  }
+}
+
+export async function tryParseDidCommInvitation(
+  agent: AppAgent,
+  invitationUrl: string
+): Promise<OutOfBandInvitation | null> {
+  try {
+    // Try to parse the invitation as an DIDComm invitation.
+    // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
+    // So we use the parseMessage from AFJ and see if this returns a valid message.
+    // Parse invitation supports legacy connection invitations, oob invitations, and
+    // legacy connectionless invitations, and will all transform them into an OOB invitation.
+    const invitation = await agent.oob.parseInvitation(invitationUrl)
+
+    agent.config.logger.debug(`Parsed didcomm invitation with id ${invitation.id}`)
+    return invitation
+  } catch (error) {
+    agent.config.logger.debug(
+      `Ignoring error during parsing of didcomm invitation, could be another type of invitation.`
+    )
+    // We continue, as it could be there's other types of QRs besides DIDComm
+    return null
+  }
 }

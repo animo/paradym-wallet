@@ -95,7 +95,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
             Cancel
           </Button.Text>
         )}
-        <XStack h="$2.5">
+        <XStack maxHeight="$10">
           <AnimatePresence>
             {helpText && (
               <XStack
@@ -108,13 +108,14 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 animation="quick"
                 bg="$warning-500"
                 br="$12"
-                px="$2"
+                px="$4"
+                py="$2"
                 jc="center"
                 ai="center"
                 gap="$2"
               >
                 <AlertOctagon size={16} />
-                <Paragraph variant="text" size="$2">
+                <Paragraph variant="text" size="$2" lineHeight={20}>
                   {helpText}
                 </Paragraph>
               </XStack>
