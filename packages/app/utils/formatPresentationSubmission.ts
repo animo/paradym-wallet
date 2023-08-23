@@ -1,6 +1,6 @@
 import type { PresentationSubmission, SubmissionEntry } from '@internal/openid4vc-client'
 
-import { getCredentialForDisplay } from '@internal/agent'
+import { getW3cCredentialForDisplay } from '@internal/agent'
 
 export interface FormattedSubmission {
   name: string
@@ -19,14 +19,16 @@ export function formatPresentationSubmission(
     return requirement.submission.map((submission: SubmissionEntry) => {
       if (submission.verifiableCredential) {
         // Credential can be satisfied
-        const { display, credential } = getCredentialForDisplay(submission.verifiableCredential)
+        const { display, w3cCredential } = getW3cCredentialForDisplay(
+          submission.verifiableCredential
+        )
         return {
           name: submission.name ?? 'Unknown',
           description: submission.purpose,
           isSatisfied: true,
           credentialName: display.name,
           issuerName: display.issuer.name,
-          requestedAttributes: Object.keys(credential.credentialSubject),
+          requestedAttributes: Object.keys(w3cCredential.credentialSubject),
           backgroundColor: display.backgroundColor,
         }
       }
