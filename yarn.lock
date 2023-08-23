@@ -3252,6 +3252,7 @@ __metadata:
     "@hyperledger/indy-vdr-react-native": ^0.1.0
     "@internal/openid4vc-client": "*"
     "@internal/utils": "*"
+    "@tanstack/react-query": ^4.33.0
     rxjs: ^7.8.1
   peerDependencies:
     "@hyperledger/anoncreds-react-native": ^0.1.0
