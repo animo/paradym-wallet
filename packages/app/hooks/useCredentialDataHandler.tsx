@@ -25,7 +25,7 @@ export const useCredentialDataHandler = () => {
     if (isOpenIdCredentialOffer(dataUrl)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
-        pathname: '/notifications/credential',
+        pathname: '/notifications/openIdCredential',
         query: {
           uri: encodeURIComponent(dataUrl),
         },
@@ -67,7 +67,7 @@ export const useCredentialDataHandler = () => {
       // Credential exchange
       if ('credentialExchangeId' in result) {
         push({
-          pathname: '/notifications/credential',
+          pathname: '/notifications/didCommCredential',
           query: {
             credentialExchangeId: result.credentialExchangeId,
           },

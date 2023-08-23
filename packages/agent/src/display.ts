@@ -1,10 +1,13 @@
+import type { CredentialForDisplayId } from './hooks'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
-import type { W3cCredentialRecord } from '@aries-framework/core'
+import type { CredentialExchangeRecord, W3cCredentialRecord } from '@aries-framework/core'
 import type { OpenId4VcCredentialMetadata } from '@internal/openid4vc-client'
 
 import { ClaimFormat, JsonTransformer } from '@aries-framework/core'
 import { getOpenId4VcCredentialMetadata } from '@internal/openid4vc-client'
 import { sanitizeString, getHostNameFromUrl } from '@internal/utils'
+
+import { getDidCommCredentialExchangeDisplayMetadata } from './didcomm/metadata'
 
 type JffW3cCredentialJson = W3cCredentialJson & {
   name?: string
@@ -28,17 +31,17 @@ export interface DisplayImage {
   altText?: string
 }
 
-export interface W3cCredentialDisplay {
+export interface CredentialDisplay {
   name: string
   locale?: string
   description?: string
   textColor?: string
   backgroundColor?: string
   backgroundImage?: DisplayImage
-  issuer: W3cCredentialIssuerDisplay
+  issuer: CredentialIssuerDisplay
 }
 
-export interface W3cCredentialIssuerDisplay {
+export interface CredentialIssuerDisplay {
   name: string
   locale?: string
   logo?: DisplayImage
@@ -59,8 +62,8 @@ function findDisplay<Display extends { locale?: string }>(
 function getIssuerDisplay(
   credential: W3cCredentialJson,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
-): W3cCredentialIssuerDisplay {
-  const issuerDisplay: Partial<W3cCredentialIssuerDisplay> = {}
+): CredentialIssuerDisplay {
+  const issuerDisplay: Partial<CredentialIssuerDisplay> = {}
 
   // Try to extract from openid metadata first
   if (openId4VcMetadata) {
@@ -120,11 +123,11 @@ function getIssuerDisplay(
   }
 }
 
-export function getCredentialDisplay(
+function getW3cCredentialDisplay(
   credential: W3cCredentialJson,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
 ) {
-  const credentialDisplay: Partial<W3cCredentialDisplay> = {}
+  const credentialDisplay: Partial<CredentialDisplay> = {}
 
   if (openId4VcMetadata) {
     const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
@@ -170,10 +173,28 @@ export function getCredentialDisplay(
   }
 }
 
-export function getCredentialForDisplay(w3cCredentialRecord: W3cCredentialRecord): {
-  credential: W3cCredentialJson
-  display: W3cCredentialDisplay
-} {
+export function getCredentialExchangeForDisplay(
+  credentialExchangeRecord: CredentialExchangeRecord
+) {
+  const didCommDisplayMetadata =
+    getDidCommCredentialExchangeDisplayMetadata(credentialExchangeRecord)
+
+  return {
+    id: `credential-exchange-${credentialExchangeRecord.id}` satisfies CredentialForDisplayId,
+    createdAt: credentialExchangeRecord.createdAt,
+    display: {
+      issuer: {
+        name: didCommDisplayMetadata?.issuerName ?? 'Unknown',
+      },
+      name: didCommDisplayMetadata?.credentialName ?? 'Credential',
+    } as CredentialDisplay,
+    attributes: Object.fromEntries(
+      credentialExchangeRecord.credentialAttributes?.map(({ name, value }) => [name, value]) ?? []
+    ) satisfies Record<string, unknown>,
+  }
+}
+
+export function getW3cCredentialForDisplay(w3cCredentialRecord: W3cCredentialRecord) {
   const credential = JsonTransformer.toJSON(
     w3cCredentialRecord.credential.claimFormat === ClaimFormat.JwtVc
       ? w3cCredentialRecord.credential.credential
@@ -182,13 +203,19 @@ export function getCredentialForDisplay(w3cCredentialRecord: W3cCredentialRecord
 
   const openId4VcMetadata = getOpenId4VcCredentialMetadata(w3cCredentialRecord)
   const issuerDisplay = getIssuerDisplay(credential, openId4VcMetadata)
-  const credentialDisplay = getCredentialDisplay(credential, openId4VcMetadata)
+  const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
 
   return {
+    id: `w3c-credential-${w3cCredentialRecord.id}` satisfies CredentialForDisplayId,
+    createdAt: w3cCredentialRecord.createdAt,
     display: {
       ...credentialDisplay,
       issuer: issuerDisplay,
     },
-    credential,
+    w3cCredential: credential,
+    // FIXME: support credential with multiple subjects
+    attributes: Array.isArray(credential.credentialSubject)
+      ? credential.credentialSubject[0] ?? {}
+      : credential.credentialSubject,
   }
 }

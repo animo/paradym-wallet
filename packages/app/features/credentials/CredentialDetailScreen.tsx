@@ -1,4 +1,6 @@
-import { getCredentialForDisplay, useW3cCredentialRecordById } from '@internal/agent'
+import type { CredentialForDisplayId } from '@internal/agent'
+
+import { useCredentialForDisplayById } from '@internal/agent'
 import { ScrollView, YStack, Spacer } from '@internal/ui'
 import React from 'react'
 import { createParam } from 'solito'
@@ -8,23 +10,23 @@ import CredentialAttributes from 'app/components/CredentialAttributes'
 import CredentialCard from 'app/components/CredentialCard'
 import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
 
-const { useParam } = createParam<{ id: string }>()
+const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
 export function CredentialDetailScreen() {
-  const [id] = useParam('id')
+  const { params } = useParams()
   const router = useRouter()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   // Go back home if no id is provided
-  if (!id) {
+  if (!params.id) {
     router.back()
     return null
   }
 
-  const record = useW3cCredentialRecordById(id)
-  if (!record) return null
+  const credentialForDisplay = useCredentialForDisplayById(params.id)
+  if (!credentialForDisplay) return null
 
-  const { credential, display } = getCredentialForDisplay(record)
+  const { attributes, display } = credentialForDisplay
 
   return (
     <YStack bg="$grey-200" height="100%">
@@ -42,14 +44,7 @@ export function CredentialDetailScreen() {
               subtitle={display.description}
               bgColor={display.backgroundColor}
             />
-            <CredentialAttributes
-              subject={
-                // FIXME: support credential with multiple subjects
-                Array.isArray(credential.credentialSubject)
-                  ? credential.credentialSubject[0] ?? {}
-                  : credential.credentialSubject
-              }
-            />
+            <CredentialAttributes subject={attributes} />
           </YStack>
         </YStack>
       </ScrollView>
