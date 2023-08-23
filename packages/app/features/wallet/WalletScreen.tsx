@@ -1,4 +1,4 @@
-import { getCredentialForDisplay, useW3cCredentialRecords } from '@internal/agent'
+import { useCredentialsForDisplay } from '@internal/agent'
 import {
   AnimatePresence,
   BASE_CREDENTIAL_CARD_HEIGHT,
@@ -27,8 +27,8 @@ import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
 
 export function WalletScreen() {
   const { push } = useRouter()
-  const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
-  const firstThreeRecords = w3cCredentialRecords.slice(0, 3)
+  const { isLoading, credentials } = useCredentialsForDisplay()
+  const firstThreeRecords = credentials.slice(0, 3)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } =
     useScrollViewPosition(HEADER_TITLE_TEXT_HEIGHT)
 
@@ -45,7 +45,7 @@ export function WalletScreen() {
 
   return (
     <YStack bg="$grey-200" height="100%" position="relative">
-      {w3cCredentialRecords.length !== 0 && (
+      {credentials.length !== 0 && (
         <YStack
           zIndex="$5"
           position="absolute"
@@ -90,7 +90,7 @@ export function WalletScreen() {
           )}
         </AnimatePresence>
       </XStack>
-      {w3cCredentialRecords.length === 0 ? (
+      {credentials.length === 0 ? (
         <NoContentWallet />
       ) : (
         <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle} px="$4">
@@ -105,25 +105,24 @@ export function WalletScreen() {
                 BASE_CREDENTIAL_CARD_HEIGHT + firstThreeRecords.length * CREDENTIAL_TOP_INFO_OFFSET
               }
             >
-              {firstThreeRecords.map((credentialRecord, idx) => {
-                const { display } = getCredentialForDisplay(credentialRecord)
+              {firstThreeRecords.map((credential, idx) => {
                 return (
                   <XStack
-                    key={credentialRecord.id}
+                    key={credential.id}
                     mt={CREDENTIAL_TOP_INFO_HEIGHT * idx}
                     br="$8"
                     borderColor="$lightTranslucent"
                     borderWidth={0.5}
                   >
                     <CredentialCard
-                      onPress={() => navigateToCredentialDetail(credentialRecord.id)}
-                      issuerImage={display.issuer.logo}
-                      backgroundImage={display.backgroundImage}
-                      textColor={display.textColor}
-                      name={display.name}
-                      issuerName={display.issuer.name}
-                      subtitle={display.description}
-                      bgColor={display.backgroundColor}
+                      onPress={() => navigateToCredentialDetail(credential.id)}
+                      issuerImage={credential.display.issuer.logo}
+                      backgroundImage={credential.display.backgroundImage}
+                      textColor={credential.display.textColor}
+                      name={credential.display.name}
+                      issuerName={credential.display.issuer.name}
+                      subtitle={credential.display.description}
+                      bgColor={credential.display.backgroundColor}
                       shadow={false}
                     />
                   </XStack>
@@ -136,18 +135,15 @@ export function WalletScreen() {
               Credentials
             </Heading>
             <TableContainer>
-              {w3cCredentialRecords.map((credentialRecord, idx) => {
-                const { display } = getCredentialForDisplay(credentialRecord)
+              {credentials.map((credential, idx) => {
                 return (
                   <CredentialRowCard
-                    key={credentialRecord.id}
-                    name={display.name}
-                    issuer={display.issuer.name}
-                    bgColor={display.backgroundColor}
-                    onPress={() => navigateToCredentialDetail(credentialRecord.id)}
-                    hideBorder={
-                      w3cCredentialRecords.length === 1 || idx === w3cCredentialRecords.length - 1
-                    }
+                    key={credential.id}
+                    name={credential.display.name}
+                    issuer={credential.display.issuer.name}
+                    bgColor={credential.display.backgroundColor}
+                    onPress={() => navigateToCredentialDetail(credential.id)}
+                    hideBorder={credentials.length === 1 || idx === credentials.length - 1}
                   />
                 )
               })}

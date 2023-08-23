@@ -13,7 +13,9 @@
     "@aries-framework/react-hooks": "0.4.2",
     "@aries-framework/react-native": "0.4.1-alpha.31",
     "@internal/openid4vc-client": "*",
-    "@internal/utils": "*"
+    "@internal/utils": "*",
+    "@tanstack/react-query": "^4.33.0",
+    "rxjs": "^7.8.1"
   },
   "peerDependencies": {
     "@hyperledger/anoncreds-react-native": "^0.1.0",
