@@ -37,7 +37,7 @@ export const useCredentialDataHandler = () => {
     } else if (isOpenIdPresentationRequest(dataUrl)) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
-        pathname: '/notifications/presentation',
+        pathname: '/notifications/openIdPresentation',
         query: {
           uri: encodeURIComponent(dataUrl),
         },
@@ -74,11 +74,11 @@ export const useCredentialDataHandler = () => {
         })
       }
       // Proof Exchange
-      else if ('presentationExchangeId' in result) {
+      else if ('proofExchangeId' in result) {
         push({
-          pathname: '/notifications/presentation',
+          pathname: '/notifications/didCommPresentation',
           query: {
-            presentationExchangeId: result.presentationExchangeId,
+            proofExchangeId: result.proofExchangeId,
           },
         })
       }
