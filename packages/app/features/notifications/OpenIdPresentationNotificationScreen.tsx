@@ -1,4 +1,9 @@
-import { getCredentialsForProofRequest, shareProof, useAgent } from '@internal/agent'
+import {
+  getCredentialsForProofRequest,
+  shareProof,
+  useAgent,
+  formatW3cPresentationSubmission,
+} from '@internal/agent'
 import { useToastController, Spinner, Page, Paragraph } from '@internal/ui'
 import React, { useEffect, useState, useMemo } from 'react'
 import { createParam } from 'solito'
@@ -6,7 +11,6 @@ import { useRouter } from 'solito/router'
 
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
-import { formatW3cPresentationSubmission } from 'app/utils'
 type Query = { uri: string }
 
 const { useParam } = createParam<Query>()

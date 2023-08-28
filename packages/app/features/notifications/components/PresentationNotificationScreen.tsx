@@ -1,4 +1,4 @@
-import type { FormattedSubmission } from 'app/utils'
+import type { FormattedSubmission } from '@internal/agent'
 
 import { YStack, Heading, Button, ScrollView, Spinner, Paragraph } from '@internal/ui'
 import { sanitizeString } from '@internal/utils'
