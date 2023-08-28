@@ -3,3 +3,8 @@ export * from './providers'
 export * from './parsers'
 export * from './display'
 export * from './hooks'
+export {
+  FormattedSubmission,
+  FormattedSubmissionEntry,
+  formatW3cPresentationSubmission,
+} from './format/formatPresentation'
