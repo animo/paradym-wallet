@@ -6,6 +6,5 @@ export * from './hooks'
 export {
   FormattedSubmission,
   FormattedSubmissionEntry,
-  formatAnonCredsSubmission,
   formatW3cPresentationSubmission,
 } from './format/formatPresentation'
