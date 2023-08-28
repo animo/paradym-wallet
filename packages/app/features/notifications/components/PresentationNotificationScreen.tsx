@@ -11,7 +11,7 @@ interface PresentationNotificationScreenProps {
   isAccepting?: boolean
   onAccept: () => void
   onDecline: () => void
-  verifierName: string
+  verifierName?: string
 }
 
 export function PresentationNotificationScreen({
@@ -34,7 +34,7 @@ export function PresentationNotificationScreen({
         <YStack g="xl">
           <YStack ai="center" jc="center" gap="$4">
             <Heading variant="h2" ta="center" px="$4">
-              You have received an information request from {verifierName}.
+              You have received an information request{verifierName ? ` from ${verifierName}` : ''}.
             </Heading>
             {submission.purpose && (
               <Paragraph variant="sub" ta="center" mx="$3" numberOfLines={3} secondary>
