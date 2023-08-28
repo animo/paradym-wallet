@@ -8,3 +8,4 @@ export {
   FormattedSubmissionEntry,
   formatW3cPresentationSubmission,
 } from './format/formatPresentation'
+export * from './mediation'
