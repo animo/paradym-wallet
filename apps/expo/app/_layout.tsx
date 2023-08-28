@@ -1,7 +1,7 @@
 import type { AppAgent } from '@internal/agent'
 
 import { AgentProvider, initializeAgent } from '@internal/agent'
-import { Heading, Page, Paragraph, XStack, YStack, useToastController } from '@internal/ui'
+import { Heading, Page, Paragraph, XStack, YStack, useToastController, config } from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useTransparentNavigationBar } from 'app/hooks/useTransparentNavigationBar'
 import { Provider } from 'app/provider'
@@ -125,8 +125,20 @@ export default function HomeLayout() {
               <Stack.Screen
                 options={{
                   headerShown: true,
+                  headerStyle: {
+                    backgroundColor: config.tokens.color['grey-200'].val,
+                  },
+                  headerShadowVisible: false,
+                  headerTintColor: config.tokens.color['primary-500'].val,
+                  headerTitle: 'Inbox',
+                }}
+                name="notifications/inbox"
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: true,
                   headerTransparent: true,
-                  headerTintColor: '#5A33F6',
+                  headerTintColor: config.tokens.color['primary-500'].val,
                   headerTitle: '',
                 }}
                 name="credentials/[id]"
