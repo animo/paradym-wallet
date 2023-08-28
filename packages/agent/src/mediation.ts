@@ -3,24 +3,27 @@ import type { AppAgent } from './agent'
 import { AriesFrameworkError, MediatorPickupStrategy } from '@aries-framework/core'
 import { useEffect } from 'react'
 
-import { useAgent } from './agent'
-
 /**
  * Check whether a default mediator is configued
  */
 export async function hasMediationConfigured(agent: AppAgent) {
   const mediationRecord = await agent.mediationRecipient.findDefaultMediator()
 
-  mediationRecord !== null
+  return mediationRecord !== null
 }
 
 /**
  * Create connection to mediator and request mediation.
+ *
+ * This connects based on an invitation url
  */
-export async function setupMediation(agent: AppAgent, mediatorInvitationUrl: string) {
+export async function setupMediationWithInvitationUrl(
+  agent: AppAgent,
+  mediatorInvitationUrl: string
+) {
   const outOfBandInvitation = await agent.oob.parseInvitation(mediatorInvitationUrl)
   const outOfBandRecord = await agent.oob.findByReceivedInvitationId(outOfBandInvitation.id)
-  const [connection] = outOfBandRecord
+  let [connection] = outOfBandRecord
     ? await agent.connections.findAllByOutOfBandId(outOfBandRecord.id)
     : []
 
@@ -42,7 +45,45 @@ export async function setupMediation(agent: AppAgent, mediatorInvitationUrl: str
       throw new AriesFrameworkError('No connection record to provision mediation.')
     }
 
-    return agent.connections.returnWhenIsConnected(newConnection.id)
+    connection = newConnection
+  }
+
+  const readyConnection = connection.isReady
+    ? connection
+    : await agent.connections.returnWhenIsConnected(connection.id)
+
+  return agent.mediationRecipient.provision(readyConnection)
+}
+
+/**
+ * Create connection to mediator and request mediation.
+ *
+ * This connects based on a did
+ */
+export async function setupMediationWithDid(agent: AppAgent, mediatorDid: string) {
+  // If the invitation is a did, the invitation id is the did
+  const outOfBandRecord = await agent.oob.findByReceivedInvitationId(mediatorDid)
+  let [connection] = outOfBandRecord
+    ? await agent.connections.findAllByOutOfBandId(outOfBandRecord.id)
+    : []
+
+  if (!connection) {
+    agent.config.logger.debug('Mediation connection does not exist, creating connection')
+    // We don't want to use the current default mediator when connecting to another mediator
+    const routing = await agent.mediationRecipient.getRouting({ useDefaultMediator: false })
+
+    agent.config.logger.debug('Routing created', routing)
+    const { connectionRecord: newConnection } = await agent.oob.receiveImplicitInvitation({
+      did: mediatorDid,
+      routing,
+    })
+    agent.config.logger.debug(`Mediation invitation processed`, { mediatorDid })
+
+    if (!newConnection) {
+      throw new AriesFrameworkError('No connection record to provision mediation.')
+    }
+
+    connection = newConnection
   }
 
   const readyConnection = connection.isReady
@@ -78,12 +119,20 @@ async function stopMessagePickup(agent: AppAgent) {
  * You can use the `isEnabled` config property to enable/disable message pickup.
  * This is useful if e.g. there's no internet connection, or mediation has not been setup yet
  */
-export function useMessagePickup({ isEnabled = true }: { isEnabled?: boolean }) {
-  const { agent } = useAgent()
-
+export function useMessagePickup({
+  isEnabled = true,
+  agent,
+}: {
+  isEnabled?: boolean
+  agent?: AppAgent
+}) {
   useEffect(() => {
+    // If no agent, do nothing
+    if (!agent) return
     // Do not pickup messages if not enabled
     if (!isEnabled) return
+
+    agent.config.logger.debug('Initiating message pickup.')
 
     void initiateMessagePickup(agent)
 
@@ -91,5 +140,5 @@ export function useMessagePickup({ isEnabled = true }: { isEnabled?: boolean }) 
     return () => {
       void stopMessagePickup(agent)
     }
-  }, [isEnabled])
+  }, [isEnabled, agent])
 }
