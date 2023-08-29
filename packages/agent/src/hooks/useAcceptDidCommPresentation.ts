@@ -167,7 +167,7 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
     status,
     proofExchange,
     submission: data,
-    verifierName: connection?.theirLabel ?? 'Unknown',
+    verifierName: connection?.theirLabel,
   }
 }
 

@@ -3,6 +3,7 @@ import type { PropsWithChildren } from 'react'
 
 import NativeAgentProvider from '@aries-framework/react-hooks'
 
+import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
 import { W3cCredentialRecordProvider } from './W3cCredentialsProvider'
 
 export interface AgentProviderProps {
@@ -11,6 +12,8 @@ export interface AgentProviderProps {
 
 export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProviderProps>) => (
   <NativeAgentProvider agent={agent}>
-    <W3cCredentialRecordProvider agent={agent}>{children}</W3cCredentialRecordProvider>
+    <W3cCredentialRecordProvider agent={agent}>
+      <ExchangeRecordDisplayMetadataProvider>{children}</ExchangeRecordDisplayMetadataProvider>
+    </W3cCredentialRecordProvider>
   </NativeAgentProvider>
 )

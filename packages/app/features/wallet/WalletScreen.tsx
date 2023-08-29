@@ -21,6 +21,7 @@ import { useRouter } from 'solito/router'
 
 import CredentialCard from 'app/components/CredentialCard'
 import CredentialRowCard from 'app/components/CredentialRowCard'
+import InboxIcon from 'app/components/InboxIcon'
 import NoContentWallet from 'app/components/NoContentWallet'
 import { useNetworkCallback } from 'app/hooks/useNetworkCallback'
 import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
@@ -64,7 +65,16 @@ export function WalletScreen() {
           <Scan color="$grey-100" />
         </YStack>
       )}
-      <XStack h="$4" jc="center" px="$4" py="$2" border={isScrolledByOffset} borderTopWidth={0}>
+      <XStack
+        h="$4"
+        jc="space-between"
+        px="$4"
+        py="$2"
+        border={isScrolledByOffset}
+        borderTopWidth={0}
+      >
+        {/* XStack here so the other items are rendered center and right due to flex */}
+        <XStack width="$2" />
         <AnimatePresence exitBeforeEnter>
           {isScrolledByOffset ? (
             <Paragraph
@@ -84,11 +94,15 @@ export function WalletScreen() {
               exitStyle={{ opacity: 0 }}
               opacity={1}
               animation="medium"
+              alignItems="center"
             >
               <Logo />
             </XStack>
           )}
         </AnimatePresence>
+        <XStack width="$2" alignItems="center">
+          <InboxIcon />
+        </XStack>
       </XStack>
       {credentials.length === 0 ? (
         <NoContentWallet />

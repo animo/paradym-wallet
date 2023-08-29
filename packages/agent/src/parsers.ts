@@ -136,9 +136,7 @@ export const getCredentialsForProofRequest = async ({
 
   return {
     ...results,
-    verifierHostName: getHostNameFromUrl(
-      results.verifiedAuthorizationRequest.redirectURI
-    ) as string,
+    verifierHostName: getHostNameFromUrl(results.verifiedAuthorizationRequest.redirectURI),
   }
 }
 
