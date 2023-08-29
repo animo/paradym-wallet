@@ -6,4 +6,5 @@ export {
   FileBadge,
   CornerDownRight,
   AlertOctagon,
+  Inbox,
 } from '@tamagui/lucide-icons'

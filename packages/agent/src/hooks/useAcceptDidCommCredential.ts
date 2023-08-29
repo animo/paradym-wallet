@@ -1,16 +1,13 @@
-import type { CredentialExchangeRecord, CredentialStateChangedEvent } from '@aries-framework/core'
+import type { CredentialStateChangedEvent } from '@aries-framework/core'
 
 import { CredentialState, CredentialEventTypes } from '@aries-framework/core'
-import { useConnectionById, useCredentialById } from '@aries-framework/react-hooks'
+import { useCredentialById } from '@aries-framework/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 
 import { useAgent } from '../agent'
-import {
-  getDidCommCredentialExchangeDisplayMetadata,
-  setDidCommCredentialExchangeMetadata,
-} from '../didcomm/metadata'
+import { getDidCommCredentialExchangeDisplayMetadata } from '../didcomm/metadata'
 
 function useOfferAttributes(credentialExchangeId: string) {
   const { agent } = useAgent()
@@ -39,58 +36,11 @@ function useOfferAttributes(credentialExchangeId: string) {
   }
 }
 
-function useDidCommCredentialDisplayMetadata(
-  credentialExchangeRecord?: CredentialExchangeRecord,
-  schemaId?: string
-) {
-  const { agent } = useAgent()
-
-  // TODO: we should also fetch the oob record for a label for connectionless exchanges
-  const connectionRecord = useConnectionById(credentialExchangeRecord?.connectionId ?? '')
-
-  const { data, status } = useQuery({
-    enabled: credentialExchangeRecord !== undefined && schemaId !== undefined,
-    queryKey: ['didCommCredentialDisplayMetadata', credentialExchangeRecord?.id, schemaId],
-    queryFn: async () => {
-      if (!credentialExchangeRecord || !schemaId) return undefined
-      const metadata = getDidCommCredentialExchangeDisplayMetadata(credentialExchangeRecord)
-      if (metadata) {
-        return metadata
-      }
-
-      const issuerName = connectionRecord?.theirLabel
-      const schemaResult = await agent.modules.anoncreds.getSchema(schemaId)
-      const schemaName = schemaResult.schema?.name
-
-      // Update the metadata on the record for future use
-      if (issuerName || schemaName) {
-        setDidCommCredentialExchangeMetadata(credentialExchangeRecord, {
-          issuerName,
-          credentialName: schemaName,
-        })
-        await agent.credentials.update(credentialExchangeRecord)
-      }
-
-      return {
-        issuerName: connectionRecord?.theirLabel,
-        credentialName: schemaName,
-      }
-    },
-  })
-
-  return {
-    display: data,
-    status,
-  }
-}
-
 export function useAcceptDidCommCredential(credentialExchangeId: string) {
   const { agent } = useAgent()
 
   const credentialExchange = useCredentialById(credentialExchangeId)
   const { data } = useOfferAttributes(credentialExchangeId)
-  const { display: didcommDisplayMetadata, status: displayMetadataStatus } =
-    useDidCommCredentialDisplayMetadata(credentialExchange, data?.schemaId)
 
   const { mutateAsync, status } = useMutation({
     mutationKey: ['acceptDidCommCredential', credentialExchangeId],
@@ -118,19 +68,20 @@ export function useAcceptDidCommCredential(credentialExchangeId: string) {
     },
   })
 
+  const didcommDisplayMetadata = credentialExchange
+    ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
+    : undefined
+
   return {
     acceptCredential: mutateAsync,
     status,
     credentialExchange,
-    display:
-      displayMetadataStatus === 'loading'
-        ? undefined
-        : {
-            issuer: {
-              name: didcommDisplayMetadata?.issuerName ?? 'Unknown',
-            },
-            name: didcommDisplayMetadata?.credentialName ?? 'Credential',
-          },
+    display: {
+      issuer: {
+        name: didcommDisplayMetadata?.issuerName ?? 'Unknown',
+      },
+      name: didcommDisplayMetadata?.credentialName ?? 'Credential',
+    },
     attributes: data?.attributes,
   }
 }
