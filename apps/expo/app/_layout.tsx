@@ -44,6 +44,7 @@ export default function HomeLayout() {
   const [agentInitializationFailed, setAgentInitializationFailed] = useState(false)
   const toast = useToastController()
   const { top } = useSafeAreaInsets()
+  const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
   useTransparentNavigationBar()
 
   // Enable message pickup when mediation is configured and internet connection is available
@@ -79,17 +80,24 @@ export default function HomeLayout() {
   useEffect(() => {
     if (!agent) return
     if (!hasInternetConnection || isMediationConfigured) return
+    if (isSettingUpMediation) return
 
-    void hasMediationConfigured(agent).then(async (mediationConfigured) => {
-      // TODO: replace with setupMediationWithDid, once mediator has been setup
-      if (!mediationConfigured) {
-        agent.config.logger.debug('Mediation not configured yet.')
-        await setupMediationWithInvitationUrl(agent, mediatorInvitationUrl)
-      }
+    setIsSettingUpMediation(true)
 
-      agent.config.logger.info("Mediation configured. You're ready to go!")
-      setIsMediationConfigured(true)
-    })
+    void hasMediationConfigured(agent)
+      .then(async (mediationConfigured) => {
+        // TODO: replace with setupMediationWithDid, once mediator has been setup
+        if (!mediationConfigured) {
+          agent.config.logger.debug('Mediation not configured yet.')
+          await setupMediationWithInvitationUrl(agent, mediatorInvitationUrl)
+        }
+
+        agent.config.logger.info("Mediation configured. You're ready to go!")
+        setIsMediationConfigured(true)
+      })
+      .finally(() => {
+        setIsSettingUpMediation(false)
+      })
   }, [hasInternetConnection, agent, isMediationConfigured])
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
