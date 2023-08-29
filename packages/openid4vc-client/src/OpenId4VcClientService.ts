@@ -500,6 +500,9 @@ export class OpenId4VcClientService {
     }
 
     if (!result || !result.isValid) {
+      agentContext.config.logger.error('Failed to validate credential', {
+        result,
+      })
       throw new AriesFrameworkError(
         `Failed to validate credential, error = ${result.error?.message ?? 'Unknown'}`
       )

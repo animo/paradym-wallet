@@ -41,6 +41,9 @@ export function OpenIdCredentialNotificationScreen() {
         })
         setCredentialRecord(record)
       } catch (e) {
+        agent.config.logger.error("Couldn't receive credential from OpenID4VCI offer", {
+          error: e as unknown,
+        })
         toast.show('Credential information could not be extracted.')
         pushToWallet()
       }

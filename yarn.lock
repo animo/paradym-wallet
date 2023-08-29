@@ -27,40 +27,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/anoncreds-rs@npm:0.4.1-alpha.31":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/anoncreds-rs@npm:0.4.1-alpha.31"
+"@aries-framework/anoncreds-rs@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/anoncreds-rs@npm:0.4.1"
   dependencies:
-    "@aries-framework/anoncreds": 0.4.1-alpha.31+93276deb
-    "@aries-framework/core": 0.4.1-alpha.31+93276deb
+    "@aries-framework/anoncreds": 0.4.1
+    "@aries-framework/core": 0.4.1
     class-transformer: ^0.5.1
     class-validator: 0.14.0
     rxjs: ^7.2.0
     tsyringe: ^4.7.0
   peerDependencies:
     "@hyperledger/anoncreds-shared": ^0.1.0
-  checksum: e8611c64eaa24e7535de08a9756274fb89daf021434692f4e0d2c10ff1291c8e012b30a895b125c548727214c9121167d0b24d413541388ea1e2d9bb612bd856
+  checksum: 6f1d100d549988c3f2f45a96c1db4e1d3808c715ecf451cc9649d0e4fabc28b354f453edb59b08536e00dfc17a2cff1b67236bb1370a7e8243b2331bb4a4c8d5
   languageName: node
   linkType: hard
 
-"@aries-framework/anoncreds@npm:0.4.1-alpha.31, @aries-framework/anoncreds@npm:0.4.1-alpha.31+93276deb":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/anoncreds@npm:0.4.1-alpha.31"
+"@aries-framework/anoncreds@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/anoncreds@npm:0.4.1"
   dependencies:
-    "@aries-framework/core": 0.4.1-alpha.31+93276deb
+    "@aries-framework/core": 0.4.1
     bn.js: ^5.2.1
     class-transformer: 0.5.1
     class-validator: 0.14.0
     reflect-metadata: ^0.1.13
-  checksum: 70aa66462fca531e984031cbff16838fd32dbedfb2accb5883b13056aafa1b58ec717a3bec7482c46320b6971c5056fb9bde14b1c397ac2abe1acec0ee87338f
+  checksum: ae0bcf4987bd0c0d60dfb9b9bfa9f4f3129aa84b5b7c52dc49dcd8e2a8a4b68f58aebc13144bb53b8a8e98920a45c5cdf7f5f3dfc2dea5c5bbcc70a992a00873
   languageName: node
   linkType: hard
 
-"@aries-framework/askar@npm:0.4.1-alpha.31":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/askar@npm:0.4.1-alpha.31"
+"@aries-framework/askar@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/askar@npm:0.4.1"
   dependencies:
-    "@aries-framework/core": 0.4.1-alpha.31+93276deb
+    "@aries-framework/core": 0.4.1
     bn.js: ^5.2.1
     class-transformer: 0.5.1
     class-validator: 0.14.0
@@ -68,16 +68,16 @@ __metadata:
     tsyringe: ^4.7.0
   peerDependencies:
     "@hyperledger/aries-askar-shared": ^0.1.0
-  checksum: 7d9167c581f63aaaf0a4b304934f6280d18135b2fc98e4ad16e9d5d928a5ef5768abb52d7822ff56d3104e4b99baf22c3eea7172c0ed81f3c95a0a4b0acfb025
+  checksum: b57f73895a947f448588494ac3d972106cce5aa4e154c87b372ce72e094b49a2c8fd73428066609c5de66f8fcfcf1230a61c318cd7992ec05c4b1657abd8e5ab
   languageName: node
   linkType: hard
 
-"@aries-framework/cheqd@npm:0.4.1-alpha.31":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/cheqd@npm:0.4.1-alpha.31"
+"@aries-framework/cheqd@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/cheqd@npm:0.4.1"
   dependencies:
-    "@aries-framework/anoncreds": 0.4.1-alpha.31+93276deb
-    "@aries-framework/core": 0.4.1-alpha.31+93276deb
+    "@aries-framework/anoncreds": 0.4.1
+    "@aries-framework/core": 0.4.1
     "@cheqd/sdk": cjs
     "@cheqd/ts-proto": cjs
     "@cosmjs/crypto": ^0.29.5
@@ -87,13 +87,13 @@ __metadata:
     class-validator: ^0.14.0
     rxjs: ^7.2.0
     tsyringe: ^4.7.0
-  checksum: b69736eab8ab924c5b56113b53b877097cadd54dba6c36ee25c507fff9a0fd1df0b4beab62110bb3a59637c76ab3e9bc5b6482df7752dca9d3195786136b95fa
+  checksum: 46ed64b9c8f1d85cf060ace4084b960ab5f680755b3081a169107208273d3a24ec86472843590e86b8cc07fad5b2fda5b82bc6cb8e3aed2f3b82c189cc0b5639
   languageName: node
   linkType: hard
 
-"@aries-framework/core@npm:0.4.1-alpha.31, @aries-framework/core@npm:0.4.1-alpha.31+93276deb":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/core@npm:0.4.1-alpha.31"
+"@aries-framework/core@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/core@npm:0.4.1"
   dependencies:
     "@digitalcredentials/jsonld": ^5.2.1
     "@digitalcredentials/jsonld-signatures": ^9.3.1
@@ -122,34 +122,34 @@ __metadata:
     uuid: ^9.0.0
     varint: ^6.0.0
     web-did-resolver: ^2.0.21
-  checksum: 8d1a2655e71305600904ac892b09501a7aa73d491b745f5f910231e3d051b1d351b36ad240e9bda7dc906ec89f8a808317b808560731ff63092acb9f98256409
+  checksum: 23e9c732761ed0e23702cbfc50d889c85264444291a4ebc481a84ac8ace80741c1458836d9c5a09e62ff928a80323e493063fec8b898e730a69c6f623c35c216
   languageName: node
   linkType: hard
 
-"@aries-framework/indy-vdr@npm:0.4.1-alpha.31":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/indy-vdr@npm:0.4.1-alpha.31"
+"@aries-framework/indy-vdr@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/indy-vdr@npm:0.4.1"
   dependencies:
-    "@aries-framework/anoncreds": 0.4.1-alpha.31+93276deb
-    "@aries-framework/core": 0.4.1-alpha.31+93276deb
+    "@aries-framework/anoncreds": 0.4.1
+    "@aries-framework/core": 0.4.1
   peerDependencies:
     "@hyperledger/indy-vdr-shared": ^0.1.0
-  checksum: c42ab2dea14cf03f93179c4440f88fa3a527c5d1113635f103e0e8c8d6fe2c806bbb5a602e3645a7965c0ee627b116dba92bb0ab02a49a5e10ad0f1962fdb115
+  checksum: 23cec06749e1831561924bda53586baf56e516af26c9c720ff273b849a5ec4111833c8bd7935879dd6bc796c0c30f6cc3f7c2ed82b2daf6900dceb1e0b51bc8e
   languageName: node
   linkType: hard
 
-"@aries-framework/node@npm:0.4.1-alpha.31":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/node@npm:0.4.1-alpha.31"
+"@aries-framework/node@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/node@npm:0.4.1"
   dependencies:
-    "@aries-framework/core": 0.4.1-alpha.31+93276deb
+    "@aries-framework/core": 0.4.1
     "@types/express": ^4.17.15
     express: ^4.17.1
     ffi-napi: ^4.0.3
     node-fetch: ^2.6.1
     ref-napi: ^3.0.3
     ws: ^8.13.0
-  checksum: b2c846bdde68caf00b4ad94cae67270840983d307464fe4cb56e4cbcb24679fcdd5ac4bd27024dcc701b54e0c7f76603a61d5ed2c15124504d35ce86b02beb12
+  checksum: 43b815e4b6898371660c7268dc9aeeaa06a631d27366c907be5bfb0ef5448c84fbc528ae64c88b2c25888db6e8fc0b79ca3e36374b6d152af7148f532313697b
   languageName: node
   linkType: hard
 
@@ -165,18 +165,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aries-framework/react-native@npm:0.4.1-alpha.31":
-  version: 0.4.1-alpha.31
-  resolution: "@aries-framework/react-native@npm:0.4.1-alpha.31"
+"@aries-framework/react-native@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@aries-framework/react-native@npm:0.4.1"
   dependencies:
-    "@aries-framework/core": 0.4.1-alpha.31+93276deb
+    "@aries-framework/core": 0.4.1
     "@azure/core-asynciterator-polyfill": ^1.0.2
     events: ^3.3.0
   peerDependencies:
     react-native: ^0.71.4
     react-native-fs: ^2.20.0
     react-native-get-random-values: ^1.8.0
-  checksum: 1e5f67a116692a754c66f90236d4a7b7ef43ce148e3a22e3b28184be3bded8fc325f3a506ffed9d2ee2bd562fe658a8500ad02597b5834b5f11cbaff0a1fc21e
+  checksum: 1d7d24241025d24a4a3ad73c5c3db5ebd454e484205d7a8c405b02b3e53bef0dc2dfb5ef34c2df750fda130bc86ae5ad45790fdfc9eafd034998819585ec6156
   languageName: node
   linkType: hard
 
@@ -3239,14 +3239,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/agent@workspace:packages/agent"
   dependencies:
-    "@aries-framework/anoncreds": 0.4.1-alpha.31
-    "@aries-framework/anoncreds-rs": 0.4.1-alpha.31
-    "@aries-framework/askar": 0.4.1-alpha.31
-    "@aries-framework/cheqd": 0.4.1-alpha.31
-    "@aries-framework/core": 0.4.1-alpha.31
-    "@aries-framework/indy-vdr": 0.4.1-alpha.31
+    "@aries-framework/anoncreds": 0.4.1
+    "@aries-framework/anoncreds-rs": 0.4.1
+    "@aries-framework/askar": 0.4.1
+    "@aries-framework/cheqd": 0.4.1
+    "@aries-framework/core": 0.4.1
+    "@aries-framework/indy-vdr": 0.4.1
     "@aries-framework/react-hooks": 0.4.2
-    "@aries-framework/react-native": 0.4.1-alpha.31
+    "@aries-framework/react-native": 0.4.1
     "@hyperledger/anoncreds-react-native": ^0.1.0
     "@hyperledger/aries-askar-react-native": 0.1.0
     "@hyperledger/indy-vdr-react-native": ^0.1.0
@@ -3265,9 +3265,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@internal/openid4vc-client@workspace:packages/openid4vc-client"
   dependencies:
-    "@aries-framework/askar": 0.4.1-alpha.31
-    "@aries-framework/core": 0.4.1-alpha.31
-    "@aries-framework/node": 0.4.1-alpha.31
+    "@aries-framework/askar": 0.4.1
+    "@aries-framework/core": 0.4.1
+    "@aries-framework/node": 0.4.1
     "@hyperledger/aries-askar-nodejs": ^0.1.0
     "@sphereon/did-auth-siop": 0.3.2-unstable.0
     "@sphereon/oid4vci-client": "file:./sphereon-oid4vci-client-v0.5.1.tgz"
