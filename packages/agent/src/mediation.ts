@@ -15,49 +15,6 @@ export async function hasMediationConfigured(agent: AppAgent) {
 /**
  * Create connection to mediator and request mediation.
  *
- * This connects based on an invitation url
- */
-export async function setupMediationWithInvitationUrl(
-  agent: AppAgent,
-  mediatorInvitationUrl: string
-) {
-  const outOfBandInvitation = await agent.oob.parseInvitation(mediatorInvitationUrl)
-  const outOfBandRecord = await agent.oob.findByReceivedInvitationId(outOfBandInvitation.id)
-  let [connection] = outOfBandRecord
-    ? await agent.connections.findAllByOutOfBandId(outOfBandRecord.id)
-    : []
-
-  if (!connection) {
-    agent.config.logger.debug('Mediation connection does not exist, creating connection')
-    // We don't want to use the current default mediator when connecting to another mediator
-    const routing = await agent.mediationRecipient.getRouting({ useDefaultMediator: false })
-
-    agent.config.logger.debug('Routing created', routing)
-    const { connectionRecord: newConnection } = await agent.oob.receiveInvitation(
-      outOfBandInvitation,
-      {
-        routing,
-      }
-    )
-    agent.config.logger.debug(`Mediation invitation processed`, { outOfBandInvitation })
-
-    if (!newConnection) {
-      throw new AriesFrameworkError('No connection record to provision mediation.')
-    }
-
-    connection = newConnection
-  }
-
-  const readyConnection = connection.isReady
-    ? connection
-    : await agent.connections.returnWhenIsConnected(connection.id)
-
-  return agent.mediationRecipient.provision(readyConnection)
-}
-
-/**
- * Create connection to mediator and request mediation.
- *
  * This connects based on a did
  */
 export async function setupMediationWithDid(agent: AppAgent, mediatorDid: string) {
