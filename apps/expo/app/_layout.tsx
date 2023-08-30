@@ -1,10 +1,10 @@
 import type { AppAgent } from '@internal/agent'
 
 import {
+  setupMediationWithDid,
   AgentProvider,
   hasMediationConfigured,
   initializeAgent,
-  setupMediationWithInvitationUrl,
   useMessagePickup,
 } from '@internal/agent'
 import { config, Heading, Page, Paragraph, useToastController, XStack, YStack } from '@internal/ui'
@@ -20,7 +20,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { mediatorInvitationUrl } from '../constants'
+import { mediatorDid } from '../constants'
 import { DeeplinkHandler } from '../utils/DeeplinkHandler'
 import { getSecureWalletKey } from '../utils/walletKeyStore'
 
@@ -86,10 +86,9 @@ export default function HomeLayout() {
 
     void hasMediationConfigured(agent)
       .then(async (mediationConfigured) => {
-        // TODO: replace with setupMediationWithDid, once mediator has been setup
         if (!mediationConfigured) {
           agent.config.logger.debug('Mediation not configured yet.')
-          await setupMediationWithInvitationUrl(agent, mediatorInvitationUrl)
+          await setupMediationWithDid(agent, mediatorDid)
         }
 
         agent.config.logger.info("Mediation configured. You're ready to go!")
