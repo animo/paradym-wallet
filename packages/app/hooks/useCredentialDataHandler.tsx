@@ -10,12 +10,12 @@ import { useRouter } from 'solito/router'
 
 type CredentialDataOutputResult =
   | {
-      result: 'success'
-    }
+    result: 'success'
+  }
   | {
-      result: 'error'
-      message: string
-    }
+    result: 'error'
+    message: string
+  }
 
 export const useCredentialDataHandler = () => {
   const { push } = useRouter()
@@ -86,7 +86,7 @@ export const useCredentialDataHandler = () => {
 
     return {
       result: 'error',
-      message: 'Schema not supported.',
+      message: 'QR Code not recognized.',
     }
   }
 

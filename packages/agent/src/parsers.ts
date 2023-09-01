@@ -1,9 +1,11 @@
 import type { AppAgent } from './agent'
 import type {
+  ConnectionRecord,
   CredentialStateChangedEvent,
   JwkDidCreateOptions,
   KeyDidCreateOptions,
   OutOfBandInvitation,
+  OutOfBandRecord,
   ProofStateChangedEvent,
   W3cCredentialRecord,
 } from '@aries-framework/core'
@@ -73,8 +75,8 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         supportsAllDidMethods || supportedDidMethods.includes('did:jwk')
           ? 'jwk'
           : supportedDidMethods.includes('did:key')
-          ? 'key'
-          : undefined
+            ? 'key'
+            : undefined
 
       if (!didMethod) {
         throw new Error(
@@ -259,12 +261,24 @@ export async function receiveOutOfBandInvitation(
     )
   )
 
-  const { connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
-    reuseConnection: true,
-  })
+  let connectionRecord: ConnectionRecord | undefined, outOfBandRecord: OutOfBandRecord
 
-  // Assign connectionId so it can be used in the observables.
-  connectionId = connectionRecord?.id
+  try {
+
+    ({ connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
+      reuseConnection: true,
+    }))
+
+    // Assign connectionId so it can be used in the observables.
+    connectionId = connectionRecord?.id
+  } catch (error) {
+    agent.config.logger.error(`Error while receiving invitation: ${error.message}`)
+    return {
+      result: 'error',
+      message: "Invitation has already been scanned.",
+    }
+  }
+
 
   try {
     const event = await eventPromise

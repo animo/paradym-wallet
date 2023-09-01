@@ -1,65 +1,48 @@
 import { QrScanner } from '@internal/scanner'
 import { Page, Spinner, Paragraph } from '@internal/ui'
 import * as Haptics from 'expo-haptics'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { useCredentialDataHandler } from 'app/hooks/useCredentialDataHandler'
 import { isAndroid } from 'app/utils/platform'
+import { sleep } from '@tanstack/query-core/build/lib/utils'
+
+const unsupportedUrlPrefixes = ['_oob=']
 
 export function QrScannerScreen() {
   const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
 
-  const [scannedData, setScannedData] = useState('')
   const [helpText, setHelpText] = useState('')
-  const [isScanModalFocused, setIsScanModalFocused] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [scannedInvalidQrs, setScannedInvalidQrs] = useState<string[]>([])
 
-  const unsupportedUrlPrefixes = ['_oob=']
+  const [isLoading, setIsLoading] = useState(false)
 
-  // TODO: is there any other way we can detect a modal over modal?
-  useEffect(() => {
-    const onScan = async () => {
-      if (isProcessing) return
-      setIsProcessing(true)
+  const onScan = async (scannedData: string) => {
+    if (isProcessing) return
+    setIsProcessing(true)
+    setIsLoading(true)
 
-      // don't do anything if we already scanned the data and the helpText is still shown
-      if (helpText !== '' && scannedInvalidQrs.includes(scannedData)) return
+    const result = await handleCredentialData(scannedData)
 
-      // Trigger help text if scanning a QR that is already scanned and was invalid
-      if (scannedInvalidQrs.includes(scannedData)) {
-        triggerHelpText(scannedData)
-      }
+    if (result.result === 'error') {
+      const isUnsupportedUrl = unsupportedUrlPrefixes.find((x) => scannedData.includes(x))
+      setHelpText(
+        isUnsupportedUrl
+          ? 'This QR-code is not supported yet. Try scanning a different one.'
+          : result.message ? result.message : 'Invalid QR code. Try scanning a different one.'
+      )
 
-      const result = await handleCredentialData(scannedData)
-      if (result.result === 'success') {
-        setIsScanModalFocused(false)
-      } else if (result.result === 'error') {
-        scannedInvalidQrs.push(scannedData)
-        setScannedInvalidQrs((qrs) => [...qrs, scannedData])
-        triggerHelpText(scannedData)
-      }
-
-      setIsProcessing(false)
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+      setIsLoading(false)
     }
 
-    if (scannedData && isScanModalFocused) void onScan()
-  }, [scannedData])
+    await sleep(5000)
+    setHelpText('')
+    setIsLoading(false)
+    setIsProcessing(false)
 
-  const triggerHelpText = (data: string) => {
-    const isUnsupportedUrl = unsupportedUrlPrefixes.find((f) => data.includes(f))
-    setHelpText(
-      isUnsupportedUrl
-        ? 'This QR-code is not supported yet. Try scanning a different one.'
-        : 'Invalid QR code. Try scanning a different one.'
-    )
-    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-    //clear the help text after 5 seconds
-    setTimeout(() => {
-      setHelpText('')
-    }, 5000)
   }
 
   // Only show cancel button on Android
@@ -67,8 +50,8 @@ export function QrScannerScreen() {
 
   return (
     <>
-      <QrScanner onScan={(data) => setScannedData(data)} onCancel={onCancel} helpText={helpText} />
-      {isProcessing && (
+      <QrScanner onScan={onScan} onCancel={onCancel} helpText={helpText} />
+      {isLoading && (
         <Page
           position="absolute"
           jc="center"
