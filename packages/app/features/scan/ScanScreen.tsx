@@ -1,12 +1,12 @@
 import { QrScanner } from '@internal/scanner'
 import { Page, Spinner, Paragraph } from '@internal/ui'
+import { sleep } from '@tanstack/query-core/build/lib/utils'
 import * as Haptics from 'expo-haptics'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { useCredentialDataHandler } from 'app/hooks/useCredentialDataHandler'
 import { isAndroid } from 'app/utils/platform'
-import { sleep } from '@tanstack/query-core/build/lib/utils'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
@@ -31,7 +31,9 @@ export function QrScannerScreen() {
       setHelpText(
         isUnsupportedUrl
           ? 'This QR-code is not supported yet. Try scanning a different one.'
-          : result.message ? result.message : 'Invalid QR code. Try scanning a different one.'
+          : result.message
+          ? result.message
+          : 'Invalid QR code. Try scanning a different one.'
       )
 
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
@@ -42,7 +44,6 @@ export function QrScannerScreen() {
     setHelpText('')
     setIsLoading(false)
     setIsProcessing(false)
-
   }
 
   // Only show cancel button on Android
@@ -50,7 +51,13 @@ export function QrScannerScreen() {
 
   return (
     <>
-      <QrScanner onScan={onScan} onCancel={onCancel} helpText={helpText} />
+      <QrScanner
+        onScan={() => {
+          void onScan
+        }}
+        onCancel={onCancel}
+        helpText={helpText}
+      />
       {isLoading && (
         <Page
           position="absolute"

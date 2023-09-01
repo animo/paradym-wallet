@@ -75,8 +75,8 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         supportsAllDidMethods || supportedDidMethods.includes('did:jwk')
           ? 'jwk'
           : supportedDidMethods.includes('did:key')
-            ? 'key'
-            : undefined
+          ? 'key'
+          : undefined
 
       if (!didMethod) {
         throw new Error(
@@ -264,21 +264,18 @@ export async function receiveOutOfBandInvitation(
   let connectionRecord: ConnectionRecord | undefined, outOfBandRecord: OutOfBandRecord
 
   try {
-
-    ({ connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
+    ;({ connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
       reuseConnection: true,
     }))
 
     // Assign connectionId so it can be used in the observables.
     connectionId = connectionRecord?.id
   } catch (error) {
-    agent.config.logger.error(`Error while receiving invitation: ${error.message}`)
     return {
       result: 'error',
-      message: "Invitation has already been scanned.",
+      message: 'Invitation has already been scanned.',
     }
   }
-
 
   try {
     const event = await eventPromise
