@@ -265,9 +265,11 @@ export async function receiveOutOfBandInvitation(
   let outOfBandRecord: OutOfBandRecord
 
   try {
-    ;({ connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
+    const receiveInvitationResult = await agent.oob.receiveInvitation(invitation, {
       reuseConnection: true,
-    }))
+    })
+    connectionRecord = receiveInvitationResult.connectionRecord
+    outOfBandRecord = receiveInvitationResult.outOfBandRecord
 
     // Assign connectionId so it can be used in the observables.
     connectionId = connectionRecord?.id
