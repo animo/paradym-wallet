@@ -261,7 +261,8 @@ export async function receiveOutOfBandInvitation(
     )
   )
 
-  let connectionRecord: ConnectionRecord | undefined, outOfBandRecord: OutOfBandRecord
+  let connectionRecord: ConnectionRecord | undefined
+  let outOfBandRecord: OutOfBandRecord
 
   try {
     ;({ connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
