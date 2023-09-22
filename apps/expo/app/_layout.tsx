@@ -15,8 +15,7 @@ import { Provider } from 'app/provider'
 import { NoInternetToastProvider } from 'app/provider/NoInternetToastProvider'
 import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
-import { Stack } from 'expo-router'
-import * as SplashScreen from 'expo-splash-screen'
+import { Stack, SplashScreen } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -101,7 +100,9 @@ export default function HomeLayout() {
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
-    if (fontLoaded && (agent || agentInitializationFailed)) void SplashScreen.hideAsync()
+    if (fontLoaded && (agent || agentInitializationFailed)) {
+      void SplashScreen.hideAsync()
+    }
   }, [fontLoaded, agent, agentInitializationFailed])
 
   // Show error screen if agent could not be initialized
