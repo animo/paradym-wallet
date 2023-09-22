@@ -1,9 +1,11 @@
 import type { AppAgent } from './agent'
 import type {
+  ConnectionRecord,
   CredentialStateChangedEvent,
   JwkDidCreateOptions,
   KeyDidCreateOptions,
   OutOfBandInvitation,
+  OutOfBandRecord,
   ProofStateChangedEvent,
   W3cCredentialRecord,
 } from '@aries-framework/core'
@@ -259,12 +261,35 @@ export async function receiveOutOfBandInvitation(
     )
   )
 
-  const { connectionRecord, outOfBandRecord } = await agent.oob.receiveInvitation(invitation, {
-    reuseConnection: true,
-  })
+  let connectionRecord: ConnectionRecord | undefined
+  let outOfBandRecord: OutOfBandRecord
 
-  // Assign connectionId so it can be used in the observables.
-  connectionId = connectionRecord?.id
+  try {
+    // Check if invitation already exists
+    const receivedInvite = await agent.oob.findByReceivedInvitationId(invitation.id)
+    if (receivedInvite) {
+      return {
+        result: 'error',
+        message: 'Invitation has already been scanned.',
+      }
+    }
+
+    const receiveInvitationResult = await agent.oob.receiveInvitation(invitation, {
+      reuseConnection: true,
+    })
+    connectionRecord = receiveInvitationResult.connectionRecord
+    outOfBandRecord = receiveInvitationResult.outOfBandRecord
+
+    // Assign connectionId so it can be used in the observables.
+    connectionId = connectionRecord?.id
+  } catch (error) {
+    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
+
+    return {
+      result: 'error',
+      message: 'Invalid invitation.',
+    }
+  }
 
   try {
     const event = await eventPromise

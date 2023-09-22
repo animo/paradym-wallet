@@ -86,7 +86,7 @@ export const useCredentialDataHandler = () => {
 
     return {
       result: 'error',
-      message: 'Schema not supported.',
+      message: 'QR Code not recognized.',
     }
   }
 
