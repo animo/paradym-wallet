@@ -52,8 +52,8 @@ export function QrScannerScreen() {
   return (
     <>
       <QrScanner
-        onScan={() => {
-          void onScan
+        onScan={(data) => {
+          void onScan(data)
         }}
         onCancel={onCancel}
         helpText={helpText}

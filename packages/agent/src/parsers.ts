@@ -265,6 +265,15 @@ export async function receiveOutOfBandInvitation(
   let outOfBandRecord: OutOfBandRecord
 
   try {
+    // Check if invitation already exists
+    const receivedInvite = await agent.oob.findByReceivedInvitationId(invitation.id)
+    if (receivedInvite) {
+      return {
+        result: 'error',
+        message: 'Invitation has already been scanned.',
+      }
+    }
+
     const receiveInvitationResult = await agent.oob.receiveInvitation(invitation, {
       reuseConnection: true,
     })
@@ -274,16 +283,7 @@ export async function receiveOutOfBandInvitation(
     // Assign connectionId so it can be used in the observables.
     connectionId = connectionRecord?.id
   } catch (error) {
-    agent.config.logger.error(`Error while receiving invitation: ${error}`)
-
-    const receivedInvite = await agent.oob.findByReceivedInvitationId(invitation.id)
-
-    if (!receivedInvite) {
-      return {
-        result: 'error',
-        message: 'Invitation has already been scanned.',
-      }
-    }
+    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
 
     return {
       result: 'error',
