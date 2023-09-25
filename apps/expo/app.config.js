@@ -5,14 +5,17 @@ const variants = {
   development: {
     bundle: '.dev',
     name: ' (Dev)',
+    mediatorDid: 'did:web:mediator.dev.paradym.id',
   },
   preview: {
     bundle: '.preview',
     name: ' (Preview)',
+    mediatorDid: 'did:web:mediator.paradym.id',
   },
   production: {
     bundle: '',
     name: '',
+    mediatorDid: 'did:web:mediator.paradym.id',
   },
 }
 
@@ -91,7 +94,7 @@ const config = {
     eas: {
       projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
     },
-    mediatorDid: 'did:web:mediator.paradym.id',
+    mediatorDid: variant.mediatorDid,
   },
 }
 
