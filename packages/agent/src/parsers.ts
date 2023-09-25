@@ -72,17 +72,22 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     }) => {
       // Prefer did:jwk, otherwise use did:key, otherwise use undefined
       const didMethod =
-        supportsAllDidMethods || supportedDidMethods.includes('did:jwk')
+        supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
           ? 'jwk'
-          : supportedDidMethods.includes('did:key')
+          : // If supportedDidMethods is undefined, it means we couldn't determine the supported did methods
+          // This is either because an inline credential offer was used, or the issuer didn't declare which
+          // did methods are supported.
+          // NOTE: MATTR launchpad for JFF MUST use did:key. So it is important that the default
+          // method is did:key if supportedDidMethods is undefined.
+          supportedDidMethods?.includes('did:key') || supportedDidMethods === undefined
           ? 'key'
           : undefined
 
       if (!didMethod) {
         throw new Error(
-          `No supported did method could be found. Supported methods are did:key and did:jwk. Issuer supports ${supportedDidMethods.join(
-            ', '
-          )}`
+          `No supported did method could be found. Supported methods are did:key and did:jwk. Issuer supports ${
+            supportedDidMethods?.join(', ') ?? 'Unknown'
+          }`
         )
       }
 
@@ -111,6 +116,9 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     verifyCredentialStatus: false,
     allowedCredentialFormats: [OpenIdCredentialFormatProfile.JwtVcJson],
     allowedProofOfPossessionSignatureAlgorithms: [
+      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
+      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
+      // will be used
       JwaSignatureAlgorithm.EdDSA,
       JwaSignatureAlgorithm.ES256,
     ],

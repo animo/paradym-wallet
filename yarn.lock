@@ -128,7 +128,7 @@ __metadata:
 
 "@aries-framework/core@patch:@aries-framework/core@npm%3A0.4.1#./.yarn/patches/@aries-framework-core-npm-0.4.1-bf3ca88ff9.patch::locator=paradym-wallet%40workspace%3A.":
   version: 0.4.1
-  resolution: "@aries-framework/core@patch:@aries-framework/core@npm%3A0.4.1#./.yarn/patches/@aries-framework-core-npm-0.4.1-bf3ca88ff9.patch::version=0.4.1&hash=0a10d8&locator=paradym-wallet%40workspace%3A."
+  resolution: "@aries-framework/core@patch:@aries-framework/core@npm%3A0.4.1#./.yarn/patches/@aries-framework-core-npm-0.4.1-bf3ca88ff9.patch::version=0.4.1&hash=9fdd8c&locator=paradym-wallet%40workspace%3A."
   dependencies:
     "@digitalcredentials/jsonld": ^5.2.1
     "@digitalcredentials/jsonld-signatures": ^9.3.1
@@ -157,7 +157,7 @@ __metadata:
     uuid: ^9.0.0
     varint: ^6.0.0
     web-did-resolver: ^2.0.21
-  checksum: c2aebcf66753e94f4f50d388180f34ae13817a74c29f4af8c83c896d024360797289b25b7eac619be4ea476e1d272414dc22d377b6fbeff6462d581b4ebecf35
+  checksum: 7e910659517c56276f4bb1a14767bdd0d0243241f86cc14c00324370db3bf7028d6c5dfad9439f197b7261fee3549305378bb35e5b54acd7d091bbd7756c1dcb
   languageName: node
   linkType: hard
 
