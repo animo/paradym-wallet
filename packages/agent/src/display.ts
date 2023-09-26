@@ -205,6 +205,11 @@ export function getW3cCredentialForDisplay(w3cCredentialRecord: W3cCredentialRec
   const issuerDisplay = getIssuerDisplay(credential, openId4VcMetadata)
   const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
 
+  // FIXME: support credential with multiple subjects
+  const credentialAttributes = Array.isArray(credential.credentialSubject)
+    ? credential.credentialSubject[0] ?? {}
+    : credential.credentialSubject
+
   return {
     id: `w3c-credential-${w3cCredentialRecord.id}` satisfies CredentialForDisplayId,
     createdAt: w3cCredentialRecord.createdAt,
@@ -213,9 +218,6 @@ export function getW3cCredentialForDisplay(w3cCredentialRecord: W3cCredentialRec
       issuer: issuerDisplay,
     },
     w3cCredential: credential,
-    // FIXME: support credential with multiple subjects
-    attributes: Array.isArray(credential.credentialSubject)
-      ? credential.credentialSubject[0] ?? {}
-      : credential.credentialSubject,
+    attributes: credentialAttributes,
   }
 }

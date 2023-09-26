@@ -1,13 +1,17 @@
-import { Paragraph, YStack } from '../base'
+import { Paragraph, YStack, XStack } from '../base'
+import { Image } from '../content'
 
 interface TableRowProps {
   attribute: string
-  value: string
+  // Value can be undefined if image prop is used
+  value?: string
+  image?: string
   isLastRow: boolean
   onPress?(): void
 }
 
-export const TableRow = ({ attribute, value, isLastRow, onPress }: TableRowProps) => {
+export const TableRow = ({ attribute, value, isLastRow, onPress, image }: TableRowProps) => {
+  const renderedImage = image ? <Image src={image} width={50} height={50} /> : undefined
   return (
     <YStack
       px="$2.5"
@@ -20,12 +24,18 @@ export const TableRow = ({ attribute, value, isLastRow, onPress }: TableRowProps
         opacity: 0.8,
       }}
     >
-      <Paragraph variant="text" secondary f={1}>
-        {attribute}
-      </Paragraph>
-      <Paragraph f={1} flexGrow={1}>
-        {value}
-      </Paragraph>
+      <XStack f={1}>
+        <YStack f={1} justifyContent="flex-start">
+          <Paragraph variant="text" secondary>
+            {attribute}
+          </Paragraph>
+          {value && <Paragraph>{value}</Paragraph>}
+          {/* Render image on the left if no value */}
+          {!value && renderedImage}
+        </YStack>
+        {/* Otherwise render image on the right */}
+        {value && renderedImage}
+      </XStack>
     </YStack>
   )
 }
