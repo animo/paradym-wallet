@@ -114,8 +114,11 @@ export interface ProofOfPossessionVerificationMethodResolverOptions {
   /**
    * The credential type that will be requested from the issuer. This is
    * based on the credential types that are included the credential offer.
+   *
+   * If the offered credential is an inline credential offer, the value
+   * will be `undefined`.
    */
-  supportedCredentialId: string
+  supportedCredentialId?: string
 
   /**
    * Whether the issuer supports the `did` cryptographic binding method,
@@ -134,8 +137,16 @@ export interface ProofOfPossessionVerificationMethodResolverOptions {
    * MUST be based on one of these did methods.
    *
    * The did methods are returned in the format `did:<method>`, e.g. `did:web`.
+   *
+   * The value is undefined in the case the supported did methods could not be extracted.
+   * This is the case when an inline credential was used, or when the issuer didn't include
+   * the supported did methods in the issuer metadata.
+   *
+   * NOTE: an empty array (no did methods supported) has a different meaning from the value
+   * being undefined (the supported did methods could not be extracted). If `supportsAllDidMethods`
+   * is true, the value of this property MUST be ignored.
    */
-  supportedDidMethods: string[]
+  supportedDidMethods?: string[]
 }
 
 /**
@@ -152,7 +163,7 @@ export type ProofOfPossessionVerificationMethodResolver = (
  */
 export interface ProofOfPossessionRequirements {
   signatureAlgorithm: JwaSignatureAlgorithm
-  supportedDidMethods: string[]
+  supportedDidMethods?: string[]
   supportsAllDidMethods: boolean
 }
 

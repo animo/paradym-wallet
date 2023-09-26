@@ -14,9 +14,10 @@ import type {
   W3cVerifyCredentialResult,
 } from '@aries-framework/core'
 import type {
+  CredentialOfferFormat,
   CredentialResponse,
-  CredentialSupported,
   Jwt,
+  OfferedCredentialsWithMetadata,
   OpenIDResponse,
 } from '@sphereon/oid4vci-common'
 
@@ -187,21 +188,28 @@ export class OpenId4VcClientService {
 
     // Loop through all the credentialTypes in the credential offer
     for (const offeredCredential of client.getOfferedCredentialsWithMetadata()) {
+      const format = (
+        isInlineCredentialOffer(offeredCredential)
+          ? offeredCredential.inlineCredentialOffer.format
+          : offeredCredential.credentialSupported.format
+      ) as SupportedCredentialFormats
+
       // TODO: support inline credential offers. Not clear to me how to determine the did method / alg, etc..
       if (offeredCredential.type === OfferedCredentialType.InlineCredentialOffer) {
-        throw new AriesFrameworkError("Inline credential offers aren't supported")
-      }
+        // Check if the format is supported/allowed
+        if (!allowedCredentialFormats.includes(format)) continue
+      } else {
+        const supportedCredentialMetadata = offeredCredential.credentialSupported
 
-      const supportedCredentialMetadata = offeredCredential.credentialSupported
-
-      // FIXME
-      // If the credential id ends with the format, it is a v8 credential supported that has been
-      // split into multiple entries (each entry can now only have one format). For now we continue
-      // as assume there will be another entry with the correct format.
-      if (supportedCredentialMetadata.id?.endsWith(`-${supportedCredentialMetadata.format}`)) {
-        const format = getUniformFormat(supportedCredentialMetadata.format)
-        if (!allowedCredentialFormats.includes(format as SupportedCredentialFormats)) {
-          continue
+        // FIXME
+        // If the credential id ends with the format, it is a v8 credential supported that has been
+        // split into multiple entries (each entry can now only have one format). For now we continue
+        // as assume there will be another entry with the correct format.
+        if (supportedCredentialMetadata.id?.endsWith(`-${supportedCredentialMetadata.format}`)) {
+          const uniformFormat = getUniformFormat(
+            supportedCredentialMetadata.format
+          ) as SupportedCredentialFormats
+          if (!allowedCredentialFormats.includes(uniformFormat)) continue
         }
       }
 
@@ -211,7 +219,7 @@ export class OpenId4VcClientService {
         {
           allowedCredentialFormats,
           allowedProofOfPossessionSignatureAlgorithms,
-          credentialMetadata: supportedCredentialMetadata,
+          offeredCredentialWithMetadata: offeredCredential,
           proofOfPossessionVerificationMethodResolver:
             options.proofOfPossessionVerificationMethodResolver,
         }
@@ -243,10 +251,19 @@ export class OpenId4VcClientService {
         .withTokenFromResponse(accessToken)
         .build()
 
-      const credentialResponse = await credentialRequestClient.acquireCredentialsUsingProof({
-        proofInput,
-        credentialSupported: supportedCredentialMetadata,
-      })
+      let credentialResponse: OpenIDResponse<CredentialResponse>
+
+      if (isInlineCredentialOffer(offeredCredential)) {
+        credentialResponse = await credentialRequestClient.acquireCredentialsUsingProof({
+          proofInput,
+          inlineCredentialOffer: offeredCredential.inlineCredentialOffer,
+        })
+      } else {
+        credentialResponse = await credentialRequestClient.acquireCredentialsUsingProof({
+          proofInput,
+          credentialSupported: offeredCredential.credentialSupported,
+        })
+      }
 
       const credential = await this.handleCredentialResponse(agentContext, credentialResponse, {
         verifyCredentialStatus: options.verifyCredentialStatus,
@@ -261,8 +278,15 @@ export class OpenId4VcClientService {
       })
       this.logger.debug('Full credential', credentialRecord)
 
-      // Set the OpenId4Vc credential metadata and update record
-      setOpenId4VcCredentialMetadata(credentialRecord, supportedCredentialMetadata, serverMetadata)
+      if (!isInlineCredentialOffer(offeredCredential)) {
+        const supportedCredentialMetadata = offeredCredential.credentialSupported
+        // Set the OpenId4Vc credential metadata and update record
+        setOpenId4VcCredentialMetadata(
+          credentialRecord,
+          supportedCredentialMetadata,
+          serverMetadata
+        )
+      }
 
       receivedCredentials.push(credentialRecord)
     }
@@ -282,12 +306,12 @@ export class OpenId4VcClientService {
       proofOfPossessionVerificationMethodResolver: ProofOfPossessionVerificationMethodResolver
       allowedCredentialFormats: SupportedCredentialFormats[]
       allowedProofOfPossessionSignatureAlgorithms: JwaSignatureAlgorithm[]
-      credentialMetadata: CredentialSupported
+      offeredCredentialWithMetadata: OfferedCredentialsWithMetadata
     }
   ) {
     const { signatureAlgorithm, supportedDidMethods, supportsAllDidMethods } =
       this.getProofOfPossessionRequirements(agentContext, {
-        credentialMetadata: options.credentialMetadata,
+        offeredCredentialWithMetadata: options.offeredCredentialWithMetadata,
         allowedCredentialFormats: options.allowedCredentialFormats,
         allowedProofOfPossessionSignatureAlgorithms:
           options.allowedProofOfPossessionSignatureAlgorithms,
@@ -305,7 +329,9 @@ export class OpenId4VcClientService {
       JwkClass.keyType
     )
 
-    const format = getUniformFormat(options.credentialMetadata.format)
+    const format = isInlineCredentialOffer(options.offeredCredentialWithMetadata)
+      ? options.offeredCredentialWithMetadata.inlineCredentialOffer.format
+      : options.offeredCredentialWithMetadata.credentialSupported.format
 
     // Now we need to determine the did method and alg based on the cryptographic suite
     const verificationMethod = await options.proofOfPossessionVerificationMethodResolver({
@@ -313,7 +339,9 @@ export class OpenId4VcClientService {
       proofOfPossessionSignatureAlgorithm: signatureAlgorithm,
       supportedVerificationMethods,
       keyType: JwkClass.keyType,
-      supportedCredentialId: options.credentialMetadata.id as string,
+      supportedCredentialId: !isInlineCredentialOffer(options.offeredCredentialWithMetadata)
+        ? options.offeredCredentialWithMetadata.credentialSupported.id
+        : undefined,
       supportsAllDidMethods,
       supportedDidMethods,
     })
@@ -321,6 +349,9 @@ export class OpenId4VcClientService {
     // Make sure the verification method uses a supported did method
     if (
       !supportsAllDidMethods &&
+      // If supportedDidMethods is undefined, it means the issuer didn't include the binding methods in the metadata
+      // The user can still select a verification method, but we can't validate it
+      supportedDidMethods !== undefined &&
       !supportedDidMethods.find((supportedDidMethod) =>
         verificationMethod.id.startsWith(supportedDidMethod)
       )
@@ -353,32 +384,44 @@ export class OpenId4VcClientService {
     agentContext: AgentContext,
     options: {
       allowedCredentialFormats: SupportedCredentialFormats[]
-      credentialMetadata: CredentialSupported
+      offeredCredentialWithMetadata: OfferedCredentialsWithMetadata
       allowedProofOfPossessionSignatureAlgorithms: JwaSignatureAlgorithm[]
     }
   ): ProofOfPossessionRequirements {
-    const { credentialMetadata, allowedCredentialFormats } = options
+    const { offeredCredentialWithMetadata, allowedCredentialFormats } = options
+
+    // Extract format from offer
+    let format =
+      offeredCredentialWithMetadata.type === OfferedCredentialType.InlineCredentialOffer
+        ? offeredCredentialWithMetadata.inlineCredentialOffer.format
+        : offeredCredentialWithMetadata.credentialSupported.format
 
     // Get uniform format, so we don't have to deal with the different spec versions
-    const format = getUniformFormat(credentialMetadata.format)
+    format = getUniformFormat(format)
 
-    if (!allowedCredentialFormats.includes(format as SupportedCredentialFormats)) {
-      throw new AriesFrameworkError(
-        `Issuer only supports format '${format}' for credential type '${
-          credentialMetadata.id as string
-        }', but the wallet only allows formats '${options.allowedCredentialFormats.join(', ')}'`
-      )
-    }
+    const credentialMetadata =
+      offeredCredentialWithMetadata.type === OfferedCredentialType.CredentialSupported
+        ? offeredCredentialWithMetadata.credentialSupported
+        : undefined
 
-    const issuerSupportedCryptographicSuites =
-      credentialMetadata.cryptographic_suites_supported ?? []
-    const issuerSupportedBindingMethods: string[] =
-      credentialMetadata.cryptographic_binding_methods_supported ??
+    const issuerSupportedCryptographicSuites = credentialMetadata?.cryptographic_suites_supported
+    const issuerSupportedBindingMethods =
+      credentialMetadata?.cryptographic_binding_methods_supported ??
       // FIXME: somehow the MATTR Launchpad returns binding_methods_supported instead of cryptographic_binding_methods_supported
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      (credentialMetadata.binding_methods_supported as string[] | undefined) ??
-      []
+      (credentialMetadata?.binding_methods_supported as string[] | undefined)
+
+    if (!isInlineCredentialOffer(offeredCredentialWithMetadata)) {
+      const credentialMetadata = offeredCredentialWithMetadata.credentialSupported
+      if (!allowedCredentialFormats.includes(format as SupportedCredentialFormats)) {
+        throw new AriesFrameworkError(
+          `Issuer only supports format '${format}' for credential type '${
+            credentialMetadata.id as string
+          }', but the wallet only allows formats '${options.allowedCredentialFormats.join(', ')}'`
+        )
+      }
+    }
 
     // For each of the supported algs, find the key types, then find the proof types
     const signatureSuiteRegistry = agentContext.dependencyManager.resolve(SignatureSuiteRegistry)
@@ -388,41 +431,55 @@ export class OpenId4VcClientService {
     switch (format) {
       case 'jwt_vc_json':
       case 'jwt_vc_json-ld':
-        potentialSignatureAlgorithm = options.allowedProofOfPossessionSignatureAlgorithms.find(
-          (signatureAlgorithm) => issuerSupportedCryptographicSuites.includes(signatureAlgorithm)
-        )
+        // If undefined, it means the issuer didn't include the cryptographic suites in the metadata
+        // We just guess that the first one is supported
+        if (issuerSupportedCryptographicSuites === undefined) {
+          potentialSignatureAlgorithm = options.allowedProofOfPossessionSignatureAlgorithms[0]
+        } else {
+          potentialSignatureAlgorithm = options.allowedProofOfPossessionSignatureAlgorithms.find(
+            (signatureAlgorithm) => issuerSupportedCryptographicSuites.includes(signatureAlgorithm)
+          )
+        }
         break
       case 'ldp_vc':
-        // We need to find it based on the JSON-LD proof type
-        potentialSignatureAlgorithm = options.allowedProofOfPossessionSignatureAlgorithms.find(
-          (signatureAlgorithm) => {
-            const JwkClass = getJwkClassFromJwaSignatureAlgorithm(signatureAlgorithm)
-            if (!JwkClass) return false
+        // If undefined, it means the issuer didn't include the cryptographic suites in the metadata
+        // We just guess that the first one is supported
+        if (issuerSupportedCryptographicSuites === undefined) {
+          potentialSignatureAlgorithm = options.allowedProofOfPossessionSignatureAlgorithms[0]
+        } else {
+          // We need to find it based on the JSON-LD proof type
+          potentialSignatureAlgorithm = options.allowedProofOfPossessionSignatureAlgorithms.find(
+            (signatureAlgorithm) => {
+              const JwkClass = getJwkClassFromJwaSignatureAlgorithm(signatureAlgorithm)
+              if (!JwkClass) return false
 
-            // TODO: getByKeyType should return a list
-            const matchingSuite = signatureSuiteRegistry.getByKeyType(JwkClass.keyType)
-            if (!matchingSuite) return false
+              // TODO: getByKeyType should return a list
+              const matchingSuite = signatureSuiteRegistry.getByKeyType(JwkClass.keyType)
+              if (!matchingSuite) return false
 
-            return issuerSupportedCryptographicSuites.includes(matchingSuite.proofType)
-          }
-        )
+              return issuerSupportedCryptographicSuites.includes(matchingSuite.proofType)
+            }
+          )
+        }
         break
       default:
         throw new AriesFrameworkError(
-          `Unsupported requested credential format '${credentialMetadata.format}' with id ${
-            credentialMetadata.id as string
+          `Unsupported requested credential format '${format}' with id ${
+            credentialMetadata?.id ?? 'Inline credential offer'
           }`
         )
     }
 
-    const supportsAllDidMethods = issuerSupportedBindingMethods.includes('did')
-    const supportedDidMethods = issuerSupportedBindingMethods.filter((method) =>
+    const supportsAllDidMethods = issuerSupportedBindingMethods?.includes('did') ?? false
+    const supportedDidMethods = issuerSupportedBindingMethods?.filter((method) =>
       method.startsWith('did:')
     )
 
     if (!potentialSignatureAlgorithm) {
       throw new AriesFrameworkError(
-        `Could not establish signature algorithm for id ${credentialMetadata.id as string}`
+        `Could not establish signature algorithm for format ${format} and id ${
+          credentialMetadata?.id ?? 'Inline credential offer'
+        }`
       )
     }
 
@@ -558,4 +615,13 @@ export class OpenId4VcClientService {
       return jws
     }
   }
+}
+
+function isInlineCredentialOffer(
+  offeredCredential: OfferedCredentialsWithMetadata
+): offeredCredential is {
+  inlineCredentialOffer: CredentialOfferFormat
+  type: OfferedCredentialType.InlineCredentialOffer
+} {
+  return offeredCredential.type === OfferedCredentialType.InlineCredentialOffer
 }

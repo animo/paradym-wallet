@@ -11,7 +11,7 @@
     "android": "cd apps/expo && yarn android",
     "watch": "yarn workspaces foreach -pi run watch",
     "fix": "manypkg fix",
-    "postinstall": "patch-package && yarn check-deps && yarn build",
+    "postinstall": "yarn check-deps && yarn build",
     "build": "yarn workspaces foreach run build",
     "upgrade:tamagui": "yarn up '*tamagui*'@latest '@tamagui/*'@latest react-native-web-lite@latest",
     "upgrade:tamagui:canary": "yarn up '*tamagui*'@canary '@tamagui/*'@canary react-native-web-lite@canary",
@@ -41,7 +41,8 @@
     "@cosmjs/tendermint-rpc": "npm:@cosmjs-rn/tendermint-rpc@^0.27.1",
     "@cosmjs/utils": "npm:@cosmjs-rn/utils@^0.27.1",
     "@cosmjs/proto-signing": "npm:@cosmjs-rn/proto-signing@^0.27.1",
-    "@cosmjs/crypto": "npm:@cosmjs-rn/crypto@^0.27.1"
+    "@cosmjs/crypto": "npm:@cosmjs-rn/crypto@^0.27.1",
+    "@sphereon/did-auth-siop@0.3.2-unstable.0": "patch:@sphereon/did-auth-siop@npm%3A0.3.2-unstable.0#./.yarn/patches/@sphereon-did-auth-siop-npm-0.3.2-unstable.0-6a34120d09.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -57,7 +58,6 @@
     "eslint-plugin-react": "^7.32.2",
     "expo-linking": "^4.0.1",
     "node-gyp": "^9.3.1",
-    "patch-package": "^7.0.0",
     "prettier": "^2.7.1",
     "turbo": "^1.8.3",
     "typescript": "^4.7.4"
