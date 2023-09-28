@@ -48,8 +48,13 @@ export default function CredentialAttributes({
               <TableRow
                 key={row.key}
                 attribute={row.key}
-                value={row.value}
+                value={
+                  row.type === 'string' || row.type === 'imageAndString' ? row.value : undefined
+                }
                 isLastRow={idx === table.rows.length - 1}
+                image={
+                  row.type === 'image' || row.type === 'imageAndString' ? row.image : undefined
+                }
               />
             ))}
           </TableContainer>

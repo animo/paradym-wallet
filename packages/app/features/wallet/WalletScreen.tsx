@@ -144,7 +144,7 @@ export function WalletScreen() {
               })}
             </ZStack>
           </YStack>
-          <YStack g="md">
+          <YStack g="md" marginBottom="$8">
             <Heading variant="h3" textAlign="left" secondary>
               Credentials
             </Heading>
