@@ -9,11 +9,11 @@
   "devDependencies": {
     "@react-native-masked-view/masked-view": "^0.2.9",
     "@types/react": "^18.0.27",
-    "expo-barcode-scanner": "^12.3.2"
+    "expo-barcode-scanner": "~12.5.3"
   },
   "peerDependencies": {
     "@react-native-masked-view/masked-view": "^0.2.9",
-    "expo-barcode-scanner": "^12.3.2",
+    "expo-barcode-scanner": "~12.5.3",
     "react-native": "0.71.7"
   }
 }
