@@ -180,6 +180,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@astronautlabs/jsonpath@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@astronautlabs/jsonpath@npm:1.1.2"
+  dependencies:
+    static-eval: 2.0.2
+  checksum: f14216c6698101fa9f825faee503399170d0e3391077a02c9d9f18a7b6293f92f1a10ee98e1c907bc8b52dac37a1b12bb72d40977a5bb848beb778e069df5497
+  languageName: node
+  linkType: hard
+
 "@azure/core-asynciterator-polyfill@npm:^1.0.2":
   version: 1.0.2
   resolution: "@azure/core-asynciterator-polyfill@npm:1.0.2"
@@ -3297,11 +3306,11 @@ __metadata:
     "@aries-framework/core": 0.4.1
     "@aries-framework/node": 0.4.1
     "@hyperledger/aries-askar-nodejs": ^0.1.0
-    "@sphereon/did-auth-siop": 0.3.2-unstable.0
+    "@sphereon/did-auth-siop": 0.3.2-unstable.11
     "@sphereon/oid4vci-client": "file:./sphereon-oid4vci-client-v0.5.1.tgz"
     "@sphereon/oid4vci-common": "file:./sphereon-oid4vci-common-v0.5.0.tgz"
-    "@sphereon/pex": ^2.0.1
-    "@sphereon/pex-models": ^2.0.2
+    "@sphereon/pex": ^2.1.2
+    "@sphereon/pex-models": ^2.0.3
     "@sphereon/ssi-types": ^0.11.0
     "@stablelib/random": ^1.0.2
     "@types/jsonpath": ^0.2.0
@@ -4596,6 +4605,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sphereon/pex-models@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@sphereon/pex-models@npm:2.0.3"
+  checksum: 9be4caa56fe92bf8841ad4055f478a902aef5ef9e12ea86ad4265cebc5e1b7049aff8af911e42fab953bb6e9f98fcf2764dad37dc432b282829eccb01d19eb14
+  languageName: node
+  linkType: hard
+
 "@sphereon/pex@npm:^2.0.1":
   version: 2.0.1
   resolution: "@sphereon/pex@npm:2.0.1"
@@ -4609,6 +4625,22 @@ __metadata:
     nanoid: ^3.3.6
     string.prototype.matchall: ^4.0.8
   checksum: 48629e37ed6c72ec7b272c39610c6b4dcc49eadb943d10d9dc7b87fe63f899f9ea47928136772aa3c41bc20eb26dce8e8bbd7fd098778b33aaa7e3b82529b95f
+  languageName: node
+  linkType: hard
+
+"@sphereon/pex@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "@sphereon/pex@npm:2.1.2"
+  dependencies:
+    "@astronautlabs/jsonpath": ^1.1.2
+    "@sphereon/pex-models": ^2.0.3
+    "@sphereon/ssi-types": ^0.15.1
+    ajv: ^8.12.0
+    ajv-formats: ^2.1.1
+    jwt-decode: ^3.1.2
+    nanoid: ^3.3.6
+    string.prototype.matchall: ^4.0.8
+  checksum: e69bd7180f570c66f4ff2a8cb48f8ce22f043e15bc650c6e8d52f8034286e5c9abc80e0afa732bfa146b4f566730a472a098a8185096047c974e2c28a8543550
   languageName: node
   linkType: hard
 
@@ -4627,6 +4659,15 @@ __metadata:
   dependencies:
     jwt-decode: ^3.1.2
   checksum: d66d3c1a2ae524860a1553f94f6d0aa95e05453922522bdf8a89ccc9d8f1646df8214d54f21816e0870b25751cda659a439e09ac1fd4326b49c5a7253a1b0590
+  languageName: node
+  linkType: hard
+
+"@sphereon/ssi-types@npm:^0.15.1":
+  version: 0.15.1
+  resolution: "@sphereon/ssi-types@npm:0.15.1"
+  dependencies:
+    jwt-decode: ^3.1.2
+  checksum: bbb685fc3b7ae2fba195f5a6d4788bc34d4fa85b201db6cee076ffe8f392657a6cf897635876b98393acd3e7b751c1e364634f961636acdaeb8e54be7c6942f3
   languageName: node
   linkType: hard
 

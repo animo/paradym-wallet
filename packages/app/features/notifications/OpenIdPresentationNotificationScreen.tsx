@@ -46,7 +46,8 @@ export function OpenIdPresentationNotificationScreen() {
       .then((r) => {
         setCredentialsForRequest(r)
       })
-      .catch(() => {
+      .catch((e) => {
+        console.error(e)
         toast.show('Presentation information could not be extracted.')
         pushToWallet()
       })

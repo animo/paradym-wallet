@@ -40,6 +40,8 @@ export enum QrTypes {
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer://',
   OPENID = 'openid://',
   OPENID_VC = 'openid-vc://',
+  // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#name-a-set-of-static-configurati
+  OPENID4VP = 'openid4vp://',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {
@@ -50,7 +52,11 @@ export const isOpenIdCredentialOffer = (url: string) => {
 }
 
 export const isOpenIdPresentationRequest = (url: string) => {
-  return url.startsWith(QrTypes.OPENID) || url.startsWith(QrTypes.OPENID_VC)
+  return (
+    url.startsWith(QrTypes.OPENID) ||
+    url.startsWith(QrTypes.OPENID_VC) ||
+    url.startsWith(QrTypes.OPENID4VP)
+  )
 }
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
