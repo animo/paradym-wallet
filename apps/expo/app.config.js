@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('./package.json')
+
 /* eslint-disable */
 const APP_VARIANT = process.env.APP_VARIANT || 'production'
 
@@ -41,7 +44,7 @@ const config = {
   scheme: 'paradym',
   slug: 'paradym-wallet',
   owner: 'animo-id',
-  version: '1.1.0',
+  version,
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
