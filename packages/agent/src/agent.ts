@@ -58,7 +58,7 @@ export const initializeAgent = async (walletKey: string) => {
     config: {
       label: 'Paradym Wallet',
       walletConfig: {
-        id: 'paradym-wallet-secure-254994949',
+        id: 'paradym-wallet-secure',
         key: walletKey,
       },
       autoUpdateStorageOnStartup: true,
