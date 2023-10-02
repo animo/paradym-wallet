@@ -19,12 +19,12 @@
   },
   "peerDependencies": {
     "@hyperledger/anoncreds-react-native": "^0.1.0",
-    "@hyperledger/aries-askar-react-native": "0.1.0",
+    "@hyperledger/aries-askar-react-native": "^0.1.0",
     "@hyperledger/indy-vdr-react-native": "^0.1.0"
   },
   "devDependencies": {
     "@hyperledger/anoncreds-react-native": "^0.1.0",
-    "@hyperledger/aries-askar-react-native": "0.1.0",
+    "@hyperledger/aries-askar-react-native": "^0.1.0",
     "@hyperledger/indy-vdr-react-native": "^0.1.0"
   }
 }

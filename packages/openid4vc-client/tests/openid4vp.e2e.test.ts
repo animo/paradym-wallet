@@ -61,7 +61,7 @@ describe('OpenId4VcClient | OpenID4VP', () => {
       const { selectResults, verifiedAuthorizationRequest } =
         await openId4VpClientService.selectCredentialForProofRequest(agent.context, {
           authorizationRequest:
-            'openid4vp://authorize?client_id=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Fcallback&client_id_scheme=redirect_uri&response_uri=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Fcallback&response_type=vp_token&response_mode=direct_post&presentation_definition_uri=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Frequest%3Fstate%3DRBFw2A7WP4qPe44kmrsAOg&nonce=rOmsQz9731_5Pnl8dhYzog&state=RBFw2A7WP4qPe44kmrsAOg',
+            'openid4vp://authorize?client_id=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Fcallback&client_id_scheme=redirect_uri&response_uri=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Fcallback&response_type=vp_token&response_mode=direct_post&presentation_definition_uri=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Frequest%3Fstate%3D9b2nQuoLQkW0bX_vk24qjg&nonce=u-Wg1dR5wo5IqIr8ilshMQ&state=9b2nQuoLQkW0bX_vk24qjg',
         })
 
       if (!selectResults.areRequirementsSatisfied) {

@@ -137,7 +137,12 @@ export class OpenId4VpClientService {
       selectedCredentials: options.selectedCredentials,
       presentationDefinition:
         options.verifiedAuthorizationRequest.presentationDefinitions[0].definition,
-      // TODO: challenge / nonce
+      includePresentationSubmissionInVp: false,
+      // TODO: are there other properties we need to include?
+      nonce:
+        await options.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty<string>(
+          'nonce'
+        ),
     })
 
     const verificationMethod = await this.getVerificationMethodFromVerifiablePresentation(
@@ -148,6 +153,37 @@ export class OpenId4VpClientService {
     const alg = getJwkClassFromKeyType(key.keyType)?.supportedSignatureAlgorithms[0]
     if (!alg) {
       throw new AriesFrameworkError(`No supported algs for key type: ${key.keyType}`)
+    }
+
+    // FIXME: the spec requires us to use `path_nested`, which is not automatically
+    // handled by the PEX library. We should probably do some version discovery here,
+    // but that should then also be integrated into sphereon's pex library.
+    // Response mode direct_post is new in Draft 18 and used by MATTR
+    const responseMode =
+      await options.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty<string>(
+        'response_mode'
+      )
+
+    if (responseMode === 'direct_post') {
+      // We nest each descriptor with a path_nested if the path is not $
+      // FIXME: this does not work with multiple presentation definitions and VPs
+      vp.presentationSubmission.descriptor_map = vp.presentationSubmission.descriptor_map.map(
+        (descriptor) => {
+          if (descriptor.path === '$') return descriptor
+
+          return {
+            id: descriptor.id,
+            path_nested: {
+              ...descriptor,
+              path: descriptor.path.replace('$.', '$.vp.'),
+              format: 'jwt_vc_json',
+            },
+            path: '$',
+            // NOTE: We only support JWT vps at the moment. Should be made dynamic at some point
+            format: 'jwt_vp',
+          }
+        }
+      )
     }
 
     const response = await op.createAuthorizationResponse(options.verifiedAuthorizationRequest, {

@@ -86,11 +86,15 @@ export class PresentationExchangeService {
       presentationDefinition,
       challenge,
       domain,
+      nonce,
+      includePresentationSubmissionInVp = true,
     }: {
       selectedCredentials: W3cVerifiableCredential[]
       presentationDefinition: PresentationDefinitionV1
       challenge?: string
       domain?: string
+      nonce?: string
+      includePresentationSubmissionInVp?: boolean
     }
   ) {
     if (selectedCredentials.length === 0) {
@@ -131,13 +135,17 @@ export class PresentationExchangeService {
     const verifiablePresentationResult = await this.pex.verifiablePresentationFrom(
       presentationDefinition,
       selectedCredentials.map(getSphereonW3cVerifiableCredential),
-      this.getPresentationSignCallback(agentContext, verificationMethod),
+      this.getPresentationSignCallback(
+        agentContext,
+        verificationMethod,
+        includePresentationSubmissionInVp
+      ),
       {
         holderDID: firstSubjectId,
         proofOptions: {
           challenge,
           domain,
-          // TODO: add nonce
+          nonce,
         },
         signatureOptions: {
           verificationMethod: verificationMethod?.id,
@@ -156,7 +164,8 @@ export class PresentationExchangeService {
 
   public getPresentationSignCallback(
     agentContext: AgentContext,
-    verificationMethod: VerificationMethod
+    verificationMethod: VerificationMethod,
+    includePresentationSubmissionInVp = true
   ) {
     const w3cCredentialService = agentContext.dependencyManager.resolve(W3cCredentialService)
 
@@ -166,7 +175,14 @@ export class PresentationExchangeService {
       const { challenge, domain, nonce } = options.proofOptions ?? {}
       const { verificationMethod: verificationMethodId } = options.signatureOptions ?? {}
 
-      const w3cPresentation = JsonTransformer.fromJSON(presentationJson, W3cPresentation)
+      let presentationToSignJson = presentationJson
+      if (!includePresentationSubmissionInVp) {
+        presentationToSignJson = {
+          ...presentationToSignJson,
+          presentation_submission: undefined,
+        }
+      }
+      const w3cPresentation = JsonTransformer.fromJSON(presentationToSignJson, W3cPresentation)
 
       if (verificationMethodId && verificationMethodId !== verificationMethod.id) {
         throw new AriesFrameworkError(

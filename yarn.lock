@@ -2882,25 +2882,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperledger/aries-askar-react-native@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@hyperledger/aries-askar-react-native@npm:0.1.0"
+"@hyperledger/aries-askar-react-native@npm:^0.1.0":
+  version: 0.1.1
+  resolution: "@hyperledger/aries-askar-react-native@npm:0.1.1"
   dependencies:
-    "@hyperledger/aries-askar-shared": 0.1.0
+    "@hyperledger/aries-askar-shared": 0.1.1
     "@mapbox/node-pre-gyp": ^1.0.10
   peerDependencies:
     react: ">= 16"
     react-native: ">= 0.66.0"
-  checksum: aee362450a0758a03fb4074531ba2073f5a9d3a09069dc19f955dd7a6dad9871f9f0226302503fca54490f596b206766b3a7bceabe6a8355ab33b9f24a18464e
-  languageName: node
-  linkType: hard
-
-"@hyperledger/aries-askar-shared@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@hyperledger/aries-askar-shared@npm:0.1.0"
-  dependencies:
-    fast-text-encoding: ^1.0.3
-  checksum: 024d1fa121e923f60b297b565aed1ebf9c31a100f5487d687b5dadade99734a7c6f792c1a025dbaeed865570bffda473dc9355aa034d1169d52303f343ac13a1
+  checksum: c16d1bfb8fbc732e624944138c7a8a9b0c461aae6bd41db3cdb89382c8d750b384d056ef018a8bc5d26fa6dca6f7e3c59c6e8122deeac0c1c48e162e559cfeef
   languageName: node
   linkType: hard
 
@@ -2946,7 +2937,7 @@ __metadata:
     "@aries-framework/react-hooks": 0.4.2
     "@aries-framework/react-native": 0.4.1
     "@hyperledger/anoncreds-react-native": ^0.1.0
-    "@hyperledger/aries-askar-react-native": 0.1.0
+    "@hyperledger/aries-askar-react-native": ^0.1.0
     "@hyperledger/indy-vdr-react-native": ^0.1.0
     "@internal/openid4vc-client": "*"
     "@internal/utils": "*"
@@ -2954,7 +2945,7 @@ __metadata:
     rxjs: ^7.8.1
   peerDependencies:
     "@hyperledger/anoncreds-react-native": ^0.1.0
-    "@hyperledger/aries-askar-react-native": 0.1.0
+    "@hyperledger/aries-askar-react-native": ^0.1.0
     "@hyperledger/indy-vdr-react-native": ^0.1.0
   languageName: unknown
   linkType: soft
@@ -4134,9 +4125,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.0.tgz::locator=paradym-wallet%40workspace%3A.":
-  version: 0.4.1-unstable.0
-  resolution: "@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.0.tgz::locator=paradym-wallet%40workspace%3A."
+"@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.3.tgz::locator=paradym-wallet%40workspace%3A.":
+  version: 0.4.1-unstable.3
+  resolution: "@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.3.tgz::locator=paradym-wallet%40workspace%3A."
   dependencies:
     "@astronautlabs/jsonpath": ^1.1.2
     "@sphereon/did-uni-client": ^0.6.0
@@ -4154,7 +4145,7 @@ __metadata:
     sha.js: ^2.4.11
     uint8arrays: ^3.1.1
     uuid: ^9.0.0
-  checksum: 4a3f3555aafa42149eb23c8915996ebd34a0f0a3366f99043b58fd53581d5d283ec98b369cb889142049c0bce16ed2a145c02f6c5b8db723e7f724adb2eafd21
+  checksum: 8d2ff920627fa217817e8c76bc460ca9d4585814e2005b742e7cabcfa9a536b62763154244822c85dbf0165abbe746a11722953053b1a4f287e035cefaf45206
   languageName: node
   linkType: hard
 
@@ -9380,7 +9371,7 @@ __metadata:
     "@babel/runtime": ^7.18.9
     "@expo/metro-config": ~0.10.0
     "@hyperledger/anoncreds-react-native": ^0.1.0
-    "@hyperledger/aries-askar-react-native": 0.1.0
+    "@hyperledger/aries-askar-react-native": ^0.1.0
     "@hyperledger/indy-vdr-react-native": ^0.1.0
     "@internal/agent": "*"
     "@internal/ui": "*"
