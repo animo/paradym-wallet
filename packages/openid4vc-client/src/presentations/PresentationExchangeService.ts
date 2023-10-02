@@ -7,7 +7,7 @@ import type {
   W3cVerifiableCredential,
 } from '@aries-framework/core'
 import type { PresentationSignCallBackParams } from '@sphereon/pex'
-import type { PresentationDefinitionV1 } from '@sphereon/pex-models'
+import type { PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
 import type { IVerifiablePresentation } from '@sphereon/ssi-types'
 
 import {
@@ -23,7 +23,7 @@ import {
   W3cPresentation,
 } from '@aries-framework/core'
 import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
-import { PEXv1, Status } from '@sphereon/pex'
+import { PEVersion, PEX, Status } from '@sphereon/pex'
 
 import { selectCredentialsForRequest } from './selection/PexCredentialSelection'
 import {
@@ -34,13 +34,13 @@ import {
 
 @injectable()
 export class PresentationExchangeService {
-  private pex = new PEXv1()
+  private pex = new PEX()
 
   /**
    * Validates a DIF Presentation Definition
    */
   public validateDefinition(presentationDefinition: PresentationDefinitionV1) {
-    const result = PEXv1.validateDefinition(presentationDefinition)
+    const result = PEX.validateDefinition(presentationDefinition)
 
     // check if error
     const firstResult = Array.isArray(result) ? result[0] : result
@@ -239,24 +239,53 @@ export class PresentationExchangeService {
    */
   private async queryCredentialForPresentationDefinition(
     agentContext: AgentContext,
-    presentationDefinition: PresentationDefinitionV1
+    presentationDefinition: PresentationDefinitionV1 | PresentationDefinitionV2
   ) {
     const w3cCredentialRepository = agentContext.dependencyManager.resolve(W3cCredentialRepository)
 
     const query: Array<Query<W3cCredentialRecord>> = []
 
-    // The schema.uri can contain either an expanded type, or a context uri
-    for (const inputDescriptor of presentationDefinition.input_descriptors) {
-      for (const schema of inputDescriptor.schema) {
-        // FIXME: It's currently not possible to query by the `type` of the credential. So we fetch all JWT VCs for now
-        query.push({
-          $or: [
-            { expandedType: [schema.uri] },
-            { contexts: [schema.uri] },
-            { claimFormat: ClaimFormat.JwtVc },
-          ],
-        })
+    const presentationDefinitionVersion = PEX.definitionVersionDiscovery(presentationDefinition)
+
+    if (!presentationDefinitionVersion.version) {
+      throw new AriesFrameworkError(
+        `Unable to determine version for presentation definition. ${
+          presentationDefinitionVersion.error ?? 'Unknown error'
+        }`
+      )
+    }
+
+    if (presentationDefinitionVersion.version === PEVersion.v1) {
+      const pd = presentationDefinition as PresentationDefinitionV1
+
+      // The schema.uri can contain either an expanded type, or a context uri
+      for (const inputDescriptor of pd.input_descriptors) {
+        for (const schema of inputDescriptor.schema) {
+          // FIXME: It's currently not possible to query by the `type` of the credential. So we fetch all JWT VCs for now
+          query.push({
+            $or: [
+              { expandedType: [schema.uri] },
+              { contexts: [schema.uri] },
+              { claimFormat: ClaimFormat.JwtVc },
+            ],
+          })
+        }
       }
+    } else if (presentationDefinitionVersion.version === PEVersion.v2) {
+      // FIXME: As PE version 2 does not have the `schema` anymore, we can't query by schema anymore.
+      // For now we retrieve ALL credentials, as we did the same for V1 with JWT credentials. We probably need
+      // to find some way to do initial filtering, hopefully if there's a filter on the `type` field or something.
+
+      // FIXME: It's currently not possible to query by the `type` of the credential. So we fetch all JWT VCs for now
+      query.push({
+        $or: [{ claimFormat: ClaimFormat.JwtVc }],
+      })
+    } else {
+      throw new AriesFrameworkError(
+        `Unsupported presentation definition version ${
+          presentationDefinitionVersion.version as unknown as string
+        }`
+      )
     }
 
     // query the wallet ourselves first to avoid the need to query the pex library for all

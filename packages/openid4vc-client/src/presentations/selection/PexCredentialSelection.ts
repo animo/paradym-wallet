@@ -12,7 +12,7 @@ import type {
 } from '@sphereon/pex-models'
 
 import { AriesFrameworkError } from '@aries-framework/core'
-import { PEXv1 } from '@sphereon/pex'
+import { PEX } from '@sphereon/pex'
 import { Rules } from '@sphereon/pex-models'
 import { default as jp } from 'jsonpath'
 
@@ -22,7 +22,7 @@ export function selectCredentialsForRequest(
   presentationDefinition: PresentationDefinitionV1,
   credentialRecords: W3cCredentialRecord[]
 ): PresentationSubmission {
-  const pex = new PEXv1()
+  const pex = new PEX()
 
   const encodedCredentials = credentialRecords.map((c) =>
     getSphereonW3cVerifiableCredential(c.credential)

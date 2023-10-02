@@ -151,6 +151,7 @@ export class OpenId4VpClientService {
     }
 
     const response = await op.createAuthorizationResponse(options.verifiedAuthorizationRequest, {
+      issuer: verificationMethod.controller,
       presentationExchange: {
         verifiablePresentations: [vp.verifiablePresentation.encoded as W3CVerifiablePresentation],
         presentationSubmission: vp.presentationSubmission,

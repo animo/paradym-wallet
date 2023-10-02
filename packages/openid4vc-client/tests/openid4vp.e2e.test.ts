@@ -1,19 +1,11 @@
-import type { KeyDidCreateOptions } from '@aries-framework/core'
+import type { W3cCredentialRecord } from '@aries-framework/core'
 
 import { AskarModule } from '@aries-framework/askar'
-import {
-  JwaSignatureAlgorithm,
-  Agent,
-  KeyType,
-  TypedArrayEncoder,
-  W3cCredentialRecord,
-  DidKey,
-} from '@aries-framework/core'
+import { KeyType, W3cJwtVerifiableCredential, Agent, Buffer } from '@aries-framework/core'
 import { agentDependencies } from '@aries-framework/node'
 import { ariesAskar } from '@hyperledger/aries-askar-nodejs'
 
 import { OpenId4VcClientModule, OpenId4VpClientService } from '../src'
-import { OpenIdCredentialFormatProfile } from '../src/utils/claimFormatMapping'
 
 const modules = {
   openId4VcClient: new OpenId4VcClientModule(),
@@ -46,15 +38,51 @@ describe('OpenId4VcClient | OpenID4VP', () => {
     await agent.wallet.delete()
   })
 
-  describe('Authorization Request', () => {
-    it('[DRAFT 08]: Should successfully execute the pre-authorized flow using a did:key P256 subject and JWT credential', async () => {
-      const openId4VpClientService = agent.dependencyManager.resolve(OpenId4VpClientService)
-      const results = await openId4VpClientService.selectCredentialForProofRequest(agent.context, {
-        authorizationRequest:
-          'openid4vp://authorize?client_id=https://launchpad.mattrlabs.com/api/vp/callback&client_id_scheme=redirect_uri&response_uri=https://launchpad.mattrlabs.com/api/vp/callback&response_type=vp_token&response_mode=direct_post&presentation_definition_uri=https://launchpad.mattrlabs.com/api/vp/request?state=b5ktzmeknMKDh0aQ7wBy7A&nonce=cEtvqAkaQZqTR0RHOFvOHg&state=b5ktzmeknMKDh0aQ7wBy7A',
+  describe('Mattr interop', () => {
+    // Not working yet. Once it works, we can mock the requests/responses
+    xit('Should succesfuly share a proof with MATTR launchpad', async () => {
+      // Store needed credential / did / key
+      await agent.w3cCredentials.storeCredential({
+        credential: W3cJwtVerifiableCredential.fromSerializedJwt(
+          'eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDp3ZWI6bGF1bmNocGFkLnZpaS5lbGVjdHJvbi5tYXR0cmxhYnMuaW8jNkJoRk1DR1RKZyJ9.eyJpc3MiOiJkaWQ6d2ViOmxhdW5jaHBhZC52aWkuZWxlY3Ryb24ubWF0dHJsYWJzLmlvIiwic3ViIjoiZGlkOmtleTp6Nk1rdHF0WE5HOENEVVk5UHJydG9TdEZ6ZUNuaHBNbWd4WUwxZ2lrY1czQnp2TlciLCJuYmYiOjE2OTYwMjI5NDksImV4cCI6MTcyNzY0NTM0OSwidmMiOnsibmFtZSI6IkV4YW1wbGUgVW5pdmVyc2l0eSBEZWdyZWUiLCJkZXNjcmlwdGlvbiI6IkpGRiBQbHVnZmVzdCAzIE9wZW5CYWRnZSBDcmVkZW50aWFsIiwiY3JlZGVudGlhbEJyYW5kaW5nIjp7ImJhY2tncm91bmRDb2xvciI6IiM0NjRjNDkifSwiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiLCJodHRwczovL21hdHRyLmdsb2JhbC9jb250ZXh0cy92Yy1leHRlbnNpb25zL3YyIiwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9vYi92M3AwL2NvbnRleHQtMy4wLjIuanNvbiIsImh0dHBzOi8vcHVybC5pbXNnbG9iYWwub3JnL3NwZWMvb2IvdjNwMC9leHRlbnNpb25zLmpzb24iLCJodHRwczovL3czaWQub3JnL3ZjLXJldm9jYXRpb24tbGlzdC0yMDIwL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJPcGVuQmFkZ2VDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmtleTp6Nk1rdHF0WE5HOENEVVk5UHJydG9TdEZ6ZUNuaHBNbWd4WUwxZ2lrY1czQnp2TlciLCJ0eXBlIjpbIkFjaGlldmVtZW50U3ViamVjdCJdLCJhY2hpZXZlbWVudCI6eyJpZCI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWNoaWV2ZW1lbnRzLzIxc3QtY2VudHVyeS1za2lsbHMvdGVhbXdvcmsiLCJuYW1lIjoiVGVhbXdvcmsiLCJ0eXBlIjpbIkFjaGlldmVtZW50Il0sImltYWdlIjp7ImlkIjoiaHR0cHM6Ly93M2MtY2NnLmdpdGh1Yi5pby92Yy1lZC9wbHVnZmVzdC0zLTIwMjMvaW1hZ2VzL0pGRi1WQy1FRFUtUExVR0ZFU1QzLWJhZGdlLWltYWdlLnBuZyIsInR5cGUiOiJJbWFnZSJ9LCJjcml0ZXJpYSI6eyJuYXJyYXRpdmUiOiJUZWFtIG1lbWJlcnMgYXJlIG5vbWluYXRlZCBmb3IgdGhpcyBiYWRnZSBieSB0aGVpciBwZWVycyBhbmQgcmVjb2duaXplZCB1cG9uIHJldmlldyBieSBFeGFtcGxlIENvcnAgbWFuYWdlbWVudC4ifSwiZGVzY3JpcHRpb24iOiJUaGlzIGJhZGdlIHJlY29nbml6ZXMgdGhlIGRldmVsb3BtZW50IG9mIHRoZSBjYXBhY2l0eSB0byBjb2xsYWJvcmF0ZSB3aXRoaW4gYSBncm91cCBlbnZpcm9ubWVudC4ifX0sImlzc3VlciI6eyJpZCI6ImRpZDp3ZWI6bGF1bmNocGFkLnZpaS5lbGVjdHJvbi5tYXR0cmxhYnMuaW8iLCJuYW1lIjoiRXhhbXBsZSBVbml2ZXJzaXR5IiwiaWNvblVybCI6Imh0dHBzOi8vdzNjLWNjZy5naXRodWIuaW8vdmMtZWQvcGx1Z2Zlc3QtMS0yMDIyL2ltYWdlcy9KRkZfTG9nb0xvY2t1cC5wbmciLCJpbWFnZSI6Imh0dHBzOi8vdzNjLWNjZy5naXRodWIuaW8vdmMtZWQvcGx1Z2Zlc3QtMS0yMDIyL2ltYWdlcy9KRkZfTG9nb0xvY2t1cC5wbmcifX19.HUYvivfEH2-yBXUq6t5gEZu1NY7_6tjsWojQvYbpRL_md5TyAmwn-LyfcPLyrQpgJcu08XjFp8smXFMfYJEqCQ'
+        ),
       })
 
-      console.log(results)
+      await agent.wallet.createKey({
+        keyType: KeyType.Ed25519,
+        seed: Buffer.from('00000000000000000000000000000000'),
+      })
+
+      await agent.dids.import({
+        did: 'did:key:z6MktqtXNG8CDUY9PrrtoStFzeCnhpMmgxYL1gikcW3BzvNW',
+      })
+
+      const openId4VpClientService = agent.dependencyManager.resolve(OpenId4VpClientService)
+      const { selectResults, verifiedAuthorizationRequest } =
+        await openId4VpClientService.selectCredentialForProofRequest(agent.context, {
+          authorizationRequest:
+            'openid4vp://authorize?client_id=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Fcallback&client_id_scheme=redirect_uri&response_uri=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Fcallback&response_type=vp_token&response_mode=direct_post&presentation_definition_uri=https%3A%2F%2Flaunchpad.mattrlabs.com%2Fapi%2Fvp%2Frequest%3Fstate%3DRBFw2A7WP4qPe44kmrsAOg&nonce=rOmsQz9731_5Pnl8dhYzog&state=RBFw2A7WP4qPe44kmrsAOg',
+        })
+
+      if (!selectResults.areRequirementsSatisfied) {
+        throw new Error('Requirements are not satisfied.')
+      }
+
+      const credentialRecords = selectResults.requirements
+        .flatMap((requirement) =>
+          requirement.submission.flatMap((submission) => submission.verifiableCredential)
+        )
+        .filter(
+          (credentialRecord): credentialRecord is W3cCredentialRecord =>
+            credentialRecord !== undefined
+        )
+
+      const credentials = credentialRecords.map((credentialRecord) => credentialRecord.credential)
+
+      await openId4VpClientService.shareProof(agent.context, {
+        verifiedAuthorizationRequest,
+        selectedCredentials: credentials,
+      })
     })
   })
 })
