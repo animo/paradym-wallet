@@ -28,6 +28,7 @@ if (!variant) {
   throw new Error('Invalid variant provided: ' + process.env.APP_VARIANT)
 }
 
+// NOTE: Keep this in sync with the `QrTypes` enum
 const invitationSchemes = [
   'openid',
   'openid-initiate-issuance',
