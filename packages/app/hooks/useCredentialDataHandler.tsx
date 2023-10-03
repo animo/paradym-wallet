@@ -66,21 +66,27 @@ export const useCredentialDataHandler = () => {
 
       // Credential exchange
       if ('credentialExchangeId' in result) {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         push({
           pathname: '/notifications/didCommCredential',
           query: {
             credentialExchangeId: result.credentialExchangeId,
           },
         })
+
+        return { result: 'success' }
       }
       // Proof Exchange
       else if ('proofExchangeId' in result) {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         push({
           pathname: '/notifications/didCommPresentation',
           query: {
             proofExchangeId: result.proofExchangeId,
           },
         })
+
+        return { result: 'success' }
       }
     }
 

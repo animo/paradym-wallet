@@ -160,10 +160,12 @@ export const shareProof = async ({
   agent,
   verifiedAuthorizationRequest,
   selectResults,
+  submissionEntryIndexes,
 }: {
   agent: AppAgent
   verifiedAuthorizationRequest: VerifiedAuthorizationRequestWithPresentationDefinition
   selectResults: PresentationSubmission
+  submissionEntryIndexes: number[]
 }) => {
   const openId4VpClientService = agent.dependencyManager.resolve(OpenId4VpClientService)
 
@@ -172,8 +174,10 @@ export const shareProof = async ({
   }
 
   const credentialRecords = selectResults.requirements
-    .flatMap((requirement) =>
-      requirement.submission.flatMap((submission) => submission.verifiableCredential)
+    .flatMap((requirement) => requirement.submission)
+    .map(
+      (submission, index) =>
+        submission.verifiableCredentials[submissionEntryIndexes[index] as number]
     )
     .filter(
       (credentialRecord): credentialRecord is W3cCredentialRecord => credentialRecord !== undefined

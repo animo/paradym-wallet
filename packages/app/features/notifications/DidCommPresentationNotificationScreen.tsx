@@ -17,15 +17,22 @@ export function DidCommPresentationNotificationScreen() {
   const toast = useToastController()
   const { params } = useParams()
 
-  const { acceptPresentation, proofExchange, status, submission, verifierName } =
-    useAcceptDidCommPresentation(params.proofExchangeId)
+  const {
+    acceptPresentation,
+    proofExchange,
+    status,
+    submission,
+    verifierName,
+    setCredentialIndexForSubmissionEntryIndex,
+    submissionEntryIndexes,
+  } = useAcceptDidCommPresentation(params.proofExchangeId)
 
   const pushToWallet = () => {
     router.back()
     router.push('/')
   }
 
-  if (!submission || !proofExchange) {
+  if (!submission || !proofExchange || !submissionEntryIndexes) {
     return (
       <Page jc="center" ai="center" g="md">
         <Spinner />
@@ -64,6 +71,8 @@ export function DidCommPresentationNotificationScreen() {
       // If state is not idle, it means we have pressed accept
       isAccepting={status !== 'idle'}
       verifierName={verifierName}
+      submissionEntryIndexes={submissionEntryIndexes}
+      onSelectCredentialIndexForSubmissionEntryIndex={setCredentialIndexForSubmissionEntryIndex}
     />
   )
 }

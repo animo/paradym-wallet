@@ -2,6 +2,7 @@ import type { CredentialDisplay } from '@internal/agent'
 
 import { YStack, Heading, Button, Spacer, ScrollView, Spinner } from '@internal/ui'
 import React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import CredentialAttributes from 'app/components/CredentialAttributes'
 import CredentialCard from 'app/components/CredentialCard'
@@ -22,8 +23,15 @@ export function CredentialNotificationScreen({
   onAccept,
   onDecline,
 }: CredentialNotificationScreenProps) {
+  const safeArea = useSafeAreaInsets()
+
   return (
-    <ScrollView bg="$grey-200">
+    <ScrollView
+      bg="$grey-200"
+      contentContainerStyle={{
+        paddingTop: safeArea.top,
+      }}
+    >
       <YStack g="3xl" jc="space-between" pad="lg" py="$6">
         <YStack g="2xl">
           <Heading variant="h2" ta="center" px="$4">

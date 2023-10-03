@@ -11,7 +11,7 @@
     "android": "cd apps/expo && yarn android",
     "watch": "yarn workspaces foreach -pi run watch",
     "fix": "manypkg fix",
-    "postinstall": "yarn check-deps && yarn build",
+    "postinstall": "yarn build",
     "build": "yarn workspaces foreach run build",
     "upgrade:tamagui": "yarn up '*tamagui*'@latest '@tamagui/*'@latest react-native-web-lite@latest",
     "upgrade:tamagui:canary": "yarn up '*tamagui*'@canary '@tamagui/*'@canary react-native-web-lite@canary",

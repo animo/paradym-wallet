@@ -101,6 +101,9 @@ export class PresentationExchangeService {
       throw new AriesFrameworkError('No credentials selected for creating presentation.')
     }
 
+    // TODO: we need to split the VP into multiple VPs if there are multiple subjects. We need to group all credentials for the same
+    // subject together, and create a vp for each group. Then we need to only include those credentials, and combine the presentation
+    // submission for them into one.
     // We use the subject id to resolve the DID document.
     // I am assuming the subject is the same for all credentials (for now)
     // The presentation contains multiple credentials and these are being added

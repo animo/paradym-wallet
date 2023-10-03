@@ -1,58 +1,20 @@
-import { Sheet as TSheet } from '@tamagui/sheet'
-import { useState } from 'react'
+import type { ForwardedRef } from 'react'
 
-import { Button } from '../base'
-import { ChevronDown, ChevronUp } from '../content'
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { forwardRef } from 'react'
 
 type Props = {
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  showChevron?: boolean
-  snapPoints?: number[]
+  snapPoints?: string[]
   children?: React.ReactNode
 }
 
-export const Sheet = ({
-  open,
-  setOpen,
-  showChevron = false,
-  snapPoints = [80],
-  children,
-}: Props) => {
-  const [position, setPosition] = useState(0)
-
-  return (
-    <>
-      {showChevron && (
-        <Button.Text
-          size="$6"
-          icon={open ? <ChevronDown /> : <ChevronUp />}
-          circular
-          onPress={() => setOpen((x) => !x)}
-        />
-      )}
-      <TSheet
-        modal
-        open={open}
-        onOpenChange={setOpen}
-        snapPoints={snapPoints}
-        position={position}
-        onPositionChange={setPosition}
-        dismissOnSnapToBottom
-      >
-        <TSheet.Overlay backgroundColor="$darkTranslucent" />
-        <TSheet.Handle backgroundColor="$black" h="$0.5" />
-        <TSheet.Frame
-          flex={1}
-          padding="$4"
-          justifyContent="center"
-          alignItems="center"
-          space="$4"
-          backgroundColor="$white"
-        >
-          {children}
-        </TSheet.Frame>
-      </TSheet>
-    </>
-  )
-}
+export { BottomSheetScrollView }
+export const Sheet = forwardRef(
+  ({ snapPoints = ['80%'], children }: Props, ref: ForwardedRef<BottomSheet>) => {
+    return (
+      <BottomSheet ref={ref} index={-1} snapPoints={snapPoints}>
+        {children}
+      </BottomSheet>
+    )
+  }
+)

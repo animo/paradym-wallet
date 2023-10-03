@@ -16,7 +16,8 @@ import { NoInternetToastProvider } from 'app/provider/NoInternetToastProvider'
 import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
 import { Stack, SplashScreen } from 'expo-router'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { mediatorDid } from '../constants'
@@ -138,60 +139,62 @@ export default function HomeLayout() {
 
   return (
     <Provider>
-      <AgentProvider agent={agent}>
-        <ThemeProvider value={DefaultTheme}>
-          <NoInternetToastProvider>
-            <DeeplinkHandler>
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen
-                  options={{
-                    presentation: 'modal',
-                    // Extra modal options not needed for QR Scanner
-                  }}
-                  name="(home)/scan"
-                />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/openIdCredential"
-                />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/didCommCredential"
-                />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/openIdPresentation"
-                />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/didCommPresentation"
-                />
-                <Stack.Screen
-                  options={{
-                    headerShown: true,
-                    headerStyle: {
-                      backgroundColor: config.tokens.color['grey-200'].val,
-                    },
-                    headerShadowVisible: false,
-                    headerTintColor: config.tokens.color['primary-500'].val,
-                    headerTitle: 'Inbox',
-                  }}
-                  name="notifications/inbox"
-                />
-                <Stack.Screen
-                  options={{
-                    headerShown: true,
-                    headerTransparent: true,
-                    headerTintColor: config.tokens.color['primary-500'].val,
-                    headerTitle: '',
-                  }}
-                  name="credentials/[id]"
-                />
-              </Stack>
-            </DeeplinkHandler>
-          </NoInternetToastProvider>
-        </ThemeProvider>
-      </AgentProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <AgentProvider agent={agent}>
+          <ThemeProvider value={DefaultTheme}>
+            <NoInternetToastProvider>
+              <DeeplinkHandler>
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen
+                    options={{
+                      presentation: 'modal',
+                      // Extra modal options not needed for QR Scanner
+                    }}
+                    name="(home)/scan"
+                  />
+                  <Stack.Screen
+                    options={{ presentation: 'fullScreenModal', ...headerModalOptions }}
+                    name="notifications/openIdCredential"
+                  />
+                  <Stack.Screen
+                    options={{ presentation: 'fullScreenModal', ...headerModalOptions }}
+                    name="notifications/didCommCredential"
+                  />
+                  <Stack.Screen
+                    options={{ presentation: 'fullScreenModal', ...headerModalOptions }}
+                    name="notifications/openIdPresentation"
+                  />
+                  <Stack.Screen
+                    options={{ presentation: 'fullScreenModal', ...headerModalOptions }}
+                    name="notifications/didCommPresentation"
+                  />
+                  <Stack.Screen
+                    options={{
+                      headerShown: true,
+                      headerStyle: {
+                        backgroundColor: config.tokens.color['grey-200'].val,
+                      },
+                      headerShadowVisible: false,
+                      headerTintColor: config.tokens.color['primary-500'].val,
+                      headerTitle: 'Inbox',
+                    }}
+                    name="notifications/inbox"
+                  />
+                  <Stack.Screen
+                    options={{
+                      headerShown: true,
+                      headerTransparent: true,
+                      headerTintColor: config.tokens.color['primary-500'].val,
+                      headerTitle: '',
+                    }}
+                    name="credentials/[id]"
+                  />
+                </Stack>
+              </DeeplinkHandler>
+            </NoInternetToastProvider>
+          </ThemeProvider>
+        </AgentProvider>
+      </GestureHandlerRootView>
     </Provider>
   )
 }

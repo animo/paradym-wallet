@@ -154,7 +154,7 @@ function getSubmissionRequirementsAllInputDescriptors(
     const submission = getSubmissionForInputDescriptor(inputDescriptor, selectResults)
 
     submissionRequirements.push({
-      isRequirementSatisfied: submission.verifiableCredential !== undefined,
+      isRequirementSatisfied: submission.verifiableCredentials.length >= 1,
       submission: [submission],
       // Every input descriptor is a separate requirement, so the count is always 1
       needsCount: 1,
@@ -198,7 +198,7 @@ function getSubmissionRequirementRuleAll(
 
     // If all submissions have a credential, the requirement is satisfied
     isRequirementSatisfied: selectedSubmission.submission.every(
-      (submission) => submission.verifiableCredential !== undefined
+      (submission) => submission.verifiableCredentials.length >= 1
     ),
   }
 }
@@ -233,7 +233,7 @@ function getSubmissionRequirementRulePick(
 
     const submission = getSubmissionForInputDescriptor(inputDescriptor, selectResults)
 
-    if (submission.verifiableCredential) {
+    if (submission.verifiableCredentials.length >= 1) {
       satisfiedSubmissions.push(submission)
     } else {
       unsatisfiedSubmissions.push(submission)
@@ -267,7 +267,7 @@ function getSubmissionForInputDescriptor(
   // https://github.com/Sphereon-Opensource/PEX/issues/116
   // FIXME: the match.name is only the id if the input_descriptor has no name
   // Find first match
-  const match = selectResults.matches?.find(
+  const matches = selectResults.matches?.filter(
     (m) =>
       m.name === inputDescriptor.id ||
       // FIXME: this is not collision proof as the name doesn't have to be unique
@@ -278,23 +278,23 @@ function getSubmissionForInputDescriptor(
     inputDescriptorId: inputDescriptor.id,
     name: inputDescriptor.name,
     purpose: inputDescriptor.purpose,
+    verifiableCredentials: [],
   }
 
-  // return early if no match.
-  if (!match) return submissionEntry
+  // return early if no matches.
+  if (!matches?.length) return submissionEntry
 
   // FIXME: This can return multiple credentials for multiple input_descriptors,
   // which I think is a bug in the PEX library
   // Extract all credentials from the match
-  const [verifiableCredential] = extractCredentialsFromMatch(
-    match,
-    selectResults.verifiableCredential
-  )
-
-  return {
-    ...submissionEntry,
-    verifiableCredential,
+  for (const match of matches) {
+    submissionEntry.verifiableCredentials = [
+      ...submissionEntry.verifiableCredentials,
+      ...extractCredentialsFromMatch(match, selectResults.verifiableCredential),
+    ]
   }
+
+  return submissionEntry
 }
 
 function extractCredentialsFromMatch(
