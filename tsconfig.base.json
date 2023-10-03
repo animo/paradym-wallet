@@ -23,7 +23,7 @@
     // DONT DO THIS so jsdoc will remain
     "removeComments": false,
     "skipLibCheck": true,
-    "sourceMap": false,
+    "inlineSourceMap": true,
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
     "target": "es2020",

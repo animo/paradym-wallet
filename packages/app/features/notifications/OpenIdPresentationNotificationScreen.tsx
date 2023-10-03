@@ -34,6 +34,16 @@ export function OpenIdPresentationNotificationScreen() {
     [credentialsForRequest]
   )
 
+  const [submissionEntryIndexes, setSubmissionEntryIndexes] = useState<number[]>()
+
+  // Sets the initial indexes for all credentials for the submission entries
+  // 0 if credential is available, -1 if not
+  useEffect(() => {
+    if (!submission) return
+    const indexes = submission.entries.map((entry) => (entry.isSatisfied ? 0 : -1))
+    setSubmissionEntryIndexes(indexes)
+  }, [submission])
+
   const pushToWallet = () => {
     router.back()
     router.push('/')
@@ -46,13 +56,14 @@ export function OpenIdPresentationNotificationScreen() {
       .then((r) => {
         setCredentialsForRequest(r)
       })
-      .catch(() => {
+      .catch((e) => {
+        console.error(e)
         toast.show('Presentation information could not be extracted.')
         pushToWallet()
       })
   }, [uri])
 
-  if (!submission || !credentialsForRequest) {
+  if (!submission || !submissionEntryIndexes || !credentialsForRequest) {
     return (
       <Page jc="center" ai="center" g="md">
         <Spinner />
@@ -65,11 +76,12 @@ export function OpenIdPresentationNotificationScreen() {
 
   const onProofAccept = () => {
     setIsSharing(true)
-    shareProof({ ...credentialsForRequest, agent })
+    shareProof({ ...credentialsForRequest, agent, submissionEntryIndexes })
       .then(() => {
         toast.show('Information has been successfully shared.')
       })
-      .catch(() => {
+      .catch((e) => {
+        console.error(e)
         toast.show('Presentation could not be shared.')
       })
       .finally(() => {
@@ -87,6 +99,15 @@ export function OpenIdPresentationNotificationScreen() {
       onAccept={onProofAccept}
       onDecline={onProofDecline}
       submission={submission}
+      submissionEntryIndexes={submissionEntryIndexes}
+      onSelectCredentialIndexForSubmissionEntryIndex={(credentialIndex, submissionEntryIndex) =>
+        setSubmissionEntryIndexes((prevIndexes) => {
+          if (!prevIndexes) return prevIndexes
+          const newIndexes = [...prevIndexes]
+          newIndexes[submissionEntryIndex] = credentialIndex
+          return newIndexes
+        })
+      }
       isAccepting={isSharing}
       verifierName={credentialsForRequest.verifierHostName}
     />

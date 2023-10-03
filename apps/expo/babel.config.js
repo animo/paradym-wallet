@@ -21,8 +21,6 @@ module.exports = function (api) {
           extensions: ['.js', '.jsx', '.tsx', '.ios.js', '.android.js'],
         },
       ],
-      // if you want reanimated support
-      // 'react-native-reanimated/plugin',
       ...(process.env.EAS_BUILD_PLATFORM === 'android'
         ? []
         : [
@@ -40,6 +38,8 @@ module.exports = function (api) {
           include: 'TAMAGUI_TARGET',
         },
       ],
+      // if you want reanimated support
+      'react-native-reanimated/plugin',
     ],
   }
 }

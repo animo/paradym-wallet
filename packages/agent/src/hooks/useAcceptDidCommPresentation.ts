@@ -1,9 +1,11 @@
 import type { FormattedSubmission } from '../format/formatPresentation'
 import type {
+  AnonCredsCredentialsForProofRequest,
   AnonCredsPredicateType,
   AnonCredsRequestedAttributeMatch,
   AnonCredsRequestedPredicate,
   AnonCredsRequestedPredicateMatch,
+  AnonCredsSelectedCredentials,
 } from '@aries-framework/anoncreds'
 import type { ProofStateChangedEvent } from '@aries-framework/core'
 
@@ -15,6 +17,7 @@ import {
 } from '@aries-framework/core'
 import { useConnectionById, useProofById } from '@aries-framework/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 
@@ -26,13 +29,19 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
 
   const proofExchange = useProofById(proofExchangeId)
   const connection = useConnectionById(proofExchange?.connectionId ?? '')
+  const [submissionEntryIndexes, setSubmissionEntryIndexes] = useState<number[]>()
 
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
-    queryFn: async (): Promise<FormattedSubmission> => {
+    queryFn: async (): Promise<{
+      anonCredsCredentials: AnonCredsCredentialsForProofRequest
+      submission: FormattedSubmission
+      format: 'anoncreds' | 'indy'
+    }> => {
       const repository = agent.dependencyManager.resolve(CredentialRepository)
       const formatData = await agent.proofs.getFormatData(proofExchangeId)
-      const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
+      const format = formatData.request?.anoncreds ? 'anoncreds' : 'indy'
+      const proofRequest = formatData.request?.[format]
 
       const credentialsForRequest = await agent.proofs.getCredentialsForRequest({
         proofRecordId: proofExchangeId,
@@ -63,26 +72,35 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
 
           if (!firstMatch) {
             submission.entries.push({
-              credentialName: 'Credential', // TODO: we can extract this from the schema name, but we would have to fetch it
+              credentials: [],
               isSatisfied: false,
-              name: groupName, // TODO
-              requestedAttributes: attributeNames,
+              name: groupName,
             })
           } else {
-            const credentialExchange = await repository.findSingleByQuery(agent.context, {
-              credentialIds: [firstMatch.credentialId],
-            })
+            const credentials = await Promise.all(
+              attributeArray.map(async (attributeMatch) => {
+                // TODO: we can probably optimize this. We already have all records in memory
+                // We can also make it a single query instead of multiple
+                const credentialExchange = await repository.findSingleByQuery(agent.context, {
+                  credentialIds: [attributeMatch.credentialId],
+                })
 
-            const credentialDisplayMetadata = credentialExchange
-              ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
-              : undefined
+                const credentialDisplayMetadata = credentialExchange
+                  ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
+                  : undefined
+
+                return {
+                  requestedAttributes: attributeNames,
+                  credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
+                  issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
+                }
+              })
+            )
 
             submission.entries.push({
               name: groupName, // TODO: humanize string? Or should we let this out?
-              credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
               isSatisfied: true,
-              issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
-              requestedAttributes: attributeNames,
+              credentials,
             })
           }
         })
@@ -105,26 +123,33 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
 
           if (!firstMatch) {
             submission.entries.push({
-              credentialName: 'Credential', // TODO: we can extract this from the schema name, but we would have to fetch it
+              credentials: [],
               isSatisfied: false,
               name: groupName, // TODO
-              requestedAttributes: [formatPredicate(requestedPredicate)],
             })
           } else {
-            const credentialExchange = await repository.findSingleByQuery(agent.context, {
-              credentialIds: [firstMatch.credentialId],
-            })
+            const credentials = await Promise.all(
+              predicateArray.map(async (predicateMatch) => {
+                const credentialExchange = await repository.findSingleByQuery(agent.context, {
+                  credentialIds: [predicateMatch.credentialId],
+                })
 
-            const credentialDisplayMetadata = credentialExchange
-              ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
-              : undefined
+                const credentialDisplayMetadata = credentialExchange
+                  ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
+                  : undefined
+
+                return {
+                  issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
+                  credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
+                  requestedAttributes: [formatPredicate(requestedPredicate)],
+                }
+              })
+            )
 
             submission.entries.push({
               name: groupName, // TODO: humanize string? Or should we let this out?
-              credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
               isSatisfied: true,
-              issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
-              requestedAttributes: [formatPredicate(requestedPredicate)],
+              credentials,
             })
           }
         })
@@ -132,13 +157,20 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
 
       submission.areAllSatisfied = submission.entries.every((entry) => entry.isSatisfied)
 
-      return submission
+      // Set all entries to first one by default (or -1 if not satisfied)
+      setSubmissionEntryIndexes(
+        submission.entries.map((submissionEntry) => (submissionEntry.isSatisfied ? 0 : -1))
+      )
+
+      return { submission, anonCredsCredentials, format }
     },
   })
 
   const { mutateAsync, status } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
     mutationFn: async () => {
+      if (!data || !submissionEntryIndexes) throw new Error('No credentials available')
+
       const presentationDone$ = agent.events
         .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
         .pipe(
@@ -157,17 +189,59 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
 
       const presentationDonePromise = firstValueFrom(presentationDone$)
 
-      await agent.proofs.acceptRequest({ proofRecordId: proofExchangeId })
+      const selectedCredentials: AnonCredsSelectedCredentials = {
+        attributes: {},
+        predicates: {},
+        selfAttestedAttributes: {},
+      }
+
+      submissionEntryIndexes.forEach((credentialIndex, submissionEntryIndex) => {
+        const submissionEntry = data.submission.entries[submissionEntryIndex]
+        if (!submissionEntry) throw new Error('Submission entry does not exist')
+        if (!submissionEntry.isSatisfied) throw new Error('Submission entry is not satisfied')
+        const selectedCredential = submissionEntry.credentials[credentialIndex]
+        if (!selectedCredential) throw new Error('Selected credential does not exist')
+        const type = data.anonCredsCredentials.attributes[submissionEntry.name]
+          ? 'attributes'
+          : 'predicates'
+        const anonCredsCredentials = data.anonCredsCredentials[type][submissionEntry.name]
+        if (!anonCredsCredentials) throw new Error('Credential does not exist')
+        const anonCredsCredential = anonCredsCredentials[credentialIndex]
+        if (!anonCredsCredential) throw new Error('Credential does not exist')
+
+        selectedCredentials[type][submissionEntry.name] = anonCredsCredential
+      })
+
+      await agent.proofs.acceptRequest({
+        proofRecordId: proofExchangeId,
+        proofFormats: {
+          [data.format]: selectedCredentials,
+        },
+      })
       await presentationDonePromise
     },
   })
+
+  function setCredentialIndexForSubmissionEntryIndex(
+    credentialIndex: number,
+    submissionEntryIndex: number
+  ) {
+    setSubmissionEntryIndexes((prev) => {
+      if (!prev) return prev
+      const newIndexes = [...prev]
+      newIndexes[submissionEntryIndex] = credentialIndex
+      return newIndexes
+    })
+  }
 
   return {
     acceptPresentation: mutateAsync,
     status,
     proofExchange,
-    submission: data,
+    submission: data?.submission,
     verifierName: connection?.theirLabel,
+    setCredentialIndexForSubmissionEntryIndex,
+    submissionEntryIndexes,
   }
 }
 
