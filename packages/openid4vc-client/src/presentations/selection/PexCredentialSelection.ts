@@ -9,9 +9,12 @@ import type {
   PresentationDefinitionV1,
   SubmissionRequirement,
   InputDescriptorV1,
+  PresentationDefinitionV2,
+  InputDescriptorV2,
 } from '@sphereon/pex-models'
 
 import { AriesFrameworkError } from '@aries-framework/core'
+import { sanitizeString } from '@internal/utils'
 import { PEX } from '@sphereon/pex'
 import { Rules } from '@sphereon/pex-models'
 import { default as jp } from 'jsonpath'
@@ -145,7 +148,7 @@ function getSubmissionRequirements(
 }
 
 function getSubmissionRequirementsAllInputDescriptors(
-  presentationDefinition: PresentationDefinitionV1,
+  presentationDefinition: PresentationDefinitionV1 | PresentationDefinitionV2,
   selectResults: W3cCredentialRecordSelectResults
 ): PresentationSubmissionRequirement[] {
   const submissionRequirements: PresentationSubmissionRequirement[] = []
@@ -166,7 +169,7 @@ function getSubmissionRequirementsAllInputDescriptors(
 
 function getSubmissionRequirementRuleAll(
   submissionRequirement: SubmissionRequirement,
-  presentationDefinition: PresentationDefinitionV1,
+  presentationDefinition: PresentationDefinitionV1 | PresentationDefinitionV2,
   selectResults: W3cCredentialRecordSelectResults
 ) {
   // Check if there's a 'from'. If not the structure is not as we expect it
@@ -261,7 +264,7 @@ function getSubmissionRequirementRulePick(
 }
 
 function getSubmissionForInputDescriptor(
-  inputDescriptor: InputDescriptorV1,
+  inputDescriptor: InputDescriptorV1 | InputDescriptorV2,
   selectResults: W3cCredentialRecordSelectResults
 ): SubmissionEntry {
   // https://github.com/Sphereon-Opensource/PEX/issues/116
@@ -274,9 +277,17 @@ function getSubmissionForInputDescriptor(
       m.name === inputDescriptor.name
   )
 
+  let name = inputDescriptor.name
+  // If there's no name on the input descriptor, but the id does not contain
+  // any special characters or numbers (so only letters and spaces),
+  // we will use a sanitized version of the id as the name
+  if (!name && inputDescriptor.id.match(/^[a-zA-Z ]+$/)) {
+    name = sanitizeString(inputDescriptor.id)
+  }
+
   const submissionEntry: SubmissionEntry = {
     inputDescriptorId: inputDescriptor.id,
-    name: inputDescriptor.name,
+    name,
     purpose: inputDescriptor.purpose,
     verifiableCredentials: [],
   }

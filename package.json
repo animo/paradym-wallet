@@ -32,7 +32,7 @@
     "@unimodules/react-native-adapter": "./noop",
     "@unimodules/core": "./noop",
     "@sphereon/pex": "file:./sphereon-pex-v2.1.3-unstable.1.tgz",
-    "@sphereon/did-auth-siop": "file:./sphereon-did-auth-siop-v0.4.1-unstable.3.tgz",
+    "@sphereon/did-auth-siop": "file:./sphereon-did-auth-siop-v0.4.1-unstable.5.tgz",
     "ref-napi": "npm:@2060.io/ref-napi@3.0.4",
     "@cosmjs/amino": "npm:@cosmjs-rn/amino@^0.27.1",
     "@cosmjs/encoding": "npm:@cosmjs-rn/encoding@^0.27.1",

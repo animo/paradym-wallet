@@ -1,6 +1,8 @@
+import type { PresentationSubmission } from './selection'
+import type { CredentialsForInputDescriptor } from './selection/types'
 import type {
   AgentContext,
-  W3cVerifiableCredential,
+  W3cCredentialRecord,
   W3cVerifiablePresentation,
 } from '@aries-framework/core'
 import type {
@@ -128,13 +130,33 @@ export class OpenId4VpClientService {
     agentContext: AgentContext,
     options: {
       verifiedAuthorizationRequest: VerifiedAuthorizationRequestWithPresentationDefinition
-      selectedCredentials: W3cVerifiableCredential[]
+      submission: PresentationSubmission
+      submissionEntryIndexes: number[]
     }
   ) {
     const op = this.getOp(agentContext)
 
-    const vp = await this.presentationExchangeService.createPresentation(agentContext, {
-      selectedCredentials: options.selectedCredentials,
+    const credentialsForInputDescriptor: CredentialsForInputDescriptor = {}
+
+    options.submission.requirements
+      .flatMap((requirement) => requirement.submission)
+      .forEach((submission, index) => {
+        const verifiableCredential = submission.verifiableCredentials[
+          options.submissionEntryIndexes[index] as number
+        ] as W3cCredentialRecord
+
+        const inputDescriptor = credentialsForInputDescriptor[submission.inputDescriptorId]
+        if (!inputDescriptor) {
+          credentialsForInputDescriptor[submission.inputDescriptorId] = [
+            verifiableCredential.credential,
+          ]
+        } else {
+          inputDescriptor.push(verifiableCredential.credential)
+        }
+      })
+
+    const vps = await this.presentationExchangeService.createPresentation(agentContext, {
+      credentialsForInputDescriptor,
       presentationDefinition:
         options.verifiedAuthorizationRequest.presentationDefinitions[0].definition,
       includePresentationSubmissionInVp: false,
@@ -147,7 +169,7 @@ export class OpenId4VpClientService {
 
     const verificationMethod = await this.getVerificationMethodFromVerifiablePresentation(
       agentContext,
-      vp.verifiablePresentation
+      vps.verifiablePresentations[0] as W3cVerifiablePresentation
     )
     const key = getKeyFromVerificationMethod(verificationMethod)
     const alg = getJwkClassFromKeyType(key.keyType)?.supportedSignatureAlgorithms[0]
@@ -155,42 +177,13 @@ export class OpenId4VpClientService {
       throw new AriesFrameworkError(`No supported algs for key type: ${key.keyType}`)
     }
 
-    // FIXME: the spec requires us to use `path_nested`, which is not automatically
-    // handled by the PEX library. We should probably do some version discovery here,
-    // but that should then also be integrated into sphereon's pex library.
-    // Response mode direct_post is new in Draft 18 and used by MATTR
-    const responseMode =
-      await options.verifiedAuthorizationRequest.authorizationRequest.getMergedProperty<string>(
-        'response_mode'
-      )
-
-    if (responseMode === 'direct_post') {
-      // We nest each descriptor with a path_nested if the path is not $
-      // FIXME: this does not work with multiple presentation definitions and VPs
-      vp.presentationSubmission.descriptor_map = vp.presentationSubmission.descriptor_map.map(
-        (descriptor) => {
-          if (descriptor.path === '$') return descriptor
-
-          return {
-            id: descriptor.id,
-            path_nested: {
-              ...descriptor,
-              path: descriptor.path.replace('$.', '$.vp.'),
-              format: 'jwt_vc_json',
-            },
-            path: '$',
-            // NOTE: We only support JWT vps at the moment. Should be made dynamic at some point
-            format: 'jwt_vp',
-          }
-        }
-      )
-    }
-
     const response = await op.createAuthorizationResponse(options.verifiedAuthorizationRequest, {
       issuer: verificationMethod.controller,
       presentationExchange: {
-        verifiablePresentations: [vp.verifiablePresentation.encoded as W3CVerifiablePresentation],
-        presentationSubmission: vp.presentationSubmission,
+        verifiablePresentations: vps.verifiablePresentations.map(
+          (vp) => vp.encoded as W3CVerifiablePresentation
+        ),
+        presentationSubmission: vps.presentationSubmission,
       },
       signature: {
         signature: async (data) => {

@@ -1,4 +1,4 @@
-import type { W3cCredentialRecord } from '@aries-framework/core'
+import type { W3cCredentialRecord, W3cVerifiableCredential } from '@aries-framework/core'
 
 /**
  * A submission entry that satisfies a specific input descriptor from the
@@ -105,4 +105,11 @@ export interface PresentationSubmission {
    * Purpose of the presentation definition.
    */
   purpose?: string
+}
+
+/**
+ * Mapping of selected credentials for an input descriptor
+ */
+export interface CredentialsForInputDescriptor {
+  [inputDescriptorId: string]: W3cVerifiableCredential[]
 }

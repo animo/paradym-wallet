@@ -78,7 +78,7 @@ export function PresentationNotificationScreen({
           minHeight: '100%',
         }}
       >
-        <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$grey-200">
+        <YStack g="xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$grey-200">
           <YStack g="xl">
             <YStack ai="center" jc="center" gap="$4">
               <Heading variant="h2" ta="center" px="$4">
@@ -96,7 +96,7 @@ export function PresentationNotificationScreen({
                 const entryIndex = submissionEntryIndexes[i] as number
                 const selectedCredential = s.credentials[entryIndex]
                 return (
-                  <YStack key={s.name}>
+                  <YStack key={i}>
                     <YStack
                       br="$4"
                       border
@@ -104,13 +104,15 @@ export function PresentationNotificationScreen({
                       gap="$2"
                       borderColor={s.isSatisfied ? '$grey-300' : '$danger-500'}
                       onPress={
-                        s.isSatisfied ? () => setChangeSubmissionCredentialIndex(i) : undefined
+                        s.credentials.length > 1
+                          ? () => setChangeSubmissionCredentialIndex(i)
+                          : undefined
                       }
                       pressStyle={{ backgroundColor: s.isSatisfied ? '$grey-100' : undefined }}
                     >
                       <YStack gap="$2">
                         <XStack justifyContent="space-between" alignItems="center">
-                          <Stack>
+                          <Stack flex={1}>
                             <CredentialRowCard
                               issuer={selectedCredential?.issuerName}
                               name={selectedCredential?.credentialName ?? s.name}

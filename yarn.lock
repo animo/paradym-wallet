@@ -3003,6 +3003,7 @@ __metadata:
     "@aries-framework/core": 0.4.1
     "@aries-framework/node": 0.4.1
     "@hyperledger/aries-askar-nodejs": ^0.1.0
+    "@internal/utils": "*"
     "@sphereon/did-auth-siop": ^0.4.0
     "@sphereon/oid4vci-client": "file:./sphereon-oid4vci-client-v0.5.1.tgz"
     "@sphereon/oid4vci-common": "file:./sphereon-oid4vci-common-v0.5.0.tgz"
@@ -4170,9 +4171,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.3.tgz::locator=paradym-wallet%40workspace%3A.":
-  version: 0.4.1-unstable.3
-  resolution: "@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.3.tgz::locator=paradym-wallet%40workspace%3A."
+"@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.5.tgz::locator=paradym-wallet%40workspace%3A.":
+  version: 0.4.1-unstable.5
+  resolution: "@sphereon/did-auth-siop@file:./sphereon-did-auth-siop-v0.4.1-unstable.5.tgz::locator=paradym-wallet%40workspace%3A."
   dependencies:
     "@astronautlabs/jsonpath": ^1.1.2
     "@sphereon/did-uni-client": ^0.6.0
@@ -4190,7 +4191,7 @@ __metadata:
     sha.js: ^2.4.11
     uint8arrays: ^3.1.1
     uuid: ^9.0.0
-  checksum: 8d2ff920627fa217817e8c76bc460ca9d4585814e2005b742e7cabcfa9a536b62763154244822c85dbf0165abbe746a11722953053b1a4f287e035cefaf45206
+  checksum: c63ebb0962cfbc2de61056b8e60397dfa0d17732cca97dd5fac02ec9658443bd1f8c9d456c42932051a07629d7fcaf06e7fd2dc3af70bf710004fb07f1d8c481
   languageName: node
   linkType: hard
 

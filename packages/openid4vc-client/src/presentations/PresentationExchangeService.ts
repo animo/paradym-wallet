@@ -1,4 +1,4 @@
-import type { PresentationSubmission } from './selection/types'
+import type { CredentialsForInputDescriptor, PresentationSubmission } from './selection/types'
 import type {
   AgentContext,
   Query,
@@ -6,8 +6,13 @@ import type {
   W3cCredentialRecord,
   W3cVerifiableCredential,
 } from '@aries-framework/core'
-import type { PresentationSignCallBackParams } from '@sphereon/pex'
-import type { PresentationDefinitionV1, PresentationDefinitionV2 } from '@sphereon/pex-models'
+import type { PresentationSignCallBackParams, VerifiablePresentationResult } from '@sphereon/pex'
+import type {
+  PresentationDefinitionV1,
+  PresentationDefinitionV2,
+  PresentationSubmission as PexPresentationSubmission,
+  Descriptor,
+} from '@sphereon/pex-models'
 import type { IVerifiablePresentation } from '@sphereon/ssi-types'
 
 import {
@@ -82,86 +87,144 @@ export class PresentationExchangeService {
   public async createPresentation(
     agentContext: AgentContext,
     {
-      selectedCredentials,
+      credentialsForInputDescriptor,
       presentationDefinition,
       challenge,
       domain,
       nonce,
       includePresentationSubmissionInVp = true,
     }: {
-      selectedCredentials: W3cVerifiableCredential[]
-      presentationDefinition: PresentationDefinitionV1
+      credentialsForInputDescriptor: CredentialsForInputDescriptor
+      presentationDefinition: PresentationDefinitionV1 | PresentationDefinitionV2
       challenge?: string
       domain?: string
       nonce?: string
       includePresentationSubmissionInVp?: boolean
     }
   ) {
-    if (selectedCredentials.length === 0) {
-      throw new AriesFrameworkError('No credentials selected for creating presentation.')
+    // if (selectedCredentials.length === 0) {
+    //   throw new AriesFrameworkError('No credentials selected for creating presentation.')
+    // }
+
+    const vps: {
+      [subjectId: string]: {
+        [inputDescriptorId: string]: W3cVerifiableCredential[]
+      }
+    } = {}
+
+    const verifiablePresentationResults: VerifiablePresentationResult[] = []
+
+    Object.entries(credentialsForInputDescriptor).forEach(([inputDescriptorId, credentials]) => {
+      credentials.forEach((credential) => {
+        const firstCredentialSubjectId = credential.credentialSubjectIds[0]
+        if (!firstCredentialSubjectId) {
+          throw new AriesFrameworkError(
+            'Credential subject missing from the selected credential for creating presentation.'
+          )
+        }
+
+        const inputDescriptorsForSubject = vps[firstCredentialSubjectId] ?? {}
+        vps[firstCredentialSubjectId] = inputDescriptorsForSubject
+
+        const credentialsForInputDescriptor = inputDescriptorsForSubject[inputDescriptorId] ?? []
+        inputDescriptorsForSubject[inputDescriptorId] = credentialsForInputDescriptor
+
+        credentialsForInputDescriptor.push(credential)
+      })
+    })
+
+    for (const [subjectId, inputDescriptors] of Object.entries(vps)) {
+      // Determine a suitable verification method for the presentation
+      const verificationMethod = await this.getVerificationMethodForSubjectId(
+        agentContext,
+        subjectId
+      )
+
+      if (!verificationMethod) {
+        throw new AriesFrameworkError(`No verification method found for subject id ${subjectId}`)
+      }
+
+      const inputDescriptorsForVp = (
+        presentationDefinition.input_descriptors as PresentationDefinitionV1[]
+      ).filter((inputDescriptor) => inputDescriptor.id in inputDescriptors)
+
+      const credentialsForVp = Object.values(inputDescriptors)
+        .flatMap((inputDescriptors) => inputDescriptors)
+        .map(getSphereonW3cVerifiableCredential)
+
+      const presentationDefinitionForVp = {
+        ...presentationDefinition,
+        input_descriptors: inputDescriptorsForVp,
+
+        // We remove the submission requirements, as it will otherwise fail to create the VP
+        // FIXME: Will this cause issue for creating the credential? Need to run tests
+        submission_requirements: undefined,
+      }
+
+      // Q1: is holder always subject id, what if there are multiple subjects???
+      // Q2: What about proofType, proofPurpose verification method for multiple subjects?
+      const verifiablePresentationResult = await this.pex.verifiablePresentationFrom(
+        presentationDefinitionForVp,
+        credentialsForVp,
+        this.getPresentationSignCallback(
+          agentContext,
+          verificationMethod,
+          // Can't include submission if more than one VP
+          Object.values(vps).length > 1 ? false : includePresentationSubmissionInVp
+        ),
+        {
+          holderDID: subjectId,
+          proofOptions: {
+            challenge,
+            domain,
+            nonce,
+          },
+          signatureOptions: {
+            verificationMethod: verificationMethod?.id,
+          },
+        }
+      )
+
+      verifiablePresentationResults.push(verifiablePresentationResult)
     }
 
-    // TODO: we need to split the VP into multiple VPs if there are multiple subjects. We need to group all credentials for the same
-    // subject together, and create a vp for each group. Then we need to only include those credentials, and combine the presentation
-    // submission for them into one.
-    // We use the subject id to resolve the DID document.
-    // I am assuming the subject is the same for all credentials (for now)
-    // The presentation contains multiple credentials and these are being added
-    // TODO how do we derive the verification method if there are multiple subject Ids
-    // FIXME
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const [firstSubjectId] = selectedCredentials[0]?.credentialSubjectIds ?? []
+    const firstVerifiablePresentationResult = verifiablePresentationResults[0]
+    if (!firstVerifiablePresentationResult) {
+      throw new AriesFrameworkError('No verifiable presentations created.')
+    }
 
-    // Credential is allowed to be presented without a subject id. In that case we can't prove ownership of credential
-    // And it is more like a bearer token.
-    // In the future we can first check the holder key and if it exists we can use that as the one that should authenticate
-    // https://www.w3.org/TR/vc-data-model/#example-a-credential-issued-to-a-holder-who-is-not-the-only-subject-of-the-credential-who-has-no-relationship-with-the-subject-of-the-credential-but-who-has-a-relationship-with-the-issuer
-    if (!firstSubjectId) {
-      throw new AriesFrameworkError(
-        'Credential subject missing from the selected credential for creating presentation.'
+    const presentationSubmission: PexPresentationSubmission = {
+      id: firstVerifiablePresentationResult.presentationSubmission.id,
+      definition_id: firstVerifiablePresentationResult.presentationSubmission.definition_id,
+      descriptor_map: [],
+    }
+
+    for (const vp of verifiablePresentationResults) {
+      presentationSubmission.descriptor_map.push(
+        ...vp.presentationSubmission.descriptor_map.map((descriptor): Descriptor => {
+          const index = verifiablePresentationResults.indexOf(vp)
+          const prefix = verifiablePresentationResults.length > 1 ? `$[${index}]` : '$'
+          return {
+            format: 'jwt_vp',
+            path: prefix,
+            id: descriptor.id,
+            path_nested: {
+              ...descriptor,
+              path: descriptor.path.replace('$.', `${prefix}.vp.`),
+              format: 'jwt_vc_json',
+            },
+          }
+        })
       )
     }
 
-    // Determine a suitable verification method for the presentation
-    const verificationMethod = await this.getVerificationMethodForSubjectId(
-      agentContext,
-      firstSubjectId
-    )
-
-    if (!verificationMethod) {
-      throw new AriesFrameworkError(`No verification method found for subject id ${firstSubjectId}`)
-    }
-
-    // Q1: is holder always subject id, what if there are multiple subjects???
-    // Q2: What about proofType, proofPurpose verification method for multiple subjects?
-    const verifiablePresentationResult = await this.pex.verifiablePresentationFrom(
-      presentationDefinition,
-      selectedCredentials.map(getSphereonW3cVerifiableCredential),
-      this.getPresentationSignCallback(
-        agentContext,
-        verificationMethod,
-        includePresentationSubmissionInVp
-      ),
-      {
-        holderDID: firstSubjectId,
-        proofOptions: {
-          challenge,
-          domain,
-          nonce,
-        },
-        signatureOptions: {
-          verificationMethod: verificationMethod?.id,
-        },
-      }
-    )
-
     return {
-      verifiablePresentation: getW3cVerifiablePresentationInstance(
-        verifiablePresentationResult.verifiablePresentation
+      verifiablePresentations: verifiablePresentationResults.map((r) =>
+        getW3cVerifiablePresentationInstance(r.verifiablePresentation)
       ),
-      presentationSubmission: verifiablePresentationResult.presentationSubmission,
-      presentationSubmissionLocation: verifiablePresentationResult.presentationSubmissionLocation,
+      presentationSubmission,
+      presentationSubmissionLocation:
+        firstVerifiablePresentationResult.presentationSubmissionLocation,
     }
   }
 

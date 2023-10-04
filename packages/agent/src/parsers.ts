@@ -173,21 +173,10 @@ export const shareProof = async ({
     throw new Error('Requirements are not satisfied.')
   }
 
-  const credentialRecords = selectResults.requirements
-    .flatMap((requirement) => requirement.submission)
-    .map(
-      (submission, index) =>
-        submission.verifiableCredentials[submissionEntryIndexes[index] as number]
-    )
-    .filter(
-      (credentialRecord): credentialRecord is W3cCredentialRecord => credentialRecord !== undefined
-    )
-
-  const credentials = credentialRecords.map((credentialRecord) => credentialRecord.credential)
-
   await openId4VpClientService.shareProof(agent.context, {
     verifiedAuthorizationRequest,
-    selectedCredentials: credentials,
+    submission: selectResults,
+    submissionEntryIndexes: submissionEntryIndexes,
   })
 }
 
