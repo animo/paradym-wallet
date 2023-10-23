@@ -19,7 +19,7 @@
     "@tamagui/shorthands": "latest",
     "@tamagui/themes": "latest",
     "@tanstack/react-query": "^4.33.0",
-    "burnt": "^0.10.0",
+    "burnt": "^0.12.1",
     "expo-constants": "~14.4.2",
     "expo-haptics": "~12.4.0",
     "expo-linking": "~5.0.2",
