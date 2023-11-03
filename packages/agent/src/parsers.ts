@@ -33,6 +33,7 @@ import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/
 import { supportsIncomingMessageType } from '@aries-framework/core/build/utils/messageType'
 import { OpenId4VpClientService, OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
 import { getHostNameFromUrl } from '@internal/utils'
+import queryString from 'query-string'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
 export enum QrTypes {
@@ -346,12 +347,15 @@ export async function tryParseDidCommInvitation(
   invitationUrl: string
 ): Promise<OutOfBandInvitation | null> {
   try {
+    const parsedUrl = queryString.parseUrl(invitationUrl)
+    const updatedInvitationUrl = (parsedUrl['oobUrl'] as string | undefined) ?? invitationUrl
+
     // Try to parse the invitation as an DIDComm invitation.
     // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
     // So we use the parseMessage from AFJ and see if this returns a valid message.
     // Parse invitation supports legacy connection invitations, oob invitations, and
     // legacy connectionless invitations, and will all transform them into an OOB invitation.
-    const invitation = await agent.oob.parseInvitation(invitationUrl)
+    const invitation = await agent.oob.parseInvitation(updatedInvitationUrl)
 
     agent.config.logger.debug(`Parsed didcomm invitation with id ${invitation.id}`)
     return invitation
