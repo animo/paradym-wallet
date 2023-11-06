@@ -348,7 +348,7 @@ export async function tryParseDidCommInvitation(
 ): Promise<OutOfBandInvitation | null> {
   try {
     const parsedUrl = queryString.parseUrl(invitationUrl)
-    const updatedInvitationUrl = (parsedUrl['oobUrl'] as string | undefined) ?? invitationUrl
+    const updatedInvitationUrl = (parsedUrl.query['oobUrl'] as string | undefined) ?? invitationUrl
 
     // Try to parse the invitation as an DIDComm invitation.
     // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
