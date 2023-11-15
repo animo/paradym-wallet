@@ -43,6 +43,12 @@ export const usePreFetchInboxDisplayMetadata = () => {
         ? connections.find((connection) => record.connectionId === connection.id)
         : undefined
 
+      // Extract label from out-of-band invitation if no connection associated
+      const outOfBandRecord =
+        !connection && record.parentThreadId
+          ? await agent.oob.findByReceivedInvitationId(record.parentThreadId)
+          : undefined
+
       const formatData = await agent.credentials.getFormatData(record.id)
       const offer = formatData.offer?.anoncreds ?? formatData.offer?.indy
       // We just return here, so the rest can still continue
@@ -50,7 +56,7 @@ export const usePreFetchInboxDisplayMetadata = () => {
 
       const schemaId = offer.schema_id
 
-      const issuerName = connection?.theirLabel
+      const issuerName = connection?.theirLabel ?? outOfBandRecord?.outOfBandInvitation.label
       const schemaResult = await agent.modules.anoncreds.getSchema(schemaId)
       const schemaName = schemaResult.schema?.name
 
@@ -75,13 +81,19 @@ export const usePreFetchInboxDisplayMetadata = () => {
         ? connections.find((connection) => record.connectionId === connection.id)
         : undefined
 
+      // Extract label from out-of-band invitation if no connection associated
+      const outOfBandRecord =
+        !connection && record.parentThreadId
+          ? await agent.oob.findByReceivedInvitationId(record.parentThreadId)
+          : undefined
+
       const formatData = await agent.proofs.getFormatData(record.id)
       const request = formatData.request?.anoncreds ?? formatData.request?.indy
 
       // We just return here, so the rest can still continue
       if (!request) return
 
-      const verifierName = connection?.theirLabel
+      const verifierName = connection?.theirLabel ?? outOfBandRecord?.outOfBandInvitation.label
       const proofName = request.name
 
       // Update the metadata on the record for future use
