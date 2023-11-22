@@ -143,6 +143,11 @@ export default function HomeLayout() {
           <NoInternetToastProvider>
             <DeeplinkHandler>
               <Stack screenOptions={{ headerShown: false }}>
+                {/*Workaround: To prevent the routing of the deeplinks*/}
+                <Stack.Screen name="invitation/[id]" redirect />
+                <Stack.Screen name="https/[...dummy]" redirect />
+                <Stack.Screen name="http/[...dummy]" redirect />
+
                 <Stack.Screen
                   options={{
                     presentation: 'modal',
