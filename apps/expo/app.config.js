@@ -102,8 +102,8 @@ const config = {
           scheme: 'https',
           host,
           pathPrefix: '/invitation',
-        }
-      }))
+        },
+      })),
     ],
   },
   extra: {
