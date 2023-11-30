@@ -63,7 +63,7 @@ export default function HomeLayout() {
       })
       if (!walletKey) return
 
-      const agent = await initializeAgent(walletKey).catch((e) => {
+      const agent = await initializeAgent(walletKey).catch(() => {
         setAgentInitializationFailed(true)
         toast.show('Could not initialize agent.')
       })
