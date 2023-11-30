@@ -143,7 +143,12 @@ export default function HomeLayout() {
           <NoInternetToastProvider>
             <DeeplinkHandler>
               <Stack screenOptions={{ headerShown: false }}>
-                {/*Workaround: To prevent the routing of the deeplinks*/}
+                {/**
+                 * Workaround:
+                 * The following screens are not rendered by the router.
+                 * They are used to prevent the internal route to be executed.
+                 * So now they are being redirected to the home screen. So the user will not see a 404.
+                 **/}
                 <Stack.Screen name="invitation/[id]" redirect />
                 <Stack.Screen name="https/[...dummy]" redirect />
                 <Stack.Screen name="http/[...dummy]" redirect />
