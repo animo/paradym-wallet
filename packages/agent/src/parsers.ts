@@ -42,6 +42,7 @@ export enum QrTypes {
   OPENID = 'openid://',
   OPENID_VC = 'openid-vc://',
   DIDCOMM = 'didcomm://',
+  HTTPS = 'https://',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {

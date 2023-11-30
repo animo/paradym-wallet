@@ -37,6 +37,8 @@ const invitationSchemes = [
   'didcomm',
 ]
 
+const associatedDomains = ['paradym.id', 'dev.paradym.id']
+
 /**
  * @type {import('@expo/config-types').ExpoConfig}
  */
@@ -77,6 +79,7 @@ const config = {
         },
       ],
     },
+    associatedDomains: associatedDomains.map((host) => 'applinks:' + host),
   },
   android: {
     adaptiveIcon: {
@@ -90,6 +93,16 @@ const config = {
         category: ['DEFAULT', 'BROWSABLE'],
         data: {
           scheme,
+        },
+      })),
+      ...associatedDomains.map((host) => ({
+        action: 'VIEW',
+        category: ['DEFAULT', 'BROWSABLE'],
+        autoVerify: true,
+        data: {
+          scheme: 'https',
+          host,
+          pathPrefix: '/invitation',
         },
       })),
     ],

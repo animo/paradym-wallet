@@ -1,10 +1,10 @@
 import type { AppAgent } from '@internal/agent'
 
 import {
-  setupMediationWithDid,
   AgentProvider,
   hasMediationConfigured,
   initializeAgent,
+  setupMediationWithDid,
   useMessagePickup,
 } from '@internal/agent'
 import { config, Heading, Page, Paragraph, useToastController, XStack, YStack } from '@internal/ui'
@@ -15,7 +15,7 @@ import { Provider } from 'app/provider'
 import { NoInternetToastProvider } from 'app/provider/NoInternetToastProvider'
 import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
-import { Stack, SplashScreen } from 'expo-router'
+import { SplashScreen, Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -64,8 +64,8 @@ export default function HomeLayout() {
       if (!walletKey) return
 
       const agent = await initializeAgent(walletKey).catch(() => {
-        toast.show('Could not initialize agent.')
         setAgentInitializationFailed(true)
+        toast.show('Could not initialize agent.')
       })
       if (!agent) return
 
@@ -143,6 +143,16 @@ export default function HomeLayout() {
           <NoInternetToastProvider>
             <DeeplinkHandler>
               <Stack screenOptions={{ headerShown: false }}>
+                {/**
+                 * Workaround:
+                 * The following screens are not rendered by the router.
+                 * They are used to prevent the internal route to be executed.
+                 * So now they are being redirected to the home screen. So the user will not see a 404.
+                 **/}
+                <Stack.Screen name="invitation/[id]" redirect />
+                <Stack.Screen name="https/[...dummy]" redirect />
+                <Stack.Screen name="http/[...dummy]" redirect />
+
                 <Stack.Screen
                   options={{
                     presentation: 'modal',
