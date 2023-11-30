@@ -98,6 +98,7 @@ const config = {
       ...associatedDomains.map((host) => ({
         action: 'VIEW',
         category: ['DEFAULT', 'BROWSABLE'],
+        autoVerify: true,
         data: {
           scheme: 'https',
           host,
