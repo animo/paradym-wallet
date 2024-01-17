@@ -127,10 +127,9 @@ export const initializeAgent = async (walletKey: string) => {
           networks: [
             {
               network: 'testnet',
-
-              cosmosPayerSeed:
-                // FIXME: Property is required, but we will never actually write to the network, so it doesn't matter what the value is
-                'robust across amount corn curve panther opera wish toe ring bleak empower wreck party abstract glad average muffin picnic jar squeeze annual long aunt',
+            },
+            {
+              network: 'mainnet',
             },
           ],
         })
