@@ -22,10 +22,10 @@ export default function InboxNotificationRowCard({
       >
         <XStack bg="$grey-700" h="$5" w="$5" br="$2" />
         <YStack jc="space-between">
-          <Paragraph variant="sub" secondary fontSize="$1">
+          <Paragraph variant="sub" numberOfLines={1} opacity={0.8}>
             {description}
           </Paragraph>
-          <Heading variant="h3" numberOfLines={1} fontSize="$6">
+          <Heading variant="h3" numberOfLines={1} size="$4">
             {title}
           </Heading>
         </YStack>
