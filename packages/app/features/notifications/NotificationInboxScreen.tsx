@@ -17,7 +17,7 @@ export function NotificationInboxScreen() {
         <ScrollView px="$4" pt="$2">
           <YStack width="100%" overflow="hidden" g="md">
             {inboxNotifications.map((notification) => {
-              let description = ` ${
+              let description = `${
                 notification.type === 'CredentialRecord' ? 'Credential offer' : 'Data request'
               }`
               if (notification.contactLabel) {
