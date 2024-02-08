@@ -1,6 +1,6 @@
-import type { PresentationSubmission, SubmissionEntry } from '@internal/openid4vc-client'
+import type { DifPexCredentialsForRequest } from '@credo-ts/core'
 
-import { getW3cCredentialForDisplay } from '../display'
+import { getCredentialForDisplay } from '../display'
 
 export interface FormattedSubmission {
   name: string
@@ -19,23 +19,29 @@ export interface FormattedSubmissionEntry {
   backgroundColor?: string
 }
 
-export function formatW3cPresentationSubmission(
-  presentationSubmission: PresentationSubmission
+export function formatDifPexCredentialsForRequest(
+  credentialsForRequest: DifPexCredentialsForRequest
 ): FormattedSubmission {
-  const entries = presentationSubmission.requirements.flatMap((requirement) => {
-    return requirement.submission.map((submission: SubmissionEntry) => {
-      if (submission.verifiableCredential) {
+  const entries = credentialsForRequest.requirements.flatMap((requirement) => {
+    return requirement.submissionEntry.map((submission) => {
+      // FIXME: support credential selection from JFF branch
+      const [firstVerifiableCredential] = submission.verifiableCredentials
+      if (firstVerifiableCredential) {
         // Credential can be satisfied
-        const { display, w3cCredential } = getW3cCredentialForDisplay(
-          submission.verifiableCredential
-        )
+        const { display, credential, attributes } =
+          getCredentialForDisplay(firstVerifiableCredential)
         return {
           name: submission.name ?? 'Unknown',
           description: submission.purpose,
           isSatisfied: true,
           credentialName: display.name,
           issuerName: display.issuer.name,
-          requestedAttributes: Object.keys(w3cCredential.credentialSubject),
+          // FIXME: will PEX already apply SD, and thus overwrite the original? That would be really problematic
+          // FIXME: how do we get the requested attributes here in case of SD?
+          // We need to get all attributes that will be disclosed, but we don't know that here
+          requestedAttributes: credential?.credentialSubject
+            ? Object.keys(credential.credentialSubject)
+            : Object.keys(attributes),
           backgroundColor: display.backgroundColor,
         }
       }
@@ -51,8 +57,8 @@ export function formatW3cPresentationSubmission(
 
   return {
     areAllSatisfied: entries.every((entry) => entry.isSatisfied),
-    name: presentationSubmission.name ?? 'Unknown',
-    purpose: presentationSubmission.purpose,
+    name: credentialsForRequest.name ?? 'Unknown',
+    purpose: credentialsForRequest.purpose,
     entries,
   }
 }

@@ -1,9 +1,12 @@
 import { useCredentialById as _useCredentialById } from '@aries-framework/react-hooks'
 
-import { getCredentialExchangeForDisplay, getW3cCredentialForDisplay } from '../display'
-import { useW3cCredentialRecordById } from '../providers'
+import { getCredentialExchangeForDisplay, getCredentialForDisplay } from '../display'
+import { useSdJwtVcRecordById, useW3cCredentialRecordById } from '../providers'
 
-export type CredentialForDisplayId = `credential-exchange-${string}` | `w3c-credential-${string}`
+export type CredentialForDisplayId =
+  | `credential-exchange-${string}`
+  | `w3c-credential-${string}`
+  | `sd-jwt-vc-${string}`
 
 export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId) => {
   if (credentialId.startsWith('credential-exchange-')) {
@@ -15,6 +18,11 @@ export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId
     const c = useW3cCredentialRecordById(credentialId.replace('w3c-credential-', ''))
     if (!c) return null
 
-    return getW3cCredentialForDisplay(c)
+    return getCredentialForDisplay(c)
+  } else if (credentialId.startsWith('sd-jwt-vc-')) {
+    const c = useSdJwtVcRecordById(credentialId.replace('sd-jwt-vc-', ''))
+    if (!c) return null
+
+    return getCredentialForDisplay(c)
   }
 }

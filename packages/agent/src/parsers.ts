@@ -7,16 +7,22 @@ import type {
   OutOfBandInvitation,
   OutOfBandRecord,
   ProofStateChangedEvent,
-  W3cCredentialRecord,
-} from '@aries-framework/core'
-import type { PlaintextMessage } from '@aries-framework/core/build/types'
+  DifPexCredentialsForRequest,
+} from '@credo-ts/core'
+import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
-  PresentationSubmission,
-  VerifiedAuthorizationRequestWithPresentationDefinition,
-} from '@internal/openid4vc-client'
+  OpenId4VciCredentialSupportedWithId,
+  OpenId4VcSiopVerifiedAuthorizationRequest,
+} from '@credo-ts/openid4vc'
 
-import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@aries-framework/anoncreds'
+import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
+  DifPresentationExchangeService,
+  SdJwtVcRecord,
+  SdJwtVcRepository,
+  W3cCredentialRecord,
+  W3cCredentialRepository,
+  getJwkFromKey,
   CredentialEventTypes,
   CredentialState,
   OutOfBandRepository,
@@ -28,13 +34,14 @@ import {
   DidJwk,
   DidKey,
   JwaSignatureAlgorithm,
-} from '@aries-framework/core'
-import { W3cCredentialRepository } from '@aries-framework/core/build/modules/vc/repository'
-import { supportsIncomingMessageType } from '@aries-framework/core/build/utils/messageType'
-import { OpenId4VpClientService, OpenIdCredentialFormatProfile } from '@internal/openid4vc-client'
+} from '@credo-ts/core'
+import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
+import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@internal/utils'
 import queryString from 'query-string'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
+
+import { setOpenId4VcCredentialMetadata } from './openid4vc/metadata'
 
 export enum QrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
@@ -66,71 +73,120 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   if (!isOpenIdCredentialOffer(data))
     throw new Error('URI does not start with OpenID issuance prefix.')
 
-  const records = await agent.modules.openId4VcClient.requestCredentialUsingPreAuthorizedCode({
-    uri: data,
-    proofOfPossessionVerificationMethodResolver: async ({
-      supportedDidMethods,
-      keyType,
-      supportsAllDidMethods,
-    }) => {
-      // Prefer did:jwk, otherwise use did:key, otherwise use undefined
-      const didMethod =
-        supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
-          ? 'jwk'
-          : // If supportedDidMethods is undefined, it means we couldn't determine the supported did methods
-          // This is either because an inline credential offer was used, or the issuer didn't declare which
-          // did methods are supported.
-          // NOTE: MATTR launchpad for JFF MUST use did:key. So it is important that the default
-          // method is did:key if supportedDidMethods is undefined.
-          supportedDidMethods?.includes('did:key') || supportedDidMethods === undefined
-          ? 'key'
-          : undefined
+  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(data)
 
-      if (!didMethod) {
-        throw new Error(
-          `No supported did method could be found. Supported methods are did:key and did:jwk. Issuer supports ${
-            supportedDidMethods?.join(', ') ?? 'Unknown'
-          }`
-        )
-      }
-
-      const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
-        method: didMethod,
-        options: {
+  // FIXME: return credential_supported entry for credential so it's easy to store metadata
+  const credentials =
+    await agent.modules.openId4VcHolder.acceptCredentialOfferUsingPreAuthorizedCode(
+      resolvedCredentialOffer,
+      {
+        credentialBindingResolver: async ({
+          supportedDidMethods,
           keyType,
+          supportsAllDidMethods,
+          supportsJwk,
+          credentialFormat,
+        }) => {
+          // First, we try to pick a did method
+          // Prefer did:jwk, otherwise use did:key, otherwise use undefined
+          let didMethod: 'key' | 'jwk' | undefined =
+            supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
+              ? 'jwk'
+              : supportedDidMethods?.includes('did:key')
+              ? 'key'
+              : undefined
+
+          // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
+          // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
+          // define which did methods they support
+          if (!supportedDidMethods && !supportsJwk) {
+            didMethod = 'key'
+          }
+
+          if (didMethod) {
+            const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
+              method: didMethod,
+              options: {
+                keyType,
+              },
+            })
+
+            if (didResult.didState.state !== 'finished') {
+              throw new Error('DID creation failed.')
+            }
+
+            let verificationMethodId: string
+            if (didMethod === 'jwk') {
+              const didJwk = DidJwk.fromDid(didResult.didState.did)
+              verificationMethodId = didJwk.verificationMethodId
+            } else {
+              const didKey = DidKey.fromDid(didResult.didState.did)
+              verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
+            }
+
+            return {
+              didUrl: verificationMethodId,
+              method: 'did',
+            }
+          }
+
+          // Otherwise we also support plain jwk for sd-jwt only
+          if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
+            const key = await agent.wallet.createKey({
+              keyType,
+            })
+            return {
+              method: 'jwk',
+              jwk: getJwkFromKey(key),
+            }
+          }
+
+          throw new Error(
+            `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
+              supportsJwk ? 'jwk, ' : ''
+            }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
+          )
         },
-      })
 
-      if (didResult.didState.state !== 'finished') {
-        throw new Error('DID creation failed.')
+        verifyCredentialStatus: false,
+        // FIXME: why is this removed?
+        // allowedCredentialFormats: [OpenIdCredentialFormatProfile.JwtVcJson],
+        allowedProofOfPossessionSignatureAlgorithms: [
+          // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
+          // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
+          // will be used
+          JwaSignatureAlgorithm.EdDSA,
+          JwaSignatureAlgorithm.ES256,
+        ],
       }
+    )
 
-      let verificationMethodId: string
-      if (didMethod === 'jwk') {
-        const didJwk = DidJwk.fromDid(didResult.didState.did)
-        verificationMethodId = didJwk.verificationMethodId
-      } else {
-        const didKey = DidKey.fromDid(didResult.didState.did)
-        verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
-      }
+  const [firstCredential] = credentials
+  if (!firstCredential) throw new Error('Error retrieving credential using pre authorized flow.')
 
-      return didResult.didState.didDocument.dereferenceKey(verificationMethodId)
-    },
-    verifyCredentialStatus: false,
-    allowedCredentialFormats: [OpenIdCredentialFormatProfile.JwtVcJson],
-    allowedProofOfPossessionSignatureAlgorithms: [
-      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
-      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
-      // will be used
-      JwaSignatureAlgorithm.EdDSA,
-      JwaSignatureAlgorithm.ES256,
-    ],
-  })
+  let record: SdJwtVcRecord | W3cCredentialRecord
 
-  if (!records || !records.length)
-    throw new Error('Error storing credential using pre authorized flow.')
+  // TODO: add claimFormat to SdJwtVc
 
-  return records[0]
+  if ('compact' in firstCredential) {
+    record = new SdJwtVcRecord({
+      compactSdJwtVc: firstCredential.compact,
+    })
+  } else {
+    record = new W3cCredentialRecord({
+      credential: firstCredential,
+      // We don't support expanded types right now, but would become problem when we support JSON-LD
+      tags: {},
+    })
+  }
+
+  setOpenId4VcCredentialMetadata(
+    record,
+    resolvedCredentialOffer.offeredCredentials[0] as OpenId4VciCredentialSupportedWithId,
+    resolvedCredentialOffer.metadata
+  )
+
+  return record
 }
 
 export const getCredentialsForProofRequest = async ({
@@ -142,55 +198,63 @@ export const getCredentialsForProofRequest = async ({
 }) => {
   if (!isOpenIdPresentationRequest(data)) throw new Error('URI does not start with OpenID prefix.')
 
-  const openId4VpClientService = agent.dependencyManager.resolve(OpenId4VpClientService)
-  const results = await openId4VpClientService.selectCredentialForProofRequest(agent.context, {
-    authorizationRequest: data,
-  })
+  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(data)
+
+  if (!resolved.presentationExchange) {
+    throw new Error('No presentation exchange found in authorization request.')
+  }
 
   return {
-    ...results,
-    verifierHostName: getHostNameFromUrl(results.verifiedAuthorizationRequest.redirectURI),
+    ...resolved.presentationExchange,
+    authorizationRequest: resolved.authorizationRequest,
+    verifierHostName: resolved.authorizationRequest.responseURI
+      ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
+      : undefined,
   }
 }
 
 export const shareProof = async ({
   agent,
-  verifiedAuthorizationRequest,
-  selectResults,
+  authorizationRequest,
+  credentialsForRequest,
 }: {
   agent: AppAgent
-  verifiedAuthorizationRequest: VerifiedAuthorizationRequestWithPresentationDefinition
-  selectResults: PresentationSubmission
+  authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
+  // TODO: support selection
+  credentialsForRequest: DifPexCredentialsForRequest
 }) => {
-  const openId4VpClientService = agent.dependencyManager.resolve(OpenId4VpClientService)
+  const presentationExchangeService = agent.dependencyManager.resolve(
+    DifPresentationExchangeService
+  )
 
-  if (!selectResults.areRequirementsSatisfied) {
-    throw new Error('Requirements are not satisfied.')
+  const credentials = presentationExchangeService.selectCredentialsForRequest(credentialsForRequest)
+  const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
+    authorizationRequest,
+    presentationExchange: {
+      credentials,
+    },
+  })
+
+  if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
+    throw new Error(
+      `Error while accepting authorization request. ${result.serverResponse.body as string}`
+    )
   }
 
-  const credentialRecords = selectResults.requirements
-    .flatMap((requirement) =>
-      requirement.submission.flatMap((submission) => submission.verifiableCredential)
-    )
-    .filter(
-      (credentialRecord): credentialRecord is W3cCredentialRecord => credentialRecord !== undefined
-    )
-
-  const credentials = credentialRecords.map((credentialRecord) => credentialRecord.credential)
-
-  await openId4VpClientService.shareProof(agent.context, {
-    verifiedAuthorizationRequest,
-    selectedCredentials: credentials,
-  })
+  return result
 }
 
-export async function storeW3cCredential(
+export async function storeCredential(
   agent: AppAgent,
-  w3cCredentialRecord: W3cCredentialRecord
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord
 ) {
-  const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
-
-  await w3cCredentialRepository.save(agent.context, w3cCredentialRecord)
+  if (credentialRecord instanceof W3cCredentialRecord) {
+    await agent.dependencyManager
+      .resolve(W3cCredentialRepository)
+      .save(agent.context, credentialRecord)
+  } else {
+    await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
+  }
 }
 
 /**

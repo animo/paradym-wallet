@@ -16,7 +16,6 @@ module.exports = function (api) {
             '@internal/ui': '../../packages/ui',
             '@internal/agent': '../../packages/agent',
             '@internal/utils': '../../packages/utils',
-            '@internal/openid4vc-client': '../../packages/openid4vc-client',
           },
           extensions: ['.js', '.jsx', '.tsx', '.ios.js', '.android.js'],
         },

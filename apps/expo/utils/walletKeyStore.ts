@@ -1,10 +1,10 @@
-import { uuid } from '@aries-framework/core/build/utils/uuid'
+import { utils } from '@credo-ts/core'
 import * as SecureStore from 'expo-secure-store'
 
 const STORE_KEY = 'wallet-key' as const
 
 const generateNewWalletKey = (): string => {
-  return uuid()
+  return utils.uuid()
 }
 
 export const getSecureWalletKey = async (): Promise<string> => {

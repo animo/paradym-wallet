@@ -2,7 +2,7 @@ import {
   getCredentialsForProofRequest,
   shareProof,
   useAgent,
-  formatW3cPresentationSubmission,
+  formatDifPexCredentialsForRequest,
 } from '@internal/agent'
 import { useToastController, Spinner, Page, Paragraph } from '@internal/ui'
 import React, { useEffect, useState, useMemo } from 'react'
@@ -29,7 +29,7 @@ export function OpenIdPresentationNotificationScreen() {
   const submission = useMemo(
     () =>
       credentialsForRequest
-        ? formatW3cPresentationSubmission(credentialsForRequest.selectResults)
+        ? formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
         : undefined,
     [credentialsForRequest]
   )
@@ -46,8 +46,12 @@ export function OpenIdPresentationNotificationScreen() {
       .then((r) => {
         setCredentialsForRequest(r)
       })
-      .catch(() => {
+      .catch((e) => {
         toast.show('Presentation information could not be extracted.')
+        agent.config.logger.error('Error getting credentials for request', {
+          error: e as unknown,
+        })
+
         pushToWallet()
       })
   }, [uri])
@@ -65,12 +69,20 @@ export function OpenIdPresentationNotificationScreen() {
 
   const onProofAccept = () => {
     setIsSharing(true)
-    shareProof({ ...credentialsForRequest, agent })
+
+    shareProof({
+      agent,
+      authorizationRequest: credentialsForRequest.authorizationRequest,
+      credentialsForRequest: credentialsForRequest.credentialsForRequest,
+    })
       .then(() => {
         toast.show('Information has been successfully shared.')
       })
-      .catch(() => {
+      .catch((e) => {
         toast.show('Presentation could not be shared.')
+        agent.config.logger.error('Error accepting presentation', {
+          error: e as unknown,
+        })
       })
       .finally(() => {
         pushToWallet()

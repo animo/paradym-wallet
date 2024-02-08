@@ -1,4 +1,4 @@
-import { CredentialState, ProofState } from '@aries-framework/core'
+import { CredentialState, ProofState } from '@credo-ts/core'
 import { useConnections, useCredentialByState, useProofByState } from '@aries-framework/react-hooks'
 import { useMemo, useEffect } from 'react'
 

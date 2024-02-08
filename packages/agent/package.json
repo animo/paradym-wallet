@@ -4,28 +4,28 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@aries-framework/anoncreds": "0.4.2",
-    "@aries-framework/anoncreds-rs": "0.4.2",
-    "@aries-framework/askar": "0.4.2",
-    "@aries-framework/cheqd": "0.4.2",
-    "@aries-framework/core": "0.4.2",
-    "@aries-framework/indy-vdr": "0.4.2",
-    "@aries-framework/react-hooks": "0.4.2",
-    "@aries-framework/react-native": "0.4.2",
-    "@internal/openid4vc-client": "*",
+    "@aries-framework/core": "npm:@credo-ts/core@0.5.0-alpha.126",
+    "@aries-framework/question-answer": "npm:@credo-ts/question-answer@0.5.0-alpha.126",
+    "@aries-framework/react-hooks": "^0.5.0",
+    "@credo-ts/anoncreds": "0.5.0-alpha.126",
+    "@credo-ts/askar": "0.5.0-alpha.126",
+    "@credo-ts/cheqd": "0.5.0-alpha.126",
+    "@credo-ts/core": "0.5.0-alpha.126",
+    "@credo-ts/indy-vdr": "0.5.0-alpha.126",
+    "@credo-ts/openid4vc": "0.5.0-alpha.126",
+    "@credo-ts/react-native": "0.5.0-alpha.126",
     "@internal/utils": "*",
     "@tanstack/react-query": "^4.33.0",
     "query-string": "^8.1.0",
     "rxjs": "^7.8.1"
   },
-  "peerDependencies": {
-    "@hyperledger/anoncreds-react-native": "^0.1.0",
-    "@hyperledger/aries-askar-react-native": "0.1.0",
-    "@hyperledger/indy-vdr-react-native": "^0.1.0"
+  "react-native": {
+    "@aries-framework/core": "@credo-ts/core",
+    "@aries-framework/question-answer": "@credo-ts/question-answer"
   },
-  "devDependencies": {
-    "@hyperledger/anoncreds-react-native": "^0.1.0",
-    "@hyperledger/aries-askar-react-native": "0.1.0",
-    "@hyperledger/indy-vdr-react-native": "^0.1.0"
+  "peerDependencies": {
+    "@hyperledger/anoncreds-react-native": "*",
+    "@hyperledger/aries-askar-react-native": "*",
+    "@hyperledger/indy-vdr-react-native": "*"
   }
 }

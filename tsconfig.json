@@ -8,8 +8,7 @@
       "@internal/ui/*": ["./packages/ui/*"],
       "@internal/agent/*": ["./packages/agent/src/*"],
       "@internal/utils/*": ["./packages/utils/src/*"],
-      "@internal/scanner/*": ["./packages/scanner/src/*"],
-      "@internal/openid4vc-client/*": ["./packages/openid4vc-client/src/*"]
+      "@internal/scanner/*": ["./packages/scanner/src/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

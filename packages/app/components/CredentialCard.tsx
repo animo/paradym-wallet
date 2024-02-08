@@ -101,13 +101,7 @@ export default function CredentialCard({
           <Card.Background>
             {hasInternet ? (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
-                <Image
-                  src={backgroundImage.url}
-                  alt={backgroundImage.altText}
-                  resizeMode="cover"
-                  width="100%"
-                  height="100%"
-                />
+                <Image src={backgroundImage.url} alt={backgroundImage.altText} resizeMode="cover" />
               </YStack>
             ) : (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'} />

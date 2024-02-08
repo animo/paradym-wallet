@@ -1,15 +1,16 @@
-import { CredentialState } from '@aries-framework/core'
 import {
   useCredentials as _useCredentials,
   useCredentialByState,
 } from '@aries-framework/react-hooks'
+import { CredentialState } from '@credo-ts/core'
 import { useMemo } from 'react'
 
-import { getW3cCredentialForDisplay, getCredentialExchangeForDisplay } from '../display'
-import { useW3cCredentialRecords } from '../providers'
+import { getCredentialForDisplay, getCredentialExchangeForDisplay } from '../display'
+import { useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
 
 export const useCredentialsForDisplay = () => {
-  const { w3cCredentialRecords, isLoading } = useW3cCredentialRecords()
+  const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()
+  const { sdJwtVcRecords, isLoading: isLoadingSdJwt } = useSdJwtVcRecords()
   const { loading } = _useCredentials()
 
   const credentialExchangeRecords = useCredentialByState([
@@ -19,7 +20,8 @@ export const useCredentialsForDisplay = () => {
 
   const credentials = useMemo(() => {
     // Map into common structure that can be rendered
-    const uniformW3cCredentialRecords = w3cCredentialRecords.map(getW3cCredentialForDisplay)
+    const uniformW3cCredentialRecords = w3cCredentialRecords.map(getCredentialForDisplay)
+    const uniformSdJwtVcRecords = sdJwtVcRecords.map(getCredentialForDisplay)
     const uniformCredentialExchangeRecords = credentialExchangeRecords.map(
       getCredentialExchangeForDisplay
     )
@@ -28,13 +30,14 @@ export const useCredentialsForDisplay = () => {
     const sortedRecords = [
       ...uniformCredentialExchangeRecords,
       ...uniformW3cCredentialRecords,
+      ...uniformSdJwtVcRecords,
     ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
     return sortedRecords
-  }, [w3cCredentialRecords, credentialExchangeRecords])
+  }, [w3cCredentialRecords, credentialExchangeRecords, sdJwtVcRecords])
 
   return {
     credentials,
-    isLoading: isLoading || loading,
+    isLoading: isLoadingSdJwt || isLoadingW3c || loading,
   }
 }

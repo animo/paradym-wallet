@@ -1,7 +1,7 @@
 import type { AppAgent } from '../agent'
-import type { JwkDidCreateOptions } from '@aries-framework/core'
+import type { JwkDidCreateOptions } from '@credo-ts/core'
 
-import { KeyType, TypedArrayEncoder, W3cJwtVerifiableCredential } from '@aries-framework/core'
+import { KeyType, TypedArrayEncoder, W3cJwtVerifiableCredential } from '@credo-ts/core'
 
 export async function importDbcCredentialWithDid(agent: AppAgent) {
   const dbcCredenitalSubjectDid =

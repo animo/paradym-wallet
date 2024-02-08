@@ -6,6 +6,6 @@ export * from './hooks'
 export {
   FormattedSubmission,
   FormattedSubmissionEntry,
-  formatW3cPresentationSubmission,
+  formatDifPexCredentialsForRequest,
 } from './format/formatPresentation'
 export * from './mediation'
