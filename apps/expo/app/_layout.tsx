@@ -185,8 +185,9 @@ export default function HomeLayout() {
                     headerShadowVisible: false,
                     headerTintColor: config.tokens.color['primary-500'].val,
                     headerTitle: 'Inbox',
+                    headerTitleAlign: 'center',
                     headerTitleStyle: {
-                      fontWeight: '600',
+                      fontWeight: isAndroid() ? '700' : '500', // Match font weight on android to native back button style
                       fontSize: 18,
                     },
                   }}

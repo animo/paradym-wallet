@@ -52,11 +52,10 @@ export function WalletScreen() {
           zIndex="$5"
           position="absolute"
           right="$6"
-          bottom="$6"
+          bottom={bottom ?? '$6'}
           bg="$grey-900"
           br="$12"
           p="$4"
-          mb={bottom / 2}
           pressStyle={{ backgroundColor: '$grey-800' }}
           shadowOffset={{ width: 5, height: 5 }}
           shadowColor="$grey-500"
