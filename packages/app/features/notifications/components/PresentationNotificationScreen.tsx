@@ -75,7 +75,7 @@ export function PresentationNotificationScreen({
                       </Paragraph>
                       <YStack flexDirection="row" flexWrap="wrap">
                         {s.requestedAttributes.map((a) => (
-                          <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
+                          <Paragraph key={a} variant="annotation" secondary>
                             • {sanitizeString(a)}
                           </Paragraph>
                         ))}
