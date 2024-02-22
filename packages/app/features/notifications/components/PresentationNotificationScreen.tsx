@@ -1,10 +1,12 @@
 import type { FormattedSubmission } from '@internal/agent'
 
-import { YStack, Heading, Button, ScrollView, Spinner, Paragraph } from '@internal/ui'
+import { YStack, Heading, Button, ScrollView, Paragraph } from '@internal/ui'
 import { sanitizeString } from '@internal/utils'
 import React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import CredentialRowCard from 'app/components/CredentialRowCard'
+import DualResponseButtons from 'app/components/DualResponseButtons'
 
 interface PresentationNotificationScreenProps {
   submission: FormattedSubmission
@@ -21,14 +23,14 @@ export function PresentationNotificationScreen({
   submission,
   verifierName,
 }: PresentationNotificationScreenProps) {
+  const { bottom } = useSafeAreaInsets()
   return (
     <ScrollView
       bg="$grey-200"
-      fullscreen
-      space
       contentContainerStyle={{
         minHeight: '100%',
       }}
+      safeAreaBottom={bottom}
     >
       <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$grey-200">
         <YStack g="xl">
@@ -56,8 +58,9 @@ export function PresentationNotificationScreen({
                     <CredentialRowCard
                       issuer={s.issuerName}
                       name={s.credentialName}
-                      hideBorder={true}
                       bgColor={s.backgroundColor}
+                      hideBorder
+                      showFullText
                     />
                     {s.description && (
                       <Paragraph secondary px="$3" variant="text">
@@ -66,13 +69,13 @@ export function PresentationNotificationScreen({
                     )}
                   </YStack>
                   {s.isSatisfied && s.requestedAttributes ? (
-                    <YStack pad="md" gap="$2">
+                    <YStack px="$3" pb="$3" gap="$2">
                       <Paragraph variant="sub">
                         The following information will be presented:
                       </Paragraph>
                       <YStack flexDirection="row" flexWrap="wrap">
                         {s.requestedAttributes.map((a) => (
-                          <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
+                          <Paragraph key={a} variant="annotation" secondary>
                             • {sanitizeString(a)}
                           </Paragraph>
                         ))}
@@ -89,12 +92,11 @@ export function PresentationNotificationScreen({
           </YStack>
         </YStack>
         {submission.areAllSatisfied ? (
-          <YStack gap="$2">
-            <Button.Solid disabled={isAccepting} onPress={onAccept}>
-              {isAccepting ? <Spinner variant="dark" /> : 'Accept'}
-            </Button.Solid>
-            <Button.Outline onPress={onDecline}>Decline</Button.Outline>
-          </YStack>
+          <DualResponseButtons
+            onAccept={onAccept}
+            onDecline={onDecline}
+            isAccepting={isAccepting}
+          />
         ) : (
           <YStack gap="$4">
             <Paragraph variant="sub" ta="center">

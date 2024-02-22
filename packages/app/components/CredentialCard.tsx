@@ -6,7 +6,6 @@ import {
   Image,
   Paragraph,
   Heading,
-  Spacer,
   FileBadge,
   darken,
   getTextColorBasedOnBg,
@@ -61,6 +60,7 @@ export default function CredentialCard({
         pressStyle={{
           backgroundColor: onPress && darken(bgColor ?? '$grey-900', 0.05),
         }}
+        h="$16"
         borderWidth={0.5}
         borderColor="$borderTranslucent"
         onPress={onPress}
@@ -69,7 +69,7 @@ export default function CredentialCard({
           <XStack jc="space-between">
             <XStack pr="$4">{icon}</XStack>
             <YStack f={1}>
-              <Heading variant="h3" size="$4" textAlign="right" color={textColor} numberOfLines={1}>
+              <Heading variant="h3" size="$4" textAlign="right" color={textColor} numberOfLines={2}>
                 {name}
               </Heading>
               <Paragraph
@@ -84,14 +84,13 @@ export default function CredentialCard({
             </YStack>
           </XStack>
         </Card.Header>
-        <Spacer size="$11" />
         <Card.Footer>
           <XStack>
             <YStack>
               <Paragraph variant="annotation" opacity={0.8} color={textColor}>
                 Issuer
               </Paragraph>
-              <Paragraph variant="sub" color={textColor}>
+              <Paragraph variant="sub" color={textColor} numberOfLines={2}>
                 {issuerName}
               </Paragraph>
             </YStack>

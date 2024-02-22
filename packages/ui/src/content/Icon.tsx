@@ -7,4 +7,5 @@ export {
   CornerDownRight,
   AlertOctagon,
   Inbox,
+  X,
 } from '@tamagui/lucide-icons'
