@@ -21,7 +21,7 @@ export default function InboxNotificationRowCard({
         overflow="hidden"
       >
         <XStack bg="$grey-700" h="$5" w="$5" br="$2" />
-        <YStack jc="space-between">
+        <YStack flex={1} jc="space-between">
           <Paragraph variant="sub" numberOfLines={1} opacity={0.8}>
             {description}
           </Paragraph>

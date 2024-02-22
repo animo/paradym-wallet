@@ -17,6 +17,7 @@ import {
   YStack,
   ZStack,
 } from '@internal/ui'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
 import CredentialCard from 'app/components/CredentialCard'
@@ -32,7 +33,7 @@ export function WalletScreen() {
   const firstThreeRecords = credentials.slice(0, 3)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } =
     useScrollViewPosition(HEADER_TITLE_TEXT_HEIGHT)
-
+  const { bottom } = useSafeAreaInsets()
   const navigateToCredentialDetail = (id: string) => push(`/credentials/${id}`)
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
 
@@ -55,6 +56,7 @@ export function WalletScreen() {
           bg="$grey-900"
           br="$12"
           p="$4"
+          mb={bottom / 2}
           pressStyle={{ backgroundColor: '$grey-800' }}
           shadowOffset={{ width: 5, height: 5 }}
           shadowColor="$grey-500"

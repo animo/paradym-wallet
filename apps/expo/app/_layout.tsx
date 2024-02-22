@@ -185,6 +185,10 @@ export default function HomeLayout() {
                     headerShadowVisible: false,
                     headerTintColor: config.tokens.color['primary-500'].val,
                     headerTitle: 'Inbox',
+                    headerTitleStyle: {
+                      fontWeight: '600',
+                      fontSize: 18,
+                    },
                   }}
                   name="notifications/inbox"
                 />
