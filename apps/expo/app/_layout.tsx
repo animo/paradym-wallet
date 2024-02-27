@@ -7,15 +7,25 @@ import {
   setupMediationWithDid,
   useMessagePickup,
 } from '@internal/agent'
-import { config, Heading, Page, Paragraph, useToastController, XStack, YStack } from '@internal/ui'
+import {
+  ChevronLeft,
+  config,
+  Heading,
+  Page,
+  Paragraph,
+  useToastController,
+  XStack,
+  YStack,
+} from '@internal/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import NavHeader from 'app/components/NavHeader'
 import { useHasInternetConnection } from 'app/hooks/useHasInternetConnection'
 import { useTransparentNavigationBar } from 'app/hooks/useTransparentNavigationBar'
 import { Provider } from 'app/provider'
 import { NoInternetToastProvider } from 'app/provider/NoInternetToastProvider'
 import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
-import { SplashScreen, Stack } from 'expo-router'
+import { SplashScreen, Stack, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -43,6 +53,8 @@ export default function HomeLayout() {
   const [agentInitializationFailed, setAgentInitializationFailed] = useState(false)
   const toast = useToastController()
   const { top } = useSafeAreaInsets()
+  const { back } = useRouter()
+
   const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
   useTransparentNavigationBar()
 
@@ -179,17 +191,10 @@ export default function HomeLayout() {
                 <Stack.Screen
                   options={{
                     headerShown: true,
-                    headerStyle: {
-                      backgroundColor: config.tokens.color['grey-200'].val,
-                    },
+                    headerTransparent: true,
                     headerShadowVisible: false,
-                    headerTintColor: config.tokens.color['primary-500'].val,
-                    headerTitle: 'Inbox',
-                    headerTitleAlign: 'center',
-                    headerTitleStyle: {
-                      fontWeight: isAndroid() ? '700' : '500', // Match font weight on android to native back button style
-                      fontSize: 18,
-                    },
+                    headerTitle: '',
+                    header: () => NavHeader(),
                   }}
                   name="notifications/inbox"
                 />
@@ -199,6 +204,7 @@ export default function HomeLayout() {
                     headerTransparent: true,
                     headerTintColor: config.tokens.color['primary-500'].val,
                     headerTitle: '',
+                    header: () => NavHeader(),
                   }}
                   name="credentials/[id]"
                 />

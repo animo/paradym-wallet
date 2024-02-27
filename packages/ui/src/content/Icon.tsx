@@ -8,4 +8,5 @@ export {
   AlertOctagon,
   Inbox,
   X,
+  Trash2,
 } from '@tamagui/lucide-icons'
