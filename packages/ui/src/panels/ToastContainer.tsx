@@ -1,6 +1,6 @@
 import { useToastController } from '@tamagui/toast'
 
-import { Paragraph, XStack } from '../base'
+import { Paragraph, Stack, XStack } from '../base'
 import { X } from '../content'
 
 interface ToastContainerProps {
@@ -26,7 +26,9 @@ export const ToastContainer = ({ title, safeAreaMargin = false }: ToastContainer
       ai="center"
     >
       <Paragraph w="90%">{title}</Paragraph>
-      <X size="$1" onPress={() => toast.hide()} color="$grey-600" />
+      <Stack jc="center" h="100%" onPress={() => toast.hide()}>
+        <X size="$1" color="$grey-600" />
+      </Stack>
     </XStack>
   )
 }
