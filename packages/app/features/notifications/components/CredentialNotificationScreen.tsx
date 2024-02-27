@@ -26,8 +26,14 @@ export function CredentialNotificationScreen({
 }: CredentialNotificationScreenProps) {
   const { bottom } = useSafeAreaInsets()
   return (
-    <ScrollView bg="$grey-200" safeAreaBottom={bottom}>
-      <YStack g="3xl" jc="space-between" pad="lg" py="$6">
+    <ScrollView
+      bg="$grey-200"
+      contentContainerStyle={{
+        minHeight: '100%',
+      }}
+      safeAreaBottom={bottom}
+    >
+      <YStack g="3xl" jc="space-between" height="100%" pad="lg" py="$6">
         <YStack g="2xl">
           <Heading variant="h2" ta="center" px="$4">
             You have received a credential
