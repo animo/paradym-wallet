@@ -1,4 +1,7 @@
-import { Paragraph, YStack } from '../base'
+import { useToastController } from '@tamagui/toast'
+
+import { Paragraph, Stack, XStack } from '../base'
+import { X } from '../content'
 
 interface ToastContainerProps {
   title: string
@@ -6,8 +9,9 @@ interface ToastContainerProps {
 }
 
 export const ToastContainer = ({ title, safeAreaMargin = false }: ToastContainerProps) => {
+  const toast = useToastController()
   return (
-    <YStack
+    <XStack
       enterStyle={{ opacity: 0, scale: 0.5, y: -25 }}
       exitStyle={{ opacity: 0, scale: 1, y: -20 }}
       y={0}
@@ -18,8 +22,13 @@ export const ToastContainer = ({ title, safeAreaMargin = false }: ToastContainer
       margin={safeAreaMargin ? '$4' : 0}
       padding="$3"
       borderRadius="$4"
+      jc="space-between"
+      ai="center"
     >
-      <Paragraph>{title}</Paragraph>
-    </YStack>
+      <Paragraph w="90%">{title}</Paragraph>
+      <Stack jc="center" h="100%" onPress={() => toast.hide()}>
+        <X size="$1" color="$grey-600" />
+      </Stack>
+    </XStack>
   )
 }

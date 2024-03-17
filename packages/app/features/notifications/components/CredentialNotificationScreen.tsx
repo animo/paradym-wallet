@@ -1,10 +1,12 @@
 import type { CredentialDisplay } from '@internal/agent'
 
-import { YStack, Heading, Button, Spacer, ScrollView, Spinner } from '@internal/ui'
+import { YStack, Heading, ScrollView } from '@internal/ui'
 import React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import CredentialAttributes from 'app/components/CredentialAttributes'
 import CredentialCard from 'app/components/CredentialCard'
+import DualResponseButtons from 'app/components/DualResponseButtons'
 
 interface CredentialNotificationScreenProps {
   display: CredentialDisplay
@@ -22,9 +24,16 @@ export function CredentialNotificationScreen({
   onAccept,
   onDecline,
 }: CredentialNotificationScreenProps) {
+  const { bottom } = useSafeAreaInsets()
   return (
-    <ScrollView bg="$grey-200">
-      <YStack g="3xl" jc="space-between" pad="lg" py="$6">
+    <ScrollView
+      bg="$grey-200"
+      contentContainerStyle={{
+        minHeight: '100%',
+      }}
+      safeAreaBottom={bottom}
+    >
+      <YStack g="3xl" jc="space-between" height="100%" pad="lg" py="$6">
         <YStack g="2xl">
           <Heading variant="h2" ta="center" px="$4">
             You have received a credential
@@ -41,16 +50,8 @@ export function CredentialNotificationScreen({
           />
           <CredentialAttributes subject={attributes} />
         </YStack>
-        <YStack gap="$2">
-          <Button.Solid disabled={isAccepting} onPress={onAccept}>
-            {isAccepting ? <Spinner variant="dark" /> : 'Accept'}
-          </Button.Solid>
-          <Button.Outline disabled={isAccepting} onPress={onDecline}>
-            Decline
-          </Button.Outline>
-        </YStack>
+        <DualResponseButtons onAccept={onAccept} onDecline={onDecline} isAccepting={isAccepting} />
       </YStack>
-      <Spacer />
     </ScrollView>
   )
 }

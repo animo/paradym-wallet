@@ -20,7 +20,7 @@ export function Provider({ children, ...rest }: Omit<TamaguiProviderProps, 'conf
       {...rest}
     >
       <ToastProvider
-        swipeDirection="horizontal"
+        swipeDirection="up"
         duration={6000}
         native={
           [

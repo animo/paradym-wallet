@@ -6,6 +6,7 @@ interface CredentialRowCardProps {
   onPress?(): void
   bgColor?: string
   hideBorder?: boolean
+  showFullText?: boolean
 }
 
 export default function CredentialRowCard({
@@ -14,6 +15,7 @@ export default function CredentialRowCard({
   bgColor,
   onPress,
   hideBorder = false,
+  showFullText = false,
 }: CredentialRowCardProps) {
   return (
     <YStack>
@@ -24,13 +26,13 @@ export default function CredentialRowCard({
         pressStyle={{ backgroundColor: onPress && '$grey-100' }}
         overflow="hidden"
       >
-        <XStack bg={bgColor ?? '$grey-700'} h="$4.5" w="24%" br="$2" />
-        <YStack jc={issuer ? 'space-between' : 'center'}>
-          <Heading variant="h3" numberOfLines={1}>
+        <XStack border bg={bgColor ?? '$grey-700'} h="$4.5" w="24%" br="$2" />
+        <YStack flex={1} jc={issuer ? 'space-between' : 'center'}>
+          <Heading variant="h3" numberOfLines={showFullText ? 2 : 1}>
             {name}
           </Heading>
           {issuer && (
-            <Paragraph variant="sub" secondary>
+            <Paragraph variant="sub" secondary numberOfLines={showFullText ? 3 : 1}>
               {issuer}
             </Paragraph>
           )}
