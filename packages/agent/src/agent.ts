@@ -35,6 +35,7 @@ import {
   WsOutboundTransport,
   ConnectionsModule,
   MediatorPickupStrategy,
+  KeyDerivationMethod,
 } from '@credo-ts/core'
 import {
   IndyVdrAnonCredsRegistry,
@@ -51,7 +52,13 @@ import { indyVdr } from '@hyperledger/indy-vdr-react-native'
 
 import { indyNetworks } from './indyNetworks'
 
-export const initializeAgent = async (walletKey: string) => {
+export const initializeAgent = async ({
+  walletKey,
+  keyDerivation,
+}: {
+  walletKey: string
+  keyDerivation: 'raw' | 'derive'
+}) => {
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
@@ -59,6 +66,8 @@ export const initializeAgent = async (walletKey: string) => {
       walletConfig: {
         id: 'paradym-wallet-secure',
         key: walletKey,
+        keyDerivationMethod:
+          keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
       logger: new ConsoleLogger(LogLevel.debug),
