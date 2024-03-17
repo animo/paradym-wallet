@@ -65,6 +65,7 @@ const config = {
   updates: {
     fallbackToCacheTimeout: 0,
   },
+  plugins: ['expo-font', 'expo-secure-store'],
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,

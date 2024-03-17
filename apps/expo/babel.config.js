@@ -1,11 +1,10 @@
 /* eslint-disable */
 
 module.exports = function (api) {
-  api.cache(true)
+  api.cache(false)
   return {
     presets: [['babel-preset-expo', { jsxRuntime: 'automatic' }]],
     plugins: [
-      require.resolve('expo-router/babel'),
       [
         require.resolve('babel-plugin-module-resolver'),
         {
@@ -22,21 +21,12 @@ module.exports = function (api) {
       ],
       // if you want reanimated support
       // 'react-native-reanimated/plugin',
-      ...(process.env.EAS_BUILD_PLATFORM === 'android'
-        ? []
-        : [
-            [
-              '@tamagui/babel-plugin',
-              {
-                components: ['@internal/ui', 'tamagui'],
-                config: './tamagui.config.ts',
-              },
-            ],
-          ]),
       [
-        'transform-inline-environment-variables',
+        '@tamagui/babel-plugin',
         {
-          include: 'TAMAGUI_TARGET',
+          components: ['@internal/ui', 'tamagui'],
+          config: './tamagui.config.ts',
+          disableExtraction: process.env.NODE_ENV === 'development',
         },
       ],
     ],

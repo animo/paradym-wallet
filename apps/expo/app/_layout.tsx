@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/order
 import type { AppAgent } from '@internal/agent'
 
 import {
@@ -15,7 +16,8 @@ import { Provider } from 'app/provider'
 import { NoInternetToastProvider } from 'app/provider/NoInternetToastProvider'
 import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
-import { SplashScreen, Stack } from 'expo-router'
+import { Stack } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

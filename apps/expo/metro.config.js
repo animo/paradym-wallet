@@ -7,7 +7,7 @@ const { getDefaultConfig } = require('@expo/metro-config')
 const path = require('path')
 
 const projectRoot = __dirname
-const workspaceRoot = path.resolve(__dirname, '../..')
+const workspaceRoot = path.resolve(projectRoot, '../..')
 
 const config = getDefaultConfig(projectRoot)
 
@@ -16,9 +16,6 @@ config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ]
-config.resolver.sourceExts = ['js', 'json', 'ts', 'tsx', 'cjs']
-
-config.transformer = { ...config.transformer, unstable_allowRequireContext: true }
-config.transformer.minifierPath = require.resolve('metro-minify-terser')
+config.resolver.sourceExts = ['js', 'json', 'ts', 'tsx', 'cjs', 'mjs']
 
 module.exports = config

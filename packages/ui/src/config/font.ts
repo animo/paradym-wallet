@@ -24,6 +24,7 @@ export const fontRegular = createInterFont({
     5: 2,
     true: 0,
   },
+  face: {},
 })
 
 export const fontMedium = createInterFont({
@@ -50,6 +51,7 @@ export const fontMedium = createInterFont({
     5: 2,
     true: 0,
   },
+  face: {},
 })
 
 export const fontSemiBold = createInterFont({
@@ -76,6 +78,7 @@ export const fontSemiBold = createInterFont({
     5: 2,
     true: 0,
   },
+  face: {},
 })
 
 export const fontBold = createInterFont({
@@ -102,4 +105,5 @@ export const fontBold = createInterFont({
     5: 2,
     true: 0,
   },
+  face: {},
 })
