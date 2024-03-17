@@ -7,8 +7,8 @@ import type {
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/core'
 
-import { useConnectionById, useProofById } from '@aries-framework/react-hooks'
 import { CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
+import { useConnectionById, useProofById } from '@credo-ts/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'

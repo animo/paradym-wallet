@@ -1,8 +1,6 @@
 import type { W3cCredentialRecord, SdJwtVcRecord } from '@internal/agent'
 
 import {
-  W3cVerifiableCredential,
-  SdJwtVc,
   getCredentialForDisplay,
   storeCredential,
   receiveCredentialFromOpenId4VciOffer,

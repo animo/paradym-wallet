@@ -1,4 +1,3 @@
-import { useAgent as useAgentLib } from '@aries-framework/react-hooks'
 import {
   AnonCredsCredentialFormatService,
   AnonCredsModule,
@@ -44,6 +43,7 @@ import {
   IndyVdrSovDidResolver,
 } from '@credo-ts/indy-vdr'
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
+import { useAgent as useAgentLib } from '@credo-ts/react-hooks'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'

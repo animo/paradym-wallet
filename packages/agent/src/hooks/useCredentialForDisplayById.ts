@@ -1,4 +1,4 @@
-import { useCredentialById as _useCredentialById } from '@aries-framework/react-hooks'
+import { useCredentialById as _useCredentialById } from '@credo-ts/react-hooks'
 
 import { getCredentialExchangeForDisplay, getCredentialForDisplay } from '../display'
 import { useSdJwtVcRecordById, useW3cCredentialRecordById } from '../providers'

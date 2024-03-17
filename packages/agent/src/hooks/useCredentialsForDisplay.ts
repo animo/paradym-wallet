@@ -1,8 +1,5 @@
-import {
-  useCredentials as _useCredentials,
-  useCredentialByState,
-} from '@aries-framework/react-hooks'
 import { CredentialState } from '@credo-ts/core'
+import { useCredentials as _useCredentials, useCredentialByState } from '@credo-ts/react-hooks'
 import { useMemo } from 'react'
 
 import { getCredentialForDisplay, getCredentialExchangeForDisplay } from '../display'

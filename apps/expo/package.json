@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@hyperledger/anoncreds-react-native": "0.2.0-dev.9",
-    "@hyperledger/aries-askar-react-native": "0.2.0-dev.6",
-    "@hyperledger/indy-vdr-react-native": "0.2.0-dev.7",
+    "@hyperledger/anoncreds-react-native": "^0.2.1",
+    "@hyperledger/aries-askar-react-native": "^0.2.0",
+    "@hyperledger/indy-vdr-react-native": "^0.2.0",
     "@internal/agent": "*",
     "@internal/ui": "*",
     "@react-native-community/blur": "^4.3.2",

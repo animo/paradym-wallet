@@ -38,13 +38,7 @@
     "@cosmjs/tendermint-rpc": "npm:@cosmjs-rn/tendermint-rpc@^0.27.1",
     "@cosmjs/utils": "npm:@cosmjs-rn/utils@^0.27.1",
     "@cosmjs/proto-signing": "npm:@cosmjs-rn/proto-signing@^0.27.1",
-    "@cosmjs/crypto": "npm:@cosmjs-rn/crypto@^0.27.1",
-    "@sd-jwt/core": "0.2.1-alpha.0",
-    "@sd-jwt/present": "0.2.1-alpha.0",
-    "@sd-jwt/decode": "0.2.1-alpha.0",
-    "@sd-jwt/utils": "0.2.1-alpha.0",
-    "@aries-framework/core": "npm:@credo-ts/core@0.5.0-alpha.126",
-    "@aries-framework/question-answer": "npm:@credo-ts/question-answer@0.5.0-alpha.126"
+    "@cosmjs/crypto": "npm:@cosmjs-rn/crypto@^0.27.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",

@@ -1,12 +1,12 @@
 import type { AppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
 
+import { SdJwtVcRecord } from '@credo-ts/core'
 import {
   recordsAddedByType,
   recordsRemovedByType,
   recordsUpdatedByType,
-} from '@aries-framework/react-hooks/build/recordUtils'
-import { SdJwtVcRecord } from '@credo-ts/core'
+} from '@credo-ts/react-hooks/build/recordUtils'
 import { useState, createContext, useContext, useEffect } from 'react'
 import * as React from 'react'
 

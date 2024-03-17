@@ -1,7 +1,7 @@
 import type { AppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
 
-import NativeAgentProvider from '@aries-framework/react-hooks'
+import NativeAgentProvider from '@credo-ts/react-hooks'
 
 import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
 import { SdJwtVcRecordProvider } from './SdJwtVcsProvider'

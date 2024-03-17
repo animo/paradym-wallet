@@ -1,7 +1,7 @@
 import type { CredentialStateChangedEvent } from '@credo-ts/core'
 
-import { useCredentialById } from '@aries-framework/react-hooks'
 import { CredentialState, CredentialEventTypes } from '@credo-ts/core'
+import { useCredentialById } from '@credo-ts/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
