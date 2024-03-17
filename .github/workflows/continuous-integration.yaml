@@ -8,11 +8,6 @@ on:
     branches:
       - main
 
-# Cancel multiple runs for the same PR or branch
-concurrency:
-  group: aries-framework-${{ github.ref }}-${{ github.repository }}-${{ github.event_name }}
-  cancel-in-progress: true
-
 jobs:
   validate:
     runs-on: ubuntu-22.04
@@ -42,5 +37,6 @@ jobs:
       - name: Check Types
         run: yarn check-types
 
-      - name: Unit Tests
-        run: yarn test:unit
+      # Can be re-enabled when we have tests, but we don't have any
+      # - name: Unit Tests
+      #   run: yarn test:unit
