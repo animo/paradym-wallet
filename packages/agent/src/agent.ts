@@ -6,15 +6,14 @@ import {
   LegacyIndyProofFormatService,
   V1CredentialProtocol,
   V1ProofProtocol,
-} from '@aries-framework/anoncreds'
-import { AnonCredsRsModule } from '@aries-framework/anoncreds-rs'
-import { AskarModule } from '@aries-framework/askar'
+} from '@credo-ts/anoncreds'
+import { AskarModule } from '@credo-ts/askar'
 import {
   CheqdAnonCredsRegistry,
   CheqdDidResolver,
   CheqdModule,
   CheqdModuleConfig,
-} from '@aries-framework/cheqd'
+} from '@credo-ts/cheqd'
 import {
   JwkDidRegistrar,
   JwkDidResolver,
@@ -36,23 +35,30 @@ import {
   WsOutboundTransport,
   ConnectionsModule,
   MediatorPickupStrategy,
-} from '@aries-framework/core'
+  KeyDerivationMethod,
+} from '@credo-ts/core'
 import {
   IndyVdrAnonCredsRegistry,
   IndyVdrIndyDidResolver,
   IndyVdrModule,
   IndyVdrSovDidResolver,
-} from '@aries-framework/indy-vdr'
-import { useAgent as useAgentLib } from '@aries-framework/react-hooks'
-import { agentDependencies } from '@aries-framework/react-native'
+} from '@credo-ts/indy-vdr'
+import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
+import { useAgent as useAgentLib } from '@credo-ts/react-hooks'
+import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'
-import { OpenId4VcClientModule } from '@internal/openid4vc-client'
 
 import { indyNetworks } from './indyNetworks'
 
-export const initializeAgent = async (walletKey: string) => {
+export const initializeAgent = async ({
+  walletKey,
+  keyDerivation,
+}: {
+  walletKey: string
+  keyDerivation: 'raw' | 'derive'
+}) => {
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
@@ -60,6 +66,8 @@ export const initializeAgent = async (walletKey: string) => {
       walletConfig: {
         id: 'paradym-wallet-secure',
         key: walletKey,
+        keyDerivationMethod:
+          keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
       logger: new ConsoleLogger(LogLevel.debug),
@@ -68,11 +76,9 @@ export const initializeAgent = async (walletKey: string) => {
       askar: new AskarModule({
         ariesAskar: ariesAskar,
       }),
-      anoncredsRs: new AnonCredsRsModule({
-        anoncreds,
-      }),
       anoncreds: new AnonCredsModule({
         registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry()],
+        anoncreds,
       }),
       mediationRecipient: new MediationRecipientModule({
         // We want to manually connect to the mediator, so it doesn't impact wallet startup
@@ -89,7 +95,7 @@ export const initializeAgent = async (walletKey: string) => {
           new IndyVdrIndyDidResolver(),
         ],
       }),
-      openId4VcClient: new OpenId4VcClientModule(),
+      openId4VcHolder: new OpenId4VcHolderModule(),
       indyVdr: new IndyVdrModule({
         indyVdr,
         networks: indyNetworks,

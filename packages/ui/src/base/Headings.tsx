@@ -45,6 +45,7 @@ export const Heading = styled(THeading, {
         tag: 'h2',
         size: '$5',
         fontFamily: '$medium',
+        letterSpacing: -0.5,
       },
       h3: {
         name: 'H3',

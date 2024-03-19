@@ -1,6 +1,6 @@
 import type { AppAgent } from './agent'
 
-import { AriesFrameworkError, MediatorPickupStrategy } from '@aries-framework/core'
+import { CredoError, MediatorPickupStrategy } from '@credo-ts/core'
 import { useEffect } from 'react'
 
 /**
@@ -37,7 +37,7 @@ export async function setupMediationWithDid(agent: AppAgent, mediatorDid: string
     agent.config.logger.debug(`Mediation invitation processed`, { mediatorDid })
 
     if (!newConnection) {
-      throw new AriesFrameworkError('No connection record to provision mediation.')
+      throw new CredoError('No connection record to provision mediation.')
     }
 
     connection = newConnection
@@ -57,7 +57,7 @@ async function initiateMessagePickup(agent: AppAgent) {
   agent.config.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
-  await agent.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.PickUpV2)
+  await agent.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.Implicit)
 }
 
 /**

@@ -51,7 +51,14 @@ export default function CredentialCard({
     )
 
   return (
-    <XStack shadow={shadow} position="relative">
+    <XStack
+      shadow={shadow}
+      br="$8"
+      bg={!backgroundImage ? bgColor ?? '$grey-900' : '$transparent'}
+      borderWidth={0.5}
+      borderColor="$borderTranslucent"
+      position="relative"
+    >
       <Card
         padded
         width="100%"
@@ -61,11 +68,9 @@ export default function CredentialCard({
           backgroundColor: onPress && darken(bgColor ?? '$grey-900', 0.05),
         }}
         h="$16"
-        borderWidth={0.5}
-        borderColor="$borderTranslucent"
         onPress={onPress}
       >
-        <Card.Header>
+        <Card.Header padding={0}>
           <XStack jc="space-between">
             <XStack pr="$4">{icon}</XStack>
             <YStack f={1}>
@@ -100,13 +105,7 @@ export default function CredentialCard({
           <Card.Background>
             {hasInternet ? (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
-                <Image
-                  src={backgroundImage.url}
-                  alt={backgroundImage.altText}
-                  resizeMode="cover"
-                  width="100%"
-                  height="100%"
-                />
+                <Image src={backgroundImage.url} alt={backgroundImage.altText} resizeMode="cover" />
               </YStack>
             ) : (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'} />

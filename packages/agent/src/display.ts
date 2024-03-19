@@ -1,13 +1,14 @@
 import type { CredentialForDisplayId } from './hooks'
+import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
-import type { CredentialExchangeRecord, W3cCredentialRecord } from '@aries-framework/core'
-import type { OpenId4VcCredentialMetadata } from '@internal/openid4vc-client'
+import type { CredentialExchangeRecord, W3cCredentialRecord } from '@credo-ts/core'
 
-import { ClaimFormat, JsonTransformer } from '@aries-framework/core'
-import { getOpenId4VcCredentialMetadata } from '@internal/openid4vc-client'
+import { Hasher, SdJwtVcRecord, ClaimFormat, JsonTransformer } from '@credo-ts/core'
 import { sanitizeString, getHostNameFromUrl } from '@internal/utils'
+import { decodeSdJwtVc } from '@sd-jwt/decode'
 
 import { getDidCommCredentialExchangeDisplayMetadata } from './didcomm/metadata'
+import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
 
 type JffW3cCredentialJson = W3cCredentialJson & {
   name?: string
@@ -59,7 +60,7 @@ function findDisplay<Display extends { locale?: string }>(
   return item
 }
 
-function getIssuerDisplay(
+function getW3cIssuerDisplay(
   credential: W3cCredentialJson,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
 ): CredentialIssuerDisplay {
@@ -123,6 +124,47 @@ function getIssuerDisplay(
   }
 }
 
+function getSdJwtIssuerDisplay(
+  openId4VcMetadata?: OpenId4VcCredentialMetadata | null
+): CredentialIssuerDisplay {
+  const issuerDisplay: Partial<CredentialIssuerDisplay> = {}
+
+  // Try to extract from openid metadata first
+  if (openId4VcMetadata) {
+    const openidIssuerDisplay = findDisplay(openId4VcMetadata.issuer.display)
+
+    if (openidIssuerDisplay) {
+      issuerDisplay.name = openidIssuerDisplay.name
+
+      if (openidIssuerDisplay.logo) {
+        issuerDisplay.logo = {
+          url: openidIssuerDisplay.logo?.url,
+          altText: openidIssuerDisplay.logo?.alt_text,
+        }
+      }
+    }
+
+    // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
+    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+    if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
+      issuerDisplay.logo = {
+        url: openidCredentialDisplay.logo?.url,
+        altText: openidCredentialDisplay.logo?.alt_text,
+      }
+    }
+  }
+
+  // Last fallback: use issuer id from openid4vc
+  if (!issuerDisplay.name && openId4VcMetadata?.issuer.id) {
+    issuerDisplay.name = getHostNameFromUrl(openId4VcMetadata.issuer.id)
+  }
+
+  return {
+    ...issuerDisplay,
+    name: issuerDisplay.name ?? 'Unknown',
+  }
+}
+
 function getW3cCredentialDisplay(
   credential: W3cCredentialJson,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
@@ -173,6 +215,46 @@ function getW3cCredentialDisplay(
   }
 }
 
+function getSdJwtCredentialDisplay(
+  credentialPayload: Record<string, unknown>,
+  openId4VcMetadata?: OpenId4VcCredentialMetadata | null
+) {
+  const credentialDisplay: Partial<CredentialDisplay> = {}
+
+  if (openId4VcMetadata) {
+    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+
+    if (openidCredentialDisplay) {
+      credentialDisplay.name = openidCredentialDisplay.name
+      credentialDisplay.description = openidCredentialDisplay.description
+      credentialDisplay.textColor = openidCredentialDisplay.text_color
+      credentialDisplay.backgroundColor = openidCredentialDisplay.background_color
+
+      if (openidCredentialDisplay.background_image) {
+        credentialDisplay.backgroundImage = {
+          url: openidCredentialDisplay.background_image.url,
+          altText: openidCredentialDisplay.background_image.alt_text,
+        }
+      }
+
+      // NOTE: logo is used in issuer display (not sure if that's right though)
+    }
+  }
+
+  // If there's no name for the credential, we extract it from the last type
+  // and sanitize it. This is not optimal. But provides at least something.
+  if (!credentialDisplay.name && typeof credentialPayload.vct === 'string') {
+    credentialDisplay.name = sanitizeString(credentialPayload.vct)
+  }
+
+  return {
+    ...credentialDisplay,
+    // Last fallback, if there's really no name for the credential, we use a generic name
+    // TODO: use on-device AI to determine a name for the credential based on the credential data
+    name: credentialDisplay.name ?? 'Credential',
+  }
+}
+
 export function getCredentialExchangeForDisplay(
   credentialExchangeRecord: CredentialExchangeRecord
 ) {
@@ -194,30 +276,60 @@ export function getCredentialExchangeForDisplay(
   }
 }
 
-export function getW3cCredentialForDisplay(w3cCredentialRecord: W3cCredentialRecord) {
-  const credential = JsonTransformer.toJSON(
-    w3cCredentialRecord.credential.claimFormat === ClaimFormat.JwtVc
-      ? w3cCredentialRecord.credential.credential
-      : w3cCredentialRecord.credential
-  ) as W3cCredentialJson
+export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
+  if (credentialRecord instanceof SdJwtVcRecord) {
+    // FIXME: we should probably add a decode method on the SdJwtVcRecord
+    // as you now need the agent context to decode the sd-jwt vc, while that's
+    // not really needed
+    const { decodedPayload } = decodeSdJwtVc(credentialRecord.compactSdJwtVc, (data, alg) =>
+      Hasher.hash(data, alg)
+    )
 
-  const openId4VcMetadata = getOpenId4VcCredentialMetadata(w3cCredentialRecord)
-  const issuerDisplay = getIssuerDisplay(credential, openId4VcMetadata)
-  const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
+    const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+    const issuerDisplay = getSdJwtIssuerDisplay(openId4VcMetadata)
+    const credentialDisplay = getSdJwtCredentialDisplay(decodedPayload, openId4VcMetadata)
 
-  // FIXME: support credential with multiple subjects
-  const credentialAttributes = Array.isArray(credential.credentialSubject)
-    ? credential.credentialSubject[0] ?? {}
-    : credential.credentialSubject
+    // TODO: should we add a way to see these claims? Currently matching what would
+    // be included in a w3c credential subject
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { _sd_alg, _sd_hash, iss, vct, cnf, ...visibleProperties } = decodedPayload
 
-  return {
-    id: `w3c-credential-${w3cCredentialRecord.id}` satisfies CredentialForDisplayId,
-    createdAt: w3cCredentialRecord.createdAt,
-    display: {
-      ...credentialDisplay,
-      issuer: issuerDisplay,
-    },
-    w3cCredential: credential,
-    attributes: credentialAttributes,
+    // TODO: display somehow which fields can be selective disclosed
+
+    return {
+      id: `sd-jwt-vc-${credentialRecord.id}` satisfies CredentialForDisplayId,
+      createdAt: credentialRecord.createdAt,
+      display: {
+        ...credentialDisplay,
+        issuer: issuerDisplay,
+      },
+      attributes: visibleProperties,
+    }
+  } else {
+    const credential = JsonTransformer.toJSON(
+      credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
+        ? credentialRecord.credential.credential
+        : credentialRecord.credential
+    ) as W3cCredentialJson
+
+    const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+    const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
+    const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
+
+    // FIXME: support credential with multiple subjects
+    const credentialAttributes = Array.isArray(credential.credentialSubject)
+      ? credential.credentialSubject[0] ?? {}
+      : credential.credentialSubject
+
+    return {
+      id: `w3c-credential-${credentialRecord.id}` satisfies CredentialForDisplayId,
+      createdAt: credentialRecord.createdAt,
+      display: {
+        ...credentialDisplay,
+        issuer: issuerDisplay,
+      },
+      credential,
+      attributes: credentialAttributes,
+    }
   }
 }

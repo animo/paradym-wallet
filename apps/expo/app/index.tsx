@@ -11,6 +11,7 @@ export default function Screen() {
       <Stack.Screen
         options={{
           headerShown: true,
+          title: 'Home',
           header: () => {
             return <XStack h={top} bg="$grey-200" />
           },

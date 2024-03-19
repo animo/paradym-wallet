@@ -31,7 +31,6 @@
   "resolutions": {
     "@unimodules/react-native-adapter": "./noop",
     "@unimodules/core": "./noop",
-    "ref-napi": "npm:@2060.io/ref-napi@3.0.4",
     "@cosmjs/amino": "npm:@cosmjs-rn/amino@^0.27.1",
     "@cosmjs/encoding": "npm:@cosmjs-rn/encoding@^0.27.1",
     "@cosmjs/math": "npm:@cosmjs-rn/math@^0.27.1",
@@ -39,8 +38,7 @@
     "@cosmjs/tendermint-rpc": "npm:@cosmjs-rn/tendermint-rpc@^0.27.1",
     "@cosmjs/utils": "npm:@cosmjs-rn/utils@^0.27.1",
     "@cosmjs/proto-signing": "npm:@cosmjs-rn/proto-signing@^0.27.1",
-    "@cosmjs/crypto": "npm:@cosmjs-rn/crypto@^0.27.1",
-    "@sphereon/did-auth-siop@0.3.2-unstable.0": "patch:@sphereon/did-auth-siop@npm%3A0.3.2-unstable.0#./.yarn/patches/@sphereon-did-auth-siop-npm-0.3.2-unstable.0-6a34120d09.patch"
+    "@cosmjs/crypto": "npm:@cosmjs-rn/crypto@^0.27.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -54,7 +52,6 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
-    "expo-linking": "~5.0.2",
     "node-gyp": "^9.3.1",
     "prettier": "^2.7.1",
     "turbo": "^1.8.3",

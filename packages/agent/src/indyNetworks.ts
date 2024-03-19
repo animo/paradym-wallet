@@ -1,4 +1,4 @@
-import type { IndyVdrPoolConfig } from '@aries-framework/indy-vdr'
+import type { IndyVdrPoolConfig } from '@credo-ts/indy-vdr'
 
 export const indyNetworks: [IndyVdrPoolConfig, ...IndyVdrPoolConfig[]] = [
   {

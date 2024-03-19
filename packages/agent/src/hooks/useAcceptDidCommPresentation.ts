@@ -4,16 +4,11 @@ import type {
   AnonCredsRequestedAttributeMatch,
   AnonCredsRequestedPredicate,
   AnonCredsRequestedPredicateMatch,
-} from '@aries-framework/anoncreds'
-import type { ProofStateChangedEvent } from '@aries-framework/core'
+} from '@credo-ts/anoncreds'
+import type { ProofStateChangedEvent } from '@credo-ts/core'
 
-import {
-  CredentialRepository,
-  AriesFrameworkError,
-  ProofEventTypes,
-  ProofState,
-} from '@aries-framework/core'
-import { useConnectionById, useProofById } from '@aries-framework/react-hooks'
+import { CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
+import { useConnectionById, useProofById } from '@credo-ts/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
@@ -42,7 +37,7 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
         credentialsForRequest.proofFormats.anoncreds ?? credentialsForRequest.proofFormats.indy
 
       if (!anonCredsCredentials || !proofRequest) {
-        throw new AriesFrameworkError('Invalid proof request.')
+        throw new CredoError('Invalid proof request.')
       }
 
       const submission: FormattedSubmission = {

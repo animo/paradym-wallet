@@ -28,16 +28,16 @@ export const Stack = styled(TStack, {
         borderRadius: '$1',
       },
       sm: {
-        borderRadiusSizes: '$2',
+        borderRadius: '$2',
       },
       md: {
-        borderRadiusSizes: '$3',
+        borderRadius: '$3',
       },
       lg: {
-        borderRadiusSizes: '$4',
+        borderRadius: '$4',
       },
       xl: {
-        borderRadiusSizes: '$8',
+        borderRadius: '$8',
       },
     },
     g: {

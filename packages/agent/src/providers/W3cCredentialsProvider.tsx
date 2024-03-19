@@ -1,16 +1,16 @@
 import type { AppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
 
-import { W3cCredentialRecord } from '@aries-framework/core'
+import { W3cCredentialRecord } from '@credo-ts/core'
 import {
   recordsAddedByType,
   recordsRemovedByType,
   recordsUpdatedByType,
-} from '@aries-framework/react-hooks/build/recordUtils'
+} from '@credo-ts/react-hooks/build/recordUtils'
 import { useState, createContext, useContext, useEffect } from 'react'
 import * as React from 'react'
 
-export { W3cCredentialRecord } from '@aries-framework/core'
+export { W3cCredentialRecord, W3cVerifiableCredential } from '@credo-ts/core'
 
 type W3cCredentialRecordState = {
   w3cCredentialRecords: Array<W3cCredentialRecord>

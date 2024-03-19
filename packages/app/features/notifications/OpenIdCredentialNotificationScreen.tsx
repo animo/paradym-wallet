@@ -1,8 +1,8 @@
-import type { W3cCredentialRecord } from '@internal/agent'
+import type { W3cCredentialRecord, SdJwtVcRecord } from '@internal/agent'
 
 import {
-  getW3cCredentialForDisplay,
-  storeW3cCredential,
+  getCredentialForDisplay,
+  storeCredential,
   receiveCredentialFromOpenId4VciOffer,
   useAgent,
 } from '@internal/agent'
@@ -24,7 +24,7 @@ export function OpenIdCredentialNotificationScreen() {
   const toast = useToastController()
   const [uri] = useParam('uri')
 
-  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord>()
+  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord>()
   const [isStoring, setIsStoring] = useState(false)
 
   const pushToWallet = () => {
@@ -35,11 +35,12 @@ export function OpenIdCredentialNotificationScreen() {
   useEffect(() => {
     const requestCredential = async (uri: string) => {
       try {
-        const record = await receiveCredentialFromOpenId4VciOffer({
+        const credentialRecord = await receiveCredentialFromOpenId4VciOffer({
           agent,
           data: decodeURIComponent(uri),
         })
-        setCredentialRecord(record)
+
+        setCredentialRecord(credentialRecord)
       } catch (e) {
         agent.config.logger.error("Couldn't receive credential from OpenID4VCI offer", {
           error: e as unknown,
@@ -55,20 +56,17 @@ export function OpenIdCredentialNotificationScreen() {
     return <GettingCredentialInformationScreen />
   }
 
-  if (!credentialRecord.credential) {
-    toast.show('Credential information could not be extracted.')
-    pushToWallet()
-    return null
-  }
-
   const onCredentialAccept = async () => {
     setIsStoring(true)
 
-    await storeW3cCredential(agent, credentialRecord)
+    await storeCredential(agent, credentialRecord)
       .then(() => {
         toast.show('Credential has been added to your wallet.')
       })
-      .catch(() => {
+      .catch((e) => {
+        agent.config.logger.error("Couldn't store credential", {
+          error: e as unknown,
+        })
         toast.show('Something went wrong while storing the credential.')
       })
       .finally(() => {
@@ -81,7 +79,7 @@ export function OpenIdCredentialNotificationScreen() {
     pushToWallet()
   }
 
-  const { display, attributes } = getW3cCredentialForDisplay(credentialRecord)
+  const { display, attributes } = getCredentialForDisplay(credentialRecord)
 
   return (
     <CredentialNotificationScreen

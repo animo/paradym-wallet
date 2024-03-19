@@ -17,13 +17,9 @@ export const fontRegular = createInterFont({
     7: 38, // Page Title
   },
   letterSpacing: {
-    1: -1,
-    2: -0.5,
-    3: 0,
-    4: 1,
-    5: 2,
-    true: 0,
+    4: 0,
   },
+  face: {},
 })
 
 export const fontMedium = createInterFont({
@@ -43,13 +39,9 @@ export const fontMedium = createInterFont({
     7: 38, // Page Title
   },
   letterSpacing: {
-    1: -1,
-    2: -0.5,
-    3: 0,
-    4: 1,
-    5: 2,
-    true: 0,
+    4: 0,
   },
+  face: {},
 })
 
 export const fontSemiBold = createInterFont({
@@ -69,13 +61,9 @@ export const fontSemiBold = createInterFont({
     7: 38, // Page Title
   },
   letterSpacing: {
-    1: -1,
-    2: -0.5,
-    3: 0,
-    4: 1,
-    5: 2,
-    true: 0,
+    4: 0,
   },
+  face: {},
 })
 
 export const fontBold = createInterFont({
@@ -95,11 +83,7 @@ export const fontBold = createInterFont({
     7: 38, // Page Title
   },
   letterSpacing: {
-    1: -1,
-    2: -0.5,
-    3: 0,
-    4: 1,
-    5: 2,
-    true: 0,
+    4: 0,
   },
+  face: {},
 })
