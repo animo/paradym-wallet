@@ -149,8 +149,6 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         },
 
         verifyCredentialStatus: false,
-        // FIXME: why is this removed?
-        // allowedCredentialFormats: [OpenIdCredentialFormatProfile.JwtVcJson],
         allowedProofOfPossessionSignatureAlgorithms: [
           // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
           // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one

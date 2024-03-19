@@ -3,6 +3,7 @@ import 'fast-text-encoding'
 
 import { Buffer } from '@credo-ts/core'
 
+// Needed for cheqd, it depends on global buffer
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line no-undef

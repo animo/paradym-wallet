@@ -36,7 +36,3 @@ jobs:
 
       - name: Check Types
         run: yarn check-types
-
-      # Can be re-enabled when we have tests, but we don't have any
-      # - name: Unit Tests
-      #   run: yarn test:unit
