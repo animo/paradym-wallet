@@ -289,13 +289,11 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     const issuerDisplay = getSdJwtIssuerDisplay(openId4VcMetadata)
     const credentialDisplay = getSdJwtCredentialDisplay(decodedPayload, openId4VcMetadata)
 
-    // TODO: should we add a way to see these claims? Currently matching what would
-    // be included in a w3c credential subject
+    // TODO: We should map these claims to nice format and names
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _sd_alg, _sd_hash, iss, vct, cnf, ...visibleProperties } = decodedPayload
+    const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, ...visibleProperties } = decodedPayload
 
     // TODO: display somehow which fields can be selective disclosed
-
     return {
       id: `sd-jwt-vc-${credentialRecord.id}` satisfies CredentialForDisplayId,
       createdAt: credentialRecord.createdAt,

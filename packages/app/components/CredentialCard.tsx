@@ -69,6 +69,7 @@ export default function CredentialCard({
         }}
         h="$16"
         onPress={onPress}
+        overflow="hidden"
       >
         <Card.Header padding={0}>
           <XStack jc="space-between">
@@ -105,7 +106,13 @@ export default function CredentialCard({
           <Card.Background>
             {hasInternet ? (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
-                <Image src={backgroundImage.url} alt={backgroundImage.altText} resizeMode="cover" />
+                <Image
+                  src={backgroundImage.url}
+                  alt={backgroundImage.altText}
+                  width="100%"
+                  height="100%"
+                  resizeMode="cover"
+                />
               </YStack>
             ) : (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'} />
