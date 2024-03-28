@@ -11,7 +11,7 @@ export function capitalizeFirstLetter(string: string) {
  * i.e. sanitizeString("helloWorld")  // returns: 'Hello world'
  */
 export function sanitizeString(str: string) {
-  const result = str.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+  const result = str.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replaceAll('_', ' ')
   let words = result.split(' ')
   words = words.map((word, index) => {
     if (index === 0 || word.toUpperCase() === word) {

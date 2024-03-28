@@ -62,10 +62,16 @@ export function formatCredentialSubject(
         image: value,
         type: 'image',
       })
-    } else if (typeof value === 'string') {
+    } else if (typeof value === 'string' || typeof value === 'number') {
       stringRows.push({
         key: sanitizeString(key),
-        value: value,
+        value: `${value}`,
+        type: 'string',
+      })
+    } else if (typeof value === 'boolean') {
+      stringRows.push({
+        key: sanitizeString(key),
+        value: value ? 'Yes' : 'No',
         type: 'string',
       })
     }
