@@ -17,5 +17,9 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ]
 config.resolver.sourceExts = ['js', 'json', 'ts', 'tsx', 'cjs', 'mjs']
+config.resolver.extraNodeModules = {
+  // Needed for cosmjs trying to import node crypto
+  crypto: require.resolve('./crypto.ts'),
+}
 
 module.exports = config

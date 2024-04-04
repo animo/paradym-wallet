@@ -30,15 +30,7 @@
   },
   "resolutions": {
     "@unimodules/react-native-adapter": "./noop",
-    "@unimodules/core": "./noop",
-    "@cosmjs/amino": "npm:@cosmjs-rn/amino@^0.27.1",
-    "@cosmjs/encoding": "npm:@cosmjs-rn/encoding@^0.27.1",
-    "@cosmjs/math": "npm:@cosmjs-rn/math@^0.27.1",
-    "@cosmjs/stargate": "npm:@cosmjs-rn/stargate@^0.27.1",
-    "@cosmjs/tendermint-rpc": "npm:@cosmjs-rn/tendermint-rpc@^0.27.1",
-    "@cosmjs/utils": "npm:@cosmjs-rn/utils@^0.27.1",
-    "@cosmjs/proto-signing": "npm:@cosmjs-rn/proto-signing@^0.27.1",
-    "@cosmjs/crypto": "npm:@cosmjs-rn/crypto@^0.27.1"
+    "@unimodules/core": "./noop"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
