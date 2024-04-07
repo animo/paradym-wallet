@@ -4,11 +4,12 @@ import {
   useAgent,
   formatDifPexCredentialsForRequest,
 } from '@internal/agent'
-import { useToastController, Spinner, Page, Paragraph } from '@internal/ui'
+import { useToastController } from '@internal/ui'
 import React, { useEffect, useState, useMemo } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
+import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
 type Query = { uri?: string; data?: string }
@@ -62,14 +63,7 @@ export function OpenIdPresentationNotificationScreen() {
   }, [params])
 
   if (!submission || !credentialsForRequest) {
-    return (
-      <Page jc="center" ai="center" g="md">
-        <Spinner />
-        <Paragraph variant="sub" textAlign="center">
-          Getting verification information
-        </Paragraph>
-      </Page>
-    )
+    return <GettingInformationScreen type="presentation" />
   }
 
   const onProofAccept = () => {

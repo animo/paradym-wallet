@@ -128,7 +128,7 @@ export const useInboxNotifications = () => {
           createdAt: record.createdAt,
           contactLabel: metadata?.issuerName,
           notificationTitle: metadata?.credentialName ?? 'Credential',
-        }
+        } as const
       } else {
         const metadata = getDidCommProofExchangeDisplayMetadata(record)
 
@@ -138,7 +138,7 @@ export const useInboxNotifications = () => {
           createdAt: record.createdAt,
           contactLabel: metadata?.verifierName,
           notificationTitle: metadata?.proofName ?? 'Data Request',
-        }
+        } as const
       }
     })
   }, [proofExchangeRecords, credentialExchangeRecords])

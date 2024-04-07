@@ -12,7 +12,7 @@ import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
-import { GettingCredentialInformationScreen } from './components/GettingCredentialInformationScreen'
+import { GettingInformationScreen } from './components/GettingInformationScreen'
 
 type Query = { uri?: string; data?: string }
 
@@ -54,7 +54,7 @@ export function OpenIdCredentialNotificationScreen() {
   }, [params])
 
   if (!credentialRecord) {
-    return <GettingCredentialInformationScreen />
+    return <GettingInformationScreen type="credential" />
   }
 
   const onCredentialAccept = async () => {

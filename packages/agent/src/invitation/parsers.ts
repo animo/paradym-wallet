@@ -24,7 +24,11 @@ export type ParsedInvitation = {
 export enum InvitationQrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer://',
+  // TODO: I think we should not support openid://, as we mainly support openid4vp
+  // But older requests do use openid:// I think (such as the DIIP dbc login)
+  // but I think we're going to move to just openid4p in the future
   OPENID = 'openid://',
+  OPENID4VP = 'openid4vp://',
   OPENID_VC = 'openid-vc://',
   DIDCOMM = 'didcomm://',
   HTTPS = 'https://',

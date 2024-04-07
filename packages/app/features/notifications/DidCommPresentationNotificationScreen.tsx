@@ -1,24 +1,25 @@
 import { useAcceptDidCommPresentation, useAgent } from '@internal/agent'
-import { useToastController, Spinner, Page, Paragraph } from '@internal/ui'
+import { useToastController } from '@internal/ui'
 import React from 'react'
-import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
+import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
-type Query = { proofExchangeId: string }
+interface DidCommPresentationNotificationScreenProps {
+  proofExchangeId: string
+}
 
-const { useParams } = createParam<Query>()
-
-export function DidCommPresentationNotificationScreen() {
+export function DidCommPresentationNotificationScreen({
+  proofExchangeId,
+}: DidCommPresentationNotificationScreenProps) {
   const { agent } = useAgent()
 
   const router = useRouter()
   const toast = useToastController()
-  const { params } = useParams()
 
   const { acceptPresentation, proofExchange, status, submission, verifierName } =
-    useAcceptDidCommPresentation(params.proofExchangeId)
+    useAcceptDidCommPresentation(proofExchangeId)
 
   const pushToWallet = () => {
     router.back()
@@ -26,14 +27,7 @@ export function DidCommPresentationNotificationScreen() {
   }
 
   if (!submission || !proofExchange) {
-    return (
-      <Page jc="center" ai="center" g="md">
-        <Spinner />
-        <Paragraph variant="sub" textAlign="center">
-          Getting verification information
-        </Paragraph>
-      </Page>
-    )
+    return <GettingInformationScreen type="presentation" />
   }
 
   const onProofAccept = () => {

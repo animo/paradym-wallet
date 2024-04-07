@@ -34,6 +34,7 @@ const invitationSchemes = [
   'openid-initiate-issuance',
   'openid-credential-offer',
   'openid-vc',
+  'openid4vp',
   'didcomm',
 ]
 

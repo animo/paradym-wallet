@@ -163,15 +163,11 @@ export default function HomeLayout() {
                 />
                 <Stack.Screen
                   options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/didCommCredential"
-                />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
                   name="notifications/openIdPresentation"
                 />
                 <Stack.Screen
                   options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/didCommPresentation"
+                  name="notifications/didcomm"
                 />
                 <Stack.Screen
                   options={{
