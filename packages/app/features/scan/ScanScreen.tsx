@@ -1,7 +1,6 @@
 import { QrScanner } from '@internal/scanner'
 import { Page, Spinner, Paragraph } from '@internal/ui'
-import { sleep } from '@tanstack/query-core/build/lib/utils'
-import * as Haptics from 'expo-haptics'
+import { useIsFocused } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
@@ -18,29 +17,27 @@ export function QrScannerScreen() {
   const [isProcessing, setIsProcessing] = useState(false)
 
   const [isLoading, setIsLoading] = useState(false)
+  const isFocused = useIsFocused()
 
   const onScan = async (scannedData: string) => {
-    if (isProcessing) return
+    if (isProcessing || !isFocused) return
     setIsProcessing(true)
     setIsLoading(true)
 
     const result = await handleCredentialData(scannedData)
-
-    if (result.result === 'error') {
+    if (!result.success) {
       const isUnsupportedUrl = unsupportedUrlPrefixes.find((x) => scannedData.includes(x))
       setHelpText(
         isUnsupportedUrl
           ? 'This QR-code is not supported yet. Try scanning a different one.'
-          : result.message
-          ? result.message
+          : result.error
+          ? result.error
           : 'Invalid QR code. Try scanning a different one.'
       )
-
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       setIsLoading(false)
     }
 
-    await sleep(5000)
+    await new Promise((resolve) => setTimeout(resolve, 5000))
     setHelpText('')
     setIsLoading(false)
     setIsProcessing(false)

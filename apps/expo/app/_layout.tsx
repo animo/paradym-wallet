@@ -27,6 +27,11 @@ import { getSecureWalletKey } from '../utils/walletKeyStore'
 
 void SplashScreen.preventAutoHideAsync()
 
+export const unstable_settings = {
+  // Ensure any route can link back to `/`
+  initialRouteName: 'index',
+}
+
 export default function HomeLayout() {
   const [fontLoaded] = useFonts({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -144,17 +149,7 @@ export default function HomeLayout() {
         <ThemeProvider value={DefaultTheme}>
           <NoInternetToastProvider>
             <DeeplinkHandler>
-              <Stack screenOptions={{ headerShown: false }}>
-                {/**
-                 * Workaround:
-                 * The following screens are not rendered by the router.
-                 * They are used to prevent the internal route to be executed.
-                 * So now they are being redirected to the home screen. So the user will not see a 404.
-                 **/}
-                <Stack.Screen name="invitation/[id]" redirect />
-                <Stack.Screen name="https/[...dummy]" redirect />
-                <Stack.Screen name="http/[...dummy]" redirect />
-
+              <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
                 <Stack.Screen
                   options={{
                     presentation: 'modal',

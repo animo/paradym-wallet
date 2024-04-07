@@ -37,7 +37,7 @@ const invitationSchemes = [
   'didcomm',
 ]
 
-const associatedDomains = ['paradym.id', 'dev.paradym.id']
+const associatedDomains = ['paradym.id', 'dev.paradym.id', 'aurora.paradym.id']
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}
