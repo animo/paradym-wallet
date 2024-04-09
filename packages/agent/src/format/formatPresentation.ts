@@ -10,13 +10,17 @@ export interface FormattedSubmission {
 }
 
 export interface FormattedSubmissionEntry {
+  inputDescriptorId: string
   name: string
-  isSatisfied: boolean
-  credentialName: string
-  issuerName?: string
   description?: string
-  requestedAttributes?: string[]
-  backgroundColor?: string
+  isSatisfied: boolean
+
+  credentials: Array<{
+    credentialName: string
+    issuerName: string
+    requestedAttributes: string[]
+    backgroundColor?: string
+  }>
 }
 
 export function formatDifPexCredentialsForRequest(
@@ -24,33 +28,26 @@ export function formatDifPexCredentialsForRequest(
 ): FormattedSubmission {
   const entries = credentialsForRequest.requirements.flatMap((requirement) => {
     return requirement.submissionEntry.map((submission) => {
-      // FIXME: support credential selection from JFF branch
-      const [firstVerifiableCredential] = submission.verifiableCredentials
-      if (firstVerifiableCredential) {
-        // Credential can be satisfied
-        const { display, credential, attributes } =
-          getCredentialForDisplay(firstVerifiableCredential)
-        return {
-          name: submission.name ?? 'Unknown',
-          description: submission.purpose,
-          isSatisfied: true,
-          credentialName: display.name,
-          issuerName: display.issuer.name,
-          // FIXME: will PEX already apply SD, and thus overwrite the original? That would be really problematic
-          // FIXME: how do we get the requested attributes here in case of SD?
-          // We need to get all attributes that will be disclosed, but we don't know that here
-          requestedAttributes: credential?.credentialSubject
-            ? Object.keys(credential.credentialSubject)
-            : Object.keys(attributes),
-          backgroundColor: display.backgroundColor,
-        }
-      }
       return {
+        inputDescriptorId: submission.inputDescriptorId,
         name: submission.name ?? 'Unknown',
         description: submission.purpose,
-        isSatisfied: false,
-        // fallback to submission name because there is no credential
-        credentialName: submission.name ?? 'Credential name',
+        isSatisfied: submission.verifiableCredentials.length >= 1,
+        credentials: submission.verifiableCredentials.map((credentialRecord) => {
+          const { display, credential, attributes } = getCredentialForDisplay(credentialRecord)
+
+          return {
+            credentialName: display.name,
+            issuerName: display.issuer.name,
+            // FIXME: will PEX already apply SD, and thus overwrite the original? That would be really problematic
+            // FIXME: how do we get the requested attributes here in case of SD?
+            // We need to get all attributes that will be disclosed, but we don't know that here
+            requestedAttributes: credential?.credentialSubject
+              ? Object.keys(credential.credentialSubject)
+              : Object.keys(attributes),
+            backgroundColor: display.backgroundColor,
+          }
+        }),
       }
     })
   })

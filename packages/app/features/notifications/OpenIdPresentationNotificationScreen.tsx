@@ -1,3 +1,10 @@
+import type {
+  DifPexInputDescriptorToCredentials,
+  FormattedSubmission,
+  SdJwtVcRecord,
+  W3cCredentialRecord,
+} from '@internal/agent'
+
 import {
   getCredentialsForProofRequest,
   shareProof,
@@ -25,15 +32,12 @@ export function OpenIdPresentationNotificationScreen() {
   // TODO: update to useAcceptOpenIdPresentation
   const [credentialsForRequest, setCredentialsForRequest] =
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
-  const [isSharing, setIsSharing] = useState(false)
+  const [submission, setSubmission] = useState<FormattedSubmission>()
 
-  const submission = useMemo(
-    () =>
-      credentialsForRequest
-        ? formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
-        : undefined,
-    [credentialsForRequest]
-  )
+  const [isSharing, setIsSharing] = useState(false)
+  const [selectedCredentials, setSelectedCredentials] = useState<{
+    [inputDescriptorId: string]: number | undefined /* index */
+  }>({})
 
   const pushToWallet = () => {
     router.back()
@@ -48,7 +52,10 @@ export function OpenIdPresentationNotificationScreen() {
           data: params.data,
           uri: params.uri,
         })
+
+        const s = formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
         setCredentialsForRequest(credentialsForRequest)
+        setSubmission(s)
       } catch (error: unknown) {
         toast.show('Presentation information could not be extracted.')
         agent.config.logger.error('Error getting credentials for request', {
@@ -62,7 +69,7 @@ export function OpenIdPresentationNotificationScreen() {
     void handleRequest()
   }, [params])
 
-  if (!submission || !credentialsForRequest) {
+  if (!submission || !credentialsForRequest || !selectedCredentials) {
     return <GettingInformationScreen type="presentation" />
   }
 
@@ -72,6 +79,7 @@ export function OpenIdPresentationNotificationScreen() {
     shareProof({
       agent,
       authorizationRequest: credentialsForRequest.authorizationRequest,
+      selectedCredentials: {},
       credentialsForRequest: credentialsForRequest.credentialsForRequest,
     })
       .then(() => {
@@ -99,6 +107,13 @@ export function OpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
+      selectedCredentials={selectedCredentials}
+      onSelectCredentialForInputDescriptor={(inputDescriptorId: string, index: number) =>
+        setSelectedCredentials((selectedCredentials) => ({
+          ...selectedCredentials,
+          [inputDescriptorId]: index,
+        }))
+      }
       verifierName={credentialsForRequest.verifierHostName}
     />
   )

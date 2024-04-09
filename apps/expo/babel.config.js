@@ -19,8 +19,6 @@ module.exports = function (api) {
           extensions: ['.js', '.jsx', '.tsx', '.ios.js', '.android.js'],
         },
       ],
-      // if you want reanimated support
-      // 'react-native-reanimated/plugin',
       [
         '@tamagui/babel-plugin',
         {
@@ -29,6 +27,8 @@ module.exports = function (api) {
           disableExtraction: process.env.NODE_ENV === 'development',
         },
       ],
+      // if you want reanimated support
+      'react-native-reanimated/plugin',
     ],
   }
 }

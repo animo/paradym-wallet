@@ -41,6 +41,7 @@ import { getHostNameFromUrl } from '@internal/utils'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
 import { setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
+export type { DifPexInputDescriptorToCredentials } from '@credo-ts/core'
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
   agent,

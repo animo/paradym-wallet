@@ -5,4 +5,5 @@ export {
   storeCredential,
   getCredentialsForProofRequest,
   shareProof,
+  DifPexInputDescriptorToCredentials,
 } from './handler'
