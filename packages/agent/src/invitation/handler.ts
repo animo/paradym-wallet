@@ -1,4 +1,4 @@
-import type { AppAgent } from './agent'
+import type { AppAgent } from '../agent'
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
@@ -38,42 +38,40 @@ import {
 import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
 import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@internal/utils'
-import queryString from 'query-string'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
-import { setOpenId4VcCredentialMetadata } from './openid4vc/metadata'
-
-export enum QrTypes {
-  OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
-  OPENID_CREDENTIAL_OFFER = 'openid-credential-offer://',
-  OPENID = 'openid://',
-  OPENID_VC = 'openid-vc://',
-  DIDCOMM = 'didcomm://',
-  HTTPS = 'https://',
-}
-
-export const isOpenIdCredentialOffer = (url: string) => {
-  return (
-    url.startsWith(QrTypes.OPENID_INITIATE_ISSUANCE) ||
-    url.startsWith(QrTypes.OPENID_CREDENTIAL_OFFER)
-  )
-}
-
-export const isOpenIdPresentationRequest = (url: string) => {
-  return url.startsWith(QrTypes.OPENID) || url.startsWith(QrTypes.OPENID_VC)
-}
+import { setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
   agent,
   data,
+  uri,
 }: {
   agent: AppAgent
-  data: string
+  // Either data itself (the offer) or uri can be passed
+  data?: string
+  uri?: string
 }) => {
-  if (!isOpenIdCredentialOffer(data))
-    throw new Error('URI does not start with OpenID issuance prefix.')
+  let offerUri = uri
 
-  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(data)
+  if (!offerUri && data) {
+    // FIXME: Credo only support credential offer string, but we already parsed it before. So we construct an offer here
+    // but in the future we need to support the parsed offer in Credo directly
+    offerUri = `openid-credential-offer://credential_offer=${encodeURIComponent(
+      JSON.stringify(data)
+    )}`
+  } else if (!offerUri) {
+    throw new Error('either data or uri must be provided')
+  }
+
+  agent.config.logger.info(`Receiving openid uri ${offerUri}`, {
+    offerUri,
+    data,
+    uri,
+  })
+  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(
+    offerUri
+  )
 
   // FIXME: return credential_supported entry for credential so it's easy to store metadata
   const credentials =
@@ -188,15 +186,32 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 }
 
 export const getCredentialsForProofRequest = async ({
-  data,
   agent,
+  data,
+  uri,
 }: {
-  data: string
   agent: AppAgent
+  // Either data or uri can be provided
+  data?: string
+  uri?: string
 }) => {
-  if (!isOpenIdPresentationRequest(data)) throw new Error('URI does not start with OpenID prefix.')
+  let requestUri = uri
 
-  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(data)
+  if (!requestUri && data) {
+    // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
+    // but in the future we need to support the parsed request in Credo directly
+    requestUri = `openid://request=${encodeURIComponent(data)}`
+  } else if (!requestUri) {
+    throw new Error('Either data or uri must be provided')
+  }
+
+  agent.config.logger.info(`Receiving openid uri ${requestUri}`, {
+    data,
+    uri,
+    requestUri,
+  })
+
+  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
 
   if (!resolved.presentationExchange) {
     throw new Error('No presentation exchange found in authorization request.')
@@ -262,9 +277,9 @@ export async function receiveOutOfBandInvitation(
   agent: AppAgent,
   invitation: OutOfBandInvitation
 ): Promise<
-  | { result: 'success'; credentialExchangeId: string }
-  | { result: 'success'; proofExchangeId: string }
-  | { result: 'error'; message: string }
+  | { success: true; id: string; type: 'credentialExchange' }
+  | { success: true; id: string; type: 'proofExchange' }
+  | { success: false; error: string }
 > {
   const requestMessages = invitation.getRequests() ?? []
 
@@ -273,8 +288,8 @@ export async function receiveOutOfBandInvitation(
       'Message contains multiple requests. Invitation should only contain a single request.'
     agent.config.logger.error(message)
     return {
-      result: 'error',
-      message,
+      success: false,
+      error: message,
     }
   }
 
@@ -284,8 +299,8 @@ export async function receiveOutOfBandInvitation(
     if (!invitation.handshakeProtocols || invitation.handshakeProtocols.length === 0) {
       agent.config.logger.error('No requests and no handshake protocols found in invitation.')
       return {
-        result: 'error',
-        message: 'Invalid invitation.',
+        success: false,
+        error: 'Invalid invitation.',
       }
     }
   }
@@ -302,8 +317,8 @@ export async function receiveOutOfBandInvitation(
     if (!isValidRequestMessage) {
       agent.config.logger.error('Message request is not from supported protocol.')
       return {
-        result: 'error',
-        message: 'Invalid invitation.',
+        success: false,
+        error: 'Invalid invitation.',
       }
     }
   }
@@ -342,8 +357,8 @@ export async function receiveOutOfBandInvitation(
     const receivedInvite = await agent.oob.findByReceivedInvitationId(invitation.id)
     if (receivedInvite) {
       return {
-        result: 'error',
-        message: 'Invitation has already been scanned.',
+        success: false,
+        error: 'Invitation has already been scanned.',
       }
     }
 
@@ -359,8 +374,8 @@ export async function receiveOutOfBandInvitation(
     agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
 
     return {
-      result: 'error',
-      message: 'Invalid invitation.',
+      success: false,
+      error: 'Invalid invitation.',
     }
   }
 
@@ -370,13 +385,15 @@ export async function receiveOutOfBandInvitation(
 
     if (event.type === CredentialEventTypes.CredentialStateChanged) {
       return {
-        result: 'success',
-        credentialExchangeId: event.payload.credentialRecord.id,
+        success: true,
+        id: event.payload.credentialRecord.id,
+        type: 'credentialExchange',
       }
     } else if (event.type === ProofEventTypes.ProofStateChanged) {
       return {
-        result: 'success',
-        proofExchangeId: event.payload.proofRecord.id,
+        success: true,
+        id: event.payload.proofRecord.id,
+        type: 'proofExchange',
       }
     }
   } catch (error) {
@@ -394,39 +411,13 @@ export async function receiveOutOfBandInvitation(
     }
 
     return {
-      result: 'error',
-      message: 'Invalid invitation.',
+      success: false,
+      error: 'Invalid invitation.',
     }
   }
 
   return {
-    result: 'error',
-    message: 'Invalid invitation.',
-  }
-}
-
-export async function tryParseDidCommInvitation(
-  agent: AppAgent,
-  invitationUrl: string
-): Promise<OutOfBandInvitation | null> {
-  try {
-    const parsedUrl = queryString.parseUrl(invitationUrl)
-    const updatedInvitationUrl = (parsedUrl.query['oobUrl'] as string | undefined) ?? invitationUrl
-
-    // Try to parse the invitation as an DIDComm invitation.
-    // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
-    // So we use the parseMessage from AFJ and see if this returns a valid message.
-    // Parse invitation supports legacy connection invitations, oob invitations, and
-    // legacy connectionless invitations, and will all transform them into an OOB invitation.
-    const invitation = await agent.oob.parseInvitation(updatedInvitationUrl)
-
-    agent.config.logger.debug(`Parsed didcomm invitation with id ${invitation.id}`)
-    return invitation
-  } catch (error) {
-    agent.config.logger.debug(
-      `Ignoring error during parsing of didcomm invitation, could be another type of invitation.`
-    )
-    // We continue, as it could be there's other types of QRs besides DIDComm
-    return null
+    success: false,
+    error: 'Invalid invitation.',
   }
 }

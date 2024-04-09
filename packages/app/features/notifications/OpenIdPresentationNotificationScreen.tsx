@@ -4,22 +4,23 @@ import {
   useAgent,
   formatDifPexCredentialsForRequest,
 } from '@internal/agent'
-import { useToastController, Spinner, Page, Paragraph } from '@internal/ui'
+import { useToastController } from '@internal/ui'
 import React, { useEffect, useState, useMemo } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
+import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
-type Query = { uri: string }
+type Query = { uri?: string; data?: string }
 
-const { useParam } = createParam<Query>()
+const { useParams } = createParam<Query>()
 
 export function OpenIdPresentationNotificationScreen() {
   const { agent } = useAgent()
   const router = useRouter()
   const toast = useToastController()
-  const [uri] = useParam('uri')
+  const { params } = useParams()
 
   // TODO: update to useAcceptOpenIdPresentation
   const [credentialsForRequest, setCredentialsForRequest] =
@@ -40,31 +41,29 @@ export function OpenIdPresentationNotificationScreen() {
   }
 
   useEffect(() => {
-    if (!uri) return
-
-    getCredentialsForProofRequest({ agent, data: decodeURIComponent(uri) })
-      .then((r) => {
-        setCredentialsForRequest(r)
-      })
-      .catch((e) => {
+    async function handleRequest() {
+      try {
+        const credentialsForRequest = await getCredentialsForProofRequest({
+          agent,
+          data: params.data,
+          uri: params.uri,
+        })
+        setCredentialsForRequest(credentialsForRequest)
+      } catch (error: unknown) {
         toast.show('Presentation information could not be extracted.')
         agent.config.logger.error('Error getting credentials for request', {
-          error: e as unknown,
+          error,
         })
 
         pushToWallet()
-      })
-  }, [uri])
+      }
+    }
+
+    void handleRequest()
+  }, [params])
 
   if (!submission || !credentialsForRequest) {
-    return (
-      <Page jc="center" ai="center" g="md">
-        <Spinner />
-        <Paragraph variant="sub" textAlign="center">
-          Getting verification information
-        </Paragraph>
-      </Page>
-    )
+    return <GettingInformationScreen type="presentation" />
   }
 
   const onProofAccept = () => {

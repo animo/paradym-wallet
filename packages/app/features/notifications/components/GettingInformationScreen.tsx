@@ -1,6 +1,10 @@
 import { Page, Paragraph, Spinner } from '@internal/ui'
 
-export function GettingCredentialInformationScreen() {
+interface GettingInformationScreenProps {
+  type: 'credential' | 'presentation' | 'invitation'
+}
+
+export function GettingInformationScreen({ type }: GettingInformationScreenProps) {
   return (
     <Page
       jc="center"
@@ -14,7 +18,7 @@ export function GettingCredentialInformationScreen() {
     >
       <Spinner />
       <Paragraph variant="sub" textAlign="center">
-        Getting credential information
+        Getting {type} information
       </Paragraph>
     </Page>
   )

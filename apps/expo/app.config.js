@@ -34,10 +34,11 @@ const invitationSchemes = [
   'openid-initiate-issuance',
   'openid-credential-offer',
   'openid-vc',
+  'openid4vp',
   'didcomm',
 ]
 
-const associatedDomains = ['paradym.id', 'dev.paradym.id']
+const associatedDomains = ['paradym.id', 'dev.paradym.id', 'aurora.paradym.id']
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}

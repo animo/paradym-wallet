@@ -32,14 +32,14 @@ export function NotificationInboxScreen() {
                   onPress={() => {
                     if (notification.type === 'CredentialRecord') {
                       push({
-                        pathname: '/notifications/didCommCredential',
+                        pathname: '/notifications/didcomm',
                         query: {
                           credentialExchangeId: notification.id,
                         },
                       })
                     } else {
                       push({
-                        pathname: '/notifications/didCommPresentation',
+                        pathname: '/notifications/didcomm',
                         query: {
                           proofExchangeId: notification.id,
                         },

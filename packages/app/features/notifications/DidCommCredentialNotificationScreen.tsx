@@ -1,25 +1,25 @@
 import { useAcceptDidCommCredential, useAgent } from '@internal/agent'
 import { useToastController } from '@internal/ui'
 import React from 'react'
-import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
-import { GettingCredentialInformationScreen } from './components/GettingCredentialInformationScreen'
+import { GettingInformationScreen } from './components/GettingInformationScreen'
 
-type Query = { credentialExchangeId: string }
+interface DidCommCredentialNotificationScreenProps {
+  credentialExchangeId: string
+}
 
-const { useParams } = createParam<Query>()
-
-export function DidCommCredentialNotificationScreen() {
+export function DidCommCredentialNotificationScreen({
+  credentialExchangeId,
+}: DidCommCredentialNotificationScreenProps) {
   const { agent } = useAgent()
 
   const router = useRouter()
   const toast = useToastController()
-  const { params } = useParams()
 
   const { acceptCredential, status, credentialExchange, attributes, display } =
-    useAcceptDidCommCredential(params.credentialExchangeId)
+    useAcceptDidCommCredential(credentialExchangeId)
 
   const pushToWallet = () => {
     router.back()
@@ -27,7 +27,7 @@ export function DidCommCredentialNotificationScreen() {
   }
 
   if (!credentialExchange || !attributes || !display) {
-    return <GettingCredentialInformationScreen />
+    return <GettingInformationScreen type="credential" />
   }
 
   const onCredentialAccept = async () => {

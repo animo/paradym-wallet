@@ -12,17 +12,17 @@ import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
-import { GettingCredentialInformationScreen } from './components/GettingCredentialInformationScreen'
+import { GettingInformationScreen } from './components/GettingInformationScreen'
 
-type Query = { uri: string }
+type Query = { uri?: string; data?: string }
 
-const { useParam } = createParam<Query>()
+const { useParams } = createParam<Query>()
 
 export function OpenIdCredentialNotificationScreen() {
   const { agent } = useAgent()
   const router = useRouter()
   const toast = useToastController()
-  const [uri] = useParam('uri')
+  const { params } = useParams()
 
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord>()
   const [isStoring, setIsStoring] = useState(false)
@@ -33,27 +33,28 @@ export function OpenIdCredentialNotificationScreen() {
   }
 
   useEffect(() => {
-    const requestCredential = async (uri: string) => {
+    const requestCredential = async (params: Query) => {
       try {
         const credentialRecord = await receiveCredentialFromOpenId4VciOffer({
           agent,
-          data: decodeURIComponent(uri),
+          data: params.data,
+          uri: params.uri,
         })
 
         setCredentialRecord(credentialRecord)
-      } catch (e) {
-        agent.config.logger.error("Couldn't receive credential from OpenID4VCI offer", {
-          error: e as unknown,
+      } catch (e: unknown) {
+        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+          error: e,
         })
         toast.show('Credential information could not be extracted.')
         pushToWallet()
       }
     }
-    if (uri) void requestCredential(uri)
-  }, [uri])
+    void requestCredential(params)
+  }, [params])
 
   if (!credentialRecord) {
-    return <GettingCredentialInformationScreen />
+    return <GettingInformationScreen type="credential" />
   }
 
   const onCredentialAccept = async () => {
