@@ -103,12 +103,12 @@ export async function parseDidCommInvitation(
         success: true,
         result: parsedInvitation,
       } as const
-    } else {
-      return {
-        success: true,
-        result: parseInvitationJson(invitation),
-      } as const
     }
+
+    return {
+      success: true,
+      result: parseInvitationJson(invitation),
+    } as const
   } catch (error) {
     return {
       success: false,
