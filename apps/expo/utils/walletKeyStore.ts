@@ -43,7 +43,9 @@ export const getSecureWalletKey = async (): Promise<{
 const fixInvalidWalletKey = async () => {
   const fileSystem = new agentDependencies.FileSystem()
 
-  if (!(await fileSystem.exists(fileSystem.dataPath))) return
+  const walletPath = `${fileSystem.dataPath}/wallet`
 
-  await fileSystem.delete(fileSystem.dataPath)
+  if (!(await fileSystem.exists(walletPath))) return
+
+  await fileSystem.delete(walletPath)
 }
