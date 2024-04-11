@@ -18,8 +18,14 @@ export function DidCommPresentationNotificationScreen({
   const router = useRouter()
   const toast = useToastController()
 
-  const { acceptPresentation, proofExchange, status, submission, verifierName } =
-    useAcceptDidCommPresentation(proofExchangeId)
+  const {
+    acceptPresentation,
+    declinePresentation,
+    proofExchange,
+    status,
+    submission,
+    verifierName,
+  } = useAcceptDidCommPresentation(proofExchangeId)
 
   const pushToWallet = () => {
     router.back()
@@ -44,7 +50,9 @@ export function DidCommPresentationNotificationScreen({
   }
 
   const onProofDecline = () => {
-    void agent.proofs.deleteById(proofExchange.id)
+    declinePresentation().finally(() => {
+      void agent.proofs.deleteById(proofExchange.id)
+    })
 
     toast.show('Information request has been declined.')
     pushToWallet()

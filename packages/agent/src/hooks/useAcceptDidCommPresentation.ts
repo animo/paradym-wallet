@@ -131,7 +131,7 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
     },
   })
 
-  const { mutateAsync, status } = useMutation({
+  const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
     mutationFn: async () => {
       const presentationDone$ = agent.events
@@ -157,9 +157,33 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
     },
   })
 
+  const { mutateAsync: declineMutateAsync } = useMutation({
+    mutationKey: ['declineDidCommPresentation', proofExchangeId],
+    mutationFn: async () => {
+      const presentationDeclined$ = agent.events
+        .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
+        .pipe(
+          // Correct record with id and state
+          filter(
+            (event) =>
+              event.payload.proofRecord.id === proofExchangeId &&
+              [ProofState.Declined].includes(event.payload.proofRecord.state)
+          ),
+          // 10 seconds to complete exchange
+          timeout(10000),
+          first()
+        )
+
+      const presentationDeclinePromise = firstValueFrom(presentationDeclined$)
+      await agent.proofs.declineRequest({ proofRecordId: proofExchangeId, sendProblemReport: true })
+      await presentationDeclinePromise
+    },
+  })
+
   return {
-    acceptPresentation: mutateAsync,
-    status,
+    acceptPresentation: acceptMutateAsync,
+    declinePresentation: declineMutateAsync,
+    status: acceptStatus,
     proofExchange,
     submission: data,
     verifierName: connection?.theirLabel,
