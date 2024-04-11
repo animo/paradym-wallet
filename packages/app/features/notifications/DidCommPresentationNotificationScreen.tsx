@@ -22,7 +22,7 @@ export function DidCommPresentationNotificationScreen({
     acceptPresentation,
     declinePresentation,
     proofExchange,
-    status,
+    acceptStatus,
     submission,
     verifierName,
   } = useAcceptDidCommPresentation(proofExchangeId)
@@ -64,7 +64,7 @@ export function DidCommPresentationNotificationScreen({
       onDecline={onProofDecline}
       submission={submission}
       // If state is not idle, it means we have pressed accept
-      isAccepting={status !== 'idle'}
+      isAccepting={acceptStatus !== 'idle'}
       verifierName={verifierName}
     />
   )

@@ -183,7 +183,7 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
   return {
     acceptPresentation: acceptMutateAsync,
     declinePresentation: declineMutateAsync,
-    status: acceptStatus,
+    acceptStatus,
     proofExchange,
     submission: data,
     verifierName: connection?.theirLabel,
