@@ -26,7 +26,7 @@ export const getSecureWalletKey = async (): Promise<{
 
   // No wallet key found, generate new method: raw wallet key
   const newWalletKey = generateNewWalletKey()
-  await SecureStore.setItemAsync(STORE_KEY_RAW, newWalletKey.keyDerivation)
+  await SecureStore.setItemAsync(STORE_KEY_RAW, newWalletKey.walletKey)
 
   return newWalletKey
 }
