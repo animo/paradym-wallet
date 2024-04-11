@@ -17,6 +17,8 @@ export const getSecureWalletKey = async (): Promise<{
 
   // New method: raw wallet key
   let walletKey = await SecureStore.getItemAsync(STORE_KEY_RAW)
+  // Fix for a period when the key was stored as 'raw' so it has to be regenerated
+  if (walletKey === 'raw') walletKey = null
   if (walletKey) return { walletKey, keyDerivation: 'raw' }
 
   // TODO: rotate the old wallet key to a new raw key
