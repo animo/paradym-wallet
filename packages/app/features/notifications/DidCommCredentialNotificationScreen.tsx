@@ -1,4 +1,4 @@
-import { useAcceptDidCommCredential, useAgent } from '@internal/agent'
+import { useDidCommCredentialActions, useAgent } from '@internal/agent'
 import { useToastController } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -18,8 +18,14 @@ export function DidCommCredentialNotificationScreen({
   const router = useRouter()
   const toast = useToastController()
 
-  const { acceptCredential, status, credentialExchange, attributes, display } =
-    useAcceptDidCommCredential(credentialExchangeId)
+  const {
+    acceptCredential,
+    acceptStatus,
+    declineCredential,
+    credentialExchange,
+    attributes,
+    display,
+  } = useDidCommCredentialActions(credentialExchangeId)
 
   const pushToWallet = () => {
     router.back()
@@ -44,7 +50,9 @@ export function DidCommCredentialNotificationScreen({
   }
 
   const onCredentialDecline = () => {
-    void agent.credentials.deleteById(credentialExchange.id)
+    declineCredential().finally(() => {
+      void agent.credentials.deleteById(credentialExchange.id)
+    })
 
     toast.show('Credential has been declined.')
     pushToWallet()
@@ -59,7 +67,7 @@ export function DidCommCredentialNotificationScreen({
       }}
       onDecline={onCredentialDecline}
       // If state is not idle, it means we have pressed accept
-      isAccepting={status !== 'idle'}
+      isAccepting={acceptStatus !== 'idle'}
     />
   )
 }

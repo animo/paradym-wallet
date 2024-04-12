@@ -16,7 +16,7 @@ import { filter, first, timeout } from 'rxjs/operators'
 import { useAgent } from '../agent'
 import { getDidCommCredentialExchangeDisplayMetadata } from '../didcomm/metadata'
 
-export function useAcceptDidCommPresentation(proofExchangeId: string) {
+export function useDidCommPresentationActions(proofExchangeId: string) {
   const { agent } = useAgent()
 
   const proofExchange = useProofById(proofExchangeId)
@@ -157,7 +157,7 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
     },
   })
 
-  const { mutateAsync: declineMutateAsync } = useMutation({
+  const { mutateAsync: declineMutateAsync, status: declineStatus } = useMutation({
     mutationKey: ['declineDidCommPresentation', proofExchangeId],
     mutationFn: async () => {
       const presentationDeclined$ = agent.events
@@ -184,6 +184,7 @@ export function useAcceptDidCommPresentation(proofExchangeId: string) {
     acceptPresentation: acceptMutateAsync,
     declinePresentation: declineMutateAsync,
     acceptStatus,
+    declineStatus,
     proofExchange,
     submission: data,
     verifierName: connection?.theirLabel,

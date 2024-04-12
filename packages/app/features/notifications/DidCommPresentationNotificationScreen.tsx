@@ -1,4 +1,4 @@
-import { useAcceptDidCommPresentation, useAgent } from '@internal/agent'
+import { useDidCommPresentationActions, useAgent } from '@internal/agent'
 import { useToastController } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -25,7 +25,7 @@ export function DidCommPresentationNotificationScreen({
     acceptStatus,
     submission,
     verifierName,
-  } = useAcceptDidCommPresentation(proofExchangeId)
+  } = useDidCommPresentationActions(proofExchangeId)
 
   const pushToWallet = () => {
     router.back()
