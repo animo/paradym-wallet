@@ -1,4 +1,4 @@
-import { useAcceptDidCommPresentation, useAgent } from '@internal/agent'
+import { useDidCommPresentationActions, useAgent } from '@internal/agent'
 import { useToastController } from '@internal/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
@@ -18,8 +18,14 @@ export function DidCommPresentationNotificationScreen({
   const router = useRouter()
   const toast = useToastController()
 
-  const { acceptPresentation, proofExchange, status, submission, verifierName } =
-    useAcceptDidCommPresentation(proofExchangeId)
+  const {
+    acceptPresentation,
+    declinePresentation,
+    proofExchange,
+    acceptStatus,
+    submission,
+    verifierName,
+  } = useDidCommPresentationActions(proofExchangeId)
 
   const pushToWallet = () => {
     router.back()
@@ -44,7 +50,9 @@ export function DidCommPresentationNotificationScreen({
   }
 
   const onProofDecline = () => {
-    void agent.proofs.deleteById(proofExchange.id)
+    declinePresentation().finally(() => {
+      void agent.proofs.deleteById(proofExchange.id)
+    })
 
     toast.show('Information request has been declined.')
     pushToWallet()
@@ -56,7 +64,7 @@ export function DidCommPresentationNotificationScreen({
       onDecline={onProofDecline}
       submission={submission}
       // If state is not idle, it means we have pressed accept
-      isAccepting={status !== 'idle'}
+      isAccepting={acceptStatus !== 'idle'}
       verifierName={verifierName}
     />
   )

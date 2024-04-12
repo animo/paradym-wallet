@@ -36,13 +36,13 @@ function useOfferAttributes(credentialExchangeId: string) {
   }
 }
 
-export function useAcceptDidCommCredential(credentialExchangeId: string) {
+export function useDidCommCredentialActions(credentialExchangeId: string) {
   const { agent } = useAgent()
 
   const credentialExchange = useCredentialById(credentialExchangeId)
   const { data } = useOfferAttributes(credentialExchangeId)
 
-  const { mutateAsync, status } = useMutation({
+  const { mutateAsync: acceptCredentialMutation, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommCredential', credentialExchangeId],
     mutationFn: async () => {
       const credentialDone$ = agent.events
@@ -68,13 +68,41 @@ export function useAcceptDidCommCredential(credentialExchangeId: string) {
     },
   })
 
+  const { mutateAsync: declineCredentialMutation, status: declineStatus } = useMutation({
+    mutationKey: ['declineDidCommCredential', credentialExchangeId],
+    mutationFn: async () => {
+      const credentialDone$ = agent.events
+        .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
+        .pipe(
+          // Correct record with id and state
+          filter(
+            (event) =>
+              event.payload.credentialRecord.id === credentialExchangeId &&
+              event.payload.credentialRecord.state === CredentialState.Declined
+          ),
+          // 10 seconds to complete exchange
+          timeout(10000),
+          first()
+        )
+
+      const credentialDonePromise = firstValueFrom(credentialDone$)
+
+      await agent.credentials.declineOffer(credentialExchangeId, {
+        sendProblemReport: true,
+      })
+      await credentialDonePromise
+    },
+  })
+
   const didcommDisplayMetadata = credentialExchange
     ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
     : undefined
 
   return {
-    acceptCredential: mutateAsync,
-    status,
+    acceptCredential: acceptCredentialMutation,
+    declineCredential: declineCredentialMutation,
+    acceptStatus,
+    declineStatus,
     credentialExchange,
     display: {
       issuer: {
