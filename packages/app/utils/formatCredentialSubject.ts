@@ -49,12 +49,14 @@ export function formatCredentialSubject(
   const stringRows: CredentialAttributeRow[] = []
   const objectTables: CredentialAttributeTable[] = []
 
-  Object.keys(subject).forEach((key) => {
-    if (key === 'id' || key === 'type') return // omit id and type
+  for (const key of Object.keys(subject)) {
+    // omit id and type
+    if (key === 'id' || key === 'type') continue
 
     const value = subject[key]
 
-    if (!value) return // omit properties with no value
+    // omit properties with no value
+    if (value === undefined) continue
 
     if (typeof value === 'string' && value.startsWith('data:image/')) {
       stringRows.push({
@@ -97,7 +99,7 @@ export function formatCredentialSubject(
         )
       }
     }
-  })
+  }
 
   const tableData: CredentialAttributeTable[] = [
     { title, rows: stringRows, depth, parent },

@@ -30,7 +30,10 @@
   },
   "resolutions": {
     "@unimodules/react-native-adapter": "./noop",
-    "@unimodules/core": "./noop"
+    "@unimodules/core": "./noop",
+    "@sd-jwt/decode@^0.2.0": "patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch",
+    "@sd-jwt/decode@^0.2.1": "patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch",
+    "@sd-jwt/decode@0.2.1": "patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",

@@ -1,0 +1,13 @@
+diff --git a/build/disclosures/fromArray.js b/build/disclosures/fromArray.js
+index 57fa9089ded3dada42f081df93a0ee42cfc5b869..1504374a341834a212e0f4d9a5344db574bb31be 100644
+--- a/build/disclosures/fromArray.js
++++ b/build/disclosures/fromArray.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.disclosureFromArray = void 0;
+-const disclosureFromArray = (a) => a[2]
++const disclosureFromArray = (a) => a[2] !== undefined
+     ? { salt: a[0], key: a[1], value: a[2] }
+     : { salt: a[0], value: a[1] };
+ exports.disclosureFromArray = disclosureFromArray;
