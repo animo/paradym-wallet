@@ -276,6 +276,52 @@ export function getCredentialExchangeForDisplay(
   }
 }
 
+interface CredentialMetadata {
+  type: string
+  issuer: string
+  holder: string | Record<string, unknown>
+  validUntil?: Date
+  validFrom?: Date
+  issuedAt?: Date
+}
+
+export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
+  type SdJwtVcPayload = {
+    iss: string
+    cnf: Record<string, unknown>
+    vct: string
+    iat?: number
+    nbf?: number
+    exp?: number
+    [key: string]: unknown
+  }
+  // TODO: We should map these claims to nice format and names
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, ...visibleProperties } =
+    sdJwtVcPayload as SdJwtVcPayload
+
+  const credentialMetadata: CredentialMetadata = {
+    type: vct,
+    issuer: iss,
+    holder: cnf,
+  }
+
+  if (iat) {
+    credentialMetadata.issuedAt = new Date(iat * 1000)
+  }
+  if (exp) {
+    credentialMetadata.validUntil = new Date(exp * 1000)
+  }
+  if (nbf) {
+    credentialMetadata.validFrom = new Date(nbf * 1000)
+  }
+
+  return {
+    visibleProperties,
+    metadata: credentialMetadata,
+  }
+}
+
 export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
   if (credentialRecord instanceof SdJwtVcRecord) {
     // FIXME: we should probably add a decode method on the SdJwtVcRecord
@@ -289,11 +335,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     const issuerDisplay = getSdJwtIssuerDisplay(openId4VcMetadata)
     const credentialDisplay = getSdJwtCredentialDisplay(decodedPayload, openId4VcMetadata)
 
-    // TODO: We should map these claims to nice format and names
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, ...visibleProperties } = decodedPayload
-
-    // TODO: display somehow which fields can be selective disclosed
+    // TODO: add metadata attributes
     return {
       id: `sd-jwt-vc-${credentialRecord.id}` satisfies CredentialForDisplayId,
       createdAt: credentialRecord.createdAt,
@@ -301,7 +343,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes: visibleProperties,
+      attributes: filterAndMapSdJwtKeys(decodedPayload).visibleProperties,
     }
   } else {
     const credential = JsonTransformer.toJSON(

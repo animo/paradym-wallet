@@ -1,6 +1,8 @@
 import type { DifPexCredentialsForRequest } from '@credo-ts/core'
 
-import { getCredentialForDisplay } from '../display'
+import { ClaimFormat } from '@credo-ts/core'
+
+import { filterAndMapSdJwtKeys, getCredentialForDisplay } from '../display'
 
 export interface FormattedSubmission {
   name: string
@@ -28,20 +30,28 @@ export function formatDifPexCredentialsForRequest(
       const [firstVerifiableCredential] = submission.verifiableCredentials
       if (firstVerifiableCredential) {
         // Credential can be satisfied
-        const { display, credential, attributes } =
-          getCredentialForDisplay(firstVerifiableCredential)
+        const { display, credential } = getCredentialForDisplay(
+          firstVerifiableCredential.credentialRecord
+        )
+
+        // TODO: support nesting
+        let requestedAttributes: string[]
+        if (firstVerifiableCredential.type === ClaimFormat.SdJwtVc) {
+          const { metadata, visibleProperties } = filterAndMapSdJwtKeys(
+            firstVerifiableCredential.disclosedPayload
+          )
+          requestedAttributes = [...Object.keys(visibleProperties), ...Object.keys(metadata)]
+        } else {
+          requestedAttributes = Object.keys(credential?.credentialSubject ?? {})
+        }
+
         return {
           name: submission.name ?? 'Unknown',
           description: submission.purpose,
           isSatisfied: true,
           credentialName: display.name,
           issuerName: display.issuer.name,
-          // FIXME: will PEX already apply SD, and thus overwrite the original? That would be really problematic
-          // FIXME: how do we get the requested attributes here in case of SD?
-          // We need to get all attributes that will be disclosed, but we don't know that here
-          requestedAttributes: credential?.credentialSubject
-            ? Object.keys(credential.credentialSubject)
-            : Object.keys(attributes),
+          requestedAttributes,
           backgroundColor: display.backgroundColor,
         }
       }
