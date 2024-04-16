@@ -56,16 +56,13 @@ export default function CredentialCard({
     return { backgroundColor: darken(bgColor ?? '$grey-900', 0.1) }
   }
 
-  const getBgColor = () => {
-    if (backgroundImage?.url) return '$transparent'
-    return bgColor ?? '$grey-900'
-  }
+  const bgColorValue = backgroundImage?.url ? '$transparent' : bgColor ?? '$grey-900'
 
   return (
     <XStack
       shadow={shadow}
       br="$8"
-      bg={getBgColor()}
+      bg={bgColorValue}
       borderWidth={0.5}
       borderColor="$borderTranslucent"
       position="relative"
