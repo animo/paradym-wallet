@@ -4444,16 +4444,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sd-jwt/decode@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@sd-jwt/decode@npm:0.3.0"
-  dependencies:
-    "@sd-jwt/types": 0.3.0
-    "@sd-jwt/utils": 0.3.0
-  checksum: 4841d29da16ce21dc53bcfd54d410903dfef5594f26270e783b43c296803e1f698ecef65542383acb4beeba3759f2c718aea3c675dab68744440927f0cf9077f
-  languageName: node
-  linkType: hard
-
 "@sd-jwt/decode@patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch::locator=paradym-wallet%40workspace%3A.":
   version: 0.2.1
   resolution: "@sd-jwt/decode@patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch::version=0.2.1&hash=fb6dd3&locator=paradym-wallet%40workspace%3A."
