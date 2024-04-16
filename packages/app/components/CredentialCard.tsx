@@ -50,11 +50,19 @@ export default function CredentialCard({
       </XStack>
     )
 
+  const getPressStyle = () => {
+    if (!onPress) return {}
+    if (backgroundImage?.url) return { opacity: 0.9 }
+    return { backgroundColor: darken(bgColor ?? '$grey-900', 0.1) }
+  }
+
+  const bgColorValue = backgroundImage?.url ? '$transparent' : bgColor ?? '$grey-900'
+
   return (
     <XStack
       shadow={shadow}
       br="$8"
-      bg={!backgroundImage ? bgColor ?? '$grey-900' : '$transparent'}
+      bg={bgColorValue}
       borderWidth={0.5}
       borderColor="$borderTranslucent"
       position="relative"
@@ -63,10 +71,7 @@ export default function CredentialCard({
         padded
         width="100%"
         br="$8"
-        bg={!backgroundImage ? bgColor ?? '$grey-900' : '$transparent'}
-        pressStyle={{
-          backgroundColor: onPress && darken(bgColor ?? '$grey-900', 0.05),
-        }}
+        pressStyle={getPressStyle()}
         h="$16"
         onPress={onPress}
         overflow="hidden"
