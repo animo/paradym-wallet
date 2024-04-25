@@ -5,7 +5,7 @@ import type { CredentialExchangeRecord, W3cCredentialRecord } from '@credo-ts/co
 
 import { Hasher, SdJwtVcRecord, ClaimFormat, JsonTransformer } from '@credo-ts/core'
 import { sanitizeString, getHostNameFromUrl } from '@internal/utils'
-import { decodeSdJwtVc } from '@sd-jwt/decode'
+import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
 import { getDidCommCredentialExchangeDisplayMetadata } from './didcomm/metadata'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
@@ -327,8 +327,13 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     // FIXME: we should probably add a decode method on the SdJwtVcRecord
     // as you now need the agent context to decode the sd-jwt vc, while that's
     // not really needed
-    const { decodedPayload } = decodeSdJwtVc(credentialRecord.compactSdJwtVc, (data, alg) =>
+    const { disclosures, jwt } = decodeSdJwtSync(credentialRecord.compactSdJwtVc, (data, alg) =>
       Hasher.hash(data, alg)
+    )
+    const decodedPayload: Record<string, unknown> = getClaimsSync(
+      jwt.payload,
+      disclosures,
+      (data, alg) => Hasher.hash(data, alg)
     )
 
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)

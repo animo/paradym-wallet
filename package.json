@@ -31,10 +31,7 @@
   "resolutions": {
     "@unimodules/react-native-adapter": "./noop",
     "@unimodules/core": "./noop",
-    "@sd-jwt/decode@^0.2.0": "patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch",
-    "@sd-jwt/decode@^0.2.1": "patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch",
-    "@sd-jwt/decode@0.2.1": "patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch",
-    "@sd-jwt/decode@^0.3.0": "patch:@sd-jwt/decode@npm%3A0.2.1#./.yarn/patches/@sd-jwt-decode-npm-0.2.1-4ba346c112.patch"
+    "@sphereon/pex@^3.3.2": "patch:@sphereon/pex@npm%3A3.3.2#./.yarn/patches/@sphereon-pex-npm-3.3.2-144d9252ec.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
