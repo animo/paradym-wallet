@@ -1,4 +1,3 @@
-import { useCredentials as _useCredentials } from '@credo-ts/react-hooks'
 import { useMemo } from 'react'
 
 import { getCredentialForDisplay } from '../display'
@@ -7,7 +6,6 @@ import { useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
 export const useCredentialsForDisplay = () => {
   const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()
   const { sdJwtVcRecords, isLoading: isLoadingSdJwt } = useSdJwtVcRecords()
-  const { loading } = _useCredentials()
 
   const credentials = useMemo(() => {
     // Map into common structure that can be rendered
@@ -24,6 +22,6 @@ export const useCredentialsForDisplay = () => {
 
   return {
     credentials,
-    isLoading: isLoadingSdJwt || isLoadingW3c || loading,
+    isLoading: isLoadingSdJwt || isLoadingW3c,
   }
 }

@@ -1,3 +1,4 @@
+import type { OpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 import type { CredentialExchangeRecord, ProofExchangeRecord } from '@credo-ts/core'
 
 export interface DidCommCredentialExchangeDisplayMetadata {
@@ -53,4 +54,31 @@ export function setDidCommProofExchangeMetadata(
   metadata: DidCommProofExchangeDisplayMetadata
 ) {
   proofExchangeRecord.metadata.set(didCommProofExchangeDisplayMetadataKey, metadata)
+}
+
+export function openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(
+  didcommMetadata: DidCommCredentialExchangeDisplayMetadata
+): OpenId4VcCredentialMetadata {
+  return {
+    credential: {
+      display: didcommMetadata.credentialName
+        ? [
+            {
+              name: didcommMetadata?.credentialName,
+            },
+          ]
+        : undefined,
+    },
+    issuer: {
+      // FIXME: what is issuer url?
+      id: didcommMetadata?.issuerName ?? 'Unkown',
+      display: didcommMetadata.issuerName
+        ? [
+            {
+              name: didcommMetadata?.issuerName,
+            },
+          ]
+        : undefined,
+    },
+  }
 }
