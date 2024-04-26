@@ -1,13 +1,17 @@
 import type { CredentialStateChangedEvent } from '@credo-ts/core'
 
-import { CredentialState, CredentialEventTypes } from '@credo-ts/core'
+import { W3cCredentialRepository, CredentialState, CredentialEventTypes } from '@credo-ts/core'
 import { useCredentialById } from '@credo-ts/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 
 import { useAgent } from '../agent'
-import { getDidCommCredentialExchangeDisplayMetadata } from '../didcomm/metadata'
+import {
+  openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
+  getDidCommCredentialExchangeDisplayMetadata,
+} from '../didcomm/metadata'
+import { setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 
 function useOfferAttributes(credentialExchangeId: string) {
   const { agent } = useAgent()
@@ -64,7 +68,31 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
       await agent.credentials.acceptOffer({ credentialRecordId: credentialExchangeId })
-      await credentialDonePromise
+      const doneEvent = await credentialDonePromise
+
+      const w3cCredentialRecordId = doneEvent.payload.credentialRecord.credentials.find(
+        (c) => c.credentialRecordType === 'w3c'
+      )?.credentialRecordId
+      const didCommDisplayMetadata = getDidCommCredentialExchangeDisplayMetadata(
+        doneEvent.payload.credentialRecord
+      )
+
+      // Update the w3c credential record metadata, based on the didcomm credential exchange display metadata
+      if (w3cCredentialRecordId && didCommDisplayMetadata) {
+        // NOTE: we store the metadata also in openid4vc format, just because it's simple. In the future
+        // we may want to have our own display format we use for all credential types
+        const w3cRecord = await agent.w3cCredentials.getCredentialRecordById(w3cCredentialRecordId)
+
+        // TODO: we must somehow link the w3c credential record to a DIDComm connection
+        // first in Paradym Wallet, but would alos be nice to do this within Credo
+        setOpenId4VcCredentialMetadata(
+          w3cRecord,
+          openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(didCommDisplayMetadata)
+        )
+
+        const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
+        await w3cCredentialRepository.update(agent.context, w3cRecord)
+      }
     },
   })
 

@@ -1,13 +1,12 @@
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
-import type { CredentialExchangeRecord, W3cCredentialRecord } from '@credo-ts/core'
+import type { W3cCredentialRecord } from '@credo-ts/core'
 
 import { Hasher, SdJwtVcRecord, ClaimFormat, JsonTransformer } from '@credo-ts/core'
 import { sanitizeString, getHostNameFromUrl } from '@internal/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
-import { getDidCommCredentialExchangeDisplayMetadata } from './didcomm/metadata'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
 
 type JffW3cCredentialJson = W3cCredentialJson & {
@@ -252,27 +251,6 @@ function getSdJwtCredentialDisplay(
     // Last fallback, if there's really no name for the credential, we use a generic name
     // TODO: use on-device AI to determine a name for the credential based on the credential data
     name: credentialDisplay.name ?? 'Credential',
-  }
-}
-
-export function getCredentialExchangeForDisplay(
-  credentialExchangeRecord: CredentialExchangeRecord
-) {
-  const didCommDisplayMetadata =
-    getDidCommCredentialExchangeDisplayMetadata(credentialExchangeRecord)
-
-  return {
-    id: `credential-exchange-${credentialExchangeRecord.id}` satisfies CredentialForDisplayId,
-    createdAt: credentialExchangeRecord.createdAt,
-    display: {
-      issuer: {
-        name: didCommDisplayMetadata?.issuerName ?? 'Unknown',
-      },
-      name: didCommDisplayMetadata?.credentialName ?? 'Credential',
-    } as CredentialDisplay,
-    attributes: Object.fromEntries(
-      credentialExchangeRecord.credentialAttributes?.map(({ name, value }) => [name, value]) ?? []
-    ) satisfies Record<string, unknown>,
   }
 }
 
