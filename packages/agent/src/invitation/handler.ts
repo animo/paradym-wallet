@@ -40,7 +40,10 @@ import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@internal/utils'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
-import { setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
+import {
+  extractOpenId4VcCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '../openid4vc/metadata'
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
   agent,
@@ -176,11 +179,12 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     })
   }
 
-  setOpenId4VcCredentialMetadata(
-    record,
+  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(
     resolvedCredentialOffer.offeredCredentials[0] as OpenId4VciCredentialSupportedWithId,
     resolvedCredentialOffer.metadata
   )
+
+  setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
 
   return record
 }

@@ -18,10 +18,10 @@ export interface OpenId4VcCredentialMetadata {
 
 const openId4VcCredentialMetadataKey = '_paradym/openId4VcCredentialMetadata'
 
-function extractOpenId4VcCredentialMetadata(
+export function extractOpenId4VcCredentialMetadata(
   credentialMetadata: OpenId4VciCredentialSupported,
   serverMetadata: EndpointMetadataResult
-) {
+): OpenId4VcCredentialMetadata {
   return {
     credential: {
       display: credentialMetadata.display,
@@ -50,11 +50,7 @@ export function getOpenId4VcCredentialMetadata(
  */
 export function setOpenId4VcCredentialMetadata(
   credentialRecord: W3cCredentialRecord | SdJwtVcRecord,
-  credentialMetadata: OpenId4VciCredentialSupported,
-  serverMetadata: EndpointMetadataResult
+  metadata: OpenId4VcCredentialMetadata
 ) {
-  credentialRecord.metadata.set(
-    openId4VcCredentialMetadataKey,
-    extractOpenId4VcCredentialMetadata(credentialMetadata, serverMetadata)
-  )
+  credentialRecord.metadata.set(openId4VcCredentialMetadataKey, metadata)
 }
