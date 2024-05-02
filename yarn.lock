@@ -3140,7 +3140,7 @@ __metadata:
     "@credo-ts/react-native": 0.5.3
     "@internal/utils": "*"
     "@tanstack/react-query": ^4.33.0
-    credo-ts-didweb-anoncreds: 0.0.1-alpha.11
+    credo-ts-didweb-anoncreds: 0.0.1-alpha.12
     query-string: ^8.1.0
     rxjs: ^7.8.1
   peerDependencies:
@@ -8826,16 +8826,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"credo-ts-didweb-anoncreds@npm:0.0.1-alpha.11":
-  version: 0.0.1-alpha.11
-  resolution: "credo-ts-didweb-anoncreds@npm:0.0.1-alpha.11"
+"credo-ts-didweb-anoncreds@npm:0.0.1-alpha.12":
+  version: 0.0.1-alpha.12
+  resolution: "credo-ts-didweb-anoncreds@npm:0.0.1-alpha.12"
   dependencies:
     "@credo-ts/anoncreds": ^0.5.2
     "@credo-ts/core": ^0.5.2
     "@hyperledger/anoncreds-shared": ^0.2.1
     canonicalize: ^1.0.8
     query-string: 7.1.3
-  checksum: 0c48a88e21e4c9ff067f1f8042ddf0a33d6ad0510fb83738bfd2bfbc032fa335090dccf1d50e40589a3a39369d289ae37a7db1aaa8e31b2d1e5843091840ec55
+  checksum: 08bb7cef5e38eb6de6f9a21e5091ded561fefa5423d6f3575a98fb7a1aa405302bdede08f1380ac6431fc9ed66bee7cb8b7445a78d643123e8bbe7b4b0df3856
   languageName: node
   linkType: hard
 
