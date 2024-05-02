@@ -1,6 +1,6 @@
 {
   "name": "expo-app",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "expo-router/entry",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@hyperledger/anoncreds-react-native": "^0.2.1",
+    "@hyperledger/anoncreds-react-native": "^0.2.2",
     "@hyperledger/aries-askar-react-native": "^0.2.0",
     "@hyperledger/indy-vdr-react-native": "^0.2.0",
     "@internal/agent": "*",
