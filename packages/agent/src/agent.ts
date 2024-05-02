@@ -49,6 +49,7 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'
+import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
 import { indyNetworks } from './indyNetworks'
 
@@ -77,7 +78,11 @@ export const initializeAgent = async ({
         ariesAskar: ariesAskar,
       }),
       anoncreds: new AnonCredsModule({
-        registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry()],
+        registries: [
+          new IndyVdrAnonCredsRegistry(),
+          new CheqdAnonCredsRegistry(),
+          new DidWebAnonCredsRegistry(),
+        ],
         anoncreds,
       }),
       mediationRecipient: new MediationRecipientModule({
