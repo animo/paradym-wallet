@@ -1,4 +1,4 @@
-import { parseDidCommInvitation, useAgent, receiveOutOfBandInvitation } from '@internal/agent'
+import { parseDidCommInvitation, receiveOutOfBandInvitation, useAgent } from '@internal/agent'
 import { useToastController } from '@internal/ui'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'

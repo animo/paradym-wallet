@@ -44,7 +44,7 @@ The folder structure is as follows
 
 You can add other folders inside of `packages/` if you know what you're doing and have a good reason to.
 
-## 🏁 Start the app
+## 🏁 Start the Paradym wallet
 
 First, start by installing all dependencies by running `yarn`.
 
@@ -52,7 +52,7 @@ Once all dependencies are installed, you need to make sure you have a developmen
 You can install this using the following commands:
 
 ```
-cd apps/expo
+cd apps/paradym
 yarn prebuild
 yarn ios # or android
 ```
@@ -100,7 +100,7 @@ yarn
 If you're installing a library with any native code, you must install it in `expo`:
 
 ```sh
-cd apps/expo
+cd apps/paradym
 yarn add react-native-reanimated
 cd ..
 yarn

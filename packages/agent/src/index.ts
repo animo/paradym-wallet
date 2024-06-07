@@ -9,7 +9,13 @@ import { Buffer } from '@credo-ts/core'
 // eslint-disable-next-line no-undef
 global.Buffer = Buffer
 
-export { initializeAgent, useAgent, AppAgent } from './agent'
+export {
+  initializeFullAgent,
+  initializeOpenId4VcHolderAgent,
+  useAgent,
+  FullAppAgent,
+  OpenId4VcHolderAppAgent,
+} from './agent'
 export * from './providers'
 export * from './invitation'
 export * from './display'

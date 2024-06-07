@@ -1,4 +1,4 @@
-import type { AppAgent } from '../agent'
+import type { FullAppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
 
 import { W3cCredentialRecord } from '@credo-ts/core'
@@ -74,7 +74,7 @@ export const useW3cCredentialRecordById = (id: string): W3cCredentialRecord | un
 }
 
 interface Props {
-  agent: AppAgent
+  agent: FullAppAgent
 }
 
 export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = ({

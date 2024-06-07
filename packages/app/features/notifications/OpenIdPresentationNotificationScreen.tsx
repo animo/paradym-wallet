@@ -1,8 +1,8 @@
 import {
   getCredentialsForProofRequest,
   shareProof,
-  useAgent,
   formatDifPexCredentialsForRequest,
+  useAgent,
 } from '@internal/agent'
 import { useToastController } from '@internal/ui'
 import React, { useEffect, useState, useMemo } from 'react'

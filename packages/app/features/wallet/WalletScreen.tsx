@@ -27,7 +27,11 @@ import NoContentWallet from 'app/components/NoContentWallet'
 import { useNetworkCallback } from 'app/hooks/useNetworkCallback'
 import useScrollViewPosition from 'app/hooks/useScrollViewPosition'
 
-export function WalletScreen() {
+type WalletScreenProps = {
+  logo: number
+}
+
+export function WalletScreen({ logo }: WalletScreenProps) {
   const { push } = useRouter()
   const { isLoading, credentials } = useCredentialsForDisplay()
   const firstThreeRecords = credentials.slice(0, 3)
@@ -97,7 +101,8 @@ export function WalletScreen() {
               animation="medium"
               alignItems="center"
             >
-              <Logo />
+              {/* @ts-expect-error Type of Logo is not propegated correctly, possibly something to do with Tamagui? */}
+              <Logo source={logo} />
             </XStack>
           )}
         </AnimatePresence>

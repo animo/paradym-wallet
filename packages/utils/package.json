@@ -2,5 +2,10 @@
   "name": "@internal/utils",
   "version": "0.0.1",
   "private": true,
-  "main": "src/index.ts"
+  "main": "src/index.ts",
+  "devDependencies": {
+    "@credo-ts/react-native": "^0.5.3",
+    "@hyperledger/aries-askar-react-native": "^0.2.1",
+    "expo-secure-store": "^13.0.1"
+  }
 }

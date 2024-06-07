@@ -1,14 +1,14 @@
-// eslint-disable-next-line import/order
-import type { AppAgent } from '@internal/agent'
+import type { FullAppAgent } from '@internal/agent'
 
 import {
   AgentProvider,
   hasMediationConfigured,
-  initializeAgent,
+  initializeFullAgent,
   setupMediationWithDid,
   useMessagePickup,
 } from '@internal/agent'
 import { config, Heading, Page, Paragraph, useToastController, XStack, YStack } from '@internal/ui'
+import { getSecureWalletKey } from '@internal/utils'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useHasInternetConnection } from 'app/hooks/useHasInternetConnection'
 import { useTransparentNavigationBar } from 'app/hooks/useTransparentNavigationBar'
@@ -20,10 +20,10 @@ import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { initializeAppAgent } from '.'
 
 import { mediatorDid } from '../constants'
 import { DeeplinkHandler } from '../utils/DeeplinkHandler'
-import { getSecureWalletKey } from '../utils/walletKeyStore'
 
 void SplashScreen.preventAutoHideAsync()
 
@@ -43,7 +43,7 @@ export default function HomeLayout() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   })
-  const [agent, setAgent] = useState<AppAgent>()
+  const [agent, setAgent] = useState<FullAppAgent>()
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
   const hasInternetConnection = useHasInternetConnection()
 
@@ -70,7 +70,11 @@ export default function HomeLayout() {
       })
       if (!walletKey) return
 
-      const agent = await initializeAgent(walletKey).catch(() => {
+      const agent = await initializeAppAgent({
+        ...walletKey,
+        walletLabel: 'paradym-wallet',
+        walletId: 'paradym-wallet-secure',
+      }).catch(() => {
         setAgentInitializationFailed(true)
         toast.show('Could not initialize agent.')
       })

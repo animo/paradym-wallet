@@ -1,4 +1,4 @@
-import type { AppAgent } from '../agent'
+import type { FullAppAgent } from '../agent'
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
@@ -50,7 +50,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   data,
   uri,
 }: {
-  agent: AppAgent
+  agent: FullAppAgent
   // Either data itself (the offer) or uri can be passed
   data?: string
   uri?: string
@@ -194,7 +194,7 @@ export const getCredentialsForProofRequest = async ({
   data,
   uri,
 }: {
-  agent: AppAgent
+  agent: FullAppAgent
   // Either data or uri can be provided
   data?: string
   uri?: string
@@ -235,7 +235,7 @@ export const shareProof = async ({
   authorizationRequest,
   credentialsForRequest,
 }: {
-  agent: AppAgent
+  agent: FullAppAgent
   authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
   // TODO: support selection
   credentialsForRequest: DifPexCredentialsForRequest
@@ -262,7 +262,7 @@ export const shareProof = async ({
 }
 
 export async function storeCredential(
-  agent: AppAgent,
+  agent: FullAppAgent,
   credentialRecord: W3cCredentialRecord | SdJwtVcRecord
 ) {
   if (credentialRecord instanceof W3cCredentialRecord) {
@@ -278,7 +278,7 @@ export async function storeCredential(
  * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
  */
 export async function receiveOutOfBandInvitation(
-  agent: AppAgent,
+  agent: FullAppAgent,
   invitation: OutOfBandInvitation
 ): Promise<
   | { success: true; id: string; type: 'credentialExchange' }

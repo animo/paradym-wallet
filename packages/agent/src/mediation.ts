@@ -1,4 +1,4 @@
-import type { AppAgent } from './agent'
+import type { FullAppAgent } from './agent'
 
 import { CredoError, MediatorPickupStrategy } from '@credo-ts/core'
 import { useEffect } from 'react'
@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 /**
  * Check whether a default mediator is configued
  */
-export async function hasMediationConfigured(agent: AppAgent) {
+export async function hasMediationConfigured(agent: FullAppAgent) {
   const mediationRecord = await agent.mediationRecipient.findDefaultMediator()
 
   return mediationRecord !== null
@@ -17,7 +17,7 @@ export async function hasMediationConfigured(agent: AppAgent) {
  *
  * This connects based on a did
  */
-export async function setupMediationWithDid(agent: AppAgent, mediatorDid: string) {
+export async function setupMediationWithDid(agent: FullAppAgent, mediatorDid: string) {
   // If the invitation is a did, the invitation id is the did
   const outOfBandRecord = await agent.oob.findByReceivedInvitationId(mediatorDid)
   let [connection] = outOfBandRecord
@@ -53,7 +53,7 @@ export async function setupMediationWithDid(agent: AppAgent, mediatorDid: string
 /**
  * Initiate message pickup from the mediator.
  */
-async function initiateMessagePickup(agent: AppAgent) {
+async function initiateMessagePickup(agent: FullAppAgent) {
   agent.config.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
@@ -63,7 +63,7 @@ async function initiateMessagePickup(agent: AppAgent) {
 /**
  * Stop message pickup from the mediator.
  */
-async function stopMessagePickup(agent: AppAgent) {
+async function stopMessagePickup(agent: FullAppAgent) {
   agent.config.logger.info('Stopping message pickup from mediator')
 
   // Stop message pickup. Will stopp all message pickup, not just from the mediator
@@ -81,7 +81,7 @@ export function useMessagePickup({
   agent,
 }: {
   isEnabled?: boolean
-  agent?: AppAgent
+  agent?: FullAppAgent
 }) {
   useEffect(() => {
     // If no agent, do nothing
