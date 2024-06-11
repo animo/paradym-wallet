@@ -1,7 +1,7 @@
 // don't import from here, that's handled already
 // instead this is just setting types for this folder
 
-import { config } from '@internal/ui'
+import { config } from '@package/ui'
 
 type Conf = typeof config
 

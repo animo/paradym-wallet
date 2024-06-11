@@ -1,8 +1,8 @@
-import type { FullAppAgent } from '@internal/agent/agent'
+import type { FullAppAgent } from '@package/agent'
 
-import { initializeFullAgent, useAgent } from '@internal/agent/agent'
-import { XStack } from '@internal/ui'
-import { WalletScreen } from 'app/features/wallet/WalletScreen'
+import { initializeFullAgent, useAgent } from '@package/agent'
+import { XStack } from '@package/ui'
+import { WalletScreen } from '@package/app'
 import { Stack } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

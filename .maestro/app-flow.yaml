@@ -1,8 +1,0 @@
-appId: id.paradym.wallet
----
-- runFlow:
-    file: './tests/actions/start-app.yaml'
-
-## Test: QR Code Scanner
-- runFlow:
-    file: './tests/qr-code-scanner.yaml'

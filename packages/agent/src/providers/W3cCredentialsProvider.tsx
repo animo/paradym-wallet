@@ -2,13 +2,9 @@ import type { FullAppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
 
 import { W3cCredentialRecord } from '@credo-ts/core'
-import {
-  recordsAddedByType,
-  recordsRemovedByType,
-  recordsUpdatedByType,
-} from '@credo-ts/react-hooks/build/recordUtils'
+import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '@credo-ts/react-hooks/build/recordUtils'
 import { useState, createContext, useContext, useEffect } from 'react'
-import * as React from 'react'
+import type * as React from 'react'
 
 export { W3cCredentialRecord, W3cVerifiableCredential } from '@credo-ts/core'
 
@@ -17,10 +13,7 @@ type W3cCredentialRecordState = {
   isLoading: boolean
 }
 
-const addRecord = (
-  record: W3cCredentialRecord,
-  state: W3cCredentialRecordState
-): W3cCredentialRecordState => {
+const addRecord = (record: W3cCredentialRecord, state: W3cCredentialRecordState): W3cCredentialRecordState => {
   const newRecordsState = [...state.w3cCredentialRecords]
   newRecordsState.unshift(record)
   return {
@@ -29,10 +22,7 @@ const addRecord = (
   }
 }
 
-const updateRecord = (
-  record: W3cCredentialRecord,
-  state: W3cCredentialRecordState
-): W3cCredentialRecordState => {
+const updateRecord = (record: W3cCredentialRecord, state: W3cCredentialRecordState): W3cCredentialRecordState => {
   const newRecordsState = [...state.w3cCredentialRecords]
   const index = newRecordsState.findIndex((r) => r.id === record.id)
   if (index > -1) {
@@ -44,10 +34,7 @@ const updateRecord = (
   }
 }
 
-const removeRecord = (
-  record: W3cCredentialRecord,
-  state: W3cCredentialRecordState
-): W3cCredentialRecordState => {
+const removeRecord = (record: W3cCredentialRecord, state: W3cCredentialRecordState): W3cCredentialRecordState => {
   const newRecordsState = state.w3cCredentialRecords.filter((r) => r.id !== record.id)
   return {
     isLoading: state.isLoading,
@@ -60,9 +47,7 @@ const W3cCredentialRecordContext = createContext<W3cCredentialRecordState | unde
 export const useW3cCredentialRecords = (): W3cCredentialRecordState => {
   const w3cCredentialRecordContext = useContext(W3cCredentialRecordContext)
   if (!w3cCredentialRecordContext) {
-    throw new Error(
-      'useW3cCredentialRecord must be used within a W3cCredentialRecordContextProvider'
-    )
+    throw new Error('useW3cCredentialRecord must be used within a W3cCredentialRecordContextProvider')
   }
 
   return w3cCredentialRecordContext
@@ -77,10 +62,7 @@ interface Props {
   agent: FullAppAgent
 }
 
-export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = ({
-  agent,
-  children,
-}) => {
+export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {
   const [state, setState] = useState<W3cCredentialRecordState>({
     w3cCredentialRecords: [],
     isLoading: true,
@@ -90,7 +72,7 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
     void agent.w3cCredentials
       .getAllCredentialRecords()
       .then((w3cCredentialRecords) => setState({ w3cCredentialRecords, isLoading: false }))
-  }, [])
+  }, [agent])
 
   useEffect(() => {
     if (!state.isLoading && agent) {
@@ -98,12 +80,12 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
         setState(addRecord(record, state))
       )
 
-      const credentialUpdate$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe(
-        (record) => setState(updateRecord(record, state))
+      const credentialUpdate$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe((record) =>
+        setState(updateRecord(record, state))
       )
 
-      const credentialRemove$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe(
-        (record) => setState(removeRecord(record, state))
+      const credentialRemove$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe((record) =>
+        setState(removeRecord(record, state))
       )
 
       return () => {
@@ -114,9 +96,5 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
     }
   }, [state, agent])
 
-  return (
-    <W3cCredentialRecordContext.Provider value={state}>
-      {children}
-    </W3cCredentialRecordContext.Provider>
-  )
+  return <W3cCredentialRecordContext.Provider value={state}>{children}</W3cCredentialRecordContext.Provider>
 }

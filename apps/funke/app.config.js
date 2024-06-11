@@ -1,7 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('./package.json')
 
-/* eslint-disable */
 const APP_VARIANT = process.env.APP_VARIANT || 'production'
 
 const variants = {
@@ -22,23 +20,17 @@ const variants = {
 const variant = variants[APP_VARIANT]
 
 if (!variant) {
-  throw new Error('Invalid variant provided: ' + process.env.APP_VARIANT)
+  throw new Error(`Invalid variant provided: ${process.env.APP_VARIANT}`)
 }
 
 // NOTE: Keep this in sync with the `QrTypes` enum
-const invitationSchemes = [
-  'openid',
-  'openid-initiate-issuance',
-  'openid-credential-offer',
-  'openid-vc',
-  'openid4vp',
-]
+const invitationSchemes = ['openid', 'openid-initiate-issuance', 'openid-credential-offer', 'openid-vc', 'openid4vp']
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
-  name: 'Funke Wallet' + variant.name,
+  name: `Funke Wallet${variant.name}`,
   scheme: 'funke',
   slug: 'funke-wallet',
   owner: 'animo-id',
@@ -60,11 +52,11 @@ const config = {
   updates: {
     fallbackToCacheTimeout: 0,
   },
-  plugins: ['expo-font', 'expo-secure-store'],
+  plugins: ['expo-font', 'expo-secure-store', 'expo-router'],
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,
-    bundleIdentifier: 'id.animo.funke.wallet' + variant.bundle,
+    bundleIdentifier: `id.animo.funke.wallet${variant.bundle}`,
     infoPlist: {
       NSCameraUsageDescription: 'This app uses the camera to scan QR-codes.',
       ITSAppUsesNonExemptEncryption: false,
@@ -81,7 +73,7 @@ const config = {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#FFFFFF',
     },
-    package: 'id.animo.funke.wallet' + variant.bundle,
+    package: `id.animo.funke.wallet${variant.bundle}`,
     intentFilters: [
       ...invitationSchemes.map((scheme) => ({
         action: 'VIEW',

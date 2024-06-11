@@ -1,4 +1,4 @@
-import { QrScannerScreen } from 'app/features/scan/ScanScreen'
+import { QrScannerScreen } from '@package/app'
 
 export default function Screen() {
   return (

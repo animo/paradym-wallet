@@ -28,7 +28,7 @@ The wallet can be used in three environments:
 
 ## Project Structure
 
-The project is a monorepo managed using **Yarn (v3)**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router, React Navigation and Solito**. For the Agent and SSI capabilities **Aries Framework JavaScript (AFJ)** is used.
+The project is a monorepo managed using **pnpm**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router, React Navigation and Solito**. For the Agent and SSI capabilities **Aries Framework JavaScript (AFJ)** is used.
 
 The folder structure is as follows
 
@@ -46,41 +46,25 @@ You can add other folders inside of `packages/` if you know what you're doing an
 
 ## 🏁 Start the Paradym wallet
 
-First, start by installing all dependencies by running `yarn`.
+First, start by installing all dependencies by running `pnpm install`.
 
 Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device.
 You can install this using the following commands:
 
 ```
 cd apps/paradym
-yarn prebuild
-yarn ios # or android
+pnpm prebuild
+pnpm ios # or android
 ```
 
 You only need to install the development build when **native** dependencies change. If you're only working on JS, you can skip this step if you already have the development build installed.
 
-Once installed you can run `yarn native` from the root of the project to start your development server.
+Once installed you can run `pnpm start` from the root of the project to start your development server.
 
 ## 📦 Releasing
 
 🚧 Soon documentation will be added on how to publish a new release to the Apple App Store and Google Play Stores. 🚧
 
-## 🧪 Integration Testing
-
-We use [Maestro](https://maestro.mobile.dev/) for integration testing. Maestro is a tool for writing integration tests for mobile apps. It allows you to write tests in YAML that run on real devices and interact with your app just like a real user would.
-
-The tests are located in the `.maestro` folder.
-
-You need to have the app running with `yarn ios/android` before running the tests.
-
-### Required dependencies
-
-- [Maestro CLI](https://maestro.mobile.dev/getting-started/installing-maestro)
-
-### Running tests
-
-- `yarn maestro:test` - Run all tests
-- `yarn maestro:studio` - A GUI for creating test actions
 
 ## 🆕 Add new dependencies
 
@@ -90,9 +74,9 @@ If you're installing a JavaScript-only dependency that will be used across platf
 
 ```sh
 cd packages/app
-yarn add date-fns
+pnpm add date-fns
 cd ../..
-yarn
+pnpm
 ```
 
 ### Native dependencies
@@ -101,9 +85,9 @@ If you're installing a library with any native code, you must install it in `exp
 
 ```sh
 cd apps/paradym
-yarn add react-native-reanimated
+pnpm add react-native-reanimated
 cd ..
-yarn
+pnpm
 ```
 
 You can also install the native library inside of `packages/app` if you want to get autoimport for that package inside of the `app` folder. However, you need to be careful and install the _exact_ same version in both packages. If the versions mismatch at all, you'll potentially get terrible bugs. This is a classic monorepo issue. You can use `lerna-update-wizard` to help with this (you don't need to use Lerna to use that lib).

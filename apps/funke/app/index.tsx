@@ -1,8 +1,8 @@
-import type { OpenId4VcHolderAppAgent } from '@internal/agent'
+import type { OpenId4VcHolderAppAgent } from '@package/agent'
 
-import { initializeOpenId4VcHolderAgent, useAgent } from '@internal/agent'
-import { XStack } from '@internal/ui'
-import { WalletScreen } from 'app/features/wallet/WalletScreen'
+import { initializeOpenId4VcHolderAgent, useAgent } from '@package/agent'
+import { XStack } from '@package/ui'
+import { WalletScreen } from '@package/app'
 import { Stack } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -23,7 +23,6 @@ export default function Screen() {
           },
         }}
       />
-      {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
       <WalletScreen logo={require('../assets/in-app-logo.png')} />
     </>
   )

@@ -4,7 +4,7 @@
  * @type {import('expo/metro-config')}
  */
 const { getDefaultConfig } = require('@expo/metro-config')
-const path = require('path')
+const path = require('node:path')
 
 const projectRoot = __dirname
 const workspaceRoot = path.resolve(projectRoot, '../..')
@@ -19,7 +19,7 @@ config.resolver.nodeModulesPaths = [
 config.resolver.sourceExts = ['js', 'json', 'ts', 'tsx', 'cjs', 'mjs']
 config.resolver.extraNodeModules = {
   // Needed for cosmjs trying to import node crypto
-  crypto: require.resolve('./crypto.ts'),
+  crypto: require.resolve('./app/polyfills/crypto.ts'),
 }
 
 module.exports = config

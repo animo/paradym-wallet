@@ -1,20 +1,17 @@
-import type { OpenId4VcHolderAppAgent } from '@internal/agent'
+import type { OpenId4VcHolderAppAgent } from '@package/agent'
 
-import { AgentProvider } from '@internal/agent'
-import { config, Heading, Page, Paragraph, useToastController, XStack, YStack } from '@internal/ui'
-import { getSecureWalletKey } from '@internal/utils'
+import { AgentProvider } from '@package/agent'
+import { useTransparentNavigationBar, Provider, NoInternetToastProvider, isAndroid } from '@package/app'
+import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
+import { getSecureWalletKey } from '@package/utils'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useTransparentNavigationBar } from 'app/hooks/useTransparentNavigationBar'
-import { Provider } from 'app/provider'
-import { NoInternetToastProvider } from 'app/provider/NoInternetToastProvider'
-import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { DeeplinkHandler } from '../utils/DeeplinkHandler'
+import { DeeplinkHandler } from './utils'
 
 import { initializeAppAgent } from '.'
 
@@ -70,7 +67,7 @@ export default function HomeLayout() {
     }
 
     void startAgent()
-  }, [])
+  }, [toast, agent])
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
@@ -86,9 +83,7 @@ export default function HomeLayout() {
         <Page jc="center" ai="center" g="md">
           <YStack>
             <Heading variant="h1">Error</Heading>
-            <Paragraph>
-              Could not establish a secure environment. The current device could be not supported.
-            </Paragraph>
+            <Paragraph>Could not establish a secure environment. The current device could be not supported.</Paragraph>
           </YStack>
         </Page>
       </Provider>

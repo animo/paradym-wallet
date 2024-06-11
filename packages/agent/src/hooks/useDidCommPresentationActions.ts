@@ -50,9 +50,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         Object.keys(anonCredsCredentials.attributes).map(async (groupName) => {
           const requestedAttribute = proofRequest.requested_attributes[groupName]
           const attributeNames = requestedAttribute?.names ?? [requestedAttribute?.name as string]
-          const attributeArray = anonCredsCredentials.attributes[
-            groupName
-          ] as AnonCredsRequestedAttributeMatch[]
+          const attributeArray = anonCredsCredentials.attributes[groupName] as AnonCredsRequestedAttributeMatch[]
 
           const firstMatch = attributeArray[0]
 
@@ -86,9 +84,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       await Promise.all(
         Object.keys(anonCredsCredentials.predicates).map(async (groupName) => {
           const requestedPredicate = proofRequest.requested_predicates[groupName]
-          const predicateArray = anonCredsCredentials.predicates[
-            groupName
-          ] as AnonCredsRequestedPredicateMatch[]
+          const predicateArray = anonCredsCredentials.predicates[groupName] as AnonCredsRequestedPredicateMatch[]
 
           if (!requestedPredicate) {
             throw new Error('Invalid presentation request')
@@ -134,21 +130,17 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
     mutationFn: async () => {
-      const presentationDone$ = agent.events
-        .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
-        .pipe(
-          // Correct record with id and state
-          filter(
-            (event) =>
-              event.payload.proofRecord.id === proofExchangeId &&
-              [ProofState.PresentationSent, ProofState.Done].includes(
-                event.payload.proofRecord.state
-              )
-          ),
-          // 10 seconds to complete exchange
-          timeout(10000),
-          first()
-        )
+      const presentationDone$ = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
+        // Correct record with id and state
+        filter(
+          (event) =>
+            event.payload.proofRecord.id === proofExchangeId &&
+            [ProofState.PresentationSent, ProofState.Done].includes(event.payload.proofRecord.state)
+        ),
+        // 10 seconds to complete exchange
+        timeout(10000),
+        first()
+      )
 
       const presentationDonePromise = firstValueFrom(presentationDone$)
 
@@ -205,7 +197,5 @@ const predicateTypeMap: Record<AnonCredsPredicateType, string> = {
  * @todo we could improve on this rendering, by e.g. recognizing dates in predicates (e.g. 20200101)
  */
 function formatPredicate(requestedPredicate: AnonCredsRequestedPredicate) {
-  return `${requestedPredicate.name} ${predicateTypeMap[requestedPredicate.p_type]} ${
-    requestedPredicate.p_value
-  }`
+  return `${requestedPredicate.name} ${predicateTypeMap[requestedPredicate.p_type]} ${requestedPredicate.p_value}`
 }

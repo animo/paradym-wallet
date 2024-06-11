@@ -1,4 +1,4 @@
-import { DidCommNotificationScreen } from 'app/features/notifications'
+import { DidCommNotificationScreen } from '@package/app'
 
 export default function Screen() {
   return (

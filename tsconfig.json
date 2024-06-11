@@ -1,27 +1,21 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "paths": {
-      "app/*": ["./packages/app/*"],
-      "@internal/ui/*": ["./packages/ui/*"],
-      "@internal/agent/*": ["./packages/agent/src/*"],
-      "@internal/utils/*": ["./packages/utils/src/*"],
-      "@internal/scanner/*": ["./packages/scanner/src/*"]
-    },
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
-  "include": [
-    ".eslintrc.js",
-    "**/*.js",
-    "*.js",
-    "**/*.jsx",
-    "*.jsx",
-    "**/*.ts",
-    "*.ts",
-    "**/*.tsx",
-    "*.tsx"
-  ]
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "ES2017",
+		"declaration": true,
+		"sourceMap": true,
+		"strict": true,
+		"noEmitOnError": true,
+		"lib": ["ESNext"],
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"skipLibCheck": true,
+		"jsx": "react-native",
+		"types": ["react-native"],
+		"paths": {
+			"@package/*": ["./packages/*"]
+		}
+	},
+	"exclude": ["node_modules", "build"]
 }

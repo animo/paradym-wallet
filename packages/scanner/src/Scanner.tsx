@@ -1,21 +1,10 @@
 import type { StyleProp, ViewStyle } from 'react-native'
 
-import {
-  Heading,
-  AnimatePresence,
-  Page,
-  Paragraph,
-  Button,
-  XStack,
-  YStack,
-  Spacer,
-  AlertOctagon,
-} from '@internal/ui'
+import { Heading, AnimatePresence, Page, Paragraph, Button, XStack, YStack, Spacer, AlertOctagon } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
-import { isAndroid } from 'app/utils/platform'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
 import { useCallback, useEffect, useState } from 'react'
-import { Linking, StyleSheet, Dimensions } from 'react-native'
+import { Linking, StyleSheet, Dimensions, Platform } from 'react-native'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
@@ -41,7 +30,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
 
   // Android has issues with aspect ratio
   let cameraStyle: StyleProp<ViewStyle> = StyleSheet.absoluteFill
-  if (isAndroid()) {
+  if (Platform.OS === 'android') {
     const { width, height } = Dimensions.get('screen')
     const cameraWidth = (height / 16) * 9
     const widthOffset = -(cameraWidth - width) / 2

@@ -1,4 +1,4 @@
-import type { FullAppAgent } from '@internal/agent'
+import type { FullAppAgent } from '@package/agent'
 
 import {
   AgentProvider,
@@ -6,15 +6,17 @@ import {
   initializeFullAgent,
   setupMediationWithDid,
   useMessagePickup,
-} from '@internal/agent'
-import { config, Heading, Page, Paragraph, useToastController, XStack, YStack } from '@internal/ui'
-import { getSecureWalletKey } from '@internal/utils'
+} from '@package/agent'
+import {
+  useHasInternetConnection,
+  useTransparentNavigationBar,
+  Provider,
+  NoInternetToastProvider,
+  isAndroid,
+} from '@package/app'
+import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
+import { getSecureWalletKey } from '@package/utils'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useHasInternetConnection } from 'app/hooks/useHasInternetConnection'
-import { useTransparentNavigationBar } from 'app/hooks/useTransparentNavigationBar'
-import { Provider } from 'app/provider'
-import { NoInternetToastProvider } from 'app/provider/NoInternetToastProvider'
-import { isAndroid } from 'app/utils/platform'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -22,8 +24,8 @@ import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { initializeAppAgent } from '.'
 
-import { mediatorDid } from '../constants'
-import { DeeplinkHandler } from '../utils/DeeplinkHandler'
+import { mediatorDid } from './constants'
+import { DeeplinkHandler } from './utils'
 
 void SplashScreen.preventAutoHideAsync()
 
@@ -84,7 +86,7 @@ export default function HomeLayout() {
     }
 
     void startAgent()
-  }, [])
+  }, [toast, agent])
 
   // Setup mediation
   useEffect(() => {
@@ -107,7 +109,7 @@ export default function HomeLayout() {
       .finally(() => {
         setIsSettingUpMediation(false)
       })
-  }, [hasInternetConnection, agent, isMediationConfigured])
+  }, [hasInternetConnection, agent, isMediationConfigured, isSettingUpMediation])
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
@@ -123,9 +125,7 @@ export default function HomeLayout() {
         <Page jc="center" ai="center" g="md">
           <YStack>
             <Heading variant="h1">Error</Heading>
-            <Paragraph>
-              Could not establish a secure environment. The current device could be not supported.
-            </Paragraph>
+            <Paragraph>Could not establish a secure environment. The current device could be not supported.</Paragraph>
           </YStack>
         </Page>
       </Provider>
@@ -169,10 +169,7 @@ export default function HomeLayout() {
                   options={{ presentation: 'modal', ...headerModalOptions }}
                   name="notifications/openIdPresentation"
                 />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/didcomm"
-                />
+                <Stack.Screen options={{ presentation: 'modal', ...headerModalOptions }} name="notifications/didcomm" />
                 <Stack.Screen
                   options={{
                     headerShown: true,

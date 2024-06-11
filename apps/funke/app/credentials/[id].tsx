@@ -1,4 +1,4 @@
-import { CredentialDetailScreen } from 'app/features/credentials/CredentialDetailScreen'
+import { CredentialDetailScreen } from '@package/app'
 import { Stack } from 'expo-router'
 
 export default function Screen() {

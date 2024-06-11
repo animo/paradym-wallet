@@ -70,26 +70,18 @@ export const isDidCommInvitation = (url: string) => {
     return true
   }
 
-  if (
-    url.includes('c_i=') ||
-    url.includes('oob=') ||
-    url.includes('oobUrl=') ||
-    url.includes('d_m=')
-  ) {
+  if (url.includes('c_i=') || url.includes('oob=') || url.includes('oobUrl=') || url.includes('d_m=')) {
     return true
   }
 
   return false
 }
 
-export async function parseDidCommInvitation(
-  agent: FullAppAgent,
-  invitation: string | Record<string, unknown>
-) {
+export async function parseDidCommInvitation(agent: FullAppAgent, invitation: string | Record<string, unknown>) {
   try {
     if (typeof invitation === 'string') {
       const parsedUrl = queryString.parseUrl(invitation)
-      const updatedInvitationUrl = (parsedUrl.query['oobUrl'] as string | undefined) ?? invitation
+      const updatedInvitationUrl = (parsedUrl.query.oobUrl as string | undefined) ?? invitation
 
       // Try to parse the invitation as an DIDComm invitation.
       // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.

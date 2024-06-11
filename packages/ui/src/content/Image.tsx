@@ -11,16 +11,8 @@ interface ImageProps {
 }
 
 // FIXME: tamagui image is not working for svg's
-export const Image = ({
-  src,
-  alt,
-  width,
-  height,
-  isImageLoaded,
-  resizeMode = 'contain',
-}: ImageProps) => {
-  if (src.endsWith('.svg'))
-    return <SvgUri role="img" width={width} height={height} uri={src} aria-label={alt} />
+export const Image = ({ src, alt, width, height, isImageLoaded, resizeMode = 'contain' }: ImageProps) => {
+  if (src.endsWith('.svg')) return <SvgUri role="img" width={width} height={height} uri={src} aria-label={alt} />
 
   return (
     <TImage

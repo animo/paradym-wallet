@@ -10,8 +10,7 @@ export async function importDbcCredentialWithDid(agent: FullAppAgent) {
     '1234567890123456789012345678901234567890123456789012345678901234'
   )
 
-  const hasDbcCredentialSubjectDid =
-    (await agent.dids.getCreatedDids({ did: dbcCredenitalSubjectDid })).length !== 0
+  const hasDbcCredentialSubjectDid = (await agent.dids.getCreatedDids({ did: dbcCredenitalSubjectDid })).length !== 0
 
   if (!hasDbcCredentialSubjectDid) {
     await agent.dids.create<JwkDidCreateOptions>({

@@ -30,16 +30,12 @@ export function formatDifPexCredentialsForRequest(
       const [firstVerifiableCredential] = submission.verifiableCredentials
       if (firstVerifiableCredential) {
         // Credential can be satisfied
-        const { display, credential } = getCredentialForDisplay(
-          firstVerifiableCredential.credentialRecord
-        )
+        const { display, credential } = getCredentialForDisplay(firstVerifiableCredential.credentialRecord)
 
         // TODO: support nesting
         let requestedAttributes: string[]
         if (firstVerifiableCredential.type === ClaimFormat.SdJwtVc) {
-          const { metadata, visibleProperties } = filterAndMapSdJwtKeys(
-            firstVerifiableCredential.disclosedPayload
-          )
+          const { metadata, visibleProperties } = filterAndMapSdJwtKeys(firstVerifiableCredential.disclosedPayload)
           requestedAttributes = [...Object.keys(visibleProperties), ...Object.keys(metadata)]
         } else {
           requestedAttributes = Object.keys(credential?.credentialSubject ?? {})

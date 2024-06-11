@@ -1,8 +1,0 @@
-{
-  "pipeline": {
-    "build": {
-      "extends": "",
-      "dependsOn": ["^build"]
-    }
-  }
-}

@@ -12,13 +12,7 @@ type Props = {
   children?: React.ReactNode
 }
 
-export const Sheet = ({
-  open,
-  setOpen,
-  showChevron = false,
-  snapPoints = [80],
-  children,
-}: Props) => {
+export const Sheet = ({ open, setOpen, showChevron = false, snapPoints = [80], children }: Props) => {
   const [position, setPosition] = useState(0)
 
   return (

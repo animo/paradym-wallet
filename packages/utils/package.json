@@ -1,11 +1,11 @@
 {
-  "name": "@internal/utils",
-  "version": "0.0.1",
-  "private": true,
-  "main": "src/index.ts",
-  "devDependencies": {
-    "@credo-ts/react-native": "^0.5.3",
-    "@hyperledger/aries-askar-react-native": "^0.2.1",
-    "expo-secure-store": "^13.0.1"
-  }
+	"name": "@package/utils",
+	"version": "0.0.0",
+	"private": true,
+	"main": "src/index.ts",
+	"devDependencies": {
+		"@credo-ts/react-native": "0.5.1-alpha.51",
+		"@hyperledger/aries-askar-react-native": "^0.2.0",
+		"expo-secure-store": "~13.0.1"
+	}
 }

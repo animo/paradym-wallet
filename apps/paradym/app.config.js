@@ -25,7 +25,7 @@ const variants = {
 const variant = variants[APP_VARIANT]
 
 if (!variant) {
-  throw new Error('Invalid variant provided: ' + process.env.APP_VARIANT)
+  throw new Error(`Invalid variant provided: ${process.env.APP_VARIANT}`)
 }
 
 // NOTE: Keep this in sync with the `QrTypes` enum
@@ -44,7 +44,7 @@ const associatedDomains = ['paradym.id', 'dev.paradym.id', 'aurora.paradym.id']
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
-  name: 'Paradym Wallet' + variant.name,
+  name: `Paradym Wallet${variant.name}`,
   scheme: 'paradym',
   slug: 'paradym-wallet',
   owner: 'animo-id',
@@ -70,7 +70,7 @@ const config = {
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,
-    bundleIdentifier: 'id.paradym.wallet' + variant.bundle,
+    bundleIdentifier: `id.paradym.wallet${variant.bundle}`,
     infoPlist: {
       NSCameraUsageDescription: 'This app uses the camera to scan QR-codes.',
       ITSAppUsesNonExemptEncryption: false,
@@ -81,14 +81,14 @@ const config = {
         },
       ],
     },
-    associatedDomains: associatedDomains.map((host) => 'applinks:' + host),
+    associatedDomains: associatedDomains.map((host) => `applinks:${host}`),
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#FFFFFF',
     },
-    package: 'id.paradym.wallet' + variant.bundle,
+    package: `id.paradym.wallet${variant.bundle}`,
     intentFilters: [
       ...invitationSchemes.map((scheme) => ({
         action: 'VIEW',

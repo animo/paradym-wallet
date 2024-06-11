@@ -1,4 +1,4 @@
-import { NotificationInboxScreen } from 'app/features/notifications'
+import { NotificationInboxScreen } from '@package/app'
 
 export default function Screen() {
   return (

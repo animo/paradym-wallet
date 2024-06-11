@@ -8,12 +8,7 @@ import {
   V1ProofProtocol,
 } from '@credo-ts/anoncreds'
 import { AskarModule } from '@credo-ts/askar'
-import {
-  CheqdAnonCredsRegistry,
-  CheqdDidResolver,
-  CheqdModule,
-  CheqdModuleConfig,
-} from '@credo-ts/cheqd'
+import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import {
   Agent,
   AutoAcceptCredential,
@@ -76,10 +71,7 @@ const agentModules = {
           indyCredentialFormat: new LegacyIndyCredentialFormatService(),
         }),
         new V2CredentialProtocol({
-          credentialFormats: [
-            new LegacyIndyCredentialFormatService(),
-            new AnonCredsCredentialFormatService(),
-          ],
+          credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
         }),
       ],
     }),
@@ -112,11 +104,7 @@ const agentModules = {
   },
   didcomm: {
     anoncreds: new AnonCredsModule({
-      registries: [
-        new IndyVdrAnonCredsRegistry(),
-        new CheqdAnonCredsRegistry(),
-        new DidWebAnonCredsRegistry(),
-      ],
+      registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
       anoncreds,
     }),
 
@@ -153,8 +141,7 @@ export const initializeOpenId4VcHolderAgent = async ({
       walletConfig: {
         id: walletId,
         key: walletKey,
-        keyDerivationMethod:
-          keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
+        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
@@ -188,8 +175,7 @@ export const initializeFullAgent = async ({
       walletConfig: {
         id: walletId,
         key: walletKey,
-        keyDerivationMethod:
-          keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
+        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
@@ -208,7 +194,7 @@ export const initializeFullAgent = async ({
 export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
 export type OpenId4VcHolderAppAgent = Awaited<ReturnType<typeof initializeOpenId4VcHolderAgent>>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
 export const useAgent = <A extends Agent<any> = FullAppAgent>(): { agent: A; loading: boolean } => {
   const { agent, loading } = useAgentLib<A>()
 

@@ -56,9 +56,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
           filter(
             (event) =>
               event.payload.credentialRecord.id === credentialExchangeId &&
-              [CredentialState.CredentialReceived, CredentialState.Done].includes(
-                event.payload.credentialRecord.state
-              )
+              [CredentialState.CredentialReceived, CredentialState.Done].includes(event.payload.credentialRecord.state)
           ),
           // 10 seconds to complete exchange
           timeout(10000),
@@ -73,9 +71,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
       const w3cCredentialRecordId = doneEvent.payload.credentialRecord.credentials.find(
         (c) => c.credentialRecordType === 'w3c'
       )?.credentialRecordId
-      const didCommDisplayMetadata = getDidCommCredentialExchangeDisplayMetadata(
-        doneEvent.payload.credentialRecord
-      )
+      const didCommDisplayMetadata = getDidCommCredentialExchangeDisplayMetadata(doneEvent.payload.credentialRecord)
 
       // Update the w3c credential record metadata, based on the didcomm credential exchange display metadata
       if (w3cCredentialRecordId && didCommDisplayMetadata) {

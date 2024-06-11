@@ -1,4 +1,4 @@
-import { OpenIdCredentialNotificationScreen } from 'app/features/notifications'
+import { OpenIdCredentialNotificationScreen } from '@package/app'
 
 export default function Screen() {
   return (

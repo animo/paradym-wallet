@@ -20,9 +20,7 @@ export async function hasMediationConfigured(agent: FullAppAgent) {
 export async function setupMediationWithDid(agent: FullAppAgent, mediatorDid: string) {
   // If the invitation is a did, the invitation id is the did
   const outOfBandRecord = await agent.oob.findByReceivedInvitationId(mediatorDid)
-  let [connection] = outOfBandRecord
-    ? await agent.connections.findAllByOutOfBandId(outOfBandRecord.id)
-    : []
+  let [connection] = outOfBandRecord ? await agent.connections.findAllByOutOfBandId(outOfBandRecord.id) : []
 
   if (!connection) {
     agent.config.logger.debug('Mediation connection does not exist, creating connection')
@@ -34,7 +32,7 @@ export async function setupMediationWithDid(agent: FullAppAgent, mediatorDid: st
       did: mediatorDid,
       routing,
     })
-    agent.config.logger.debug(`Mediation invitation processed`, { mediatorDid })
+    agent.config.logger.debug('Mediation invitation processed', { mediatorDid })
 
     if (!newConnection) {
       throw new CredoError('No connection record to provision mediation.')
@@ -43,9 +41,7 @@ export async function setupMediationWithDid(agent: FullAppAgent, mediatorDid: st
     connection = newConnection
   }
 
-  const readyConnection = connection.isReady
-    ? connection
-    : await agent.connections.returnWhenIsConnected(connection.id)
+  const readyConnection = connection.isReady ? connection : await agent.connections.returnWhenIsConnected(connection.id)
 
   return agent.mediationRecipient.provision(readyConnection)
 }

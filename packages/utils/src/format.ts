@@ -16,9 +16,8 @@ export function sanitizeString(str: string) {
   words = words.map((word, index) => {
     if (index === 0 || word.toUpperCase() === word) {
       return word.charAt(0).toUpperCase() + word.slice(1)
-    } else {
-      return word.charAt(0).toLowerCase() + word.slice(1)
     }
+    return word.charAt(0).toLowerCase() + word.slice(1)
   })
   return words.join(' ')
 }
