@@ -1,4 +1,4 @@
-const urlRegex = new RegExp('^(.*:)//([A-Za-z0-9-.]+)(:[0-9]+)?(.*)$')
+const urlRegex = /^(.*:)\/\/([A-Za-z0-9-.]+)(:[0-9]+)?(.*)$/
 
 export function getHostNameFromUrl(url: string) {
   const parts = urlRegex.exec(url)

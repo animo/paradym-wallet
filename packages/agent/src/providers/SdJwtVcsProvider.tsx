@@ -1,14 +1,10 @@
-import type { AppAgent } from '../agent'
+import type { FullAppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
 
 import { SdJwtVcRecord } from '@credo-ts/core'
-import {
-  recordsAddedByType,
-  recordsRemovedByType,
-  recordsUpdatedByType,
-} from '@credo-ts/react-hooks/build/recordUtils'
+import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '@credo-ts/react-hooks/build/recordUtils'
 import { useState, createContext, useContext, useEffect } from 'react'
-import * as React from 'react'
+import type * as React from 'react'
 
 export { SdJwtVc, SdJwtVcRecord } from '@credo-ts/core'
 
@@ -63,7 +59,7 @@ export const useSdJwtVcRecordById = (id: string): SdJwtVcRecord | undefined => {
 }
 
 interface Props {
-  agent: AppAgent
+  agent: FullAppAgent
 }
 
 export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {
@@ -73,10 +69,8 @@ export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agen
   })
 
   useEffect(() => {
-    void agent.sdJwtVc
-      .getAll()
-      .then((sdJwtVcRecords) => setState({ sdJwtVcRecords, isLoading: false }))
-  }, [])
+    void agent.sdJwtVc.getAll().then((sdJwtVcRecords) => setState({ sdJwtVcRecords, isLoading: false }))
+  }, [agent.sdJwtVc.getAll])
 
   useEffect(() => {
     if (!state.isLoading && agent) {

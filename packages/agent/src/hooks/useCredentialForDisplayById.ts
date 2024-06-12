@@ -9,7 +9,8 @@ export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId
     if (!c) return null
 
     return getCredentialForDisplay(c)
-  } else if (credentialId.startsWith('sd-jwt-vc-')) {
+  }
+  if (credentialId.startsWith('sd-jwt-vc-')) {
     const c = useSdJwtVcRecordById(credentialId.replace('sd-jwt-vc-', ''))
     if (!c) return null
 

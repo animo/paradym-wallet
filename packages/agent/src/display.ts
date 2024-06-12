@@ -4,7 +4,7 @@ import type { W3cCredentialJson, W3cIssuerJson } from './types'
 import type { W3cCredentialRecord } from '@credo-ts/core'
 
 import { Hasher, SdJwtVcRecord, ClaimFormat, JsonTransformer } from '@credo-ts/core'
-import { sanitizeString, getHostNameFromUrl } from '@internal/utils'
+import { sanitizeString, getHostNameFromUrl } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
@@ -47,9 +47,7 @@ export interface CredentialIssuerDisplay {
   logo?: DisplayImage
 }
 
-function findDisplay<Display extends { locale?: string }>(
-  display?: Display[]
-): Display | undefined {
+function findDisplay<Display extends { locale?: string }>(display?: Display[]): Display | undefined {
   if (!display) return undefined
 
   let item = display.find((d) => d.locale?.startsWith('en-'))
@@ -123,9 +121,7 @@ function getW3cIssuerDisplay(
   }
 }
 
-function getSdJwtIssuerDisplay(
-  openId4VcMetadata?: OpenId4VcCredentialMetadata | null
-): CredentialIssuerDisplay {
+function getSdJwtIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetadata | null): CredentialIssuerDisplay {
   const issuerDisplay: Partial<CredentialIssuerDisplay> = {}
 
   // Try to extract from openid metadata first
@@ -275,8 +271,7 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   }
   // TODO: We should map these claims to nice format and names
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, ...visibleProperties } =
-    sdJwtVcPayload as SdJwtVcPayload
+  const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, ...visibleProperties } = sdJwtVcPayload as SdJwtVcPayload
 
   const credentialMetadata: CredentialMetadata = {
     type: vct,
@@ -305,13 +300,9 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     // FIXME: we should probably add a decode method on the SdJwtVcRecord
     // as you now need the agent context to decode the sd-jwt vc, while that's
     // not really needed
-    const { disclosures, jwt } = decodeSdJwtSync(credentialRecord.compactSdJwtVc, (data, alg) =>
+    const { disclosures, jwt } = decodeSdJwtSync(credentialRecord.compactSdJwtVc, (data, alg) => Hasher.hash(data, alg))
+    const decodedPayload: Record<string, unknown> = getClaimsSync(jwt.payload, disclosures, (data, alg) =>
       Hasher.hash(data, alg)
-    )
-    const decodedPayload: Record<string, unknown> = getClaimsSync(
-      jwt.payload,
-      disclosures,
-      (data, alg) => Hasher.hash(data, alg)
     )
 
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
@@ -328,31 +319,30 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       },
       attributes: filterAndMapSdJwtKeys(decodedPayload).visibleProperties,
     }
-  } else {
-    const credential = JsonTransformer.toJSON(
-      credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
-        ? credentialRecord.credential.credential
-        : credentialRecord.credential
-    ) as W3cCredentialJson
+  }
+  const credential = JsonTransformer.toJSON(
+    credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
+      ? credentialRecord.credential.credential
+      : credentialRecord.credential
+  ) as W3cCredentialJson
 
-    const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
-    const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
-    const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
+  const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+  const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
+  const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
 
-    // FIXME: support credential with multiple subjects
-    const credentialAttributes = Array.isArray(credential.credentialSubject)
-      ? credential.credentialSubject[0] ?? {}
-      : credential.credentialSubject
+  // FIXME: support credential with multiple subjects
+  const credentialAttributes = Array.isArray(credential.credentialSubject)
+    ? credential.credentialSubject[0] ?? {}
+    : credential.credentialSubject
 
-    return {
-      id: `w3c-credential-${credentialRecord.id}` satisfies CredentialForDisplayId,
-      createdAt: credentialRecord.createdAt,
-      display: {
-        ...credentialDisplay,
-        issuer: issuerDisplay,
-      },
-      credential,
-      attributes: credentialAttributes,
-    }
+  return {
+    id: `w3c-credential-${credentialRecord.id}` satisfies CredentialForDisplayId,
+    createdAt: credentialRecord.createdAt,
+    display: {
+      ...credentialDisplay,
+      issuer: issuerDisplay,
+    },
+    credential,
+    attributes: credentialAttributes,
   }
 }

@@ -1,19 +1,20 @@
 {
-  "name": "@internal/scanner",
-  "version": "0.0.1",
-  "private": true,
-  "main": "src/index.ts",
-  "dependencies": {
-    "@internal/ui": "*"
-  },
-  "devDependencies": {
-    "@react-native-masked-view/masked-view": "0.3.0",
-    "@types/react": "^18.0.27",
-    "expo-barcode-scanner": "~12.9.3"
-  },
-  "peerDependencies": {
-    "@react-native-masked-view/masked-view": "0.3.0",
-    "expo-barcode-scanner": "~12.9.3",
-    "react-native": "0.71.7"
-  }
+	"name": "@package/scanner",
+	"version": "0.0.0",
+	"private": true,
+	"main": "src/index.ts",
+	"dependencies": {
+		"@package/ui": "workspace:*"
+	},
+	"devDependencies": {
+		"@react-native-masked-view/masked-view": "0.3.1",
+		"@types/react": "^18.0.27",
+		"expo-barcode-scanner": "~13.0.1",
+		"react-native": "0.74.2"
+	},
+	"peerDependencies": {
+		"@react-native-masked-view/masked-view": "0.3.1",
+		"expo-barcode-scanner": "~13.0.1",
+		"react-native": "0.74.2"
+	}
 }

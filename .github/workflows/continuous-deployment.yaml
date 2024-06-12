@@ -20,19 +20,30 @@ on:
           - 'ios'
           - 'all'
         default: 'all'
+      app:
+        type: choice
+        description: 'App to deploy'
+        required: true
+        options:
+          - 'funke'
+          - 'paradym'
+        default: 'paradym'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🏗 Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
@@ -41,12 +52,15 @@ jobs:
           token: ${{ secrets.EXPO_PUBLISHER_ACCESS_TOKEN }}
 
       - name: 📦 Install dependencies
-        run: yarn install
+        run: pnpm install
+
+      - name: 🚀 Build 
+        run: pnpm build
 
       - name: 🚀 Build internal preview
         if: ${{ github.event.inputs.channel == 'preview' }}
-        run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
+        run: (cd apps/${{ github.event.inputs.app }} && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
         if: ${{ github.event.inputs.channel == 'production' }}
-        run: (cd apps/expo && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
+        run: (cd apps/${{ github.event.inputs.app }} && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)

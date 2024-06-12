@@ -1,61 +1,34 @@
 {
-  "name": "paradym-wallet",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "native": "cd apps/expo && yarn start",
-    "ios": "cd apps/expo && yarn ios",
-    "android": "cd apps/expo && yarn android",
-    "watch": "yarn workspaces foreach -pi run watch",
-    "fix": "manypkg fix",
-    "postinstall": "yarn check-deps && yarn build",
-    "build": "yarn workspaces foreach run build",
-    "upgrade:tamagui": "yarn up '*tamagui*'@latest '@tamagui/*'@latest react-native-web-lite@latest",
-    "upgrade:tamagui:canary": "yarn up '*tamagui*'@canary '@tamagui/*'@canary react-native-web-lite@canary",
-    "check-deps": "check-dependency-version-consistency .",
-    "_prettier": "prettier --ignore-path .gitignore '**/*.+(js|jsx|json|ts|tsx|md|yml|yaml)'",
-    "format": "yarn _prettier --write",
-    "check-format": "yarn _prettier --list-different",
-    "check-types": "tsc --noEmit",
-    "lint": "eslint --ignore-path .gitignore .",
-    "maestro:test": "maestro test .maestro/app-flow.yaml",
-    "maestro:studio": "maestro studio",
-    "test:unit": "jest"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "resolutions": {
-    "@unimodules/react-native-adapter": "./noop",
-    "@unimodules/core": "./noop",
-    "@sphereon/pex@^3.3.2": "patch:@sphereon/pex@npm%3A3.3.2#./.yarn/patches/@sphereon-pex-npm-3.3.2-144d9252ec.patch"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.18.9",
-    "@manypkg/cli": "^0.19.1",
-    "@typescript-eslint/eslint-plugin": "^5.59.5",
-    "@typescript-eslint/parser": "^5.59.5",
-    "check-dependency-version-consistency": "^3.0.3",
-    "eslint": "^8.40.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.32.2",
-    "node-gyp": "^9.3.1",
-    "prettier": "^2.7.1",
-    "turbo": "^1.8.3",
-    "typescript": "^4.7.4"
-  },
-  "packageManager": "yarn@3.5.0",
-  "devDependencies": {
-    "@jest/globals": "^29.5.0",
-    "@types/jest": "^29.5.2",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1"
-  }
+	"name": "wallets",
+	"private": true,
+	"scripts": {
+		"postinstall": "pnpm deps:check",
+		"build": "pnpm -r build",
+		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
+		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
+		"deps:check": "check-dependency-version-consistency .",
+		"deps:fix": "pnpm deps:check --fix",
+		"check-types": "tsc --noEmit",
+		"lint": "biome lint .",
+		"lint:fix": "pnpm lint --write --unsafe",
+		"format": "biome format .",
+		"format:fix": "pnpm format --fix"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.8.1",
+		"check-dependency-version-consistency": "^3.0.3",
+		"typescript": "*"
+	},
+	"pnpm": {
+		"overrides": {
+			"@types/react": "~18.2.79",
+			"react": "18.2.0",
+			"typescript": "~5.3.3",
+			"@unimodules/react-native-adapter": "./noop",
+			"@unimodules/core": "./noop"
+		}
+	}
 }

@@ -1,4 +1,4 @@
-import type { AppAgent } from '../agent'
+import type { Agent } from '@credo-ts/core'
 import type { PropsWithChildren } from 'react'
 
 import NativeAgentProvider from '@credo-ts/react-hooks'
@@ -8,7 +8,7 @@ import { SdJwtVcRecordProvider } from './SdJwtVcsProvider'
 import { W3cCredentialRecordProvider } from './W3cCredentialsProvider'
 
 export interface AgentProviderProps {
-  agent: AppAgent
+  agent: Agent
 }
 
 export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProviderProps>) => (

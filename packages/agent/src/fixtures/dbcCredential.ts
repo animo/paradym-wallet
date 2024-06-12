@@ -1,17 +1,16 @@
-import type { AppAgent } from '../agent'
+import type { FullAppAgent } from '../agent'
 import type { JwkDidCreateOptions } from '@credo-ts/core'
 
 import { KeyType, TypedArrayEncoder, W3cJwtVerifiableCredential } from '@credo-ts/core'
 
-export async function importDbcCredentialWithDid(agent: AppAgent) {
+export async function importDbcCredentialWithDid(agent: FullAppAgent) {
   const dbcCredenitalSubjectDid =
     'did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IjVzWU9RVWZ5S0NfeWJFckJoLWdDQWJSWTdhNzhVd2JLTGdPbG11UWJFeDAiLCJ5IjoibjdUVnlIVGR4SFl4MlBnX2JPTkRaMU5jRDYzcUdscXpWSUxIRUhQOUNSRSJ9'
   const dbcCredentialSubjectDidSeed = TypedArrayEncoder.fromString(
     '1234567890123456789012345678901234567890123456789012345678901234'
   )
 
-  const hasDbcCredentialSubjectDid =
-    (await agent.dids.getCreatedDids({ did: dbcCredenitalSubjectDid })).length !== 0
+  const hasDbcCredentialSubjectDid = (await agent.dids.getCreatedDids({ did: dbcCredenitalSubjectDid })).length !== 0
 
   if (!hasDbcCredentialSubjectDid) {
     await agent.dids.create<JwkDidCreateOptions>({

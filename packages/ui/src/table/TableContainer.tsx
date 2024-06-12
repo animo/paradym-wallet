@@ -7,11 +7,7 @@ interface TableContainerProps {
   padX?: string
 }
 
-export const TableContainer = ({
-  children,
-  padY,
-  padX,
-}: PropsWithChildren<TableContainerProps>) => {
+export const TableContainer = ({ children, padY, padX }: PropsWithChildren<TableContainerProps>) => {
   return (
     <YStack border br="$4" bg="$white" width="100%" px={padX ?? 0} py={padY ?? 0} overflow="hidden">
       {children}

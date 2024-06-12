@@ -1,4 +1,4 @@
-import type { AppAgent } from '../agent'
+import type { FullAppAgent } from '../agent'
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
@@ -37,20 +37,17 @@ import {
 } from '@credo-ts/core'
 import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
 import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
-import { getHostNameFromUrl } from '@internal/utils'
+import { getHostNameFromUrl } from '@package/utils'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
-import {
-  extractOpenId4VcCredentialMetadata,
-  setOpenId4VcCredentialMetadata,
-} from '../openid4vc/metadata'
+import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
   agent,
   data,
   uri,
 }: {
-  agent: AppAgent
+  agent: FullAppAgent
   // Either data itself (the offer) or uri can be passed
   data?: string
   uri?: string
@@ -60,9 +57,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   if (!offerUri && data) {
     // FIXME: Credo only support credential offer string, but we already parsed it before. So we construct an offer here
     // but in the future we need to support the parsed offer in Credo directly
-    offerUri = `openid-credential-offer://credential_offer=${encodeURIComponent(
-      JSON.stringify(data)
-    )}`
+    offerUri = `openid-credential-offer://credential_offer=${encodeURIComponent(JSON.stringify(data))}`
   } else if (!offerUri) {
     throw new Error('either data or uri must be provided')
   }
@@ -72,93 +67,90 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     data,
     uri,
   })
-  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(
-    offerUri
-  )
+  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offerUri)
 
   // FIXME: return credential_supported entry for credential so it's easy to store metadata
-  const credentials =
-    await agent.modules.openId4VcHolder.acceptCredentialOfferUsingPreAuthorizedCode(
-      resolvedCredentialOffer,
-      {
-        credentialBindingResolver: async ({
-          supportedDidMethods,
-          keyType,
-          supportsAllDidMethods,
-          supportsJwk,
-          credentialFormat,
-        }) => {
-          // First, we try to pick a did method
-          // Prefer did:jwk, otherwise use did:key, otherwise use undefined
-          let didMethod: 'key' | 'jwk' | undefined =
-            supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
-              ? 'jwk'
-              : supportedDidMethods?.includes('did:key')
+  const credentials = await agent.modules.openId4VcHolder.acceptCredentialOfferUsingPreAuthorizedCode(
+    resolvedCredentialOffer,
+    {
+      credentialBindingResolver: async ({
+        supportedDidMethods,
+        keyType,
+        supportsAllDidMethods,
+        supportsJwk,
+        credentialFormat,
+      }) => {
+        // First, we try to pick a did method
+        // Prefer did:jwk, otherwise use did:key, otherwise use undefined
+        let didMethod: 'key' | 'jwk' | undefined =
+          supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
+            ? 'jwk'
+            : supportedDidMethods?.includes('did:key')
               ? 'key'
               : undefined
 
-          // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
-          // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
-          // define which did methods they support
-          if (!supportedDidMethods && !supportsJwk) {
-            didMethod = 'key'
-          }
+        // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
+        // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
+        // define which did methods they support
+        if (!supportedDidMethods && !supportsJwk) {
+          didMethod = 'key'
+        }
 
-          if (didMethod) {
-            const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
-              method: didMethod,
-              options: {
-                keyType,
-              },
-            })
-
-            if (didResult.didState.state !== 'finished') {
-              throw new Error('DID creation failed.')
-            }
-
-            let verificationMethodId: string
-            if (didMethod === 'jwk') {
-              const didJwk = DidJwk.fromDid(didResult.didState.did)
-              verificationMethodId = didJwk.verificationMethodId
-            } else {
-              const didKey = DidKey.fromDid(didResult.didState.did)
-              verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
-            }
-
-            return {
-              didUrl: verificationMethodId,
-              method: 'did',
-            }
-          }
-
-          // Otherwise we also support plain jwk for sd-jwt only
-          if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
-            const key = await agent.wallet.createKey({
+        if (didMethod) {
+          const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
+            method: didMethod,
+            options: {
               keyType,
-            })
-            return {
-              method: 'jwk',
-              jwk: getJwkFromKey(key),
-            }
+            },
+          })
+
+          if (didResult.didState.state !== 'finished') {
+            throw new Error('DID creation failed.')
           }
 
-          throw new Error(
-            `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
-              supportsJwk ? 'jwk, ' : ''
-            }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
-          )
-        },
+          let verificationMethodId: string
+          if (didMethod === 'jwk') {
+            const didJwk = DidJwk.fromDid(didResult.didState.did)
+            verificationMethodId = didJwk.verificationMethodId
+          } else {
+            const didKey = DidKey.fromDid(didResult.didState.did)
+            verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
+          }
 
-        verifyCredentialStatus: false,
-        allowedProofOfPossessionSignatureAlgorithms: [
-          // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
-          // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
-          // will be used
-          JwaSignatureAlgorithm.EdDSA,
-          JwaSignatureAlgorithm.ES256,
-        ],
-      }
-    )
+          return {
+            didUrl: verificationMethodId,
+            method: 'did',
+          }
+        }
+
+        // Otherwise we also support plain jwk for sd-jwt only
+        if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
+          const key = await agent.wallet.createKey({
+            keyType,
+          })
+          return {
+            method: 'jwk',
+            jwk: getJwkFromKey(key),
+          }
+        }
+
+        throw new Error(
+          `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
+            supportsJwk ? 'jwk, ' : ''
+          }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
+        )
+      },
+
+      verifyCredentialStatus: false,
+      allowedProofOfPossessionSignatureAlgorithms: [
+        // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
+        // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
+        // will be used
+        JwaSignatureAlgorithm.EdDSA,
+        JwaSignatureAlgorithm.ES256,
+      ],
+    }
+  )
 
   const [firstCredential] = credentials
   if (!firstCredential) throw new Error('Error retrieving credential using pre authorized flow.')
@@ -194,7 +186,7 @@ export const getCredentialsForProofRequest = async ({
   data,
   uri,
 }: {
-  agent: AppAgent
+  agent: FullAppAgent
   // Either data or uri can be provided
   data?: string
   uri?: string
@@ -235,14 +227,12 @@ export const shareProof = async ({
   authorizationRequest,
   credentialsForRequest,
 }: {
-  agent: AppAgent
+  agent: FullAppAgent
   authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
   // TODO: support selection
   credentialsForRequest: DifPexCredentialsForRequest
 }) => {
-  const presentationExchangeService = agent.dependencyManager.resolve(
-    DifPresentationExchangeService
-  )
+  const presentationExchangeService = agent.dependencyManager.resolve(DifPresentationExchangeService)
 
   const credentials = presentationExchangeService.selectCredentialsForRequest(credentialsForRequest)
   const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
@@ -253,22 +243,15 @@ export const shareProof = async ({
   })
 
   if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
-    throw new Error(
-      `Error while accepting authorization request. ${result.serverResponse.body as string}`
-    )
+    throw new Error(`Error while accepting authorization request. ${result.serverResponse.body as string}`)
   }
 
   return result
 }
 
-export async function storeCredential(
-  agent: AppAgent,
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord
-) {
+export async function storeCredential(agent: FullAppAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
-    await agent.dependencyManager
-      .resolve(W3cCredentialRepository)
-      .save(agent.context, credentialRecord)
+    await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
   }
@@ -278,7 +261,7 @@ export async function storeCredential(
  * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
  */
 export async function receiveOutOfBandInvitation(
-  agent: AppAgent,
+  agent: FullAppAgent,
   invitation: OutOfBandInvitation
 ): Promise<
   | { success: true; id: string; type: 'credentialExchange' }
@@ -288,8 +271,7 @@ export async function receiveOutOfBandInvitation(
   const requestMessages = invitation.getRequests() ?? []
 
   if (requestMessages.length > 1) {
-    const message =
-      'Message contains multiple requests. Invitation should only contain a single request.'
+    const message = 'Message contains multiple requests. Invitation should only contain a single request.'
     agent.config.logger.error(message)
     return {
       success: false,
@@ -338,12 +320,10 @@ export async function receiveOutOfBandInvitation(
       filter((event) => event.payload.credentialRecord.connectionId === connectionId)
     )
 
-  const proofRequest = agent.events
-    .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
-    .pipe(
-      filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
-      filter((event) => event.payload.proofRecord.connectionId === connectionId)
-    )
+  const proofRequest = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
+    filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
+    filter((event) => event.payload.proofRecord.connectionId === connectionId)
+  )
 
   const eventPromise = firstValueFrom(
     merge(credentialOffer, proofRequest).pipe(
@@ -393,7 +373,8 @@ export async function receiveOutOfBandInvitation(
         id: event.payload.credentialRecord.id,
         type: 'credentialExchange',
       }
-    } else if (event.type === ProofEventTypes.ProofStateChanged) {
+    }
+    if (event.type === ProofEventTypes.ProofStateChanged) {
       return {
         success: true,
         id: event.payload.proofRecord.id,
@@ -402,7 +383,7 @@ export async function receiveOutOfBandInvitation(
     }
   } catch (error) {
     agent.config.logger.error(
-      `Error while waiting for credential offer or proof request. Deleting connection and records`
+      'Error while waiting for credential offer or proof request. Deleting connection and records'
     )
     // Delete OOB record
     const outOfBandRepository = agent.dependencyManager.resolve(OutOfBandRepository)

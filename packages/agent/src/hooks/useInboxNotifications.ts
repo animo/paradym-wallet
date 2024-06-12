@@ -69,7 +69,7 @@ export const usePreFetchInboxDisplayMetadata = () => {
         await agent.credentials.update(record)
       }
     })
-  }, [credentialExchangeRecords])
+  }, [credentialExchangeRecords, agent, connections])
 
   // Fetch associated metadata for each record
   useEffect(() => {
@@ -105,7 +105,7 @@ export const usePreFetchInboxDisplayMetadata = () => {
         await agent.proofs.update(record)
       }
     })
-  }, [proofExchangeRecords])
+  }, [proofExchangeRecords, agent, connections])
 }
 
 export const useInboxNotifications = () => {
@@ -129,17 +129,16 @@ export const useInboxNotifications = () => {
           contactLabel: metadata?.issuerName,
           notificationTitle: metadata?.credentialName ?? 'Credential',
         } as const
-      } else {
-        const metadata = getDidCommProofExchangeDisplayMetadata(record)
-
-        return {
-          id: record.id,
-          type: record.type,
-          createdAt: record.createdAt,
-          contactLabel: metadata?.verifierName,
-          notificationTitle: metadata?.proofName ?? 'Data Request',
-        } as const
       }
+      const metadata = getDidCommProofExchangeDisplayMetadata(record)
+
+      return {
+        id: record.id,
+        type: record.type,
+        createdAt: record.createdAt,
+        contactLabel: metadata?.verifierName,
+        notificationTitle: metadata?.proofName ?? 'Data Request',
+      } as const
     })
   }, [proofExchangeRecords, credentialExchangeRecords])
 

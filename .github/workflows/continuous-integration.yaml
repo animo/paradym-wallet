@@ -14,25 +14,28 @@ jobs:
     name: Validate
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Compile
-        run: yarn build
+        run: pnpm build
 
       - name: Linting
-        run: yarn lint
+        run: pnpm lint
 
-      - name: Prettier
-        run: yarn check-format
+      - name: Formatting
+        run: pnpm format
 
       - name: Check Types
-        run: yarn check-types
+        run: pnpm check-types
