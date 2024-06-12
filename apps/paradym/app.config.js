@@ -111,7 +111,7 @@ const config = {
   },
   extra: {
     eas: {
-      projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
+      projectId: '54ebcbb3-e83b-412c-ba7b-823ca1b222b9',
     },
     mediatorDid: variant.mediatorDid,
   },
