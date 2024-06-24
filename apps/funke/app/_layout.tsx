@@ -1,17 +1,21 @@
 import type { OpenId4VcHolderAppAgent } from '@package/agent'
 
 import { AgentProvider } from '@package/agent'
-import { useTransparentNavigationBar, Provider, NoInternetToastProvider, isAndroid } from '@package/app'
+import {
+  DeeplinkHandler,
+  NoInternetToastProvider,
+  Provider,
+  isAndroid,
+  useFonts,
+  useTransparentNavigationBar,
+} from '@package/app'
 import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
 import { getSecureWalletKey } from '@package/utils'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-import { DeeplinkHandler } from './utils'
 
 import { initializeAppAgent } from '.'
 
@@ -23,16 +27,7 @@ export const unstable_settings = {
 }
 
 export default function HomeLayout() {
-  const [fontLoaded] = useFonts({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterRegular: require('@tamagui/font-inter/otf/Inter-Regular.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterSemiBold: require('@tamagui/font-inter/otf/Inter-SemiBold.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-  })
+  const [fontLoaded] = useFonts()
   const [agent, setAgent] = useState<OpenId4VcHolderAppAgent>()
 
   const [agentInitializationFailed, setAgentInitializationFailed] = useState(false)

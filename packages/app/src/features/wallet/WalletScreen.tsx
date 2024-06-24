@@ -20,7 +20,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
-import { NoContentWallet, CredentialRowCard, CredentialCard, InboxIcon } from '../../components'
+import { CredentialCard, CredentialRowCard, InboxIcon, NoContentWallet } from '../../components'
 import { useNetworkCallback, useScrollViewPosition } from '../../hooks'
 
 type WalletScreenProps = {

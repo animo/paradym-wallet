@@ -33,7 +33,8 @@ The project is a monorepo managed using **pnpm**, which contains an **Expo React
 The folder structure is as follows
 
 - `apps` top level applications
-  - `expo` react native app for iOS & Android
+  - `paradym` Paradym Wallet - react native app for iOS & Android
+  - `funke` Funke Wallet - react native app for iOS & Android
 - `packages` shared packages
   - `ui` includes our custom UI kit that will be optimized by Tamagui
   - `agent` includes the Aries Framework JavaScript (AFJ) agent and SSI capabilities
@@ -44,15 +45,15 @@ The folder structure is as follows
 
 You can add other folders inside of `packages/` if you know what you're doing and have a good reason to.
 
-## 🏁 Start the Paradym wallet
+## 🏁 Start a wallet
 
 First, start by installing all dependencies by running `pnpm install`.
 
 Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device.
 You can install this using the following commands:
 
-```
-cd apps/paradym
+```sh
+cd apps/paradym # or apps/funke
 pnpm prebuild
 pnpm ios # or android
 ```
@@ -64,7 +65,6 @@ Once installed you can run `pnpm start` from the root of the project to start yo
 ## 📦 Releasing
 
 🚧 Soon documentation will be added on how to publish a new release to the Apple App Store and Google Play Stores. 🚧
-
 
 ## 🆕 Add new dependencies
 

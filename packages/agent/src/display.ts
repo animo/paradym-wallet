@@ -1,10 +1,10 @@
+import type { W3cCredentialRecord } from '@credo-ts/core'
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
-import type { W3cCredentialRecord } from '@credo-ts/core'
 
-import { Hasher, SdJwtVcRecord, ClaimFormat, JsonTransformer } from '@credo-ts/core'
-import { sanitizeString, getHostNameFromUrl } from '@package/utils'
+import { ClaimFormat, Hasher, JsonTransformer, SdJwtVcRecord } from '@credo-ts/core'
+import { getHostNameFromUrl, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'

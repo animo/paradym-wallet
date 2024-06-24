@@ -8,11 +8,9 @@
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
 		"deps:check": "check-dependency-version-consistency .",
 		"deps:fix": "pnpm deps:check --fix",
-		"check-types": "tsc --noEmit",
-		"lint": "biome lint .",
-		"lint:fix": "pnpm lint --write --unsafe",
-		"format": "biome format .",
-		"format:fix": "pnpm format --fix"
+		"types:check": "tsc --noEmit",
+		"style:check": "biome check --unsafe",
+		"style:fix": "biome check --write --unsafe"
 	},
 	"engines": {
 		"node": ">=18.0.0"

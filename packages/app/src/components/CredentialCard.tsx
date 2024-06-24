@@ -1,6 +1,6 @@
 import type { DisplayImage } from '@package/agent'
 
-import { XStack, YStack, Image, Paragraph, Heading, FileBadge, darken, getTextColorBasedOnBg, Card } from '@package/ui'
+import { Card, FileBadge, Heading, Image, Paragraph, XStack, YStack, darken, getTextColorBasedOnBg } from '@package/ui'
 
 import { useHasInternetConnection } from '../hooks'
 

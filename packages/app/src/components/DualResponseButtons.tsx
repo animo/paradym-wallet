@@ -1,4 +1,4 @@
-import { YStack, Button, Spinner } from '@package/ui'
+import { Button, Spinner, YStack } from '@package/ui'
 
 interface DualResponseButtonProps {
   isAccepting?: boolean

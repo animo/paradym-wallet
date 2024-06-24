@@ -31,11 +31,8 @@ jobs:
       - name: Compile
         run: pnpm build
 
-      - name: Linting
-        run: pnpm lint
-
-      - name: Formatting
-        run: pnpm format
+      - name: Check Style
+        run: pnpm style:check
 
       - name: Check Types
-        run: pnpm check-types
+        run: pnpm types:check

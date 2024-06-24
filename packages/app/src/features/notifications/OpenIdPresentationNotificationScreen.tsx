@@ -1,4 +1,4 @@
-import { getCredentialsForProofRequest, shareProof, formatDifPexCredentialsForRequest, useAgent } from '@package/agent'
+import { formatDifPexCredentialsForRequest, getCredentialsForProofRequest, shareProof, useAgent } from '@package/agent'
 import { useToastController } from '@package/ui'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { createParam } from 'solito'
