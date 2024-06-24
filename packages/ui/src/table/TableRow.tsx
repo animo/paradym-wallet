@@ -1,4 +1,4 @@
-import { Paragraph, YStack, XStack } from '../base'
+import { Paragraph, XStack, YStack } from '../base'
 import { Image } from '../content'
 
 interface TableRowProps {

@@ -1,18 +1,13 @@
 import type { FullAppAgent } from '@package/agent'
 
+import { AgentProvider, hasMediationConfigured, setupMediationWithDid, useMessagePickup } from '@package/agent'
 import {
-  AgentProvider,
-  hasMediationConfigured,
-  initializeFullAgent,
-  setupMediationWithDid,
-  useMessagePickup,
-} from '@package/agent'
-import {
+  DeeplinkHandler,
+  NoInternetToastProvider,
+  Provider,
+  isAndroid,
   useHasInternetConnection,
   useTransparentNavigationBar,
-  Provider,
-  NoInternetToastProvider,
-  isAndroid,
 } from '@package/app'
 import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
 import { getSecureWalletKey } from '@package/utils'
@@ -25,7 +20,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { initializeAppAgent } from '.'
 
 import { mediatorDid } from './constants'
-import { DeeplinkHandler } from './utils'
 
 void SplashScreen.preventAutoHideAsync()
 

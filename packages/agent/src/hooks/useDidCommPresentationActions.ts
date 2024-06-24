@@ -1,4 +1,3 @@
-import type { FormattedSubmission } from '../format/formatPresentation'
 import type {
   AnonCredsPredicateType,
   AnonCredsRequestedAttributeMatch,
@@ -6,6 +5,7 @@ import type {
   AnonCredsRequestedPredicateMatch,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/core'
+import type { FormattedSubmission } from '../format/formatPresentation'
 
 import { CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
 import { useConnectionById, useProofById } from '@credo-ts/react-hooks'

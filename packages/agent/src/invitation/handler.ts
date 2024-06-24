@@ -1,44 +1,44 @@
-import type { FullAppAgent } from '../agent'
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
+  DifPexCredentialsForRequest,
   JwkDidCreateOptions,
   KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
   ProofStateChangedEvent,
-  DifPexCredentialsForRequest,
 } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
-  OpenId4VciCredentialSupportedWithId,
   OpenId4VcSiopVerifiedAuthorizationRequest,
+  OpenId4VciCredentialSupportedWithId,
 } from '@credo-ts/openid4vc'
+import type { FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
+  CredentialEventTypes,
+  CredentialState,
+  DidJwk,
+  DidKey,
   DifPresentationExchangeService,
+  JwaSignatureAlgorithm,
+  OutOfBandRepository,
+  ProofEventTypes,
+  ProofState,
   SdJwtVcRecord,
   SdJwtVcRepository,
+  V2OfferCredentialMessage,
+  V2RequestPresentationMessage,
   W3cCredentialRecord,
   W3cCredentialRepository,
   getJwkFromKey,
-  CredentialEventTypes,
-  CredentialState,
-  OutOfBandRepository,
   parseMessageType,
-  ProofEventTypes,
-  ProofState,
-  V2OfferCredentialMessage,
-  V2RequestPresentationMessage,
-  DidJwk,
-  DidKey,
-  JwaSignatureAlgorithm,
 } from '@credo-ts/core'
 import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
 import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@package/utils'
-import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
+import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 

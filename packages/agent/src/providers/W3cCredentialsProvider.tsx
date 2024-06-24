@@ -1,9 +1,9 @@
-import type { FullAppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
+import type { FullAppAgent } from '../agent'
 
 import { W3cCredentialRecord } from '@credo-ts/core'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '@credo-ts/react-hooks/build/recordUtils'
-import { useState, createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import type * as React from 'react'
 
 export { W3cCredentialRecord, W3cVerifiableCredential } from '@credo-ts/core'

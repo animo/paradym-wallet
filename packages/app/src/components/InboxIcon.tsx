@@ -1,5 +1,5 @@
 import { useHasInboxNotifications } from '@package/agent'
-import { XStack, Inbox } from '@package/ui'
+import { Inbox, XStack } from '@package/ui'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useRouter } from 'solito/router'

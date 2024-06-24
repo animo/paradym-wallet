@@ -1,5 +1,5 @@
-import type { FullAppAgent } from '../agent'
 import type { JwkDidCreateOptions } from '@credo-ts/core'
+import type { FullAppAgent } from '../agent'
 
 import { KeyType, TypedArrayEncoder, W3cJwtVerifiableCredential } from '@credo-ts/core'
 

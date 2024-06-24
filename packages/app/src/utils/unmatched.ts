@@ -1,4 +1,4 @@
-import { usePathname, useGlobalSearchParams } from 'expo-router'
+import { useGlobalSearchParams, usePathname } from 'expo-router'
 
 // NOTE: for all unmatched routes we render null, as it's good chance that
 // we got here due to deep-linking, and we already handle that somewhere else

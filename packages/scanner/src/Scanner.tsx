@@ -1,10 +1,10 @@
 import type { StyleProp, ViewStyle } from 'react-native'
 
-import { Heading, AnimatePresence, Page, Paragraph, Button, XStack, YStack, Spacer, AlertOctagon } from '@package/ui'
+import { AlertOctagon, AnimatePresence, Button, Heading, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
 import { useCallback, useEffect, useState } from 'react'
-import { Linking, StyleSheet, Dimensions, Platform } from 'react-native'
+import { Dimensions, Linking, Platform, StyleSheet } from 'react-native'
 
 interface BarcodeScannerProps {
   onScan(data: string): void

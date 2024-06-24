@@ -1,11 +1,11 @@
 import type { FormattedSubmission } from '@package/agent'
 
-import { YStack, Heading, Button, ScrollView, Paragraph } from '@package/ui'
+import { Button, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { DualResponseButtons, CredentialRowCard } from '../../../components'
+import { CredentialRowCard, DualResponseButtons } from '../../../components'
 
 interface PresentationNotificationScreenProps {
   submission: FormattedSubmission
