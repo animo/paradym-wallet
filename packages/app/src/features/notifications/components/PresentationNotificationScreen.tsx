@@ -152,7 +152,7 @@ export function PresentationNotificationScreen({
           )}
         </YStack>
       </ScrollView>
-      <Sheet ref={ref} snapPoints={['40%']}>
+      <Sheet ref={ref} snapPoints={['40%']} onClose={() => setChangeSubmissionCredentialIndex(-1)}>
         <BottomSheetScrollView>
           <Stack bg="$white" pb="$4">
             {currentSubmissionEntry?.credentials.map((c, credentialIndex) => (

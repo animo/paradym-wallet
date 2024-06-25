@@ -1,5 +1,4 @@
 import type {
-  AnonCredsCredentialsForProofRequest,
   AnonCredsPredicateType,
   AnonCredsRequestedAttributeMatch,
   AnonCredsRequestedPredicate,
@@ -24,14 +23,9 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   const proofExchange = useProofById(proofExchangeId)
   const connection = useConnectionById(proofExchange?.connectionId ?? '')
 
-  let formatKey: 'anoncreds' | 'indy' | undefined = undefined
-  let anonCredsCredentials: AnonCredsCredentialsForProofRequest | undefined
-
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
-    queryFn: async (): Promise<FormattedSubmission> => {
-      formatKey = undefined
-      anonCredsCredentials = undefined
+    queryFn: async () => {
       const repository = agent.dependencyManager.resolve(CredentialRepository)
       const formatData = await agent.proofs.getFormatData(proofExchangeId)
 
@@ -41,8 +35,9 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         proofRecordId: proofExchangeId,
       })
 
-      formatKey = formatData.request?.anoncreds !== undefined ? 'anoncreds' : 'indy'
-      anonCredsCredentials = credentialsForRequest.proofFormats.anoncreds ?? credentialsForRequest.proofFormats.indy
+      const formatKey = formatData.request?.anoncreds !== undefined ? 'anoncreds' : 'indy'
+      const anonCredsCredentials =
+        credentialsForRequest.proofFormats.anoncreds ?? credentialsForRequest.proofFormats.indy
       if (!anonCredsCredentials || !proofRequest) {
         throw new CredoError('Invalid proof request.')
       }
@@ -133,7 +128,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
       submission.areAllSatisfied = submission.entries.every((entry) => entry.isSatisfied)
 
-      return submission
+      return { submission, formatKey, anonCredsCredentials }
     },
   })
 
@@ -144,23 +139,24 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         undefined
 
       if (selectedCredentials && Object.keys(selectedCredentials).length > 0) {
-        if (!formatKey || !anonCredsCredentials) throw new Error('Unable to accept presentation without credentials')
+        if (!data?.formatKey || !data.anonCredsCredentials)
+          throw new Error('Unable to accept presentation without credentials')
         const selectedAttributes = Object.fromEntries(
-          Object.entries(anonCredsCredentials.attributes).map(([groupName, matches]) => [
+          Object.entries(data.anonCredsCredentials.attributes).map(([groupName, matches]) => [
             groupName,
             matches[selectedCredentials[groupName] ?? 0],
           ])
         )
 
         const selectedPredicates = Object.fromEntries(
-          Object.entries(anonCredsCredentials.predicates).map(([groupName, matches]) => [
+          Object.entries(data.anonCredsCredentials.predicates).map(([groupName, matches]) => [
             groupName,
             matches[selectedCredentials[groupName] ?? 0],
           ])
         )
 
         formatInput = {
-          [formatKey]: {
+          [data.formatKey]: {
             attributes: selectedAttributes,
             predicates: selectedPredicates,
             selfAttestedAttributes: {},
@@ -218,7 +214,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     acceptStatus,
     declineStatus,
     proofExchange,
-    submission: data,
+    submission: data?.submission,
     verifierName: connection?.theirLabel,
   }
 }
