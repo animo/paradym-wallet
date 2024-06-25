@@ -19,8 +19,8 @@ import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { initializeAppAgent } from '.'
 
-import { mediatorDid } from './constants'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { mediatorDid } from './constants'
 
 void SplashScreen.preventAutoHideAsync()
 
