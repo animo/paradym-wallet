@@ -1,6 +1,6 @@
 import { useDidCommPresentationActions, useAgent } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -19,6 +19,10 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
 
+  const [selectedCredentials, setSelectedCredentials] = useState<{
+    [groupName: string]: number
+  }>({})
+
   const pushToWallet = () => {
     router.back()
     router.push('/')
@@ -29,7 +33,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   }
 
   const onProofAccept = () => {
-    acceptPresentation()
+    acceptPresentation(selectedCredentials)
       .then(() => {
         toast.show('Information has been successfully shared.')
       })
@@ -58,6 +62,13 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
       // If state is not idle, it means we have pressed accept
       isAccepting={acceptStatus !== 'idle'}
       verifierName={verifierName}
+      selectedCredentials={selectedCredentials}
+      onSelectCredentialForInputDescriptor={(groupName: string, vcIndex: number) =>
+        setSelectedCredentials((selectedCredentials) => ({
+          ...selectedCredentials,
+          [groupName]: vcIndex,
+        }))
+      }
     />
   )
 }
