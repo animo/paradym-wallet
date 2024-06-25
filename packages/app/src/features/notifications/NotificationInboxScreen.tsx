@@ -2,7 +2,7 @@ import { useInboxNotifications } from '@package/agent'
 import { ScrollView, YStack } from '@package/ui'
 import { useRouter } from 'solito/router'
 
-import { NoContentInbox, InboxNotificationRowCard } from '../../components'
+import { InboxNotificationRowCard, NoContentInbox } from '../../components'
 
 export function NotificationInboxScreen() {
   const inboxNotifications = useInboxNotifications()

@@ -1,4 +1,4 @@
-import { useDidCommPresentationActions, useAgent } from '@package/agent'
+import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'

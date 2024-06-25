@@ -1,9 +1,9 @@
-import type { FullAppAgent } from '../agent'
 import type { PropsWithChildren } from 'react'
+import type { FullAppAgent } from '../agent'
 
 import { SdJwtVcRecord } from '@credo-ts/core'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '@credo-ts/react-hooks/build/recordUtils'
-import { useState, createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import type * as React from 'react'
 
 export { SdJwtVc, SdJwtVcRecord } from '@credo-ts/core'

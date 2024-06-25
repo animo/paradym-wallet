@@ -1,4 +1,4 @@
-import { Paragraph, Button, Heading, YStack, Spacer } from '@package/ui'
+import { Button, Heading, Paragraph, Spacer, YStack } from '@package/ui'
 import { useRouter } from 'solito/router'
 
 export function NoContentWallet() {

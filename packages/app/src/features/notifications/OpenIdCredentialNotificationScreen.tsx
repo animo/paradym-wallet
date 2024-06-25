@@ -1,9 +1,9 @@
-import type { W3cCredentialRecord, SdJwtVcRecord } from '@package/agent'
+import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import {
   getCredentialForDisplay,
-  storeCredential,
   receiveCredentialFromOpenId4VciOffer,
+  storeCredential,
   useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'

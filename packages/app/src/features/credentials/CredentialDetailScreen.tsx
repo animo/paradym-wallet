@@ -1,7 +1,7 @@
 import type { CredentialForDisplayId } from '@package/agent'
 
 import { useCredentialForDisplayById } from '@package/agent'
-import { ScrollView, YStack, Spacer } from '@package/ui'
+import { ScrollView, Spacer, YStack } from '@package/ui'
 import React from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'

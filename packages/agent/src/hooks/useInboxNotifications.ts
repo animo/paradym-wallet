@@ -1,6 +1,6 @@
 import { CredentialState, ProofState } from '@credo-ts/core'
 import { useConnections, useCredentialByState, useProofByState } from '@credo-ts/react-hooks'
-import { useMemo, useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useAgent } from '../agent'
 import {

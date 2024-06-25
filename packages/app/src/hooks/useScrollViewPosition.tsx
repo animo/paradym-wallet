@@ -1,6 +1,6 @@
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 export const useScrollViewPosition = (offset?: number) => {
   const scrollEventThrottle = 48 // used to decrease precision to increase performance

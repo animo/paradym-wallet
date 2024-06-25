@@ -1,5 +1,5 @@
-import type { OpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 import type { CredentialExchangeRecord, ProofExchangeRecord } from '@credo-ts/core'
+import type { OpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 
 export interface DidCommCredentialExchangeDisplayMetadata {
   issuerName?: string

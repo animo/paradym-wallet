@@ -1,4 +1,4 @@
-import { YStack, Paragraph, TableContainer, TableRow, CornerDownRight, XStack, Heading } from '@package/ui'
+import { CornerDownRight, Heading, Paragraph, TableContainer, TableRow, XStack, YStack } from '@package/ui'
 
 import { formatCredentialSubject } from '../utils'
 

@@ -1,10 +1,10 @@
 import { shorthands } from '@tamagui/shorthands'
-import { radius, space, zIndex, size } from '@tamagui/themes'
+import { radius, size, space, zIndex } from '@tamagui/themes'
 import { createTamagui, createTokens } from 'tamagui'
 
 import { animations } from '../animations'
 
-import { fontRegular, fontMedium, fontSemiBold, fontBold } from './font'
+import { fontBold, fontMedium, fontRegular, fontSemiBold } from './font'
 
 export const absoluteFill = {
   position: 'absolute',

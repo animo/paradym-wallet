@@ -1,6 +1,6 @@
 import type { CredentialStateChangedEvent } from '@credo-ts/core'
 
-import { W3cCredentialRepository, CredentialState, CredentialEventTypes } from '@credo-ts/core'
+import { CredentialEventTypes, CredentialState, W3cCredentialRepository } from '@credo-ts/core'
 import { useCredentialById } from '@credo-ts/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
@@ -8,8 +8,8 @@ import { filter, first, timeout } from 'rxjs/operators'
 
 import { useAgent } from '../agent'
 import {
-  openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
   getDidCommCredentialExchangeDisplayMetadata,
+  openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
 } from '../didcomm/metadata'
 import { setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 

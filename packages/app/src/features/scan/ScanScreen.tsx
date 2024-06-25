@@ -1,5 +1,5 @@
 import { QrScanner } from '@package/scanner'
-import { Page, Spinner, Paragraph } from '@package/ui'
+import { Page, Paragraph, Spinner } from '@package/ui'
 import { useIsFocused } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'

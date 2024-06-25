@@ -2,23 +2,23 @@ import type BottomSheet from '@gorhom/bottom-sheet'
 import type { FormattedSubmission } from '@package/agent'
 
 import {
-  YStack,
-  Heading,
-  Button,
-  ScrollView,
-  Paragraph,
   BottomSheetScrollView,
+  Button,
+  Heading,
+  Paragraph,
+  RefreshCw,
+  ScrollView,
   Sheet,
   Stack,
   XStack,
-  RefreshCw,
+  YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { DualResponseButtons, CredentialRowCard } from '../../../components'
 import { useNavigation } from 'expo-router'
+import { CredentialRowCard, DualResponseButtons } from '../../../components'
 
 interface PresentationNotificationScreenProps {
   submission: FormattedSubmission
