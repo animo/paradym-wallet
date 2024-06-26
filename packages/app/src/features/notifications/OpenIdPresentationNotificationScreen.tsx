@@ -30,6 +30,10 @@ export function OpenIdPresentationNotificationScreen() {
     [credentialsForRequest]
   )
 
+  const [selectedCredentials, setSelectedCredentials] = useState<{
+    [inputDescriptorId: string]: number
+  }>({})
+
   const pushToWallet = useCallback(() => {
     router.back()
     router.push('/')
@@ -68,6 +72,7 @@ export function OpenIdPresentationNotificationScreen() {
       agent,
       authorizationRequest: credentialsForRequest.authorizationRequest,
       credentialsForRequest: credentialsForRequest.credentialsForRequest,
+      selectedCredentials,
     })
       .then(() => {
         toast.show('Information has been successfully shared.')
@@ -95,6 +100,13 @@ export function OpenIdPresentationNotificationScreen() {
       submission={submission}
       isAccepting={isSharing}
       verifierName={credentialsForRequest.verifierHostName}
+      selectedCredentials={selectedCredentials}
+      onSelectCredentialForInputDescriptor={(inputDescriptorId: string, index: number) =>
+        setSelectedCredentials((selectedCredentials) => ({
+          ...selectedCredentials,
+          [inputDescriptorId]: index,
+        }))
+      }
     />
   )
 }

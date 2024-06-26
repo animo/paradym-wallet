@@ -3,6 +3,7 @@ import type {
   AnonCredsRequestedAttributeMatch,
   AnonCredsRequestedPredicate,
   AnonCredsRequestedPredicateMatch,
+  AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/core'
 import type { FormattedSubmission } from '../format/formatPresentation'
@@ -24,18 +25,19 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
-    queryFn: async (): Promise<FormattedSubmission> => {
+    queryFn: async () => {
       const repository = agent.dependencyManager.resolve(CredentialRepository)
       const formatData = await agent.proofs.getFormatData(proofExchangeId)
+
       const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
 
       const credentialsForRequest = await agent.proofs.getCredentialsForRequest({
         proofRecordId: proofExchangeId,
       })
 
+      const formatKey = formatData.request?.anoncreds !== undefined ? 'anoncreds' : 'indy'
       const anonCredsCredentials =
         credentialsForRequest.proofFormats.anoncreds ?? credentialsForRequest.proofFormats.indy
-
       if (!anonCredsCredentials || !proofRequest) {
         throw new CredoError('Invalid proof request.')
       }
@@ -46,90 +48,122 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         name: proofRequest?.name ?? 'Unknown',
       }
 
+      const allCredentialIds = [
+        ...Object.values(anonCredsCredentials.attributes).flatMap((matches) =>
+          matches.map((match) => match.credentialId)
+        ),
+        ...Object.values(anonCredsCredentials.predicates).flatMap((matches) =>
+          matches.map((match) => match.credentialId)
+        ),
+      ]
+      const credentialExchanges = await repository.findByQuery(agent.context, {
+        $or: allCredentialIds.map((credentialId) => ({ credentialIds: [credentialId] })),
+      })
+
+      const attributes = anonCredsCredentials.attributes
       await Promise.all(
-        Object.keys(anonCredsCredentials.attributes).map(async (groupName) => {
+        Object.keys(attributes).map(async (groupName) => {
           const requestedAttribute = proofRequest.requested_attributes[groupName]
           const attributeNames = requestedAttribute?.names ?? [requestedAttribute?.name as string]
-          const attributeArray = anonCredsCredentials.attributes[groupName] as AnonCredsRequestedAttributeMatch[]
+          const attributeArray = attributes[groupName] as AnonCredsRequestedAttributeMatch[]
 
-          const firstMatch = attributeArray[0]
+          submission.entries.push({
+            inputDescriptorId: groupName,
+            isSatisfied: attributeArray.length >= 1,
+            name: groupName, // TODO
+            credentials: attributeArray.map((attribute) => {
+              const credentialExchange = credentialExchanges.find((c) =>
+                c.credentials.find((cc) => cc.credentialRecordId === attribute.credentialId)
+              )
+              const credentialDisplayMetadata = credentialExchange
+                ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
+                : undefined
 
-          if (!firstMatch) {
-            submission.entries.push({
-              credentialName: 'Credential', // TODO: we can extract this from the schema name, but we would have to fetch it
-              isSatisfied: false,
-              name: groupName, // TODO
-              requestedAttributes: attributeNames,
-            })
-          } else {
-            const credentialExchange = await repository.findSingleByQuery(agent.context, {
-              credentialIds: [firstMatch.credentialId],
-            })
-
-            const credentialDisplayMetadata = credentialExchange
-              ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
-              : undefined
-
-            submission.entries.push({
-              name: groupName, // TODO: humanize string? Or should we let this out?
-              credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
-              isSatisfied: true,
-              issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
-              requestedAttributes: attributeNames,
-            })
-          }
+              return {
+                name: groupName, // TODO: humanize string? Or should we let this out?
+                credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
+                isSatisfied: true,
+                issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
+                requestedAttributes: attributeNames,
+              }
+            }),
+          })
         })
       )
 
+      const predicates = anonCredsCredentials.predicates
       await Promise.all(
-        Object.keys(anonCredsCredentials.predicates).map(async (groupName) => {
+        Object.keys(predicates).map(async (groupName) => {
           const requestedPredicate = proofRequest.requested_predicates[groupName]
-          const predicateArray = anonCredsCredentials.predicates[groupName] as AnonCredsRequestedPredicateMatch[]
+          const predicateArray = predicates[groupName] as AnonCredsRequestedPredicateMatch[]
 
           if (!requestedPredicate) {
             throw new Error('Invalid presentation request')
           }
 
-          // FIXME: we need to still filter based on the predicate (e.g. age is actually >= 18)
-          // This should probably be fixed in AFJ.
-          const firstMatch = predicateArray[0]
+          submission.entries.push({
+            inputDescriptorId: groupName,
+            isSatisfied: predicateArray.length >= 1,
+            name: groupName, // TODO
+            credentials: predicateArray.map((predicate) => {
+              const credentialExchange = credentialExchanges.find((c) =>
+                c.credentials.find((cc) => cc.credentialRecordId === predicate.credentialId)
+              )
+              const credentialDisplayMetadata = credentialExchange
+                ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
+                : undefined
 
-          if (!firstMatch) {
-            submission.entries.push({
-              credentialName: 'Credential', // TODO: we can extract this from the schema name, but we would have to fetch it
-              isSatisfied: false,
-              name: groupName, // TODO
-              requestedAttributes: [formatPredicate(requestedPredicate)],
-            })
-          } else {
-            const credentialExchange = await repository.findSingleByQuery(agent.context, {
-              credentialIds: [firstMatch.credentialId],
-            })
-
-            const credentialDisplayMetadata = credentialExchange
-              ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
-              : undefined
-
-            submission.entries.push({
-              name: groupName, // TODO: humanize string? Or should we let this out?
-              credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
-              isSatisfied: true,
-              issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
-              requestedAttributes: [formatPredicate(requestedPredicate)],
-            })
-          }
+              return {
+                name: groupName, // TODO: humanize string? Or should we let this out?
+                credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
+                isSatisfied: true,
+                issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
+                // TODO: we need to group multiple predicates/attributes for the same credential into one.
+                requestedAttributes: [formatPredicate(requestedPredicate)],
+              }
+            }),
+          })
         })
       )
 
       submission.areAllSatisfied = submission.entries.every((entry) => entry.isSatisfied)
 
-      return submission
+      return { submission, formatKey, anonCredsCredentials }
     },
   })
 
   const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
-    mutationFn: async () => {
+    mutationFn: async (selectedCredentials?: { [groupName: string]: number }) => {
+      let formatInput: { indy?: AnonCredsSelectedCredentials; anoncreds?: AnonCredsSelectedCredentials } | undefined =
+        undefined
+
+      if (selectedCredentials && Object.keys(selectedCredentials).length > 0) {
+        if (!data?.formatKey || !data.anonCredsCredentials)
+          throw new Error('Unable to accept presentation without credentials')
+        const selectedAttributes = Object.fromEntries(
+          Object.entries(data.anonCredsCredentials.attributes).map(([groupName, matches]) => [
+            groupName,
+            matches[selectedCredentials[groupName] ?? 0],
+          ])
+        )
+
+        const selectedPredicates = Object.fromEntries(
+          Object.entries(data.anonCredsCredentials.predicates).map(([groupName, matches]) => [
+            groupName,
+            matches[selectedCredentials[groupName] ?? 0],
+          ])
+        )
+
+        formatInput = {
+          [data.formatKey]: {
+            attributes: selectedAttributes,
+            predicates: selectedPredicates,
+            selfAttestedAttributes: {},
+          },
+        }
+      }
+
       const presentationDone$ = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
         // Correct record with id and state
         filter(
@@ -143,8 +177,10 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       )
 
       const presentationDonePromise = firstValueFrom(presentationDone$)
-
-      await agent.proofs.acceptRequest({ proofRecordId: proofExchangeId })
+      await agent.proofs.acceptRequest({
+        proofRecordId: proofExchangeId,
+        proofFormats: formatInput,
+      })
       await presentationDonePromise
     },
   })
@@ -178,7 +214,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     acceptStatus,
     declineStatus,
     proofExchange,
-    submission: data,
+    submission: data?.submission,
     verifierName: connection?.theirLabel,
   }
 }

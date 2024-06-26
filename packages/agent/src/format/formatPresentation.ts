@@ -12,51 +12,51 @@ export interface FormattedSubmission {
 }
 
 export interface FormattedSubmissionEntry {
-  name: string
+  /** can be either AnonCreds groupName or PEX inputDescriptorId */
+  inputDescriptorId: string
   isSatisfied: boolean
-  credentialName: string
-  issuerName?: string
+
+  name: string
   description?: string
-  requestedAttributes?: string[]
-  backgroundColor?: string
+
+  credentials: Array<{
+    credentialName: string
+    issuerName?: string
+    requestedAttributes?: string[]
+    backgroundColor?: string
+  }>
 }
 
 export function formatDifPexCredentialsForRequest(
   credentialsForRequest: DifPexCredentialsForRequest
 ): FormattedSubmission {
   const entries = credentialsForRequest.requirements.flatMap((requirement) => {
-    return requirement.submissionEntry.map((submission) => {
-      // FIXME: support credential selection from JFF branch
-      const [firstVerifiableCredential] = submission.verifiableCredentials
-      if (firstVerifiableCredential) {
-        // Credential can be satisfied
-        const { display, credential } = getCredentialForDisplay(firstVerifiableCredential.credentialRecord)
-
-        // TODO: support nesting
-        let requestedAttributes: string[]
-        if (firstVerifiableCredential.type === ClaimFormat.SdJwtVc) {
-          const { metadata, visibleProperties } = filterAndMapSdJwtKeys(firstVerifiableCredential.disclosedPayload)
-          requestedAttributes = [...Object.keys(visibleProperties), ...Object.keys(metadata)]
-        } else {
-          requestedAttributes = Object.keys(credential?.credentialSubject ?? {})
-        }
-
-        return {
-          name: submission.name ?? 'Unknown',
-          description: submission.purpose,
-          isSatisfied: true,
-          credentialName: display.name,
-          issuerName: display.issuer.name,
-          requestedAttributes,
-          backgroundColor: display.backgroundColor,
-        }
-      }
+    return requirement.submissionEntry.map((submission): FormattedSubmissionEntry => {
       return {
+        inputDescriptorId: submission.inputDescriptorId,
         name: submission.name ?? 'Unknown',
         description: submission.purpose,
-        isSatisfied: false,
-        // fallback to submission name because there is no credential
-        credentialName: submission.name ?? 'Credential name',
+        isSatisfied: submission.verifiableCredentials.length >= 1,
+
+        credentials: submission.verifiableCredentials.map((verifiableCredential) => {
+          const { display, credential } = getCredentialForDisplay(verifiableCredential.credentialRecord)
+
+          // TODO: support nesting
+          let requestedAttributes: string[]
+          if (verifiableCredential.type === ClaimFormat.SdJwtVc) {
+            const { metadata, visibleProperties } = filterAndMapSdJwtKeys(verifiableCredential.disclosedPayload)
+            requestedAttributes = [...Object.keys(visibleProperties), ...Object.keys(metadata)]
+          } else {
+            requestedAttributes = Object.keys(credential?.credentialSubject ?? {})
+          }
+
+          return {
+            credentialName: display.name,
+            issuerName: display.issuer.name,
+            requestedAttributes,
+            backgroundColor: display.backgroundColor,
+          }
+        }),
       }
     })
   })
