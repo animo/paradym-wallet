@@ -97,7 +97,8 @@ export function PresentationNotificationScreen({
                       bg="$white"
                       gap="$2"
                       borderColor={s.isSatisfied ? '$grey-300' : '$danger-500'}
-                      onPress={s.credentials.length > 1 ? () => setChangeSubmissionCredentialIndex(i) : undefined}
+                      // disable credential selection until we have better UX
+                      // onPress={s.credentials.length > 1 ? () => setChangeSubmissionCredentialIndex(i) : undefined}
                       pressStyle={{ backgroundColor: s.isSatisfied ? '$grey-100' : undefined }}
                     >
                       <YStack gap="$2">
@@ -110,7 +111,8 @@ export function PresentationNotificationScreen({
                               bgColor={selectedCredential?.backgroundColor}
                             />
                           </Stack>
-                          <Stack pr="$3">{s.credentials.length > 1 && <RefreshCw color="$grey-600" />}</Stack>
+                          {/* Disable credential selection until we have better UX */}
+                          {/* <Stack pr="$3">{s.credentials.length > 1 && <RefreshCw color="$grey-600" />}</Stack> */}
                         </XStack>
                         {s.description && (
                           <Paragraph secondary px="$3" variant="text">
