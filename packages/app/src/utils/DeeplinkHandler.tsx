@@ -2,12 +2,12 @@ import { useCallback } from 'react'
 import type { ReactNode } from 'react'
 
 import { InvitationQrTypes } from '@package/agent'
-import { useCredentialDataHandler } from '@package/app'
 import { useToastController } from '@package/ui'
 import { CommonActions } from '@react-navigation/native'
 import * as Linking from 'expo-linking'
 import { useNavigation } from 'expo-router'
 import { useEffect, useState } from 'react'
+import { useCredentialDataHandler } from '../hooks'
 
 interface DeeplinkHandlerProps {
   children: ReactNode
