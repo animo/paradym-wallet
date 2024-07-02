@@ -50,9 +50,6 @@ export function formatCredentialSubject(
   const objectTables: CredentialAttributeTable[] = []
 
   for (const key of Object.keys(subject)) {
-    // omit id and type
-    if (key === 'id' || key === 'type') continue
-
     const value = subject[key]
 
     // omit properties with no value
