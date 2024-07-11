@@ -16,6 +16,8 @@ import { filter, first, timeout } from 'rxjs/operators'
 import { useAgent } from '../agent'
 import { getDidCommCredentialExchangeDisplayMetadata } from '../didcomm/metadata'
 
+type ProofedCredentialEntry = FormattedSubmission['entries'][number]
+
 export function useDidCommPresentationActions(proofExchangeId: string) {
   const { agent } = useAgent()
 
@@ -40,10 +42,22 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         throw new CredoError('Invalid proof request.')
       }
 
-      const submission: FormattedSubmission = {
-        areAllSatisfied: false,
-        entries: [],
-        name: proofRequest?.name ?? 'Unknown',
+      const entries = new Map<string, ProofedCredentialEntry>()
+      const mergeOrSetEntry = (key: string, newEntry: ProofedCredentialEntry) => {
+        const entry = entries.get(key)
+        if (entry) {
+          entries.set(key, {
+            name: entry.name || newEntry.name,
+            backgroundColor: entry.backgroundColor || newEntry.backgroundColor,
+            description: entry.description || newEntry.description,
+            credentialName: entry.credentialName || newEntry.credentialName,
+            issuerName: entry.issuerName || newEntry.issuerName,
+            isSatisfied: entry.isSatisfied && newEntry.isSatisfied, // Check if both are true otherwise it's not satisfied
+            requestedAttributes: [...(entry.requestedAttributes ?? []), ...(newEntry.requestedAttributes ?? [])],
+          })
+        } else {
+          entries.set(key, newEntry)
+        }
       }
 
       await Promise.all(
@@ -54,8 +68,13 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
           const firstMatch = attributeArray[0]
 
+          // When the credentialId isn't available and there is no __CREDENTIAL__ in the groupName, we use the groupName as the key but it will result in multiple entries in the view. But I think it's not an easy task to merge them
+          const credentialKey =
+            firstMatch?.credentialId ??
+            (groupName.includes('__CREDENTIAL__') ? groupName.split('__CREDENTIAL__')[0] : groupName)
+
           if (!firstMatch) {
-            submission.entries.push({
+            mergeOrSetEntry(credentialKey, {
               credentialName: 'Credential', // TODO: we can extract this from the schema name, but we would have to fetch it
               isSatisfied: false,
               name: groupName, // TODO
@@ -70,7 +89,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
               : undefined
 
-            submission.entries.push({
+            mergeOrSetEntry(credentialKey, {
               name: groupName, // TODO: humanize string? Or should we let this out?
               credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
               isSatisfied: true,
@@ -94,8 +113,13 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           // This should probably be fixed in AFJ.
           const firstMatch = predicateArray[0]
 
+          // When the credentialId isn't available and there is no __CREDENTIAL__ in the groupName, we use the groupName as the key but it will result in multiple entries in the view. But I think it's not an easy task to merge them
+          const credentialKey =
+            firstMatch?.credentialId ??
+            (groupName.includes('__CREDENTIAL__') ? groupName.split('__CREDENTIAL__')[0] : groupName)
+
           if (!firstMatch) {
-            submission.entries.push({
+            mergeOrSetEntry(credentialKey, {
               credentialName: 'Credential', // TODO: we can extract this from the schema name, but we would have to fetch it
               isSatisfied: false,
               name: groupName, // TODO
@@ -110,7 +134,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
               : undefined
 
-            submission.entries.push({
+            mergeOrSetEntry(credentialKey, {
               name: groupName, // TODO: humanize string? Or should we let this out?
               credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
               isSatisfied: true,
@@ -120,6 +144,14 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           }
         })
       )
+
+      const entriesArray = Array.from(entries.values())
+
+      const submission: FormattedSubmission = {
+        areAllSatisfied: entriesArray.every((entry) => entry.isSatisfied),
+        entries: entriesArray,
+        name: proofRequest?.name ?? 'Unknown',
+      }
 
       submission.areAllSatisfied = submission.entries.every((entry) => entry.isSatisfied)
 
