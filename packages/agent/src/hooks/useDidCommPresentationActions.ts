@@ -68,9 +68,8 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
           const firstMatch = attributeArray[0]
 
-          const credentialKey = groupName.includes('__CREDENTIAL__')
-            ? groupName.split('__CREDENTIAL__')[0]
-            : firstMatch?.credentialId ?? groupName
+          // When the credentialId isn't available, we use the groupName as the key but it will result in multiple entries in the view. But I think it's not an easy task to merge them
+          const credentialKey = firstMatch?.credentialId ?? groupName
 
           if (!firstMatch) {
             mergeOrSetEntry(credentialKey, {
@@ -112,9 +111,8 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           // This should probably be fixed in AFJ.
           const firstMatch = predicateArray[0]
 
-          const credentialKey = groupName.includes('__CREDENTIAL__')
-            ? groupName.split('__CREDENTIAL__')[0]
-            : firstMatch?.credentialId ?? groupName
+          // When the credentialId isn't available, we use the groupName as the key but it will result in multiple entries in the view. But I think it's not an easy task to merge them
+          const credentialKey = firstMatch?.credentialId ?? groupName
 
           if (!firstMatch) {
             mergeOrSetEntry(credentialKey, {
