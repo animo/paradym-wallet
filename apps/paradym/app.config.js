@@ -66,13 +66,14 @@ const config = {
   updates: {
     fallbackToCacheTimeout: 0,
   },
-  plugins: ['expo-font', 'expo-secure-store'],
+  plugins: ['expo-font'],
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,
     bundleIdentifier: `id.paradym.wallet${variant.bundle}`,
     infoPlist: {
-      NSCameraUsageDescription: 'This app uses the camera to scan QR-codes.',
+      NSCameraUsageDescription: 'Paradym Wallet uses the camera to initiate receiving and sharing of credentials.',
+      NSFaceIDUsageDescription: 'Paradym Wallet uses FaceID to securely unlock the wallet and share credentials.',
       ITSAppUsesNonExemptEncryption: false,
       // Add schemes for deep linking
       CFBundleURLTypes: [
