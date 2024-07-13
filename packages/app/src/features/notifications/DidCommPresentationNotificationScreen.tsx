@@ -20,7 +20,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
     useDidCommPresentationActions(proofExchangeId)
 
   const [selectedCredentials, setSelectedCredentials] = useState<{
-    [groupName: string]: number
+    [inputDescriptorId: string]: string
   }>({})
 
   const pushToWallet = () => {
@@ -63,10 +63,10 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
       isAccepting={acceptStatus !== 'idle'}
       verifierName={verifierName}
       selectedCredentials={selectedCredentials}
-      onSelectCredentialForInputDescriptor={(groupName: string, vcIndex: number) =>
+      onSelectCredentialForInputDescriptor={(groupName: string, credentialId: string) =>
         setSelectedCredentials((selectedCredentials) => ({
           ...selectedCredentials,
-          [groupName]: vcIndex,
+          [groupName]: credentialId,
         }))
       }
     />
