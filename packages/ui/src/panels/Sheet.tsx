@@ -1,52 +1,41 @@
-import { Sheet as TSheet } from '@tamagui/sheet'
-import { useState } from 'react'
+import type { ForwardedRef } from 'react'
 
-import { Button } from '../base'
-import { ChevronDown, ChevronUp } from '../content'
+import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet'
+import { forwardRef } from 'react'
+import { StyleSheet } from 'react-native'
 
 type Props = {
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  showChevron?: boolean
-  snapPoints?: number[]
+  snapPoints?: string[]
   children?: React.ReactNode
+  onClose?: () => void
 }
 
-export const Sheet = ({ open, setOpen, showChevron = false, snapPoints = [80], children }: Props) => {
-  const [position, setPosition] = useState(0)
+export { BottomSheetScrollView }
 
-  return (
-    <>
-      {showChevron && (
-        <Button.Text
-          size="$6"
-          icon={open ? <ChevronDown /> : <ChevronUp />}
-          circular
-          onPress={() => setOpen((x) => !x)}
-        />
-      )}
-      <TSheet
-        modal
-        open={open}
-        onOpenChange={setOpen}
+export const Sheet = forwardRef(
+  ({ snapPoints = ['80%'], children, onClose }: Props, ref: ForwardedRef<BottomSheet>) => {
+    return (
+      <BottomSheet
+        ref={ref}
+        enablePanDownToClose
+        onClose={onClose}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            opacity={0.5}
+            enableTouchThrough={false}
+            pressBehavior="none"
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            onPress={onClose}
+            style={[{ backgroundColor: 'rgba(0, 0, 0, 1)' }, StyleSheet.absoluteFillObject]}
+          />
+        )}
+        index={-1}
         snapPoints={snapPoints}
-        position={position}
-        onPositionChange={setPosition}
-        dismissOnSnapToBottom
       >
-        <TSheet.Overlay backgroundColor="$darkTranslucent" />
-        <TSheet.Handle backgroundColor="$black" h="$0.5" />
-        <TSheet.Frame
-          flex={1}
-          padding="$4"
-          justifyContent="center"
-          alignItems="center"
-          space="$4"
-          backgroundColor="$white"
-        >
-          {children}
-        </TSheet.Frame>
-      </TSheet>
-    </>
-  )
-}
+        {children}
+      </BottomSheet>
+    )
+  }
+)

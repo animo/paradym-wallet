@@ -21,7 +21,6 @@ import {
   CredentialState,
   DidJwk,
   DidKey,
-  DifPresentationExchangeService,
   JwaSignatureAlgorithm,
   OutOfBandRepository,
   ProofEventTypes,
@@ -226,15 +225,33 @@ export const shareProof = async ({
   agent,
   authorizationRequest,
   credentialsForRequest,
+  selectedCredentials,
 }: {
   agent: FullAppAgent
   authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
-  // TODO: support selection
   credentialsForRequest: DifPexCredentialsForRequest
+  selectedCredentials: { [inputDescriptorId: string]: string }
 }) => {
-  const presentationExchangeService = agent.dependencyManager.resolve(DifPresentationExchangeService)
+  if (!credentialsForRequest.areRequirementsSatisfied) {
+    throw new Error('Requirements from proof request are not satisfied')
+  }
 
-  const credentials = presentationExchangeService.selectCredentialsForRequest(credentialsForRequest)
+  // Map all requirements and entries to a credential record. If a credential record for an
+  // input descriptor has been provided in `selectedCredentials` we will use that. Otherwise
+  // it will pick the first available credential.
+  const credentials = Object.fromEntries(
+    credentialsForRequest.requirements.flatMap((requirement) =>
+      requirement.submissionEntry.map((entry) => {
+        const credentialId = selectedCredentials[entry.inputDescriptorId]
+        const credential =
+          entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
+          entry.verifiableCredentials[0]
+
+        return [entry.inputDescriptorId, [credential.credentialRecord]]
+      })
+    )
+  )
+
   const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
     authorizationRequest,
     presentationExchange: {

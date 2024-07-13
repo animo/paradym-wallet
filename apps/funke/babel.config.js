@@ -17,6 +17,8 @@ module.exports = (api) => {
           disableExtraction: process.env.NODE_ENV === 'development',
         },
       ],
+      // used for bottom sheet
+      'react-native-reanimated/plugin',
     ],
   }
 }
