@@ -20,6 +20,7 @@ export interface FormattedSubmissionEntry {
   description?: string
 
   credentials: Array<{
+    id: string
     credentialName: string
     issuerName?: string
     requestedAttributes?: string[]
@@ -51,6 +52,7 @@ export function formatDifPexCredentialsForRequest(
           }
 
           return {
+            id: verifiableCredential.credentialRecord.id,
             credentialName: display.name,
             issuerName: display.issuer.name,
             requestedAttributes,

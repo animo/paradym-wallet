@@ -31,7 +31,7 @@ export function OpenIdPresentationNotificationScreen() {
   )
 
   const [selectedCredentials, setSelectedCredentials] = useState<{
-    [inputDescriptorId: string]: number
+    [inputDescriptorId: string]: string
   }>({})
 
   const pushToWallet = useCallback(() => {
@@ -101,10 +101,10 @@ export function OpenIdPresentationNotificationScreen() {
       isAccepting={isSharing}
       verifierName={credentialsForRequest.verifierHostName}
       selectedCredentials={selectedCredentials}
-      onSelectCredentialForInputDescriptor={(inputDescriptorId: string, index: number) =>
+      onSelectCredentialForInputDescriptor={(inputDescriptorId: string, credentialId: string) =>
         setSelectedCredentials((selectedCredentials) => ({
           ...selectedCredentials,
-          [inputDescriptorId]: index,
+          [inputDescriptorId]: credentialId,
         }))
       }
     />

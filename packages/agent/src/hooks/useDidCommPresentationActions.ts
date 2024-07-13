@@ -141,6 +141,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               : undefined
 
             return {
+              id: match.credentialId,
               credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
               isSatisfied: true,
               issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
@@ -165,7 +166,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
   const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
-    mutationFn: async (selectedCredentials?: { [groupName: string]: number }) => {
+    mutationFn: async (selectedCredentials?: { [inputDescriptorId: string]: string }) => {
       let formatInput: { indy?: AnonCredsSelectedCredentials; anoncreds?: AnonCredsSelectedCredentials } | undefined =
         undefined
 
@@ -176,8 +177,8 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         const selectedPredicates: Record<string, AnonCredsRequestedPredicateMatch> = {}
 
         for (const [inputDescriptorId, entry] of Array.from(data.entries.entries())) {
-          const matchIndex = selectedCredentials[inputDescriptorId] ?? 0
-          const match = entry.matches[matchIndex]
+          const credentialId = selectedCredentials[inputDescriptorId]
+          const match = entry.matches.find((match) => match.credentialId === credentialId) ?? entry.matches[0]
 
           for (const groupName of entry.groupNames.attributes) {
             selectedAttributes[groupName] = {

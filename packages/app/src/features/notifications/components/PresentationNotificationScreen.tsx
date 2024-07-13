@@ -26,8 +26,8 @@ interface PresentationNotificationScreenProps {
   onAccept: () => void
   onDecline: () => void
   verifierName?: string
-  selectedCredentials: { [inputDescriptorId: string]: number }
-  onSelectCredentialForInputDescriptor: (inputDescriptorId: string, index: number) => void
+  selectedCredentials: { [inputDescriptorId: string]: string }
+  onSelectCredentialForInputDescriptor: (inputDescriptorId: string, credentialId: string) => void
 }
 
 export function PresentationNotificationScreen({
@@ -86,11 +86,11 @@ export function PresentationNotificationScreen({
             </YStack>
             <YStack gap="$4">
               {submission.entries.map((s, i) => {
-                const selectedCredentialIndex = selectedCredentials[s.inputDescriptorId] ?? 0
-                const selectedCredential = s.credentials[selectedCredentialIndex]
+                const selectedCredentialId = selectedCredentials[s.inputDescriptorId]
+                const selectedCredential = s.credentials.find((c) => c.id === selectedCredentialId) ?? s.credentials[0]
 
                 return (
-                  <YStack key={s.name}>
+                  <YStack key={s.inputDescriptorId}>
                     <YStack
                       br="$4"
                       border
@@ -160,12 +160,10 @@ export function PresentationNotificationScreen({
             {currentSubmissionEntry?.credentials.map((c, credentialIndex) => (
               <CredentialRowCard
                 onPress={() => {
-                  onSelectCredentialForInputDescriptor(currentSubmissionEntry.inputDescriptorId, credentialIndex)
+                  onSelectCredentialForInputDescriptor(currentSubmissionEntry.inputDescriptorId, c.id)
                   setChangeSubmissionCredentialIndex(-1)
                 }}
-                // The index is stable enough here
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                key={credentialIndex}
+                key={c.id}
                 issuer={c.issuerName}
                 name={c.credentialName}
                 hideBorder={credentialIndex === currentSubmissionEntry.credentials.length - 1}

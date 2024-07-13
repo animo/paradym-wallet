@@ -21,7 +21,6 @@ import {
   CredentialState,
   DidJwk,
   DidKey,
-  DifPresentationExchangeService,
   JwaSignatureAlgorithm,
   OutOfBandRepository,
   ProofEventTypes,
@@ -231,7 +230,7 @@ export const shareProof = async ({
   agent: FullAppAgent
   authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
   credentialsForRequest: DifPexCredentialsForRequest
-  selectedCredentials: { [inputDescriptorId: string]: number }
+  selectedCredentials: { [inputDescriptorId: string]: string }
 }) => {
   if (!credentialsForRequest.areRequirementsSatisfied) {
     throw new Error('Requirements from proof request are not satisfied')
@@ -243,9 +242,12 @@ export const shareProof = async ({
   const credentials = Object.fromEntries(
     credentialsForRequest.requirements.flatMap((requirement) =>
       requirement.submissionEntry.map((entry) => {
-        const vcIndex = selectedCredentials[entry.inputDescriptorId] ?? 0
+        const credentialId = selectedCredentials[entry.inputDescriptorId]
+        const credential =
+          entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
+          entry.verifiableCredentials[0]
 
-        return [entry.inputDescriptorId, [entry.verifiableCredentials[vcIndex].credentialRecord]]
+        return [entry.inputDescriptorId, [credential.credentialRecord]]
       })
     )
   )
