@@ -6,7 +6,7 @@ import type {
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/core'
-import type { FormattedSubmission } from '../format/formatPresentation'
+import type { FormattedSubmission, FormattedSubmissionEntry } from '../format/formatPresentation'
 
 import { CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
 import { useConnectionById, useProofById } from '@credo-ts/react-hooks'
@@ -42,10 +42,64 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         throw new CredoError('Invalid proof request.')
       }
 
-      const submission: FormattedSubmission = {
-        areAllSatisfied: false,
-        entries: [],
-        name: proofRequest?.name ?? 'Unknown',
+      const entries = new Map<
+        string,
+        {
+          groupNames: {
+            attributes: string[]
+            predicates: string[]
+          }
+          matches: Array<AnonCredsRequestedPredicateMatch>
+          requestedAttributes: Set<string>
+        }
+      >()
+
+      const mergeOrSetEntry = (
+        type: 'attribute' | 'predicate',
+        groupName: string,
+        requestedAttributeNames: string[],
+        matches: AnonCredsRequestedAttributeMatch[] | AnonCredsRequestedPredicateMatch[]
+      ) => {
+        // We create an entry hash. This way we can group all items that have the same credentials
+        // available. If no credentials are available for a group, we create a entry hash based
+        // on the group name
+        const entryHash = groupName.includes('__CREDENTIAL__')
+          ? groupName.split('__CREDENTIAL__')[0]
+          : matches.length > 0
+            ? matches
+                .map((a) => a.credentialId)
+                .sort()
+                .join(',')
+            : groupName
+
+        const entry = entries.get(entryHash)
+
+        if (!entry) {
+          entries.set(entryHash, {
+            groupNames: {
+              attributes: type === 'attribute' ? [groupName] : [],
+              predicates: type === 'predicate' ? [groupName] : [],
+            },
+            matches,
+            requestedAttributes: new Set(requestedAttributeNames),
+          })
+          return
+        }
+
+        if (type === 'attribute') {
+          entry.groupNames.attributes.push(groupName)
+        } else {
+          entry.groupNames.predicates.push(groupName)
+        }
+
+        entry.requestedAttributes = new Set([...requestedAttributeNames, ...entry.requestedAttributes])
+
+        // We only include the matches which are present in both entries. If we use the __CREDENTIAL__ it means we can only use
+        // credentials that match both (we want this in Paradym). For the other ones we create a 'hash' from all available credentialIds
+        // first already, so it should give the same result.
+        entry.matches = entry.matches.filter((match) =>
+          matches.some((innerMatch) => match.credentialId === innerMatch.credentialId)
+        )
       }
 
       const allCredentialIds = [
@@ -60,75 +114,52 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         $or: allCredentialIds.map((credentialId) => ({ credentialIds: [credentialId] })),
       })
 
-      const attributes = anonCredsCredentials.attributes
-      await Promise.all(
-        Object.keys(attributes).map(async (groupName) => {
-          const requestedAttribute = proofRequest.requested_attributes[groupName]
-          const attributeNames = requestedAttribute?.names ?? [requestedAttribute?.name as string]
-          const attributeArray = attributes[groupName] as AnonCredsRequestedAttributeMatch[]
+      for (const [groupName, attributeArray] of Object.entries(anonCredsCredentials.attributes)) {
+        const requestedAttribute = proofRequest.requested_attributes[groupName]
+        if (!requestedAttribute) throw new Error('Invalid presentation request')
+        const requestedAttributesNames = requestedAttribute.names ?? [requestedAttribute.name as string]
 
-          submission.entries.push({
-            inputDescriptorId: groupName,
-            isSatisfied: attributeArray.length >= 1,
-            name: groupName, // TODO
-            credentials: attributeArray.map((attribute) => {
-              const credentialExchange = credentialExchanges.find((c) =>
-                c.credentials.find((cc) => cc.credentialRecordId === attribute.credentialId)
-              )
-              const credentialDisplayMetadata = credentialExchange
-                ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
-                : undefined
+        mergeOrSetEntry('attribute', groupName, requestedAttributesNames, attributeArray)
+      }
 
-              return {
-                name: groupName, // TODO: humanize string? Or should we let this out?
-                credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
-                isSatisfied: true,
-                issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
-                requestedAttributes: attributeNames,
-              }
-            }),
-          })
-        })
-      )
+      for (const [groupName, predicateArray] of Object.entries(anonCredsCredentials.predicates)) {
+        const requestedPredicate = proofRequest.requested_predicates[groupName]
+        if (!requestedPredicate) throw new Error('Invalid presentation request')
 
-      const predicates = anonCredsCredentials.predicates
-      await Promise.all(
-        Object.keys(predicates).map(async (groupName) => {
-          const requestedPredicate = proofRequest.requested_predicates[groupName]
-          const predicateArray = predicates[groupName] as AnonCredsRequestedPredicateMatch[]
+        mergeOrSetEntry('predicate', groupName, [formatPredicate(requestedPredicate)], predicateArray)
+      }
 
-          if (!requestedPredicate) {
-            throw new Error('Invalid presentation request')
-          }
+      const entriesArray = Array.from(entries.entries()).map(([entryHash, entry]): FormattedSubmissionEntry => {
+        return {
+          inputDescriptorId: entryHash,
+          credentials: entry.matches.map((match) => {
+            const credentialExchange = credentialExchanges.find((c) =>
+              c.credentials.find((cc) => cc.credentialRecordId === match.credentialId)
+            )
+            const credentialDisplayMetadata = credentialExchange
+              ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
+              : undefined
 
-          submission.entries.push({
-            inputDescriptorId: groupName,
-            isSatisfied: predicateArray.length >= 1,
-            name: groupName, // TODO
-            credentials: predicateArray.map((predicate) => {
-              const credentialExchange = credentialExchanges.find((c) =>
-                c.credentials.find((cc) => cc.credentialRecordId === predicate.credentialId)
-              )
-              const credentialDisplayMetadata = credentialExchange
-                ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
-                : undefined
+            return {
+              credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
+              isSatisfied: true,
+              issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
+              requestedAttributes: Array.from(entry.requestedAttributes),
+            }
+          }),
+          isSatisfied: entry.matches.length > 0,
+          // TODO: we can fetch the schema name based on requirements
+          name: 'Credential',
+        }
+      })
 
-              return {
-                name: groupName, // TODO: humanize string? Or should we let this out?
-                credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
-                isSatisfied: true,
-                issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
-                // TODO: we need to group multiple predicates/attributes for the same credential into one.
-                requestedAttributes: [formatPredicate(requestedPredicate)],
-              }
-            }),
-          })
-        })
-      )
+      const submission: FormattedSubmission = {
+        areAllSatisfied: entriesArray.every((entry) => entry.isSatisfied),
+        entries: entriesArray,
+        name: proofRequest?.name ?? 'Unknown',
+      }
 
-      submission.areAllSatisfied = submission.entries.every((entry) => entry.isSatisfied)
-
-      return { submission, formatKey, anonCredsCredentials }
+      return { submission, formatKey, entries }
     },
   })
 
@@ -139,21 +170,26 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         undefined
 
       if (selectedCredentials && Object.keys(selectedCredentials).length > 0) {
-        if (!data?.formatKey || !data.anonCredsCredentials)
-          throw new Error('Unable to accept presentation without credentials')
-        const selectedAttributes = Object.fromEntries(
-          Object.entries(data.anonCredsCredentials.attributes).map(([groupName, matches]) => [
-            groupName,
-            matches[selectedCredentials[groupName] ?? 0],
-          ])
-        )
+        if (!data?.formatKey || !data.entries) throw new Error('Unable to accept presentation without credentials')
 
-        const selectedPredicates = Object.fromEntries(
-          Object.entries(data.anonCredsCredentials.predicates).map(([groupName, matches]) => [
-            groupName,
-            matches[selectedCredentials[groupName] ?? 0],
-          ])
-        )
+        const selectedAttributes: Record<string, AnonCredsRequestedAttributeMatch> = {}
+        const selectedPredicates: Record<string, AnonCredsRequestedPredicateMatch> = {}
+
+        for (const [inputDescriptorId, entry] of Array.from(data.entries.entries())) {
+          const matchIndex = selectedCredentials[inputDescriptorId] ?? 0
+          const match = entry.matches[matchIndex]
+
+          for (const groupName of entry.groupNames.attributes) {
+            selectedAttributes[groupName] = {
+              ...match,
+              revealed: true,
+            }
+          }
+
+          for (const groupName of entry.groupNames.predicates) {
+            selectedPredicates[groupName] = match
+          }
+        }
 
         formatInput = {
           [data.formatKey]: {

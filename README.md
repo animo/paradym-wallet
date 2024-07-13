@@ -20,10 +20,9 @@ With Paradym Wallet, you can seamlessly manage and present your digital credenti
 
 You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
 
-The wallet can be used in three environments:
+The wallet can be used with existing demo's in these environments:
 
 - Dutch Blockchain Coalition (DBC): Use your wallet to access the DBC zone where you can find extra resources related to DBC events. You can use [this link](https://ssi.dutchblockchaincoalition.org/demo/issuer) to receive your credential, and log in on the [DBC website](https://www.dutchblockchaincoalition.org/userlogin).
-- Triall: Log in to the Triall environment. Obtain your credential [here](https://ssi.triall.io/demo/issuer) and enter the environment on the [Trial website](https://ssi.triall.io/demo/issuer).
 - Future Mobility Alliance: Access the Future Mobility Data Marketplace by obtaining your credential [here](https://ssi.future-mobility-alliance.org/demo/issuer) and logging in via the [FMA website](https://marketplace.future-mobility-alliance.org/).
 
 ## Project Structure

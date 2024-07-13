@@ -1,6 +1,6 @@
 import * as NavigationBar from 'expo-navigation-bar'
 
-import { isAndroid } from '../utils'
+import { isAndroid } from '../utils/platform'
 
 export const useTransparentNavigationBar = () => {
   if (isAndroid()) {

@@ -29,7 +29,7 @@ export function DidCommNotificationScreen() {
   const toast = useToastController()
   const router = useRouter()
 
-  const [isLoadingInvitation, setIsLoadingInvitation] = useState(false)
+  const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
   const [notification, setNotification] = useState(
     params.credentialExchangeId
       ? ({
@@ -48,7 +48,8 @@ export function DidCommNotificationScreen() {
 
   useEffect(() => {
     async function handleInvitation() {
-      if (isLoadingInvitation) return
+      if (hasHandledNotificationLoading) return
+      setHasHandledNotificationLoading(true)
 
       try {
         const invitation = params.invitation
@@ -57,8 +58,8 @@ export function DidCommNotificationScreen() {
             ? decodeURIComponent(params.invitationUrl)
             : undefined
 
+        // Might be no invitation if a presentationExchangeId or credentialExchangeId is passed directly
         if (!invitation) return
-        setIsLoadingInvitation(true)
 
         const parseResult = await parseDidCommInvitation(agent, invitation)
         if (!parseResult.success) {
@@ -86,12 +87,10 @@ export function DidCommNotificationScreen() {
         toast.show('Error parsing invitation')
         pushToWallet()
       }
-
-      setIsLoadingInvitation(false)
     }
 
     void handleInvitation()
-  }, [params.invitation, params.invitationUrl, isLoadingInvitation, agent, toast, pushToWallet])
+  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, toast, pushToWallet])
 
   // We were routed here without any notification
   if (!params.credentialExchangeId && !params.proofExchangeId && !params.invitation && !params.invitationUrl) {
