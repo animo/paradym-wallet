@@ -66,7 +66,20 @@ const config = {
   updates: {
     fallbackToCacheTimeout: 0,
   },
-  plugins: ['expo-font', 'expo-secure-store'],
+  plugins: [
+    [
+      'expo-font',
+      {
+        fonts: [
+          '../../node_modules/@tamagui/font-inter/otf/Inter-Regular.otf',
+          '../../node_modules/@tamagui/font-inter/otf/Inter-Medium.otf',
+          '../../node_modules/@tamagui/font-inter/otf/Inter-SemiBold.otf',
+          '../../node_modules/@tamagui/font-inter/otf/Inter-Bold.otf',
+        ],
+      },
+    ],
+    'expo-secure-store',
+  ],
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,

@@ -4,7 +4,7 @@ import { createTamagui, createTokens } from 'tamagui'
 
 import { animations } from '../animations'
 
-import { fontInter } from './font'
+import { fontInter, fontRaleway } from './font'
 
 export const absoluteFill = {
   position: 'absolute',
@@ -62,23 +62,25 @@ export const hexColors = {
 
 export type Colors = keyof typeof hexColors
 
-export const tokens = createTokens({
+export const tokensInput = {
   color: hexColors,
   size,
   radius,
   zIndex,
   space,
-})
+} as const
+export const tokens = createTokens(tokensInput)
 
-export const config = createTamagui({
+export const configInput = {
   animations,
   shouldAddPrefersColorThemes: true,
   themeClassNameOnRoot: true,
   shorthands,
   fonts: {
+    default: fontInter,
     inter: fontInter,
+    raleway: fontRaleway,
   },
-  defaultFont: 'Inter',
   tokens,
   themes: {
     dark: {
@@ -88,4 +90,6 @@ export const config = createTamagui({
       ...tokens.color,
     },
   },
-})
+} as const
+
+export const config = createTamagui(configInput)

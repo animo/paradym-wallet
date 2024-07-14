@@ -12,7 +12,6 @@ import {
 import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
 import { getSecureWalletKey } from '@package/utils'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
@@ -30,16 +29,6 @@ export const unstable_settings = {
 }
 
 export default function HomeLayout() {
-  const [fontLoaded] = useFonts({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterRegular: require('@tamagui/font-inter/otf/Inter-Regular.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterSemiBold: require('@tamagui/font-inter/otf/Inter-SemiBold.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-  })
   const [agent, setAgent] = useState<FullAppAgent>()
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
   const hasInternetConnection = useHasInternetConnection()
@@ -108,13 +97,13 @@ export default function HomeLayout() {
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
-    if (fontLoaded && (agent || agentInitializationFailed)) {
+    if (agent || agentInitializationFailed) {
       void SplashScreen.hideAsync()
     }
-  }, [fontLoaded, agent, agentInitializationFailed])
+  }, [agent, agentInitializationFailed])
 
   // Show error screen if agent could not be initialized
-  if (fontLoaded && agentInitializationFailed) {
+  if (agentInitializationFailed) {
     return (
       <Provider>
         <Page jc="center" ai="center" g="md">
@@ -128,7 +117,7 @@ export default function HomeLayout() {
   }
 
   // The splash screen will be rendered on top of this
-  if (!fontLoaded || !agent) {
+  if (!agent) {
     return null
   }
 

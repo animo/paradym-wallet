@@ -5,7 +5,7 @@ import { Heading as THeading, styled } from 'tamagui'
 export const Heading = styled(THeading, {
   name: 'Heading',
   tag: 'span',
-  fontFamily: '$inter',
+  fontFamily: '$default',
   fontWeight: '$medium',
   userSelect: 'auto',
   accessibilityRole: 'header',
