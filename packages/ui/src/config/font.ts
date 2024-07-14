@@ -1,6 +1,6 @@
 import { createInterFont } from '@tamagui/font-inter'
-import { createFont } from 'tamagui'
 import { Platform } from 'react-native'
+import { createFont } from 'tamagui'
 
 export const fontRaleway = createFont({
   family: 'Raleway',

@@ -1,6 +1,6 @@
 // don't import from here, that's handled already
 // instead this is just setting types for this folder
-import { hexColors, tokensInput, configInput } from '@package/ui/src/config/tamagui.config'
+import { configInput, hexColors, tokensInput } from '@package/ui/src/config/tamagui.config'
 import { createTamagui, createTokens } from 'tamagui'
 
 const tokens = createTokens({

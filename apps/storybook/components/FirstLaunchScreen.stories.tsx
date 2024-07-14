@@ -1,4 +1,4 @@
-import { Heading, Page, YStack, Separator, Paragraph } from '@package/ui'
+import { Heading, Page, Paragraph, Separator, YStack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import { View } from 'react-native'
