@@ -4,6 +4,8 @@ import { styled, withStaticProperties } from 'tamagui'
 const Btn = styled(TButton, {
   name: 'Button',
   borderRadius: 8,
+  // fontFamily: '$default',
+  // fontWeight: '$medium',
   pressStyle: {
     opacity: 0.8,
   },

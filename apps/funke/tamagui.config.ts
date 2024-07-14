@@ -1,6 +1,6 @@
 // don't import from here, that's handled already
 // instead this is just setting types for this folder
-import { configInput, hexColors, tokensInput } from '@package/ui/src/config/tamagui.config'
+import { configInput, fontRaleway, hexColors, tokensInput } from '@package/ui/src/config/tamagui.config'
 import { createTamagui, createTokens } from 'tamagui'
 
 const tokens = createTokens({
@@ -25,9 +25,7 @@ const config = createTamagui({
   ...configInput,
   tokens,
   fonts: {
-    ...configInput.fonts,
-    // We use different font in the funke app
-    default: configInput.fonts.raleway,
+    default: fontRaleway,
   },
   themes: {
     dark: {

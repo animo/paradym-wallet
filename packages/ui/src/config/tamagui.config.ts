@@ -1,10 +1,11 @@
 import { shorthands } from '@tamagui/shorthands'
 import { radius, size, space, zIndex } from '@tamagui/themes'
-import { createTamagui, createTokens } from 'tamagui'
+import { type CreateTamaguiProps, createTamagui, createTokens } from 'tamagui'
 
 import { animations } from '../animations'
 
 import { fontInter, fontRaleway } from './font'
+export { fontInter, fontRaleway }
 
 export const absoluteFill = {
   position: 'absolute',
@@ -78,8 +79,6 @@ export const configInput = {
   shorthands,
   fonts: {
     default: fontInter,
-    inter: fontInter,
-    raleway: fontRaleway,
   },
   tokens,
   themes: {
@@ -90,6 +89,6 @@ export const configInput = {
       ...tokens.color,
     },
   },
-} as const
+} as const satisfies CreateTamaguiProps
 
 export const config = createTamagui(configInput)
