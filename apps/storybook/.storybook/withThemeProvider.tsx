@@ -1,7 +1,7 @@
-import React from 'react'
 import { TamaguiProvider } from '@package/ui'
-import { useColorScheme } from 'react-native'
 import type { Decorator } from '@storybook/react'
+import React from 'react'
+import { useColorScheme } from 'react-native'
 
 // TODO: make custom decorator that allows changing this from within the storybook UI. But
 // requires quite some boilerplate

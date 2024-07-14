@@ -1,7 +1,7 @@
+import { Spinner } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import { View } from 'react-native'
-import { Spinner } from '@package/ui'
 
 const meta = {
   title: 'Spinner',

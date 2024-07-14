@@ -78,6 +78,7 @@ export const config = createTamagui({
   fonts: {
     inter: fontInter,
   },
+  defaultFont: 'Inter',
   tokens,
   themes: {
     dark: {

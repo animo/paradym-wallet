@@ -1,9 +1,9 @@
 {
-  "name": "storybook",
-  "slug": "storybook",
-  "version": "1.0.0",
-  "orientation": "portrait",
-  "ios": {
-    "bundleIdentifier": "id.animo.wallet.storybook"
-  }
+	"name": "storybook",
+	"slug": "storybook",
+	"version": "1.0.0",
+	"orientation": "portrait",
+	"ios": {
+		"bundleIdentifier": "id.animo.wallet.storybook"
+	}
 }

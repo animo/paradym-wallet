@@ -1,1 +1,5 @@
-export default require('./.ondevice').default
+import { registerRootComponent } from 'expo'
+
+const Storybook = require('./.ondevice').default
+
+registerRootComponent(Storybook)
