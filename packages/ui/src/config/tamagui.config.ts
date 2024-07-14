@@ -4,7 +4,7 @@ import { createTamagui, createTokens } from 'tamagui'
 
 import { animations } from '../animations'
 
-import { fontBold, fontMedium, fontRegular, fontSemiBold } from './font'
+import { fontInter } from './font'
 
 export const absoluteFill = {
   position: 'absolute',
@@ -76,11 +76,7 @@ export const config = createTamagui({
   themeClassNameOnRoot: true,
   shorthands,
   fonts: {
-    body: fontMedium, // default to medium font
-    regular: fontRegular,
-    medium: fontMedium,
-    semiBold: fontSemiBold,
-    bold: fontBold,
+    inter: fontInter,
   },
   tokens,
   themes: {
