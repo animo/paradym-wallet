@@ -1,27 +1,14 @@
 // don't import from here, that's handled already
 // instead this is just setting types for this folder
-import { size, space, zIndex } from '@tamagui/themes'
+import { radius, size, space, zIndex } from '@tamagui/themes'
 
 import { configInput, fontRaleway, hexColors } from '@package/ui/src/config/tamagui.config'
 import { createTamagui, createTokens } from 'tamagui'
 
 export const tokensInput = {
   color: hexColors,
+  radius,
   size,
-  radius: {
-    0: '0px',
-    1: '4px',
-    2: '8px',
-    3: '12px',
-    4: '16px',
-    true: '16px',
-    5: '20px',
-    6: '24px',
-    7: '28px',
-    8: '32px',
-    9: '36px',
-    10: '40px',
-  },
   zIndex,
   space,
 } as const
