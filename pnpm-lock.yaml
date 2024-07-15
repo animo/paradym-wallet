@@ -362,6 +362,9 @@ importers:
       react:
         specifier: 18.2.0
         version: 18.2.0
+      react-device-frameset:
+        specifier: ^1.3.4
+        version: 1.3.4(react@18.2.0)
       react-native:
         specifier: 0.74.2
         version: 0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0)
@@ -620,6 +623,9 @@ importers:
       '@tamagui/toast':
         specifier: ^1.91.4
         version: 1.100.3(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+      react-native-heroicons:
+        specifier: ^4.0.0
+        version: 4.0.0(react-native-svg@15.2.0(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       tamagui:
         specifier: ^1.91.4
         version: 1.100.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.2.0))(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -8036,6 +8042,11 @@ packages:
       react: 18.2.0
       react-dom: '>=16.8.0'
 
+  react-device-frameset@1.3.4:
+    resolution: {integrity: sha512-M9VUa2up9TFOgsELHBFRkZf8ER0AyOYF5+5qbtYseQCZfg6XUxuNDX5VsJNfMGu6Zz6x9Dgh4rfFDFONK9H7dg==}
+    peerDependencies:
+      react: 18.2.0
+
   react-devtools-core@5.2.0:
     resolution: {integrity: sha512-vZK+/gvxxsieAoAyYaiRIVFxlajb7KXhgBDV7OsoMzaAE+IqGpoxusBjIgq5ibqA2IloKu0p9n7tE68z1xs18A==}
 
@@ -8112,6 +8123,12 @@ packages:
     resolution: {integrity: sha512-m3CkXWss6B1dd6mCMleLpzDCJJGGaHOLQsUzZv8kAASJmMfmVT4d2fx375iXKTRWT25ThBfae3dECuX5cq/8hg==}
     peerDependencies:
       react: 18.2.0
+
+  react-native-heroicons@4.0.0:
+    resolution: {integrity: sha512-RY3XhAr0aQxLtWUkIUifTUBYC3tOspe0pMTHTATpQYyg6Uw7PYO5qmHYFul9w8tvYAB43WDRZ+yomdVmMQ2Jqw==}
+    peerDependencies:
+      react: 18.2.0
+      react-native-svg: '>=9'
 
   react-native-markdown-display@6.1.6:
     resolution: {integrity: sha512-B/nHcsJ/lFie/GCmQKU1EJeDNTYRRY/sHMQEC9nzJ5uN8pm5F0KTFfC/UZn/Jb9x8Mi/S0neBw54UL+sygphUg==}
@@ -19385,6 +19402,10 @@ snapshots:
       react: 18.2.0
       react-dom: 18.3.1(react@18.2.0)
 
+  react-device-frameset@1.3.4(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+
   react-devtools-core@5.2.0:
     dependencies:
       shell-quote: 1.8.1
@@ -19477,6 +19498,11 @@ snapshots:
       react: 18.2.0
       react-fast-compare: 3.2.2
       shallowequal: 1.1.0
+
+  react-native-heroicons@4.0.0(react-native-svg@15.2.0(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+      react-native-svg: 15.2.0(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
 
   react-native-markdown-display@6.1.6(react-native@0.74.2(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
     dependencies:

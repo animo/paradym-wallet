@@ -1,4 +1,4 @@
-import type { TamaguiInternalConfig, TamaguiProviderProps } from '@package/ui'
+import type { TamaguiProviderProps } from '@package/ui'
 
 import { CustomToast, TamaguiProvider, ToastProvider } from '@package/ui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -9,20 +9,11 @@ import { ToastViewport } from './ToastViewport'
 
 const queryClient = new QueryClient()
 
-interface ProviderProps extends TamaguiProviderProps {
-  tamaguiConfig: TamaguiInternalConfig
-}
-
-export function Provider({ tamaguiConfig, children, ...rest }: PropsWithChildren<ProviderProps>) {
+export function Provider({ children, ...rest }: PropsWithChildren<TamaguiProviderProps>) {
   const scheme = useColorScheme()
 
   return (
-    <TamaguiProvider
-      config={tamaguiConfig}
-      disableInjectCSS
-      defaultTheme={scheme === 'dark' ? 'dark' : 'light'}
-      {...rest}
-    >
+    <TamaguiProvider disableInjectCSS defaultTheme={scheme === 'dark' ? 'dark' : 'light'} {...rest}>
       <ToastProvider
         swipeDirection="up"
         duration={6000}

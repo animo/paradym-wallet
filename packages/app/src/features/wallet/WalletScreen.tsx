@@ -7,9 +7,9 @@ import {
   HEADER_TITLE_TEXT_HEIGHT,
   Heading,
   Logo,
+  LucideIcon,
   Page,
   Paragraph,
-  Scan,
   ScrollView,
   Spinner,
   TableContainer,
@@ -62,7 +62,7 @@ export function WalletScreen({ logo }: WalletScreenProps) {
           shadowRadius={10}
           onPress={() => navigateToScanner()}
         >
-          <Scan color="$grey-100" />
+          <LucideIcon.Scan color="$grey-100" />
         </YStack>
       )}
       <XStack h="$4" jc="space-between" px="$4" py="$2" border={isScrolledByOffset} borderTopWidth={0}>

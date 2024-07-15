@@ -1,6 +1,6 @@
 import type { StyleProp, ViewStyle } from 'react-native'
 
-import { AlertOctagon, AnimatePresence, Button, Heading, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
+import { AnimatePresence, Button, Heading, LucideIcon, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
 import { useCallback, useEffect, useState } from 'react'
@@ -103,7 +103,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 ai="center"
                 gap="$2"
               >
-                <AlertOctagon size={16} />
+                <LucideIcon.AlertOctagon size={16} />
                 <Paragraph variant="text" size="$2" lineHeight={20}>
                   {helpText}
                 </Paragraph>

@@ -106,7 +106,7 @@ export default function HomeLayout() {
   // Show error screen if agent could not be initialized
   if (agentInitializationFailed) {
     return (
-      <Provider tamaguiConfig={tamaguiConfig}>
+      <Provider config={tamaguiConfig}>
         <Page jc="center" ai="center" g="md">
           <YStack>
             <Heading variant="h1">Error</Heading>
@@ -133,7 +133,7 @@ export default function HomeLayout() {
   }
 
   return (
-    <Provider tamaguiConfig={tamaguiConfig}>
+    <Provider config={tamaguiConfig}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <AgentProvider agent={agent}>
           <ThemeProvider value={DefaultTheme}>
