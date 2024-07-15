@@ -79,6 +79,7 @@ export const configInput = {
   themeClassNameOnRoot: true,
   shorthands,
   fonts: {
+    // By default we use the same font for headings and body
     default: fontInter,
     heading: fontInter,
   },
