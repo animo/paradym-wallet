@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react'
 import withThemeProvider from './withThemeProvider'
+import 'react-device-frameset/styles/marvel-devices.min.css'
 
 const preview: Preview = {
   decorators: [withThemeProvider],
