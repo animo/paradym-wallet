@@ -1,4 +1,4 @@
-import { Button, Heading, HeroIcon, LucideIcon, Page, Separator, XStack, YStack } from '@package/ui'
+import { Button, Heading, HeroIcon, Page, Separator, XStack, YStack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import { LinearGradient } from 'tamagui/linear-gradient'
