@@ -5,5 +5,22 @@
 	"orientation": "portrait",
 	"ios": {
 		"bundleIdentifier": "id.animo.wallet.storybook"
-	}
+	},
+	"plugins": [
+		[
+			"expo-font",
+			{
+				"fonts": [
+					"../../node_modules/@tamagui/font-inter/otf/Inter-Regular.otf",
+					"../../node_modules/@tamagui/font-inter/otf/Inter-Medium.otf",
+					"../../node_modules/@tamagui/font-inter/otf/Inter-SemiBold.otf",
+					"../../node_modules/@tamagui/font-inter/otf/Inter-Bold.otf",
+					"../../node_modules/@expo-google-fonts/raleway/Raleway_400Regular.ttf",
+					"../../node_modules/@expo-google-fonts/raleway/Raleway_500Medium.ttf",
+					"../../node_modules/@expo-google-fonts/raleway/Raleway_600SemiBold.ttf",
+					"../../node_modules/@expo-google-fonts/raleway/Raleway_700Bold.ttf"
+				]
+			}
+		]
+	]
 }

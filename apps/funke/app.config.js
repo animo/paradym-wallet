@@ -6,14 +6,17 @@ const variants = {
   development: {
     bundle: '.dev',
     name: ' (Dev)',
+    mediatorDid: 'did:web:mediator.dev.paradym.id',
   },
   preview: {
     bundle: '.preview',
     name: ' (Preview)',
+    mediatorDid: 'did:web:mediator.paradym.id',
   },
   production: {
     bundle: '',
     name: '',
+    mediatorDid: 'did:web:mediator.paradym.id',
   },
 }
 
@@ -52,7 +55,21 @@ const config = {
   updates: {
     fallbackToCacheTimeout: 0,
   },
-  plugins: ['expo-font', 'expo-secure-store', 'expo-router'],
+  plugins: [
+    [
+      'expo-font',
+      {
+        fonts: [
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_400Regular.ttf',
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_500Medium.ttf',
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_600SemiBold.ttf',
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_700Bold.ttf',
+        ],
+      },
+    ],
+    'expo-secure-store',
+    'expo-router',
+  ],
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,
@@ -88,6 +105,7 @@ const config = {
     eas: {
       projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
     },
+    mediatorDid: variant.mediatorDid,
   },
 }
 

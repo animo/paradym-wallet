@@ -6,7 +6,6 @@ import {
   NoInternetToastProvider,
   Provider,
   isAndroid,
-  useFonts,
   useTransparentNavigationBar,
 } from '@package/app'
 import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
@@ -19,6 +18,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { initializeAppAgent } from '.'
+import tamaguiConfig from '../tamagui.config'
 
 void SplashScreen.preventAutoHideAsync()
 
@@ -28,7 +28,6 @@ export const unstable_settings = {
 }
 
 export default function HomeLayout() {
-  const [fontLoaded] = useFonts()
   const [agent, setAgent] = useState<OpenId4VcHolderAppAgent>()
 
   const [agentInitializationFailed, setAgentInitializationFailed] = useState(false)
@@ -67,15 +66,15 @@ export default function HomeLayout() {
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
-    if (fontLoaded && (agent || agentInitializationFailed)) {
+    if (agent || agentInitializationFailed) {
       void SplashScreen.hideAsync()
     }
-  }, [fontLoaded, agent, agentInitializationFailed])
+  }, [agent, agentInitializationFailed])
 
   // Show error screen if agent could not be initialized
-  if (fontLoaded && agentInitializationFailed) {
+  if (agentInitializationFailed) {
     return (
-      <Provider>
+      <Provider tamaguiConfig={tamaguiConfig}>
         <Page jc="center" ai="center" g="md">
           <YStack>
             <Heading variant="h1">Error</Heading>
@@ -87,7 +86,7 @@ export default function HomeLayout() {
   }
 
   // The splash screen will be rendered on top of this
-  if (!fontLoaded || !agent) {
+  if (!agent) {
     return null
   }
 
@@ -102,7 +101,7 @@ export default function HomeLayout() {
   }
 
   return (
-    <Provider>
+    <Provider tamaguiConfig={tamaguiConfig}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <AgentProvider agent={agent}>
           <ThemeProvider value={DefaultTheme}>

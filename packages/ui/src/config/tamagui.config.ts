@@ -1,10 +1,11 @@
 import { shorthands } from '@tamagui/shorthands'
 import { radius, size, space, zIndex } from '@tamagui/themes'
-import { createTamagui, createTokens } from 'tamagui'
+import { type CreateTamaguiProps, createTamagui, createTokens } from 'tamagui'
 
 import { animations } from '../animations'
 
-import { fontInter } from './font'
+import { fontInter, fontRaleway } from './font'
+export { fontInter, fontRaleway }
 
 export const absoluteFill = {
   position: 'absolute',
@@ -62,23 +63,23 @@ export const hexColors = {
 
 export type Colors = keyof typeof hexColors
 
-export const tokens = createTokens({
+export const tokensInput = {
   color: hexColors,
   size,
   radius,
   zIndex,
   space,
-})
+} as const
+export const tokens = createTokens(tokensInput)
 
-export const config = createTamagui({
+export const configInput = {
   animations,
   shouldAddPrefersColorThemes: true,
   themeClassNameOnRoot: true,
   shorthands,
   fonts: {
-    inter: fontInter,
+    default: fontInter,
   },
-  defaultFont: 'Inter',
   tokens,
   themes: {
     dark: {
@@ -88,4 +89,6 @@ export const config = createTamagui({
       ...tokens.color,
     },
   },
-})
+} as const satisfies CreateTamaguiProps
+
+export const config = createTamagui(configInput)
