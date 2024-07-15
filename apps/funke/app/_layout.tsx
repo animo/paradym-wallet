@@ -96,7 +96,7 @@ export default function HomeLayout() {
     headerShown: true,
     header: () => {
       // Header is translucent by default. See configuration in app.json
-      return <XStack bg="$grey-200" h={top} />
+      return <XStack bg="$background" h={top} />
     },
   }
 
@@ -127,7 +127,7 @@ export default function HomeLayout() {
                     options={{
                       headerShown: true,
                       headerStyle: {
-                        backgroundColor: config.tokens.color['grey-200'].val,
+                        backgroundColor: config.tokens.color.background.val,
                       },
                       headerShadowVisible: false,
                       headerTintColor: config.tokens.color['primary-500'].val,

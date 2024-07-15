@@ -45,7 +45,7 @@ export function WalletScreen({ logo }: WalletScreenProps) {
   }
 
   return (
-    <YStack bg="$grey-200" height="100%" position="relative">
+    <YStack bg="$background" height="100%" position="relative">
       {credentials.length !== 0 && (
         <YStack
           zIndex="$5"

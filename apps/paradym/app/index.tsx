@@ -19,7 +19,7 @@ export default function Screen() {
           headerShown: true,
           title: 'Home',
           header: () => {
-            return <XStack h={top} bg="$grey-200" />
+            return <XStack h={top} bg="$background" />
           },
         }}
       />

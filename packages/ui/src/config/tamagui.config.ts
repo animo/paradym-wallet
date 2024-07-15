@@ -61,10 +61,11 @@ export const hexColors = {
   borderTranslucent: 'rgba(224, 227, 232, 0.5)', // grey-300 with opacity
 }
 
-export type Colors = keyof typeof hexColors
-
 export const tokensInput = {
-  color: hexColors,
+  color: {
+    ...hexColors,
+    background: hexColors['grey-200'],
+  },
   size,
   radius,
   zIndex,

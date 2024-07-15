@@ -65,13 +65,13 @@ export function PresentationNotificationScreen({
   return (
     <>
       <ScrollView
-        bg="$grey-200"
+        bg="$background"
         contentContainerStyle={{
           minHeight: '100%',
         }}
         safeAreaBottom={bottom}
       >
-        <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$grey-200">
+        <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$background">
           <YStack g="xl">
             <YStack ai="center" jc="center" gap="$4">
               <Heading variant="h2" ta="center" px="$4">

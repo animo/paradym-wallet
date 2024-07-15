@@ -17,6 +17,7 @@ const tokens = createTokens({
   ...tokensInput,
   color: {
     ...hexColors, // Re-use existing colors for positive/warnings etc.
+    background: hexColors.white,
     'grey-100': '#EFF3F6',
     'grey-200': '#E3E8EC',
     'grey-300': '#D7DCE0',
