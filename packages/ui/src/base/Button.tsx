@@ -3,7 +3,7 @@ import { styled, withStaticProperties } from 'tamagui'
 
 const Btn = styled(TButton, {
   name: 'Button',
-  borderRadius: 8,
+  borderRadius: '$4',
   fontFamily: '$default',
   fontWeight: '$medium',
   pressStyle: {
