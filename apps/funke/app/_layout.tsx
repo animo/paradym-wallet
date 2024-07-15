@@ -18,6 +18,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { initializeAppAgent } from '.'
+import tamaguiConfig from '../tamagui.config'
 
 void SplashScreen.preventAutoHideAsync()
 
@@ -73,7 +74,7 @@ export default function HomeLayout() {
   // Show error screen if agent could not be initialized
   if (agentInitializationFailed) {
     return (
-      <Provider>
+      <Provider tamaguiConfig={tamaguiConfig}>
         <Page jc="center" ai="center" g="md">
           <YStack>
             <Heading variant="h1">Error</Heading>
@@ -100,7 +101,7 @@ export default function HomeLayout() {
   }
 
   return (
-    <Provider>
+    <Provider tamaguiConfig={tamaguiConfig}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <AgentProvider agent={agent}>
           <ThemeProvider value={DefaultTheme}>
