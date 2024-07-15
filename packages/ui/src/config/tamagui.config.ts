@@ -4,8 +4,8 @@ import { type CreateTamaguiProps, createTamagui, createTokens } from 'tamagui'
 
 import { animations } from '../animations'
 
-import { fontInter, fontRaleway } from './font'
-export { fontInter, fontRaleway }
+import { fontInter, fontOpenSans, fontRaleway } from './font'
+export { fontInter, fontOpenSans, fontRaleway }
 
 export const absoluteFill = {
   position: 'absolute',
@@ -80,6 +80,7 @@ export const configInput = {
   shorthands,
   fonts: {
     default: fontInter,
+    heading: fontInter,
   },
   tokens,
   themes: {
