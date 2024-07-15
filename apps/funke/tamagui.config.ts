@@ -2,7 +2,7 @@
 // instead this is just setting types for this folder
 import { radius, size, space, zIndex } from '@tamagui/themes'
 
-import { configInput, fontRaleway, hexColors } from '@package/ui/src/config/tamagui.config'
+import { configInput, fontOpenSans, fontRaleway, hexColors } from '@package/ui/src/config/tamagui.config'
 import { createTamagui, createTokens } from 'tamagui'
 
 export const tokensInput = {
@@ -43,7 +43,8 @@ const config = createTamagui({
   ...configInput,
   tokens,
   fonts: {
-    default: fontRaleway,
+    default: fontOpenSans,
+    heading: fontRaleway,
   },
   themes: {
     dark: {
