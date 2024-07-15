@@ -57,6 +57,10 @@ const config = {
       'expo-font',
       {
         fonts: [
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_400Regular.ttf',
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_500Medium.ttf',
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_600SemiBold.ttf',
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_700Bold.ttf',
           '../../node_modules/@expo-google-fonts/raleway/Raleway_400Regular.ttf',
           '../../node_modules/@expo-google-fonts/raleway/Raleway_500Medium.ttf',
           '../../node_modules/@expo-google-fonts/raleway/Raleway_600SemiBold.ttf',

@@ -33,6 +33,9 @@ importers:
 
   apps/funke:
     dependencies:
+      '@expo-google-fonts/open-sans':
+        specifier: ^0.2.3
+        version: 0.2.3
       '@expo-google-fonts/raleway':
         specifier: ^0.2.3
         version: 0.2.3
@@ -2213,6 +2216,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@expo-google-fonts/open-sans@0.2.3':
+    resolution: {integrity: sha512-HjEue5908n2yTtNSo47lAN3UFi2sAp00u6E3tx9nSEr0P2SDFDjYgsA89nPaAYOyxDN0EPGtNTa2K/VUe3jgmA==}
 
   '@expo-google-fonts/raleway@0.2.3':
     resolution: {integrity: sha512-31D87kwraBhf59VPXEUQxRQjMCIUqNrvmWmfcyRremnwjdvSyu7LAjT6KmTZB/kAuRHJRGY4KFPQDhnPhxkZ7A==}
@@ -11368,6 +11374,8 @@ snapshots:
   '@esbuild/win32-x64@0.23.0':
     optional: true
 
+  '@expo-google-fonts/open-sans@0.2.3': {}
+
   '@expo-google-fonts/raleway@0.2.3': {}
 
   '@expo/bunyan@4.0.0':
@@ -12811,7 +12819,7 @@ snapshots:
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
-      '@types/node': 18.19.34
+      '@types/node': 20.14.2
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
