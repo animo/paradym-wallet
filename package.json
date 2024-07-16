@@ -1,47 +1,52 @@
 {
-	"name": "wallets",
-	"private": true,
-	"scripts": {
-		"postinstall": "pnpm deps:check",
-		"build": "pnpm -r build",
-		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
-		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
-		"deps:check": "check-dependency-version-consistency .",
-		"deps:fix": "pnpm deps:check --fix",
-		"types:check": "tsc --noEmit",
-		"style:check": "biome check --unsafe",
-		"style:fix": "biome check --write --unsafe"
-	},
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.8.1",
-		"check-dependency-version-consistency": "^3.0.3",
-		"typescript": "*"
-	},
-	"pnpm": {
-		"overrides": {
-			"@types/react": "~18.2.79",
-			"react": "18.2.0",
-			"react-docgen-typescript": "2.2.2",
-			"typescript": "~5.3.3",
-			"@unimodules/react-native-adapter": "./noop",
-			"@unimodules/core": "./noop",
+  "name": "wallets",
+  "private": true,
+  "scripts": {
+    "postinstall": "pnpm deps:check",
+    "build": "pnpm -r build",
+    "upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
+    "upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
+    "deps:check": "check-dependency-version-consistency .",
+    "deps:fix": "pnpm deps:check --fix",
+    "types:check": "tsc --noEmit",
+    "style:check": "biome check --unsafe",
+    "style:fix": "biome check --write --unsafe"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.1",
+    "check-dependency-version-consistency": "^3.0.3",
+    "typescript": "*"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "~18.2.79",
+      "react": "18.2.0",
+      "react-docgen-typescript": "2.2.2",
+      "typescript": "~5.3.3",
+      "@unimodules/react-native-adapter": "./noop",
+      "@unimodules/core": "./noop",
 
-			"@hyperledger/anoncreds-react-native": "^0.2.2",
-			"@hyperledger/aries-askar-react-native": "^0.2.3",
-			"@hyperledger/indy-vdr-react-native": "^0.2.0",
+      "@hyperledger/anoncreds-react-native": "^0.2.2",
+      "@hyperledger/aries-askar-react-native": "^0.2.3",
+      "@hyperledger/indy-vdr-react-native": "^0.2.0",
 
-			"@credo-ts/anoncreds": "0.5.10-alpha-20240729100152",
-			"@credo-ts/askar": "0.5.10-alpha-20240729100152",
-			"@credo-ts/cheqd": "0.5.10-alpha-20240729100152",
-			"@credo-ts/core": "0.5.10-alpha-20240729100152",
-			"@credo-ts/indy-vdr": "0.5.10-alpha-20240729100152",
-			"@credo-ts/openid4vc": "0.5.10-alpha-20240729100152",
-			"@credo-ts/question-answer": "0.5.10-alpha-20240729100152",
-			"@credo-ts/react-hooks": "0.6.1",
-			"@credo-ts/react-native": "0.5.10-alpha-20240729100152"
-		}
-	}
+      "@credo-ts/anoncreds": "0.5.10-alpha-20240729100152",
+      "@credo-ts/askar": "0.5.10-alpha-20240729100152",
+      "@credo-ts/cheqd": "0.5.10-alpha-20240729100152",
+      "@credo-ts/core": "0.5.10-alpha-20240729100152",
+      "@credo-ts/indy-vdr": "0.5.10-alpha-20240729100152",
+      "@credo-ts/openid4vc": "0.5.10-alpha-20240729100152",
+      "@credo-ts/question-answer": "0.5.10-alpha-20240729100152",
+      "@credo-ts/react-hooks": "0.6.1",
+      "@credo-ts/react-native": "0.5.10-alpha-20240729100152"
+    },
+    "patchedDependencies": {
+      "@hyperledger/aries-askar-react-native@0.2.3": "patches/@hyperledger__aries-askar-react-native@0.2.3.patch",
+      "@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
+      "@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch"
+    }
+  }
 }
