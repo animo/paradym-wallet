@@ -3,6 +3,7 @@ import type {
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
   JwkDidCreateOptions,
+  Key,
   KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
@@ -22,6 +23,7 @@ import {
   DidJwk,
   DidKey,
   JwaSignatureAlgorithm,
+  KeyBackend,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -95,11 +97,20 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           didMethod = 'key'
         }
 
+        const key = await agent.wallet
+          .createKey({
+            keyType,
+            keyBackend: KeyBackend.SecureElement,
+          })
+          .catch(() => {
+            throw new Error(`Could not create a hardware-backed key for keytype: '${keyType}'. Only P-256 is supported`)
+          })
+
         if (didMethod) {
           const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
             method: didMethod,
             options: {
-              keyType,
+              key,
             },
           })
 
@@ -124,9 +135,6 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
         // Otherwise we also support plain jwk for sd-jwt only
         if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
-          const key = await agent.wallet.createKey({
-            keyType,
-          })
           return {
             method: 'jwk',
             jwk: getJwkFromKey(key),
