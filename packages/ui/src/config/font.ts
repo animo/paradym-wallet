@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import { createFont } from 'tamagui'
 
 export const fontOpenSans = createFont({
-  family: 'OpenSans',
+  family: 'Open Sans',
   weight: {
     regular: '400',
     1: '400',

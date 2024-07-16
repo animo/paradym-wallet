@@ -47,12 +47,7 @@ const config = createTamagui({
     heading: fontRaleway,
   },
   themes: {
-    dark: {
-      ...tokens.color,
-    },
-    light: {
-      ...tokens.color,
-    },
+    light: tokens.color,
   },
 })
 

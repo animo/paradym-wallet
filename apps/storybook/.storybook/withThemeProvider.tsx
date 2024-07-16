@@ -7,7 +7,7 @@ import { useColorScheme } from 'react-native'
 // requires quite some boilerplate
 // You can change the theme used in the storybook
 import funkeConfig from '../../funke/tamagui.config'
-// import paradymConfig from '../../paradym/tamagui.config'
+import paradymConfig from '../../paradym/tamagui.config'
 
 const withThemeProvider: Decorator = (Story, context) => {
   const scheme = useColorScheme()

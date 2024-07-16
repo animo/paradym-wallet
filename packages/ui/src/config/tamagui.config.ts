@@ -85,12 +85,7 @@ export const configInput = {
   },
   tokens,
   themes: {
-    dark: {
-      ...tokens.color, // use same scheme in dark mode for now
-    },
-    light: {
-      ...tokens.color,
-    },
+    light: tokens.color,
   },
 } as const satisfies CreateTamaguiProps
 
