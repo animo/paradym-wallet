@@ -65,12 +65,7 @@ export async function canUseBiometryBackedWalletKey(): Promise<boolean> {
   /**
    * We only support biometrics secured storage of the wallet key
    */
-  const supportedBiometryType = await Keychain.getSupportedBiometryType(walletKeyStoreBaseOptions)
-  if (!supportedBiometryType) {
-    return false
-  }
-
-  return true
+  return Keychain.getSupportedBiometryType(walletKeyStoreBaseOptions)
 }
 
 /**
