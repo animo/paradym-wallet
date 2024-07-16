@@ -44,7 +44,6 @@
       "@credo-ts/react-native": "0.5.10-alpha-20240729100152"
     },
     "patchedDependencies": {
-      "@hyperledger/aries-askar-react-native@0.2.3": "patches/@hyperledger__aries-askar-react-native@0.2.3.patch",
       "@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
       "@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch"
     }

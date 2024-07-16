@@ -97,14 +97,19 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           didMethod = 'key'
         }
 
-        const key = await agent.wallet
-          .createKey({
+        let key: Key | undefined = undefined
+
+        try {
+          key = await agent.wallet.createKey({
             keyType,
             keyBackend: KeyBackend.SecureElement,
           })
-          .catch(() => {
-            throw new Error(`Could not create a hardware-backed key for keytype: '${keyType}'. Only P-256 is supported`)
+        } catch (e) {
+          agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
+          key = await agent.wallet.createKey({
+            keyType,
           })
+        }
 
         if (didMethod) {
           const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
