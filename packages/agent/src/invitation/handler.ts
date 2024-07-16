@@ -2,9 +2,7 @@ import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
-  JwkDidCreateOptions,
   Key,
-  KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
   ProofStateChangedEvent,
@@ -20,8 +18,6 @@ import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-t
 import {
   CredentialEventTypes,
   CredentialState,
-  DidJwk,
-  DidKey,
   JwaSignatureAlgorithm,
   KeyBackend,
   OutOfBandRepository,
@@ -120,33 +116,6 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         key = await agent.wallet.createKey({
           keyType,
         })
-      }
-
-      if (didMethod) {
-        const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
-          method: didMethod,
-          options: {
-            key,
-          },
-        })
-
-        if (didResult.didState.state !== 'finished') {
-          throw new Error('DID creation failed.')
-        }
-
-        let verificationMethodId: string
-        if (didMethod === 'jwk') {
-          const didJwk = DidJwk.fromDid(didResult.didState.did)
-          verificationMethodId = didJwk.verificationMethodId
-        } else {
-          const didKey = DidKey.fromDid(didResult.didState.did)
-          verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
-        }
-
-        return {
-          didUrl: verificationMethodId,
-          method: 'did',
-        }
       }
 
       // Otherwise we also support plain jwk for sd-jwt only
