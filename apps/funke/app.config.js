@@ -52,7 +52,25 @@ const config = {
   updates: {
     fallbackToCacheTimeout: 0,
   },
-  plugins: ['expo-font', 'expo-secure-store', 'expo-router'],
+  plugins: [
+    [
+      'expo-font',
+      {
+        fonts: [
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_400Regular.ttf',
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_500Medium.ttf',
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_600SemiBold.ttf',
+          '../../node_modules/@expo-google-fonts/open-sans/OpenSans_700Bold.ttf',
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_400Regular.ttf',
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_500Medium.ttf',
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_600SemiBold.ttf',
+          '../../node_modules/@expo-google-fonts/raleway/Raleway_700Bold.ttf',
+        ],
+      },
+    ],
+    'expo-secure-store',
+    'expo-router',
+  ],
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,

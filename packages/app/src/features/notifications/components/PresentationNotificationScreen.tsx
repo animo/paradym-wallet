@@ -5,8 +5,8 @@ import {
   BottomSheetScrollView,
   Button,
   Heading,
+  LucideIcon,
   Paragraph,
-  RefreshCw,
   ScrollView,
   Sheet,
   Stack,
@@ -65,13 +65,13 @@ export function PresentationNotificationScreen({
   return (
     <>
       <ScrollView
-        bg="$grey-200"
+        bg="$background"
         contentContainerStyle={{
           minHeight: '100%',
         }}
         safeAreaBottom={bottom}
       >
-        <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$grey-200">
+        <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$background">
           <YStack g="xl">
             <YStack ai="center" jc="center" gap="$4">
               <Heading variant="h2" ta="center" px="$4">
@@ -112,7 +112,7 @@ export function PresentationNotificationScreen({
                             />
                           </Stack>
                           {/* Disable credential selection until we have better UX */}
-                          {/* <Stack pr="$3">{s.credentials.length > 1 && <RefreshCw color="$grey-600" />}</Stack> */}
+                          {/* <Stack pr="$3">{s.credentials.length > 1 && <LucideIcon.RefreshCw color="$grey-600" />}</Stack> */}
                         </XStack>
                         {s.description && (
                           <Paragraph secondary px="$3" variant="text">

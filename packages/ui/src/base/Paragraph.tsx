@@ -8,7 +8,8 @@ export const Paragraph = styled(SizableText, {
   userSelect: 'auto',
   color: '$grey-900',
   letterSpacing: '$true',
-  fontFamily: '$medium',
+  fontFamily: '$default',
+  fontWeight: '$medium',
   variants: {
     light: {
       true: {
@@ -37,7 +38,7 @@ export const Paragraph = styled(SizableText, {
       },
       text: {
         size: '$2',
-        fontFamily: '$regular',
+        fontWeight: '$regular',
       },
     },
   } as const,

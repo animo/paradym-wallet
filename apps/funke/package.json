@@ -10,6 +10,8 @@
 		"prebuild": "APP_VARIANT=development expo prebuild --no-install"
 	},
 	"dependencies": {
+		"@expo-google-fonts/open-sans": "^0.2.3",
+		"@expo-google-fonts/raleway": "^0.2.3",
 		"@gorhom/bottom-sheet": "^4.6.3",
 		"@hyperledger/anoncreds-react-native": "^0.2.2",
 		"@hyperledger/aries-askar-react-native": "^0.2.0",

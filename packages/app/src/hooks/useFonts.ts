@@ -5,7 +5,7 @@ export function useFonts() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     InterRegular: require('@tamagui/font-inter/otf/Inter-Regular.otf'),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    InterMedium: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     InterSemiBold: require('@tamagui/font-inter/otf/Inter-SemiBold.otf'),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

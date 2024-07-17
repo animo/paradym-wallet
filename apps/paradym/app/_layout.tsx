@@ -12,7 +12,6 @@ import {
 import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
 import { getSecureWalletKey } from '@package/utils'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
@@ -20,6 +19,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { initializeAppAgent } from '.'
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import tamaguiConfig from '../tamagui.config'
 import { mediatorDid } from './constants'
 
 void SplashScreen.preventAutoHideAsync()
@@ -30,16 +30,6 @@ export const unstable_settings = {
 }
 
 export default function HomeLayout() {
-  const [fontLoaded] = useFonts({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterRegular: require('@tamagui/font-inter/otf/Inter-Regular.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterSemiBold: require('@tamagui/font-inter/otf/Inter-SemiBold.otf'),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-  })
   const [agent, setAgent] = useState<FullAppAgent>()
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
   const hasInternetConnection = useHasInternetConnection()
@@ -108,15 +98,15 @@ export default function HomeLayout() {
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
-    if (fontLoaded && (agent || agentInitializationFailed)) {
+    if (agent || agentInitializationFailed) {
       void SplashScreen.hideAsync()
     }
-  }, [fontLoaded, agent, agentInitializationFailed])
+  }, [agent, agentInitializationFailed])
 
   // Show error screen if agent could not be initialized
-  if (fontLoaded && agentInitializationFailed) {
+  if (agentInitializationFailed) {
     return (
-      <Provider>
+      <Provider config={tamaguiConfig}>
         <Page jc="center" ai="center" g="md">
           <YStack>
             <Heading variant="h1">Error</Heading>
@@ -128,7 +118,7 @@ export default function HomeLayout() {
   }
 
   // The splash screen will be rendered on top of this
-  if (!fontLoaded || !agent) {
+  if (!agent) {
     return null
   }
 
@@ -138,12 +128,12 @@ export default function HomeLayout() {
     headerShown: true,
     header: () => {
       // Header is translucent by default. See configuration in app.json
-      return <XStack bg="$grey-200" h={top} />
+      return <XStack bg="$background" h={top} />
     },
   }
 
   return (
-    <Provider>
+    <Provider config={tamaguiConfig}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <AgentProvider agent={agent}>
           <ThemeProvider value={DefaultTheme}>
@@ -173,7 +163,7 @@ export default function HomeLayout() {
                     options={{
                       headerShown: true,
                       headerStyle: {
-                        backgroundColor: config.tokens.color['grey-200'].val,
+                        backgroundColor: config.tokens.color.background.val,
                       },
                       headerShadowVisible: false,
                       headerTintColor: config.tokens.color['primary-500'].val,

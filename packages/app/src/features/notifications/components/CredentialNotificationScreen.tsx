@@ -27,7 +27,7 @@ export function CredentialNotificationScreen({
   const { bottom } = useSafeAreaInsets()
   return (
     <ScrollView
-      bg="$grey-200"
+      bg="$background"
       contentContainerStyle={{
         minHeight: '100%',
       }}

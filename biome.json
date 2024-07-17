@@ -3,6 +3,9 @@
 	"organizeImports": {
 		"enabled": true
 	},
+	"files": {
+		"ignore": ["storybook.requires.ts"]
+	},
 	"javascript": {
 		"parser": {
 			"unsafeParameterDecoratorsEnabled": true

@@ -4,7 +4,7 @@ import { Stack } from './Stacks'
 
 export const Page = styled(Stack, {
   name: 'Page',
-  backgroundColor: '$grey-200',
+  backgroundColor: '$background',
   position: 'absolute',
   padding: '$4',
   top: 0,
