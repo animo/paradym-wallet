@@ -638,6 +638,10 @@ importers:
         version: 1.100.3
 
   packages/utils:
+    dependencies:
+      react-native-argon2:
+        specifier: ^2.0.1
+        version: 2.0.1
     devDependencies:
       '@credo-ts/react-native':
         specifier: 0.5.1-alpha.51
@@ -8102,6 +8106,9 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
+  react-native-argon2@2.0.1:
+    resolution: {integrity: sha512-/iOi0S+VVgS1gQGtQgL4ZxUVS4gz6Lav3bgIbtNmr9KbOunnBYzP6/yBe/XxkbpXvasHDwdQnuppOH/nuOBn7w==}
+
   react-native-fit-image@1.5.5:
     resolution: {integrity: sha512-Wl3Vq2DQzxgsWKuW4USfck9zS7YzhvLNPpkwUUCF90bL32e1a0zOVQ3WsJILJOwzmPdHfzZmWasiiAUNBkhNkg==}
 
@@ -12819,7 +12826,7 @@ snapshots:
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 18.19.34
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -19474,6 +19481,8 @@ snapshots:
   react-is@18.1.0: {}
 
   react-is@18.3.1: {}
+
+  react-native-argon2@2.0.1: {}
 
   react-native-fit-image@1.5.5:
     dependencies:
