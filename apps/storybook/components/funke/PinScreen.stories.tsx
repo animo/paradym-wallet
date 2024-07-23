@@ -1,8 +1,8 @@
 import { Heading, Page, Paragraph, ProgressBar, XStack, YStack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useRef, useState } from 'react'
-import { Input, Circle } from 'tamagui'
 import type { TextInput } from 'react-native'
+import { Circle, Input } from 'tamagui'
 
 interface PinScreenProps {
   pinLength: number

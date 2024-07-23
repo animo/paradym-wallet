@@ -1,7 +1,8 @@
 import {
+  Button,
   Heading,
-  HeroIcons,
   type HeroIcon,
+  HeroIcons,
   Image,
   Page,
   Paragraph,
@@ -9,12 +10,11 @@ import {
   Stack,
   XStack,
   YStack,
-  Button,
 } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useRef, useState } from 'react'
-import { Input, Circle } from 'tamagui'
 import { StyleSheet, type TextInput } from 'react-native'
+import { Circle, Input } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 import { useArgs } from '@storybook/addons'
@@ -140,6 +140,7 @@ const IdCardPinScreen = ({ pinLength, onPinComplete, state, onGoToWallet, userNa
         <Heading variant="title">{title}</Heading>
         <XStack display={state === 'enterPin' ? 'flex' : 'none'} gap="$3" justifyContent="center">
           {pin.map((digit, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
             <YStack key={index} maxWidth={35} flex-1 justifyContent="center">
               <Input
                 p="$0"

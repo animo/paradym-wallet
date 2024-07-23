@@ -1,9 +1,9 @@
 import { Button, Heading, Paragraph, Stack, YStack } from '@package/ui'
+import { useArgs } from '@storybook/addons'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Sheet, View, useTheme } from 'tamagui'
 import { Path, Svg } from 'react-native-svg'
-import { useArgs } from '@storybook/addons'
+import { Sheet, View, useTheme } from 'tamagui'
 
 interface BiometricsModalProps {
   onAcceptBiometrics: () => void

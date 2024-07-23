@@ -3,13 +3,13 @@ import type { NumberProp, SvgProps } from 'react-native-svg'
 
 import {
   ArrowPathIcon,
-  LockClosedIcon,
+  ArrowRightIcon,
   GlobeAltIcon,
   IdentificationIcon,
   KeyIcon,
-  StarIcon,
+  LockClosedIcon,
   ShieldCheckIcon,
-  ArrowRightIcon,
+  StarIcon,
 } from 'react-native-heroicons/outline'
 import { styled } from 'tamagui'
 
