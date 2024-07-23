@@ -67,7 +67,10 @@ export const tokensInput = {
     background: hexColors['grey-200'],
   },
   size,
-  radius,
+  radius: {
+    ...radius,
+    button: 8,
+  },
   zIndex,
   space,
 } as const
@@ -82,10 +85,22 @@ export const configInput = {
     // By default we use the same font for headings and body
     default: fontInter,
     heading: fontInter,
+    // Somehow adding body font gives build errors?!
+    // body: fontInter,
   },
   tokens,
   themes: {
-    light: tokens.color,
+    light: {
+      ...tokens.color,
+
+      // Button
+      buttonHeight: size.$4,
+
+      // Button.Outline
+      buttonOutlineBackgroundColor: hexColors.white,
+      buttonOutlineBorderColor: hexColors['grey-300'],
+      buttonOutlineTextColor: hexColors['grey-900'],
+    },
   },
 } as const satisfies CreateTamaguiProps
 

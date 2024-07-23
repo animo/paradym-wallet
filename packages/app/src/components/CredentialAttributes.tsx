@@ -1,4 +1,4 @@
-import { Heading, LucideIcon, Paragraph, TableContainer, TableRow, XStack, YStack } from '@package/ui'
+import { Heading, LucideIcons, Paragraph, TableContainer, TableRow, XStack, YStack } from '@package/ui'
 
 import { formatCredentialSubject } from '../utils'
 
@@ -15,7 +15,7 @@ export function CredentialAttributes({ subject, disableHeader = false }: Credent
       {tables.map((table) => (
         <YStack key={table.depth} g="md" pt={table.parent ? 0 : '$2'}>
           <XStack gap="$2">
-            {table.depth > 1 && <LucideIcon.CornerDownRight size="$1" />}
+            {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
             {(!disableHeader || table.title) && (
               <Heading variant="h3" pl="$2" secondary>
                 {table.title ?? 'Credential information'}

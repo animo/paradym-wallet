@@ -62,7 +62,7 @@ export const fontRaleway = createFont({
     4: 18, // Heading 3
     5: 20, // Heading 2
     6: 24, // Heading 1
-    7: 38, // Page Title
+    7: 32, // Page Title
   },
   letterSpacing: {
     4: 0,
@@ -70,10 +70,10 @@ export const fontRaleway = createFont({
   face: {
     // Raleway is a lighter font in terms of weight, so we move all the weights one step up.
     // Android uses filename, iOS uses PostScript name (configured in app.config.js with expo-font plugin)
-    '300': { normal: Platform.select({ ios: 'Raleway-Regular', android: 'Raleway_400Regular' }) },
-    '400': { normal: Platform.select({ ios: 'Raleway-Medium', android: 'Raleway_500Medium' }) },
-    '500': { normal: Platform.select({ ios: 'Raleway-SemiBold', android: 'Raleway_600SemiBold' }) },
-    '600': { normal: Platform.select({ ios: 'Raleway-Bold', android: 'Raleway_700Bold' }) },
+    '400': { normal: Platform.select({ ios: 'Raleway-Regular', android: 'Raleway_400Regular' }) },
+    '500': { normal: Platform.select({ ios: 'Raleway-Medium', android: 'Raleway_500Medium' }) },
+    '600': { normal: Platform.select({ ios: 'Raleway-SemiBold', android: 'Raleway_600SemiBold' }) },
+    '700': { normal: Platform.select({ ios: 'Raleway-Bold', android: 'Raleway_700Bold' }) },
   },
 })
 

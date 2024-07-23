@@ -1,7 +1,7 @@
 import { useToastController } from '@tamagui/toast'
 
 import { Paragraph, Stack, XStack } from '../base'
-import { LucideIcon } from '../content'
+import { LucideIcons } from '../content'
 
 interface ToastContainerProps {
   title: string
@@ -27,7 +27,7 @@ export const ToastContainer = ({ title, safeAreaMargin = false }: ToastContainer
     >
       <Paragraph w="90%">{title}</Paragraph>
       <Stack jc="center" h="100%" onPress={() => toast.hide()}>
-        <LucideIcon.X size="$1" color="$grey-600" />
+        <LucideIcons.X size="$1" color="$grey-600" />
       </Stack>
     </XStack>
   )

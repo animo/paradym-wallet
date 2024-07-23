@@ -1,10 +1,19 @@
 import { AlertOctagon, CornerDownRight, FileBadge, Inbox, RefreshCw, Scan, X } from '@tamagui/lucide-icons'
 import type { NumberProp, SvgProps } from 'react-native-svg'
 
-import { GlobeAltIcon as GlobeAlt } from 'react-native-heroicons/outline'
-import { type ColorTokens, useTheme } from 'tamagui'
+import {
+  ArrowPathIcon,
+  LockClosedIcon,
+  GlobeAltIcon,
+  IdentificationIcon,
+  KeyIcon,
+  StarIcon,
+  ShieldCheckIcon,
+  ArrowRightIcon,
+} from 'react-native-heroicons/outline'
+import { styled } from 'tamagui'
 
-export const LucideIcon = {
+export const LucideIcons = {
   Scan,
   FileBadge,
   CornerDownRight,
@@ -16,19 +25,28 @@ export const LucideIcon = {
 
 interface HeroIconProps extends SvgProps {
   size?: NumberProp
-  color?: ColorTokens
 }
 
 function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
-  return ({ color, ...props }: HeroIconProps) => {
-    const theme = useTheme()
-    // Map token to value or use the color directly if it's not a token
-    const actualColor = color ? theme[color]?.val || color : undefined
-
-    return <Icon {...props} color={actualColor} />
-  }
+  return styled(
+    (props: HeroIconProps) => <Icon {...props} />,
+    {},
+    {
+      accept: {
+        color: 'color',
+      },
+    }
+  )
 }
 
-export const HeroIcon = {
-  GlobeAlt: wrapHeroIcon(GlobeAlt),
-}
+export type HeroIcon = ReturnType<typeof wrapHeroIcon>
+export const HeroIcons = {
+  GlobeAlt: wrapHeroIcon(GlobeAltIcon),
+  Key: wrapHeroIcon(KeyIcon),
+  Identification: wrapHeroIcon(IdentificationIcon),
+  Star: wrapHeroIcon(StarIcon),
+  ShieldCheck: wrapHeroIcon(ShieldCheckIcon),
+  ArrowPath: wrapHeroIcon(ArrowPathIcon),
+  LockClosed: wrapHeroIcon(LockClosedIcon),
+  ArrowRight: wrapHeroIcon(ArrowRightIcon),
+} as const

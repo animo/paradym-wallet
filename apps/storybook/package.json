@@ -19,6 +19,7 @@
 		"@react-native-community/netinfo": "11.3.1",
 		"@react-native-masked-view/masked-view": "0.3.1",
 		"@react-navigation/native": "^6.1.6",
+		"@storybook/addons": "^7.6.17",
 		"burnt": "^0.12.2",
 		"expo": "~51.0.12",
 		"expo-barcode-scanner": "~13.0.1",

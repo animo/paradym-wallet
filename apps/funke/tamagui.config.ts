@@ -1,5 +1,3 @@
-// don't import from here, that's handled already
-// instead this is just setting types for this folder
 import { radius, size, space, zIndex } from '@tamagui/themes'
 
 import { configInput, fontOpenSans, fontRaleway, hexColors } from '@package/ui/src/config/tamagui.config'
@@ -7,7 +5,10 @@ import { createTamagui, createTokens } from 'tamagui'
 
 export const tokensInput = {
   color: hexColors,
-  radius,
+  radius: {
+    ...radius,
+    button: 16,
+  },
   size,
   zIndex,
   space,
@@ -45,9 +46,21 @@ const config = createTamagui({
   fonts: {
     default: fontOpenSans,
     heading: fontRaleway,
+    // Somehow adding body font gives build errors?!
+    // body: fontOpenSans,
   },
   themes: {
-    light: tokens.color,
+    light: {
+      ...tokens.color,
+
+      // Button
+      buttonHeight: 53,
+
+      // Button.Outline
+      buttonOutlineBackgroundColor: hexColors['grey-100'],
+      buttonOutlineBorderColor: '#ebedef',
+      buttonOutlineTextColor: hexColors['grey-900'],
+    },
   },
 })
 
