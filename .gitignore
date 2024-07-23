@@ -101,3 +101,5 @@ android
 # build output
 dist/
 types/
+
+storybook-static

@@ -1,0 +1,13 @@
+diff --git a/build/shared/router/express.native.js b/build/shared/router/express.native.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..76b80b442ea111c6d0a9e94b4888ef69896c78f5
+--- /dev/null
++++ b/build/shared/router/express.native.js
+@@ -0,0 +1,7 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.importExpress = void 0;
++function importExpress() {
++        throw new Error("Express cannot be imported in React Native. This is probably because you are trying to use the 'OpenId4VcIssuerModule' or the 'OpenId4VcVerifierModule'.")
++}
++exports.importExpress = importExpress;

@@ -9,7 +9,7 @@ export function NotificationInboxScreen() {
   const { push } = useRouter()
 
   return (
-    <YStack bg="$grey-200" height="100%" position="relative">
+    <YStack bg="$background" height="100%" position="relative">
       {inboxNotifications.length === 0 ? (
         <NoContentInbox />
       ) : (

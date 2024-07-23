@@ -1,6 +1,6 @@
 import type { DisplayImage } from '@package/agent'
 
-import { Card, FileBadge, Heading, Image, Paragraph, XStack, YStack, darken, getTextColorBasedOnBg } from '@package/ui'
+import { Card, Heading, Image, LucideIcon, Paragraph, XStack, YStack, darken, getTextColorBasedOnBg } from '@package/ui'
 
 import { useHasInternetConnection } from '../hooks'
 
@@ -35,7 +35,7 @@ export function CredentialCard({
     <Image src={issuerImage.url} alt={issuerImage.altText} width={64} height={48} />
   ) : (
     <XStack width={48} height={48} bg="$lightTranslucent" ai="center" br="$12" pad="md">
-      <FileBadge color="$grey-100" />
+      <LucideIcon.FileBadge color="$grey-100" />
     </XStack>
   )
 

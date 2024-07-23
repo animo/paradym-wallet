@@ -6,7 +6,6 @@ import {
   NoInternetToastProvider,
   Provider,
   isAndroid,
-  useFonts,
   useTransparentNavigationBar,
 } from '@package/app'
 import { getLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
@@ -15,9 +14,11 @@ import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { initializeAppAgent } from '.'
+import tamaguiConfig from '../tamagui.config'
 
 void SplashScreen.preventAutoHideAsync()
 
@@ -27,7 +28,6 @@ export const unstable_settings = {
 }
 
 export default function HomeLayout() {
-  const [fontLoaded] = useFonts()
   const [agent, setAgent] = useState<OpenId4VcHolderAppAgent>()
 
   const [agentInitializationFailed, setAgentInitializationFailed] = useState(false)
@@ -66,15 +66,15 @@ export default function HomeLayout() {
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {
-    if (fontLoaded && (agent || agentInitializationFailed)) {
+    if (agent || agentInitializationFailed) {
       void SplashScreen.hideAsync()
     }
-  }, [fontLoaded, agent, agentInitializationFailed])
+  }, [agent, agentInitializationFailed])
 
   // Show error screen if agent could not be initialized
-  if (fontLoaded && agentInitializationFailed) {
+  if (agentInitializationFailed) {
     return (
-      <Provider>
+      <Provider config={tamaguiConfig}>
         <Page jc="center" ai="center" g="md">
           <YStack>
             <Heading variant="h1">Error</Heading>
@@ -86,7 +86,7 @@ export default function HomeLayout() {
   }
 
   // The splash screen will be rendered on top of this
-  if (!fontLoaded || !agent) {
+  if (!agent) {
     return null
   }
 
@@ -96,63 +96,65 @@ export default function HomeLayout() {
     headerShown: true,
     header: () => {
       // Header is translucent by default. See configuration in app.json
-      return <XStack bg="$grey-200" h={top} />
+      return <XStack bg="$background" h={top} />
     },
   }
 
   return (
-    <Provider>
-      <AgentProvider agent={agent}>
-        <ThemeProvider value={DefaultTheme}>
-          <NoInternetToastProvider>
-            <DeeplinkHandler>
-              <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
-                <Stack.Screen
-                  options={{
-                    presentation: 'modal',
-                    // Extra modal options not needed for QR Scanner
-                  }}
-                  name="(home)/scan"
-                />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/openIdCredential"
-                />
-                <Stack.Screen
-                  options={{ presentation: 'modal', ...headerModalOptions }}
-                  name="notifications/openIdPresentation"
-                />
-                <Stack.Screen
-                  options={{
-                    headerShown: true,
-                    headerStyle: {
-                      backgroundColor: config.tokens.color['grey-200'].val,
-                    },
-                    headerShadowVisible: false,
-                    headerTintColor: config.tokens.color['primary-500'].val,
-                    headerTitle: 'Inbox',
-                    headerTitleAlign: 'center',
-                    headerTitleStyle: {
-                      fontWeight: isAndroid() ? '700' : '500', // Match font weight on android to native back button style
-                      fontSize: 18,
-                    },
-                  }}
-                  name="notifications/inbox"
-                />
-                <Stack.Screen
-                  options={{
-                    headerShown: true,
-                    headerTransparent: true,
-                    headerTintColor: config.tokens.color['primary-500'].val,
-                    headerTitle: '',
-                  }}
-                  name="credentials/[id]"
-                />
-              </Stack>
-            </DeeplinkHandler>
-          </NoInternetToastProvider>
-        </ThemeProvider>
-      </AgentProvider>
+    <Provider config={tamaguiConfig}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <AgentProvider agent={agent}>
+          <ThemeProvider value={DefaultTheme}>
+            <NoInternetToastProvider>
+              <DeeplinkHandler>
+                <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
+                  <Stack.Screen
+                    options={{
+                      presentation: 'modal',
+                      // Extra modal options not needed for QR Scanner
+                    }}
+                    name="(home)/scan"
+                  />
+                  <Stack.Screen
+                    options={{ presentation: 'modal', ...headerModalOptions }}
+                    name="notifications/openIdCredential"
+                  />
+                  <Stack.Screen
+                    options={{ presentation: 'modal', ...headerModalOptions }}
+                    name="notifications/openIdPresentation"
+                  />
+                  <Stack.Screen
+                    options={{
+                      headerShown: true,
+                      headerStyle: {
+                        backgroundColor: config.tokens.color.background.val,
+                      },
+                      headerShadowVisible: false,
+                      headerTintColor: config.tokens.color['primary-500'].val,
+                      headerTitle: 'Inbox',
+                      headerTitleAlign: 'center',
+                      headerTitleStyle: {
+                        fontWeight: isAndroid() ? '700' : '500', // Match font weight on android to native back button style
+                        fontSize: 18,
+                      },
+                    }}
+                    name="notifications/inbox"
+                  />
+                  <Stack.Screen
+                    options={{
+                      headerShown: true,
+                      headerTransparent: true,
+                      headerTintColor: config.tokens.color['primary-500'].val,
+                      headerTitle: '',
+                    }}
+                    name="credentials/[id]"
+                  />
+                </Stack>
+              </DeeplinkHandler>
+            </NoInternetToastProvider>
+          </ThemeProvider>
+        </AgentProvider>
+      </GestureHandlerRootView>
     </Provider>
   )
 }

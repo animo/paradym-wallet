@@ -29,7 +29,7 @@ export function CredentialDetailScreen() {
   const { attributes, display } = credentialForDisplay
 
   return (
-    <YStack bg="$grey-200" height="100%">
+    <YStack bg="$background" height="100%">
       <Spacer size="$13" />
       <YStack borderWidth={isScrolledByOffset ? 0.5 : 0} borderColor="$grey-300" />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
