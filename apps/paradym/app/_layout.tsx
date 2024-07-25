@@ -61,8 +61,9 @@ export default function HomeLayout() {
         ...walletKey,
         walletLabel: 'paradym-wallet',
         walletId: 'paradym-wallet-secure',
-      }).catch(() => {
+      }).catch((error) => {
         setAgentInitializationFailed(true)
+        console.error('Could not initialize agent.', error)
         toast.show('Could not initialize agent.')
       })
       if (!agent) return
