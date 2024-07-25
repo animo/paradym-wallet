@@ -68,7 +68,6 @@ const config = {
         ],
       },
     ],
-    'expo-secure-store',
     'expo-router',
   ],
   assetBundlePatterns: ['**/*'],
@@ -76,7 +75,8 @@ const config = {
     supportsTablet: false,
     bundleIdentifier: `id.animo.funke.wallet${variant.bundle}`,
     infoPlist: {
-      NSCameraUsageDescription: 'This app uses the camera to scan QR-codes.',
+      NSCameraUsageDescription: 'Funke Wallet uses the camera to initiate receiving and sharing of credentials.',
+      NSFaceIDUsageDescription: 'Funke Wallet uses FaceID to securely unlock the wallet and share credentials.',
       ITSAppUsesNonExemptEncryption: false,
       // Add schemes for deep linking
       CFBundleURLTypes: [
