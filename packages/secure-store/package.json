@@ -1,0 +1,24 @@
+{
+	"name": "@package/secure-store",
+	"version": "0.0.0",
+	"private": true,
+	"peerDependencies": {
+		"@hyperledger/aries-askar-react-native": "^0.2.0",
+		"expo-secure-store": "~13.0.1",
+		"react-native": "0.74.2",
+		"react-native-argon2": "^2.0.1",
+		"react-native-get-random-values": "~1.11.0",
+		"react-native-keychain": "^8.2.0"
+	},
+	"peerDependenciesMeta": {
+		"expo-secure-store": {
+			"optional": true
+		},
+		"react-native-keychain": {
+			"optional": true
+		},
+		"react-native-argon2": {
+			"optional": true
+		}
+	}
+}
