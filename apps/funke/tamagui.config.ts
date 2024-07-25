@@ -55,11 +55,6 @@ const config = createTamagui({
 
       // Button
       buttonHeight: 53,
-
-      // Button.Outline
-      buttonOutlineBackgroundColor: hexColors['grey-100'],
-      buttonOutlineBorderColor: '#ebedef',
-      buttonOutlineTextColor: hexColors['grey-900'],
     },
   },
 })

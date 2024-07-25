@@ -1,6 +1,7 @@
-import { Button, Heading, HeroIcons, Page, Paragraph, ProgressBar, Stack, XStack, YStack } from '@package/ui'
+import { Button, Heading, HeroIcons, Page, Paragraph, Stack, XStack, YStack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import { OnboardingScreensHeader } from './OnboardingScreensHeader'
 
 interface OnboardingStepItemProps {
   stepName: string
@@ -38,11 +39,11 @@ const OnboardingStepItem = ({ stepName, title, description, icon }: OnboardingSt
 const OnboardingStepsScreen = () => {
   return (
     <Page flex-1 gap="$6" justifyContent="space-around">
-      <ProgressBar value={25} />
-      <YStack gap="$2">
-        <Heading variant="title">Setup digital identity</Heading>
-        <Paragraph variant="text">To setup your digital identity we'll follow the following steps:</Paragraph>
-      </YStack>
+      <OnboardingScreensHeader
+        progress={0}
+        title="Setup digital identity"
+        subtitle="To setup your digital identity we'll follow the following steps:"
+      />
       <YStack flex-1 gap="$2">
         <OnboardingStepItem
           stepName="step 1"

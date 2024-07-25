@@ -34,13 +34,7 @@ const BiometricsModal = ({ onAcceptBiometrics, open, onOpenChange }: BiometricsM
       disableDrag
       dismissOnOverlayPress={false}
     >
-      <Sheet.Overlay
-        animation="lazy"
-        enterStyle={{ opacity: 0 }}
-        exitStyle={{ opacity: 0 }}
-        backgroundColor="$black"
-        opacity={0.2}
-      />
+      <Sheet.Overlay bc="#00000033" animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
       <Sheet.Frame borderRadius="$8" maxHeight={360} width="90%" alignSelf="center">
         <YStack flex-1 justifyContent="space-between" overflow="hidden">
           <Stack backgroundColor="$primary-100" height={175} justifyContent="center" alignItems="center">

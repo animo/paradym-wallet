@@ -1,8 +1,9 @@
-import { Heading, Page, Paragraph, ProgressBar, XStack, YStack } from '@package/ui'
+import { Page, XStack, YStack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 import { Circle, Input } from 'tamagui'
+import { OnboardingScreensHeader } from './OnboardingScreensHeader'
 
 interface PinScreenProps {
   pinLength: number
@@ -28,13 +29,9 @@ const PinScreen = ({ title, subtitle, pinLength, onPinComplete }: PinScreenProps
   }
 
   return (
-    <Page gap="$6" justifyContent="space-around">
-      <ProgressBar value={25} />
-      <YStack gap="$2" flex={3}>
-        <Heading variant="title">{title}</Heading>
-        {subtitle && <Paragraph>{subtitle}</Paragraph>}
-      </YStack>
-      <YStack flex={9} mt="$5" onPress={focusInput}>
+    <Page gap="$6">
+      <OnboardingScreensHeader flex={1} progress={33} title={title} subtitle={subtitle} />
+      <YStack flex={3} onPress={focusInput}>
         <XStack justifyContent="center" gap="$2">
           {new Array(pinLength).fill(0).map((_, i) => (
             <Circle

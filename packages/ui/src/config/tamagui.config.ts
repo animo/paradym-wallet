@@ -77,6 +77,9 @@ export const tokensInput = {
 export const tokens = createTokens(tokensInput)
 
 export const configInput = {
+  settings: {
+    styleCompat: 'react-native',
+  },
   animations,
   shouldAddPrefersColorThemes: true,
   themeClassNameOnRoot: true,
@@ -95,11 +98,6 @@ export const configInput = {
 
       // Button
       buttonHeight: size.$4,
-
-      // Button.Outline
-      buttonOutlineBackgroundColor: hexColors.white,
-      buttonOutlineBorderColor: hexColors['grey-300'],
-      buttonOutlineTextColor: hexColors['grey-900'],
     },
   },
 } as const satisfies CreateTamaguiProps

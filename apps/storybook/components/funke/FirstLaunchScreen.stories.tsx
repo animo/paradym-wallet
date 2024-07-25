@@ -28,7 +28,7 @@ const FirstLaunchScreen = () => {
         <YStack flex-1 />
         <XStack gap="$2" my="$2">
           <Button.Outline p="$0" width="$buttonHeight">
-            <HeroIcons.GlobeAlt />
+            <HeroIcons.GlobeAlt size={24} />
           </Button.Outline>
           <Button.Solid flexGrow={1} onPress={() => {}}>
             Get Started
