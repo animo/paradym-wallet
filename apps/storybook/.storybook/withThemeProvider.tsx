@@ -1,18 +1,24 @@
 import { TamaguiProvider } from '@package/ui'
 import type { Decorator } from '@storybook/react'
 import React from 'react'
-import { useColorScheme } from 'react-native'
 
-// TODO: make custom decorator that allows changing this from within the storybook UI. But
-// requires quite some boilerplate
-// You can change the theme used in the storybook
 import funkeConfig from '../../funke/tamagui.config'
 import paradymConfig from '../../paradym/tamagui.config'
 
+const configs = {
+  funke: funkeConfig,
+  paradym: paradymConfig,
+}
+
 const withThemeProvider: Decorator = (Story, context) => {
-  const scheme = useColorScheme()
+  const configName = context.parameters.theme ?? 'funke'
+
+  const config = configs[configName]
+  if (!config)
+    throw new Error(`Theme with name ${configName} does not exist. Valid themes are ${Object.keys(configs).join(', ')}`)
+
   return (
-    <TamaguiProvider config={funkeConfig} defaultTheme={scheme === 'dark' ? 'dark' : 'light'}>
+    <TamaguiProvider config={config} defaultTheme="light">
       <Story {...context} />
     </TamaguiProvider>
   )

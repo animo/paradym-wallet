@@ -5,7 +5,7 @@ import {
   BottomSheetScrollView,
   Button,
   Heading,
-  LucideIcon,
+  LucideIcons,
   Paragraph,
   ScrollView,
   Sheet,
@@ -112,7 +112,7 @@ export function PresentationNotificationScreen({
                             />
                           </Stack>
                           {/* Disable credential selection until we have better UX */}
-                          {/* <Stack pr="$3">{s.credentials.length > 1 && <LucideIcon.RefreshCw color="$grey-600" />}</Stack> */}
+                          {/* <Stack pr="$3">{s.credentials.length > 1 && <LucideIcons.RefreshCw color="$grey-600" />}</Stack> */}
                         </XStack>
                         {s.description && (
                           <Paragraph secondary px="$3" variant="text">

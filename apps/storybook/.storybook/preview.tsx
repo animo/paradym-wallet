@@ -1,9 +1,10 @@
 import type { Preview } from '@storybook/react'
 import withThemeProvider from './withThemeProvider'
 import 'react-device-frameset/styles/marvel-devices.min.css'
+import { withDeviceFrameOnWeb } from './withDeviceFrameOnWeb'
 
 const preview: Preview = {
-  decorators: [withThemeProvider],
+  decorators: [withThemeProvider, withDeviceFrameOnWeb],
   parameters: {
     backgrounds: {
       default: 'grey',
