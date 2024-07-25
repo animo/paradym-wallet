@@ -61,14 +61,14 @@
 		"@storybook/react": "^7.6.18",
 		"@storybook/react-native": "^7.6.18",
 		"@storybook/react-webpack5": "^7.6.18",
-		"@tamagui/babel-plugin": "^1.91.4",
+		"@tamagui/babel-plugin": "^1.104.2",
 		"@types/react": "~18.2.79",
 		"babel-loader": "^8.2.3",
 		"babel-plugin-react-docgen-typescript": "^1.5.1",
 		"babel-plugin-react-native-web": "^0.19.10",
 		"cross-env": "^7.0.3",
 		"storybook": "^7.6.18",
-		"tamagui-loader": "^1.91.4",
+		"tamagui-loader": "^1.104.2",
 		"typescript": "*"
 	},
 	"private": true
