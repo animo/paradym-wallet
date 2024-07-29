@@ -1,12 +1,15 @@
 import argon2 from 'react-native-argon2'
 
 /**
- * Derive key from pin and salt.
+ * Derive a hash from pin and salt. (which can be used to seed a key)
  *
  * Configuration based on recommended parameters defined in RFC 9106
  * @see https://www.rfc-editor.org/rfc/rfc9106.html#name-parameter-choice
+ *
+ * returns a hex-encoded derived hash
+ *
  */
-export const deriveWalletKey = async (pin: string, salt: string) => {
+const derive = async (pin: string, salt: string): Promise<string> => {
   const { rawHash } = await argon2(pin, salt, {
     hashLength: 32,
     mode: 'argon2id',
@@ -24,6 +27,12 @@ export const deriveWalletKey = async (pin: string, salt: string) => {
  * @see https://github.com/LinusU/react-native-get-random-values
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues
  */
-export function generateSalt(): string {
-  return crypto.getRandomValues(new Uint8Array(32)).join('')
-}
+const generateSalt = () => crypto.getRandomValues(new Uint8Array(32)).join('')
+
+/**
+ * Derive key from pin and salt.
+ *
+ * Configuration based on recommended parameters defined in RFC 9106
+ * @see https://www.rfc-editor.org/rfc/rfc9106.html#name-parameter-choice
+ */
+export const kdf = { derive, generateSalt }

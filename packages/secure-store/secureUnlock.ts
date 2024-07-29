@@ -1,6 +1,6 @@
 import { WalletUnlockError } from './error/WalletUnlockError'
+import { kdf } from './kdf'
 import { getSalt, storeSalt } from './secure-unlock/saltStore'
-import { deriveWalletKey, generateSalt } from './secure-unlock/walletKeyDerivation'
 import {
   canUseBiometryBackedWalletKey,
   getWalletKeyUsingBiometrics,
@@ -25,7 +25,7 @@ export async function createSaltForPin(returnExisting = false) {
     if (existingSalt) return existingSalt
   }
 
-  const salt = generateSalt()
+  const salt = kdf.generateSalt()
   await storeSalt(salt, version)
 
   return salt
@@ -37,7 +37,7 @@ export async function getWalletKeyUsingPin(pin: string) {
     throw new WalletUnlockError('Error unlocking wallet. No salt configured')
   }
 
-  const walletKey = await deriveWalletKey(pin, salt)
+  const walletKey = await kdf.derive(pin, salt)
   return walletKey
 }
 

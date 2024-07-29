@@ -19,6 +19,7 @@
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
 		"@package/ui": "workspace:*",
+		"@package/secure-store": "workspace:*",
 		"@react-native-community/blur": "^4.3.2",
 		"@react-native-community/netinfo": "11.3.1",
 		"@react-native-masked-view/masked-view": "0.3.1",
@@ -54,6 +55,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
+		"@credo-ts/core": "0.5.1-alpha.51",
 		"@tamagui/babel-plugin": "^1.104.2",
 		"typescript": "*"
 	}

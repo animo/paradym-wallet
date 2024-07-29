@@ -100,6 +100,6 @@ android
 
 # build output
 dist/
-types/
+packages/ui/types
 
 storybook-static
