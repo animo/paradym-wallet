@@ -12,7 +12,7 @@
 		"baseUrl": ".",
 		"skipLibCheck": true,
 		"jsx": "react-native",
-		"types": ["react-native"],
+		"typeRoots": ["./types"],
 		"paths": {
 			"@package/*": ["./packages/*"]
 		}
