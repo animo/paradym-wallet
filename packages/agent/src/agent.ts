@@ -30,6 +30,7 @@ import {
   V2ProofProtocol,
   WebDidResolver,
   WsOutboundTransport,
+  X509Module,
 } from '@credo-ts/core'
 import {
   IndyVdrAnonCredsRegistry,
@@ -45,6 +46,7 @@ import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
+import { trustedCertificates } from 'apps/funke/constants'
 import { indyNetworks } from './indyNetworks'
 import { appLogger } from './logger'
 
@@ -86,6 +88,9 @@ const agentModules = {
         }),
       ],
     }),
+    x509: new X509Module({
+      trustedCertificates,
+    }),
     cheqd: new CheqdModule(
       new CheqdModuleConfig({
         networks: [
@@ -99,7 +104,7 @@ const agentModules = {
       })
     ),
   },
-  openid4vcholder: {
+  openId4VcHolder: {
     openId4VcHolder: new OpenId4VcHolderModule(),
   },
   didcomm: {
@@ -146,7 +151,7 @@ export const initializeOpenId4VcHolderAgent = async ({
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
     },
-    modules: { ...agentModules.base, ...agentModules.openid4vcholder },
+    modules: { ...agentModules.base, ...agentModules.openId4VcHolder },
   })
 
   agent.registerOutboundTransport(new HttpOutboundTransport())
@@ -180,7 +185,11 @@ export const initializeFullAgent = async ({
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
     },
-    modules: { ...agentModules.base, ...agentModules.openid4vcholder, ...agentModules.didcomm },
+    modules: {
+      ...agentModules.base,
+      ...agentModules.openId4VcHolder,
+      ...agentModules.didcomm,
+    },
   })
 
   agent.registerOutboundTransport(new HttpOutboundTransport())
@@ -195,7 +204,10 @@ export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
 export type OpenId4VcHolderAppAgent = Awaited<ReturnType<typeof initializeOpenId4VcHolderAgent>>
 
 // biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
-export const useAgent = <A extends Agent<any> = FullAppAgent>(): { agent: A; loading: boolean } => {
+export const useAgent = <A extends Agent<any> = FullAppAgent>(): {
+  agent: A
+  loading: boolean
+} => {
   const { agent, loading } = useAgentLib<A>()
 
   if (!agent) {
