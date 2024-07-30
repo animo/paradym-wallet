@@ -1,6 +1,6 @@
 import type { SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
 import type { OpenId4VciCredentialSupported, OpenId4VciIssuerMetadataDisplay } from '@credo-ts/openid4vc'
-import type { EndpointMetadataResult } from '@sphereon/oid4vci-common'
+import type { MetadataDisplay } from '@sphereon/oid4vci-common'
 
 export interface OpenId4VcCredentialMetadata {
   credential: {
@@ -17,7 +17,7 @@ const openId4VcCredentialMetadataKey = '_paradym/openId4VcCredentialMetadata'
 
 export function extractOpenId4VcCredentialMetadata(
   credentialMetadata: OpenId4VciCredentialSupported,
-  serverMetadata: EndpointMetadataResult
+  serverMetadata: { display?: MetadataDisplay[]; id: string }
 ): OpenId4VcCredentialMetadata {
   return {
     credential: {
@@ -25,8 +25,8 @@ export function extractOpenId4VcCredentialMetadata(
       order: credentialMetadata.order,
     },
     issuer: {
-      display: serverMetadata.credentialIssuerMetadata?.display,
-      id: serverMetadata.issuer,
+      display: serverMetadata.display,
+      id: serverMetadata.id,
     },
   }
 }

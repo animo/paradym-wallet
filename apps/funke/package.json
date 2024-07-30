@@ -10,16 +10,18 @@
 		"prebuild": "APP_VARIANT=development expo prebuild --no-install"
 	},
 	"dependencies": {
+		"@animo-id/expo-secure-environment": "0.0.1-alpha.0",
+		"@credo-ts/core": "*",
 		"@expo-google-fonts/open-sans": "^0.2.3",
 		"@expo-google-fonts/raleway": "^0.2.3",
 		"@gorhom/bottom-sheet": "^4.6.3",
-		"@hyperledger/anoncreds-react-native": "^0.2.2",
-		"@hyperledger/aries-askar-react-native": "^0.2.0",
-		"@hyperledger/indy-vdr-react-native": "^0.2.0",
+		"@hyperledger/anoncreds-react-native": "*",
+		"@hyperledger/aries-askar-react-native": "*",
+		"@hyperledger/indy-vdr-react-native": "*",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
-		"@package/ui": "workspace:*",
 		"@package/secure-store": "workspace:*",
+		"@package/ui": "workspace:*",
 		"@react-native-community/blur": "^4.3.2",
 		"@react-native-community/netinfo": "11.3.1",
 		"@react-native-masked-view/masked-view": "0.3.1",
@@ -37,6 +39,7 @@
 		"expo-linking": "~6.3.1",
 		"expo-navigation-bar": "~3.0.6",
 		"expo-router": "~3.5.16",
+		"expo-secure-store": "~13.0.1",
 		"expo-splash-screen": "~0.27.5",
 		"expo-status-bar": "~1.12.1",
 		"expo-system-ui": "~3.0.6",
@@ -55,7 +58,6 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
-		"@credo-ts/core": "0.5.1-alpha.51",
 		"@tamagui/babel-plugin": "^1.104.2",
 		"typescript": "*"
 	}

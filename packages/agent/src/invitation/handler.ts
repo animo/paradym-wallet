@@ -3,6 +3,7 @@ import type {
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
   JwkDidCreateOptions,
+  Key,
   KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
@@ -22,6 +23,7 @@ import {
   DidJwk,
   DidKey,
   JwaSignatureAlgorithm,
+  KeyBackend,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -68,90 +70,103 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   })
   const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offerUri)
 
-  // FIXME: return credential_supported entry for credential so it's easy to store metadata
-  const credentials = await agent.modules.openId4VcHolder.acceptCredentialOfferUsingPreAuthorizedCode(
+  const { accessToken, cNonce } = await agent.modules.openId4VcHolder.requestToken({
     resolvedCredentialOffer,
-    {
-      credentialBindingResolver: async ({
-        supportedDidMethods,
-        keyType,
-        supportsAllDidMethods,
-        supportsJwk,
-        credentialFormat,
-      }) => {
-        // First, we try to pick a did method
-        // Prefer did:jwk, otherwise use did:key, otherwise use undefined
-        let didMethod: 'key' | 'jwk' | undefined =
-          supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
-            ? 'jwk'
-            : supportedDidMethods?.includes('did:key')
-              ? 'key'
-              : undefined
+  })
+  const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+    resolvedCredentialOffer,
+    cNonce,
+    accessToken,
+    verifyCredentialStatus: false,
+    allowedProofOfPossessionSignatureAlgorithms: [
+      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
+      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
+      // will be used
+      JwaSignatureAlgorithm.EdDSA,
+      JwaSignatureAlgorithm.ES256,
+    ],
+    credentialBindingResolver: async ({
+      supportedDidMethods,
+      keyType,
+      supportsAllDidMethods,
+      supportsJwk,
+      credentialFormat,
+    }) => {
+      // First, we try to pick a did method
+      // Prefer did:jwk, otherwise use did:key, otherwise use undefined
+      let didMethod: 'key' | 'jwk' | undefined =
+        supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
+          ? 'jwk'
+          : supportedDidMethods?.includes('did:key')
+            ? 'key'
+            : undefined
 
-        // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
-        // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
-        // define which did methods they support
-        if (!supportedDidMethods && !supportsJwk) {
-          didMethod = 'key'
+      // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
+      // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
+      // define which did methods they support
+      if (!supportedDidMethods && !supportsJwk) {
+        didMethod = 'key'
+      }
+
+      let key: Key | undefined = undefined
+
+      try {
+        key = await agent.wallet.createKey({
+          keyType,
+          keyBackend: KeyBackend.SecureElement,
+        })
+      } catch (e) {
+        agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
+        key = await agent.wallet.createKey({
+          keyType,
+        })
+      }
+
+      if (didMethod) {
+        const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
+          method: didMethod,
+          options: {
+            key,
+          },
+        })
+
+        if (didResult.didState.state !== 'finished') {
+          throw new Error('DID creation failed.')
         }
 
-        if (didMethod) {
-          const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
-            method: didMethod,
-            options: {
-              keyType,
-            },
-          })
-
-          if (didResult.didState.state !== 'finished') {
-            throw new Error('DID creation failed.')
-          }
-
-          let verificationMethodId: string
-          if (didMethod === 'jwk') {
-            const didJwk = DidJwk.fromDid(didResult.didState.did)
-            verificationMethodId = didJwk.verificationMethodId
-          } else {
-            const didKey = DidKey.fromDid(didResult.didState.did)
-            verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
-          }
-
-          return {
-            didUrl: verificationMethodId,
-            method: 'did',
-          }
+        let verificationMethodId: string
+        if (didMethod === 'jwk') {
+          const didJwk = DidJwk.fromDid(didResult.didState.did)
+          verificationMethodId = didJwk.verificationMethodId
+        } else {
+          const didKey = DidKey.fromDid(didResult.didState.did)
+          verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
         }
 
-        // Otherwise we also support plain jwk for sd-jwt only
-        if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
-          const key = await agent.wallet.createKey({
-            keyType,
-          })
-          return {
-            method: 'jwk',
-            jwk: getJwkFromKey(key),
-          }
+        return {
+          didUrl: verificationMethodId,
+          method: 'did',
         }
+      }
 
-        throw new Error(
-          `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
-            supportsJwk ? 'jwk, ' : ''
-          }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
-        )
-      },
+      // Otherwise we also support plain jwk for sd-jwt only
+      if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
+        return {
+          method: 'jwk',
+          jwk: getJwkFromKey(key),
+        }
+      }
 
-      verifyCredentialStatus: false,
-      allowedProofOfPossessionSignatureAlgorithms: [
-        // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
-        // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
-        // will be used
-        JwaSignatureAlgorithm.EdDSA,
-        JwaSignatureAlgorithm.ES256,
-      ],
-    }
-  )
+      throw new Error(
+        `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
+          supportsJwk ? 'jwk, ' : ''
+        }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
+      )
+    },
+  })
 
-  const [firstCredential] = credentials
+  const [x] = credentials
+  const { credential: firstCredential } = x
   if (!firstCredential) throw new Error('Error retrieving credential using pre authorized flow.')
 
   let record: SdJwtVcRecord | W3cCredentialRecord
@@ -160,7 +175,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
   if ('compact' in firstCredential) {
     record = new SdJwtVcRecord({
-      compactSdJwtVc: firstCredential.compact,
+      compactSdJwtVc: firstCredential.compact as string,
     })
   } else {
     record = new W3cCredentialRecord({
@@ -172,7 +187,10 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
   const openId4VcMetadata = extractOpenId4VcCredentialMetadata(
     resolvedCredentialOffer.offeredCredentials[0] as OpenId4VciCredentialSupportedWithId,
-    resolvedCredentialOffer.metadata
+    {
+      display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
+      id: resolvedCredentialOffer.metadata.issuer,
+    }
   )
 
   setOpenId4VcCredentialMetadata(record, openId4VcMetadata)

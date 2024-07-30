@@ -10,9 +10,9 @@
 		"prebuild": "APP_VARIANT=development pnpm expo prebuild --no-install"
 	},
 	"dependencies": {
-		"@hyperledger/anoncreds-react-native": "^0.2.2",
-		"@hyperledger/aries-askar-react-native": "^0.2.0",
-		"@hyperledger/indy-vdr-react-native": "^0.2.0",
+		"@hyperledger/anoncreds-react-native": "*",
+		"@hyperledger/aries-askar-react-native": "*",
+		"@hyperledger/indy-vdr-react-native": "*",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
 		"@package/ui": "workspace:*",

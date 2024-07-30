@@ -6,14 +6,23 @@ const variants = {
   development: {
     bundle: '.dev',
     name: ' (Dev)',
+    trustedCertificates: [
+      // https://funke.animo.id
+      'MIIBAzCBq6ADAgECAhArxq0w60RTDK4WY9HzgcvBMAoGCCqGSM49BAMCMAAwIBcNNzAwMTAxMDAwMDAwWhgPMjI4NjExMjAxNzQ2NDBaMAAwOTATBgcqhkjOPQIBBggqhkjOPQMBBwMiAALcD1XzKepFxWMAOqV+ln1fybBt7DRO5CV0f9A6mRp2xaMlMCMwIQYDVR0RBBowGIYWaHR0cHM6Ly9mdW5rZS5hbmltby5pZDAKBggqhkjOPQQDAgNHADBEAiAfvGG6sqrvzIMWYpJB5VLloo9f51loYXSkKxJIOztlNwIgLLSvEl0Dmp5vtj2buZ2nXQ2RBKxiLbc5eYGeMeoUnjk=',
+    ],
   },
   preview: {
     bundle: '.preview',
     name: ' (Preview)',
+    trustedCertificates: [
+      // https://funke.animo.id
+      'MIIBAzCBq6ADAgECAhArxq0w60RTDK4WY9HzgcvBMAoGCCqGSM49BAMCMAAwIBcNNzAwMTAxMDAwMDAwWhgPMjI4NjExMjAxNzQ2NDBaMAAwOTATBgcqhkjOPQIBBggqhkjOPQMBBwMiAALcD1XzKepFxWMAOqV+ln1fybBt7DRO5CV0f9A6mRp2xaMlMCMwIQYDVR0RBBowGIYWaHR0cHM6Ly9mdW5rZS5hbmltby5pZDAKBggqhkjOPQQDAgNHADBEAiAfvGG6sqrvzIMWYpJB5VLloo9f51loYXSkKxJIOztlNwIgLLSvEl0Dmp5vtj2buZ2nXQ2RBKxiLbc5eYGeMeoUnjk=',
+    ],
   },
   production: {
     bundle: '',
     name: '',
+    trustedCertificates: [],
   },
 }
 
@@ -106,6 +115,7 @@ const config = {
     eas: {
       projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
     },
+    trustedCertificates: variant.trustedCertificates,
   },
 }
 
