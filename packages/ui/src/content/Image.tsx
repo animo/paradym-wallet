@@ -1,7 +1,7 @@
 import { SvgUri } from 'react-native-svg'
 import { Image as TImage } from 'tamagui'
 
-interface ImageProps {
+export interface ImageProps {
   src: string
   alt?: string
   width?: number | string

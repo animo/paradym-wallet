@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import * as Keychain from 'react-native-keychain'
-import { type KeychainOptions, getKeychainItemById, storeKeychainItem, removeKeychainItemById } from '../keychain'
+import { type KeychainOptions, getKeychainItemById, removeKeychainItemById, storeKeychainItem } from '../keychain'
 
 const walletKeyStoreBaseOptions: KeychainOptions = {
   /* Only allow the current set of enrolled biometrics to access the wallet key */
@@ -33,7 +33,7 @@ const WALLET_KEY_ID = (version: number) => `PARADYM_WALLET_KEY_${version}`
  * Returns whether biometry backed wallet key can be used. Can be called before trying to access
  * or store the wallet key in the keychain.
  */
-export async function canUseBiometryBackedWalletKey(): Promise<boolean> {
+async function canUseBiometryBackedWalletKey(): Promise<boolean> {
   if (Platform.OS === 'android') {
     /**
      * `setUserAuthenticationParameters` is only available on Android API 30+, and is needed to ensure
@@ -78,7 +78,7 @@ export async function canUseBiometryBackedWalletKey(): Promise<boolean> {
  *
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function storeWalletKey(walletKey: string, version: number): Promise<void> {
+async function storeWalletKey(walletKey: string, version: number): Promise<void> {
   const walletKeyId = WALLET_KEY_ID(version)
   await storeKeychainItem(walletKeyId, walletKey, walletKeyStoreBaseOptions)
 }
@@ -89,7 +89,7 @@ export async function storeWalletKey(walletKey: string, version: number): Promis
  * @returns {string | null} the wallet key or null if it doesn't exist
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function getWalletKeyUsingBiometrics(version: number): Promise<string | null> {
+async function getWalletKeyUsingBiometrics(version: number): Promise<string | null> {
   const walletKeyId = WALLET_KEY_ID(version)
   return await getKeychainItemById(walletKeyId, walletKeyStoreBaseOptions)
 }
@@ -100,7 +100,14 @@ export async function getWalletKeyUsingBiometrics(version: number): Promise<stri
  * @returns {boolean} whether the wallet key was removed (false if the wallet key wasn't stored)
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function removeWalletKey(version: number): Promise<boolean> {
+async function removeWalletKey(version: number): Promise<boolean> {
   const walletKeyId = WALLET_KEY_ID(version)
   return await removeKeychainItemById(walletKeyId, walletKeyStoreBaseOptions)
+}
+
+export const walletKeyStore = {
+  removeWalletKey,
+  getWalletKeyUsingBiometrics,
+  storeWalletKey,
+  canUseBiometryBackedWalletKey,
 }

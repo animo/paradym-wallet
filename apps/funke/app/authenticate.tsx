@@ -1,12 +1,10 @@
 import { Redirect } from 'expo-router'
 import { Text, View } from 'react-native'
 
-import { useSecureUnlock } from './_layout'
-import { useEffect } from 'react'
-import { initializeAppAgent } from './(app)'
-import * as SplashScreen from 'expo-splash-screen'
+import { initializeAppAgent, useSecureUnlock } from '@/agent'
 import type { SecureUnlockMethod } from '@package/secure-store/secureUnlock'
-import { secureUnlockVersion } from '../../../packages/secure-store/secure-unlock/version'
+import * as SplashScreen from 'expo-splash-screen'
+import { useEffect } from 'react'
 
 /**
  * Authenticate screen is redirect to from app layout when app is configured but locked
@@ -19,13 +17,8 @@ export default function Authenticate() {
     if (secureUnlock.state !== 'unlocked') return
 
     initializeAppAgent({
-      keyDerivation: 'raw',
-      walletId: `funke-wallet-${secureUnlockVersion}`,
       walletKey: secureUnlock.walletKey,
-      walletLabel: 'Funke Wallet',
-    }).then((agent) => {
-      secureUnlock.setContext({ agent })
-    })
+    }).then((agent) => secureUnlock.setContext({ agent }))
   }, [secureUnlock])
 
   // We want to wait until the agent is initialized before redirecting

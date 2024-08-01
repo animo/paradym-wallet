@@ -1,4 +1,5 @@
 import * as Keychain from 'react-native-keychain'
+import { kdf } from '../kdf'
 import { type KeychainOptions, getKeychainItemById, storeKeychainItem } from '../keychain'
 
 const saltStoreBaseOptions: KeychainOptions = {
@@ -13,7 +14,7 @@ const SALT_ID = (version: number) => `PARADYM_WALLET_SALT_${version}`
  *
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function storeSalt(salt: string, version: number): Promise<void> {
+async function storeSalt(salt: string, version: number): Promise<void> {
   const saltId = SALT_ID(version)
 
   await storeKeychainItem(saltId, salt, saltStoreBaseOptions)
@@ -25,11 +26,32 @@ export async function storeSalt(salt: string, version: number): Promise<void> {
  * @returns {string | null} the salt or null if it doesn't exist
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function getSalt(version: number): Promise<string | null> {
+async function getSalt(version: number): Promise<string | null> {
   const saltId = SALT_ID(version)
 
   // TODO: should probably throw error if not found
   const salt = await getKeychainItemById(saltId, saltStoreBaseOptions)
 
   return salt
+}
+
+/*
+ * Generate and store a salt. Optionally returning the existing one if it exists
+ */
+async function createAndStoreSalt(returnExisting: boolean, version: number) {
+  if (returnExisting) {
+    const existingSalt = await getSalt(version)
+    if (existingSalt) return existingSalt
+  }
+
+  const salt = kdf.generateSalt()
+  await storeSalt(salt, version)
+
+  return salt
+}
+
+export const walletKeySaltStore = {
+  getSalt,
+  storeSalt,
+  createAndStoreSalt,
 }

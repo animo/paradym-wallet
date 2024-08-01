@@ -3,6 +3,7 @@ import type {
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
   JwkDidCreateOptions,
+  Key,
   KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
@@ -17,7 +18,7 @@ import type {
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
-import type { FullAppAgent } from '../agent'
+import type { EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -26,6 +27,7 @@ import {
   DidJwk,
   DidKey,
   JwaSignatureAlgorithm,
+  KeyBackend,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -50,7 +52,7 @@ export async function resolveOpenId4VciOffer({
   offer,
   authorization,
 }: {
-  agent: FullAppAgent
+  agent: EitherAgent
   offer: { data?: string; uri?: string }
   authorization?: { clientId: string; redirectUri: string }
 }) {
@@ -114,7 +116,7 @@ export async function acquireAccessToken({
   agent,
   resolvedAuthorizationRequest,
 }: {
-  agent: FullAppAgent
+  agent: EitherAgent
   resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequestWithCode
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
 }) {
@@ -140,7 +142,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   accessToken,
   clientId,
 }: {
-  agent: FullAppAgent
+  agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdToRequest?: string
   clientId?: string
@@ -161,10 +163,18 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
   // FIXME: return credential_supported entry for credential so it's easy to store metadata
   const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+    resolvedCredentialOffer,
     ...accessToken,
     clientId,
-    resolvedCredentialOffer,
     credentialsToRequest: [offeredCredentialToRequest.id],
+    verifyCredentialStatus: false,
+    allowedProofOfPossessionSignatureAlgorithms: [
+      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
+      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
+      // will be used
+      JwaSignatureAlgorithm.EdDSA,
+      JwaSignatureAlgorithm.ES256,
+    ],
     credentialBindingResolver: async ({
       supportedDidMethods,
       keyType,
@@ -188,11 +198,25 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         didMethod = 'key'
       }
 
+      let key: Key | undefined = undefined
+
+      try {
+        key = await agent.wallet.createKey({
+          keyType,
+          keyBackend: KeyBackend.SecureElement,
+        })
+      } catch (e) {
+        agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
+        key = await agent.wallet.createKey({
+          keyType,
+        })
+      }
+
       if (didMethod) {
         const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
           method: didMethod,
           options: {
-            keyType,
+            key,
           },
         })
 
@@ -217,9 +241,6 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
       // Otherwise we also support plain jwk for sd-jwt only
       if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
-        const key = await agent.wallet.createKey({
-          keyType,
-        })
         return {
           method: 'jwk',
           jwk: getJwkFromKey(key),
@@ -232,19 +253,10 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
       )
     },
-
-    verifyCredentialStatus: false,
-    allowedProofOfPossessionSignatureAlgorithms: [
-      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
-      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
-      // will be used
-      JwaSignatureAlgorithm.EdDSA,
-      JwaSignatureAlgorithm.ES256,
-    ],
   })
 
   const [firstCredential] = credentials
-  if (!firstCredential) throw new Error('Error retrieving credential flow.')
+  if (!firstCredential) throw new Error('Error retrieving credential.')
 
   let record: SdJwtVcRecord | W3cCredentialRecord
 
@@ -261,10 +273,10 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     })
   }
 
-  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(
-    offeredCredentialToRequest,
-    resolvedCredentialOffer.metadata
-  )
+  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
+    id: resolvedCredentialOffer.metadata.issuer,
+    display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
+  })
 
   setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
 
@@ -276,7 +288,7 @@ export const getCredentialsForProofRequest = async ({
   data,
   uri,
 }: {
-  agent: FullAppAgent
+  agent: EitherAgent
   // Either data or uri can be provided
   data?: string
   uri?: string
@@ -318,7 +330,7 @@ export const shareProof = async ({
   credentialsForRequest,
   selectedCredentials,
 }: {
-  agent: FullAppAgent
+  agent: EitherAgent
   authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
   credentialsForRequest: DifPexCredentialsForRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
@@ -357,7 +369,7 @@ export const shareProof = async ({
   return result
 }
 
-export async function storeCredential(agent: FullAppAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
+export async function storeCredential(agent: EitherAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
   } else {

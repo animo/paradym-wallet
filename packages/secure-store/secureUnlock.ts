@@ -4,4 +4,4 @@ export {
   SecureUnlockState,
   useSecureUnlock,
   SecureUnlockProvider,
-} from './secure-unlock/SecureUnlockProvider'
+} from './secure-wallet-key/SecureUnlockProvider'

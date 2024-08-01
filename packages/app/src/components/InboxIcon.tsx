@@ -1,5 +1,5 @@
 import { useHasInboxNotifications } from '@package/agent'
-import { LucideIcon, XStack } from '@package/ui'
+import { LucideIcons, XStack } from '@package/ui'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useRouter } from 'solito/router'
@@ -12,7 +12,7 @@ export function InboxIcon() {
   return (
     <TouchableOpacity onPress={() => push('/notifications/inbox')}>
       <XStack>
-        <LucideIcon.Inbox />
+        <LucideIcons.Inbox />
         {hasInboxNotifications && <Circle ml="$-0.75" size="$0.75" backgroundColor="$danger-500" />}
       </XStack>
     </TouchableOpacity>

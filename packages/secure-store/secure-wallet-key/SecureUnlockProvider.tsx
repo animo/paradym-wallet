@@ -1,9 +1,7 @@
-import { createContext, useContext, useState, type PropsWithChildren } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getSalt } from './saltStore'
-import { secureUnlockVersion } from './version'
-import { canUseBiometryBackedWalletKey, getWalletKeyUsingBiometrics, storeWalletKey } from './walletKeyStore'
-import { createSaltForPin, getWalletKeyUsingPin } from './walletKeyDerivation'
+import { type PropsWithChildren, createContext, useContext, useState } from 'react'
+
+import { secureWalletKey } from './secureWalletKey'
 
 const SecureUnlockContext = createContext<SecureUnlockReturn<Record<string, unknown>>>({
   state: 'initializing',
@@ -63,13 +61,13 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
 
   useQuery({
     queryFn: async () => {
+      const salt = await secureWalletKey.getSalt(secureWalletKey.walletKeyVersion)
       // TODO: is salt the best way to test this?
-      const salt = await getSalt(secureUnlockVersion)
 
       // We have two params. If e.g. unlocking using biometrics failed, we will
       // set setCanTryUnlockingUsingBiometrics to false, but `setCanUseBiometrics`
       // will still be true (so we can store it)
-      const canUseBiometrics = await canUseBiometryBackedWalletKey()
+      const canUseBiometrics = await secureWalletKey.canUseBiometryBackedWalletKey()
       setCanUseBiometrics(canUseBiometrics)
       setCanTryUnlockingUsingBiometrics(canUseBiometrics)
 
@@ -100,7 +98,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       canTryUnlockingUsingBiometrics,
       tryUnlockingUsingBiometrics: async () => {
         try {
-          const walletKey = await getWalletKeyUsingBiometrics(secureUnlockVersion)
+          const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.walletKeyVersion)
           if (walletKey) {
             setWalletKey(walletKey)
             setUnlockMethod('biometrics')
@@ -116,11 +114,11 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       },
       unlockUsingPin: async (pin: string) => {
         // TODO: how do we verify the key is correct?
-        const walletKey = await getWalletKeyUsingPin(pin, secureUnlockVersion)
+        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.walletKeyVersion)
 
         // TODO: need extra option to know whether user wants to use biometrics?
         if (canUseBiometrics) {
-          await storeWalletKey(walletKey, secureUnlockVersion)
+          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
         }
         setWalletKey(walletKey)
         setUnlockMethod('pin')
@@ -133,11 +131,11 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
     return {
       state,
       setup: async (pin, { storeUsingBiometrics = true }) => {
-        await createSaltForPin(true, secureUnlockVersion)
-        const walletKey = await getWalletKeyUsingPin(pin, secureUnlockVersion)
+        await secureWalletKey.createAndStoreSalt(true, secureWalletKey.walletKeyVersion)
+        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.walletKeyVersion)
 
         if (canUseBiometrics && storeUsingBiometrics) {
-          await storeWalletKey(walletKey, secureUnlockVersion).catch((error) => {
+          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion).catch((error) => {
             // TODO: handle
             // TODO: set state param?
           })

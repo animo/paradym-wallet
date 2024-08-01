@@ -1,23 +1,23 @@
-import {
-  type FullAppAgent,
-  receiveCredentialFromOpenId4VciOffer,
-  acquireAccessToken,
-  resolveOpenId4VciOffer,
-  type OpenId4VciResolvedCredentialOffer,
-  type OpenId4VciResolvedAuthorizationRequest,
-  type OpenId4VciRequestTokenResponse,
-} from '@package/agent'
+import type { AppAgent } from '@/agent'
 import { AusweisAuthFlow } from '@animo-id/expo-ausweis-sdk'
+import {
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedAuthorizationRequest,
+  type OpenId4VciResolvedCredentialOffer,
+  acquireAccessToken,
+  receiveCredentialFromOpenId4VciOffer,
+  resolveOpenId4VciOffer,
+} from '@package/agent'
 
 export interface ReceivePidUseCaseOptions {
-  agent: FullAppAgent
+  agent: AppAgent
   onStateChange?: (newState: ReceivePidUseCaseState) => void
 }
 
 export type ReceivePidUseCaseState = 'id-card-auth' | 'acquire-access-token' | 'retrieve-credential' | 'error'
 
 export class ReceivePidUseCase {
-  private agent: FullAppAgent
+  private agent: AppAgent
 
   private resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   private resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest
@@ -36,7 +36,7 @@ export class ReceivePidUseCase {
   private static REDIRECT_URI = 'https://funke.animo.id/redirect'
 
   private constructor(
-    agent: FullAppAgent,
+    agent: AppAgent,
     resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest,
     resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer,
     onStateChange?: (newState: ReceivePidUseCaseState) => void

@@ -1,11 +1,9 @@
 import { Redirect } from 'expo-router'
 import { Text, View } from 'react-native'
 
-import { useSecureUnlock } from '../_layout'
-import { useEffect } from 'react'
-import { initializeAppAgent } from '../(app)'
+import { initializeAppAgent, useSecureUnlock } from '@/agent'
 import * as SplashScreen from 'expo-splash-screen'
-import { secureUnlockVersion } from '../../../../packages/secure-store/secure-unlock/version'
+import { useEffect } from 'react'
 
 /**
  * Onboarding screen is redirect to from app layout when app is not configured
@@ -18,10 +16,7 @@ export default function Onboarding() {
     if (secureUnlock.state !== 'unlocked') return
 
     initializeAppAgent({
-      keyDerivation: 'raw',
-      walletId: `funke-wallet-${secureUnlockVersion}`,
       walletKey: secureUnlock.walletKey,
-      walletLabel: 'Funke Wallet',
     }).then((agent) => secureUnlock.setContext({ agent }))
   }, [secureUnlock])
 

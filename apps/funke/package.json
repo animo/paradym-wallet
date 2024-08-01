@@ -11,14 +11,17 @@
 	},
 	"dependencies": {
 		"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.5",
+		"@animo-id/expo-secure-environment": "0.0.1-alpha.0",
+		"@credo-ts/core": "*",
 		"@expo-google-fonts/open-sans": "^0.2.3",
 		"@expo-google-fonts/raleway": "^0.2.3",
 		"@gorhom/bottom-sheet": "^4.6.3",
-		"@hyperledger/anoncreds-react-native": "^0.2.2",
-		"@hyperledger/aries-askar-react-native": "^0.2.3",
-		"@hyperledger/indy-vdr-react-native": "^0.2.0",
+		"@hyperledger/anoncreds-react-native": "*",
+		"@hyperledger/aries-askar-react-native": "*",
+		"@hyperledger/indy-vdr-react-native": "*",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
+		"@package/secure-store": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@react-native-community/blur": "^4.3.2",
 		"@react-native-community/netinfo": "11.3.1",
@@ -37,6 +40,7 @@
 		"expo-linking": "~6.3.1",
 		"expo-navigation-bar": "~3.0.6",
 		"expo-router": "~3.5.16",
+		"expo-secure-store": "~13.0.1",
 		"expo-splash-screen": "~0.27.5",
 		"expo-status-bar": "~1.12.1",
 		"expo-system-ui": "~3.0.6",
@@ -55,7 +59,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
-		"@tamagui/babel-plugin": "^1.91.4",
+		"@tamagui/babel-plugin": "^1.104.2",
 		"typescript": "*"
 	}
 }

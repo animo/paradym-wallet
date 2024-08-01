@@ -67,13 +67,19 @@ export const tokensInput = {
     background: hexColors['grey-200'],
   },
   size,
-  radius,
+  radius: {
+    ...radius,
+    button: 8,
+  },
   zIndex,
   space,
 } as const
 export const tokens = createTokens(tokensInput)
 
 export const configInput = {
+  settings: {
+    styleCompat: 'react-native',
+  },
   animations,
   shouldAddPrefersColorThemes: true,
   themeClassNameOnRoot: true,
@@ -82,10 +88,17 @@ export const configInput = {
     // By default we use the same font for headings and body
     default: fontInter,
     heading: fontInter,
+    // Somehow adding body font gives build errors?!
+    // body: fontInter,
   },
   tokens,
   themes: {
-    light: tokens.color,
+    light: {
+      ...tokens.color,
+
+      // Button
+      buttonHeight: size.$4,
+    },
   },
 } as const satisfies CreateTamaguiProps
 

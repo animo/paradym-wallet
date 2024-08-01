@@ -1,7 +1,7 @@
-import { Text } from 'react-native'
 import { Redirect, Stack } from 'expo-router'
+import { Text } from 'react-native'
 
-import { useSecureUnlock } from '../_layout'
+import { useSecureUnlock } from '@/agent'
 import { AgentProvider } from '@package/agent'
 
 export default function AppLayout() {

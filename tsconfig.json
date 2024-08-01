@@ -12,9 +12,10 @@
 		"baseUrl": ".",
 		"skipLibCheck": true,
 		"jsx": "react-native",
-		"types": ["react-native"],
+		"typeRoots": ["./types"],
 		"paths": {
-			"@package/*": ["./packages/*"]
+			"@package/*": ["./packages/*"],
+			"@/*": ["./apps/funke/*", "./apps/paradym/*"]
 		}
 	},
 	"exclude": ["node_modules", "build"]

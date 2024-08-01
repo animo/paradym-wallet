@@ -2,18 +2,30 @@ const { version } = require('./package.json')
 
 const APP_VARIANT = process.env.APP_VARIANT || 'production'
 
+// https://demo.pid-issuer.bundesdruckerei.de
+const bdrPidIssuerCertificate = `-----BEGIN CERTIFICATE-----
+MIICeTCCAiCgAwIBAgIUB5E9QVZtmUYcDtCjKB/H3VQv72gwCgYIKoZIzj0EAwIwgYgxCzAJBgNVBAYTAkRFMQ8wDQYDVQQHDAZCZXJsaW4xHTAbBgNVBAoMFEJ1bmRlc2RydWNrZXJlaSBHbWJIMREwDwYDVQQLDAhUIENTIElERTE2MDQGA1UEAwwtU1BSSU5EIEZ1bmtlIEVVREkgV2FsbGV0IFByb3RvdHlwZSBJc3N1aW5nIENBMB4XDTI0MDUzMTA2NDgwOVoXDTM0MDUyOTA2NDgwOVowgYgxCzAJBgNVBAYTAkRFMQ8wDQYDVQQHDAZCZXJsaW4xHTAbBgNVBAoMFEJ1bmRlc2RydWNrZXJlaSBHbWJIMREwDwYDVQQLDAhUIENTIElERTE2MDQGA1UEAwwtU1BSSU5EIEZ1bmtlIEVVREkgV2FsbGV0IFByb3RvdHlwZSBJc3N1aW5nIENBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYGzdwFDnc7+Kn5ibAvCOM8ke77VQxqfMcwZL8IaIA+WCROcCfmY/giH92qMru5p/kyOivE0RC/IbdMONvDoUyaNmMGQwHQYDVR0OBBYEFNRWGMCJOOgOWIQYyXZiv6u7xZC+MB8GA1UdIwQYMBaAFNRWGMCJOOgOWIQYyXZiv6u7xZC+MBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMAoGCCqGSM49BAMCA0cAMEQCIGEm7wkZKHt/atb4MdFnXW6yrnwMUT2u136gdtl10Y6hAiBuTFqvVYth1rbxzCP0xWZHmQK9kVyxn8GPfX27EIzzsw==
+-----END CERTIFICATE-----`
+
+// https://funke.animo.id
+const animoFunkeRelyingPartyCertificate =
+  'MIIBAzCBq6ADAgECAhArxq0w60RTDK4WY9HzgcvBMAoGCCqGSM49BAMCMAAwIBcNNzAwMTAxMDAwMDAwWhgPMjI4NjExMjAxNzQ2NDBaMAAwOTATBgcqhkjOPQIBBggqhkjOPQMBBwMiAALcD1XzKepFxWMAOqV+ln1fybBt7DRO5CV0f9A6mRp2xaMlMCMwIQYDVR0RBBowGIYWaHR0cHM6Ly9mdW5rZS5hbmltby5pZDAKBggqhkjOPQQDAgNHADBEAiAfvGG6sqrvzIMWYpJB5VLloo9f51loYXSkKxJIOztlNwIgLLSvEl0Dmp5vtj2buZ2nXQ2RBKxiLbc5eYGeMeoUnjk='
+
 const variants = {
   development: {
     bundle: '.dev',
     name: ' (Dev)',
+    trustedCertificates: [animoFunkeRelyingPartyCertificate, bdrPidIssuerCertificate],
   },
   preview: {
     bundle: '.preview',
     name: ' (Preview)',
+    trustedCertificates: [animoFunkeRelyingPartyCertificate, bdrPidIssuerCertificate],
   },
   production: {
     bundle: '',
     name: '',
+    trustedCertificates: [animoFunkeRelyingPartyCertificate, bdrPidIssuerCertificate],
   },
 }
 
@@ -103,10 +115,14 @@ const config = {
       })),
     ],
   },
+  experiments: {
+    tsconfigPaths: true,
+  },
   extra: {
     eas: {
       projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
     },
+    trustedCertificates: variant.trustedCertificates,
   },
 }
 

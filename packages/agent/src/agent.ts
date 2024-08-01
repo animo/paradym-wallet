@@ -49,10 +49,6 @@ import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { indyNetworks } from './indyNetworks'
 import { appLogger } from './logger'
 
-const trustedCertificate = `-----BEGIN CERTIFICATE-----
-MIICeTCCAiCgAwIBAgIUB5E9QVZtmUYcDtCjKB/H3VQv72gwCgYIKoZIzj0EAwIwgYgxCzAJBgNVBAYTAkRFMQ8wDQYDVQQHDAZCZXJsaW4xHTAbBgNVBAoMFEJ1bmRlc2RydWNrZXJlaSBHbWJIMREwDwYDVQQLDAhUIENTIElERTE2MDQGA1UEAwwtU1BSSU5EIEZ1bmtlIEVVREkgV2FsbGV0IFByb3RvdHlwZSBJc3N1aW5nIENBMB4XDTI0MDUzMTA2NDgwOVoXDTM0MDUyOTA2NDgwOVowgYgxCzAJBgNVBAYTAkRFMQ8wDQYDVQQHDAZCZXJsaW4xHTAbBgNVBAoMFEJ1bmRlc2RydWNrZXJlaSBHbWJIMREwDwYDVQQLDAhUIENTIElERTE2MDQGA1UEAwwtU1BSSU5EIEZ1bmtlIEVVREkgV2FsbGV0IFByb3RvdHlwZSBJc3N1aW5nIENBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYGzdwFDnc7+Kn5ibAvCOM8ke77VQxqfMcwZL8IaIA+WCROcCfmY/giH92qMru5p/kyOivE0RC/IbdMONvDoUyaNmMGQwHQYDVR0OBBYEFNRWGMCJOOgOWIQYyXZiv6u7xZC+MB8GA1UdIwQYMBaAFNRWGMCJOOgOWIQYyXZiv6u7xZC+MBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMAoGCCqGSM49BAMCA0cAMEQCIGEm7wkZKHt/atb4MdFnXW6yrnwMUT2u136gdtl10Y6hAiBuTFqvVYth1rbxzCP0xWZHmQK9kVyxn8GPfX27EIzzsw==
------END CERTIFICATE-----`
-
 const askarModule = new AskarModule({
   ariesAskar: ariesAskar,
 })
@@ -61,9 +57,7 @@ const agentModules = {
   funke: {
     ariesAskar: askarModule,
     openId4VcHolder: new OpenId4VcHolderModule(),
-    x509: new X509Module({
-      trustedCertificates: [trustedCertificate],
-    }),
+    x509: new X509Module({}),
   },
   paradym: {
     ariesAskar: askarModule,
@@ -138,11 +132,13 @@ export const initializeFunkeAgent = async ({
   walletId,
   walletKey,
   keyDerivation,
+  trustedX509Certificates,
 }: {
   walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
+  trustedX509Certificates: string[]
 }) => {
   const agent = new Agent({
     dependencies: agentDependencies,
@@ -160,6 +156,11 @@ export const initializeFunkeAgent = async ({
   })
 
   await agent.initialize()
+
+  // Register the trusted x509 certificates
+  for (const trustedCertificate of trustedX509Certificates) {
+    agent.x509.addTrustedCertificate(trustedCertificate)
+  }
 
   return agent
 }
@@ -200,9 +201,13 @@ export const initializeFullAgent = async ({
 
 export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
 export type FunkeAppAgent = Awaited<ReturnType<typeof initializeFunkeAgent>>
+export type EitherAgent = FullAppAgent | FunkeAppAgent
 
 // biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
-export const useAgent = <A extends Agent<any> = FullAppAgent>(): { agent: A; loading: boolean } => {
+export const useAgent = <A extends Agent<any> = FullAppAgent>(): {
+  agent: A
+  loading: boolean
+} => {
   const { agent, loading } = useAgentLib<A>()
 
   if (!agent) {

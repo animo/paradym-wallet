@@ -1,15 +1,10 @@
-import type { FunkeAppAgent } from '@package/agent'
-
-import { initializeFunkeAgent, useAgent } from '@package/agent'
+import { useAppAgent } from '@/agent'
+import { addMessageListener } from '@animo-id/expo-ausweis-sdk'
 import { Button, Paragraph, XStack, YStack } from '@package/ui'
 import { Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ReceivePidUseCase, type ReceivePidUseCaseState } from '../../use-cases/ReceivePidUseCase'
-import { addMessageListener } from '@animo-id/expo-ausweis-sdk'
-
-export const initializeAppAgent = initializeFunkeAgent
-export const useAppAgent = useAgent<FunkeAppAgent>
 
 export default function Screen() {
   const { top } = useSafeAreaInsets()
@@ -17,7 +12,7 @@ export default function Screen() {
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCase>()
   const [state, setState] = useState<ReceivePidUseCaseState | 'not-initialized'>('not-initialized')
   const [credential, setCredential] = useState<string>()
-  const { agent } = useAgent()
+  const { agent } = useAppAgent()
 
   useEffect(() => {
     const { remove } = addMessageListener((message) => {
@@ -29,7 +24,6 @@ export default function Screen() {
 
   useEffect(() => {
     ReceivePidUseCase.initialize({ agent, onStateChange: setState }).then((pidUseCase) => {
-      console.log('got pid use case')
       setReceivePidUseCase(pidUseCase)
     })
   }, [agent])
