@@ -124,6 +124,7 @@ export class ReceivePidUseCase {
       return credentialRecord
     } catch (error) {
       this.handleError()
+      throw error
     }
   }
 
@@ -138,9 +139,6 @@ export class ReceivePidUseCase {
       }
 
       const authorizationCode = new URL(authorizationCodeResponse.url).searchParams.get('code')
-
-      console.log('entries', authorizationCodeResponse.headers)
-      console.log('authorizationCode', authorizationCode)
 
       if (!authorizationCode) {
         this.handleError()
