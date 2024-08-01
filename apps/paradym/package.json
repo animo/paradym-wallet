@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@hyperledger/anoncreds-react-native": "^0.2.2",
-		"@hyperledger/aries-askar-react-native": "^0.2.0",
+		"@hyperledger/aries-askar-react-native": "^0.2.3",
 		"@hyperledger/indy-vdr-react-native": "^0.2.0",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",

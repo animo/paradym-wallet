@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import * as Keychain from 'react-native-keychain'
-import { type KeychainOptions, getKeychainItemById, storeKeychainItem } from '../keychain'
+import { type KeychainOptions, getKeychainItemById, storeKeychainItem, removeKeychainItemById } from '../keychain'
 
 const walletKeyStoreBaseOptions: KeychainOptions = {
   /* Only allow the current set of enrolled biometrics to access the wallet key */
@@ -78,7 +78,7 @@ export async function canUseBiometryBackedWalletKey(): Promise<boolean> {
  *
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function storeWalletKey(walletKey: string, version = 1): Promise<void> {
+export async function storeWalletKey(walletKey: string, version: number): Promise<void> {
   const walletKeyId = WALLET_KEY_ID(version)
   await storeKeychainItem(walletKeyId, walletKey, walletKeyStoreBaseOptions)
 }
@@ -89,7 +89,18 @@ export async function storeWalletKey(walletKey: string, version = 1): Promise<vo
  * @returns {string | null} the wallet key or null if it doesn't exist
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function getWalletKeyUsingBiometrics(version = 1): Promise<string | null> {
+export async function getWalletKeyUsingBiometrics(version: number): Promise<string | null> {
   const walletKeyId = WALLET_KEY_ID(version)
   return await getKeychainItemById(walletKeyId, walletKeyStoreBaseOptions)
+}
+
+/**
+ * Delete the wallet key from hardware backed, biometric protected storage.
+ *
+ * @returns {boolean} whether the wallet key was removed (false if the wallet key wasn't stored)
+ * @throws {KeychainError} if an unexpected error occurs
+ */
+export async function removeWalletKey(version: number): Promise<boolean> {
+  const walletKeyId = WALLET_KEY_ID(version)
+  return await removeKeychainItemById(walletKeyId, walletKeyStoreBaseOptions)
 }

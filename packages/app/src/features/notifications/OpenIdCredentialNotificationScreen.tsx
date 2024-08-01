@@ -1,8 +1,10 @@
 import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import {
+  acquireAccessToken,
   getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
+  resolveOpenId4VciOffer,
   storeCredential,
   useAgent,
 } from '@package/agent'
@@ -35,10 +37,13 @@ export function OpenIdCredentialNotificationScreen() {
   useEffect(() => {
     const requestCredential = async (params: Query) => {
       try {
+        // Only supports pre-auth flow
+        const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({ agent, offer: params })
+        const tokenResponse = await acquireAccessToken({ agent, resolvedCredentialOffer })
         const credentialRecord = await receiveCredentialFromOpenId4VciOffer({
           agent,
-          data: params.data,
-          uri: params.uri,
+          resolvedCredentialOffer,
+          accessToken: tokenResponse,
         })
 
         setCredentialRecord(credentialRecord)

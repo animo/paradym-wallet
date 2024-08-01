@@ -53,6 +53,7 @@ const config = {
     fallbackToCacheTimeout: 0,
   },
   plugins: [
+    '@animo-id/expo-ausweis-sdk',
     [
       'expo-font',
       {

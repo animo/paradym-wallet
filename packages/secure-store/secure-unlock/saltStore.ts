@@ -13,7 +13,7 @@ const SALT_ID = (version: number) => `PARADYM_WALLET_SALT_${version}`
  *
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function storeSalt(salt: string, version = 1): Promise<void> {
+export async function storeSalt(salt: string, version: number): Promise<void> {
   const saltId = SALT_ID(version)
 
   await storeKeychainItem(saltId, salt, saltStoreBaseOptions)
@@ -25,7 +25,7 @@ export async function storeSalt(salt: string, version = 1): Promise<void> {
  * @returns {string | null} the salt or null if it doesn't exist
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function getSalt(version = 1): Promise<string | null> {
+export async function getSalt(version: number): Promise<string | null> {
   const saltId = SALT_ID(version)
 
   // TODO: should probably throw error if not found

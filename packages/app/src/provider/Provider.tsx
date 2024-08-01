@@ -2,6 +2,7 @@ import type { TamaguiProviderProps } from '@package/ui'
 
 import { CustomToast, TamaguiProvider, ToastProvider } from '@package/ui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import type { PropsWithChildren } from 'react'
 import { ToastViewport } from './ToastViewport'
@@ -21,7 +22,9 @@ export function Provider({ children, ...rest }: PropsWithChildren<TamaguiProvide
           ]
         }
       >
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <GestureHandlerRootView style={{ flex: 1 }}>{children}</GestureHandlerRootView>
+        </QueryClientProvider>
         <CustomToast />
         <ToastViewport />
       </ToastProvider>
