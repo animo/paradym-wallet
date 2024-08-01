@@ -1,5 +1,6 @@
 import ExpoConstants from 'expo-constants'
 
+export const FUNKE_WALLET_SEED_CREDENTIAL_RECORD_ID = 'FUNKE_WALLET_SEED_CREDENTIAL_RECORD_ID '
 export const FUNKE_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'FUNKE_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID'
 
 const TRUSTED_CERTIFICATES = ExpoConstants.expoConfig?.extra?.trustedCertificates as [string, ...string[]] | undefined

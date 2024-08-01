@@ -23,3 +23,4 @@ export {
 } from './format/formatPresentation'
 export * from './mediation'
 export * from './crypto'
+export * from './storage'
