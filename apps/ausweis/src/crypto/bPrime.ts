@@ -1,5 +1,14 @@
-import { type AgentContext, TypedArrayEncoder } from '@credo-ts/core'
-import { Key, KeyAlgs, KeyMethod } from '@hyperledger/aries-askar-react-native'
+import {
+  type AgentContext,
+  type JwsProtectedHeaderOptions,
+  JwsService,
+  JwtPayload,
+  type Key,
+  KeyType,
+  TypedArrayEncoder,
+  getJwkFromKey,
+} from '@credo-ts/core'
+import type { FullAppAgent } from '@package/agent/src'
 import { kdf } from '@package/secure-store/kdf'
 import { ausweisAes128Gcm } from './aes'
 
@@ -14,7 +23,7 @@ import { ausweisAes128Gcm } from './aes'
  */
 export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Array<number>) => {
   if (!(await ausweisAes128Gcm.aes128GcmHasKey({ agentContext }))) {
-    throw new Error('No AES key found in storage. Flow is called in an incorrect way!')
+    await ausweisAes128Gcm.aes128GcmGenerateAndStoreKey({ agentContext })
   }
 
   const pinSecret = await ausweisAes128Gcm.aes128GcmEncrypt({
@@ -27,9 +36,39 @@ export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Arra
     TypedArrayEncoder.toUtf8String(pinSecret)
   )
 
-  return Key.fromSeed({
-    seed: new Uint8Array(TypedArrayEncoder.fromHex(pinSeed)),
-    method: KeyMethod.None,
-    algorithm: KeyAlgs.EcSecp256r1,
+  return agentContext.wallet.createKey({
+    seed: TypedArrayEncoder.fromHex(pinSeed),
+    keyType: KeyType.P256,
   })
+}
+
+export const createPinDerivedEphKeyPop = async (
+  agent: FullAppAgent,
+  { aud, cNonce, deviceKey, pinDerivedEph }: { pinDerivedEph: Key; deviceKey: Key; cNonce: string; aud: string }
+) => {
+  const deviceKeyClaim = getJwkFromKey(deviceKey).toJson()
+
+  const payload = new JwtPayload({
+    aud,
+    additionalClaims: {
+      nonce: cNonce,
+      device_key: { jwk: deviceKeyClaim },
+    },
+  })
+
+  const protectedHeaderOptions: JwsProtectedHeaderOptions = {
+    alg: 'ES256',
+    typ: 'pin_derived_eph_key_pop',
+    jwk: getJwkFromKey(pinDerivedEph),
+  }
+
+  const jwsService = agent.dependencyManager.resolve<JwsService>(JwsService)
+
+  const compact = await jwsService.createJwsCompact(agent.context, {
+    key: pinDerivedEph,
+    payload,
+    protectedHeaderOptions,
+  })
+
+  return compact
 }
