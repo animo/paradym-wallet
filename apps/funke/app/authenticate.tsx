@@ -2,12 +2,12 @@ import { Redirect } from 'expo-router'
 import { KeyboardAvoidingView } from 'react-native'
 
 import { initializeAppAgent, useSecureUnlock } from '@/agent'
+import { WalletInvalidKeyError } from '@credo-ts/core'
+import { HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef } from 'react'
-import { PinDotsInput, type PinDotsInputRef, YStack, Paragraph, HeroIcons } from '@package/ui'
-import { Circle } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { WalletInvalidKeyError } from '@credo-ts/core'
+import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
 
 /**
@@ -31,13 +31,10 @@ export default function Authenticate() {
   useEffect(() => {
     if (secureUnlock.state !== 'acquired-wallet-key') return
 
-    console.log('acquired initialize')
     initializeAppAgent({
       walletKey: secureUnlock.walletKey,
     })
-      .then((agent) => {
-        secureUnlock.setWalletKeyValid({ agent })
-      })
+      .then((agent) => secureUnlock.setWalletKeyValid({ agent }))
       .catch((error) => {
         if (error instanceof WalletInvalidKeyError) {
           secureUnlock.setWalletKeyInvalid()

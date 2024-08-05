@@ -15,14 +15,6 @@ export default function Screen() {
   const { agent } = useAppAgent()
 
   useEffect(() => {
-    const { remove } = addMessageListener((message) => {
-      console.log('receive message', JSON.stringify(message, null, 2))
-    })
-
-    return () => remove()
-  }, [])
-
-  useEffect(() => {
     ReceivePidUseCase.initialize({ agent, onStateChange: setState }).then((pidUseCase) => {
       setReceivePidUseCase(pidUseCase)
     })
@@ -34,7 +26,6 @@ export default function Screen() {
 
     if (state === 'acquire-access-token') return
     if (state === 'id-card-auth') {
-      console.log('authenticate using id card')
       await receivePidUseCase.authenticateUsingIdCard()
       return
     }

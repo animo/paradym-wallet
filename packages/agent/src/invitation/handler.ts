@@ -28,6 +28,7 @@ import {
   DidKey,
   JwaSignatureAlgorithm,
   KeyBackend,
+  KeyType,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -200,13 +201,20 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
       let key: Key | undefined = undefined
 
-      try {
-        key = await agent.wallet.createKey({
-          keyType,
-          keyBackend: KeyBackend.SecureElement,
-        })
-      } catch (e) {
-        agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
+      // For P-256 we first try secure enclave
+      if (keyType === KeyType.P256) {
+        key = await agent.wallet
+          .createKey({
+            keyType,
+            keyBackend: KeyBackend.SecureElement,
+          })
+          .catch((e) => {
+            agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
+            return agent.wallet.createKey({
+              keyType,
+            })
+          })
+      } else {
         key = await agent.wallet.createKey({
           keyType,
         })

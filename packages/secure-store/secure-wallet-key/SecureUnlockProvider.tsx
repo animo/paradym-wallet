@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useState } from 'react'
 
-import { secureWalletKey } from './secureWalletKey'
 import { KeychainError } from '../error/KeychainError'
+import { secureWalletKey } from './secureWalletKey'
 
 const SecureUnlockContext = createContext<SecureUnlockReturn<Record<string, unknown>>>({
   state: 'initializing',
