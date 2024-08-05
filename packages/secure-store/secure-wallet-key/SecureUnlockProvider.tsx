@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useState } from 'react'
 
 import { secureWalletKey } from './secureWalletKey'
+import { KeychainError } from '../error/KeychainError'
 
 const SecureUnlockContext = createContext<SecureUnlockReturn<Record<string, unknown>>>({
   state: 'initializing',
@@ -26,38 +27,53 @@ export function SecureUnlockProvider({ children }: PropsWithChildren) {
   )
 }
 
-export type SecureUnlockState = 'initializing' | 'not-configured' | 'locked' | 'unlocked'
+export type SecureUnlockState = 'initializing' | 'not-configured' | 'locked' | 'acquired-wallet-key' | 'unlocked'
 export type SecureUnlockMethod = 'pin' | 'biometrics'
 
-export type SecureUnlockReturn<Context> =
-  | {
-      state: 'initializing'
-    }
-  | {
-      state: 'not-configured'
-      setup: (pin: string, options: { storeUsingBiometrics?: boolean }) => void
-    }
-  | {
-      state: 'locked'
-      tryUnlockingUsingBiometrics: () => Promise<void>
-      canTryUnlockingUsingBiometrics: boolean
-      unlockUsingPin: (pin: string) => Promise<void>
-    }
-  | {
-      state: 'unlocked'
-      walletKey: string
-      unlockMethod: SecureUnlockMethod
-      context: Context
-      setContext: (context: Context) => void
-    }
+export type SecureUnlockReturnInitializing = {
+  state: 'initializing'
+}
+export type SecureUnlockReturnNotConfigured = {
+  state: 'not-configured'
+  setup: (pin: string) => void
+}
+export type SecureUnlockReturnLocked = {
+  state: 'locked'
+  tryUnlockingUsingBiometrics: () => Promise<void>
+  canTryUnlockingUsingBiometrics: boolean
+  unlockUsingPin: (pin: string) => Promise<void>
+  isUnlocking: boolean
+}
+export type SecureUnlockReturnWalletKeyAcquired<Context extends Record<string, unknown>> = {
+  state: 'acquired-wallet-key'
+  walletKey: string
+  unlockMethod: SecureUnlockMethod
+  setWalletKeyValid: (context: Context) => void
+  setWalletKeyInvalid: () => void
+}
+export type SecureUnlockReturnUnlocked<Context extends Record<string, unknown>> = {
+  state: 'unlocked'
+  unlockMethod: SecureUnlockMethod
+  context: Context
+  lock: () => void
+}
 
-function _useSecureUnlockState<Context extends Record<string, unknown>>(): SecureUnlockReturn<Partial<Context>> {
+export type SecureUnlockReturn<Context extends Record<string, unknown>> =
+  | SecureUnlockReturnInitializing
+  | SecureUnlockReturnNotConfigured
+  | SecureUnlockReturnLocked
+  | SecureUnlockReturnWalletKeyAcquired<Context>
+  | SecureUnlockReturnUnlocked<Context>
+
+function _useSecureUnlockState<Context extends Record<string, unknown>>(): SecureUnlockReturn<Context> {
   const [state, setState] = useState<SecureUnlockState>('initializing')
   const [walletKey, setWalletKey] = useState<string>()
   const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
+  const [biometricsUnlockAttempts, setBiometricsUnlockAttempts] = useState(0)
   const [canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
   const [unlockMethod, setUnlockMethod] = useState<SecureUnlockMethod>()
-  const [context, setContext] = useState<Partial<Context>>({})
+  const [context, setContext] = useState<Context>()
+  const [isUnlocking, setIsUnlocking] = useState(false)
 
   useQuery({
     queryFn: async () => {
@@ -78,51 +94,98 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
     enabled: state === 'initializing',
   })
 
-  if (state === 'unlocked') {
+  if (state === 'acquired-wallet-key') {
     if (!walletKey || !unlockMethod) {
       throw new Error('Missing walletKey or unlockMethod')
     }
 
     return {
       state,
-      context,
-      setContext,
       walletKey,
       unlockMethod,
+      setWalletKeyInvalid: () => {
+        if (unlockMethod === 'biometrics') {
+          setCanTryUnlockingUsingBiometrics(false)
+        }
+
+        setState('locked')
+        setWalletKey(undefined)
+        setUnlockMethod(undefined)
+      },
+      setWalletKeyValid: (context) => {
+        setContext(context)
+        setState('unlocked')
+
+        // TODO: need extra option to know whether user wants to use biometrics?
+        // TODO: do we need to check whether already stored?
+        if (canUseBiometrics) {
+          void secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
+        }
+      },
+    }
+  }
+
+  if (state === 'unlocked') {
+    if (!walletKey || !unlockMethod || !context) {
+      throw new Error('Missing walletKey, unlockMethod or context')
+    }
+
+    return {
+      state,
+      context,
+      unlockMethod,
+      lock: () => {
+        setWalletKey(undefined)
+        setUnlockMethod(undefined)
+        setContext(undefined)
+        setState('locked')
+      },
     }
   }
 
   if (state === 'locked') {
     return {
       state,
+      isUnlocking,
       canTryUnlockingUsingBiometrics,
       tryUnlockingUsingBiometrics: async () => {
+        // TODO: need to somehow inform user that the unlocking went wrong
+        if (!canTryUnlockingUsingBiometrics) return
+
+        setIsUnlocking(true)
+        setCanTryUnlockingUsingBiometrics(false)
+        setBiometricsUnlockAttempts((attempts) => attempts + 1)
         try {
           const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.walletKeyVersion)
           if (walletKey) {
             setWalletKey(walletKey)
             setUnlockMethod('biometrics')
-            setState('unlocked')
-          } else {
-            // We don't have the wallet key in biometrics storage
-            setCanTryUnlockingUsingBiometrics(false)
+            setState('acquired-wallet-key')
           }
         } catch (error) {
-          setCanTryUnlockingUsingBiometrics(false)
-          // todo: error? cancelled? Could maybe try again?
+          // If use cancelled we won't allow trying using biometrics again
+          if (error instanceof KeychainError && error.reason === 'userCancelled') {
+            setCanTryUnlockingUsingBiometrics(false)
+          }
+          // If other error, we will allow up to three attempts
+          else if (biometricsUnlockAttempts < 3) {
+            setCanTryUnlockingUsingBiometrics(true)
+          }
+        } finally {
+          setIsUnlocking(false)
         }
       },
       unlockUsingPin: async (pin: string) => {
-        // TODO: how do we verify the key is correct?
-        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.walletKeyVersion)
+        setIsUnlocking(true)
+        try {
+          const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.walletKeyVersion)
 
-        // TODO: need extra option to know whether user wants to use biometrics?
-        if (canUseBiometrics) {
-          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
+          setWalletKey(walletKey)
+          setUnlockMethod('pin')
+          setState('acquired-wallet-key')
+        } finally {
+          setIsUnlocking(false)
         }
-        setWalletKey(walletKey)
-        setUnlockMethod('pin')
-        setState('unlocked')
       },
     }
   }
@@ -130,20 +193,13 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
   if (state === 'not-configured') {
     return {
       state,
-      setup: async (pin, { storeUsingBiometrics = true }) => {
+      setup: async (pin) => {
         await secureWalletKey.createAndStoreSalt(true, secureWalletKey.walletKeyVersion)
         const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.walletKeyVersion)
 
-        if (canUseBiometrics && storeUsingBiometrics) {
-          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion).catch((error) => {
-            // TODO: handle
-            // TODO: set state param?
-          })
-        }
-
         setWalletKey(walletKey)
         setUnlockMethod('pin')
-        setState('unlocked')
+        setState('acquired-wallet-key')
       },
     }
   }

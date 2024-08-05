@@ -1,6 +1,6 @@
 import * as Keychain from 'react-native-keychain'
 import { kdf } from '../kdf'
-import { type KeychainOptions, getKeychainItemById, storeKeychainItem } from '../keychain'
+import { type KeychainOptions, getKeychainItemById, storeKeychainItem, removeKeychainItemById } from '../keychain'
 
 const saltStoreBaseOptions: KeychainOptions = {
   /* Salt can be accessed on this device */
@@ -50,8 +50,14 @@ async function createAndStoreSalt(returnExisting: boolean, version: number) {
   return salt
 }
 
+async function removeSalt(version: number) {
+  const saltId = SALT_ID(version)
+  return await removeKeychainItemById(saltId, saltStoreBaseOptions)
+}
+
 export const walletKeySaltStore = {
   getSalt,
   storeSalt,
   createAndStoreSalt,
+  removeSalt,
 }

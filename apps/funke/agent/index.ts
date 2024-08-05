@@ -5,5 +5,6 @@ export { initializeAppAgent } from './initialize'
 
 export const useAppAgent = useAgent<FunkeAppAgent>
 export type AppAgent = FunkeAppAgent
+export type SecureUnlockContext = { agent: AppAgent }
 
-export const useSecureUnlock = () => _useSecureUnlock<{ agent?: AppAgent }>()
+export const useSecureUnlock = () => _useSecureUnlock<SecureUnlockContext>()

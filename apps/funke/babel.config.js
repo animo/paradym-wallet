@@ -12,7 +12,8 @@ module.exports = (api) => {
       [
         '@tamagui/babel-plugin',
         {
-          components: ['@package/ui', 'tamagui'],
+          // No idea why, but tamagui can't find the packages... :(
+          components: ['@package/ui', '@package/app', 'tamagui'],
           config: './tamagui.config.ts',
           disableExtraction: process.env.NODE_ENV === 'development',
         },

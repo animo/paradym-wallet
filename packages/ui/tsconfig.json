@@ -1,10 +1,7 @@
 {
 	"extends": "../../tsconfig",
-	"include": ["src"],
 	"compilerOptions": {
-		"composite": true,
-		"jsx": "react-jsx",
-		"typeRoots": ["types"]
+		"jsx": "react-jsx"
 	},
-	"references": []
+	"include": ["./src"]
 }

@@ -1,6 +1,6 @@
 import type { ColorTokens } from 'tamagui'
 
-import { hexColors } from './config/tamagui.config'
+import { hexColors } from '../config/tamagui.config'
 /**
  * Get text color (white or black) for specific background color
  */

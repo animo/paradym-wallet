@@ -36,6 +36,9 @@ export async function getKeychainItemById(id: string, options: KeychainOptions):
   }).catch((error) => {
     throw new KeychainError(`Error retrieving value with id '${id}' from keychain`, {
       cause: error,
+      // This is a bit hacky, but we don't get a nice error from keychain
+      // https://github.com/oblador/react-native-keychain/issues/609
+      reason: error instanceof Error && error.message.toLowerCase().includes('cancel') ? 'userCancelled' : 'unknown',
     })
   })
 
