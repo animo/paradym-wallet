@@ -23,7 +23,6 @@ export default function Screen() {
   const nextStep = async () => {
     if (!receivePidUseCase) return
     if (state === 'error') return
-
     if (state === 'acquire-access-token') return
     if (state === 'id-card-auth') {
       await receivePidUseCase.authenticateUsingIdCard()
