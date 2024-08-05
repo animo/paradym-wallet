@@ -12,9 +12,13 @@ import type {
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
   OpenId4VcSiopVerifiedAuthorizationRequest,
-  OpenId4VciCredentialSupportedWithId,
+  OpenId4VciRequestTokenResponse,
+  OpenId4VciResolvedAuthorizationRequest,
+  OpenId4VciResolvedAuthorizationRequestWithCode,
+  OpenId4VciResolvedCredentialOffer,
+  OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
-import type { FullAppAgent } from '../agent'
+import type { EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -24,6 +28,7 @@ import {
   DidKey,
   JwaSignatureAlgorithm,
   KeyBackend,
+  KeyType,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -43,40 +48,126 @@ import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 
-export const receiveCredentialFromOpenId4VciOffer = async ({
+export async function resolveOpenId4VciOffer({
   agent,
-  data,
-  uri,
+  offer,
+  authorization,
 }: {
-  agent: FullAppAgent
-  // Either data itself (the offer) or uri can be passed
-  data?: string
-  uri?: string
-}) => {
-  let offerUri = uri
+  agent: EitherAgent
+  offer: { data?: string; uri?: string }
+  authorization?: { clientId: string; redirectUri: string }
+}) {
+  let offerUri = offer.uri
 
-  if (!offerUri && data) {
+  if (!offerUri && offer.data) {
     // FIXME: Credo only support credential offer string, but we already parsed it before. So we construct an offer here
     // but in the future we need to support the parsed offer in Credo directly
-    offerUri = `openid-credential-offer://credential_offer=${encodeURIComponent(JSON.stringify(data))}`
+    offerUri = `openid-credential-offer://credential_offer=${encodeURIComponent(JSON.stringify(offer.data))}`
   } else if (!offerUri) {
     throw new Error('either data or uri must be provided')
   }
 
   agent.config.logger.info(`Receiving openid uri ${offerUri}`, {
     offerUri,
-    data,
-    uri,
+    data: offer.data,
+    uri: offer.uri,
   })
-  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offerUri)
 
-  const { accessToken, cNonce } = await agent.modules.openId4VcHolder.requestToken({
+  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offerUri)
+  let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
+
+  // NOTE: we always assume scopes are used at the moment
+  if (resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
+    // If only authorization_code grant is valid and user didn't provide authorization details we can't continue
+    if (
+      !resolvedCredentialOffer.credentialOfferPayload.grants['urn:ietf:params:oauth:grant-type:pre-authorized_code'] &&
+      !authorization
+    ) {
+      throw new Error(
+        "Missing 'authorization' parameter with 'clientId' and 'redirectUri' and authorization code flow is only allowed grant type on offer."
+      )
+    }
+
+    const uniqueScopes = Array.from(
+      new Set(
+        resolvedCredentialOffer.offeredCredentials.map((o) => o.scope).filter((s): s is string => s !== undefined)
+      )
+    )
+
+    if (authorization) {
+      resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveIssuanceAuthorizationRequest(
+        resolvedCredentialOffer,
+        {
+          scope: uniqueScopes,
+          redirectUri: authorization.redirectUri,
+          clientId: authorization.clientId,
+        }
+      )
+    }
+  }
+
+  return {
     resolvedCredentialOffer,
-  })
+    resolvedAuthorizationRequest,
+  }
+}
+
+export async function acquireAccessToken({
+  resolvedCredentialOffer,
+  agent,
+  resolvedAuthorizationRequest,
+}: {
+  agent: EitherAgent
+  resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequestWithCode
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+}) {
+  let tokenOptions: OpenId4VciTokenRequestOptions = {
+    resolvedCredentialOffer,
+  }
+
+  if (resolvedAuthorizationRequest) {
+    tokenOptions = {
+      resolvedAuthorizationRequest,
+      resolvedCredentialOffer,
+      code: resolvedAuthorizationRequest.code,
+    }
+  }
+
+  return await agent.modules.openId4VcHolder.requestToken(tokenOptions)
+}
+
+export const receiveCredentialFromOpenId4VciOffer = async ({
+  agent,
+  resolvedCredentialOffer,
+  credentialConfigurationIdToRequest,
+  accessToken,
+  clientId,
+}: {
+  agent: EitherAgent
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  credentialConfigurationIdToRequest?: string
+  clientId?: string
+
+  // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
+  accessToken: OpenId4VciRequestTokenResponse
+}) => {
+  // By default request the first offered credential
+  // TODO: extract the first supported offered credential
+  const offeredCredentialToRequest = credentialConfigurationIdToRequest
+    ? resolvedCredentialOffer.offeredCredentials.find((offered) => offered.id === credentialConfigurationIdToRequest)
+    : resolvedCredentialOffer.offeredCredentials[0]
+  if (!offeredCredentialToRequest) {
+    throw new Error(
+      `Parameter 'credentialConfigurationIdToRequest' with value ${credentialConfigurationIdToRequest} is not a credential_configuration_id in the credential offer.`
+    )
+  }
+
+  // FIXME: return credential_supported entry for credential so it's easy to store metadata
   const credentials = await agent.modules.openId4VcHolder.requestCredentials({
     resolvedCredentialOffer,
-    cNonce,
-    accessToken,
+    ...accessToken,
+    clientId,
+    credentialsToRequest: [offeredCredentialToRequest.id],
     verifyCredentialStatus: false,
     allowedProofOfPossessionSignatureAlgorithms: [
       // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
@@ -110,13 +201,20 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
       let key: Key | undefined = undefined
 
-      try {
-        key = await agent.wallet.createKey({
-          keyType,
-          keyBackend: KeyBackend.SecureElement,
-        })
-      } catch (e) {
-        agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
+      // For P-256 we first try secure enclave
+      if (keyType === KeyType.P256) {
+        key = await agent.wallet
+          .createKey({
+            keyType,
+            keyBackend: KeyBackend.SecureElement,
+          })
+          .catch((e) => {
+            agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
+            return agent.wallet.createKey({
+              keyType,
+            })
+          })
+      } else {
         key = await agent.wallet.createKey({
           keyType,
         })
@@ -165,33 +263,28 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     },
   })
 
-  const [x] = credentials
-  const { credential: firstCredential } = x
-  if (!firstCredential) throw new Error('Error retrieving credential using pre authorized flow.')
+  const [firstCredential] = credentials
+  if (!firstCredential) throw new Error('Error retrieving credential.')
 
   let record: SdJwtVcRecord | W3cCredentialRecord
 
   // TODO: add claimFormat to SdJwtVc
-
-  if ('compact' in firstCredential) {
+  if ('compact' in firstCredential.credential) {
     record = new SdJwtVcRecord({
-      compactSdJwtVc: firstCredential.compact as string,
+      compactSdJwtVc: firstCredential.credential.compact,
     })
   } else {
     record = new W3cCredentialRecord({
-      credential: firstCredential,
+      credential: firstCredential.credential,
       // We don't support expanded types right now, but would become problem when we support JSON-LD
       tags: {},
     })
   }
 
-  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(
-    resolvedCredentialOffer.offeredCredentials[0] as OpenId4VciCredentialSupportedWithId,
-    {
-      display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
-      id: resolvedCredentialOffer.metadata.issuer,
-    }
-  )
+  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
+    id: resolvedCredentialOffer.metadata.issuer,
+    display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
+  })
 
   setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
 
@@ -203,7 +296,7 @@ export const getCredentialsForProofRequest = async ({
   data,
   uri,
 }: {
-  agent: FullAppAgent
+  agent: EitherAgent
   // Either data or uri can be provided
   data?: string
   uri?: string
@@ -245,7 +338,7 @@ export const shareProof = async ({
   credentialsForRequest,
   selectedCredentials,
 }: {
-  agent: FullAppAgent
+  agent: EitherAgent
   authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
   credentialsForRequest: DifPexCredentialsForRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
@@ -284,7 +377,7 @@ export const shareProof = async ({
   return result
 }
 
-export async function storeCredential(agent: FullAppAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
+export async function storeCredential(agent: EitherAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
   } else {

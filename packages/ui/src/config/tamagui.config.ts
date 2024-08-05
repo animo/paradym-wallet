@@ -89,7 +89,7 @@ export const configInput = {
     default: fontInter,
     heading: fontInter,
     // Somehow adding body font gives build errors?!
-    // body: fontInter,
+    body: fontInter,
   },
   tokens,
   themes: {

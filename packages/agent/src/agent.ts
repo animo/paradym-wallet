@@ -46,15 +46,22 @@ import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
-import { trustedCertificates } from 'apps/funke/constants'
 import { indyNetworks } from './indyNetworks'
 import { appLogger } from './logger'
 
+const askarModule = new AskarModule({
+  ariesAskar: ariesAskar,
+})
+
 const agentModules = {
-  base: {
-    askar: new AskarModule({
-      ariesAskar: ariesAskar,
-    }),
+  funke: {
+    ariesAskar: askarModule,
+    openId4VcHolder: new OpenId4VcHolderModule(),
+    x509: new X509Module({}),
+  },
+  paradym: {
+    ariesAskar: askarModule,
+    openId4VcHolder: new OpenId4VcHolderModule(),
     dids: new DidsModule({
       registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
       resolvers: [
@@ -66,6 +73,35 @@ const agentModules = {
         new IndyVdrIndyDidResolver(),
       ],
     }),
+    anoncreds: new AnonCredsModule({
+      registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
+      anoncreds,
+    }),
+
+    mediationRecipient: new MediationRecipientModule({
+      // We want to manually connect to the mediator, so it doesn't impact wallet startup
+      mediatorPickupStrategy: MediatorPickupStrategy.None,
+    }),
+
+    indyVdr: new IndyVdrModule({
+      indyVdr,
+      networks: indyNetworks,
+    }),
+    connections: new ConnectionsModule({
+      autoAcceptConnections: true,
+    }),
+    cheqd: new CheqdModule(
+      new CheqdModuleConfig({
+        networks: [
+          {
+            network: 'testnet',
+          },
+          {
+            network: 'mainnet',
+          },
+        ],
+      })
+    ),
     credentials: new CredentialsModule({
       autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
       credentialProtocols: [
@@ -88,56 +124,21 @@ const agentModules = {
         }),
       ],
     }),
-    x509: new X509Module({
-      trustedCertificates,
-    }),
-    cheqd: new CheqdModule(
-      new CheqdModuleConfig({
-        networks: [
-          {
-            network: 'testnet',
-          },
-          {
-            network: 'mainnet',
-          },
-        ],
-      })
-    ),
-  },
-  openId4VcHolder: {
-    openId4VcHolder: new OpenId4VcHolderModule(),
-  },
-  didcomm: {
-    anoncreds: new AnonCredsModule({
-      registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
-      anoncreds,
-    }),
-
-    mediationRecipient: new MediationRecipientModule({
-      // We want to manually connect to the mediator, so it doesn't impact wallet startup
-      mediatorPickupStrategy: MediatorPickupStrategy.None,
-    }),
-
-    indyVdr: new IndyVdrModule({
-      indyVdr,
-      networks: indyNetworks,
-    }),
-    connections: new ConnectionsModule({
-      autoAcceptConnections: true,
-    }),
   },
 } as const
 
-export const initializeOpenId4VcHolderAgent = async ({
+export const initializeFunkeAgent = async ({
   walletLabel,
   walletId,
   walletKey,
   keyDerivation,
+  trustedX509Certificates,
 }: {
   walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
+  trustedX509Certificates: string[]
 }) => {
   const agent = new Agent({
     dependencies: agentDependencies,
@@ -151,13 +152,15 @@ export const initializeOpenId4VcHolderAgent = async ({
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
     },
-    modules: { ...agentModules.base, ...agentModules.openId4VcHolder },
+    modules: agentModules.funke,
   })
 
-  agent.registerOutboundTransport(new HttpOutboundTransport())
-  agent.registerOutboundTransport(new WsOutboundTransport())
-
   await agent.initialize()
+
+  // Register the trusted x509 certificates
+  for (const trustedCertificate of trustedX509Certificates) {
+    agent.x509.addTrustedCertificate(trustedCertificate)
+  }
 
   return agent
 }
@@ -185,11 +188,7 @@ export const initializeFullAgent = async ({
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
     },
-    modules: {
-      ...agentModules.base,
-      ...agentModules.openId4VcHolder,
-      ...agentModules.didcomm,
-    },
+    modules: agentModules.paradym,
   })
 
   agent.registerOutboundTransport(new HttpOutboundTransport())
@@ -201,7 +200,8 @@ export const initializeFullAgent = async ({
 }
 
 export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
-export type OpenId4VcHolderAppAgent = Awaited<ReturnType<typeof initializeOpenId4VcHolderAgent>>
+export type FunkeAppAgent = Awaited<ReturnType<typeof initializeFunkeAgent>>
+export type EitherAgent = FullAppAgent | FunkeAppAgent
 
 // biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
 export const useAgent = <A extends Agent<any> = FullAppAgent>(): {

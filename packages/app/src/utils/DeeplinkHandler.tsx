@@ -15,6 +15,7 @@ interface DeeplinkHandlerProps {
 
 const deeplinkSchemes = Object.values(InvitationQrTypes)
 
+// TODO: use https://docs.expo.dev/router/advanced/native-intent/
 export const DeeplinkHandler = ({ children }: DeeplinkHandlerProps) => {
   const { handleCredentialData } = useCredentialDataHandler()
   const toast = useToastController()

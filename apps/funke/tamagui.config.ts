@@ -47,7 +47,7 @@ const config = createTamagui({
     default: fontOpenSans,
     heading: fontRaleway,
     // Somehow adding body font gives build errors?!
-    // body: fontOpenSans,
+    body: fontOpenSans,
   },
   themes: {
     light: {

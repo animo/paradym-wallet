@@ -1,4 +1,5 @@
 import { AlertOctagon, CornerDownRight, FileBadge, Inbox, RefreshCw, Scan, X } from '@tamagui/lucide-icons'
+import { forwardRef } from 'react'
 import type { NumberProp, SvgProps } from 'react-native-svg'
 
 import {
@@ -29,7 +30,7 @@ interface HeroIconProps extends SvgProps {
 
 function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
   return styled(
-    (props: HeroIconProps) => <Icon {...props} />,
+    forwardRef((props: HeroIconProps, ref) => <Icon {...props} />),
     {},
     {
       accept: {

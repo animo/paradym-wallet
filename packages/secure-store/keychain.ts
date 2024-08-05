@@ -11,7 +11,7 @@ export type KeychainOptions = Omit<Keychain.Options, 'service'>
 export async function storeKeychainItem(id: string, value: string, options: KeychainOptions): Promise<void> {
   const result = await Keychain.setGenericPassword(id, value, {
     ...options,
-    service: value,
+    service: id,
   }).catch((error) => {
     throw new KeychainError(`Error storing value for id '${id}' in keychain`, {
       cause: error,
@@ -24,7 +24,7 @@ export async function storeKeychainItem(id: string, value: string, options: Keyc
 }
 
 /**
- * Retrieve a value by id from the keychcain
+ * Retrieve a value by id from the keychain
  *
  * @returns {string | null} the value or null if it doesn't exist
  * @throws {KeychainError} if an unexpected error occurs
@@ -36,6 +36,9 @@ export async function getKeychainItemById(id: string, options: KeychainOptions):
   }).catch((error) => {
     throw new KeychainError(`Error retrieving value with id '${id}' from keychain`, {
       cause: error,
+      // This is a bit hacky, but we don't get a nice error from keychain
+      // https://github.com/oblador/react-native-keychain/issues/609
+      reason: error instanceof Error && error.message.toLowerCase().includes('cancel') ? 'userCancelled' : 'unknown',
     })
   })
 
@@ -44,4 +47,23 @@ export async function getKeychainItemById(id: string, options: KeychainOptions):
   }
 
   return result.password
+}
+
+/**
+ * Remove a value by id from the keychain
+ *
+ * @returns {boolean} Whether the keychain item was removed
+ * @throws {KeychainError} if an unexpected error occurs
+ */
+export async function removeKeychainItemById(id: string, options: KeychainOptions): Promise<boolean> {
+  const result = await Keychain.resetGenericPassword({
+    ...options,
+    service: id,
+  }).catch((error) => {
+    throw new KeychainError(`Error retrieving value with id '${id}' from keychain`, {
+      cause: error,
+    })
+  })
+
+  return result
 }

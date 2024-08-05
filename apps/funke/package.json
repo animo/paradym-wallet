@@ -10,6 +10,7 @@
 		"prebuild": "APP_VARIANT=development expo prebuild --no-install"
 	},
 	"dependencies": {
+		"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.5",
 		"@animo-id/expo-secure-environment": "0.0.1-alpha.0",
 		"@credo-ts/core": "*",
 		"@expo-google-fonts/open-sans": "^0.2.3",
@@ -58,7 +59,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
-		"@tamagui/babel-plugin": "^1.104.2",
+		"@tamagui/babel-plugin": "^1.108.0",
 		"typescript": "*"
 	}
 }

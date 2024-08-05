@@ -50,7 +50,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
-		"@tamagui/babel-plugin": "^1.104.2",
+		"@tamagui/babel-plugin": "^1.108.0",
 		"typescript": "*"
 	}
 }
