@@ -22,7 +22,7 @@ overrides:
   '@credo-ts/openid4vc': 0.5.10
   '@credo-ts/question-answer': 0.5.10
   '@credo-ts/react-hooks': 0.6.1
-  '@credo-ts/react-native': 0.5.10
+  '@credo-ts/react-native': 0.5.10-alpha-20240805102402
   '@animo-id/expo-secure-environment': 0.1.0-alpha.2
   '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.9
   react-native: 0.74.5
@@ -535,8 +535,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1(@credo-ts/core@0.5.10(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.5.10(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3))(react@18.2.0)
       '@credo-ts/react-native':
-        specifier: 0.5.10
-        version: 0.5.10(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native-get-random-values@1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.10-alpha-20240805102402
+        version: 0.5.10-alpha-20240805102402(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native-get-random-values@1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-react-native':
         specifier: ^0.2.2
         version: 0.2.2(patch_hash=uf6a7jvct2tkboe5xpglqybeia)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -1647,8 +1647,8 @@ packages:
       '@credo-ts/question-answer': 0.5.10
       react: 18.2.0
 
-  '@credo-ts/react-native@0.5.10':
-    resolution: {integrity: sha512-qfZ7SrJUl6JLmrThhHOz0lZbRylg9itW2vM5xPrR0I3iKGGESsqSoWLvU3kbfXQeMvKiGtKxLt/BA/zrapaV+A==}
+  '@credo-ts/react-native@0.5.10-alpha-20240805102402':
+    resolution: {integrity: sha512-Of/uoFhNWSqX/+l8DJrDzeY7K6ohpL5c1Rwb7PTQ5xzrqlvxLgs6blY2EwEeQqRjONp2JrJkw8RHn2GPQH8SuQ==}
     peerDependencies:
       react-native: 0.74.5
       react-native-fs: ^2.20.0
@@ -10923,7 +10923,7 @@ snapshots:
       react: 18.2.0
       rxjs: 7.8.1
 
-  '@credo-ts/react-native@0.5.10(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native-get-random-values@1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/react-native@0.5.10-alpha-20240805102402(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native-get-random-values@1.11.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@azure/core-asynciterator-polyfill': 1.0.2
       '@credo-ts/core': 0.5.10(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
