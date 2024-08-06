@@ -10,7 +10,7 @@ import {
   resolveOpenId4VciOffer,
 } from '@package/agent'
 
-export interface ReceivePidUseCaseOptions
+export interface ReceivePidUseCaseCFlowOptions
   extends Pick<
     AusweisAuthFlowOptions,
     'onAttachCard' | 'onRequestAccessRights' | 'onStatusProgress' | 'onCardAttachedChanged'
@@ -18,7 +18,9 @@ export interface ReceivePidUseCaseOptions
   agent: AppAgent
   onStateChange?: (newState: ReceivePidUseCaseState) => void
   onEnterPin: (
-    options: Parameters<AusweisAuthFlowOptions['onEnterPin']>[0] & { currentSessionPinAttempts: number }
+    options: Parameters<AusweisAuthFlowOptions['onEnterPin']>[0] & {
+      currentSessionPinAttempts: number
+    }
   ) => string | Promise<string>
 }
 
@@ -26,8 +28,8 @@ export type ReceivePidUseCaseState = 'id-card-auth' | 'acquire-access-token' | '
 
 export type CardScanningErrorDetails = Parameters<AusweisAuthFlowOptions['onError']>[0]
 
-export class ReceivePidUseCase {
-  private options: ReceivePidUseCaseOptions
+export class ReceivePidUseCaseCFlow {
+  private options: ReceivePidUseCaseCFlowOptions
 
   private resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   private resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest
@@ -52,12 +54,15 @@ export class ReceivePidUseCase {
   private successCallbacks: AusweisAuthFlowOptions['onSuccess'][] = [
     ({ refreshUrl }) => {
       this.refreshUrl = refreshUrl
-      this.assertState({ expectedState: 'id-card-auth', newState: 'acquire-access-token' })
+      this.assertState({
+        expectedState: 'id-card-auth',
+        newState: 'acquire-access-token',
+      })
     },
   ]
 
   private constructor(
-    options: ReceivePidUseCaseOptions,
+    options: ReceivePidUseCaseCFlowOptions,
     resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest,
     resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   ) {
@@ -92,13 +97,13 @@ export class ReceivePidUseCase {
     this.options.onStateChange?.('id-card-auth')
   }
 
-  public static async initialize(options: ReceivePidUseCaseOptions) {
+  public static async initialize(options: ReceivePidUseCaseCFlowOptions) {
     const resolved = await resolveOpenId4VciOffer({
       agent: options.agent,
-      offer: { uri: ReceivePidUseCase.SD_JWT_VC_OFFER },
+      offer: { uri: ReceivePidUseCaseCFlow.SD_JWT_VC_OFFER },
       authorization: {
-        clientId: ReceivePidUseCase.CLIENT_ID,
-        redirectUri: ReceivePidUseCase.REDIRECT_URI,
+        clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
+        redirectUri: ReceivePidUseCaseCFlow.REDIRECT_URI,
       },
     })
 
@@ -106,7 +111,7 @@ export class ReceivePidUseCase {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
-    return new ReceivePidUseCase(options, resolved.resolvedAuthorizationRequest, resolved.resolvedCredentialOffer)
+    return new ReceivePidUseCaseCFlow(options, resolved.resolvedAuthorizationRequest, resolved.resolvedCredentialOffer)
   }
 
   public async cancelIdCardScanning() {
@@ -167,7 +172,7 @@ export class ReceivePidUseCase {
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdToRequest,
-        clientId: ReceivePidUseCase.CLIENT_ID,
+        clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
         pidSchemes,
       })
 
@@ -227,8 +232,8 @@ export class ReceivePidUseCase {
     expectedState,
     newState,
   }: {
-    expectedState: ReceivePidUseCase['currentState']
-    newState?: ReceivePidUseCase['currentState']
+    expectedState: ReceivePidUseCaseCFlow['currentState']
+    newState?: ReceivePidUseCaseCFlow['currentState']
   }) {
     if (this.currentState !== expectedState) {
       throw new Error(`Expected state to be ${expectedState}. Found ${this.currentState}`)

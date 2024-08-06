@@ -10,7 +10,7 @@ import {
 } from '@credo-ts/core'
 import type { FullAppAgent } from '@package/agent/src'
 import { kdf } from '@package/secure-store/kdf'
-import { ausweisAes128Gcm } from './aes'
+import { ausweisAes256Gcm } from './aes'
 
 /**
  *
@@ -22,11 +22,11 @@ import { ausweisAes128Gcm } from './aes'
  *
  */
 export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Array<number>) => {
-  if (!(await ausweisAes128Gcm.aes128GcmHasKey({ agentContext }))) {
-    await ausweisAes128Gcm.aes128GcmGenerateAndStoreKey({ agentContext })
+  if (!(await ausweisAes256Gcm.aes256GcmHasKey({ agentContext }))) {
+    await ausweisAes256Gcm.aes256GcmGenerateAndStoreKey({ agentContext })
   }
 
-  const pinSecret = await ausweisAes128Gcm.aes128GcmEncrypt({
+  const pinSecret = await ausweisAes256Gcm.aes256GcmEncrypt({
     agentContext,
     data: new Uint8Array(pin),
   })

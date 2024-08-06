@@ -2,10 +2,10 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@ausweis/agent'
 import {
   type CardScanningErrorDetails,
-  ReceivePidUseCase,
-  type ReceivePidUseCaseOptions,
+  ReceivePidUseCaseCFlow,
+  type ReceivePidUseCaseCFlowOptions,
   type ReceivePidUseCaseState,
-} from '@ausweis/use-cases/ReceivePidUseCase'
+} from '@ausweis/use-cases/ReceivePidUseCaseCFlow'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { storeCredential } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -22,6 +22,7 @@ import { OnboardingIdCardStartScan } from './screens/id-card-start-scan'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
+import { ReceivePidUseCaseBPrimeFlow } from '@ausweis/use-cases/ReceivePidUseCaseBPrimeFlow'
 
 type Page =
   | { type: 'fullscreen' }
@@ -170,7 +171,7 @@ export function OnboardingContextProvider({
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
 
-  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCase>()
+  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
   const [walletPin, setWalletPin] = useState<string>()
   const [idCardPin, setIdCardPin] = useState<string>()
@@ -260,7 +261,7 @@ export function OnboardingContextProvider({
 
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
 
-  const onEnterPin: ReceivePidUseCaseOptions['onEnterPin'] = useCallback(
+  const onEnterPin: ReceivePidUseCaseCFlowOptions['onEnterPin'] = useCallback(
     (options) => {
       if (!idCardPin) {
         // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
@@ -342,7 +343,7 @@ export function OnboardingContextProvider({
     }
 
     if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {
-      return ReceivePidUseCase.initialize({
+      return ReceivePidUseCaseCFlow.initialize({
         agent: secureUnlock.context.agent,
         onStateChange: setReceivePidUseCaseState,
         onCardAttachedChanged: ({ isCardAttached }) =>
