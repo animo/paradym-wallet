@@ -28,11 +28,9 @@
 			"typescript": "~5.3.3",
 			"@unimodules/react-native-adapter": "./noop",
 			"@unimodules/core": "./noop",
-
 			"@hyperledger/anoncreds-react-native": "^0.2.2",
 			"@hyperledger/aries-askar-react-native": "^0.2.3",
 			"@hyperledger/indy-vdr-react-native": "^0.2.0",
-
 			"@credo-ts/anoncreds": "0.5.10-alpha-20240805102402",
 			"@credo-ts/askar": "0.5.10-alpha-20240805102402",
 			"@credo-ts/cheqd": "0.5.10-alpha-20240805102402",
@@ -41,12 +39,16 @@
 			"@credo-ts/openid4vc": "0.5.10-alpha-20240805102402",
 			"@credo-ts/question-answer": "0.5.10-alpha-20240805102402",
 			"@credo-ts/react-hooks": "0.6.1",
-			"@credo-ts/react-native": "0.5.10-alpha-20240805102402"
+			"@credo-ts/react-native": "0.5.10-alpha-20240805102402",
+
+			"@animo-id/expo-secure-environment": "0.1.0-alpha.1"
 		},
 		"patchedDependencies": {
 			"@credo-ts/openid4vc@0.5.10-alpha-20240805102402": "patches/@credo-ts__openid4vc@0.5.9.patch",
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch"
+			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch",
+			"@credo-ts/openid4vc@0.5.10-alpha-20240805102402": "patches/@credo-ts__openid4vc@0.5.10-alpha-20240805102402.patch",
+			"@sphereon/oid4vci-client@0.16.1-next.3": "patches/@sphereon__oid4vci-client@0.16.1-next.3.patch"
 		}
 	}
 }

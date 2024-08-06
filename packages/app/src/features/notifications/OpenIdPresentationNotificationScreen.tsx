@@ -42,12 +42,12 @@ export function OpenIdPresentationNotificationScreen() {
   useEffect(() => {
     async function handleRequest() {
       try {
-        const credentialsForRequest = await getCredentialsForProofRequest({
+        const cfr = await getCredentialsForProofRequest({
           agent,
           data: params.data,
           uri: params.uri,
         })
-        setCredentialsForRequest(credentialsForRequest)
+        setCredentialsForRequest(cfr)
       } catch (error: unknown) {
         toast.show('Presentation information could not be extracted.')
         agent.config.logger.error('Error getting credentials for request', {

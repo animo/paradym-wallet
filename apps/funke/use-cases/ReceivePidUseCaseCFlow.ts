@@ -1,4 +1,5 @@
 import type { AppAgent } from '@/agent'
+import { pidSchemes } from '@/constants'
 import { AusweisAuthFlow } from '@animo-id/expo-ausweis-sdk'
 import {
   type OpenId4VciRequestTokenResponse,
@@ -16,7 +17,7 @@ export interface ReceivePidUseCaseOptions {
 
 export type ReceivePidUseCaseState = 'id-card-auth' | 'acquire-access-token' | 'retrieve-credential' | 'error'
 
-export class ReceivePidUseCase {
+export class ReceivePidUseCaseCFlow {
   private agent: AppAgent
 
   private resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
@@ -66,10 +67,10 @@ export class ReceivePidUseCase {
   public static async initialize({ agent, onStateChange }: ReceivePidUseCaseOptions) {
     const resolved = await resolveOpenId4VciOffer({
       agent,
-      offer: { uri: ReceivePidUseCase.SD_JWT_VC_OFFER },
+      offer: { uri: ReceivePidUseCaseCFlow.SD_JWT_VC_OFFER },
       authorization: {
-        clientId: ReceivePidUseCase.CLIENT_ID,
-        redirectUri: ReceivePidUseCase.REDIRECT_URI,
+        clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
+        redirectUri: ReceivePidUseCaseCFlow.REDIRECT_URI,
       },
     })
 
@@ -77,7 +78,7 @@ export class ReceivePidUseCase {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
-    return new ReceivePidUseCase(
+    return new ReceivePidUseCaseCFlow(
       agent,
       resolved.resolvedAuthorizationRequest,
       resolved.resolvedCredentialOffer,
@@ -113,7 +114,8 @@ export class ReceivePidUseCase {
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdToRequest,
-        clientId: ReceivePidUseCase.CLIENT_ID,
+        clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
+        pidSchemes,
       })
 
       // TODO: add error handling everywhere to set state to error
@@ -129,7 +131,10 @@ export class ReceivePidUseCase {
   }
 
   private async acquireAccessToken(refreshUrl: string) {
-    this.assertState({ expectedState: 'id-card-auth', newState: 'acquire-access-token' })
+    this.assertState({
+      expectedState: 'id-card-auth',
+      newState: 'acquire-access-token',
+    })
 
     try {
       const authorizationCodeResponse = await fetch(refreshUrl)
@@ -154,7 +159,10 @@ export class ReceivePidUseCase {
         agent: this.agent,
       })
 
-      this.assertState({ expectedState: 'acquire-access-token', newState: 'retrieve-credential' })
+      this.assertState({
+        expectedState: 'acquire-access-token',
+        newState: 'retrieve-credential',
+      })
     } catch (error) {
       this.handleError()
     }
@@ -163,7 +171,10 @@ export class ReceivePidUseCase {
   private assertState({
     expectedState,
     newState,
-  }: { expectedState: ReceivePidUseCase['currentState']; newState?: ReceivePidUseCase['currentState'] }) {
+  }: {
+    expectedState: ReceivePidUseCaseCFlow['currentState']
+    newState?: ReceivePidUseCaseCFlow['currentState']
+  }) {
     if (this.currentState !== expectedState) {
       throw new Error(`Expected state to be ${expectedState}. Found ${this.currentState}`)
     }

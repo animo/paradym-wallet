@@ -3,7 +3,6 @@ import type {
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
   JwkDidCreateOptions,
-  Key,
   KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
@@ -28,7 +27,6 @@ import {
   DidKey,
   JwaSignatureAlgorithm,
   KeyBackend,
-  KeyType,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -142,11 +140,13 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   credentialConfigurationIdToRequest,
   accessToken,
   clientId,
+  pidSchemes,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdToRequest?: string
   clientId?: string
+  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocNamespaces: Array<string> }
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
@@ -199,26 +199,15 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         didMethod = 'key'
       }
 
-      let key: Key | undefined = undefined
+      // TODO: require support for mDoc namespace here as well
+      const vct = resolvedCredentialOffer.offeredCredentialConfigurations[offeredCredentialToRequest.id].vct
 
-      // For P-256 we first try secure enclave
-      if (keyType === KeyType.P256) {
-        key = await agent.wallet
-          .createKey({
-            keyType,
-            keyBackend: KeyBackend.SecureElement,
-          })
-          .catch((e) => {
-            agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
-            return agent.wallet.createKey({
-              keyType,
-            })
-          })
-      } else {
-        key = await agent.wallet.createKey({
-          keyType,
-        })
-      }
+      const shouldKeyBeHardwareBacked = pidSchemes?.sdJwtVcVcts.includes(vct as string) ?? false
+
+      const key = await agent.wallet.createKey({
+        keyType,
+        keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
+      })
 
       if (didMethod) {
         const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
