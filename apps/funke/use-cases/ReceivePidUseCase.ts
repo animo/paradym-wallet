@@ -1,4 +1,5 @@
 import type { AppAgent } from '@/agent'
+import { pidSchemes } from '@/constants'
 import { AusweisAuthFlow } from '@animo-id/expo-ausweis-sdk'
 import {
   type OpenId4VciRequestTokenResponse,
@@ -114,6 +115,7 @@ export class ReceivePidUseCase {
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdToRequest,
         clientId: ReceivePidUseCase.CLIENT_ID,
+        pidSchemes,
       })
 
       // TODO: add error handling everywhere to set state to error
@@ -129,7 +131,10 @@ export class ReceivePidUseCase {
   }
 
   private async acquireAccessToken(refreshUrl: string) {
-    this.assertState({ expectedState: 'id-card-auth', newState: 'acquire-access-token' })
+    this.assertState({
+      expectedState: 'id-card-auth',
+      newState: 'acquire-access-token',
+    })
 
     try {
       const authorizationCodeResponse = await fetch(refreshUrl)
@@ -154,7 +159,10 @@ export class ReceivePidUseCase {
         agent: this.agent,
       })
 
-      this.assertState({ expectedState: 'acquire-access-token', newState: 'retrieve-credential' })
+      this.assertState({
+        expectedState: 'acquire-access-token',
+        newState: 'retrieve-credential',
+      })
     } catch (error) {
       this.handleError()
     }
@@ -163,7 +171,10 @@ export class ReceivePidUseCase {
   private assertState({
     expectedState,
     newState,
-  }: { expectedState: ReceivePidUseCase['currentState']; newState?: ReceivePidUseCase['currentState'] }) {
+  }: {
+    expectedState: ReceivePidUseCase['currentState']
+    newState?: ReceivePidUseCase['currentState']
+  }) {
     if (this.currentState !== expectedState) {
       throw new Error(`Expected state to be ${expectedState}. Found ${this.currentState}`)
     }
