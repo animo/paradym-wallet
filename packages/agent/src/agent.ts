@@ -8,7 +8,7 @@ import {
   V1ProofProtocol,
 } from '@credo-ts/anoncreds'
 import { AskarModule } from '@credo-ts/askar'
-import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
+
 import {
   Agent,
   AutoAcceptCredential,
@@ -53,80 +53,6 @@ const askarModule = new AskarModule({
   ariesAskar: ariesAskar,
 })
 
-const agentModules = {
-  funke: {
-    ariesAskar: askarModule,
-    openId4VcHolder: new OpenId4VcHolderModule(),
-    x509: new X509Module({}),
-  },
-  paradym: {
-    ariesAskar: askarModule,
-    openId4VcHolder: new OpenId4VcHolderModule(),
-    dids: new DidsModule({
-      registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
-      resolvers: [
-        new WebDidResolver(),
-        new KeyDidResolver(),
-        new JwkDidResolver(),
-        new CheqdDidResolver(),
-        new IndyVdrSovDidResolver(),
-        new IndyVdrIndyDidResolver(),
-      ],
-    }),
-    anoncreds: new AnonCredsModule({
-      registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
-      anoncreds,
-    }),
-
-    mediationRecipient: new MediationRecipientModule({
-      // We want to manually connect to the mediator, so it doesn't impact wallet startup
-      mediatorPickupStrategy: MediatorPickupStrategy.None,
-    }),
-
-    indyVdr: new IndyVdrModule({
-      indyVdr,
-      networks: indyNetworks,
-    }),
-    connections: new ConnectionsModule({
-      autoAcceptConnections: true,
-    }),
-    cheqd: new CheqdModule(
-      new CheqdModuleConfig({
-        networks: [
-          {
-            network: 'testnet',
-          },
-          {
-            network: 'mainnet',
-          },
-        ],
-      })
-    ),
-    credentials: new CredentialsModule({
-      autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
-      credentialProtocols: [
-        new V1CredentialProtocol({
-          indyCredentialFormat: new LegacyIndyCredentialFormatService(),
-        }),
-        new V2CredentialProtocol({
-          credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
-        }),
-      ],
-    }),
-    proofs: new ProofsModule({
-      autoAcceptProofs: AutoAcceptProof.ContentApproved,
-      proofProtocols: [
-        new V1ProofProtocol({
-          indyProofFormat: new LegacyIndyProofFormatService(),
-        }),
-        new V2ProofProtocol({
-          proofFormats: [new LegacyIndyProofFormatService(), new AnonCredsProofFormatService()],
-        }),
-      ],
-    }),
-  },
-} as const
-
 export const initializeFunkeAgent = async ({
   walletLabel,
   walletId,
@@ -152,7 +78,11 @@ export const initializeFunkeAgent = async ({
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
     },
-    modules: agentModules.funke,
+    modules: {
+      ariesAskar: askarModule,
+      openId4VcHolder: new OpenId4VcHolderModule(),
+      x509: new X509Module({}),
+    },
   })
 
   await agent.initialize()
@@ -176,6 +106,11 @@ export const initializeFullAgent = async ({
   walletKey: string
   keyDerivation: 'raw' | 'derive'
 }) => {
+  // FIXME: in the funke app importing the cheqd module gives errors. As we're not using cheqd in the Funke wallet
+  // we protect it like this, but I think the Paradym Wallet must be broken as well then?!?
+  const { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } =
+    require('@credo-ts/cheqd') as typeof import('@credo-ts/cheqd')
+
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
@@ -188,7 +123,72 @@ export const initializeFullAgent = async ({
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
     },
-    modules: agentModules.paradym,
+    modules: {
+      ariesAskar: askarModule,
+      openId4VcHolder: new OpenId4VcHolderModule(),
+      dids: new DidsModule({
+        registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
+        resolvers: [
+          new WebDidResolver(),
+          new KeyDidResolver(),
+          new JwkDidResolver(),
+          new CheqdDidResolver(),
+          new IndyVdrSovDidResolver(),
+          new IndyVdrIndyDidResolver(),
+        ],
+      }),
+      anoncreds: new AnonCredsModule({
+        registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
+        anoncreds,
+      }),
+
+      mediationRecipient: new MediationRecipientModule({
+        // We want to manually connect to the mediator, so it doesn't impact wallet startup
+        mediatorPickupStrategy: MediatorPickupStrategy.None,
+      }),
+
+      indyVdr: new IndyVdrModule({
+        indyVdr,
+        networks: indyNetworks,
+      }),
+      connections: new ConnectionsModule({
+        autoAcceptConnections: true,
+      }),
+      cheqd: new CheqdModule(
+        new CheqdModuleConfig({
+          networks: [
+            {
+              network: 'testnet',
+            },
+            {
+              network: 'mainnet',
+            },
+          ],
+        })
+      ),
+      credentials: new CredentialsModule({
+        autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
+        credentialProtocols: [
+          new V1CredentialProtocol({
+            indyCredentialFormat: new LegacyIndyCredentialFormatService(),
+          }),
+          new V2CredentialProtocol({
+            credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
+          }),
+        ],
+      }),
+      proofs: new ProofsModule({
+        autoAcceptProofs: AutoAcceptProof.ContentApproved,
+        proofProtocols: [
+          new V1ProofProtocol({
+            indyProofFormat: new LegacyIndyProofFormatService(),
+          }),
+          new V2ProofProtocol({
+            proofFormats: [new LegacyIndyProofFormatService(), new AnonCredsProofFormatService()],
+          }),
+        ],
+      }),
+    },
   })
 
   agent.registerOutboundTransport(new HttpOutboundTransport())
