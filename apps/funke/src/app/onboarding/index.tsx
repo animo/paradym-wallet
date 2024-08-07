@@ -1,7 +1,7 @@
 import { Redirect } from 'expo-router'
 import { Text, View } from 'react-native'
 
-import { initializeAppAgent, useSecureUnlock } from '@/agent'
+import { initializeAppAgent, useSecureUnlock } from '@funke/agent'
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'

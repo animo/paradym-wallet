@@ -1,4 +1,4 @@
-import type { AppAgent } from '@/agent'
+import type { AppAgent } from '@funke/agent'
 import { AusweisAuthFlow } from '@animo-id/expo-ausweis-sdk'
 import {
   type OpenId4VciRequestTokenResponse,

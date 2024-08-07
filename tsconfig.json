@@ -15,7 +15,8 @@
 		"typeRoots": ["./types"],
 		"paths": {
 			"@package/*": ["./packages/*"],
-			"@/*": ["./apps/funke/*", "./apps/paradym/*"]
+			"@funke/*": ["./apps/funke/src/*"],
+			"@paradym/*": ["./apps/paradym/*"]
 		}
 	},
 	"exclude": ["node_modules", "build"]

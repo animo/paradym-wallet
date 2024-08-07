@@ -1,5 +1,4 @@
-import { useAppAgent } from '@/agent'
-import { addMessageListener } from '@animo-id/expo-ausweis-sdk'
+import { useAppAgent } from '@funke/agent'
 import { Button, Paragraph, XStack, YStack } from '@package/ui'
 import { Stack } from 'expo-router'
 import { useEffect, useState } from 'react'

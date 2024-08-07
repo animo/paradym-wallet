@@ -1,6 +1,6 @@
 import { Redirect, Stack } from 'expo-router'
 
-import { useSecureUnlock } from '@/agent'
+import { useSecureUnlock } from '@funke/agent'
 import { AgentProvider } from '@package/agent'
 import { useResetWalletDevMenu } from '../../utils/resetWallet'
 
