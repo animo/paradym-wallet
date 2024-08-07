@@ -10,7 +10,7 @@ export default function AppLayout() {
 
   // Wallet is not configured yet. Redirect to onboarding
   if (secureUnlock.state === 'not-configured') {
-    return <Redirect href="/onboarding" />
+    return <Redirect href="/onboarding/welcome" />
   }
 
   // Wallet is locked. Redirect to authentication screen

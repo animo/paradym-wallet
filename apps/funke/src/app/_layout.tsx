@@ -6,7 +6,7 @@ import * as SplashScreen from 'expo-splash-screen'
 
 import tamaguiConfig from '../tamagui.config'
 
-void SplashScreen.preventAutoHideAsync()
+// void SplashScreen.preventAutoHideAsync()
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`

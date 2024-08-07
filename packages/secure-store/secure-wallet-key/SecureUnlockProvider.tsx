@@ -135,10 +135,10 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       context,
       unlockMethod,
       lock: () => {
+        setState('locked')
         setWalletKey(undefined)
         setUnlockMethod(undefined)
         setContext(undefined)
-        setState('locked')
       },
     }
   }

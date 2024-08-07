@@ -3,10 +3,9 @@ import { KeyboardAvoidingView } from 'react-native'
 
 import { initializeAppAgent, useSecureUnlock } from '@/agent'
 import { WalletInvalidKeyError } from '@credo-ts/core'
-import { HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
+import { HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, FlexPage, YStack } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
 
@@ -17,7 +16,6 @@ export default function Authenticate() {
   useResetWalletDevMenu()
 
   const secureUnlock = useSecureUnlock()
-  const safeAreaInsets = useSafeAreaInsets()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
@@ -66,14 +64,7 @@ export default function Authenticate() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <YStack
-        gap="$6"
-        p="$4"
-        // TODO: how to handle safe area?
-        {...safeAreaInsets}
-        backgroundColor="$background"
-        flex-1
-      >
+      <FlexPage>
         <YStack flex-1 gap="$4" alignItems="center" justifyContent="center">
           <Circle size="$3" backgroundColor="$grey-100">
             <HeroIcons.LockClosed color="$grey-700" />
@@ -87,7 +78,7 @@ export default function Authenticate() {
             onPinComplete={unlockUsingPin}
           />
         </YStack>
-      </YStack>
+      </FlexPage>
     </KeyboardAvoidingView>
   )
 }

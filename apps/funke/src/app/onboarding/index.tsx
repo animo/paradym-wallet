@@ -44,7 +44,7 @@ export default function Onboarding() {
   }
 
   // TODO: where to put this?
-  void SplashScreen.hideAsync()
+  // void SplashScreen.hideAsync()
 
   const onboarding = () => {
     secureUnlock.setup('123456')

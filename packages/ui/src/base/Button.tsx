@@ -9,7 +9,7 @@ const Btn = styled(TButton, {
   pressStyle: {
     opacity: 0.8,
   },
-  height: '$buttonHeight',
+  height: '$size.buttonHeight',
 })
 
 export const SolidButton = styled(Btn, {
