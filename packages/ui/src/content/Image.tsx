@@ -2,7 +2,7 @@ import { SvgUri } from 'react-native-svg'
 import { Image as TImage } from 'tamagui'
 
 export interface ImageProps {
-  src: string
+  src: string | number
   alt?: string
   width?: number | string
   height?: number | string
@@ -12,11 +12,12 @@ export interface ImageProps {
 
 // FIXME: tamagui image is not working for svg's
 export const Image = ({ src, alt, width, height, isImageLoaded, resizeMode = 'contain' }: ImageProps) => {
-  if (src.endsWith('.svg')) return <SvgUri role="img" width={width} height={height} uri={src} aria-label={alt} />
+  if (typeof src === 'string' && src.endsWith('.svg'))
+    return <SvgUri role="img" width={width} height={height} uri={src} aria-label={alt} />
 
   return (
     <TImage
-      source={{ uri: src }}
+      source={{ uri: src as string }}
       onLoad={isImageLoaded ? () => isImageLoaded() : undefined}
       width={width}
       height={height}

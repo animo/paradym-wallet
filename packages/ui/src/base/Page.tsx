@@ -1,4 +1,4 @@
-import { styled } from 'tamagui'
+import { YStack, styled } from 'tamagui'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Stack } from './Stacks'
@@ -14,37 +14,28 @@ export const Page = styled(Stack, {
   bottom: 0,
 })
 
-export const FlexPage = styled(Stack, {
+const FlexPageBase = styled(Stack, {
   name: 'FlexPage',
   backgroundColor: '$background',
   'flex-1': true,
   gap: '$6',
   padding: '$4',
-  variants: {
-    safeArea: {
-      true: {},
-      x: {},
-      y: {},
-      b: {},
-      t: {},
-      l: {},
-      r: {},
-    },
-  },
-  defaultVariants: {
-    safeArea: true,
-  },
-}).styleable((props, ref) => {
-  const safeAreaInsets = useSafeAreaInsets()
-
-  const top =
-    props.safeArea === true || props.safeArea === 'y' || props.safeArea === 't' ? safeAreaInsets.top : undefined
-  const bottom =
-    props.safeArea === true || props.safeArea === 'y' || props.safeArea === 'b' ? safeAreaInsets.bottom : undefined
-  const left =
-    props.safeArea === true || props.safeArea === 'x' || props.safeArea === 'l' ? safeAreaInsets.left : undefined
-  const right =
-    props.safeArea === true || props.safeArea === 'x' || props.safeArea === 'r' ? safeAreaInsets.right : undefined
-
-  return <Stack {...props} ref={ref} top={top} left={left} right={right} bottom={bottom} />
 })
+
+export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' | 'l' | 'b' | 't' | 'r' }>(
+  (props, ref) => {
+    const safeAreaInsets = useSafeAreaInsets()
+
+    // Not defined means true, not sure why defaultVariant doesn't work
+    const safeArea = props.safeArea ?? true
+
+    const top = safeArea === true || safeArea === 'y' || safeArea === 't' ? safeAreaInsets.top : undefined
+    const bottom = safeArea === true || safeArea === 'y' || safeArea === 'b' ? safeAreaInsets.bottom : undefined
+    const left = safeArea === true || safeArea === 'x' || safeArea === 'l' ? safeAreaInsets.left : undefined
+    const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
+
+    return (
+      <FlexPageBase {...props} ref={ref} marginTop={top} marginLeft={left} marginRight={right} marginBottom={bottom} />
+    )
+  }
+)

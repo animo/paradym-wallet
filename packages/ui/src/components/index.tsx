@@ -1,1 +1,5 @@
 export * from './PinDotsInput'
+export * from './OnboardingScreensHeader'
+export * from './OnboardingStepItem'
+export * from './IdCard'
+export * from './PinPad'

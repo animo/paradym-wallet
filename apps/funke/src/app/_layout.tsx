@@ -4,13 +4,13 @@ import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 
-import tamaguiConfig from '../tamagui.config'
+import tamaguiConfig from '../../tamagui.config'
 
-// void SplashScreen.preventAutoHideAsync()
+void SplashScreen.preventAutoHideAsync()
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`
-  initialRouteName: '(app)/index',
+  initialRouteName: '/(app)/index',
 }
 
 export default function RootLayout() {
@@ -19,7 +19,15 @@ export default function RootLayout() {
   return (
     <Provider config={tamaguiConfig}>
       <SecureUnlockProvider>
-        <ThemeProvider value={DefaultTheme}>
+        <ThemeProvider
+          value={{
+            ...DefaultTheme,
+            colors: {
+              ...DefaultTheme.colors,
+              background: 'white',
+            },
+          }}
+        >
           <NoInternetToastProvider>
             <Slot />
           </NoInternetToastProvider>

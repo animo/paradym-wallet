@@ -1,9 +1,9 @@
 import { Page, XStack, YStack } from '@package/ui'
+import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 import { Circle, Input } from 'tamagui'
-import { OnboardingScreensHeader } from './OnboardingScreensHeader'
 
 interface PinScreenProps {
   pinLength: number

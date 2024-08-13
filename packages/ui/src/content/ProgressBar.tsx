@@ -15,7 +15,7 @@ const _ProgressBar = styled(Progress, {
 const ProgressBarStyled = _ProgressBar.styleable(({ indicatorColor, ...props }, ref) => {
   return (
     <_ProgressBar {...props} ref={ref}>
-      {props.children ?? <Progress.Indicator backgroundColor={indicatorColor ?? '$primary-500'} animation="bouncy" />}
+      {props.children ?? <Progress.Indicator backgroundColor={indicatorColor ?? '$primary-500'} animation="lazy" />}
     </_ProgressBar>
   )
 })

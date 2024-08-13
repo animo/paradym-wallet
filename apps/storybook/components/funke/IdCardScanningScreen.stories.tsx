@@ -5,8 +5,8 @@ import React from 'react'
 // TODO: src import?
 import { NfcCardScanningPlacementImage } from '@package/ui/src/images/NfcScanningCardPlacementImage'
 
+import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
 import { YStack } from 'tamagui'
-import { OnboardingScreensHeader } from './OnboardingScreensHeader'
 
 const IdCardScanningScreen = ({ isScanning }: { isScanning: boolean }) => {
   const title = isScanning ? 'Keep your card still' : 'Place your card on top of your phone'

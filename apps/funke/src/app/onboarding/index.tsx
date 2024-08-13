@@ -1,58 +1,43 @@
-import { Redirect } from 'expo-router'
-import { Text, View } from 'react-native'
+import { useOnboardingContext } from '@funke/features/onboarding'
+import { FlexPage, OnboardingScreensHeader } from '@package/ui'
+import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated'
 
-import { initializeAppAgent, useSecureUnlock } from '@funke/agent'
-import { WalletInvalidKeyError } from '@credo-ts/core'
-import * as SplashScreen from 'expo-splash-screen'
-import { useEffect } from 'react'
+export default function OnboardingScreens() {
+  const onboardingContext = useOnboardingContext()
 
-/**
- * Onboarding screen is redirect to from app layout when app is not configured
- */
-export default function Onboarding() {
-  const secureUnlock = useSecureUnlock()
-
-  useEffect(() => {
-    // TODO: prevent multi-initialization
-    if (secureUnlock.state !== 'acquired-wallet-key') return
-
-    initializeAppAgent({
-      walletKey: secureUnlock.walletKey,
-    })
-      .then((agent) => secureUnlock.setWalletKeyValid({ agent }))
-      .catch((error) => {
-        if (error instanceof WalletInvalidKeyError) {
-          secureUnlock.setWalletKeyInvalid()
-        }
-
-        // TODO: handle other
-        console.error(error)
-      })
-  }, [secureUnlock])
-
-  // We want to wait until the agent is initialized before redirecting
-  if (secureUnlock.state === 'acquired-wallet-key') {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Loading ... onboarding</Text>
-      </View>
+  let page: React.JSX.Element
+  if (onboardingContext.page.type === 'fullscreen') {
+    page = onboardingContext.screen
+  } else {
+    page = (
+      <FlexPage gap="$0">
+        <OnboardingScreensHeader
+          flex={1}
+          progress={onboardingContext.progress}
+          title={onboardingContext.page.title}
+          subtitle={onboardingContext.page.subtitle}
+        />
+        <Animated.View
+          key={onboardingContext.page.animationKey ?? onboardingContext.currentStep}
+          style={{ flex: 3 }}
+          entering={FadeInRight}
+          exiting={FadeOutLeft}
+        >
+          {onboardingContext.screen}
+        </Animated.View>
+      </FlexPage>
     )
   }
 
-  if (secureUnlock.state !== 'not-configured') {
-    return <Redirect href="/" />
-  }
-
-  // TODO: where to put this?
-  // void SplashScreen.hideAsync()
-
-  const onboarding = () => {
-    secureUnlock.setup('123456')
-  }
-
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text onPress={onboarding}>Onboarding</Text>
-    </View>
+    <Animated.View
+      // for full screen, we want to animate the page transitions. For others we don't want to animate the static layout for every page change
+      key={onboardingContext.page.type === 'fullscreen' ? onboardingContext.currentStep : onboardingContext.page.type}
+      style={{ flex: 1 }}
+      entering={FadeInRight}
+      exiting={FadeOutLeft}
+    >
+      {page}
+    </Animated.View>
   )
 }

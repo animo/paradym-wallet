@@ -1,5 +1,5 @@
+import { trustedX509Certificates } from '@funke/constants'
 import { initializeFunkeAgent } from '@package/agent'
-import { trustedX509Certificates } from '../constants'
 
 export function initializeAppAgent({ walletKey }: { walletKey: string }) {
   return initializeFunkeAgent({

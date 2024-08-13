@@ -10,6 +10,7 @@
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 		"baseUrl": ".",
+		"types": ["png"],
 		"skipLibCheck": true,
 		"jsx": "react-native",
 		"typeRoots": ["./types"],

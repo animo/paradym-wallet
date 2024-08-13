@@ -1,9 +1,8 @@
 import { Redirect } from 'expo-router'
-import { KeyboardAvoidingView } from 'react-native'
 
-import { initializeAppAgent, useSecureUnlock } from '@funke/agent'
 import { WalletInvalidKeyError } from '@credo-ts/core'
-import { HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, FlexPage, YStack } from '@package/ui'
+import { initializeAppAgent, useSecureUnlock } from '@funke/agent'
+import { FlexPage, HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, Stack, YStack } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef } from 'react'
 import { Circle } from 'tamagui'
@@ -32,13 +31,12 @@ export default function Authenticate() {
     initializeAppAgent({
       walletKey: secureUnlock.walletKey,
     })
-      .then((agent) => secureUnlock.setWalletKeyValid({ agent }))
+      .then((agent) => secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true }))
       .catch((error) => {
         if (error instanceof WalletInvalidKeyError) {
           secureUnlock.setWalletKeyInvalid()
           pinInputRef.current?.clear()
           pinInputRef.current?.shake()
-          pinInputRef.current?.focus()
         }
 
         // TODO: handle other
@@ -54,7 +52,6 @@ export default function Authenticate() {
     return <Redirect href="/" />
   }
 
-  // TODO: where to put this?
   void SplashScreen.hideAsync()
 
   const unlockUsingPin = async (pin: string) => {
@@ -63,22 +60,15 @@ export default function Authenticate() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <FlexPage>
-        <YStack flex-1 gap="$4" alignItems="center" justifyContent="center">
-          <Circle size="$3" backgroundColor="$grey-100">
-            <HeroIcons.LockClosed color="$grey-700" />
-          </Circle>
-          <Paragraph>Enter your app pin code</Paragraph>
-          <PinDotsInput
-            isLoading={isLoading}
-            ref={pinInputRef}
-            autoFocus
-            pinLength={6}
-            onPinComplete={unlockUsingPin}
-          />
-        </YStack>
-      </FlexPage>
-    </KeyboardAvoidingView>
+    <FlexPage flex-1 safeArea="t">
+      <YStack flex={3} justifyContent="center" alignItems="center" gap="$4">
+        <Circle size="$3" backgroundColor="$grey-100">
+          <HeroIcons.LockClosed color="$grey-700" />
+        </Circle>
+        <Paragraph>Enter your app pin code</Paragraph>
+        <PinDotsInput isLoading={isLoading} ref={pinInputRef} pinLength={6} onPinComplete={unlockUsingPin} />
+      </YStack>
+      <Stack flex-1 />
+    </FlexPage>
   )
 }
