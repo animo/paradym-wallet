@@ -16,7 +16,7 @@ import { HeroIcons, Image } from '../content'
 
 export interface IdCardProps {
   icon: keyof typeof iconMapping
-  issuerImage: string
+  issuerImage: number
   userName?: string
 }
 

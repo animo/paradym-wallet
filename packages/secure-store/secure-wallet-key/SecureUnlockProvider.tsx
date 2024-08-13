@@ -150,7 +150,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       canTryUnlockingUsingBiometrics,
       tryUnlockingUsingBiometrics: async () => {
         // TODO: need to somehow inform user that the unlocking went wrong
-        if (!canTryUnlockingUsingBiometrics) return
+        if (!canTryUnlockingUsingBiometrics) return null
 
         setIsUnlocking(true)
         setCanTryUnlockingUsingBiometrics(false)
