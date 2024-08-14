@@ -1,5 +1,5 @@
 {
-	"name": "funke-wallet",
+	"name": "ausweis-wallet",
 	"version": "1.5.1",
 	"main": "index.ts",
 	"private": true,

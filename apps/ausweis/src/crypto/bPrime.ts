@@ -1,7 +1,7 @@
 import { type AgentContext, TypedArrayEncoder } from '@credo-ts/core'
 import { Key, KeyAlgs, KeyMethod } from '@hyperledger/aries-askar-react-native'
 import { kdf } from '@package/secure-store/kdf'
-import { funkeAes128Gcm } from './aes'
+import { ausweisAes128Gcm } from './aes'
 
 /**
  *
@@ -13,11 +13,11 @@ import { funkeAes128Gcm } from './aes'
  *
  */
 export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Array<number>) => {
-  if (!(await funkeAes128Gcm.aes128GcmHasKey({ agentContext }))) {
+  if (!(await ausweisAes128Gcm.aes128GcmHasKey({ agentContext }))) {
     throw new Error('No AES key found in storage. Flow is called in an incorrect way!')
   }
 
-  const pinSecret = await funkeAes128Gcm.aes128GcmEncrypt({
+  const pinSecret = await ausweisAes128Gcm.aes128GcmEncrypt({
     agentContext,
     data: new Uint8Array(pin),
   })

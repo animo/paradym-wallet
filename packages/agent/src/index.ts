@@ -7,10 +7,10 @@ global.Buffer = Buffer
 
 export {
   initializeFullAgent,
-  initializeFunkeAgent,
+  initializeAusweisAgent,
   useAgent,
   FullAppAgent,
-  FunkeAppAgent,
+  AusweisAppAgent,
 } from './agent'
 export * from './providers'
 export * from './invitation'

@@ -51,7 +51,7 @@ importers:
         specifier: ~5.3.3
         version: 5.3.3
 
-  apps/funke:
+  apps/ausweis:
     dependencies:
       '@animo-id/expo-ausweis-sdk':
         specifier: 0.0.1-alpha.7
