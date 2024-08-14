@@ -33,7 +33,7 @@ The folder structure is as follows
 
 - `apps` top level applications
   - `paradym` Paradym Wallet - react native app for iOS & Android
-  - `funke` Funke Wallet - react native app for iOS & Android
+  - `ausweis` Ausweis Wallet - react native app for iOS & Android
 - `packages` shared packages
   - `ui` includes our custom UI kit that will be optimized by Tamagui
   - `agent` includes the Aries Framework JavaScript (AFJ) agent and SSI capabilities

@@ -30,9 +30,9 @@ const invitationSchemes = ['openid', 'openid-initiate-issuance', 'openid-credent
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
-  name: `Funke Wallet${variant.name}`,
-  scheme: 'funke',
-  slug: 'funke-wallet',
+  name: `Ausweis Wallet ${variant.name}`,
+  scheme: 'ausweis-wallet',
+  slug: 'ausweis-wallet',
   owner: 'animo-id',
   version,
   orientation: 'portrait',
@@ -74,10 +74,10 @@ const config = {
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: false,
-    bundleIdentifier: `id.animo.funke.wallet${variant.bundle}`,
+    bundleIdentifier: `id.animo.ausweis${variant.bundle}`,
     infoPlist: {
-      NSCameraUsageDescription: 'Funke Wallet uses the camera to initiate receiving and sharing of credentials.',
-      NSFaceIDUsageDescription: 'Funke Wallet uses FaceID to securely unlock the wallet and share credentials.',
+      NSCameraUsageDescription: 'Ausweis Wallet uses the camera to initiate receiving and sharing of credentials.',
+      NSFaceIDUsageDescription: 'Ausweis Wallet uses FaceID to securely unlock the wallet and share credentials.',
       ITSAppUsesNonExemptEncryption: false,
       // Add schemes for deep linking
       CFBundleURLTypes: [
@@ -92,7 +92,7 @@ const config = {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#FFFFFF',
     },
-    package: `id.animo.funke.wallet${variant.bundle}`,
+    package: `id.animo.ausweis${variant.bundle}`,
     intentFilters: [
       ...invitationSchemes.map((scheme) => ({
         action: 'VIEW',

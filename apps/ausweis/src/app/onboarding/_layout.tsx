@@ -1,4 +1,4 @@
-import { OnboardingContextProvider } from '@funke/features/onboarding'
+import { OnboardingContextProvider } from '@ausweis/features/onboarding'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useResetWalletDevMenu } from '../../utils/resetWallet'

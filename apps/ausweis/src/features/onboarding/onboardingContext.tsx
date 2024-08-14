@@ -1,12 +1,12 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import type { SdJwtVcHeader } from '@credo-ts/core'
-import { initializeAppAgent, useSecureUnlock } from '@funke/agent'
+import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@ausweis/agent'
 import {
   ReceivePidUseCase,
   type ReceivePidUseCaseOptions,
   type ReceivePidUseCaseState,
-} from '@funke/use-cases/ReceivePidUseCase'
-import { type FunkeAppAgent, storeCredential } from '@package/agent'
+} from '@ausweis/use-cases/ReceivePidUseCase'
+import type { SdJwtVcHeader } from '@credo-ts/core'
+import { storeCredential } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter } from '@package/utils'
 import { useRouter } from 'expo-router'
@@ -21,7 +21,14 @@ import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
 
-type Page = { type: 'fullscreen' } | { type: 'content'; title: string; subtitle?: string; animationKey?: string }
+type Page =
+  | { type: 'fullscreen' }
+  | {
+      type: 'content'
+      title: string
+      subtitle?: string
+      animationKey?: string
+    }
 
 // Same animation key means the content won't fade out and then in again. So if the two screens have most content in common
 // this looks nicer.
@@ -149,7 +156,10 @@ export const OnboardingContext = createContext<OnboardingContext>({} as Onboardi
 export function OnboardingContextProvider({
   initialStep,
   children,
-}: PropsWithChildren<{ initialStep?: OnboardingStep['step']; flow?: 'c' | 'bprime' }>) {
+}: PropsWithChildren<{
+  initialStep?: OnboardingStep['step']
+  flow?: 'c' | 'bprime'
+}>) {
   const toast = useToastController()
   const secureUnlock = useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
@@ -160,7 +170,7 @@ export function OnboardingContextProvider({
   const [walletPin, setWalletPin] = useState<string>()
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
-  const [agent, setAgent] = useState<FunkeAppAgent>()
+  const [agent, setAgent] = useState<AppAgent>()
 
   const currentStep = onboardingStepsCFlow.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
@@ -209,7 +219,9 @@ export function OnboardingContextProvider({
 
   const onPinReEnter = async (pin: string) => {
     if (walletPin !== pin) {
-      toast.show('Pin entries do not match', { customData: { preset: 'danger' } })
+      toast.show('Pin entries do not match', {
+        customData: { preset: 'danger' },
+      })
       setWalletPin(undefined)
       goToPreviousStep()
       throw new Error('Pin entries do not match')
@@ -251,7 +263,9 @@ export function OnboardingContextProvider({
           })
           // If we don't wait for a bit, it will render the keyboard and the nfc modal at the same time...
           setTimeout(() => {
-            toast.show('Invalid PIN entered for eID Card. Please try again', { customData: { preset: 'danger' } })
+            toast.show('Invalid PIN entered for eID Card. Please try again', {
+              customData: { preset: 'danger' },
+            })
             setCurrentStepName('id-card-pin')
           }, 3000)
         })
@@ -274,7 +288,10 @@ export function OnboardingContextProvider({
     setIdCardPin(pin)
 
     if (secureUnlock.state !== 'unlocked') {
-      reset({ error: 'onIdCardPinEnter: Secure unlock state is not unlocked', resetToStep: 'welcome' })
+      reset({
+        error: 'onIdCardPinEnter: Secure unlock state is not unlocked',
+        resetToStep: 'welcome',
+      })
       throw new Error('onIdCardPinEnter: Secure unlock state is not unlocked')
     }
 
@@ -298,7 +315,13 @@ export function OnboardingContextProvider({
     return
   }
 
-  const reset = ({ resetToStep = 'welcome', error }: { error?: unknown; resetToStep: OnboardingStep['step'] }) => {
+  const reset = ({
+    resetToStep = 'welcome',
+    error,
+  }: {
+    error?: unknown
+    resetToStep: OnboardingStep['step']
+  }) => {
     if (error) console.error(error)
 
     const stepsToCompleteAfterReset = onboardingStepsCFlow
@@ -339,13 +362,19 @@ export function OnboardingContextProvider({
 
   const onStartScanning = async () => {
     if (receivePidUseCase?.state !== 'id-card-auth') {
-      reset({ resetToStep: 'id-card-pin', error: 'onStartScanning: receivePidUseCaseState is not id-card-auth' })
+      reset({
+        resetToStep: 'id-card-pin',
+        error: 'onStartScanning: receivePidUseCaseState is not id-card-auth',
+      })
       return
     }
 
     // FIXME: we should probably remove the database here.
     if (secureUnlock.state !== 'unlocked') {
-      reset({ resetToStep: 'welcome', error: 'onStartScanning: secureUnlock.state is not unlocked' })
+      reset({
+        resetToStep: 'welcome',
+        error: 'onStartScanning: secureUnlock.state is not unlocked',
+      })
       return
     }
 
@@ -371,7 +400,9 @@ export function OnboardingContextProvider({
             { given_name: string; family_name: string }
           >(credential.compactSdJwtVc)
           setUserName(
-            `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(parsed.prettyClaims.family_name.toLowerCase())}`
+            `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
+              parsed.prettyClaims.family_name.toLowerCase()
+            )}`
           )
           setCurrentStepName('id-card-complete')
         } catch (error) {
