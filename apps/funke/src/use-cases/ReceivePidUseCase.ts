@@ -1,10 +1,6 @@
-import {
-  AusweisAuthFlow,
-  type AusweisAuthFlowOptions,
-  addMessageListener,
-  sendCommand,
-} from '@animo-id/expo-ausweis-sdk'
+import { AusweisAuthFlow, type AusweisAuthFlowOptions } from '@animo-id/expo-ausweis-sdk'
 import type { AppAgent } from '@funke/agent'
+import { pidSchemes } from '@funke/constants'
 import {
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
@@ -155,6 +151,7 @@ export class ReceivePidUseCase {
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdToRequest,
         clientId: ReceivePidUseCase.CLIENT_ID,
+        pidSchemes,
       })
 
       // TODO: add error handling everywhere to set state to error
@@ -199,7 +196,10 @@ export class ReceivePidUseCase {
         agent: this.options.agent,
       })
 
-      this.assertState({ expectedState: 'acquire-access-token', newState: 'retrieve-credential' })
+      this.assertState({
+        expectedState: 'acquire-access-token',
+        newState: 'retrieve-credential',
+      })
     } catch (error) {
       this.handleError()
       throw error
@@ -209,7 +209,10 @@ export class ReceivePidUseCase {
   private assertState({
     expectedState,
     newState,
-  }: { expectedState: ReceivePidUseCase['currentState']; newState?: ReceivePidUseCase['currentState'] }) {
+  }: {
+    expectedState: ReceivePidUseCase['currentState']
+    newState?: ReceivePidUseCase['currentState']
+  }) {
     if (this.currentState !== expectedState) {
       throw new Error(`Expected state to be ${expectedState}. Found ${this.currentState}`)
     }

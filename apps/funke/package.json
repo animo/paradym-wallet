@@ -10,8 +10,8 @@
 		"prebuild": "APP_VARIANT=development expo prebuild --no-install"
 	},
 	"dependencies": {
-		"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.5",
-		"@animo-id/expo-secure-environment": "0.1.0-alpha.1",
+		"@animo-id/expo-ausweis-sdk": "*",
+		"@animo-id/expo-secure-environment": "*",
 		"@credo-ts/core": "*",
 		"@expo-google-fonts/open-sans": "^0.2.3",
 		"@expo-google-fonts/raleway": "^0.2.3",

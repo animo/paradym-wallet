@@ -142,11 +142,13 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   credentialConfigurationIdToRequest,
   accessToken,
   clientId,
+  pidSchemes,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdToRequest?: string
   clientId?: string
+  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocNamespaces: Array<string> }
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
@@ -182,6 +184,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       supportsAllDidMethods,
       supportsJwk,
       credentialFormat,
+      supportedCredentialId,
     }) => {
       // First, we try to pick a did method
       // Prefer did:jwk, otherwise use did:key, otherwise use undefined
@@ -199,26 +202,26 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         didMethod = 'key'
       }
 
-      let key: Key | undefined = undefined
+      const offeredCredentialConfiguration = supportedCredentialId
+        ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
+        : undefined
 
-      // For P-256 we first try secure enclave
-      if (keyType === KeyType.P256) {
-        key = await agent.wallet
-          .createKey({
-            keyType,
-            keyBackend: KeyBackend.SecureElement,
-          })
-          .catch((e) => {
-            agent.config.logger.warn('Could not create a key in the secure element', e as Record<string, unknown>)
-            return agent.wallet.createKey({
-              keyType,
-            })
-          })
-      } else {
-        key = await agent.wallet.createKey({
-          keyType,
-        })
-      }
+      const shouldKeyBeHardwareBackedForMsoMdoc = false
+      //   offeredCredentialConfiguration?.format === "mso_mdoc" &&
+      //   pidSchemes?.msoMdocNamespaces.includes(
+      //     offeredCredentialConfiguration.namespace
+      //   );
+      const shouldKeyBeHardwareBackedForSdJwtVc =
+        offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
+        pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
+
+      // TODO: add mso-mdoc config from above
+      const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
+
+      const key = await agent.wallet.createKey({
+        keyType,
+        keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
+      })
 
       if (didMethod) {
         const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
