@@ -33,18 +33,21 @@
 			"@hyperledger/aries-askar-react-native": "^0.2.3",
 			"@hyperledger/indy-vdr-react-native": "^0.2.0",
 
-			"@credo-ts/anoncreds": "0.5.10-alpha-20240805102402",
-			"@credo-ts/askar": "0.5.10-alpha-20240805102402",
-			"@credo-ts/cheqd": "0.5.10-alpha-20240805102402",
-			"@credo-ts/core": "0.5.10-alpha-20240805102402",
-			"@credo-ts/indy-vdr": "0.5.10-alpha-20240805102402",
-			"@credo-ts/openid4vc": "0.5.10-alpha-20240805102402",
-			"@credo-ts/question-answer": "0.5.10-alpha-20240805102402",
+			"@credo-ts/anoncreds": "0.5.10",
+			"@credo-ts/askar": "0.5.10",
+			"@credo-ts/cheqd": "0.5.10",
+			"@credo-ts/core": "0.5.10",
+			"@credo-ts/indy-vdr": "0.5.10",
+			"@credo-ts/openid4vc": "0.5.10",
+			"@credo-ts/question-answer": "0.5.10",
 			"@credo-ts/react-hooks": "0.6.1",
-			"@credo-ts/react-native": "0.5.10-alpha-20240805102402"
+			"@credo-ts/react-native": "0.5.10",
+
+			"@animo-id/expo-secure-environment": "0.1.0-alpha.2",
+			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.7"
 		},
 		"patchedDependencies": {
-			"@credo-ts/openid4vc@0.5.10-alpha-20240805102402": "patches/@credo-ts__openid4vc@0.5.9.patch",
+			"@credo-ts/openid4vc@0.5.10": "patches/@credo-ts__openid4vc@0.5.10.patch",
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
 			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch"
 		}
