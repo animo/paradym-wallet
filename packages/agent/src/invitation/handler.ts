@@ -247,6 +247,13 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         }
       }
 
+      if (credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc) {
+        return {
+          method: 'jwk',
+          jwk: getJwkFromKey(key),
+        }
+      }
+
       // Otherwise we also support plain jwk for sd-jwt only
       if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
         return {
@@ -256,7 +263,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       }
 
       throw new Error(
-        `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
+        `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt/mdoc. Issuer supports ${
           supportsJwk ? 'jwk, ' : ''
         }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
       )

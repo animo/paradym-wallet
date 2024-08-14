@@ -215,6 +215,16 @@ export function OnboardingContextProvider({
       throw new Error('Pin entries do not match')
     }
 
+    if (secureUnlock.state === 'locked') {
+      return secureUnlock
+        .tryUnlockingUsingBiometrics()
+        .then((walletKey) => initializeAgent(walletKey as string))
+        .then(() => goToNextStep())
+        .catch((e) => {
+          reset({ error: e, resetToStep: 'welcome' })
+          throw e
+        })
+    }
     if (secureUnlock.state !== 'not-configured') {
       router.replace('/')
       return

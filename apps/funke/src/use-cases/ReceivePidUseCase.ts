@@ -90,7 +90,7 @@ export class ReceivePidUseCase {
   public static async initialize(options: ReceivePidUseCaseOptions) {
     const resolved = await resolveOpenId4VciOffer({
       agent: options.agent,
-      offer: { uri: ReceivePidUseCase.SD_JWT_VC_OFFER },
+      offer: { uri: ReceivePidUseCase.MDL_OFFER },
       authorization: {
         clientId: ReceivePidUseCase.CLIENT_ID,
         redirectUri: ReceivePidUseCase.REDIRECT_URI,
