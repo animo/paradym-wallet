@@ -1,5 +1,6 @@
-import { Heading, Paragraph, ProgressBar, YStack } from '@package/ui'
 import type { ComponentProps } from 'react'
+import { Heading, Paragraph, YStack } from '../base'
+import { ProgressBar } from '../content'
 
 interface OnboardingScreensHeaderProps extends ComponentProps<typeof YStack> {
   progress: number

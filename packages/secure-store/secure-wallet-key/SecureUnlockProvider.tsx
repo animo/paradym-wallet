@@ -35,20 +35,20 @@ export type SecureUnlockReturnInitializing = {
 }
 export type SecureUnlockReturnNotConfigured = {
   state: 'not-configured'
-  setup: (pin: string) => void
+  setup: (pin: string) => Promise<{ walletKey: string }>
 }
 export type SecureUnlockReturnLocked = {
   state: 'locked'
-  tryUnlockingUsingBiometrics: () => Promise<void>
+  tryUnlockingUsingBiometrics: () => Promise<string | null>
   canTryUnlockingUsingBiometrics: boolean
-  unlockUsingPin: (pin: string) => Promise<void>
+  unlockUsingPin: (pin: string) => Promise<string>
   isUnlocking: boolean
 }
 export type SecureUnlockReturnWalletKeyAcquired<Context extends Record<string, unknown>> = {
   state: 'acquired-wallet-key'
   walletKey: string
   unlockMethod: SecureUnlockMethod
-  setWalletKeyValid: (context: Context) => void
+  setWalletKeyValid: (context: Context, options: { enableBiometrics: boolean }) => void
   setWalletKeyInvalid: () => void
 }
 export type SecureUnlockReturnUnlocked<Context extends Record<string, unknown>> = {
@@ -112,13 +112,13 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         setWalletKey(undefined)
         setUnlockMethod(undefined)
       },
-      setWalletKeyValid: (context) => {
+      setWalletKeyValid: (context, options) => {
         setContext(context)
         setState('unlocked')
 
         // TODO: need extra option to know whether user wants to use biometrics?
         // TODO: do we need to check whether already stored?
-        if (canUseBiometrics) {
+        if (canUseBiometrics && options.enableBiometrics) {
           void secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
         }
       },
@@ -135,10 +135,10 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       context,
       unlockMethod,
       lock: () => {
+        setState('locked')
         setWalletKey(undefined)
         setUnlockMethod(undefined)
         setContext(undefined)
-        setState('locked')
       },
     }
   }
@@ -150,7 +150,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       canTryUnlockingUsingBiometrics,
       tryUnlockingUsingBiometrics: async () => {
         // TODO: need to somehow inform user that the unlocking went wrong
-        if (!canTryUnlockingUsingBiometrics) return
+        if (!canTryUnlockingUsingBiometrics) return null
 
         setIsUnlocking(true)
         setCanTryUnlockingUsingBiometrics(false)
@@ -162,6 +162,8 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
             setUnlockMethod('biometrics')
             setState('acquired-wallet-key')
           }
+
+          return walletKey
         } catch (error) {
           // If use cancelled we won't allow trying using biometrics again
           if (error instanceof KeychainError && error.reason === 'userCancelled') {
@@ -174,6 +176,8 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         } finally {
           setIsUnlocking(false)
         }
+
+        return null
       },
       unlockUsingPin: async (pin: string) => {
         setIsUnlocking(true)
@@ -183,6 +187,8 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
           setWalletKey(walletKey)
           setUnlockMethod('pin')
           setState('acquired-wallet-key')
+
+          return walletKey
         } finally {
           setIsUnlocking(false)
         }
@@ -200,6 +206,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         setWalletKey(walletKey)
         setUnlockMethod('pin')
         setState('acquired-wallet-key')
+        return { walletKey }
       },
     }
   }

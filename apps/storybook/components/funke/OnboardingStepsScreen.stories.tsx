@@ -1,7 +1,7 @@
 import { Button, Heading, HeroIcons, Page, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { OnboardingScreensHeader } from './OnboardingScreensHeader'
 
 interface OnboardingStepItemProps {
   stepName: string

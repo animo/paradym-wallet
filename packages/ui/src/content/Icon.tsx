@@ -5,6 +5,9 @@ import type { NumberProp, SvgProps } from 'react-native-svg'
 import {
   ArrowPathIcon,
   ArrowRightIcon,
+  BackspaceIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
   GlobeAltIcon,
   IdentificationIcon,
   KeyIcon,
@@ -50,4 +53,7 @@ export const HeroIcons = {
   ArrowPath: wrapHeroIcon(ArrowPathIcon),
   LockClosed: wrapHeroIcon(LockClosedIcon),
   ArrowRight: wrapHeroIcon(ArrowRightIcon),
+  Backspace: wrapHeroIcon(BackspaceIcon),
+  ExclamationCircle: wrapHeroIcon(ExclamationCircleIcon),
+  CheckCircle: wrapHeroIcon(CheckCircleIcon),
 } as const

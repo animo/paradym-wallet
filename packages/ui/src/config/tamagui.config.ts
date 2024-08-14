@@ -66,7 +66,10 @@ export const tokensInput = {
     ...hexColors,
     background: hexColors['grey-200'],
   },
-  size,
+  size: {
+    ...size,
+    buttonHeight: size.$4,
+  },
   radius: {
     ...radius,
     button: 8,
@@ -93,12 +96,7 @@ export const configInput = {
   },
   tokens,
   themes: {
-    light: {
-      ...tokens.color,
-
-      // Button
-      buttonHeight: size.$4,
-    },
+    light: tokens.color,
   },
 } as const satisfies CreateTamaguiProps
 

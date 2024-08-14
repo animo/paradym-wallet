@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"rootDir": "./",
 		"paths": {
-			"@/*": ["./apps/funke/*"]
+			"@funke/*": ["./apps/funke/src/*"]
 		}
-	}
+	},
+	"include": ["./src/**/*.ts", "./src/**/*.tsx", "tamagui.config.ts"]
 }

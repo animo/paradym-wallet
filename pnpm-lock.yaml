@@ -90,6 +90,9 @@ importers:
       '@package/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@package/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@react-native-community/blur':
         specifier: ^4.3.2
         version: 4.4.0(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)

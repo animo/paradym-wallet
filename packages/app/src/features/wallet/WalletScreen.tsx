@@ -25,9 +25,10 @@ import { useNetworkCallback, useScrollViewPosition } from '../../hooks'
 
 type WalletScreenProps = {
   logo: number
+  showInbox?: boolean
 }
 
-export function WalletScreen({ logo }: WalletScreenProps) {
+export function WalletScreen({ logo, showInbox = true }: WalletScreenProps) {
   const { push } = useRouter()
   const { isLoading, credentials } = useCredentialsForDisplay()
   const firstThreeRecords = credentials.slice(0, 3)
@@ -94,7 +95,7 @@ export function WalletScreen({ logo }: WalletScreenProps) {
           )}
         </AnimatePresence>
         <XStack width="$2" alignItems="center">
-          <InboxIcon />
+          {showInbox && <InboxIcon />}
         </XStack>
       </XStack>
       {credentials.length === 0 ? (

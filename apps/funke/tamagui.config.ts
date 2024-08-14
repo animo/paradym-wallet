@@ -16,6 +16,10 @@ export const tokensInput = {
 
 const tokens = createTokens({
   ...tokensInput,
+  size: {
+    ...tokensInput.size,
+    buttonHeight: 53,
+  },
   color: {
     ...hexColors, // Re-use existing colors for positive/warnings etc.
     background: hexColors.white,
@@ -50,12 +54,7 @@ const config = createTamagui({
     body: fontOpenSans,
   },
   themes: {
-    light: {
-      ...tokens.color,
-
-      // Button
-      buttonHeight: 53,
-    },
+    light: tokens.color,
   },
 })
 

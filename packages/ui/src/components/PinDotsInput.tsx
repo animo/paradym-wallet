@@ -3,26 +3,33 @@ import type { TextInput } from 'react-native'
 import Animated, { useSharedValue, withRepeat, withSequence, withTiming, withDelay } from 'react-native-reanimated'
 import { Circle, Input } from 'tamagui'
 import { XStack, YStack } from '../base'
+import { PinPad, PinValues } from './PinPad'
 
 interface PinDotsInputProps {
   pinLength: number
   onPinComplete: (pin: string) => void
-  autoFocus?: boolean
   isLoading?: boolean
+  useNativeKeyboard?: boolean
 }
 
 export interface PinDotsInputRef {
+  /** Only applicable if using native keyboard */
   focus: () => void
   clear: () => void
   shake: () => void
 }
 
 export const PinDotsInput = forwardRef(
-  ({ onPinComplete, pinLength, autoFocus, isLoading }: PinDotsInputProps, ref: ForwardedRef<PinDotsInputRef>) => {
+  (
+    { onPinComplete, pinLength, isLoading, useNativeKeyboard = true }: PinDotsInputProps,
+    ref: ForwardedRef<PinDotsInputRef>
+  ) => {
     const [pin, setPin] = useState('')
     const inputRef = useRef<TextInput>(null)
 
-    const pinDots = new Array(pinLength).fill(0).map((_, i) => isLoading || pin[i] !== undefined)
+    const isInLoadingState = isLoading || pin.length === pinLength
+
+    const pinDots = new Array(pinLength).fill(0).map((_, i) => isInLoadingState || pin[i] !== undefined)
 
     const translationAnimations = pinDots.map(() => useSharedValue(0))
     const shakeAnimation = useSharedValue(0)
@@ -39,7 +46,7 @@ export const PinDotsInput = forwardRef(
     useEffect(() => {
       translationAnimations.forEach((animation, index) => {
         // Go back down in 75 milliseconds
-        if (!isLoading) {
+        if (!isInLoadingState) {
           animation.value = withTiming(0, { duration: 75 })
           return
         }
@@ -59,7 +66,7 @@ export const PinDotsInput = forwardRef(
           )
         )
       })
-    }, [...translationAnimations, translationAnimations.forEach, translationAnimations.length, isLoading])
+    }, [...translationAnimations, translationAnimations.forEach, translationAnimations.length, isInLoadingState])
 
     useImperativeHandle(
       ref,
@@ -71,16 +78,41 @@ export const PinDotsInput = forwardRef(
       [startShakeAnimation]
     )
 
+    const onPressPinNumber = (character: PinValues) => {
+      if (character === PinValues.Backspace) {
+        setPin((pin) => pin.slice(0, pin.length - 1))
+        return
+      }
+
+      if (character === PinValues.Empty) {
+        return
+      }
+
+      setPin((currentPin) => {
+        const newPin = currentPin + character
+
+        if (newPin.length === pinLength) {
+          // If we don't do this the 6th dot will never be rendered and that looks weird
+          setTimeout(() => onPinComplete(newPin), 100)
+        }
+
+        return newPin
+      })
+    }
+
     const onChangePin = (newPin: string) => {
+      if (isLoading) return
       const sanitized = newPin.replace(/[^0-9]/g, '')
       setPin(sanitized)
-      if (sanitized.length === 6) {
-        onPinComplete(sanitized)
+
+      if (sanitized.length === pinLength) {
+        // If we don't do this the 6th dot will never be rendered and that looks weird
+        setTimeout(() => onPinComplete(newPin), 100)
       }
     }
 
     return (
-      <YStack onPress={() => inputRef.current?.focus()}>
+      <YStack gap="$4" onPress={() => inputRef.current?.focus()}>
         <Animated.View style={{ left: shakeAnimation }}>
           <XStack justifyContent="center" gap="$2">
             {pinDots.map((filled, i) => (
@@ -96,22 +128,26 @@ export const PinDotsInput = forwardRef(
             ))}
           </XStack>
         </Animated.View>
-        <Input
-          ref={inputRef}
-          value={pin}
-          borderWidth={0}
-          zIndex={-10000}
-          position="absolute"
-          onBlur={() => inputRef.current?.focus()}
-          maxLength={pinLength}
-          onChangeText={onChangePin}
-          autoFocus={autoFocus}
-          flex={1}
-          height={0}
-          width={0}
-          inputMode="numeric"
-          secureTextEntry
-        />
+        {useNativeKeyboard ? (
+          <Input
+            ref={inputRef}
+            value={pin}
+            borderWidth={0}
+            zIndex={-10000}
+            position="absolute"
+            onBlur={() => inputRef.current?.focus()}
+            maxLength={pinLength}
+            onChangeText={onChangePin}
+            autoFocus
+            flex={1}
+            height={0}
+            width={0}
+            inputMode="numeric"
+            secureTextEntry
+          />
+        ) : (
+          <PinPad onPressPinNumber={onPressPinNumber} disabled={isInLoadingState} />
+        )}
       </YStack>
     )
   }

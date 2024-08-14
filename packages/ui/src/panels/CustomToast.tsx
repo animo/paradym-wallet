@@ -17,7 +17,12 @@ export const CustomToast = () => {
       p={0}
       width="100%"
     >
-      <ToastContainer title={currentToast.title} safeAreaMargin />
+      <ToastContainer
+        title={currentToast.title}
+        message={currentToast.message}
+        safeAreaMargin
+        variant={currentToast.customData?.preset}
+      />
     </Toast>
   )
 }

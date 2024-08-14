@@ -5,9 +5,9 @@ import type { TextInput } from 'react-native'
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated'
 import { Input } from 'tamagui'
 
+import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
 import { useArgs } from '@storybook/addons'
 import { IdCard } from './IdCard'
-import { OnboardingScreensHeader } from './OnboardingScreensHeader'
 
 const germanIssuerImage = require('../../../funke/assets/german-issuer-image.png')
 

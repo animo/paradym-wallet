@@ -23,6 +23,7 @@
 		"@package/app": "workspace:*",
 		"@package/secure-store": "workspace:*",
 		"@package/ui": "workspace:*",
+		"@package/utils": "workspace:*",
 		"@react-native-community/blur": "^4.3.2",
 		"@react-native-community/netinfo": "11.3.1",
 		"@react-native-masked-view/masked-view": "0.3.1",

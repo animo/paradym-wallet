@@ -1,6 +1,6 @@
 import type { Agent } from '@credo-ts/core'
+import { FUNKE_WALLET_SEED_CREDENTIAL_RECORD_ID } from '@funke/constants'
 import { walletJsonStore } from '@package/agent'
-import { FUNKE_WALLET_SEED_CREDENTIAL_RECORD_ID } from '../constants'
 
 export const seedCredentialStorage = {
   store: async (agent: Agent, seedCredential: string) =>
