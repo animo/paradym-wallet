@@ -52,11 +52,11 @@ importers:
   apps/funke:
     dependencies:
       '@animo-id/expo-ausweis-sdk':
-        specifier: 0.0.1-alpha.5
-        version: 0.0.1-alpha.5(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+        specifier: 0.0.1-alpha.7
+        version: 0.0.1-alpha.7(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@animo-id/expo-secure-environment':
-        specifier: 0.1.0-alpha.1
-        version: 0.1.0-alpha.1(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+        specifier: 0.1.0-alpha.2
+        version: 0.1.0-alpha.2(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@credo-ts/core':
         specifier: 0.5.10-alpha-20240805102402
         version: 0.5.10-alpha-20240805102402(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
@@ -704,8 +704,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.5':
-    resolution: {integrity: sha512-4m/D/fJFlKIUNY1mFf+xxxDz5EmDx5Cob514vKzcMgQkMItEtGp21/JqDxBfVKyM4SDFMG3Pxx2zjaxdtZt3uw==}
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.7':
+    resolution: {integrity: sha512-XmNBp3Ivr0ct02SCBYaKnuD2o+Xm02YMNLR+V0CLRAmUTpaeI8YlvMhmFQxAQ/HZttfWCWSRGdir9HLWeWPSfw==}
     peerDependencies:
       expo: '*'
       react: 18.2.0
@@ -718,8 +718,8 @@ packages:
       react: 18.2.0
       react-native: '*'
 
-  '@animo-id/expo-secure-environment@0.1.0-alpha.1':
-    resolution: {integrity: sha512-yjsoLFCTCY2XOgIr+SgCXg+3Y6auYC26uki9cPBrEhXWAWMy7k9WFZRMEjCJ8VZc3Pf9Embja++omZGTL3Vevg==}
+  '@animo-id/expo-secure-environment@0.1.0-alpha.2':
+    resolution: {integrity: sha512-uphtwykpFIXSQ1evoMdj5MaRZPLXpPSf9OnC81wF/Z9QQGsJx2g4fyL5UAOpP+DMTm0Z3Dp3tddCIgRAq/8w6Q==}
     peerDependencies:
       expo: '*'
       react: 18.2.0
@@ -9566,7 +9566,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.5(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.7(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@expo/config-plugins': 8.0.8
       expo: 51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))
@@ -9584,7 +9584,7 @@ snapshots:
       react-native: 0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)
     optional: true
 
-  '@animo-id/expo-secure-environment@0.1.0-alpha.1(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+  '@animo-id/expo-secure-environment@0.1.0-alpha.2(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@peculiar/asn1-ecc': 2.3.8
       '@peculiar/asn1-schema': 2.3.8
