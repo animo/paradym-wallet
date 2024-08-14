@@ -9,7 +9,7 @@ import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingSc
 import { useArgs } from '@storybook/addons'
 import { IdCard } from './IdCard'
 
-const germanIssuerImage = require('../../../funke/assets/german-issuer-image.png')
+const germanIssuerImage = require('../../../ausweis/assets/german-issuer-image.png')
 
 interface IdCardPinScreenProps {
   pinLength: number

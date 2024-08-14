@@ -53,7 +53,7 @@ const askarModule = new AskarModule({
   ariesAskar: ariesAskar,
 })
 
-export const initializeFunkeAgent = async ({
+export const initializeAusweisAgent = async ({
   walletLabel,
   walletId,
   walletKey,
@@ -200,8 +200,8 @@ export const initializeFullAgent = async ({
 }
 
 export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
-export type FunkeAppAgent = Awaited<ReturnType<typeof initializeFunkeAgent>>
-export type EitherAgent = FullAppAgent | FunkeAppAgent
+export type AusweisAppAgent = Awaited<ReturnType<typeof initializeAusweisAgent>>
+export type EitherAgent = FullAppAgent | AusweisAppAgent
 
 // biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
 export const useAgent = <A extends Agent<any> = FullAppAgent>(): {

@@ -1,4 +1,4 @@
-import { useOnboardingContext } from '@funke/features/onboarding'
+import { useOnboardingContext } from '@ausweis/features/onboarding'
 import { FlexPage, OnboardingScreensHeader } from '@package/ui'
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated'
 
