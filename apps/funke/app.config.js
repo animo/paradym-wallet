@@ -55,6 +55,15 @@ const config = {
   plugins: [
     '@animo-id/expo-ausweis-sdk',
     [
+      'expo-build-properties',
+      {
+        android: {
+          minSdkVersion: 26,
+          useLegacyPackaging: true,
+        },
+      },
+    ],
+    [
       'expo-font',
       {
         fonts: [

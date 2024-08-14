@@ -234,7 +234,6 @@ export function OnboardingContextProvider({
 
   const onEnterPin: ReceivePidUseCaseOptions['onEnterPin'] = useCallback(
     (options) => {
-      console.log('options', options, idCardPin)
       if (!idCardPin) {
         // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
         sendCommand({ cmd: 'INTERRUPT' })

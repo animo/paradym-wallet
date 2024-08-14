@@ -6,5 +6,10 @@
 			"@funke/*": ["./apps/funke/src/*"]
 		}
 	},
-	"include": ["./src/**/*.ts", "./src/**/*.tsx", "tamagui.config.ts"]
+	"include": [
+		"./src/**/*.ts",
+		"./src/**/*.tsx",
+		"tamagui.config.ts",
+		"index.ts"
+	]
 }

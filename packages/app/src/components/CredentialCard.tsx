@@ -66,7 +66,16 @@ export function CredentialCard({
       borderColor="$borderTranslucent"
       position="relative"
     >
-      <Card padded width="100%" br="$8" pressStyle={getPressStyle()} h="$16" onPress={onPress} overflow="hidden">
+      <Card
+        padded
+        width="100%"
+        br="$8"
+        backgroundColor="transparent"
+        pressStyle={getPressStyle()}
+        h="$16"
+        onPress={onPress}
+        overflow="hidden"
+      >
         <Card.Header padding={0}>
           <XStack jc="space-between">
             <XStack pr="$4">{icon}</XStack>

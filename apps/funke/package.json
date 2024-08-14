@@ -1,7 +1,7 @@
 {
 	"name": "funke-wallet",
 	"version": "1.5.1",
-	"main": "expo-router/entry",
+	"main": "index.ts",
 	"private": true,
 	"scripts": {
 		"start": "APP_VARIANT=development expo start -c --dev-client",
@@ -47,7 +47,7 @@
 		"expo-system-ui": "~3.0.6",
 		"expo-updates": "~0.25.16",
 		"react": "*",
-		"react-native": "0.74.2",
+		"react-native": "*",
 		"react-native-argon2": "^2.0.1",
 		"react-native-fs": "^2.20.0",
 		"react-native-gesture-handler": "~2.16.2",
@@ -61,6 +61,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
 		"@tamagui/babel-plugin": "^1.108.0",
+		"expo-build-properties": "^0.12.5",
 		"typescript": "*"
 	}
 }
