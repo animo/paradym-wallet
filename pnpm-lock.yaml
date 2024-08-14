@@ -27,6 +27,9 @@ overrides:
   '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.7
 
 patchedDependencies:
+  '@credo-ts/openid4vc@0.5.11-pr-1996-20240814121350':
+    hash: fumt2t6gwhrr4skaa77vekccou
+    path: patches/@credo-ts__openid4vc@0.5.11-pr-1996-20240814121350.patch
   '@hyperledger/anoncreds-react-native@0.2.2':
     hash: uf6a7jvct2tkboe5xpglqybeia
     path: patches/@hyperledger__anoncreds-react-native@0.2.2.patch
@@ -520,7 +523,7 @@ importers:
         version: 0.5.11-pr-1996-20240814121350(@hyperledger/anoncreds-shared@0.2.2)(@hyperledger/indy-vdr-shared@0.2.2)(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/openid4vc':
         specifier: 0.5.11-pr-1996-20240814121350
-        version: 0.5.11-pr-1996-20240814121350(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
+        version: 0.5.11-pr-1996-20240814121350(patch_hash=fumt2t6gwhrr4skaa77vekccou)(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/question-answer':
         specifier: 0.5.11-pr-1996-20240814121350
         version: 0.5.11-pr-1996-20240814121350(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
@@ -10866,7 +10869,7 @@ snapshots:
       - supports-color
       - web-streams-polyfill
 
-  '@credo-ts/openid4vc@0.5.11-pr-1996-20240814121350(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/openid4vc@0.5.11-pr-1996-20240814121350(patch_hash=fumt2t6gwhrr4skaa77vekccou)(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@credo-ts/core': 0.5.11-pr-1996-20240814121350(expo@51.0.27(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.2(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@sphereon/did-auth-siop': 0.16.1-next.8

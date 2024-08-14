@@ -1,0 +1,13 @@
+diff --git a/build/openid4vc-holder/OpenId4VciHolderService.js b/build/openid4vc-holder/OpenId4VciHolderService.js
+index a6d6ea556d4145b8663b42bfed230b7878ed9bb9..4903a7a788b01a5497c345d2134e5e338e504d52 100644
+--- a/build/openid4vc-holder/OpenId4VciHolderService.js
++++ b/build/openid4vc-holder/OpenId4VciHolderService.js
+@@ -456,7 +456,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+         const issuerSupportedBindingMethods = credentialToRequest.configuration.cryptographic_binding_methods_supported;
+         const supportsAllDidMethods = (_c = issuerSupportedBindingMethods === null || issuerSupportedBindingMethods === void 0 ? void 0 : issuerSupportedBindingMethods.includes('did')) !== null && _c !== void 0 ? _c : false;
+         const supportedDidMethods = issuerSupportedBindingMethods === null || issuerSupportedBindingMethods === void 0 ? void 0 : issuerSupportedBindingMethods.filter((method) => method.startsWith('did:'));
+-        const supportsJwk = (_d = issuerSupportedBindingMethods === null || issuerSupportedBindingMethods === void 0 ? void 0 : issuerSupportedBindingMethods.includes('jwk')) !== null && _d !== void 0 ? _d : false;
++        const supportsJwk = issuerSupportedBindingMethods?.includes('jwk') || issuerSupportedBindingMethods?.includes('cose_key') || false
+         return {
+             signatureAlgorithm,
+             supportedDidMethods,

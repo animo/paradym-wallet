@@ -148,7 +148,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdToRequest?: string
   clientId?: string
-  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocNamespaces: Array<string> }
+  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
@@ -206,13 +206,11 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
         : undefined
 
-      const shouldKeyBeHardwareBackedForMsoMdoc = false
-      //   offeredCredentialConfiguration?.format === "mso_mdoc" &&
-      //   pidSchemes?.msoMdocNamespaces.includes(
-      //     offeredCredentialConfiguration.namespace
-      //   );
+      const shouldKeyBeHardwareBackedForMsoMdoc =
+        offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
+        pidSchemes?.msoMdocDoctypes.includes(offeredCredentialConfiguration.doctype)
       const shouldKeyBeHardwareBackedForSdJwtVc =
-        offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
+        offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.SdJwtVc &&
         pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
 
       // TODO: add mso-mdoc config from above
@@ -250,15 +248,12 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         }
       }
 
-      if (credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc) {
-        return {
-          method: 'jwk',
-          jwk: getJwkFromKey(key),
-        }
-      }
-
-      // Otherwise we also support plain jwk for sd-jwt only
-      if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
+      // Otherwise we also support plain jwk for sd-jwt/mdoc only
+      if (
+        supportsJwk &&
+        (credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc ||
+          credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc)
+      ) {
         return {
           method: 'jwk',
           jwk: getJwkFromKey(key),
