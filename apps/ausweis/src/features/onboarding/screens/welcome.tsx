@@ -1,13 +1,15 @@
-import { Button, FlexPage, Heading, HeroIcons, Separator, XStack, YStack } from '@package/ui'
-import React from 'react'
+import { Button, FlexPage, Heading, Separator, XStack, YStack } from '@package/ui'
+import React, { useState } from 'react'
 import Animated, { FadingTransition } from 'react-native-reanimated'
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 export interface OnboardingWelcomeProps {
-  goToNextStep: () => void
+  goToNextStep: (selectedFlow: 'c' | 'bprime') => void
 }
 
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
+  const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
+
   return (
     <Animated.View style={{ flex: 1 }} layout={FadingTransition}>
       <FlexPage p={0} safeArea={false}>
@@ -32,10 +34,16 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </YStack>
           <YStack flex-1 />
           <XStack gap="$2" my="$6">
-            <Button.Outline p="$0" width="$buttonHeight">
-              <HeroIcons.GlobeAlt size={24} color="$grey-700" />
+            <Button.Outline
+              p="$0"
+              width="$buttonHeight"
+              onPress={() => setSelectedFlow((selectedFlow) => (selectedFlow === 'c' ? 'bprime' : 'c'))}
+            >
+              <Heading variant="h2" color={'$primary-500'} fontWeight={'bold'}>
+                {selectedFlow === 'c' ? 'C' : "B'"}
+              </Heading>
             </Button.Outline>
-            <Button.Solid flexGrow={1} onPress={goToNextStep}>
+            <Button.Solid flexGrow={1} onPress={() => goToNextStep(selectedFlow)}>
               Get Started
             </Button.Solid>
           </XStack>

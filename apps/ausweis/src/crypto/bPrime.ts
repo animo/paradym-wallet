@@ -8,8 +8,8 @@ import {
   TypedArrayEncoder,
   getJwkFromKey,
 } from '@credo-ts/core'
-import type { FullAppAgent } from '@package/agent/src'
 import { kdf } from '@package/secure-store/kdf'
+import type { FullAppAgent } from 'packages/agent/src'
 import { ausweisAes256Gcm } from './aes'
 
 /**

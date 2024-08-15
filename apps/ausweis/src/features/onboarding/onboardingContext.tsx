@@ -1,5 +1,6 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@ausweis/agent'
+import { ReceivePidUseCaseBPrimeFlow } from '@ausweis/use-cases/ReceivePidUseCaseBPrimeFlow'
 import {
   type CardScanningErrorDetails,
   ReceivePidUseCaseCFlow,
@@ -22,7 +23,6 @@ import { OnboardingIdCardStartScan } from './screens/id-card-start-scan'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
-import { ReceivePidUseCaseBPrimeFlow } from '@ausweis/use-cases/ReceivePidUseCaseBPrimeFlow'
 
 type Page =
   | { type: 'fullscreen' }
@@ -35,7 +35,7 @@ type Page =
 
 // Same animation key means the content won't fade out and then in again. So if the two screens have most content in common
 // this looks nicer.
-const onboardingStepsCFlow = [
+const onboardingSteps = [
   {
     step: 'welcome',
     progress: 0,
@@ -147,7 +147,7 @@ const onboardingStepsCFlow = [
   Screen: React.FunctionComponent<any>
 }>
 
-export type OnboardingSteps = typeof onboardingStepsCFlow
+export type OnboardingSteps = typeof onboardingSteps
 export type OnboardingStep = OnboardingSteps[number]
 
 export type OnboardingContext = {
@@ -164,15 +164,16 @@ export function OnboardingContextProvider({
   children,
 }: PropsWithChildren<{
   initialStep?: OnboardingStep['step']
-  flow?: 'c' | 'bprime'
 }>) {
   const toast = useToastController()
   const secureUnlock = useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
 
+  const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
+
   const [walletPin, setWalletPin] = useState<string>()
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
@@ -189,12 +190,12 @@ export function OnboardingContextProvider({
     showScanModal: true,
   })
 
-  const currentStep = onboardingStepsCFlow.find((step) => step.step === currentStepName)
+  const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
 
   const goToNextStep = useCallback(() => {
-    const currentStepIndex = onboardingStepsCFlow.findIndex((step) => step.step === currentStepName)
-    const nextStep = onboardingStepsCFlow[currentStepIndex + 1]
+    const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
+    const nextStep = onboardingSteps[currentStepIndex + 1]
 
     if (nextStep) {
       setCurrentStepName(nextStep.step)
@@ -205,8 +206,8 @@ export function OnboardingContextProvider({
   }, [currentStepName, router])
 
   const goToPreviousStep = useCallback(() => {
-    const currentStepIndex = onboardingStepsCFlow.findIndex((step) => step.step === currentStepName)
-    const previousStep = onboardingStepsCFlow[currentStepIndex - 1]
+    const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
+    const previousStep = onboardingSteps[currentStepIndex - 1]
 
     if (previousStep) {
       setCurrentStepName(previousStep.step)
@@ -215,6 +216,12 @@ export function OnboardingContextProvider({
 
   const onPinEnter = async (pin: string) => {
     setWalletPin(pin)
+    goToNextStep()
+  }
+
+  const selectFlow = (flow: 'c' | 'bprime') => {
+    setSelectedFlow(flow)
+
     goToNextStep()
   }
 
@@ -343,26 +350,42 @@ export function OnboardingContextProvider({
     }
 
     if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {
-      return ReceivePidUseCaseCFlow.initialize({
-        agent: secureUnlock.context.agent,
-        onStateChange: setReceivePidUseCaseState,
-        onCardAttachedChanged: ({ isCardAttached }) =>
-          setIdCardScanningState((state) => ({
-            ...state,
-            isCardAttached,
-            state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
-          })),
-        onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
-        onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
-      })
-        .then((receivePidUseCase) => {
+      if (selectedFlow === 'c') {
+        return ReceivePidUseCaseCFlow.initialize({
+          agent: secureUnlock.context.agent,
+          onStateChange: setReceivePidUseCaseState,
+          onCardAttachedChanged: ({ isCardAttached }) =>
+            setIdCardScanningState((state) => ({
+              ...state,
+              isCardAttached,
+              state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
+            })),
+          onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
+          onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
+        }).then((receivePidUseCase) => {
           setReceivePidUseCase(receivePidUseCase)
           goToNextStep()
         })
-        .catch((e) => {
-          reset({ error: e, resetToStep: 'id-card-pin' })
-          throw e
+      }
+      if (selectedFlow === 'bprime') {
+        if (!walletPin) {
+          throw new Error('wallet Pin has not been setup!')
+        }
+        return ReceivePidUseCaseBPrimeFlow.initialize({
+          agent: secureUnlock.context.agent,
+          onStateChange: setReceivePidUseCaseState,
+          onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
+          pidPin: walletPin.split('').map(Number),
         })
+          .then((receivePidUseCase) => {
+            setReceivePidUseCase(receivePidUseCase)
+            goToNextStep()
+          })
+          .catch((e) => {
+            reset({ error: e, resetToStep: 'id-card-pin' })
+            throw e
+          })
+      }
     }
 
     goToNextStep()
@@ -380,8 +403,8 @@ export function OnboardingContextProvider({
   }) => {
     if (error) console.error(error)
 
-    const stepsToCompleteAfterReset = onboardingStepsCFlow
-      .slice(onboardingStepsCFlow.findIndex((step) => step.step === resetToStep))
+    const stepsToCompleteAfterReset = onboardingSteps
+      .slice(onboardingSteps.findIndex((step) => step.step === resetToStep))
       .map((step) => step.step)
 
     if (stepsToCompleteAfterReset.includes('pin')) {
@@ -510,7 +533,9 @@ export function OnboardingContextProvider({
   }
 
   let screen: React.JSX.Element
-  if (currentStep.step === 'pin' || currentStep.step === 'pin-reenter') {
+  if (currentStep.step === 'welcome') {
+    screen = <currentStep.Screen goToNextStep={selectFlow} />
+  } else if (currentStep.step === 'pin' || currentStep.step === 'pin-reenter') {
     screen = <currentStep.Screen key="pin-now" goToNextStep={currentStep.step === 'pin' ? onPinEnter : onPinReEnter} />
   } else if (currentStep.step === 'id-card-pin') {
     screen = <currentStep.Screen goToNextStep={onIdCardPinReEnter ?? onIdCardPinEnter} />
