@@ -29,5 +29,8 @@
 	},
 	"devDependencies": {
 		"@types/fast-text-encoding": "^1.0.3"
+	},
+	"peerDependencies": {
+		"expo": "*"
 	}
 }

@@ -20,6 +20,7 @@
 		"rxjs": "^7.8.1"
 	},
 	"peerDependencies": {
+		"expo": "*",
 		"@hyperledger/anoncreds-react-native": "*",
 		"@hyperledger/aries-askar-react-native": "*",
 		"@hyperledger/indy-vdr-react-native": "*"
