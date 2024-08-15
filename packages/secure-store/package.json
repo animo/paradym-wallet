@@ -5,7 +5,7 @@
 	"peerDependencies": {
 		"@hyperledger/aries-askar-react-native": "*",
 		"expo-secure-store": "~13.0.1",
-		"react-native": "0.74.2",
+		"react-native": "*",
 		"react-native-argon2": "^2.0.1",
 		"react-native-get-random-values": "~1.11.0",
 		"react-native-keychain": "^8.2.0"

@@ -12,6 +12,7 @@ import {
   IdentificationIcon,
   KeyIcon,
   LockClosedIcon,
+  QrCodeIcon,
   ShieldCheckIcon,
   StarIcon,
 } from 'react-native-heroicons/outline'
@@ -56,4 +57,5 @@ export const HeroIcons = {
   Backspace: wrapHeroIcon(BackspaceIcon),
   ExclamationCircle: wrapHeroIcon(ExclamationCircleIcon),
   CheckCircle: wrapHeroIcon(CheckCircleIcon),
+  Scan: wrapHeroIcon(QrCodeIcon),
 } as const

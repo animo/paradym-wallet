@@ -12,8 +12,8 @@ export function CredentialAttributes({ subject, disableHeader = false }: Credent
 
   return (
     <YStack g="md">
-      {tables.map((table) => (
-        <YStack key={table.depth} g="md" pt={table.parent ? 0 : '$2'}>
+      {tables.map((table, index) => (
+        <YStack key={`${table.parent}-${table.depth}-${table.title}-${index}`} g="md" pt={table.parent ? 0 : '$2'}>
           <XStack gap="$2">
             {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
             {(!disableHeader || table.title) && (

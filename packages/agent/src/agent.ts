@@ -76,7 +76,7 @@ export const initializeAusweisAgent = async ({
         keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
-      // logger: appLogger(LogLevel.debug),
+      logger: appLogger(LogLevel.debug),
     },
     modules: {
       ariesAskar: askarModule,
