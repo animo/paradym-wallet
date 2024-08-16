@@ -19,6 +19,7 @@ import type {
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
 import type { EitherAgent, FullAppAgent } from '../agent'
+import { Platform } from 'react-native'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -216,7 +217,12 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
 
       // TODO: add mso-mdoc config from above
-      const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
+      let shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
+
+      // FIXME: hardware key does not work on Android (key pubic bytes are wrong or something)
+      if (Platform.OS === 'android') {
+        shouldKeyBeHardwareBacked = false
+      }
 
       const key = await agent.wallet.createKey({
         keyType,
