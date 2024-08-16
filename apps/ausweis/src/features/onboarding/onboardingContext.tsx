@@ -13,6 +13,7 @@ import { capitalizeFirstLetter, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { Platform } from 'react-native'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
@@ -21,7 +22,6 @@ import { OnboardingIdCardStartScan } from './screens/id-card-start-scan'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
-import { Platform } from 'react-native'
 
 type Page =
   | { type: 'fullscreen' }

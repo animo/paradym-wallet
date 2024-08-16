@@ -1,5 +1,5 @@
-import { Button, Heading, Paragraph, Stack, YStack, XStack } from '../base'
 import { Sheet } from 'tamagui'
+import { Button, Heading, Paragraph, Stack, XStack, YStack } from '../base'
 import { AnimatedNfcScanIcon, ProgressBar } from '../content'
 
 interface NfcScannerModalAndroidProps {

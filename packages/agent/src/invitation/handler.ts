@@ -18,8 +18,8 @@ import type {
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
-import type { EitherAgent, FullAppAgent } from '../agent'
 import { Platform } from 'react-native'
+import type { EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
