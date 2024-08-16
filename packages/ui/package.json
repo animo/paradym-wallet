@@ -5,13 +5,13 @@
 	"main": "src/index.ts",
 	"module:jsx": "src",
 	"dependencies": {
-		"@tamagui/animations-react-native": "^1.108.0",
-		"@tamagui/font-inter": "^1.108.0",
-		"@tamagui/react-native-media-driver": "^1.108.0",
-		"@tamagui/shorthands": "^1.108.0",
-		"@tamagui/themes": "^1.108.0",
-		"@tamagui/toast": "^1.108.0",
+		"@tamagui/animations-react-native": "1.108.0",
+		"@tamagui/font-inter": "1.108.0",
+		"@tamagui/react-native-media-driver": "1.108.0",
+		"@tamagui/shorthands": "1.108.0",
+		"@tamagui/themes": "1.108.0",
+		"@tamagui/toast": "1.108.0",
 		"react-native-heroicons": "^4.0.0",
-		"tamagui": "^1.108.0"
+		"tamagui": "1.108.0"
 	}
 }
