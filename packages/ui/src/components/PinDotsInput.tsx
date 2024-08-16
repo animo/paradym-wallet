@@ -132,7 +132,10 @@ export const PinDotsInput = forwardRef(
           <Input
             ref={inputRef}
             value={pin}
-            borderWidth={0}
+            // borderWidth={0}
+            // Setting borderWidth to 0 makes it not work on Android (maybe it needs to be 'visible'?)
+            // So we set it to white, the same as the background
+            borderColor="white"
             zIndex={-10000}
             position="absolute"
             onBlur={() => inputRef.current?.focus()}

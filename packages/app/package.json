@@ -13,6 +13,7 @@
 		"@tamagui/colors": "^1.108.0",
 		"@tamagui/font-inter": "^1.108.0",
 		"@tamagui/lucide-icons": "^1.108.0",
+		"@tamagui/portal": "^1.108.3",
 		"@tamagui/shorthands": "^1.108.0",
 		"@tamagui/themes": "^1.108.0",
 		"@tanstack/react-query": "^4.33.0",

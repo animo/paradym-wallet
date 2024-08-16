@@ -33,7 +33,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           <YStack flex-1 />
           <XStack gap="$2" my="$6">
             <Button.Outline p="$0" width="$buttonHeight">
-              <HeroIcons.GlobeAlt size={24} />
+              <HeroIcons.GlobeAlt size={24} color="$grey-700" />
             </Button.Outline>
             <Button.Solid flexGrow={1} onPress={goToNextStep}>
               Get Started
