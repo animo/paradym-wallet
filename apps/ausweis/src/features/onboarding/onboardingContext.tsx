@@ -223,7 +223,7 @@ export function OnboardingContextProvider({
   useEffect(() => {
     if (secureUnlock.state !== 'acquired-wallet-key' || !agent) return
 
-    secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: false })
+    secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true })
   }, [secureUnlock, agent])
 
   const initializeAgent = useCallback(async (walletKey: string) => {
