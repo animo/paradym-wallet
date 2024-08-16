@@ -10,7 +10,11 @@ import {
   resolveOpenId4VciOffer,
 } from '@package/agent'
 
-export interface ReceivePidUseCaseOptions extends Pick<AusweisAuthFlowOptions, 'onInsertCard'> {
+export interface ReceivePidUseCaseOptions
+  extends Pick<
+    AusweisAuthFlowOptions,
+    'onAttachCard' | 'onRequestAccessRights' | 'onStatusProgress' | 'onCardAttachedChanged'
+  > {
   agent: AppAgent
   onStateChange?: (newState: ReceivePidUseCaseState) => void
   onEnterPin: (
@@ -19,6 +23,8 @@ export interface ReceivePidUseCaseOptions extends Pick<AusweisAuthFlowOptions, '
 }
 
 export type ReceivePidUseCaseState = 'id-card-auth' | 'acquire-access-token' | 'retrieve-credential' | 'error'
+
+export type CardScanningErrorDetails = Parameters<AusweisAuthFlowOptions['onError']>[0]
 
 export class ReceivePidUseCase {
   private options: ReceivePidUseCaseOptions
@@ -42,7 +48,7 @@ export class ReceivePidUseCase {
   private static CLIENT_ID = '7598ca4c-cc2e-4ff1-a4b4-ed58f249e274'
   private static REDIRECT_URI = 'https://funke.animo.id/redirect'
 
-  private errorCallbacks: AusweisAuthFlowOptions['onError'][] = [this.handleError]
+  private errorCallbacks: AusweisAuthFlowOptions['onError'][] = [(e) => this.handleError(e)]
   private successCallbacks: AusweisAuthFlowOptions['onSuccess'][] = [
     ({ refreshUrl }) => {
       this.refreshUrl = refreshUrl
@@ -78,7 +84,10 @@ export class ReceivePidUseCase {
           successCallback({ refreshUrl })
         }
       },
-      onInsertCard: () => this.options.onInsertCard?.(),
+      onCardAttachedChanged: (options) => this.options.onCardAttachedChanged?.(options),
+      debug: false,
+      onStatusProgress: (options) => this.options.onStatusProgress?.(options),
+      onAttachCard: () => this.options.onAttachCard?.(),
     })
     this.options.onStateChange?.('id-card-auth')
   }
@@ -100,6 +109,14 @@ export class ReceivePidUseCase {
     return new ReceivePidUseCase(options, resolved.resolvedAuthorizationRequest, resolved.resolvedCredentialOffer)
   }
 
+  public async cancelIdCardScanning() {
+    if (this.currentState !== 'id-card-auth' || !this.idCardAuthFlow.isActive) {
+      return
+    }
+
+    await this.idCardAuthFlow.cancel()
+  }
+
   public authenticateUsingIdCard() {
     if (this.idCardAuthFlow.isActive) {
       throw new Error('authentication flow already active')
@@ -114,7 +131,7 @@ export class ReceivePidUseCase {
     // We return an authentication promise to make it easier to track the state
     // We remove the callbacks once the error or success is triggered.
     const authenticationPromise = new Promise((resolve, reject) => {
-      const successCallback: AusweisAuthFlowOptions['onSuccess'] = ({ refreshUrl }) => {
+      const successCallback: AusweisAuthFlowOptions['onSuccess'] = () => {
         this.errorCallbacks = this.errorCallbacks.filter((c) => c === errorCallback)
         this.successCallbacks = this.successCallbacks.filter((c) => c === successCallback)
         resolve(null)
@@ -161,7 +178,7 @@ export class ReceivePidUseCase {
 
       return credentialRecord
     } catch (error) {
-      this.handleError()
+      this.handleError(error)
       throw error
     }
   }
@@ -176,14 +193,14 @@ export class ReceivePidUseCase {
 
       const authorizationCodeResponse = await fetch(this.refreshUrl)
       if (!authorizationCodeResponse.ok) {
-        this.handleError()
+        this.handleError('Did not receive valid response for authorization code redirect')
         return
       }
 
       const authorizationCode = new URL(authorizationCodeResponse.url).searchParams.get('code')
 
       if (!authorizationCode) {
-        this.handleError()
+        this.handleError('Missing authorization code')
         return
       }
 
@@ -201,7 +218,7 @@ export class ReceivePidUseCase {
         newState: 'retrieve-credential',
       })
     } catch (error) {
-      this.handleError()
+      this.handleError(error)
       throw error
     }
   }
@@ -223,8 +240,9 @@ export class ReceivePidUseCase {
     }
   }
 
-  private handleError() {
+  private handleError(error: unknown) {
     this.currentState = 'error'
+    console.error(error)
 
     this.options.onStateChange?.('error')
   }
