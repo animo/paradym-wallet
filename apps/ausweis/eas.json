@@ -35,7 +35,7 @@
 		"production": {
 			"ios": {
 				"companyName": "Animo Solutions",
-				"ascAppId": "6449846111"
+				"ascAppId": "6636489314"
 			},
 			"android": {
 				"track": "alpha"
@@ -44,7 +44,7 @@
 		"preview": {
 			"ios": {
 				"companyName": "Animo Solutions",
-				"ascAppId": "6449938864"
+				"ascAppId": "6636489314"
 			},
 			"android": {
 				"track": "internal"
