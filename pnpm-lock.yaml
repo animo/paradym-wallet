@@ -24,7 +24,7 @@ overrides:
   '@credo-ts/react-hooks': 0.6.1
   '@credo-ts/react-native': 0.5.10
   '@animo-id/expo-secure-environment': 0.1.0-alpha.2
-  '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.7
+  '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.9
   react-native: 0.74.5
 
 patchedDependencies:
@@ -55,8 +55,8 @@ importers:
   apps/ausweis:
     dependencies:
       '@animo-id/expo-ausweis-sdk':
-        specifier: 0.0.1-alpha.7
-        version: 0.0.1-alpha.7(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+        specifier: 0.0.1-alpha.9
+        version: 0.0.1-alpha.9(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@animo-id/expo-secure-environment':
         specifier: 0.1.0-alpha.2
         version: 0.1.0-alpha.2(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -200,7 +200,7 @@ importers:
         specifier: ^7.24.4
         version: 7.25.2
       '@tamagui/babel-plugin':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       expo-build-properties:
         specifier: ^0.12.5
@@ -327,7 +327,7 @@ importers:
         specifier: ^7.24.4
         version: 7.25.2
       '@tamagui/babel-plugin':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       typescript:
         specifier: ~5.3.3
@@ -481,7 +481,7 @@ importers:
         specifier: ^7.6.18
         version: 7.6.20(@babel/core@7.25.2)(@swc/core@1.7.3(@swc/helpers@0.5.12))(@swc/helpers@0.5.12)(esbuild@0.18.20)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(type-fest@3.13.1)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)
       '@tamagui/babel-plugin':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       '@types/react':
         specifier: ~18.2.79
@@ -502,7 +502,7 @@ importers:
         specifier: ^7.6.18
         version: 7.6.20
       tamagui-loader:
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)(webpack@5.93.0(@swc/core@1.7.3(@swc/helpers@0.5.12))(esbuild@0.18.20))
       typescript:
         specifier: ~5.3.3
@@ -583,22 +583,25 @@ importers:
         specifier: 11.3.1
         version: 11.3.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))
       '@tamagui/animations-react-native':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       '@tamagui/colors':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0
       '@tamagui/font-inter':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       '@tamagui/lucide-icons':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react-native-svg@15.2.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react@18.2.0)
+      '@tamagui/portal':
+        specifier: 1.108.0
+        version: 1.108.0(react@18.2.0)
       '@tamagui/shorthands':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0
       '@tamagui/themes':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       '@tanstack/react-query':
         specifier: ^4.33.0
@@ -684,28 +687,28 @@ importers:
   packages/ui:
     dependencies:
       '@tamagui/animations-react-native':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       '@tamagui/font-inter':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       '@tamagui/react-native-media-driver':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@tamagui/shorthands':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0
       '@tamagui/themes':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       '@tamagui/toast':
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(react@18.2.0)
       react-native-heroicons:
         specifier: ^4.0.0
         version: 4.0.0(react-native-svg@15.2.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       tamagui:
-        specifier: ^1.108.0
+        specifier: 1.108.0
         version: 1.108.0(@types/react@18.2.79)(react-dom@18.3.1(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
 
   packages/utils: {}
@@ -716,8 +719,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.7':
-    resolution: {integrity: sha512-XmNBp3Ivr0ct02SCBYaKnuD2o+Xm02YMNLR+V0CLRAmUTpaeI8YlvMhmFQxAQ/HZttfWCWSRGdir9HLWeWPSfw==}
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.9':
+    resolution: {integrity: sha512-memipHjBzAm9RvVB4MYBBZpkGM9mzBasoXD6Pl47LF6n1lbsV1uIUCFiTIeEYYa3Y3hpIRfkeOLnxIbpd+XRKg==}
     peerDependencies:
       expo: '*'
       react: 18.2.0
@@ -3121,9 +3124,6 @@ packages:
 
   '@react-native/normalize-colors@0.74.85':
     resolution: {integrity: sha512-pcE4i0X7y3hsAE0SpIl7t6dUc0B0NZLd1yv7ssm4FrLhWG+CGyIq4eFDXpmPU1XHmL5PPySxTAjEMiwv6tAmOw==}
-
-  '@react-native/normalize-colors@0.74.86':
-    resolution: {integrity: sha512-GGA+nhwrQ1umwnkv7tuGbGIk0oBTeNbG4cUxNQX/CbYW0R98RCNxSbXjfw1XnXZd3lCSFLDxzw154V4hum2pNQ==}
 
   '@react-native/normalize-colors@0.74.87':
     resolution: {integrity: sha512-Xh7Nyk/MPefkb0Itl5Z+3oOobeG9lfLb7ZOY2DKpFnoCE1TzBmib9vMNdFaLdSxLIP+Ec6icgKtdzYg8QUPYzA==}
@@ -9576,7 +9576,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.7(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.9(expo@51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@expo/config-plugins': 8.0.8
       expo: 51.0.23(@babel/core@7.25.2)(@babel/preset-env@7.25.2(@babel/core@7.25.2))
@@ -12822,8 +12822,6 @@ snapshots:
   '@react-native/normalize-colors@0.74.84': {}
 
   '@react-native/normalize-colors@0.74.85': {}
-
-  '@react-native/normalize-colors@0.74.86': {}
 
   '@react-native/normalize-colors@0.74.87': {}
 
@@ -19581,7 +19579,7 @@ snapshots:
   react-native-web@0.19.12(react-dom@18.3.1(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.25.0
-      '@react-native/normalize-colors': 0.74.86
+      '@react-native/normalize-colors': 0.74.87
       fbjs: 3.0.5
       inline-style-prefixer: 6.0.4
       memoize-one: 6.0.0

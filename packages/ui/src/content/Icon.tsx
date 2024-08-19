@@ -7,14 +7,18 @@ import {
   ArrowRightIcon,
   BackspaceIcon,
   CheckCircleIcon,
+  CreditCardIcon,
+  DevicePhoneMobileIcon,
   ExclamationCircleIcon,
   GlobeAltIcon,
+  HandRaisedIcon,
   IdentificationIcon,
   KeyIcon,
   LockClosedIcon,
   QrCodeIcon,
   ShieldCheckIcon,
   StarIcon,
+  XCircleIcon,
 } from 'react-native-heroicons/outline'
 import { styled } from 'tamagui'
 
@@ -58,4 +62,8 @@ export const HeroIcons = {
   ExclamationCircle: wrapHeroIcon(ExclamationCircleIcon),
   CheckCircle: wrapHeroIcon(CheckCircleIcon),
   Scan: wrapHeroIcon(QrCodeIcon),
+  CreditCard: wrapHeroIcon(CreditCardIcon),
+  DevicePhoneMobile: wrapHeroIcon(DevicePhoneMobileIcon),
+  HandRaised: wrapHeroIcon(HandRaisedIcon),
+  XCircle: wrapHeroIcon(XCircleIcon),
 } as const

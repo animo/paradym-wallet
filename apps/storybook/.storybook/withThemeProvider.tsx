@@ -2,16 +2,16 @@ import { TamaguiProvider } from '@package/ui'
 import type { Decorator } from '@storybook/react'
 import React from 'react'
 
-import funkeConfig from '../../funke/tamagui.config'
+import ausweisConfig from '../../ausweis/tamagui.config'
 import paradymConfig from '../../paradym/tamagui.config'
 
 const configs = {
-  funke: funkeConfig,
+  ausweis: ausweisConfig,
   paradym: paradymConfig,
 }
 
 const withThemeProvider: Decorator = (Story, context) => {
-  const configName = context.parameters.theme ?? 'funke'
+  const configName = context.parameters.theme ?? 'ausweis'
 
   const config = configs[configName]
   if (!config)

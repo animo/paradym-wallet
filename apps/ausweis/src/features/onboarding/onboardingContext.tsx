@@ -1,6 +1,7 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@ausweis/agent'
 import {
+  type CardScanningErrorDetails,
   ReceivePidUseCase,
   type ReceivePidUseCaseOptions,
   type ReceivePidUseCaseState,
@@ -8,10 +9,11 @@ import {
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { storeCredential } from '@package/agent'
 import { useToastController } from '@package/ui'
-import { capitalizeFirstLetter } from '@package/utils'
+import { capitalizeFirstLetter, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { Platform } from 'react-native'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
@@ -98,7 +100,10 @@ const onboardingStepsCFlow = [
     progress: 66,
     page: {
       type: 'content',
-      title: 'Place your eID card at the top of you phone.',
+      title:
+        Platform.OS === 'android'
+          ? 'Place your eID card at the back of your phone'
+          : 'Place your eID card at the top of you phone.',
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardStartScan,
@@ -171,6 +176,17 @@ export function OnboardingContextProvider({
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
   const [agent, setAgent] = useState<AppAgent>()
+  const [idCardScanningState, setIdCardScanningState] = useState<{
+    showScanModal: boolean
+    isCardAttached?: boolean
+    progress: number
+    state: 'readyToScan' | 'scanning' | 'complete' | 'error'
+  }>({
+    isCardAttached: undefined,
+    progress: 0,
+    state: 'readyToScan',
+    showScanModal: true,
+  })
 
   const currentStep = onboardingStepsCFlow.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
@@ -248,25 +264,56 @@ export function OnboardingContextProvider({
     (options) => {
       if (!idCardPin) {
         // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
-        sendCommand({ cmd: 'INTERRUPT' })
+        if (Platform.OS === 'ios') sendCommand({ cmd: 'INTERRUPT' })
+
+        setIdCardScanningState((state) => ({
+          ...state,
+          progress: 0,
+          state: 'error',
+          showScanModal: true,
+          isCardAttached: undefined,
+        }))
 
         // Ask user for PIN:
         return new Promise<string>((resolve) => {
           setOnIdCardPinReEnter(() => {
             return async (idCardPin: string) => {
+              setIdCardScanningState((state) => ({
+                ...state,
+                showScanModal: true,
+              }))
               setCurrentStepName('id-card-scan')
               // UI blocks if we immediately resolve the PIN, we first want to make sure we navigate to the id-card-scan page again
               setTimeout(() => resolve(idCardPin), 100)
               setOnIdCardPinReEnter(undefined)
             }
           })
-          // If we don't wait for a bit, it will render the keyboard and the nfc modal at the same time...
-          setTimeout(() => {
+
+          let promise: Promise<void>
+          // On android we have a custom modal, so we can keep the timeout shorten, but we do want to show the error modal for a bit.
+          if (Platform.OS === 'android') {
+            promise = sleep(1000).then(async () => {
+              setIdCardScanningState((state) => ({
+                ...state,
+                state: 'readyToScan',
+                showScanModal: false,
+              }))
+
+              await sleep(500)
+            })
+          }
+          // on iOS we need to wait 3 seconds for the NFC modal to close, as otherwise it will render the keyboard and the nfc modal at the same time...
+          else {
+            promise = sleep(3000)
+          }
+
+          // Navigate to the id-card-pin and show a toast
+          promise.then(() => {
+            setCurrentStepName('id-card-pin')
             toast.show('Invalid PIN entered for eID Card. Please try again', {
               customData: { preset: 'danger' },
             })
-            setCurrentStepName('id-card-pin')
-          }, 3000)
+          })
         })
       }
 
@@ -298,6 +345,13 @@ export function OnboardingContextProvider({
       return ReceivePidUseCase.initialize({
         agent: secureUnlock.context.agent,
         onStateChange: setReceivePidUseCaseState,
+        onCardAttachedChanged: ({ isCardAttached }) =>
+          setIdCardScanningState((state) => ({
+            ...state,
+            isCardAttached,
+            state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
+          })),
+        onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
         onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
       })
         .then((receivePidUseCase) => {
@@ -317,9 +371,11 @@ export function OnboardingContextProvider({
   const reset = ({
     resetToStep = 'welcome',
     error,
+    showToast = true,
   }: {
     error?: unknown
     resetToStep: OnboardingStep['step']
+    showToast?: boolean
   }) => {
     if (error) console.error(error)
 
@@ -335,28 +391,35 @@ export function OnboardingContextProvider({
 
     // Reset eID Card state
     if (stepsToCompleteAfterReset.includes('id-card-pin')) {
-      // TODO: we need to be able to re-initialize the expo ausweis sdk
+      setIdCardPin(undefined)
       setReceivePidUseCaseState(undefined)
       setReceivePidUseCase(undefined)
+      setIdCardScanningState({
+        progress: 0,
+        state: 'readyToScan',
+        isCardAttached: undefined,
+        showScanModal: true,
+      })
       setOnIdCardPinReEnter(undefined)
     }
     if (stepsToCompleteAfterReset.includes('id-card-fetch')) {
       setUserName(undefined)
     }
     if (stepsToCompleteAfterReset.includes('id-card-pin')) {
-      setIdCardPin(undefined)
     }
 
     // TODO: if we already have the agent, we should either remove the wallet and start again,
     // or we need to start from the id card flow
     setCurrentStepName(resetToStep)
 
-    toast.show('Error occurred during onboarding', {
-      message: 'Please try again.',
-      customData: {
-        preset: 'danger',
-      },
-    })
+    if (showToast) {
+      toast.show('Error occurred during onboarding', {
+        message: 'Please try again.',
+        customData: {
+          preset: 'danger',
+        },
+      })
+    }
   }
 
   const onStartScanning = async () => {
@@ -377,37 +440,69 @@ export function OnboardingContextProvider({
       return
     }
 
+    goToNextStep()
+
+    // Authenticate
     try {
-      goToNextStep()
-      // Authenticate
       await receivePidUseCase.authenticateUsingIdCard()
+    } catch (error) {
+      setIdCardScanningState((state) => ({
+        ...state,
+        state: 'error',
+      }))
+      await sleep(500)
+      setIdCardScanningState((state) => ({
+        ...state,
+        showScanModal: false,
+      }))
+      await sleep(500)
 
-      // The modal on iOS is so slooooooow.
-      // TODO: we probably don't need this on Android
-      setTimeout(async () => {
-        try {
-          setCurrentStepName('id-card-fetch')
+      const reason = (error as CardScanningErrorDetails).reason
+      if (reason === 'user_cancelled' || reason === 'cancelled') {
+        reset({
+          resetToStep: 'id-card-pin',
+          error,
+          showToast: false,
+        })
+        toast.show('eID card scanning cancelled', {
+          message: 'Please try again.',
+          customData: {
+            preset: 'danger',
+          },
+        })
+      } else {
+        reset({ resetToStep: 'id-card-pin', error })
+      }
 
-          // Acquire access token
-          await receivePidUseCase.acquireAccessToken()
+      return
+    }
 
-          // Retrieve Credential
-          const credential = await receivePidUseCase.retrieveCredential()
-          await storeCredential(secureUnlock.context.agent, credential)
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<
-            SdJwtVcHeader,
-            { given_name: string; family_name: string }
-          >(credential.compactSdJwtVc)
-          setUserName(
-            `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
-              parsed.prettyClaims.family_name.toLowerCase()
-            )}`
-          )
-          setCurrentStepName('id-card-complete')
-        } catch (error) {
-          reset({ resetToStep: 'id-card-pin', error })
-        }
-      }, 2000)
+    try {
+      setIdCardScanningState((state) => ({ ...state, state: 'complete', progress: 100 }))
+
+      // on iOS it takes around two seconds for the modal to close. On Android we wait 1 second
+      // and then close the modal
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setIdCardScanningState((state) => ({ ...state, showScanModal: false }))
+      await new Promise((resolve) => setTimeout(resolve, Platform.OS === 'android' ? 500 : 1000))
+      setCurrentStepName('id-card-fetch')
+
+      // Acquire access token
+      await receivePidUseCase.acquireAccessToken()
+
+      // Retrieve Credential
+      const credential = await receivePidUseCase.retrieveCredential()
+      await storeCredential(secureUnlock.context.agent, credential)
+      const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<
+        SdJwtVcHeader,
+        { given_name: string; family_name: string }
+      >(credential.compactSdJwtVc)
+      setUserName(
+        `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
+          parsed.prettyClaims.family_name.toLowerCase()
+        )}`
+      )
+      setCurrentStepName('id-card-complete')
     } catch (error) {
       reset({ resetToStep: 'id-card-pin', error })
     }
@@ -422,6 +517,18 @@ export function OnboardingContextProvider({
     screen = <currentStep.Screen goToNextStep={onStartScanning} />
   } else if (currentStep.step === 'id-card-complete') {
     screen = <currentStep.Screen goToNextStep={goToNextStep} userName={userName} />
+  } else if (currentStep.step === 'id-card-scan') {
+    screen = (
+      <currentStep.Screen
+        progress={idCardScanningState.progress}
+        scanningState={idCardScanningState.state}
+        isCardAttached={idCardScanningState.isCardAttached}
+        onCancel={() => {
+          receivePidUseCase?.cancelIdCardScanning()
+        }}
+        showScanModal={idCardScanningState.showScanModal ?? true}
+      />
+    )
   } else {
     screen = <currentStep.Screen goToNextStep={goToNextStep} />
   }
