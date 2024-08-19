@@ -117,7 +117,7 @@ const config = {
   },
   extra: {
     eas: {
-      projectId: 'todo',
+      projectId: '28b058bb-3c4b-4347-8e72-41dfc1dd99eb',
     },
   },
 }
