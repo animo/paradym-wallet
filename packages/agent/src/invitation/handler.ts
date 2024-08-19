@@ -296,12 +296,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
 
       // TODO: add mso-mdoc config from above
-      let shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
-
-      // FIXME: hardware key does not work on Android (key pubic bytes are wrong or something)
-      if (Platform.OS === 'android') {
-        shouldKeyBeHardwareBacked = false
-      }
+      const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
 
       const key = await agent.wallet.createKey({
         keyType,
