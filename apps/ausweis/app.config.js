@@ -85,6 +85,8 @@ const config = {
     supportsTablet: false,
     bundleIdentifier: `id.animo.ausweis${variant.bundle}`,
     infoPlist: {
+      NSPhotoLibraryUsageDescription:
+        'Ausweis Wallet uses the camera to initiate receiving and sharing of credentials.',
       NSCameraUsageDescription: 'Ausweis Wallet uses the camera to initiate receiving and sharing of credentials.',
       NSFaceIDUsageDescription: 'Ausweis Wallet uses FaceID to securely unlock the wallet and share credentials.',
       ITSAppUsesNonExemptEncryption: false,
