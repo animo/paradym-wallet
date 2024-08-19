@@ -1,16 +1,19 @@
 import { AusweisAuthFlow, type AusweisAuthFlowOptions } from '@animo-id/expo-ausweis-sdk'
 import type { AppAgent } from '@ausweis/agent'
 import { pidSchemes } from '@ausweis/constants'
+import { createPinDerivedEphKeyPop, deriveKeypairFromPin } from '@ausweis/crypto/bPrime'
+import { Key, KeyType } from '@credo-ts/core'
 import {
+  type FullAppAgent,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
   acquireAccessToken,
-  receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
 } from '@package/agent'
+import { receiveCredentialFromOpenId4VciOfferAuthenticatedChannel } from '@package/agent'
 
-export interface ReceivePidUseCaseOptions
+export interface ReceivePidUseCaseBPrimeOptions
   extends Pick<
     AusweisAuthFlowOptions,
     'onAttachCard' | 'onRequestAccessRights' | 'onStatusProgress' | 'onCardAttachedChanged'
@@ -18,16 +21,17 @@ export interface ReceivePidUseCaseOptions
   agent: AppAgent
   onStateChange?: (newState: ReceivePidUseCaseState) => void
   onEnterPin: (
-    options: Parameters<AusweisAuthFlowOptions['onEnterPin']>[0] & { currentSessionPinAttempts: number }
+    options: Parameters<AusweisAuthFlowOptions['onEnterPin']>[0] & {
+      currentSessionPinAttempts: number
+    }
   ) => string | Promise<string>
+  pidPin: Array<number>
 }
 
 export type ReceivePidUseCaseState = 'id-card-auth' | 'acquire-access-token' | 'retrieve-credential' | 'error'
 
-export type CardScanningErrorDetails = Parameters<AusweisAuthFlowOptions['onError']>[0]
-
-export class ReceivePidUseCase {
-  private options: ReceivePidUseCaseOptions
+export class ReceivePidUseCaseBPrimeFlow {
+  private options: ReceivePidUseCaseBPrimeOptions
 
   private resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   private resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest
@@ -42,22 +46,25 @@ export class ReceivePidUseCase {
   }
 
   private static SD_JWT_VC_OFFER =
-    'openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fdemo.pid-issuer.bundesdruckerei.de%2Fc%22%2C%22credential_configuration_ids%22%3A%5B%22pid-sd-jwt%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%7D%7D%7D'
+    'openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fdemo.pid-issuer.bundesdruckerei.de%2Fb1%22%2C%22credential_configuration_ids%22%3A%5B%22pid-sd-jwt%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%7D%7D%7D'
   private static MDL_OFFER =
     'openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fdemo.pid-issuer.bundesdruckerei.de%2Fc%22%2C%22credential_configuration_ids%22%3A%5B%22pid-mso-mdoc%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%7D%7D%7D'
   private static CLIENT_ID = '7598ca4c-cc2e-4ff1-a4b4-ed58f249e274'
   private static REDIRECT_URI = 'https://funke.animo.id/redirect'
 
-  private errorCallbacks: AusweisAuthFlowOptions['onError'][] = [(e) => this.handleError(e)]
+  private errorCallbacks: AusweisAuthFlowOptions['onError'][] = [this.handleError]
   private successCallbacks: AusweisAuthFlowOptions['onSuccess'][] = [
     ({ refreshUrl }) => {
       this.refreshUrl = refreshUrl
-      this.assertState({ expectedState: 'id-card-auth', newState: 'acquire-access-token' })
+      this.assertState({
+        expectedState: 'id-card-auth',
+        newState: 'acquire-access-token',
+      })
     },
   ]
 
   private constructor(
-    options: ReceivePidUseCaseOptions,
+    options: ReceivePidUseCaseBPrimeOptions,
     resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest,
     resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   ) {
@@ -84,21 +91,18 @@ export class ReceivePidUseCase {
           successCallback({ refreshUrl })
         }
       },
-      onCardAttachedChanged: (options) => this.options.onCardAttachedChanged?.(options),
-      debug: false,
-      onStatusProgress: (options) => this.options.onStatusProgress?.(options),
       onAttachCard: () => this.options.onAttachCard?.(),
     })
     this.options.onStateChange?.('id-card-auth')
   }
 
-  public static async initialize(options: ReceivePidUseCaseOptions) {
+  public static async initialize(options: ReceivePidUseCaseBPrimeOptions) {
     const resolved = await resolveOpenId4VciOffer({
       agent: options.agent,
-      offer: { uri: ReceivePidUseCase.SD_JWT_VC_OFFER },
+      offer: { uri: ReceivePidUseCaseBPrimeFlow.SD_JWT_VC_OFFER },
       authorization: {
-        clientId: ReceivePidUseCase.CLIENT_ID,
-        redirectUri: ReceivePidUseCase.REDIRECT_URI,
+        clientId: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+        redirectUri: ReceivePidUseCaseBPrimeFlow.REDIRECT_URI,
       },
     })
 
@@ -106,15 +110,11 @@ export class ReceivePidUseCase {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
-    return new ReceivePidUseCase(options, resolved.resolvedAuthorizationRequest, resolved.resolvedCredentialOffer)
-  }
-
-  public async cancelIdCardScanning() {
-    if (this.currentState !== 'id-card-auth' || !this.idCardAuthFlow.isActive) {
-      return
-    }
-
-    await this.idCardAuthFlow.cancel()
+    return new ReceivePidUseCaseBPrimeFlow(
+      options,
+      resolved.resolvedAuthorizationRequest,
+      resolved.resolvedCredentialOffer
+    )
   }
 
   public authenticateUsingIdCard() {
@@ -131,7 +131,7 @@ export class ReceivePidUseCase {
     // We return an authentication promise to make it easier to track the state
     // We remove the callbacks once the error or success is triggered.
     const authenticationPromise = new Promise((resolve, reject) => {
-      const successCallback: AusweisAuthFlowOptions['onSuccess'] = () => {
+      const successCallback: AusweisAuthFlowOptions['onSuccess'] = ({ refreshUrl }) => {
         this.errorCallbacks = this.errorCallbacks.filter((c) => c === errorCallback)
         this.successCallbacks = this.successCallbacks.filter((c) => c === successCallback)
         resolve(null)
@@ -161,13 +161,29 @@ export class ReceivePidUseCase {
         throw new Error('Expected accessToken be defined in state retrieve-credential')
       }
 
+      // TODO: get the device key
+      const deviceKey = Key.fromPublicKey(new Uint8Array(), KeyType.P256)
+
+      const pinDerivedEph = await deriveKeypairFromPin(this.options.agent.context, this.options.pidPin)
+
+      // TODO: how do we get the audience?
+      const pinDerivedEphKeyPop = await createPinDerivedEphKeyPop(this.options.agent as unknown as FullAppAgent, {
+        aud: 'a',
+        pinDerivedEph,
+        deviceKey,
+        cNonce: 'a',
+      })
+
       const credentialConfigurationIdToRequest = this.resolvedCredentialOffer.offeredCredentials[0].id
-      const credentialRecord = await receiveCredentialFromOpenId4VciOffer({
+      const credentialRecord = await receiveCredentialFromOpenId4VciOfferAuthenticatedChannel({
+        pinDerivedEphKeyPop,
+        pinDerivedEph,
+        deviceKey,
         agent: this.options.agent,
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdToRequest,
-        clientId: ReceivePidUseCase.CLIENT_ID,
+        clientId: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
         pidSchemes,
       })
 
@@ -178,7 +194,7 @@ export class ReceivePidUseCase {
 
       return credentialRecord
     } catch (error) {
-      this.handleError(error)
+      this.handleError()
       throw error
     }
   }
@@ -193,14 +209,14 @@ export class ReceivePidUseCase {
 
       const authorizationCodeResponse = await fetch(this.refreshUrl)
       if (!authorizationCodeResponse.ok) {
-        this.handleError('Did not receive valid response for authorization code redirect')
+        this.handleError()
         return
       }
 
       const authorizationCode = new URL(authorizationCodeResponse.url).searchParams.get('code')
 
       if (!authorizationCode) {
-        this.handleError('Missing authorization code')
+        this.handleError()
         return
       }
 
@@ -218,17 +234,25 @@ export class ReceivePidUseCase {
         newState: 'retrieve-credential',
       })
     } catch (error) {
-      this.handleError(error)
+      this.handleError()
       throw error
     }
+  }
+
+  public async cancelIdCardScanning() {
+    if (this.currentState !== 'id-card-auth' || !this.idCardAuthFlow.isActive) {
+      return
+    }
+
+    await this.idCardAuthFlow.cancel()
   }
 
   private assertState({
     expectedState,
     newState,
   }: {
-    expectedState: ReceivePidUseCase['currentState']
-    newState?: ReceivePidUseCase['currentState']
+    expectedState: ReceivePidUseCaseBPrimeFlow['currentState']
+    newState?: ReceivePidUseCaseBPrimeFlow['currentState']
   }) {
     if (this.currentState !== expectedState) {
       throw new Error(`Expected state to be ${expectedState}. Found ${this.currentState}`)
@@ -240,9 +264,8 @@ export class ReceivePidUseCase {
     }
   }
 
-  private handleError(error: unknown) {
+  private handleError() {
     this.currentState = 'error'
-    console.error(error)
 
     this.options.onStateChange?.('error')
   }

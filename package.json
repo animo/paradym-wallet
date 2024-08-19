@@ -28,7 +28,6 @@
 			"typescript": "~5.3.3",
 			"@unimodules/react-native-adapter": "./noop",
 			"@unimodules/core": "./noop",
-
 			"@hyperledger/anoncreds-react-native": "^0.2.2",
 			"@hyperledger/aries-askar-react-native": "^0.2.3",
 			"@hyperledger/indy-vdr-react-native": "^0.2.0",
@@ -51,7 +50,8 @@
 		"patchedDependencies": {
 			"@credo-ts/openid4vc@0.5.10": "patches/@credo-ts__openid4vc@0.5.10.patch",
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch"
+			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch",
+			"@sphereon/oid4vci-client@0.16.1-next.3": "patches/@sphereon__oid4vci-client@0.16.1-next.3.patch"
 		}
 	}
 }

@@ -47,6 +47,7 @@ import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
+import type { AppAgent } from '@ausweis/agent'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 
 export async function resolveOpenId4VciOffer({
@@ -135,6 +136,84 @@ export async function acquireAccessToken({
   }
 
   return await agent.modules.openId4VcHolder.requestToken(tokenOptions)
+}
+
+export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
+  agent,
+  resolvedCredentialOffer,
+  credentialConfigurationIdToRequest,
+  accessToken,
+  clientId,
+  pidSchemes,
+  deviceKey,
+  pinDerivedEphKeyPop,
+  pinDerivedEph,
+}: {
+  agent: AppAgent
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  credentialConfigurationIdToRequest?: string
+  clientId?: string
+  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocNamespaces: Array<string> }
+  deviceKey: Key
+  pinDerivedEphKeyPop: string
+  pinDerivedEph: Key
+
+  // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
+  accessToken: OpenId4VciRequestTokenResponse
+}) => {
+  // By default request the first offered credential
+  // TODO: extract the first supported offered credential
+  const offeredCredentialToRequest = credentialConfigurationIdToRequest
+    ? resolvedCredentialOffer.offeredCredentials.find((offered) => offered.id === credentialConfigurationIdToRequest)
+    : resolvedCredentialOffer.offeredCredentials[0]
+  if (!offeredCredentialToRequest) {
+    throw new Error(
+      `Parameter 'credentialConfigurationIdToRequest' with value ${credentialConfigurationIdToRequest} is not a credential_configuration_id in the credential offer.`
+    )
+  }
+
+  // FIXME: return credential_supported entry for credential so it's easy to store metadata
+  const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+    resolvedCredentialOffer,
+    ...accessToken,
+    customFormat: 'seed_credential',
+    additionalCredentialRequestPayloadClaims: {
+      pin_derived_eph_key_pop: pinDerivedEphKeyPop,
+    },
+    additionalProofOfPossessionPayloadClaims: {
+      pin_derived_eph_pub: getJwkFromKey(pinDerivedEph).toJson(),
+    },
+
+    clientId,
+    credentialsToRequest: [offeredCredentialToRequest.id],
+    verifyCredentialStatus: false,
+    allowedProofOfPossessionSignatureAlgorithms: [
+      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
+      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
+      // will be used
+      JwaSignatureAlgorithm.EdDSA,
+      JwaSignatureAlgorithm.ES256,
+    ],
+    credentialBindingResolver: async ({ keyType, supportsJwk }) => {
+      if (!supportsJwk) {
+        throw Error('Issuer does not support JWK')
+      }
+
+      if (keyType !== KeyType.P256) {
+        throw new Error(`invalid key type used '${keyType}' and only  ${KeyType.P256} is allowed.`)
+      }
+      return {
+        method: 'jwk',
+        jwk: getJwkFromKey(deviceKey),
+      }
+    },
+  })
+
+  console.log('TODO: store seed credential')
+  console.log(JSON.stringify(credentials, null, 2))
+
+  const record: SdJwtVcRecord = new SdJwtVcRecord({ compactSdJwtVc: 'todo' })
+  return record
 }
 
 export const receiveCredentialFromOpenId4VciOffer = async ({

@@ -1,3 +1,91 @@
+diff --git a/build/openid4vc-holder/OpenId4VcHolderApi.js b/build/openid4vc-holder/OpenId4VcHolderApi.js
+index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..3ba413b3926c08b59b833e661c6c236d006bd984 100644
+--- a/build/openid4vc-holder/OpenId4VcHolderApi.js
++++ b/build/openid4vc-holder/OpenId4VcHolderApi.js
+@@ -140,7 +140,7 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
+      * @param options.tokenResponse Obtained through @see requestAccessToken
+      */
+     async requestCredentials(options) {
+-        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
++        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, customFormat } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
+         return this.openId4VciHolderService.acceptCredentialOffer(this.agentContext, {
+             resolvedCredentialOffer,
+             acceptCredentialOfferOptions: credentialRequestOptions,
+@@ -148,6 +148,9 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
+             cNonce,
+             dpop,
+             clientId,
++            additionalCredentialRequestPayloadClaims,
++            additionalProofOfPossessionPayloadClaims,
++            customFormat
+         });
+     }
+     /**
+diff --git a/build/openid4vc-holder/OpenId4VciHolderService.js b/build/openid4vc-holder/OpenId4VciHolderService.js
+index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..f2c47e0096fc9635e4c3a76fbbc24eaa2ae6fccb 100644
+--- a/build/openid4vc-holder/OpenId4VciHolderService.js
++++ b/build/openid4vc-holder/OpenId4VciHolderService.js
+@@ -187,7 +187,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+     }
+     async requestAccessToken(agentContext, options) {
+         var _a, _b, _c, _d;
+-        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code } = options;
++        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code, customFormat } = options;
+         const { metadata, credentialOfferRequestWithBaseUrl } = resolvedCredentialOffer;
+         // acquire the access token
+         let accessTokenResponse;
+@@ -228,7 +228,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+     }
+     async acceptCredentialOffer(agentContext, options) {
+         var _a, _b, _c, _d, _e, _f;
+-        const { resolvedCredentialOffer, acceptCredentialOfferOptions } = options;
++        const { resolvedCredentialOffer, acceptCredentialOfferOptions, customFormat, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims } = options;
+         const { metadata, version, offeredCredentialConfigurations } = resolvedCredentialOffer;
+         const { credentialsToRequest, credentialBindingResolver, verifyCredentialStatus } = acceptCredentialOfferOptions;
+         if ((credentialsToRequest === null || credentialsToRequest === void 0 ? void 0 : credentialsToRequest.length) === 0) {
+@@ -288,6 +288,9 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+             })
+                 .withEndpointMetadata(metadata)
+                 .withAlg(signatureAlgorithm);
++            if(additionalProofOfPossessionPayloadClaims !== null && additionalProofOfPossessionPayloadClaims !== void 0) {
++              proofOfPossessionBuilder.withJwt({header: {}, payload: additionalProofOfPossessionPayloadClaims })
++            }
+             // TODO: what if auth flow using did, and the did is different from client id. We now use the client_id
+             if (credentialBinding.method === 'did') {
+                 proofOfPossessionBuilder.withClientId((0, core_1.parseDid)(credentialBinding.didUrl).did).withKid(credentialBinding.didUrl);
+@@ -313,6 +316,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+                 .withVersion(version)
+                 .withCredentialEndpoint(metadata.credential_endpoint)
+                 .withToken(tokenResponse.access_token);
++            if(customFormat) { credentialRequestBuilder.withFormat(customFormat) }
+             const credentialRequestClient = credentialRequestBuilder.build();
+             const createDpopOpts = tokenResponse.dpop
+                 ? await this.getCreateDpopOptions(agentContext, metadata, {
+@@ -331,7 +335,8 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+             const credential = await this.handleCredentialResponse(agentContext, credentialResponse, {
+                 verifyCredentialStatus: verifyCredentialStatus !== null && verifyCredentialStatus !== void 0 ? verifyCredentialStatus : false,
+                 credentialIssuerMetadata: metadata.credentialIssuerMetadata,
+-                format: offeredCredentialConfiguration.format,
++                format: customFormat !== null && customFormat !== void 0 ? customFormat : offeredCredentialConfiguration.format,
++                additionalRequestClaims: additionalCredentialRequestPayloadClaims
+             });
+             this.logger.debug('Full credential', credential);
+             receivedCredentials.push(credential);
+diff --git a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
+index 157a48fc081a43127891fbbf272990f3b62c1a72..6584c09cc6c39566c8bf09c5bac54fd1a9f8bf4c 100644
+--- a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
++++ b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
+@@ -88,6 +88,10 @@ export interface OpenId4VciCredentialRequestOptions extends Omit<OpenId4VciAccep
+      * The client id used for authorization. Only required if authorization_code flow was used.
+      */
+     clientId?: string;
++
++    additionalProofOfPossessionPayloadClaims?: Record<string, unknown>
++    additionalCredentialRequestPayloadClaims?: Record<string, unknown>
++    customFormat?: string
+ }
+ /**
+  * Options that are used to accept a credential offer for both the pre-authorized code flow and authorization code flow.
 diff --git a/build/shared/issuerMetadataUtils.js b/build/shared/issuerMetadataUtils.js
 index fb5a81e3beb103d7e411a3d687290445a7bb2d20..eb14ae9ff380aaae2016f411a1eacec0bfdb8138 100644
 --- a/build/shared/issuerMetadataUtils.js

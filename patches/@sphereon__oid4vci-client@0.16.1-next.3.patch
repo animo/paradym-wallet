@@ -1,0 +1,58 @@
+diff --git a/dist/CredentialRequestClient.js b/dist/CredentialRequestClient.js
+index 616811cf81ab05139bab5a87e4e11ceb9beb821e..d7c2934bdf53e3601e43f6d6c24ca2c5ca0ef99b 100644
+--- a/dist/CredentialRequestClient.js
++++ b/dist/CredentialRequestClient.js
+@@ -53,7 +53,7 @@ class CredentialRequestClient {
+     }
+     acquireCredentialsUsingProof(opts) {
+         return __awaiter(this, void 0, void 0, function* () {
+-            const { credentialIdentifier, credentialTypes, proofInput, format, context, subjectIssuance } = opts;
++            const { credentialIdentifier, credentialTypes, proofInput, format, context, subjectIssuance, additionalRequestClaims } = opts;
+             const request = yield this.createCredentialRequest({
+                 proofInput,
+                 credentialTypes,
+@@ -62,6 +62,7 @@ class CredentialRequestClient {
+                 version: this.version(),
+                 credentialIdentifier,
+                 subjectIssuance,
++                additionalRequestClaims
+             });
+             return yield this.acquireCredentialsUsingRequest(request, opts.createDPoPOpts);
+         });
+@@ -137,7 +138,7 @@ class CredentialRequestClient {
+     createCredentialRequest(opts) {
+         return __awaiter(this, void 0, void 0, function* () {
+             var _a;
+-            const { proofInput, credentialIdentifier: credential_identifier } = opts;
++            const { proofInput, credentialIdentifier: credential_identifier, additionalRequestClaims } = opts;
+             const proof = yield buildProof(proofInput, opts);
+             if (credential_identifier) {
+                 if (opts.format || opts.credentialTypes || opts.context) {
+@@ -148,11 +149,10 @@ class CredentialRequestClient {
+                     proof,
+                 };
+             }
+-            const formatSelection = (_a = opts.format) !== null && _a !== void 0 ? _a : this.credentialRequestOpts.format;
+-            if (!formatSelection) {
++            const format = (_a = opts.format) !== null && _a !== void 0 ? _a : this.credentialRequestOpts.format;
++            if (!format) {
+                 throw Error(`Format of credential to be issued is missing`);
+             }
+-            const format = (0, oid4vci_common_1.getUniformFormat)(formatSelection);
+             const typesSelection = (opts === null || opts === void 0 ? void 0 : opts.credentialTypes) && (typeof opts.credentialTypes === 'string' || opts.credentialTypes.length > 0)
+                 ? opts.credentialTypes
+                 : this.credentialRequestOpts.credentialTypes;
+@@ -164,7 +164,12 @@ class CredentialRequestClient {
+                 throw Error(`Credential type(s) need to be provided`);
+             }
+             // TODO: we should move format specific logic
+-            if (format === 'jwt_vc_json' || format === 'jwt_vc') {
++            if(format === 'seed_credential') {
++              return Object.assign(additionalRequestClaims, {
++                format,
++                proof
++              })
++            } else if (format === 'jwt_vc_json' || format === 'jwt_vc') {
+                 return Object.assign({ credential_definition: {
+                         type: types,
+                     }, format,
