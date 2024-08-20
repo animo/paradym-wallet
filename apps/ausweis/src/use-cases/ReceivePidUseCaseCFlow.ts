@@ -248,7 +248,6 @@ export class ReceivePidUseCaseCFlow {
   private handleError(error: unknown) {
     this.currentState = 'error'
     console.error(error)
-
     this.options.onStateChange?.('error')
   }
 }

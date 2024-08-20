@@ -1,11 +1,10 @@
-import { Heading, HeroIcons, IdCard, Page, ScrollView, Spacer, Spinner, Stack, XStack, YStack } from '@package/ui'
+import { Heading, HeroIcons, IdCard, Page, ScrollView, Spacer, Spinner, XStack, YStack } from '@package/ui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
 import { usePidCredential } from '@ausweis/hooks'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import { capitalizeFirstLetter } from '@package/utils'
-import Reanimated from 'react-native-reanimated'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
 export function FunkeWalletScreen() {

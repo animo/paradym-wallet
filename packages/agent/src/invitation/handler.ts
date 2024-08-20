@@ -7,6 +7,7 @@ import type {
   KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
+  P256Jwk,
   ProofStateChangedEvent,
 } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
@@ -18,7 +19,6 @@ import type {
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
-import { Platform } from 'react-native'
 import type { EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
@@ -35,6 +35,7 @@ import {
   ProofState,
   SdJwtVcRecord,
   SdJwtVcRepository,
+  TypedArrayEncoder,
   V2OfferCredentialMessage,
   V2RequestPresentationMessage,
   W3cCredentialRecord,
@@ -47,7 +48,7 @@ import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
-import type { AppAgent } from '@ausweis/agent'
+import { deviceKeyPair } from '@ausweis/storage/pidPin'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 import { BiometricAuthenticationCancelledError } from './error'
 
@@ -55,10 +56,12 @@ export async function resolveOpenId4VciOffer({
   agent,
   offer,
   authorization,
+  customHeaders,
 }: {
   agent: EitherAgent
   offer: { data?: string; uri?: string }
   authorization?: { clientId: string; redirectUri: string }
+  customHeaders?: Record<string, unknown>
 }) {
   let offerUri = offer.uri
 
@@ -104,6 +107,7 @@ export async function resolveOpenId4VciOffer({
           scope: uniqueScopes,
           redirectUri: authorization.redirectUri,
           clientId: authorization.clientId,
+          customHeaders,
         }
       )
     }
@@ -115,14 +119,53 @@ export async function resolveOpenId4VciOffer({
   }
 }
 
+export async function popCallbackForBPrime(jwt: {
+  header: Record<string, unknown>
+  payload: Record<string, unknown>
+}) {
+  const header = {
+    ...jwt.header,
+    alg: 'ES256',
+  }
+
+  const payload = jwt.payload
+
+  const toBeSigned = `${TypedArrayEncoder.toBase64URL(
+    TypedArrayEncoder.fromString(JSON.stringify(header))
+  )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
+  const signature = new Uint8Array(30).fill(42)
+  const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
+  return jws
+}
+
+export function getCreateJwtCallbackForBPrime() {
+  return async (_jwtIssuer: unknown, jwt: { header: Record<string, unknown>; payload: Record<string, unknown> }) => {
+    const header = {
+      ...jwt.header,
+      alg: 'ES256',
+    }
+
+    const payload = jwt.payload
+
+    const toBeSigned = `${TypedArrayEncoder.toBase64URL(
+      TypedArrayEncoder.fromString(JSON.stringify(header))
+    )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
+    const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
+    const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
+    return jws
+  }
+}
+
 export async function acquireAccessToken({
   resolvedCredentialOffer,
   agent,
   resolvedAuthorizationRequest,
+  dPopKeyJwk,
 }: {
   agent: EitherAgent
   resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequestWithCode
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  dPopKeyJwk?: P256Jwk
 }) {
   let tokenOptions: OpenId4VciTokenRequestOptions = {
     resolvedCredentialOffer,
@@ -133,6 +176,8 @@ export async function acquireAccessToken({
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,
       code: resolvedAuthorizationRequest.code,
+      dPopKeyJwk,
+      getCreateJwtCallback: getCreateJwtCallbackForBPrime,
     }
   }
 
@@ -147,21 +192,19 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
   clientId,
   pidSchemes,
   deviceKey,
-  pinDerivedEphKeyPop,
-  pinDerivedEph,
+  customHeaders,
 }: {
-  agent: AppAgent
+  agent: FullAppAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdToRequest?: string
   clientId?: string
   pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocNamespaces: Array<string> }
   deviceKey: Key
-  pinDerivedEphKeyPop: string
-  pinDerivedEph: Key
+  customHeaders?: Record<string, unknown>
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
-}) => {
+}): Promise<string> => {
   // By default request the first offered credential
   // TODO: extract the first supported offered credential
   const offeredCredentialToRequest = credentialConfigurationIdToRequest
@@ -174,27 +217,16 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
   }
 
   // FIXME: return credential_supported entry for credential so it's easy to store metadata
-  const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+  const credentials = (await agent.modules.openId4VcHolder.requestCredentials({
     resolvedCredentialOffer,
     ...accessToken,
-    customFormat: 'seed_credential',
-    additionalCredentialRequestPayloadClaims: {
-      pin_derived_eph_key_pop: pinDerivedEphKeyPop,
-    },
-    additionalProofOfPossessionPayloadClaims: {
-      pin_derived_eph_pub: getJwkFromKey(pinDerivedEph).toJson(),
-    },
-
+    popCallback: popCallbackForBPrime,
+    getCreateJwtCallback: getCreateJwtCallbackForBPrime,
+    customBody: { format: 'jwt' },
     clientId,
     credentialsToRequest: [offeredCredentialToRequest.id],
     verifyCredentialStatus: false,
-    allowedProofOfPossessionSignatureAlgorithms: [
-      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
-      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
-      // will be used
-      JwaSignatureAlgorithm.EdDSA,
-      JwaSignatureAlgorithm.ES256,
-    ],
+    allowedProofOfPossessionSignatureAlgorithms: [JwaSignatureAlgorithm.EdDSA, JwaSignatureAlgorithm.ES256],
     credentialBindingResolver: async ({ keyType, supportsJwk }) => {
       if (!supportsJwk) {
         throw Error('Issuer does not support JWK')
@@ -208,13 +240,9 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
         jwk: getJwkFromKey(deviceKey),
       }
     },
-  })
+  })) as unknown as Array<string>
 
-  console.log('TODO: store seed credential')
-  console.log(JSON.stringify(credentials, null, 2))
-
-  const record: SdJwtVcRecord = new SdJwtVcRecord({ compactSdJwtVc: 'todo' })
-  return record
+  return credentials[0]
 }
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
