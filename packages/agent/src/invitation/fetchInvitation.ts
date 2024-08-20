@@ -1,9 +1,10 @@
-import type { ParseInvitationResult } from './parsers'
+import type { ParseInvitationResult, ParseInvitationResultError } from './parsers'
 
-const errorResponse = (message: string) => {
+const errorResponse = (error: ParseInvitationResultError, message: string) => {
   return {
     success: false,
-    error: message,
+    error,
+    message,
   } as const
 }
 
@@ -24,7 +25,7 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<ParseInvi
     })
     clearTimeout(timeout)
     if (!response.ok) {
-      return errorResponse('Unable to retrieve invitation.')
+      return errorResponse('retrieve_invitation_error', 'Unable to retrieve invitation.')
     }
 
     const contentType = response.headers.get('content-type')
@@ -36,14 +37,14 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<ParseInvi
     return handleTextResponse(text)
   } catch (error) {
     clearTimeout(timeout)
-    return errorResponse('Unable to retrieve invitation.')
+    return errorResponse('retrieve_invitation_error', 'Unable to retrieve invitation.')
   }
 }
 
 function handleJsonResponse(json: unknown): ParseInvitationResult {
   // We expect a JSON object
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
-    return errorResponse('Invitation not recognized.')
+    return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
   }
 
   if ('@type' in json) {
@@ -68,7 +69,7 @@ function handleJsonResponse(json: unknown): ParseInvitationResult {
     }
   }
 
-  return errorResponse('Invitation not recognized.')
+  return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
 }
 
 function handleTextResponse(text: string): ParseInvitationResult {
@@ -91,6 +92,6 @@ function handleTextResponse(text: string): ParseInvitationResult {
 
     // handel like above
   } catch (error) {
-    return errorResponse('Invitation not recognized.')
+    return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
   }
 }

@@ -5,9 +5,10 @@ import { formatCredentialSubject } from '../utils'
 type CredentialAttributesProps = {
   subject: Record<string, unknown>
   disableHeader?: boolean
+  headerTitle?: string
 }
 
-export function CredentialAttributes({ subject, disableHeader = false }: CredentialAttributesProps) {
+export function CredentialAttributes({ subject, disableHeader = false, headerTitle }: CredentialAttributesProps) {
   const tables = formatCredentialSubject(subject)
 
   return (
@@ -18,7 +19,7 @@ export function CredentialAttributes({ subject, disableHeader = false }: Credent
             {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
             {(!disableHeader || table.title) && (
               <Heading variant="h3" pl="$2" secondary>
-                {table.title ?? 'Credential information'}
+                {table.title ?? headerTitle ?? 'Credential information'}
               </Heading>
             )}
             {table.parent && (
@@ -35,7 +36,7 @@ export function CredentialAttributes({ subject, disableHeader = false }: Credent
               // however, we can't overlay a Tamagui Sheet over a modal screen
               // so we probably need a custom implementation for this.
               <TableRow
-                key={row.key}
+                key={row.key ?? (row.type === 'imageAndString' || row.type === 'string' ? row.value : row.image)}
                 attribute={row.key}
                 value={row.type === 'string' || row.type === 'imageAndString' ? row.value : undefined}
                 isLastRow={idx === table.rows.length - 1}

@@ -26,9 +26,11 @@ export const TableRow = ({ attribute, value, isLastRow, onPress, image }: TableR
     >
       <XStack f={1}>
         <YStack f={1} justifyContent="flex-start">
-          <Paragraph variant="text" secondary>
-            {attribute}
-          </Paragraph>
+          {attribute && (
+            <Paragraph variant="text" secondary>
+              {attribute}
+            </Paragraph>
+          )}
           {value && <Paragraph>{value}</Paragraph>}
           {/* Render image on the left if no value */}
           {!value && renderedImage}

@@ -49,6 +49,7 @@ import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import type { AppAgent } from '@ausweis/agent'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
+import { BiometricAuthenticationCancelledError } from './error'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -451,18 +452,27 @@ export const shareProof = async ({
     )
   )
 
-  const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
-    authorizationRequest,
-    presentationExchange: {
-      credentials,
-    },
-  })
+  try {
+    const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
+      authorizationRequest,
+      presentationExchange: {
+        credentials,
+      },
+    })
 
-  if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
-    throw new Error(`Error while accepting authorization request. ${result.serverResponse.body as string}`)
+    if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
+      throw new Error(`Error while accepting authorization request. ${result.serverResponse.body as string}`)
+    }
+
+    return result
+  } catch (error) {
+    // TODO: check message on Android
+    if (error instanceof Error && error.message.toLowerCase().includes('authentication canceled')) {
+      throw new BiometricAuthenticationCancelledError('Biometrics authentication cancelled')
+    }
+
+    throw error
   }
-
-  return result
 }
 
 export async function storeCredential(agent: EitherAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {

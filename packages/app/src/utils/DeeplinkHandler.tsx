@@ -41,7 +41,7 @@ export const DeeplinkHandler = ({ children }: DeeplinkHandlerProps) => {
       if (isRecognizedDeeplink) {
         void handleCredentialData(url).then((result) => {
           if (!result.success) {
-            toast.show(result.error)
+            toast.show(result.message)
           }
         })
       }

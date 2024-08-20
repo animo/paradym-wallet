@@ -15,9 +15,11 @@ import { Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons, Image } from '../content'
 
 export interface IdCardProps {
-  icon: keyof typeof iconMapping
+  icon: keyof typeof iconMapping | 'none'
   issuerImage: number
   userName?: string
+  hideUserName?: boolean
+  onPress?: () => void
 }
 
 const iconMapping = {
@@ -26,7 +28,7 @@ const iconMapping = {
   complete: <HeroIcons.ShieldCheck color="$white" />,
 } as const
 
-export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
+export function IdCard({ icon, issuerImage, userName, onPress, hideUserName }: IdCardProps) {
   const rotation = useSharedValue(0)
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -54,7 +56,7 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
   }, [icon, rotation])
 
   return (
-    <YStack gap="$6" p="$5" borderRadius="$8" overflow="hidden" borderColor="rgba(216, 218, 200, 1)">
+    <YStack gap="$6" p="$5" borderRadius="$8" overflow="hidden" borderColor="rgba(216, 218, 200, 1)" onPress={onPress}>
       <LinearGradient
         colors={['#EFE7DA', '#EDEEE6', '#E9EDEE', '#D4D6C0']}
         start={[0.98, 0.02]}
@@ -72,7 +74,7 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
         <YStack gap="$1">
           <Paragraph secondary>Personalausweis</Paragraph>
           <Paragraph size="$6" fontWeight="$regular">
-            {userName ?? '********'}
+            {hideUserName ? '********' : userName ?? ''}
           </Paragraph>
         </YStack>
         <Stack>
@@ -80,11 +82,15 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
         </Stack>
       </XStack>
       <XStack justifyContent="flex-end">
-        <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
-          <Circle size="$3" backgroundColor="$grey-700" opacity={0.4}>
-            {iconMapping[icon]}
-          </Circle>
-        </Animated.View>
+        {icon !== 'none' ? (
+          <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
+            <Circle size="$3" backgroundColor="$grey-700" opacity={0.4}>
+              {iconMapping[icon]}
+            </Circle>
+          </Animated.View>
+        ) : (
+          <Stack width="$3" height="$3" />
+        )}
       </XStack>
     </YStack>
   )

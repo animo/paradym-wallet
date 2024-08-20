@@ -4,7 +4,13 @@ export {
   OpenId4VciRequestTokenResponse,
 } from '@credo-ts/openid4vc'
 
-export { parseInvitationUrl, parseDidCommInvitation, InvitationQrTypes } from './parsers'
+export {
+  parseInvitationUrl,
+  parseDidCommInvitation,
+  InvitationQrTypes,
+  InvitationType,
+  ParseInvitationResultError,
+} from './parsers'
 export {
   receiveOutOfBandInvitation,
   receiveCredentialFromOpenId4VciOffer,
@@ -15,3 +21,4 @@ export {
   getCredentialsForProofRequest,
   shareProof,
 } from './handler'
+export * from './error'

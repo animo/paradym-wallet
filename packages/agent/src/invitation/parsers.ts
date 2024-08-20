@@ -5,6 +5,8 @@ import queryString from 'query-string'
 
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
+export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
+export type ParseInvitationResultError = 'invitation_not_recognized' | 'parse_error' | 'retrieve_invitation_error'
 export type ParseInvitationResult =
   | {
       success: true
@@ -12,11 +14,12 @@ export type ParseInvitationResult =
     }
   | {
       success: false
-      error: string
+      error: ParseInvitationResultError
+      message: string
     }
 
 export type ParsedInvitation = {
-  type: 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
+  type: InvitationType
   format: 'url' | 'parsed'
   data: string | Record<string, unknown>
 }
@@ -104,7 +107,8 @@ export async function parseDidCommInvitation(agent: FullAppAgent, invitation: st
   } catch (error) {
     return {
       success: false,
-      error: 'Failed to parse invitation.',
+      error: 'parsing_failed',
+      message: 'Failed to parse invitation.',
     } as const
   }
 }
@@ -151,6 +155,7 @@ export async function parseInvitationUrl(invitationUrl: string): Promise<ParseIn
 
   return {
     success: false,
-    error: 'Invitation not recognized.',
+    error: 'invitation_not_recognized',
+    message: 'Invitation not recognized.',
   }
 }

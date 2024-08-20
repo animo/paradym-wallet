@@ -56,7 +56,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
         secureTextEntry
       />
       <YStack gap="$4" flex-1>
-        <IdCard icon={isLoading ? 'loading' : 'locked'} issuerImage={germanIssuerImage} />
+        <IdCard hideUserName icon={isLoading ? 'loading' : 'locked'} issuerImage={germanIssuerImage} />
         <XStack gap="$3" justifyContent="center">
           {pinValues.map((digit, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
