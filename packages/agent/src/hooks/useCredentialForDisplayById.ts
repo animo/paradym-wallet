@@ -1,3 +1,4 @@
+import { useSeedCredentialPidData } from '@ausweis/storage'
 import { getCredentialForDisplay } from '../display'
 import { useSdJwtVcRecordById, useW3cCredentialRecordById } from '../providers'
 
@@ -12,6 +13,13 @@ export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId
   }
   if (credentialId.startsWith('sd-jwt-vc-')) {
     const c = useSdJwtVcRecordById(credentialId.replace('sd-jwt-vc-', ''))
+    if (!c) return null
+
+    return getCredentialForDisplay(c)
+  }
+
+  if (credentialId.startsWith('seed-credential')) {
+    const { seedCredential: c } = useSeedCredentialPidData()
     if (!c) return null
 
     return getCredentialForDisplay(c)

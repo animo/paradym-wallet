@@ -1,5 +1,27 @@
+diff --git a/dist/AuthorizationCodeClient.js b/dist/AuthorizationCodeClient.js
+index 99785e7f134743eeb8fd70a04d69ff1e4ea2bcda..824a2adf28901b58943afb82467284b79ccf3b23 100644
+--- a/dist/AuthorizationCodeClient.js
++++ b/dist/AuthorizationCodeClient.js
+@@ -70,7 +70,7 @@ function filterSupportedCredentials(credentialOffer, credentialsSupported) {
+         return Object.assign(Object.assign({}, entry[1]), { configuration_id: entry[0] });
+     });
+ }
+-const createAuthorizationRequestUrl = (_a) => __awaiter(void 0, [_a], void 0, function* ({ pkce, endpointMetadata, authorizationRequest, credentialOffer, credentialConfigurationSupported, clientId, version, }) {
++const createAuthorizationRequestUrl = (_a) => __awaiter(void 0, [_a], void 0, function* ({ pkce, endpointMetadata, authorizationRequest, credentialOffer, credentialConfigurationSupported, clientId, version, headers }) {
+     var _b, _c, _d, _e;
+     function removeDisplayAndValueTypes(obj) {
+         const newObj = Object.assign({}, obj);
+@@ -148,7 +148,7 @@ const createAuthorizationRequestUrl = (_a) => __awaiter(void 0, [_a], void 0, fu
+         const parResponse = yield (0, oid4vci_common_1.formPost)(parEndpoint, (0, oid4vci_common_1.convertJsonToURI)(queryObj, {
+             mode: oid4vci_common_1.JsonURIMode.X_FORM_WWW_URLENCODED,
+             uriTypeProperties: ['client_id', 'request_uri', 'redirect_uri', 'scope', 'authorization_details', 'issuer_state'],
+-        }), { contentType: 'application/x-www-form-urlencoded', accept: 'application/json' });
++        }), { contentType: 'application/x-www-form-urlencoded', accept: 'application/json', customHeaders: headers === null || headers === void 0 ? void 0 : headers });
+         if (parResponse.errorBody || !parResponse.successBody) {
+             if (parMode === oid4vci_common_1.PARMode.REQUIRE) {
+                 throw Error(`PAR error: ${parResponse.origResponse.statusText}`);
 diff --git a/dist/CredentialRequestClient.js b/dist/CredentialRequestClient.js
-index 616811cf81ab05139bab5a87e4e11ceb9beb821e..d7c2934bdf53e3601e43f6d6c24ca2c5ca0ef99b 100644
+index 616811cf81ab05139bab5a87e4e11ceb9beb821e..a0ea512c1e73b7ee66de25dc0f99b1631ed1bfb0 100644
 --- a/dist/CredentialRequestClient.js
 +++ b/dist/CredentialRequestClient.js
 @@ -53,7 +53,7 @@ class CredentialRequestClient {
@@ -7,18 +29,43 @@ index 616811cf81ab05139bab5a87e4e11ceb9beb821e..d7c2934bdf53e3601e43f6d6c24ca2c5
      acquireCredentialsUsingProof(opts) {
          return __awaiter(this, void 0, void 0, function* () {
 -            const { credentialIdentifier, credentialTypes, proofInput, format, context, subjectIssuance } = opts;
-+            const { credentialIdentifier, credentialTypes, proofInput, format, context, subjectIssuance, additionalRequestClaims } = opts;
++            const { credentialIdentifier, credentialTypes, proofInput, format, context, subjectIssuance, additionalRequestClaims, customBody } = opts;
              const request = yield this.createCredentialRequest({
                  proofInput,
                  credentialTypes,
-@@ -62,6 +62,7 @@ class CredentialRequestClient {
+@@ -62,11 +62,12 @@ class CredentialRequestClient {
                  version: this.version(),
                  credentialIdentifier,
                  subjectIssuance,
-+                additionalRequestClaims
++                additionalRequestClaims,
              });
-             return yield this.acquireCredentialsUsingRequest(request, opts.createDPoPOpts);
+-            return yield this.acquireCredentialsUsingRequest(request, opts.createDPoPOpts);
++            return yield this.acquireCredentialsUsingRequest(request, opts.createDPoPOpts, customBody);
          });
+     }
+-    acquireCredentialsUsingRequest(uniformRequest, createDPoPOpts) {
++    acquireCredentialsUsingRequest(uniformRequest, createDPoPOpts, customBody) {
+         return __awaiter(this, void 0, void 0, function* () {
+             var _a, _b;
+             if (this.version() < oid4vci_common_1.OpenId4VCIVersion.VER_1_0_13) {
+@@ -82,7 +83,7 @@ class CredentialRequestClient {
+             debug(`request\n: ${JSON.stringify(request, null, 2)}`);
+             const requestToken = this.credentialRequestOpts.token;
+             let dPoP = createDPoPOpts ? yield (0, oid4vc_common_1.createDPoP)((0, oid4vc_common_1.getCreateDPoPOptions)(createDPoPOpts, credentialEndpoint, { accessToken: requestToken })) : undefined;
+-            let response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(request), {
++            let response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(customBody === null || customBody === void 0 ?  request : customBody), {
+                 bearerToken: requestToken,
+                 customHeaders: Object.assign({}, (dPoP && { dpop: dPoP })),
+             }));
+@@ -91,7 +92,7 @@ class CredentialRequestClient {
+             if (retryWithNonce.ok && createDPoPOpts) {
+                 createDPoPOpts.jwtPayloadProps.nonce = retryWithNonce.dpopNonce;
+                 dPoP = yield (0, oid4vc_common_1.createDPoP)((0, oid4vc_common_1.getCreateDPoPOptions)(createDPoPOpts, credentialEndpoint, { accessToken: requestToken }));
+-                response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(request), {
++                response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(customBody === null || customBody === void 0 ? request : customBody), {
+                     bearerToken: requestToken,
+                     customHeaders: Object.assign({}, (createDPoPOpts && { dpop: dPoP })),
+                 }));
 @@ -137,7 +138,7 @@ class CredentialRequestClient {
      createCredentialRequest(opts) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -56,3 +103,15 @@ index 616811cf81ab05139bab5a87e4e11ceb9beb821e..d7c2934bdf53e3601e43f6d6c24ca2c5
                  return Object.assign({ credential_definition: {
                          type: types,
                      }, format,
+diff --git a/dist/OpenID4VCIClientV1_0_13.js b/dist/OpenID4VCIClientV1_0_13.js
+index cebfbfbc7d79673e9f6a0e4363aff135612d7e4d..7951dc566a54663a10767af5e1224b83c53c0ea6 100644
+--- a/dist/OpenID4VCIClientV1_0_13.js
++++ b/dist/OpenID4VCIClientV1_0_13.js
+@@ -128,6 +128,7 @@ class OpenID4VCIClientV1_0_13 {
+                     credentialOffer: this.credentialOffer,
+                     credentialConfigurationSupported: this.getCredentialsSupported(),
+                     version: this.version(),
++                    headers: opts === null || opts === void 0 ? void 0 : opts.headers
+                 });
+             }
+             return this._state.authorizationURL;

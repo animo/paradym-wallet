@@ -1,4 +1,4 @@
-import type { W3cCredentialRecord } from '@credo-ts/core'
+import { W3cCredentialRecord } from '@credo-ts/core'
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
@@ -7,6 +7,8 @@ import { ClaimFormat, Hasher, JsonTransformer, SdJwtVcRecord } from '@credo-ts/c
 import { getHostNameFromUrl, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
+import type { SeedCredentialPidData } from '@ausweis/storage'
+import { createFind } from 'rxjs/internal/operators/find'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
 
 type JffW3cCredentialJson = W3cCredentialJson & {
@@ -300,7 +302,7 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   }
 }
 
-export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
+export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord | SeedCredentialPidData) {
   if (credentialRecord instanceof SdJwtVcRecord) {
     // FIXME: we should probably add a decode method on the SdJwtVcRecord
     // as you now need the agent context to decode the sd-jwt vc, while that's
@@ -325,29 +327,37 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       attributes: filterAndMapSdJwtKeys(decodedPayload).visibleProperties,
     }
   }
-  const credential = JsonTransformer.toJSON(
-    credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
-      ? credentialRecord.credential.credential
-      : credentialRecord.credential
-  ) as W3cCredentialJson
+  if (credentialRecord instanceof W3cCredentialRecord) {
+    const credential = JsonTransformer.toJSON(
+      credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
+        ? credentialRecord.credential.credential
+        : credentialRecord.credential
+    ) as W3cCredentialJson
 
-  const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
-  const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
-  const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
+    const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+    const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
+    const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
 
-  // FIXME: support credential with multiple subjects
-  const credentialAttributes = Array.isArray(credential.credentialSubject)
-    ? credential.credentialSubject[0] ?? {}
-    : credential.credentialSubject
+    // FIXME: support credential with multiple subjects
+    const credentialAttributes = Array.isArray(credential.credentialSubject)
+      ? credential.credentialSubject[0] ?? {}
+      : credential.credentialSubject
+
+    return {
+      id: `w3c-credential-${credentialRecord.id}` satisfies CredentialForDisplayId,
+      createdAt: credentialRecord.createdAt,
+      display: {
+        ...credentialDisplay,
+        issuer: issuerDisplay,
+      },
+      credential,
+      attributes: credentialAttributes,
+    }
+  }
 
   return {
-    id: `w3c-credential-${credentialRecord.id}` satisfies CredentialForDisplayId,
-    createdAt: credentialRecord.createdAt,
-    display: {
-      ...credentialDisplay,
-      issuer: issuerDisplay,
-    },
-    credential,
-    attributes: credentialAttributes,
+    id: 'seed-credential',
+    createdAt: new Date(credentialRecord.iat * 1000),
+    attributes: credentialRecord.pid_data,
   }
 }

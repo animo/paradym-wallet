@@ -1,5 +1,5 @@
 diff --git a/build/openid4vc-holder/OpenId4VcHolderApi.js b/build/openid4vc-holder/OpenId4VcHolderApi.js
-index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..3ba413b3926c08b59b833e661c6c236d006bd984 100644
+index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..13bb4976cb804a6489809ad8c2362053c4a520e8 100644
 --- a/build/openid4vc-holder/OpenId4VcHolderApi.js
 +++ b/build/openid4vc-holder/OpenId4VcHolderApi.js
 @@ -140,7 +140,7 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
@@ -7,43 +7,99 @@ index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..3ba413b3926c08b59b833e661c6c236d
       */
      async requestCredentials(options) {
 -        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
-+        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, customFormat } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
++        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, customFormat, popCallback, getCreateJwtCallback,customBody } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
          return this.openId4VciHolderService.acceptCredentialOffer(this.agentContext, {
              resolvedCredentialOffer,
              acceptCredentialOfferOptions: credentialRequestOptions,
-@@ -148,6 +148,9 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
+@@ -148,6 +148,12 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
              cNonce,
              dpop,
              clientId,
 +            additionalCredentialRequestPayloadClaims,
 +            additionalProofOfPossessionPayloadClaims,
-+            customFormat
++            customFormat,
++            popCallback,
++            getCreateJwtCallback,
++            customBody
          });
      }
      /**
 diff --git a/build/openid4vc-holder/OpenId4VciHolderService.js b/build/openid4vc-holder/OpenId4VciHolderService.js
-index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..f2c47e0096fc9635e4c3a76fbbc24eaa2ae6fccb 100644
+index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..c00f9d5d3b69752c590ba303eac99ebed19a01ac 100644
 --- a/build/openid4vc-holder/OpenId4VciHolderService.js
 +++ b/build/openid4vc-holder/OpenId4VciHolderService.js
-@@ -187,7 +187,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -119,7 +119,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+         const authDetails = offeredCredentials
+             .map((credential) => this.getAuthDetailsFromOfferedCredential(credential, authDetailsLocation))
+             .filter((authDetail) => authDetail !== undefined);
+-        const { clientId, redirectUri, scope } = authCodeFlowOptions;
++        const { clientId, redirectUri, scope, customHeaders } = authCodeFlowOptions;
+         const vciClientState = {
+             state: {
+                 credentialOffer: resolvedCredentialOffer.credentialOfferRequestWithBaseUrl,
+@@ -144,6 +144,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+                 authorizationDetails: authDetails,
+                 parMode: oid4vci_common_1.PARMode.AUTO,
+             },
++            headers: customHeaders
+         });
+         return Object.assign(Object.assign({}, authCodeFlowOptions), { codeVerifier,
+             authorizationRequestUri });
+@@ -166,8 +167,12 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+             return undefined;
+         const alg = dpopSigningAlgValuesSupported.find((alg) => (0, core_1.getJwkClassFromJwaSignatureAlgorithm)(alg));
+         let jwk;
++        let getCreateJwtCallback = utils_1.getCreateJwtCallback;
+         if (resourceRequestOptions) {
+             jwk = resourceRequestOptions.jwk;
++            if(resourceRequestOptions.getCreateJwtCallback !== null && resourceRequestOptions.getCreateJwtCallback !== void 0) {
++              getCreateJwtCallback = resourceRequestOptions.getCreateJwtCallback;
++            }
+         }
+         else {
+             const JwkClass = alg ? (0, core_1.getJwkClassFromJwaSignatureAlgorithm)(alg) : undefined;
+@@ -181,20 +186,20 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+             jwtIssuer: { alg: alg, jwk: jwk.toJson() },
+             dPoPSigningAlgValuesSupported: dpopSigningAlgValuesSupported,
+             jwtPayloadProps: (_c = resourceRequestOptions === null || resourceRequestOptions === void 0 ? void 0 : resourceRequestOptions.jwtPayloadProps) !== null && _c !== void 0 ? _c : {},
+-            createJwtCallback: (0, utils_1.getCreateJwtCallback)(agentContext),
++            createJwtCallback: getCreateJwtCallback(agentContext),
+         };
+         return createDPoPOpts;
      }
      async requestAccessToken(agentContext, options) {
          var _a, _b, _c, _d;
 -        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code } = options;
-+        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code, customFormat } = options;
++        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code, customFormat, dPopKeyJwk, getCreateJwtCallback } = options;
          const { metadata, credentialOfferRequestWithBaseUrl } = resolvedCredentialOffer;
          // acquire the access token
          let accessTokenResponse;
-@@ -228,7 +228,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+         const accessTokenClient = new oid4vci_client_1.AccessTokenClient();
+-        const createDPoPOpts = await this.getCreateDpopOptions(agentContext, metadata);
+-        let dpopJwk;
+-        if (createDPoPOpts) {
++        const createDPoPOpts = await this.getCreateDpopOptions(agentContext, metadata, dPopKeyJwk === null || dPopKeyJwk === void 0 ? undefined : { jwk: dPopKeyJwk, getCreateJwtCallback });
++        let dpopJwk = dPopKeyJwk;
++        if ((dpopJwk == null || dpopJwk === void 0) && createDPoPOpts) {
+             if (!createDPoPOpts.jwtIssuer.jwk.kty) {
+                 throw new core_1.CredoError('Missing required key type (kty) in the jwk.');
+             }
+@@ -228,7 +233,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
      }
      async acceptCredentialOffer(agentContext, options) {
          var _a, _b, _c, _d, _e, _f;
 -        const { resolvedCredentialOffer, acceptCredentialOfferOptions } = options;
-+        const { resolvedCredentialOffer, acceptCredentialOfferOptions, customFormat, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims } = options;
++        const { resolvedCredentialOffer, acceptCredentialOfferOptions, customFormat, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, getCreateJwtCallback, popCallback, customBody } = options;
          const { metadata, version, offeredCredentialConfigurations } = resolvedCredentialOffer;
          const { credentialsToRequest, credentialBindingResolver, verifyCredentialStatus } = acceptCredentialOfferOptions;
          if ((credentialsToRequest === null || credentialsToRequest === void 0 ? void 0 : credentialsToRequest.length) === 0) {
-@@ -288,6 +288,9 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -283,11 +288,14 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+             // Create the proof of possession
+             const proofOfPossessionBuilder = oid4vci_client_1.ProofOfPossessionBuilder.fromAccessTokenResponse({
+                 accessTokenResponse: tokenResponse,
+-                callbacks: { signCallback: this.proofOfPossessionSignCallback(agentContext) },
++                callbacks: { signCallback: popCallback === null || popCallback === void 0 ? this.proofOfPossessionSignCallback(agentContext) : popCallback },
+                 version,
              })
                  .withEndpointMetadata(metadata)
                  .withAlg(signatureAlgorithm);
@@ -53,7 +109,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..f2c47e0096fc9635e4c3a76fbbc24eaa
              // TODO: what if auth flow using did, and the did is different from client id. We now use the client_id
              if (credentialBinding.method === 'did') {
                  proofOfPossessionBuilder.withClientId((0, core_1.parseDid)(credentialBinding.didUrl).did).withKid(credentialBinding.didUrl);
-@@ -313,6 +316,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -313,11 +321,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  .withVersion(version)
                  .withCredentialEndpoint(metadata.credential_endpoint)
                  .withToken(tokenResponse.access_token);
@@ -61,7 +117,24 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..f2c47e0096fc9635e4c3a76fbbc24eaa
              const credentialRequestClient = credentialRequestBuilder.build();
              const createDpopOpts = tokenResponse.dpop
                  ? await this.getCreateDpopOptions(agentContext, metadata, {
-@@ -331,7 +335,8 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+                     jwk: tokenResponse.dpop.jwk,
+                     jwtPayloadProps: { accessToken: tokenResponse.access_token, nonce: (_e = tokenResponse.dpop) === null || _e === void 0 ? void 0 : _e.nonce },
++                    getCreateJwtCallback
+                 })
+                 : undefined;
+             const credentialResponse = await credentialRequestClient.acquireCredentialsUsingProof({
+@@ -325,13 +335,19 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+                 credentialTypes: (0, issuerMetadataUtils_1.getTypesFromCredentialSupported)(offeredCredentialConfiguration),
+                 format: offeredCredentialConfiguration.format,
+                 createDPoPOpts: createDpopOpts,
++                customBody: customBody
+             });
++
++            if(customBody !== null && customBody !== void 0) {
++              return [credentialResponse.successBody.credential]
++            }
+             newCNonce = (_f = credentialResponse.successBody) === null || _f === void 0 ? void 0 : _f.c_nonce;
+             // Create credential, but we don't store it yet (only after the user has accepted the credential)
              const credential = await this.handleCredentialResponse(agentContext, credentialResponse, {
                  verifyCredentialStatus: verifyCredentialStatus !== null && verifyCredentialStatus !== void 0 ? verifyCredentialStatus : false,
                  credentialIssuerMetadata: metadata.credentialIssuerMetadata,
@@ -72,10 +145,19 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..f2c47e0096fc9635e4c3a76fbbc24eaa
              this.logger.debug('Full credential', credential);
              receivedCredentials.push(credential);
 diff --git a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
-index 157a48fc081a43127891fbbf272990f3b62c1a72..6584c09cc6c39566c8bf09c5bac54fd1a9f8bf4c 100644
+index 157a48fc081a43127891fbbf272990f3b62c1a72..d938b42750f95fa69685bf5ae6199fbe8aace1e9 100644
 --- a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
 +++ b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
-@@ -88,6 +88,10 @@ export interface OpenId4VciCredentialRequestOptions extends Omit<OpenId4VciAccep
+@@ -64,6 +64,8 @@ export interface OpenId4VciSendNotificationOptions {
+     notificationEvent: OpenId4VciNotificationEvent;
+ }
+ interface OpenId4VcTokenRequestBaseOptions {
++    getCreateJwtCallback?: unknown
++    dPopKeyJwk?: Record<string, unknown>
+     resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer;
+     txCode?: string;
+ }
+@@ -88,6 +90,11 @@ export interface OpenId4VciCredentialRequestOptions extends Omit<OpenId4VciAccep
       * The client id used for authorization. Only required if authorization_code flow was used.
       */
      clientId?: string;
@@ -83,14 +165,33 @@ index 157a48fc081a43127891fbbf272990f3b62c1a72..6584c09cc6c39566c8bf09c5bac54fd1
 +    additionalProofOfPossessionPayloadClaims?: Record<string, unknown>
 +    additionalCredentialRequestPayloadClaims?: Record<string, unknown>
 +    customFormat?: string
++    customBody?: Record<string, unknown>
  }
  /**
   * Options that are used to accept a credential offer for both the pre-authorized code flow and authorization code flow.
+@@ -133,6 +140,9 @@ export interface OpenId4VciAcceptCredentialOfferOptions {
+      * for the proof of possession signature.
+      */
+     credentialBindingResolver: OpenId4VciCredentialBindingResolver;
++
++    getCreateJwtCallback?: unknown
++    popCallback?: unknown
+ }
+ /**
+  * Options that are used for the authorization code flow.
+@@ -142,6 +152,7 @@ export interface OpenId4VciAuthCodeFlowOptions {
+     clientId: string;
+     redirectUri: string;
+     scope?: string[];
++    customHeaders?: Record<string, unknown>
+ }
+ export interface OpenId4VciCredentialBindingOptions {
+     /**
 diff --git a/build/shared/issuerMetadataUtils.js b/build/shared/issuerMetadataUtils.js
-index fb5a81e3beb103d7e411a3d687290445a7bb2d20..eb14ae9ff380aaae2016f411a1eacec0bfdb8138 100644
+index 975341a9efacacd2859f4a992e643f9b43132fb6..88d0ae2c2c9915acad618370c896e7bd969ba8bc 100644
 --- a/build/shared/issuerMetadataUtils.js
 +++ b/build/shared/issuerMetadataUtils.js
-@@ -57,7 +57,10 @@ function credentialConfigurationSupportedToCredentialSupported(id, config) {
+@@ -56,7 +56,10 @@ function credentialConfigurationSupportedToCredentialSupported(id, config) {
          }
          return Object.assign(Object.assign({}, baseConfig), { format: config.format, vct: config.vct, claims: config.claims });
      }

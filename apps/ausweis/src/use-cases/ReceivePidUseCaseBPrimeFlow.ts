@@ -1,8 +1,14 @@
 import { AusweisAuthFlow, type AusweisAuthFlowOptions } from '@animo-id/expo-ausweis-sdk'
 import type { AppAgent } from '@ausweis/agent'
 import { pidSchemes } from '@ausweis/constants'
-import { createPinDerivedEphKeyPop, deriveKeypairFromPin } from '@ausweis/crypto/bPrime'
-import { Key, KeyType } from '@credo-ts/core'
+import {
+  createMockedClientAttestationAndProofOfPossession,
+  deriveKeypairFromPin,
+  requestToPidProvider,
+} from '@ausweis/crypto/bPrime'
+import { seedCredentialStorage } from '@ausweis/storage'
+import { deviceKeyPair } from '@ausweis/storage/pidPin'
+import { type JwkJson, Key, KeyType, P256Jwk } from '@credo-ts/core'
 import {
   type FullAppAgent,
   type OpenId4VciRequestTokenResponse,
@@ -49,7 +55,7 @@ export class ReceivePidUseCaseBPrimeFlow {
     'openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fdemo.pid-issuer.bundesdruckerei.de%2Fb1%22%2C%22credential_configuration_ids%22%3A%5B%22pid-sd-jwt%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%7D%7D%7D'
   private static MDL_OFFER =
     'openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fdemo.pid-issuer.bundesdruckerei.de%2Fc%22%2C%22credential_configuration_ids%22%3A%5B%22pid-mso-mdoc%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%7D%7D%7D'
-  private static CLIENT_ID = '7598ca4c-cc2e-4ff1-a4b4-ed58f249e274'
+  static CLIENT_ID = '7598ca4c-cc2e-4ff1-a4b4-ed58f249e274'
   private static REDIRECT_URI = 'https://funke.animo.id/redirect'
 
   private errorCallbacks: AusweisAuthFlowOptions['onError'][] = [this.handleError]
@@ -98,6 +104,15 @@ export class ReceivePidUseCaseBPrimeFlow {
   }
 
   public static async initialize(options: ReceivePidUseCaseBPrimeOptions) {
+    const headers = {
+      client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-client-attestation',
+      client_assertion: await createMockedClientAttestationAndProofOfPossession(
+        options.agent as unknown as FullAppAgent,
+        {
+          audience: 'https://demo.pid-issuer.bundesdruckerei.de/b1',
+        }
+      ),
+    }
     const resolved = await resolveOpenId4VciOffer({
       agent: options.agent,
       offer: { uri: ReceivePidUseCaseBPrimeFlow.SD_JWT_VC_OFFER },
@@ -105,6 +120,7 @@ export class ReceivePidUseCaseBPrimeFlow {
         clientId: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
         redirectUri: ReceivePidUseCaseBPrimeFlow.REDIRECT_URI,
       },
+      customHeaders: headers,
     })
 
     if (!resolved.resolvedAuthorizationRequest) {
@@ -132,7 +148,7 @@ export class ReceivePidUseCaseBPrimeFlow {
     // We return an authentication promise to make it easier to track the state
     // We remove the callbacks once the error or success is triggered.
     const authenticationPromise = new Promise((resolve, reject) => {
-      const successCallback: AusweisAuthFlowOptions['onSuccess'] = ({ refreshUrl }) => {
+      const successCallback: AusweisAuthFlowOptions['onSuccess'] = () => {
         this.errorCallbacks = this.errorCallbacks.filter((c) => c === errorCallback)
         this.successCallbacks = this.successCallbacks.filter((c) => c === successCallback)
         resolve(null)
@@ -162,25 +178,13 @@ export class ReceivePidUseCaseBPrimeFlow {
         throw new Error('Expected accessToken be defined in state retrieve-credential')
       }
 
-      // TODO: get the device key
-      const deviceKey = Key.fromPublicKey(new Uint8Array(), KeyType.P256)
-
-      const pinDerivedEph = await deriveKeypairFromPin(this.options.agent.context, this.options.pidPin)
-
-      // TODO: how do we get the audience?
-      const pinDerivedEphKeyPop = await createPinDerivedEphKeyPop(this.options.agent as unknown as FullAppAgent, {
-        aud: 'a',
-        pinDerivedEph,
-        deviceKey,
-        cNonce: 'a',
-      })
+      const deviceKeyPublicKeyBytes = deviceKeyPair.publicKey()
+      const deviceKey = Key.fromPublicKey(deviceKeyPublicKeyBytes, KeyType.P256)
 
       const credentialConfigurationIdToRequest = this.resolvedCredentialOffer.offeredCredentials[0].id
-      const credentialRecord = await receiveCredentialFromOpenId4VciOfferAuthenticatedChannel({
-        pinDerivedEphKeyPop,
-        pinDerivedEph,
+      const credential = await receiveCredentialFromOpenId4VciOfferAuthenticatedChannel({
         deviceKey,
-        agent: this.options.agent,
+        agent: this.options.agent as unknown as FullAppAgent,
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdToRequest,
@@ -188,14 +192,11 @@ export class ReceivePidUseCaseBPrimeFlow {
         pidSchemes,
       })
 
-      // TODO: add error handling everywhere to set state to error
-      if (credentialRecord.type !== 'SdJwtVcRecord') {
-        throw new Error('Unexpected record type')
-      }
+      await seedCredentialStorage.store(this.options.agent, credential)
 
-      return credentialRecord
+      return credential
     } catch (error) {
-      this.handleError()
+      this.handleError(error)
       throw error
     }
   }
@@ -210,24 +211,30 @@ export class ReceivePidUseCaseBPrimeFlow {
 
       const authorizationCodeResponse = await fetch(this.refreshUrl)
       if (!authorizationCodeResponse.ok) {
-        this.handleError()
+        this.handleError(`Auth code response has invalid status. ${authorizationCodeResponse.status}`)
         return
       }
 
-      const authorizationCode = new URL(authorizationCodeResponse.url).searchParams.get('code')
+      const { pin_nonce: pinNonce } = await authorizationCodeResponse.json()
 
-      if (!authorizationCode) {
-        this.handleError()
-        return
-      }
+      const pinDerivedEph = await deriveKeypairFromPin(this.options.agent.context, this.options.pidPin)
+
+      const code = await requestToPidProvider(
+        authorizationCodeResponse.url,
+        this.options.agent as unknown as FullAppAgent,
+        pinDerivedEph,
+        pinNonce
+      )
 
       this.accessToken = await acquireAccessToken({
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         resolvedAuthorizationRequest: {
           ...this.resolvedAuthorizationRequest,
-          code: authorizationCode,
+          code,
         },
         agent: this.options.agent,
+        // @ts-ignore
+        dPopKeyJwk: P256Jwk.fromJson(deviceKeyPair.asJwk() as unknown as JwkJson),
       })
 
       this.assertState({
@@ -235,10 +242,12 @@ export class ReceivePidUseCaseBPrimeFlow {
         newState: 'retrieve-credential',
       })
     } catch (error) {
-      this.handleError()
+      this.handleError(error)
       throw error
     }
   }
+
+  public async finishAuthorization() {}
 
   public async cancelIdCardScanning() {
     if (this.currentState !== 'id-card-auth' || !this.idCardAuthFlow.isActive) {
@@ -265,9 +274,9 @@ export class ReceivePidUseCaseBPrimeFlow {
     }
   }
 
-  private handleError() {
+  private handleError(error: unknown) {
     this.currentState = 'error'
-
+    console.error(error)
     this.options.onStateChange?.('error')
   }
 }

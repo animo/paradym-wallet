@@ -1,39 +1,24 @@
-import { assertAskarWallet } from '@credo-ts/askar/build/utils/assertAskarWallet'
 import { type AgentContext, Hasher } from '@credo-ts/core'
 import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
 
+const AES_256_STATIC_SEED = new Uint8Array(12).fill(10)
+
 const aes256GcmGenerateAndStoreKey =
-  (id: string) =>
+  (_: string) =>
   async ({ agentContext }: { agentContext: AgentContext }) => {
-    const wallet = agentContext.wallet
-    const key = Key.generate(KeyAlgs.AesA256Gcm)
-    assertAskarWallet(wallet)
-    await wallet.withSession((session) => session.insertKey({ name: id, key }))
+    // no-op
   }
 
 const aes256GcmHasKey =
-  (id: string) =>
+  (_: string) =>
   async ({ agentContext }: { agentContext: AgentContext }) => {
-    const wallet = agentContext.wallet
-    assertAskarWallet(wallet)
-    const aesKey = await wallet.withSession((session) => session.fetchKey({ name: id }))
-
-    return Boolean(aesKey)
+    // no-op
+    return true
   }
 
-const aes256GcmGetKey =
-  (id: string) =>
-  async ({ agentContext }: { agentContext: AgentContext }) => {
-    const wallet = agentContext.wallet
-    assertAskarWallet(wallet)
-    const aesKey = await wallet.withSession((session) => session.fetchKey({ name: id }))
-
-    if (!aesKey) {
-      throw new Error(`AES-256-GCM key not found with id: ${id}`)
-    }
-
-    return aesKey.key
-  }
+const aes256GcmGetKey = (_: string) => async (_: { agentContext: AgentContext }) => {
+  return Key.fromSeed({ algorithm: KeyAlgs.AesA256Gcm, seed: AES_256_STATIC_SEED })
+}
 
 const aes256GcmEncrypt =
   (id: string) =>
@@ -51,13 +36,8 @@ const aes256GcmEncrypt =
     agentContext: AgentContext
     nonce?: Uint8Array
   }) => {
-    const wallet = agentContext.wallet
-    assertAskarWallet(wallet)
-
     const key = await aes256GcmGetKey(id)({ agentContext })
-
     const { ciphertextWithTag } = key.aeadEncrypt({ nonce, message: data })
-
     return ciphertextWithTag
   }
 

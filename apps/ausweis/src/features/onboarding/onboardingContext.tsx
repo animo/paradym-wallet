@@ -1,5 +1,6 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@ausweis/agent'
+import { deviceKeyPair } from '@ausweis/storage/pidPin'
 import { ReceivePidUseCaseBPrimeFlow } from '@ausweis/use-cases/ReceivePidUseCaseBPrimeFlow'
 import {
   type CardScanningErrorDetails,
@@ -8,8 +9,8 @@ import {
   type ReceivePidUseCaseState,
 } from '@ausweis/use-cases/ReceivePidUseCaseCFlow'
 import { resetWallet } from '@ausweis/utils/resetWallet'
-import type { SdJwtVcHeader } from '@credo-ts/core'
-import { storeCredential } from '@package/agent'
+import { type SdJwtVcHeader, TypedArrayEncoder } from '@credo-ts/core'
+import { SdJwtVcRecord, storeCredential } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
@@ -294,14 +295,21 @@ export function OnboardingContextProvider({
       return
     }
 
-    return secureUnlock
-      .setup(walletPin)
-      .then(async ({ walletKey }) => initializeAgent(walletKey))
-      .then(() => goToNextStep())
-      .catch(async (e) => {
-        await reset({ error: e, resetToStep: 'welcome' })
-        throw e
-      })
+    return (
+      secureUnlock
+        .setup(walletPin)
+        .then(({ walletKey }) => initializeAgent(walletKey))
+        // After `initializeAgent` function is finished we can assume that `setAgent(agent)` is called and the agent is set
+        // We store the wallet pin as the pid pin. We do this to avoid a double key derivation which is too much of a slow down
+        // In the future we can possibly sync the key derivation between what the
+        // Architecture Proposal suggests and what we require to do for our wallet storage
+        .then(deviceKeyPair.generate)
+        .then(goToNextStep)
+        .catch((e) => {
+          reset({ error: e, resetToStep: 'welcome' })
+          throw e
+        })
+    )
   }
 
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
@@ -541,7 +549,11 @@ export function OnboardingContextProvider({
     }
 
     try {
-      setIdCardScanningState((state) => ({ ...state, state: 'complete', progress: 100 }))
+      setIdCardScanningState((state) => ({
+        ...state,
+        state: 'complete',
+        progress: 100,
+      }))
 
       // on iOS it takes around two seconds for the modal to close. On Android we wait 1 second
       // and then close the modal
@@ -584,16 +596,26 @@ export function OnboardingContextProvider({
     try {
       // Retrieve Credential
       const credential = await receivePidUseCase.retrieveCredential()
-      await storeCredential(secureUnlock.context.agent, credential)
-      const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<
-        SdJwtVcHeader,
-        { given_name: string; family_name: string }
-      >(credential.compactSdJwtVc)
-      setUserName(
-        `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
-          parsed.prettyClaims.family_name.toLowerCase()
-        )}`
-      )
+      if (credential instanceof SdJwtVcRecord) {
+        await storeCredential(secureUnlock.context.agent, credential)
+        const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<
+          SdJwtVcHeader,
+          { given_name: string; family_name: string }
+        >(credential.compactSdJwtVc)
+        setUserName(
+          `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
+            parsed.prettyClaims.family_name.toLowerCase()
+          )}`
+        )
+      } else {
+        const payload = credential.split('.')[1]
+        const {
+          pid_data: { given_name, family_name },
+        } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
+        setUserName(
+          `${capitalizeFirstLetter(given_name.toLowerCase())} ${capitalizeFirstLetter(family_name.toLowerCase())}`
+        )
+      }
       setCurrentStepName('id-card-complete')
     } catch (error) {
       await reset({ resetToStep: 'id-card-pin', error })

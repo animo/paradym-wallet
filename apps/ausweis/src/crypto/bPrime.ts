@@ -1,3 +1,5 @@
+import { deviceKeyPair } from '@ausweis/storage/pidPin'
+import { ReceivePidUseCaseBPrimeFlow } from '@ausweis/use-cases/ReceivePidUseCaseBPrimeFlow'
 import {
   type AgentContext,
   type JwsProtectedHeaderOptions,
@@ -7,7 +9,9 @@ import {
   KeyType,
   TypedArrayEncoder,
   getJwkFromKey,
+  utils,
 } from '@credo-ts/core'
+import { Buffer } from '@credo-ts/core'
 import { kdf } from '@package/secure-store/kdf'
 import type { FullAppAgent } from 'packages/agent/src'
 import { ausweisAes256Gcm } from './aes'
@@ -22,10 +26,6 @@ import { ausweisAes256Gcm } from './aes'
  *
  */
 export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Array<number>) => {
-  if (!(await ausweisAes256Gcm.aes256GcmHasKey({ agentContext }))) {
-    await ausweisAes256Gcm.aes256GcmGenerateAndStoreKey({ agentContext })
-  }
-
   const pinSecret = await ausweisAes256Gcm.aes256GcmEncrypt({
     agentContext,
     data: new Uint8Array(pin),
@@ -37,7 +37,7 @@ export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Arra
   )
 
   return agentContext.wallet.createKey({
-    seed: TypedArrayEncoder.fromHex(pinSeed),
+    privateKey: TypedArrayEncoder.fromHex(pinSeed),
     keyType: KeyType.P256,
   })
 }
@@ -71,4 +71,178 @@ export const createPinDerivedEphKeyPop = async (
   })
 
   return compact
+}
+
+/**
+ *
+ * The Wallet signs the PIN nonce concatenated with the device-bound public key dev_pub with the key pin_derived_eph_priv
+ *
+ */
+export const signPinNonceAndDeviceKeyWithPinDerivedEphPriv = async (
+  agent: FullAppAgent,
+  {
+    pinNonce,
+    pinDerivedEphKey,
+  }: {
+    pinNonce: string
+    pinDerivedEphKey: Key
+  }
+): Promise<string> => {
+  const header = {
+    alg: 'ES256',
+    jwk: getJwkFromKey(pinDerivedEphKey).toJson(),
+  }
+
+  const payload = Buffer.from([
+    ...TypedArrayEncoder.fromString(pinNonce),
+    ...TypedArrayEncoder.fromString(TypedArrayEncoder.toBase64URL(deviceKeyPair.asJwkInBytes())),
+  ])
+
+  const toBeSigned = `${TypedArrayEncoder.toBase64URL(
+    TypedArrayEncoder.fromString(JSON.stringify(header))
+  )}.${TypedArrayEncoder.toBase64URL(payload)}`
+
+  const signature = await agent.context.wallet.sign({
+    data: TypedArrayEncoder.fromString(toBeSigned),
+    key: pinDerivedEphKey,
+  })
+
+  const compact = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
+
+  return compact
+}
+
+/**
+ *
+ * The Wallet signs the PIN nonce concatenated with the Wallet PIN derived public key pin_derived_eph_pub with the key dev_priv
+ *
+ */
+export const signPinNonceAndPinDerivedEphPubWithDeviceKey = async ({
+  pinNonce,
+  pinDerivedEphKey,
+}: {
+  pinNonce: string
+  pinDerivedEphKey: Key
+}): Promise<string> => {
+  const pinDerivedEphPubAsJwkBytes = TypedArrayEncoder.fromString(
+    JSON.stringify(getJwkFromKey(pinDerivedEphKey).toJson())
+  )
+
+  const header = { alg: 'ES256' }
+  const payload = Buffer.from([
+    ...TypedArrayEncoder.fromString(pinNonce),
+    ...TypedArrayEncoder.fromString(TypedArrayEncoder.toBase64URL(pinDerivedEphPubAsJwkBytes)),
+  ])
+
+  const toBeSigned = `${TypedArrayEncoder.toBase64URL(
+    TypedArrayEncoder.fromString(JSON.stringify(header))
+  )}.${TypedArrayEncoder.toBase64URL(payload)}`
+
+  const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
+  const compact = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
+
+  return compact
+}
+
+export const requestToPidProvider = async (
+  endpoint: string,
+  agent: FullAppAgent,
+  pinDerivedEphKey: Key,
+  pinNonce: string
+) => {
+  const pin_signed_nonce = await signPinNonceAndDeviceKeyWithPinDerivedEphPriv(agent, {
+    pinNonce,
+    pinDerivedEphKey,
+  })
+  const device_key_signed_nonce = await signPinNonceAndPinDerivedEphPubWithDeviceKey({
+    pinDerivedEphKey,
+    pinNonce,
+  })
+
+  const body = {
+    pin_signed_nonce,
+    device_key_signed_nonce,
+  }
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  if (response.ok) {
+    const url = new URL(response.url)
+    const code = url.searchParams.get('code')
+    if (code) {
+      return code
+    }
+    throw Error('Could not extract the code from the returned URL')
+  }
+  const txt = await response.text()
+  throw Error(txt)
+}
+
+const fetchPidIssuerNonce = async (issuer: string): Promise<string> => {
+  const response = await fetch(`${issuer}/nonce`, { method: 'POST' })
+
+  if (response.ok) {
+    const parsed = await response.json()
+    return parsed.nonce
+  }
+
+  throw Error(await response.text())
+}
+
+export const createMockedClientAttestationAndProofOfPossession = async (
+  agent: FullAppAgent,
+  {
+    audience,
+  }: {
+    audience: string
+  }
+) => {
+  const nonce = await fetchPidIssuerNonce(audience)
+  const key = await agent.context.wallet.createKey({
+    keyType: KeyType.P256,
+    privateKey: TypedArrayEncoder.fromHex('ad38184e0d5d9af97b023b6421707dc079f7d66a185bfd4c589837e3cb69fbfa'),
+  })
+  const payload = {
+    iss: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+    sub: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+    exp: Math.floor(new Date().getTime() / 1000 + 100),
+    cnf: {
+      jwk: deviceKeyPair.asJwk(),
+    },
+  }
+
+  const header = {
+    alg: 'ES256',
+  }
+
+  const payloadString = TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))
+  const headerString = TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(header)))
+  const toBeSigned = `${headerString}.${payloadString}`
+  const signature = await agent.context.wallet.sign({
+    key,
+    data: TypedArrayEncoder.fromString(toBeSigned),
+  })
+  const jwtCompact = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
+
+  const clientAttestationPopJwtPayload = {
+    iss: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+    exp: Math.floor(new Date().getTime() / 1000 + 100),
+    jti: utils.uuid(),
+    aud: audience,
+    nonce: nonce,
+  }
+
+  const popPayloadString = TypedArrayEncoder.toBase64URL(
+    TypedArrayEncoder.fromString(JSON.stringify(clientAttestationPopJwtPayload))
+  )
+  const popHeaderString = TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify({ alg: 'ES256' })))
+  const popToBeSigned = `${popHeaderString}.${popPayloadString}`
+  const popSignature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(popToBeSigned)))
+  const popJwtCompact = `${popToBeSigned}.${TypedArrayEncoder.toBase64URL(popSignature)}`
+
+  return `${jwtCompact}~${popJwtCompact}`
 }
