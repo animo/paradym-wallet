@@ -5,7 +5,6 @@ import {
   BottomSheetScrollView,
   Button,
   Heading,
-  LucideIcons,
   Paragraph,
   ScrollView,
   Sheet,

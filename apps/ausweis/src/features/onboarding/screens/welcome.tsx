@@ -1,7 +1,9 @@
-import { Button, FlexPage, Heading, Separator, XStack, YStack } from '@package/ui'
+import { Button, FlexPage, Heading, HeroIcons, Logo, Separator, Stack, XStack, YStack } from '@package/ui'
+import { Image } from '@tamagui/image'
 import React, { useState } from 'react'
+import { Alert } from 'react-native'
 import Animated, { FadingTransition } from 'react-native-reanimated'
-import { LinearGradient } from 'tamagui/linear-gradient'
+import inAppLogo from '../../../../assets/icon.png'
 
 export interface OnboardingWelcomeProps {
   goToNextStep: (selectedFlow: 'c' | 'bprime') => void
@@ -11,35 +13,35 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
 
   return (
-    <Animated.View style={{ flex: 1 }} layout={FadingTransition}>
-      <FlexPage p={0} safeArea={false}>
-        <LinearGradient
-          position="absolute"
-          flex={1}
-          width="100%"
-          height="100%"
-          colors={['$grey-100', '$white']}
-          start={[0.5, 0]}
-          end={[0.5, 1]}
-        />
-        <YStack p="$4" gap="$4" flex-1 justifyContent="space-between">
+    <Animated.View style={{ flexGrow: 1 }} layout={FadingTransition}>
+      <FlexPage p={0} fg={1} jc="space-between">
+        <YStack px="$4" gap="$4" flex-1 justifyContent="space-between">
           {/* This stack ensures the right spacing  */}
-          <YStack flex={3} />
-          <YStack gap="$2">
-            <Heading variant="title">Ausweis Wallet</Heading>
-            <Separator borderWidth={3} borderRadius={3} borderColor="$primary-500" width="$4" />
-            <Heading variant="title" secondary>
-              Your digital Identity
-            </Heading>
+          <YStack ai="flex-end">
+            <Stack
+              p="$2"
+              onPress={() => {
+                Alert.alert('Help!')
+              }}
+            >
+              <HeroIcons.QuestionMarkCircle color="$grey-900" />
+            </Stack>
           </YStack>
-          <YStack flex-1 />
-          <XStack gap="$2" my="$6">
+          <YStack gap="$4" jc="center" ai="center">
+            <Image br="$6" source={inAppLogo} width={64} height={64} />
+            <Heading>Ausweis Wallet</Heading>
+          </YStack>
+          <XStack gap="$2">
             <Button.Outline
               p="$0"
               width="$buttonHeight"
+              bg="$grey-100"
+              pressStyle={{
+                bg: '$grey-200',
+              }}
               onPress={() => setSelectedFlow((selectedFlow) => (selectedFlow === 'c' ? 'bprime' : 'c'))}
             >
-              <Heading variant="h2" color={'$primary-500'} fontWeight={'bold'}>
+              <Heading variant="h2" fontWeight="bold">
                 {selectedFlow === 'c' ? 'C' : "B'"}
               </Heading>
             </Button.Outline>

@@ -3,6 +3,7 @@ import { forwardRef } from 'react'
 import type { NumberProp, SvgProps } from 'react-native-svg'
 
 import {
+  ArrowLeftIcon,
   ArrowPathIcon,
   ArrowRightIcon,
   BackspaceIcon,
@@ -16,6 +17,7 @@ import {
   KeyIcon,
   LockClosedIcon,
   QrCodeIcon,
+  QuestionMarkCircleIcon,
   ShieldCheckIcon,
   StarIcon,
   XCircleIcon,
@@ -58,6 +60,7 @@ export const HeroIcons = {
   ArrowPath: wrapHeroIcon(ArrowPathIcon),
   LockClosed: wrapHeroIcon(LockClosedIcon),
   ArrowRight: wrapHeroIcon(ArrowRightIcon),
+  ArrowLeft: wrapHeroIcon(ArrowLeftIcon),
   Backspace: wrapHeroIcon(BackspaceIcon),
   ExclamationCircle: wrapHeroIcon(ExclamationCircleIcon),
   CheckCircle: wrapHeroIcon(CheckCircleIcon),
@@ -66,4 +69,5 @@ export const HeroIcons = {
   DevicePhoneMobile: wrapHeroIcon(DevicePhoneMobileIcon),
   HandRaised: wrapHeroIcon(HandRaisedIcon),
   XCircle: wrapHeroIcon(XCircleIcon),
+  QuestionMarkCircle: wrapHeroIcon(QuestionMarkCircleIcon),
 } as const

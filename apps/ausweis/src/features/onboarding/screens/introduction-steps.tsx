@@ -7,8 +7,8 @@ interface OnboardingIntroductionStepsProps {
 
 export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroductionStepsProps) {
   return (
-    <>
-      <YStack flex-1 gap="$6">
+    <YStack fg={1} jc="space-between">
+      <YStack gap="$5">
         <OnboardingStepItem
           stepName="step 1"
           title="Setup a pin code for the app"
@@ -28,7 +28,7 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
           icon={<HeroIcons.Star color="$white" size={20} />}
         />
       </YStack>
-      <YStack gap="$2" alignItems="center">
+      <YStack gap="$4" alignItems="center">
         {/* TODO: grey-700 vs secondary */}
         <Paragraph variant="sub" color="$grey-700" textAlign="center">
           You'll need your passport to setup the wallet
@@ -37,6 +37,6 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
           Continue
         </Button.Solid>
       </YStack>
-    </>
+    </YStack>
   )
 }

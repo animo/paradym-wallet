@@ -46,7 +46,7 @@ const onboardingSteps = [
   },
   {
     step: 'introduction-steps',
-    progress: 0,
+    progress: 16.5,
     page: {
       type: 'content',
       title: 'Setup digital identity',
@@ -60,7 +60,7 @@ const onboardingSteps = [
     page: {
       type: 'content',
       title: 'Pick a 6-digit app pin',
-      subtitle: 'This will be used to unlock the Ausweis Wallet.',
+      subtitle: 'You are required to enter your identity pin every time you share data with a party.',
       animationKey: 'pin',
     },
     Screen: OnboardingPinEnter,
@@ -71,7 +71,8 @@ const onboardingSteps = [
     page: {
       type: 'content',
       title: 'Re-enter your pin',
-      animationKey: 'pin',
+      subtitle: 'You are required to enter your identity pin every time you share data with a party.',
+      animationKey: 'pin-reenter',
     },
     Screen: OnboardingPinEnter,
   },
@@ -155,6 +156,8 @@ export type OnboardingContext = {
   progress: number
   page: Page
   screen: React.JSX.Element
+  reset: () => void
+  isGoingForward: boolean
 }
 
 export const OnboardingContext = createContext<OnboardingContext>({} as OnboardingContext)
@@ -170,6 +173,7 @@ export function OnboardingContextProvider({
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
 
+  const [isGoingForward, setIsGoingForward] = useState(true)
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
@@ -194,6 +198,7 @@ export function OnboardingContextProvider({
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
 
   const goToNextStep = useCallback(() => {
+    setIsGoingForward(true)
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
     const nextStep = onboardingSteps[currentStepIndex + 1]
 
@@ -206,6 +211,7 @@ export function OnboardingContextProvider({
   }, [currentStepName, router])
 
   const goToPreviousStep = useCallback(() => {
+    setIsGoingForward(false)
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
     const previousStep = onboardingSteps[currentStepIndex - 1]
 
@@ -559,12 +565,21 @@ export function OnboardingContextProvider({
     screen = <currentStep.Screen goToNextStep={goToNextStep} />
   }
 
+  const onUserReset = () => {
+    reset({
+      resetToStep: 'welcome',
+      showToast: false,
+    })
+  }
+
   return (
     <OnboardingContext.Provider
       value={{
         currentStep: currentStep.step,
         progress: currentStep.progress,
         page: currentStep.page,
+        reset: onUserReset,
+        isGoingForward,
         screen,
       }}
     >
