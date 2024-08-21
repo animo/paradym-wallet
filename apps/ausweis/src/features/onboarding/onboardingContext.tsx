@@ -157,7 +157,6 @@ export type OnboardingContext = {
   page: Page
   screen: React.JSX.Element
   reset: () => void
-  isGoingForward: boolean
 }
 
 export const OnboardingContext = createContext<OnboardingContext>({} as OnboardingContext)
@@ -173,7 +172,6 @@ export function OnboardingContextProvider({
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
 
-  const [isGoingForward, setIsGoingForward] = useState(true)
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
@@ -198,7 +196,6 @@ export function OnboardingContextProvider({
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
 
   const goToNextStep = useCallback(() => {
-    setIsGoingForward(true)
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
     const nextStep = onboardingSteps[currentStepIndex + 1]
 
@@ -211,7 +208,6 @@ export function OnboardingContextProvider({
   }, [currentStepName, router])
 
   const goToPreviousStep = useCallback(() => {
-    setIsGoingForward(false)
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
     const previousStep = onboardingSteps[currentStepIndex - 1]
 
@@ -579,7 +575,6 @@ export function OnboardingContextProvider({
         progress: currentStep.progress,
         page: currentStep.page,
         reset: onUserReset,
-        isGoingForward,
         screen,
       }}
     >
