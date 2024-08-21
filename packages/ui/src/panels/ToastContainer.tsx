@@ -36,6 +36,9 @@ export const ToastContainer = ({ title, message, safeAreaMargin = false, variant
       exitStyle={{ opacity: 0, scale: 1, y: -20 }}
       animation="quick"
       backgroundColor="$white"
+      borderWidth={1}
+      borderColor="$grey-200"
+      shadow="sm"
       borderRadius="$4"
       margin={safeAreaMargin ? '$4' : 0}
       padding="$3"

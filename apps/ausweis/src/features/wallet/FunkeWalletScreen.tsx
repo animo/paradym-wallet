@@ -1,15 +1,4 @@
-import {
-  HEADER_TITLE_TEXT_HEIGHT,
-  Heading,
-  HeroIcons,
-  IdCard,
-  Page,
-  ScrollView,
-  Spacer,
-  Spinner,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { Heading, HeroIcons, IdCard, Page, ScrollView, Spacer, Spinner, XStack, YStack } from '@package/ui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 

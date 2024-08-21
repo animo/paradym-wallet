@@ -1,9 +1,9 @@
-import { DidCommNotificationScreen } from '@package/app'
+import { DidCommNotificationScreen, ModalProvider } from '@package/app'
 
 export default function Screen() {
   return (
-    <>
+    <ModalProvider>
       <DidCommNotificationScreen />
-    </>
+    </ModalProvider>
   )
 }

@@ -2,7 +2,8 @@ import { Paragraph, XStack, YStack } from '../base'
 import { Image } from '../content'
 
 interface TableRowProps {
-  attribute: string
+  // attribute can be undefined for array values
+  attribute?: string
   // Value can be undefined if image prop is used
   value?: string
   image?: string
