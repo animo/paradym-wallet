@@ -36,6 +36,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
               p="$0"
               width="$buttonHeight"
               bg="$grey-100"
+              borderColor="$grey-200"
               pressStyle={{
                 bg: '$grey-200',
               }}

@@ -22,7 +22,7 @@ const OutlineButton = styled(Btn, {
   name: 'OutlineButton',
   backgroundColor: '$white',
   color: '$grey-900',
-  borderColor: '$grey-200',
+  borderColor: '$grey-300',
 })
 
 const TextButton = styled(Btn, {

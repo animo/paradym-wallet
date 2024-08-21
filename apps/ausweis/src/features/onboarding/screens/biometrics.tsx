@@ -1,4 +1,4 @@
-import { AnimatedFingerPrintCircle,  Button, XStack, YStack } from '@package/ui'
+import { AnimatedFingerPrintCircle, Button, XStack, YStack } from '@package/ui'
 import React from 'react'
 
 interface OnboardingBiometricsProps {

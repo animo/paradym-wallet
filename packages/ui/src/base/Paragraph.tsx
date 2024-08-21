@@ -10,7 +10,6 @@ export const Paragraph = styled(SizableText, {
   letterSpacing: '$true',
   fontFamily: '$default',
   fontWeight: '$medium',
-  lineHeight: 24,
   variants: {
     light: {
       true: {
