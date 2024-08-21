@@ -4,7 +4,7 @@ import { HeroIcons, ProgressBar } from '../content'
 
 interface OnboardingScreensHeaderProps extends ComponentProps<typeof YStack> {
   progress: number
-  title: string
+  title?: string
   subtitle?: string
   onBack?: () => void
 }
