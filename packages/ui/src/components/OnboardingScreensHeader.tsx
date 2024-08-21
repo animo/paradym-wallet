@@ -4,10 +4,12 @@ import { HeroIcons, ProgressBar } from '../content'
 
 interface OnboardingScreensHeaderProps extends ComponentProps<typeof YStack> {
   progress: number
+  title: string
+  subtitle?: string
   onBack?: () => void
 }
 
-export function OnboardingScreensHeader({ progress, onBack }: OnboardingScreensHeaderProps) {
+export function OnboardingScreensHeader({ progress, title, subtitle, onBack }: OnboardingScreensHeaderProps) {
   return (
     <YStack gap="$3">
       <XStack jc="space-between">
