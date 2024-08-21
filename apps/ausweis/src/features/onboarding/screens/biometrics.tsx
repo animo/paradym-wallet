@@ -1,4 +1,4 @@
-import { AnimatedFingerprintIcon, Button, YStack } from '@package/ui'
+import { AnimatedFingerPrintCircle,  Button, XStack, YStack } from '@package/ui'
 import React from 'react'
 
 interface OnboardingBiometricsProps {
@@ -7,9 +7,11 @@ interface OnboardingBiometricsProps {
 
 export function OnboardingBiometrics({ goToNextStep }: OnboardingBiometricsProps) {
   return (
-    <YStack gap="$6" flex-1>
-      <YStack flex-1 justifyContent="center" alignItems="center">
-        <AnimatedFingerprintIcon />
+    <YStack fg={1} jc="space-between" gap="$6">
+      <YStack justifyContent="center" alignItems="center">
+        <XStack ai="center" jc="center" h="$15" border w="100%" p="$4" br="$4" bg="#dbe9fe33">
+          <AnimatedFingerPrintCircle />
+        </XStack>
       </YStack>
       <Button.Solid alignSelf="stretch" onPress={goToNextStep}>
         Activate Biometrics

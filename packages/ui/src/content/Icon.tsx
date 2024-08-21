@@ -11,6 +11,7 @@ import {
   CreditCardIcon,
   DevicePhoneMobileIcon,
   ExclamationCircleIcon,
+  FingerPrintIcon,
   GlobeAltIcon,
   HandRaisedIcon,
   IdentificationIcon,
@@ -70,4 +71,5 @@ export const HeroIcons = {
   HandRaised: wrapHeroIcon(HandRaisedIcon),
   XCircle: wrapHeroIcon(XCircleIcon),
   QuestionMarkCircle: wrapHeroIcon(QuestionMarkCircleIcon),
+  FingerPrint: wrapHeroIcon(FingerPrintIcon),
 } as const

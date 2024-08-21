@@ -1,4 +1,4 @@
-import { Button, FlexPage, Heading, HeroIcons, Logo, Separator, Stack, XStack, YStack } from '@package/ui'
+import { Button, FlexPage, Heading, HeroIcons, Stack, XStack, YStack } from '@package/ui'
 import { Image } from '@tamagui/image'
 import React, { useState } from 'react'
 import { Alert } from 'react-native'

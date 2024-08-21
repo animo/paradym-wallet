@@ -19,7 +19,9 @@ import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
 import { OnboardingIdCardScan } from './screens/id-card-scan'
+import { OnboardingIdCardStart } from './screens/id-card-start'
 import { OnboardingIdCardStartScan } from './screens/id-card-start-scan'
+import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
@@ -29,7 +31,9 @@ type Page =
   | {
       type: 'content'
       title: string
+      animation?: 'default' | 'delayed'
       subtitle?: string
+      caption?: string
       animationKey?: string
     }
 
@@ -49,6 +53,7 @@ const onboardingSteps = [
     progress: 16.5,
     page: {
       type: 'content',
+      animation: 'delayed',
       title: 'Setup digital identity',
       subtitle: "To setup your digital identity we'll follow the following steps:",
     },
@@ -78,7 +83,7 @@ const onboardingSteps = [
   },
   {
     step: 'biometrics',
-    progress: 33,
+    progress: 49.5,
     page: {
       type: 'content',
       title: 'Let’s secure your wallet',
@@ -88,12 +93,22 @@ const onboardingSteps = [
     Screen: OnboardingBiometrics,
   },
   {
+    step: 'id-card-start',
+    progress: 66,
+    page: {
+      type: 'content',
+      title: 'Scan your passport to validate your identity',
+      subtitle: 'You’ll need to setup your wallet using your physical identity card and the eID pin.',
+      caption: 'Your eID pin has been sent shared with you when you received your physical passport.',
+    },
+    Screen: OnboardingIdCardStart,
+  },
+  {
     step: 'id-card-pin',
     progress: 66,
     page: {
       type: 'content',
       title: 'Enter your eID pin',
-      subtitle: 'This will be used in the next step to unlock your eID.',
     },
     Screen: OnboardingIdCardPinEnter,
   },
@@ -102,10 +117,11 @@ const onboardingSteps = [
     progress: 66,
     page: {
       type: 'content',
-      title:
+      title: 'Scanning your eID card',
+      subtitle:
         Platform.OS === 'android'
-          ? 'Place your eID card at the back of your phone'
-          : 'Place your eID card at the top of you phone.',
+          ? 'Place your ID card on the top of the device’s back side.'
+          : 'Place your ID card at the top of the device’s front side.',
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardStartScan,
@@ -115,7 +131,11 @@ const onboardingSteps = [
     progress: 66,
     page: {
       type: 'content',
-      title: 'Keep your eID card still',
+      title: 'Scanning your eID card',
+      subtitle:
+        Platform.OS === 'android'
+          ? 'Place your ID card on the top of the device’s back side.'
+          : 'Place your ID card at the top of the device’s front side.',
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardScan,
@@ -125,17 +145,29 @@ const onboardingSteps = [
     progress: 66,
     page: {
       type: 'content',
-      title: 'Setting up identity',
+      title: 'Fetching information',
       animationKey: 'id-card-final',
     },
     Screen: OnboardingIdCardFetch,
+  },
+  {
+    step: 'id-card-verify',
+    progress: 82.5,
+    page: {
+      type: 'content',
+      title: 'We need to verify it’s you',
+      subtitle: 'Your biometrics are required to unlock your identity.',
+      animationKey: 'id-card-verify',
+    },
+    Screen: OnboardingIdCardVerify,
   },
   {
     step: 'id-card-complete',
     progress: 100,
     page: {
       type: 'content',
-      title: 'Your wallet is ready',
+      title: 'Success!',
+      subtitle: 'The information has been retrieved from your passport.',
       animationKey: 'id-card-final',
     },
     Screen: OnboardingIdCardFetch,
@@ -528,7 +560,7 @@ export function OnboardingContextProvider({
           parsed.prettyClaims.family_name.toLowerCase()
         )}`
       )
-      setCurrentStepName('id-card-complete')
+      setCurrentStepName('id-card-verify')
     } catch (error) {
       reset({ resetToStep: 'id-card-pin', error })
     }
