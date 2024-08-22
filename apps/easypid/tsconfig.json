@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"rootDir": "./",
 		"paths": {
-			"@ausweis/*": ["./apps/ausweis/src/*"]
+			"@easypid/*": ["./apps/easypid/src/*"]
 		}
 	},
 	"include": [

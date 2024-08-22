@@ -1,14 +1,14 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@ausweis/agent'
-import { ReceivePidUseCaseBPrimeFlow } from '@ausweis/use-cases/ReceivePidUseCaseBPrimeFlow'
+import type { SdJwtVcHeader } from '@credo-ts/core'
+import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
 import {
   type CardScanningErrorDetails,
   ReceivePidUseCaseCFlow,
   type ReceivePidUseCaseCFlowOptions,
   type ReceivePidUseCaseState,
-} from '@ausweis/use-cases/ReceivePidUseCaseCFlow'
-import { resetWallet } from '@ausweis/utils/resetWallet'
-import type { SdJwtVcHeader } from '@credo-ts/core'
+} from '@easypid/use-cases/ReceivePidUseCaseCFlow'
+import { resetWallet } from '@easypid/utils/resetWallet'
 import { storeCredential } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, sleep } from '@package/utils'

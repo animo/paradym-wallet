@@ -1,8 +1,8 @@
 import { AusweisAuthFlow, type AusweisAuthFlowOptions } from '@animo-id/expo-ausweis-sdk'
-import type { AppAgent } from '@ausweis/agent'
-import { pidSchemes } from '@ausweis/constants'
-import { createPinDerivedEphKeyPop, deriveKeypairFromPin } from '@ausweis/crypto/bPrime'
 import { Key, KeyType } from '@credo-ts/core'
+import type { AppAgent } from '@easypid/agent'
+import { pidSchemes } from '@easypid/constants'
+import { createPinDerivedEphKeyPop, deriveKeypairFromPin } from '@easypid/crypto/bPrime'
 import {
   type FullAppAgent,
   type OpenId4VciRequestTokenResponse,

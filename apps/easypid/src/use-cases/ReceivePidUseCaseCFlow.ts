@@ -1,6 +1,6 @@
 import { AusweisAuthFlow, type AusweisAuthFlowOptions } from '@animo-id/expo-ausweis-sdk'
-import type { AppAgent } from '@ausweis/agent'
-import { pidSchemes } from '@ausweis/constants'
+import type { AppAgent } from '@easypid/agent'
+import { pidSchemes } from '@easypid/constants'
 import {
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,

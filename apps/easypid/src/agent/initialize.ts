@@ -1,4 +1,4 @@
-import { trustedX509Certificates } from '@ausweis/constants'
+import { trustedX509Certificates } from '@easypid/constants'
 import { initializeEasyPIDAgent } from '@package/agent'
 
 export function initializeAppAgent({ walletKey }: { walletKey: string }) {

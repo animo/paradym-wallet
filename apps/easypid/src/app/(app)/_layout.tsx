@@ -1,8 +1,8 @@
 import { Redirect, Stack } from 'expo-router'
 
-import { useSecureUnlock } from '@ausweis/agent'
-import { useHasFinishedOnboarding } from '@ausweis/features/onboarding'
-import { resetWallet, useResetWalletDevMenu } from '@ausweis/utils/resetWallet'
+import { useSecureUnlock } from '@easypid/agent'
+import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
+import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider } from '@package/agent'
 import { useEffect, useState } from 'react'
 import Reanimated, { FadeIn } from 'react-native-reanimated'

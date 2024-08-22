@@ -47,7 +47,7 @@ import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
-import type { AppAgent } from '@ausweis/agent'
+import type { AppAgent } from '@easypid/agent'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
 
 export async function resolveOpenId4VciOffer({

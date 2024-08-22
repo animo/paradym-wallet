@@ -1,4 +1,4 @@
-import { useOnboardingContext } from '@ausweis/features/onboarding'
+import { useOnboardingContext } from '@easypid/features/onboarding'
 import { FlexPage, Heading, OnboardingScreensHeader, Paragraph, YStack } from '@package/ui'
 import type React from 'react'
 import { Alert } from 'react-native'

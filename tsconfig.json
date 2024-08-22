@@ -16,7 +16,7 @@
 		"typeRoots": ["./types"],
 		"paths": {
 			"@package/*": ["./packages/*"],
-			"@ausweis/*": ["./apps/ausweis/src/*"],
+			"@easypid/*": ["./apps/ausweis/src/*"],
 			"@paradym/*": ["./apps/paradym/*"]
 		}
 	},

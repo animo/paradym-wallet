@@ -1,5 +1,5 @@
-import { AUSWEIS_WALLET_SEED_CREDENTIAL_RECORD_ID } from '@ausweis/constants'
 import type { Agent } from '@credo-ts/core'
+import { AUSWEIS_WALLET_SEED_CREDENTIAL_RECORD_ID } from '@easypid/constants'
 import { walletJsonStore } from '@package/agent'
 
 export const seedCredentialStorage = {

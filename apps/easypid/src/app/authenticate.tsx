@@ -1,7 +1,7 @@
 import { Redirect } from 'expo-router'
 
-import { initializeAppAgent, useSecureUnlock } from '@ausweis/agent'
 import { WalletInvalidKeyError } from '@credo-ts/core'
+import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { FlexPage, HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, Stack, YStack } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef } from 'react'
