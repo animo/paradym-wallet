@@ -2,7 +2,8 @@ import { Paragraph, XStack, YStack } from '../base'
 import { Image } from '../content'
 
 interface TableRowProps {
-  attribute: string
+  // attribute can be undefined for array values
+  attribute?: string
   // Value can be undefined if image prop is used
   value?: string
   image?: string
@@ -18,7 +19,8 @@ export const TableRow = ({ attribute, value, isLastRow, onPress, image }: TableR
       py="$2"
       key={attribute}
       borderBottomWidth={isLastRow ? 0 : 1}
-      borderBottomColor="$grey-200"
+      borderBottomColor="$tableBorderColor"
+      backgroundColor="$tableBackgroundColor"
       onPress={onPress}
       pressStyle={{
         opacity: 0.8,
@@ -26,9 +28,11 @@ export const TableRow = ({ attribute, value, isLastRow, onPress, image }: TableR
     >
       <XStack f={1}>
         <YStack f={1} justifyContent="flex-start">
-          <Paragraph variant="text" secondary>
-            {attribute}
-          </Paragraph>
+          {attribute && (
+            <Paragraph variant="text" secondary>
+              {attribute}
+            </Paragraph>
+          )}
           {value && <Paragraph>{value}</Paragraph>}
           {/* Render image on the left if no value */}
           {!value && renderedImage}

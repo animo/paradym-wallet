@@ -15,19 +15,22 @@ import { Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons, Image } from '../content'
 
 export interface IdCardProps {
-  icon: keyof typeof iconMapping
+  icon?: keyof typeof iconMapping
   issuerImage: number
   userName?: string
+  hideUserName?: boolean
+  onPress?: () => void
+  small?: boolean
 }
 
 const iconMapping = {
-  locked: <HeroIcons.LockClosed color="$white" />,
-  loading: <HeroIcons.ArrowPath color="$white" />,
-  complete: <HeroIcons.ShieldCheck color="$white" />,
-  biometric: <HeroIcons.FingerPrint color="$white" />,
+  locked: HeroIcons.LockClosed,
+  loading: HeroIcons.ArrowPath,
+  complete: HeroIcons.ShieldCheck,
+  biometric: HeroIcons.FingerPrint,
 } as const
 
-export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
+export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, small }: IdCardProps) {
   const rotation = useSharedValue(0)
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -54,16 +57,20 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
     }
   }, [icon, rotation])
 
+  const IconComponent = icon ? iconMapping[icon] : undefined
   return (
     <YStack
-      jc="space-between"
-      h="$15"
-      gap="$6"
-      p="$5"
-      borderRadius="$8"
+      // jc="space-between"
+      h={small ? '$9' : '$15'}
+      maxWidth={small ? '$14' : undefined}
+      gap={small ? '$1' : '$6'}
+      p={small ? '$3' : '$5'}
+      borderRadius={small ? '$5' : '$8'}
       overflow="hidden"
+      flex-1
       borderColor="#D8DAC8"
-      bw="$0.5"
+      bw={small ? '$0.25' : '$0.5'}
+      onPress={onPress}
     >
       <LinearGradient
         colors={['#EFE7DA', '#EDEEE6', '#E9EDEE', '#D4D6C0']}
@@ -79,24 +86,28 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
         style={StyleSheet.absoluteFillObject}
       />
       <XStack justifyContent="space-between">
-        <YStack gap="$3">
-          <Paragraph size="$2" fontWeight="$bold" color="$grey-700">
+        <YStack gap={small ? '$1' : '$3'}>
+          <Paragraph size={small ? '$1' : '$2'} fontWeight="$bold" color="$grey-700">
             PERSONALAUSWEIS
           </Paragraph>
-          <Paragraph size="$6" fontWeight="$semiBold">
-            {userName ?? '********'}
+          <Paragraph size={small ? '$3' : '$6'} fontWeight="$semiBold">
+            {hideUserName ? '********' : userName ?? ''}
           </Paragraph>
         </YStack>
         <Stack>
-          <Image src={issuerImage} width={48} height={48} resizeMode="contain" />
+          <Image src={issuerImage} width={small ? 24 : 48} height={small ? 24 : 48} resizeMode="contain" />
         </Stack>
       </XStack>
       <XStack justifyContent="flex-start">
-        <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
-          <Circle p="$2" backgroundColor="$grey-900" opacity={0.25}>
-            {iconMapping[icon]}
-          </Circle>
-        </Animated.View>
+        {IconComponent ? (
+          <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
+            <Circle size={small ? '$1' : '$3'} backgroundColor="$grey-900" opacity={0.25}>
+              <IconComponent color="$white" size={small ? 12 : 24} />
+            </Circle>
+          </Animated.View>
+        ) : (
+          <Stack width={small ? '$1' : '$3'} height={small ? '$1' : '$3'} />
+        )}
       </XStack>
     </YStack>
   )

@@ -12,7 +12,12 @@ export interface OnboardingIdCardFetchProps {
 export function OnboardingIdCardFetch({ goToNextStep, userName }: OnboardingIdCardFetchProps) {
   return (
     <YStack justifyContent="space-between" flex-1>
-      <IdCard icon={userName ? 'complete' : 'loading'} issuerImage={germanIssuerImage} userName={userName} />
+      <IdCard
+        icon={userName ? 'complete' : 'loading'}
+        hideUserName
+        issuerImage={germanIssuerImage}
+        userName={userName}
+      />
       <Stack>
         {userName && (
           <Animated.View entering={FadeIn} layout={LinearTransition}>

@@ -1,11 +1,17 @@
-import { parseInvitationUrl } from '@package/agent'
+import { type InvitationType, type ParseInvitationResultError, parseInvitationUrl } from '@package/agent'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'solito/router'
 
 export const useCredentialDataHandler = () => {
   const { push } = useRouter()
 
-  const handleCredentialData = async (dataUrl: string) => {
+  const handleCredentialData = async (
+    dataUrl: string,
+    options?: { allowedInvitationTypes?: Array<InvitationType> }
+  ): Promise<
+    | { success: true }
+    | { success: false; error: ParseInvitationResultError | 'invitation_type_not_allowed'; message: string }
+  > => {
     const parseResult = await parseInvitationUrl(dataUrl)
 
     if (!parseResult.success) {
@@ -14,6 +20,14 @@ export const useCredentialDataHandler = () => {
     }
 
     const invitationData = parseResult.result
+    if (options?.allowedInvitationTypes && !options.allowedInvitationTypes.includes(invitationData.type)) {
+      return {
+        success: false,
+        error: 'invitation_type_not_allowed',
+        message: 'Invitation type not allowed',
+      } as const
+    }
+
     if (invitationData.type === 'openid-credential-offer') {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       push({
@@ -54,7 +68,8 @@ export const useCredentialDataHandler = () => {
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
     return {
       success: false,
-      error: 'Invitation not recognized.',
+      error: 'invitation_not_recognized',
+      message: 'Invitation not recognized.',
     } as const
   }
 

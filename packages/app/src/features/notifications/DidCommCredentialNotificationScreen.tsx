@@ -33,10 +33,10 @@ export function DidCommCredentialNotificationScreen({
   const onCredentialAccept = async () => {
     await acceptCredential()
       .then(() => {
-        toast.show('Credential has been added to your wallet.')
+        toast.show('Credential has been added to your wallet.', { customData: { preset: 'success' } })
       })
       .catch(() => {
-        toast.show('Something went wrong while storing the credential.')
+        toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
       })
       .finally(() => {
         pushToWallet()
