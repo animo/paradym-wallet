@@ -1,4 +1,4 @@
-import { parseInvitationUrl, type InvitationType, type ParseInvitationResultError } from '@package/agent'
+import { type InvitationType, type ParseInvitationResultError, parseInvitationUrl } from '@package/agent'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'solito/router'
 

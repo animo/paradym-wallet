@@ -1,6 +1,5 @@
-import { NfcScannerModalAndroid, Stack } from '@package/ui'
+import { AnimatedNfcScan, Button, NfcScannerModalAndroid, Stack, YStack } from '@package/ui'
 
-import { NfcCardScanningPlacementImage } from '@package/ui/src/images/NfcScanningCardPlacementImage'
 import { Platform } from 'react-native'
 
 interface OnboardingIdCardScanProps {
@@ -9,6 +8,7 @@ interface OnboardingIdCardScanProps {
   progress: number
   showScanModal: boolean
   onCancel: () => void
+  onStartScanning?: () => void
 }
 
 export function OnboardingIdCardScan({
@@ -17,15 +17,18 @@ export function OnboardingIdCardScan({
   isCardAttached,
   onCancel,
   showScanModal,
+  onStartScanning,
 }: OnboardingIdCardScanProps) {
   return (
     <>
       <Stack flex-1>
-        <Stack flex={3}>
-          <NfcCardScanningPlacementImage height="80%" />
+        <YStack ai="center" w="45%">
+          <AnimatedNfcScan />
+        </YStack>
+
+        <Stack flex-1 justifyContent="flex-end">
+          {onStartScanning && <Button.Solid onPress={onStartScanning}>Start scanning</Button.Solid>}
         </Stack>
-        {/* This is here to have the same layout as id-card-start-scan */}
-        <Stack flex-1 />
       </Stack>
       {Platform.OS === 'android' && (
         <NfcScannerModalAndroid

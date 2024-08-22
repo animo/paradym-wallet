@@ -25,7 +25,7 @@ export const fontOpenSans = createFont({
     4: 18, // Heading 3
     5: 20, // Heading 2
     6: 24, // Heading 1
-    7: 38, // Page Title
+    7: 28, // Page Title
   },
   letterSpacing: {
     4: 0,
@@ -62,7 +62,7 @@ export const fontRaleway = createFont({
     4: 18, // Heading 3
     5: 20, // Heading 2
     6: 24, // Heading 1
-    7: 32, // Page Title
+    7: 28, // Page Title
   },
   letterSpacing: {
     4: 0,
@@ -100,7 +100,7 @@ export const fontInter = createInterFont({
     4: 18, // Heading 3
     5: 20, // Heading 2
     6: 24, // Heading 1
-    7: 38, // Page Title
+    7: 28, // Page Title
   },
   letterSpacing: {
     4: 0,

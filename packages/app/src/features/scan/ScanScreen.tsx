@@ -4,9 +4,9 @@ import { useIsFocused } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
+import type { InvitationType } from '@package/agent'
 import { useCredentialDataHandler } from '../../hooks'
 import { isAndroid } from '../../utils'
-import type { InvitationType } from '@package/agent'
 
 const unsupportedUrlPrefixes = ['_oob=']
 

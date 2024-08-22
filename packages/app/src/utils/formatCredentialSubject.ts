@@ -44,7 +44,7 @@ export function formatCredentialSubject(
   subject: Record<string, unknown> | Array<string | number | boolean>,
   depth = 0,
   parent?: string,
-  title?: string,
+  title?: string
 ): CredentialAttributeTable[] {
   const stringRows: CredentialAttributeRow[] = []
   const objectTables: CredentialAttributeTable[] = []
@@ -94,12 +94,7 @@ export function formatCredentialSubject(
         }
       } else {
         objectTables.push(
-          ...formatCredentialSubject(
-            value as Record<string, unknown>,
-            depth + 1,
-            title,
-            sanitizeString(key)
-          )
+          ...formatCredentialSubject(value as Record<string, unknown>, depth + 1, title, sanitizeString(key))
         )
       }
     }

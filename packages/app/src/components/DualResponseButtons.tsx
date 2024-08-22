@@ -4,16 +4,33 @@ interface DualResponseButtonProps {
   isAccepting?: boolean
   onAccept: () => void
   onDecline: () => void
+  acceptText?: string
+  declineText?: string
+  variant?: 'confirmation' | 'regular'
+  align?: 'horizontal' | 'vertical'
 }
 
-export function DualResponseButtons({ onAccept, onDecline, isAccepting }: DualResponseButtonProps) {
+export function DualResponseButtons({
+  onAccept,
+  onDecline,
+  isAccepting,
+  align = 'vertical',
+  acceptText = 'Accept',
+  declineText = 'Decline',
+  variant = 'regular',
+}: DualResponseButtonProps) {
   return (
-    <YStack gap="$2" py="$2">
-      <Button.Solid disabled={isAccepting} onPress={onAccept}>
-        {isAccepting ? <Spinner variant="dark" /> : 'Accept'}
+    <YStack gap="$2" py="$2" flexDirection={align === 'horizontal' ? 'row-reverse' : 'column'}>
+      <Button.Solid
+        fg={1}
+        disabled={isAccepting}
+        onPress={onAccept}
+        {...(variant === 'confirmation' ? { bg: '$danger-500' } : {})}
+      >
+        {isAccepting ? <Spinner variant="dark" /> : acceptText}
       </Button.Solid>
-      <Button.Outline disabled={isAccepting} onPress={onDecline}>
-        Decline
+      <Button.Outline fg={1} bg="$grey-100" disabled={isAccepting} onPress={onDecline}>
+        {declineText}
       </Button.Outline>
     </YStack>
   )

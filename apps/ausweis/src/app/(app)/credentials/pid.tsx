@@ -1,5 +1,5 @@
-import { Stack } from 'expo-router'
 import { FunkePidCredentialDetailScreen } from '@ausweis/features/wallet/FunkePidCredentialDetailScreen'
+import { Stack } from 'expo-router'
 
 export default function Screen() {
   return (

@@ -2,10 +2,10 @@ import { Heading, HeroIcons, IdCard, Page, ScrollView, Spacer, Spinner, XStack, 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
-import germanIssuerImage from '../../../assets/german-issuer-image.png'
+import { usePidCredential } from '@ausweis/hooks'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import { capitalizeFirstLetter } from '@package/utils'
-import { usePidCredential } from '@ausweis/hooks'
+import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
@@ -47,7 +47,7 @@ export function FunkeWalletScreen() {
             <Heading variant="title" fontWeight="$bold">
               {capitalizeFirstLetter(credential.attributes.given_name.toLowerCase())}'s Wallet
             </Heading>
-            <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName icon="none" />
+            <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
             <Spacer />
             <Heading variant="h1">Recent Activity</Heading>
           </YStack>
