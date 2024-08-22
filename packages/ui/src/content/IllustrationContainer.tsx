@@ -29,7 +29,7 @@ export function IllustrationContainer({ children, pulse }: { children: React.Rea
 export const CircleContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <Stack h={156} w={156} bg="#4365DE33" br={999} jc="center" ai="center">
-      <Stack h={124} w={124} bg="#4365DE80" br={999} jc="center" ai="center">
+      <Stack h={124} w={124} bg="#4365DE99" br={999} jc="center" ai="center">
         <LinearGradient
           colors={['#ffffff0D', '#FFFFFFCC', '#ffffff0D']}
           style={{
