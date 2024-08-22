@@ -23,7 +23,7 @@ export function FunkePidCredentialDetailScreen() {
       <YStack borderWidth={isScrolledByOffset ? 0.5 : 0} borderColor="$grey-300" />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack g="xl" pad="lg" py="$4">
-          <IdCard issuerImage={germanIssuerImage} />
+          <IdCard issuerImage={germanIssuerImage} small />
           <Stack g="md">
             <Heading variant="title">Personalausweis</Heading>
             <CredentialAttributes subject={credential.attributes} headerTitle="Attributes" />

@@ -96,7 +96,11 @@ export const configInput = {
   },
   tokens,
   themes: {
-    light: tokens.color,
+    light: {
+      ...tokens.color,
+      tableBackgroundColor: tokens.color.background,
+      tableBorderColor: tokens.color['grey-200'],
+    },
   },
 } as const satisfies CreateTamaguiProps
 

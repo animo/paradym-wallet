@@ -35,7 +35,7 @@ export const LucideIcons = {
   RefreshCw,
 }
 
-interface HeroIconProps extends SvgProps {
+export interface HeroIconProps extends SvgProps {
   size?: NumberProp
 }
 

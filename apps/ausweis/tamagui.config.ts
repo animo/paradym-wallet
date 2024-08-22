@@ -27,8 +27,8 @@ const tokens = createTokens({
     'grey-200': '#E3E8EC',
     'grey-300': '#D7DCE0',
     'grey-400': '#BFC5CB',
-    'grey-500': '#ACB3BB',
-    'grey-600': '#8A929B',
+    'grey-500': '#F6F8F9',
+    'grey-600': '#6D7581',
     'grey-700': '#656974',
     'grey-800': '#464B56',
     'grey-900': '#282C37',
@@ -55,7 +55,11 @@ const config = createTamagui({
     body: fontOpenSans,
   },
   themes: {
-    light: tokens.color,
+    light: {
+      ...tokens.color,
+      tableBackgroundColor: tokens.color['grey-500'],
+      tableBorderColor: '#ECEFF2',
+    },
   },
 })
 

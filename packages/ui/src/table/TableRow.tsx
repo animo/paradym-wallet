@@ -19,7 +19,8 @@ export const TableRow = ({ attribute, value, isLastRow, onPress, image }: TableR
       py="$2"
       key={attribute}
       borderBottomWidth={isLastRow ? 0 : 1}
-      borderBottomColor="$grey-200"
+      borderBottomColor="$tableBorderColor"
+      backgroundColor="$tableBackgroundColor"
       onPress={onPress}
       pressStyle={{
         opacity: 0.8,
