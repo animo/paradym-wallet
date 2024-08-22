@@ -5,7 +5,7 @@ import { RippleCircle } from './AnimatedFingerPrintCircle'
 export function IllustrationContainerBackground() {
   return (
     <LinearGradient
-      colors={['#FFFFFF00', '#00000040', '#FFFFFF00', '#00000040', '#FFFFFF00', '#00000040', '#FFFFFF00']}
+      colors={['#FFFFFF00', '#00000033', '#FFFFFF00', '#00000033', '#FFFFFF00', '#00000033', '#FFFFFF00']}
       locations={[0, 0.2, 0.46, 0.67, 0.79, 0.92, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
