@@ -1,20 +1,20 @@
 import { sanitizeString } from '@package/utils'
 
 export type CredentialAttributeRowString = {
-  key: string
+  key?: string
   value: string
   type: 'string'
 }
 
 export type CredentialAttributeRowImage = {
   type: 'image'
-  key: string
+  key?: string
   image: string
 }
 
 export type CredentialAttributeRowImageAndString = {
   type: 'imageAndString'
-  key: string
+  key?: string
   image: string
   value: string
 }
@@ -41,7 +41,7 @@ export type CredentialAttributeTable = {
  * @returns an array of CredentialAttributeTable objects, each representing a table with rows of key-value pairs. Nested objects are represented as separate tables.
  */
 export function formatCredentialSubject(
-  subject: Record<string, unknown>,
+  subject: Record<string, unknown> | Array<string | number | boolean>,
   depth = 0,
   parent?: string,
   title?: string
@@ -49,33 +49,37 @@ export function formatCredentialSubject(
   const stringRows: CredentialAttributeRow[] = []
   const objectTables: CredentialAttributeTable[] = []
 
-  for (const key of Object.keys(subject)) {
+  const isArray = Array.isArray(subject)
+  for (const [key, value] of Object.entries(subject)) {
     // omit id and type
     if (key === 'id' || key === 'type') continue
-
-    const value = subject[key]
 
     // omit properties with no value
     if (value === undefined) continue
 
     if (typeof value === 'string' && value.startsWith('data:image/')) {
       stringRows.push({
-        key: sanitizeString(key),
+        key: isArray ? undefined : sanitizeString(key),
         image: value,
         type: 'image',
       })
     } else if (typeof value === 'string' || typeof value === 'number') {
       stringRows.push({
-        key: sanitizeString(key),
+        key: isArray ? undefined : sanitizeString(key),
         value: `${value}`,
         type: 'string',
       })
     } else if (typeof value === 'boolean') {
       stringRows.push({
-        key: sanitizeString(key),
+        key: isArray ? undefined : sanitizeString(key),
         value: value ? 'Yes' : 'No',
         type: 'string',
       })
+    } else if (
+      Array.isArray(value) &&
+      value.every((v) => typeof v === 'boolean' || typeof v === 'string' || typeof v === 'number')
+    ) {
+      objectTables.push(...formatCredentialSubject(value, depth + 1, title, isArray ? undefined : sanitizeString(key)))
     }
     // FIXME: Handle arrays
     else if (typeof value === 'object' && value !== null) {

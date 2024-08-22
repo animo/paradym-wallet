@@ -9,6 +9,13 @@ export const Stack = styled(TStack, {
       },
     },
     shadow: {
+      sm: {
+        elevation: 3,
+        shadowOffset: { width: 0, height: 4 },
+        shadowColor: 'grey',
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+      },
       true: {
         elevation: 4,
         shadowOffset: { width: 5, height: 5 },

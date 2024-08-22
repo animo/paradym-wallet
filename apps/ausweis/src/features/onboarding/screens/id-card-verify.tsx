@@ -12,7 +12,7 @@ export interface OnboardingIdCardFetchProps {
 export function OnboardingIdCardVerify({ goToNextStep }: OnboardingIdCardFetchProps) {
   return (
     <YStack jc="space-between" fg={1}>
-      <IdCard icon="biometric" issuerImage={germanIssuerImage} />
+      <IdCard hideUserName icon="biometric" issuerImage={germanIssuerImage} />
       <Button.Solid onPress={goToNextStep}>Unlock with biometrics</Button.Solid>
     </YStack>
   )

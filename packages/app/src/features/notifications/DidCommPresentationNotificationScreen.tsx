@@ -35,10 +35,10 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   const onProofAccept = () => {
     acceptPresentation(selectedCredentials)
       .then(() => {
-        toast.show('Information has been successfully shared.')
+        toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
       })
       .catch(() => {
-        toast.show('Presentation could not be shared.')
+        toast.show('Presentation could not be shared.', { customData: { preset: 'danger' } })
       })
       .finally(() => {
         pushToWallet()

@@ -1,4 +1,10 @@
-import { formatDifPexCredentialsForRequest, getCredentialsForProofRequest, shareProof, useAgent } from '@package/agent'
+import {
+  BiometricAuthenticationCancelledError,
+  formatDifPexCredentialsForRequest,
+  getCredentialsForProofRequest,
+  shareProof,
+  useAgent,
+} from '@package/agent'
 import { useToastController } from '@package/ui'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { createParam } from 'solito'
@@ -49,7 +55,9 @@ export function OpenIdPresentationNotificationScreen() {
         })
         setCredentialsForRequest(cfr)
       } catch (error: unknown) {
-        toast.show('Presentation information could not be extracted.')
+        toast.show('Presentation information could not be extracted.', {
+          customData: { preset: 'danger' },
+        })
         agent.config.logger.error('Error getting credentials for request', {
           error,
         })
@@ -75,15 +83,24 @@ export function OpenIdPresentationNotificationScreen() {
       selectedCredentials,
     })
       .then(() => {
-        toast.show('Information has been successfully shared.')
+        toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
+        pushToWallet()
       })
       .catch((e) => {
-        toast.show('Presentation could not be shared.')
-        agent.config.logger.error('Error accepting presentation', {
-          error: e as unknown,
+        if (e instanceof BiometricAuthenticationCancelledError) {
+          toast.show('Biometric authentication cancelled', {
+            customData: { preset: 'danger' },
+          })
+          setIsSharing(false)
+          return
+        }
+
+        toast.show('Presentation could not be shared.', {
+          customData: { preset: 'danger' },
         })
-      })
-      .finally(() => {
+        agent.config.logger.error('Error accepting presentation', {
+          error: e,
+        })
         pushToWallet()
       })
   }

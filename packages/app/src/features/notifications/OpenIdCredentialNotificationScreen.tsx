@@ -51,7 +51,7 @@ export function OpenIdCredentialNotificationScreen() {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error: e,
         })
-        toast.show('Credential information could not be extracted.')
+        toast.show('Credential information could not be extracted.', { customData: { preset: 'danger' } })
         pushToWallet()
       }
     }
@@ -67,13 +67,13 @@ export function OpenIdCredentialNotificationScreen() {
 
     await storeCredential(agent, credentialRecord)
       .then(() => {
-        toast.show('Credential has been added to your wallet.')
+        toast.show('Credential has been added to your wallet.', { customData: { preset: 'success' } })
       })
       .catch((e) => {
         agent.config.logger.error("Couldn't store credential", {
           error: e as unknown,
         })
-        toast.show('Something went wrong while storing the credential.')
+        toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
       })
       .finally(() => {
         pushToWallet()

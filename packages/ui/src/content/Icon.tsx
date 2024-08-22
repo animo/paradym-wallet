@@ -35,7 +35,7 @@ export const LucideIcons = {
   RefreshCw,
 }
 
-interface HeroIconProps extends SvgProps {
+export interface HeroIconProps extends SvgProps {
   size?: NumberProp
 }
 
@@ -70,6 +70,7 @@ export const HeroIcons = {
   DevicePhoneMobile: wrapHeroIcon(DevicePhoneMobileIcon),
   HandRaised: wrapHeroIcon(HandRaisedIcon),
   XCircle: wrapHeroIcon(XCircleIcon),
+  QrCode: wrapHeroIcon(QrCodeIcon),
   QuestionMarkCircle: wrapHeroIcon(QuestionMarkCircleIcon),
   FingerPrint: wrapHeroIcon(FingerPrintIcon),
 } as const

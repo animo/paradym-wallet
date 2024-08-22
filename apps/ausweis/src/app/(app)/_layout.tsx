@@ -1,15 +1,22 @@
-import { Redirect, Stack } from 'expo-router'
+import { Redirect, Stack, useRouter } from 'expo-router'
 
 import { useSecureUnlock } from '@ausweis/agent'
 import { useHasFinishedOnboarding } from '@ausweis/features/onboarding'
 import { resetWallet, useResetWalletDevMenu } from '@ausweis/utils/resetWallet'
 import { AgentProvider } from '@package/agent'
+import { DeeplinkHandler, isAndroid } from '@package/app'
+import { HeroIcons, XStack } from '@package/ui'
 import { useEffect, useState } from 'react'
 import Reanimated, { FadeIn } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTheme } from 'tamagui'
 
 export default function AppLayout() {
   useResetWalletDevMenu()
   const secureUnlock = useSecureUnlock()
+  const { top } = useSafeAreaInsets()
+  const theme = useTheme()
+  const router = useRouter()
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -39,15 +46,53 @@ export default function AppLayout() {
     return <Redirect href="/authenticate" />
   }
 
+  // On Android, we push down the screen content when the presentation is a Modal
+  // This is because Android phones render Modals as full screen pages.
+  const headerModalOptions = isAndroid() && {
+    headerShown: true,
+    header: () => {
+      // Header is translucent by default. See configuration in app.json
+      return <XStack bg="$background" h={top} />
+    },
+  }
+
   // Render the normal wallet, which is everything inside (app)
   return (
     <AgentProvider agent={secureUnlock.context.agent}>
-      <Reanimated.View
-        style={{ flex: 1 }}
-        entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(200)}
-      >
-        <Stack />
-      </Reanimated.View>
+      <DeeplinkHandler allowedInvitationTypes={['openid-authorization-request']}>
+        <Reanimated.View
+          style={{ flex: 1 }}
+          entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(200)}
+        >
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              options={{
+                presentation: 'modal',
+                // Extra modal options not needed for QR Scanner
+              }}
+              name="(home)/scan"
+            />
+            <Stack.Screen
+              options={{ presentation: 'modal', ...headerModalOptions }}
+              name="notifications/openIdPresentation"
+            />
+            <Stack.Screen
+              options={{
+                headerShown: true,
+                headerTransparent: true,
+                headerTintColor: theme['primary-500'].val,
+                headerTitle: '',
+                headerLeft: () => (
+                  <XStack onPress={() => router.back()}>
+                    <HeroIcons.ArrowLeft size={32} color="$black" />
+                  </XStack>
+                ),
+              }}
+              name="credentials/pid"
+            />
+          </Stack>
+        </Reanimated.View>
+      </DeeplinkHandler>
     </AgentProvider>
   )
 }

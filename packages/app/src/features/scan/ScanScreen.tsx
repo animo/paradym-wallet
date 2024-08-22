@@ -4,12 +4,17 @@ import { useIsFocused } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
+import type { InvitationType } from '@package/agent'
 import { useCredentialDataHandler } from '../../hooks'
 import { isAndroid } from '../../utils'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
-export function QrScannerScreen() {
+interface QrScannerScreenProps {
+  allowedInvitationTypes?: Array<InvitationType>
+}
+
+export function QrScannerScreen({ allowedInvitationTypes }: QrScannerScreenProps) {
   const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
 
@@ -24,14 +29,15 @@ export function QrScannerScreen() {
     setIsProcessing(true)
     setIsLoading(true)
 
-    const result = await handleCredentialData(scannedData)
+    const result = await handleCredentialData(scannedData, { allowedInvitationTypes })
     if (!result.success) {
-      const isUnsupportedUrl = unsupportedUrlPrefixes.find((x) => scannedData.includes(x))
+      const isUnsupportedUrl =
+        unsupportedUrlPrefixes.find((x) => scannedData.includes(x)) || result.error === 'invitation_type_not_allowed'
       setHelpText(
         isUnsupportedUrl
           ? 'This QR-code is not supported yet. Try scanning a different one.'
-          : result.error
-            ? result.error
+          : result.message
+            ? result.message
             : 'Invalid QR code. Try scanning a different one.'
       )
       setIsLoading(false)
