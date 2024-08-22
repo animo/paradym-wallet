@@ -1,4 +1,4 @@
-import { FunkePidCredentialDetailScreen } from '@ausweis/features/wallet/FunkePidCredentialDetailScreen'
+import { FunkePidCredentialDetailScreen } from '@easypid/features/wallet/FunkePidCredentialDetailScreen'
 import { Stack } from 'expo-router'
 
 export default function Screen() {

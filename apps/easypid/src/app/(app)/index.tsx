@@ -1,4 +1,4 @@
-import { FunkeWalletScreen } from '@ausweis/features/wallet/FunkeWalletScreen'
+import { FunkeWalletScreen } from '@easypid/features/wallet/FunkeWalletScreen'
 import { XStack } from '@package/ui'
 import { Stack } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

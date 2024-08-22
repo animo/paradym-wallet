@@ -2,7 +2,7 @@ import { Heading, HeroIcons, IdCard, Page, ScrollView, Spacer, Spinner, Stack, X
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
-import { usePidCredential } from '@ausweis/hooks'
+import { usePidCredential } from '@easypid/hooks'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import { capitalizeFirstLetter } from '@package/utils'
 import Reanimated from 'react-native-reanimated'
