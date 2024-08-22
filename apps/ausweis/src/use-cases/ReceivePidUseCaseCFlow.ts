@@ -90,7 +90,7 @@ export class ReceivePidUseCaseCFlow {
         }
       },
       onCardAttachedChanged: (options) => this.options.onCardAttachedChanged?.(options),
-      debug: false,
+      debug: __DEV__,
       onStatusProgress: (options) => this.options.onStatusProgress?.(options),
       onAttachCard: () => this.options.onAttachCard?.(),
     })
