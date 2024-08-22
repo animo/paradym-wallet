@@ -1,6 +1,6 @@
-import { Button, Stack } from '@package/ui'
+import { Button, IdCardImage, Stack } from '@package/ui'
 
-import { ImageContainer, NfcCardScanningPlacementImage } from '@package/ui'
+import { IllustrationContainer } from '@package/ui'
 
 interface OnboardingIdCardStartScanProps {
   goToNextStep: () => void
@@ -9,11 +9,9 @@ interface OnboardingIdCardStartScanProps {
 export function OnboardingIdCardStart({ goToNextStep }: OnboardingIdCardStartScanProps) {
   return (
     <Stack fg={1}>
-      <ImageContainer>
-        <Stack pt="$6">
-          <NfcCardScanningPlacementImage height={224} width={224} />
-        </Stack>
-      </ImageContainer>
+      <IllustrationContainer>
+        <IdCardImage height={52} width={256} />
+      </IllustrationContainer>
       <Stack flex-1 justifyContent="flex-end">
         <Button.Solid onPress={goToNextStep}>Continue</Button.Solid>
       </Stack>

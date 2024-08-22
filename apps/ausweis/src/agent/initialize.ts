@@ -1,12 +1,12 @@
 import { trustedX509Certificates } from '@ausweis/constants'
-import { initializeAusweisAgent } from '@package/agent'
+import { initializeEasyPIDAgent } from '@package/agent'
 
 export function initializeAppAgent({ walletKey }: { walletKey: string }) {
-  return initializeAusweisAgent({
+  return initializeEasyPIDAgent({
     keyDerivation: 'raw',
     walletId: 'ausweis-wallet',
     walletKey,
-    walletLabel: 'Ausweis Wallet',
+    walletLabel: 'EasyPID Wallet',
     trustedX509Certificates,
   })
 }

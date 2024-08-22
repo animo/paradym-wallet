@@ -1,8 +1,21 @@
-import { Button, FlexPage, Heading, HeroIcons, Stack, XStack, YStack } from '@package/ui'
+import {
+  Button,
+  CircleContainer,
+  FlexPage,
+  Heading,
+  HeroIcons,
+  IllustrationContainerBackground,
+  Paragraph,
+  Stack,
+  XStack,
+  YStack,
+} from '@package/ui'
 import { Image } from '@tamagui/image'
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 import { Alert } from 'react-native'
 import Animated, { FadingTransition } from 'react-native-reanimated'
+
 import inAppLogo from '../../../../assets/icon.png'
 
 export interface OnboardingWelcomeProps {
@@ -14,9 +27,29 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
 
   return (
     <Animated.View style={{ flexGrow: 1 }} layout={FadingTransition}>
-      <FlexPage p={0} fg={1} jc="space-between">
+      <Stack
+        h="60%"
+        w="150%"
+        mt="-10%"
+        left="-25%"
+        bg="#D5DDF0CC"
+        position="absolute"
+        top={0}
+        flex={1}
+        ai="center"
+        jc="flex-end"
+        br={200}
+        overflow="hidden"
+      >
+        <IllustrationContainerBackground />
+        <YStack mb="$10">
+          <CircleContainer>
+            <Image br="$6" source={inAppLogo} width={64} height={64} />
+          </CircleContainer>
+        </YStack>
+      </Stack>
+      <FlexPage p={0} fg={1} jc="space-between" bg="#00000000">
         <YStack px="$4" gap="$4" flex-1 justifyContent="space-between">
-          {/* This stack ensures the right spacing  */}
           <YStack ai="flex-end">
             <Stack
               p="$2"
@@ -27,9 +60,12 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
               <HeroIcons.QuestionMarkCircle color="$grey-900" />
             </Stack>
           </YStack>
+          <Stack h="$10" />
           <YStack gap="$4" jc="center" ai="center">
-            <Image br="$6" source={inAppLogo} width={64} height={64} />
-            <Heading>Ausweis Wallet</Heading>
+            <Heading fontSize={32}>Animo EasyPID</Heading>
+            <Paragraph color="$grey-700" lineHeight={24} px="$4" ta="center">
+              With the EasyPID, you can easily share personal data using your phone.
+            </Paragraph>
           </YStack>
           <XStack gap="$2">
             <Button.Outline

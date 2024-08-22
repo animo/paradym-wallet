@@ -89,7 +89,7 @@ const onboardingSteps = [
       type: 'content',
       title: 'Let’s secure your wallet',
       subtitle:
-        'The Ausweis wallet will be unlocked using the biometrics functionality of your phone. This is to make sure only you can enter your wallet.',
+        'The wallet will be unlocked using the biometrics functionality of your phone. This is to make sure only you can enter your wallet.',
     },
     Screen: OnboardingBiometrics,
   },

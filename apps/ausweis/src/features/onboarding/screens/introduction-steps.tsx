@@ -12,7 +12,7 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
         <OnboardingStepItem
           stepName="step 1"
           title="Setup a pin code for the app"
-          description="This code will secure the Ausweis wallet and should be kept to yourself."
+          description="This code will secure the wallet and should be kept to yourself."
           icon={<HeroIcons.Key color="$white" size={20} />}
         />
         <OnboardingStepItem
@@ -29,8 +29,7 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
         />
       </YStack>
       <YStack gap="$4" alignItems="center">
-        {/* TODO: grey-700 vs secondary */}
-        <Paragraph variant="sub" color="$grey-700" textAlign="center">
+        <Paragraph variant="sub" color="$grey-600" fontWeight="$medium" textAlign="center">
           You'll need your eID card to setup the wallet
         </Paragraph>
         <Button.Solid alignSelf="stretch" onPress={goToNextStep}>

@@ -8,10 +8,10 @@ global.Buffer = Buffer
 
 export {
   initializeFullAgent,
-  initializeAusweisAgent,
+  initializeEasyPIDAgent,
   useAgent,
   FullAppAgent,
-  AusweisAppAgent,
+  EasyPIDAppAgent,
 } from './agent'
 export * from './providers'
 export * from './invitation'

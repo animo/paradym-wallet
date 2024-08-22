@@ -30,9 +30,9 @@ const invitationSchemes = ['openid', 'openid-initiate-issuance', 'openid-credent
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
-  name: `Ausweis Wallet ${variant.name}`,
-  scheme: 'ausweis-wallet',
-  slug: 'ausweis-wallet',
+  name: `EasyPID ${variant.name}`,
+  scheme: 'animo-easypid',
+  slug: 'animo-easypid',
   owner: 'animo-id',
   version,
   orientation: 'portrait',
@@ -46,8 +46,8 @@ const config = {
   },
   splash: {
     image: './assets/splash.png',
-    resizeMode: 'contain',
-    backgroundColor: '#FFFFFF',
+    resizeMode: 'cover',
+    backgroundColor: '#2445CD',
   },
   updates: {
     fallbackToCacheTimeout: 0,
@@ -85,10 +85,9 @@ const config = {
     supportsTablet: false,
     bundleIdentifier: `id.animo.ausweis${variant.bundle}`,
     infoPlist: {
-      NSPhotoLibraryUsageDescription:
-        'Ausweis Wallet uses the camera to initiate receiving and sharing of credentials.',
-      NSCameraUsageDescription: 'Ausweis Wallet uses the camera to initiate receiving and sharing of credentials.',
-      NSFaceIDUsageDescription: 'Ausweis Wallet uses FaceID to securely unlock the wallet and share credentials.',
+      NSPhotoLibraryUsageDescription: 'EasyPID uses the camera to initiate receiving and sharing of credentials.',
+      NSCameraUsageDescription: 'EasyPID uses the camera to initiate receiving and sharing of credentials.',
+      NSFaceIDUsageDescription: 'EasyPID uses FaceID to securely unlock the wallet and share credentials.',
       ITSAppUsesNonExemptEncryption: false,
       // Add schemes for deep linking
       CFBundleURLTypes: [
