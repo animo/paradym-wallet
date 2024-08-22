@@ -7,6 +7,7 @@ import {
   type ReceivePidUseCaseCFlowOptions,
   type ReceivePidUseCaseState,
 } from '@ausweis/use-cases/ReceivePidUseCaseCFlow'
+import { resetWallet } from '@ausweis/utils/resetWallet'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { storeCredential } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -15,12 +16,12 @@ import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
+import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
 import { OnboardingIdCardScan } from './screens/id-card-scan'
 import { OnboardingIdCardStart } from './screens/id-card-start'
-import { OnboardingIdCardStartScan } from './screens/id-card-start-scan'
 import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
@@ -77,7 +78,7 @@ const onboardingSteps = [
       type: 'content',
       title: 'Re-enter your pin',
       subtitle: 'You are required to enter your identity pin every time you share data with a party.',
-      animationKey: 'pin-reenter',
+      animationKey: 'pin',
     },
     Screen: OnboardingPinEnter,
   },
@@ -97,9 +98,10 @@ const onboardingSteps = [
     progress: 66,
     page: {
       type: 'content',
-      title: 'Scan your passport to validate your identity',
-      subtitle: 'You’ll need to setup your wallet using your physical identity card and the eID pin.',
-      caption: 'Your eID pin has been sent shared with you when you received your physical passport.',
+      title: 'Scan your eID card to verify your identity',
+      subtitle: 'You’ll need to setup your wallet using your physical eID card and the eID pin.',
+      caption:
+        'Your eID pin has been configured previously when you received your eID card and is different from your app pin.',
     },
     Screen: OnboardingIdCardStart,
   },
@@ -120,11 +122,11 @@ const onboardingSteps = [
       title: 'Scanning your eID card',
       subtitle:
         Platform.OS === 'android'
-          ? 'Place your ID card on the top of the device’s back side.'
-          : 'Place your ID card at the top of the device’s front side.',
+          ? 'Place your eID card on your device’s back side.'
+          : 'Place your eID card at the top of the device’s back side.',
       animationKey: 'id-card-scan',
     },
-    Screen: OnboardingIdCardStartScan,
+    Screen: OnboardingIdCardScan,
   },
   {
     step: 'id-card-scan',
@@ -134,8 +136,8 @@ const onboardingSteps = [
       title: 'Scanning your eID card',
       subtitle:
         Platform.OS === 'android'
-          ? 'Place your ID card on the top of the device’s back side.'
-          : 'Place your ID card at the top of the device’s front side.',
+          ? 'Place your eID card on your device’s back side.'
+          : 'Place your eID card at the top of the device’s back side.',
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardScan,
@@ -146,7 +148,6 @@ const onboardingSteps = [
     page: {
       type: 'content',
       title: 'Fetching information',
-      animationKey: 'id-card-final',
     },
     Screen: OnboardingIdCardFetch,
   },
@@ -157,7 +158,7 @@ const onboardingSteps = [
       type: 'content',
       title: 'We need to verify it’s you',
       subtitle: 'Your biometrics are required to unlock your identity.',
-      animationKey: 'id-card-verify',
+      animationKey: 'id-card',
     },
     Screen: OnboardingIdCardVerify,
   },
@@ -167,8 +168,8 @@ const onboardingSteps = [
     page: {
       type: 'content',
       title: 'Success!',
-      subtitle: 'The information has been retrieved from your passport.',
-      animationKey: 'id-card-final',
+      subtitle: 'The information has been retrieved from your eID card.',
+      animationKey: 'id-card',
     },
     Screen: OnboardingIdCardFetch,
   },
@@ -203,6 +204,7 @@ export function OnboardingContextProvider({
   const secureUnlock = useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
+  const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
 
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
@@ -235,9 +237,10 @@ export function OnboardingContextProvider({
       setCurrentStepName(nextStep.step)
     } else {
       // Navigate to the actual app.
+      setHasFinishedOnboarding(true)
       router.replace('/')
     }
-  }, [currentStepName, router])
+  }, [currentStepName, router, setHasFinishedOnboarding])
 
   const goToPreviousStep = useCallback(() => {
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
@@ -285,6 +288,7 @@ export function OnboardingContextProvider({
       throw new Error('Pin entries do not match')
     }
 
+    console.log(secureUnlock.state)
     if (secureUnlock.state !== 'not-configured') {
       router.replace('/')
       return
@@ -292,10 +296,10 @@ export function OnboardingContextProvider({
 
     return secureUnlock
       .setup(walletPin)
-      .then(({ walletKey }) => initializeAgent(walletKey))
+      .then(async ({ walletKey }) => initializeAgent(walletKey))
       .then(() => goToNextStep())
-      .catch((e) => {
-        reset({ error: e, resetToStep: 'welcome' })
+      .catch(async (e) => {
+        await reset({ error: e, resetToStep: 'welcome' })
         throw e
       })
   }
@@ -376,7 +380,7 @@ export function OnboardingContextProvider({
     setIdCardPin(pin)
 
     if (secureUnlock.state !== 'unlocked') {
-      reset({
+      await reset({
         error: 'onIdCardPinEnter: Secure unlock state is not unlocked',
         resetToStep: 'welcome',
       })
@@ -415,8 +419,8 @@ export function OnboardingContextProvider({
             setReceivePidUseCase(receivePidUseCase)
             goToNextStep()
           })
-          .catch((e) => {
-            reset({ error: e, resetToStep: 'id-card-pin' })
+          .catch(async (e) => {
+            await reset({ error: e, resetToStep: 'id-card-pin' })
             throw e
           })
       }
@@ -426,7 +430,7 @@ export function OnboardingContextProvider({
     return
   }
 
-  const reset = ({
+  const reset = async ({
     resetToStep = 'welcome',
     error,
     showToast = true,
@@ -463,7 +467,9 @@ export function OnboardingContextProvider({
     if (stepsToCompleteAfterReset.includes('id-card-fetch')) {
       setUserName(undefined)
     }
-    if (stepsToCompleteAfterReset.includes('id-card-pin')) {
+
+    if (stepsToCompleteAfterReset.includes('pin')) {
+      await resetWallet(secureUnlock)
     }
 
     // TODO: if we already have the agent, we should either remove the wallet and start again,
@@ -482,16 +488,15 @@ export function OnboardingContextProvider({
 
   const onStartScanning = async () => {
     if (receivePidUseCase?.state !== 'id-card-auth') {
-      reset({
+      await reset({
         resetToStep: 'id-card-pin',
         error: 'onStartScanning: receivePidUseCaseState is not id-card-auth',
       })
       return
     }
 
-    // FIXME: we should probably remove the database here.
     if (secureUnlock.state !== 'unlocked') {
-      reset({
+      await reset({
         resetToStep: 'welcome',
         error: 'onStartScanning: secureUnlock.state is not unlocked',
       })
@@ -517,7 +522,7 @@ export function OnboardingContextProvider({
 
       const reason = (error as CardScanningErrorDetails).reason
       if (reason === 'user_cancelled' || reason === 'cancelled') {
-        reset({
+        await reset({
           resetToStep: 'id-card-pin',
           error,
           showToast: false,
@@ -529,7 +534,7 @@ export function OnboardingContextProvider({
           },
         })
       } else {
-        reset({ resetToStep: 'id-card-pin', error })
+        await reset({ resetToStep: 'id-card-pin', error })
       }
 
       return
@@ -548,6 +553,35 @@ export function OnboardingContextProvider({
       // Acquire access token
       await receivePidUseCase.acquireAccessToken()
 
+      if (selectedFlow === 'c') {
+        // For c flow we need to do a biometrics check, so we first inform the user of that
+        setCurrentStepName('id-card-verify')
+      } else if (selectedFlow === 'bprime') {
+        await retrieveCredential()
+      }
+    } catch (error) {
+      await reset({ resetToStep: 'id-card-pin', error })
+    }
+  }
+
+  const retrieveCredential = async () => {
+    if (receivePidUseCase?.state !== 'retrieve-credential') {
+      await reset({
+        resetToStep: 'id-card-pin',
+        error: 'retrieveCredential: receivePidUseCaseState is not retrieve-credential',
+      })
+      return
+    }
+
+    if (secureUnlock.state !== 'unlocked') {
+      await reset({
+        resetToStep: 'welcome',
+        error: 'retrieveCredential: secureUnlock.state is not unlocked',
+      })
+      return
+    }
+
+    try {
       // Retrieve Credential
       const credential = await receivePidUseCase.retrieveCredential()
       await storeCredential(secureUnlock.context.agent, credential)
@@ -560,9 +594,9 @@ export function OnboardingContextProvider({
           parsed.prettyClaims.family_name.toLowerCase()
         )}`
       )
-      setCurrentStepName('id-card-verify')
+      setCurrentStepName('id-card-complete')
     } catch (error) {
-      reset({ resetToStep: 'id-card-pin', error })
+      await reset({ resetToStep: 'id-card-pin', error })
     }
   }
 
@@ -570,16 +604,22 @@ export function OnboardingContextProvider({
   if (currentStep.step === 'welcome') {
     screen = <currentStep.Screen goToNextStep={selectFlow} />
   } else if (currentStep.step === 'pin' || currentStep.step === 'pin-reenter') {
-    screen = <currentStep.Screen key="pin-now" goToNextStep={currentStep.step === 'pin' ? onPinEnter : onPinReEnter} />
-  } else if (currentStep.step === 'id-card-pin') {
-    screen = <currentStep.Screen goToNextStep={onIdCardPinReEnter ?? onIdCardPinEnter} />
-  } else if (currentStep.step === 'id-card-start-scan') {
-    screen = <currentStep.Screen goToNextStep={onStartScanning} />
-  } else if (currentStep.step === 'id-card-complete') {
-    screen = <currentStep.Screen goToNextStep={goToNextStep} userName={userName} />
-  } else if (currentStep.step === 'id-card-scan') {
     screen = (
       <currentStep.Screen
+        key={currentStep.page.animationKey}
+        goToNextStep={currentStep.step === 'pin' ? onPinEnter : onPinReEnter}
+      />
+    )
+  } else if (currentStep.step === 'id-card-pin') {
+    screen = <currentStep.Screen goToNextStep={onIdCardPinReEnter ?? onIdCardPinEnter} />
+  } else if (currentStep.step === 'id-card-complete') {
+    screen = <currentStep.Screen goToNextStep={goToNextStep} userName={userName} key={currentStep.page.animationKey} />
+  } else if (currentStep.step === 'id-card-verify') {
+    screen = <currentStep.Screen goToNextStep={retrieveCredential} key={currentStep.page.animationKey} />
+  } else if (currentStep.step === 'id-card-scan' || currentStep.step === 'id-card-start-scan') {
+    screen = (
+      <currentStep.Screen
+        key={currentStep.page.animationKey}
         progress={idCardScanningState.progress}
         scanningState={idCardScanningState.state}
         isCardAttached={idCardScanningState.isCardAttached}
@@ -587,18 +627,18 @@ export function OnboardingContextProvider({
           receivePidUseCase?.cancelIdCardScanning()
         }}
         showScanModal={idCardScanningState.showScanModal ?? true}
+        onStartScanning={currentStep.step === 'id-card-start-scan' ? onStartScanning : undefined}
       />
     )
   } else {
     screen = <currentStep.Screen goToNextStep={goToNextStep} />
   }
 
-  const onUserReset = () => {
+  const onUserReset = () =>
     reset({
       resetToStep: 'welcome',
       showToast: false,
     })
-  }
 
   return (
     <OnboardingContext.Provider

@@ -1,6 +1,3 @@
-import { Button, Stack, YStack, ZStack } from '@package/ui'
-
-import { NfcCard, NfcHand } from '@package/ui'
 import { useEffect } from 'react'
 import Animated, {
   useSharedValue,
@@ -10,12 +7,10 @@ import Animated, {
   withDelay,
   withSequence,
 } from 'react-native-reanimated'
+import { Stack, ZStack } from '../base'
+import { NfcCard, NfcHand } from '../images'
 
-interface OnboardingIdCardStartScanProps {
-  goToNextStep: () => void
-}
-
-export function OnboardingIdCardStartScan({ goToNextStep }: OnboardingIdCardStartScanProps) {
+export function AnimatedNfcScan() {
   const translateY = useSharedValue(0)
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -48,22 +43,15 @@ export function OnboardingIdCardStartScan({ goToNextStep }: OnboardingIdCardStar
   })
 
   return (
-    <Stack fg={1}>
-      <YStack ai="center" w="45%">
-        <ZStack mt="$6" jc="center" ai="center">
-          <Stack mt="$10">
-            <NfcHand height={256} width={256} />
-          </Stack>
-          <Animated.View style={animatedStyle}>
-            <Stack mt="$-10" mx="$6">
-              <NfcCard height={100} width={100} />
-            </Stack>
-          </Animated.View>
-        </ZStack>
-      </YStack>
-      <Stack flex-1 justifyContent="flex-end">
-        <Button.Solid onPress={goToNextStep}>Start scanning</Button.Solid>
+    <ZStack mt="$6" jc="center" ai="center">
+      <Animated.View style={animatedStyle}>
+        <Stack mt="$-10" mx="$6">
+          <NfcCard height={100} width={100} />
+        </Stack>
+      </Animated.View>
+      <Stack mt="$10">
+        <NfcHand height={256} width={256} />
       </Stack>
-    </Stack>
+    </ZStack>
   )
 }
