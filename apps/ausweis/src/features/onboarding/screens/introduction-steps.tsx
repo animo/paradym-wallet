@@ -7,8 +7,8 @@ interface OnboardingIntroductionStepsProps {
 
 export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroductionStepsProps) {
   return (
-    <>
-      <YStack flex-1 gap="$6">
+    <YStack fg={1} jc="space-between">
+      <YStack gap="$5">
         <OnboardingStepItem
           stepName="step 1"
           title="Setup a pin code for the app"
@@ -17,8 +17,8 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
         />
         <OnboardingStepItem
           stepName="step 2"
-          title="Scan your physical passport"
-          description="You'll need to validate your passport using it's pin."
+          title="Scan your physical eID card"
+          description="You'll need to validate your eID card using its pin."
           icon={<HeroIcons.Identification color="$white" size={20} />}
         />
         <OnboardingStepItem
@@ -28,15 +28,15 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
           icon={<HeroIcons.Star color="$white" size={20} />}
         />
       </YStack>
-      <YStack gap="$2" alignItems="center">
+      <YStack gap="$4" alignItems="center">
         {/* TODO: grey-700 vs secondary */}
         <Paragraph variant="sub" color="$grey-700" textAlign="center">
-          You'll need your passport to setup the wallet
+          You'll need your eID card to setup the wallet
         </Paragraph>
         <Button.Solid alignSelf="stretch" onPress={goToNextStep}>
           Continue
         </Button.Solid>
       </YStack>
-    </>
+    </YStack>
   )
 }

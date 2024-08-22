@@ -91,6 +91,7 @@ export class ReceivePidUseCaseBPrimeFlow {
           successCallback({ refreshUrl })
         }
       },
+      debug: __DEV__,
       onAttachCard: () => this.options.onAttachCard?.(),
     })
     this.options.onStateChange?.('id-card-auth')

@@ -60,15 +60,20 @@ export default function Authenticate() {
   }
 
   return (
-    <FlexPage flex-1 safeArea="t">
-      <YStack flex={3} justifyContent="center" alignItems="center" gap="$4">
+    <FlexPage flex-1 safeArea="y" gap={0} alignItems="center">
+      <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$2">
         <Circle size="$3" backgroundColor="$grey-100">
           <HeroIcons.LockClosed color="$grey-700" />
         </Circle>
         <Paragraph>Enter your app pin code</Paragraph>
-        <PinDotsInput isLoading={isLoading} ref={pinInputRef} pinLength={6} onPinComplete={unlockUsingPin} />
       </YStack>
-      <Stack flex-1 />
+      <PinDotsInput
+        isLoading={isLoading}
+        ref={pinInputRef}
+        pinLength={6}
+        onPinComplete={unlockUsingPin}
+        useNativeKeyboard={false}
+      />
     </FlexPage>
   )
 }

@@ -186,6 +186,9 @@ importers:
       react-native-keychain:
         specifier: ^8.2.0
         version: 8.2.0
+      react-native-mmkv:
+        specifier: ^2.12.2
+        version: 2.12.2(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       react-native-reanimated:
         specifier: ~3.10.1
         version: 3.10.1(@babel/core@7.25.2)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -8165,6 +8168,12 @@ packages:
 
   react-native-markdown-display@6.1.6:
     resolution: {integrity: sha512-B/nHcsJ/lFie/GCmQKU1EJeDNTYRRY/sHMQEC9nzJ5uN8pm5F0KTFfC/UZn/Jb9x8Mi/S0neBw54UL+sygphUg==}
+    peerDependencies:
+      react: 18.2.0
+      react-native: 0.74.5
+
+  react-native-mmkv@2.12.2:
+    resolution: {integrity: sha512-6058Aq0p57chPrUutLGe9fYoiDVDNMU2PKV+lLFUJ3GhoHvUrLdsS1PDSCLr00yqzL4WJQ7TTzH+V8cpyrNcfg==}
     peerDependencies:
       react: 18.2.0
       react-native: 0.74.5
@@ -19522,6 +19531,11 @@ snapshots:
       react: 18.2.0
       react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)
       react-native-fit-image: 1.5.5
+
+  react-native-mmkv@2.12.2(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)
 
   react-native-modal-datetime-picker@14.0.1(@react-native-community/datetimepicker@8.2.0(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)):
     dependencies:

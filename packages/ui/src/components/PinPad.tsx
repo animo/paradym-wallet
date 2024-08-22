@@ -1,5 +1,5 @@
-import { Circle, Paragraph, Text } from 'tamagui'
-import { Button, Stack, XStack, YStack } from '../base'
+import { Text } from 'tamagui'
+import { Stack, XStack, YStack } from '../base'
 import { HeroIcons } from '../content'
 
 export enum PinValues {
@@ -16,6 +16,20 @@ export enum PinValues {
   Zero = '0',
   Backspace = 'backspace',
 }
+const letterMap: Record<PinValues, string> = {
+  [PinValues.One]: '',
+  [PinValues.Two]: 'abc',
+  [PinValues.Three]: 'def',
+  [PinValues.Four]: 'ghi',
+  [PinValues.Five]: 'jkl',
+  [PinValues.Six]: 'mno',
+  [PinValues.Seven]: 'pqrs',
+  [PinValues.Eight]: 'tuv',
+  [PinValues.Nine]: 'wxyz',
+  [PinValues.Zero]: '',
+  [PinValues.Empty]: '',
+  [PinValues.Backspace]: '',
+}
 
 export interface PinNumberProps extends PinPadProps {
   character: PinValues
@@ -23,23 +37,33 @@ export interface PinNumberProps extends PinPadProps {
 
 const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) => {
   return (
-    <Circle
-      width={70}
-      height={70}
-      backgroundColor="$primary-400"
-      pressStyle={{ opacity: 0.5 }}
+    <Stack
+      fg={1}
+      jc="center"
+      ai="center"
+      backgroundColor={character === PinValues.Backspace ? '$grey-200' : '$white'}
+      pressStyle={{ opacity: 0.5, backgroundColor: '$grey-100' }}
       opacity={character === PinValues.Empty ? 0 : 1}
       onPress={() => onPressPinNumber(character)}
       disabled={disabled}
+      h="$6"
+      w="33.33%"
+      borderRightWidth={0.5}
+      borderColor="$grey-200"
     >
       {character === PinValues.Backspace ? (
-        <HeroIcons.Backspace color="$white" size={24} />
+        <HeroIcons.Backspace color="$grey-900" size={24} />
       ) : (
-        <Text color="$white" fontWeight="$bold" fontSize="$6" fontFamily="$body">
-          {character}
-        </Text>
+        <YStack ai="center" gap="$1">
+          <Text color="$grey-900" fontWeight="$semiBold" fontSize="$6" fontFamily="$body">
+            {character}
+          </Text>
+          <Text color="$grey-600" fontSize="$2.5" fontFamily="$medium">
+            {letterMap[character].toLocaleUpperCase()}
+          </Text>
+        </YStack>
       )}
-    </Circle>
+    </Stack>
   )
 }
 
@@ -58,7 +82,7 @@ export const PinPad = ({ onPressPinNumber, disabled }: PinPadProps) => {
 
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (
     // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-    <XStack key={rowIndex} height={70} gap="$4" justifyContent="center">
+    <XStack key={rowIndex} borderTopWidth={0.5} bc="$grey-200" borderColor="$grey-200" w="100%" justifyContent="center">
       {rowItems.map((value, columnIndex) => (
         <PinNumber
           key={`${value}:${columnIndex}:${
@@ -73,5 +97,10 @@ export const PinPad = ({ onPressPinNumber, disabled }: PinPadProps) => {
     </XStack>
   ))
 
-  return <YStack gap="$4">{pinNumbers}</YStack>
+  return (
+    // This is not a good solution, but it's a quick fix to get the pin pad full screen without changing the whole onboarding layout
+    <YStack mr={-32} ml={-32}>
+      {pinNumbers}
+    </YStack>
+  )
 }

@@ -1,19 +1,26 @@
 import type { ComponentProps } from 'react'
-import { Heading, Paragraph, YStack } from '../base'
-import { ProgressBar } from '../content'
+import { Stack, XStack, YStack } from '../base'
+import { HeroIcons, ProgressBar } from '../content'
 
 interface OnboardingScreensHeaderProps extends ComponentProps<typeof YStack> {
   progress: number
-  title: string
+  title?: string
   subtitle?: string
+  onBack?: () => void
 }
 
-export function OnboardingScreensHeader({ progress, title, subtitle, ...props }: OnboardingScreensHeaderProps) {
+export function OnboardingScreensHeader({ progress, title, subtitle, onBack }: OnboardingScreensHeaderProps) {
   return (
-    <YStack gap="$2" {...props}>
+    <YStack gap="$3">
+      <XStack jc="space-between">
+        <Stack p="$2" onPress={onBack}>
+          <HeroIcons.ArrowLeft color="$grey-900" />
+        </Stack>
+        {/* <Stack p="$2">
+          <HeroIcons.QuestionMarkCircle color="$grey-900" />
+        </Stack> */}
+      </XStack>
       <ProgressBar mb="$4" value={progress} />
-      <Heading variant="title">{title}</Heading>
-      {subtitle && <Paragraph>{subtitle}</Paragraph>}
     </YStack>
   )
 }

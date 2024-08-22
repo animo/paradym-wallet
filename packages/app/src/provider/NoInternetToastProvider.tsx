@@ -18,10 +18,10 @@ export function NoInternetToastProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (hasBeenOffline && hasInternet === true) {
-      toast.show('Online again.')
+      toast.show('Online again.', { customData: { preset: 'success' } })
       setHasBeenOffline(false)
     } else if (hasInternet === false && !hasBeenOffline) {
-      toast.show('No internet connection. Some features may not work.')
+      toast.show('No internet connection. Some features may not work.', { customData: { preset: 'danger' } })
       setHasBeenOffline(true)
     }
   }, [hasInternet, toast, hasBeenOffline])

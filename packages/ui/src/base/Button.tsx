@@ -20,7 +20,6 @@ export const SolidButton = styled(Btn, {
 
 const OutlineButton = styled(Btn, {
   name: 'OutlineButton',
-
   backgroundColor: '$white',
   color: '$grey-900',
   borderColor: '$grey-300',

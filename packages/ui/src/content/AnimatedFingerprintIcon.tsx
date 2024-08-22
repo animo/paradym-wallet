@@ -16,8 +16,8 @@ const AnimatedStack = Animated.createAnimatedComponent(YStack)
 
 // Start is a number between 0 and 1 to note the starting point.
 function FingerprintAnimationCircle({ start = 0 }: { start?: number }) {
-  const maxScale = 175
-  const minScale = 55
+  const maxScale = 220
+  const minScale = 80
 
   // Calculate initial positions based on start
   const scale = useSharedValue(minScale + start * (maxScale - minScale))

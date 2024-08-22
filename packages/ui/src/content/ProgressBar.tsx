@@ -3,7 +3,7 @@ import { Progress, styled, withStaticProperties } from 'tamagui'
 const _ProgressBar = styled(Progress, {
   name: 'ProgressBar',
   size: '$4',
-  backgroundColor: '$grey-300',
+  backgroundColor: '$grey-200',
   variants: {
     // Added here for type completion, but rendered in ProgressBar
     indicatorColor: {
@@ -15,7 +15,7 @@ const _ProgressBar = styled(Progress, {
 const ProgressBarStyled = _ProgressBar.styleable(({ indicatorColor, ...props }, ref) => {
   return (
     <_ProgressBar {...props} ref={ref}>
-      {props.children ?? <Progress.Indicator backgroundColor={indicatorColor ?? '$primary-500'} animation="lazy" />}
+      {props.children ?? <Progress.Indicator backgroundColor={indicatorColor ?? '$primary-500'} />}
     </_ProgressBar>
   )
 })

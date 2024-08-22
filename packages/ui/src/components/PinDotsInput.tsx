@@ -1,6 +1,13 @@
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
-import Animated, { useSharedValue, withRepeat, withSequence, withTiming, withDelay } from 'react-native-reanimated'
+import Animated, {
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+  withDelay,
+  Easing,
+} from 'react-native-reanimated'
 import { Circle, Input } from 'tamagui'
 import { XStack, YStack } from '../base'
 import { PinPad, PinValues } from './PinPad'
@@ -27,7 +34,7 @@ export const PinDotsInput = forwardRef(
     const [pin, setPin] = useState('')
     const inputRef = useRef<TextInput>(null)
 
-    const isInLoadingState = isLoading || pin.length === pinLength
+    const isInLoadingState = isLoading
 
     const pinDots = new Array(pinLength).fill(0).map((_, i) => isInLoadingState || pin[i] !== undefined)
 
@@ -57,8 +64,8 @@ export const PinDotsInput = forwardRef(
           delay,
           withRepeat(
             withSequence(
-              withTiming(-10, { duration: 500 / 2 }),
-              withTiming(0, { duration: 500 / 2 }),
+              withTiming(-10, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
+              withTiming(0, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
               withDelay(500, withTiming(0, { duration: 0 }))
             ),
             -1,
@@ -112,7 +119,7 @@ export const PinDotsInput = forwardRef(
     }
 
     return (
-      <YStack gap="$4" onPress={() => inputRef.current?.focus()}>
+      <YStack mt="$10" fg={1} jc="space-between" onPress={() => inputRef.current?.focus()}>
         <Animated.View style={{ left: shakeAnimation }}>
           <XStack justifyContent="center" gap="$2">
             {pinDots.map((filled, i) => (
@@ -122,7 +129,7 @@ export const PinDotsInput = forwardRef(
                   size="$1.5"
                   backgroundColor={filled ? '$primary-500' : '$background'}
                   borderColor="$primary-500"
-                  borderWidth="$1"
+                  borderWidth="$0.5"
                 />
               </Animated.View>
             ))}

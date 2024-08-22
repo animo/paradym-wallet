@@ -24,6 +24,7 @@ const iconMapping = {
   locked: <HeroIcons.LockClosed color="$white" />,
   loading: <HeroIcons.ArrowPath color="$white" />,
   complete: <HeroIcons.ShieldCheck color="$white" />,
+  biometric: <HeroIcons.FingerPrint color="$white" />,
 } as const
 
 export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
@@ -54,7 +55,16 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
   }, [icon, rotation])
 
   return (
-    <YStack gap="$6" p="$5" borderRadius="$8" overflow="hidden" borderColor="rgba(216, 218, 200, 1)">
+    <YStack
+      jc="space-between"
+      h="$15"
+      gap="$6"
+      p="$5"
+      borderRadius="$8"
+      overflow="hidden"
+      borderColor="#D8DAC8"
+      bw="$0.5"
+    >
       <LinearGradient
         colors={['#EFE7DA', '#EDEEE6', '#E9EDEE', '#D4D6C0']}
         start={[0.98, 0.02]}
@@ -69,19 +79,21 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
         style={StyleSheet.absoluteFillObject}
       />
       <XStack justifyContent="space-between">
-        <YStack gap="$1">
-          <Paragraph secondary>Personalausweis</Paragraph>
-          <Paragraph size="$6" fontWeight="$regular">
+        <YStack gap="$3">
+          <Paragraph size="$2" fontWeight="$bold" color="$grey-700">
+            PERSONALAUSWEIS
+          </Paragraph>
+          <Paragraph size="$6" fontWeight="$semiBold">
             {userName ?? '********'}
           </Paragraph>
         </YStack>
         <Stack>
-          <Image src={issuerImage} width={75} height={75} resizeMode="contain" />
+          <Image src={issuerImage} width={48} height={48} resizeMode="contain" />
         </Stack>
       </XStack>
-      <XStack justifyContent="flex-end">
+      <XStack justifyContent="flex-start">
         <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
-          <Circle size="$3" backgroundColor="$grey-700" opacity={0.4}>
+          <Circle p="$2" backgroundColor="$grey-900" opacity={0.25}>
             {iconMapping[icon]}
           </Circle>
         </Animated.View>
