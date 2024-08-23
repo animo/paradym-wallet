@@ -10,8 +10,8 @@ import Reanimated, {
   FadeOut,
   FadeIn,
 } from 'react-native-reanimated'
-import { HeroIcons } from '../content/Icon'
 import { Stack } from '../base'
+import { HeroIcons } from '../content/Icon'
 
 export function AnimatedNfcScanIcon({
   icon,

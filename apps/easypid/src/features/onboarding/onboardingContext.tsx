@@ -14,6 +14,7 @@ import {
   BiometricAuthenticationNotEnabledError,
   storeCredential,
 } from '@package/agent'
+import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
@@ -22,6 +23,7 @@ import { type PropsWithChildren, createContext, useCallback, useContext, useEffe
 import { Linking, Platform } from 'react-native'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
+import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
 import { OnboardingIdCardScan } from './screens/id-card-scan'
@@ -30,8 +32,6 @@ import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
-import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
 
 type Page =
   | { type: 'fullscreen' }

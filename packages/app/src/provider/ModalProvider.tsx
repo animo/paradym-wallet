@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
-import { ToastViewport } from './ToastViewport'
 import { Platform } from 'react-native'
+import { ToastViewport } from './ToastViewport'
 
 export function ModalProvider({ children }: PropsWithChildren) {
   return (

@@ -1,6 +1,6 @@
 import * as Keychain from 'react-native-keychain'
-import { KeychainError } from './error/KeychainError'
 import { BiometricAuthenticationError } from '../agent/src'
+import { KeychainError } from './error/KeychainError'
 
 export type KeychainOptions = Omit<Keychain.Options, 'service'>
 

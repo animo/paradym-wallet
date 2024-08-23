@@ -2,13 +2,13 @@ import { AusweisAuthFlow, type AusweisAuthFlowOptions } from '@animo-id/expo-aus
 import type { AppAgent } from '@easypid/agent'
 import { pidSchemes } from '@easypid/constants'
 import {
+  BiometricAuthenticationError,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
   acquireAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-  BiometricAuthenticationError,
 } from '@package/agent'
 
 export interface ReceivePidUseCaseCFlowOptions
