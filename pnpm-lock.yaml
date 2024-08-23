@@ -29,7 +29,7 @@ overrides:
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.5.11-pr-1996-20240824184150':
-    hash: vedtzxsdq2syvlzajfh3qxwhym
+    hash: hbhmvmsbduhfdq7hoqwhjbseva
     path: patches/@credo-ts__openid4vc@0.5.11-pr-1996-20240824184150.patch
   '@hyperledger/anoncreds-react-native@0.2.2':
     hash: uf6a7jvct2tkboe5xpglqybeia
@@ -38,7 +38,7 @@ patchedDependencies:
     hash: jtxhiuxe2e3i7qwlurpufqwh5a
     path: patches/@hyperledger__indy-vdr-react-native@0.2.2.patch
   '@sphereon/oid4vci-client@0.16.1-next.8':
-    hash: ycx3wsj4gzcjjtajwxfovdruy4
+    hash: c553s3tzchmx6ltqvxggr245t4
     path: patches/@sphereon__oid4vci-client@0.16.1-next.8.patch
   '@sphereon/oid4vci-common@0.16.1-next.8':
     hash: zbkg6sa2c36wui2us5jjxkp53i
@@ -536,7 +536,7 @@ importers:
         version: 0.5.11-pr-1996-20240824184150(@hyperledger/anoncreds-shared@0.2.2)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/openid4vc':
         specifier: 0.5.11-pr-1996-20240824184150
-        version: 0.5.11-pr-1996-20240824184150(patch_hash=vedtzxsdq2syvlzajfh3qxwhym)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
+        version: 0.5.11-pr-1996-20240824184150(patch_hash=hbhmvmsbduhfdq7hoqwhjbseva)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/question-answer':
         specifier: 0.5.11-pr-1996-20240824184150
         version: 0.5.11-pr-1996-20240824184150(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
@@ -10930,12 +10930,12 @@ snapshots:
       - supports-color
       - web-streams-polyfill
 
-  '@credo-ts/openid4vc@0.5.11-pr-1996-20240824184150(patch_hash=vedtzxsdq2syvlzajfh3qxwhym)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/openid4vc@0.5.11-pr-1996-20240824184150(patch_hash=hbhmvmsbduhfdq7hoqwhjbseva)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@credo-ts/core': 0.5.11-pr-1996-20240824184150(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@sphereon/did-auth-siop': 0.16.1-next.13
       '@sphereon/oid4vc-common': 0.16.1-next.13
-      '@sphereon/oid4vci-client': 0.16.1-next.8(patch_hash=ycx3wsj4gzcjjtajwxfovdruy4)
+      '@sphereon/oid4vci-client': 0.16.1-next.8(patch_hash=c553s3tzchmx6ltqvxggr245t4)
       '@sphereon/oid4vci-common': 0.16.1-next.8(patch_hash=zbkg6sa2c36wui2us5jjxkp53i)
       '@sphereon/oid4vci-issuer': 0.16.1-next.8
       '@sphereon/ssi-types': 0.28.0
@@ -13138,7 +13138,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/oid4vci-client@0.16.1-next.8(patch_hash=ycx3wsj4gzcjjtajwxfovdruy4)':
+  '@sphereon/oid4vci-client@0.16.1-next.8(patch_hash=c553s3tzchmx6ltqvxggr245t4)':
     dependencies:
       '@sphereon/oid4vc-common': 0.16.1-next.8
       '@sphereon/oid4vci-common': 0.16.1-next.8(patch_hash=zbkg6sa2c36wui2us5jjxkp53i)

@@ -70,7 +70,7 @@ index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c40
      async requestAccessToken(agentContext, options) {
          var _a, _b, _c, _d;
 -        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code } = options;
-+        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code, customFormat, dPopKeyJwk, getCreateJwtCallback } = options;
++        const { resolvedCredentialOffer, txCode, resolvedAuthorizationRequest, code, customBody, dPopKeyJwk, getCreateJwtCallback } = options;
          const { metadata, credentialOfferRequestWithBaseUrl } = resolvedCredentialOffer;
          // acquire the access token
          let accessTokenResponse;
@@ -164,53 +164,3 @@ index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c40
              return { credential: mdoc, notificationMetadata };
          }
          throw new core_1.CredoError(`Unsupported credential format ${credentialResponse.successBody.format}`);
-diff --git a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
-index 508d55a8ba8904509811d6f9b3c868d7aae7a54a..b6c81f72a23b320681301b3ba2df7af5ec461619 100644
---- a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
-+++ b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
-@@ -1,5 +1,6 @@
- import type { OpenId4VcCredentialHolderBinding, OpenId4VciCredentialSupportedWithId, OpenId4VciIssuerMetadata, OpenId4VciCredentialOfferPayload, OpenId4VciCredentialConfigurationsSupported } from '../shared';
- import type { JwaSignatureAlgorithm, Jwk, KeyType, VerifiableCredential } from '@credo-ts/core';
-+import type { P256Jwk } from '@credo-ts/core'
- import type { AccessTokenResponse, CredentialOfferRequestWithBaseUrl, EndpointMetadataResult, OpenId4VCIVersion } from '@sphereon/oid4vci-common';
- import { OpenId4VciCredentialFormatProfile } from '../shared/models/OpenId4VciCredentialFormatProfile';
- export type OpenId4VciSupportedCredentialFormats = OpenId4VciCredentialFormatProfile.JwtVcJson | OpenId4VciCredentialFormatProfile.JwtVcJsonLd | OpenId4VciCredentialFormatProfile.SdJwtVc | OpenId4VciCredentialFormatProfile.LdpVc | OpenId4VciCredentialFormatProfile.MsoMdoc;
-@@ -63,6 +64,8 @@ export interface OpenId4VciSendNotificationOptions {
-     notificationEvent: OpenId4VciNotificationEvent;
- }
- interface OpenId4VcTokenRequestBaseOptions {
-+    getCreateJwtCallback?: unknown
-+    dPopKeyJwk?: P256Jwk
-     resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer;
-     txCode?: string;
- }
-@@ -87,6 +90,11 @@ export interface OpenId4VciCredentialRequestOptions extends Omit<OpenId4VciAccep
-      * The client id used for authorization. Only required if authorization_code flow was used.
-      */
-     clientId?: string;
-+
-+    additionalProofOfPossessionPayloadClaims?: Record<string, unknown>
-+    additionalCredentialRequestPayloadClaims?: Record<string, unknown>
-+    customFormat?: string
-+    customBody?: Record<string, unknown>
- }
- /**
-  * Options that are used to accept a credential offer for both the pre-authorized code flow and authorization code flow.
-@@ -132,6 +140,9 @@ export interface OpenId4VciAcceptCredentialOfferOptions {
-      * for the proof of possession signature.
-      */
-     credentialBindingResolver: OpenId4VciCredentialBindingResolver;
-+
-+    getCreateJwtCallback?: unknown
-+    popCallback?: unknown
- }
- /**
-  * Options that are used for the authorization code flow.
-@@ -141,6 +152,7 @@ export interface OpenId4VciAuthCodeFlowOptions {
-     clientId: string;
-     redirectUri: string;
-     scope?: string[];
-+    customHeaders?: Record<string, unknown>
- }
- export interface OpenId4VciCredentialBindingOptions {
-     /**

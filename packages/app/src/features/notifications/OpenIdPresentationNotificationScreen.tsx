@@ -83,7 +83,9 @@ export function OpenIdPresentationNotificationScreen() {
       selectedCredentials,
     })
       .then(() => {
-        toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
+        toast.show('Information has been successfully shared.', {
+          customData: { preset: 'success' },
+        })
         pushToWallet()
       })
       .catch((e) => {
