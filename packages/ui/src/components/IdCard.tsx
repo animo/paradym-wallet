@@ -35,6 +35,7 @@ export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, sma
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
+      justifyContent: 'center',
       transform: [{ rotate: `${rotation.value}deg` }],
     }
   })
@@ -60,7 +61,6 @@ export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, sma
   const IconComponent = icon ? iconMapping[icon] : undefined
   return (
     <YStack
-      // jc="space-between"
       h={small ? '$9' : '$15'}
       maxWidth={small ? '$14' : undefined}
       gap={small ? '$1' : '$6'}
@@ -71,6 +71,7 @@ export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, sma
       borderColor="#D8DAC8"
       bw={small ? '$0.25' : '$0.5'}
       onPress={onPress}
+      pressStyle={onPress ? { opacity: 0.7 } : undefined}
     >
       <LinearGradient
         colors={['#EFE7DA', '#EDEEE6', '#E9EDEE', '#D4D6C0']}
@@ -98,16 +99,21 @@ export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, sma
           <Image src={issuerImage} width={small ? 24 : 48} height={small ? 24 : 48} resizeMode="contain" />
         </Stack>
       </XStack>
-      <XStack justifyContent="flex-start">
-        {IconComponent ? (
-          <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
-            <Circle size={small ? '$1' : '$3'} backgroundColor="$grey-900" opacity={0.25}>
-              <IconComponent color="$white" size={small ? 12 : 24} />
-            </Circle>
-          </Animated.View>
-        ) : (
-          <Stack width={small ? '$1' : '$3'} height={small ? '$1' : '$3'} />
-        )}
+      <XStack justifyContent="space-between" flex-1>
+        <XStack justifyContent="flex-start" alignItems="flex-end">
+          {IconComponent ? (
+            <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
+              <Circle size={small ? '$1' : '$3'} backgroundColor="$grey-900" opacity={0.25}>
+                <IconComponent color="$white" size={small ? 12 : 24} />
+              </Circle>
+            </Animated.View>
+          ) : (
+            <Stack width={small ? '$1' : '$3'} height={small ? '$1' : '$3'} />
+          )}
+        </XStack>
+        <XStack justifyContent="flex-end" alignItems="flex-end">
+          {onPress && <HeroIcons.ArrowRight color="$black" />}
+        </XStack>
       </XStack>
     </YStack>
   )

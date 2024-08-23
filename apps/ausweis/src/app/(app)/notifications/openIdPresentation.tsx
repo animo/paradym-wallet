@@ -1,9 +1,5 @@
-import { ModalProvider, OpenIdPresentationNotificationScreen } from '@package/app'
+import { FunkeOpenIdPresentationNotificationScreen } from '@ausweis/features/wallet/FunkeOpenIdPresentationNotificationScreen'
 
 export default function Screen() {
-  return (
-    <ModalProvider>
-      <OpenIdPresentationNotificationScreen />
-    </ModalProvider>
-  )
+  return <FunkeOpenIdPresentationNotificationScreen />
 }

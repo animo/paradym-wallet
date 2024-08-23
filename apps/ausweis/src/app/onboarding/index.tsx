@@ -1,5 +1,5 @@
 import { useOnboardingContext } from '@ausweis/features/onboarding'
-import { FlexPage, Heading, OnboardingScreensHeader, Paragraph, YStack } from '@package/ui'
+import { FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
 import type React from 'react'
 import { Alert } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
@@ -28,7 +28,7 @@ export default function OnboardingScreens() {
   } else {
     page = (
       <FlexPage gap="$2" jc="space-between">
-        <OnboardingScreensHeader progress={onboardingContext.progress} onBack={onReset} />
+        <ProgressHeader progress={onboardingContext.progress} onBack={onReset} />
         <Animated.View
           key={onboardingContext.page.animationKey ?? onboardingContext.currentStep}
           entering={pageContentTransition.entering[onboardingContext.page.animation ?? 'default']}

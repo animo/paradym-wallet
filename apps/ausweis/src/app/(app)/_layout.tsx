@@ -73,8 +73,19 @@ export default function AppLayout() {
               name="(home)/scan"
             />
             <Stack.Screen
-              options={{ presentation: 'modal', ...headerModalOptions }}
+              // options={{ presentation: 'modal', ...headerModalOptions }}
               name="notifications/openIdPresentation"
+              options={{
+                headerShown: true,
+                headerTransparent: true,
+                headerTintColor: theme['primary-500'].val,
+                headerTitle: '',
+                headerLeft: () => (
+                  <XStack onPress={() => router.back()}>
+                    <HeroIcons.ArrowLeft size={32} color="$black" />
+                  </XStack>
+                ),
+              }}
             />
             <Stack.Screen
               options={{
