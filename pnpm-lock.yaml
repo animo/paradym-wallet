@@ -23,8 +23,8 @@ overrides:
   '@credo-ts/question-answer': 0.5.10
   '@credo-ts/react-hooks': 0.6.1
   '@credo-ts/react-native': 0.5.10
-  '@animo-id/expo-secure-environment': 0.1.0-alpha.3
-  '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.10
+  '@animo-id/expo-secure-environment': 0.1.0-alpha.4
+  '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.11
   react-native: 0.74.5
 
 patchedDependencies:
@@ -58,14 +58,14 @@ importers:
         specifier: ~5.3.3
         version: 5.3.3
 
-  apps/ausweis:
+  apps/easypid:
     dependencies:
       '@animo-id/expo-ausweis-sdk':
-        specifier: 0.0.1-alpha.10
-        version: 0.0.1-alpha.10(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+        specifier: 0.0.1-alpha.11
+        version: 0.0.1-alpha.11(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@animo-id/expo-secure-environment':
-        specifier: 0.1.0-alpha.3
-        version: 0.1.0-alpha.3(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+        specifier: 0.1.0-alpha.4
+        version: 0.1.0-alpha.4(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@credo-ts/core':
         specifier: 0.5.10
         version: 0.5.10(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
@@ -524,7 +524,7 @@ importers:
         version: 0.5.10(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/askar':
         specifier: 0.5.10
-        version: 0.5.10(@animo-id/expo-secure-environment@0.1.0-alpha.3(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
+        version: 0.5.10(@animo-id/expo-secure-environment@0.1.0-alpha.4(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/cheqd':
         specifier: 0.5.10
         version: 0.5.10(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
@@ -735,15 +735,15 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.10':
-    resolution: {integrity: sha512-hHPtPw/T/v7npSn09VNkW/ifDorJtMoJd5ztpXTZgz974v6BbzGshSxGoT+X1fywLqi77blkN74hQ8324ok7Lw==}
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.11':
+    resolution: {integrity: sha512-gsfC4XIHzm15cHzhWuSVHwROPR0lVPs4/pTrs+sakM3Wy+2ENa9Ne/v8M8/GX8/TwuKZ6JUmUKE0XWdz7IQSHw==}
     peerDependencies:
       expo: '*'
       react: 18.2.0
       react-native: 0.74.5
 
-  '@animo-id/expo-secure-environment@0.1.0-alpha.3':
-    resolution: {integrity: sha512-yKJfioR/M9km/RJKhe6qkN1oF0QAOM0KHRM4AuD1lw/OQFwaJEJ0rltrdIO/S6abOGFhE2GlBH0cRaIEqbL1Pg==}
+  '@animo-id/expo-secure-environment@0.1.0-alpha.4':
+    resolution: {integrity: sha512-X96JhyyPfhYrVyt0cm1RRkP5cGd2zXsfHnML54+R8H8GRFl1f2B8sUqM0629jMTWHRzYn4vA2B73WMn5bVg3Qg==}
     peerDependencies:
       expo: '*'
       react: 18.2.0
@@ -1633,7 +1633,7 @@ packages:
   '@credo-ts/askar@0.5.10':
     resolution: {integrity: sha512-uBo+SQFK3GQaY4cQddOi7VaAqOrDVTzPpRN33Q/zVCbMX6TAhI4aXKOcbl4axhD9VXUkiHsh1MzOFkODiG1Bvw==}
     peerDependencies:
-      '@animo-id/expo-secure-environment': 0.1.0-alpha.3
+      '@animo-id/expo-secure-environment': 0.1.0-alpha.4
       '@hyperledger/aries-askar-shared': ^0.2.3
     peerDependenciesMeta:
       '@animo-id/expo-secure-environment':
@@ -9602,7 +9602,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.10(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.11(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@expo/config-plugins': 8.0.8
       expo: 51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))
@@ -9611,7 +9611,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@animo-id/expo-secure-environment@0.1.0-alpha.3(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+  '@animo-id/expo-secure-environment@0.1.0-alpha.4(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@peculiar/asn1-ecc': 2.3.13
       '@peculiar/asn1-schema': 2.3.13
@@ -10799,7 +10799,7 @@ snapshots:
       - supports-color
       - web-streams-polyfill
 
-  '@credo-ts/askar@0.5.10(@animo-id/expo-secure-environment@0.1.0-alpha.3(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/askar@0.5.10(@animo-id/expo-secure-environment@0.1.0-alpha.4(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@credo-ts/core': 0.5.10(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@hyperledger/aries-askar-shared': 0.2.3
@@ -10809,7 +10809,7 @@ snapshots:
       rxjs: 7.8.1
       tsyringe: 4.8.0
     optionalDependencies:
-      '@animo-id/expo-secure-environment': 0.1.0-alpha.3(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+      '@animo-id/expo-secure-environment': 0.1.0-alpha.4(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
     transitivePeerDependencies:
       - domexception
       - encoding
@@ -15203,7 +15203,7 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 18.19.43
+      '@types/node': 22.1.0
       form-data: 4.0.0
 
   '@types/node-forge@1.3.11':

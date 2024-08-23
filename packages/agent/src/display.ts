@@ -296,8 +296,53 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
 
   return {
     visibleProperties,
+    disclosedAttributeNames: getDisclosedAttributeNames({
+      ...visibleProperties,
+      address: {
+        street_name: 'Street',
+        country: 'nl',
+      },
+    }),
     metadata: credentialMetadata,
   }
+}
+
+export function getDisclosedAttributeNames(
+  obj: Record<string, unknown> | Array<unknown>,
+  prefix = ''
+): Array<[string, string]> {
+  let attributes: Array<[string, string]> = []
+
+  for (const key in obj) {
+    if (obj[key]) {
+      const value = obj[key]
+      const newKey = prefix ? `${prefix}.${key}` : key
+      const newName = prefix ? sanitizeString(`${prefix} ${key}`) : sanitizeString(key)
+
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        // If the value is a nested object, recurse
+        attributes = attributes.concat(getDisclosedAttributeNames(value, newKey))
+      }
+      //  else if (Array.isArray(value)) {
+      //   attributes.push([`${value.length} ${newName}`, newKey])
+      //   // // If the value is an array, iterate over the array elements
+      //   // value.forEach((item, index) => {
+      //   //   if (typeof item === 'object') {
+      //   //     attributes = attributes.concat(getDisclosedAttributeNames(item, `${newKey}.${index}`))
+      //   //   } else {
+
+      //   //     attributes.push([`${newName} ${index}`, `${newKey}.${index}`])
+      //   //   }
+      //   // })
+      // }
+      else {
+        // If the value is a primitive, add the key to the list
+        attributes.push([newName, newKey])
+      }
+    }
+  }
+
+  return attributes
 }
 
 export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {

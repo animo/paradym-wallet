@@ -19,7 +19,7 @@ import type {
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
-import type { EitherAgent, FullAppAgent } from '../agent'
+import type { EasyPIDAppAgent, EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -48,9 +48,9 @@ import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
-import { deviceKeyPair } from '@ausweis/storage/pidPin'
+import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
-import { BiometricAuthenticationCancelledError } from './error'
+import { BiometricAuthenticationError } from './error'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -194,7 +194,7 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
   deviceKey,
   customHeaders,
 }: {
-  agent: FullAppAgent
+  agent: EasyPIDAppAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdToRequest?: string
   clientId?: string
@@ -273,134 +273,139 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     )
   }
 
-  // FIXME: return credential_supported entry for credential so it's easy to store metadata
-  const credentials = await agent.modules.openId4VcHolder.requestCredentials({
-    resolvedCredentialOffer,
-    ...accessToken,
-    clientId,
-    credentialsToRequest: [offeredCredentialToRequest.id],
-    verifyCredentialStatus: false,
-    allowedProofOfPossessionSignatureAlgorithms: [
-      // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
-      // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
-      // will be used
-      JwaSignatureAlgorithm.EdDSA,
-      JwaSignatureAlgorithm.ES256,
-    ],
-    credentialBindingResolver: async ({
-      supportedDidMethods,
-      keyType,
-      supportsAllDidMethods,
-      supportsJwk,
-      credentialFormat,
-      supportedCredentialId,
-    }) => {
-      // First, we try to pick a did method
-      // Prefer did:jwk, otherwise use did:key, otherwise use undefined
-      let didMethod: 'key' | 'jwk' | undefined =
-        supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
-          ? 'jwk'
-          : supportedDidMethods?.includes('did:key')
-            ? 'key'
-            : undefined
-
-      // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
-      // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
-      // define which did methods they support
-      if (!supportedDidMethods && !supportsJwk) {
-        didMethod = 'key'
-      }
-
-      const offeredCredentialConfiguration = supportedCredentialId
-        ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
-        : undefined
-
-      const shouldKeyBeHardwareBackedForMsoMdoc = false
-      //   offeredCredentialConfiguration?.format === "mso_mdoc" &&
-      //   pidSchemes?.msoMdocNamespaces.includes(
-      //     offeredCredentialConfiguration.namespace
-      //   );
-      const shouldKeyBeHardwareBackedForSdJwtVc =
-        offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
-        pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
-
-      // TODO: add mso-mdoc config from above
-      const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
-
-      const key = await agent.wallet.createKey({
+  try {
+    // FIXME: return credential_supported entry for credential so it's easy to store metadata
+    const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+      resolvedCredentialOffer,
+      ...accessToken,
+      clientId,
+      credentialsToRequest: [offeredCredentialToRequest.id],
+      verifyCredentialStatus: false,
+      allowedProofOfPossessionSignatureAlgorithms: [
+        // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
+        // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
+        // will be used
+        JwaSignatureAlgorithm.EdDSA,
+        JwaSignatureAlgorithm.ES256,
+      ],
+      credentialBindingResolver: async ({
+        supportedDidMethods,
         keyType,
-        keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
-      })
+        supportsAllDidMethods,
+        supportsJwk,
+        credentialFormat,
+        supportedCredentialId,
+      }) => {
+        // First, we try to pick a did method
+        // Prefer did:jwk, otherwise use did:key, otherwise use undefined
+        let didMethod: 'key' | 'jwk' | undefined =
+          supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
+            ? 'jwk'
+            : supportedDidMethods?.includes('did:key')
+              ? 'key'
+              : undefined
 
-      if (didMethod) {
-        const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
-          method: didMethod,
-          options: {
-            key,
-          },
+        // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
+        // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
+        // define which did methods they support
+        if (!supportedDidMethods && !supportsJwk) {
+          didMethod = 'key'
+        }
+
+        const offeredCredentialConfiguration = supportedCredentialId
+          ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
+          : undefined
+
+        const shouldKeyBeHardwareBackedForMsoMdoc = false
+        //   offeredCredentialConfiguration?.format === "mso_mdoc" &&
+        //   pidSchemes?.msoMdocNamespaces.includes(
+        //     offeredCredentialConfiguration.namespace
+        //   );
+        const shouldKeyBeHardwareBackedForSdJwtVc =
+          offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
+          pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
+
+        // TODO: add mso-mdoc config from above
+        const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
+
+        const key = await agent.wallet.createKey({
+          keyType,
+          keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
         })
 
-        if (didResult.didState.state !== 'finished') {
-          throw new Error('DID creation failed.')
+        if (didMethod) {
+          const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
+            method: didMethod,
+            options: {
+              key,
+            },
+          })
+
+          if (didResult.didState.state !== 'finished') {
+            throw new Error('DID creation failed.')
+          }
+
+          let verificationMethodId: string
+          if (didMethod === 'jwk') {
+            const didJwk = DidJwk.fromDid(didResult.didState.did)
+            verificationMethodId = didJwk.verificationMethodId
+          } else {
+            const didKey = DidKey.fromDid(didResult.didState.did)
+            verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
+          }
+
+          return {
+            didUrl: verificationMethodId,
+            method: 'did',
+          }
         }
 
-        let verificationMethodId: string
-        if (didMethod === 'jwk') {
-          const didJwk = DidJwk.fromDid(didResult.didState.did)
-          verificationMethodId = didJwk.verificationMethodId
-        } else {
-          const didKey = DidKey.fromDid(didResult.didState.did)
-          verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
+        // Otherwise we also support plain jwk for sd-jwt only
+        if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
+          return {
+            method: 'jwk',
+            jwk: getJwkFromKey(key),
+          }
         }
 
-        return {
-          didUrl: verificationMethodId,
-          method: 'did',
-        }
-      }
-
-      // Otherwise we also support plain jwk for sd-jwt only
-      if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
-        return {
-          method: 'jwk',
-          jwk: getJwkFromKey(key),
-        }
-      }
-
-      throw new Error(
-        `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
-          supportsJwk ? 'jwk, ' : ''
-        }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
-      )
-    },
-  })
-
-  const [firstCredential] = credentials
-  if (!firstCredential) throw new Error('Error retrieving credential.')
-
-  let record: SdJwtVcRecord | W3cCredentialRecord
-
-  // TODO: add claimFormat to SdJwtVc
-  if ('compact' in firstCredential.credential) {
-    record = new SdJwtVcRecord({
-      compactSdJwtVc: firstCredential.credential.compact,
+        throw new Error(
+          `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
+            supportsJwk ? 'jwk, ' : ''
+          }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
+        )
+      },
     })
-  } else {
-    record = new W3cCredentialRecord({
-      credential: firstCredential.credential,
-      // We don't support expanded types right now, but would become problem when we support JSON-LD
-      tags: {},
+
+    const [firstCredential] = credentials
+    if (!firstCredential) throw new Error('Error retrieving credential.')
+
+    let record: SdJwtVcRecord | W3cCredentialRecord
+
+    // TODO: add claimFormat to SdJwtVc
+    if ('compact' in firstCredential.credential) {
+      record = new SdJwtVcRecord({
+        compactSdJwtVc: firstCredential.credential.compact,
+      })
+    } else {
+      record = new W3cCredentialRecord({
+        credential: firstCredential.credential,
+        // We don't support expanded types right now, but would become problem when we support JSON-LD
+        tags: {},
+      })
+    }
+
+    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
+      id: resolvedCredentialOffer.metadata.issuer,
+      display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
     })
+
+    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+    return record
+  } catch (error) {
+    // Handle biometric authentication errors
+    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
   }
-
-  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
-    id: resolvedCredentialOffer.metadata.issuer,
-    display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
-  })
-
-  setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-  return record
 }
 
 export const getCredentialsForProofRequest = async ({
@@ -489,12 +494,8 @@ export const shareProof = async ({
 
     return result
   } catch (error) {
-    // TODO: check message on Android
-    if (error instanceof Error && error.message.toLowerCase().includes('authentication canceled')) {
-      throw new BiometricAuthenticationCancelledError('Biometrics authentication cancelled')
-    }
-
-    throw error
+    // Handle biometric authentication errors
+    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
   }
 }
 

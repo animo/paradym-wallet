@@ -1,5 +1,5 @@
 import { Page, XStack, YStack } from '@package/ui'
-import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
+import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
@@ -81,7 +81,7 @@ type Story = StoryObj<typeof meta>
 export const PinEnter: Story = {
   args: {
     title: 'Pick a 6-digit app pin',
-    subtitle: 'This will be used to unlock the Ausweis Wallet.',
+    subtitle: 'This will be used to unlock the EasyPID Wallet.',
   },
 }
 export const PinReEnter: Story = {

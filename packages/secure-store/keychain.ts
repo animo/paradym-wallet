@@ -1,4 +1,5 @@
 import * as Keychain from 'react-native-keychain'
+import { BiometricAuthenticationError } from '../agent/src'
 import { KeychainError } from './error/KeychainError'
 
 export type KeychainOptions = Omit<Keychain.Options, 'service'>
@@ -13,9 +14,12 @@ export async function storeKeychainItem(id: string, value: string, options: Keyc
     ...options,
     service: id,
   }).catch((error) => {
-    throw new KeychainError(`Error storing value for id '${id}' in keychain`, {
-      cause: error,
-    })
+    throw (
+      BiometricAuthenticationError.tryParseFromError(error) ??
+      new KeychainError(`Error storing value for id '${id}' in keychain`, {
+        cause: error,
+      })
+    )
   })
 
   if (!result) {
@@ -28,18 +32,20 @@ export async function storeKeychainItem(id: string, value: string, options: Keyc
  *
  * @returns {string | null} the value or null if it doesn't exist
  * @throws {KeychainError} if an unexpected error occurs
+ * @throws {BiometricAuthenticationError} if biometric authentication failed
  */
 export async function getKeychainItemById(id: string, options: KeychainOptions): Promise<string | null> {
   const result = await Keychain.getGenericPassword({
     ...options,
     service: id,
   }).catch((error) => {
-    throw new KeychainError(`Error retrieving value with id '${id}' from keychain`, {
-      cause: error,
-      // This is a bit hacky, but we don't get a nice error from keychain
-      // https://github.com/oblador/react-native-keychain/issues/609
-      reason: error instanceof Error && error.message.toLowerCase().includes('cancel') ? 'userCancelled' : 'unknown',
-    })
+    throw (
+      BiometricAuthenticationError.tryParseFromError(error) ??
+      new KeychainError(`Error retrieving value with id '${id}' from keychain`, {
+        cause: error,
+        reason: 'unknown',
+      })
+    )
   })
 
   if (!result) {
@@ -60,7 +66,7 @@ export async function removeKeychainItemById(id: string, options: KeychainOption
     ...options,
     service: id,
   }).catch((error) => {
-    throw new KeychainError(`Error retrieving value with id '${id}' from keychain`, {
+    throw new KeychainError(`Error removing value with id '${id}' from keychain`, {
       cause: error,
     })
   })
