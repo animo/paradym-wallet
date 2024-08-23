@@ -11,7 +11,7 @@ import {
 } from '@credo-ts/core'
 import { Buffer } from '@credo-ts/core'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
-import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
+import { ReceivePidUseCaseFlow } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { EasyPIDAppAgent } from '@package/agent'
 import { kdf } from '@package/secure-store/kdf'
 import { easyPidAes256Gcm } from './aes'
@@ -207,8 +207,8 @@ export const createMockedClientAttestationAndProofOfPossession = async (
     privateKey: TypedArrayEncoder.fromHex('ad38184e0d5d9af97b023b6421707dc079f7d66a185bfd4c589837e3cb69fbfa'),
   })
   const payload = {
-    iss: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
-    sub: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+    iss: ReceivePidUseCaseFlow.CLIENT_ID,
+    sub: ReceivePidUseCaseFlow.CLIENT_ID,
     exp: Math.floor(new Date().getTime() / 1000 + 100),
     cnf: {
       jwk: deviceKeyPair.asJwk(),
@@ -229,7 +229,7 @@ export const createMockedClientAttestationAndProofOfPossession = async (
   const jwtCompact = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
 
   const clientAttestationPopJwtPayload = {
-    iss: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+    iss: ReceivePidUseCaseFlow.CLIENT_ID,
     exp: Math.floor(new Date().getTime() / 1000 + 100),
     jti: utils.uuid(),
     aud: audience,

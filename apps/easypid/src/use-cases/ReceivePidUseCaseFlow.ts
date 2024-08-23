@@ -37,6 +37,8 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   protected refreshUrl?: string
   protected currentSessionPinAttempts = 0
 
+  static CLIENT_ID = '7598ca4c-cc2e-4ff1-a4b4-ed58f249e274'
+
   protected currentState: ReceivePidUseCaseState = 'id-card-auth'
   public get state() {
     return this.currentState
