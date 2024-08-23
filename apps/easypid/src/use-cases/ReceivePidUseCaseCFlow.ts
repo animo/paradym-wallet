@@ -8,6 +8,7 @@ import {
   acquireAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  BiometricAuthenticationError,
 } from '@package/agent'
 
 export interface ReceivePidUseCaseCFlowOptions
@@ -183,6 +184,11 @@ export class ReceivePidUseCaseCFlow {
 
       return credentialRecord
     } catch (error) {
+      // We can recover from this error, so we shouldn't set the state to error
+      if (error instanceof BiometricAuthenticationError) {
+        throw error
+      }
+
       this.handleError(error)
       throw error
     }

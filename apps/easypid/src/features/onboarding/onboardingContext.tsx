@@ -9,13 +9,17 @@ import {
   type ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import { resetWallet } from '@easypid/utils/resetWallet'
-import { storeCredential } from '@package/agent'
+import {
+  BiometricAuthenticationCancelledError,
+  BiometricAuthenticationNotEnabledError,
+  storeCredential,
+} from '@package/agent'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { Platform } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
@@ -26,6 +30,8 @@ import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
+import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
+import { secureWalletKey } from '@package/secure-store/secureUnlock'
 
 type Page =
   | { type: 'fullscreen' }
@@ -43,6 +49,7 @@ type Page =
 const onboardingSteps = [
   {
     step: 'welcome',
+    alternativeFlow: false,
     progress: 0,
     page: {
       type: 'fullscreen',
@@ -51,6 +58,7 @@ const onboardingSteps = [
   },
   {
     step: 'introduction-steps',
+    alternativeFlow: false,
     progress: 16.5,
     page: {
       type: 'content',
@@ -62,6 +70,7 @@ const onboardingSteps = [
   },
   {
     step: 'pin',
+    alternativeFlow: false,
     progress: 33,
     page: {
       type: 'content',
@@ -73,6 +82,7 @@ const onboardingSteps = [
   },
   {
     step: 'pin-reenter',
+    alternativeFlow: false,
     progress: 33,
     page: {
       type: 'content',
@@ -84,6 +94,7 @@ const onboardingSteps = [
   },
   {
     step: 'biometrics',
+    alternativeFlow: false,
     progress: 49.5,
     page: {
       type: 'content',
@@ -94,7 +105,20 @@ const onboardingSteps = [
     Screen: OnboardingBiometrics,
   },
   {
+    step: 'biometrics-disabled',
+    progress: 49.5,
+    alternativeFlow: true,
+    page: {
+      type: 'content',
+      title: 'You need to enable biometrics',
+      subtitle:
+        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
+    },
+    Screen: OnboardingBiometrics,
+  },
+  {
     step: 'id-card-start',
+    alternativeFlow: false,
     progress: 66,
     page: {
       type: 'content',
@@ -107,6 +131,7 @@ const onboardingSteps = [
   },
   {
     step: 'id-card-pin',
+    alternativeFlow: false,
     progress: 66,
     page: {
       type: 'content',
@@ -116,34 +141,31 @@ const onboardingSteps = [
   },
   {
     step: 'id-card-start-scan',
+    alternativeFlow: false,
     progress: 66,
     page: {
       type: 'content',
-      title: 'Scanning your eID card',
-      subtitle:
-        Platform.OS === 'android'
-          ? 'Place your eID card on your device’s back side.'
-          : 'Place your eID card at the top of the device’s back side.',
+      title: 'Ready your eID card',
+      subtitle: 'Place your device on top of your eID card to scan it.',
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardScan,
   },
   {
     step: 'id-card-scan',
+    alternativeFlow: false,
     progress: 66,
     page: {
       type: 'content',
-      title: 'Scanning your eID card',
-      subtitle:
-        Platform.OS === 'android'
-          ? 'Place your eID card on your device’s back side.'
-          : 'Place your eID card at the top of the device’s back side.',
+      title: 'Ready your eID card',
+      subtitle: 'Place your device on top of your eID card to scan it.',
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardScan,
   },
   {
     step: 'id-card-fetch',
+    alternativeFlow: false,
     progress: 66,
     page: {
       type: 'content',
@@ -154,6 +176,7 @@ const onboardingSteps = [
   {
     step: 'id-card-verify',
     progress: 82.5,
+    alternativeFlow: true,
     page: {
       type: 'content',
       title: 'We need to verify it’s you',
@@ -163,8 +186,21 @@ const onboardingSteps = [
     Screen: OnboardingIdCardVerify,
   },
   {
+    step: 'id-card-biometrics-disabled',
+    progress: 82.5,
+    alternativeFlow: true,
+    page: {
+      type: 'content',
+      title: 'You need to enable biometrics',
+      subtitle:
+        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
+    },
+    Screen: OnboardingIdCardBiometricsDisabled,
+  },
+  {
     step: 'id-card-complete',
     progress: 100,
+    alternativeFlow: false,
     page: {
       type: 'content',
       title: 'Success!',
@@ -177,6 +213,8 @@ const onboardingSteps = [
   step: string
   progress: number
   page: Page
+  // if true will not be navigated to by goToNextStep
+  alternativeFlow: boolean
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   Screen: React.FunctionComponent<any>
 }>
@@ -231,7 +269,8 @@ export function OnboardingContextProvider({
 
   const goToNextStep = useCallback(() => {
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
-    const nextStep = onboardingSteps[currentStepIndex + 1]
+    // goToNextStep excludes alternative flows
+    const nextStep = onboardingSteps.slice(currentStepIndex + 1).find((step) => !step.alternativeFlow)
 
     if (nextStep) {
       setCurrentStepName(nextStep.step)
@@ -244,7 +283,7 @@ export function OnboardingContextProvider({
 
   const goToPreviousStep = useCallback(() => {
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
-    const previousStep = onboardingSteps[currentStepIndex - 1]
+    const previousStep = [...onboardingSteps.slice(0, currentStepIndex)].reverse().find((step) => !step.alternativeFlow)
 
     if (previousStep) {
       setCurrentStepName(previousStep.step)
@@ -267,8 +306,6 @@ export function OnboardingContextProvider({
   // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
   useEffect(() => {
     if (secureUnlock.state !== 'acquired-wallet-key' || !agent) return
-
-    secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true })
   }, [secureUnlock, agent])
 
   const initializeAgent = useCallback(async (walletKey: string) => {
@@ -288,7 +325,6 @@ export function OnboardingContextProvider({
       throw new Error('Pin entries do not match')
     }
 
-    console.log(secureUnlock.state)
     if (secureUnlock.state !== 'not-configured') {
       router.replace('/')
       return
@@ -302,6 +338,64 @@ export function OnboardingContextProvider({
         await reset({ error: e, resetToStep: 'welcome' })
         throw e
       })
+  }
+
+  const onEnableBiometricsDisabled = async () => {
+    return Linking.openSettings().then(() => setCurrentStepName('biometrics'))
+  }
+
+  const onEnableBiometrics = async () => {
+    if (!agent || (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')) {
+      await reset({
+        resetToStep: 'pin',
+      })
+      return
+    }
+
+    try {
+      if (secureUnlock.state === 'acquired-wallet-key') {
+        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true })
+      }
+
+      // Directly try getting the wallet key so the user can enable biometrics
+      // and we can check if biometrics works
+      const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.walletKeyVersion)
+
+      if (!walletKey) {
+        const walletKey =
+          secureUnlock.state === 'acquired-wallet-key'
+            ? secureUnlock.walletKey
+            : secureUnlock.context.agent.config.walletConfig?.key
+        if (!walletKey) {
+          await reset({ resetToStep: 'pin' })
+          return
+        }
+
+        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
+        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.walletKeyVersion)
+      }
+
+      goToNextStep()
+    } catch (error) {
+      // We can recover from this, and will show an error on the screen
+      if (error instanceof BiometricAuthenticationCancelledError) {
+        toast.show('Biometric authentication cancelled', {
+          customData: { preset: 'danger' },
+        })
+        throw error
+      }
+
+      if (error instanceof BiometricAuthenticationNotEnabledError) {
+        setCurrentStepName('biometrics-disabled')
+        throw error
+      }
+
+      await reset({
+        resetToStep: 'pin',
+        error,
+      })
+      throw error
+    }
   }
 
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
@@ -596,8 +690,26 @@ export function OnboardingContextProvider({
       )
       setCurrentStepName('id-card-complete')
     } catch (error) {
+      console.error('error here', error)
+      if (error instanceof BiometricAuthenticationCancelledError) {
+        toast.show('Biometric authentication cancelled', {
+          customData: { preset: 'danger' },
+        })
+        return
+      }
+
+      // What if not supported?!?
+      if (error instanceof BiometricAuthenticationNotEnabledError) {
+        setCurrentStepName('id-card-biometrics-disabled')
+        return
+      }
+
       await reset({ resetToStep: 'id-card-pin', error })
     }
+  }
+
+  const goToAppSettings = () => {
+    Linking.openSettings().then(() => setCurrentStepName('id-card-verify'))
   }
 
   let screen: React.JSX.Element
@@ -610,12 +722,18 @@ export function OnboardingContextProvider({
         goToNextStep={currentStep.step === 'pin' ? onPinEnter : onPinReEnter}
       />
     )
+  } else if (currentStep.step === 'biometrics') {
+    screen = <currentStep.Screen goToNextStep={onEnableBiometrics} actionText="Activate Biometrics" />
+  } else if (currentStep.step === 'biometrics-disabled') {
+    screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Go to settings" />
   } else if (currentStep.step === 'id-card-pin') {
     screen = <currentStep.Screen goToNextStep={onIdCardPinReEnter ?? onIdCardPinEnter} />
   } else if (currentStep.step === 'id-card-complete') {
     screen = <currentStep.Screen goToNextStep={goToNextStep} userName={userName} key={currentStep.page.animationKey} />
   } else if (currentStep.step === 'id-card-verify') {
     screen = <currentStep.Screen goToNextStep={retrieveCredential} key={currentStep.page.animationKey} />
+  } else if (currentStep.step === 'id-card-biometrics-disabled') {
+    screen = <currentStep.Screen goToNextStep={goToAppSettings} />
   } else if (currentStep.step === 'id-card-scan' || currentStep.step === 'id-card-start-scan') {
     screen = (
       <currentStep.Screen
@@ -626,7 +744,7 @@ export function OnboardingContextProvider({
         onCancel={() => {
           receivePidUseCase?.cancelIdCardScanning()
         }}
-        showScanModal={idCardScanningState.showScanModal ?? true}
+        showScanModal={currentStep.step !== 'id-card-scan' ? false : idCardScanningState.showScanModal ?? true}
         onStartScanning={currentStep.step === 'id-card-start-scan' ? onStartScanning : undefined}
       />
     )

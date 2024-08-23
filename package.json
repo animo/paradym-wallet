@@ -42,8 +42,8 @@
 			"@credo-ts/react-hooks": "0.6.1",
 			"@credo-ts/react-native": "0.5.10",
 
-			"@animo-id/expo-secure-environment": "0.1.0-alpha.3",
-			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.10",
+			"@animo-id/expo-secure-environment": "0.1.0-alpha.4",
+			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.11",
 
 			"react-native": "0.74.5"
 		},

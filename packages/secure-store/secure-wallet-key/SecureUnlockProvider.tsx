@@ -50,7 +50,7 @@ export type SecureUnlockReturnWalletKeyAcquired<Context extends Record<string, u
   state: 'acquired-wallet-key'
   walletKey: string
   unlockMethod: SecureUnlockMethod
-  setWalletKeyValid: (context: Context, options: { enableBiometrics: boolean }) => void
+  setWalletKeyValid: (context: Context, options: { enableBiometrics: boolean }) => Promise<void>
   setWalletKeyInvalid: () => void
   reinitialize: () => void
 }
@@ -128,14 +128,14 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         setWalletKey(undefined)
         setUnlockMethod(undefined)
       },
-      setWalletKeyValid: (context, options) => {
+      setWalletKeyValid: async (context, options) => {
         setContext(context)
         setState('unlocked')
 
         // TODO: need extra option to know whether user wants to use biometrics?
         // TODO: do we need to check whether already stored?
         if (canUseBiometrics && options.enableBiometrics) {
-          void secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
+          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
         }
       },
     }

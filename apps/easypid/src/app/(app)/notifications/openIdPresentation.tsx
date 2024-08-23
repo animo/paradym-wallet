@@ -1,9 +1,5 @@
-import { ModalProvider, OpenIdPresentationNotificationScreen } from '@package/app'
+import { OpenIdPresentationNotificationScreen } from '@package/app'
 
 export default function Screen() {
-  return (
-    <ModalProvider>
-      <OpenIdPresentationNotificationScreen />
-    </ModalProvider>
-  )
+  return <OpenIdPresentationNotificationScreen />
 }

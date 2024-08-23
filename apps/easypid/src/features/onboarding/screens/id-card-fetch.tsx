@@ -14,7 +14,7 @@ export function OnboardingIdCardFetch({ goToNextStep, userName }: OnboardingIdCa
     <YStack justifyContent="space-between" flex-1>
       <IdCard
         icon={userName ? 'complete' : 'loading'}
-        hideUserName
+        hideUserName={!userName}
         issuerImage={germanIssuerImage}
         userName={userName}
       />
