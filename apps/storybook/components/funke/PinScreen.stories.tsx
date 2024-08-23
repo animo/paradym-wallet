@@ -1,5 +1,5 @@
 import { Page, XStack, YStack } from '@package/ui'
-import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
+import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useRef, useState } from 'react'
 import type { TextInput } from 'react-native'

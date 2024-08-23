@@ -2,12 +2,12 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
-import {
-  type CardScanningErrorDetails,
-  ReceivePidUseCaseCFlow,
-  type ReceivePidUseCaseCFlowOptions,
-  type ReceivePidUseCaseState,
-} from '@easypid/use-cases/ReceivePidUseCaseCFlow'
+import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
+import type {
+  CardScanningErrorDetails,
+  ReceivePidUseCaseFlowOptions,
+  ReceivePidUseCaseState,
+} from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { resetWallet } from '@easypid/utils/resetWallet'
 import {
   BiometricAuthenticationCancelledError,
@@ -400,7 +400,7 @@ export function OnboardingContextProvider({
 
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
 
-  const onEnterPin: ReceivePidUseCaseCFlowOptions['onEnterPin'] = useCallback(
+  const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
     (options) => {
       if (!idCardPin) {
         // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
@@ -481,43 +481,39 @@ export function OnboardingContextProvider({
       throw new Error('onIdCardPinEnter: Secure unlock state is not unlocked')
     }
 
+    if (!walletPin) {
+      await reset({ error: 'onIdCardPinEnter: Missing walletKey in state', resetToStep: 'welcome' })
+      throw new Error('onIdCardPinEnter: Missing walletKey in state')
+    }
+
+    const baseOptions = {
+      agent: secureUnlock.context.agent,
+      onStateChange: setReceivePidUseCaseState,
+      onCardAttachedChanged: ({ isCardAttached }) =>
+        setIdCardScanningState((state) => ({
+          ...state,
+          isCardAttached,
+          state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
+        })),
+      onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
+      onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
+    } as const satisfies ReceivePidUseCaseFlowOptions
+
     if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {
-      if (selectedFlow === 'c') {
-        return ReceivePidUseCaseCFlow.initialize({
-          agent: secureUnlock.context.agent,
-          onStateChange: setReceivePidUseCaseState,
-          onCardAttachedChanged: ({ isCardAttached }) =>
-            setIdCardScanningState((state) => ({
-              ...state,
-              isCardAttached,
-              state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
-            })),
-          onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
-          onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
-        }).then((receivePidUseCase) => {
+      const flow =
+        selectedFlow === 'c'
+          ? ReceivePidUseCaseCFlow.initialize(baseOptions)
+          : ReceivePidUseCaseBPrimeFlow.initialize({ ...baseOptions, pidPin: walletPin.split('').map(Number) })
+
+      return flow
+        .then((receivePidUseCase) => {
           setReceivePidUseCase(receivePidUseCase)
           goToNextStep()
         })
-      }
-      if (selectedFlow === 'bprime') {
-        if (!walletPin) {
-          throw new Error('wallet Pin has not been setup!')
-        }
-        return ReceivePidUseCaseBPrimeFlow.initialize({
-          agent: secureUnlock.context.agent,
-          onStateChange: setReceivePidUseCaseState,
-          onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
-          pidPin: walletPin.split('').map(Number),
+        .catch(async (e) => {
+          await reset({ error: e, resetToStep: 'id-card-pin' })
+          throw e
         })
-          .then((receivePidUseCase) => {
-            setReceivePidUseCase(receivePidUseCase)
-            goToNextStep()
-          })
-          .catch(async (e) => {
-            await reset({ error: e, resetToStep: 'id-card-pin' })
-            throw e
-          })
-      }
     }
 
     goToNextStep()

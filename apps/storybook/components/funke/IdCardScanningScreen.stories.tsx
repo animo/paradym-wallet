@@ -5,7 +5,7 @@ import React from 'react'
 // TODO: src import?
 import { IdCardImage } from '@package/ui/src/images/IdCardImage'
 
-import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
+import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
 import { YStack } from 'tamagui'
 
 const IdCardScanningScreen = ({ isScanning }: { isScanning: boolean }) => {

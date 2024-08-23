@@ -5,7 +5,7 @@ import type { TextInput } from 'react-native'
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated'
 import { Input } from 'tamagui'
 
-import { OnboardingScreensHeader } from '@package/ui/src/components/OnboardingScreensHeader'
+import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
 import { useArgs } from '@storybook/addons'
 import { IdCard } from './IdCard'
 

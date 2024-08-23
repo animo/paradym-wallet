@@ -25,7 +25,7 @@ on:
         description: 'App to deploy'
         required: true
         options:
-          - 'ausweis'
+          - 'easypid'
           - 'paradym'
         default: 'paradym'
 
