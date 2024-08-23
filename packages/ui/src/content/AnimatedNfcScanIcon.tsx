@@ -9,42 +9,35 @@ import Reanimated, {
   useAnimatedStyle,
   FadeOut,
   FadeIn,
-  cancelAnimation,
 } from 'react-native-reanimated'
+import { Stack } from '../base'
 import { HeroIcons } from '../content/Icon'
 
 export function AnimatedNfcScanIcon({
   icon,
   scanAnimated = true,
 }: { icon: 'complete' | 'error' | 'scan'; scanAnimated?: boolean }) {
-  const translateX = useSharedValue(-100)
+  const rotation = useSharedValue(0)
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: translateX.value }],
-      width: 108,
-      height: 108,
+      transform: [{ rotate: `${rotation.value}deg` }],
     }
-  }, [translateX])
+  })
 
   useEffect(() => {
-    // Cancel current one when it changes
-    cancelAnimation(translateX)
-
-    if (icon === 'scan' && scanAnimated) {
-      translateX.value = withRepeat(
+    rotation.value = withSequence(
+      withTiming(360, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
+      withTiming(0, { duration: 0 }),
+      withRepeat(
         withSequence(
-          withTiming(0, { duration: 1000, easing: Easing.ease }), // move to the right
-          withDelay(2000, withTiming(-100, { duration: 0 })), // 2 seconds rest, then reset to original position instantly
-          withTiming(-100, { duration: 400 }) // 400ms rest
+          withDelay(500, withTiming(360, { duration: 1500, easing: Easing.inOut(Easing.ease) })),
+          withTiming(0, { duration: 0 })
         ),
-        -1,
-        false
+        -1
       )
-    } else {
-      translateX.value = withTiming(0, { duration: 500, easing: Easing.ease })
-    }
-  }, [icon, scanAnimated, translateX])
+    )
+  }, [rotation])
 
   return (
     <Reanimated.View
@@ -53,11 +46,15 @@ export function AnimatedNfcScanIcon({
       entering={FadeIn}
       exiting={FadeOut}
     >
-      {icon === 'scan' && <HeroIcons.CreditCard position="absolute" color="$primary-500" size={72} fill="white" />}
       {icon === 'scan' && (
-        <Reanimated.View style={animatedStyle}>
-          <HeroIcons.DevicePhoneMobile position="absolute" fill="white" color="$primary-500" size={108} />
-        </Reanimated.View>
+        <HeroIcons.DevicePhoneMobile position="absolute" fill="white" color="$primary-500" size={108} />
+      )}
+      {icon === 'scan' && (
+        <Stack position="absolute" justifyContent="center" alignItems="center" width={32} height={32}>
+          <Reanimated.View style={animatedStyle}>
+            <HeroIcons.ArrowPath color="$primary-500" size={32} />
+          </Reanimated.View>
+        </Stack>
       )}
 
       {icon === 'complete' && <HeroIcons.CheckCircle size={108} color="$positive-500" />}

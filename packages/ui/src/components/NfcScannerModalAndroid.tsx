@@ -12,19 +12,19 @@ interface NfcScannerModalAndroidProps {
 const text = {
   readyToScan: {
     title: 'Ready to scan',
-    description: 'Place your phone on top of your eID card to start scanning',
+    description: 'Place your device on top of your eID card to scan it.',
   },
   scanning: {
     title: 'Do not move the eID card',
-    description: 'Scanning is in progress...',
+    description: 'Scanning in progress.',
   },
   complete: {
-    title: 'Scanning complete',
-    description: 'You can now remove your eID Card',
+    title: 'Scan successful!',
+    description: 'You can now remove your eID card.',
   },
   error: {
-    title: 'Error during scan',
-    description: 'Please try again',
+    title: 'Scan failed',
+    description: 'Please try again.',
   },
 }
 
@@ -56,10 +56,14 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
           </XStack>
 
           <YStack flex-1 p="$4" justifyContent="space-between">
-            <Stack>
-              <Heading variant="h2">{title}</Heading>
-              <Paragraph variant="text">{description}</Paragraph>
-            </Stack>
+            <YStack gap="$2" alignItems="center" px="$5">
+              <Heading variant="h2" textAlign="center">
+                {title}
+              </Heading>
+              <Paragraph variant="text" textAlign="center">
+                {description}
+              </Paragraph>
+            </YStack>
 
             {scanningState === 'scanning' && (
               <YStack px="$2" alignItems="center">

@@ -2,7 +2,7 @@ import { TamaguiProvider } from '@package/ui'
 import type { Decorator } from '@storybook/react'
 import React from 'react'
 
-import ausweisConfig from '../../ausweis/tamagui.config'
+import ausweisConfig from '../../easypid/tamagui.config'
 import paradymConfig from '../../paradym/tamagui.config'
 
 const configs = {

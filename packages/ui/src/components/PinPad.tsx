@@ -1,4 +1,4 @@
-import { Text } from 'tamagui'
+import { Text, useTheme } from 'tamagui'
 import { Stack, XStack, YStack } from '../base'
 import { HeroIcons } from '../content'
 
@@ -55,10 +55,12 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
         <HeroIcons.Backspace color="$grey-900" size={24} />
       ) : (
         <YStack ai="center" gap="$1">
-          <Text color="$grey-900" fontWeight="$semiBold" fontSize="$6" fontFamily="$body">
+          {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
+          <Text color="$grey-900" fontWeight="$semiBold" fontSize={24} fontFamily="$body">
             {character}
           </Text>
-          <Text color="$grey-600" fontSize="$2.5" fontFamily="$medium">
+          {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
+          <Text color="$grey-600" fontSize={15} fontFamily="$medium">
             {letterMap[character].toLocaleUpperCase()}
           </Text>
         </YStack>
