@@ -1,11 +1,7 @@
-import { useAppAgent } from '@ausweis/agent'
 import { FunkePidCredentialDetailScreen } from '@ausweis/features/wallet/FunkePidCredentialDetailScreen'
-import { SeedCredentialProvider } from '@ausweis/storage'
-import type { FullAppAgent } from '@package/agent'
 import { Stack } from 'expo-router'
 
 export default function Screen() {
-  const { agent } = useAppAgent()
   return (
     <>
       <Stack.Screen
@@ -15,9 +11,7 @@ export default function Screen() {
           // the header to not show... :(
         }}
       />
-      <SeedCredentialProvider agent={agent as unknown as FullAppAgent}>
-        <FunkePidCredentialDetailScreen />
-      </SeedCredentialProvider>
+      <FunkePidCredentialDetailScreen />
     </>
   )
 }

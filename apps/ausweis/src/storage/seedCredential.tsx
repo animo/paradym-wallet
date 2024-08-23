@@ -2,7 +2,7 @@ import { AUSWEIS_WALLET_SEED_CREDENTIAL_RECORD_ID } from '@ausweis/constants'
 import { type Agent, TypedArrayEncoder } from '@credo-ts/core'
 import { GenericRecord } from '@credo-ts/core/build/modules/generic-records/repository/GenericRecord'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '@credo-ts/react-hooks/build/recordUtils'
-import { type FullAppAgent, walletJsonStore } from '@package/agent'
+import { type AusweisAppAgent, walletJsonStore } from '@package/agent'
 import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 
 export const seedCredentialStorage = {
@@ -101,7 +101,7 @@ export const useSeedCredentialPidData = (): SeedCredentialStatePidData => {
 }
 
 interface Props {
-  agent: FullAppAgent
+  agent: AusweisAppAgent
 }
 
 export const SeedCredentialProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {

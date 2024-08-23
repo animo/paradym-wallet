@@ -21,22 +21,32 @@ type Attributes = {
 export function usePidCredential() {
   const { isLoading, credentials } = useCredentialsForDisplay()
   const { isLoading: isSeedCredentialLoading, seedCredential } = useSeedCredentialPidData()
-  const credential = seedCredential ?? credentials[0]
 
   const pidCredential = useMemo(() => {
-    if (!credential) return undefined
-
-    const attributes =
-      'attributes' in credential ? (credential.attributes as Attributes) : (credential.pid_data as Attributes)
-
-    return {
-      id: 'id' in credential ? credential.id : 'seed-credential',
-      attributes,
-      userName: `${capitalizeFirstLetter(
-        attributes.given_name.toLowerCase()
-      )} ${capitalizeFirstLetter(attributes.family_name.toLowerCase())}`,
+    if (seedCredential) {
+      return {
+        id: 'seed-credential',
+        attributes: seedCredential.pid_data,
+        userName: `${capitalizeFirstLetter(
+          seedCredential.pid_data.given_name.toLowerCase()
+        )} ${capitalizeFirstLetter(seedCredential.pid_data.family_name.toLowerCase())}`,
+      }
     }
-  }, [credential])
+
+    if (credentials[0]) {
+      const credential = credentials[0]
+      const attributes = credential.attributes as Attributes
+      return {
+        id: credential.id,
+        attributes,
+        userName: `${capitalizeFirstLetter(
+          attributes.given_name.toLowerCase()
+        )} ${capitalizeFirstLetter(attributes.family_name.toLowerCase())}`,
+      }
+    }
+
+    return undefined
+  }, [seedCredential, credentials[0]])
 
   if (isLoading || isSeedCredentialLoading || !pidCredential) {
     return {
