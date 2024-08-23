@@ -29,7 +29,7 @@ overrides:
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.5.10':
-    hash: jfadjyfjoxzaj4qweqyz6rubtq
+    hash: ma44erspg3urbrgtbjpqly6vqu
     path: patches/@credo-ts__openid4vc@0.5.10.patch
   '@hyperledger/anoncreds-react-native@0.2.2':
     hash: uf6a7jvct2tkboe5xpglqybeia
@@ -38,7 +38,7 @@ patchedDependencies:
     hash: jtxhiuxe2e3i7qwlurpufqwh5a
     path: patches/@hyperledger__indy-vdr-react-native@0.2.2.patch
   '@sphereon/oid4vci-client@0.16.1-next.3':
-    hash: 26jruelslza5jj5owhjpne25jq
+    hash: dvb2jwspkrqllhsknlez7intia
     path: patches/@sphereon__oid4vci-client@0.16.1-next.3.patch
   '@sphereon/oid4vci-common@0.16.1-next.3':
     hash: zbkg6sa2c36wui2us5jjxkp53i
@@ -536,7 +536,7 @@ importers:
         version: 0.5.10(@hyperledger/anoncreds-shared@0.2.2)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/openid4vc':
         specifier: 0.5.10
-        version: 0.5.10(patch_hash=jfadjyfjoxzaj4qweqyz6rubtq)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
+        version: 0.5.10(patch_hash=ma44erspg3urbrgtbjpqly6vqu)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@credo-ts/question-answer':
         specifier: 0.5.10
         version: 0.5.10(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
@@ -10908,12 +10908,12 @@ snapshots:
       - supports-color
       - web-streams-polyfill
 
-  '@credo-ts/openid4vc@0.5.10(patch_hash=jfadjyfjoxzaj4qweqyz6rubtq)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/openid4vc@0.5.10(patch_hash=ma44erspg3urbrgtbjpqly6vqu)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@credo-ts/core': 0.5.10(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@sphereon/did-auth-siop': 0.16.1-next.3
       '@sphereon/oid4vc-common': 0.16.1-next.3
-      '@sphereon/oid4vci-client': 0.16.1-next.3(patch_hash=26jruelslza5jj5owhjpne25jq)
+      '@sphereon/oid4vci-client': 0.16.1-next.3(patch_hash=dvb2jwspkrqllhsknlez7intia)
       '@sphereon/oid4vci-common': 0.16.1-next.3(patch_hash=zbkg6sa2c36wui2us5jjxkp53i)
       '@sphereon/oid4vci-issuer': 0.16.1-next.3
       '@sphereon/ssi-types': 0.28.0
@@ -13093,7 +13093,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/oid4vci-client@0.16.1-next.3(patch_hash=26jruelslza5jj5owhjpne25jq)':
+  '@sphereon/oid4vci-client@0.16.1-next.3(patch_hash=dvb2jwspkrqllhsknlez7intia)':
     dependencies:
       '@sphereon/oid4vc-common': 0.16.1-next.3
       '@sphereon/oid4vci-common': 0.16.1-next.3(patch_hash=zbkg6sa2c36wui2us5jjxkp53i)

@@ -27,7 +27,7 @@ export function usePidCredential() {
     return {
       id: credential.id,
       attributes,
-      userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())} ${capitalizeFirstLetter(attributes.family_name.toLowerCase())}`,
+      userName: 'bob',
     }
   }, [credential])
 

@@ -1,3 +1,61 @@
+diff --git a/dist/AccessTokenClient.js b/dist/AccessTokenClient.js
+index 3d3c60588bacb6dcfa5b6d190ab0f7645e153094..2345ec01446abc73d1f5aa2ecbef6687d9d1fd07 100644
+--- a/dist/AccessTokenClient.js
++++ b/dist/AccessTokenClient.js
+@@ -21,7 +21,7 @@ class AccessTokenClient {
+     acquireAccessToken(opts) {
+         return __awaiter(this, void 0, void 0, function* () {
+             var _a;
+-            const { asOpts, pin, codeVerifier, code, redirectUri, metadata, createDPoPOpts } = opts;
++            const { asOpts, pin, codeVerifier, code, redirectUri, metadata, createDPoPOpts, customBody } = opts;
+             const credentialOffer = opts.credentialOffer ? yield (0, oid4vci_common_1.assertedUniformCredentialOffer)(opts.credentialOffer) : undefined;
+             const pinMetadata = credentialOffer && this.getPinMetadata(credentialOffer.credential_offer);
+             const issuer = (_a = opts.credentialIssuer) !== null && _a !== void 0 ? _a : (credentialOffer ? (0, oid4vci_common_1.getIssuerFromCredentialOfferPayload)(credentialOffer.credential_offer) : metadata === null || metadata === void 0 ? void 0 : metadata.issuer);
+@@ -43,6 +43,7 @@ class AccessTokenClient {
+                     metadata,
+                     additionalParams: opts.additionalParams,
+                     pinMetadata,
++                    customBody,
+                 }),
+                 pinMetadata,
+                 metadata,
+@@ -53,8 +54,7 @@ class AccessTokenClient {
+         });
+     }
+     acquireAccessTokenUsingRequest(_a) {
+-        return __awaiter(this, arguments, void 0, function* ({ accessTokenRequest, pinMetadata, metadata, asOpts, issuerOpts, createDPoPOpts, }) {
+-            this.validate(accessTokenRequest, pinMetadata);
++        return __awaiter(this, arguments, void 0, function* ({ accessTokenRequest, metadata, asOpts, issuerOpts, createDPoPOpts, }) {
+             const requestTokenURL = AccessTokenClient.determineTokenURL({
+                 asOpts,
+                 issuerOpts,
+@@ -85,7 +85,7 @@ class AccessTokenClient {
+     createAccessTokenRequest(opts) {
+         return __awaiter(this, void 0, void 0, function* () {
+             var _a, _b, _c, _d, _e, _f, _g;
+-            const { asOpts, pin, codeVerifier, code, redirectUri } = opts;
++            const { asOpts, pin, codeVerifier, code, redirectUri, customBody} = opts;
+             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+             // @ts-ignore
+             const credentialOfferRequest = opts.credentialOffer ? yield (0, oid4vci_common_1.toUniformCredentialOfferRequest)(opts.credentialOffer) : undefined;
+@@ -95,6 +95,9 @@ class AccessTokenClient {
+             }
+             const credentialIssuer = (_d = (_b = opts.credentialIssuer) !== null && _b !== void 0 ? _b : (_c = credentialOfferRequest === null || credentialOfferRequest === void 0 ? void 0 : credentialOfferRequest.credential_offer) === null || _c === void 0 ? void 0 : _c.credential_issuer) !== null && _d !== void 0 ? _d : (_e = opts.metadata) === null || _e === void 0 ? void 0 : _e.issuer;
+             yield (0, functions_1.createJwtBearerClientAssertion)(request, Object.assign(Object.assign({}, opts), { credentialIssuer }));
++            if(customBody !== null && customBody !== void 0) {
++              return customBody
++            } else {
+             if (credentialOfferRequest === null || credentialOfferRequest === void 0 ? void 0 : credentialOfferRequest.supportedFlows.includes(oid4vci_common_1.AuthzFlowType.PRE_AUTHORIZED_CODE_FLOW)) {
+                 this.assertAlphanumericPin(opts.pinMetadata, pin);
+                 request.user_pin = pin;
+@@ -113,6 +116,7 @@ class AccessTokenClient {
+                 }
+                 return request;
+             }
++            }
+             throw new Error('Credential offer request follows neither pre-authorized code nor authorization code flow requirements.');
+         });
+     }
 diff --git a/dist/AuthorizationCodeClient.js b/dist/AuthorizationCodeClient.js
 index 99785e7f134743eeb8fd70a04d69ff1e4ea2bcda..824a2adf28901b58943afb82467284b79ccf3b23 100644
 --- a/dist/AuthorizationCodeClient.js
@@ -21,7 +79,7 @@ index 99785e7f134743eeb8fd70a04d69ff1e4ea2bcda..824a2adf28901b58943afb82467284b7
              if (parMode === oid4vci_common_1.PARMode.REQUIRE) {
                  throw Error(`PAR error: ${parResponse.origResponse.statusText}`);
 diff --git a/dist/CredentialRequestClient.js b/dist/CredentialRequestClient.js
-index 616811cf81ab05139bab5a87e4e11ceb9beb821e..a0ea512c1e73b7ee66de25dc0f99b1631ed1bfb0 100644
+index 616811cf81ab05139bab5a87e4e11ceb9beb821e..237a415cb3f0ce925305fad0ba2f03f275f2e1f4 100644
 --- a/dist/CredentialRequestClient.js
 +++ b/dist/CredentialRequestClient.js
 @@ -53,7 +53,7 @@ class CredentialRequestClient {

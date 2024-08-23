@@ -10,6 +10,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
+import { requestSdJwtVcFromSeedCredential } from '@ausweis/crypto/bPrime'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
@@ -83,7 +84,9 @@ export function OpenIdPresentationNotificationScreen() {
       selectedCredentials,
     })
       .then(() => {
-        toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
+        toast.show('Information has been successfully shared.', {
+          customData: { preset: 'success' },
+        })
         pushToWallet()
       })
       .catch((e) => {

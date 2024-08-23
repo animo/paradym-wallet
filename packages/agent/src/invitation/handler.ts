@@ -1,5 +1,4 @@
 import type {
-  AgentContext,
   ConnectionRecord,
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
@@ -28,7 +27,6 @@ import {
   DidJwk,
   DidKey,
   JwaSignatureAlgorithm,
-  JwsService,
   KeyBackend,
   KeyType,
   OutOfBandRepository,
@@ -154,6 +152,7 @@ export function getCreateJwtCallback() {
     )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
     const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
     const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
+    console.log(jws)
     return jws
   }
 }
