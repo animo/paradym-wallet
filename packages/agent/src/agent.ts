@@ -106,7 +106,7 @@ export const initializeFullAgent = async ({
   walletKey: string
   keyDerivation: 'raw' | 'derive'
 }) => {
-  // FIXME: in the funke app importing the cheqd module gives errors. As we're not using cheqd in the Funke wallet
+  // FIXME: in the easypid app importing the cheqd module gives errors. As we're not using cheqd in the EasyPid wallet
   // we protect it like this, but I think the Paradym Wallet must be broken as well then?!?
   const { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } =
     require('@credo-ts/cheqd') as typeof import('@credo-ts/cheqd')

@@ -52,7 +52,7 @@ Once all dependencies are installed, you need to make sure you have a developmen
 You can install this using the following commands:
 
 ```sh
-cd apps/paradym # or apps/funke
+cd apps/paradym # or apps/easypid
 pnpm prebuild
 pnpm ios # or android
 ```
