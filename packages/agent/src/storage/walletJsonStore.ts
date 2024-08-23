@@ -11,11 +11,11 @@ const update = async (agent: Agent, id: string, value: Record<string, unknown>) 
   await agent.genericRecords.update(record)
 }
 
-const getById = async <T extends Record<string, unknown>>(agent: Agent, id: string): Promise<T> => {
+const getById = async <T extends Record<string, unknown>>(agent: Agent, id: string): Promise<T | undefined> => {
   const record = await agent.genericRecords.findById(id)
 
   if (!record) {
-    throw Error(`Record with id: ${id} not found`)
+    return undefined
   }
 
   return record.content as T

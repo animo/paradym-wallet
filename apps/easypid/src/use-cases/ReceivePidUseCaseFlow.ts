@@ -53,7 +53,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     },
   ]
 
-  public abstract retrieveCredential(): Promise<SdJwtVcRecord>
+  public abstract retrieveCredential(): Promise<SdJwtVcRecord | string>
 
   protected constructor(
     options: ReceivePidUseCaseFlowOptions & ExtraOptions,
@@ -195,7 +195,6 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   protected handleError(error: unknown) {
     this.currentState = 'error'
     console.error(error)
-
     this.options.onStateChange?.('error')
   }
 }
