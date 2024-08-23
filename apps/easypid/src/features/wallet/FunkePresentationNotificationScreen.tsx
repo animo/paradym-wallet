@@ -1,6 +1,5 @@
 import type BottomSheet from '@gorhom/bottom-sheet'
 import type { FormattedSubmission } from '@package/agent'
-import germanIssuerImage from '../../../assets/german-issuer-image.png'
 import {
   BottomSheetScrollView,
   Button,
@@ -21,9 +20,10 @@ import { sanitizeString } from '@package/utils'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
+import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
-import { useNavigation, useRouter } from 'expo-router'
 import { CredentialRowCard, DualResponseButtons } from '@package/app'
+import { useNavigation, useRouter } from 'expo-router'
 
 interface FunkePresentationNotificationScreenProps {
   submission: FormattedSubmission

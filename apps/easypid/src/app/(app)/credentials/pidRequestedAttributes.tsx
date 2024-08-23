@@ -1,4 +1,4 @@
-import { FunkePidRequestedAttributesDetailScreen } from '@ausweis/features/wallet/FunkePidRequestedAttributesDetailScreen'
+import { FunkePidRequestedAttributesDetailScreen } from '@easypid/features/wallet/FunkePidRequestedAttributesDetailScreen'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {

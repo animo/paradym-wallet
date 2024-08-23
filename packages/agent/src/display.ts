@@ -296,16 +296,21 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
 
   return {
     visibleProperties,
-    disclosedAttributeNames: getDisclosedAttributeNames({...visibleProperties, address: {
-      street_name: 'Street',
-      country: 'nl'
-    }}),
+    disclosedAttributeNames: getDisclosedAttributeNames({
+      ...visibleProperties,
+      address: {
+        street_name: 'Street',
+        country: 'nl',
+      },
+    }),
     metadata: credentialMetadata,
   }
 }
 
-
-export function getDisclosedAttributeNames(obj: Record<string, unknown> | Array<unknown>, prefix = ''): Array<[string, string]> {
+export function getDisclosedAttributeNames(
+  obj: Record<string, unknown> | Array<unknown>,
+  prefix = ''
+): Array<[string, string]> {
   let attributes: Array<[string, string]> = []
 
   for (const key in obj) {
@@ -329,7 +334,7 @@ export function getDisclosedAttributeNames(obj: Record<string, unknown> | Array<
       //   //     attributes.push([`${newName} ${index}`, `${newKey}.${index}`])
       //   //   }
       //   // })
-      // } 
+      // }
       else {
         // If the value is a primitive, add the key to the list
         attributes.push([newName, newKey])

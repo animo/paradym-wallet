@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native'
-import { useMemo } from 'react'
 import { capitalizeFirstLetter } from '@package/utils'
+import { useMemo } from 'react'
+import { StyleSheet } from 'react-native'
 import { LinearGradient } from 'tamagui/linear-gradient'
 import { Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons, Image } from '../content'
