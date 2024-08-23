@@ -61,13 +61,13 @@ export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, sma
   const IconComponent = icon ? iconMapping[icon] : undefined
   return (
     <YStack
-      h={small ? '$9' : '$15'}
+      jc="space-between"
+      height={small ? '$9' : '$15'}
       maxWidth={small ? '$14' : undefined}
       gap={small ? '$1' : '$6'}
       p={small ? '$3' : '$5'}
       borderRadius={small ? '$5' : '$8'}
       overflow="hidden"
-      flex-1
       borderColor="#D8DAC8"
       bw={small ? '$0.25' : '$0.5'}
       onPress={onPress}

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 
 // TODO: src import?
-import { NfcCardScanningPlacementImage } from '@package/ui/src/images/NfcScanningCardPlacementImage'
+import { IdCardImage } from '@package/ui/src/images/IdCardImage'
 
 import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
 import { YStack } from 'tamagui'
@@ -15,7 +15,7 @@ const IdCardScanningScreen = ({ isScanning }: { isScanning: boolean }) => {
     <Page flex-1 gap="$6">
       <OnboardingScreensHeader flex={1} title={title} progress={66} />
       <Stack flex={2}>
-        <NfcCardScanningPlacementImage height="100%" />
+        <IdCardImage height="100%" />
       </Stack>
       <YStack flex={1} justifyContent="flex-end">
         {/* TODO: grey-700 vs secondary */}

@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { YStack } from '../base'
 
-const RippleCircle = () => {
+export const RippleCircle = () => {
   const scale = useSharedValue(0.5)
   const opacity = useSharedValue(1)
 

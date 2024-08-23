@@ -33,7 +33,7 @@ The folder structure is as follows
 
 - `apps` top level applications
   - `paradym` Paradym Wallet - react native app for iOS & Android
-  - `ausweis` Ausweis Wallet - react native app for iOS & Android
+  - `easypid` EasyPID Wallet - react native app for iOS & Android
 - `packages` shared packages
   - `ui` includes our custom UI kit that will be optimized by Tamagui
   - `agent` includes the Aries Framework JavaScript (AFJ) agent and SSI capabilities
@@ -52,7 +52,7 @@ Once all dependencies are installed, you need to make sure you have a developmen
 You can install this using the following commands:
 
 ```sh
-cd apps/paradym # or apps/funke
+cd apps/paradym # or apps/easypid
 pnpm prebuild
 pnpm ios # or android
 ```

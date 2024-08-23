@@ -81,7 +81,7 @@ type Story = StoryObj<typeof meta>
 export const PinEnter: Story = {
   args: {
     title: 'Pick a 6-digit app pin',
-    subtitle: 'This will be used to unlock the Ausweis Wallet.',
+    subtitle: 'This will be used to unlock the EasyPID Wallet.',
   },
 }
 export const PinReEnter: Story = {

@@ -48,7 +48,7 @@ const OnboardingStepsScreen = () => {
         <OnboardingStepItem
           stepName="step 1"
           title="Setup a pin code for the app"
-          description="This code will secure the Ausweis wallet and should be kept to yourself."
+          description="This code will secure the EasyPID wallet and should be kept to yourself."
           icon={<HeroIcons.Key color="$white" size={20} />}
         />
         <OnboardingStepItem

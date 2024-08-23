@@ -9,7 +9,7 @@ import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHead
 import { useArgs } from '@storybook/addons'
 import { IdCard } from './IdCard'
 
-const germanIssuerImage = require('../../../ausweis/assets/german-issuer-image.png')
+const germanIssuerImage = require('../../../easypid/assets/german-issuer-image.png')
 
 interface IdCardPinScreenProps {
   pinLength: number
