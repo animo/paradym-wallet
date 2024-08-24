@@ -23,7 +23,7 @@ export interface FormattedSubmissionEntry {
     issuerName?: string
     requestedAttributes?: string[]
     disclosedPayload?: Record<string, unknown>
-    metadata: CredentialMetadata
+    metadata?: CredentialMetadata
     backgroundColor?: string
   }>
 }

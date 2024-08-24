@@ -1,5 +1,5 @@
 import { Page, XStack, YStack } from '@package/ui'
-import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
+import { ProgressHeader } from '@package/ui/src/components/ProgressHeader'
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
@@ -30,7 +30,7 @@ const PinScreen = ({ title, subtitle, pinLength, onPinComplete }: PinScreenProps
 
   return (
     <Page gap="$6">
-      <OnboardingScreensHeader flex={1} progress={33} title={title} subtitle={subtitle} />
+      <ProgressHeader flex={1} progress={33} />
       <YStack flex={3} onPress={focusInput}>
         <XStack justifyContent="center" gap="$2">
           {new Array(pinLength).fill(0).map((_, i) => (

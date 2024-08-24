@@ -34,7 +34,7 @@ export function FunkePidRequestedAttributesDetailScreen({
           <IdCard issuerImage={germanIssuerImage} small />
           <Stack g="md">
             <Heading variant="title">{disclosedAttributeLength} attributes from Personalausweis</Heading>
-            <Paragraph>Issued by {credential.display.issuer.name}</Paragraph>
+            {credential.display && <Paragraph>Issued by {credential.display.issuer.name}</Paragraph>}
             <CredentialAttributes subject={disclosedPayload} headerTitle="Attributes" />
             <Button.Text onPress={() => router.back()} icon={<HeroIcons.ArrowLeft size={20} />}>
               Back

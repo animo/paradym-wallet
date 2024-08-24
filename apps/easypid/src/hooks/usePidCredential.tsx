@@ -186,7 +186,7 @@ export function usePidCredential() {
         id: 'seed-credential',
         attributes: seedCredential.pid_data,
         userName: `${capitalizeFirstLetter(seedCredential.pid_data.given_name.toLowerCase())}`,
-        display: seedCredential.display,
+        // display: seedCredential.display,
       }
     }
 

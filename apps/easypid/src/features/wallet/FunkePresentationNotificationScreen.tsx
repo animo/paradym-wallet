@@ -1,4 +1,4 @@
-import type { FormattedSubmission } from '@package/agent'
+import type { CredentialMetadata, FormattedSubmission } from '@package/agent'
 import {
   Button,
   Heading,
@@ -42,7 +42,7 @@ export function FunkePresentationNotificationScreen({
   const credential = entry?.credentials[0]
   const disclosedAttributes = credential ? getPidDisclosedAttributeNames(credential.disclosedPayload ?? {}) : []
   const disclosedPayload = credential
-    ? getPidAttributesForDisplay(credential.disclosedPayload ?? {}, credential.metadata)
+    ? getPidAttributesForDisplay(credential.disclosedPayload ?? {}, (credential.metadata ?? {}) as CredentialMetadata)
     : {}
 
   return (
