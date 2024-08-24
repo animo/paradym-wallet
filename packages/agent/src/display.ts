@@ -255,10 +255,10 @@ function getSdJwtCredentialDisplay(
   }
 }
 
-interface CredentialMetadata {
+export interface CredentialMetadata {
   type: string
   issuer: string
-  holder: string | Record<string, unknown>
+  holder?: string | Record<string, unknown>
   validUntil?: Date
   validFrom?: Date
   issuedAt?: Date
@@ -296,49 +296,24 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
 
   return {
     visibleProperties,
-    disclosedAttributeNames: getDisclosedAttributeNames({
-      ...visibleProperties,
-      address: {
-        street_name: 'Street',
-        country: 'nl',
-      },
-    }),
     metadata: credentialMetadata,
   }
 }
 
-export function getDisclosedAttributeNames(
-  obj: Record<string, unknown> | Array<unknown>,
-  prefix = ''
-): Array<[string, string]> {
-  let attributes: Array<[string, string]> = []
+export function getDisclosedAttributePaths(payload: object, prefix = ''): Array<string> {
+  let attributes: Array<string> = []
 
-  for (const key in obj) {
-    if (obj[key]) {
-      const value = obj[key]
-      const newKey = prefix ? `${prefix}.${key}` : key
-      const newName = prefix ? sanitizeString(`${prefix} ${key}`) : sanitizeString(key)
+  for (const [key, value] of Object.entries(payload)) {
+    const newKey = prefix ? `${prefix}.${key}` : key
 
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        // If the value is a nested object, recurse
-        attributes = attributes.concat(getDisclosedAttributeNames(value, newKey))
-      }
-      //  else if (Array.isArray(value)) {
-      //   attributes.push([`${value.length} ${newName}`, newKey])
-      //   // // If the value is an array, iterate over the array elements
-      //   // value.forEach((item, index) => {
-      //   //   if (typeof item === 'object') {
-      //   //     attributes = attributes.concat(getDisclosedAttributeNames(item, `${newKey}.${index}`))
-      //   //   } else {
+    if (!value) continue
 
-      //   //     attributes.push([`${newName} ${index}`, `${newKey}.${index}`])
-      //   //   }
-      //   // })
-      // }
-      else {
-        // If the value is a primitive, add the key to the list
-        attributes.push([newName, newKey])
-      }
+    if (value && typeof value === 'object') {
+      // If the value is a nested object, recurse
+      attributes = attributes.concat(getDisclosedAttributePaths(value, newKey))
+    } else {
+      // If the value is a primitive, add the key to the list
+      attributes.push(newKey)
     }
   }
 
@@ -359,7 +334,8 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     const issuerDisplay = getSdJwtIssuerDisplay(openId4VcMetadata)
     const credentialDisplay = getSdJwtCredentialDisplay(decodedPayload, openId4VcMetadata)
 
-    // TODO: add metadata attributes
+    const mapped = filterAndMapSdJwtKeys(decodedPayload)
+
     return {
       id: `sd-jwt-vc-${credentialRecord.id}` satisfies CredentialForDisplayId,
       createdAt: credentialRecord.createdAt,
@@ -367,7 +343,8 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes: filterAndMapSdJwtKeys(decodedPayload).visibleProperties,
+      attributes: mapped.visibleProperties,
+      metadata: mapped.metadata,
     }
   }
   const credential = JsonTransformer.toJSON(
@@ -394,5 +371,14 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     },
     credential,
     attributes: credentialAttributes,
+    metadata: {
+      holder: credentialRecord.credential.credentialSubjectIds[0],
+      issuer: credentialRecord.credential.issuerId,
+      type: credentialRecord.credential.type[credentialRecord.credential.type.length - 1],
+      issuedAt: new Date(credentialRecord.credential.issuanceDate),
+      validUntil: credentialRecord.credential.expirationDate
+        ? new Date(credentialRecord.credential.expirationDate)
+        : undefined,
+    } as CredentialMetadata,
   }
 }

@@ -10,9 +10,9 @@ interface ScrollViewProps extends TScrollViewProps {
 export const ScrollView = ({ safeAreaBottom, children, safeAreaTop, ...props }: ScrollViewProps) => {
   return (
     <TScrollView {...props}>
-      <Spacer height={safeAreaTop} />
+      {safeAreaTop !== undefined && <Spacer height={safeAreaTop} />}
       {children}
-      <Spacer height={safeAreaBottom} />
+      {safeAreaBottom !== undefined && <Spacer height={safeAreaBottom ?? 0} />}
     </TScrollView>
   )
 }

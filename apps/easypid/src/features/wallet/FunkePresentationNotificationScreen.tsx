@@ -1,38 +1,30 @@
-import type BottomSheet from '@gorhom/bottom-sheet'
-import type { FormattedSubmission } from '@package/agent'
+import type { CredentialMetadata, FormattedSubmission } from '@package/agent'
 import {
-  BottomSheetScrollView,
   Button,
   Heading,
   HeroIcons,
-  IdCard,
   IdCardAttributes,
   Paragraph,
-  ProgressHeader,
+  ProgressBar,
   ScrollView,
-  Sheet,
   Spacer,
-  Stack,
-  XStack,
   YStack,
 } from '@package/ui'
-import { sanitizeString } from '@package/utils'
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
-import { CredentialRowCard, DualResponseButtons } from '@package/app'
-import { useNavigation, useRouter } from 'expo-router'
+import { DualResponseButtons, useScrollViewPosition } from '@package/app'
+import { useRouter } from 'expo-router'
+import { getPidAttributesForDisplay, getPidDisclosedAttributeNames } from '../../hooks'
 
 interface FunkePresentationNotificationScreenProps {
   submission: FormattedSubmission
   isAccepting?: boolean
   onAccept: () => void
   onDecline: () => void
-  verifierName?: string
-  selectedCredentials: { [inputDescriptorId: string]: string }
-  onSelectCredentialForInputDescriptor: (inputDescriptorId: string, credentialId: string) => void
+  verifierHost?: string
 }
 
 export function FunkePresentationNotificationScreen({
@@ -40,103 +32,122 @@ export function FunkePresentationNotificationScreen({
   onDecline,
   isAccepting,
   submission,
-  verifierName,
-  selectedCredentials,
-  onSelectCredentialForInputDescriptor,
+  verifierHost,
 }: FunkePresentationNotificationScreenProps) {
-  const [changeSubmissionCredentialIndex, setChangeSubmissionCredentialIndex] = useState(-1)
-  const { bottom, top } = useSafeAreaInsets()
-
-  const currentSubmissionEntry =
-    changeSubmissionCredentialIndex !== -1 ? submission.entries[changeSubmissionCredentialIndex] : undefined
-
-  const navigation = useNavigation()
-  const ref = useRef<BottomSheet>(null)
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const router = useRouter()
+  const { bottom } = useSafeAreaInsets()
 
-  useEffect(() => {
-    if (currentSubmissionEntry) {
-      ref.current?.expand()
-    } else {
-      ref.current?.close()
-    }
-  }, [currentSubmissionEntry])
-
-  useEffect(() => {
-    navigation.setOptions({
-      gestureEnabled: true,
-    })
-  }, [navigation])
+  const entry = submission.entries[0]
+  const credential = entry?.credentials[0]
+  const disclosedAttributes = credential ? getPidDisclosedAttributeNames(credential.disclosedPayload ?? {}) : []
+  const disclosedPayload = credential
+    ? getPidAttributesForDisplay(credential.disclosedPayload ?? {}, (credential.metadata ?? {}) as CredentialMetadata)
+    : {}
 
   return (
-    <ScrollView
-      bg="$background"
-      contentContainerStyle={{
-        minHeight: '100%',
-      }}
-      // safeAreaBottom={bottom}
-      safeAreaTop={top}
-    >
-      <YStack g="3xl" jc="space-between" pad="lg" pt="$6" flex-1 bg="$background">
-        <YStack gap="$4">
-          <YStack>
-            <ProgressHeader progress={10} />
-            <Heading variant="title">Review the request</Heading>
-          </YStack>
-
-          <YStack gap="$1">
-            <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-              <HeroIcons.CircleStack color="$white" size={18} />
-            </Circle>
-            <Heading variant="h2">Requested data</Heading>
-            <Paragraph size="$3" secondary>
-              Only these 8 attributes will be shared.
-            </Paragraph>
-            <Spacer />
-            <IdCardAttributes
-              onPress={() => {
-                console.log(
-                  `/credentials/pidRequestedAttributes?requestedAttributes=${encodeURIComponent(JSON.stringify(submission.entries[0].credentials[0].requestedAttributes))}`
-                )
-                router.push(
-                  `/credentials/pidRequestedAttributes?requestedAttributes=${encodeURIComponent(JSON.stringify(submission.entries[0].credentials[0].requestedAttributes))}`
-                )
-              }}
-              attributes={submission.entries[0].credentials[0].requestedAttributes ?? []}
-              issuerImage={germanIssuerImage}
-            />
-          </YStack>
-          <YStack gap="$1">
-            <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-              <HeroIcons.InformationCircle color="$white" size={18} />
-            </Circle>
-            <Heading variant="h2">Reason for request</Heading>
-            <Paragraph size="$3" secondary>
-              {submission.purpose
-                ? submission.purpose
-                : 'No information was provided on the purpose of the data request. Be cautious'}
-            </Paragraph>
-          </YStack>
-        </YStack>
-
-        {submission.areAllSatisfied ? (
-          <DualResponseButtons
-            align="horizontal"
-            acceptText="Share"
-            declineText="Cancel"
-            onAccept={onAccept}
-            onDecline={onDecline}
-            isAccepting={isAccepting}
-          />
-        ) : (
-          <YStack gap="$4">
-            <Paragraph variant="sub" ta="center">
-              You don't have the required credentials to satisfy this request.
-            </Paragraph>
-            <Button.Solid onPress={onDecline}>Close</Button.Solid>
-          </YStack>
-        )}
+    <YStack background="$background" height="100%">
+      {/* This is the header where the scroll view get's behind. We have the same content in the scrollview, but you
+       * don't see that content. It's just so we can make the scrollview minheight 100%.  */}
+      <YStack zIndex={2} w="100%" top={0} position="absolute">
+        <Spacer size="$13" w="100%" backgroundColor="$background" />
+        <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
       </YStack>
-    </ScrollView>
+      <ScrollView
+        onScroll={handleScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ minHeight: '100%' }}
+      >
+        <Spacer size="$13" />
+        <YStack borderWidth={0.5} borderColor="$background" />
+        <YStack gap="$6" jc="space-between" p="$4" paddingBottom={bottom} flex-1>
+          <YStack gap="$6">
+            <YStack gap="$3">
+              <ProgressBar value={10} />
+              <Heading variant="title">Review the request</Heading>
+            </YStack>
+
+            <YStack gap="$1">
+              <Circle size="$2" mb="$2" backgroundColor="$primary-500">
+                <HeroIcons.CircleStack color="$white" size={18} />
+              </Circle>
+              <Heading variant="h2">Requested data</Heading>
+              <Paragraph size="$3" secondary>
+                {disclosedAttributes.length > 0 ? (
+                  disclosedAttributes.length > 1 ? (
+                    `These ${disclosedAttributes.length} attributes will be shared`
+                  ) : (
+                    'The following attribute will be shared'
+                  )
+                ) : (
+                  <>
+                    You don't have the requested credential{' '}
+                    <Paragraph secondary fontWeight="$bold">
+                      {entry.name}
+                    </Paragraph>
+                  </>
+                )}
+              </Paragraph>
+
+              {disclosedAttributes.length > 0 && (
+                <>
+                  <Spacer />
+                  <IdCardAttributes
+                    onPress={() => {
+                      router.push(
+                        `/credentials/pidRequestedAttributes?disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${disclosedAttributes?.length ?? 0}`
+                      )
+                    }}
+                    attributes={disclosedAttributes}
+                    issuerImage={germanIssuerImage}
+                  />
+                </>
+              )}
+            </YStack>
+            <YStack gap="$1">
+              <Circle size="$2" mb="$2" backgroundColor="$primary-500">
+                <HeroIcons.InformationCircle color="$white" size={18} />
+              </Circle>
+              <Heading variant="h2">Reason for request</Heading>
+              <Paragraph size="$3" secondary>
+                {submission.purpose ??
+                  submission.entries[0].description ??
+                  'No information was provided on the purpose of the data request. Be cautious'}
+              </Paragraph>
+            </YStack>
+
+            {verifierHost && (
+              <YStack gap="$1">
+                <Circle size="$2" mb="$2" backgroundColor="$primary-500">
+                  <HeroIcons.User color="$white" size={18} />
+                </Circle>
+                <Heading variant="h2">Requester</Heading>
+                <Paragraph size="$3" secondary>
+                  {verifierHost}
+                </Paragraph>
+              </YStack>
+            )}
+          </YStack>
+
+          {submission.areAllSatisfied ? (
+            <DualResponseButtons
+              align="horizontal"
+              acceptText="Share"
+              declineText="Cancel"
+              onAccept={onAccept}
+              onDecline={onDecline}
+              isAccepting={isAccepting}
+            />
+          ) : (
+            <YStack gap="$3">
+              <Paragraph variant="sub" ta="center">
+                You don't have the required credentials
+              </Paragraph>
+              <Button.Solid onPress={onDecline}>Close</Button.Solid>
+            </YStack>
+          )}
+        </YStack>
+      </ScrollView>
+    </YStack>
   )
 }

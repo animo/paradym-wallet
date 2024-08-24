@@ -1,5 +1,5 @@
 import { Button, Heading, HeroIcons, Page, Paragraph, Stack, XStack, YStack } from '@package/ui'
-import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
+import { ProgressHeader } from '@package/ui/src/components/ProgressHeader'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 
@@ -39,11 +39,7 @@ const OnboardingStepItem = ({ stepName, title, description, icon }: OnboardingSt
 const OnboardingStepsScreen = () => {
   return (
     <Page flex-1 gap="$6" justifyContent="space-around">
-      <OnboardingScreensHeader
-        progress={0}
-        title="Setup digital identity"
-        subtitle="To setup your digital identity we'll follow the following steps:"
-      />
+      <ProgressHeader progress={0} />
       <YStack flex-1 gap="$2">
         <OnboardingStepItem
           stepName="step 1"

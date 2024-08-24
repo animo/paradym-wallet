@@ -5,12 +5,18 @@ import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { SeedCredentialProvider } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider } from '@package/agent'
-import { DeeplinkHandler, isAndroid } from '@package/app'
+import { type CredentialDataHandlerOptions, DeeplinkHandler } from '@package/app'
 import { HeroIcons, XStack } from '@package/ui'
 import { useEffect, useState } from 'react'
 import Reanimated, { FadeIn } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from 'tamagui'
+
+// When deeplink routing we want to push
+export const credentialDataHandlerOptions = {
+  allowedInvitationTypes: ['openid-authorization-request'],
+  routeMethod: 'push',
+} satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {
   useResetWalletDevMenu()
@@ -47,21 +53,23 @@ export default function AppLayout() {
     return <Redirect href="/authenticate" />
   }
 
-  // On Android, we push down the screen content when the presentation is a Modal
-  // This is because Android phones render Modals as full screen pages.
-  const headerModalOptions = isAndroid() && {
+  const headerNormalOptions = {
     headerShown: true,
-    header: () => {
-      // Header is translucent by default. See configuration in app.json
-      return <XStack bg="$background" h={top} />
-    },
+    headerTransparent: true,
+    headerTintColor: theme['primary-500'].val,
+    headerTitle: '',
+    headerLeft: () => (
+      <XStack onPress={() => router.back()}>
+        <HeroIcons.ArrowLeft size={32} color="$black" />
+      </XStack>
+    ),
   }
 
   // Render the normal wallet, which is everything inside (app)
   return (
     <AgentProvider agent={secureUnlock.context.agent}>
       <SeedCredentialProvider agent={secureUnlock.context.agent}>
-        <DeeplinkHandler allowedInvitationTypes={['openid-authorization-request']}>
+        <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
           <Reanimated.View
             style={{ flex: 1 }}
             entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(200)}
@@ -70,38 +78,12 @@ export default function AppLayout() {
               <Stack.Screen
                 options={{
                   presentation: 'modal',
-                  // Extra modal options not needed for QR Scanner
                 }}
                 name="(home)/scan"
               />
-              <Stack.Screen
-                name="notifications/openIdPresentation"
-                options={{
-                  headerShown: true,
-                  headerTransparent: true,
-                  headerTintColor: theme['primary-500'].val,
-                  headerTitle: '',
-                  headerLeft: () => (
-                    <XStack onPress={() => router.back()}>
-                      <HeroIcons.ArrowLeft size={32} color="$black" />
-                    </XStack>
-                  ),
-                }}
-              />
-              <Stack.Screen
-                options={{
-                  headerShown: true,
-                  headerTransparent: true,
-                  headerTintColor: theme['primary-500'].val,
-                  headerTitle: '',
-                  headerLeft: () => (
-                    <XStack onPress={() => router.back()}>
-                      <HeroIcons.ArrowLeft size={32} color="$black" />
-                    </XStack>
-                  ),
-                }}
-                name="credentials/pid"
-              />
+              <Stack.Screen name="notifications/openIdPresentation" options={headerNormalOptions} />
+              <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
+              <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>
         </DeeplinkHandler>

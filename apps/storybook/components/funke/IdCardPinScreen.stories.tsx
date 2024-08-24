@@ -5,7 +5,7 @@ import type { TextInput } from 'react-native'
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated'
 import { Input } from 'tamagui'
 
-import { OnboardingScreensHeader } from '@package/ui/src/components/ProgressHeader'
+import { ProgressHeader } from '@package/ui/src/components/ProgressHeader'
 import { useArgs } from '@storybook/addons'
 import { IdCard } from './IdCard'
 
@@ -95,7 +95,7 @@ const IdCardPinScreen = ({ pinLength, onPinComplete, state, onGoToWallet, userNa
 
   return (
     <Page gap="$6" justifyContent="space-between">
-      <OnboardingScreensHeader title={title} progress={state === 'complete' ? 100 : 66} />
+      <ProgressHeader progress={state === 'complete' ? 100 : 66} />
       <YStack gap="$4" flex={1}>
         {state === 'enterPin' && (
           <Animated.View exiting={FadeOut} entering={FadeIn} layout={LinearTransition.springify()}>
