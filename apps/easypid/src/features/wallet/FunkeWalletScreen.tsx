@@ -44,9 +44,14 @@ export function FunkeWalletScreen() {
       <YStack bg="$background" py="$4" height="100%" position="relative">
         <ScrollView px="$4" gap="$2">
           <YStack gap="$4">
-            <Heading variant="title" fontWeight="$bold">
-              {credential.userName}'s Wallet
-            </Heading>
+            <XStack justifyContent="space-between">
+              <Heading variant="title" fontWeight="$bold">
+                {credential.userName}'s Wallet
+              </Heading>
+              <XStack onPress={() => push('/menu')}>
+                <HeroIcons.EllipsisVertical size={32} color="$black" />
+              </XStack>
+            </XStack>
             <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
             <Spacer />
             <Heading variant="h1">Recent Activity</Heading>

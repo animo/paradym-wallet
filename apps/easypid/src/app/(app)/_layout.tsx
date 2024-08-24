@@ -9,7 +9,6 @@ import { type CredentialDataHandlerOptions, DeeplinkHandler } from '@package/app
 import { HeroIcons, XStack } from '@package/ui'
 import { useEffect, useState } from 'react'
 import Reanimated, { FadeIn } from 'react-native-reanimated'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from 'tamagui'
 
 // When deeplink routing we want to push
@@ -21,7 +20,6 @@ export const credentialDataHandlerOptions = {
 export default function AppLayout() {
   useResetWalletDevMenu()
   const secureUnlock = useSecureUnlock()
-  const { top } = useSafeAreaInsets()
   const theme = useTheme()
   const router = useRouter()
 
@@ -84,6 +82,7 @@ export default function AppLayout() {
               <Stack.Screen name="notifications/openIdPresentation" options={headerNormalOptions} />
               <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
               <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
+              <Stack.Screen name="(home)/menu" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>
         </DeeplinkHandler>
