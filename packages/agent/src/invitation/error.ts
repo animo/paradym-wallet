@@ -1,7 +1,6 @@
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class BiometricAuthenticationError extends Error {
   public static tryParseFromError(error: unknown): BiometricAuthenticationError | null {
-    console.error(error)
     if (BiometricAuthenticationCancelledError.isBiometricAuthenticationCancelledError(error)) {
       return new BiometricAuthenticationCancelledError()
     }
@@ -34,7 +33,7 @@ const cancelMessages = [
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class BiometricAuthenticationCancelledError extends BiometricAuthenticationError {
   public static isBiometricAuthenticationCancelledError(error: unknown) {
-    return error instanceof Error && cancelMessages.some((m) => error.message.includes(m))
+    return error instanceof Error && cancelMessages.some((m) => error.message.toLowerCase().includes(m))
   }
 }
 
@@ -51,12 +50,12 @@ const notEnabledMessages = [
   // https://developer.android.com/reference/androidx/biometric/BiometricPrompt#constants_1
   ...androidErrorCodes([12, 1, 7, 9, 11, 14, 4, 15]),
   // Happens when no fingerprints are configured
-  'At least one biometric must be enrolled to create keys requiring user authentication for every use',
+  'at least one biometric must be enrolled to create keys requiring user authentication for every use',
 ]
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class BiometricAuthenticationNotEnabledError extends BiometricAuthenticationError {
   public static isBiometricAuthenticationNotEnabledError(error: unknown) {
-    return error instanceof Error && notEnabledMessages.some((m) => error.message.includes(m))
+    return error instanceof Error && notEnabledMessages.some((m) => error.message.toLowerCase().includes(m))
   }
 }
