@@ -19,7 +19,7 @@ type Attributes = {
   [key: string]: unknown
 }
 
-type PidSdJwtVcAttributes = {
+export type PidSdJwtVcAttributes = {
   issuing_country: string
   issuing_authority: string
   given_name: string

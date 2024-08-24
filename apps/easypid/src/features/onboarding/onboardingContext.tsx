@@ -1,6 +1,6 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
-import { TypedArrayEncoder } from '@credo-ts/core'
+import { MdocRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
@@ -35,6 +35,7 @@ import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
+import type { PidSdJwtVcAttributes } from '../../hooks'
 
 type Page =
   | { type: 'fullscreen' }
@@ -691,30 +692,38 @@ export function OnboardingContextProvider({
 
     try {
       // Retrieve Credential
-      const credential = await receivePidUseCase.retrieveCredential()
-      if (credential instanceof SdJwtVcRecord) {
-        await storeCredential(secureUnlock.context.agent, credential)
-        const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<
-          SdJwtVcHeader,
-          { given_name: string; family_name: string }
-        >(credential.compactSdJwtVc)
-        setUserName(
-          `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
-            parsed.prettyClaims.family_name.toLowerCase()
-          )}`
-        )
-      } else {
-        const payload = credential.split('.')[1]
-        const {
-          pid_data: { given_name, family_name },
-        } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
-        setUserName(
-          `${capitalizeFirstLetter(given_name.toLowerCase())} ${capitalizeFirstLetter(family_name.toLowerCase())}`
-        )
+      const credentials = await receivePidUseCase.retrieveCredentials()
+
+      for (const credential of credentials) {
+        if (credential instanceof SdJwtVcRecord) {
+          await storeCredential(secureUnlock.context.agent, credential)
+
+          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
+            credential.compactSdJwtVc
+          )
+          setUserName(
+            `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
+              parsed.prettyClaims.family_name.toLowerCase()
+            )}`
+          )
+        } else if (credential instanceof MdocRecord) {
+          await storeCredential(secureUnlock.context.agent, credential)
+
+          // NOTE: we don't set the userName here as we always get SD-JWT VC and MODC at the same time currently
+          // so it should be set
+        } else {
+          const payload = credential.split('.')[1]
+          const {
+            pid_data: { given_name, family_name },
+          } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
+          setUserName(
+            `${capitalizeFirstLetter(given_name.toLowerCase())} ${capitalizeFirstLetter(family_name.toLowerCase())}`
+          )
+        }
       }
+
       setCurrentStepName('id-card-complete')
     } catch (error) {
-      console.error('error here', error)
       if (error instanceof BiometricAuthenticationCancelledError) {
         toast.show('Biometric authentication cancelled', {
           customData: { preset: 'danger' },

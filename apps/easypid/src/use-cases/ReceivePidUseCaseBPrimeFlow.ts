@@ -54,7 +54,7 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
     )
   }
 
-  public async retrieveCredential() {
+  public async retrieveCredentials() {
     try {
       this.assertState({ expectedState: 'retrieve-credential' })
 
@@ -77,7 +77,7 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
 
       await seedCredentialStorage.store(this.options.agent, credential)
 
-      return credential
+      return [credential]
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
       if (error instanceof BiometricAuthenticationError) {
