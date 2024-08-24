@@ -30,6 +30,9 @@ import {
   JwaSignatureAlgorithm,
   KeyBackend,
   KeyType,
+  Mdoc,
+  MdocRecord,
+  MdocRepository,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -198,7 +201,7 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdToRequest?: string
   clientId?: string
-  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocNamespaces: Array<string> }
+  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
   deviceKey: Key
   customHeaders?: Record<string, unknown>
 
@@ -248,28 +251,30 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
 export const receiveCredentialFromOpenId4VciOffer = async ({
   agent,
   resolvedCredentialOffer,
-  credentialConfigurationIdToRequest,
+  credentialConfigurationIdsToRequest,
   accessToken,
   clientId,
   pidSchemes,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  credentialConfigurationIdToRequest?: string
+  credentialConfigurationIdsToRequest?: string[]
   clientId?: string
-  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocNamespaces: Array<string> }
+  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
 }) => {
   // By default request the first offered credential
   // TODO: extract the first supported offered credential
-  const offeredCredentialToRequest = credentialConfigurationIdToRequest
-    ? resolvedCredentialOffer.offeredCredentials.find((offered) => offered.id === credentialConfigurationIdToRequest)
-    : resolvedCredentialOffer.offeredCredentials[0]
-  if (!offeredCredentialToRequest) {
+  const offeredCredentialsToRequest = credentialConfigurationIdsToRequest
+    ? resolvedCredentialOffer.offeredCredentials.filter((offered) =>
+        credentialConfigurationIdsToRequest.includes(offered.id)
+      )
+    : [resolvedCredentialOffer.offeredCredentials[0]]
+  if (offeredCredentialsToRequest.length === 0) {
     throw new Error(
-      `Parameter 'credentialConfigurationIdToRequest' with value ${credentialConfigurationIdToRequest} is not a credential_configuration_id in the credential offer.`
+      `Parameter 'credentialConfigurationIdsToRequest' with values ${credentialConfigurationIdsToRequest} is not a credential_configuration_id in the credential offer.`
     )
   }
 
@@ -279,7 +284,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       resolvedCredentialOffer,
       ...accessToken,
       clientId,
-      credentialsToRequest: [offeredCredentialToRequest.id],
+      credentialsToRequest: credentialConfigurationIdsToRequest,
       verifyCredentialStatus: false,
       allowedProofOfPossessionSignatureAlgorithms: [
         // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
@@ -316,16 +321,14 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
           : undefined
 
-        const shouldKeyBeHardwareBackedForMsoMdoc = false
-        //   offeredCredentialConfiguration?.format === "mso_mdoc" &&
-        //   pidSchemes?.msoMdocNamespaces.includes(
-        //     offeredCredentialConfiguration.namespace
-        //   );
+        const shouldKeyBeHardwareBackedForMsoMdoc =
+          offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
+          pidSchemes?.msoMdocDoctypes.includes(offeredCredentialConfiguration.doctype)
+
         const shouldKeyBeHardwareBackedForSdJwtVc =
           offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
           pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
 
-        // TODO: add mso-mdoc config from above
         const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
 
         const key = await agent.wallet.createKey({
@@ -361,7 +364,11 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         }
 
         // Otherwise we also support plain jwk for sd-jwt only
-        if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
+        if (
+          supportsJwk &&
+          (credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc ||
+            credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc)
+        ) {
           return {
             method: 'jwk',
             jwk: getJwkFromKey(key),
@@ -369,40 +376,46 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         }
 
         throw new Error(
-          `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt. Issuer supports ${
+          `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt/mdoc. Issuer supports ${
             supportsJwk ? 'jwk, ' : ''
           }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
         )
       },
     })
 
-    const [firstCredential] = credentials
-    if (!firstCredential) throw new Error('Error retrieving credential.')
+    return credentials.map((credential, index) => {
+      let record: SdJwtVcRecord | W3cCredentialRecord | MdocRecord
 
-    let record: SdJwtVcRecord | W3cCredentialRecord
+      if ('compact' in credential.credential) {
+        // TODO: add claimFormat to SdJwtVc
+        record = new SdJwtVcRecord({
+          compactSdJwtVc: credential.credential.compact,
+        })
+      } else if (credential.credential instanceof Mdoc) {
+        record = new MdocRecord({
+          mdoc: credential.credential,
+        })
+      } else {
+        record = new W3cCredentialRecord({
+          credential: credential.credential,
+          // We don't support expanded types right now, but would become problem when we support JSON-LD
+          tags: {},
+        })
+      }
 
-    // TODO: add claimFormat to SdJwtVc
-    if ('compact' in firstCredential.credential) {
-      record = new SdJwtVcRecord({
-        compactSdJwtVc: firstCredential.credential.compact,
+      // FIXME: not sure if the index of credentials will match?
+      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialsToRequest[index], {
+        id: resolvedCredentialOffer.metadata.issuer,
+        display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
       })
-    } else {
-      record = new W3cCredentialRecord({
-        credential: firstCredential.credential,
-        // We don't support expanded types right now, but would become problem when we support JSON-LD
-        tags: {},
-      })
-    }
 
-    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
-      id: resolvedCredentialOffer.metadata.issuer,
-      display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
+      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+      return record
     })
-
-    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-    return record
   } catch (error) {
+    // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
+    // can retry e.g. the second credential
     // Handle biometric authentication errors
     throw BiometricAuthenticationError.tryParseFromError(error) ?? error
   }
@@ -499,9 +512,14 @@ export const shareProof = async ({
   }
 }
 
-export async function storeCredential(agent: EitherAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
+export async function storeCredential(
+  agent: EitherAgent,
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
+  } else if (credentialRecord instanceof MdocRecord) {
+    await agent.dependencyManager.resolve(MdocRepository).save(agent.context, credentialRecord)
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
   }

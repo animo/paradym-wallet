@@ -40,12 +40,15 @@ export function OpenIdCredentialNotificationScreen() {
         // Only supports pre-auth flow
         const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({ agent, offer: params })
         const tokenResponse = await acquireAccessToken({ agent, resolvedCredentialOffer })
-        const credentialRecord = await receiveCredentialFromOpenId4VciOffer({
+        const [credentialRecord] = await receiveCredentialFromOpenId4VciOffer({
           agent,
           resolvedCredentialOffer,
           accessToken: tokenResponse,
         })
 
+        if (credentialRecord.type === 'MdocRecord') {
+          throw new Error('mdoc not supported')
+        }
         setCredentialRecord(credentialRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {

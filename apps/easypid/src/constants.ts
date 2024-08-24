@@ -16,10 +16,10 @@ export const trustedX509Certificates = [bdrPidIssuerCertificate, animoFunkeRelyi
 // https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#pid-contents
 const sdJwtVcVcts = ['https://example.bmi.bund.de/credential/pid/1.0', 'urn:eu.europa.ec.eudi:pid:1']
 
-// TODO
-const msoMdocNamespaces = ['org.iso.18013.5.1.mDL']
+// https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
+const msoMdocDoctypes = ['eu.europa.ec.eudi.pid.1']
 
 export const pidSchemes = {
   sdJwtVcVcts,
-  msoMdocNamespaces,
+  msoMdocDoctypes,
 }

@@ -25,10 +25,10 @@ index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..13bb4976cb804a6489809ad8c2362053
      }
      /**
 diff --git a/build/openid4vc-holder/OpenId4VciHolderService.js b/build/openid4vc-holder/OpenId4VciHolderService.js
-index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf2814fc069f7 100644
+index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c4052dfde08 100644
 --- a/build/openid4vc-holder/OpenId4VciHolderService.js
 +++ b/build/openid4vc-holder/OpenId4VciHolderService.js
-@@ -119,7 +119,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -129,7 +129,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
          const authDetails = offeredCredentials
              .map((credential) => this.getAuthDetailsFromOfferedCredential(credential, authDetailsLocation))
              .filter((authDetail) => authDetail !== undefined);
@@ -37,7 +37,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
          const vciClientState = {
              state: {
                  credentialOffer: resolvedCredentialOffer.credentialOfferRequestWithBaseUrl,
-@@ -144,6 +144,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -154,6 +154,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  authorizationDetails: authDetails,
                  parMode: oid4vci_common_1.PARMode.AUTO,
              },
@@ -45,7 +45,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
          });
          return Object.assign(Object.assign({}, authCodeFlowOptions), { codeVerifier,
              authorizationRequestUri });
-@@ -166,8 +167,12 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -176,8 +177,12 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
              return undefined;
          const alg = dpopSigningAlgValuesSupported.find((alg) => (0, core_1.getJwkClassFromJwaSignatureAlgorithm)(alg));
          let jwk;
@@ -58,7 +58,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
          }
          else {
              const JwkClass = alg ? (0, core_1.getJwkClassFromJwaSignatureAlgorithm)(alg) : undefined;
-@@ -181,20 +186,20 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -191,20 +196,20 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
              jwtIssuer: { alg: alg, jwk: jwk.toJson() },
              dPoPSigningAlgValuesSupported: dpopSigningAlgValuesSupported,
              jwtPayloadProps: (_c = resourceRequestOptions === null || resourceRequestOptions === void 0 ? void 0 : resourceRequestOptions.jwtPayloadProps) !== null && _c !== void 0 ? _c : {},
@@ -84,7 +84,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
              if (!createDPoPOpts.jwtIssuer.jwk.kty) {
                  throw new core_1.CredoError('Missing required key type (kty) in the jwk.');
              }
-@@ -228,7 +233,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -238,7 +243,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
      }
      async acceptCredentialOffer(agentContext, options) {
          var _a, _b, _c, _d, _e, _f;
@@ -93,7 +93,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
          const { metadata, version, offeredCredentialConfigurations } = resolvedCredentialOffer;
          const { credentialsToRequest, credentialBindingResolver, verifyCredentialStatus } = acceptCredentialOfferOptions;
          if ((credentialsToRequest === null || credentialsToRequest === void 0 ? void 0 : credentialsToRequest.length) === 0) {
-@@ -283,11 +288,14 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -293,11 +298,14 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
              // Create the proof of possession
              const proofOfPossessionBuilder = oid4vci_client_1.ProofOfPossessionBuilder.fromAccessTokenResponse({
                  accessTokenResponse: tokenResponse,
@@ -109,7 +109,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
              // TODO: what if auth flow using did, and the did is different from client id. We now use the client_id
              if (credentialBinding.method === 'did') {
                  proofOfPossessionBuilder.withClientId((0, core_1.parseDid)(credentialBinding.didUrl).did).withKid(credentialBinding.didUrl);
-@@ -313,11 +321,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -323,11 +331,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  .withVersion(version)
                  .withCredentialEndpoint(metadata.credential_endpoint)
                  .withToken(tokenResponse.access_token);
@@ -123,7 +123,7 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
                  })
                  : undefined;
              const credentialResponse = await credentialRequestClient.acquireCredentialsUsingProof({
-@@ -325,13 +335,19 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -335,13 +345,19 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  credentialTypes: (0, issuerMetadataUtils_1.getTypesFromCredentialSupported)(offeredCredentialConfiguration),
                  format: offeredCredentialConfiguration.format,
                  createDPoPOpts: createDpopOpts,
@@ -144,16 +144,38 @@ index 1ae2282727ee5fb52eeab32a8245a9a7316e236d..ab80036974430715f2a45a5301abf281
              });
              this.logger.debug('Full credential', credential);
              receivedCredentials.push(credential);
+@@ -526,12 +542,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+                 throw new core_1.CredoError('Received Mdoc credential in an unsupported format.');
+             }
+             const mdoc = core_1.Mdoc.fromIssuerSignedBase64(credentialResponse.successBody.credential);
+-            const result = await this.mdocService.verify(agentContext, { mdoc });
+-            if (!result.isValid) {
+-                agentContext.config.logger.error('Failed to validate credential', { result });
+-                const errorMessage = (_g = typeof result.error) !== null && _g !== void 0 ? _g : 'Unknown';
+-                throw new core_1.CredoError(`Failed to validate credential, error = ${errorMessage}`);
+-            }
++            // FIXME: enable verification once fixed in sphereon library
++            // const result = await this.mdocService.verify(agentContext, { mdoc });
++            // if (!result.isValid) {
++            //     agentContext.config.logger.error('Failed to validate credential', { result });
++            //     const errorMessage = (_g = typeof result.error) !== null && _g !== void 0 ? _g : 'Unknown';
++            //     throw new core_1.CredoError(`Failed to validate credential, error = ${errorMessage}`);
++            // }
+             return { credential: mdoc, notificationMetadata };
+         }
+         throw new core_1.CredoError(`Unsupported credential format ${credentialResponse.successBody.format}`);
 diff --git a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
-index 157a48fc081a43127891fbbf272990f3b62c1a72..61faf8261a8a2d60149e937c41b04e2fc613b465 100644
+index 508d55a8ba8904509811d6f9b3c868d7aae7a54a..b6c81f72a23b320681301b3ba2df7af5ec461619 100644
 --- a/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
 +++ b/build/openid4vc-holder/OpenId4VciHolderServiceOptions.d.ts
-@@ -1,3 +1,4 @@
-+import type { P256Jwk } from '@credo-ts/core'
+@@ -1,5 +1,6 @@
  import type { OpenId4VcCredentialHolderBinding, OpenId4VciCredentialSupportedWithId, OpenId4VciIssuerMetadata, OpenId4VciCredentialOfferPayload, OpenId4VciCredentialConfigurationsSupported } from '../shared';
- import type { JwaSignatureAlgorithm, Jwk, KeyType } from '@credo-ts/core';
- import type { VerifiableCredential } from '@credo-ts/core/src/modules/dif-presentation-exchange/models/index';
-@@ -64,6 +65,8 @@ export interface OpenId4VciSendNotificationOptions {
+ import type { JwaSignatureAlgorithm, Jwk, KeyType, VerifiableCredential } from '@credo-ts/core';
++import type { P256Jwk } from '@credo-ts/core'
+ import type { AccessTokenResponse, CredentialOfferRequestWithBaseUrl, EndpointMetadataResult, OpenId4VCIVersion } from '@sphereon/oid4vci-common';
+ import { OpenId4VciCredentialFormatProfile } from '../shared/models/OpenId4VciCredentialFormatProfile';
+ export type OpenId4VciSupportedCredentialFormats = OpenId4VciCredentialFormatProfile.JwtVcJson | OpenId4VciCredentialFormatProfile.JwtVcJsonLd | OpenId4VciCredentialFormatProfile.SdJwtVc | OpenId4VciCredentialFormatProfile.LdpVc | OpenId4VciCredentialFormatProfile.MsoMdoc;
+@@ -63,6 +64,8 @@ export interface OpenId4VciSendNotificationOptions {
      notificationEvent: OpenId4VciNotificationEvent;
  }
  interface OpenId4VcTokenRequestBaseOptions {
@@ -162,7 +184,7 @@ index 157a48fc081a43127891fbbf272990f3b62c1a72..61faf8261a8a2d60149e937c41b04e2f
      resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer;
      txCode?: string;
  }
-@@ -88,6 +91,11 @@ export interface OpenId4VciCredentialRequestOptions extends Omit<OpenId4VciAccep
+@@ -87,6 +90,11 @@ export interface OpenId4VciCredentialRequestOptions extends Omit<OpenId4VciAccep
       * The client id used for authorization. Only required if authorization_code flow was used.
       */
      clientId?: string;
@@ -174,7 +196,7 @@ index 157a48fc081a43127891fbbf272990f3b62c1a72..61faf8261a8a2d60149e937c41b04e2f
  }
  /**
   * Options that are used to accept a credential offer for both the pre-authorized code flow and authorization code flow.
-@@ -133,6 +141,9 @@ export interface OpenId4VciAcceptCredentialOfferOptions {
+@@ -132,6 +140,9 @@ export interface OpenId4VciAcceptCredentialOfferOptions {
       * for the proof of possession signature.
       */
      credentialBindingResolver: OpenId4VciCredentialBindingResolver;
@@ -184,7 +206,7 @@ index 157a48fc081a43127891fbbf272990f3b62c1a72..61faf8261a8a2d60149e937c41b04e2f
  }
  /**
   * Options that are used for the authorization code flow.
-@@ -142,6 +153,7 @@ export interface OpenId4VciAuthCodeFlowOptions {
+@@ -141,6 +152,7 @@ export interface OpenId4VciAuthCodeFlowOptions {
      clientId: string;
      redirectUri: string;
      scope?: string[];
@@ -192,19 +214,3 @@ index 157a48fc081a43127891fbbf272990f3b62c1a72..61faf8261a8a2d60149e937c41b04e2f
  }
  export interface OpenId4VciCredentialBindingOptions {
      /**
-diff --git a/build/shared/issuerMetadataUtils.js b/build/shared/issuerMetadataUtils.js
-index 975341a9efacacd2859f4a992e643f9b43132fb6..88d0ae2c2c9915acad618370c896e7bd969ba8bc 100644
---- a/build/shared/issuerMetadataUtils.js
-+++ b/build/shared/issuerMetadataUtils.js
-@@ -56,7 +56,10 @@ function credentialConfigurationSupportedToCredentialSupported(id, config) {
-         }
-         return Object.assign(Object.assign({}, baseConfig), { format: config.format, vct: config.vct, claims: config.claims });
-     }
--    throw new core_1.CredoError(`Unsupported credential format ${config.format}`);
-+    return {
-+        ...baseConfig,
-+        ...config
-+    }
- }
- function credentialSupportedToCredentialConfigurationSupported(agentContext, credentialSupported) {
-     var _a, _b;

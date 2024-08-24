@@ -1,5 +1,5 @@
 diff --git a/dist/AuthorizationCodeClient.js b/dist/AuthorizationCodeClient.js
-index 99785e7f134743eeb8fd70a04d69ff1e4ea2bcda..824a2adf28901b58943afb82467284b79ccf3b23 100644
+index f992ebc23b05994afffb5fee9b5b24b7ee0001d7..61ebf18dfca67eba65529bde21223e376db7fbad 100644
 --- a/dist/AuthorizationCodeClient.js
 +++ b/dist/AuthorizationCodeClient.js
 @@ -70,7 +70,7 @@ function filterSupportedCredentials(credentialOffer, credentialsSupported) {
@@ -11,7 +11,7 @@ index 99785e7f134743eeb8fd70a04d69ff1e4ea2bcda..824a2adf28901b58943afb82467284b7
      var _b, _c, _d, _e;
      function removeDisplayAndValueTypes(obj) {
          const newObj = Object.assign({}, obj);
-@@ -148,7 +148,7 @@ const createAuthorizationRequestUrl = (_a) => __awaiter(void 0, [_a], void 0, fu
+@@ -149,7 +149,7 @@ const createAuthorizationRequestUrl = (_a) => __awaiter(void 0, [_a], void 0, fu
          const parResponse = yield (0, oid4vci_common_1.formPost)(parEndpoint, (0, oid4vci_common_1.convertJsonToURI)(queryObj, {
              mode: oid4vci_common_1.JsonURIMode.X_FORM_WWW_URLENCODED,
              uriTypeProperties: ['client_id', 'request_uri', 'redirect_uri', 'scope', 'authorization_details', 'issuer_state'],
@@ -21,7 +21,7 @@ index 99785e7f134743eeb8fd70a04d69ff1e4ea2bcda..824a2adf28901b58943afb82467284b7
              if (parMode === oid4vci_common_1.PARMode.REQUIRE) {
                  throw Error(`PAR error: ${parResponse.origResponse.statusText}`);
 diff --git a/dist/CredentialRequestClient.js b/dist/CredentialRequestClient.js
-index 616811cf81ab05139bab5a87e4e11ceb9beb821e..a0ea512c1e73b7ee66de25dc0f99b1631ed1bfb0 100644
+index 841c06e68175a156e28533c99dc8e04876ac630f..0989a955d55c045cf9a691fd2408649b84afc7cc 100644
 --- a/dist/CredentialRequestClient.js
 +++ b/dist/CredentialRequestClient.js
 @@ -53,7 +53,7 @@ class CredentialRequestClient {
@@ -37,7 +37,7 @@ index 616811cf81ab05139bab5a87e4e11ceb9beb821e..a0ea512c1e73b7ee66de25dc0f99b163
                  version: this.version(),
                  credentialIdentifier,
                  subjectIssuance,
-+                additionalRequestClaims,
++                additionalRequestClaims
              });
 -            return yield this.acquireCredentialsUsingRequest(request, opts.createDPoPOpts);
 +            return yield this.acquireCredentialsUsingRequest(request, opts.createDPoPOpts, customBody);
@@ -48,25 +48,23 @@ index 616811cf81ab05139bab5a87e4e11ceb9beb821e..a0ea512c1e73b7ee66de25dc0f99b163
          return __awaiter(this, void 0, void 0, function* () {
              var _a, _b;
              if (this.version() < oid4vci_common_1.OpenId4VCIVersion.VER_1_0_13) {
-@@ -82,7 +83,7 @@ class CredentialRequestClient {
+@@ -82,13 +83,13 @@ class CredentialRequestClient {
              debug(`request\n: ${JSON.stringify(request, null, 2)}`);
              const requestToken = this.credentialRequestOpts.token;
              let dPoP = createDPoPOpts ? yield (0, oid4vc_common_1.createDPoP)((0, oid4vc_common_1.getCreateDPoPOptions)(createDPoPOpts, credentialEndpoint, { accessToken: requestToken })) : undefined;
--            let response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(request), {
-+            let response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(customBody === null || customBody === void 0 ?  request : customBody), {
-                 bearerToken: requestToken,
-                 customHeaders: Object.assign({}, (dPoP && { dpop: dPoP })),
-             }));
-@@ -91,7 +92,7 @@ class CredentialRequestClient {
+-            let response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(request), Object.assign({ bearerToken: requestToken }, (dPoP && { customHeaders: { dpop: dPoP } }))));
++            let response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(customBody === null || customBody === void 0 ?  request : customBody), Object.assign({ bearerToken: requestToken }, (dPoP && { customHeaders: { dpop: dPoP } }))));
+             let nextDPoPNonce = createDPoPOpts === null || createDPoPOpts === void 0 ? void 0 : createDPoPOpts.jwtPayloadProps.nonce;
+             const retryWithNonce = (0, dpopUtil_1.shouldRetryResourceRequestWithDPoPNonce)(response);
              if (retryWithNonce.ok && createDPoPOpts) {
                  createDPoPOpts.jwtPayloadProps.nonce = retryWithNonce.dpopNonce;
                  dPoP = yield (0, oid4vc_common_1.createDPoP)((0, oid4vc_common_1.getCreateDPoPOptions)(createDPoPOpts, credentialEndpoint, { accessToken: requestToken }));
--                response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(request), {
-+                response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(customBody === null || customBody === void 0 ? request : customBody), {
-                     bearerToken: requestToken,
-                     customHeaders: Object.assign({}, (createDPoPOpts && { dpop: dPoP })),
-                 }));
-@@ -137,7 +138,7 @@ class CredentialRequestClient {
+-                response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(request), Object.assign({ bearerToken: requestToken }, (createDPoPOpts && { customHeaders: { dpop: dPoP } }))));
++                response = (yield (0, oid4vci_common_1.post)(credentialEndpoint, JSON.stringify(customBody === null || customBody === void 0 ?  request : customBody), Object.assign({ bearerToken: requestToken }, (createDPoPOpts && { customHeaders: { dpop: dPoP } }))));
+                 const successDPoPNonce = response.origResponse.headers.get('DPoP-Nonce');
+                 nextDPoPNonce = successDPoPNonce !== null && successDPoPNonce !== void 0 ? successDPoPNonce : retryWithNonce.dpopNonce;
+             }
+@@ -131,7 +132,7 @@ class CredentialRequestClient {
      createCredentialRequest(opts) {
          return __awaiter(this, void 0, void 0, function* () {
              var _a;
@@ -75,21 +73,23 @@ index 616811cf81ab05139bab5a87e4e11ceb9beb821e..a0ea512c1e73b7ee66de25dc0f99b163
              const proof = yield buildProof(proofInput, opts);
              if (credential_identifier) {
                  if (opts.format || opts.credentialTypes || opts.context) {
-@@ -148,11 +149,10 @@ class CredentialRequestClient {
+@@ -142,11 +143,10 @@ class CredentialRequestClient {
                      proof,
                  };
              }
 -            const formatSelection = (_a = opts.format) !== null && _a !== void 0 ? _a : this.credentialRequestOpts.format;
 -            if (!formatSelection) {
+-                throw Error(`Format of credential to be issued is missing`);
+-            }
+-            const format = (0, oid4vci_common_1.getUniformFormat)(formatSelection);
 +            const format = (_a = opts.format) !== null && _a !== void 0 ? _a : this.credentialRequestOpts.format;
 +            if (!format) {
-                 throw Error(`Format of credential to be issued is missing`);
-             }
--            const format = (0, oid4vci_common_1.getUniformFormat)(formatSelection);
++                 throw Error(`Format of credential to be issued is missing`);
++             }
              const typesSelection = (opts === null || opts === void 0 ? void 0 : opts.credentialTypes) && (typeof opts.credentialTypes === 'string' || opts.credentialTypes.length > 0)
                  ? opts.credentialTypes
                  : this.credentialRequestOpts.credentialTypes;
-@@ -164,7 +164,12 @@ class CredentialRequestClient {
+@@ -158,7 +158,12 @@ class CredentialRequestClient {
                  throw Error(`Credential type(s) need to be provided`);
              }
              // TODO: we should move format specific logic
@@ -104,7 +104,7 @@ index 616811cf81ab05139bab5a87e4e11ceb9beb821e..a0ea512c1e73b7ee66de25dc0f99b163
                          type: types,
                      }, format,
 diff --git a/dist/OpenID4VCIClientV1_0_13.js b/dist/OpenID4VCIClientV1_0_13.js
-index cebfbfbc7d79673e9f6a0e4363aff135612d7e4d..7951dc566a54663a10767af5e1224b83c53c0ea6 100644
+index fa81f1009155b1286138415e6aa4a8a2716b4c87..8da711c4ef01422a07219c4f734c7e6aeda22386 100644
 --- a/dist/OpenID4VCIClientV1_0_13.js
 +++ b/dist/OpenID4VCIClientV1_0_13.js
 @@ -128,6 +128,7 @@ class OpenID4VCIClientV1_0_13 {
