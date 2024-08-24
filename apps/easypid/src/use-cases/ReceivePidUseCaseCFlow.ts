@@ -1,3 +1,4 @@
+import type { MdocRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
@@ -6,7 +7,6 @@ import {
   resolveOpenId4VciOffer,
 } from '@package/agent'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
-import type { MdocRecord } from '@credo-ts/core'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
   private static SD_JWT_MDOC_OFFER =

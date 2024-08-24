@@ -24,6 +24,7 @@ import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
+import type { PidSdJwtVcAttributes } from '../../hooks'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
@@ -35,7 +36,6 @@ import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
-import type { PidSdJwtVcAttributes } from '../../hooks'
 
 type Page =
   | { type: 'fullscreen' }
