@@ -2,11 +2,15 @@ import { FunkePidRequestedAttributesDetailScreen } from '@easypid/features/walle
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
-  const { requestedAttributes } = useLocalSearchParams<{ requestedAttributes: string }>()
+  const { disclosedPayload, disclosedAttributeLength } = useLocalSearchParams<{
+    disclosedPayload: string
+    disclosedAttributeLength: string
+  }>()
 
   return (
     <FunkePidRequestedAttributesDetailScreen
-      requestedAttributes={requestedAttributes ? JSON.parse(requestedAttributes) : []}
+      disclosedPayload={JSON.parse(disclosedPayload)}
+      disclosedAttributeLength={disclosedAttributeLength}
     />
   )
 }

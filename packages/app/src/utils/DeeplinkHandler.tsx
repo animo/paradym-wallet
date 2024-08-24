@@ -7,17 +7,17 @@ import { CommonActions } from '@react-navigation/native'
 import * as Linking from 'expo-linking'
 import { useNavigation } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { useCredentialDataHandler } from '../hooks'
+import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '../hooks'
 
 interface DeeplinkHandlerProps {
   children: ReactNode
-  allowedInvitationTypes?: Array<InvitationType>
+  credentialDataHandlerOptions?: CredentialDataHandlerOptions
 }
 
 const deeplinkSchemes = Object.values(InvitationQrTypes)
 
 // TODO: use https://docs.expo.dev/router/advanced/native-intent/
-export const DeeplinkHandler = ({ children, allowedInvitationTypes }: DeeplinkHandlerProps) => {
+export const DeeplinkHandler = ({ children, credentialDataHandlerOptions }: DeeplinkHandlerProps) => {
   const { handleCredentialData } = useCredentialDataHandler()
   const toast = useToastController()
   const navigation = useNavigation()
@@ -40,14 +40,14 @@ export const DeeplinkHandler = ({ children, allowedInvitationTypes }: DeeplinkHa
 
       // Ignore deeplinks that don't start with the schemes for credentials
       if (isRecognizedDeeplink) {
-        void handleCredentialData(url, { allowedInvitationTypes }).then((result) => {
+        void handleCredentialData(url, credentialDataHandlerOptions).then((result) => {
           if (!result.success) {
             toast.show(result.message, { customData: { preset: 'danger' } })
           }
         })
       }
     },
-    [navigation.dispatch, toast.show, handleCredentialData, allowedInvitationTypes]
+    [navigation.dispatch, toast.show, handleCredentialData, credentialDataHandlerOptions]
   )
 
   // NOTE: we use getInitialURL and the event listener over useURL as we don't know

@@ -85,7 +85,7 @@ export function IdCardAttributes({
             </XStack>
           ))}
         </YStack>
-        <YStack justifyContent="flex-end">{<HeroIcons.ArrowRight color="$black" />}</YStack>
+        <YStack justifyContent="flex-end">{onPress && <HeroIcons.ArrowRight color="$black" />}</YStack>
       </XStack>
     </YStack>
   )

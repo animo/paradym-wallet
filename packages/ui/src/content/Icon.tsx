@@ -23,6 +23,7 @@ import {
   QuestionMarkCircleIcon,
   ShieldCheckIcon,
   StarIcon,
+  UserIcon,
   XCircleIcon,
   XMarkIcon,
 } from 'react-native-heroicons/outline'
@@ -79,4 +80,5 @@ export const HeroIcons = {
   QrCode: wrapHeroIcon(QrCodeIcon),
   QuestionMarkCircle: wrapHeroIcon(QuestionMarkCircleIcon),
   FingerPrint: wrapHeroIcon(FingerPrintIcon),
+  User: wrapHeroIcon(UserIcon),
 } as const

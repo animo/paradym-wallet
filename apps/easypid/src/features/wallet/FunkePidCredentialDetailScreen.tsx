@@ -20,13 +20,16 @@ export function FunkePidCredentialDetailScreen() {
   return (
     <YStack bg="$background" height="100%">
       <Spacer size="$13" />
-      <YStack borderWidth={isScrolledByOffset ? 0.5 : 0} borderColor="$grey-300" />
+      <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack g="xl" pad="lg" py="$4">
+        <YStack g="xl" p="$4">
           <IdCard issuerImage={germanIssuerImage} small />
           <Stack g="md">
             <Heading variant="title">Personalausweis</Heading>
-            <CredentialAttributes subject={credential.attributes} headerTitle="Attributes" />
+            <CredentialAttributes
+              subject={credential.attributesForDisplay ?? credential.attributes}
+              headerTitle="Attributes"
+            />
             <Button.Text onPress={() => router.back()} icon={<HeroIcons.ArrowLeft size={20} />}>
               Back
             </Button.Text>

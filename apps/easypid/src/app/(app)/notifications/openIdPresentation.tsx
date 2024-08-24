@@ -1,5 +1,5 @@
-import { OpenIdPresentationNotificationScreen } from '@package/app'
+import { FunkeOpenIdPresentationNotificationScreen } from '@easypid/features/wallet/FunkeOpenIdPresentationNotificationScreen'
 
 export default function Screen() {
-  return <OpenIdPresentationNotificationScreen />
+  return <FunkeOpenIdPresentationNotificationScreen />
 }

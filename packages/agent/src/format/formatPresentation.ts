@@ -1,8 +1,6 @@
-import type { DifPexCredentialsForRequest } from '@credo-ts/core'
+import { ClaimFormat, type DifPexCredentialsForRequest } from '@credo-ts/core'
 
-import { ClaimFormat } from '@credo-ts/core'
-
-import { filterAndMapSdJwtKeys, getCredentialForDisplay } from '../display'
+import { type CredentialMetadata, filterAndMapSdJwtKeys, getCredentialForDisplay } from '../display'
 
 export interface FormattedSubmission {
   name: string
@@ -24,6 +22,8 @@ export interface FormattedSubmissionEntry {
     credentialName: string
     issuerName?: string
     requestedAttributes?: string[]
+    disclosedPayload?: Record<string, unknown>
+    metadata: CredentialMetadata
     backgroundColor?: string
   }>
 }
@@ -40,22 +40,20 @@ export function formatDifPexCredentialsForRequest(
         isSatisfied: submission.verifiableCredentials.length >= 1,
 
         credentials: submission.verifiableCredentials.map((verifiableCredential) => {
-          const { display, credential } = getCredentialForDisplay(verifiableCredential.credentialRecord)
+          const { display, attributes, metadata } = getCredentialForDisplay(verifiableCredential.credentialRecord)
 
-          // TODO: support nesting
-          let requestedAttributes: string[]
+          let disclosedPayload = attributes
           if (verifiableCredential.type === ClaimFormat.SdJwtVc) {
-            const { metadata, disclosedAttributeNames } = filterAndMapSdJwtKeys(verifiableCredential.disclosedPayload)
-            requestedAttributes = [...disclosedAttributeNames.map(([pretty]) => pretty), ...Object.keys(metadata)]
-          } else {
-            requestedAttributes = Object.keys(credential?.credentialSubject ?? {})
+            disclosedPayload = filterAndMapSdJwtKeys(verifiableCredential.disclosedPayload).visibleProperties
           }
 
           return {
             id: verifiableCredential.credentialRecord.id,
             credentialName: display.name,
             issuerName: display.issuer.name,
-            requestedAttributes,
+            requestedAttributes: [...Object.keys(attributes), ...Object.keys(metadata)],
+            disclosedPayload,
+            metadata,
             backgroundColor: display.backgroundColor,
           }
         }),

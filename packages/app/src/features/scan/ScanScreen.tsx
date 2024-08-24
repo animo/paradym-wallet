@@ -4,17 +4,16 @@ import { useIsFocused } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
-import type { InvitationType } from '@package/agent'
-import { useCredentialDataHandler } from '../../hooks'
+import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '../../hooks'
 import { isAndroid } from '../../utils'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
 interface QrScannerScreenProps {
-  allowedInvitationTypes?: Array<InvitationType>
+  credentialDataHandlerOptions?: CredentialDataHandlerOptions
 }
 
-export function QrScannerScreen({ allowedInvitationTypes }: QrScannerScreenProps) {
+export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScreenProps) {
   const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
 
@@ -29,7 +28,7 @@ export function QrScannerScreen({ allowedInvitationTypes }: QrScannerScreenProps
     setIsProcessing(true)
     setIsLoading(true)
 
-    const result = await handleCredentialData(scannedData, { allowedInvitationTypes })
+    const result = await handleCredentialData(scannedData, credentialDataHandlerOptions)
     if (!result.success) {
       const isUnsupportedUrl =
         unsupportedUrlPrefixes.find((x) => scannedData.includes(x)) || result.error === 'invitation_type_not_allowed'

@@ -1,5 +1,11 @@
-import { QrScannerScreen } from '@package/app'
+import { type CredentialDataHandlerOptions, QrScannerScreen } from '@package/app'
+
+// When going form the scanner we want to replace (as we have the modal)
+export const credentialDataHandlerOptions = {
+  allowedInvitationTypes: ['openid-authorization-request'],
+  routeMethod: 'push',
+} satisfies CredentialDataHandlerOptions
 
 export default function Screen() {
-  return <QrScannerScreen allowedInvitationTypes={['openid-authorization-request']} />
+  return <QrScannerScreen credentialDataHandlerOptions={credentialDataHandlerOptions} />
 }

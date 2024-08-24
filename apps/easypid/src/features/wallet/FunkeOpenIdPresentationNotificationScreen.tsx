@@ -36,25 +36,18 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     [credentialsForRequest]
   )
 
-  const [selectedCredentials, setSelectedCredentials] = useState<{
-    [inputDescriptorId: string]: string
-  }>({})
-
   const pushToWallet = useCallback(() => {
     router.back()
-    router.push('/')
-  }, [router.back, router.push])
+  }, [router.back])
 
   useEffect(() => {
-    async function handleRequest() {
-      try {
-        const cfr = await getCredentialsForProofRequest({
-          agent,
-          data: params.data,
-          uri: params.uri,
-        })
-        setCredentialsForRequest(cfr)
-      } catch (error: unknown) {
+    getCredentialsForProofRequest({
+      agent,
+      data: params.data,
+      uri: params.uri,
+    })
+      .then(setCredentialsForRequest)
+      .catch((error) => {
         toast.show('Presentation information could not be extracted.', {
           customData: { preset: 'danger' },
         })
@@ -63,10 +56,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
 
         pushToWallet()
-      }
-    }
-
-    void handleRequest()
+      })
   }, [params, toast.show, agent, pushToWallet, toast])
 
   if (!submission || !credentialsForRequest) {
@@ -80,7 +70,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       agent,
       authorizationRequest: credentialsForRequest.authorizationRequest,
       credentialsForRequest: credentialsForRequest.credentialsForRequest,
-      selectedCredentials,
+      selectedCredentials: {},
     })
       .then(() => {
         toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
@@ -116,13 +106,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
-      verifierName={credentialsForRequest.verifierHostName}
-      selectedCredentials={selectedCredentials}
-      onSelectCredentialForInputDescriptor={(inputDescriptorId: string, credentialId: string) =>
-        setSelectedCredentials((selectedCredentials) => ({
-          ...selectedCredentials,
-          [inputDescriptorId]: credentialId,
-        }))
+      verifierHost={
+        credentialsForRequest.verifierHostName ? `https://${credentialsForRequest.verifierHostName}` : undefined
       }
     />
   )
