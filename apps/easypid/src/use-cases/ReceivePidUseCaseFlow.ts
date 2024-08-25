@@ -30,7 +30,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
 
   protected resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   protected resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest
-  protected idCardAuthFlow: AusweisAuthFlow
+  protected idCardAuthFlow!: AusweisAuthFlow
   protected accessToken?: OpenId4VciRequestTokenResponse
   protected refreshUrl?: string
   protected currentSessionPinAttempts = 0

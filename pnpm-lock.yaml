@@ -24,7 +24,7 @@ overrides:
   '@credo-ts/react-hooks': 0.6.1
   '@credo-ts/react-native': 0.5.11-pr-1996-20240824184150
   '@animo-id/expo-secure-environment': 0.1.0-alpha.5
-  '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.11
+  '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.12
   react-native: 0.74.5
 
 patchedDependencies:
@@ -61,8 +61,8 @@ importers:
   apps/easypid:
     dependencies:
       '@animo-id/expo-ausweis-sdk':
-        specifier: 0.0.1-alpha.11
-        version: 0.0.1-alpha.11(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+        specifier: 0.0.1-alpha.12
+        version: 0.0.1-alpha.12(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@animo-id/expo-secure-environment':
         specifier: 0.1.0-alpha.5
         version: 0.1.0-alpha.5(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -735,8 +735,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.11':
-    resolution: {integrity: sha512-gsfC4XIHzm15cHzhWuSVHwROPR0lVPs4/pTrs+sakM3Wy+2ENa9Ne/v8M8/GX8/TwuKZ6JUmUKE0XWdz7IQSHw==}
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.12':
+    resolution: {integrity: sha512-3HwBts29opiMrhX24IyU8Hz9x35rSQ6EA8zijVK6vyKU6JPm502L2EYiKtzEO7CaQIyg6Z324EoNkS+ClXotFg==}
     peerDependencies:
       expo: '*'
       react: 18.2.0
@@ -9623,7 +9623,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.11(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.12(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@expo/config-plugins': 8.0.8
       expo: 51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))

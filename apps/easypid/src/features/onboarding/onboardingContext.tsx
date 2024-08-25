@@ -101,7 +101,7 @@ const onboardingSteps = [
   {
     step: 'biometrics',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 33,
     page: {
       type: 'content',
       title: 'Let’s secure your wallet',
@@ -112,7 +112,7 @@ const onboardingSteps = [
   },
   {
     step: 'biometrics-disabled',
-    progress: 49.5,
+    progress: 33,
     alternativeFlow: true,
     page: {
       type: 'content',
@@ -125,7 +125,7 @@ const onboardingSteps = [
   {
     step: 'id-card-start',
     alternativeFlow: false,
-    progress: 66,
+    progress: 49.5,
     page: {
       type: 'content',
       title: 'Scan your eID card to verify your identity',
@@ -138,7 +138,7 @@ const onboardingSteps = [
   {
     step: 'id-card-requested-attributes',
     alternativeFlow: false,
-    progress: 66,
+    progress: 49.5,
     page: {
       type: 'content',
       title: 'Review the request',
@@ -148,7 +148,7 @@ const onboardingSteps = [
   {
     step: 'id-card-pin',
     alternativeFlow: false,
-    progress: 66,
+    progress: 49.5,
     page: {
       type: 'content',
       title: 'Enter your eID pin',
@@ -170,7 +170,7 @@ const onboardingSteps = [
   {
     step: 'id-card-scan',
     alternativeFlow: false,
-    progress: 75,
+    progress: 66,
     page: {
       type: 'content',
       title: 'Ready your eID card',
@@ -182,7 +182,7 @@ const onboardingSteps = [
   {
     step: 'id-card-fetch',
     alternativeFlow: false,
-    progress: 75,
+    progress: 82.5,
     page: {
       type: 'content',
       title: 'Fetching information',
@@ -525,7 +525,7 @@ export function OnboardingContextProvider({
     }
 
     if (stepsToCompleteAfterReset.includes('id-card-start')) {
-      // We don't handle error
+      // We don't need to handle error
       await receivePidUseCase?.cancelIdCardScanning().catch(() => {})
       setReceivePidUseCaseState(undefined)
       setReceivePidUseCase(undefined)
