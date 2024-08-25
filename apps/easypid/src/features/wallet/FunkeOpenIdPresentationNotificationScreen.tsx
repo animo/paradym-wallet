@@ -6,14 +6,14 @@ import {
   useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
-import { useRouter, useGlobalSearchParams, useLocalSearchParams } from 'expo-router'
 
+import { ClaimFormat } from '@credo-ts/core'
 import { PidIssuerPinInvalidError, requestSdJwtVcFromSeedCredential } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { GettingInformationScreen } from '@package/app/src/features/notifications/components/GettingInformationScreen'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
-import { ClaimFormat } from '@credo-ts/core'
 
 type Query = { uri?: string; data?: string }
 

@@ -1,4 +1,4 @@
-import { PinDotsInput, type PinDotsInputRef, YStack, FlexPage, HeroIcons, Paragraph } from '@package/ui'
+import { FlexPage, HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
 import React, { forwardRef } from 'react'
 import { Circle } from 'tamagui'
 

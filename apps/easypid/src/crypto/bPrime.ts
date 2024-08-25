@@ -6,10 +6,10 @@ import {
   JwtPayload,
   Key,
   KeyType,
+  SdJwtVcRecord,
   TypedArrayEncoder,
   getJwkFromKey,
   utils,
-  SdJwtVcRecord,
 } from '@credo-ts/core'
 import { Buffer } from '@credo-ts/core'
 import type { SeedCredentialPidData } from '@easypid/storage'
