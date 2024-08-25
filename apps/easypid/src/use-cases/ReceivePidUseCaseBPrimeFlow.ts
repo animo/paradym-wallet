@@ -47,11 +47,15 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
       throw new Error('Expected authorization_code grant, but not found')
     }
 
-    return new ReceivePidUseCaseBPrimeFlow(
+    const authFlow = new ReceivePidUseCaseBPrimeFlow(
       options,
       resolved.resolvedAuthorizationRequest,
       resolved.resolvedCredentialOffer
     )
+    authFlow.startAuthFlow()
+    const accessRights = await authFlow.accessRights
+    authFlow.options.onStateChange?.('id-card-auth')
+    return { authFlow, accessRights }
   }
 
   public async retrieveCredentials() {

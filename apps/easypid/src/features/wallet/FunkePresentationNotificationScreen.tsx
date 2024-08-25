@@ -3,7 +3,7 @@ import {
   Button,
   Heading,
   HeroIcons,
-  IdCardAttributes,
+  IdCardRequestedAttributesSection,
   Paragraph,
   ProgressBar,
   ScrollView,
@@ -67,43 +67,22 @@ export function FunkePresentationNotificationScreen({
               <Heading variant="title">Review the request</Heading>
             </YStack>
 
-            <YStack gap="$1">
-              <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-                <HeroIcons.CircleStack color="$white" size={18} />
-              </Circle>
-              <Heading variant="h2">Requested data</Heading>
-              <Paragraph size="$3" secondary>
-                {disclosedAttributes.length > 0 ? (
-                  disclosedAttributes.length > 1 ? (
-                    `These ${disclosedAttributes.length} attributes will be shared`
-                  ) : (
-                    'The following attribute will be shared'
-                  )
-                ) : (
-                  <>
-                    You don't have the requested credential{' '}
-                    <Paragraph secondary fontWeight="$bold">
-                      {entry.name}
-                    </Paragraph>
-                  </>
-                )}
-              </Paragraph>
-
-              {disclosedAttributes.length > 0 && (
-                <>
-                  <Spacer />
-                  <IdCardAttributes
-                    onPress={() => {
-                      router.push(
-                        `/credentials/pidRequestedAttributes?disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${disclosedAttributes?.length ?? 0}`
-                      )
-                    }}
-                    attributes={disclosedAttributes}
-                    issuerImage={germanIssuerImage}
-                  />
-                </>
-              )}
-            </YStack>
+            <IdCardRequestedAttributesSection
+              disclosedAttributes={disclosedAttributes}
+              description={
+                disclosedAttributes.length === 0
+                  ? "You don't have the requested credential"
+                  : disclosedAttributes.length > 1
+                    ? `These ${disclosedAttributes.length} attributes will be shared`
+                    : 'The following attribute will be shared'
+              }
+              issuerImage={germanIssuerImage}
+              onPressIdCard={() => {
+                router.push(
+                  `/credentials/pidRequestedAttributes?disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${disclosedAttributes?.length ?? 0}`
+                )
+              }}
+            />
             <YStack gap="$1">
               <Circle size="$2" mb="$2" backgroundColor="$primary-500">
                 <HeroIcons.InformationCircle color="$white" size={18} />

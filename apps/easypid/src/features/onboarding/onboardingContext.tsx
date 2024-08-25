@@ -30,6 +30,7 @@ import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
+import { OnboardingIdCardRequestedAttributes } from './screens/id-card-requested-attributes'
 import { OnboardingIdCardScan } from './screens/id-card-scan'
 import { OnboardingIdCardStart } from './screens/id-card-start'
 import { OnboardingIdCardVerify } from './screens/id-card-verify'
@@ -72,6 +73,7 @@ const onboardingSteps = [
     },
     Screen: OnboardingIntroductionSteps,
   },
+
   {
     step: 'pin',
     alternativeFlow: false,
@@ -99,7 +101,7 @@ const onboardingSteps = [
   {
     step: 'biometrics',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 33,
     page: {
       type: 'content',
       title: 'Let’s secure your wallet',
@@ -110,7 +112,7 @@ const onboardingSteps = [
   },
   {
     step: 'biometrics-disabled',
-    progress: 49.5,
+    progress: 33,
     alternativeFlow: true,
     page: {
       type: 'content',
@@ -123,7 +125,7 @@ const onboardingSteps = [
   {
     step: 'id-card-start',
     alternativeFlow: false,
-    progress: 66,
+    progress: 49.5,
     page: {
       type: 'content',
       title: 'Scan your eID card to verify your identity',
@@ -134,9 +136,19 @@ const onboardingSteps = [
     Screen: OnboardingIdCardStart,
   },
   {
+    step: 'id-card-requested-attributes',
+    alternativeFlow: false,
+    progress: 49.5,
+    page: {
+      type: 'content',
+      title: 'Review the request',
+    },
+    Screen: OnboardingIdCardRequestedAttributes,
+  },
+  {
     step: 'id-card-pin',
     alternativeFlow: false,
-    progress: 66,
+    progress: 49.5,
     page: {
       type: 'content',
       title: 'Enter your eID pin',
@@ -170,7 +182,7 @@ const onboardingSteps = [
   {
     step: 'id-card-fetch',
     alternativeFlow: false,
-    progress: 66,
+    progress: 82.5,
     page: {
       type: 'content',
       title: 'Fetching information',
@@ -267,6 +279,7 @@ export function OnboardingContextProvider({
     state: 'readyToScan',
     showScanModal: true,
   })
+  const [eidCardRequestedAccessRights, setEidCardRequestedAccessRights] = useState<string[]>()
 
   const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
@@ -487,52 +500,7 @@ export function OnboardingContextProvider({
 
   const onIdCardPinEnter = async (pin: string) => {
     setIdCardPin(pin)
-
-    if (secureUnlock.state !== 'unlocked') {
-      await reset({
-        error: 'onIdCardPinEnter: Secure unlock state is not unlocked',
-        resetToStep: 'welcome',
-      })
-      throw new Error('onIdCardPinEnter: Secure unlock state is not unlocked')
-    }
-
-    if (!walletPin) {
-      await reset({ error: 'onIdCardPinEnter: Missing walletKey in state', resetToStep: 'welcome' })
-      throw new Error('onIdCardPinEnter: Missing walletKey in state')
-    }
-
-    const baseOptions = {
-      agent: secureUnlock.context.agent,
-      onStateChange: setReceivePidUseCaseState,
-      onCardAttachedChanged: ({ isCardAttached }) =>
-        setIdCardScanningState((state) => ({
-          ...state,
-          isCardAttached,
-          state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
-        })),
-      onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
-      onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
-    } as const satisfies ReceivePidUseCaseFlowOptions
-
-    if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {
-      const flow =
-        selectedFlow === 'c'
-          ? ReceivePidUseCaseCFlow.initialize(baseOptions)
-          : ReceivePidUseCaseBPrimeFlow.initialize({ ...baseOptions, pidPin: walletPin.split('').map(Number) })
-
-      return flow
-        .then((receivePidUseCase) => {
-          setReceivePidUseCase(receivePidUseCase)
-          goToNextStep()
-        })
-        .catch(async (e) => {
-          await reset({ error: e, resetToStep: 'id-card-pin' })
-          throw e
-        })
-    }
-
     goToNextStep()
-    return
   }
 
   const reset = async ({
@@ -556,11 +524,17 @@ export function OnboardingContextProvider({
       setAgent(undefined)
     }
 
+    if (stepsToCompleteAfterReset.includes('id-card-start')) {
+      // We don't need to handle error
+      await receivePidUseCase?.cancelIdCardScanning().catch(() => {})
+      setReceivePidUseCaseState(undefined)
+      setReceivePidUseCase(undefined)
+      setEidCardRequestedAccessRights(undefined)
+    }
+
     // Reset eID Card state
     if (stepsToCompleteAfterReset.includes('id-card-pin')) {
       setIdCardPin(undefined)
-      setReceivePidUseCaseState(undefined)
-      setReceivePidUseCase(undefined)
       setIdCardScanningState({
         progress: 0,
         state: 'readyToScan',
@@ -745,6 +719,55 @@ export function OnboardingContextProvider({
     Linking.openSettings().then(() => setCurrentStepName('id-card-verify'))
   }
 
+  const onIdCardStart = async () => {
+    if (secureUnlock.state !== 'unlocked') {
+      await reset({
+        error: 'onIdCardStart: Secure unlock state is not unlocked',
+        resetToStep: 'welcome',
+      })
+      throw new Error('onIdCardStart: Secure unlock state is not unlocked')
+    }
+
+    if (!walletPin) {
+      await reset({ error: 'onIdCardStart: Missing walletKey in state', resetToStep: 'welcome' })
+      throw new Error('onIdCardStart: Missing walletKey in state')
+    }
+
+    const baseOptions = {
+      agent: secureUnlock.context.agent,
+      onStateChange: setReceivePidUseCaseState,
+      onCardAttachedChanged: ({ isCardAttached }) =>
+        setIdCardScanningState((state) => ({
+          ...state,
+          isCardAttached,
+          state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
+        })),
+      onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
+      onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
+    } as const satisfies ReceivePidUseCaseFlowOptions
+
+    if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {
+      const flow =
+        selectedFlow === 'c'
+          ? ReceivePidUseCaseCFlow.initialize(baseOptions)
+          : ReceivePidUseCaseBPrimeFlow.initialize({ ...baseOptions, pidPin: walletPin.split('').map(Number) })
+
+      return flow
+        .then(async ({ accessRights, authFlow }) => {
+          setReceivePidUseCase(authFlow)
+          setEidCardRequestedAccessRights(accessRights)
+          goToNextStep()
+        })
+        .catch(async (e) => {
+          await reset({ error: e, resetToStep: 'id-card-start' })
+          throw e
+        })
+    }
+
+    // If we already have it initialized, it should be fine to resolve immediately as it should already have been set
+    goToNextStep()
+  }
+
   let screen: React.JSX.Element
   if (currentStep.step === 'welcome') {
     screen = <currentStep.Screen goToNextStep={selectFlow} />
@@ -759,6 +782,10 @@ export function OnboardingContextProvider({
     screen = <currentStep.Screen goToNextStep={onEnableBiometrics} actionText="Activate Biometrics" />
   } else if (currentStep.step === 'biometrics-disabled') {
     screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Go to settings" />
+  } else if (currentStep.step === 'id-card-start') {
+    screen = <currentStep.Screen goToNextStep={onIdCardStart} />
+  } else if (currentStep.step === 'id-card-requested-attributes') {
+    screen = <currentStep.Screen goToNextStep={goToNextStep} requestedAttributes={eidCardRequestedAccessRights ?? []} />
   } else if (currentStep.step === 'id-card-pin') {
     screen = <currentStep.Screen goToNextStep={onIdCardPinReEnter ?? onIdCardPinEnter} />
   } else if (currentStep.step === 'id-card-complete') {
