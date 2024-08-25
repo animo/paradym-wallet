@@ -170,7 +170,10 @@ export function getPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttr
 
   disclosedAttributeNames.push('Issuer')
   disclosedAttributeNames.push('Issued at')
+
+  // FIXME: should not be included in case of B' flow ( or at least currnetlh the count doesn't match with the displayed attributes)
   disclosedAttributeNames.push('Expires at')
+
   disclosedAttributeNames.push('Credential type')
 
   return disclosedAttributeNames
@@ -178,18 +181,9 @@ export function getPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttr
 
 export function usePidCredential() {
   const { isLoading, credentials } = useCredentialsForDisplay()
-  const { isLoading: isSeedCredentialLoading, seedCredential } = useSeedCredentialPidData()
+  const { isLoading: isSeedCredentialLoading } = useSeedCredentialPidData()
 
   const pidCredential = useMemo(() => {
-    if (seedCredential) {
-      return {
-        id: 'seed-credential',
-        attributes: seedCredential.pid_data,
-        userName: `${capitalizeFirstLetter(seedCredential.pid_data.given_name.toLowerCase())}`,
-        // display: seedCredential.display,
-      }
-    }
-
     if (credentials[0]) {
       const credential = credentials[0]
       const attributes = credential.attributes as PidSdJwtVcAttributes
@@ -203,7 +197,7 @@ export function usePidCredential() {
     }
 
     return undefined
-  }, [seedCredential, credentials[0]])
+  }, [credentials[0]])
 
   if (isLoading || isSeedCredentialLoading || !pidCredential) {
     return {
