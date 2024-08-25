@@ -11,17 +11,7 @@ export interface IdCardAttributesProps {
   attributes: string[]
 }
 
-export function IdCardAttributes({
-  issuerImage,
-  onPress,
-  attributes = [
-    'name',
-    'date of Birth',
-    'expiration date',
-    'driving privileges',
-    'verry long attribute i dont know what t odo',
-  ],
-}: IdCardAttributesProps) {
+export function IdCardAttributes({ issuerImage, onPress, attributes }: IdCardAttributesProps) {
   const groupedAttributes = useMemo(() => {
     const result: Array<[string, string | undefined]> = []
     for (let i = 0; i < attributes.length; i += 2) {
@@ -35,7 +25,6 @@ export function IdCardAttributes({
       minHeight="$13"
       borderRadius="$8"
       overflow="hidden"
-      flex-1
       borderColor="#D8DAC8"
       bw="$0.5"
       onPress={onPress}
@@ -68,18 +57,18 @@ export function IdCardAttributes({
           <Image src={issuerImage} width={32} height={32} resizeMode="contain" />
         </Stack>
       </XStack>
-      <XStack p="$4" gap="$4" backgroundColor="$white" opacity={0.8} flex-1>
-        <YStack gap="$3" flex-1>
+      <XStack p="$4" gap="$4" backgroundColor="$white" opacity={0.8}>
+        <YStack gap="$3" fg={1}>
           {groupedAttributes.map(([first, second]) => (
             <XStack key={first + second} gap="$4">
-              <Stack flex-1>
+              <Stack flexGrow={1} flexBasis={0}>
                 <Paragraph variant="sub" color="#415963">
                   {capitalizeFirstLetter(first)}
                 </Paragraph>
               </Stack>
-              <Stack flex-1>
+              <Stack flexGrow={1} flexBasis={0}>
                 <Paragraph variant="sub" color="#415963">
-                  {second && capitalizeFirstLetter(second)}
+                  {second ? capitalizeFirstLetter(second) : ''}
                 </Paragraph>
               </Stack>
             </XStack>

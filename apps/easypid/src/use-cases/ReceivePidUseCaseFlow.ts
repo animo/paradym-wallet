@@ -1,4 +1,4 @@
-import { AusweisAuthFlow, type AusweisAuthFlowOptions } from '@animo-id/expo-ausweis-sdk'
+import { AusweisAuthFlow, type AusweisAuthFlowOptions, sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { MdocRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import {
@@ -10,10 +10,7 @@ import {
 } from '@package/agent'
 
 export interface ReceivePidUseCaseFlowOptions
-  extends Pick<
-    AusweisAuthFlowOptions,
-    'onAttachCard' | 'onRequestAccessRights' | 'onStatusProgress' | 'onCardAttachedChanged'
-  > {
+  extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {
   agent: AppAgent
   onStateChange?: (newState: ReceivePidUseCaseState) => void
   onEnterPin: (
@@ -37,6 +34,8 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   protected accessToken?: OpenId4VciRequestTokenResponse
   protected refreshUrl?: string
   protected currentSessionPinAttempts = 0
+  protected authenticationPromise?: Promise<void>
+  protected accessRights: Promise<string[]>
 
   static CLIENT_ID = '7598ca4c-cc2e-4ff1-a4b4-ed58f249e274'
 
@@ -67,31 +66,37 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     this.resolvedCredentialOffer = resolvedCredentialOffer
     this.options = options
 
-    this.idCardAuthFlow = new AusweisAuthFlow({
-      onEnterPin: async (options) => {
-        const pin = await this.options.onEnterPin({
-          ...options,
-          currentSessionPinAttempts: this.currentSessionPinAttempts,
-        })
-        this.currentSessionPinAttempts += 1
-        return pin
-      },
-      onError: (error) => {
-        for (const errorCallback of this.errorCallbacks) {
-          errorCallback(error)
-        }
-      },
-      onSuccess: ({ refreshUrl }) => {
-        for (const successCallback of this.successCallbacks) {
-          successCallback({ refreshUrl })
-        }
-      },
-      onCardAttachedChanged: (options) => this.options.onCardAttachedChanged?.(options),
-      debug: __DEV__,
-      onStatusProgress: (options) => this.options.onStatusProgress?.(options),
-      onAttachCard: () => this.options.onAttachCard?.(),
+    this.accessRights = new Promise((resolve) => {
+      this.idCardAuthFlow = new AusweisAuthFlow({
+        onEnterPin: async (options) => {
+          const pin = await this.options.onEnterPin({
+            ...options,
+            currentSessionPinAttempts: this.currentSessionPinAttempts,
+          })
+          this.currentSessionPinAttempts += 1
+          return pin
+        },
+        onError: (error) => {
+          for (const errorCallback of this.errorCallbacks) {
+            errorCallback(error)
+          }
+        },
+        onSuccess: ({ refreshUrl }) => {
+          for (const successCallback of this.successCallbacks) {
+            successCallback({ refreshUrl })
+          }
+        },
+        onCardAttachedChanged: (options) => this.options.onCardAttachedChanged?.(options),
+        debug: __DEV__,
+        onStatusProgress: (options) => this.options.onStatusProgress?.(options),
+        onAttachCard: () => this.options.onAttachCard?.(),
+        onRequestAccessRights: (options) => {
+          resolve(options.effective)
+          // FIXME: this is a bit hacky, we never resolve this one, as we manually call `ACCEPT_ACCESS_RIGHTS`
+          return new Promise(() => {})
+        },
+      })
     })
-    this.options.onStateChange?.('id-card-auth')
   }
 
   public async cancelIdCardScanning() {
@@ -103,39 +108,18 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   }
 
   public authenticateUsingIdCard() {
-    if (this.idCardAuthFlow.isActive) {
-      throw new Error('authentication flow already active')
+    this.currentSessionPinAttempts = 0
+
+    if (!this.idCardAuthFlow.isActive || !this.authenticationPromise) {
+      throw new Error('authentication flow not active')
     }
 
     if (this.currentState !== 'id-card-auth') {
       throw new Error(`Current state is ${this.currentState}. Expected id-card-auth`)
     }
 
-    this.currentSessionPinAttempts = 0
-
-    // We return an authentication promise to make it easier to track the state
-    // We remove the callbacks once the error or success is triggered.
-    const authenticationPromise = new Promise((resolve, reject) => {
-      const successCallback: AusweisAuthFlowOptions['onSuccess'] = () => {
-        this.errorCallbacks = this.errorCallbacks.filter((c) => c === errorCallback)
-        this.successCallbacks = this.successCallbacks.filter((c) => c === successCallback)
-        resolve(null)
-      }
-      const errorCallback: AusweisAuthFlowOptions['onError'] = (error) => {
-        this.errorCallbacks = this.errorCallbacks.filter((c) => c === errorCallback)
-        this.successCallbacks = this.successCallbacks.filter((c) => c === successCallback)
-        reject(error)
-      }
-
-      this.successCallbacks.push(successCallback)
-      this.errorCallbacks.push(errorCallback)
-
-      this.idCardAuthFlow.start({
-        tcTokenUrl: this.resolvedAuthorizationRequest.authorizationRequestUri,
-      })
-    })
-
-    return authenticationPromise
+    sendCommand({ cmd: 'ACCEPT' })
+    return this.authenticationPromise
   }
 
   public async acquireAccessToken() {
@@ -176,6 +160,37 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
       this.handleError(error)
       throw error
     }
+  }
+
+  protected async startAuthFlow() {
+    if (this.idCardAuthFlow.isActive) {
+      throw new Error('authentication flow already active')
+    }
+
+    // We return an authentication promise to make it easier to track the state
+    // We remove the callbacks once the error or success is triggered.
+    const authenticationPromise = new Promise<void>((resolve, reject) => {
+      const successCallback: AusweisAuthFlowOptions['onSuccess'] = () => {
+        this.errorCallbacks = this.errorCallbacks.filter((c) => c === errorCallback)
+        this.successCallbacks = this.successCallbacks.filter((c) => c === successCallback)
+        resolve()
+      }
+      const errorCallback: AusweisAuthFlowOptions['onError'] = (error) => {
+        this.errorCallbacks = this.errorCallbacks.filter((c) => c === errorCallback)
+        this.successCallbacks = this.successCallbacks.filter((c) => c === successCallback)
+        reject(error)
+      }
+
+      this.successCallbacks.push(successCallback)
+      this.errorCallbacks.push(errorCallback)
+
+      this.idCardAuthFlow.start({
+        tcTokenUrl: this.resolvedAuthorizationRequest.authorizationRequestUri,
+      })
+    })
+
+    this.authenticationPromise = authenticationPromise
+    return authenticationPromise
   }
 
   protected assertState({
