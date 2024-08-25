@@ -110,6 +110,8 @@ export async function resolveOpenId4VciOffer({
           scope: uniqueScopes,
           redirectUri: authorization.redirectUri,
           clientId: authorization.clientId,
+          // Added in patch but not in types
+          // @ts-ignore
           customHeaders,
         }
       )
@@ -179,6 +181,8 @@ export async function acquireAccessToken({
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,
       code: resolvedAuthorizationRequest.code,
+      // Added in patch but not in types
+      // @ts-ignore
       dPopKeyJwk,
       getCreateJwtCallback: getCreateJwtCallbackForBPrime,
     }
@@ -223,6 +227,8 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
   const credentials = (await agent.modules.openId4VcHolder.requestCredentials({
     resolvedCredentialOffer,
     ...accessToken,
+    // Added in patch but not in types
+    // @ts-ignore
     popCallback: popCallbackForBPrime,
     getCreateJwtCallback: getCreateJwtCallbackForBPrime,
     customBody: { format: 'jwt' },

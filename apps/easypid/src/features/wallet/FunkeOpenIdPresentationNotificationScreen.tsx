@@ -10,6 +10,8 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
+import { requestSdJwtVcFromSeedCredential } from '@easypid/crypto/bPrime'
+import { useSeedCredentialPidData } from '@easypid/storage'
 import { GettingInformationScreen } from '@package/app/src/features/notifications/components/GettingInformationScreen'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
@@ -22,6 +24,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const router = useRouter()
   const toast = useToastController()
   const { params } = useParams()
+  const { seedCredential } = useSeedCredentialPidData()
 
   // TODO: update to useAcceptOpenIdPresentation
   const [credentialsForRequest, setCredentialsForRequest] =
@@ -41,11 +44,22 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   }, [router.back])
 
   useEffect(() => {
-    getCredentialsForProofRequest({
-      agent,
-      data: params.data,
-      uri: params.uri,
-    })
+    ;(async () => {
+      if (seedCredential) {
+        await requestSdJwtVcFromSeedCredential({
+          agent,
+          authorizationRequestUri: params.uri ?? 'TODO: this is temp anyways',
+          pidPin: '8376487',
+        })
+      }
+    })()
+      .then(() =>
+        getCredentialsForProofRequest({
+          agent,
+          data: params.data,
+          uri: params.uri,
+        })
+      )
       .then(setCredentialsForRequest)
       .catch((error) => {
         toast.show('Presentation information could not be extracted.', {
@@ -57,7 +71,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
         pushToWallet()
       })
-  }, [params, toast.show, agent, pushToWallet, toast])
+  }, [params, toast.show, agent, pushToWallet, toast, seedCredential])
 
   if (!submission || !credentialsForRequest) {
     return <GettingInformationScreen type="presentation" />
@@ -73,7 +87,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       selectedCredentials: {},
     })
       .then(() => {
-        toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
+        toast.show('Information has been successfully shared.', {
+          customData: { preset: 'success' },
+        })
         pushToWallet()
       })
       .catch((e) => {
