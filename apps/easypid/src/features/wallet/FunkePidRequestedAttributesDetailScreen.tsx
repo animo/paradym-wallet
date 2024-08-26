@@ -34,8 +34,8 @@ export function FunkePidRequestedAttributesDetailScreen({
           <IdCard issuerImage={germanIssuerImage} small />
           <Stack g="md">
             <Heading variant="title">{disclosedAttributeLength} attributes from Personalausweis</Heading>
-            {credential.display && <Paragraph>Issued by {credential.display.issuer.name}</Paragraph>}
-            <CredentialAttributes subject={disclosedPayload} headerTitle="Attributes" />
+            {credential.display && <Paragraph color="$grey-700">Issued by {credential.display.issuer.name}</Paragraph>}
+            <CredentialAttributes subject={disclosedPayload} headerTitle="Attributes" headerStyle="small" />
             <TextBackButton />
           </Stack>
         </YStack>

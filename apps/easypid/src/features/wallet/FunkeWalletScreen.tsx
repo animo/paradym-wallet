@@ -15,6 +15,7 @@ import { useRouter } from 'solito/router'
 
 import { useActivities } from '@easypid/features/activity/activityRecord'
 import { usePidCredential } from '@easypid/hooks'
+import { DualResponseButtons } from '@package/app'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
@@ -108,26 +109,28 @@ export function FunkeWalletScreen() {
                   />
                 ))}
               </YStack>
-              <Animated.View style={activityPressStyle}>
-                <Button.Text
-                  onPress={() => push('/activity')}
-                  p="$2"
-                  mt={-12}
-                  ml={-4}
-                  jc="flex-start"
-                  color="$primary-500"
-                  fontWeight="$semiBold"
-                  fontSize="$3"
-                  onPressIn={() => {
-                    activityScale.value = withTiming(0.99, { duration: 100 })
-                  }}
-                  onPressOut={() => {
-                    activityScale.value = withTiming(1, { duration: 50 })
-                  }}
-                >
-                  More activities <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
-                </Button.Text>
-              </Animated.View>
+              {activities.length > 3 && (
+                <Animated.View style={activityPressStyle}>
+                  <Button.Text
+                    onPress={() => push('/activity')}
+                    p="$2"
+                    mt={-12}
+                    ml={-4}
+                    jc="flex-start"
+                    color="$primary-500"
+                    fontWeight="$semiBold"
+                    fontSize="$3"
+                    onPressIn={() => {
+                      activityScale.value = withTiming(0.99, { duration: 100 })
+                    }}
+                    onPressOut={() => {
+                      activityScale.value = withTiming(1, { duration: 50 })
+                    }}
+                  >
+                    More activities <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
+                  </Button.Text>
+                </Animated.View>
+              )}
             </YStack>
           </YStack>
         </ScrollView>
