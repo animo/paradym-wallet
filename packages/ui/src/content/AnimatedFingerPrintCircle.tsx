@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { YStack } from '../base'
 
-export const RippleCircle = () => {
+export const RippleCircle = ({ size = 184 }: { size?: number }) => {
   const scale = useSharedValue(0.5)
   const opacity = useSharedValue(1)
 
@@ -51,9 +51,9 @@ export const RippleCircle = () => {
     <Animated.View
       style={[
         {
-          width: 184,
-          height: 184,
-          borderRadius: 96,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
           backgroundColor: '#dbe9fe',
           position: 'absolute',
         },

@@ -27,7 +27,7 @@ export const TableRow = ({ attribute, value, isLastRow, onPress, image }: TableR
       }}
     >
       <XStack f={1}>
-        <YStack f={1} justifyContent="flex-start">
+        <YStack gap="$1.5" f={1} justifyContent="flex-start">
           {attribute && (
             <Paragraph variant="text" secondary>
               {attribute}

@@ -1,12 +1,11 @@
-import { Button, FlexPage, Heading, HeroIcons, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
+import { FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
 import React from 'react'
-import { useRouter } from 'solito/router'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
+import { TextBackButton } from 'packages/app'
 
 export function FunkeAboutScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-  const router = useRouter()
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -25,9 +24,7 @@ export function FunkeAboutScreen() {
       >
         <YStack fg={1} px="$4" jc="space-between">
           <Paragraph color="$grey-700">This page is under construction.</Paragraph>
-          <Button.Text color="$primary-500" fontWeight="$semiBold" fontSize="$4" onPress={() => router.back()}>
-            <HeroIcons.ArrowLeft mr={-4} color="$primary-500" size={20} /> Back
-          </Button.Text>
+          <TextBackButton />
         </YStack>
       </ScrollView>
     </FlexPage>

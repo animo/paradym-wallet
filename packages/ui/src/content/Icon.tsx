@@ -1,4 +1,4 @@
-import { AlertOctagon, CornerDownRight, FileBadge, Inbox, RefreshCw, Scan, X } from '@tamagui/lucide-icons'
+import { AlertOctagon, CornerDownRight, FileBadge, Inbox, ListFilter, RefreshCw, Scan, X } from '@tamagui/lucide-icons'
 import { forwardRef } from 'react'
 import type { NumberProp, SvgProps } from 'react-native-svg'
 
@@ -37,6 +37,7 @@ import {
 import { styled } from 'tamagui'
 
 export const LucideIcons = {
+  ListFilter,
   Scan,
   FileBadge,
   CornerDownRight,

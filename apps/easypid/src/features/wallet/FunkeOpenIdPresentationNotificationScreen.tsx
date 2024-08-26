@@ -30,6 +30,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const [credentialsForRequest, setCredentialsForRequest] =
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
   const [isSharing, setIsSharing] = useState(false)
+  const [showGettingInfo, setShowGettingInfo] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowGettingInfo(false)
+    }, 1000) // 1 second delay
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const submission = useMemo(
     () =>
@@ -151,7 +160,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [pin, router, toast.show, agent, pushToWallet, params.uri, onProofAccept, credentialsForRequest])
 
-  if (!submission || !credentialsForRequest) {
+  // This needs to have a minimum delay to show the animation
+  if (!submission || !credentialsForRequest || showGettingInfo) {
     return <GettingInformationScreen type="presentation" />
   }
 

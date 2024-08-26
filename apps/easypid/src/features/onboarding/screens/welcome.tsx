@@ -63,8 +63,8 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           <Stack h="$10" />
           <YStack gap="$4" jc="center" ai="center">
             <Heading fontSize={32}>Animo EasyPID</Heading>
-            <Paragraph color="$grey-700" lineHeight={24} px="$4" ta="center">
-              With the EasyPID, you can easily share personal data using your phone.
+            <Paragraph color="$grey-500" lineHeight={24} px="$2" ta="center">
+              This is your digital wallet. With it, you can store and share information about yourself.
             </Paragraph>
           </YStack>
           <XStack gap="$2">

@@ -1,41 +1,41 @@
-import { Button, FlexPage, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { Button, FlexPage, Heading, HeroIcons, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import React from 'react'
-import { useRouter } from 'solito/router'
 
-import { useScrollViewPosition } from '@package/app/src/hooks'
+import { useScaleAnimation, useScrollViewPosition } from '@package/app/src/hooks'
 
 import { useSecureUnlock } from '@easypid/agent'
+import { resetWallet } from '@easypid/utils/resetWallet'
+import { TextBackButton } from '@package/app'
 import { Link } from 'expo-router'
 import { Alert } from 'react-native'
-import { resetWallet } from '../../utils/resetWallet'
+import Animated from 'react-native-reanimated'
 
 const menuItems = [
   {
     title: 'Activity',
     icon: HeroIcons.Activity,
-    href: '/(menu)/activity',
+    href: '/activity',
   },
   {
     title: 'Settings',
     icon: HeroIcons.Settings,
-    href: '/(menu)/settings',
+    href: 'menu/settings',
   },
   {
     title: 'Feedback',
     icon: HeroIcons.Feedback,
-    href: '/(menu)/feedback',
+    href: 'menu/feedback',
   },
   {
     title: 'About the wallet',
     icon: HeroIcons.InformationCircle,
-    href: '/(menu)/about',
+    href: 'menu/about',
   },
 ]
 
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const secureUnlock = useSecureUnlock()
-  const router = useRouter()
 
   const onResetWallet = () => {
     Alert.alert('Reset Wallet', 'Are you sure you want to reset the wallet?', [
@@ -47,7 +47,6 @@ export function FunkeMenuScreen() {
         text: 'Yes',
         onPress: () => {
           resetWallet(secureUnlock)
-          router.replace('/onboarding')
         },
       },
     ])
@@ -71,35 +70,49 @@ export function FunkeMenuScreen() {
         <YStack fg={1} jc="space-between">
           <YStack>
             {menuItems.map((item, idx) => (
-              <Link href={item.href} key={item.title} asChild>
-                <XStack
-                  jc="space-between"
-                  gap="$4"
-                  key={item.title}
-                  py="$5"
-                  px="$4"
-                  borderBottomWidth={idx === menuItems.length - 1 ? 0 : 0.5}
-                  borderColor="$grey-300"
-                  pressStyle={{
-                    backgroundColor: '$grey-100',
-                  }}
-                >
-                  <XStack gap="$4">
-                    <Stack>
-                      <item.icon color="$grey-900" />
-                    </Stack>
-                    <Paragraph>{item.title}</Paragraph>
-                  </XStack>
-                  <HeroIcons.ChevronRight color="$primary-500" size={20} />
-                </XStack>
-              </Link>
+              <MenuItem key={item.title} item={item} idx={idx} />
             ))}
-          </YStack>
-          <YStack px="$4">
-            <Button.Solid onPress={onResetWallet}>Reset Wallet</Button.Solid>
+            <YStack py="$4" ai="center">
+              <YStack px="$4" w="60%">
+                <Button.Solid onPress={onResetWallet}>Reset wallet</Button.Solid>
+              </YStack>
+            </YStack>
           </YStack>
         </YStack>
+        <TextBackButton />
       </ScrollView>
     </FlexPage>
+  )
+}
+
+const MenuItem = ({ item, idx }: { item: (typeof menuItems)[number]; idx: number }) => {
+  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
+
+  return (
+    <Animated.View style={pressStyle}>
+      <Link href={item.href} key={item.title} asChild>
+        <XStack
+          jc="space-between"
+          gap="$4"
+          key={item.title}
+          py="$5"
+          px="$4"
+          borderBottomWidth={idx === menuItems.length - 1 ? 0 : 0.5}
+          borderColor="$grey-300"
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+        >
+          <XStack gap="$4" ai="center">
+            <Stack>
+              <item.icon color="$primary-500" />
+            </Stack>
+            <Heading variant="h3" fontWeight="$semiBold">
+              {item.title}
+            </Heading>
+          </XStack>
+          <HeroIcons.ChevronRight color="$primary-500" size={20} />
+        </XStack>
+      </Link>
+    </Animated.View>
   )
 }

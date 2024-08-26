@@ -17,7 +17,7 @@ export function GettingInformationScreen({ type }: GettingInformationScreenProps
       animation="lazy"
     >
       <Spinner />
-      <Paragraph variant="sub" textAlign="center">
+      <Paragraph color="$grey-700" variant="sub" textAlign="center">
         Getting {type} information
       </Paragraph>
     </Page>

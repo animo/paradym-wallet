@@ -70,8 +70,8 @@ const onboardingSteps = [
     page: {
       type: 'content',
       animation: 'delayed',
-      title: 'Setup digital identity',
-      subtitle: "To setup your digital identity we'll follow the following steps:",
+      title: 'Get your digital identity',
+      subtitle: 'Before you can use the app we will go through the following steps.',
     },
     Screen: OnboardingIntroductionSteps,
   },
@@ -82,8 +82,8 @@ const onboardingSteps = [
     progress: 33,
     page: {
       type: 'content',
-      title: 'Pick a 6-digit app pin',
-      subtitle: 'You are required to enter your identity pin every time you share data with a party.',
+      title: 'Choose a 6-digit PIN',
+      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
       animationKey: 'pin',
     },
     Screen: OnboardingPinEnter,
@@ -94,8 +94,8 @@ const onboardingSteps = [
     progress: 33,
     page: {
       type: 'content',
-      title: 'Re-enter your pin',
-      subtitle: 'You are required to enter your identity pin every time you share data with a party.',
+      title: 'Repeat your PIN',
+      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
       animationKey: 'pin',
     },
     Screen: OnboardingPinEnter,
@@ -106,9 +106,9 @@ const onboardingSteps = [
     progress: 33,
     page: {
       type: 'content',
-      title: 'Let’s secure your wallet',
+      title: 'Set up biometrics',
       subtitle:
-        'The wallet will be unlocked using the biometrics functionality of your phone. This is to make sure only you can enter your wallet.',
+        'Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.',
     },
     Screen: OnboardingBiometrics,
   },
@@ -130,10 +130,9 @@ const onboardingSteps = [
     progress: 49.5,
     page: {
       type: 'content',
-      title: 'Scan your eID card to verify your identity',
-      subtitle: 'You’ll need to setup your wallet using your physical eID card and the eID pin.',
-      caption:
-        'Your eID pin has been configured previously when you received your eID card and is different from your app pin.',
+      title: 'Scan your eID card to retrieve your data',
+      subtitle: 'Add your personal details once using your eID card and its PIN.',
+      caption: 'Your eID PIN was issued to you when you received your eID card.',
     },
     Screen: OnboardingIdCardStart,
   },
@@ -153,7 +152,7 @@ const onboardingSteps = [
     progress: 49.5,
     page: {
       type: 'content',
-      title: 'Enter your eID pin',
+      title: 'Enter your eID card PIN',
     },
     Screen: OnboardingIdCardPinEnter,
   },
@@ -163,7 +162,7 @@ const onboardingSteps = [
     progress: 66,
     page: {
       type: 'content',
-      title: 'Ready your eID card',
+      title: 'Scan your eID card',
       subtitle: 'Place your device on top of your eID card to scan it.',
       animationKey: 'id-card-scan',
     },
@@ -175,7 +174,7 @@ const onboardingSteps = [
     progress: 66,
     page: {
       type: 'content',
-      title: 'Ready your eID card',
+      title: 'Scan your eID card',
       subtitle: 'Place your device on top of your eID card to scan it.',
       animationKey: 'id-card-scan',
     },
@@ -198,7 +197,7 @@ const onboardingSteps = [
     page: {
       type: 'content',
       title: 'We need to verify it’s you',
-      subtitle: 'Your biometrics are required to unlock your identity.',
+      subtitle: 'Your biometrics are required to verify your identity.',
       animationKey: 'id-card',
     },
     Screen: OnboardingIdCardVerify,
@@ -222,8 +221,8 @@ const onboardingSteps = [
     page: {
       type: 'content',
       title: 'Success!',
-      subtitle: 'The information has been retrieved from your eID card.',
-      animationKey: 'id-card',
+      subtitle: 'Your information has been retrieved from your eID card.',
+      animationKey: 'id-card-success',
     },
     Screen: OnboardingIdCardFetch,
   },

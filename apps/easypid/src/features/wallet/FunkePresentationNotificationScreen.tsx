@@ -8,6 +8,8 @@ import {
   ProgressBar,
   ScrollView,
   Spacer,
+  Stack,
+  XStack,
   YStack,
 } from '@package/ui'
 import React from 'react'
@@ -15,8 +17,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
+import { getPidAttributesForDisplay, getPidDisclosedAttributeNames } from '@easypid/hooks'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useRouter } from 'expo-router'
+import { Alert } from 'react-native'
+import Animated, { FadeIn } from 'react-native-reanimated'
 import {
   getMdocPidAttributesForDisplay,
   getMdocPidDisclosedAttributeNames,
@@ -41,7 +46,7 @@ export function FunkePresentationNotificationScreen({
 }: FunkePresentationNotificationScreenProps) {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const router = useRouter()
-  const { bottom } = useSafeAreaInsets()
+  const { top, bottom } = useSafeAreaInsets()
 
   const entry = submission.entries[0]
   const credential = entry?.credentials[0]
@@ -67,88 +72,117 @@ export function FunkePresentationNotificationScreen({
           )
         : {}
 
+  const onStop = () => {
+    Alert.alert('Stop', 'Are you sure you want to stop sharing?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Yes',
+        onPress: () => {
+          router.replace('/')
+        },
+      },
+    ])
+  }
+
   return (
-    <YStack background="$background" height="100%">
-      {/* This is the header where the scroll view get's behind. We have the same content in the scrollview, but you
-       * don't see that content. It's just so we can make the scrollview minheight 100%.  */}
-      <YStack zIndex={2} w="100%" top={0} position="absolute">
-        <Spacer size="$13" w="100%" backgroundColor="$background" />
-        <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
-      </YStack>
-      <ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={scrollEventThrottle}
-        contentContainerStyle={{ minHeight: '100%' }}
-      >
-        <Spacer size="$13" />
-        <YStack borderWidth={0.5} borderColor="$background" />
-        <YStack gap="$6" jc="space-between" p="$4" paddingBottom={bottom} flex-1>
-          <YStack gap="$6">
-            <YStack gap="$3">
-              <ProgressBar value={10} />
-              <Heading variant="title">Review the request</Heading>
-            </YStack>
+    <Animated.View entering={FadeIn}>
+      <YStack background="$background" height="100%">
+        {/* This is the header where the scroll view get's behind. We have the same content in the scrollview, but you
+         * don't see that content. It's just so we can make the scrollview minheight 100%.  */}
+        <YStack px="$4" zIndex={2} w="100%" bg="$background" position="absolute">
+          <Stack h={top} />
+          <XStack jc="space-between">
+            <Stack ml={-4} p="$2" onPress={onStop}>
+              <HeroIcons.ArrowLeft size={28} color="$black" />
+            </Stack>
+          </XStack>
+          <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
+        </YStack>
+        <ScrollView
+          onScroll={handleScroll}
+          scrollEventThrottle={scrollEventThrottle}
+          contentContainerStyle={{ minHeight: '100%' }}
+        >
+          <Spacer size="$13" />
+          <YStack borderWidth={0.5} borderColor="$background" />
+          <YStack gap="$6" jc="space-between" p="$4" paddingBottom={bottom} flex-1>
+            <YStack gap="$5">
+              <YStack gap="$2">
+                <Stack mb="$4">
+                  <ProgressBar value={33} />
+                </Stack>
+                <Heading variant="title">Review the request</Heading>
+              </YStack>
 
-            <IdCardRequestedAttributesSection
-              disclosedAttributes={disclosedAttributes}
-              description={
-                disclosedAttributes.length === 0
-                  ? "You don't have the requested credential"
-                  : disclosedAttributes.length > 1
-                    ? `These ${disclosedAttributes.length} attributes will be shared`
-                    : 'The following attribute will be shared'
-              }
-              issuerImage={germanIssuerImage}
-              onPressIdCard={() => {
-                router.push(
-                  `/credentials/pidRequestedAttributes?disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${disclosedAttributes?.length ?? 0}`
-                )
-              }}
-            />
-            <YStack gap="$1">
-              <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-                <HeroIcons.InformationCircle color="$white" size={18} />
-              </Circle>
-              <Heading variant="h2">Reason for request</Heading>
-              <Paragraph size="$3" secondary>
-                {submission.purpose ??
-                  submission.entries[0].description ??
-                  'No information was provided on the purpose of the data request. Be cautious'}
-              </Paragraph>
-            </YStack>
+              <IdCardRequestedAttributesSection
+                disclosedAttributes={disclosedAttributes}
+                description={
+                  disclosedAttributes.length === 0
+                    ? "You don't have the requested credential."
+                    : disclosedAttributes.length > 1
+                      ? `These ${disclosedAttributes.length} attributes will be shared.`
+                      : 'The following attribute will be shared:'
+                }
+                issuerImage={germanIssuerImage}
+                onPressIdCard={() => {
+                  router.push(
+                    `/credentials/pidRequestedAttributes?disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${disclosedAttributes?.length ?? 0}`
+                  )
+                }}
+              />
 
-            {verifierHost && (
-              <YStack gap="$1">
+              <YStack gap="$2">
                 <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-                  <HeroIcons.User color="$white" size={18} />
+                  <HeroIcons.InformationCircle color="$white" size={18} />
                 </Circle>
-                <Heading variant="h2">Requester</Heading>
+                <Heading variant="h3" fontWeight="$semiBold">
+                  Reason for request
+                </Heading>
                 <Paragraph size="$3" secondary>
-                  {verifierHost}
+                  {submission.purpose ??
+                    submission.entries[0].description ??
+                    'No information was provided on the purpose of the data request. Be cautious'}
                 </Paragraph>
+              </YStack>
+
+              {verifierHost && (
+                <YStack gap="$2">
+                  <Circle size="$2.5" mb="$2" backgroundColor="$primary-500">
+                    <HeroIcons.User color="$white" size={18} />
+                  </Circle>
+                  <Heading variant="h3" fontWeight="$semiBold">
+                    Requester
+                  </Heading>
+                  <Paragraph size="$3" secondary>
+                    {verifierHost}
+                  </Paragraph>
+                </YStack>
+              )}
+            </YStack>
+
+            {submission.areAllSatisfied ? (
+              <DualResponseButtons
+                align="horizontal"
+                acceptText="Share"
+                declineText="Cancel"
+                onAccept={onAccept}
+                onDecline={onDecline}
+                isAccepting={isAccepting}
+              />
+            ) : (
+              <YStack gap="$3">
+                <Paragraph variant="sub" ta="center">
+                  You don't have the required credentials
+                </Paragraph>
+                <Button.Solid onPress={onDecline}>Close</Button.Solid>
               </YStack>
             )}
           </YStack>
-
-          {submission.areAllSatisfied ? (
-            <DualResponseButtons
-              align="horizontal"
-              acceptText="Share"
-              declineText="Cancel"
-              onAccept={onAccept}
-              onDecline={onDecline}
-              isAccepting={isAccepting}
-            />
-          ) : (
-            <YStack gap="$3">
-              <Paragraph variant="sub" ta="center">
-                You don't have the required credentials
-              </Paragraph>
-              <Button.Solid onPress={onDecline}>Close</Button.Solid>
-            </YStack>
-          )}
-        </YStack>
-      </ScrollView>
-    </YStack>
+        </ScrollView>
+      </YStack>
+    </Animated.View>
   )
 }
