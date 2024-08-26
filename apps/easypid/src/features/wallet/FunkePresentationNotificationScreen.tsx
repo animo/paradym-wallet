@@ -72,11 +72,8 @@ export function FunkePresentationNotificationScreen({
         <YStack px="$4" zIndex={2} w="100%" bg="$background" position="absolute">
           <Stack h={top} />
           <XStack jc="space-between">
-            <Stack ml={-4} p="$2" onPress={() => router.back()}>
+            <Stack ml={-4} p="$2" onPress={onStop}>
               <HeroIcons.ArrowLeft size={28} color="$black" />
-            </Stack>
-            <Stack mr={-4} p="$2" onPress={onStop}>
-              <HeroIcons.X size={28} color="$black" />
             </Stack>
           </XStack>
           <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
@@ -97,20 +94,6 @@ export function FunkePresentationNotificationScreen({
                 <Heading variant="title">Review the request</Heading>
               </YStack>
 
-              <YStack gap="$2">
-                <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-                  <HeroIcons.InformationCircle color="$white" size={18} />
-                </Circle>
-                <Heading variant="h3" fontWeight="$semiBold">
-                  Reason for request
-                </Heading>
-                <Paragraph size="$3" secondary>
-                  {submission.purpose ??
-                    submission.entries[0].description ??
-                    'No information was provided on the purpose of the data request. Be cautious'}
-                </Paragraph>
-              </YStack>
-
               <IdCardRequestedAttributesSection
                 disclosedAttributes={disclosedAttributes}
                 description={
@@ -127,6 +110,20 @@ export function FunkePresentationNotificationScreen({
                   )
                 }}
               />
+
+              <YStack gap="$2">
+                <Circle size="$2" mb="$2" backgroundColor="$primary-500">
+                  <HeroIcons.InformationCircle color="$white" size={18} />
+                </Circle>
+                <Heading variant="h3" fontWeight="$semiBold">
+                  Reason for request
+                </Heading>
+                <Paragraph size="$3" secondary>
+                  {submission.purpose ??
+                    submission.entries[0].description ??
+                    'No information was provided on the purpose of the data request. Be cautious'}
+                </Paragraph>
+              </YStack>
 
               {verifierHost && (
                 <YStack gap="$2">

@@ -1,5 +1,6 @@
+import { useScaleAnimation } from '@package/app'
 import { formatRelativeDate } from '@package/utils'
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
+import Animated from 'react-native-reanimated'
 import { useRouter } from 'solito/router'
 import { Heading, Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons } from '../content'
@@ -24,21 +25,7 @@ export function ActivityRowItem({
   const Icon = interactionIcons[type]
   const Title = title[type]
 
-  const scale = useSharedValue(1)
-
-  const pressStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    }
-  })
-
-  const handlePressIn = () => {
-    scale.value = withTiming(0.98, { duration: 100 })
-  }
-
-  const handlePressOut = () => {
-    scale.value = withTiming(1, { duration: 50 })
-  }
+  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   return (
     <Animated.View style={pressStyle}>

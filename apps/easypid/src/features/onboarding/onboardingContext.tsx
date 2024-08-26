@@ -222,7 +222,7 @@ const onboardingSteps = [
       type: 'content',
       title: 'Success!',
       subtitle: 'Your information has been retrieved from your eID card.',
-      animationKey: 'id-card',
+      animationKey: 'id-card-success',
     },
     Screen: OnboardingIdCardFetch,
   },

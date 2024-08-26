@@ -1,25 +1,12 @@
 import { Button, HeroIcons } from '@package/ui'
 import { useRouter } from 'expo-router'
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import Animated from 'react-native-reanimated'
+import { useScaleAnimation } from '../hooks/useScaleAnimation'
 
 export function TextBackButton() {
   const router = useRouter()
 
-  const scale = useSharedValue(1)
-
-  const pressStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    }
-  })
-
-  const handlePressIn = () => {
-    scale.value = withTiming(0.98, { duration: 100 })
-  }
-
-  const handlePressOut = () => {
-    scale.value = withTiming(1, { duration: 50 })
-  }
+  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.95 })
 
   return (
     <Animated.View style={pressStyle}>

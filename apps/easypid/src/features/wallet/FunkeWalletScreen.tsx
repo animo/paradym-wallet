@@ -15,9 +15,8 @@ import { useRouter } from 'solito/router'
 
 import { useActivities } from '@easypid/features/activity/activityRecord'
 import { usePidCredential } from '@easypid/hooks'
-import { DualResponseButtons } from '@package/app'
-import { useNetworkCallback } from '@package/app/src/hooks'
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { useNetworkCallback, useScaleAnimation } from '@package/app/src/hooks'
+import Animated from 'react-native-reanimated'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
 export function FunkeWalletScreen() {
@@ -28,21 +27,23 @@ export function FunkeWalletScreen() {
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
   const { activities, isLoading: isLoadingActivities } = useActivities()
 
-  const qrScale = useSharedValue(1)
+  const {
+    pressStyle: qrPressStyle,
+    handlePressIn: qrHandlePressIn,
+    handlePressOut: qrHandlePressOut,
+  } = useScaleAnimation({ scaleInValue: 0.95 })
 
-  const qrPressStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: qrScale.value }],
-    }
-  })
+  const {
+    pressStyle: activityPressStyle,
+    handlePressIn: activityHandlePressIn,
+    handlePressOut: activityHandlePressOut,
+  } = useScaleAnimation({ scaleInValue: 0.99 })
 
-  const activityScale = useSharedValue(1)
-
-  const activityPressStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: activityScale.value }],
-    }
-  })
+  const {
+    handlePressIn: menuHandlePressIn,
+    handlePressOut: menuHandlePressOut,
+    pressStyle: menuPressStyle,
+  } = useScaleAnimation({ scaleInValue: 0.9 })
 
   if (isLoading || isLoadingActivities) {
     return (
@@ -66,12 +67,8 @@ export function FunkeWalletScreen() {
               shadowColor="$grey-600"
               shadowOpacity={0.6}
               shadowRadius={5}
-              onPressIn={() => {
-                qrScale.value = withTiming(0.95, { duration: 100 })
-              }}
-              onPressOut={() => {
-                qrScale.value = withTiming(1, { duration: 50 })
-              }}
+              onPressIn={qrHandlePressIn}
+              onPressOut={qrHandlePressOut}
               onPress={() => navigateToScanner()}
             >
               <HeroIcons.QrCode color="$grey-100" size={48} />
@@ -86,9 +83,11 @@ export function FunkeWalletScreen() {
               <Heading variant="title" fontSize={32} fontWeight="$bold">
                 {credential.userName}'s wallet
               </Heading>
-              <XStack p="$2" mr={-4} onPress={() => push('/menu')}>
-                <HeroIcons.Menu size={28} color="$black" />
-              </XStack>
+              <Animated.View style={menuPressStyle}>
+                <XStack onPressIn={menuHandlePressIn} onPressOut={menuHandlePressOut} onPress={() => push('/menu')}>
+                  <HeroIcons.Menu size={28} color="$black" />
+                </XStack>
+              </Animated.View>
             </XStack>
             <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
             <YStack gap="$4" w="100%">
@@ -120,14 +119,10 @@ export function FunkeWalletScreen() {
                     color="$primary-500"
                     fontWeight="$semiBold"
                     fontSize="$3"
-                    onPressIn={() => {
-                      activityScale.value = withTiming(0.99, { duration: 100 })
-                    }}
-                    onPressOut={() => {
-                      activityScale.value = withTiming(1, { duration: 50 })
-                    }}
+                    onPressIn={activityHandlePressIn}
+                    onPressOut={activityHandlePressOut}
                   >
-                    More activities <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
+                    View all activity <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
                   </Button.Text>
                 </Animated.View>
               )}

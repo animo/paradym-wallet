@@ -1,3 +1,4 @@
+import { useScaleAnimation } from '@package/app'
 import { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import Animated, {
@@ -32,21 +33,7 @@ const iconMapping = {
 
 export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, small }: IdCardProps) {
   const rotation = useSharedValue(0)
-  const scale = useSharedValue(1)
-
-  const pressStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    }
-  })
-
-  const handlePressIn = () => {
-    scale.value = withTiming(0.98, { duration: 100 })
-  }
-
-  const handlePressOut = () => {
-    scale.value = withTiming(1, { duration: 50 })
-  }
+  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
