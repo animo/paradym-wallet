@@ -6,6 +6,7 @@ import {
   JwtPayload,
   Key,
   KeyType,
+  SdJwtVcRecord,
   TypedArrayEncoder,
   getJwkFromKey,
   utils,
@@ -293,14 +294,18 @@ export const createMockedClientAttestationAndProofOfPossession = async (
   return `${jwtCompact}~${popJwtCompact}`
 }
 
+export class PidIssuerPinInvalidError extends Error {}
+
 export const requestSdJwtVcFromSeedCredential = async ({
   agent,
   authorizationRequestUri,
   pidPin,
+  incorrectPin,
 }: {
   agent: FullAppAgent
   authorizationRequestUri: string
   pidPin: string
+  incorrectPin?: boolean
 }) => {
   try {
     await agent.context.wallet.createKey({
@@ -309,9 +314,19 @@ export const requestSdJwtVcFromSeedCredential = async ({
     })
   } catch {}
 
-  const record = await agent.sdJwtVc.store(
-    'eyJ0eXAiOiJ2YytzZC1qd3QiLCJraWQiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQjekRuYWV5ZUtaNjRwbU1vRlE0eXlZZXFKWFVIa25udnNWaXhEamV2czE4RTdZc3dNZCIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQiLCJpYXQiOjE3MjQ1ODg1NDIsInZjdCI6IkV4YW1wbGVDcmVkZW50aWFscyIsImlkIjoiMTIzNCIsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJtb08wSkVCT1dpaTVNdkhUWTFFWFZ5d1BuQjdrRUpFWURlOVh3Q01vMGhnIiwieSI6Ikg1MGFlMTdxcHozMUVldm1NUnpyMDJRcU9yVTM2RGlwOThocnQtR2E0ZFUifX0sInBsYWNlX29mX2JpcnRoIjp7ImxvY2FsaXR5IjoiQkVSTElOIn0sIl9zZCI6WyJMRzlGeDVpUk5iQUxDeFdBMXdrV2VLTWVPV2pzdVJObXRYdDJQRGVRcEFBIiwiT2hFa09YYWpaSlVtdlR2NEVmTjMzQl9mRFBRTVluYlprckVyMVRIUGlWVSIsImNjZDdMSEhYVWlUb3JkZ3ZJcEd3cWRwWVJLQmR4cnRqck5Na2ZTUTE2N28iLCJocGdJYXVOemNkOFI2NmcwaGlQWU94V2w0OHY3WHZESFZobE1DMEtYT3drIiwia1JqbVFBZnpxcVR2WjNfdHJERW5lVmZaOVFjZ3hXai1GdWp0Rm8yZHF2YyIsImtWWVc2bHlEck5yMlA5d0hGYktqcVB3TWd2d1c4NnNEQWJmRXc0TFBoM2ciXSwiX3NkX2FsZyI6IlNIQS0yNTYifQ.nE6z7fwqKuyDBnMQ72ReH4QRZre9CwnSuaW3zapQw2s~WyJmOWY0N2QzNDNmZDgzNTk1IiwiYWRkcmVzcyIseyJjb3VudHJ5IjoiREUiLCJsb2NhbGl0eSI6IkvDlkxOIiwicG9zdGFsX2NvZGUiOiI1MTE0NyIsInN0cmVldF9hZGRyZXNzIjoiSEVJREVTVFJBU1NFIDE3In1d~WyI3YTA3YTYxMmVlYTQ4NDQ2IiwiYmlydGhfZmFtaWx5X25hbWUiLCJHQUJMRVIiXQ~WyJkZjU5NGM3MTA5YjQ3NWYxIiwiYmlydGhkYXRlIiwiMTk4NC0wMS0yNiJd~WyJhZWQxYTRhMTk5ZWM1MmI0IiwiZmFtaWx5X25hbWUiLCJNVVNURVJNQU5OIl0~WyI1MzAzNWYzNjY4NzFhMmU4IiwiZ2l2ZW5fbmFtZSIsIkVSSUtBIl0~WyJlM2FhZmFkYTNmMjMwMTJlIiwibmF0aW9uYWxpdHkiLCJERSJd~'
-  )
+  // TODO: replace with correct invalid pin logic, remove incorrectPin param
+  if (incorrectPin) {
+    throw new PidIssuerPinInvalidError()
+  }
+
+  // NOTE: @berend it is not needed to store it (we inject it in the submission as record)
+  // const record = agent.sdJwtVc.fromCompact(
+  //   'eyJ0eXAiOiJ2YytzZC1qd3QiLCJraWQiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQjekRuYWV5ZUtaNjRwbU1vRlE0eXlZZXFKWFVIa25udnNWaXhEamV2czE4RTdZc3dNZCIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQiLCJpYXQiOjE3MjQ1ODg1NDIsInZjdCI6IkV4YW1wbGVDcmVkZW50aWFscyIsImlkIjoiMTIzNCIsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJtb08wSkVCT1dpaTVNdkhUWTFFWFZ5d1BuQjdrRUpFWURlOVh3Q01vMGhnIiwieSI6Ikg1MGFlMTdxcHozMUVldm1NUnpyMDJRcU9yVTM2RGlwOThocnQtR2E0ZFUifX0sInBsYWNlX29mX2JpcnRoIjp7ImxvY2FsaXR5IjoiQkVSTElOIn0sIl9zZCI6WyJMRzlGeDVpUk5iQUxDeFdBMXdrV2VLTWVPV2pzdVJObXRYdDJQRGVRcEFBIiwiT2hFa09YYWpaSlVtdlR2NEVmTjMzQl9mRFBRTVluYlprckVyMVRIUGlWVSIsImNjZDdMSEhYVWlUb3JkZ3ZJcEd3cWRwWVJLQmR4cnRqck5Na2ZTUTE2N28iLCJocGdJYXVOemNkOFI2NmcwaGlQWU94V2w0OHY3WHZESFZobE1DMEtYT3drIiwia1JqbVFBZnpxcVR2WjNfdHJERW5lVmZaOVFjZ3hXai1GdWp0Rm8yZHF2YyIsImtWWVc2bHlEck5yMlA5d0hGYktqcVB3TWd2d1c4NnNEQWJmRXc0TFBoM2ciXSwiX3NkX2FsZyI6IlNIQS0yNTYifQ.nE6z7fwqKuyDBnMQ72ReH4QRZre9CwnSuaW3zapQw2s~WyJmOWY0N2QzNDNmZDgzNTk1IiwiYWRkcmVzcyIseyJjb3VudHJ5IjoiREUiLCJsb2NhbGl0eSI6IkvDlkxOIiwicG9zdGFsX2NvZGUiOiI1MTE0NyIsInN0cmVldF9hZGRyZXNzIjoiSEVJREVTVFJBU1NFIDE3In1d~WyI3YTA3YTYxMmVlYTQ4NDQ2IiwiYmlydGhfZmFtaWx5X25hbWUiLCJHQUJMRVIiXQ~WyJkZjU5NGM3MTA5YjQ3NWYxIiwiYmlydGhkYXRlIiwiMTk4NC0wMS0yNiJd~WyJhZWQxYTRhMTk5ZWM1MmI0IiwiZmFtaWx5X25hbWUiLCJNVVNURVJNQU5OIl0~WyI1MzAzNWYzNjY4NzFhMmU4IiwiZ2l2ZW5fbmFtZSIsIkVSSUtBIl0~WyJlM2FhZmFkYTNmMjMwMTJlIiwibmF0aW9uYWxpdHkiLCJERSJd~'
+  // )
+  const record = new SdJwtVcRecord({
+    compactSdJwtVc:
+      'eyJ0eXAiOiJ2YytzZC1qd3QiLCJraWQiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQjekRuYWV5ZUtaNjRwbU1vRlE0eXlZZXFKWFVIa25udnNWaXhEamV2czE4RTdZc3dNZCIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQiLCJpYXQiOjE3MjQ1ODg1NDIsInZjdCI6IkV4YW1wbGVDcmVkZW50aWFscyIsImlkIjoiMTIzNCIsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJtb08wSkVCT1dpaTVNdkhUWTFFWFZ5d1BuQjdrRUpFWURlOVh3Q01vMGhnIiwieSI6Ikg1MGFlMTdxcHozMUVldm1NUnpyMDJRcU9yVTM2RGlwOThocnQtR2E0ZFUifX0sInBsYWNlX29mX2JpcnRoIjp7ImxvY2FsaXR5IjoiQkVSTElOIn0sIl9zZCI6WyJMRzlGeDVpUk5iQUxDeFdBMXdrV2VLTWVPV2pzdVJObXRYdDJQRGVRcEFBIiwiT2hFa09YYWpaSlVtdlR2NEVmTjMzQl9mRFBRTVluYlprckVyMVRIUGlWVSIsImNjZDdMSEhYVWlUb3JkZ3ZJcEd3cWRwWVJLQmR4cnRqck5Na2ZTUTE2N28iLCJocGdJYXVOemNkOFI2NmcwaGlQWU94V2w0OHY3WHZESFZobE1DMEtYT3drIiwia1JqbVFBZnpxcVR2WjNfdHJERW5lVmZaOVFjZ3hXai1GdWp0Rm8yZHF2YyIsImtWWVc2bHlEck5yMlA5d0hGYktqcVB3TWd2d1c4NnNEQWJmRXc0TFBoM2ciXSwiX3NkX2FsZyI6IlNIQS0yNTYifQ.nE6z7fwqKuyDBnMQ72ReH4QRZre9CwnSuaW3zapQw2s~WyJmOWY0N2QzNDNmZDgzNTk1IiwiYWRkcmVzcyIseyJjb3VudHJ5IjoiREUiLCJsb2NhbGl0eSI6IkvDlkxOIiwicG9zdGFsX2NvZGUiOiI1MTE0NyIsInN0cmVldF9hZGRyZXNzIjoiSEVJREVTVFJBU1NFIDE3In1d~WyI3YTA3YTYxMmVlYTQ4NDQ2IiwiYmlydGhfZmFtaWx5X25hbWUiLCJHQUJMRVIiXQ~WyJkZjU5NGM3MTA5YjQ3NWYxIiwiYmlydGhkYXRlIiwiMTk4NC0wMS0yNiJd~WyJhZWQxYTRhMTk5ZWM1MmI0IiwiZmFtaWx5X25hbWUiLCJNVVNURVJNQU5OIl0~WyI1MzAzNWYzNjY4NzFhMmU4IiwiZ2l2ZW5fbmFtZSIsIkVSSUtBIl0~WyJlM2FhZmFkYTNmMjMwMTJlIiwibmF0aW9uYWxpdHkiLCJERSJd~',
+  })
 
   // TODO: enable this for the B' presentation issuance flow
   // const issuer = 'https://demo.pid-issuer.bundesdruckerei.de/b1'
@@ -450,7 +465,7 @@ const convertDate = (date: string) => {
 }
 
 export const convertAndStorePidDataIntoFakeSdJwtVc = async (
-  agent: FullAppAgent,
+  agent: EasyPIDAppAgent,
   pid_data: SeedCredentialPidData['pid_data']
 ) => {
   const date = convertDate(pid_data.birthdate as string)
@@ -467,11 +482,7 @@ export const convertAndStorePidDataIntoFakeSdJwtVc = async (
     age_in_years: date.age_in_years,
     age_equal_or_over: date.age_equal_or_over,
     place_of_birth: pid_data.place_of_birth,
-    address: {
-      locality: pid_data.address.locality,
-      postal_code: pid_data.address.postal_code,
-      street_address: pid_data.address.street_address,
-    },
+    address: pid_data.address,
     nationalities: [pid_data.nationality],
   }
 
@@ -498,17 +509,18 @@ export const convertAndStorePidDataIntoFakeSdJwtVc = async (
         'age_birth_year',
         'age_in_years',
         'birth_family_name',
+        // TODO: each item separately or disclosed as a whole?
         'nationalities',
-        'age_equal_or_over.12',
-        'age_equal_or_over.14',
-        'age_equal_or_over.16',
-        'age_equal_or_over.18',
-        'age_equal_or_over.21',
-        'age_equal_or_over.65',
-        'address.locality',
-        'address.postal_code',
-        'address.street_address',
       ],
+      age_equal_or_over: {
+        _sd: ['12', '14', '16', '18', '21', '65'],
+      },
+      place_of_birth: {
+        _sd: ['locality'],
+      },
+      address: {
+        _sd: ['locality', 'postal_code', 'street_address', 'country'],
+      },
     },
   })
 

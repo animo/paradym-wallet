@@ -83,6 +83,7 @@ export default function AppLayout() {
               <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
               <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
               <Stack.Screen name="(home)/menu" options={headerNormalOptions} />
+              <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>
         </DeeplinkHandler>

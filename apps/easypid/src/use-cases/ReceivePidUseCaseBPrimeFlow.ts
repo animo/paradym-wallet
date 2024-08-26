@@ -1,6 +1,7 @@
-import { type JwkJson, Key, KeyType, P256Jwk } from '@credo-ts/core'
+import { type JwkJson, Key, KeyType, P256Jwk, TypedArrayEncoder } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
+  convertAndStorePidDataIntoFakeSdJwtVc,
   createMockedClientAttestationAndProofOfPossession,
   deriveKeypairFromPin,
   requestToPidProvider,
@@ -80,6 +81,10 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
       })
 
       await seedCredentialStorage.store(this.options.agent, credential)
+
+      const payload = credential.split('.')[1]
+      const { pid_data } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
+      await convertAndStorePidDataIntoFakeSdJwtVc(this.options.agent, pid_data)
 
       return [credential]
     } catch (error) {
