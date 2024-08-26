@@ -1,5 +1,5 @@
 diff --git a/build/openid4vc-holder/OpenId4VcHolderApi.js b/build/openid4vc-holder/OpenId4VcHolderApi.js
-index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..13bb4976cb804a6489809ad8c2362053c4a520e8 100644
+index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..69cd404569c831349e7dfdae76a999b85901245e 100644
 --- a/build/openid4vc-holder/OpenId4VcHolderApi.js
 +++ b/build/openid4vc-holder/OpenId4VcHolderApi.js
 @@ -140,7 +140,7 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
@@ -7,11 +7,11 @@ index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..13bb4976cb804a6489809ad8c2362053
       */
      async requestCredentials(options) {
 -        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
-+        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, customFormat, popCallback, getCreateJwtCallback,customBody } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
++        const { resolvedCredentialOffer, cNonce, accessToken, dpop, clientId, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, customFormat, popCallback, getCreateJwtCallback,customBody,skipSdJwtVcValidation } = options, credentialRequestOptions = __rest(options, ["resolvedCredentialOffer", "cNonce", "accessToken", "dpop", "clientId"]);
          return this.openId4VciHolderService.acceptCredentialOffer(this.agentContext, {
              resolvedCredentialOffer,
              acceptCredentialOfferOptions: credentialRequestOptions,
-@@ -148,6 +148,12 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
+@@ -148,6 +148,13 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
              cNonce,
              dpop,
              clientId,
@@ -20,12 +20,13 @@ index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..13bb4976cb804a6489809ad8c2362053
 +            customFormat,
 +            popCallback,
 +            getCreateJwtCallback,
-+            customBody
++            customBody,
++            skipSdJwtVcValidation
          });
      }
      /**
 diff --git a/build/openid4vc-holder/OpenId4VciHolderService.js b/build/openid4vc-holder/OpenId4VciHolderService.js
-index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c4052dfde08 100644
+index 83d55fd85edd379c9cd01947304478934c16212b..d5530cf59dcdc32d0f99ac4ecf53478117e109fd 100644
 --- a/build/openid4vc-holder/OpenId4VciHolderService.js
 +++ b/build/openid4vc-holder/OpenId4VciHolderService.js
 @@ -129,7 +129,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
@@ -84,16 +85,25 @@ index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c40
              if (!createDPoPOpts.jwtIssuer.jwk.kty) {
                  throw new core_1.CredoError('Missing required key type (kty) in the jwk.');
              }
-@@ -238,7 +243,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -228,6 +233,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+                 credentialOffer: { credential_offer: credentialOfferRequestWithBaseUrl.credential_offer },
+                 pin: txCode,
+                 createDPoPOpts,
++                customBody
+             });
+         }
+         if (!accessTokenResponse.successBody) {
+@@ -238,7 +244,8 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
      }
      async acceptCredentialOffer(agentContext, options) {
          var _a, _b, _c, _d, _e, _f;
 -        const { resolvedCredentialOffer, acceptCredentialOfferOptions } = options;
-+        const { resolvedCredentialOffer, acceptCredentialOfferOptions, customFormat, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, getCreateJwtCallback, popCallback, customBody } = options;
++        const { resolvedCredentialOffer, acceptCredentialOfferOptions, customFormat, additionalProofOfPossessionPayloadClaims, additionalCredentialRequestPayloadClaims, getCreateJwtCallback, popCallback, customBody, skipSdJwtVcValidation } = options;
++
          const { metadata, version, offeredCredentialConfigurations } = resolvedCredentialOffer;
          const { credentialsToRequest, credentialBindingResolver, verifyCredentialStatus } = acceptCredentialOfferOptions;
          if ((credentialsToRequest === null || credentialsToRequest === void 0 ? void 0 : credentialsToRequest.length) === 0) {
-@@ -293,11 +298,14 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -293,11 +300,17 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
              // Create the proof of possession
              const proofOfPossessionBuilder = oid4vci_client_1.ProofOfPossessionBuilder.fromAccessTokenResponse({
                  accessTokenResponse: tokenResponse,
@@ -104,12 +114,15 @@ index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c40
                  .withEndpointMetadata(metadata)
                  .withAlg(signatureAlgorithm);
 +            if(additionalProofOfPossessionPayloadClaims !== null && additionalProofOfPossessionPayloadClaims !== void 0) {
-+              proofOfPossessionBuilder.withJwt({header: {}, payload: additionalProofOfPossessionPayloadClaims })
++              if(additionalProofOfPossessionPayloadClaims.iss !== null) {
++                proofOfPossessionBuilder.withIssuer(additionalProofOfPossessionPayloadClaims.iss)
++              }
++              // proofOfPossessionBuilder.withJwt({header: {}, payload: additionalProofOfPossessionPayloadClaims })
 +            }
              // TODO: what if auth flow using did, and the did is different from client id. We now use the client_id
              if (credentialBinding.method === 'did') {
                  proofOfPossessionBuilder.withClientId((0, core_1.parseDid)(credentialBinding.didUrl).did).withKid(credentialBinding.didUrl);
-@@ -323,11 +331,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -323,11 +336,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  .withVersion(version)
                  .withCredentialEndpoint(metadata.credential_endpoint)
                  .withToken(tokenResponse.access_token);
@@ -123,11 +136,12 @@ index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c40
                  })
                  : undefined;
              const credentialResponse = await credentialRequestClient.acquireCredentialsUsingProof({
-@@ -335,13 +345,19 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -335,13 +350,20 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  credentialTypes: (0, issuerMetadataUtils_1.getTypesFromCredentialSupported)(offeredCredentialConfiguration),
                  format: offeredCredentialConfiguration.format,
                  createDPoPOpts: createDpopOpts,
-+                customBody: customBody
++                customBody: customBody,
++                additionalRequestClaims: additionalCredentialRequestPayloadClaims
              });
 +
 +            if(customBody !== null && customBody !== void 0) {
@@ -140,11 +154,37 @@ index 83d55fd85edd379c9cd01947304478934c16212b..c1de002cc412cfd35c663c696ed81c40
                  credentialIssuerMetadata: metadata.credentialIssuerMetadata,
 -                format: offeredCredentialConfiguration.format,
 +                format: customFormat !== null && customFormat !== void 0 ? customFormat : offeredCredentialConfiguration.format,
-+                additionalRequestClaims: additionalCredentialRequestPayloadClaims
++                skipSdJwtVcValidation
              });
              this.logger.debug('Full credential', credential);
              receivedCredentials.push(credential);
-@@ -526,12 +542,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -487,14 +509,18 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+             if (typeof credentialResponse.successBody.credential !== 'string')
+                 throw new core_1.CredoError(`Received a credential of format ${shared_1.OpenId4VciCredentialFormatProfile.SdJwtVc}, but the credential is not a string. ${JSON.stringify(credentialResponse.successBody.credential)}`);
+             const sdJwtVcApi = agentContext.dependencyManager.resolve(core_1.SdJwtVcApi);
+-            const verificationResult = await sdJwtVcApi.verify({
+-                compactSdJwtVc: credentialResponse.successBody.credential,
+-            });
+-            if (!verificationResult.isValid) {
+-                agentContext.config.logger.error('Failed to validate credential', { verificationResult });
+-                throw new core_1.CredoError(`Failed to validate sd-jwt-vc credential. Results = ${JSON.stringify(verificationResult)}`);
++            if(options.skipSdJwtVcValidation === null || options.skipSdJwtVcValidation === void 0 || options.skipSdJwtVcValidation === false) { 
++              const verificationResult = await sdJwtVcApi.verify({
++                  compactSdJwtVc: credentialResponse.successBody.credential,
++              });
++              if (!verificationResult.isValid) {
++                  agentContext.config.logger.error('Failed to validate credential', { verificationResult });
++                  throw new core_1.CredoError(`Failed to validate sd-jwt-vc credential. Results = ${JSON.stringify(verificationResult)}`);
++              }
++              return { credential: verificationResult.sdJwtVc, notificationMetadata };
++            } else {
++            return { credential: sdJwtVcApi.fromCompact(credentialResponse.successBody.credential), notificationMetadata };
+             }
+-            return { credential: verificationResult.sdJwtVc, notificationMetadata };
+         }
+         else if (format === shared_1.OpenId4VciCredentialFormatProfile.JwtVcJson ||
+             format === shared_1.OpenId4VciCredentialFormatProfile.JwtVcJsonLd) {
+@@ -526,12 +552,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  throw new core_1.CredoError('Received Mdoc credential in an unsupported format.');
              }
              const mdoc = core_1.Mdoc.fromIssuerSignedBase64(credentialResponse.successBody.credential);
