@@ -1,7 +1,7 @@
 import { getCredentialForDisplay } from '../display'
 import { useSdJwtVcRecordById, useW3cCredentialRecordById } from '../providers'
 
-export type CredentialForDisplayId = `w3c-credential-${string}` | `sd-jwt-vc-${string}`
+export type CredentialForDisplayId = `w3c-credential-${string}` | `sd-jwt-vc-${string}` | `mdoc-${string}`
 
 export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId) => {
   if (credentialId.startsWith('w3c-credential-')) {
@@ -16,4 +16,7 @@ export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId
 
     return getCredentialForDisplay(c)
   }
+
+  // TODO: add mdoc
+  return null
 }

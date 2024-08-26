@@ -17,7 +17,12 @@ import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useRouter } from 'expo-router'
-import { getPidAttributesForDisplay, getPidDisclosedAttributeNames } from '../../hooks'
+import {
+  getSdJwtPidAttributesForDisplay,
+  getSdJwtPidDisclosedAttributeNames,
+  getMdocPidDisclosedAttributeNames,
+  getMdocPidAttributesForDisplay,
+} from '../../hooks'
 
 interface FunkePresentationNotificationScreenProps {
   submission: FormattedSubmission
@@ -40,10 +45,27 @@ export function FunkePresentationNotificationScreen({
 
   const entry = submission.entries[0]
   const credential = entry?.credentials[0]
-  const disclosedAttributes = credential ? getPidDisclosedAttributeNames(credential.disclosedPayload ?? {}) : []
-  const disclosedPayload = credential
-    ? getPidAttributesForDisplay(credential.disclosedPayload ?? {}, (credential.metadata ?? {}) as CredentialMetadata)
-    : {}
+
+  // TODO: combine methods so we don't have to care about formats here
+  const type = credential ? (credential.disclosedPayload?.vct ? 'sd-jwt' : 'mdoc') : undefined
+  const disclosedAttributes =
+    type === 'mdoc'
+      ? getMdocPidDisclosedAttributeNames(credential.disclosedPayload ?? {})
+      : type === 'sd-jwt'
+        ? getSdJwtPidDisclosedAttributeNames(credential.disclosedPayload ?? {})
+        : []
+  const disclosedPayload =
+    type === 'mdoc'
+      ? getMdocPidAttributesForDisplay(
+          credential.disclosedPayload ?? {},
+          (credential.metadata ?? {}) as CredentialMetadata
+        )
+      : type === 'sd-jwt'
+        ? getSdJwtPidAttributesForDisplay(
+            credential.disclosedPayload ?? {},
+            credential.metadata ?? ({} as CredentialMetadata)
+          )
+        : {}
 
   return (
     <YStack background="$background" height="100%">

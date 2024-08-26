@@ -1,18 +1,4 @@
-import {
-  ActivityRowItem,
-  Heading,
-  HeroIcons,
-  IdCard,
-  Image,
-  Page,
-  Paragraph,
-  ScrollView,
-  Spacer,
-  Spinner,
-  Stack,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { ActivityRowItem, Heading, HeroIcons, IdCard, Page, ScrollView, Spinner, XStack, YStack } from '@package/ui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 

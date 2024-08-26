@@ -19,6 +19,31 @@ type Attributes = {
   [key: string]: unknown
 }
 
+export type PidMdocAttributes = {
+  age_birth_year: number
+  age_in_years: number
+  age_over_12: boolean
+  age_over_14: boolean
+  age_over_16: boolean
+  age_over_18: boolean
+  age_over_21: boolean
+  age_over_65: boolean
+  birth_date: string
+  birth_place: string
+  expiry_date: string
+  family_name: string
+  family_name_birth: string
+  given_name: string
+  issuance_date: string
+  issuing_authority: string
+  issuing_country: string
+  nationality?: string
+  resident_city: string
+  resident_country: string
+  resident_postal_code: string
+  resident_street: string
+}
+
 export type PidSdJwtVcAttributes = {
   issuing_country: string
   issuing_authority: string
@@ -48,7 +73,7 @@ const attributeNameMapping = {
   street_address: 'Street',
 } as Record<string, string>
 
-export function getPidAttributesForDisplay(
+export function getSdJwtPidAttributesForDisplay(
   attributes: Partial<PidSdJwtVcAttributes | Attributes>,
   metadata: CredentialMetadata
 ) {
@@ -114,7 +139,177 @@ export function getPidAttributesForDisplay(
   ])
 }
 
-export function getPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
+export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>, metadata: CredentialMetadata) {
+  const attributeGroups: Array<[string, unknown]> = []
+
+  const {
+    age_over_12,
+    age_over_14,
+    age_over_16,
+    age_over_18,
+    age_over_21,
+    age_over_65,
+    birth_place,
+    resident_city,
+    resident_country,
+    resident_postal_code,
+    resident_street,
+    nationality,
+    issuing_authority,
+    issuing_country,
+    issuance_date,
+    expiry_date,
+    ...remainingAttributes
+  } = attributes
+
+  // Address
+  const address = {
+    locality: resident_city,
+    street_address: resident_street,
+    country: resident_country,
+    postal_code: resident_postal_code,
+  }
+  if (Object.values(address).some(Boolean)) {
+    attributeGroups.push([
+      'Address',
+      Object.fromEntries(
+        Object.entries(address)
+          .filter(([_, value]) => value)
+          .map(([key, value]) => [attributeNameMapping[key] ?? sanitizeString(key), value])
+      ),
+    ])
+  }
+
+  // Place of Birth
+  if (birth_place) {
+    attributeGroups.push(['Place of birth', { locality: birth_place }])
+  }
+
+  // Nationality
+  if (nationality) {
+    attributeGroups.push(['Nationalities', [nationality]])
+  }
+
+  // Age over
+  const ageOverAttributes = { age_over_12, age_over_14, age_over_16, age_over_18, age_over_21, age_over_65 }
+  const ageOver = Object.entries(ageOverAttributes)
+    .filter(([_, value]) => value)
+    .reduce((acc, [key, value]) => ({ ...acc, [key.split('_')[2]]: value }), {})
+  if (Object.keys(ageOver).length > 0) {
+    attributeGroups.push(['Age over', ageOver])
+  }
+
+  // TODO: how to disclose holder?
+  const { holder, type, issuer, ...metadataRest } = metadata
+
+  // Metadata
+  attributeGroups.push([
+    'Credential Information',
+    {
+      issuing_authority,
+      issuing_country,
+      ...metadataRest,
+      // TODO: we need to extract some issuer value from mdoc, but not sure
+      issuer: undefined,
+      issuedAt: issuance_date,
+      expiresAt: expiry_date,
+      credentialType: type,
+    },
+  ])
+
+  return Object.fromEntries([
+    ...Object.entries(remainingAttributes).map(([key, value]) => [
+      attributeNameMapping[key] ?? sanitizeString(key),
+      value,
+    ]),
+    ...attributeGroups,
+  ])
+}
+
+export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAttributes>) {
+  const disclosedAttributeNames: string[] = []
+  const {
+    birth_place,
+    age_over_12,
+    age_over_14,
+    age_over_16,
+    age_over_18,
+    age_over_21,
+    age_over_65,
+    resident_city,
+    resident_country,
+    resident_postal_code,
+    resident_street,
+    nationality,
+    issuing_authority,
+    issuing_country,
+    issuance_date,
+    expiry_date,
+    ...remainingAttributes
+  } = attributes
+
+  for (const attribute of Object.keys(remainingAttributes)) {
+    disclosedAttributeNames.push(attributeNameMapping[attribute] ?? sanitizeString(attribute))
+  }
+
+  // Address
+  const address = {
+    locality: resident_city,
+    street_address: resident_street,
+    country: resident_country,
+    postal_code: resident_postal_code,
+  }
+  if (Object.values(address).some(Boolean)) {
+    disclosedAttributeNames.push(
+      ...Object.entries(address)
+        .filter(([_, value]) => value)
+        .map(
+          ([key]) => `Address ${attributeNameMapping[key] ?? sanitizeString(key, { startWithCapitalLetter: false })}`
+        )
+    )
+  }
+
+  // Place of birth
+  if (birth_place) {
+    disclosedAttributeNames.push('Place of birth')
+  }
+
+  // Nationality
+  if (nationality) {
+    disclosedAttributeNames.push('Nationality')
+  }
+
+  // Age over
+  const ageOverAttributes = { age_over_12, age_over_14, age_over_16, age_over_18, age_over_21, age_over_65 }
+  for (const [key, value] of Object.entries(ageOverAttributes)) {
+    if (value) {
+      disclosedAttributeNames.push(`Age over ${key.split('_')[2]}`)
+    }
+  }
+
+  if (issuing_authority) {
+    disclosedAttributeNames.push('Issuing authority')
+  }
+  if (issuing_country) {
+    disclosedAttributeNames.push('Issuing country')
+  }
+
+  // TODO: we need to extract some issuer value from mdoc, but not sure
+  // disclosedAttributeNames.push('Issuer')
+
+  if (issuance_date) {
+    disclosedAttributeNames.push('Issued at')
+  }
+  if (expiry_date) {
+    disclosedAttributeNames.push('Expires at')
+  }
+
+  disclosedAttributeNames.push('Credential type')
+
+  return disclosedAttributeNames
+}
+
+export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
   const disclosedAttributeNames: string[] = []
   const {
     place_of_birth,
@@ -192,7 +387,7 @@ export function usePidCredential() {
         attributes,
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
         display: credential.display,
-        attributesForDisplay: getPidAttributesForDisplay(attributes, credential.metadata),
+        attributesForDisplay: getSdJwtPidAttributesForDisplay(attributes, credential.metadata),
       }
     }
 
