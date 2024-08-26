@@ -1,5 +1,5 @@
 diff --git a/dist/AccessTokenClient.js b/dist/AccessTokenClient.js
-index 3d3c60588bacb6dcfa5b6d190ab0f7645e153094..2345ec01446abc73d1f5aa2ecbef6687d9d1fd07 100644
+index 6544e793d99eecd2a2bd71206da89319225e3deb..b58399ada1fb3d3df9e0beec75a0e1300d82e997 100644
 --- a/dist/AccessTokenClient.js
 +++ b/dist/AccessTokenClient.js
 @@ -21,7 +21,7 @@ class AccessTokenClient {
@@ -79,7 +79,7 @@ index f992ebc23b05994afffb5fee9b5b24b7ee0001d7..61ebf18dfca67eba65529bde21223e37
              if (parMode === oid4vci_common_1.PARMode.REQUIRE) {
                  throw Error(`PAR error: ${parResponse.origResponse.statusText}`);
 diff --git a/dist/CredentialRequestClient.js b/dist/CredentialRequestClient.js
-index 841c06e68175a156e28533c99dc8e04876ac630f..0989a955d55c045cf9a691fd2408649b84afc7cc 100644
+index 841c06e68175a156e28533c99dc8e04876ac630f..b60d811d2fa90a9e36d8eba20eeaa06a0b71b218 100644
 --- a/dist/CredentialRequestClient.js
 +++ b/dist/CredentialRequestClient.js
 @@ -53,7 +53,7 @@ class CredentialRequestClient {
@@ -147,20 +147,20 @@ index 841c06e68175a156e28533c99dc8e04876ac630f..0989a955d55c045cf9a691fd2408649b
              const typesSelection = (opts === null || opts === void 0 ? void 0 : opts.credentialTypes) && (typeof opts.credentialTypes === 'string' || opts.credentialTypes.length > 0)
                  ? opts.credentialTypes
                  : this.credentialRequestOpts.credentialTypes;
-@@ -158,7 +158,12 @@ class CredentialRequestClient {
-                 throw Error(`Credential type(s) need to be provided`);
+@@ -178,8 +178,12 @@ class CredentialRequestClient {
+                 if (types.length > 1) {
+                     throw Error(`Only a single credential type is supported for ${format}`);
+                 }
+-                return Object.assign({ format,
++                const base = Object.assign({ format,
+                     proof, vct: types[0] }, opts.subjectIssuance);
++                if(additionalRequestClaims !== null && additionalRequestClaims !== void 0) {
++                  Object.assign(base, additionalRequestClaims)
++                }
++                return base
              }
-             // TODO: we should move format specific logic
--            if (format === 'jwt_vc_json' || format === 'jwt_vc') {
-+            if(format === 'seed_credential') {
-+              return Object.assign(additionalRequestClaims, {
-+                format,
-+                proof
-+              })
-+            } else if (format === 'jwt_vc_json' || format === 'jwt_vc') {
-                 return Object.assign({ credential_definition: {
-                         type: types,
-                     }, format,
+             else if (format === 'mso_mdoc') {
+                 if (types.length > 1) {
 diff --git a/dist/OpenID4VCIClientV1_0_13.js b/dist/OpenID4VCIClientV1_0_13.js
 index fa81f1009155b1286138415e6aa4a8a2716b4c87..8da711c4ef01422a07219c4f734c7e6aeda22386 100644
 --- a/dist/OpenID4VCIClientV1_0_13.js

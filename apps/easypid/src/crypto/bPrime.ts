@@ -1,23 +1,33 @@
 import { assertAskarWallet } from '@credo-ts/askar/build/utils/assertAskarWallet'
 import {
   type AgentContext,
+  type JwkJson,
   type JwsProtectedHeaderOptions,
   JwsService,
   JwtPayload,
   Key,
   KeyType,
+  P256Jwk,
   SdJwtVcRecord,
   TypedArrayEncoder,
   getJwkFromKey,
   utils,
 } from '@credo-ts/core'
 import { Buffer } from '@credo-ts/core'
-import type { SeedCredentialPidData } from '@easypid/storage'
+import { bdrPidIssuerCertificate } from '@easypid/constants'
+import { type SeedCredentialPidData, seedCredentialStorage } from '@easypid/storage'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
+import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
+import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import { ReceivePidUseCaseFlow } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { Key as AskarKey, KeyAlgs } from '@hyperledger/aries-askar-react-native'
-import type { EasyPIDAppAgent } from '@package/agent'
+import {
+  type EasyPIDAppAgent,
+  extractOpenId4VcCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '@package/agent'
 import type { FullAppAgent } from '@package/agent'
+import { getCreateJwtCallbackForBPrime, popCallbackForBPrime } from '@package/agent/src/invitation/handler'
 import { kdf } from '@package/secure-store/kdf'
 import { easyPidAes256Gcm } from './aes'
 
@@ -295,6 +305,7 @@ export const createMockedClientAttestationAndProofOfPossession = async (
 }
 
 export class PidIssuerPinInvalidError extends Error {}
+export class PidIssuerPinLockedError extends Error {}
 
 export const requestSdJwtVcFromSeedCredential = async ({
   agent,
@@ -302,7 +313,7 @@ export const requestSdJwtVcFromSeedCredential = async ({
   pidPin,
   incorrectPin,
 }: {
-  agent: FullAppAgent
+  agent: EasyPIDAppAgent
   authorizationRequestUri: string
   pidPin: string
   incorrectPin?: boolean
@@ -314,123 +325,122 @@ export const requestSdJwtVcFromSeedCredential = async ({
     })
   } catch {}
 
-  // TODO: replace with correct invalid pin logic, remove incorrectPin param
-  if (incorrectPin) {
-    throw new PidIssuerPinInvalidError()
+  try {
+    const issuer = 'https://demo.pid-issuer.bundesdruckerei.de/b1'
+    const pinNonce = await fetchPidIssuerNonce(issuer)
+    const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(
+      ReceivePidUseCaseBPrimeFlow.SD_JWT_VC_OFFER
+    )
+    const pinDerivedEphKey = await deriveKeypairFromPin(agent.context, pidPin.split('').map(Number))
+
+    const clientAttestation = await createMockedClientAttestationAndProofOfPossession(agent, {
+      audience: issuer,
+      nonce: pinNonce,
+    })
+
+    const seedCredential = (await seedCredentialStorage.get(agent))?.seedCredential
+
+    const pinSignedNonce = await signPinNonceAndDeviceKeyWithPinDerivedEphPriv(agent, {
+      pinNonce,
+      pinDerivedEphKey,
+    })
+    const deviceKeySignedNonce = await signPinNonceAndPinDerivedEphPubWithDeviceKey({
+      pinDerivedEphKey,
+      pinNonce,
+    })
+
+    const tokenResponse = await agent.modules.openId4VcHolder.requestToken({
+      resolvedCredentialOffer,
+      // @ts-ignore
+      dPopKeyJwk: P256Jwk.fromJson(deviceKeyPair.asJwk() as unknown as JwkJson),
+      getCreateJwtCallback: getCreateJwtCallbackForBPrime,
+      customBody: {
+        grant_type: 'seed_credential',
+        client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-client-attestation',
+        client_assertion: clientAttestation,
+        seed_credential: seedCredential,
+        pin_signed_nonce: pinSignedNonce,
+        device_key_signed_nonce: deviceKeySignedNonce,
+        client_id: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+      },
+    })
+
+    const resolvedAuthorizationRequest =
+      await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(authorizationRequestUri)
+    const payload =
+      await resolvedAuthorizationRequest.authorizationRequest.authorizationRequest.requestObject?.getPayload()
+    const rpEphPub = payload?.rp_eph_pub
+    if (!rpEphPub) {
+      throw new Error('rp_eph_pub not found in the payload of the authorization request')
+    }
+
+    const key = await agent.context.wallet.createKey({
+      keyType: KeyType.P256,
+    })
+
+    const offeredCredentialToRequest = resolvedCredentialOffer.offeredCredentials.find((i) => i.id === 'pid-sd-jwt')
+
+    if (!offeredCredentialToRequest) {
+      throw new Error('Could not find an pid-sd-jwt')
+    }
+
+    const credentialAndNotifications = await agent.modules.openId4VcHolder.requestCredentials({
+      resolvedCredentialOffer,
+      credentialBindingResolver: async ({ keyType, supportsJwk }) => {
+        if (!supportsJwk) {
+          throw Error('Issuer does not support JWK')
+        }
+
+        if (keyType !== KeyType.P256) {
+          throw new Error(`invalid key type used '${keyType}' and only ${KeyType.P256} is allowed.`)
+        }
+
+        return {
+          method: 'jwk',
+          jwk: getJwkFromKey(key),
+        }
+      },
+      ...tokenResponse,
+      // @ts-ignore
+      additionalCredentialRequestPayloadClaims: {
+        verifier_ka: rpEphPub.jwk,
+      },
+      clientId: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+      getCreateJwtCallback: getCreateJwtCallbackForBPrime,
+      // we do this because the credential is hmac'ed between the verifier and issuer, so the validation can be done with the `rp_eph_pub` and the issuer key from the cert, but it does not add a lot of value
+      skipSdJwtVcValidation: true,
+    })
+
+    const [firstCredential] = credentialAndNotifications
+    if (!firstCredential) throw new Error('Error retrieving credential.')
+
+    let record: SdJwtVcRecord
+
+    if ('compact' in firstCredential.credential) {
+      record = new SdJwtVcRecord({
+        compactSdJwtVc: firstCredential.credential.compact,
+      })
+    } else {
+      throw new Error('Only sd-jwt-vc is allowed')
+    }
+
+    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
+      id: resolvedCredentialOffer.metadata.issuer,
+      display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
+    })
+
+    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+    return record
+  } catch (e) {
+    if (e instanceof Error && e.message.includes('PIN invalid')) {
+      throw new PidIssuerPinInvalidError()
+    }
+    if (e instanceof Error && e.message.includes('PIN locked')) {
+      throw new PidIssuerPinLockedError()
+    }
+    throw e
   }
-
-  // NOTE: @berend it is not needed to store it (we inject it in the submission as record)
-  // const record = agent.sdJwtVc.fromCompact(
-  //   'eyJ0eXAiOiJ2YytzZC1qd3QiLCJraWQiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQjekRuYWV5ZUtaNjRwbU1vRlE0eXlZZXFKWFVIa25udnNWaXhEamV2czE4RTdZc3dNZCIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQiLCJpYXQiOjE3MjQ1ODg1NDIsInZjdCI6IkV4YW1wbGVDcmVkZW50aWFscyIsImlkIjoiMTIzNCIsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJtb08wSkVCT1dpaTVNdkhUWTFFWFZ5d1BuQjdrRUpFWURlOVh3Q01vMGhnIiwieSI6Ikg1MGFlMTdxcHozMUVldm1NUnpyMDJRcU9yVTM2RGlwOThocnQtR2E0ZFUifX0sInBsYWNlX29mX2JpcnRoIjp7ImxvY2FsaXR5IjoiQkVSTElOIn0sIl9zZCI6WyJMRzlGeDVpUk5iQUxDeFdBMXdrV2VLTWVPV2pzdVJObXRYdDJQRGVRcEFBIiwiT2hFa09YYWpaSlVtdlR2NEVmTjMzQl9mRFBRTVluYlprckVyMVRIUGlWVSIsImNjZDdMSEhYVWlUb3JkZ3ZJcEd3cWRwWVJLQmR4cnRqck5Na2ZTUTE2N28iLCJocGdJYXVOemNkOFI2NmcwaGlQWU94V2w0OHY3WHZESFZobE1DMEtYT3drIiwia1JqbVFBZnpxcVR2WjNfdHJERW5lVmZaOVFjZ3hXai1GdWp0Rm8yZHF2YyIsImtWWVc2bHlEck5yMlA5d0hGYktqcVB3TWd2d1c4NnNEQWJmRXc0TFBoM2ciXSwiX3NkX2FsZyI6IlNIQS0yNTYifQ.nE6z7fwqKuyDBnMQ72ReH4QRZre9CwnSuaW3zapQw2s~WyJmOWY0N2QzNDNmZDgzNTk1IiwiYWRkcmVzcyIseyJjb3VudHJ5IjoiREUiLCJsb2NhbGl0eSI6IkvDlkxOIiwicG9zdGFsX2NvZGUiOiI1MTE0NyIsInN0cmVldF9hZGRyZXNzIjoiSEVJREVTVFJBU1NFIDE3In1d~WyI3YTA3YTYxMmVlYTQ4NDQ2IiwiYmlydGhfZmFtaWx5X25hbWUiLCJHQUJMRVIiXQ~WyJkZjU5NGM3MTA5YjQ3NWYxIiwiYmlydGhkYXRlIiwiMTk4NC0wMS0yNiJd~WyJhZWQxYTRhMTk5ZWM1MmI0IiwiZmFtaWx5X25hbWUiLCJNVVNURVJNQU5OIl0~WyI1MzAzNWYzNjY4NzFhMmU4IiwiZ2l2ZW5fbmFtZSIsIkVSSUtBIl0~WyJlM2FhZmFkYTNmMjMwMTJlIiwibmF0aW9uYWxpdHkiLCJERSJd~'
-  // )
-  const record = new SdJwtVcRecord({
-    compactSdJwtVc:
-      'eyJ0eXAiOiJ2YytzZC1qd3QiLCJraWQiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQjekRuYWV5ZUtaNjRwbU1vRlE0eXlZZXFKWFVIa25udnNWaXhEamV2czE4RTdZc3dNZCIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJkaWQ6a2V5OnpEbmFleWVLWjY0cG1Nb0ZRNHl5WWVxSlhVSGtubnZzVml4RGpldnMxOEU3WXN3TWQiLCJpYXQiOjE3MjQ1ODg1NDIsInZjdCI6IkV4YW1wbGVDcmVkZW50aWFscyIsImlkIjoiMTIzNCIsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJtb08wSkVCT1dpaTVNdkhUWTFFWFZ5d1BuQjdrRUpFWURlOVh3Q01vMGhnIiwieSI6Ikg1MGFlMTdxcHozMUVldm1NUnpyMDJRcU9yVTM2RGlwOThocnQtR2E0ZFUifX0sInBsYWNlX29mX2JpcnRoIjp7ImxvY2FsaXR5IjoiQkVSTElOIn0sIl9zZCI6WyJMRzlGeDVpUk5iQUxDeFdBMXdrV2VLTWVPV2pzdVJObXRYdDJQRGVRcEFBIiwiT2hFa09YYWpaSlVtdlR2NEVmTjMzQl9mRFBRTVluYlprckVyMVRIUGlWVSIsImNjZDdMSEhYVWlUb3JkZ3ZJcEd3cWRwWVJLQmR4cnRqck5Na2ZTUTE2N28iLCJocGdJYXVOemNkOFI2NmcwaGlQWU94V2w0OHY3WHZESFZobE1DMEtYT3drIiwia1JqbVFBZnpxcVR2WjNfdHJERW5lVmZaOVFjZ3hXai1GdWp0Rm8yZHF2YyIsImtWWVc2bHlEck5yMlA5d0hGYktqcVB3TWd2d1c4NnNEQWJmRXc0TFBoM2ciXSwiX3NkX2FsZyI6IlNIQS0yNTYifQ.nE6z7fwqKuyDBnMQ72ReH4QRZre9CwnSuaW3zapQw2s~WyJmOWY0N2QzNDNmZDgzNTk1IiwiYWRkcmVzcyIseyJjb3VudHJ5IjoiREUiLCJsb2NhbGl0eSI6IkvDlkxOIiwicG9zdGFsX2NvZGUiOiI1MTE0NyIsInN0cmVldF9hZGRyZXNzIjoiSEVJREVTVFJBU1NFIDE3In1d~WyI3YTA3YTYxMmVlYTQ4NDQ2IiwiYmlydGhfZmFtaWx5X25hbWUiLCJHQUJMRVIiXQ~WyJkZjU5NGM3MTA5YjQ3NWYxIiwiYmlydGhkYXRlIiwiMTk4NC0wMS0yNiJd~WyJhZWQxYTRhMTk5ZWM1MmI0IiwiZmFtaWx5X25hbWUiLCJNVVNURVJNQU5OIl0~WyI1MzAzNWYzNjY4NzFhMmU4IiwiZ2l2ZW5fbmFtZSIsIkVSSUtBIl0~WyJlM2FhZmFkYTNmMjMwMTJlIiwibmF0aW9uYWxpdHkiLCJERSJd~',
-  })
-
-  // TODO: enable this for the B' presentation issuance flow
-  // const issuer = 'https://demo.pid-issuer.bundesdruckerei.de/b1'
-  // const pinNonce = await fetchPidIssuerNonce(issuer)
-  // const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(
-  //   ReceivePidUseCaseBPrimeFlow.SD_JWT_VC_OFFER
-  // )
-  // const pinDerivedEphKey = await deriveKeypairFromPin(agent.context, pidPin.split('').map(Number))
-
-  // const clientAttestation = await createMockedClientAttestationAndProofOfPossession(agent, {
-  //   audience: issuer,
-  //   nonce: pinNonce,
-  // })
-
-  // const seedCredential = (await seedCredentialStorage.get(agent))?.seedCredential
-
-  // const pinSignedNonce = await signPinNonceAndDeviceKeyWithPinDerivedEphPriv(agent, {
-  //   pinNonce,
-  //   pinDerivedEphKey,
-  // })
-  // const deviceKeySignedNonce = await signPinNonceAndPinDerivedEphPubWithDeviceKey({
-  //   pinDerivedEphKey,
-  //   pinNonce,
-  // })
-
-  // const tokenResponse = await agent.modules.openId4VcHolder.requestToken({
-  //   resolvedCredentialOffer,
-  //   // @ts-ignore
-  //   dPopKeyJwk: P256Jwk.fromJson(deviceKeyPair.asJwk() as unknown as JwkJson),
-  //   getCreateJwtCallback,
-  //   customBody: {
-  //     grant_type: 'seed_credential',
-  //     client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-client-attestation',
-  //     client_assertion: clientAttestation,
-  //     seed_credential: seedCredential,
-  //     pin_signed_nonce: pinSignedNonce,
-  //     device_key_signed_nonce: deviceKeySignedNonce,
-  //     client_id: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
-  //   },
-  // })
-
-  // const resolvedAuthorizationRequest =
-  //   await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(authorizationRequestUri)
-  // const rpEphPub = resolvedAuthorizationRequest.authorizationRequest.authorizationRequest.payload.rp_eph_pub
-  // if (!rpEphPub) {
-  //   throw new Error('rp_eph_pub not found in the payload of the authorization request')
-  // }
-
-  // const key = await agent.context.wallet.createKey({
-  //   keyType: KeyType.P256,
-  // })
-  // const kbEphPub = getJwkFromKey(key).toJson()
-
-  // const offeredCredentialToRequest = resolvedCredentialOffer.offeredCredentials.find((i) => i.id === 'sd-jwt-vc-pid')
-
-  // if (!offeredCredentialToRequest) {
-  //   throw new Error('Could not find an sd-jwt-vc-pid')
-  // }
-
-  // const credentialAndNotifications = await agent.modules.openId4VcHolder.requestCredentials({
-  //   resolvedCredentialOffer,
-  //   credentialBindingResolver: async ({ keyType, supportsJwk }) => {
-  //     if (!supportsJwk) {
-  //       throw Error('Issuer does not support JWK')
-  //     }
-
-  //     if (keyType !== KeyType.P256) {
-  //       throw new Error(`invalid key type used '${keyType}' and only  ${KeyType.P256} is allowed.`)
-  //     }
-
-  //     return {
-  //       method: 'jwk',
-  //       jwk: getJwkFromKey(key),
-  //     }
-  //   },
-  //   ...tokenResponse,
-  //   additionalCredentialRequestPayloadClaims: {
-  //     rp_eph_pub: { jwk: rpEphPub },
-  //     kb_eph_pub: { jwk: kbEphPub },
-  //   },
-  // })
-
-  // const [firstCredential] = credentialAndNotifications
-  // if (!firstCredential) throw new Error('Error retrieving credential.')
-
-  // let record: SdJwtVcRecord
-
-  // // TODO: add claimFormat to SdJwtVc
-  // if ('compact' in firstCredential.credential) {
-  //   record = new SdJwtVcRecord({
-  //     compactSdJwtVc: firstCredential.credential.compact,
-  //   })
-  // } else {
-  //   throw new Error('Only sd-jwt-vc is allowed')
-  // }
-
-  // const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
-  //   id: resolvedCredentialOffer.metadata.issuer,
-  //   display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
-  // })
-
-  // setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-  return record
 }
 
 const getAge = (birthDate: Date) => {

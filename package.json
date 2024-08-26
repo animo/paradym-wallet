@@ -49,7 +49,8 @@
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
 			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch",
 			"@sphereon/oid4vci-client@0.16.1-next.8": "patches/@sphereon__oid4vci-client@0.16.1-next.8.patch",
-			"@sphereon/oid4vci-common@0.16.1-next.8": "patches/@sphereon__oid4vci-common@0.16.1-next.8.patch"
+			"@sphereon/oid4vci-common@0.16.1-next.8": "patches/@sphereon__oid4vci-common@0.16.1-next.8.patch",
+			"@credo-ts/core@0.5.11-pr-1996-20240824184150": "patches/@credo-ts__core@0.5.11-pr-1996-20240824184150.patch"
 		}
 	}
 }

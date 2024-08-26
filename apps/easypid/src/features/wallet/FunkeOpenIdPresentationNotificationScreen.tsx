@@ -1,5 +1,6 @@
 import {
   BiometricAuthenticationCancelledError,
+  type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
   shareProof,
@@ -109,7 +110,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     if (!pin) return
 
     requestSdJwtVcFromSeedCredential({
-      agent,
+      agent: agent as unknown as EasyPIDAppAgent,
       authorizationRequestUri: params.uri ?? 'TODO: this is temp anyways',
       pidPin: pin,
       incorrectPin: false,

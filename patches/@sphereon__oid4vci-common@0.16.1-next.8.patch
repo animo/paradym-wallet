@@ -1,13 +1,15 @@
 diff --git a/dist/functions/HttpUtils.js b/dist/functions/HttpUtils.js
-index a948980b90876aebc3d1ac5b784b1f367797360a..08fe88b38d685108783af4ed4478106d2b1e1931 100644
+index a948980b90876aebc3d1ac5b784b1f367797360a..63a7dffbe28e676737ad4ec574d435f9205a260e 100644
 --- a/dist/functions/HttpUtils.js
 +++ b/dist/functions/HttpUtils.js
-@@ -62,7 +62,8 @@ const openIdFetch = (url, body, opts) => __awaiter(void 0, void 0, void 0, funct
+@@ -62,7 +62,10 @@ const openIdFetch = (url, body, opts) => __awaiter(void 0, void 0, void 0, funct
          debug(`Body:\r\n${typeof body == 'string' ? body : JSON.stringify(body)}`);
      }
      debug(`Headers:\r\n${JSON.stringify(payload.headers)}`);
 -    const origResponse = yield (0, cross_fetch_1.fetch)(url, payload);
 +    const newUrl = url.includes("b1/par") ?  `${url}?${new URLSearchParams(opts.customHeaders)}` : url
++    console.log(`URL: ${newUrl}`)
++    console.log(`PAY: ${JSON.stringify(payload, null, 2)}`)
 +    const origResponse = yield (0, cross_fetch_1.fetch)(newUrl, payload);
      const isJSONResponse = accept === 'application/json' || origResponse.headers.get('Content-Type') === 'application/json';
      const success = origResponse && origResponse.status >= 200 && origResponse.status < 400;
