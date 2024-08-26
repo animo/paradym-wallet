@@ -11,7 +11,7 @@ const update = async (agent: Agent, id: string, value: Record<string, unknown>) 
   await agent.genericRecords.update(record)
 }
 
-const getById = async <T extends Record<string, unknown>>(agent: Agent, id: string): Promise<T | undefined> => {
+const getById = async <T>(agent: Agent, id: string): Promise<T | undefined> => {
   const record = await agent.genericRecords.findById(id)
 
   if (!record) {
@@ -25,4 +25,13 @@ export const walletJsonStore = {
   store,
   getById,
   update,
+}
+
+export function getWalletJsonStore<Content>(recordId: string) {
+  return {
+    recordId,
+    store: async (agent: Agent, content: Content) => walletJsonStore.store(agent, recordId, content),
+    update: async (agent: Agent, content: Content) => walletJsonStore.update(agent, recordId, content),
+    get: async (agent: Agent) => walletJsonStore.getById<Content>(agent, recordId),
+  }
 }

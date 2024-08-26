@@ -16,8 +16,12 @@ import type { SeedCredentialPidData } from '@easypid/storage'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { ReceivePidUseCaseFlow } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { Key as AskarKey, KeyAlgs } from '@hyperledger/aries-askar-react-native'
-import type { EasyPIDAppAgent } from '@package/agent'
-import type { FullAppAgent } from '@package/agent'
+import {
+  type EasyPIDAppAgent,
+  type OpenId4VcCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+  storeCredential,
+} from '@package/agent'
 import { kdf } from '@package/secure-store/kdf'
 import { easyPidAes256Gcm } from './aes'
 
@@ -302,7 +306,7 @@ export const requestSdJwtVcFromSeedCredential = async ({
   pidPin,
   incorrectPin,
 }: {
-  agent: FullAppAgent
+  agent: EasyPIDAppAgent
   authorizationRequestUri: string
   pidPin: string
   incorrectPin?: boolean
@@ -466,7 +470,8 @@ const convertDate = (date: string) => {
 
 export const convertAndStorePidDataIntoFakeSdJwtVc = async (
   agent: EasyPIDAppAgent,
-  pid_data: SeedCredentialPidData['pid_data']
+  pid_data: SeedCredentialPidData['pid_data'],
+  openId4VcMetadata: OpenId4VcCredentialMetadata
 ) => {
   const date = convertDate(pid_data.birthdate as string)
 
@@ -524,5 +529,10 @@ export const convertAndStorePidDataIntoFakeSdJwtVc = async (
     },
   })
 
-  await agent.sdJwtVc.store(sdJwtVc.compact)
+  const record = await agent.sdJwtVc.store(sdJwtVc.compact)
+  const sdJwtVcRecord = new SdJwtVcRecord({
+    compactSdJwtVc: sdJwtVc.compact,
+  })
+  setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+  await storeCredential(agent, sdJwtVcRecord)
 }

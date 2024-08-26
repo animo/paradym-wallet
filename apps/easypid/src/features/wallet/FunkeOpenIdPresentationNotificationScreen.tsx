@@ -3,22 +3,23 @@ import {
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
   shareProof,
-  useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
-import { ClaimFormat } from '@credo-ts/core'
+import { ClaimFormat, utils } from '@credo-ts/core'
+import { useAppAgent } from '@easypid/agent'
 import { PidIssuerPinInvalidError, requestSdJwtVcFromSeedCredential } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { GettingInformationScreen } from '@package/app/src/features/notifications/components/GettingInformationScreen'
+import { activityStorage } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
 type Query = { uri?: string; data?: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
-  const { agent } = useAgent()
+  const { agent } = useAppAgent()
   const router = useRouter()
   const toast = useToastController()
   const { pin } = useGlobalSearchParams<{ pin?: string }>()
@@ -82,6 +83,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         selectedCredentials: {},
       })
 
+      await activityStorage.addActivity(agent, {
+        id: utils.uuid(),
+        type: 'shared',
+        date: new Date().toISOString(),
+        entityHost: credentialsForRequest.verifierHostName as string,
+      })
       toast.show('Information has been successfully shared.', {
         customData: { preset: 'success' },
       })
@@ -147,7 +154,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     return <GettingInformationScreen type="presentation" />
   }
 
-  const onProofDecline = () => {
+  const onProofDecline = async () => {
     pushToWallet()
     toast.show('Information request has been declined.')
   }
