@@ -25,11 +25,19 @@ export function FunkeWalletScreen() {
   const navigateToPidDetail = () => push('/credentials/pid')
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
 
-  const scale = useSharedValue(1)
+  const qrScale = useSharedValue(1)
 
-  const pressStyle = useAnimatedStyle(() => {
+  const qrPressStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scale.value }],
+      transform: [{ scale: qrScale.value }],
+    }
+  })
+
+  const activityScale = useSharedValue(1)
+
+  const activityPressStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: activityScale.value }],
     }
   })
 
@@ -45,7 +53,7 @@ export function FunkeWalletScreen() {
     <>
       <XStack position="absolute" width="100%" zIndex={5} justifyContent="center" bottom={bottom ?? '$6'}>
         <YStack bg="#e9e9eb" br="$12">
-          <Animated.View style={pressStyle}>
+          <Animated.View style={qrPressStyle}>
             <YStack
               bg="$grey-900"
               br="$12"
@@ -56,10 +64,10 @@ export function FunkeWalletScreen() {
               shadowOpacity={0.6}
               shadowRadius={5}
               onPressIn={() => {
-                scale.value = withTiming(0.95, { duration: 100 })
+                qrScale.value = withTiming(0.95, { duration: 100 })
               }}
               onPressOut={() => {
-                scale.value = withTiming(1, { duration: 50 })
+                qrScale.value = withTiming(1, { duration: 50 })
               }}
               onPress={() => navigateToScanner()}
             >
@@ -80,7 +88,7 @@ export function FunkeWalletScreen() {
               </XStack>
             </XStack>
             <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
-            <YStack gap="$5" w="100%">
+            <YStack gap="$4" w="100%">
               <XStack ai="center" justifyContent="space-between">
                 <Heading variant="h3" fontWeight="$semiBold">
                   Recent activity
@@ -91,20 +99,21 @@ export function FunkeWalletScreen() {
                 <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
                 <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
               </YStack>
-              <Animated.View style={pressStyle}>
+              <Animated.View style={activityPressStyle}>
                 <Button.Text
                   onPress={() => push('/activity')}
                   p="$2"
-                  mt={-16}
+                  mt={-12}
                   ml={-4}
                   jc="flex-start"
                   color="$primary-500"
                   fontWeight="$semiBold"
+                  fontSize="$3"
                   onPressIn={() => {
-                    scale.value = withTiming(0.99, { duration: 100 })
+                    activityScale.value = withTiming(0.99, { duration: 100 })
                   }}
                   onPressOut={() => {
-                    scale.value = withTiming(1, { duration: 50 })
+                    activityScale.value = withTiming(1, { duration: 50 })
                   }}
                 >
                   More activities <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
