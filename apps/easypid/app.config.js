@@ -30,7 +30,7 @@ const invitationSchemes = ['openid', 'openid-initiate-issuance', 'openid-credent
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
-  name: `EasyPID ${variant.name}`,
+  name: `EasyPID${variant.name}`,
   scheme: 'animo-easypid',
   slug: 'ausweis-wallet',
   owner: 'animo-id',

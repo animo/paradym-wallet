@@ -1,4 +1,18 @@
-import { Heading, HeroIcons, IdCard, Page, ScrollView, Spacer, Spinner, XStack, YStack } from '@package/ui'
+import {
+  ActivityRowItem,
+  Heading,
+  HeroIcons,
+  IdCard,
+  Image,
+  Page,
+  Paragraph,
+  ScrollView,
+  Spacer,
+  Spinner,
+  Stack,
+  XStack,
+  YStack,
+} from '@package/ui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
@@ -40,21 +54,28 @@ export function FunkeWalletScreen() {
           <HeroIcons.QrCode color="$grey-100" size={48} />
         </YStack>
       </XStack>
-
       <YStack bg="$background" py="$4" height="100%" position="relative">
         <ScrollView px="$4" gap="$2">
-          <YStack gap="$4">
-            <XStack justifyContent="space-between">
-              <Heading variant="title" fontWeight="$bold">
-                {credential.userName}'s Wallet
+          <YStack gap="$6">
+            <XStack ai="center" justifyContent="space-between">
+              <Heading variant="title" fontSize={32} fontWeight="$bold">
+                {credential.userName}'s wallet
               </Heading>
-              <XStack onPress={() => push('/menu')}>
-                <HeroIcons.EllipsisVertical size={32} color="$black" />
+              <XStack p="$2" mr={-4} onPress={() => push('/menu')}>
+                <HeroIcons.Menu color="$black" />
               </XStack>
             </XStack>
             <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
-            <Spacer />
-            <Heading variant="h1">Recent Activity</Heading>
+            <YStack gap="$5" w="100%">
+              <Heading variant="h2" fontWeight="$semiBold">
+                Recent activity
+              </Heading>
+              <YStack gap="$4" w="100%">
+                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb1231231231" date="Today" />
+                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date="Today" />
+                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date="Today" />
+              </YStack>
+            </YStack>
           </YStack>
         </ScrollView>
       </YStack>

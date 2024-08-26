@@ -16,7 +16,7 @@ export function OnboardingIdCardRequestedAttributes({
     <Stack flexBasis={0} flexGrow={1} justifyContent="space-between">
       <IdCardRequestedAttributesSection
         disclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}
-        description={`These ${requestedAttributes.length} attributes will be read from your eID card`}
+        description={`These ${requestedAttributes.length} attributes will be read from your eID card.`}
         issuerImage={germanIssuerImage}
       />
       <Stack>
