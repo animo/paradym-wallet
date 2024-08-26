@@ -87,6 +87,7 @@ export default function AppLayout() {
               <Stack.Screen name="(menu)/feedback" options={headerNormalOptions} />
               <Stack.Screen name="(menu)/settings" options={headerNormalOptions} />
               <Stack.Screen name="(menu)/about" options={headerNormalOptions} />
+              <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>
         </DeeplinkHandler>
