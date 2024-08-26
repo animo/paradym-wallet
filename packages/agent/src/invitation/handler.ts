@@ -142,7 +142,7 @@ export async function popCallbackForBPrime(jwt: {
   const toBeSigned = `${TypedArrayEncoder.toBase64URL(
     TypedArrayEncoder.fromString(JSON.stringify(header))
   )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
-  const signature = new Uint8Array(30).fill(42)
+  const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
   const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
   return jws
 }
