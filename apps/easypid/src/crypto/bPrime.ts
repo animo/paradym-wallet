@@ -1,6 +1,9 @@
 import { assertAskarWallet } from '@credo-ts/askar/build/utils/assertAskarWallet'
 import {
+  type AgentContext,
   Buffer,
+  type JwkJson,
+  type JwsProtectedHeaderOptions,
   JwsService,
   JwtPayload,
   Key,
@@ -10,21 +13,18 @@ import {
   TypedArrayEncoder,
   getJwkFromKey,
   utils,
-  type AgentContext,
-  type JwkJson,
-  type JwsProtectedHeaderOptions,
 } from '@credo-ts/core'
-import { seedCredentialStorage, type SeedCredentialPidData } from '@easypid/storage'
+import { type SeedCredentialPidData, seedCredentialStorage } from '@easypid/storage'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
 import { ReceivePidUseCaseFlow } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { Key as AskarKey, KeyAlgs } from '@hyperledger/aries-askar-react-native'
 import {
-  setOpenId4VcCredentialMetadata,
-  storeCredential,
   type EasyPIDAppAgent,
   type OpenId4VcCredentialMetadata,
   extractOpenId4VcCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+  storeCredential,
 } from '@package/agent'
 import { getCreateJwtCallbackForBPrime } from '@package/agent/src/invitation/handler'
 import { kdf } from '@package/secure-store/kdf'
