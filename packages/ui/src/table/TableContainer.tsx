@@ -9,7 +9,16 @@ interface TableContainerProps {
 
 export const TableContainer = ({ children, padY, padX }: PropsWithChildren<TableContainerProps>) => {
   return (
-    <YStack border br="$4" bg="$white" width="100%" px={padX ?? 0} py={padY ?? 0} overflow="hidden">
+    <YStack
+      bw={1}
+      borderColor="$grey-200"
+      br="$4"
+      bg="$white"
+      width="100%"
+      px={padX ?? 0}
+      py={padY ?? 0}
+      overflow="hidden"
+    >
       {children}
     </YStack>
   )

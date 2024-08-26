@@ -1,4 +1,4 @@
-import { PinDotsInput, type PinDotsInputRef } from '@package/ui'
+import { PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
 import React, { useRef, useState } from 'react'
 
 export interface OnboardingPinEnterProps {
@@ -21,12 +21,14 @@ export default function OnboardingPinEnter({ goToNextStep }: OnboardingPinEnterP
   }
 
   return (
-    <PinDotsInput
-      onPinComplete={onPinComplete}
-      isLoading={isLoading}
-      pinLength={6}
-      ref={pinRef}
-      useNativeKeyboard={false}
-    />
+    <YStack mt="$10" fg={1}>
+      <PinDotsInput
+        onPinComplete={onPinComplete}
+        isLoading={isLoading}
+        pinLength={6}
+        ref={pinRef}
+        useNativeKeyboard={false}
+      />
+    </YStack>
   )
 }

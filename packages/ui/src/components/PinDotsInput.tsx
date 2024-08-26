@@ -119,7 +119,7 @@ export const PinDotsInput = forwardRef(
     }
 
     return (
-      <YStack mt="$10" fg={1} jc="space-between" onPress={() => inputRef.current?.focus()}>
+      <YStack fg={1} jc="space-between" onPress={() => inputRef.current?.focus()}>
         <Animated.View style={{ left: shakeAnimation }}>
           <XStack justifyContent="center" gap="$2">
             {pinDots.map((filled, i) => (

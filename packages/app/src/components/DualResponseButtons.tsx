@@ -22,14 +22,14 @@ export function DualResponseButtons({
   return (
     <YStack gap="$2" py="$2" flexDirection={align === 'horizontal' ? 'row-reverse' : 'column'}>
       <Button.Solid
-        fg={1}
+        f={1}
         disabled={isAccepting}
         onPress={onAccept}
         {...(variant === 'confirmation' ? { bg: '$danger-500' } : {})}
       >
         {isAccepting ? <Spinner variant="dark" /> : acceptText}
       </Button.Solid>
-      <Button.Outline fg={1} bg="$grey-100" disabled={isAccepting} onPress={onDecline}>
+      <Button.Outline f={1} bg="$grey-100" disabled={isAccepting} onPress={onDecline}>
         {declineText}
       </Button.Outline>
     </YStack>

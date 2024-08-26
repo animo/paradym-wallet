@@ -23,11 +23,12 @@ const tokens = createTokens({
   color: {
     ...hexColors, // Re-use existing colors for positive/warnings etc.
     background: hexColors.white,
+    'grey-50': '#F6F8F9',
     'grey-100': '#EFF3F6',
     'grey-200': '#E3E8EC',
     'grey-300': '#D7DCE0',
     'grey-400': '#BFC5CB',
-    'grey-500': '#F6F8F9',
+    'grey-500': '#839196',
     'grey-600': '#6D7581',
     'grey-700': '#656974',
     'grey-800': '#464B56',
@@ -57,8 +58,8 @@ const config = createTamagui({
   themes: {
     light: {
       ...tokens.color,
-      tableBackgroundColor: tokens.color['grey-500'],
-      tableBorderColor: '#ECEFF2',
+      tableBackgroundColor: tokens.color['grey-100'],
+      tableBorderColor: tokens.color['grey-200'],
     },
   },
 })

@@ -6,10 +6,11 @@ import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { seedCredentialStorage } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
-import { type CredentialDataHandlerOptions, DeeplinkHandler } from '@package/app'
+import { type CredentialDataHandlerOptions, DeeplinkHandler, useScaleAnimation } from '@package/app'
 import { HeroIcons, XStack } from '@package/ui'
 import { useEffect, useState } from 'react'
 import Reanimated, { FadeIn } from 'react-native-reanimated'
+import Animated from 'react-native-reanimated'
 import { useTheme } from 'tamagui'
 
 const jsonRecordIds = [seedCredentialStorage.recordId, activityStorage.recordId]
@@ -54,15 +55,26 @@ export default function AppLayout() {
     return <Redirect href="/authenticate" />
   }
 
+  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.9 })
+
   const headerNormalOptions = {
     headerShown: true,
     headerTransparent: true,
     headerTintColor: theme['primary-500'].val,
     headerTitle: '',
     headerLeft: () => (
-      <XStack p="$2" ml={-4} onPress={() => router.back()} ai="center">
-        <HeroIcons.ArrowLeft size={28} color="$black" />
-      </XStack>
+      <Animated.View style={pressStyle}>
+        <XStack
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          onPress={() => router.back()}
+          p="$2"
+          ml={-4}
+          ai="center"
+        >
+          <HeroIcons.ArrowLeft size={28} color="$black" />
+        </XStack>
+      </Animated.View>
     ),
   }
 
@@ -73,7 +85,7 @@ export default function AppLayout() {
         <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
           <Reanimated.View
             style={{ flex: 1 }}
-            entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(200)}
+            entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(800)}
           >
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen
@@ -82,14 +94,15 @@ export default function AppLayout() {
                 }}
                 name="(home)/scan"
               />
-              <Stack.Screen name="notifications/openIdPresentation" options={headerNormalOptions} />
+              <Stack.Screen name="notifications/openIdPresentation" />
               <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
               <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/menu" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/activity" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/feedback" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/settings" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/about" options={headerNormalOptions} />
+              <Stack.Screen name="menu/index" options={headerNormalOptions} />
+              <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
+              <Stack.Screen name="menu/settings" options={headerNormalOptions} />
+              <Stack.Screen name="menu/about" options={headerNormalOptions} />
+              <Stack.Screen name="activity/index" options={headerNormalOptions} />
+              <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
               <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>
