@@ -1,6 +1,7 @@
 import { assertAskarWallet } from '@credo-ts/askar/build/utils/assertAskarWallet'
 import {
   type AgentContext,
+  Buffer,
   type JwkJson,
   type JwsProtectedHeaderOptions,
   JwsService,
@@ -13,21 +14,19 @@ import {
   getJwkFromKey,
   utils,
 } from '@credo-ts/core'
-import { Buffer } from '@credo-ts/core'
-import { bdrPidIssuerCertificate } from '@easypid/constants'
 import { type SeedCredentialPidData, seedCredentialStorage } from '@easypid/storage'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
-import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import { ReceivePidUseCaseFlow } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { Key as AskarKey, KeyAlgs } from '@hyperledger/aries-askar-react-native'
 import {
   type EasyPIDAppAgent,
+  type OpenId4VcCredentialMetadata,
   extractOpenId4VcCredentialMetadata,
   setOpenId4VcCredentialMetadata,
+  storeCredential,
 } from '@package/agent'
-import type { FullAppAgent } from '@package/agent'
-import { getCreateJwtCallbackForBPrime, popCallbackForBPrime } from '@package/agent/src/invitation/handler'
+import { getCreateJwtCallbackForBPrime } from '@package/agent/src/invitation/handler'
 import { kdf } from '@package/secure-store/kdf'
 import { easyPidAes256Gcm } from './aes'
 
@@ -476,7 +475,8 @@ const convertDate = (date: string) => {
 
 export const convertAndStorePidDataIntoFakeSdJwtVc = async (
   agent: EasyPIDAppAgent,
-  pid_data: SeedCredentialPidData['pid_data']
+  pid_data: SeedCredentialPidData['pid_data'],
+  openId4VcMetadata: OpenId4VcCredentialMetadata
 ) => {
   const date = convertDate(pid_data.birthdate as string)
 
@@ -534,5 +534,10 @@ export const convertAndStorePidDataIntoFakeSdJwtVc = async (
     },
   })
 
-  await agent.sdJwtVc.store(sdJwtVc.compact)
+  const record = await agent.sdJwtVc.store(sdJwtVc.compact)
+  const sdJwtVcRecord = new SdJwtVcRecord({
+    compactSdJwtVc: sdJwtVc.compact,
+  })
+  setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+  await storeCredential(agent, sdJwtVcRecord)
 }

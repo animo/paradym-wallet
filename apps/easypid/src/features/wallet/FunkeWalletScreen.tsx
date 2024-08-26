@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
+import { useActivities } from '@easypid/features/activity/activityRecord'
 import { usePidCredential } from '@easypid/hooks'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
@@ -24,6 +25,7 @@ export function FunkeWalletScreen() {
   const { bottom } = useSafeAreaInsets()
   const navigateToPidDetail = () => push('/credentials/pid')
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
+  const { activities, isLoading: isLoadingActivities } = useActivities()
 
   const qrScale = useSharedValue(1)
 
@@ -41,7 +43,7 @@ export function FunkeWalletScreen() {
     }
   })
 
-  if (isLoading) {
+  if (isLoading || isLoadingActivities) {
     return (
       <Page jc="center" ai="center">
         <Spinner />
@@ -95,9 +97,16 @@ export function FunkeWalletScreen() {
                 </Heading>
               </XStack>
               <YStack gap="$4" w="100%">
-                <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
-                <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
-                <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
+                {activities.slice(0, 3).map((activity) => (
+                  <ActivityRowItem
+                    key={activity.id}
+                    id={activity.id}
+                    title={activity.type === 'shared' ? 'Shared data' : 'Received digital identity'}
+                    subtitle={activity.entityName ?? activity.entityHost}
+                    date={new Date(activity.date)}
+                    type={activity.type}
+                  />
+                ))}
               </YStack>
               <Animated.View style={activityPressStyle}>
                 <Button.Text
