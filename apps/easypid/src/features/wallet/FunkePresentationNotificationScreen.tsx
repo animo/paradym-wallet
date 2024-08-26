@@ -17,7 +17,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
-import { getPidAttributesForDisplay, getPidDisclosedAttributeNames } from '@easypid/hooks'
+import {
+  getMdocPidAttributesForDisplay,
+  getMdocPidDisclosedAttributeNames,
+  getSdJwtPidAttributesForDisplay,
+  getSdJwtPidDisclosedAttributeNames,
+} from '@easypid/hooks'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
@@ -44,10 +49,27 @@ export function FunkePresentationNotificationScreen({
 
   const entry = submission.entries[0]
   const credential = entry?.credentials[0]
-  const disclosedAttributes = credential ? getPidDisclosedAttributeNames(credential.disclosedPayload ?? {}) : []
-  const disclosedPayload = credential
-    ? getPidAttributesForDisplay(credential.disclosedPayload ?? {}, (credential.metadata ?? {}) as CredentialMetadata)
-    : {}
+
+  // TODO: combine methods so we don't have to care about formats here
+  const type = credential ? (credential.disclosedPayload?.vct ? 'sd-jwt' : 'mdoc') : undefined
+  const disclosedAttributes =
+    type === 'mdoc'
+      ? getMdocPidDisclosedAttributeNames(credential.disclosedPayload ?? {})
+      : type === 'sd-jwt'
+        ? getSdJwtPidDisclosedAttributeNames(credential.disclosedPayload ?? {})
+        : []
+  const disclosedPayload =
+    type === 'mdoc'
+      ? getMdocPidAttributesForDisplay(
+          credential.disclosedPayload ?? {},
+          (credential.metadata ?? {}) as CredentialMetadata
+        )
+      : type === 'sd-jwt'
+        ? getSdJwtPidAttributesForDisplay(
+            credential.disclosedPayload ?? {},
+            credential.metadata ?? ({} as CredentialMetadata)
+          )
+        : {}
 
   const onStop = () => {
     Alert.alert('Stop', 'Are you sure you want to stop sharing?', [

@@ -16,7 +16,6 @@ import {
 } from '@credo-ts/core'
 import { type SeedCredentialPidData, seedCredentialStorage } from '@easypid/storage'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
-import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
 import { ReceivePidUseCaseFlow } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { Key as AskarKey, KeyAlgs } from '@hyperledger/aries-askar-react-native'
 import {
@@ -28,6 +27,7 @@ import {
 } from '@package/agent'
 import { getCreateJwtCallbackForBPrime } from '@package/agent/src/invitation/handler'
 import { kdf } from '@package/secure-store/kdf'
+import { B_PRIME_SD_JWT_VC_OFFER } from '../use-cases/bdrPidIssuerOffers'
 import { easyPidAes256Gcm } from './aes'
 
 /**
@@ -327,9 +327,7 @@ export const requestSdJwtVcFromSeedCredential = async ({
   try {
     const issuer = 'https://demo.pid-issuer.bundesdruckerei.de/b1'
     const pinNonce = await fetchPidIssuerNonce(issuer)
-    const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(
-      ReceivePidUseCaseBPrimeFlow.SD_JWT_VC_OFFER
-    )
+    const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(B_PRIME_SD_JWT_VC_OFFER)
     const pinDerivedEphKey = await deriveKeypairFromPin(agent.context, pidPin.split('').map(Number))
 
     const clientAttestation = await createMockedClientAttestationAndProofOfPossession(agent, {
@@ -360,7 +358,7 @@ export const requestSdJwtVcFromSeedCredential = async ({
         seed_credential: seedCredential,
         pin_signed_nonce: pinSignedNonce,
         device_key_signed_nonce: deviceKeySignedNonce,
-        client_id: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+        client_id: ReceivePidUseCaseFlow.CLIENT_ID,
       },
     })
 
@@ -404,7 +402,7 @@ export const requestSdJwtVcFromSeedCredential = async ({
       additionalCredentialRequestPayloadClaims: {
         verifier_ka: rpEphPub.jwk,
       },
-      clientId: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
+      clientId: ReceivePidUseCaseFlow.CLIENT_ID,
       getCreateJwtCallback: getCreateJwtCallbackForBPrime,
       // we do this because the credential is hmac'ed between the verifier and issuer, so the validation can be done with the `rp_eph_pub` and the issuer key from the cert, but it does not add a lot of value
       skipSdJwtVcValidation: true,

@@ -31,26 +31,27 @@
 			"@hyperledger/anoncreds-react-native": "^0.2.2",
 			"@hyperledger/aries-askar-react-native": "^0.2.3",
 			"@hyperledger/indy-vdr-react-native": "^0.2.0",
-			"@credo-ts/anoncreds": "0.5.11-pr-1996-20240824184150",
-			"@credo-ts/askar": "0.5.11-pr-1996-20240824184150",
-			"@credo-ts/cheqd": "0.5.11-pr-1996-20240824184150",
-			"@credo-ts/core": "0.5.11-pr-1996-20240824184150",
-			"@credo-ts/indy-vdr": "0.5.11-pr-1996-20240824184150",
-			"@credo-ts/openid4vc": "0.5.11-pr-1996-20240824184150",
-			"@credo-ts/question-answer": "0.5.11-pr-1996-20240824184150",
+			"@credo-ts/anoncreds": "0.5.11-pr-1996-20240826144759",
+			"@credo-ts/askar": "0.5.11-pr-1996-20240826144759",
+			"@credo-ts/cheqd": "0.5.11-pr-1996-20240826144759",
+			"@credo-ts/core": "0.5.11-pr-1996-20240826144759",
+			"@credo-ts/indy-vdr": "0.5.11-pr-1996-20240826144759",
+			"@credo-ts/openid4vc": "0.5.11-pr-1996-20240826144759",
+			"@credo-ts/question-answer": "0.5.11-pr-1996-20240826144759",
 			"@credo-ts/react-hooks": "0.6.1",
-			"@credo-ts/react-native": "0.5.11-pr-1996-20240824184150",
+			"@credo-ts/react-native": "0.5.11-pr-1996-20240826144759",
 			"@animo-id/expo-secure-environment": "0.1.0-alpha.5",
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.12",
-			"react-native": "0.74.5"
+			"react-native": "0.74.5",
+			"@sphereon/did-auth-siop": "file:./sphereon-did-auth-siop-0.16.0.tgz"
 		},
 		"patchedDependencies": {
-			"@credo-ts/openid4vc@0.5.11-pr-1996-20240824184150": "patches/@credo-ts__openid4vc@0.5.11-pr-1996-20240824184150.patch",
+			"@credo-ts/openid4vc@0.5.11-pr-1996-20240826144759": "patches/@credo-ts__openid4vc@0.5.11-pr-1996-20240826144759.patch",
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
 			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch",
-			"@sphereon/oid4vci-client@0.16.1-next.8": "patches/@sphereon__oid4vci-client@0.16.1-next.8.patch",
-			"@sphereon/oid4vci-common@0.16.1-next.8": "patches/@sphereon__oid4vci-common@0.16.1-next.8.patch",
-			"@credo-ts/core@0.5.11-pr-1996-20240824184150": "patches/@credo-ts__core@0.5.11-pr-1996-20240824184150.patch"
+			"@sphereon/oid4vci-client@0.16.1-next.14": "patches/@sphereon__oid4vci-client@0.16.1-next.14.patch",
+			"@sphereon/oid4vci-common@0.16.1-next.14": "patches/@sphereon__oid4vci-common@0.16.1-next.14.patch",
+			"@credo-ts/core@0.5.11-pr-1996-20240826144759": "patches/@credo-ts__core@0.5.11-pr-1996-20240826144759.patch"
 		}
 	}
 }

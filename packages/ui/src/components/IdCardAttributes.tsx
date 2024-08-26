@@ -84,7 +84,7 @@ export function IdCardAttributes({ issuerImage, onPress, attributes }: IdCardAtt
             <Image src={issuerImage} width={32} height={32} resizeMode="contain" />
           </Stack>
         </XStack>
-        <XStack p="$4" gap="$4" backgroundColor="$white" opacity={0.8}>
+        <XStack p="$4" gap="$4" backgroundColor="$white" flex-1 opacity={0.8}>
           <YStack gap="$2.5" fg={1}>
             {groupedAttributes.map(([first, second]) => (
               <XStack key={first + second} gap="$4">

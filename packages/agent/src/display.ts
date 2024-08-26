@@ -3,7 +3,7 @@ import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
-import { ClaimFormat, Hasher, JsonTransformer, SdJwtVcRecord } from '@credo-ts/core'
+import { ClaimFormat, Hasher, JsonTransformer, Mdoc, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { getHostNameFromUrl, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
@@ -121,7 +121,7 @@ function getW3cIssuerDisplay(
   }
 }
 
-function getSdJwtIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetadata | null): CredentialIssuerDisplay {
+function getOpenId4VcIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetadata | null): CredentialIssuerDisplay {
   const issuerDisplay: Partial<CredentialIssuerDisplay> = {}
 
   // Try to extract from openid metadata first
@@ -206,6 +206,47 @@ function getW3cCredentialDisplay(
   if (!credentialDisplay.backgroundColor && jffCredential.credentialBranding?.backgroundColor) {
     credentialDisplay.backgroundColor = jffCredential.credentialBranding.backgroundColor
   }
+
+  return {
+    ...credentialDisplay,
+    // Last fallback, if there's really no name for the credential, we use a generic name
+    // TODO: use on-device AI to determine a name for the credential based on the credential data
+    name: credentialDisplay.name ?? 'Credential',
+  }
+}
+
+function getMdocCredentialDisplay(
+  credentialPayload: Record<string, unknown>,
+  openId4VcMetadata?: OpenId4VcCredentialMetadata | null
+) {
+  const credentialDisplay: Partial<CredentialDisplay> = {}
+
+  if (openId4VcMetadata) {
+    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+
+    if (openidCredentialDisplay) {
+      credentialDisplay.name = openidCredentialDisplay.name
+      credentialDisplay.description = openidCredentialDisplay.description
+      credentialDisplay.textColor = openidCredentialDisplay.text_color
+      credentialDisplay.backgroundColor = openidCredentialDisplay.background_color
+
+      if (openidCredentialDisplay.background_image) {
+        credentialDisplay.backgroundImage = {
+          url: openidCredentialDisplay.background_image.url,
+          altText: openidCredentialDisplay.background_image.alt_text,
+        }
+      }
+
+      // NOTE: logo is used in issuer display (not sure if that's right though)
+    }
+  }
+
+  // TODO: mdoc
+  // If there's no name for the credential, we extract it from the last type
+  // and sanitize it. This is not optimal. But provides at least something.
+  // if (!credentialDisplay.name && typeof credentialPayload.vct === 'string') {
+  //   credentialDisplay.name = sanitizeString(credentialPayload.vct)
+  // }
 
   return {
     ...credentialDisplay,
@@ -320,7 +361,7 @@ export function getDisclosedAttributePaths(payload: object, prefix = ''): Array<
   return attributes
 }
 
-export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
+export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord) {
   if (credentialRecord instanceof SdJwtVcRecord) {
     // FIXME: we should probably add a decode method on the SdJwtVcRecord
     // as you now need the agent context to decode the sd-jwt vc, while that's
@@ -331,7 +372,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     )
 
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
-    const issuerDisplay = getSdJwtIssuerDisplay(openId4VcMetadata)
+    const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
     const credentialDisplay = getSdJwtCredentialDisplay(decodedPayload, openId4VcMetadata)
 
     const mapped = filterAndMapSdJwtKeys(decodedPayload)
@@ -347,6 +388,32 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       metadata: mapped.metadata,
     }
   }
+  if (credentialRecord instanceof MdocRecord) {
+    const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+    const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
+    const credentialDisplay = getMdocCredentialDisplay({}, openId4VcMetadata)
+
+    const mdocInstance = Mdoc.fromIssuerSignedHex(credentialRecord.issuerSignedHex)
+
+    const attributes = Object.fromEntries(Object.values(mdocInstance.namespaces).flatMap((a) => Object.entries(a)))
+
+    return {
+      id: `mdoc-${credentialRecord.id}` satisfies CredentialForDisplayId,
+      createdAt: credentialRecord.createdAt,
+      display: {
+        ...credentialDisplay,
+        issuer: issuerDisplay,
+      },
+      attributes,
+      // TODO:
+      metadata: {
+        holder: 'Unknown',
+        issuer: 'Unknown',
+        type: mdocInstance.docType,
+      } satisfies CredentialMetadata,
+    }
+  }
+
   const credential = JsonTransformer.toJSON(
     credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
       ? credentialRecord.credential.credential
