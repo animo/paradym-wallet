@@ -62,7 +62,7 @@ export function FunkeWalletScreen() {
                 {credential.userName}'s wallet
               </Heading>
               <XStack p="$2" mr={-4} onPress={() => push('/menu')}>
-                <HeroIcons.Menu color="$black" />
+                <HeroIcons.Menu size={28} color="$black" />
               </XStack>
             </XStack>
             <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
@@ -71,9 +71,9 @@ export function FunkeWalletScreen() {
                 Recent activity
               </Heading>
               <YStack gap="$4" w="100%">
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb1231231231" date="Today" />
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date="Today" />
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date="Today" />
+                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb1231231231" date={new Date()} />
+                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
+                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
               </YStack>
             </YStack>
           </YStack>

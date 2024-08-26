@@ -58,7 +58,7 @@ export default function AppLayout() {
     headerTitle: '',
     headerLeft: () => (
       <XStack p="$2" ml={-4} onPress={() => router.back()} ai="center">
-        <HeroIcons.ArrowLeft color="$black" />
+        <HeroIcons.ArrowLeft size={28} color="$black" />
       </XStack>
     ),
   }
