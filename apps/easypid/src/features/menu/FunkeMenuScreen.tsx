@@ -1,10 +1,11 @@
-import { Button, FlexPage, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { Button, FlexPage, Heading, HeroIcons, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
 
 import { useSecureUnlock } from '@easypid/agent'
+import { TextBackButton } from '@package/app'
 import { Link } from 'expo-router'
 import { Alert } from 'react-native'
 import { resetWallet } from '../../utils/resetWallet'
@@ -13,22 +14,22 @@ const menuItems = [
   {
     title: 'Activity',
     icon: HeroIcons.Activity,
-    href: '/(menu)/activity',
+    href: '/activity',
   },
   {
     title: 'Settings',
     icon: HeroIcons.Settings,
-    href: '/(menu)/settings',
+    href: 'menu/settings',
   },
   {
     title: 'Feedback',
     icon: HeroIcons.Feedback,
-    href: '/(menu)/feedback',
+    href: 'menu/feedback',
   },
   {
     title: 'About the wallet',
     icon: HeroIcons.InformationCircle,
-    href: '/(menu)/about',
+    href: 'menu/about',
   },
 ]
 
@@ -81,24 +82,29 @@ export function FunkeMenuScreen() {
                   borderBottomWidth={idx === menuItems.length - 1 ? 0 : 0.5}
                   borderColor="$grey-300"
                   pressStyle={{
-                    backgroundColor: '$grey-100',
+                    backgroundColor: '$grey-50',
                   }}
                 >
-                  <XStack gap="$4">
+                  <XStack gap="$4" ai="center">
                     <Stack>
-                      <item.icon color="$grey-900" />
+                      <item.icon color="$primary-500" />
                     </Stack>
-                    <Paragraph>{item.title}</Paragraph>
+                    <Heading variant="h3" fontWeight="$semiBold">
+                      {item.title}
+                    </Heading>
                   </XStack>
                   <HeroIcons.ChevronRight color="$primary-500" size={20} />
                 </XStack>
               </Link>
             ))}
-          </YStack>
-          <YStack px="$4">
-            <Button.Solid onPress={onResetWallet}>Reset Wallet</Button.Solid>
+            <YStack py="$4" ai="center">
+              <YStack px="$4" w="60%">
+                <Button.Solid onPress={onResetWallet}>Reset wallet</Button.Solid>
+              </YStack>
+            </YStack>
           </YStack>
         </YStack>
+        <TextBackButton />
       </ScrollView>
     </FlexPage>
   )

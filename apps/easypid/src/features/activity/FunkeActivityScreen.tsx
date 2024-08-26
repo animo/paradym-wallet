@@ -2,9 +2,9 @@ import { FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from '@packag
 import React from 'react'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
-import { TextBackButton } from 'packages/app'
+import { TextBackButton } from 'packages/app/src'
 
-export function FunkeAboutScreen() {
+export function FunkeActivityScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   return (
@@ -13,7 +13,7 @@ export function FunkeAboutScreen() {
         <YStack gap="$4" p="$4">
           <Stack h="$1" />
           <Heading variant="title" fontWeight="$bold">
-            About
+            Activity
           </Heading>
         </YStack>
       </YStack>

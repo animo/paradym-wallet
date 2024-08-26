@@ -54,6 +54,12 @@ export const Heading = styled(THeading, {
         size: '$4',
         fontWeight: '$medium',
       },
+      h4: {
+        name: 'H4',
+        tag: 'h4',
+        size: '$3',
+        fontWeight: '$medium',
+      },
     },
   } as const,
   defaultVariants: {

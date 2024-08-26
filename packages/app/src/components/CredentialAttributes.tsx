@@ -6,9 +6,15 @@ type CredentialAttributesProps = {
   subject: Record<string, unknown>
   disableHeader?: boolean
   headerTitle?: string
+  headerStyle?: 'regular' | 'small'
 }
 
-export function CredentialAttributes({ subject, disableHeader = false, headerTitle }: CredentialAttributesProps) {
+export function CredentialAttributes({
+  subject,
+  disableHeader = false,
+  headerTitle,
+  headerStyle = 'regular',
+}: CredentialAttributesProps) {
   const tables = formatCredentialSubject(subject)
 
   return (
@@ -18,7 +24,12 @@ export function CredentialAttributes({ subject, disableHeader = false, headerTit
           <XStack gap="$2">
             {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
             {(!disableHeader || table.title) && (
-              <Heading variant="h3" pl="$2" secondary>
+              <Heading
+                variant={headerStyle === 'small' ? 'h4' : 'h3'}
+                pl={headerStyle === 'regular' && '$2'}
+                fontWeight={headerStyle === 'small' ? '$semiBold' : '$medium'}
+                secondary
+              >
                 {table.title ?? headerTitle ?? 'Credential information'}
               </Heading>
             )}

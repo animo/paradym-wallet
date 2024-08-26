@@ -70,7 +70,7 @@ export default function AppLayout() {
         <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
           <Reanimated.View
             style={{ flex: 1 }}
-            entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(200)}
+            entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(800)}
           >
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen
@@ -79,14 +79,16 @@ export default function AppLayout() {
                 }}
                 name="(home)/scan"
               />
-              <Stack.Screen name="notifications/openIdPresentation" options={headerNormalOptions} />
+              <Stack.Screen name="notifications/openIdPresentation" />
               <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
               <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/menu" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/activity" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/feedback" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/settings" options={headerNormalOptions} />
-              <Stack.Screen name="(menu)/about" options={headerNormalOptions} />
+              <Stack.Screen name="menu/index" options={headerNormalOptions} />
+              <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
+              <Stack.Screen name="menu/settings" options={headerNormalOptions} />
+              <Stack.Screen name="menu/about" options={headerNormalOptions} />
+              <Stack.Screen name="activity/index" options={headerNormalOptions} />
+              <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
+
               <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>

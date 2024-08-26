@@ -1,15 +1,12 @@
 import {
   ActivityRowItem,
+  Button,
   Heading,
   HeroIcons,
   IdCard,
-  Image,
   Page,
-  Paragraph,
   ScrollView,
-  Spacer,
   Spinner,
-  Stack,
   XStack,
   YStack,
 } from '@package/ui'
@@ -18,6 +15,7 @@ import { useRouter } from 'solito/router'
 
 import { usePidCredential } from '@easypid/hooks'
 import { useNetworkCallback } from '@package/app/src/hooks'
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
 export function FunkeWalletScreen() {
@@ -26,6 +24,14 @@ export function FunkeWalletScreen() {
   const { bottom } = useSafeAreaInsets()
   const navigateToPidDetail = () => push('/credentials/pid')
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
+
+  const scale = useSharedValue(1)
+
+  const pressStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    }
+  })
 
   if (isLoading) {
     return (
@@ -38,20 +44,28 @@ export function FunkeWalletScreen() {
   return (
     <>
       <XStack position="absolute" width="100%" zIndex={5} justifyContent="center" bottom={bottom ?? '$6'}>
-        <YStack
-          bg="$grey-900"
-          br="$12"
-          borderWidth="$2"
-          borderColor="#e9e9eb"
-          p="$3.5"
-          pressStyle={{ backgroundColor: '$grey-800' }}
-          shadowOffset={{ width: 5, height: 5 }}
-          shadowColor="$grey-500"
-          shadowOpacity={0.5}
-          shadowRadius={10}
-          onPress={() => navigateToScanner()}
-        >
-          <HeroIcons.QrCode color="$grey-100" size={48} />
+        <YStack bg="#e9e9eb" br="$12">
+          <Animated.View style={pressStyle}>
+            <YStack
+              bg="$grey-900"
+              br="$12"
+              p="$3.5"
+              m="$2.5"
+              shadowOffset={{ width: 0, height: 2 }}
+              shadowColor="$grey-600"
+              shadowOpacity={0.6}
+              shadowRadius={5}
+              onPressIn={() => {
+                scale.value = withTiming(0.95, { duration: 100 })
+              }}
+              onPressOut={() => {
+                scale.value = withTiming(1, { duration: 50 })
+              }}
+              onPress={() => navigateToScanner()}
+            >
+              <HeroIcons.QrCode color="$grey-100" size={48} />
+            </YStack>
+          </Animated.View>
         </YStack>
       </XStack>
       <YStack bg="$background" py="$4" height="100%" position="relative">
@@ -67,14 +81,35 @@ export function FunkeWalletScreen() {
             </XStack>
             <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
             <YStack gap="$5" w="100%">
-              <Heading variant="h2" fontWeight="$semiBold">
-                Recent activity
-              </Heading>
+              <XStack ai="center" justifyContent="space-between">
+                <Heading variant="h3" fontWeight="$semiBold">
+                  Recent activity
+                </Heading>
+              </XStack>
               <YStack gap="$4" w="100%">
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb1231231231" date={new Date()} />
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
+                <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
+                <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
+                <ActivityRowItem id="123" title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
               </YStack>
+              <Animated.View style={pressStyle}>
+                <Button.Text
+                  onPress={() => push('/activity')}
+                  p="$2"
+                  mt={-16}
+                  ml={-4}
+                  jc="flex-start"
+                  color="$primary-500"
+                  fontWeight="$semiBold"
+                  onPressIn={() => {
+                    scale.value = withTiming(0.99, { duration: 100 })
+                  }}
+                  onPressOut={() => {
+                    scale.value = withTiming(1, { duration: 50 })
+                  }}
+                >
+                  More activities <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
+                </Button.Text>
+              </Animated.View>
             </YStack>
           </YStack>
         </ScrollView>

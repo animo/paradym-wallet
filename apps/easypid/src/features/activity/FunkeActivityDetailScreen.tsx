@@ -1,10 +1,15 @@
 import { Button, FlexPage, Heading, HeroIcons, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
 import React from 'react'
-import { useRouter } from 'solito/router'
+import { createParam } from 'solito'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
+import { useRouter } from 'solito/router'
 
-export function FunkeActivityScreen() {
+const { useParams } = createParam<{ id: string }>()
+
+export function FunkeActivityDetailScreen() {
+  const { params } = useParams()
+
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const router = useRouter()
 
@@ -14,7 +19,7 @@ export function FunkeActivityScreen() {
         <YStack gap="$4" p="$4">
           <Stack h="$1" />
           <Heading variant="title" fontWeight="$bold">
-            Activity
+            Activity detail {params.id}
           </Heading>
         </YStack>
       </YStack>
