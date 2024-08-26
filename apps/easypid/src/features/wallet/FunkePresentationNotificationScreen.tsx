@@ -17,17 +17,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
-import { getPidAttributesForDisplay, getPidDisclosedAttributeNames } from '@easypid/hooks'
-import { DualResponseButtons, useScrollViewPosition } from '@package/app'
-import { useRouter } from 'expo-router'
-import { Alert } from 'react-native'
-import Animated, { FadeIn } from 'react-native-reanimated'
 import {
   getMdocPidAttributesForDisplay,
   getMdocPidDisclosedAttributeNames,
   getSdJwtPidAttributesForDisplay,
   getSdJwtPidDisclosedAttributeNames,
-} from '../../hooks'
+} from '@easypid/hooks'
+import { DualResponseButtons, useScrollViewPosition } from '@package/app'
+import { useRouter } from 'expo-router'
+import { Alert } from 'react-native'
+import Animated, { FadeIn } from 'react-native-reanimated'
 
 interface FunkePresentationNotificationScreenProps {
   submission: FormattedSubmission
