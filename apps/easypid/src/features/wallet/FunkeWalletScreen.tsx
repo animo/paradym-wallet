@@ -2,6 +2,7 @@ import { ActivityRowItem, Heading, HeroIcons, IdCard, Page, ScrollView, Spinner,
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
+import { useActivities } from '@easypid/features/activity/activityRecord'
 import { usePidCredential } from '@easypid/hooks'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
@@ -12,8 +13,9 @@ export function FunkeWalletScreen() {
   const { bottom } = useSafeAreaInsets()
   const navigateToPidDetail = () => push('/credentials/pid')
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
+  const { activities, isLoading: isLoadingActivities } = useActivities()
 
-  if (isLoading) {
+  if (isLoading || isLoadingActivities) {
     return (
       <Page jc="center" ai="center">
         <Spinner />
@@ -57,9 +59,15 @@ export function FunkeWalletScreen() {
                 Recent activity
               </Heading>
               <YStack gap="$4" w="100%">
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb1231231231" date={new Date()} />
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
-                <ActivityRowItem title="Shared data" subtitle="Bundesdruckerei Gmhb" date={new Date()} />
+                {activities.slice(0, 3).map((activity) => (
+                  <ActivityRowItem
+                    key={activity.id}
+                    title={activity.type === 'shared' ? 'Shared data' : 'Received digital identity'}
+                    subtitle={activity.entityName ?? activity.entityHost}
+                    date={new Date(activity.date)}
+                    type={activity.type}
+                  />
+                ))}
               </YStack>
             </YStack>
           </YStack>

@@ -18,10 +18,10 @@ import germanIssuerImage from '../../../assets/german-issuer-image.png'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useRouter } from 'expo-router'
 import {
+  getMdocPidAttributesForDisplay,
+  getMdocPidDisclosedAttributeNames,
   getSdJwtPidAttributesForDisplay,
   getSdJwtPidDisclosedAttributeNames,
-  getMdocPidDisclosedAttributeNames,
-  getMdocPidAttributesForDisplay,
 } from '../../hooks'
 
 interface FunkePresentationNotificationScreenProps {

@@ -2,6 +2,7 @@ import { AusweisAuthFlow, type AusweisAuthFlowOptions, sendCommand } from '@anim
 import type { MdocRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import {
+  type OpenId4VcCredentialMetadata,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
@@ -55,7 +56,9 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     },
   ]
 
-  public abstract retrieveCredentials(): Promise<Array<SdJwtVcRecord | MdocRecord | string>>
+  public abstract retrieveCredentials(): Promise<
+    Array<SdJwtVcRecord | MdocRecord | { credential: string; openId4VcMetadata: OpenId4VcCredentialMetadata }>
+  >
 
   protected constructor(
     options: ReceivePidUseCaseFlowOptions & ExtraOptions,

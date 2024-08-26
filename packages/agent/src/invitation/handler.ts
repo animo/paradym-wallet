@@ -52,7 +52,11 @@ import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { deviceKeyPair } from '@easypid/storage/pidPin'
-import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
+import {
+  type OpenId4VcCredentialMetadata,
+  extractOpenId4VcCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '../openid4vc/metadata'
 import { BiometricAuthenticationError } from './error'
 
 export async function resolveOpenId4VciOffer({
@@ -211,7 +215,7 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
-}): Promise<string> => {
+}): Promise<{ credential: string; openId4VcMetadata: OpenId4VcCredentialMetadata }> => {
   // By default request the first offered credential
   // TODO: extract the first supported offered credential
   const offeredCredentialToRequest = credentialConfigurationIdToRequest
@@ -251,7 +255,17 @@ export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
     },
   })) as unknown as Array<string>
 
-  return credentials[0]
+  const credential = credentials[0]
+  // FIXME: not sure if the index of credentials will match?
+  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
+    id: resolvedCredentialOffer.metadata.issuer,
+    display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
+  })
+
+  return {
+    credential,
+    openId4VcMetadata,
+  }
 }
 
 export const receiveCredentialFromOpenId4VciOffer = async ({

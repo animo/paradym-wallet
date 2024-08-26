@@ -1,15 +1,18 @@
 import { Redirect, Stack, useRouter } from 'expo-router'
 
 import { useSecureUnlock } from '@easypid/agent'
+import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
-import { SeedCredentialProvider } from '@easypid/storage'
+import { seedCredentialStorage } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { AgentProvider } from '@package/agent'
+import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
 import { type CredentialDataHandlerOptions, DeeplinkHandler } from '@package/app'
 import { HeroIcons, XStack } from '@package/ui'
 import { useEffect, useState } from 'react'
 import Reanimated, { FadeIn } from 'react-native-reanimated'
 import { useTheme } from 'tamagui'
+
+const jsonRecordIds = [seedCredentialStorage.recordId, activityStorage.recordId]
 
 // When deeplink routing we want to push
 export const credentialDataHandlerOptions = {
@@ -66,7 +69,7 @@ export default function AppLayout() {
   // Render the normal wallet, which is everything inside (app)
   return (
     <AgentProvider agent={secureUnlock.context.agent}>
-      <SeedCredentialProvider agent={secureUnlock.context.agent}>
+      <WalletJsonStoreProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
         <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
           <Reanimated.View
             style={{ flex: 1 }}
@@ -91,7 +94,7 @@ export default function AppLayout() {
             </Stack>
           </Reanimated.View>
         </DeeplinkHandler>
-      </SeedCredentialProvider>
+      </WalletJsonStoreProvider>
     </AgentProvider>
   )
 }

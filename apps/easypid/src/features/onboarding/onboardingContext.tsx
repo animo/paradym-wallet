@@ -1,6 +1,6 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
-import { MdocRecord, TypedArrayEncoder } from '@credo-ts/core'
+import { MdocRecord, TypedArrayEncoder, utils } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
@@ -15,16 +15,18 @@ import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
   SdJwtVcRecord,
+  getOpenId4VcCredentialMetadata,
   storeCredential,
 } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
-import { capitalizeFirstLetter, sleep } from '@package/utils'
+import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import type { PidSdJwtVcAttributes } from '../../hooks'
+import { activityStorage } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
@@ -680,19 +682,38 @@ export function OnboardingContextProvider({
               parsed.prettyClaims.family_name.toLowerCase()
             )}`
           )
+
+          const issuerName = getOpenId4VcCredentialMetadata(credential)?.issuer.display?.[0]?.name
+          await activityStorage.addActivity(secureUnlock.context.agent, {
+            id: credential.id,
+            type: 'received',
+            date: new Date().toISOString(),
+            entityHost: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
+            entityName: issuerName,
+          })
         } else if (credential instanceof MdocRecord) {
           await storeCredential(secureUnlock.context.agent, credential)
 
           // NOTE: we don't set the userName here as we always get SD-JWT VC and MODC at the same time currently
           // so it should be set
         } else {
-          const payload = credential.split('.')[1]
+          const payload = credential.credential.split('.')[1]
           const {
+            iss,
             pid_data: { given_name, family_name },
           } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
           setUserName(
             `${capitalizeFirstLetter(given_name.toLowerCase())} ${capitalizeFirstLetter(family_name.toLowerCase())}`
           )
+
+          const issuerName = credential.openId4VcMetadata.issuer.display?.[0]?.name
+          await activityStorage.addActivity(secureUnlock.context.agent, {
+            id: utils.uuid(),
+            type: 'received',
+            date: new Date().toISOString(),
+            entityHost: getHostNameFromUrl(iss) as string,
+            entityName: issuerName,
+          })
         }
       }
 
