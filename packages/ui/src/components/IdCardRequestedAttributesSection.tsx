@@ -17,11 +17,13 @@ export function IdCardRequestedAttributesSection({
   issuerImage,
 }: IdCardRequestedAttributesSectionProps) {
   return (
-    <YStack>
-      <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-        <HeroIcons.CircleStack color="$white" size={18} />
+    <YStack gap="$2">
+      <Circle size="$3" mb="$2" backgroundColor="$primary-500">
+        <HeroIcons.CircleStack color="$white" size={20} />
       </Circle>
-      <Heading variant="h2">Requested data</Heading>
+      <Heading variant="h2" fontWeight="$semiBold">
+        Requested data
+      </Heading>
       <Paragraph size="$3" secondary>
         {description}
       </Paragraph>

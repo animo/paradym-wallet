@@ -57,8 +57,8 @@ export default function AppLayout() {
     headerTintColor: theme['primary-500'].val,
     headerTitle: '',
     headerLeft: () => (
-      <XStack onPress={() => router.back()}>
-        <HeroIcons.ArrowLeft size={32} color="$black" />
+      <XStack p="$2" ml={-4} onPress={() => router.back()} ai="center">
+        <HeroIcons.ArrowLeft size={28} color="$black" />
       </XStack>
     ),
   }
@@ -82,7 +82,11 @@ export default function AppLayout() {
               <Stack.Screen name="notifications/openIdPresentation" options={headerNormalOptions} />
               <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
               <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
-              <Stack.Screen name="(home)/menu" options={headerNormalOptions} />
+              <Stack.Screen name="(menu)/menu" options={headerNormalOptions} />
+              <Stack.Screen name="(menu)/activity" options={headerNormalOptions} />
+              <Stack.Screen name="(menu)/feedback" options={headerNormalOptions} />
+              <Stack.Screen name="(menu)/settings" options={headerNormalOptions} />
+              <Stack.Screen name="(menu)/about" options={headerNormalOptions} />
               <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>
