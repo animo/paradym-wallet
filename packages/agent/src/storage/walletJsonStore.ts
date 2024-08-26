@@ -1,12 +1,14 @@
 import type { Agent } from '@credo-ts/core'
 import { GenericRecord } from '@credo-ts/core/build/modules/generic-records/repository/GenericRecord'
 
-const store = async (agent: Agent, id: string, value: Record<string, unknown>) => {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+const store = async (agent: Agent, id: string, value: any) => {
   const record = new GenericRecord({ id, content: value })
   await agent.genericRecords.save(record)
 }
 
-const update = async (agent: Agent, id: string, value: Record<string, unknown>) => {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+const update = async (agent: Agent, id: string, value: any) => {
   const record = new GenericRecord({ id, content: value })
   await agent.genericRecords.update(record)
 }
