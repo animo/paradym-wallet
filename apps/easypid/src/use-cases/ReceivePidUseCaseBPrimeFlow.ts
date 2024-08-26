@@ -70,7 +70,7 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
       const deviceKeyPublicKeyBytes = deviceKeyPair.publicKey()
       const deviceKey = Key.fromPublicKey(deviceKeyPublicKeyBytes, KeyType.P256)
       const credentialConfigurationIdToRequest = this.resolvedCredentialOffer.offeredCredentials[0].id
-      const credential = await receiveCredentialFromOpenId4VciOfferAuthenticatedChannel({
+      const { credential, openId4VcMetadata } = await receiveCredentialFromOpenId4VciOfferAuthenticatedChannel({
         deviceKey,
         agent: this.options.agent,
         accessToken: this.accessToken,
@@ -80,13 +80,13 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
         pidSchemes,
       })
 
-      await seedCredentialStorage.store(this.options.agent, credential)
+      await seedCredentialStorage.store(this.options.agent, { seedCredential: credential })
 
       const payload = credential.split('.')[1]
       const { pid_data } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
-      await convertAndStorePidDataIntoFakeSdJwtVc(this.options.agent, pid_data)
+      await convertAndStorePidDataIntoFakeSdJwtVc(this.options.agent, pid_data, openId4VcMetadata)
 
-      return [credential]
+      return [{ credential, openId4VcMetadata }]
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
       if (error instanceof BiometricAuthenticationError) {

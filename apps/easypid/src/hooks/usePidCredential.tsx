@@ -39,6 +39,7 @@ export type PidSdJwtVcAttributes = {
   age_in_years: number
   age_birth_year: number
   nationalities: string[]
+  iss: string
 }
 
 const attributeNameMapping = {
