@@ -52,17 +52,17 @@ export function FunkePresentationNotificationScreen({
   const { top, bottom } = useSafeAreaInsets()
 
   const entry = submission.entries[0]
-  const credential = entry?.credentials[0]
+  const credential = entry?.credentials[0] as (typeof entry)['credentials'][0] | undefined
 
   const disclosedAttributes = getPidDisclosedAttributeNames(
-    credential.disclosedPayload ?? {},
-    credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+    credential?.disclosedPayload ?? {},
+    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
   )
 
   const disclosedPayload = getPidAttributesForDisplay(
-    credential.disclosedPayload ?? {},
-    credential.metadata ?? ({} as CredentialMetadata),
-    credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+    credential?.disclosedPayload ?? {},
+    credential?.metadata ?? ({} as CredentialMetadata),
+    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
   )
 
   const onStop = () => {
@@ -114,67 +114,69 @@ export function FunkePresentationNotificationScreen({
         <Spacer size="$13" />
         <YStack borderWidth={0.5} borderColor="$background" />
         <YStack gap="$6" jc="space-between" p="$4" paddingBottom={bottom} flex-1>
-          <Animated.View entering={FadeIn}>
-            <YStack gap="$2">
-              <ZStack mb="$4">
-                <Stack h={12.5} mt={-1} bg="$grey-200" br="$3" />
-                <Animated.View key="progress-bar-anim" style={animatedProgressStyle}>
-                  <ProgressBar value={33} />
-                </Animated.View>
-              </ZStack>
-              <Heading variant="title">Review the request</Heading>
-            </YStack>
-          </Animated.View>
-          <Animated.View
-            entering={FadeInDown.springify().damping(128).mass(0.8).stiffness(200).restSpeedThreshold(0.1).delay(200)}
-          >
-            <YStack gap="$6">
-              <IdCardRequestedAttributesSection
-                disclosedAttributes={disclosedAttributes}
-                description={
-                  disclosedAttributes.length === 0
-                    ? "You don't have the requested credential."
-                    : disclosedAttributes.length > 1
-                      ? `These ${disclosedAttributes.length} attributes will be shared.`
-                      : 'The following attribute will be shared:'
-                }
-                issuerImage={germanIssuerImage}
-                onPressIdCard={() => {
-                  router.push(
-                    `/credentials/pidRequestedAttributes?disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${disclosedAttributes?.length ?? 0}`
-                  )
-                }}
-              />
-
+          <Stack gap="$6">
+            <Animated.View entering={FadeIn}>
               <YStack gap="$2">
-                <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-                  <HeroIcons.InformationCircle color="$white" size={18} />
-                </Circle>
-                <Heading variant="h3" fontWeight="$semiBold">
-                  Reason for request
-                </Heading>
-                <Paragraph size="$3" secondary>
-                  {submission.purpose ??
-                    submission.entries[0].description ??
-                    'No information was provided on the purpose of the data request. Be cautious'}
-                </Paragraph>
+                <ZStack mb="$4">
+                  <Stack h={12.5} mt={-1} bg="$grey-200" br="$3" />
+                  <Animated.View key="progress-bar-anim" style={animatedProgressStyle}>
+                    <ProgressBar value={33} />
+                  </Animated.View>
+                </ZStack>
+                <Heading variant="title">Review the request</Heading>
               </YStack>
+            </Animated.View>
+            <Animated.View
+              entering={FadeInDown.springify().damping(128).mass(0.8).stiffness(200).restSpeedThreshold(0.1).delay(200)}
+            >
+              <YStack gap="$6">
+                <IdCardRequestedAttributesSection
+                  disclosedAttributes={submission.areAllSatisfied ? disclosedAttributes : []}
+                  description={
+                    !submission.areAllSatisfied
+                      ? "You don't have the requested credential."
+                      : disclosedAttributes.length > 1
+                        ? `These ${disclosedAttributes.length} attributes will be shared.`
+                        : 'The following attribute will be shared:'
+                  }
+                  issuerImage={germanIssuerImage}
+                  onPressIdCard={() => {
+                    router.push(
+                      `/credentials/pidRequestedAttributes?disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${disclosedAttributes?.length ?? 0}`
+                    )
+                  }}
+                />
 
-              {verifierHost && (
                 <YStack gap="$2">
-                  <Circle size="$2.5" mb="$2" backgroundColor="$primary-500">
-                    <HeroIcons.User color="$white" size={18} />
+                  <Circle size="$2" mb="$2" backgroundColor="$primary-500">
+                    <HeroIcons.InformationCircle color="$white" size={18} />
                   </Circle>
                   <Heading variant="h3" fontWeight="$semiBold">
-                    Requester
+                    Reason for request
                   </Heading>
                   <Paragraph size="$3" secondary>
-                    {verifierHost}
+                    {submission.purpose ??
+                      submission.entries[0].description ??
+                      'No information was provided on the purpose of the data request. Be cautious'}
                   </Paragraph>
                 </YStack>
-              )}
-            </YStack>
-          </Animated.View>
+
+                {verifierHost && (
+                  <YStack gap="$2">
+                    <Circle size="$2.5" mb="$2" backgroundColor="$primary-500">
+                      <HeroIcons.User color="$white" size={18} />
+                    </Circle>
+                    <Heading variant="h3" fontWeight="$semiBold">
+                      Requester
+                    </Heading>
+                    <Paragraph size="$3" secondary>
+                      {verifierHost}
+                    </Paragraph>
+                  </YStack>
+                )}
+              </YStack>
+            </Animated.View>
+          </Stack>
 
           <Animated.View entering={FadeInDown.delay(400)}>
             {submission.areAllSatisfied ? (
