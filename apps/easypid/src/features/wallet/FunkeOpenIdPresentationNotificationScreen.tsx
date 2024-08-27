@@ -1,5 +1,6 @@
 import {
   BiometricAuthenticationCancelledError,
+  type CredentialMetadata,
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
@@ -18,6 +19,7 @@ import {
 } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { GettingInformationScreen } from '@package/app/src/features/notifications/components/GettingInformationScreen'
+import { getPidAttributesForDisplay } from '../../hooks'
 import { activityStorage } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
@@ -97,12 +99,21 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         selectedCredentials: {},
       })
 
+      const credential = submission.entries[0]?.credentials[0]
+      const disclosedPayload = getPidAttributesForDisplay(
+        credential.disclosedPayload ?? {},
+        credential.metadata ?? ({} as CredentialMetadata),
+        credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+      )
+
       await activityStorage.addActivity(agent, {
         id: utils.uuid(),
         type: 'shared',
+        disclosedPayload,
         date: new Date().toISOString(),
         entityHost: credentialsForRequest.verifierHostName as string,
       })
+
       toast.show('Information has been successfully shared.', {
         customData: { preset: 'success' },
       })
