@@ -1,6 +1,5 @@
-import { Button, Heading, HeroIcons, IdCard, ScrollView, Spacer, Stack, YStack } from '@package/ui'
+import { Heading, IdCard, ScrollView, Spacer, Stack, YStack } from '@package/ui'
 import React from 'react'
-import { useRouter } from 'solito/router'
 
 import { CredentialAttributes } from '@package/app/src/components'
 import { useScrollViewPosition } from '@package/app/src/hooks'

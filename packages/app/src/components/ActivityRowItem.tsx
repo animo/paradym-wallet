@@ -30,15 +30,16 @@ export function ActivityRowItem({ id, subtitle, date, type = 'shared' }: Activit
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
+  const onLinkPress = () => {
+    if (type === 'received') {
+      return router.push('/credentials/pid')
+    }
+    return router.push(`/activity/${id}`)
+  }
+
   return (
     <Animated.View style={pressStyle}>
-      <XStack
-        gap="$4"
-        w="100%"
-        // onPress={() => router.push(`/activity/${id}`)}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-      >
+      <XStack gap="$4" w="100%" onPress={onLinkPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
         <Stack jc="center" ai="center" w={48} h={48} br="$12" bg="$primary-500" p="$4">
           <Icon color="$white" />
         </Stack>

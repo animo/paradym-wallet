@@ -10,6 +10,10 @@ import { useActivities } from './activityRecord'
 
 const { useParams } = createParam<{ id: string }>()
 
+// When it's a credential, it should render a credential detail screen.
+// As we only have the PID credential this is currently not needed to implement.
+// So the activity detail screen is always a 'shared data' screen.
+
 export function FunkeActivityDetailScreen() {
   const { params } = useParams()
   const router = useRouter()
@@ -42,6 +46,7 @@ export function FunkeActivityDetailScreen() {
       >
         <YStack g="xl" fg={1} px="$4" pb="$4" jc="space-between" marginBottom={bottom}>
           <CredentialAttributes
+            // @TimoGlastra add attributes here
             subject={{
               Address: {},
               'Age over': { '21': true },

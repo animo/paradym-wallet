@@ -155,7 +155,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
 
         if (error instanceof PidIssuerPinLockedError) {
-          router.push('pinLocked')
+          router.replace('pinLocked')
           return
         }
 

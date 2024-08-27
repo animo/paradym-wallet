@@ -32,7 +32,6 @@ export default function AppLayout() {
   // if this is the case we will redo the onboarding
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const [resetWalletState, setResetWalletState] = useState<'resetting' | 'reset'>()
-  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.9 })
   const shouldResetWallet =
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
 

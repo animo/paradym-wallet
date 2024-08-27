@@ -6,7 +6,7 @@ import { useScrollViewPosition } from '@package/app/src/hooks'
 import { useSecureUnlock } from '@easypid/agent'
 import { resetWallet } from '@easypid/utils/resetWallet'
 import { TextBackButton } from '@package/app'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { Alert } from 'react-native'
 import Animated from 'react-native-reanimated'
 
@@ -36,6 +36,7 @@ const menuItems = [
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const secureUnlock = useSecureUnlock()
+  const router = useRouter()
 
   const onResetWallet = () => {
     Alert.alert('Reset Wallet', 'Are you sure you want to reset the wallet?', [
@@ -46,7 +47,7 @@ export function FunkeMenuScreen() {
       {
         text: 'Yes',
         onPress: () => {
-          resetWallet(secureUnlock)
+          resetWallet(secureUnlock).then(() => router.replace('onboarding'))
         },
       },
     ])
