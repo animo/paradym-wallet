@@ -14,7 +14,7 @@ const Btn = styled(TButton, {
   variants: {
     scaleOnPress: {
       true: {
-        // Overwrite pressStyle
+        // Overwrite pressStyle to use animated buttons
         pressStyle: {
           opacity: 1,
         },

@@ -32,7 +32,7 @@ const invitationSchemes = ['openid', 'openid-initiate-issuance', 'openid-credent
 const config = {
   name: `EasyPID${variant.name}`,
   scheme: 'animo-easypid',
-  slug: 'animo-easypid',
+  slug: 'ausweis-wallet',
   owner: 'animo-id',
   version,
   orientation: 'portrait',
