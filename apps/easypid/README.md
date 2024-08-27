@@ -32,7 +32,7 @@ The identity wallet contains the following temporary features for development an
   <img src="assets/screen1.png" width="30%" />
   <img src="assets/screen2.png" width="30%" /> 
   <img src="assets/screen3.png" width="30%" />
-</div> -->
+</div>
 
  <p align="center"><i>Impression of the EasyPID Wallet</i></p> 
 
@@ -74,22 +74,53 @@ Compatible with iPhone 5s and later models.
 
 ## Project Structure
 
-<!-- The project is a monorepo managed using **pnpm**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router, React Navigation and Solito**. For the Agent and SSI capabilities **Aries Framework JavaScript (AFJ)** is used.
+The EasyPID wallet is part of a larger monorepo. The EasyPID app is located in the [apps/easypid](apps/easypid) directory.
 
-The folder structure is as follows
+### EasyPID App
 
-- `apps` top level applications
-  - `paradym` Paradym Wallet - react native app for iOS & Android
-  - `easypid` EasyPID Wallet - react native app for iOS & Android
-- `packages` shared packages
-  - `ui` includes our custom UI kit that will be optimized by Tamagui
-  - `agent` includes the Aries Framework JavaScript (AFJ) agent and SSI capabilities
-  - `app` you'll be importing most files from `app/`
-    - `features` (don't use a `screens` folder. organize by feature.)
-    - `provider` (all the providers that wrap the app, and some no-ops for Web.)
-    - `navigation` This folder contains navigation-related code for RN. You may use it for any navigation code, such as custom links.
+This is the actual EasyPID application. It is built using Expo and React Native.
 
-You can add other folders inside of `packages/` if you know what you're doing and have a good reason to. -->
+The app uses file-based routing starting in the [`src/app`](src/app) directory. Each file in this directory is a route within the app. 
+
+E.g. ['src/app/authenticate.tsx'](src/app/authenticate.tsx) is the entry point for the authentication screen.
+
+Initially when the app is opened, the [`src/app/(app)/_layout.tsx`](src/app/(app)/_layout.tsx) is rendered. This is the main layout for the app. If the wallet is not unlocked, the user is redirected to the onboarding (on first launch) or authentication screen (on return).
+
+### Agent
+
+The agent contains the digital identity related wallet functionality. It uses an [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance to manage the wallet.
+
+[Aries Askar](https://github.com/hyperledger/aries-askar) is used for cryptographic operations and encrypted storage of the wallet data. 
+
+[Expo Secure Environment](https://github.com/animo/expo-secure-environment) is used to provide support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication.
+
+Some relevant links:
+- [Handling invitations](../../packages/agent/src/invitation/handler.ts) - this is the entry point for most interactions in the app that need to use the agent. E.g receiving and sharing credentials
+
+### Secure Unlock
+
+The secure store package located in [`packages/secure-store`](packages/secure-store) contains logic for secure unlocking and initializing of the wallet. It uses [React Native Keychain](https://github.com/oblador/react-native-keychain) under the hood, which integrates with the device's secure APIs for storing sensitive data.
+
+It also contains the logic for deriving the wallet's master key from the user PIN (using KDF). Whenver the wallet is opened, the PIN is required to unlock the wallet.
+
+Alternatively, the derive PIN can be stored in the device's keychcain, allowing the user to retrieve the master key from the keychain and unlock the wallet directly.
+
+Relevant links:
+- [Secure Unlock Provider](../../packages/secure-store/secure-wallet-key/SecureUnlockProvider.tsx) - the main entry point for secure unlocking and initialization of the wallet
+
+### App / UI Package
+
+The [app pacakge](packages/app) and [ui pacakge](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/paradym) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
+
+### PID Options
+
+The C flow supported in the Pardaym Wallet is mostly implemetned in Credo, the underlying identity framework we use. 
+
+For the B' flow, more custom work was needed and this is implemented in the following files:
+- [src/crypto/bPrime.ts](src/crypto/bPrime.ts)
+- [src/crypto/aes.ts](src/crypto/aes.ts)
+
+The crypto for the B' flow is implemented using Aries Askar.
 
 ## Tech stack / base components
 
