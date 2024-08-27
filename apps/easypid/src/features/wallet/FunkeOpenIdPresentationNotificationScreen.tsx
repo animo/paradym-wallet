@@ -1,10 +1,10 @@
 import {
   BiometricAuthenticationCancelledError,
+  type CredentialMetadata,
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
   shareProof,
-  type CredentialMetadata,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router'
@@ -19,9 +19,9 @@ import {
 } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { GettingInformationScreen } from '@package/app/src/features/notifications/components/GettingInformationScreen'
+import { getPidAttributesForDisplay } from '../../hooks'
 import { activityStorage } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
-import { getPidAttributesForDisplay } from '../../hooks'
 
 type Query = { uri?: string; data?: string }
 
