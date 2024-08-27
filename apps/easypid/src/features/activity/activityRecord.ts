@@ -8,6 +8,8 @@ interface Activity {
   type: ActivityType
   date: string
 
+  disclosedPayload?: Record<string, unknown>
+
   // host of the entity interacted with
   // e.g. funke.animo.id
   entityHost: string
