@@ -1,5 +1,5 @@
 diff --git a/build/openid4vc-holder/OpenId4VcHolderApi.js b/build/openid4vc-holder/OpenId4VcHolderApi.js
-index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..69cd404569c831349e7dfdae76a999b85901245e 100644
+index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..070a203d2a56f5439cd278daa7bec54f69382147 100644
 --- a/build/openid4vc-holder/OpenId4VcHolderApi.js
 +++ b/build/openid4vc-holder/OpenId4VcHolderApi.js
 @@ -140,7 +140,7 @@ let OpenId4VcHolderApi = class OpenId4VcHolderApi {
@@ -26,7 +26,7 @@ index 9605e9a095d780e666fd6afbd0b95c41b44fbd69..69cd404569c831349e7dfdae76a999b8
      }
      /**
 diff --git a/build/openid4vc-holder/OpenId4VciHolderService.js b/build/openid4vc-holder/OpenId4VciHolderService.js
-index 83d55fd85edd379c9cd01947304478934c16212b..d5530cf59dcdc32d0f99ac4ecf53478117e109fd 100644
+index 83d55fd85edd379c9cd01947304478934c16212b..ccf9ebc0272b9c0642602658d496463b69fd72a9 100644
 --- a/build/openid4vc-holder/OpenId4VciHolderService.js
 +++ b/build/openid4vc-holder/OpenId4VciHolderService.js
 @@ -129,7 +129,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
@@ -184,23 +184,11 @@ index 83d55fd85edd379c9cd01947304478934c16212b..d5530cf59dcdc32d0f99ac4ecf534781
          }
          else if (format === shared_1.OpenId4VciCredentialFormatProfile.JwtVcJson ||
              format === shared_1.OpenId4VciCredentialFormatProfile.JwtVcJsonLd) {
-@@ -526,12 +552,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+@@ -526,6 +552,7 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
                  throw new core_1.CredoError('Received Mdoc credential in an unsupported format.');
              }
              const mdoc = core_1.Mdoc.fromIssuerSignedBase64(credentialResponse.successBody.credential);
--            const result = await this.mdocService.verify(agentContext, { mdoc });
--            if (!result.isValid) {
--                agentContext.config.logger.error('Failed to validate credential', { result });
--                const errorMessage = (_g = typeof result.error) !== null && _g !== void 0 ? _g : 'Unknown';
--                throw new core_1.CredoError(`Failed to validate credential, error = ${errorMessage}`);
--            }
-+            // FIXME: enable verification once fixed in sphereon library
-+            // const result = await this.mdocService.verify(agentContext, { mdoc });
-+            // if (!result.isValid) {
-+            //     agentContext.config.logger.error('Failed to validate credential', { result });
-+            //     const errorMessage = (_g = typeof result.error) !== null && _g !== void 0 ? _g : 'Unknown';
-+            //     throw new core_1.CredoError(`Failed to validate credential, error = ${errorMessage}`);
-+            // }
-             return { credential: mdoc, notificationMetadata };
-         }
-         throw new core_1.CredoError(`Unsupported credential format ${credentialResponse.successBody.format}`);
++            console.log('running mdoc verification now')
+             const result = await this.mdocService.verify(agentContext, { mdoc });
+             if (!result.isValid) {
+                 agentContext.config.logger.error('Failed to validate credential', { result });
