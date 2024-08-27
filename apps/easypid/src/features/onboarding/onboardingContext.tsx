@@ -617,7 +617,7 @@ export function OnboardingContextProvider({
           },
         })
       } else {
-        await reset({ resetToStep: 'id-card-pin', error })
+        await reset({ resetToStep: 'id-card-start', error })
       }
 
       return
