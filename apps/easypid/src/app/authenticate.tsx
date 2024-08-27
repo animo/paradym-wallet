@@ -4,7 +4,7 @@ import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { FlexPage, Heading, HeroIcons, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
 
@@ -16,6 +16,7 @@ export default function Authenticate() {
 
   const secureUnlock = useSecureUnlock()
   const pinInputRef = useRef<PinDotsInputRef>(null)
+  const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
@@ -27,7 +28,9 @@ export default function Authenticate() {
 
   useEffect(() => {
     if (secureUnlock.state !== 'acquired-wallet-key') return
+    if (isInitializingAgent) return
 
+    setIsInitializingAgent(true)
     initializeAppAgent({
       walletKey: secureUnlock.walletKey,
     })
@@ -42,7 +45,10 @@ export default function Authenticate() {
         // TODO: handle other
         console.error(error)
       })
-  }, [secureUnlock])
+      .finally(() => {
+        setIsInitializingAgent(false)
+      })
+  }, [secureUnlock, isInitializingAgent])
 
   if (
     secureUnlock.state === 'initializing' ||

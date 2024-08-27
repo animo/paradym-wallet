@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
-import { ClaimFormat } from '@credo-ts/core'
+import type { ClaimFormat } from '@credo-ts/core'
 import { getPidAttributesForDisplay, getPidDisclosedAttributeNames } from '@easypid/hooks'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useRouter } from 'expo-router'
@@ -45,9 +45,6 @@ export function FunkePresentationNotificationScreen({
 
   const entry = submission.entries[0]
   const credential = entry?.credentials[0]
-
-  // TODO: combine methods so we don't have to care about formats here
-  const type = credential ? (credential.claimFormat === ClaimFormat.SdJwtVc ? 'sd-jwt' : 'mdoc') : undefined
 
   const disclosedAttributes = getPidDisclosedAttributeNames(
     credential.disclosedPayload ?? {},
