@@ -1,4 +1,5 @@
-import { useScaleAnimation } from '@package/app'
+// FIXME: ui should not depend on app. animation should be moved to ui
+import { useScaleAnimation } from '@package/app/src/hooks/useScaleAnimation'
 import { formatRelativeDate } from '@package/utils'
 import Animated from 'react-native-reanimated'
 import { useRouter } from 'solito/router'

@@ -1,4 +1,5 @@
-import { useScaleAnimation } from '@package/app'
+// FIXME: do not depend on app package in ui
+import { useScaleAnimation } from '@package/app/src/hooks/useScaleAnimation'
 import { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import Animated, {

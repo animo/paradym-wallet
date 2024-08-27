@@ -8,7 +8,7 @@ import type {
 import type { ProofStateChangedEvent } from '@credo-ts/core'
 import type { FormattedSubmission, FormattedSubmissionEntry } from '../format/formatPresentation'
 
-import { CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
+import { ClaimFormat, CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
 import { useConnectionById, useProofById } from '@credo-ts/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
@@ -146,6 +146,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               isSatisfied: true,
               issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
               requestedAttributes: Array.from(entry.requestedAttributes),
+              claimFormat: 'AnonCreds',
             }
           }),
           isSatisfied: entry.matches.length > 0,
