@@ -8,7 +8,7 @@ This app is an implementation of a mobile EUDI wallet protoype.
 
 This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers. For more information on the project reach out to <ana@animo.id>.
 
-In the project an identity wallet and a test relying party was delivered.
+During the project an identity wallet and a test relying party was delivered.
 
 The identity wallet contains the following features:
 
@@ -27,17 +27,18 @@ The identity wallet contains the following temporary features for development an
 - Switch between C and B' PID flow
 - Reset wallet
 
-<!--
-TODO if possible: add pictures / video
+
  <div align="center">
-  <img src="assets/ios-1.jpg" width="30%" />
-  <img src="assets/ios-2.jpg" width="30%" /> 
-  <img src="assets/ios-3.jpg" width="30%" />
+  <img src="assets/screen1.png" width="30%" />
+  <img src="assets/screen2.png" width="30%" /> 
+  <img src="assets/screen3.png" width="30%" />
 </div> -->
-<!-- 
-<p align="center"><i>Impression of Paradym Wallet</i></p> -->
+
+ <p align="center"><i>Impression of the EasyPID Wallet</i></p> 
 
 ## Install
+
+
 
 ## Try it out
 
@@ -45,19 +46,15 @@ Here's some resources and tips that might be helpful while testing the app.
 
 ### Before you start
 
-- Make sure you are connected to the VPN <!--TODO: LINK -->
+- Make sure you are have access to the BDR PID issuer which is behind a firewall
 - Have an eID card ready
 - Have the [test relying party](https://funke.animo.id/) ready
-    <!-- - The test relying party enables you to select a TODO ADD -->
+    - The test relying party enables you to select a credential type and request type to verify the PID credential. 
+    - It will display a QR code as well as relevant information, 
 
-### During
+### Device Compatibility
 
-- The very first screen has an option to switch between the C and B' flow for testing purposes. It is located on the left side besides the continue button.
-- There is an option to reset the wallet during testing. It is located in the menu that you can find on the home page.
-
-## Device Compatibility
-
-### Android
+#### Android
 
 This app requires devices with:
 
@@ -66,9 +63,14 @@ This app requires devices with:
 
 Android devices without these features will not be able to run the app.
 
-### iOS
+#### iOS
 
 Compatible with iPhone 5s and later models.
+
+### While testing
+
+- The very first screen has an option to switch between the C and B' flow for testing purposes. It is located on the left side besides the continue button.
+- There is an option to reset the wallet during testing. It is located in the menu, which you can find on the home page.
 
 ## Project Structure
 
