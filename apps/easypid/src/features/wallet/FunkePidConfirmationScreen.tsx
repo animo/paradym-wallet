@@ -1,4 +1,4 @@
-import { FlexPage, HeroIcons, Paragraph, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
 import React, { forwardRef } from 'react'
 import { Circle } from 'tamagui'
 
@@ -10,12 +10,14 @@ export interface FunkePidConfirmationScreenProps {
 export const FunkePidConfirmationScreen = forwardRef<PinDotsInputRef, FunkePidConfirmationScreenProps>(
   ({ onSubmitPin, isLoading }: FunkePidConfirmationScreenProps, ref) => {
     return (
-      <FlexPage flex-1 safeArea="y" gap={0} alignItems="center">
-        <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$2">
-          <Circle size="$3" backgroundColor="$grey-100">
+      <FlexPage flex-1 safeArea="y" alignItems="center">
+        <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
+          <Circle size="$4" backgroundColor="$grey-100">
             <HeroIcons.LockClosed color="$grey-700" />
           </Circle>
-          <Paragraph>Enter your app pin code</Paragraph>
+          <Heading variant="h2" fontWeight="$semiBold">
+            Enter your app PIN code
+          </Heading>
         </YStack>
         <PinDotsInput
           isLoading={isLoading}

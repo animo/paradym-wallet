@@ -647,7 +647,7 @@ export function OnboardingContextProvider({
       }
     } catch (error) {
       if (error instanceof PinPossiblyReusedError) {
-        await reset({ resetToStep: 'pin', error, toastMessage: 'Are you using a unique PIN?' })
+        await reset({ resetToStep: 'pin', error, toastMessage: 'Have you used this PIN before?' })
       } else {
         await reset({ resetToStep: 'id-card-pin', error })
       }
