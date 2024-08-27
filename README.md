@@ -10,11 +10,14 @@ With Paradym Wallet, you can seamlessly manage and present your digital credenti
 
 <div align="center">
   <img src="assets/ios-1.jpg" width="30%" />
-  <img src="assets/ios-2.jpg" width="30%" /> 
+  <img src="assets/ios-2.jpg" width="30%" />
   <img src="assets/ios-3.jpg" width="30%" />
 </div>
 
 <p align="center"><i>Impression of Paradym Wallet</i></p>
+
+> **Note:** 
+> To read more about the Animo EasyPID EUDI wallet prototype, look in the [EasyPID app directory](apps/easypid).
 
 ## Try it out
 
