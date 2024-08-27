@@ -11,7 +11,13 @@ export function IllustrationContainerBackground() {
       locations={[0, 0.2, 0.46, 0.67, 0.79, 0.92, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={{ flex: 1, opacity: 0.25, height: '100%', width: '100%', position: 'absolute' }}
+      style={{
+        flex: 1,
+        opacity: 0.25,
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+      }}
     />
   )
 }

@@ -17,12 +17,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 
-import {
-  getMdocPidAttributesForDisplay,
-  getMdocPidDisclosedAttributeNames,
-  getSdJwtPidAttributesForDisplay,
-  getSdJwtPidDisclosedAttributeNames,
-} from '@easypid/hooks'
+import { ClaimFormat } from '@credo-ts/core'
+import { getPidAttributesForDisplay, getPidDisclosedAttributeNames } from '@easypid/hooks'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
@@ -51,25 +47,18 @@ export function FunkePresentationNotificationScreen({
   const credential = entry?.credentials[0]
 
   // TODO: combine methods so we don't have to care about formats here
-  const type = credential ? (credential.disclosedPayload?.vct ? 'sd-jwt' : 'mdoc') : undefined
-  const disclosedAttributes =
-    type === 'mdoc'
-      ? getMdocPidDisclosedAttributeNames(credential.disclosedPayload ?? {})
-      : type === 'sd-jwt'
-        ? getSdJwtPidDisclosedAttributeNames(credential.disclosedPayload ?? {})
-        : []
-  const disclosedPayload =
-    type === 'mdoc'
-      ? getMdocPidAttributesForDisplay(
-          credential.disclosedPayload ?? {},
-          (credential.metadata ?? {}) as CredentialMetadata
-        )
-      : type === 'sd-jwt'
-        ? getSdJwtPidAttributesForDisplay(
-            credential.disclosedPayload ?? {},
-            credential.metadata ?? ({} as CredentialMetadata)
-          )
-        : {}
+  const type = credential ? (credential.claimFormat === ClaimFormat.SdJwtVc ? 'sd-jwt' : 'mdoc') : undefined
+
+  const disclosedAttributes = getPidDisclosedAttributeNames(
+    credential.disclosedPayload ?? {},
+    credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+  )
+
+  const disclosedPayload = getPidAttributesForDisplay(
+    credential.disclosedPayload ?? {},
+    credential.metadata ?? ({} as CredentialMetadata),
+    credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+  )
 
   const onStop = () => {
     Alert.alert('Stop', 'Are you sure you want to stop sharing?', [

@@ -21,6 +21,8 @@ export interface ReceivePidUseCaseBPrimeOptions extends ReceivePidUseCaseFlowOpt
   pidPin: Array<number>
 }
 
+export class PinPossiblyReusedError extends Error {}
+
 export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePidUseCaseBPrimeOptions> {
   private static REDIRECT_URI = 'https://funke.animo.id/redirect'
 
@@ -135,6 +137,14 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
         newState: 'retrieve-credential',
       })
     } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('Internal server error')) {
+          const pinPossiblyReusedError = new PinPossiblyReusedError('PIN is possibly reused')
+          this.handleError(pinPossiblyReusedError)
+          throw pinPossiblyReusedError
+        }
+      }
+
       this.handleError(error)
       throw error
     }

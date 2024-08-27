@@ -1,3 +1,4 @@
+import { ClaimFormat } from '@credo-ts/core'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
 import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
@@ -73,6 +74,18 @@ const attributeNameMapping = {
   age_in_years: 'Age',
   street_address: 'Street',
 } as Record<string, string>
+
+export function getPidAttributesForDisplay(
+  attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
+  metadata: CredentialMetadata,
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+) {
+  if (claimFormat === ClaimFormat.SdJwtVc) {
+    return getSdJwtPidAttributesForDisplay(attributes, metadata)
+  }
+
+  return getMdocPidAttributesForDisplay(attributes, metadata)
+}
 
 export function getSdJwtPidAttributesForDisplay(
   attributes: Partial<PidSdJwtVcAttributes | Attributes>,
@@ -225,6 +238,17 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
     ]),
     ...attributeGroups,
   ])
+}
+
+export function getPidDisclosedAttributeNames(
+  attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+) {
+  if (claimFormat === ClaimFormat.SdJwtVc) {
+    return getSdJwtPidDisclosedAttributeNames(attributes)
+  }
+
+  return getMdocPidDisclosedAttributeNames(attributes)
 }
 
 export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAttributes>) {

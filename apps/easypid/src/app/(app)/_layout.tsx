@@ -32,6 +32,7 @@ export default function AppLayout() {
   // if this is the case we will redo the onboarding
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const [resetWalletState, setResetWalletState] = useState<'resetting' | 'reset'>()
+  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.9 })
   const shouldResetWallet =
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
 
@@ -103,6 +104,7 @@ export default function AppLayout() {
               <Stack.Screen name="activity/index" options={headerNormalOptions} />
               <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
               <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
+              <Stack.Screen name="pinLocked" options={headerNormalOptions} />
             </Stack>
           </Reanimated.View>
         </DeeplinkHandler>
