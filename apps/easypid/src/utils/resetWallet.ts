@@ -23,8 +23,13 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
   if (await fs.exists(fs.dataPath)) await fs.delete(fs.dataPath)
   if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
 
-  await secureWalletKey.removeWalletKey(secureWalletKey.walletKeyVersion)
-  await secureWalletKey.removeSalt(secureWalletKey.walletKeyVersion)
+  // I think removing triggers the biometrics somehow, but we increase the version
+  // await secureWalletKey.removeWalletKey(secureWalletKey.walletKeyVersion)
+  // await secureWalletKey.removeSalt(secureWalletKey.walletKeyVersion)
+
+  // Update wallet key version
+  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+  secureWalletKey.setWalletKeyVersion(walletKeyVersion + 1)
 
   removeHasFinishedOnboarding()
   removeHasSeenIntroTooltip()

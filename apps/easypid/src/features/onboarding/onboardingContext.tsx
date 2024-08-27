@@ -329,6 +329,7 @@ export function OnboardingContextProvider({
   const initializeAgent = useCallback(async (walletKey: string) => {
     const agent = await initializeAppAgent({
       walletKey,
+      walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
     })
     setAgent(agent)
   }, [])
@@ -388,7 +389,7 @@ export function OnboardingContextProvider({
 
       // Directly try getting the wallet key so the user can enable biometrics
       // and we can check if biometrics works
-      const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.walletKeyVersion)
+      const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
 
       if (!walletKey) {
         const walletKey =
@@ -400,8 +401,8 @@ export function OnboardingContextProvider({
           return
         }
 
-        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
-        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.walletKeyVersion)
+        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
+        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
       }
 
       goToNextStep()
