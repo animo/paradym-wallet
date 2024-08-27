@@ -6,8 +6,8 @@ import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { seedCredentialStorage } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
-import { type CredentialDataHandlerOptions, DeeplinkHandler, useScaleAnimation } from '@package/app'
-import { HeroIcons, XStack } from '@package/ui'
+import { type CredentialDataHandlerOptions, DeeplinkHandler } from '@package/app'
+import { HeroIcons, XStack, useScaleAnimation } from '@package/ui'
 import { useEffect, useState } from 'react'
 import Reanimated, { FadeIn } from 'react-native-reanimated'
 import Animated from 'react-native-reanimated'
@@ -26,6 +26,7 @@ export default function AppLayout() {
   const secureUnlock = useSecureUnlock()
   const theme = useTheme()
   const router = useRouter()
+  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.9 })
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -54,8 +55,6 @@ export default function AppLayout() {
   if (secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key') {
     return <Redirect href="/authenticate" />
   }
-
-  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.9 })
 
   const headerNormalOptions = {
     headerShown: true,

@@ -1,31 +1,39 @@
 import {
-  ActivityRowItem,
   Button,
   Heading,
   HeroIcons,
   IdCard,
+  IllustrationContainer,
   Page,
   ScrollView,
   Spinner,
+  WelcomePopup,
   XStack,
   YStack,
+  useScaleAnimation,
 } from '@package/ui'
+import { usePathname } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
 import { useActivities } from '@easypid/features/activity/activityRecord'
 import { usePidCredential } from '@easypid/hooks'
-import { useNetworkCallback, useScaleAnimation } from '@package/app/src/hooks'
+import { useNetworkCallback } from '@package/app/src/hooks'
+import { ActivityRowItem } from 'packages/app'
+import { useEffect } from 'react'
 import Animated from 'react-native-reanimated'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
+import { useHasSeenIntroTooltip } from '../onboarding/hasFinishedOnboarding'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
+  const pathname = usePathname()
   const { isLoading, credential } = usePidCredential()
   const { bottom } = useSafeAreaInsets()
   const navigateToPidDetail = () => push('/credentials/pid')
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
   const { activities, isLoading: isLoadingActivities } = useActivities()
+  const [hasSeenIntroTooltip, setHasSeenIntroTooltip] = useHasSeenIntroTooltip()
 
   const {
     pressStyle: qrPressStyle,
@@ -45,6 +53,17 @@ export function FunkeWalletScreen() {
     pressStyle: menuPressStyle,
   } = useScaleAnimation({ scaleInValue: 0.9 })
 
+  const onCloseIntroTooltip = () => {
+    setHasSeenIntroTooltip(true)
+  }
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (pathname === '/') return
+    if (!hasSeenIntroTooltip) {
+      onCloseIntroTooltip()
+    }
+  }, [pathname, hasSeenIntroTooltip])
+
   if (isLoading || isLoadingActivities) {
     return (
       <Page jc="center" ai="center">
@@ -55,6 +74,7 @@ export function FunkeWalletScreen() {
 
   return (
     <>
+      {!hasSeenIntroTooltip && <WelcomePopup bottom={bottom} onClose={onCloseIntroTooltip} />}
       <XStack position="absolute" width="100%" zIndex={5} justifyContent="center" bottom={bottom ?? '$6'}>
         <YStack bg="#e9e9eb" br="$12">
           <Animated.View style={qrPressStyle}>
@@ -65,11 +85,14 @@ export function FunkeWalletScreen() {
               m="$2.5"
               shadowOffset={{ width: 0, height: 2 }}
               shadowColor="$grey-600"
-              shadowOpacity={0.6}
+              shadowOpacity={0.3}
               shadowRadius={5}
               onPressIn={qrHandlePressIn}
               onPressOut={qrHandlePressOut}
-              onPress={() => navigateToScanner()}
+              onPress={() => {
+                navigateToScanner()
+                onCloseIntroTooltip()
+              }}
             >
               <HeroIcons.QrCode color="$grey-100" size={48} />
             </YStack>
@@ -101,7 +124,6 @@ export function FunkeWalletScreen() {
                   <ActivityRowItem
                     key={activity.id}
                     id={activity.id}
-                    title={activity.type === 'shared' ? 'Shared data' : 'Received digital identity'}
                     subtitle={activity.entityName ?? activity.entityHost}
                     date={new Date(activity.date)}
                     type={activity.type}

@@ -5,7 +5,10 @@ import { useEffect } from 'react'
 import { DevSettings } from 'react-native'
 import { type SecureUnlockContext, useSecureUnlock } from '../agent'
 
-import { removeHasFinishedOnboarding } from '@easypid/features/onboarding/hasFinishedOnboarding'
+import {
+  removeHasFinishedOnboarding,
+  removeHasSeenIntroTooltip,
+} from '@easypid/features/onboarding/hasFinishedOnboarding'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {
   if (secureUnlock.state === 'unlocked') {
@@ -24,6 +27,7 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
   await secureWalletKey.removeSalt(secureWalletKey.walletKeyVersion)
 
   removeHasFinishedOnboarding()
+  removeHasSeenIntroTooltip()
 
   if (secureUnlock.state !== 'initializing') {
     secureUnlock.reinitialize()

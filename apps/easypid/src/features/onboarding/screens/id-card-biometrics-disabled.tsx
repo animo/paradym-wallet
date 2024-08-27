@@ -11,7 +11,9 @@ export function OnboardingIdCardBiometricsDisabled({ goToNextStep }: OnboardingI
   return (
     <YStack jc="space-between" fg={1}>
       <IdCard hideUserName icon="biometric" issuerImage={germanIssuerImage} />
-      <Button.Solid onPress={goToNextStep}>Go to settings</Button.Solid>
+      <Button.Solid scaleOnPress onPress={goToNextStep}>
+        Go to settings
+      </Button.Solid>
     </YStack>
   )
 }

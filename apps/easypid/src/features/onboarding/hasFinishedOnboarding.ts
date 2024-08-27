@@ -8,3 +8,11 @@ export function useHasFinishedOnboarding() {
 export function removeHasFinishedOnboarding() {
   mmkv.delete('hasFinishedOnboarding')
 }
+
+export function useHasSeenIntroTooltip() {
+  return useMMKVBoolean('hasSeenIntroTooltip', mmkv)
+}
+
+export function removeHasSeenIntroTooltip() {
+  mmkv.delete('hasSeenIntroTooltip')
+}

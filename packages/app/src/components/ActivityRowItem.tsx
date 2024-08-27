@@ -1,29 +1,32 @@
-import { useScaleAnimation } from '@package/app'
+import type { ActivityType } from '@easypid/features/activity/activityRecord'
 import { formatRelativeDate } from '@package/utils'
 import Animated from 'react-native-reanimated'
 import { useRouter } from 'solito/router'
-import { Heading, Paragraph, Stack, XStack, YStack } from '../base'
-import { HeroIcons } from '../content'
+import { Heading, Paragraph, Stack, XStack, YStack } from '../../../ui/src/base'
+import { HeroIcons } from '../../../ui/src/content'
+import { useScaleAnimation } from '../../../ui/src/hooks'
 
 const interactionIcons = {
   received: HeroIcons.CreditCard,
   shared: HeroIcons.Interaction,
 }
 
-const title = {
+export const activityTitleMap = {
   received: 'Received credential',
   shared: 'Shared data',
 }
 
-export function ActivityRowItem({
-  id,
-  subtitle,
-  date,
-  type = 'shared',
-}: { id: string; title: string; subtitle: string; date: Date; type?: 'shared' | 'received' }) {
+interface ActivityRowItemProps {
+  id: string
+  subtitle: string
+  date: Date
+  type: ActivityType
+}
+
+export function ActivityRowItem({ id, subtitle, date, type = 'shared' }: ActivityRowItemProps) {
   const router = useRouter()
   const Icon = interactionIcons[type]
-  const Title = title[type]
+  const Title = activityTitleMap[type]
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
@@ -32,7 +35,7 @@ export function ActivityRowItem({
       <XStack
         gap="$4"
         w="100%"
-        onPress={() => router.push(`/activity/${id}`)}
+        // onPress={() => router.push(`/activity/${id}`)}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >

@@ -1,4 +1,3 @@
-import { useScaleAnimation } from '@package/app'
 import { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import Animated, {
@@ -14,6 +13,7 @@ import { Circle } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 import { Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons, Image } from '../content'
+import { useScaleAnimation } from '../hooks'
 
 export interface IdCardProps {
   icon?: keyof typeof iconMapping

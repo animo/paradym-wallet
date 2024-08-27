@@ -46,9 +46,7 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
       <Sheet.Overlay bc="#00000033" animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
       <Sheet.Frame width="90%" justifyContent="flex-end" backgroundColor="transparent" alignSelf="center" bottom="5%">
         <YStack height={400} borderRadius="$8" backgroundColor="$white" overflow="hidden">
-          {/* I don't understand tamagui sometimes. IT DOES NOT PICK UP THE $primary-100 here, but
-            primary-500 does work fine. So we extract it from the theme :( */}
-          <XStack backgroundColor="#dbe9fe" height={175} justifyContent="center" alignItems="center">
+          <XStack backgroundColor="$primary-100" height={175} justifyContent="center" alignItems="center">
             <AnimatedNfcScanIcon
               icon={scanningState === 'readyToScan' || scanningState === 'scanning' ? 'scan' : scanningState}
               scanAnimated={scanningState === 'readyToScan'}

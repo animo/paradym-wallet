@@ -9,7 +9,9 @@ import {
   Stack,
   XStack,
   YStack,
+  useScaleAnimation,
 } from '@package/ui'
+import { useToastController } from '@package/ui'
 import { Image } from '@tamagui/image'
 import type React from 'react'
 import { useState } from 'react'
@@ -22,8 +24,23 @@ export interface OnboardingWelcomeProps {
   goToNextStep: (selectedFlow: 'c' | 'bprime') => void
 }
 
+const readableFlow = {
+  c: 'C',
+  bprime: "B'",
+}
+
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
+  const toast = useToastController()
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
+
+  const onPressFlow = () => {
+    const newFlow = selectedFlow === 'c' ? 'bprime' : 'c'
+    setSelectedFlow(newFlow)
+    toast.show(`${readableFlow[newFlow]} flow activated!`, {
+      type: 'info',
+      message: `You are now using the ${readableFlow[newFlow]} flow.`,
+    })
+  }
 
   return (
     <Animated.View style={{ flexGrow: 1 }} layout={FadingTransition}>
@@ -54,7 +71,10 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             <Stack
               p="$2"
               onPress={() => {
-                Alert.alert('Help!')
+                Alert.alert(
+                  'This is the EasyPID wallet',
+                  `\nThis is your digital wallet. With it, you can store and share information about yourself. \n\n You can switch between the C and B' flow by pressing the grey button in the bottom left.`
+                )
               }}
             >
               <HeroIcons.QuestionMarkCircle color="$grey-900" />
@@ -69,20 +89,17 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </YStack>
           <XStack gap="$2">
             <Button.Outline
-              p="$0"
+              scaleOnPress
+              fg={0}
               width="$buttonHeight"
               bg="$grey-100"
+              color="$grey-900"
               borderColor="$grey-200"
-              pressStyle={{
-                bg: '$grey-200',
-              }}
-              onPress={() => setSelectedFlow((selectedFlow) => (selectedFlow === 'c' ? 'bprime' : 'c'))}
+              onPress={onPressFlow}
             >
-              <Heading variant="h2" fontWeight="bold">
-                {selectedFlow === 'c' ? 'C' : "B'"}
-              </Heading>
+              <Paragraph fontWeight="$semiBold">{selectedFlow === 'c' ? 'C' : "B'"}</Paragraph>
             </Button.Outline>
-            <Button.Solid flexGrow={1} onPress={() => goToNextStep(selectedFlow)}>
+            <Button.Solid flexGrow={1} scaleOnPress onPress={() => goToNextStep(selectedFlow)}>
               Get Started
             </Button.Solid>
           </XStack>

@@ -27,7 +27,11 @@ export function OnboardingIdCardScan({
         </YStack>
 
         <Stack flex-1 justifyContent="flex-end">
-          {onStartScanning && <Button.Solid onPress={onStartScanning}>Start scanning</Button.Solid>}
+          {onStartScanning && (
+            <Button.Solid scaleOnPress onPress={onStartScanning}>
+              Start scanning
+            </Button.Solid>
+          )}
         </Stack>
       </Stack>
       {Platform.OS === 'android' && (

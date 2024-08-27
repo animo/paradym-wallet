@@ -1,0 +1,1 @@
+export { useScaleAnimation } from './useScaleAnimation'

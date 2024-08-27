@@ -20,7 +20,9 @@ export function OnboardingIdCardRequestedAttributes({
         issuerImage={germanIssuerImage}
       />
       <Stack>
-        <Button.Solid onPress={goToNextStep}>Continue</Button.Solid>
+        <Button.Solid scaleOnPress onPress={goToNextStep}>
+          Continue
+        </Button.Solid>
       </Stack>
     </Stack>
   )

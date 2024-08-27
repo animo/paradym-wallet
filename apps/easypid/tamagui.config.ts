@@ -34,7 +34,7 @@ const tokens = createTokens({
     'grey-800': '#464B56',
     'grey-900': '#282C37',
     'primary-50': '#F1F4FD',
-    'primary-100': '#DFE7FA ',
+    'primary-100': '#DFE7FA',
     'primary-200': '#C6D4F7',
     'primary-300': '#9FB9F1',
     'primary-400': '#7294E8',

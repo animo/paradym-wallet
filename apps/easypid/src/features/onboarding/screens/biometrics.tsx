@@ -25,7 +25,7 @@ export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBio
       <IllustrationContainer>
         <HeroIcons.FingerPrint color="$grey-100" size={72} />
       </IllustrationContainer>
-      <Button.Solid disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
+      <Button.Solid fg={1} scaleOnPress disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
         {isLoading ? <Spinner variant="dark" /> : actionText}
       </Button.Solid>
     </YStack>
