@@ -554,7 +554,7 @@ export function OnboardingContextProvider({
       await resetWallet(secureUnlock)
     }
 
-    // TODO: if we already have the agent, we should either remove the wallet and start again,
+    // TODO: if we already have the agent, we should either remove the wallet and start again
     // or we need to start from the id card flow
     setCurrentStepName(resetToStep)
 
