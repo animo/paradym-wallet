@@ -9,15 +9,15 @@ import {
   Stack,
   XStack,
   YStack,
-  useScaleAnimation,
 } from '@package/ui'
 import { useToastController } from '@package/ui'
 import { Image } from '@tamagui/image'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 import Animated, { FadingTransition } from 'react-native-reanimated'
 
+import { generateKeypair } from '@animo-id/expo-secure-environment'
 import inAppLogo from '../../../../assets/icon.png'
 
 export interface OnboardingWelcomeProps {
@@ -32,6 +32,7 @@ const readableFlow = {
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
   const toast = useToastController()
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
+  const [isBlockedByHsm, setIsBlockedByHsm] = useState(false)
 
   const onPressFlow = () => {
     const newFlow = selectedFlow === 'c' ? 'bprime' : 'c'
@@ -41,6 +42,18 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
       message: `You are now using the ${readableFlow[newFlow]} flow.`,
     })
   }
+
+  useEffect(() => {
+    try {
+      generateKeypair('123', false)
+    } catch (error) {
+      setIsBlockedByHsm(true)
+      Alert.alert(
+        'Your device is not supported',
+        'This device does not have a secure enclave. This is required as an additional layer of security for your digital identity. Unfortunately, this means you are unable to use the EasyPID wallet with this device.'
+      )
+    }
+  }, [])
 
   return (
     <Animated.View style={{ flexGrow: 1 }} layout={FadingTransition}>
@@ -99,7 +112,22 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             >
               <Paragraph fontWeight="$semiBold">{selectedFlow === 'c' ? 'C' : "B'"}</Paragraph>
             </Button.Outline>
-            <Button.Solid flexGrow={1} scaleOnPress onPress={() => goToNextStep(selectedFlow)}>
+            <Button.Solid
+              opacity={isBlockedByHsm ? 0.8 : 1}
+              flexGrow={1}
+              scaleOnPress={!isBlockedByHsm}
+              onPress={() => {
+                if (isBlockedByHsm) {
+                  toast.show('Your device is not supported', {
+                    type: 'error',
+                    message:
+                      'Your device does not have a secure enclave. This is required as an additional layer of security for your digital identity.',
+                  })
+                } else {
+                  goToNextStep(selectedFlow)
+                }
+              }}
+            >
               Get Started
             </Button.Solid>
           </XStack>

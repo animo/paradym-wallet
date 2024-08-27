@@ -107,7 +107,7 @@ export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, sma
           <XStack justifyContent="flex-start" alignItems="flex-end">
             {IconComponent ? (
               <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
-                <Circle size={small ? '$1' : '$3'} backgroundColor="$grey-900" opacity={0.25}>
+                <Circle size={small ? '$1' : '$3'} backgroundColor="#282C3740">
                   <IconComponent color="$white" size={small ? 12 : 24} />
                 </Circle>
               </Animated.View>
