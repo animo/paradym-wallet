@@ -16,6 +16,9 @@ With Paradym Wallet, you can seamlessly manage and present your digital credenti
 
 <p align="center"><i>Impression of Paradym Wallet</i></p>
 
+> **Note:** 
+> To read more about the Animo EasyPID EUDI wallet prototype, look in the [EasyPID app directory](apps/easypid).
+
 ## Try it out
 
 You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
