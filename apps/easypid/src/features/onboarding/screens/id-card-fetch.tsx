@@ -21,7 +21,7 @@ export function OnboardingIdCardFetch({ goToNextStep, userName }: OnboardingIdCa
       <Stack>
         {userName && (
           <Animated.View entering={FadeIn} layout={LinearTransition}>
-            <Button.Solid onPress={goToNextStep}>
+            <Button.Solid scaleOnPress onPress={goToNextStep}>
               Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
             </Button.Solid>
           </Animated.View>

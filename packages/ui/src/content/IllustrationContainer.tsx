@@ -2,6 +2,8 @@ import { LinearGradient } from 'tamagui/linear-gradient'
 import { Stack, YStack } from '../base'
 import { RippleCircle } from './AnimatedFingerPrintCircle'
 
+type IllustrationContainerVariant = 'feature' | 'danger'
+
 export function IllustrationContainerBackground() {
   return (
     <LinearGradient
@@ -23,18 +25,16 @@ export function IllustrationContainerBackground() {
 export function IllustrationContainer({
   children,
   pulse,
-  variant = 'normal',
-}: {
-  children: React.ReactNode
-  pulse?: boolean
-  variant?: 'normal' | 'danger'
-}) {
+  variant = 'feature',
+}: { children: React.ReactNode; pulse?: boolean; variant?: IllustrationContainerVariant }) {
+  const bgColor = variant === 'feature' ? '#D5DDF0CC' : '#F8E5ECCC'
+
   return (
-    <Stack bg="#D5DDF0CC" br="$4" overflow="hidden">
+    <Stack bg={bgColor} br="$4" overflow="hidden">
       <IllustrationContainerBackground />
       <YStack h="$15" jc="center" ai="center">
         {pulse && <RippleCircle />}
-        <CircleContainer>{children}</CircleContainer>
+        <CircleContainer variant={variant}>{children}</CircleContainer>
       </YStack>
     </Stack>
   )
@@ -42,12 +42,14 @@ export function IllustrationContainer({
 
 export const CircleContainer = ({
   children,
-}: {
-  children: React.ReactNode
-}) => {
+  variant = 'feature',
+}: { children: React.ReactNode; variant?: IllustrationContainerVariant }) => {
+  const bgColor = variant === 'feature' ? '#4365DE33' : '#E5598633'
+  const innerBgColor = variant === 'feature' ? '#4365DE99' : '#E5598699'
+
   return (
-    <Stack h={156} w={156} bg="#4365DE33" br={999} jc="center" ai="center">
-      <Stack h={124} w={124} bg="#4365DE99" br={999} jc="center" ai="center">
+    <Stack h={156} w={156} bg={bgColor} br={999} jc="center" ai="center">
+      <Stack h={124} w={124} bg={innerBgColor} br={999} jc="center" ai="center">
         <LinearGradient
           colors={['#ffffff0D', '#FFFFFFCC', '#ffffff0D']}
           style={{

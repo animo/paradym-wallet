@@ -1,9 +1,11 @@
 import { type EasyPIDAppAgent, getWalletJsonStore, useWalletJsonRecord } from '@package/agent'
 import { useMemo } from 'react'
 
+export type ActivityType = 'shared' | 'received'
+
 interface Activity {
   id: string
-  type: 'shared' | 'received'
+  type: ActivityType
   date: string
 
   disclosedPayload?: Record<string, unknown>

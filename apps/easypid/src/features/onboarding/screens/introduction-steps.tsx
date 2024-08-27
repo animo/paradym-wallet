@@ -32,7 +32,7 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
         <Paragraph variant="sub" color="$grey-600" fontWeight="$medium" textAlign="center">
           You'll need your eID card to setup the wallet
         </Paragraph>
-        <Button.Solid alignSelf="stretch" onPress={goToNextStep}>
+        <Button.Solid scaleOnPress alignSelf="stretch" onPress={goToNextStep}>
           Continue
         </Button.Solid>
       </YStack>

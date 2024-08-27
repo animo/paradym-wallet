@@ -39,11 +39,11 @@ const config = {
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
   androidStatusBar: {
-    backgroundColor: '#00000000',
+    backgroundColor: '#F2F4F6',
     barStyle: 'light-content',
   },
   androidNavigationBar: {
-    backgroundColor: '#2445CD',
+    backgroundColor: '#F2F4F6',
   },
   splash: {
     image: './assets/splash.png',

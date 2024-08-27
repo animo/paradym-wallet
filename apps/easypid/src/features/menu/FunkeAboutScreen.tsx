@@ -13,7 +13,7 @@ export function FunkeAboutScreen() {
         <YStack gap="$4" p="$4">
           <Stack h="$1" />
           <Heading variant="title" fontWeight="$bold">
-            About
+            About the wallet
           </Heading>
         </YStack>
       </YStack>

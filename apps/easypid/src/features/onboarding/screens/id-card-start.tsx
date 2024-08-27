@@ -23,7 +23,7 @@ export function OnboardingIdCardStart({ goToNextStep }: OnboardingIdCardStartSca
         <IdCardImage height={52} width={256} />
       </IllustrationContainer>
       <Stack flex-1 justifyContent="flex-end">
-        <Button.Solid disabled={isLoading} onPress={onContinue}>
+        <Button.Solid scaleOnPress disabled={isLoading} onPress={onContinue}>
           {isLoading ? <Spinner variant="dark" /> : 'Continue'}
         </Button.Solid>
       </Stack>
