@@ -386,6 +386,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       },
       attributes: mapped.visibleProperties,
       metadata: mapped.metadata,
+      claimFormat: ClaimFormat.SdJwtVc,
     }
   }
   if (credentialRecord instanceof MdocRecord) {
@@ -411,6 +412,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
         issuer: 'Unknown',
         type: mdocInstance.docType,
       } satisfies CredentialMetadata,
+      claimFormat: ClaimFormat.MsoMdoc,
     }
   }
 
@@ -447,5 +449,6 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
         ? new Date(credentialRecord.credential.expirationDate)
         : undefined,
     } as CredentialMetadata,
+    claimFormat: credentialRecord.credential.claimFormat,
   }
 }

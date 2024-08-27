@@ -25,6 +25,7 @@ export interface FormattedSubmissionEntry {
     disclosedPayload?: Record<string, unknown>
     metadata?: CredentialMetadata
     backgroundColor?: string
+    claimFormat: ClaimFormat | 'AnonCreds'
   }>
 }
 
@@ -40,7 +41,9 @@ export function formatDifPexCredentialsForRequest(
         isSatisfied: submission.verifiableCredentials.length >= 1,
 
         credentials: submission.verifiableCredentials.map((verifiableCredential) => {
-          const { display, attributes, metadata } = getCredentialForDisplay(verifiableCredential.credentialRecord)
+          const { display, attributes, metadata, claimFormat } = getCredentialForDisplay(
+            verifiableCredential.credentialRecord
+          )
 
           let disclosedPayload = attributes
           if (verifiableCredential.type === ClaimFormat.SdJwtVc) {
@@ -59,6 +62,7 @@ export function formatDifPexCredentialsForRequest(
             disclosedPayload,
             metadata,
             backgroundColor: display.backgroundColor,
+            claimFormat,
           }
         }),
       }
