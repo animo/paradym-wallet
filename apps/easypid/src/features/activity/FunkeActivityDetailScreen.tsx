@@ -1,4 +1,4 @@
-import { FlexPage, Heading, ScrollView, Stack, YStack } from '@package/ui'
+import { FlexPage, Heading, IdCard, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
 import React from 'react'
 import { createParam } from 'solito'
 
@@ -6,6 +6,7 @@ import { CredentialAttributes, TextBackButton, activityTitleMap } from '@package
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
+import germanIssuerImage from '../../../assets/german-issuer-image.png'
 import { useActivities } from './activityRecord'
 
 const { useParams } = createParam<{ id: string }>()
@@ -30,44 +31,35 @@ export function FunkeActivityDetailScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   return (
-    <FlexPage gap="$0" safeArea="t" paddingHorizontal="$0">
-      <YStack w="100%" top={0} borderBottomWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'}>
-        <YStack gap="$4" p="$4">
-          <Stack h="$1" />
-          <Heading variant="title" fontWeight="$bold">
-            {activityTitleMap[activity.type]}
-          </Heading>
-        </YStack>
-      </YStack>
-      <ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={scrollEventThrottle}
-        contentContainerStyle={{ minHeight: '90%' }}
-      >
-        <YStack g="xl" fg={1} px="$4" pb="$4" jc="space-between" marginBottom={bottom}>
-          <CredentialAttributes
-            // @TimoGlastra add attributes here
-            subject={{
-              Address: {},
-              'Age over': { '21': true },
-              'Credential Information': {
-                credentialType: 'urn:eu.europa.ec.eudi:pid:1',
-                expiresAt: '9/9/2024, 17:18:27',
-                issuedAt: '26/8/2024, 17:18:27',
-                issuer: 'https://demo.pid-issuer.bundesdruckerei.de/c',
-                issuing_authority: 'DE',
-                issuing_country: 'DE',
-              },
-              'Family name': 'MUSTERMANN',
-              'Given name': 'ERIKA',
-              'Place of birth': {},
-            }}
-            headerTitle="Attributes"
-            headerStyle="small"
-          />
+    <YStack bg="$background" height="100%">
+      <Spacer size="$13" />
+      <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
+      <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <YStack g="xl" p="$4" marginBottom={bottom}>
+          {activity.disclosedPayload ? (
+            <>
+              <IdCard small issuerImage={germanIssuerImage} />
+
+              <Stack g="md">
+                <Heading variant="title">{activityTitleMap[activity.type]}</Heading>
+                <Paragraph color="$grey-700">
+                  You have shared this data with {activity.entityName ?? activity.entityHost} on{' '}
+                  {new Date(activity.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                  .
+                </Paragraph>
+              </Stack>
+              <CredentialAttributes subject={activity.disclosedPayload} headerTitle="Attributes" headerStyle="small" />
+            </>
+          ) : (
+            <Paragraph>Disclosed information could not be shown.</Paragraph>
+          )}
           <TextBackButton />
         </YStack>
       </ScrollView>
-    </FlexPage>
+    </YStack>
   )
 }
