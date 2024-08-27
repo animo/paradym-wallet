@@ -132,11 +132,14 @@ The following section lists the software components used to create the EasyPID w
 
 The following standards and specifications were implemented.
 
-- [OpenID for Verifiable Credential Issuance - ID 1 / Draft 13](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html)
-- [OpenID for Verifiable Presentations - Draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0-20.html)
-- [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
-- [Self-Issued OpenID Provider V2 - Draft 13](https://openid.net/specs/openid-connect-self-issued-v2-1_0-13.html)
-- [ISO 18013-5](https://www.iso.org/standard/69084.html)
-- [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
-- [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
-- ❌ [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
+- 🟢 [OpenID for Verifiable Credential Issuance - ID 1 / Draft 13](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html)
+- 🟢[OpenID for Verifiable Presentations - Draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0-20.html)
+- 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
+- 🟢 [Self-Issued OpenID Provider V2 - Draft 13](https://openid.net/specs/openid-connect-self-issued-v2-1_0-13.html)
+- 🟡 [ISO 18013-5](https://www.iso.org/standard/69084.html)
+  - Missing deviceSigned signing and verification
+- 🟡 [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
+  - Missing JWT Secured Authorization Response Mode
+- 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
+  - Missing verifier_attestation, `haip://` scheme and wallet attestation
+- 🔴 [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
