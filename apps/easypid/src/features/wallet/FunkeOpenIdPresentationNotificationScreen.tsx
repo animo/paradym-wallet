@@ -11,7 +11,11 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
 import { ClaimFormat, utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
-import { PidIssuerPinInvalidError, requestSdJwtVcFromSeedCredential } from '@easypid/crypto/bPrime'
+import {
+  PidIssuerPinInvalidError,
+  PidIssuerPinLockedError,
+  requestSdJwtVcFromSeedCredential,
+} from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { GettingInformationScreen } from '@package/app/src/features/notifications/components/GettingInformationScreen'
 import { activityStorage } from '../activity/activityRecord'
@@ -147,6 +151,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       .catch((error) => {
         if (error instanceof PidIssuerPinInvalidError) {
           router.setParams({ pinResult: 'error', pin: undefined })
+          return
+        }
+
+        if (error instanceof PidIssuerPinLockedError) {
+          router.push('pinLocked')
           return
         }
 

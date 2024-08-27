@@ -9,12 +9,26 @@ export function IllustrationContainerBackground() {
       locations={[0, 0.2, 0.46, 0.67, 0.79, 0.92, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={{ flex: 1, opacity: 0.25, height: '100%', width: '100%', position: 'absolute' }}
+      style={{
+        flex: 1,
+        opacity: 0.25,
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+      }}
     />
   )
 }
 
-export function IllustrationContainer({ children, pulse }: { children: React.ReactNode; pulse?: boolean }) {
+export function IllustrationContainer({
+  children,
+  pulse,
+  variant = 'normal',
+}: {
+  children: React.ReactNode
+  pulse?: boolean
+  variant?: 'normal' | 'danger'
+}) {
   return (
     <Stack bg="#D5DDF0CC" br="$4" overflow="hidden">
       <IllustrationContainerBackground />
@@ -26,7 +40,11 @@ export function IllustrationContainer({ children, pulse }: { children: React.Rea
   )
 }
 
-export const CircleContainer = ({ children }: { children: React.ReactNode }) => {
+export const CircleContainer = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   return (
     <Stack h={156} w={156} bg="#4365DE33" br={999} jc="center" ai="center">
       <Stack h={124} w={124} bg="#4365DE99" br={999} jc="center" ai="center">
