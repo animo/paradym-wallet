@@ -3,7 +3,7 @@ import type { SdJwtVcHeader } from '@credo-ts/core'
 import { MdocRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
-import { ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
+import { PinPossiblyReusedError, ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -507,10 +507,12 @@ export function OnboardingContextProvider({
     resetToStep = 'welcome',
     error,
     showToast = true,
+    toastMessage = 'Please try again.',
   }: {
     error?: unknown
     resetToStep: OnboardingStep['step']
     showToast?: boolean
+    toastMessage?: string
   }) => {
     if (error) console.error(error)
 
@@ -557,7 +559,7 @@ export function OnboardingContextProvider({
 
     if (showToast) {
       toast.show('Error occurred during onboarding', {
-        message: 'Please try again.',
+        message: toastMessage,
         customData: {
           preset: 'danger',
         },
@@ -643,7 +645,11 @@ export function OnboardingContextProvider({
         await retrieveCredential()
       }
     } catch (error) {
-      await reset({ resetToStep: 'id-card-pin', error })
+      if (error instanceof PinPossiblyReusedError) {
+        await reset({ resetToStep: 'pin', error, toastMessage: 'Are you using a unique PIN?' })
+      } else {
+        await reset({ resetToStep: 'id-card-pin', error })
+      }
     }
   }
 
