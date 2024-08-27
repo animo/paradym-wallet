@@ -4,13 +4,11 @@
 
 <h1 align="center"><b>Animo EasyPID</b></h1>
 
-This app is an implementation of a mobile EUDI wallet protoype.
-
 This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers. For more information on the project reach out to <ana@animo.id>.
 
 During the project an identity wallet and a test relying party was delivered.
 
-The identity wallet contains the following features:
+The identity wallet contains the following features, you can see the full flow without running the app in the [Figma design](https://www.figma.com/proto/gBBLERk7lkE27bw8Vm3es4/Funke?show-proto-sidebar=1):
 
 - Onboard user
 - Set up PIN
@@ -27,7 +25,6 @@ The identity wallet contains the following temporary features for development an
 - Switch between C and B' PID flow
 - Reset wallet
 
-
  <div align="center">
   <img src="assets/screen1.png" width="30%" />
   <img src="assets/screen2.png" width="30%" /> 
@@ -38,7 +35,7 @@ The identity wallet contains the following temporary features for development an
 
 ## Install
 
-
+The prototype app is currently pusblished privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app. If not, please reach out to us at ana@animo.id.
 
 ## Try it out
 
@@ -143,46 +140,3 @@ The following standards and specifications were implemented.
 - [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
 - [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
 - ❌ [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
-
-## 🏁 Start a wallet
-
-<!-- First, start by installing all dependencies by running `pnpm install`.
-
-Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device.
-You can install this using the following commands:
-
-```sh
-cd apps/easypid
-pnpm prebuild
-pnpm ios # or android
-```
-
-You only need to install the development build when **native** dependencies change. If you're only working on JS, you can skip this step if you already have the development build installed.
-
-Once installed you can run `pnpm start` from the root of the project to start your development server. -->
-
-<!-- ## 🆕 Add new dependencies
-
-### Pure JS dependencies
-
-If you're installing a JavaScript-only dependency that will be used across platforms, install it in `packages/app`:
-
-```sh
-cd packages/app
-pnpm add date-fns
-cd ../..
-pnpm
-```
-
-### Native dependencies
-
-If you're installing a library with any native code, you must install it in `expo`:
-
-```sh
-cd apps/paradym
-pnpm add react-native-reanimated
-cd ..
-pnpm
-```
-
-You can also install the native library inside of `packages/app` if you want to get autoimport for that package inside of the `app` folder. However, you need to be careful and install the _exact_ same version in both packages. If the versions mismatch at all, you'll potentially get terrible bugs. This is a classic monorepo issue. You can use `lerna-update-wizard` to help with this (you don't need to use Lerna to use that lib). -->
