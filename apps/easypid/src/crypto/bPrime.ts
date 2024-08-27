@@ -400,7 +400,7 @@ export const requestSdJwtVcFromSeedCredential = async ({
       ...tokenResponse,
       // @ts-ignore
       additionalCredentialRequestPayloadClaims: {
-        verifier_ka: rpEphPub.jwk,
+        verifier_ka: rpEphPub,
       },
       clientId: ReceivePidUseCaseFlow.CLIENT_ID,
       getCreateJwtCallback: getCreateJwtCallbackForBPrime,
