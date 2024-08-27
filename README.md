@@ -10,7 +10,7 @@ With Paradym Wallet, you can seamlessly manage and present your digital credenti
 
 <div align="center">
   <img src="assets/ios-1.jpg" width="30%" />
-  <img src="assets/ios-2.jpg" width="30%" /> 
+  <img src="assets/ios-2.jpg" width="30%" />
   <img src="assets/ios-3.jpg" width="30%" />
 </div>
 
