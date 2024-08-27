@@ -2,6 +2,7 @@ import { Redirect } from 'expo-router'
 
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { FlexPage, Heading, HeroIcons, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
@@ -33,6 +34,7 @@ export default function Authenticate() {
     setIsInitializingAgent(true)
     initializeAppAgent({
       walletKey: secureUnlock.walletKey,
+      walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
     })
       .then((agent) => secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true }))
       .catch((error) => {

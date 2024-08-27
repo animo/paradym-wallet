@@ -1,9 +1,12 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import { MMKV, useMMKVNumber } from 'react-native-mmkv'
 import { WalletUnlockError } from '../error/WalletUnlockError'
 import { kdf } from '../kdf'
 import { walletKeySaltStore } from './walletKeySaltStore'
 import { walletKeyStore } from './walletKeyStore'
+
+const mmkv = new MMKV()
 
 async function getWalletKeyUsingPin(pin: string, version: number) {
   const salt = await walletKeySaltStore.getSalt(version)
@@ -20,11 +23,23 @@ async function getWalletKeyUsingPin(pin: string, version: number) {
   return walletKey
 }
 
+export function useWalletKeyVersion() {
+  return useMMKVNumber('walletKeyVersion', mmkv)
+}
+
+export function getWalletKeyVersion() {
+  return mmkv.getNumber('walletKeyVersion') ?? 1
+}
+
+export function setWalletKeyVersion(version: number) {
+  mmkv.set('walletKeyVersion', version)
+}
+
 export const secureWalletKey = {
   getWalletKeyUsingPin,
   ...walletKeyStore,
   ...walletKeySaltStore,
 
-  // TODO: how to version
-  walletKeyVersion: 1,
+  getWalletKeyVersion,
+  setWalletKeyVersion,
 }

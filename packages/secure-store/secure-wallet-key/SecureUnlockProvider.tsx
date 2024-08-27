@@ -81,7 +81,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
 
   useQuery({
     queryFn: async () => {
-      const salt = await secureWalletKey.getSalt(secureWalletKey.walletKeyVersion)
+      const salt = await secureWalletKey.getSalt(secureWalletKey.getWalletKeyVersion())
       // TODO: is salt the best way to test this?
 
       // We have two params. If e.g. unlocking using biometrics failed, we will
@@ -135,7 +135,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         // TODO: need extra option to know whether user wants to use biometrics?
         // TODO: do we need to check whether already stored?
         if (canUseBiometrics && options.enableBiometrics) {
-          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.walletKeyVersion)
+          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
         }
       },
     }
@@ -174,7 +174,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         setCanTryUnlockingUsingBiometrics(false)
         setBiometricsUnlockAttempts((attempts) => attempts + 1)
         try {
-          const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.walletKeyVersion)
+          const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
           if (walletKey) {
             setWalletKey(walletKey)
             setUnlockMethod('biometrics')
@@ -200,7 +200,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       unlockUsingPin: async (pin: string) => {
         setIsUnlocking(true)
         try {
-          const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.walletKeyVersion)
+          const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
 
           setWalletKey(walletKey)
           setUnlockMethod('pin')
@@ -219,8 +219,8 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       state,
       reinitialize,
       setup: async (pin) => {
-        await secureWalletKey.createAndStoreSalt(true, secureWalletKey.walletKeyVersion)
-        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.walletKeyVersion)
+        await secureWalletKey.createAndStoreSalt(true, secureWalletKey.getWalletKeyVersion())
+        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
 
         setWalletKey(walletKey)
         setUnlockMethod('pin')
