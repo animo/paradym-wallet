@@ -3347,7 +3347,7 @@ packages:
     engines: {node: '>= 8'}
 
   '@sphereon/did-auth-siop@file:sphereon-did-auth-siop-0.16.0.tgz':
-    resolution: {integrity: sha512-ClSggF0NJ5zFOr6pLhi6cJs08QPqJFUb3+p+Cn0K+68HcMfUWt0/d6fKAOokV2GK6lF9QWHjIAzSbagKgqFDNw==, tarball: file:sphereon-did-auth-siop-0.16.0.tgz}
+    resolution: {integrity: sha512-iEv/LId86l2LWl+JdT7oS5/ymnv0iLn39ujsTRTw7xTZXkkSUOSuIC/FzY5flEmZJuVuibOdeFyYE3CtKm0Y3Q==, tarball: file:sphereon-did-auth-siop-0.16.0.tgz}
     version: 0.16.0
     engines: {node: '>=18'}
 
