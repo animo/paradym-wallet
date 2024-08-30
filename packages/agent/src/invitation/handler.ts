@@ -20,6 +20,7 @@ import type {
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
 import type { EasyPIDAppAgent, EitherAgent, FullAppAgent } from '../agent'
+import { Linking } from 'react-native'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -597,6 +598,12 @@ export const shareProof = async ({
         },
       })
     )
+
+    // if redirect_uri is provided, open it in the browser
+    // Even if the response returned an error, we must open this uri
+    if (typeof result.serverResponse.body === 'object' && typeof result.serverResponse.body.redirect_uri === 'string') {
+      await Linking.openURL(result.serverResponse.body.redirect_uri)
+    }
 
     if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
       throw new Error(`Error while accepting authorization request. ${result.serverResponse.body as string}`)
