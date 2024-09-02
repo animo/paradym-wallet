@@ -143,3 +143,9 @@ The following standards and specifications were implemented.
 - 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
   - Missing verifier_attestation, `haip://` scheme and wallet attestation
 - 🔴 [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
+
+## Changelog
+
+### 02-09-2024
+
+- Redeployed test relying party to add a "Open in Wallet" button for same device flow ([commit](https://github.com/animo/openid4vc-playground-funke/commit/9a839521e8d70aaf92b7fa03fa037fc866644ad0))
