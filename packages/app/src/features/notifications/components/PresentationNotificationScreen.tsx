@@ -66,7 +66,7 @@ export function PresentationNotificationScreen({
       <ScrollView
         bg="$background"
         contentContainerStyle={{
-          minHeight: '90%',
+          minHeight: '100%',
         }}
         safeAreaBottom={bottom}
       >
@@ -107,7 +107,8 @@ export function PresentationNotificationScreen({
                               bgColor={selectedCredential?.backgroundColor}
                             />
                           </Stack>
-                          <Stack
+                          {/* // FIXME: disable credential selection until we have better UX */}
+                          {/* <Stack
                             pos="absolute"
                             right="$0"
                             p="$4"
@@ -115,7 +116,7 @@ export function PresentationNotificationScreen({
                             onPress={s.credentials.length > 1 ? () => setChangeSubmissionCredentialIndex(i) : undefined}
                           >
                             {s.credentials.length > 1 && <LucideIcons.RefreshCw color="$grey-500" />}
-                          </Stack>
+                          </Stack> */}
                         </XStack>
                         {s.description && (
                           <Paragraph secondary px="$3" variant="text">

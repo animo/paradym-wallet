@@ -29,7 +29,7 @@ export function CredentialNotificationScreen({
     <ScrollView
       bg="$background"
       contentContainerStyle={{
-        minHeight: '90%',
+        minHeight: '100%',
       }}
       safeAreaBottom={bottom}
     >
