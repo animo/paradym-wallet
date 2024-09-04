@@ -50,7 +50,7 @@ export function CredentialNotificationScreen({
           />
           <CredentialAttributes subject={attributes} />
         </YStack>
-        <DualResponseButtons onAccept={onAccept} onDecline={onDecline} isAccepting={isAccepting} />
+        <DualResponseButtons onAccept={onAccept} onDecline={onDecline} isLoading={isAccepting} />
       </YStack>
     </ScrollView>
   )

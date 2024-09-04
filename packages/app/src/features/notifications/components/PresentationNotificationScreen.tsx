@@ -147,7 +147,7 @@ export function PresentationNotificationScreen({
             </YStack>
           </YStack>
           {submission.areAllSatisfied ? (
-            <DualResponseButtons onAccept={onAccept} onDecline={onDecline} isAccepting={isAccepting} />
+            <DualResponseButtons onAccept={onAccept} onDecline={onDecline} isLoading={isAccepting} />
           ) : (
             <YStack gap="$4">
               <Paragraph variant="sub" ta="center">

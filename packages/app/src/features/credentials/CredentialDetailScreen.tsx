@@ -1,7 +1,17 @@
 import type { CredentialForDisplayId } from '@package/agent'
 
-import { useCredentialForDisplayById } from '@package/agent'
-import { Heading, LucideIcons, Paragraph, ScrollView, Sheet, Spacer, Stack, YStack } from '@package/ui'
+import { useAgent, useCredentialForDisplayById } from '@package/agent'
+import {
+  Heading,
+  LucideIcons,
+  Paragraph,
+  ScrollView,
+  Sheet,
+  Spacer,
+  Stack,
+  YStack,
+  useToastController,
+} from '@package/ui'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
@@ -18,9 +28,14 @@ export function CredentialDetailScreen() {
   const navigation = useNavigation()
   const { params } = useParams()
   const router = useRouter()
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const toast = useToastController()
   const { bottom } = useSafeAreaInsets()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  const { agent } = useAgent()
 
   useEffect(() => {
     navigation.setOptions({
@@ -42,6 +57,27 @@ export function CredentialDetailScreen() {
   if (!credentialForDisplay) return null
 
   const { attributes, display } = credentialForDisplay
+
+  const onDeleteCredential = async () => {
+    setIsLoading(true)
+
+    try {
+      if (params.id.startsWith('w3c-credential-')) {
+        const w3cCredentialId = params.id.replace('w3c-credential-', '')
+        await agent.w3cCredentials.removeCredentialRecord(w3cCredentialId)
+      } else {
+        const sdJwtVcId = params.id.replace('sd-jwt-vc-', '')
+        await agent.sdJwtVc.deleteById(sdJwtVcId)
+      }
+      toast.show('Credential deleted', { type: 'success' })
+      router.back()
+    } catch (error) {
+      toast.show('Error deleting credential', { type: 'error' })
+      console.error(error)
+    }
+
+    setIsLoading(false)
+  }
 
   return (
     <YStack bg="$background" height="100%">
@@ -72,11 +108,11 @@ export function CredentialDetailScreen() {
             </Paragraph>
           </Stack>
           <DualResponseButtons
+            isLoading={isLoading}
             variant="confirmation"
             acceptText="Delete credential"
             declineText="Cancel"
-            // TODO: add delete credential
-            onAccept={() => setIsSheetOpen(false)}
+            onAccept={onDeleteCredential}
             onDecline={() => setIsSheetOpen(false)}
           />
         </Stack>

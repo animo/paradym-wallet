@@ -186,7 +186,7 @@ export function FunkePresentationNotificationScreen({
                 declineText="Stop"
                 onAccept={onAccept}
                 onDecline={onDecline}
-                isAccepting={isAccepting}
+                isLoading={isAccepting}
               />
             ) : (
               <YStack gap="$3">
