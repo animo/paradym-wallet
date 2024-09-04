@@ -10,6 +10,7 @@
 		"prebuild": "APP_VARIANT=development pnpm expo prebuild --no-install"
 	},
 	"dependencies": {
+		"@animo-id/expo-secure-environment": "*",
 		"@hyperledger/anoncreds-react-native": "*",
 		"@hyperledger/aries-askar-react-native": "*",
 		"@hyperledger/indy-vdr-react-native": "*",
