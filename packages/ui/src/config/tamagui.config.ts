@@ -98,7 +98,7 @@ export const configInput = {
   themes: {
     light: {
       ...tokens.color,
-      tableBackgroundColor: tokens.color.background,
+      tableBackgroundColor: tokens.color.white,
       tableBorderColor: tokens.color['grey-200'],
     },
   },

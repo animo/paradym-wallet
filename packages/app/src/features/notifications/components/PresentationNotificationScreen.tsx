@@ -1,19 +1,19 @@
-import type BottomSheet from '@gorhom/bottom-sheet'
 import type { FormattedSubmission } from '@package/agent'
 
 import {
-  BottomSheetScrollView,
   Button,
   Heading,
+  LucideIcons,
   Paragraph,
   ScrollView,
   Sheet,
   Stack,
+  TableContainer,
   XStack,
   YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useNavigation } from 'expo-router'
@@ -38,6 +38,7 @@ export function PresentationNotificationScreen({
   selectedCredentials,
   onSelectCredentialForInputDescriptor,
 }: PresentationNotificationScreenProps) {
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [changeSubmissionCredentialIndex, setChangeSubmissionCredentialIndex] = useState(-1)
   const { bottom } = useSafeAreaInsets()
 
@@ -45,13 +46,12 @@ export function PresentationNotificationScreen({
     changeSubmissionCredentialIndex !== -1 ? submission.entries[changeSubmissionCredentialIndex] : undefined
 
   const navigation = useNavigation()
-  const ref = useRef<BottomSheet>(null)
 
   useEffect(() => {
     if (currentSubmissionEntry) {
-      ref.current?.expand()
+      setIsSheetOpen(true)
     } else {
-      ref.current?.close()
+      setIsSheetOpen(false)
     }
   }, [currentSubmissionEntry])
 
@@ -66,7 +66,7 @@ export function PresentationNotificationScreen({
       <ScrollView
         bg="$background"
         contentContainerStyle={{
-          minHeight: '100%',
+          minHeight: '90%',
         }}
         safeAreaBottom={bottom}
       >
@@ -96,9 +96,6 @@ export function PresentationNotificationScreen({
                       bg="$white"
                       gap="$2"
                       borderColor={s.isSatisfied ? '$grey-300' : '$danger-500'}
-                      // disable credential selection until we have better UX
-                      // onPress={s.credentials.length > 1 ? () => setChangeSubmissionCredentialIndex(i) : undefined}
-                      pressStyle={{ backgroundColor: s.isSatisfied ? '$grey-100' : undefined }}
                     >
                       <YStack gap="$2">
                         <XStack justifyContent="space-between" alignItems="center">
@@ -110,8 +107,15 @@ export function PresentationNotificationScreen({
                               bgColor={selectedCredential?.backgroundColor}
                             />
                           </Stack>
-                          {/* Disable credential selection until we have better UX */}
-                          {/* <Stack pr="$3">{s.credentials.length > 1 && <LucideIcons.RefreshCw color="$grey-600" />}</Stack> */}
+                          <Stack
+                            pos="absolute"
+                            right="$0"
+                            p="$4"
+                            pressStyle={{ opacity: 0.8 }}
+                            onPress={s.credentials.length > 1 ? () => setChangeSubmissionCredentialIndex(i) : undefined}
+                          >
+                            {s.credentials.length > 1 && <LucideIcons.RefreshCw color="$grey-500" />}
+                          </Stack>
                         </XStack>
                         {s.description && (
                           <Paragraph secondary px="$3" variant="text">
@@ -153,9 +157,18 @@ export function PresentationNotificationScreen({
           )}
         </YStack>
       </ScrollView>
-      <Sheet ref={ref} snapPoints={['40%']} onClose={() => setChangeSubmissionCredentialIndex(-1)}>
-        <BottomSheetScrollView>
-          <Stack bg="$white" pb="$4">
+      <Sheet
+        isOpen={isSheetOpen}
+        setIsOpen={setIsSheetOpen}
+        onOpenChange={() => {
+          setChangeSubmissionCredentialIndex(-1)
+        }}
+      >
+        <Stack bg="$grey-100" p="$4" gap="$4" pb={bottom}>
+          <Heading variant="h3" ta="center" py="$2">
+            Select the credential you want to use
+          </Heading>
+          <TableContainer>
             {currentSubmissionEntry?.credentials.map((c, credentialIndex) => (
               <CredentialRowCard
                 onPress={() => {
@@ -169,8 +182,8 @@ export function PresentationNotificationScreen({
                 bgColor={c.backgroundColor}
               />
             ))}
-          </Stack>
-        </BottomSheetScrollView>
+          </TableContainer>
+        </Stack>
       </Sheet>
     </>
   )

@@ -1,21 +1,36 @@
 import type { CredentialForDisplayId } from '@package/agent'
 
 import { useCredentialForDisplayById } from '@package/agent'
-import { ScrollView, Spacer, YStack } from '@package/ui'
-import React from 'react'
+import { Heading, LucideIcons, Paragraph, ScrollView, Sheet, Spacer, Stack, YStack } from '@package/ui'
+import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
-import { CredentialAttributes } from '../../components'
+import { useNavigation } from 'expo-router'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { CredentialAttributes, DualResponseButtons } from '../../components'
 import { CredentialCard } from '../../components'
 import { useScrollViewPosition } from '../../hooks'
 
 const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
 export function CredentialDetailScreen() {
+  const navigation = useNavigation()
   const { params } = useParams()
   const router = useRouter()
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const { bottom } = useSafeAreaInsets()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Stack px="$4" py="$2" onPress={() => setIsSheetOpen(true)} mr="$-4">
+          <LucideIcons.Trash2 color={isSheetOpen ? '$danger-600' : '$danger-500'} />
+        </Stack>
+      ),
+    })
+  }, [navigation, isSheetOpen])
 
   // Go back home if no id is provided
   if (!params.id) {
@@ -48,6 +63,24 @@ export function CredentialDetailScreen() {
           </YStack>
         </YStack>
       </ScrollView>
+      <Sheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
+        <Stack p="$4" gap="$6" pb={bottom}>
+          <Stack gap="$3">
+            <Heading variant="h1">Delete '{display.name}'?</Heading>
+            <Paragraph color="$grey-600">
+              This will make the credential unusable and delete it from your wallet.
+            </Paragraph>
+          </Stack>
+          <DualResponseButtons
+            variant="confirmation"
+            acceptText="Delete credential"
+            declineText="Cancel"
+            // TODO: add delete credential
+            onAccept={() => setIsSheetOpen(false)}
+            onDecline={() => setIsSheetOpen(false)}
+          />
+        </Stack>
+      </Sheet>
     </YStack>
   )
 }
