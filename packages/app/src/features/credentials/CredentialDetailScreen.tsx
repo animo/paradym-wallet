@@ -1,21 +1,51 @@
 import type { CredentialForDisplayId } from '@package/agent'
 
-import { useCredentialForDisplayById } from '@package/agent'
-import { ScrollView, Spacer, YStack } from '@package/ui'
-import React from 'react'
+import { deleteCredential, useAgent, useCredentialForDisplayById } from '@package/agent'
+import {
+  Heading,
+  LucideIcons,
+  Paragraph,
+  ScrollView,
+  Sheet,
+  Spacer,
+  Stack,
+  YStack,
+  useToastController,
+} from '@package/ui'
+import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
-import { CredentialAttributes } from '../../components'
+import { useNavigation } from 'expo-router'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { CredentialAttributes, DualResponseButtons } from '../../components'
 import { CredentialCard } from '../../components'
 import { useScrollViewPosition } from '../../hooks'
 
 const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
 export function CredentialDetailScreen() {
+  const navigation = useNavigation()
   const { params } = useParams()
   const router = useRouter()
+  const toast = useToastController()
+  const { bottom } = useSafeAreaInsets()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  const { agent } = useAgent()
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Stack px="$4" py="$2" onPress={() => setIsSheetOpen(true)} mr="$-4">
+          <LucideIcons.Trash2 color={isSheetOpen ? '$danger-600' : '$danger-500'} />
+        </Stack>
+      ),
+    })
+  }, [navigation, isSheetOpen])
 
   // Go back home if no id is provided
   if (!params.id) {
@@ -27,6 +57,21 @@ export function CredentialDetailScreen() {
   if (!credentialForDisplay) return null
 
   const { attributes, display } = credentialForDisplay
+
+  const onDeleteCredential = async () => {
+    setIsLoading(true)
+
+    try {
+      await deleteCredential(agent, params.id)
+      toast.show('Credential deleted', { type: 'success' })
+      router.back()
+    } catch (error) {
+      toast.show('Error deleting credential', { type: 'error' })
+      console.error(error)
+    }
+
+    setIsLoading(false)
+  }
 
   return (
     <YStack bg="$background" height="100%">
@@ -48,6 +93,24 @@ export function CredentialDetailScreen() {
           </YStack>
         </YStack>
       </ScrollView>
+      <Sheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
+        <Stack p="$4" gap="$6" pb={bottom}>
+          <Stack gap="$3">
+            <Heading variant="h1">Delete '{display.name}'?</Heading>
+            <Paragraph color="$grey-600">
+              This will make the credential unusable and delete it from your wallet.
+            </Paragraph>
+          </Stack>
+          <DualResponseButtons
+            isLoading={isLoading}
+            variant="confirmation"
+            acceptText="Delete credential"
+            declineText="Cancel"
+            onAccept={onDeleteCredential}
+            onDecline={() => setIsSheetOpen(false)}
+          />
+        </Stack>
+      </Sheet>
     </YStack>
   )
 }

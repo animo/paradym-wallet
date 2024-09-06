@@ -11,7 +11,6 @@
 		"storybook:generate": "sb-rn-get-stories --config-path .ondevice"
 	},
 	"dependencies": {
-		"@gorhom/bottom-sheet": "^4.6.3",
 		"@package/app": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@react-native-async-storage/async-storage": "1.23.1",

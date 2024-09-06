@@ -157,17 +157,9 @@ export default function HomeLayout() {
                 <Stack.Screen
                   options={{
                     headerShown: true,
-                    headerStyle: {
-                      backgroundColor: config.tokens.color.background.val,
-                    },
-                    headerShadowVisible: false,
+                    headerTransparent: true,
                     headerTintColor: config.tokens.color['primary-500'].val,
-                    headerTitle: 'Inbox',
-                    headerTitleAlign: 'center',
-                    headerTitleStyle: {
-                      fontWeight: isAndroid() ? '700' : '500', // Match font weight on android to native back button style
-                      fontSize: 18,
-                    },
+                    headerTitle: '',
                   }}
                   name="notifications/inbox"
                 />

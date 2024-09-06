@@ -81,7 +81,6 @@ export const initializeEasyPIDAgent = async ({
     modules: {
       ariesAskar: askarModule,
       openId4VcHolder: new OpenId4VcHolderModule(),
-      x509: new X509Module({}),
     },
   })
 

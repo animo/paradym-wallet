@@ -52,6 +52,7 @@ import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { deviceKeyPair } from '@easypid/storage/pidPin'
+import type { CredentialForDisplayId } from '../hooks'
 import {
   type OpenId4VcCredentialMetadata,
   extractOpenId4VcCredentialMetadata,
@@ -542,6 +543,19 @@ export async function storeCredential(
     await agent.dependencyManager.resolve(MdocRepository).save(agent.context, credentialRecord)
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
+  }
+}
+
+export async function deleteCredential(agent: EitherAgent, credentialId: CredentialForDisplayId) {
+  if (credentialId.startsWith('w3c-credential-')) {
+    const w3cCredentialId = credentialId.replace('w3c-credential-', '')
+    await agent.w3cCredentials.removeCredentialRecord(w3cCredentialId)
+  } else if (credentialId.startsWith('sd-jwt-vc')) {
+    const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
+    await agent.sdJwtVc.deleteById(sdJwtVcId)
+  } else if (credentialId.startsWith('mdoc-')) {
+    const mdocId = credentialId.replace('mdoc-', '')
+    await agent.mdoc.deleteById(mdocId)
   }
 }
 

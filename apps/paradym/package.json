@@ -1,6 +1,6 @@
 {
 	"name": "paradym-wallet",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"main": "index.ts",
 	"private": true,
 	"scripts": {
@@ -10,6 +10,7 @@
 		"prebuild": "APP_VARIANT=development pnpm expo prebuild --no-install"
 	},
 	"dependencies": {
+		"@animo-id/expo-secure-environment": "*",
 		"@hyperledger/anoncreds-react-native": "*",
 		"@hyperledger/aries-askar-react-native": "*",
 		"@hyperledger/indy-vdr-react-native": "*",
