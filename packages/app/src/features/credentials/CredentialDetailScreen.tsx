@@ -1,6 +1,6 @@
 import type { CredentialForDisplayId } from '@package/agent'
 
-import { useAgent, useCredentialForDisplayById } from '@package/agent'
+import { deleteCredential, useAgent, useCredentialForDisplayById } from '@package/agent'
 import {
   Heading,
   LucideIcons,
@@ -62,13 +62,7 @@ export function CredentialDetailScreen() {
     setIsLoading(true)
 
     try {
-      if (params.id.startsWith('w3c-credential-')) {
-        const w3cCredentialId = params.id.replace('w3c-credential-', '')
-        await agent.w3cCredentials.removeCredentialRecord(w3cCredentialId)
-      } else {
-        const sdJwtVcId = params.id.replace('sd-jwt-vc-', '')
-        await agent.sdJwtVc.deleteById(sdJwtVcId)
-      }
+      await deleteCredential(agent, params.id)
       toast.show('Credential deleted', { type: 'success' })
       router.back()
     } catch (error) {

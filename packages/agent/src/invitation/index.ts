@@ -20,5 +20,6 @@ export {
   storeCredential,
   getCredentialsForProofRequest,
   shareProof,
+  deleteCredential,
 } from './handler'
 export * from './error'
