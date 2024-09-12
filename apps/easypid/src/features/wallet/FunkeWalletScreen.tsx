@@ -3,8 +3,8 @@ import {
   Heading,
   HeroIcons,
   IdCard,
-  IllustrationContainer,
   Page,
+  Paragraph,
   ScrollView,
   Spinner,
   WelcomePopup,
@@ -18,6 +18,7 @@ import { useRouter } from 'solito/router'
 
 import { useActivities } from '@easypid/features/activity/activityRecord'
 import { usePidCredential } from '@easypid/hooks'
+import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import { ActivityRowItem } from 'packages/app'
 import { useEffect } from 'react'
@@ -26,6 +27,7 @@ import germanIssuerImage from '../../../assets/german-issuer-image.png'
 import { useHasSeenIntroTooltip } from '../onboarding/hasFinishedOnboarding'
 
 export function FunkeWalletScreen() {
+  const onResetWallet = useWalletReset()
   const { push } = useRouter()
   const pathname = usePathname()
   const { isLoading, credential } = usePidCredential()
@@ -103,8 +105,8 @@ export function FunkeWalletScreen() {
         <ScrollView px="$4" gap="$2">
           <YStack gap="$6">
             <XStack ai="center" justifyContent="space-between">
-              <Heading variant="title" fontSize={32} fontWeight="$bold">
-                {credential.userName}'s wallet
+              <Heading variant="h1" fontSize={32} fontWeight="$bold">
+                Wallet
               </Heading>
               <Animated.View style={menuPressStyle}>
                 <XStack onPressIn={menuHandlePressIn} onPressOut={menuHandlePressOut} onPress={() => push('/menu')}>
@@ -112,41 +114,56 @@ export function FunkeWalletScreen() {
                 </XStack>
               </Animated.View>
             </XStack>
-            <IdCard issuerImage={germanIssuerImage} onPress={navigateToPidDetail} hideUserName />
+            <IdCard
+              isNotReceived={!credential}
+              issuerImage={germanIssuerImage}
+              onPress={credential ? navigateToPidDetail : onResetWallet}
+              hideUserName
+            />
             <YStack gap="$4" w="100%">
               <XStack ai="center" justifyContent="space-between">
-                <Heading variant="h3" fontWeight="$semiBold">
-                  Recent activity
-                </Heading>
+                <Heading variant="h3">Recent activity</Heading>
               </XStack>
-              <YStack gap="$4" w="100%">
-                {activities.slice(0, 3).map((activity) => (
-                  <ActivityRowItem
-                    key={activity.id}
-                    id={activity.id}
-                    subtitle={activity.entityName ?? activity.entityHost}
-                    date={new Date(activity.date)}
-                    type={activity.type}
-                  />
-                ))}
-              </YStack>
-              {activities.length > 3 && (
-                <Animated.View style={activityPressStyle}>
-                  <Button.Text
-                    onPress={() => push('/activity')}
-                    p="$2"
-                    mt={-12}
-                    ml={-4}
-                    jc="flex-start"
-                    color="$primary-500"
-                    fontWeight="$semiBold"
-                    fontSize="$3"
-                    onPressIn={activityHandlePressIn}
-                    onPressOut={activityHandlePressOut}
-                  >
-                    View all activity <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
-                  </Button.Text>
-                </Animated.View>
+
+              {activities.length === 0 ? (
+                <YStack gap="$2" py="$8" ai="center" justifyContent="center" flex={1}>
+                  <Heading variant="sub2">Nothing to see here, for now</Heading>
+                  <Paragraph variant="sub" ta="center">
+                    Setup your ID or use the QR scanner to receive credentials.
+                  </Paragraph>
+                </YStack>
+              ) : (
+                <>
+                  <YStack gap="$4" w="100%">
+                    {activities.slice(0, 3).map((activity) => (
+                      <ActivityRowItem
+                        key={activity.id}
+                        id={activity.id}
+                        subtitle={activity.entityName ?? activity.entityHost}
+                        date={new Date(activity.date)}
+                        type={activity.type}
+                      />
+                    ))}
+                  </YStack>
+                  {activities.length > 3 && (
+                    <Animated.View style={activityPressStyle}>
+                      <Button.Text
+                        onPress={() => push('/activity')}
+                        p="$2"
+                        mt={-12}
+                        ml={-4}
+                        jc="flex-start"
+                        color="$primary-500"
+                        fontWeight="$semiBold"
+                        fontSize="$3"
+                        onPressIn={activityHandlePressIn}
+                        onPressOut={activityHandlePressOut}
+                      >
+                        View all activity <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
+                      </Button.Text>
+                    </Animated.View>
+                  )}
+                </>
               )}
             </YStack>
           </YStack>

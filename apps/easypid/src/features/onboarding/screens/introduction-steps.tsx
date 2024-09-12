@@ -8,7 +8,7 @@ interface OnboardingIntroductionStepsProps {
 export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroductionStepsProps) {
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$5">
+      <YStack gap="$2">
         <OnboardingStepItem
           stepName="step 1"
           title="Secure the wallet"
@@ -29,7 +29,7 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
         />
       </YStack>
       <YStack gap="$4" alignItems="center">
-        <Paragraph variant="sub" color="$grey-600" fontWeight="$medium" textAlign="center">
+        <Paragraph variant="sub" textAlign="center">
           You'll need your eID card to setup the wallet
         </Paragraph>
         <Button.Solid scaleOnPress alignSelf="stretch" onPress={goToNextStep}>

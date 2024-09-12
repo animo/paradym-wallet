@@ -25,7 +25,7 @@ export function FunkePidCredentialDetailScreen() {
         <YStack g="xl" p="$4" marginBottom={bottom}>
           <IdCard issuerImage={germanIssuerImage} small />
           <Stack g="md">
-            <Heading variant="title">Personalausweis</Heading>
+            <Heading variant="h1">Personalausweis</Heading>
             <CredentialAttributes
               subject={credential.attributesForDisplay ?? credential.attributes}
               headerTitle="Attributes"

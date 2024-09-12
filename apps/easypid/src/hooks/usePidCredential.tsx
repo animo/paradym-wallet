@@ -419,7 +419,7 @@ export function usePidCredential() {
     return undefined
   }, [credentials[0]])
 
-  if (isLoading || isSeedCredentialLoading || !pidCredential) {
+  if (isLoading || isSeedCredentialLoading) {
     return {
       credential: undefined,
       isLoading: true,

@@ -1,3 +1,4 @@
+import { BlurView } from 'expo-blur'
 import { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import Animated, {
@@ -11,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Circle } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
-import { Paragraph, Stack, XStack, YStack } from '../base'
+import { Button, Heading, Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons, Image } from '../content'
 import { useScaleAnimation } from '../hooks'
 
@@ -22,6 +23,7 @@ export interface IdCardProps {
   hideUserName?: boolean
   onPress?: () => void
   small?: boolean
+  isNotReceived?: boolean
 }
 
 const iconMapping = {
@@ -31,7 +33,15 @@ const iconMapping = {
   biometric: HeroIcons.FingerPrint,
 } as const
 
-export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, small }: IdCardProps) {
+export function IdCard({
+  icon,
+  issuerImage,
+  userName,
+  onPress,
+  hideUserName,
+  small,
+  isNotReceived = false,
+}: IdCardProps) {
   const rotation = useSharedValue(0)
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
@@ -76,7 +86,24 @@ export function IdCard({ icon, issuerImage, userName, onPress, hideUserName, sma
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        position="relative"
       >
+        {isNotReceived && (
+          <Stack position="absolute" zIndex="$2" top={0} left={0} right={0} bottom={0}>
+            <BlurView intensity={20} tint="light" style={StyleSheet.absoluteFillObject} />
+            <YStack gap="$2" flex-1 ai="center" jc="center">
+              <Heading variant="sub1" fontWeight="$semiBold">
+                No Digital ID
+              </Heading>
+              <Paragraph ta="center">Your Digital ID has not been activated yet.</Paragraph>
+              <Stack py="$2">
+                <Button.Solid h="$4" onPress={onPress}>
+                  Set up digital ID
+                </Button.Solid>
+              </Stack>
+            </YStack>
+          </Stack>
+        )}
         <LinearGradient
           colors={['#EFE7DA', '#EDEEE6', '#E9EDEE', '#D4D6C0']}
           start={[0.98, 0.02]}

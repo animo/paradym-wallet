@@ -15,7 +15,7 @@ export function NotificationInboxScreen() {
   return (
     <YStack bg="$background" pt={top} height="100%" position="relative">
       <Stack mt="$7" p="$2" px="$4" border={isScrolledByOffset} borderTopWidth={0}>
-        <Heading variant="title" fontSize={36}>
+        <Heading variant="h1" fontSize={36}>
           Inbox
         </Heading>
       </Stack>

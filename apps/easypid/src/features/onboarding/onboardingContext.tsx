@@ -308,6 +308,11 @@ export function OnboardingContextProvider({
     }
   }, [currentStepName])
 
+  const finishOnboarding = useCallback(() => {
+    setHasFinishedOnboarding(true)
+    router.replace('/')
+  }, [router, setHasFinishedOnboarding])
+
   const onPinEnter = async (pin: string) => {
     setWalletPin(pin)
     goToNextStep()
@@ -810,7 +815,7 @@ export function OnboardingContextProvider({
   } else if (currentStep.step === 'biometrics-disabled') {
     screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Go to settings" />
   } else if (currentStep.step === 'id-card-start') {
-    screen = <currentStep.Screen goToNextStep={onIdCardStart} />
+    screen = <currentStep.Screen goToNextStep={onIdCardStart} onSkipCardSetup={finishOnboarding} />
   } else if (currentStep.step === 'id-card-requested-attributes') {
     screen = <currentStep.Screen goToNextStep={goToNextStep} requestedAttributes={eidCardRequestedAccessRights ?? []} />
   } else if (currentStep.step === 'id-card-pin') {

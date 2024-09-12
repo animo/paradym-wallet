@@ -27,7 +27,7 @@ export const FunkePinLockedScreen = () => {
     <FlexPage gap="$2" jc="space-between">
       <YStack fg={1} gap="$6" mt="$6">
         <YStack gap="$6">
-          <Heading variant="title">Too many incorrect attempts</Heading>
+          <Heading variant="h1">Too many incorrect attempts</Heading>
           <Paragraph color="$grey-700">
             You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.
           </Paragraph>

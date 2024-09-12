@@ -28,7 +28,9 @@ export default function OnboardingScreens() {
   } else {
     page = (
       <FlexPage gap="$2" jc="space-between">
-        <ProgressHeader progress={onboardingContext.progress} onBack={onReset} />
+        <Animated.View entering={FadeIn.delay(300)}>
+          <ProgressHeader key="header" progress={onboardingContext.progress} onBack={onReset} />
+        </Animated.View>
         <Animated.View
           key={onboardingContext.page.animationKey ?? onboardingContext.currentStep}
           entering={pageContentTransition.entering[onboardingContext.page.animation ?? 'default']}
@@ -37,13 +39,11 @@ export default function OnboardingScreens() {
         >
           <YStack fg={1} gap="$6">
             <YStack gap="$3">
-              <Heading variant="title">{onboardingContext.page.title}</Heading>
-              {onboardingContext.page.subtitle && (
-                <Paragraph color="$grey-700">{onboardingContext.page.subtitle}</Paragraph>
-              )}
+              <Heading variant="h1">{onboardingContext.page.title}</Heading>
+              {onboardingContext.page.subtitle && <Paragraph>{onboardingContext.page.subtitle}</Paragraph>}
               {onboardingContext.page.caption && (
-                <Paragraph color="$grey-700">
-                  <Paragraph fontWeight="bold">Remember:</Paragraph> {onboardingContext.page.caption}
+                <Paragraph>
+                  <Paragraph emphasis>Remember:</Paragraph> {onboardingContext.page.caption}
                 </Paragraph>
               )}
             </YStack>
@@ -69,7 +69,7 @@ export default function OnboardingScreens() {
 
 const pageContentTransition = {
   entering: {
-    fullScreen: FadeIn.delay(300),
+    fullScreen: FadeIn.duration(0),
     delayed: FadeInRight.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(500),
     default: FadeInRight.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(200),
   },
