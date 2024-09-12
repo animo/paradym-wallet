@@ -96,10 +96,8 @@ export function CredentialDetailScreen() {
       <Sheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
         <Stack p="$4" gap="$6" pb={bottom}>
           <Stack gap="$3">
-            <Heading variant="h1">Delete '{display.name}'?</Heading>
-            <Paragraph color="$grey-600">
-              This will make the credential unusable and delete it from your wallet.
-            </Paragraph>
+            <Heading variant="h2">Delete '{display.name}'?</Heading>
+            <Paragraph secondary>This will make the credential unusable and delete it from your wallet.</Paragraph>
           </Stack>
           <DualResponseButtons
             isLoading={isLoading}

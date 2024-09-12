@@ -9,12 +9,16 @@ export function NoContentWallet() {
       <Spacer />
       <YStack>
         <YStack jc="center" ai="center" gap="$2">
-          <Heading variant="h2">This is your wallet</Heading>
+          <Heading variant="h2" fontWeight="$medium" letterSpacing={-0.5}>
+            This is your wallet
+          </Heading>
           <Paragraph textAlign="center" secondary>
             Credentials will be shown here.
           </Paragraph>
         </YStack>
-        <Button.Text onPress={() => push('/scan')}>Scan a QR code</Button.Text>
+        <Button.Text fontWeight="$medium" onPress={() => push('/scan')}>
+          Scan a QR code
+        </Button.Text>
       </YStack>
       <Spacer size="$8" />
     </YStack>

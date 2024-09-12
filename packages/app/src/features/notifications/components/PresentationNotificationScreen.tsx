@@ -73,7 +73,7 @@ export function PresentationNotificationScreen({
         <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$background">
           <YStack g="xl">
             <YStack ai="center" jc="center" gap="$4">
-              <Heading variant="h2" ta="center" px="$4">
+              <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
                 You have received an information request
                 {verifierName ? ` from ${verifierName}` : ''}.
               </Heading>

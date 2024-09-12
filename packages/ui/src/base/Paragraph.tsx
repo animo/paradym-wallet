@@ -22,7 +22,7 @@ export const Paragraph = styled(SizableText, {
     },
     secondary: {
       true: {
-        color: '$grey-500',
+        color: '$grey-600',
       },
     },
     emphasis: {

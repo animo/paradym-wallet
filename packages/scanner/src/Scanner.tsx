@@ -40,7 +40,9 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <Heading variant="h2">Please allow camera access</Heading>
+        <Heading variant="h2" letterSpacing={-0.5}>
+          Please allow camera access
+        </Heading>
         <Paragraph textAlign="center">
           This allows Paradym to scan QR codes that include credentials or data requests.
         </Paragraph>
@@ -58,7 +60,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
         />
       )}
       <YStack zi="$5" ai="center">
-        <Heading variant="h1" ta="center" dark py="$8" maxWidth="80%">
+        <Heading variant="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
           Use the camera to scan a QR code
         </Heading>
       </YStack>

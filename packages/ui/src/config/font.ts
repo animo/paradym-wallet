@@ -135,6 +135,13 @@ export const fontInter = createInterFont({
   letterSpacing: {
     4: 0,
   },
+  lineHeight: {
+    3: 20,
+    4: 24,
+    true: 24,
+    5: 28,
+    6: 32,
+  },
   face: {
     '400': { normal: 'Inter-Regular' },
     '500': { normal: 'Inter-Medium' },
