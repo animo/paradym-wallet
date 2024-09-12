@@ -119,7 +119,7 @@ export function PresentationNotificationScreen({
                           </Stack> */}
                         </XStack>
                         {s.description && (
-                          <Paragraph secondary px="$3" variant="text">
+                          <Paragraph secondary px="$3" variant="sub">
                             {s.description}
                           </Paragraph>
                         )}

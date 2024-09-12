@@ -104,9 +104,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 gap="$2"
               >
                 <LucideIcons.AlertOctagon size={16} />
-                <Paragraph variant="text" size="$2" lineHeight={20}>
-                  {helpText}
-                </Paragraph>
+                <Paragraph variant="sub">{helpText}</Paragraph>
               </XStack>
             )}
           </AnimatePresence>

@@ -58,7 +58,7 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
               <Heading variant="h2" textAlign="center">
                 {title}
               </Heading>
-              <Paragraph variant="text" textAlign="center">
+              <Paragraph variant="sub" textAlign="center">
                 {description}
               </Paragraph>
             </YStack>

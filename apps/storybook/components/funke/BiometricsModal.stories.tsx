@@ -42,7 +42,7 @@ const BiometricsModal = ({ onAcceptBiometrics, open, onOpenChange }: BiometricsM
           </Stack>
           <YStack p="$2" px="$4" gap="$3" height={100}>
             <Heading variant="h2">Biometrics is required</Heading>
-            <Paragraph variant="text">
+            <Paragraph variant="sub">
               Securing with your biometrics is required for receiving your digital identity
             </Paragraph>
           </YStack>

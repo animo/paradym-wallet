@@ -1,4 +1,15 @@
-import { Button, Heading, HeroIcons, IdCard, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
+import {
+  Button,
+  Heading,
+  HeroIcons,
+  IdCard,
+  Paragraph,
+  ScrollView,
+  Spacer,
+  Stack,
+  YStack,
+  useToastController,
+} from '@package/ui'
 import React from 'react'
 import { useRouter } from 'solito/router'
 
@@ -18,10 +29,24 @@ export function FunkePidRequestedAttributesDetailScreen({
   disclosedPayload,
   disclosedAttributeLength,
 }: FunkePidRequestedAttributesDetailScreenProps) {
+  const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { isLoading, credential } = usePidCredential()
+  const router = useRouter()
+
   if (isLoading) {
+    return null
+  }
+
+  if (!credential) {
+    toast.show('Error getting credential details', {
+      message: 'Credential not found',
+      customData: {
+        preset: 'danger',
+      },
+    })
+    router.back()
     return null
   }
 
