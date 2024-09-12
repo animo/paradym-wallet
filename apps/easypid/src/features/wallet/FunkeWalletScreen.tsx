@@ -106,7 +106,7 @@ export function FunkeWalletScreen() {
           <YStack gap="$6">
             <XStack ai="center" justifyContent="space-between">
               <Heading variant="h1" fontSize={32} fontWeight="$bold">
-                Wallet
+                {credential ? `${credential.userName}'s wallet` : 'Wallet'}
               </Heading>
               <Animated.View style={menuPressStyle}>
                 <XStack onPressIn={menuHandlePressIn} onPressOut={menuHandlePressOut} onPress={() => push('/menu')}>
