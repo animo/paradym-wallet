@@ -19,8 +19,8 @@ import type {
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
-import type { EasyPIDAppAgent, EitherAgent, FullAppAgent } from '../agent'
 import { Linking } from 'react-native'
+import type { EasyPIDAppAgent, EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -55,6 +55,7 @@ import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { deviceKeyPair } from '@easypid/storage/pidPin'
+import q from 'query-string'
 import type { CredentialForDisplayId } from '../hooks'
 import {
   type OpenId4VcCredentialMetadata,
@@ -62,7 +63,6 @@ import {
   setOpenId4VcCredentialMetadata,
 } from '../openid4vc/metadata'
 import { BiometricAuthenticationError } from './error'
-import q from 'query-string'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export async function resolveOpenId4VciOffer({
