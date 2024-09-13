@@ -1,0 +1,17 @@
+diff --git a/dist/jwt/JwtVerifier.js b/dist/jwt/JwtVerifier.js
+index 9e7218d8c1e90427c3abfe6be6ff7df40117673c..c30d7504412891e2f66241dd24a8463b3b4dceba 100644
+--- a/dist/jwt/JwtVerifier.js
++++ b/dist/jwt/JwtVerifier.js
+@@ -31,10 +31,10 @@ const getX5cVerifier = (jwt, options) => {
+     if (!Array.isArray(jwt.header.x5c) || jwt.header.x5c.length === 0 || !jwt.header.x5c.every((cert) => typeof cert === 'string')) {
+         throw new Error(`Received an invalid JWT.. '${type}' contains an invalid x5c header.`);
+     }
+-    if (typeof jwt.payload.iss !== 'string') {
++    if (type !== 'request-object' && typeof jwt.payload.iss !== 'string') {
+         throw new Error(`Received an invalid JWT. '${type}' contains an invalid iss claim.`);
+     }
+-    return { method: 'x5c', x5c: jwt.header.x5c, issuer: jwt.payload.iss, type: type, alg: jwt.header.alg };
++    return { method: 'x5c', x5c: jwt.header.x5c, issuer: jwt.payload.iss ?? jwt.payload.client_id, type: type, alg: jwt.header.alg };
+ };
+ exports.getX5cVerifier = getX5cVerifier;
+ const getJwkVerifier = (jwt, options) => __awaiter(void 0, void 0, void 0, function* () {

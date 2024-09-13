@@ -27,6 +27,7 @@ overrides:
   '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.12
   react-native: 0.74.5
   '@sphereon/did-auth-siop': file:./sphereon-did-auth-siop-0.16.0.tgz
+  '@sphereon/oid4vc-common': 0.16.1-next.14
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.5.11-pr-1996-20240827124430':
@@ -38,6 +39,9 @@ patchedDependencies:
   '@hyperledger/indy-vdr-react-native@0.2.2':
     hash: jtxhiuxe2e3i7qwlurpufqwh5a
     path: patches/@hyperledger__indy-vdr-react-native@0.2.2.patch
+  '@sphereon/oid4vc-common@0.16.1-next.14':
+    hash: nglnl6raz4zqpmewvolbw5yily
+    path: patches/@sphereon__oid4vc-common@0.16.1-next.14.patch
   '@sphereon/oid4vci-client@0.16.1-next.14':
     hash: 7s3wmlpmfikkjc2epivpdhcc7i
     path: patches/@sphereon__oid4vci-client@0.16.1-next.14.patch
@@ -3319,7 +3323,7 @@ packages:
     engines: {node: '>= 8'}
 
   '@sphereon/did-auth-siop@file:sphereon-did-auth-siop-0.16.0.tgz':
-    resolution: {integrity: sha512-ClSggF0NJ5zFOr6pLhi6cJs08QPqJFUb3+p+Cn0K+68HcMfUWt0/d6fKAOokV2GK6lF9QWHjIAzSbagKgqFDNw==, tarball: file:sphereon-did-auth-siop-0.16.0.tgz}
+    resolution: {integrity: sha512-iEv/LId86l2LWl+JdT7oS5/ymnv0iLn39ujsTRTw7xTZXkkSUOSuIC/FzY5flEmZJuVuibOdeFyYE3CtKm0Y3Q==, tarball: file:sphereon-did-auth-siop-0.16.0.tgz}
     version: 0.16.0
     engines: {node: '>=18'}
 
@@ -3328,10 +3332,6 @@ packages:
 
   '@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.22':
     resolution: {integrity: sha512-uAZZExVy+ug9JLircejWa5eLtAZ7bnBP6xb7DO2+86LRsHNLh2k2jMWJYxp+iWtGHTsh6RYsZl14ScQLvjiQ/A==}
-
-  '@sphereon/oid4vc-common@0.16.0':
-    resolution: {integrity: sha512-EgT0gwMX5/MhTDAOEWqbx2c9azBSQAThL8EDu7wufGQxRFNAc3Ya8NXoCMIOfqIqbSLhmyCB0ANcdoHeJq2VdA==}
-    engines: {node: '>=18'}
 
   '@sphereon/oid4vc-common@0.16.1-next.14':
     resolution: {integrity: sha512-0Db4mYGUQ/D7EEYEWoyQYTIoixKxBhftatPeR886ivVl9uFATknZuoTgwn5uPMZf3GyIHW7Tc7ZbDt4LdavwJA==}
@@ -10979,7 +10979,7 @@ snapshots:
     dependencies:
       '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(web-streams-polyfill@3.3.3)
       '@sphereon/did-auth-siop': file:sphereon-did-auth-siop-0.16.0.tgz
-      '@sphereon/oid4vc-common': 0.16.1-next.14
+      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
       '@sphereon/oid4vci-client': 0.16.1-next.14(patch_hash=7s3wmlpmfikkjc2epivpdhcc7i)
       '@sphereon/oid4vci-common': 0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)
       '@sphereon/oid4vci-issuer': 0.16.1-next.14
@@ -13116,7 +13116,7 @@ snapshots:
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/oid4vc-common': 0.16.0
+      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
       '@sphereon/pex': 3.3.3
       '@sphereon/pex-models': 2.2.4
       '@sphereon/ssi-types': 0.22.0
@@ -13146,17 +13146,7 @@ snapshots:
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
 
-  '@sphereon/oid4vc-common@0.16.0':
-    dependencies:
-      '@sphereon/ssi-types': 0.28.0
-      jwt-decode: 4.0.0
-      sha.js: 2.4.11
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@sphereon/oid4vc-common@0.16.1-next.14':
+  '@sphereon/oid4vc-common@0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)':
     dependencies:
       '@sphereon/ssi-types': 0.29.0
       jwt-decode: 4.0.0
@@ -13168,7 +13158,7 @@ snapshots:
 
   '@sphereon/oid4vci-client@0.16.1-next.14(patch_hash=7s3wmlpmfikkjc2epivpdhcc7i)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.14
+      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
       '@sphereon/oid4vci-common': 0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)
       '@sphereon/ssi-types': 0.29.0
       cross-fetch: 3.1.8
@@ -13179,7 +13169,7 @@ snapshots:
 
   '@sphereon/oid4vci-common@0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.14
+      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
       '@sphereon/ssi-types': 0.29.0
       cross-fetch: 3.1.8
       debug: 4.3.6
@@ -13192,7 +13182,7 @@ snapshots:
 
   '@sphereon/oid4vci-issuer@0.16.1-next.14':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.14
+      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
       '@sphereon/oid4vci-common': 0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)
       '@sphereon/ssi-types': 0.29.0
       uuid: 9.0.1
