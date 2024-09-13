@@ -21,5 +21,6 @@ export {
   getCredentialsForProofRequest,
   shareProof,
   deleteCredential,
+  withTrustedCertificate,
 } from './handler'
 export * from './error'

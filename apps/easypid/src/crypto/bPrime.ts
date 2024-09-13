@@ -25,7 +25,11 @@ import {
   setOpenId4VcCredentialMetadata,
   storeCredential,
 } from '@package/agent'
-import { getCreateJwtCallbackForBPrime } from '@package/agent/src/invitation/handler'
+import {
+  extractCertificateFromAuthorizationRequest,
+  getCreateJwtCallbackForBPrime,
+  withTrustedCertificate,
+} from '@package/agent/src/invitation/handler'
 import { kdf } from '@package/secure-store/kdf'
 import { B_PRIME_SD_JWT_VC_OFFER } from '../use-cases/bdrPidIssuerOffers'
 import { easyPidAes256Gcm } from './aes'
@@ -362,8 +366,12 @@ export const requestSdJwtVcFromSeedCredential = async ({
       },
     })
 
-    const resolvedAuthorizationRequest =
-      await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(authorizationRequestUri)
+    // Temp solution to add and remove the trusted certicaite
+    const certificate = await extractCertificateFromAuthorizationRequest({ uri: authorizationRequestUri })
+    const resolvedAuthorizationRequest = await withTrustedCertificate(agent, certificate, () =>
+      agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(authorizationRequestUri)
+    )
+
     const payload =
       await resolvedAuthorizationRequest.authorizationRequest.authorizationRequest.requestObject?.getPayload()
     const rpEphPub = payload?.rp_eph_pub

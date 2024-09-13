@@ -68,6 +68,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       agent,
       data: params.data,
       uri: params.uri,
+      allowUntrustedCertificates: true,
     })
       .then(setCredentialsForRequest)
       .catch((error) => {
@@ -97,6 +98,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         authorizationRequest: credentialsForRequest.authorizationRequest,
         credentialsForRequest: credentialsForRequest.credentialsForRequest,
         selectedCredentials: {},
+        allowUntrustedCertificate: true,
       })
 
       const credential = submission.entries[0]?.credentials[0]
