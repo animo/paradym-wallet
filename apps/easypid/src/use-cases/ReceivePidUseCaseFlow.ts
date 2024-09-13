@@ -71,7 +71,6 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     this.options = options
 
     this.accessRights = new Promise((resolve) => {
-      console.log('this allow access rights', options.allowSimulatorCard)
       this.idCardAuthFlow = new AusweisAuthFlow({
         onEnterPin: async (options) => {
           const pin = await this.options.onEnterPin({
