@@ -532,6 +532,7 @@ export function OnboardingContextProvider({
     if (stepsToCompleteAfterReset.includes('pin')) {
       // Reset PIN state
       setWalletPin(undefined)
+      setAllowSimulatorCard(false)
       setAgent(undefined)
     }
 
