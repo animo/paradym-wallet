@@ -7,5 +7,5 @@ export const credentialDataHandlerOptions = {
 } satisfies CredentialDataHandlerOptions
 
 export default function Screen() {
-  return <QrScannerScreen credentialDataHandlerOptions={credentialDataHandlerOptions} />
+  return <QrScannerScreen credentialDataHandlerOptions={credentialDataHandlerOptions} appName="EasyPID" />
 }

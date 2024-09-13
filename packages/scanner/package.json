@@ -7,14 +7,14 @@
 		"@package/ui": "workspace:*"
 	},
 	"devDependencies": {
-		"@react-native-masked-view/masked-view": "0.3.1",
-		"@types/react": "~18.2.79",
-		"expo-barcode-scanner": "~13.0.1",
+		"@react-native-masked-view/masked-view": "*",
+		"@types/react": "*",
+		"expo-camera": "*",
 		"react-native": "*"
 	},
 	"peerDependencies": {
-		"@react-native-masked-view/masked-view": "0.3.1",
-		"expo-barcode-scanner": "~13.0.1",
+		"@react-native-masked-view/masked-view": "*",
+		"expo-camera": "*",
 		"react-native": "*"
 	}
 }
