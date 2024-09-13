@@ -454,31 +454,44 @@ const extractCertificateFromJwt = (jwt: string) => {
 /**
  * This is a temp method to allow for untrusted certificates to still work with the wallet.
  */
-export const extractCertificateFromAuthorizationRequest = async ({ data, uri }: { data?: string; uri?: string }) => {
+export const extractCertificateFromAuthorizationRequest = async ({
+  data,
+  uri,
+}: { data?: string; uri?: string }): Promise<{ data: string | null; certificate: string | null }> => {
   try {
     if (data) {
-      return extractCertificateFromJwt(data)
+      return {
+        data,
+        certificate: extractCertificateFromJwt(data),
+      }
     }
 
     if (uri) {
       const query = q.parseUrl(uri).query
       if (query.request_uri && typeof query.request_uri === 'string') {
         const result = await fetchInvitationDataUrl(query.request_uri)
+
         if (
           result.success &&
           result.result.type === 'openid-authorization-request' &&
           typeof result.result.data === 'string'
         ) {
-          return extractCertificateFromJwt(result.result.data)
+          return {
+            data: result.result.data,
+            certificate: extractCertificateFromJwt(result.result.data),
+          }
         }
       } else if (query.request && typeof query.request === 'string') {
-        return extractCertificateFromJwt(query.request)
+        return {
+          data: query.request,
+          certificate: extractCertificateFromJwt(query.request),
+        }
       }
     }
 
-    return null
+    return { data: null, certificate: null }
   } catch (error) {
-    return null
+    return { data: null, certificate: null }
   }
 }
 
@@ -514,16 +527,20 @@ export const getCredentialsForProofRequest = async ({
 }) => {
   let requestUri: string
 
-  const certificate = allowUntrustedCertificates
+  const { certificate = null, data: newData = null } = allowUntrustedCertificates
     ? await extractCertificateFromAuthorizationRequest({ data, uri })
-    : null
+    : {}
 
-  if (uri) {
-    requestUri = uri
+  if (newData) {
+    // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
+    // but in the future we need to support the parsed request in Credo directly
+    requestUri = `openid://?request=${encodeURIComponent(newData)}`
   } else if (data) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
     // but in the future we need to support the parsed request in Credo directly
-    requestUri = `openid://request=${encodeURIComponent(data)}`
+    requestUri = `openid://?request=${encodeURIComponent(data)}`
+  } else if (uri) {
+    requestUri = uri
   } else {
     throw new Error('Either data or uri must be provided')
   }

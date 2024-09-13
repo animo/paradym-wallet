@@ -367,9 +367,13 @@ export const requestSdJwtVcFromSeedCredential = async ({
     })
 
     // Temp solution to add and remove the trusted certicaite
-    const certificate = await extractCertificateFromAuthorizationRequest({ uri: authorizationRequestUri })
+    const { certificate, data: requestData } = await extractCertificateFromAuthorizationRequest({
+      uri: authorizationRequestUri,
+    })
     const resolvedAuthorizationRequest = await withTrustedCertificate(agent, certificate, () =>
-      agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(authorizationRequestUri)
+      agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(
+        requestData ? `openid://?request=${encodeURIComponent(requestData)}` : authorizationRequestUri
+      )
     )
 
     const payload =
