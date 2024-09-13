@@ -24,7 +24,15 @@ if (!variant) {
 }
 
 // NOTE: Keep this in sync with the `QrTypes` enum
-const invitationSchemes = ['openid', 'openid-initiate-issuance', 'openid-credential-offer', 'openid-vc', 'openid4vp']
+const invitationSchemes = [
+  'openid',
+  'openid-initiate-issuance',
+  'openid-credential-offer',
+  'openid-vc',
+  'openid4vp',
+  'animo-easypid',
+  'haip',
+]
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}

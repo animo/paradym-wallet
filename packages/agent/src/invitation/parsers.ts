@@ -35,6 +35,7 @@ export enum InvitationQrTypes {
   OPENID_VC = 'openid-vc://',
   DIDCOMM = 'didcomm://',
   HTTPS = 'https://',
+  HAIP = 'haip://',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {
