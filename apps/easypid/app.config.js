@@ -63,6 +63,13 @@ const config = {
   },
   plugins: [
     '@animo-id/expo-ausweis-sdk',
+    'expo-router',
+    [
+      'expo-camera',
+      {
+        recordAudioAndroid: false,
+      },
+    ],
     [
       'expo-build-properties',
       {
@@ -87,7 +94,6 @@ const config = {
         ],
       },
     ],
-    'expo-router',
   ],
   assetBundlePatterns: ['**/*'],
   ios: {

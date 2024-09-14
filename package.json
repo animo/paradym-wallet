@@ -22,6 +22,7 @@
 	},
 	"pnpm": {
 		"overrides": {
+			"@react-native-masked-view/masked-view": "0.3.1",
 			"@types/react": "~18.2.79",
 			"react": "18.2.0",
 			"react-docgen-typescript": "2.2.2",
@@ -42,9 +43,10 @@
 			"@credo-ts/react-native": "0.5.11-pr-1996-20240827124430",
 			"@animo-id/expo-secure-environment": "0.1.0-alpha.5",
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
-			"react-native": "0.74.5",
+			"react-native": "0.75.3",
 			"@sphereon/did-auth-siop": "file:./sphereon-did-auth-siop-0.16.0.tgz",
-			"@sphereon/oid4vc-common": "0.16.1-next.14"
+			"@sphereon/oid4vc-common": "0.16.1-next.14",
+			"expo-camera": "~15.0.16"
 		},
 		"patchedDependencies": {
 			"@credo-ts/openid4vc@0.5.11-pr-1996-20240827124430": "patches/@credo-ts__openid4vc@0.5.11-pr-1996-20240827124430.patch",
@@ -52,7 +54,8 @@
 			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch",
 			"@sphereon/oid4vci-client@0.16.1-next.14": "patches/@sphereon__oid4vci-client@0.16.1-next.14.patch",
 			"@sphereon/oid4vci-common@0.16.1-next.14": "patches/@sphereon__oid4vci-common@0.16.1-next.14.patch",
-			"@sphereon/oid4vc-common@0.16.1-next.14": "patches/@sphereon__oid4vc-common@0.16.1-next.14.patch"
+			"@sphereon/oid4vc-common@0.16.1-next.14": "patches/@sphereon__oid4vc-common@0.16.1-next.14.patch",
+			"@hyperledger/aries-askar-react-native@0.2.3": "patches/@hyperledger__aries-askar-react-native@0.2.3.patch"
 		}
 	}
 }

@@ -22,3 +22,17 @@ index a38cf8a6c70271dc878376cde5281a063b38bc52..4a74ba8cc69d90c63948dcf64190407e
      targetSdkVersion getExt('targetSdkVersion')
      
      externalNativeBuild {
+diff --git a/anoncreds.podspec b/anoncreds.podspec
+index 290eb4830eb673c20ae3fb2e445cb1251be655ec..685a0f9285e7074f42220bf1bd12b10e0e798d01 100644
+--- a/anoncreds.podspec
++++ b/anoncreds.podspec
+@@ -16,7 +16,8 @@ Pod::Spec.new do |s|
+   s.header_mappings_dir = "cpp"
+ 
+   s.pod_target_xcconfig = {
+-    :USE_HEADERMAP => "No"
++    :USE_HEADERMAP => "No",
++    'CLANG_CXX_LANGUAGE_STANDARD' => "c++20",
+   }
+ 
+   s.ios.vendored_frameworks = "native/mobile/ios/anoncreds.xcframework"

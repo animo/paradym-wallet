@@ -2,27 +2,27 @@ import type { StyleProp, ViewStyle } from 'react-native'
 
 import { AnimatePresence, Button, Heading, LucideIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
-import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
-import { useCallback, useEffect, useState } from 'react'
+import { CameraView, useCameraPermissions } from 'expo-camera'
+import { useCallback, useEffect } from 'react'
 import { Dimensions, Linking, Platform, StyleSheet } from 'react-native'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
   onCancel?(): void
   helpText?: string
+  appName: string
 }
 
-export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) => {
-  const [hasPermission, setHasPermission] = useState<boolean>()
+export const QrScanner = ({ onScan, onCancel, helpText, appName }: BarcodeScannerProps) => {
+  const [permission, requestPermission] = useCameraPermissions()
 
   useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await ExpoBarCodeScanner.requestPermissionsAsync()
-      setHasPermission(status === 'granted')
-    }
+    if (!permission) return
 
-    void getBarCodeScannerPermissions()
-  }, [])
+    if (!permission.granted && permission.canAskAgain) {
+      requestPermission()
+    }
+  }, [permission, requestPermission])
 
   const _openAppSetting = useCallback(() => {
     void Linking.openSettings()
@@ -37,12 +37,12 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
     cameraStyle = { height, width: cameraWidth, left: widthOffset }
   }
 
-  if (hasPermission === false) {
+  if (permission && !permission.granted && !permission.canAskAgain) {
     return (
       <Page justifyContent="center" alignItems="center">
         <Heading variant="h2">Please allow camera access</Heading>
         <Paragraph textAlign="center">
-          This allows Paradym to scan QR codes that include credentials or data requests.
+          This allows {appName} to scan QR codes that include credentials or data requests.
         </Paragraph>
         <Button.Text onPress={() => _openAppSetting()}>Open settings</Button.Text>
       </Page>
@@ -51,10 +51,13 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
 
   return (
     <Page f={1} fd="column" jc="space-between" bg="$black">
-      {hasPermission && (
-        <ExpoBarCodeScanner
+      {permission?.granted && (
+        <CameraView
           style={[cameraStyle, StyleSheet.absoluteFill]}
-          onBarCodeScanned={({ data }) => onScan(data)}
+          barcodeScannerSettings={{
+            barcodeTypes: ['qr'],
+          }}
+          onBarcodeScanned={({ data }) => onScan(data)}
         />
       )}
       <YStack zi="$5" ai="center">
