@@ -24,7 +24,15 @@ if (!variant) {
 }
 
 // NOTE: Keep this in sync with the `QrTypes` enum
-const invitationSchemes = ['openid', 'openid-initiate-issuance', 'openid-credential-offer', 'openid-vc', 'openid4vp']
+const invitationSchemes = [
+  'openid',
+  'openid-initiate-issuance',
+  'openid-credential-offer',
+  'openid-vc',
+  'openid4vp',
+  'animo-easypid',
+  'haip',
+]
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}
@@ -55,6 +63,13 @@ const config = {
   },
   plugins: [
     '@animo-id/expo-ausweis-sdk',
+    'expo-router',
+    [
+      'expo-camera',
+      {
+        recordAudioAndroid: false,
+      },
+    ],
     [
       'expo-build-properties',
       {
@@ -79,7 +94,6 @@ const config = {
         ],
       },
     ],
-    'expo-router',
   ],
   assetBundlePatterns: ['**/*'],
   ios: {

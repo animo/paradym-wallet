@@ -19,6 +19,7 @@ import type {
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
+import { Linking } from 'react-native'
 import type { EasyPIDAppAgent, EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
@@ -28,6 +29,7 @@ import {
   DidJwk,
   DidKey,
   JwaSignatureAlgorithm,
+  Jwt,
   KeyBackend,
   KeyType,
   Mdoc,
@@ -43,6 +45,7 @@ import {
   V2RequestPresentationMessage,
   W3cCredentialRecord,
   W3cCredentialRepository,
+  X509ModuleConfig,
   getJwkFromKey,
   parseMessageType,
 } from '@credo-ts/core'
@@ -52,6 +55,7 @@ import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { deviceKeyPair } from '@easypid/storage/pidPin'
+import q from 'query-string'
 import type { CredentialForDisplayId } from '../hooks'
 import {
   type OpenId4VcCredentialMetadata,
@@ -59,6 +63,7 @@ import {
   setOpenId4VcCredentialMetadata,
 } from '../openid4vc/metadata'
 import { BiometricAuthenticationError } from './error'
+import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -442,23 +447,101 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 }
 
+const extractCertificateFromJwt = (jwt: string) => {
+  const jwtHeader = Jwt.fromSerializedJwt(jwt).header
+  return Array.isArray(jwtHeader.x5c) && typeof jwtHeader.x5c[0] === 'string' ? jwtHeader.x5c[0] : null
+}
+/**
+ * This is a temp method to allow for untrusted certificates to still work with the wallet.
+ */
+export const extractCertificateFromAuthorizationRequest = async ({
+  data,
+  uri,
+}: { data?: string; uri?: string }): Promise<{ data: string | null; certificate: string | null }> => {
+  try {
+    if (data) {
+      return {
+        data,
+        certificate: extractCertificateFromJwt(data),
+      }
+    }
+
+    if (uri) {
+      const query = q.parseUrl(uri).query
+      if (query.request_uri && typeof query.request_uri === 'string') {
+        const result = await fetchInvitationDataUrl(query.request_uri)
+
+        if (
+          result.success &&
+          result.result.type === 'openid-authorization-request' &&
+          typeof result.result.data === 'string'
+        ) {
+          return {
+            data: result.result.data,
+            certificate: extractCertificateFromJwt(result.result.data),
+          }
+        }
+      } else if (query.request && typeof query.request === 'string') {
+        return {
+          data: query.request,
+          certificate: extractCertificateFromJwt(query.request),
+        }
+      }
+    }
+
+    return { data: null, certificate: null }
+  } catch (error) {
+    return { data: null, certificate: null }
+  }
+}
+
+export async function withTrustedCertificate<T>(
+  agent: EitherAgent,
+  certificate: string | null,
+  method: () => Promise<T> | T
+): Promise<T> {
+  const x509ModuleConfig = agent.dependencyManager.resolve(X509ModuleConfig)
+  const currentTrustedCertificates = x509ModuleConfig.trustedCertificates
+    ? [...x509ModuleConfig.trustedCertificates]
+    : []
+
+  try {
+    if (certificate) agent.x509.addTrustedCertificate(certificate)
+    return await method()
+  } finally {
+    if (certificate) x509ModuleConfig.setTrustedCertificates(currentTrustedCertificates as [string])
+  }
+}
+
 export const getCredentialsForProofRequest = async ({
   agent,
   data,
   uri,
+  allowUntrustedCertificates = false,
 }: {
   agent: EitherAgent
   // Either data or uri can be provided
   data?: string
   uri?: string
+  allowUntrustedCertificates?: boolean
 }) => {
-  let requestUri = uri
+  let requestUri: string
 
-  if (!requestUri && data) {
+  const { certificate = null, data: newData = null } = allowUntrustedCertificates
+    ? await extractCertificateFromAuthorizationRequest({ data, uri })
+    : {}
+
+  if (newData) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
     // but in the future we need to support the parsed request in Credo directly
-    requestUri = `openid://request=${encodeURIComponent(data)}`
-  } else if (!requestUri) {
+    requestUri = `openid://?request=${encodeURIComponent(newData)}`
+  } else if (data) {
+    // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
+    // but in the future we need to support the parsed request in Credo directly
+    requestUri = `openid://?request=${encodeURIComponent(data)}`
+  } else if (uri) {
+    requestUri = uri
+  } else {
     throw new Error('Either data or uri must be provided')
   }
 
@@ -468,7 +551,10 @@ export const getCredentialsForProofRequest = async ({
     requestUri,
   })
 
-  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
+  // Temp solution to add and remove the trusted certificate
+  const resolved = await withTrustedCertificate(agent, certificate, () =>
+    agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
+  )
 
   if (!resolved.presentationExchange) {
     throw new Error('No presentation exchange found in authorization request.')
@@ -480,7 +566,7 @@ export const getCredentialsForProofRequest = async ({
     verifierHostName: resolved.authorizationRequest.responseURI
       ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
       : undefined,
-  }
+  } as const
 }
 
 export const shareProof = async ({
@@ -488,11 +574,13 @@ export const shareProof = async ({
   authorizationRequest,
   credentialsForRequest,
   selectedCredentials,
+  allowUntrustedCertificate = false,
 }: {
   agent: EitherAgent
   authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
   credentialsForRequest: DifPexCredentialsForRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
+  allowUntrustedCertificate?: boolean
 }) => {
   if (!credentialsForRequest.areRequirementsSatisfied) {
     throw new Error('Requirements from proof request are not satisfied')
@@ -515,12 +603,24 @@ export const shareProof = async ({
   )
 
   try {
-    const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
-      authorizationRequest,
-      presentationExchange: {
-        credentials,
-      },
-    })
+    // Temp solution to add and remove the trusted certicaite
+    const certificate =
+      authorizationRequest.jwt && allowUntrustedCertificate ? extractCertificateFromJwt(authorizationRequest.jwt) : null
+
+    const result = await withTrustedCertificate(agent, certificate, () =>
+      agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
+        authorizationRequest,
+        presentationExchange: {
+          credentials,
+        },
+      })
+    )
+
+    // if redirect_uri is provided, open it in the browser
+    // Even if the response returned an error, we must open this uri
+    if (typeof result.serverResponse.body === 'object' && typeof result.serverResponse.body.redirect_uri === 'string') {
+      await Linking.openURL(result.serverResponse.body.redirect_uri)
+    }
 
     if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
       throw new Error(`Error while accepting authorization request. ${result.serverResponse.body as string}`)

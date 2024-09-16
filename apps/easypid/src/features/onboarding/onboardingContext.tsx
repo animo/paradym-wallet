@@ -264,6 +264,7 @@ export function OnboardingContextProvider({
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
+  const [allowSimulatorCard, setAllowSimulatorCard] = useState(false)
 
   const [walletPin, setWalletPin] = useState<string>()
   const [idCardPin, setIdCardPin] = useState<string>()
@@ -340,7 +341,13 @@ export function OnboardingContextProvider({
   }, [])
 
   const onPinReEnter = async (pin: string) => {
-    if (walletPin !== pin) {
+    // Spells SERVER & BROKEN on the pin pad (with letters)
+    // Allows bypassing the eID card and use a simulator card
+    const isSimulatorPinCode = walletPin === '737837' && pin === '276536'
+
+    if (isSimulatorPinCode) {
+      setAllowSimulatorCard(true)
+    } else if (walletPin !== pin) {
       toast.show('Pin entries do not match', {
         customData: { preset: 'danger' },
       })
@@ -530,6 +537,7 @@ export function OnboardingContextProvider({
     if (stepsToCompleteAfterReset.includes('pin')) {
       // Reset PIN state
       setWalletPin(undefined)
+      setAllowSimulatorCard(false)
       setAgent(undefined)
     }
 
@@ -776,6 +784,7 @@ export function OnboardingContextProvider({
         })),
       onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
       onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
+      allowSimulatorCard,
     } as const satisfies ReceivePidUseCaseFlowOptions
 
     if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {

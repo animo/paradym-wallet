@@ -8,7 +8,8 @@
 		"react-native": "*",
 		"react-native-argon2": "^2.0.1",
 		"react-native-get-random-values": "~1.11.0",
-		"react-native-keychain": "^8.2.0"
+		"react-native-keychain": "^8.2.0",
+		"@tanstack/react-query": "^5"
 	},
 	"peerDependenciesMeta": {
 		"expo-secure-store": {

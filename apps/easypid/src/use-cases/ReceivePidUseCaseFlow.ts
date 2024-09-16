@@ -19,6 +19,7 @@ export interface ReceivePidUseCaseFlowOptions
       currentSessionPinAttempts: number
     }
   ) => string | Promise<string>
+  allowSimulatorCard?: boolean
 }
 
 export type ReceivePidUseCaseState = 'id-card-auth' | 'acquire-access-token' | 'retrieve-credential' | 'error'
@@ -90,6 +91,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
           }
         },
         onCardAttachedChanged: (options) => this.options.onCardAttachedChanged?.(options),
+        allowSimulatorCard: options.allowSimulatorCard,
         debug: __DEV__,
         onStatusProgress: (options) => this.options.onStatusProgress?.(options),
         onAttachCard: () => this.options.onAttachCard?.(),
