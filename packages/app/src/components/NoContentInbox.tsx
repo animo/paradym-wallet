@@ -9,12 +9,14 @@ export function NoContentInbox() {
       <Spacer />
       <YStack>
         <YStack jc="center" ai="center" gap="$2">
-          <Heading variant="h2">You're all caught up</Heading>
+          <Heading variant="h2" fontWeight="$medium" letterSpacing={-0.5}>
+            You're all caught up
+          </Heading>
           <Paragraph textAlign="center" secondary>
             You don't have any notifications at the moment.
           </Paragraph>
         </YStack>
-        <Button.Text onPress={() => back()} icon={<LucideIcons.ArrowLeft size={20} m={-4} />}>
+        <Button.Text fontWeight="$medium" onPress={() => back()} icon={<LucideIcons.ArrowLeft size={20} m={-4} />}>
           Go back
         </Button.Text>
       </YStack>

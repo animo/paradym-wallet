@@ -1,4 +1,4 @@
-import { Circle, Spacer } from 'tamagui'
+import { Circle } from 'tamagui'
 import { Heading, Paragraph, YStack } from '../base'
 import { HeroIcons } from '../content'
 import { IdCardAttributes } from './IdCardAttributes'
@@ -25,9 +25,7 @@ export function IdCardRequestedAttributesSection({
         <Heading variant="h3" fontWeight="$semiBold">
           Requested data
         </Heading>
-        <Paragraph size="$3" secondary>
-          {description}
-        </Paragraph>
+        <Paragraph>{description}</Paragraph>
       </YStack>
       {disclosedAttributes.length > 0 && (
         <IdCardAttributes onPress={onPressIdCard} attributes={disclosedAttributes} issuerImage={issuerImage} />

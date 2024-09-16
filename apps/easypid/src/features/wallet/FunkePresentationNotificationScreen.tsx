@@ -123,7 +123,7 @@ export function FunkePresentationNotificationScreen({
                     <ProgressBar value={33} />
                   </Animated.View>
                 </ZStack>
-                <Heading variant="title">Review the request</Heading>
+                <Heading variant="h1">Review the request</Heading>
               </YStack>
             </Animated.View>
             <Animated.View

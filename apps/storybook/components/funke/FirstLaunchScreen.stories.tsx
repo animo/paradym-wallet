@@ -19,9 +19,9 @@ const FirstLaunchScreen = () => {
         {/* This stack ensures the right spacing  */}
         <YStack flex={3} />
         <YStack gap="$2">
-          <Heading variant="title">EasyPID Wallet</Heading>
+          <Heading variant="h1">EasyPID Wallet</Heading>
           <Separator borderWidth={3} borderRadius={3} borderColor="$primary-500" width="$4" />
-          <Heading variant="title" secondary>
+          <Heading variant="h1" secondary>
             Your digital Identity
           </Heading>
         </YStack>

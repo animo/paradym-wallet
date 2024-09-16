@@ -35,7 +35,7 @@ export function CredentialNotificationScreen({
     >
       <YStack g="3xl" jc="space-between" height="100%" pad="lg" py="$6">
         <YStack g="2xl">
-          <Heading variant="h2" ta="center" px="$4">
+          <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
             You have received a credential
             {display.issuer?.name ? ` from ${display.issuer.name}` : ''}
           </Heading>

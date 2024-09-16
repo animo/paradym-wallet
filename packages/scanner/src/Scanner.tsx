@@ -40,7 +40,9 @@ export const QrScanner = ({ onScan, onCancel, helpText, appName }: BarcodeScanne
   if (permission && !permission.granted && !permission.canAskAgain) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <Heading variant="h2">Please allow camera access</Heading>
+        <Heading variant="h2" letterSpacing={-0.5}>
+          Please allow camera access
+        </Heading>
         <Paragraph textAlign="center">
           This allows {appName} to scan QR codes that include credentials or data requests.
         </Paragraph>
@@ -61,7 +63,7 @@ export const QrScanner = ({ onScan, onCancel, helpText, appName }: BarcodeScanne
         />
       )}
       <YStack zi="$5" ai="center">
-        <Heading variant="h1" ta="center" dark py="$8" maxWidth="80%">
+        <Heading variant="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
           Use the camera to scan a QR code
         </Heading>
       </YStack>
@@ -107,9 +109,7 @@ export const QrScanner = ({ onScan, onCancel, helpText, appName }: BarcodeScanne
                 gap="$2"
               >
                 <LucideIcons.AlertOctagon size={16} />
-                <Paragraph variant="text" size="$2" lineHeight={20}>
-                  {helpText}
-                </Paragraph>
+                <Paragraph variant="sub">{helpText}</Paragraph>
               </XStack>
             )}
           </AnimatePresence>

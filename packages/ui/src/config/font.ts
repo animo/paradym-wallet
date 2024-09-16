@@ -28,7 +28,22 @@ export const fontOpenSans = createFont({
     7: 28, // Page Title
   },
   letterSpacing: {
+    1: -0.25,
+    2: -0.15,
+    3: -0.1,
     4: 0,
+    true: 0,
+    5: 0.1,
+    6: 0.15,
+    7: 0.2,
+    8: 0.25,
+  },
+  lineHeight: {
+    3: 20,
+    4: 24,
+    true: 24,
+    5: 28,
+    6: 32,
   },
   face: {
     // Android uses filename, iOS uses PostScript name (configured in app.config.js with expo-font plugin)
@@ -65,7 +80,22 @@ export const fontRaleway = createFont({
     7: 28, // Page Title
   },
   letterSpacing: {
+    1: -0.25,
+    2: -0.15,
+    3: -0.1,
     4: 0,
+    true: 0,
+    5: 0.1,
+    6: 0.15,
+    7: 0.2,
+    8: 0.25,
+  },
+  lineHeight: {
+    3: 20,
+    4: 24,
+    true: 24,
+    5: 28,
+    6: 32,
   },
   face: {
     // Raleway is a lighter font in terms of weight, so we move all the weights one step up.
@@ -104,6 +134,13 @@ export const fontInter = createInterFont({
   },
   letterSpacing: {
     4: 0,
+  },
+  lineHeight: {
+    3: 20,
+    4: 24,
+    true: 24,
+    5: 28,
+    6: 32,
   },
   face: {
     '400': { normal: 'Inter-Regular' },

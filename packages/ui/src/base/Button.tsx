@@ -40,6 +40,7 @@ export const OutlineButton = styled(Btn, {
 export const TextButton = styled(Btn, {
   name: 'TextButton',
   color: '$primary-500',
+  fontWeight: '$semiBold',
   borderWidth: 0,
 })
 

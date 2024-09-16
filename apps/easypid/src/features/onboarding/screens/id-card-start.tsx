@@ -1,14 +1,23 @@
-import { Button, IdCardImage, Spinner, Stack } from '@package/ui'
+import { Button, HeroIcons, IdCardImage, Spinner, Stack } from '@package/ui'
 
 import { IllustrationContainer } from '@package/ui'
 import { useState } from 'react'
 
 interface OnboardingIdCardStartScanProps {
   goToNextStep: () => Promise<void>
+  onSkipCardSetup: () => void
 }
 
-export function OnboardingIdCardStart({ goToNextStep }: OnboardingIdCardStartScanProps) {
+export function OnboardingIdCardStart({ goToNextStep, onSkipCardSetup }: OnboardingIdCardStartScanProps) {
   const [isLoading, setIsLoading] = useState(false)
+
+  const onSetupLater = () => {
+    if (isLoading) return
+
+    setIsLoading(true)
+    onSkipCardSetup()
+    setIsLoading(false)
+  }
 
   const onContinue = () => {
     if (isLoading) return
@@ -22,7 +31,10 @@ export function OnboardingIdCardStart({ goToNextStep }: OnboardingIdCardStartSca
       <IllustrationContainer>
         <IdCardImage height={52} width={256} />
       </IllustrationContainer>
-      <Stack flex-1 justifyContent="flex-end">
+      <Stack gap="$4" flex-1 justifyContent="flex-end">
+        <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
+          Set up later
+        </Button.Text>
         <Button.Solid scaleOnPress disabled={isLoading} onPress={onContinue}>
           {isLoading ? <Spinner variant="dark" /> : 'Continue'}
         </Button.Solid>

@@ -41,7 +41,7 @@ export function FunkeActivityDetailScreen() {
               <IdCard small issuerImage={germanIssuerImage} />
 
               <Stack g="md">
-                <Heading variant="title">{activityTitleMap[activity.type]}</Heading>
+                <Heading variant="h1">{activityTitleMap[activity.type]}</Heading>
                 <Paragraph color="$grey-700">
                   You have shared this data with {activity.entityName ?? activity.entityHost} on{' '}
                   {new Date(activity.date).toLocaleDateString('en-US', {

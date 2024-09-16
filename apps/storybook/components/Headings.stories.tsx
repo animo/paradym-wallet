@@ -7,8 +7,8 @@ const meta = {
   title: 'Heading',
   component: Heading,
   args: {
-    variant: 'title',
-    children: 'Title',
+    variant: 'h1',
+    children: 'H1',
   },
   decorators: [
     (Story) => (
@@ -23,12 +23,6 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Title: Story = {
-  args: {
-    variant: 'title',
-    children: 'Title',
-  },
-}
 export const H1: Story = {
   args: {
     variant: 'h1',

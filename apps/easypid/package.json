@@ -41,6 +41,8 @@
 		"babel-plugin-module-resolver": "^4.1.0",
 		"burnt": "^0.12.2",
 		"expo": "~51.0.32",
+		"expo-barcode-scanner": "~13.0.1",
+		"expo-blur": "^13.0.2",
 		"expo-camera": "*",
 		"expo-constants": "~16.0.2",
 		"expo-dev-client": "~4.0.16",

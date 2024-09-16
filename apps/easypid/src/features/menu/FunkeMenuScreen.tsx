@@ -3,11 +3,9 @@ import React from 'react'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
 
-import { useSecureUnlock } from '@easypid/agent'
-import { resetWallet } from '@easypid/utils/resetWallet'
+import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { TextBackButton } from '@package/app'
-import { Link, useRouter } from 'expo-router'
-import { Alert } from 'react-native'
+import { Link } from 'expo-router'
 import Animated from 'react-native-reanimated'
 
 const menuItems = [
@@ -35,30 +33,14 @@ const menuItems = [
 
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-  const secureUnlock = useSecureUnlock()
-  const router = useRouter()
-
-  const onResetWallet = () => {
-    Alert.alert('Reset Wallet', 'Are you sure you want to reset the wallet?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Yes',
-        onPress: () => {
-          resetWallet(secureUnlock).then(() => router.replace('onboarding'))
-        },
-      },
-    ])
-  }
+  const onResetWallet = useWalletReset()
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <YStack w="100%" top={0} borderBottomWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'}>
         <YStack gap="$4" p="$4">
           <Stack h="$1" />
-          <Heading variant="title" fontWeight="$bold">
+          <Heading variant="h1" fontWeight="$bold">
             Menu
           </Heading>
         </YStack>

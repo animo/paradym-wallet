@@ -103,7 +103,7 @@ export function WalletScreen({ logo, showInbox = true }: WalletScreenProps) {
       ) : (
         <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle} px="$4">
           <YStack g="md" width="100%">
-            <Heading variant="h3" textAlign="left" secondary>
+            <Heading variant="h3" fontWeight="$medium" textAlign="left" secondary>
               Recently added
             </Heading>
             <ZStack
@@ -137,7 +137,7 @@ export function WalletScreen({ logo, showInbox = true }: WalletScreenProps) {
             </ZStack>
           </YStack>
           <YStack g="md" marginBottom="$8">
-            <Heading variant="h3" textAlign="left" secondary>
+            <Heading variant="h3" fontWeight="$medium" textAlign="left" secondary>
               Credentials
             </Heading>
             <TableContainer>

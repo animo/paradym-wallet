@@ -28,7 +28,7 @@ const OnboardingStepItem = ({ stepName, title, description, icon }: OnboardingSt
           {stepName}
         </Paragraph>
         <Heading variant="h2">{title}</Heading>
-        <Paragraph variant="text" size="$3" fontWeight="$regular">
+        <Paragraph variant="sub" size="$3" fontWeight="$regular">
           {description}
         </Paragraph>
       </YStack>

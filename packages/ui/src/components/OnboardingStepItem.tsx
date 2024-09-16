@@ -20,16 +20,12 @@ export const OnboardingStepItem = ({ stepName, title, description, icon }: Onboa
       >
         {icon}
       </Stack>
-      <YStack gap="$2" flex-1>
-        <Paragraph variant="sub" color="$grey-700" fontWeight="$semiBold" textTransform="uppercase">
+      <YStack gap="$1" flex-1>
+        <Paragraph variant="caption" textTransform="uppercase">
           {stepName}
         </Paragraph>
-        <Heading variant="h3" fontWeight="$semiBold" color="$grey-900">
-          {title}
-        </Heading>
-        <Paragraph variant="text" size="$3" color="$grey-700">
-          {description}
-        </Paragraph>
+        <Heading variant="sub1">{title}</Heading>
+        <Paragraph>{description}</Paragraph>
       </YStack>
     </XStack>
   )

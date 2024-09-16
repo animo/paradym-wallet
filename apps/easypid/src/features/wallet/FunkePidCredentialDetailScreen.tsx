@@ -1,19 +1,33 @@
-import { Heading, IdCard, ScrollView, Spacer, Stack, YStack } from '@package/ui'
+import { Heading, IdCard, ScrollView, Spacer, Stack, YStack, useToastController } from '@package/ui'
 import React from 'react'
 
 import { CredentialAttributes } from '@package/app/src/components'
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
 
+import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import germanIssuerImage from '../../../assets/german-issuer-image.png'
 import { usePidCredential } from '../../hooks'
 
 export function FunkePidCredentialDetailScreen() {
+  const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { isLoading, credential } = usePidCredential()
+  const router = useRouter()
   if (isLoading) {
+    return null
+  }
+
+  if (!credential) {
+    toast.show('Error getting credential details', {
+      message: 'Credential not found',
+      customData: {
+        preset: 'danger',
+      },
+    })
+    router.back()
     return null
   }
 
@@ -25,7 +39,7 @@ export function FunkePidCredentialDetailScreen() {
         <YStack g="xl" p="$4" marginBottom={bottom}>
           <IdCard issuerImage={germanIssuerImage} small />
           <Stack g="md">
-            <Heading variant="title">Personalausweis</Heading>
+            <Heading variant="h1">Personalausweis</Heading>
             <CredentialAttributes
               subject={credential.attributesForDisplay ?? credential.attributes}
               headerTitle="Attributes"

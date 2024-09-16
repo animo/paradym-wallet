@@ -6,19 +6,18 @@ export const Paragraph = styled(SizableText, {
   name: 'Paragraph',
   tag: 'p',
   userSelect: 'auto',
-  color: '$grey-900',
-  letterSpacing: '$true',
+  color: '$grey-700',
   fontFamily: '$default',
-  fontWeight: '$medium',
+  fontWeight: '$regular',
   variants: {
     light: {
       true: {
-        color: '$grey-900',
+        color: '$grey-700',
       },
     },
     dark: {
       true: {
-        color: '$grey-100',
+        color: '$grey-200',
       },
     },
     secondary: {
@@ -26,19 +25,33 @@ export const Paragraph = styled(SizableText, {
         color: '$grey-600',
       },
     },
+    emphasis: {
+      true: {
+        fontWeight: '$bold',
+        color: '$grey-900',
+      },
+    },
     variant: {
       normal: {
         size: '$3',
+        lineHeight: '$5',
+        letterSpacing: '$8',
       },
       sub: {
         size: '$2',
+        lineHeight: '$3',
+        letterSpacing: '$8',
       },
       annotation: {
-        size: '$1',
-      },
-      text: {
         size: '$2',
-        fontWeight: '$regular',
+        lineHeight: '$5',
+        letterSpacing: '$8',
+      },
+      caption: {
+        size: '$2',
+        lineHeight: '$5',
+        letterSpacing: '$2',
+        fontWeight: '$semiBold',
       },
     },
   } as const,

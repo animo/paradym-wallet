@@ -13,7 +13,7 @@ export function FunkeFeedbackScreen() {
       <YStack w="100%" top={0} borderBottomWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'}>
         <YStack gap="$4" p="$4">
           <Stack h="$1" />
-          <Heading variant="title" fontWeight="$bold">
+          <Heading variant="h1" fontWeight="$bold">
             Feedback
           </Heading>
         </YStack>
