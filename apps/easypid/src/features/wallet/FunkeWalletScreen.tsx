@@ -77,7 +77,7 @@ export function FunkeWalletScreen() {
   return (
     <>
       {!hasSeenIntroTooltip && <WelcomePopup bottom={bottom} onClose={onCloseIntroTooltip} />}
-      <XStack position="absolute" width="100%" zIndex={5} justifyContent="center" bottom={bottom ?? '$6'}>
+      <XStack position="absolute" width="100%" zIndex={5} justifyContent="center" bottom={Math.max(bottom, 16) ?? '$6'}>
         <YStack bg="#e9e9eb" br="$12">
           <Animated.View style={qrPressStyle}>
             <YStack

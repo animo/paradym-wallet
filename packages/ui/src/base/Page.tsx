@@ -20,6 +20,16 @@ const FlexPageBase = styled(Stack, {
   'flex-1': true,
   gap: '$6',
   paddingHorizontal: '$4',
+  variants: {
+    unstyled: {
+      true: {
+        padding: 0,
+        margin: 0,
+        gap: 0,
+        'flex-1': false,
+      },
+    },
+  },
 })
 
 export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' | 'l' | 'b' | 't' | 'r' }>(
@@ -30,7 +40,9 @@ export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' 
     const safeArea = props.safeArea ?? true
 
     const top = safeArea === true || safeArea === 'y' || safeArea === 't' ? safeAreaInsets.top : undefined
-    const bottom = safeArea === true || safeArea === 'y' || safeArea === 'b' ? safeAreaInsets.bottom : undefined
+    // Some devices have no bottom safe area, so we add a default of 16px so the content is not against the edge
+    const bottom =
+      safeArea === true || safeArea === 'y' || safeArea === 'b' ? Math.max(safeAreaInsets.bottom, 20) : undefined
     const left = safeArea === true || safeArea === 'x' || safeArea === 'l' ? safeAreaInsets.left : undefined
     const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
 
