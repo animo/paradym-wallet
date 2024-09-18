@@ -1,4 +1,4 @@
-import { Button, HeroIcons, IdCardImage, Spinner, Stack } from '@package/ui'
+import { Button, HeroIcons, IdCardImage, ScrollView, Spinner, YStack } from '@package/ui'
 
 import { IllustrationContainer } from '@package/ui'
 import { useState } from 'react'
@@ -27,18 +27,24 @@ export function OnboardingIdCardStart({ goToNextStep, onSkipCardSetup }: Onboard
   }
 
   return (
-    <Stack fg={1}>
-      <IllustrationContainer>
-        <IdCardImage height={52} width={256} />
-      </IllustrationContainer>
-      <Stack gap="$4" flex-1 justifyContent="flex-end">
-        <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
+    <YStack fg={1} jc="space-between">
+      <YStack flex={1} overflow="hidden">
+        <ScrollView alwaysBounceVertical={false}>
+          <YStack gap="$2" pb="$4">
+            <IllustrationContainer>
+              <IdCardImage height={52} width={256} />
+            </IllustrationContainer>
+          </YStack>
+        </ScrollView>
+      </YStack>
+      <YStack gap="$4" alignItems="center">
+        <Button.Text disabled={isLoading} icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
           Set up later
         </Button.Text>
         <Button.Solid scaleOnPress disabled={isLoading} onPress={onContinue}>
           {isLoading ? <Spinner variant="dark" /> : 'Continue'}
         </Button.Solid>
-      </Stack>
-    </Stack>
+      </YStack>
+    </YStack>
   )
 }

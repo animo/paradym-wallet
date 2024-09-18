@@ -1,10 +1,10 @@
-import { Spinner as TSpinner } from 'tamagui'
+import { Spinner as TSpinner, type SpinnerProps as TSpinnerProps } from 'tamagui'
 
-interface SpinnerProps {
+interface SpinnerProps extends TSpinnerProps {
   size?: 'small' | 'large'
   variant?: 'light' | 'dark'
 }
 
-export function Spinner({ size = 'small', variant = 'light' }: SpinnerProps) {
-  return <TSpinner size={size} color={variant === 'dark' ? '$grey-100' : '$grey-900'} />
+export function Spinner({ size = 'small', variant = 'light', ...props }: SpinnerProps) {
+  return <TSpinner size={size} color={variant === 'dark' ? '$grey-100' : '$grey-900'} {...props} />
 }

@@ -123,7 +123,7 @@ export function IdCard({
               PERSONALAUSWEIS
             </Paragraph>
             <Paragraph size={small ? '$3' : '$6'} fontWeight="$semiBold">
-              {hideUserName ? '********' : userName ?? ''}
+              {hideUserName && !icon ? '********' : userName ?? ''}
             </Paragraph>
           </YStack>
           <Stack>
@@ -134,13 +134,11 @@ export function IdCard({
           <XStack justifyContent="flex-start" alignItems="flex-end">
             {IconComponent ? (
               <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
-                <Circle size={small ? '$1' : '$3'} backgroundColor="#282C3740">
-                  <IconComponent color="$white" size={small ? 12 : 24} />
+                <Circle m={'$-1'} size={small ? '$1' : '$3'} backgroundColor="#282C3740">
+                  <IconComponent color="$white" size={small ? 12 : 20} />
                 </Circle>
               </Animated.View>
-            ) : (
-              <Stack width={small ? '$1' : '$3'} height={small ? '$1' : '$3'} />
-            )}
+            ) : null}
           </XStack>
           <XStack justifyContent="flex-end" alignItems="flex-end">
             {onPress && <HeroIcons.ArrowRight color="$black" />}

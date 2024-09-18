@@ -49,7 +49,7 @@ export function AnimatedNfcScan() {
           <NfcCard height={100} width={100} />
         </Stack>
       </Animated.View>
-      <Stack mt="$10">
+      <Stack mt="$8">
         <NfcHand height={256} width={256} />
       </Stack>
     </ZStack>
