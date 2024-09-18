@@ -9,17 +9,6 @@
 		"ios": "APP_VARIANT=development expo run:ios",
 		"prebuild": "APP_VARIANT=development expo prebuild --no-install"
 	},
-	"expo": {
-		"remove-after-sdk-52": "https://expo.dev/changelog/2024/08-14-react-native-0.75#1-exclude-packages-from-version-validations",
-		"install": {
-			"exclude": [
-				"react-native@~0.74.0",
-				"react-native-reanimated@~3.10.0",
-				"react-native-gesture-handler@~2.16.1",
-				"react-native-screens@~3.31.1"
-			]
-		}
-	},
 	"dependencies": {
 		"@animo-id/expo-ausweis-sdk": "*",
 		"@animo-id/expo-secure-environment": "*",
@@ -36,15 +25,14 @@
 		"@package/utils": "workspace:*",
 		"@react-native-community/blur": "^4.3.2",
 		"@react-native-community/netinfo": "11.3.1",
-		"@react-native-masked-view/masked-view": "*",
+		"@react-native-masked-view/masked-view": "0.3.1",
 		"@react-navigation/native": "^6.1.6",
 		"babel-plugin-module-resolver": "^4.1.0",
 		"burnt": "^0.12.2",
-		"expo": "~51.0.32",
+		"expo": "~51.0.12",
 		"expo-barcode-scanner": "~13.0.1",
-		"expo-blur": "^13.0.2",
-		"expo-camera": "*",
 		"expo-constants": "~16.0.2",
+		"expo-blur": "^13.0.2",
 		"expo-dev-client": "~4.0.16",
 		"expo-font": "~12.0.7",
 		"expo-haptics": "~13.0.1",
@@ -52,7 +40,7 @@
 		"expo-linear-gradient": "~13.0.2",
 		"expo-linking": "~6.3.1",
 		"expo-navigation-bar": "~3.0.6",
-		"expo-router": "~3.5.23",
+		"expo-router": "~3.5.16",
 		"expo-secure-store": "~13.0.1",
 		"expo-splash-screen": "~0.27.5",
 		"expo-status-bar": "~1.12.1",
@@ -62,13 +50,13 @@
 		"react-native": "*",
 		"react-native-argon2": "^2.0.1",
 		"react-native-fs": "^2.20.0",
-		"react-native-gesture-handler": "~2.18.1",
+		"react-native-gesture-handler": "~2.16.2",
 		"react-native-get-random-values": "~1.11.0",
 		"react-native-keychain": "^8.2.0",
 		"react-native-mmkv": "^2.12.2",
 		"react-native-reanimated": "~3.15.0",
 		"react-native-safe-area-context": "4.10.1",
-		"react-native-screens": "~3.34.0",
+		"react-native-screens": "~3.31.1",
 		"react-native-svg": "15.2.0"
 	},
 	"devDependencies": {
