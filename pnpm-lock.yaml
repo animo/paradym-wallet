@@ -15,26 +15,27 @@ overrides:
   '@hyperledger/anoncreds-react-native': ^0.2.2
   '@hyperledger/aries-askar-react-native': ^0.2.3
   '@hyperledger/indy-vdr-react-native': ^0.2.0
-  '@credo-ts/anoncreds': 0.5.11-pr-1996-20240827124430
-  '@credo-ts/askar': 0.5.11-pr-1996-20240827124430
-  '@credo-ts/cheqd': 0.5.11-pr-1996-20240827124430
-  '@credo-ts/core': 0.5.11-pr-1996-20240827124430
-  '@credo-ts/indy-vdr': 0.5.11-pr-1996-20240827124430
-  '@credo-ts/openid4vc': 0.5.11-pr-1996-20240827124430
-  '@credo-ts/question-answer': 0.5.11-pr-1996-20240827124430
+  '@credo-ts/anoncreds': 0.5.12-pr-2039-20240918161638
+  '@credo-ts/askar': 0.5.12-pr-2039-20240918161638
+  '@credo-ts/cheqd': 0.5.12-pr-2039-20240918161638
+  '@credo-ts/core': 0.5.12-pr-2039-20240918161638
+  '@credo-ts/indy-vdr': 0.5.12-pr-2039-20240918161638
+  '@credo-ts/openid4vc': 0.5.12-pr-2039-20240918161638
+  '@credo-ts/question-answer': 0.5.12-pr-2039-20240918161638
   '@credo-ts/react-hooks': 0.6.1
-  '@credo-ts/react-native': 0.5.11-pr-1996-20240827124430
+  '@credo-ts/react-native': 0.5.12-pr-2039-20240918161638
   '@animo-id/expo-secure-environment': 0.1.0-alpha.5
   '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.14
   react-native: 0.75.3
-  '@sphereon/did-auth-siop': file:./sphereon-did-auth-siop-0.16.0.tgz
-  '@sphereon/oid4vc-common': 0.16.1-next.14
   expo-camera: ~15.0.16
+  '@sphereon/did-auth-siop': file:./sphereon-did-auth-siop-0.16.0-paradym-multi-vp-2.tgz
+  '@sphereon/pex': file:./sphereon-pex-5.0.0-unstable.0-paradym-multi-vp.tgz
+  '@sphereon/oid4vc-common': 0.16.1-next.29
+  '@sphereon/oid4vci-client': 0.16.1-next.29
+  '@sphereon/oid4vci-common': 0.16.1-next.29
+  '@sphereon/oid4vci-issuer': 0.16.1-next.29
 
 patchedDependencies:
-  '@credo-ts/openid4vc@0.5.11-pr-1996-20240827124430':
-    hash: ytkffp6mlnn7pnbuzzh5tbo2ra
-    path: patches/@credo-ts__openid4vc@0.5.11-pr-1996-20240827124430.patch
   '@hyperledger/anoncreds-react-native@0.2.2':
     hash: uj4fpmtxrqtmj5uf7zkg323eku
     path: patches/@hyperledger__anoncreds-react-native@0.2.2.patch
@@ -44,15 +45,6 @@ patchedDependencies:
   '@hyperledger/indy-vdr-react-native@0.2.2':
     hash: k3s7tjqtyll6c4am7ycpwzldhq
     path: patches/@hyperledger__indy-vdr-react-native@0.2.2.patch
-  '@sphereon/oid4vc-common@0.16.1-next.14':
-    hash: nglnl6raz4zqpmewvolbw5yily
-    path: patches/@sphereon__oid4vc-common@0.16.1-next.14.patch
-  '@sphereon/oid4vci-client@0.16.1-next.14':
-    hash: 7s3wmlpmfikkjc2epivpdhcc7i
-    path: patches/@sphereon__oid4vci-client@0.16.1-next.14.patch
-  '@sphereon/oid4vci-common@0.16.1-next.14':
-    hash: blqn6vt6i3cjj2v3vqh5nn6s4a
-    path: patches/@sphereon__oid4vci-common@0.16.1-next.14.patch
 
 importers:
 
@@ -77,8 +69,8 @@ importers:
         specifier: 0.1.0-alpha.5
         version: 0.1.0-alpha.5(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(react@18.2.0)
       '@credo-ts/core':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@expo-google-fonts/open-sans':
         specifier: ^0.2.3
         version: 0.2.3
@@ -530,32 +522,32 @@ importers:
   packages/agent:
     dependencies:
       '@credo-ts/anoncreds':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@credo-ts/askar':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(@animo-id/expo-secure-environment@0.1.0-alpha.5(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(@animo-id/expo-secure-environment@0.1.0-alpha.5(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@credo-ts/cheqd':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@credo-ts/core':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@credo-ts/indy-vdr':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@credo-ts/openid4vc':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(patch_hash=ytkffp6mlnn7pnbuzzh5tbo2ra)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@credo-ts/question-answer':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@credo-ts/react-hooks':
         specifier: 0.6.1
-        version: 0.6.1(@credo-ts/core@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(react@18.2.0)
+        version: 0.6.1(@credo-ts/core@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(react@18.2.0)
       '@credo-ts/react-native':
-        specifier: 0.5.11-pr-1996-20240827124430
-        version: 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native-get-random-values@1.11.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+        specifier: 0.5.12-pr-2039-20240918161638
+        version: 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native-get-random-values@1.11.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-react-native':
         specifier: ^0.2.2
         version: 0.2.2(patch_hash=uj4fpmtxrqtmj5uf7zkg323eku)(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(react@18.2.0)
@@ -573,7 +565,7 @@ importers:
         version: 5.56.2(react@18.2.0)
       credo-ts-didweb-anoncreds:
         specifier: 0.0.1-alpha.13
-        version: 0.0.1-alpha.13(@credo-ts/anoncreds@0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/core@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.2)
+        version: 0.0.1-alpha.13(@credo-ts/anoncreds@0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/core@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.2)
       expo:
         specifier: '*'
         version: 51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))
@@ -1618,12 +1610,13 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cheqd/sdk@2.4.4':
-    resolution: {integrity: sha512-ratcHNuKUZH6pmRvyLeiEFODhrlawfiDssaSzANscOTjeDMJzHK0YvEiSXswZAHcsB/DWbGlR+9gKhbLyD5G7w==}
-    engines: {node: '>=18.0.0'}
+  '@cheqd/sdk@2.5.1':
+    resolution: {integrity: sha512-Vm9hwFIzgXhK1/ilaciauPnfa2mm8/aGPVRxM/O3LCLUyBdmS+dKIY6G6FKN/ttcsfUJSRmpR50weFY/vMqs3g==}
+    engines: {node: '>=18'}
 
-  '@cheqd/ts-proto@2.2.2':
-    resolution: {integrity: sha512-32XCz1tD/T8r9Pw6IWH+XDttnGEguN0/1dWoUnTZ6uIPAA65YYSz2Ba9ZJ69a7YipYzX9C1CRddVZ3u229dfYg==}
+  '@cheqd/ts-proto@2.3.2':
+    resolution: {integrity: sha512-WqwthQGyF16tx3LyqwJlLq/4DfTigNsCWtGY3ct9RSfTNTPI/JZ1qLE7eSkcE9Glk4Yk95d+SYbqOeoSNP442Q==}
+    engines: {node: '>=18'}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -1665,13 +1658,13 @@ packages:
   '@cosmjs/utils@0.30.1':
     resolution: {integrity: sha512-KvvX58MGMWh7xA+N+deCfunkA/ZNDvFLw4YbOmX3f/XBIkqrVY7qlotfy2aNb1kgp6h4B6Yc8YawJPDTfvWX7g==}
 
-  '@credo-ts/anoncreds@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-kh8sPVUbi4GRIbq6f9YQQiqEZCvQS67zYjiybHSl41kmb/t1P1TGkECOwpEqp3Jn+1MlI7HTbqP5Fxle8KcyQg==}
+  '@credo-ts/anoncreds@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-Yf7T1zEXGoX6nAtAqyIgwvTTqcGebkPhqlAXdN3mZAZK/QnCpSHlNNInd2FdATwidwHMNhDpU2ApAbTLjYh//Q==}
     peerDependencies:
       '@hyperledger/anoncreds-shared': ^0.2.2
 
-  '@credo-ts/askar@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-vX6wkDaWg1qnljqk56plUD98YQbZgUQ4dHRfesv3VW11wkx2IMXYpFliigRztBVvGz2C+2xvcQGKH4jajrBArg==}
+  '@credo-ts/askar@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-eLBNqy71FDyp9Qn2mQsEbUwC/pswHSYue4t7iZhH2M50f5sI0kI7qgPWsfH/0KzIt0fhC9i4HmZYGGMtgMdCKw==}
     peerDependencies:
       '@animo-id/expo-secure-environment': 0.1.0-alpha.5
       '@hyperledger/aries-askar-shared': ^0.2.3
@@ -1679,32 +1672,32 @@ packages:
       '@animo-id/expo-secure-environment':
         optional: true
 
-  '@credo-ts/cheqd@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-ezrfw9IfyAcu8imHoeC/IBqQuH/mQz4LKLrePXSFtxCl0Wxtig2/gKPHdoZAZ2BJLn1CqCP5MpwT9tQBVDtatA==}
+  '@credo-ts/cheqd@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-OZ71+QsbGLTPL6+Vkna9gZlbrJf8CKrZBKK/Wj4sRDOwf8Sw+3hfiuAdtHiAx13972pzQbOesc/2/2cPkHBYsg==}
 
-  '@credo-ts/core@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-cGcnUxmSKlF0yycTQ1OPyCiLlsW6qF5jzz5s89aKT70gABv0O6ZR/yXaSSLNuXVeNBM335f+jXj9oWwfPfAV8w==}
+  '@credo-ts/core@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-iME7dUX9IphhTovTPWJnI8KM66OuBOMuLBJzfg3QfpPapf8F0ha0W/fcujLLmMHCYCobiAqcaBTw8VMaUWcWSQ==}
 
-  '@credo-ts/indy-vdr@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-m9ob3pd20yxUCDm/kTHOtiv7pQ1jvsFXgPJTBwZMP68pQp2fDnGb6vlQp/YP7BxIMPGmtlHwMvLSi27bSFlpEw==}
+  '@credo-ts/indy-vdr@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-346Y4SKjoOwJKPpoSphsyfG3PQd71JyCaB8k2RV7ncc3KP3bGvGBDjHr51uldYT4GV2oUIYWyx22yhtpKtM9Rw==}
     peerDependencies:
       '@hyperledger/indy-vdr-shared': ^0.2.2
 
-  '@credo-ts/openid4vc@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-TT0l/zXjFs2Zxw0gwpl8w7WJr7HUnJ6kZ+tYukGq62Cx5pJMY8fXCDwabulTiftb2wrLx+Z4KgN+kUuLTYM55g==}
+  '@credo-ts/openid4vc@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-ux3bmwFnWMMrCRZQimoy6w58gp3Y2wEgJAbaQSUT18wDUi6eOfoAI1R7rKPekL4FAbvJVAVz0Tmul7mj0aWAng==}
 
-  '@credo-ts/question-answer@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-xVipUf1d21Rv5Y+NHVanWfdx8Ob0gMTmVhOMMXEZbOsr8KLwZUm9s0siU5cJ3AAigN2Ddzgolr4HbvgEZnEr6Q==}
+  '@credo-ts/question-answer@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-ft0VuP9NKN1XYm9sxBCYqH9TEI5vyZ164x9fpN4t9DVy/Ca0u4SVTzFBoR6ZeC6wUwKfhR99RE1pssO8W9nVCw==}
 
   '@credo-ts/react-hooks@0.6.1':
     resolution: {integrity: sha512-lZt1N5oKzYfh9DMUBauX9Q2irJPxbztfK9zkYU93mhSV7jF5up0X/TdWxj85l9Guu7iL84JDQJY11CpIHquPOQ==}
     peerDependencies:
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430
-      '@credo-ts/question-answer': 0.5.11-pr-1996-20240827124430
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638
+      '@credo-ts/question-answer': 0.5.12-pr-2039-20240918161638
       react: 18.2.0
 
-  '@credo-ts/react-native@0.5.11-pr-1996-20240827124430':
-    resolution: {integrity: sha512-AiMvvikEtNHWNPxWOmqBXmkdJq58ek/eyArJepyQocnC0lfW3u1m0lDIInuXpe3itRuHWElISJDz6bmrP0iKxg==}
+  '@credo-ts/react-native@0.5.12-pr-2039-20240918161638':
+    resolution: {integrity: sha512-9p781FxXuzW46VQ+O30Vln1gVw+Bnzc0D0oLtdJ3Bc/Se1+FWlDG6uv+smvm7Jpp0XEn9/aHEbNgIt5p6ek2Fw==}
     peerDependencies:
       react-native: 0.75.3
       react-native-fs: ^2.20.0
@@ -2214,6 +2207,45 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@ethersproject/address@5.7.0':
+    resolution: {integrity: sha512-9wYhYt7aghVGo758POM5nqcOMaE168Q6aRLJZwUmiqSrAungkG74gSSeKEIR7ukixesdRZGPgVqme6vmxs1fkA==}
+
+  '@ethersproject/bignumber@5.7.0':
+    resolution: {integrity: sha512-n1CAdIHRWjSucQO3MC1zPSVgV/6dy/fjL9pMrPP9peL+QxEg9wOsVqwD4+818B6LUEtaXzVHQiuivzRoxPxUGw==}
+
+  '@ethersproject/bytes@5.7.0':
+    resolution: {integrity: sha512-nsbxwgFXWh9NyYWo+U8atvmMsSdKJprTcICAkvbBffT75qDocbuggBU0SJiVK2MuTrp0q+xvLkTnGMPK1+uA9A==}
+
+  '@ethersproject/constants@5.7.0':
+    resolution: {integrity: sha512-DHI+y5dBNvkpYUMiRQyxRBYBefZkJfo70VUkUAsRjcPs47muV9evftfZ0PJVCXYbAiCgght0DtcF9srFQmIgWA==}
+
+  '@ethersproject/keccak256@5.7.0':
+    resolution: {integrity: sha512-2UcPboeL/iW+pSg6vZ6ydF8tCnv3Iu/8tUmLLzWWGzxWKFFqOBQFLo6uLUv6BDrLgCDfN28RJ/wtByx+jZ4KBg==}
+
+  '@ethersproject/logger@5.7.0':
+    resolution: {integrity: sha512-0odtFdXu/XHtjQXJYA3u9G0G8btm0ND5Cu8M7i5vhEcE8/HmF4Lbdqanwyv4uQTr2tx6b7fQRmgLrsnpQlmnig==}
+
+  '@ethersproject/networks@5.7.1':
+    resolution: {integrity: sha512-n/MufjFYv3yFcUyfhnXotyDlNdFb7onmkSy8aQERi2PjNcnWQ66xXxa3XlS8nCcA8aJKJjIIMNJTC7tu80GwpQ==}
+
+  '@ethersproject/properties@5.7.0':
+    resolution: {integrity: sha512-J87jy8suntrAkIZtecpxEPxY//szqr1mlBaYlQ0r4RCaiD2hjheqF9s1LVE8vVuJCXisjIP+JgtK/Do54ej4Sw==}
+
+  '@ethersproject/random@5.7.0':
+    resolution: {integrity: sha512-19WjScqRA8IIeWclFme75VMXSBvi4e6InrUNuaR4s5pTF2qNhcGdCUwdxUVGtDDqC00sDLCO93jPQoDUH4HVmQ==}
+
+  '@ethersproject/rlp@5.7.0':
+    resolution: {integrity: sha512-rBxzX2vK8mVF7b0Tol44t5Tb8gomOHkj5guL+HhzQ1yBh/ydjGnpw6at+X6Iw0Kp3OzzzkcKp8N9r0W4kYSs9w==}
+
+  '@ethersproject/signing-key@5.7.0':
+    resolution: {integrity: sha512-MZdy2nL3wO0u7gkB4nA/pEf8lu1TlFswPNmy8AiYkfKTdO6eXBJyUdmHO/ehm/htHw9K/qF8ujnTyUAD+Ry54Q==}
+
+  '@ethersproject/strings@5.7.0':
+    resolution: {integrity: sha512-/9nu+lj0YswRNSH0NXYqrh8775XNyEdUQAuf3f+SmOrnVewcJ5SBNAjF7lpgehKi4abvNNXyf+HX86czCdJ8Mg==}
+
+  '@ethersproject/transactions@5.7.0':
+    resolution: {integrity: sha512-kmcNicCp1lp8qanMTC3RIikGgoJ80ztTyvtsFvCYpSCfkjhD0jZ2LOrnbcuxuToLIUYYf+4XwD1rP+B/erDIhQ==}
+
   '@expo-google-fonts/open-sans@0.2.3':
     resolution: {integrity: sha512-HjEue5908n2yTtNSo47lAN3UFi2sAp00u6E3tx9nSEr0P2SDFDjYgsA89nPaAYOyxDN0EPGtNTa2K/VUe3jgmA==}
 
@@ -2475,9 +2507,23 @@ packages:
   '@ndelangen/get-tarball@3.0.9':
     resolution: {integrity: sha512-9JKTEik4vq+yGosHYhZ1tiH/3WpUS0Nh0kej4Agndhox8pAdWhEx5knFVRcb/ya9knCRCs1rPxNrSXTDdfVqpA==}
 
+  '@noble/ciphers@0.4.1':
+    resolution: {integrity: sha512-QCOA9cgf3Rc33owG0AYBB9wszz+Ul2kramWN8tXG44Gyciud/tbkEqvxRF/IpqQaBpRBNi9f4jdNxqB2CQCIXg==}
+
+  '@noble/ciphers@0.5.3':
+    resolution: {integrity: sha512-B0+6IIHiqEs3BPMT0hcRmHvEj2QHOLu+uwt+tqDDeVd0oyVzh7BPrDcPjRnV1PV/5LaknXJJQvOuRGR0zQJz+w==}
+
+  '@noble/curves@1.6.0':
+    resolution: {integrity: sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@noble/hashes@1.4.0':
     resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
     engines: {node: '>= 16'}
+
+  '@noble/hashes@1.5.0':
+    resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3282,6 +3328,9 @@ packages:
     resolution: {integrity: sha512-lzD84av1ZQhYUS+jsGqJiCMaJO2dn9u+RTT9n9q6D3SaKVwWqv+7AoRKqBu19bkwyE+iFRl1ymr40QS90jVFYg==}
     engines: {node: '>=14.15'}
 
+  '@scure/base@1.1.9':
+    resolution: {integrity: sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg==}
+
   '@sd-jwt/core@0.7.2':
     resolution: {integrity: sha512-vix1GplUFc1A9H42r/yXkg7cKYthggyqZEwlFdsBbn4xdZNE+AHVF4N7kPa1pPxipwN3UIHd4XnQ5MJV15mhsQ==}
     engines: {node: '>=18'}
@@ -3351,9 +3400,9 @@ packages:
     resolution: {integrity: sha512-kQpk267uxB19X3X2T1mvNMjyvIEonpNSHrMlK5ZaBU6aZxw7wPbpgKJOjHN3+/GPVpXgAV9soVT2oyHpLkLtyw==}
     engines: {node: '>= 8'}
 
-  '@sphereon/did-auth-siop@file:sphereon-did-auth-siop-0.16.0.tgz':
-    resolution: {integrity: sha512-iEv/LId86l2LWl+JdT7oS5/ymnv0iLn39ujsTRTw7xTZXkkSUOSuIC/FzY5flEmZJuVuibOdeFyYE3CtKm0Y3Q==, tarball: file:sphereon-did-auth-siop-0.16.0.tgz}
-    version: 0.16.0
+  '@sphereon/did-auth-siop@file:sphereon-did-auth-siop-0.16.0-paradym-multi-vp-2.tgz':
+    resolution: {integrity: sha512-UMBiGxaN1KSIlgGvTH2ZG6xMEsk8098J6OD3uezjQS9ZxO1AOhXFRYzSjdJxj676UYWVasq33wZJRecWv9aAMA==, tarball: file:sphereon-did-auth-siop-0.16.0-paradym-multi-vp-2.tgz}
+    version: 0.16.0-paradym-multi-vp-2
     engines: {node: '>=18'}
 
   '@sphereon/did-uni-client@0.6.3':
@@ -3362,20 +3411,20 @@ packages:
   '@sphereon/kmp-mdl-mdoc@0.2.0-SNAPSHOT.22':
     resolution: {integrity: sha512-uAZZExVy+ug9JLircejWa5eLtAZ7bnBP6xb7DO2+86LRsHNLh2k2jMWJYxp+iWtGHTsh6RYsZl14ScQLvjiQ/A==}
 
-  '@sphereon/oid4vc-common@0.16.1-next.14':
-    resolution: {integrity: sha512-0Db4mYGUQ/D7EEYEWoyQYTIoixKxBhftatPeR886ivVl9uFATknZuoTgwn5uPMZf3GyIHW7Tc7ZbDt4LdavwJA==}
+  '@sphereon/oid4vc-common@0.16.1-next.29':
+    resolution: {integrity: sha512-Y5PALbBdHrMLS0iyPXgIuQY+GWzjBk23NlRTcL0rLSJj8Fngxj1SSAfKWt4XBKOd0ns8y8obQhzls8tR0F7b9w==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-client@0.16.1-next.14':
-    resolution: {integrity: sha512-L6MSUwvkCTMCr3ivBOhQG23t95U6hrdbZ6mvmoIPLdVw8iqpiMjmJ88PK5UjCzNlBwLzkj6nzO6b5jMQEQhaJw==}
+  '@sphereon/oid4vci-client@0.16.1-next.29':
+    resolution: {integrity: sha512-iwvGmgpGpC0r0DuLumhSHGM8Hj09Uajgv6YH0ZJ4N+qCmnxl7CAA1sGmZLsgKU23hKi3+JknLAONNK4UKE3KIw==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-common@0.16.1-next.14':
-    resolution: {integrity: sha512-A6S8X5DZ/4ySWbft8dE8uARaBm2qhu19ZgmAnu6ErJT5TqCxvaIKfYZ0k2TCrN1IAaMAVMz3Jkw0HKb3yezyIw==}
+  '@sphereon/oid4vci-common@0.16.1-next.29':
+    resolution: {integrity: sha512-7UAtbW0ss8xiRTaAsLpzCideX2yGxXg+eljZwbqIJHzTVXYe0uELaXzgAg7ErvMYVIoUy0F42QRKVcJL/K/diw==}
     engines: {node: '>=18'}
 
-  '@sphereon/oid4vci-issuer@0.16.1-next.14':
-    resolution: {integrity: sha512-J4YSIJeKB32TDAw8vMMQ+ubiW8vUJMDhfvPixbhcOcxYOKowCGZ3nOQmKX4ZzxDKGxdBSAaVWnj0byK7SmHUqg==}
+  '@sphereon/oid4vci-issuer@0.16.1-next.29':
+    resolution: {integrity: sha512-7WxeTMifDKUFFD1MSIt/js2CiNXPhITuQbsqGcoTqb0v0Ghr/IhH3e1ksayZvgLoavEFy44VdJxZaH5jlZZN9Q==}
     engines: {node: '>=18'}
     peerDependencies:
       awesome-qr: ^2.1.5-rc.0
@@ -3383,27 +3432,58 @@ packages:
       awesome-qr:
         optional: true
 
-  '@sphereon/pex-models@2.2.4':
-    resolution: {integrity: sha512-pGlp+wplneE1+Lk3U48/2htYKTbONMeG5/x7vhO6AnPUOsnOXeJdftPrBYWVSzz/JH5GJptAc6+pAyYE1zMu4Q==}
+  '@sphereon/pex-models@2.3.1':
+    resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
 
-  '@sphereon/pex@3.3.3':
-    resolution: {integrity: sha512-CXwdEcMTUh2z/5AriBn3OuShEG06l2tgiIr7qDJthnkez8DQ3sZo2vr4NEQWKKAL+DeAWAI4FryQGO4KuK7yfg==}
+  '@sphereon/pex@file:sphereon-pex-5.0.0-unstable.0-paradym-multi-vp.tgz':
+    resolution: {integrity: sha512-T/fjF6+c6YIT+eLlb0zDlay1FsfE/DMSqgzWF7F07N1Qag96Ugps7vUbvU8nJ+yCnfHWtKQz2du0vNdIjhy0ug==, tarball: file:sphereon-pex-5.0.0-unstable.0-paradym-multi-vp.tgz}
+    version: 5.0.0-unstable.0-paradym-multi-vp
     engines: {node: '>=18'}
 
-  '@sphereon/ssi-types@0.22.0':
-    resolution: {integrity: sha512-YPJAZlKmzNALXK8ohP3ETxj1oVzL4+M9ljj3fD5xrbacvYax1JPCVKc8BWSubGcQckKHPbgbpcS7LYEeghyT9Q==}
+  '@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.112':
+    resolution: {integrity: sha512-nc0jFPOWg0H20S8m83aQUpNym0Wx0rJCGkgpH6GdK8gBtgza8Y9DvAap1AYZug18WbqPcF6rBjvtIJqAKsSvlQ==}
 
-  '@sphereon/ssi-types@0.28.0':
-    resolution: {integrity: sha512-NkTkrsBoQUZzJutlk5XD3snBxL9kfsxKdQvBbGUEaUDOiW8siTNUoJuQFeA+bI0eJY99up95bmMKdJeDc1VDfg==}
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.112':
+    resolution: {integrity: sha512-VBkJjHokFNsQ0wsHUbyCysMuShTOEuK6yrvyW64uOFcB2hzq1J/wi9CewI+YRHv7mnejBlu46uYNycvOKKRcsQ==}
 
-  '@sphereon/ssi-types@0.29.0':
-    resolution: {integrity: sha512-fq4rx5UBRlfCRTqY0jKu4Fr5PKwWi20/FDVeceQrnk9QMnAnDPh4XhasVx5A1RYgCWrxdcgQiVsykUH7Uy2gVA==}
+  '@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.112':
+    resolution: {integrity: sha512-OrBaSg5wLSehkJ4MyuyDWKD4CRIBERnJqRT0o/y5DbaCF3k02+/lN/rWP+4qwk2w192fIEAExG4L2GwZM/5PLQ==}
+
+  '@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.112':
+    resolution: {integrity: sha512-XdXV4qj+BYTZWyGHduWQxl0mxCYt5CF0Q93p4Thbm2/hjfaAC6aJi2WAXFGTIri95QVbKW1Uscob0CjNCVkWdg==}
+
+  '@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.112':
+    resolution: {integrity: sha512-er6TwGUWxlao2lSP97r1DTFlUXcPSMsIToULOWQJp6wKbvCuvV6pN5luS0qKB/W0/TOUE5kXzFwNx086BPnPRA==}
+
+  '@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.112':
+    resolution: {integrity: sha512-bbx2jFoqWhW/xYABVwg3HiUo15yztPt3s+9bJtdB8n4PCjin4Nq3+vFvaHsmu70yAGkbWfsBcBVW6Y3oFtvpAA==}
+
+  '@sphereon/ssi-sdk.agent-config@0.29.1-unstable.161':
+    resolution: {integrity: sha512-ZP/TjapF/Gv/AwnNr9e1U3rjyRwdLtAj4un9j1csnKcgYe9ff2fhYbe06y9mU4tfQilH69mAW4Tz1t6N5U7XbA==}
+
+  '@sphereon/ssi-sdk.core@0.29.1-unstable.161':
+    resolution: {integrity: sha512-3E/KsjTywT9BzP5bMi41JVTu9nTiu2ekwNSPobF9tAJnHJv+LkjCJ59xA8jtbq/Xe4iq3xRMU17yBvpZXN2W4A==}
+
+  '@sphereon/ssi-types@0.29.1-next.122':
+    resolution: {integrity: sha512-/6wV0JU5lJgevtMeMoy9bFsyQVszQT7BP3VVpbfHLjZV/v4Mwc00j2CGN2piGGyI2oK0hOtdO3pok3UKZ7m8oA==}
+
+  '@sphereon/ssi-types@0.29.1-unstable.121':
+    resolution: {integrity: sha512-g5qt2cRa/9t3WrBWMneGOrwjyU2Mqdh4LlKeO6japli5bgl5D6lim91F++m1iIIhOYP4dqPpk5PLjy9XQlLyEw==}
+
+  '@sphereon/ssi-types@0.29.1-unstable.161':
+    resolution: {integrity: sha512-ifMADjk6k0f97/isK/4Qw/PX6n4k+qS5k6mmmH47MTD3KMDddVghoXycsvNw7wObJdLUalHBX630ghr+u21oMg==}
+
+  '@sphereon/ssi-types@0.29.1-unstable.208':
+    resolution: {integrity: sha512-3YAFzy//BojsYN+RYoEjndWP3w5a8a3qRZi5dS0Gh6s4yMCiykqTJM1agJVeoaLce8JxFFaCWSpkzwbmJYGTaQ==}
 
   '@sphereon/ssi-types@0.9.0':
     resolution: {integrity: sha512-umCr/syNcmvMMbQ+i/r/mwjI1Qw2aFPp9AwBTvTo1ailAVaaJjJGPkkVz1K9/2NZATNdDiQ3A8yGzdVJoKh9pA==}
 
   '@sphereon/wellknown-dids-client@0.1.3':
     resolution: {integrity: sha512-TAT24L3RoXD8ocrkTcsz7HuJmgjNjdoV6IXP1p3DdaI/GqkynytXE3J1+F7vUFMRYwY5nW2RaXSgDQhrFJemaA==}
+
+  '@sqltools/formatter@1.2.5':
+    resolution: {integrity: sha512-Uy0+khmZqUrUGm5dmMqVlnvufZRSK0FbYzVgp0UMstm+F5+W2/jnEEQyc9vo1ZR/E5ZI/B1WjjoTqBqwJL6Krw==}
 
   '@stablelib/aead@1.0.1':
     resolution: {integrity: sha512-q39ik6sxGHewqtO0nP4BuSe3db5G1fEJE8ukvngS2gLkBXyy6E7pLubhbYgnkDFv6V8cWaxcE4Xn0t6LWcJkyg==}
@@ -4295,6 +4375,9 @@ packages:
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
 
+  '@trust/keyto@1.0.1':
+    resolution: {integrity: sha512-OXTmKkrnkwktCX86XA7eWs1TQ6u64enm0syzAfNhjigbuGLy5aLhbhRYWtjt4zzdG/irWudluheRZ9Ic9pCwsA==}
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -4412,6 +4495,9 @@ packages:
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
 
+  '@types/node@18.18.8':
+    resolution: {integrity: sha512-OLGBaaK5V3VRBS1bAkMVP2/W9B+H8meUfl866OrMNQqt7wDgdpWPp5o6gmIc9pB+lIQHSq4ZL8ypeH1vPxcPaQ==}
+
   '@types/node@18.19.43':
     resolution: {integrity: sha512-Mw/YlgXnyJdEwLoFv2dpuJaDFriX+Pc+0qOBJ57jC1H6cDxIj2xc5yUrdtArDVG0m+KV6622a4p2tenEqB3C/g==}
 
@@ -4441,6 +4527,9 @@ packages:
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
+
+  '@types/secp256k1@4.0.6':
+    resolution: {integrity: sha512-hHxJU6PAEUn0TP4S/ZOzuTUvJWuZ6eIKeNKb5RBpODvSl6hp1Wrw4s7ATY50rklRCScUDpHzVA/DQdSjJ3UoYQ==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -4484,6 +4573,15 @@ packages:
     resolution: {integrity: sha512-hHqer2mcdVC0eYnVNbWyi28AlGOPb2vjH3lP3/Bc8Lc8BjhMsDwFMm7WhoP5C1+cfbr/QJ6Er3H/L08wznXxfg==}
     peerDependencies:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
+
+  '@veramo/core@4.2.0':
+    resolution: {integrity: sha512-HIqbXfCbwOAJelR5Ohsm22vr63cy6ND8Ua/+9wfMDAiymUUS7NryaJ/v6NRtnmIrNZqUMDdR9/TWdp4cCq5eBg==}
+
+  '@veramo/key-manager@4.2.0':
+    resolution: {integrity: sha512-v/swPrxxI155iFxWjcJDmeyfMLOnAu/VRxJJE+cv8Ld9mmPi5xljaoO9/ozt0j4Cz92n6lFKqfVOxs2ECV85UA==}
+
+  '@veramo/utils@4.2.0':
+    resolution: {integrity: sha512-jHkli0Qz9rFsWzPAdfJP3P2MFxvVMZPDXZvtVBm8x1fjAGrw/Htz/c5drhDAeBXnqPd9011/7cyvp6AOvdbc8Q==}
 
   '@web3-storage/multipart-parser@1.0.0':
     resolution: {integrity: sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==}
@@ -4700,6 +4798,10 @@ packages:
   app-root-dir@1.0.2:
     resolution: {integrity: sha512-jlpIfsOoNoafl92Sz//64uQHGSyMrD2vYG5d8o2a4qGvyNCvXur7bzIsWtAC/6flI2RYAp3kv8rsfBtaLm7w0g==}
 
+  app-root-path@3.1.0:
+    resolution: {integrity: sha512-biN3PwB2gUtjaYy/isrU3aNWI5w+fAfvHkSvCKeQGxhmYpwKFUxudR3Yya+KqVRHBmEDYh+/lTozYCFbmzX4nA==}
+    engines: {node: '>= 6.0.0'}
+
   appdirsjs@1.2.7:
     resolution: {integrity: sha512-Quji6+8kLBC3NnBeo14nPDq0+2jUs5s3/xEye+udFHumHhRk4M7aAMXp/PBJqkKYGuuyR9M/6Dq7d2AViiGmhw==}
 
@@ -4750,6 +4852,12 @@ packages:
 
   asmcrypto.js@0.22.0:
     resolution: {integrity: sha512-usgMoyXjMbx/ZPdzTSXExhMPur2FTdz/Vo5PVx2gIaBcdAAJNOFlsdgqveM8Cff7W0v+xrf9BwjOV26JSAF9qA==}
+
+  asn1.js-rfc5280@3.0.0:
+    resolution: {integrity: sha512-Y2LZPOWeZ6qehv698ZgOGGCZXBQShObWnGthTrIFlIQjuV1gg2B8QOhWFRExq/MR1VnPpIIe7P9vX2vElxv+Pg==}
+
+  asn1.js@5.4.1:
+    resolution: {integrity: sha512-+I//4cYPccV8LdmBLiX8CYvf9Sp3vQsrqu2QNXRcrbiWvcx/UdlFiqUJJzxRQxgsZmvhXhn4cSKeSmoFjVdupA==}
 
   asn1js@3.0.5:
     resolution: {integrity: sha512-FVnvrKJwpt9LP2lAMl8qZswRNm3T4q9CON+bxldk2iwk3FFpuwhx2FfinyitizWHsVYyaY+y5JzDR0rCMV5yTQ==}
@@ -4923,6 +5031,9 @@ packages:
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
 
+  blakejs@1.2.1:
+    resolution: {integrity: sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ==}
+
   bn.js@4.12.0:
     resolution: {integrity: sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==}
 
@@ -5024,6 +5135,10 @@ packages:
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
+
+  bytestreamjs@2.0.1:
+    resolution: {integrity: sha512-U1Z/ob71V/bXfVABvNr/Kumf5VyeQRBEm6Txb0PQ6S7V5GpBM3w4Cbqz/xPDicR5tN0uvDifng8C+5qECeGwyQ==}
+    engines: {node: '>=6.0.0'}
 
   cacache@18.0.4:
     resolution: {integrity: sha512-B+L5iIa9mgcjLbliir2th36yEwPftrzteHYujzsx3dFP/31GCHcIeS8f5MGd80odLOjaOvSpU3EEAmRQptkxLQ==}
@@ -5159,6 +5274,11 @@ packages:
     resolution: {integrity: sha512-I/zHAwsKf9FqGoXM4WWRACob9+SNukZTd94DWF57E4toouRulbCxcUh6RKUEOQlYTHJnzkPMySvPNaaSLNfLZw==}
     engines: {node: '>=8'}
 
+  cli-highlight@2.1.11:
+    resolution: {integrity: sha512-9KDcoEVwyUXrjcJNvHD0NFc/hiwe/WPVYIleQh2O1N2Zro5gWJZ/K+3DGn8w8P/F6FxOgzyC5bxDyHIgCSPhGg==}
+    engines: {node: '>=8.0.0', npm: '>=5.0.0'}
+    hasBin: true
+
   cli-spinners@2.9.2:
     resolution: {integrity: sha512-ywqV+5MmyL4E7ybXgKys4DugZbX0FC6LnwrhjuykIjnK9k8OQacQ7axGKnjDXWNhns0xot3bZI5h55H8yo9cJg==}
     engines: {node: '>=6'}
@@ -5169,6 +5289,9 @@ packages:
 
   cliui@6.0.0:
     resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
+
+  cliui@7.0.4:
+    resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
 
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
@@ -5345,14 +5468,17 @@ packages:
   cosmjs-types@0.7.2:
     resolution: {integrity: sha512-vf2uLyktjr/XVAgEq0DjMxeAWh1yYREe7AMHDKd7EiHVqxBPCaBS+qEEQUkXbR9ndnckqr1sUG8BQhazh4X5lA==}
 
+  credential-status@2.0.6:
+    resolution: {integrity: sha512-l5ZwSbX/UXFJ3DQ3dFt4rc2BtfUu/rhlkefR7BL9EZsKPyCe21okJA9mDy4h/nXvMEwpYjSQEa5vzR7KZqhI9g==}
+
   credentials-context@2.0.0:
     resolution: {integrity: sha512-/mFKax6FK26KjgV2KW2D4YqKgoJ5DVJpNt87X2Jc9IxT2HBMy7nEIlc+n7pEi+YFFe721XqrvZPd+jbyyBjsvQ==}
 
   credo-ts-didweb-anoncreds@0.0.1-alpha.13:
     resolution: {integrity: sha512-0x8lipY82+ALdTu+gVRe6RKvoJRvn2/Bhj/klk8PhmvWAAQXVMvzVOmUrw0BLTQ+19+koY1yufltglWXxRMxqA==}
     peerDependencies:
-      '@credo-ts/anoncreds': 0.5.11-pr-1996-20240827124430
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430
+      '@credo-ts/anoncreds': 0.5.12-pr-2039-20240918161638
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638
       '@hyperledger/anoncreds-shared': ^0.2.1
 
   cross-env@7.0.3:
@@ -5570,6 +5696,9 @@ packages:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
 
+  des.js@1.1.0:
+    resolution: {integrity: sha512-r17GxjhUCjSRy8aiJpr8/UadFIzMzJGexI3Nmz4ADi9LYSFx4gTBp80+NaX/YsXWWLhpZ7v/v/ubEc/bCNfKwg==}
+
   destroy@1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
@@ -5599,8 +5728,18 @@ packages:
     engines: {node: '>= 4.0.0'}
     hasBin: true
 
+  did-jwt-vc@3.2.15:
+    resolution: {integrity: sha512-M/WPiL34CQUiN4bvWnZ0OFHJ3usPtstfQfbNbHAWHvwjeCGi7nAdv62VXHgy2xIhJMc790hH7PsMN3i6SCGEyg==}
+    engines: {node: '>=18'}
+
   did-jwt@6.11.6:
     resolution: {integrity: sha512-OfbWknRxJuUqH6Lk0x+H1FsuelGugLbBDEwsoJnicFOntIG/A4y19fn0a8RLxaQbWQ5gXg0yDq5E2huSBiiXzw==}
+
+  did-jwt@7.4.7:
+    resolution: {integrity: sha512-Apz7nIfIHSKWIMaEP5L/K8xkwByvjezjTG0xiqwKdnNj1x8M0+Yasury5Dm/KPltxi2PlGfRPf3IejRKZrT8mQ==}
+
+  did-jwt@8.0.4:
+    resolution: {integrity: sha512-KPtG7H+8GgKGMiDqFvOdNy5BBN3hpA+8xV7VygEnpst5oPIqjvcH3rTtnPF55a8bOxIzE2PudKGIXIQhekv7WA==}
 
   did-resolver@4.1.0:
     resolution: {integrity: sha512-S6fWHvCXkZg2IhS4RcVHxwuyVejPR7c+a4Go0xbQ9ps5kILa8viiYQgrM4gfTyeTjJ0ekgJH9gk/BawTpmkbZA==}
@@ -5679,6 +5818,9 @@ packages:
 
   electron-to-chromium@1.5.4:
     resolution: {integrity: sha512-orzA81VqLyIGUEA77YkVA1D+N+nNfl2isJVjjmOyrlxuooZ19ynb+dOlaDTqd/idKRS9lDCSBmtzM+kyCsMnkA==}
+
+  elliptic@6.5.4:
+    resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
 
   elliptic@6.5.6:
     resolution: {integrity: sha512-mpzdtpeCLuS3BmE3pO3Cpp5bbjlOPY2Q0PgoF+Od1XZrHLYI28Xe3ossCmYCQt11FQKEYd9+PF8jymTvtWJSHQ==}
@@ -6550,6 +6692,9 @@ packages:
   hermes-parser@0.22.0:
     resolution: {integrity: sha512-gn5RfZiEXCsIWsFGsKiykekktUoh0PdFWYocXsUdZIyWSckT6UIyPcyyUIPSR3kpnELWeK3n3ztAse7Mat6PSA==}
 
+  highlight.js@10.7.3:
+    resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
+
   hmac-drbg@1.0.1:
     resolution: {integrity: sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==}
 
@@ -6633,6 +6778,11 @@ packages:
   image-size@1.1.1:
     resolution: {integrity: sha512-541xKlUw6jr/6gGuk92F+mYM5zaFAc5ahphvkqvNe2bQ6gVBkd6bfrmVJ2t4KDAfikAYZyIqTnktX3i6/aQDrQ==}
     engines: {node: '>=16.x'}
+    hasBin: true
+
+  image-size@2.0.0-beta.2:
+    resolution: {integrity: sha512-1nDNnVxJixMWBynFgQ1q8+aVqK60TiNHpMyFAXt9xpzGZV+2lHI1IXjgdcAjBxPc4nx2ed1NdYs2I+Zfq+Zn7w==}
+    engines: {node: '>=18.18.0'}
     hasBin: true
 
   import-fresh@2.0.0:
@@ -6974,11 +7124,44 @@ packages:
   js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
 
+  js-crypto-aes@1.0.6:
+    resolution: {integrity: sha512-E2hu9z5+YtpDg9Un/bDfmH+I5dv/8aN+ozxv9L0ybZldcQ9T5iYDbBKdlKGBUKI3IvzoWSBSdnZnhwZaRIN46w==}
+
+  js-crypto-ec@1.0.7:
+    resolution: {integrity: sha512-vou6cW3wGAQ75RzS++I/rthELPFp0nhHCmaAKQvdhwD480Q3FltLgyNkTMgcLTdN+Ghj8BRU1/+3oIEIOOK/MA==}
+
+  js-crypto-env@1.0.5:
+    resolution: {integrity: sha512-8/UNN3sG8J+yMzqwSNVaobaWhIz4MqZFoOg5OB0DFXqS8eFjj2YvdmLJqIWXPl57Yw10SvYx0DQOtkfsWIV9Aw==}
+
+  js-crypto-hash@1.0.7:
+    resolution: {integrity: sha512-GdbcVKjplbXJdR9oF2ks8+sBCLD7BUZ144Bc+Ie8OJuBHSIiHyMzdg2eD+ZYf87awTsKckNn1xIv+31+V2ewcA==}
+
+  js-crypto-hmac@1.0.7:
+    resolution: {integrity: sha512-OVn2wjAuOV7ToQYvRKY2VoElCHoRW7BepycPPuH73xbLygDczkef41YsXMpKLnVAyS5kdwMJQy9qlMR9touHTg==}
+
+  js-crypto-key-utils@1.0.7:
+    resolution: {integrity: sha512-8/y/hpKevnAgr5EXz2x4IXMfqjzYZAzzXXc9OnAyI5JNdUtAufJkGfwlmZ+o40lTHv3k1egCiP/6pG/dZiqiEA==}
+
+  js-crypto-pbkdf@1.0.7:
+    resolution: {integrity: sha512-FGs1PZeqGWM8k8k5JlAhHbBhLYtls+iVmeJEC22DUJ98Q3qo9Ki4cu3i0oxhjA2VpZ8V4MmV1DJHDTFYY4iOwg==}
+
+  js-crypto-random@1.0.5:
+    resolution: {integrity: sha512-WydEQ5rrWLzgSkX1QNsuGinkv7z57UkYnDGo5f5oGtBe9QeUWUehdmPNNG4a4Sf8xGkjZBOhKaZqT1ACnyYCBA==}
+
+  js-crypto-rsa@1.0.7:
+    resolution: {integrity: sha512-HLBCWNGzuUZMNbZ3nndrVAqth1m1mvuCO4tW7PpBDn4nsdLSnPnPd+SA7NvjsufWry38DnZdpFrK2gqbsrksGw==}
+
+  js-encoding-utils@0.7.3:
+    resolution: {integrity: sha512-cfjcyPOzkZ2esMAi6eAjuto7GiT6YpPan5xIeQyN/CFqFHTt1sdqP0PJPgzi3HqAqXKN9j9hduynkgwk+AAJOw==}
+
   js-sha3@0.8.0:
     resolution: {integrity: sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+
+  js-x509-utils@1.0.7:
+    resolution: {integrity: sha512-IDB3CtWyvkNJVbDPZvzM9o3Y6CyzDiMls6R23ZPwfmHHil7nRrpLxtA098SENhqjv1t/6WTeeCKQ5dhIMOGiUw==}
 
   js-yaml@3.14.1:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
@@ -7066,6 +7249,10 @@ packages:
 
   jsonpath@1.1.1:
     resolution: {integrity: sha512-l6Cg7jRpixfbgoWgkrl77dgEj8RPvND0wMH6TwQmi9Qs4TFfS9u5cUFnbeKTwj5ga5Y3BTGGNI28k117LJ009w==}
+
+  jsonpointer@5.0.1:
+    resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
+    engines: {node: '>=0.10.0'}
 
   jwt-decode@3.1.2:
     resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
@@ -7230,8 +7417,20 @@ packages:
     resolution: {integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  lodash.clonedeep@4.5.0:
+    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
+
   lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
+
+  lodash.get@4.4.2:
+    resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+
+  lodash.isequal@4.5.0:
+    resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+
+  lodash.isplainobject@4.0.6:
+    resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
 
   lodash.throttle@4.1.1:
     resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
@@ -7541,6 +7740,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  mkdirp@2.1.6:
+    resolution: {integrity: sha512-+hEnITedc8LAtIP9u3HJDFIdcLV2vXP33sqLLIzkv1Db1zO/1OxbvYf0Y1OC/S/Qo5dxHXepofhmxL02PsKe+A==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   mlly@1.7.1:
     resolution: {integrity: sha512-rrVRZRELyQzrIUAVMHxP97kv+G786pHmOKzuFII8zDYahFBS7qnHh2AlYSl1GAHhaMPCz6/oHjVMcfFYgFYHgA==}
 
@@ -7560,9 +7764,17 @@ packages:
   msrcrypto@1.5.8:
     resolution: {integrity: sha512-ujZ0TRuozHKKm6eGbKHfXef7f+esIhEckmThVnz7RNyiOJd7a6MXj2JGBoL9cnPDW+JMG16MoTUh5X+XXjI66Q==}
 
+  multibase@4.0.6:
+    resolution: {integrity: sha512-x23pDe5+svdLz/k5JPGCVdfn7Q5mZVMBETiC+ORfO+sor9Sgs0smJzAjfTbM5tckeCqnaUuMYoz+k3RXMmJClQ==}
+    engines: {node: '>=12.0.0', npm: '>=6.0.0'}
+    deprecated: This module has been superseded by the multiformats module
+
   multiformats@12.1.3:
     resolution: {integrity: sha512-eajQ/ZH7qXZQR2AgtfpmSMizQzmyYVmCql7pdhldPuYQi4atACekbJaQplk6dWyIi10jCaFnd6pqvcEFXjbaJw==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
+
+  multiformats@9.7.1:
+    resolution: {integrity: sha512-TaVmGEBt0fhxiNJMGphBfB+oGvUxFs8KgGvgl8d3C+GWtrFcvXdJ2196eg+dYhmSFClmgFfSfJEklo+SZzdNuw==}
 
   multiformats@9.9.0:
     resolution: {integrity: sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==}
@@ -7606,6 +7818,9 @@ packages:
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
 
+  node-addon-api@5.1.0:
+    resolution: {integrity: sha512-eh0GgfEkpnoWDq+VY8OyvYhFEzBk6jIYbRKdIlyTiAXIVJ8PyBaKb0rp7oDtoddbdoHWhq8wwr+XZ81F1rpNdA==}
+
   node-dir@0.1.17:
     resolution: {integrity: sha512-tmPX422rYgofd4epzrNoOXiE8XFZYOcCq1vD7MAXCDO+O+zndlA2ztdKKMa+EeuBG5tHETpr4ml4RGgpqDCCAg==}
     engines: {node: '>= 0.10.5'}
@@ -7637,6 +7852,10 @@ packages:
   node-forge@1.3.1:
     resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
     engines: {node: '>= 6.13.0'}
+
+  node-gyp-build@4.8.2:
+    resolution: {integrity: sha512-IRUxE4BVsHWXkV/SFOut4qTlagw2aM8T5/vnTsmrHJvVoKueJHRc/JaFND7QDDc61kLYUJ6qlZM3sqTSyx2dTw==}
+    hasBin: true
 
   node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
@@ -7851,6 +8070,15 @@ packages:
     resolution: {integrity: sha512-Nt/a5SfCLiTnQAjx3fHlqp8hRgTL3z7kTQZzvIMS9uCAepnCyjpdEc6M/sz69WqMBdaDBw9sF1F1UaHROYzGkQ==}
     engines: {node: '>=10'}
 
+  parse5-htmlparser2-tree-adapter@6.0.1:
+    resolution: {integrity: sha512-qPuWvbLgvDGilKc5BoicRovlT4MtYT6JfJyBOMDsKoiT+GiuP5qyrPCnR9HcPECIJJmZh5jRndyNThnhhb/vlA==}
+
+  parse5@5.1.1:
+    resolution: {integrity: sha512-ugq4DFI0Ptb+WWjAdOK16+u/nHfiIrcE+sh8kZMaM0WllQKLI9rOUq6c2b7cwPkXdzfQESqvoqK6ug7U/Yyzug==}
+
+  parse5@6.0.1:
+    resolution: {integrity: sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==}
+
   parseurl@1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
@@ -7964,6 +8192,10 @@ packages:
     resolution: {integrity: sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==}
     engines: {node: '>=8'}
 
+  pkijs@3.2.4:
+    resolution: {integrity: sha512-Et9V5QpvBilPFgagJcaKBqXjKrrgF5JL2mSDELk1vvbOTt4fuBhSSsGn9Tcz0TQTfS5GCpXQ31Whrpqeqp0VRg==}
+    engines: {node: '>=12.0.0'}
+
   plist@3.1.0:
     resolution: {integrity: sha512-uysumyrvkUX0rX/dEVqt8gC3sTBzd4zoWfLeS29nb53imdaXVvLINYXTI2GNqzaMuvacNx4uJQ8+b3zXR0pkgQ==}
     engines: {node: '>=10.4.0'}
@@ -8071,8 +8303,8 @@ packages:
     resolution: {integrity: sha512-5kQWPaJHi1WoCpjTGszzQ32PG2F4+wRY6BmAT4Vfw56Q2FZ4YZzK20xUYQH4YkfehY1e6QSICrJquM6xXZNcrw==}
     hasBin: true
 
-  protobufjs@7.3.2:
-    resolution: {integrity: sha512-RXyHaACeqXeqAKGLDl68rQKbmObRsTIn4TYVUUug1KfS47YWCo5MacGITEryugIgZqORCvJWEk4l449POg5Txg==}
+  protobufjs@7.4.0:
+    resolution: {integrity: sha512-mRUWCc3KUU4w1jU8sGxICXH/gNS94DvI1gxqDvBzhj1JpcsimQkYiOJfwsPUykUI5ZaspFbSgmBLER8IrQ3tqw==}
     engines: {node: '>=12.0.0'}
 
   proxy-addr@2.0.7:
@@ -8128,6 +8360,9 @@ packages:
   query-string@8.2.0:
     resolution: {integrity: sha512-tUZIw8J0CawM5wyGBiDOAp7ObdRQh4uBor/fUR9ZjmbZVvw95OD9If4w3MQxr99rg0DJZ/9CIORcpEqU5hQG7g==}
     engines: {node: '>=14.16'}
+
+  querystringify@2.2.0:
+    resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -8483,6 +8718,9 @@ packages:
     resolution: {integrity: sha512-nYzyjnFcPNGR3lx9lwPPPnuQxv6JWEZd2Ci0u9opN7N5zUEPIhY/GbL3vMGOr2UXwEg9WwSyV9X9Y/kLFgPsOg==}
     engines: {node: '>= 4.0.0'}
 
+  requires-port@1.0.0:
+    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
+
   reselect@4.1.8:
     resolution: {integrity: sha512-ab9EmR80F/zQTMNeneUr4cv+jSwPJgIlvEmVwLerwrWVbpLlBuls9XHzIeTFy4cegU2NHBp3va0LKOzU5qFEYQ==}
 
@@ -8591,6 +8829,10 @@ packages:
     resolution: {integrity: sha512-L0jRsrPpjdckP3oPug3/VxNKt2trR8TcabrM6FOAAlvC/9Phcmm+cuAgTlxBqdBR1WJx7Naj9WHw+aOmheSVbw==}
     engines: {node: '>= 12.13.0'}
 
+  secp256k1@5.0.0:
+    resolution: {integrity: sha512-TKWX8xvoGHrxVdqbYeZM9w+izTF4b9z3NhSaDkdn81btvuh+ivbIMGT/zQvDtTFWhRlThpoz6LEYTr7n8A5GcA==}
+    engines: {node: '>=14.0.0'}
+
   selfsigned@2.4.1:
     resolution: {integrity: sha512-th5B4L2U+eGLq1TVh7zNRGBapioSORUeymIydxgFpwww9d2qyKvtuPU2jJuHvYAwwqi2Y596QBL3eEqcPEYL8Q==}
     engines: {node: '>=10'}
@@ -8658,6 +8900,9 @@ packages:
   sha.js@2.4.11:
     resolution: {integrity: sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==}
     hasBin: true
+
+  sha3@2.1.4:
+    resolution: {integrity: sha512-S8cNxbyb0UGUM2VhRD4Poe5N58gJnJsLJ5vC7FYWGUmGhcsj4++WaIOBFVDxlG0W3To6xBuiRh+i0Qp2oNCOtg==}
 
   shallow-clone@3.0.1:
     resolution: {integrity: sha512-/6KqX+GVUdqPuPPd2LxDDxzX6CAbjJehAAOKlNpqqUpAqPM6HeL8f+o3a+JsyGjn2lv0WY8UsTgUJjU9Ok55NA==}
@@ -9201,6 +9446,64 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
+  typeorm@0.3.20:
+    resolution: {integrity: sha512-sJ0T08dV5eoZroaq9uPKBoNcGslHBR4E4y+EBHs//SiGbblGe7IeduP/IH4ddCcj0qp3PHwDwGnuvqEAnKlq/Q==}
+    engines: {node: '>=16.13.0'}
+    hasBin: true
+    peerDependencies:
+      '@google-cloud/spanner': ^5.18.0
+      '@sap/hana-client': ^2.12.25
+      better-sqlite3: ^7.1.2 || ^8.0.0 || ^9.0.0
+      hdb-pool: ^0.1.6
+      ioredis: ^5.0.4
+      mongodb: ^5.8.0
+      mssql: ^9.1.1 || ^10.0.1
+      mysql2: ^2.2.5 || ^3.0.1
+      oracledb: ^6.3.0
+      pg: ^8.5.1
+      pg-native: ^3.0.0
+      pg-query-stream: ^4.0.0
+      redis: ^3.1.1 || ^4.0.0
+      sql.js: ^1.4.0
+      sqlite3: ^5.0.3
+      ts-node: ^10.7.0
+      typeorm-aurora-data-api-driver: ^2.0.0
+    peerDependenciesMeta:
+      '@google-cloud/spanner':
+        optional: true
+      '@sap/hana-client':
+        optional: true
+      better-sqlite3:
+        optional: true
+      hdb-pool:
+        optional: true
+      ioredis:
+        optional: true
+      mongodb:
+        optional: true
+      mssql:
+        optional: true
+      mysql2:
+        optional: true
+      oracledb:
+        optional: true
+      pg:
+        optional: true
+      pg-native:
+        optional: true
+      pg-query-stream:
+        optional: true
+      redis:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+      ts-node:
+        optional: true
+      typeorm-aurora-data-api-driver:
+        optional: true
+
   typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
@@ -9320,6 +9623,9 @@ packages:
   url-join@4.0.0:
     resolution: {integrity: sha512-EGXjXJZhIHiQMK2pQukuFcL303nskqIRzWvPvV5O8miOfwoUb9G+a/Cld60kUyeaybEI94wvVClT10DtfeAExA==}
 
+  url-parse@1.5.10:
+    resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
+
   url@0.11.4:
     resolution: {integrity: sha512-oCwdVC7mTuWiPyjLUz/COz5TLk6wgp0RCsN+wHZ2Ekneac9w8uuV0njcbbie2ME+Vs+d6duwmYuR3HgQXs1fOg==}
     engines: {node: '>= 0.4'}
@@ -9375,6 +9681,10 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  uuid@10.0.0:
+    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    hasBin: true
 
   uuid@7.0.3:
     resolution: {integrity: sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==}
@@ -9637,6 +9947,10 @@ packages:
     resolution: {integrity: sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==}
     engines: {node: '>=6'}
 
+  yargs-parser@20.2.9:
+    resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
+    engines: {node: '>=10'}
+
   yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
@@ -9644,6 +9958,10 @@ packages:
   yargs@15.4.1:
     resolution: {integrity: sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==}
     engines: {node: '>=8'}
+
+  yargs@16.2.0:
+    resolution: {integrity: sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==}
+    engines: {node: '>=10'}
 
   yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
@@ -9659,6 +9977,11 @@ packages:
   yocto-queue@1.1.1:
     resolution: {integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==}
     engines: {node: '>=12.20'}
+
+  z-schema@5.0.5:
+    resolution: {integrity: sha512-D7eujBWkLa3p2sIpJA0d1pr7es+a7m0vFAnZLlCEKq/Ij2k0MLi9Br2UPxoxdYystm5K1yeBGzub0FlYUEWj2Q==}
+    engines: {node: '>=8.0.0'}
+    hasBin: true
 
   zustand@4.5.4:
     resolution: {integrity: sha512-/BPMyLKJPtFEvVL0E9E9BTUM63MNyhPGlvxk1XjrfWTUlV+BR8jufjsovHzrtR6YNcBEcL7cMHovL1n9xHawEg==}
@@ -10772,9 +11095,9 @@ snapshots:
   '@biomejs/cli-win32-x64@1.8.1':
     optional: true
 
-  '@cheqd/sdk@2.4.4':
+  '@cheqd/sdk@2.5.1':
     dependencies:
-      '@cheqd/ts-proto': 2.2.2
+      '@cheqd/ts-proto': 2.3.2
       '@cosmjs/amino': 0.30.1
       '@cosmjs/crypto': 0.30.1
       '@cosmjs/encoding': 0.30.1
@@ -10784,22 +11107,24 @@ snapshots:
       '@cosmjs/tendermint-rpc': 0.30.1
       '@cosmjs/utils': 0.30.1
       '@stablelib/ed25519': 1.0.3
+      '@types/secp256k1': 4.0.6
       cosmjs-types: 0.7.2
-      did-jwt: 6.11.6
+      did-jwt: 8.0.4
       did-resolver: 4.1.0
       file-type: 16.5.4
       long: 4.0.0
       multiformats: 9.9.0
-      uuid: 9.0.1
+      secp256k1: 5.0.0
+      uuid: 10.0.0
     transitivePeerDependencies:
       - bufferutil
       - debug
       - utf-8-validate
 
-  '@cheqd/ts-proto@2.2.2':
+  '@cheqd/ts-proto@2.3.2':
     dependencies:
       long: 5.2.3
-      protobufjs: 7.3.2
+      protobufjs: 7.4.0
 
   '@colors/colors@1.5.0':
     optional: true
@@ -10903,28 +11228,45 @@ snapshots:
 
   '@cosmjs/utils@0.30.1': {}
 
-  '@credo-ts/anoncreds@0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/anoncreds@0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-shared': 0.2.2
-      '@sphereon/pex-models': 2.2.4
+      '@sphereon/pex-models': 2.3.1
       big-integer: 1.6.52
       bn.js: 5.2.1
       class-transformer: 0.5.1
       class-validator: 0.14.1
       reflect-metadata: 0.1.14
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
-  '@credo-ts/askar@0.5.11-pr-1996-20240827124430(@animo-id/expo-secure-environment@0.1.0-alpha.5(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/askar@0.5.12-pr-2039-20240918161638(@animo-id/expo-secure-environment@0.1.0-alpha.5(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(react@18.2.0))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@hyperledger/aries-askar-shared': 0.2.3
       bn.js: 5.2.1
       class-transformer: 0.5.1
@@ -10934,40 +11276,74 @@ snapshots:
     optionalDependencies:
       '@animo-id/expo-secure-environment': 0.1.0-alpha.5(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(react@18.2.0)
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
-  '@credo-ts/cheqd@0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/cheqd@0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@cheqd/sdk': 2.4.4
-      '@cheqd/ts-proto': 2.2.2
+      '@cheqd/sdk': 2.5.1
+      '@cheqd/ts-proto': 2.3.2
       '@cosmjs/crypto': 0.30.1
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
-      '@credo-ts/anoncreds': 0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@stablelib/ed25519': 1.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.1
       tsyringe: 4.8.0
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
       - '@hyperledger/anoncreds-shared'
+      - '@sap/hana-client'
+      - better-sqlite3
       - bufferutil
       - debug
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - utf-8-validate
       - web-streams-polyfill
 
-  '@credo-ts/core@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/core@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@digitalcredentials/jsonld': 6.0.0(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@digitalcredentials/jsonld-signatures': 9.4.0(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
@@ -10984,11 +11360,9 @@ snapshots:
       '@sd-jwt/sd-jwt-vc': 0.7.2
       '@sd-jwt/types': 0.7.2
       '@sd-jwt/utils': 0.7.2
-      '@sphereon/did-auth-siop': file:sphereon-did-auth-siop-0.16.0.tgz
-      '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/pex': 3.3.3
-      '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': 0.28.0
+      '@sphereon/pex': file:sphereon-pex-5.0.0-unstable.0-paradym-multi-vp.tgz
+      '@sphereon/pex-models': 2.3.1
+      '@sphereon/ssi-types': 0.29.1-next.122
       '@stablelib/ed25519': 1.0.3
       '@types/ws': 8.5.12
       abort-controller: 3.0.0
@@ -11012,14 +11386,31 @@ snapshots:
       web-did-resolver: 2.0.27
       webcrypto-core: 1.8.0
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
-  '@credo-ts/core@0.5.11-pr-1996-20240827124430(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/core@0.5.12-pr-2039-20240918161638(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@digitalcredentials/jsonld': 6.0.0(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@digitalcredentials/jsonld-signatures': 9.4.0(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
@@ -11036,11 +11427,9 @@ snapshots:
       '@sd-jwt/sd-jwt-vc': 0.7.2
       '@sd-jwt/types': 0.7.2
       '@sd-jwt/utils': 0.7.2
-      '@sphereon/did-auth-siop': file:sphereon-did-auth-siop-0.16.0.tgz
-      '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
-      '@sphereon/pex': 3.3.3
-      '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': 0.28.0
+      '@sphereon/pex': file:sphereon-pex-5.0.0-unstable.0-paradym-multi-vp.tgz
+      '@sphereon/pex-models': 2.3.1
+      '@sphereon/ssi-types': 0.29.1-next.122
       '@stablelib/ed25519': 1.0.3
       '@types/ws': 8.5.12
       abort-controller: 3.0.0
@@ -11064,81 +11453,166 @@ snapshots:
       web-did-resolver: 2.0.27
       webcrypto-core: 1.8.0
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
-  '@credo-ts/indy-vdr@0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/indy-vdr@0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/anoncreds': 0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@hyperledger/indy-vdr-shared': 0.2.2
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
       - '@hyperledger/anoncreds-shared'
+      - '@sap/hana-client'
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
-  '@credo-ts/openid4vc@0.5.11-pr-1996-20240827124430(patch_hash=ytkffp6mlnn7pnbuzzh5tbo2ra)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/openid4vc@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
-      '@sphereon/did-auth-siop': file:sphereon-did-auth-siop-0.16.0.tgz
-      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
-      '@sphereon/oid4vci-client': 0.16.1-next.14(patch_hash=7s3wmlpmfikkjc2epivpdhcc7i)
-      '@sphereon/oid4vci-common': 0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)
-      '@sphereon/oid4vci-issuer': 0.16.1-next.14
-      '@sphereon/ssi-types': 0.28.0
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@sphereon/did-auth-siop': file:sphereon-did-auth-siop-0.16.0-paradym-multi-vp-2.tgz
+      '@sphereon/oid4vc-common': 0.16.1-next.29
+      '@sphereon/oid4vci-client': 0.16.1-next.29
+      '@sphereon/oid4vci-common': 0.16.1-next.29
+      '@sphereon/oid4vci-issuer': 0.16.1-next.29
+      '@sphereon/ssi-types': 0.29.1-next.122
       class-transformer: 0.5.1
       rxjs: 7.8.1
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
       - awesome-qr
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
-  '@credo-ts/question-answer@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/question-answer@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.1
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
       - react-native
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
-  '@credo-ts/react-hooks@0.6.1(@credo-ts/core@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(react@18.2.0)':
+  '@credo-ts/react-hooks@0.6.1(@credo-ts/core@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(react@18.2.0)':
     dependencies:
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
-      '@credo-ts/question-answer': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/question-answer': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       react: 18.2.0
       rxjs: 7.8.1
 
-  '@credo-ts/react-native@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native-get-random-values@1.11.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
+  '@credo-ts/react-native@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native-fs@2.20.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native-get-random-values@1.11.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@azure/core-asynciterator-polyfill': 1.0.2
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       events: 3.3.0
       react-native: 0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3)
       react-native-fs: 2.20.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))
       react-native-get-random-values: 1.11.0(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
       - domexception
       - encoding
       - expo
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
       - web-streams-polyfill
 
   '@digitalbazaar/bitstring@3.1.0':
@@ -11615,6 +12089,80 @@ snapshots:
 
   '@esbuild/win32-x64@0.23.0':
     optional: true
+
+  '@ethersproject/address@5.7.0':
+    dependencies:
+      '@ethersproject/bignumber': 5.7.0
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/keccak256': 5.7.0
+      '@ethersproject/logger': 5.7.0
+      '@ethersproject/rlp': 5.7.0
+
+  '@ethersproject/bignumber@5.7.0':
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/logger': 5.7.0
+      bn.js: 5.2.1
+
+  '@ethersproject/bytes@5.7.0':
+    dependencies:
+      '@ethersproject/logger': 5.7.0
+
+  '@ethersproject/constants@5.7.0':
+    dependencies:
+      '@ethersproject/bignumber': 5.7.0
+
+  '@ethersproject/keccak256@5.7.0':
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      js-sha3: 0.8.0
+
+  '@ethersproject/logger@5.7.0': {}
+
+  '@ethersproject/networks@5.7.1':
+    dependencies:
+      '@ethersproject/logger': 5.7.0
+
+  '@ethersproject/properties@5.7.0':
+    dependencies:
+      '@ethersproject/logger': 5.7.0
+
+  '@ethersproject/random@5.7.0':
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/logger': 5.7.0
+
+  '@ethersproject/rlp@5.7.0':
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/logger': 5.7.0
+
+  '@ethersproject/signing-key@5.7.0':
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/logger': 5.7.0
+      '@ethersproject/properties': 5.7.0
+      bn.js: 5.2.1
+      elliptic: 6.5.4
+      hash.js: 1.1.7
+
+  '@ethersproject/strings@5.7.0':
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/constants': 5.7.0
+      '@ethersproject/logger': 5.7.0
+
+  '@ethersproject/transactions@5.7.0':
+    dependencies:
+      '@ethersproject/address': 5.7.0
+      '@ethersproject/bignumber': 5.7.0
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/constants': 5.7.0
+      '@ethersproject/keccak256': 5.7.0
+      '@ethersproject/logger': 5.7.0
+      '@ethersproject/properties': 5.7.0
+      '@ethersproject/rlp': 5.7.0
+      '@ethersproject/signing-key': 5.7.0
 
   '@expo-google-fonts/open-sans@0.2.3': {}
 
@@ -12315,7 +12863,17 @@ snapshots:
       pump: 3.0.0
       tar-fs: 2.1.1
 
+  '@noble/ciphers@0.4.1': {}
+
+  '@noble/ciphers@0.5.3': {}
+
+  '@noble/curves@1.6.0':
+    dependencies:
+      '@noble/hashes': 1.5.0
+
   '@noble/hashes@1.4.0': {}
+
+  '@noble/hashes@1.5.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -13421,7 +13979,7 @@ snapshots:
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
-      '@types/node': 18.19.43
+      '@types/node': 18.18.8
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -13429,6 +13987,8 @@ snapshots:
       rimraf: 3.0.2
     transitivePeerDependencies:
       - supports-color
+
+  '@scure/base@1.1.9': {}
 
   '@sd-jwt/core@0.7.2':
     dependencies:
@@ -13510,14 +14070,15 @@ snapshots:
 
   '@sovpro/delimited-stream@1.1.0': {}
 
-  '@sphereon/did-auth-siop@file:sphereon-did-auth-siop-0.16.0.tgz':
+  '@sphereon/did-auth-siop@file:sphereon-did-auth-siop-0.16.0-paradym-multi-vp-2.tgz':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sphereon/did-uni-client': 0.6.3
-      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
-      '@sphereon/pex': 3.3.3
-      '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': 0.22.0
+      '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
+      '@sphereon/oid4vc-common': 0.16.1-next.29
+      '@sphereon/pex': file:sphereon-pex-5.0.0-unstable.0-paradym-multi-vp.tgz
+      '@sphereon/pex-models': 2.3.1
+      '@sphereon/ssi-types': 0.29.1-unstable.121
       '@sphereon/wellknown-dids-client': 0.1.3
       cross-fetch: 4.0.0
       debug: 4.3.6
@@ -13528,8 +14089,25 @@ snapshots:
       qs: 6.13.0
       uint8arrays: 3.1.1
     transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
       - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
       - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
 
   '@sphereon/did-uni-client@0.6.3':
     dependencies:
@@ -13544,9 +14122,9 @@ snapshots:
       '@js-joda/timezone': 2.3.0(@js-joda/core@5.6.3)
       format-util: 1.0.5
 
-  '@sphereon/oid4vc-common@0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)':
+  '@sphereon/oid4vc-common@0.16.1-next.29':
     dependencies:
-      '@sphereon/ssi-types': 0.29.0
+      '@sphereon/ssi-types': 0.29.1-unstable.208
       jwt-decode: 4.0.0
       sha.js: 2.4.11
       uint8arrays: 3.1.1
@@ -13554,21 +14132,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/oid4vci-client@0.16.1-next.14(patch_hash=7s3wmlpmfikkjc2epivpdhcc7i)':
+  '@sphereon/oid4vci-client@0.16.1-next.29':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
-      '@sphereon/oid4vci-common': 0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)
-      '@sphereon/ssi-types': 0.29.0
+      '@sphereon/oid4vc-common': 0.16.1-next.29
+      '@sphereon/oid4vci-common': 0.16.1-next.29
+      '@sphereon/ssi-types': 0.29.1-unstable.208
       cross-fetch: 3.1.8
       debug: 4.3.6
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-common@0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)':
+  '@sphereon/oid4vci-common@0.16.1-next.29':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
-      '@sphereon/ssi-types': 0.29.0
+      '@sphereon/oid4vc-common': 0.16.1-next.29
+      '@sphereon/ssi-types': 0.29.1-unstable.208
       cross-fetch: 3.1.8
       debug: 4.3.6
       jwt-decode: 4.0.0
@@ -13578,39 +14156,298 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sphereon/oid4vci-issuer@0.16.1-next.14':
+  '@sphereon/oid4vci-issuer@0.16.1-next.29':
     dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-next.14(patch_hash=nglnl6raz4zqpmewvolbw5yily)
-      '@sphereon/oid4vci-common': 0.16.1-next.14(patch_hash=blqn6vt6i3cjj2v3vqh5nn6s4a)
-      '@sphereon/ssi-types': 0.29.0
+      '@sphereon/oid4vc-common': 0.16.1-next.29
+      '@sphereon/oid4vci-common': 0.16.1-next.29
+      '@sphereon/ssi-types': 0.29.1-unstable.208
       uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@sphereon/pex-models@2.2.4': {}
+  '@sphereon/pex-models@2.3.1': {}
 
-  '@sphereon/pex@3.3.3':
+  '@sphereon/pex@file:sphereon-pex-5.0.0-unstable.0-paradym-multi-vp.tgz':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@sd-jwt/decode': 0.6.1
       '@sd-jwt/present': 0.6.1
       '@sd-jwt/types': 0.6.1
-      '@sphereon/pex-models': 2.2.4
-      '@sphereon/ssi-types': 0.22.0
+      '@sphereon/pex-models': 2.3.1
+      '@sphereon/ssi-types': 0.29.1-unstable.121
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       jwt-decode: 3.1.2
       nanoid: 3.3.7
       string.prototype.matchall: 4.0.11
       uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-types@0.22.0':
+  '@sphereon/ssi-sdk-ext.did-utils@0.24.1-unstable.112':
+    dependencies:
+      '@ethersproject/networks': 5.7.1
+      '@ethersproject/transactions': 5.7.0
+      '@sphereon/did-uni-client': 0.6.3
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161
+      '@sphereon/ssi-sdk.core': 0.29.1-unstable.161
+      '@sphereon/ssi-types': 0.29.1-unstable.161
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0
+      '@veramo/utils': 4.2.0
+      did-jwt: 6.11.6
+      did-resolver: 4.1.0
+      elliptic: 6.5.6
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk-ext.identifier-resolution@0.24.1-unstable.112':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161
+      '@sphereon/ssi-types': 0.29.1-unstable.161
+      '@veramo/core': 4.2.0
+      '@veramo/utils': 4.2.0
+      debug: 4.3.6
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk-ext.jwt-service@0.24.1-unstable.112':
+    dependencies:
+      '@sphereon/ssi-sdk-ext.did-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk-ext.identifier-resolution': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk-ext.key-manager': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk-ext.key-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-sdk.agent-config': 0.29.1-unstable.161
+      '@sphereon/ssi-types': 0.29.1-unstable.161
+      '@veramo/core': 4.2.0
+      '@veramo/utils': 4.2.0
+      debug: 4.3.6
+      jwt-decode: 4.0.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk-ext.key-manager@0.24.1-unstable.112':
+    dependencies:
+      '@veramo/core': 4.2.0
+      '@veramo/key-manager': 4.2.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.key-utils@0.24.1-unstable.112':
+    dependencies:
+      '@ethersproject/random': 5.7.0
+      '@sphereon/ssi-sdk-ext.x509-utils': 0.24.1-unstable.112
+      '@sphereon/ssi-types': 0.29.1-unstable.161
+      '@stablelib/ed25519': 1.0.3
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/sha512': 1.0.1
+      '@trust/keyto': 1.0.1
+      '@veramo/core': 4.2.0
+      base64url: 3.0.1
+      debug: 4.3.6
+      did-resolver: 4.1.0
+      elliptic: 6.5.6
+      lodash.isplainobject: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+      web-encoding: 1.1.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@sphereon/ssi-sdk-ext.x509-utils@0.24.1-unstable.112':
+    dependencies:
+      '@trust/keyto': 1.0.1
+      debug: 4.3.6
+      js-x509-utils: 1.0.7
+      pkijs: 3.2.4
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@sphereon/ssi-sdk.agent-config@0.29.1-unstable.161':
+    dependencies:
+      '@veramo/core': 4.2.0
+      debug: 4.3.6
+      jsonpointer: 5.0.1
+      typeorm: 0.3.20
+      url-parse: 1.5.10
+      yaml: 2.5.0
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-sdk.core@0.29.1-unstable.161':
+    dependencies:
+      '@sphereon/ssi-types': 0.29.1-unstable.161
+      '@veramo/core': 4.2.0
+      cross-fetch: 3.1.8
+      debug: 4.3.6
+      image-size: 2.0.0-beta.2
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@sphereon/ssi-types@0.29.1-next.122':
     dependencies:
       '@sd-jwt/decode': 0.6.1
+      '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.112
+      debug: 4.3.6
+      events: 3.3.0
       jwt-decode: 3.1.2
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
 
-  '@sphereon/ssi-types@0.28.0':
+  '@sphereon/ssi-types@0.29.1-unstable.121':
+    dependencies:
+      '@sd-jwt/decode': 0.6.1
+      '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
+      '@sphereon/ssi-sdk-ext.jwt-service': 0.24.1-unstable.112
+      debug: 4.3.6
+      events: 3.3.0
+      jwt-decode: 3.1.2
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - better-sqlite3
+      - encoding
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - oracledb
+      - pg
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+
+  '@sphereon/ssi-types@0.29.1-unstable.161':
     dependencies:
       '@sd-jwt/decode': 0.6.1
       debug: 4.3.6
@@ -13619,9 +14456,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/ssi-types@0.29.0':
+  '@sphereon/ssi-types@0.29.1-unstable.208':
     dependencies:
       '@sd-jwt/decode': 0.6.1
+      '@sphereon/kmp-mdl-mdoc': 0.2.0-SNAPSHOT.22
       debug: 4.3.6
       events: 3.3.0
       jwt-decode: 3.1.2
@@ -13639,6 +14477,8 @@ snapshots:
       jwt-decode: 3.1.2
     transitivePeerDependencies:
       - encoding
+
+  '@sqltools/formatter@1.2.5': {}
 
   '@stablelib/aead@1.0.1': {}
 
@@ -15550,6 +16390,12 @@ snapshots:
 
   '@tokenizer/token@0.3.0': {}
 
+  '@trust/keyto@1.0.1':
+    dependencies:
+      asn1.js: 5.4.1
+      base64url: 3.0.1
+      elliptic: 6.5.6
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.25.4
@@ -15675,7 +16521,11 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 22.1.0
+      '@types/node': 18.18.8
+
+  '@types/node@18.18.8':
+    dependencies:
+      undici-types: 5.26.5
 
   '@types/node@18.19.43':
     dependencies:
@@ -15703,6 +16553,10 @@ snapshots:
       csstype: 3.1.3
 
   '@types/resolve@1.20.6': {}
+
+  '@types/secp256k1@4.0.6':
+    dependencies:
+      '@types/node': 22.1.0
 
   '@types/semver@7.5.8': {}
 
@@ -15750,6 +16604,48 @@ snapshots:
       '@urql/core': 2.3.6(graphql@15.8.0)
       graphql: 15.8.0
       wonka: 4.0.15
+
+  '@veramo/core@4.2.0':
+    dependencies:
+      credential-status: 2.0.6
+      debug: 4.3.6
+      did-jwt-vc: 3.2.15
+      did-resolver: 4.1.0
+      events: 3.3.0
+      z-schema: 5.0.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@veramo/key-manager@4.2.0':
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/strings': 5.7.0
+      '@ethersproject/transactions': 5.7.0
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0
+      did-jwt: 6.11.6
+      uint8arrays: 3.1.1
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@veramo/utils@4.2.0':
+    dependencies:
+      '@ethersproject/transactions': 5.7.0
+      '@stablelib/ed25519': 1.0.3
+      '@veramo/core': 4.2.0
+      blakejs: 1.2.1
+      cross-fetch: 3.1.8
+      debug: 4.3.6
+      did-jwt: 6.11.6
+      did-jwt-vc: 3.2.15
+      did-resolver: 4.1.0
+      elliptic: 6.5.6
+      multiformats: 9.7.1
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
 
   '@web3-storage/multipart-parser@1.0.0': {}
 
@@ -15972,6 +16868,8 @@ snapshots:
 
   app-root-dir@1.0.2: {}
 
+  app-root-path@3.1.0: {}
+
   appdirsjs@1.2.7: {}
 
   application-config-path@0.1.1: {}
@@ -16020,6 +16918,17 @@ snapshots:
   asap@2.0.6: {}
 
   asmcrypto.js@0.22.0: {}
+
+  asn1.js-rfc5280@3.0.0:
+    dependencies:
+      asn1.js: 5.4.1
+
+  asn1.js@5.4.1:
+    dependencies:
+      bn.js: 4.12.0
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+      safer-buffer: 2.1.2
 
   asn1js@3.0.5:
     dependencies:
@@ -16239,6 +17148,8 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
+  blakejs@1.2.1: {}
+
   bn.js@4.12.0: {}
 
   bn.js@5.2.1: {}
@@ -16362,6 +17273,8 @@ snapshots:
   bytes@3.0.0: {}
 
   bytes@3.1.2: {}
+
+  bytestreamjs@2.0.1: {}
 
   cacache@18.0.4:
     dependencies:
@@ -16526,6 +17439,15 @@ snapshots:
     dependencies:
       restore-cursor: 3.1.0
 
+  cli-highlight@2.1.11:
+    dependencies:
+      chalk: 4.1.2
+      highlight.js: 10.7.3
+      mz: 2.7.0
+      parse5: 5.1.1
+      parse5-htmlparser2-tree-adapter: 6.0.1
+      yargs: 16.2.0
+
   cli-spinners@2.9.2: {}
 
   cli-table3@0.6.5:
@@ -16539,6 +17461,12 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
+
+  cliui@7.0.4:
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      wrap-ansi: 7.0.0
 
   cliui@8.0.1:
     dependencies:
@@ -16705,12 +17633,17 @@ snapshots:
       long: 4.0.0
       protobufjs: 6.11.4
 
+  credential-status@2.0.6:
+    dependencies:
+      did-jwt: 6.11.6
+      did-resolver: 4.1.0
+
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@credo-ts/anoncreds@0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/core@0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.2):
+  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@credo-ts/anoncreds@0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@credo-ts/core@0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.2):
     dependencies:
-      '@credo-ts/anoncreds': 0.5.11-pr-1996-20240827124430(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.5.11-pr-1996-20240827124430(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.5.12-pr-2039-20240918161638(@hyperledger/anoncreds-shared@0.2.2)(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.5.12-pr-2039-20240918161638(expo@51.0.24(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)(typescript@5.3.3))(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-shared': 0.2.2
       canonicalize: 1.0.8
       query-string: 7.1.3
@@ -16919,6 +17852,11 @@ snapshots:
 
   dequal@2.0.3: {}
 
+  des.js@1.1.0:
+    dependencies:
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+
   destroy@1.2.0: {}
 
   detect-indent@6.1.0: {}
@@ -16940,6 +17878,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  did-jwt-vc@3.2.15:
+    dependencies:
+      did-jwt: 7.4.7
+      did-resolver: 4.1.0
+
   did-jwt@6.11.6:
     dependencies:
       '@stablelib/ed25519': 1.0.3
@@ -16952,6 +17895,30 @@ snapshots:
       did-resolver: 4.1.0
       elliptic: 6.5.6
       js-sha3: 0.8.0
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+
+  did-jwt@7.4.7:
+    dependencies:
+      '@noble/ciphers': 0.4.1
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.4.0
+      '@scure/base': 1.1.9
+      canonicalize: 2.0.0
+      did-resolver: 4.1.0
+      multibase: 4.0.6
+      multiformats: 9.9.0
+      uint8arrays: 3.1.1
+
+  did-jwt@8.0.4:
+    dependencies:
+      '@noble/ciphers': 0.5.3
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.4.0
+      '@scure/base': 1.1.9
+      canonicalize: 2.0.0
+      did-resolver: 4.1.0
+      multibase: 4.0.6
       multiformats: 9.9.0
       uint8arrays: 3.1.1
 
@@ -17044,6 +18011,16 @@ snapshots:
       jake: 10.9.2
 
   electron-to-chromium@1.5.4: {}
+
+  elliptic@6.5.4:
+    dependencies:
+      bn.js: 4.12.0
+      brorand: 1.1.0
+      hash.js: 1.1.7
+      hmac-drbg: 1.0.1
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+      minimalistic-crypto-utils: 1.0.1
 
   elliptic@6.5.6:
     dependencies:
@@ -18329,6 +19306,8 @@ snapshots:
     dependencies:
       hermes-estree: 0.22.0
 
+  highlight.js@10.7.3: {}
+
   hmac-drbg@1.0.1:
     dependencies:
       hash.js: 1.1.7
@@ -18419,6 +19398,8 @@ snapshots:
   image-size@1.1.1:
     dependencies:
       queue: 6.0.2
+
+  image-size@2.0.0-beta.2: {}
 
   import-fresh@2.0.0:
     dependencies:
@@ -18787,9 +19768,86 @@ snapshots:
 
   js-base64@3.7.7: {}
 
+  js-crypto-aes@1.0.6:
+    dependencies:
+      js-crypto-env: 1.0.5
+
+  js-crypto-ec@1.0.7:
+    dependencies:
+      asn1.js: 5.4.1
+      buffer: 6.0.3
+      elliptic: 6.5.6
+      js-crypto-env: 1.0.5
+      js-crypto-hash: 1.0.7
+      js-crypto-key-utils: 1.0.7
+      js-crypto-random: 1.0.5
+      js-encoding-utils: 0.7.3
+
+  js-crypto-env@1.0.5: {}
+
+  js-crypto-hash@1.0.7:
+    dependencies:
+      buffer: 6.0.3
+      hash.js: 1.1.7
+      js-crypto-env: 1.0.5
+      md5: 2.3.0
+      sha3: 2.1.4
+
+  js-crypto-hmac@1.0.7:
+    dependencies:
+      js-crypto-env: 1.0.5
+      js-crypto-hash: 1.0.7
+
+  js-crypto-key-utils@1.0.7:
+    dependencies:
+      asn1.js: 5.4.1
+      buffer: 6.0.3
+      des.js: 1.1.0
+      elliptic: 6.5.6
+      js-crypto-aes: 1.0.6
+      js-crypto-hash: 1.0.7
+      js-crypto-pbkdf: 1.0.7
+      js-crypto-random: 1.0.5
+      js-encoding-utils: 0.7.3
+      lodash.clonedeep: 4.5.0
+
+  js-crypto-pbkdf@1.0.7:
+    dependencies:
+      js-crypto-hash: 1.0.7
+      js-crypto-hmac: 1.0.7
+      js-encoding-utils: 0.7.3
+
+  js-crypto-random@1.0.5:
+    dependencies:
+      js-crypto-env: 1.0.5
+
+  js-crypto-rsa@1.0.7:
+    dependencies:
+      bn.js: 5.2.1
+      buffer: 6.0.3
+      js-crypto-env: 1.0.5
+      js-crypto-hash: 1.0.7
+      js-crypto-key-utils: 1.0.7
+      js-crypto-random: 1.0.5
+      js-encoding-utils: 0.7.3
+
+  js-encoding-utils@0.7.3: {}
+
   js-sha3@0.8.0: {}
 
   js-tokens@4.0.0: {}
+
+  js-x509-utils@1.0.7:
+    dependencies:
+      asn1.js: 5.4.1
+      asn1.js-rfc5280: 3.0.0
+      bn.js: 5.2.1
+      buffer: 6.0.3
+      js-crypto-ec: 1.0.7
+      js-crypto-key-utils: 1.0.7
+      js-crypto-random: 1.0.5
+      js-crypto-rsa: 1.0.7
+      js-encoding-utils: 0.7.3
 
   js-yaml@3.14.1:
     dependencies:
@@ -18924,6 +19982,8 @@ snapshots:
       esprima: 1.2.2
       static-eval: 2.0.2
       underscore: 1.12.1
+
+  jsonpointer@5.0.1: {}
 
   jwt-decode@3.1.2: {}
 
@@ -19063,7 +20123,15 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
 
+  lodash.clonedeep@4.5.0: {}
+
   lodash.debounce@4.0.8: {}
+
+  lodash.get@4.4.2: {}
+
+  lodash.isequal@4.5.0: {}
+
+  lodash.isplainobject@4.0.6: {}
 
   lodash.throttle@4.1.1: {}
 
@@ -19446,6 +20514,8 @@ snapshots:
 
   mkdirp@1.0.4: {}
 
+  mkdirp@2.1.6: {}
+
   mlly@1.7.1:
     dependencies:
       acorn: 8.12.1
@@ -19463,7 +20533,13 @@ snapshots:
 
   msrcrypto@1.5.8: {}
 
+  multibase@4.0.6:
+    dependencies:
+      '@multiformats/base-x': 4.0.1
+
   multiformats@12.1.3: {}
+
+  multiformats@9.7.1: {}
 
   multiformats@9.9.0: {}
 
@@ -19502,6 +20578,8 @@ snapshots:
 
   node-abort-controller@3.1.1: {}
 
+  node-addon-api@5.1.0: {}
+
   node-dir@0.1.17:
     dependencies:
       minimatch: 3.1.2
@@ -19528,6 +20606,8 @@ snapshots:
       formdata-polyfill: 4.0.10
 
   node-forge@1.3.1: {}
+
+  node-gyp-build@4.8.2: {}
 
   node-int64@0.4.0: {}
 
@@ -19760,6 +20840,14 @@ snapshots:
     dependencies:
       pngjs: 3.4.0
 
+  parse5-htmlparser2-tree-adapter@6.0.1:
+    dependencies:
+      parse5: 6.0.1
+
+  parse5@5.1.1: {}
+
+  parse5@6.0.1: {}
+
   parseurl@1.3.3: {}
 
   pascal-case@3.1.2:
@@ -19848,6 +20936,15 @@ snapshots:
   pkg-up@3.1.0:
     dependencies:
       find-up: 3.0.0
+
+  pkijs@3.2.4:
+    dependencies:
+      '@noble/hashes': 1.4.0
+      asn1js: 3.0.5
+      bytestreamjs: 2.0.1
+      pvtsutils: 1.3.5
+      pvutils: 1.1.3
+      tslib: 2.6.3
 
   plist@3.1.0:
     dependencies:
@@ -19964,7 +21061,7 @@ snapshots:
       '@types/node': 22.1.0
       long: 4.0.0
 
-  protobufjs@7.3.2:
+  protobufjs@7.4.0:
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/base64': 1.1.2
@@ -20051,6 +21148,8 @@ snapshots:
       decode-uri-component: 0.4.1
       filter-obj: 5.1.0
       split-on-first: 3.0.0
+
+  querystringify@2.2.0: {}
 
   queue-microtask@1.2.3: {}
 
@@ -20528,6 +21627,8 @@ snapshots:
       rc: 1.2.8
       resolve: 1.7.1
 
+  requires-port@1.0.0: {}
+
   reselect@4.1.8: {}
 
   resolve-from@3.0.0: {}
@@ -20638,6 +21739,12 @@ snapshots:
       ajv-formats: 2.1.1(ajv@8.17.1)
       ajv-keywords: 5.1.0(ajv@8.17.1)
 
+  secp256k1@5.0.0:
+    dependencies:
+      elliptic: 6.5.6
+      node-addon-api: 5.1.0
+      node-gyp-build: 4.8.2
+
   selfsigned@2.4.1:
     dependencies:
       '@types/node-forge': 1.3.11
@@ -20721,6 +21828,10 @@ snapshots:
     dependencies:
       inherits: 2.0.4
       safe-buffer: 5.2.1
+
+  sha3@2.1.4:
+    dependencies:
+      buffer: 6.0.3
 
   shallow-clone@3.0.1:
     dependencies:
@@ -21330,6 +22441,26 @@ snapshots:
 
   typedarray@0.0.6: {}
 
+  typeorm@0.3.20:
+    dependencies:
+      '@sqltools/formatter': 1.2.5
+      app-root-path: 3.1.0
+      buffer: 6.0.3
+      chalk: 4.1.2
+      cli-highlight: 2.1.11
+      dayjs: 1.11.12
+      debug: 4.3.6
+      dotenv: 16.4.5
+      glob: 10.4.5
+      mkdirp: 2.1.6
+      reflect-metadata: 0.2.2
+      sha.js: 2.4.11
+      tslib: 2.6.3
+      uuid: 9.0.1
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - supports-color
+
   typescript@5.3.3: {}
 
   ua-parser-js@1.0.38: {}
@@ -21433,6 +22564,11 @@ snapshots:
 
   url-join@4.0.0: {}
 
+  url-parse@1.5.10:
+    dependencies:
+      querystringify: 2.2.0
+      requires-port: 1.0.0
+
   url@0.11.4:
     dependencies:
       punycode: 1.4.1
@@ -21482,6 +22618,8 @@ snapshots:
   utila@0.4.0: {}
 
   utils-merge@1.0.1: {}
+
+  uuid@10.0.0: {}
 
   uuid@7.0.3: {}
 
@@ -21740,6 +22878,8 @@ snapshots:
       camelcase: 5.3.1
       decamelize: 1.2.0
 
+  yargs-parser@20.2.9: {}
+
   yargs-parser@21.1.1: {}
 
   yargs@15.4.1:
@@ -21755,6 +22895,16 @@ snapshots:
       which-module: 2.0.1
       y18n: 4.0.3
       yargs-parser: 18.1.3
+
+  yargs@16.2.0:
+    dependencies:
+      cliui: 7.0.4
+      escalade: 3.1.2
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 20.2.9
 
   yargs@17.7.2:
     dependencies:
@@ -21774,6 +22924,14 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.1.1: {}
+
+  z-schema@5.0.5:
+    dependencies:
+      lodash.get: 4.4.2
+      lodash.isequal: 4.5.0
+      validator: 13.12.0
+    optionalDependencies:
+      commander: 9.5.0
 
   zustand@4.5.4(@types/react@18.2.79)(react@18.2.0):
     dependencies:

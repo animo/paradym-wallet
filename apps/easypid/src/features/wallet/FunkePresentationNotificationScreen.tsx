@@ -56,13 +56,13 @@ export function FunkePresentationNotificationScreen({
 
   const disclosedAttributes = getPidDisclosedAttributeNames(
     credential?.disclosedPayload ?? {},
-    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+    credential?.claimFormat as ClaimFormat.SdJwtVc
   )
 
   const disclosedPayload = getPidAttributesForDisplay(
     credential?.disclosedPayload ?? {},
     credential?.metadata ?? ({} as CredentialMetadata),
-    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+    credential?.claimFormat as ClaimFormat.SdJwtVc
   )
 
   const onStop = () => {

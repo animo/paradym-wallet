@@ -1,4 +1,3 @@
-import type { MdocRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
@@ -56,12 +55,12 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       })
 
       for (const credentialRecord of credentialRecords) {
-        if (credentialRecord.type !== 'SdJwtVcRecord' && credentialRecord.type !== 'MdocRecord') {
+        if (credentialRecord.type !== 'SdJwtVcRecord') {
           throw new Error(`Unexpected record type ${credentialRecord.type}`)
         }
       }
 
-      return credentialRecords as Array<SdJwtVcRecord | MdocRecord>
+      return credentialRecords as Array<SdJwtVcRecord>
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
       if (error instanceof BiometricAuthenticationError) {

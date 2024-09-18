@@ -1,4 +1,4 @@
-import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import type { SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
 import type { OpenId4VciCredentialSupported, OpenId4VciIssuerMetadataDisplay } from '@credo-ts/openid4vc'
 import type { MetadataDisplay } from '@sphereon/oid4vci-common'
 
@@ -35,7 +35,7 @@ export function extractOpenId4VcCredentialMetadata(
  * Gets the OpenId4Vc credential metadata from the given W3C credential record.
  */
 export function getOpenId4VcCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord
 ): OpenId4VcCredentialMetadata | null {
   return credentialRecord.metadata.get(openId4VcCredentialMetadataKey)
 }
@@ -46,7 +46,7 @@ export function getOpenId4VcCredentialMetadata(
  * NOTE: this does not save the record.
  */
 export function setOpenId4VcCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord,
   metadata: OpenId4VcCredentialMetadata
 ) {
   credentialRecord.metadata.set(openId4VcCredentialMetadataKey, metadata)

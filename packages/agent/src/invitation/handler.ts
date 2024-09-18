@@ -32,9 +32,6 @@ import {
   Jwt,
   KeyBackend,
   KeyType,
-  Mdoc,
-  MdocRecord,
-  MdocRepository,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -347,9 +344,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
           : undefined
 
-        const shouldKeyBeHardwareBackedForMsoMdoc =
-          offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
-          pidSchemes?.msoMdocDoctypes.includes(offeredCredentialConfiguration.doctype)
+        const shouldKeyBeHardwareBackedForMsoMdoc = false
 
         const shouldKeyBeHardwareBackedForSdJwtVc =
           offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
@@ -390,11 +385,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         }
 
         // Otherwise we also support plain jwk for sd-jwt only
-        if (
-          supportsJwk &&
-          (credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc ||
-            credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc)
-        ) {
+        if (supportsJwk && credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc) {
           return {
             method: 'jwk',
             jwk: getJwkFromKey(key),
@@ -410,16 +401,12 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     })
 
     return credentials.map((credential, index) => {
-      let record: SdJwtVcRecord | W3cCredentialRecord | MdocRecord
+      let record: SdJwtVcRecord | W3cCredentialRecord
 
       if ('compact' in credential.credential) {
         // TODO: add claimFormat to SdJwtVc
         record = new SdJwtVcRecord({
           compactSdJwtVc: credential.credential.compact,
-        })
-      } else if (credential.credential instanceof Mdoc) {
-        record = new MdocRecord({
-          mdoc: credential.credential,
         })
       } else {
         record = new W3cCredentialRecord({
@@ -633,14 +620,9 @@ export const shareProof = async ({
   }
 }
 
-export async function storeCredential(
-  agent: EitherAgent,
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
-) {
+export async function storeCredential(agent: EitherAgent, credentialRecord: W3cCredentialRecord | SdJwtVcRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
-  } else if (credentialRecord instanceof MdocRecord) {
-    await agent.dependencyManager.resolve(MdocRepository).save(agent.context, credentialRecord)
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
   }
@@ -653,9 +635,6 @@ export async function deleteCredential(agent: EitherAgent, credentialId: Credent
   } else if (credentialId.startsWith('sd-jwt-vc')) {
     const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
     await agent.sdJwtVc.deleteById(sdJwtVcId)
-  } else if (credentialId.startsWith('mdoc-')) {
-    const mdocId = credentialId.replace('mdoc-', '')
-    await agent.mdoc.deleteById(mdocId)
   }
 }
 

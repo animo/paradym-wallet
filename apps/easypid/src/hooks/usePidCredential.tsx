@@ -78,7 +78,7 @@ const attributeNameMapping = {
 export function getPidAttributesForDisplay(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
   metadata: CredentialMetadata,
-  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+  claimFormat: ClaimFormat.SdJwtVc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
     return getSdJwtPidAttributesForDisplay(attributes, metadata)
@@ -242,7 +242,7 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
 
 export function getPidDisclosedAttributeNames(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+  claimFormat: ClaimFormat.SdJwtVc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
     return getSdJwtPidDisclosedAttributeNames(attributes)

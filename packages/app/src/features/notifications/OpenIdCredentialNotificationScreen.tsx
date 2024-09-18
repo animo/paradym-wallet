@@ -46,9 +46,6 @@ export function OpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        if (credentialRecord.type === 'MdocRecord') {
-          throw new Error('mdoc not supported')
-        }
         setCredentialRecord(credentialRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
