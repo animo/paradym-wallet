@@ -67,13 +67,6 @@ const config = {
     fallbackToCacheTimeout: 0,
   },
   plugins: [
-    'expo-router',
-    [
-      'expo-camera',
-      {
-        recordAudioAndroid: false,
-      },
-    ],
     [
       'expo-font',
       {

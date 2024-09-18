@@ -11,10 +11,9 @@ const unsupportedUrlPrefixes = ['_oob=']
 
 interface QrScannerScreenProps {
   credentialDataHandlerOptions?: CredentialDataHandlerOptions
-  appName: string
 }
 
-export function QrScannerScreen({ credentialDataHandlerOptions, appName }: QrScannerScreenProps) {
+export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScreenProps) {
   const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
 
@@ -55,7 +54,6 @@ export function QrScannerScreen({ credentialDataHandlerOptions, appName }: QrSca
   return (
     <>
       <QrScanner
-        appName={appName}
         onScan={(data) => {
           void onScan(data)
         }}
