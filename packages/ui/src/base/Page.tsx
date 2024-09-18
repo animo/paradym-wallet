@@ -20,16 +20,6 @@ const FlexPageBase = styled(Stack, {
   'flex-1': true,
   gap: '$6',
   paddingHorizontal: '$4',
-  variants: {
-    unstyled: {
-      true: {
-        padding: 0,
-        margin: 0,
-        gap: 0,
-        'flex-1': false,
-      },
-    },
-  },
 })
 
 export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' | 'l' | 'b' | 't' | 'r' }>(
