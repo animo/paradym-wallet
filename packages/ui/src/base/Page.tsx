@@ -39,10 +39,10 @@ export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' 
     // Not defined means true, not sure why defaultVariant doesn't work
     const safeArea = props.safeArea ?? true
 
-    const top = safeArea === true || safeArea === 'y' || safeArea === 't' ? safeAreaInsets.top : undefined
     // Some devices have no bottom safe area, so we add a default of 16px so the content is not against the edge
     const bottom =
-      safeArea === true || safeArea === 'y' || safeArea === 'b' ? Math.max(safeAreaInsets.bottom, 20) : undefined
+      safeArea === true || safeArea === 'y' || safeArea === 'b' ? Math.max(safeAreaInsets.bottom, 16) : undefined
+    const top = safeArea === true || safeArea === 'y' || safeArea === 't' ? safeAreaInsets.top : undefined
     const left = safeArea === true || safeArea === 'x' || safeArea === 'l' ? safeAreaInsets.left : undefined
     const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
 

@@ -1,4 +1,5 @@
-import { Stack as TStack, styled } from 'tamagui'
+import type { NativeScrollEvent, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native'
+import { ScrollView, type ScrollViewProps, type StackProps, Stack as TStack, styled } from 'tamagui'
 
 export const Stack = styled(TStack, {
   name: 'Stack',
@@ -112,3 +113,18 @@ export const ZStack = styled(
     isZStack: true,
   }
 )
+
+interface ScrollableStackProps extends StackProps {
+  layout?: 'x' | 'y' | 'z'
+  scrollViewProps?: ScrollViewProps
+}
+
+export const ScrollableStack = ({ layout, scrollViewProps, children, ...props }: ScrollableStackProps) => {
+  const AlignedStack = layout === 'x' ? XStack : layout === 'y' ? YStack : layout === 'z' ? ZStack : Stack
+
+  return (
+    <ScrollView w={scrollViewProps?.w ?? '100%'} alwaysBounceVertical={false} {...scrollViewProps}>
+      <AlignedStack {...props}>{children}</AlignedStack>
+    </ScrollView>
+  )
+}

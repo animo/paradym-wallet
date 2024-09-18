@@ -1,4 +1,4 @@
-import { IdCard, Paragraph, PinPad, PinValues, Stack, XStack, YStack } from '@package/ui'
+import { IdCard, Paragraph, PinPad, PinValues, ScrollableStack, Stack, XStack, YStack } from '@package/ui'
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 
@@ -57,23 +57,21 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
   }
 
   return (
-    <YStack fg={1} jc="space-between" gap="$6">
-      <YStack gap="$6" pos="relative" ai="center" jc="center">
-        <Stack w="100%">
-          <IdCard icon={isLoading ? 'loading' : 'locked'} issuerImage={germanIssuerImage} hideUserName />
-        </Stack>
-        <XStack pos="absolute" gap="$3" justifyContent="center">
+    <YStack fg={1} jc="space-between">
+      <ScrollableStack gap="$6" pos="relative" jc="center">
+        <IdCard icon={isLoading ? 'loading' : 'locked'} issuerImage={germanIssuerImage} hideUserName />
+        <XStack pos="absolute" gap="$3" justifyContent="center" w="100%">
           {pinValues.map((digit, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
-            <YStack key={index} maxWidth={28} flex-1 justifyContent="center" alignItems="center">
-              <Paragraph lineHeight={32} size="$7" color="$grey-900" fontWeight="$medium">
+            <YStack key={index} maxWidth={24} flex-1 justifyContent="center" alignItems="center">
+              <Paragraph lineHeight={32} size="$6" color="$grey-900" fontWeight="$medium">
                 {digit ?? ' '}
               </Paragraph>
-              <Stack borderBottomWidth={2} borderBottomColor="$grey-900" width="100%" />
+              <Stack borderBottomWidth={1.5} borderBottomColor="$grey-900" width="100%" />
             </YStack>
           ))}
         </XStack>
-      </YStack>
+      </ScrollableStack>
       <PinPad onPressPinNumber={onPressPinNumber} disabled={isLoading} />
     </YStack>
   )

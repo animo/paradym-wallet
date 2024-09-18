@@ -1,10 +1,19 @@
 import { BlurView } from 'expo-blur'
+import { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
-import Animated from 'react-native-reanimated'
+import Animated, {
+  withRepeat,
+  withTiming,
+  withSequence,
+  useSharedValue,
+  Easing,
+  useAnimatedStyle,
+  withDelay,
+} from 'react-native-reanimated'
 import { Circle } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 import { Button, Heading, Paragraph, Stack, XStack, YStack } from '../base'
-import { HeroIcons, Image, Spinner } from '../content'
+import { HeroIcons, Image } from '../content'
 import { useScaleAnimation } from '../hooks'
 
 export interface IdCardProps {
@@ -33,8 +42,35 @@ export function IdCard({
   small,
   isNotReceived = false,
 }: IdCardProps) {
+  const rotation = useSharedValue(0)
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      justifyContent: 'center',
+      transform: [{ rotate: `${rotation.value}deg` }],
+    }
+  })
+
+  useEffect(() => {
+    if (icon === 'loading') {
+      rotation.value = withSequence(
+        withTiming(360, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0, { duration: 0 }),
+        withRepeat(
+          withSequence(
+            withDelay(500, withTiming(360, { duration: 1500, easing: Easing.inOut(Easing.ease) })),
+            withTiming(0, { duration: 0 })
+          ),
+          -1
+        )
+      )
+    } else {
+      rotation.value = 0
+    }
+  }, [icon, rotation])
+
+  const IconComponent = icon ? iconMapping[icon] : undefined
   return (
     <Animated.View style={pressStyle}>
       <YStack
@@ -55,7 +91,7 @@ export function IdCard({
         {isNotReceived && (
           <Stack position="absolute" zIndex="$2" top={0} left={0} right={0} bottom={0}>
             <BlurView intensity={20} tint="light" style={StyleSheet.absoluteFillObject} />
-            <YStack gap="$2" px="$4" flex-1 ai="center" jc="center">
+            <YStack gap="$2" flex-1 ai="center" jc="center">
               <Heading variant="sub1" fontWeight="$semiBold">
                 No Digital ID
               </Heading>
@@ -87,7 +123,7 @@ export function IdCard({
               PERSONALAUSWEIS
             </Paragraph>
             <Paragraph size={small ? '$3' : '$6'} fontWeight="$semiBold">
-              {hideUserName && !['locked', 'loading', undefined].includes(icon) ? '********' : userName ?? ''}
+              {hideUserName && !icon ? '********' : userName ?? ''}
             </Paragraph>
           </YStack>
           <Stack>
@@ -96,17 +132,13 @@ export function IdCard({
         </XStack>
         <XStack justifyContent="space-between" flex-1>
           <XStack justifyContent="flex-start" alignItems="flex-end">
-            {icon === 'loading' ? (
-              <Circle size={small ? '$1' : '$3'} backgroundColor="#282C3740">
-                <Spinner color="$white" />
-              </Circle>
-            ) : icon === 'biometric' ? (
-              <Circle size={small ? '$1' : '$3'} backgroundColor="#282C3740">
-                <HeroIcons.FingerPrint color="$white" size={small ? 12 : 24} />
-              </Circle>
-            ) : (
-              <Stack width={small ? '$1' : '$3'} height={small ? '$1' : '$3'} />
-            )}
+            {IconComponent ? (
+              <Animated.View style={icon === 'loading' ? animatedStyle : undefined}>
+                <Circle m={'$-1'} size={small ? '$1' : '$3'} backgroundColor="#282C3740">
+                  <IconComponent color="$white" size={small ? 12 : 20} />
+                </Circle>
+              </Animated.View>
+            ) : null}
           </XStack>
           <XStack justifyContent="flex-end" alignItems="flex-end">
             {onPress && <HeroIcons.ArrowRight color="$black" />}

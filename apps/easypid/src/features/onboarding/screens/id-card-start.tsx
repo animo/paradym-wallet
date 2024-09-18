@@ -38,7 +38,7 @@ export function OnboardingIdCardStart({ goToNextStep, onSkipCardSetup }: Onboard
         </ScrollView>
       </YStack>
       <YStack gap="$4" alignItems="center">
-        <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
+        <Button.Text disabled={isLoading} icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
           Set up later
         </Button.Text>
         <Button.Solid scaleOnPress disabled={isLoading} onPress={onContinue}>
