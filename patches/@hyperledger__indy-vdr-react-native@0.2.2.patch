@@ -22,17 +22,3 @@ index 9017d77eb32573415c7922cd83dae5cd792a885f..759b67025c2414b86ee204e1c5a52562
      targetSdkVersion getExt('targetSdkVersion')
      
      externalNativeBuild {
-diff --git a/indy-vdr.podspec b/indy-vdr.podspec
-index 8488810b804d6516f6a0d5a62020516e579ba884..78219c1ab3de60cf0382a7f479e23090895f0ee6 100644
---- a/indy-vdr.podspec
-+++ b/indy-vdr.podspec
-@@ -16,7 +16,8 @@ Pod::Spec.new do |s|
-   s.header_mappings_dir = "cpp"
- 
-   s.pod_target_xcconfig = {
--    :USE_HEADERMAP => "No"
-+    :USE_HEADERMAP => "No",
-+    'CLANG_CXX_LANGUAGE_STANDARD' => "c++20",
-   }
- 
-   s.ios.vendored_frameworks = "native/mobile/ios/indy_vdr.xcframework"
