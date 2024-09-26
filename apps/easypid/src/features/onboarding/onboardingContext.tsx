@@ -341,13 +341,13 @@ export function OnboardingContextProvider({
   }, [])
 
   const onPinReEnter = async (pin: string) => {
-    // Spells SERVER & BROKEN on the pin pad (with letters)
+    // Spells BROKEN on the pin pad (with letters)
     // Allows bypassing the eID card and use a simulator card
-    const isSimulatorPinCode = walletPin === '737837' && pin === '276536'
+    const isSimulatorPinCode = pin === '276536'
 
     if (isSimulatorPinCode) {
       setAllowSimulatorCard(true)
-    } else if (walletPin !== pin) {
+    } else if (!walletPin || walletPin !== pin) {
       toast.show('Pin entries do not match', {
         customData: { preset: 'danger' },
       })
@@ -363,7 +363,7 @@ export function OnboardingContextProvider({
 
     return (
       secureUnlock
-        .setup(walletPin)
+        .setup(walletPin as string)
         .then(({ walletKey }) => initializeAgent(walletKey))
         // After `initializeAgent` function is finished we can assume that `setAgent(agent)` is called and the agent is set
         // We store the wallet pin as the pid pin. We do this to avoid a double key derivation which is too much of a slow down
