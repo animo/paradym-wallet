@@ -79,7 +79,7 @@ export function FunkeMenuScreen() {
           <YStack>
             {idItem}
             {menuItems.map((item, idx) => (
-              <MenuItem key={item.title} item={item} idx={idx + 1} />
+              <MenuItem key={item.title} item={item} idx={idx} />
             ))}
 
             <YStack py="$4" ai="center">

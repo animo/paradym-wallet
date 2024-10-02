@@ -38,39 +38,41 @@ export function FunkeWalletScreen() {
 
   return (
     <FlexPage p={0} safeArea="b" gap={0}>
-      <XStack px="$4" py="$2" ai="center" justifyContent="space-between">
-        <IconContainer icon={<HeroIcons.Menu />} onPress={() => push('/menu')} />
-        <IconContainer icon={<LucideIcons.History />} onPress={() => push('/activity')} />
-      </XStack>
-      <AnimatedStack
-        style={qrPressStyle}
-        onPressIn={qrHandlePressIn}
-        onPressOut={qrHandlePressOut}
-        onPress={navigateToScanner}
-        alignItems="center"
-        gap="$2"
-        py="$6"
-        mx="$4"
-        borderBottomWidth="$0.5"
-        borderColor="$grey-200"
-      >
-        <YStack bg="#2A337E1A" br="$12">
-          <Stack
-            bg="$primary-500"
-            br="$12"
-            p="$4"
-            m="$2.5"
-            shadowOffset={{ width: 0, height: 2 }}
-            shadowColor="$grey-600"
-            shadowOpacity={0.3}
-            shadowRadius={5}
-          >
-            <HeroIcons.QrCode strokeWidth={1.5} color="$white" size={48} />
-          </Stack>
-        </YStack>
-        <Paragraph fontWeight="$bold" color="$primary-500">
-          Scan QR-Code
-        </Paragraph>
+      <AnimatedStack entering={FadeIn.duration(200)}>
+        <XStack px="$4" py="$2" ai="center" justifyContent="space-between">
+          <IconContainer icon={<HeroIcons.Menu />} onPress={() => push('/menu')} />
+          <IconContainer icon={<LucideIcons.History />} onPress={() => push('/activity')} />
+        </XStack>
+        <AnimatedStack
+          style={qrPressStyle}
+          onPressIn={qrHandlePressIn}
+          onPressOut={qrHandlePressOut}
+          onPress={navigateToScanner}
+          alignItems="center"
+          gap="$2"
+          py="$6"
+          mx="$4"
+          borderBottomWidth="$0.5"
+          borderColor="$grey-200"
+        >
+          <YStack bg="#2A337E1A" br="$12">
+            <Stack
+              bg="$primary-500"
+              br="$12"
+              p="$4"
+              m="$2.5"
+              shadowOffset={{ width: 0, height: 2 }}
+              shadowColor="$grey-600"
+              shadowOpacity={0.3}
+              shadowRadius={5}
+            >
+              <HeroIcons.QrCode strokeWidth={1.5} color="$white" size={48} />
+            </Stack>
+          </YStack>
+          <Paragraph fontWeight="$bold" color="$primary-500">
+            Scan QR-Code
+          </Paragraph>
+        </AnimatedStack>
       </AnimatedStack>
       {credentials.length === 0 ? (
         <AnimatedStack

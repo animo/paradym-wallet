@@ -31,6 +31,7 @@ export default function AppLayout() {
   const [resetWalletState, setResetWalletState] = useState<'resetting' | 'reset'>()
   const shouldResetWallet =
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
+  const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
 
   useEffect(() => {
     if (resetWalletState || !shouldResetWallet) return
@@ -49,7 +50,7 @@ export default function AppLayout() {
   }
 
   // Wallet is locked. Redirect to authentication screen
-  if (secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key') {
+  if (isWalletLocked) {
     return <Redirect href="/authenticate" />
   }
 
@@ -66,7 +67,7 @@ export default function AppLayout() {
     <AgentProvider agent={secureUnlock.context.agent}>
       <WalletJsonStoreProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
         <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
-          <Stack screenOptions={{ headerShown: false }}>
+          <Stack key="1234" screenOptions={{ headerShown: false }}>
             <Stack.Screen
               options={{
                 presentation: 'modal',
@@ -81,7 +82,7 @@ export default function AppLayout() {
               }}
             />
             <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
-            <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
+            <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
             <Stack.Screen name="menu/index" options={headerNormalOptions} />
             <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
             <Stack.Screen name="menu/settings" options={headerNormalOptions} />

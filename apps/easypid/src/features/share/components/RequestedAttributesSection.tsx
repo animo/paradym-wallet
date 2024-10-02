@@ -108,7 +108,7 @@ export function CardWithAttributes({
 
   const onPress = () => {
     router.push(
-      `/credentials/pidRequestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${filteredDisclosedAttributes.length}`
+      `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${filteredDisclosedAttributes.length}`
     )
   }
 
