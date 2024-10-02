@@ -15,6 +15,8 @@ export type RequestedAttributesSectionProps = {
 
 export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
   const { credential: pidCredential } = usePidCredential()
+  // TODO: New way of showing the branding of the pid is now here instead of in the submission.
+  // So we need to add it here now.
 
   return (
     <YStack gap="$4">
@@ -115,7 +117,7 @@ export function CardWithAttributes({
   return (
     <Card br="$6" borderWidth="$0.5" borderColor="$borderTranslucent" overflow="hidden" onPress={onPress}>
       <Stack p="$5" pos="relative" bg={backgroundColor ?? '$grey-900'}>
-        {hasInternet && (
+        {hasInternet && backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
               src={backgroundImage?.url ?? ''}
@@ -147,7 +149,7 @@ export function CardWithAttributes({
             </XStack>
           ))}
           <Stack pos="absolute" bottom="$0" right="$0">
-            <IconContainer icon={<HeroIcons.ArrowRight />} />
+            <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />
           </Stack>
         </YStack>
       </YStack>

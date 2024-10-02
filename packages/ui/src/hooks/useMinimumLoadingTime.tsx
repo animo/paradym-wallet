@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const useMinimumLoadingTime = (loadingTime = 500) => {
+export const useMinimumLoadingTime = (loadingTime = 1000) => {
   const [canProceed, setCanProceed] = useState(false)
 
   useEffect(() => {

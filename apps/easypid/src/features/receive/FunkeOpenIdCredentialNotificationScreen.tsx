@@ -112,7 +112,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
               key="verify-issuer"
               name={credential?.display.issuer.name}
               logo={credential?.display.issuer.logo}
-              // @ts-expect-error
+              // @ts-expect-error issuer is not typed
               domain={credentialRecord?.metadata.issuer as string}
             />
           ),

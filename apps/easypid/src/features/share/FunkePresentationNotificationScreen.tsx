@@ -4,8 +4,8 @@ import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { PinSlide } from './slides/PinSlide'
+import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
-import { PresentationSuccessSlide } from './slides/SuccessSlide'
 
 interface FunkePresentationNotificationScreenProps {
   usePin: boolean
@@ -14,7 +14,7 @@ interface FunkePresentationNotificationScreenProps {
   onDecline: () => void
   onComplete: () => void
   submission?: FormattedSubmission
-  verifierHost?: string
+  verifierName?: string
 }
 
 export function FunkePresentationNotificationScreen({
@@ -23,7 +23,7 @@ export function FunkePresentationNotificationScreen({
   onDecline,
   isAccepting,
   submission,
-  verifierHost,
+  verifierName,
   onComplete,
 }: FunkePresentationNotificationScreenProps) {
   return (
@@ -39,7 +39,7 @@ export function FunkePresentationNotificationScreen({
             step: 'verify-issuer',
             progress: 33,
             backIsCancel: true,
-            screen: <VerifyPartySlide key="verify-issuer" />,
+            screen: <VerifyPartySlide key="verify-issuer" name={verifierName} />,
           },
           {
             step: 'share-credentials',
@@ -49,7 +49,7 @@ export function FunkePresentationNotificationScreen({
                 key="share-credentials"
                 onAccept={usePin ? undefined : onAccept}
                 onDecline={onDecline}
-                verifierHost={verifierHost ?? 'Unknown'}
+                verifierName={verifierName}
                 submission={submission}
                 isAccepting={isAccepting}
               />
@@ -63,7 +63,8 @@ export function FunkePresentationNotificationScreen({
           {
             step: 'success',
             progress: 100,
-            screen: <PresentationSuccessSlide onComplete={onComplete} />,
+            backIsCancel: true,
+            screen: <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
           },
         ].filter(Boolean) as SlideStep[]
       }

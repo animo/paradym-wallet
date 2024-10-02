@@ -1,6 +1,6 @@
 import { ActivityRowItem } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
-import { FlexPage, Heading, Loader, Paragraph, ScrollView, Spacer, Spinner, Stack, YStack } from '@package/ui'
+import { FlexPage, Heading, Loader, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
 import { TextBackButton } from 'packages/app/src'
 import React from 'react'
 import { useActivities } from './activityRecord'

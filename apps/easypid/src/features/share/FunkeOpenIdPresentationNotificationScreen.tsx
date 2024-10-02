@@ -4,6 +4,7 @@ import {
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
+  getReadableNameFromHost,
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -39,39 +40,34 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
   const [isSharing, setIsSharing] = useState(false)
 
-  // TODO: If i have more of the same credential, it will return multiple submissions
   const submission = useMemo(() => {
     if (!credentialsForRequest) return undefined
 
     const formattedSubmission = formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
-    const containsPid = formattedSubmission.entries.some((entry) =>
-      entry.credentials.some((cred) => cred.metadata?.type === pidCredential?.type)
-    )
 
-    if (containsPid && pidCredential) {
-      return {
-        ...formattedSubmission,
-        entries: formattedSubmission.entries.map((entry) => {
-          return {
-            ...entry,
-            credentials: entry.credentials.map((cred) => {
-              if (cred.metadata?.type === pidCredential?.type) {
-                return {
-                  ...cred,
-                  credentialName: pidCredential.display.name,
-                  backgroundImage: pidCredential.display.backgroundImage,
-                  backgroundColor: pidCredential.display.backgroundColor,
-                }
+    // Filter to keep only the first credential for each type
+    const filteredSubmission = {
+      ...formattedSubmission,
+      entries: formattedSubmission.entries.map((entry) => {
+        const uniqueCredentials = new Map()
+        return {
+          ...entry,
+          credentials: entry.credentials
+            .filter((credential) => credential.metadata?.type)
+            .filter((credential) => {
+              const type = credential.metadata?.type
+              if (!uniqueCredentials.has(type)) {
+                uniqueCredentials.set(type, credential)
+                return true
               }
-              return cred
+              return false
             }),
-          }
-        }),
-      }
+        }
+      }),
     }
 
-    return formattedSubmission
-  }, [credentialsForRequest, pidCredential])
+    return filteredSubmission
+  }, [credentialsForRequest])
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -110,14 +106,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
 
       const credential = submission.entries[0]?.credentials[0]
-      const isPid = credential?.metadata?.type === pidCredential?.type
-      const disclosedPayload = isPid
-        ? getPidAttributesForDisplay(
-            credential.disclosedPayload ?? {},
-            credential.metadata ?? ({} as CredentialMetadata),
-            credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-          )
-        : credential?.disclosedPayload
+      const disclosedPayload =
+        credential?.metadata?.type === pidCredential?.type
+          ? getPidAttributesForDisplay(
+              credential.disclosedPayload ?? {},
+              credential.metadata ?? ({} as CredentialMetadata),
+              credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+            )
+          : credential?.disclosedPayload
 
       await activityStorage.addActivity(agent, {
         id: utils.uuid(),
@@ -200,9 +196,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
-      verifierHost={
-        credentialsForRequest?.verifierHostName ? `https://${credentialsForRequest.verifierHostName}` : undefined
-      }
+      verifierName={getReadableNameFromHost(credentialsForRequest?.verifierHostName ?? 'Party.com')}
       onComplete={() => pushToWallet('replace')}
     />
   )

@@ -113,11 +113,7 @@ export function FunkeWalletScreen() {
         </YStack>
       ) : (
         <ScrollView p="$4" py="$7" gap="$2">
-          <AnimatedStack
-            entering={FadeInDown.springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
-            position="relative"
-            mb={BASE_CREDENTIAL_CARD_HEIGHT + credentials.length * 72}
-          >
+          <AnimatedStack position="relative" mb={BASE_CREDENTIAL_CARD_HEIGHT + credentials.length * 72}>
             {credentials.map((credential, idx) => (
               <AnimatedCredentialCard key={credential.id} display={credential.display} index={idx} />
             ))}

@@ -1,10 +1,16 @@
 import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, Stack, YStack, useSpringify } from '@package/ui'
+import React from 'react'
 import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
 
-export const PresentationSuccessSlide = ({ onComplete }: { onComplete: () => void }) => {
+interface PresentationSuccessSlideProps {
+  onComplete: () => void
+  verifierName?: string
+}
+
+export const PresentationSuccessSlide = ({ verifierName, onComplete }: PresentationSuccessSlideProps) => {
   return (
     <YStack fg={1} jc="space-between">
-      <YStack fg={1} mt="$10" gap="$4">
+      <YStack fg={1} mt="$10" gap="$4" key="12345">
         <YStack
           position="relative"
           mx="$-4"
@@ -14,9 +20,9 @@ export const PresentationSuccessSlide = ({ onComplete }: { onComplete: () => voi
           borderBottomColor="$grey-200"
           overflow="hidden"
         >
-          <AnimatedStack entering={useSpringify(FadeInDown).delay(800)} w="90%" h="$14" bg="$primary-200" br="$6" />
+          <AnimatedStack entering={useSpringify(FadeInDown).delay(600)} w="90%" h="$14" bg="$primary-200" br="$6" />
           <AnimatedStack
-            entering={useSpringify(FadeInDown).delay(600)}
+            entering={useSpringify(FadeInDown).delay(450)}
             top="$4"
             position="absolute"
             w="95%"
@@ -55,15 +61,20 @@ export const PresentationSuccessSlide = ({ onComplete }: { onComplete: () => voi
             <HeroIcons.Interaction color="white" size={36} strokeWidth={2} />
           </AnimatedStack>
         </YStack>
-        <YStack gap="$4" px="$4" ai="center">
+        <YStack gap="$4" p="$4" ai="center">
           <Heading>Success!</Heading>
           <Paragraph ta="center">
-            Your information has been shared with <Paragraph fontWeight="$semiBold">Party X.</Paragraph>
+            Your information has been shared{' '}
+            {verifierName && (
+              <>
+                with <Paragraph fontWeight="$semiBold">{verifierName}</Paragraph>
+              </>
+            )}
+            .
           </Paragraph>
         </YStack>
       </YStack>
       <Stack gap="$2" borderTopWidth="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4">
-        <Button.Text>See verification details</Button.Text>
         <Button.Solid scaleOnPress onPress={onComplete}>
           Go to wallet
         </Button.Solid>

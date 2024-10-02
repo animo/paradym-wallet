@@ -452,3 +452,9 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     claimFormat: credentialRecord.credential.claimFormat,
   }
 }
+
+export const getReadableNameFromHost = (host: string) => {
+  const parts = host.split('.')
+  const domainName = parts.length >= 2 ? parts[parts.length - 2] : host
+  return domainName.charAt(0).toUpperCase() + domainName.slice(1)
+}

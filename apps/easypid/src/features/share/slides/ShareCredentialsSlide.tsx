@@ -1,15 +1,16 @@
 import type { FormattedSubmission } from '@package/agent'
-import { DualResponseButtons, RequestedAttributesSection } from '@package/app'
+import { DualResponseButtons } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
+import { Button, Heading, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
-import { Circle } from 'tamagui'
+import { Circle, Spacer } from 'tamagui'
+import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface ShareCredentialsSlideProps {
   onAccept?: () => Promise<void>
   submission?: FormattedSubmission
   onDecline: () => void
-  verifierHost: string
+  verifierName?: string
   isAccepting: boolean
 }
 
@@ -17,7 +18,7 @@ export const ShareCredentialsSlide = ({
   submission,
   onAccept,
   onDecline,
-  verifierHost,
+  verifierName,
   isAccepting,
 }: ShareCredentialsSlideProps) => {
   const { onNext } = useWizard()
@@ -41,7 +42,7 @@ export const ShareCredentialsSlide = ({
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$6" fg={1}>
-        <Heading>Do you want to share with Party X?</Heading>
+        <Heading>Do you want to share{verifierName && ` with ${verifierName}`}?</Heading>
         <YStack
           fg={1}
           onLayout={(event) => {
@@ -63,6 +64,7 @@ export const ShareCredentialsSlide = ({
                   'No information was provided on the purpose of the data request. Be cautious'}
               </Paragraph>
             </YStack>
+            <Spacer />
           </ScrollView>
         </YStack>
       </YStack>
