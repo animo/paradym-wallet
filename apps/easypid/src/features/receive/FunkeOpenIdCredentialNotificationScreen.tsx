@@ -17,7 +17,7 @@ import { activityStorage } from '../activity/activityRecord'
 import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { OfferCredentialSlide } from './slides/OfferCredentialSlide'
-import { VerifyIssuerSlide } from './slides/VerifyIssuerSlide'
+import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
 type Query = { uri?: string; data?: string }
 
@@ -33,6 +33,8 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   const [errorReason, setErrorReason] = useState<string>()
   const [isAccepted, setIsAccepted] = useState(false)
   const [isStoring, setIsStoring] = useState(false)
+
+  const credential = credentialRecord ? getCredentialForDisplay(credentialRecord) : undefined
 
   useEffect(() => {
     const requestCredential = async (params: Query) => {
@@ -105,7 +107,15 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           step: 'verify-issuer',
           progress: 33,
           backIsCancel: true,
-          screen: <VerifyIssuerSlide key="verify-issuer" credentialRecord={credentialRecord} />,
+          screen: (
+            <VerifyPartySlide
+              key="verify-issuer"
+              name={credential?.display.issuer.name}
+              logo={credential?.display.issuer.logo}
+              // @ts-expect-error
+              domain={credentialRecord?.metadata.issuer as string}
+            />
+          ),
         },
         {
           step: 'offer-credential',

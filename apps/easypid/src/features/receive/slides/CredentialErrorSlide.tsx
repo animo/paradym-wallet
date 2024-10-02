@@ -1,6 +1,11 @@
 import { Button, Heading, HeroIcons, Paragraph, Stack, XStack, YStack } from '@package/ui'
 
-export const CredentialErrorSlide = ({ reason, onCancel }: { reason?: string; onCancel: () => void }) => {
+interface CredentialErrorSlideProps {
+  reason?: string
+  onCancel: () => void
+}
+
+export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideProps) => {
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$6">

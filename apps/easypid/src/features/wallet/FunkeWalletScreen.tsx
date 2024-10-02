@@ -170,7 +170,6 @@ function AnimatedCredentialCard({
             url: 'https://i.imgur.com/Cvyjzuc.png',
             altText: 'Background Image',
           }}
-          issuerName="Germany"
           textColor="#2F3544"
           name="Personalausweis"
           bgColor="#CCCEBF"
@@ -183,8 +182,6 @@ function AnimatedCredentialCard({
           backgroundImage={display.backgroundImage}
           textColor={display.textColor}
           name={display.name}
-          issuerName={display.issuer.name}
-          subtitle={display.description}
           bgColor={display.backgroundColor}
           shadow={false}
         />

@@ -1,19 +1,21 @@
-import { type SdJwtVcRecord, type W3cCredentialRecord, getCredentialForDisplay } from '@package/agent'
+import type { DisplayImage } from '@package/agent'
 
 import { Heading, HeroIcons, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
 import { DualResponseButtons, useWizard } from 'packages/app/src'
 import { Linking } from 'react-native'
 
-// Replace record with the required text props
+interface VerifyPartySlideProps {
+  name?: string
+  issuer?: string
+  logo?: DisplayImage
+}
 
-export const VerifyIssuerSlide = ({ credentialRecord }: { credentialRecord?: SdJwtVcRecord | W3cCredentialRecord }) => {
+export const VerifyPartySlide = ({ name, issuer, logo }: VerifyPartySlideProps) => {
   const { onNext, onCancel } = useWizard()
 
-  if (credentialRecord) {
-    const credential = getCredentialForDisplay(credentialRecord)
-
+  if (name && issuer && logo && logo.url) {
     const urlPattern = /did:web:metadata\.([a-zA-Z0-9.-]+):/
-    const match = credential.metadata.issuer.match(urlPattern)
+    const match = issuer.match(urlPattern)
     const extractedUrl = match ? match[1] : 'Example.com'
 
     const openUrl = () => {
@@ -23,18 +25,12 @@ export const VerifyIssuerSlide = ({ credentialRecord }: { credentialRecord?: SdJ
     return (
       <YStack fg={1} jc="space-between">
         <YStack gap="$6">
-          <Heading>Do you recognize {credential.display.issuer.name}?</Heading>
+          <Heading>Do you recognize {name}?</Heading>
           <Stack gap="$4">
             <Stack alignSelf="flex-start">
               <XStack pos="relative">
                 <YStack br="$2" overflow="hidden" height={72} width={72} bg="$grey-900">
-                  <Image
-                    src={credential.display.issuer.logo?.url ?? ''}
-                    alt={credential.display.issuer.name}
-                    width="100%"
-                    height="100%"
-                    resizeMode="cover"
-                  />
+                  <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
                 </YStack>
                 <Stack pos="absolute" top="$-2" right="$-2">
                   <Stack bg="$positive-500" br="$12" p="$1.5">

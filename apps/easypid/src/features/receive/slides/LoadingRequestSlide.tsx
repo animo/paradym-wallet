@@ -1,19 +1,26 @@
-import { AnimatedStack, Button, Heading, Loader, Paragraph, Stack, YStack, useSpringify } from '@package/ui'
+import {
+  AnimatedStack,
+  Button,
+  Heading,
+  Loader,
+  Paragraph,
+  Stack,
+  YStack,
+  useMinimumLoadingTime,
+  useSpringify,
+} from '@package/ui'
 import { useWizard } from 'packages/app/src'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 
-export const LoadingRequestSlide = ({ isLoading, isError }: { isLoading: boolean; isError: boolean }) => {
+interface LoadingRequestSlideProps {
+  isLoading: boolean
+  isError: boolean
+}
+
+export const LoadingRequestSlide = ({ isLoading, isError }: LoadingRequestSlideProps) => {
   const { onNext, onCancel } = useWizard()
-  const [canProceed, setCanProceed] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCanProceed(true)
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [])
+  const canProceed = useMinimumLoadingTime()
 
   useEffect(() => {
     if ((!isLoading && canProceed) || (isError && canProceed)) {

@@ -55,7 +55,7 @@ export function FunkeMenuScreen() {
         icon: HeroIcons.Identification,
         title: 'Setup digital ID',
       }}
-      onClick={onResetWallet}
+      onPress={onResetWallet}
       idx={0}
     />
   )
@@ -79,7 +79,7 @@ export function FunkeMenuScreen() {
           <YStack>
             {idItem}
             {menuItems.map((item, idx) => (
-              <MenuItem key={item.title} item={item} idx={idx} />
+              <MenuItem key={item.title} item={item} idx={idx + 1} />
             ))}
 
             <YStack py="$4" ai="center">
@@ -97,7 +97,7 @@ export function FunkeMenuScreen() {
   )
 }
 
-const MenuItem = ({ item, idx, onClick }: { item: (typeof menuItems)[number]; idx: number; onClick?: () => void }) => {
+const MenuItem = ({ item, idx, onPress }: { item: (typeof menuItems)[number]; idx: number; onPress?: () => void }) => {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   const content = (
@@ -128,7 +128,7 @@ const MenuItem = ({ item, idx, onClick }: { item: (typeof menuItems)[number]; id
 
   if (item.href === '/') {
     return (
-      <Stack onPressIn={handlePressIn} onPressOut={handlePressOut} onPress={onClick}>
+      <Stack onPressIn={handlePressIn} onPressOut={handlePressOut} onPress={onPress}>
         {content}
       </Stack>
     )

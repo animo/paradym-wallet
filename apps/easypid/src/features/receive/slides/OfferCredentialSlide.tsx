@@ -172,9 +172,7 @@ export const OfferCredentialSlide = ({
               issuerImage={display.issuer.logo}
               textColor={display.textColor}
               name={display.name}
-              issuerName={display.issuer.name}
               backgroundImage={display.backgroundImage}
-              subtitle={display.description}
               bgColor={display.backgroundColor}
               isLoading={isStoring && !isCompleted}
             />

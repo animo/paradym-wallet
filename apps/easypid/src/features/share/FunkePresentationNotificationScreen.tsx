@@ -2,7 +2,7 @@ import type { FormattedSubmission } from '@package/agent'
 
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import { VerifyIssuerSlide } from '../receive/slides/VerifyIssuerSlide'
+import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { PinSlide } from './slides/PinSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 import { PresentationSuccessSlide } from './slides/SuccessSlide'
@@ -12,9 +12,9 @@ interface FunkePresentationNotificationScreenProps {
   isAccepting: boolean
   onAccept: () => Promise<void>
   onDecline: () => void
+  onComplete: () => void
   submission?: FormattedSubmission
   verifierHost?: string
-  onComplete: () => void
 }
 
 export function FunkePresentationNotificationScreen({
@@ -39,7 +39,7 @@ export function FunkePresentationNotificationScreen({
             step: 'verify-issuer',
             progress: 33,
             backIsCancel: true,
-            screen: <VerifyIssuerSlide key="verify-issuer" />,
+            screen: <VerifyPartySlide key="verify-issuer" />,
           },
           {
             step: 'share-credentials',

@@ -39,7 +39,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
   const [isSharing, setIsSharing] = useState(false)
 
-  // TODO: If i have the same credentials twice, it will return a submission with two of the same credentials.
+  // TODO: If i have more of the same credential, it will return multiple submissions
   const submission = useMemo(() => {
     if (!credentialsForRequest) return undefined
 

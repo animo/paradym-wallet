@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 export const useScrollViewPosition = (offset?: number) => {
   const height = Dimensions.get('window').height
 
-  const scrollEventThrottle = 48 // used to decrease precision to increase performance
+  const scrollEventThrottle = 48
   const [isScrolledByOffset, setIsScrolledByOffset] = useState(false)
   const [contentHeight, setContentHeight] = useState(0)
   const [_, setContainerHeight] = useState(0)
@@ -15,8 +15,7 @@ export const useScrollViewPosition = (offset?: number) => {
   const isScrollable = contentHeight > height * 0.9
   // const isScrollable = contentHeight > containerHeight
 
-  // @ts-ignore
-  const onContentSizeChange = (_, height: number) => setContentHeight(height)
+  const onContentSizeChange = (_: unknown, height: number) => setContentHeight(height)
   const onLayout = (event: LayoutChangeEvent) => setContainerHeight(event.nativeEvent.layout.height)
 
   const handleScroll = useCallback(

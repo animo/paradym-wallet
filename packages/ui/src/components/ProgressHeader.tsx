@@ -27,17 +27,17 @@ export function ProgressHeader({
   ...props
 }: ProgressHeaderProps) {
   const isError = color === 'danger'
+
   const colorValue = useSharedValue(color === 'primary' ? 0 : 1)
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    colorValue.value = withTiming(color === 'primary' ? 0 : 1, { duration: 1000 })
-  }, [color])
-
   const animatedStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(colorValue.value, [0, 1], ['#4365DE', '#DC3130'])
     return { backgroundColor: backgroundColor }
   })
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Only change when color changes
+  useEffect(() => {
+    colorValue.value = withTiming(color === 'primary' ? 0 : 1, { duration: 1000 })
+  }, [color])
 
   return (
     <YStack gap="$4" {...props}>

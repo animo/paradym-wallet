@@ -26,15 +26,10 @@ export function FunkeRequestedAttributesDetailScreen({
   const { bottom } = useSafeAreaInsets()
   const { isLoading, credentials } = useCredentialsForDisplay()
   const router = useRouter()
+
   const { credential: pidCredential } = usePidCredential()
-  const credential = credentials.find((credential) => credential.id.includes(id))
-
-  const isPidCredential = pidCredential?.id.includes(id)
-
-  const name = isPidCredential ? pidCredential?.display.name : credential?.display.name
-  const issuer = isPidCredential ? pidCredential?.display.issuer.name : credential?.display.issuer.name
-  const backgroundColor = isPidCredential ? pidCredential?.display.backgroundColor : credential?.display.backgroundColor
-  const backgroundImage = isPidCredential ? pidCredential?.display.backgroundImage : credential?.display.backgroundImage
+  const credential = credentials.find((cred) => cred.id.includes(id))
+  const activeCredential = pidCredential?.id.includes(id) ? pidCredential : credential
 
   if (isLoading) {
     return null
@@ -57,12 +52,20 @@ export function FunkeRequestedAttributesDetailScreen({
       <YStack borderWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack g="xl" pad="lg" py="$4" marginBottom={bottom}>
-          <Stack p="$2" h="$8" w="$12" br="$4" overflow="hidden" pos="relative" bg={backgroundColor ?? '$grey-900'}>
+          <Stack
+            p="$2"
+            h="$8"
+            w="$12"
+            br="$4"
+            overflow="hidden"
+            pos="relative"
+            bg={activeCredential?.display.backgroundColor ?? '$grey-900'}
+          >
             {hasInternet && (
               <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
                 <Image
-                  src={backgroundImage?.url ?? ''}
-                  alt={backgroundImage?.altText ?? ''}
+                  src={activeCredential?.display.backgroundImage?.url ?? ''}
+                  alt={activeCredential?.display.backgroundImage?.altText ?? ''}
                   resizeMode="cover"
                   height="100%"
                   width="100%"
@@ -72,9 +75,11 @@ export function FunkeRequestedAttributesDetailScreen({
           </Stack>
           <Stack g="md">
             <Heading variant="h1">
-              {disclosedAttributeLength} attributes from {name}
+              {disclosedAttributeLength} attributes from {activeCredential?.display.name}
             </Heading>
-            {credential.display && <Paragraph color="$grey-700">Issued by {issuer}</Paragraph>}
+            {activeCredential?.display.issuer && (
+              <Paragraph color="$grey-700">Issued by {activeCredential?.display.issuer.name}</Paragraph>
+            )}
             <CredentialAttributes subject={disclosedPayload} headerTitle="Attributes" headerStyle="small" />
             <TextBackButton />
           </Stack>
