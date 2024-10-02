@@ -21,8 +21,7 @@ export function FunkePidCredentialDetailScreen() {
   }
 
   if (!credential) {
-    toast.show('Error getting credential details', {
-      message: 'Credential not found',
+    toast.show('Credential not found', {
       customData: {
         preset: 'danger',
       },
@@ -34,7 +33,7 @@ export function FunkePidCredentialDetailScreen() {
   return (
     <YStack bg="$background" height="100%">
       <Spacer size="$13" />
-      <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
+      <YStack borderWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack g="xl" p="$4" marginBottom={bottom}>
           <IdCard issuerImage={germanIssuerImage} small />

@@ -122,7 +122,7 @@ export function IdCard({
             <Paragraph size={small ? '$1' : '$2'} fontWeight="$bold" color="$grey-700">
               PERSONALAUSWEIS
             </Paragraph>
-            <Paragraph size={small ? '$3' : '$6'} fontWeight="$semiBold">
+            <Paragraph color="$grey-900" size={small ? '$3' : '$6'} fontWeight="$semiBold">
               {hideUserName && !icon ? '********' : userName ?? ''}
             </Paragraph>
           </YStack>

@@ -1,6 +1,6 @@
 import { ActivityRowItem } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
-import { FlexPage, Heading, Paragraph, ScrollView, Spinner, Stack, YStack } from '@package/ui'
+import { FlexPage, Heading, Loader, Paragraph, ScrollView, Spacer, Spinner, Stack, YStack } from '@package/ui'
 import { TextBackButton } from 'packages/app/src'
 import React from 'react'
 import { useActivities } from './activityRecord'
@@ -27,7 +27,7 @@ export function FunkeActivityScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack w="100%" top={0} borderBottomWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'}>
+      <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
         <YStack gap="$4" p="$4">
           <Stack h="$1" />
           <Heading variant="h1" fontWeight="$bold">
@@ -35,9 +35,15 @@ export function FunkeActivityScreen() {
           </Heading>
         </YStack>
       </YStack>
-      {isLoadingActivities ? (
+      {activities.length === 0 ? (
+        <YStack jc="space-between" fg={1} pb="$4">
+          <Paragraph px="$4">No activity yet.</Paragraph>
+          <TextBackButton />
+        </YStack>
+      ) : isLoadingActivities ? (
         <YStack fg={1} ai="center" jc="center">
-          <Spinner />
+          <Loader />
+          <Spacer size="$12" />
         </YStack>
       ) : (
         <ScrollView

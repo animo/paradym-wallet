@@ -399,25 +399,46 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
   return disclosedAttributeNames
 }
 
+// TODO: Is it possible we add the branding/display elements when the PID is added to the wallet
+// This way we can just treat it as any other credential and don't need to special case it anywhere
 export function usePidCredential() {
   const { isLoading, credentials } = useCredentialsForDisplay()
   const { isLoading: isSeedCredentialLoading } = useSeedCredentialPidData()
 
   const pidCredential = useMemo(() => {
-    if (credentials[0]) {
-      const credential = credentials[0]
+    const credential = credentials.find((cred) => cred.metadata.type === 'urn:eu.europa.ec.eudi:pid:1')
+    if (credential) {
       const attributes = credential.attributes as PidSdJwtVcAttributes
       return {
         id: credential.id,
+        type: credential.metadata.type,
         attributes,
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
-        display: credential.display,
+        display: {
+          issuer: {
+            name: 'Germany',
+            locale: 'de',
+            logo: {
+              url: 'https://i.imgur.com/0j9sTb8.png',
+              altText: 'Logo of German Government',
+            },
+          },
+          name: 'Personalausweis',
+          description: 'This is a personal ID',
+          locale: 'de',
+          textColor: '#2F3544',
+          backgroundColor: '#CCCEBF',
+          backgroundImage: {
+            url: 'https://i.imgur.com/Cvyjzuc.png',
+            altText: 'Background Image',
+          },
+        },
         attributesForDisplay: getSdJwtPidAttributesForDisplay(attributes, credential.metadata),
       }
     }
 
     return undefined
-  }, [credentials[0]])
+  }, [credentials])
 
   if (isLoading || isSeedCredentialLoading) {
     return {

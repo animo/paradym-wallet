@@ -18,8 +18,8 @@ import {
   requestSdJwtVcFromSeedCredential,
 } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
-import { GettingInformationScreen } from '@package/app/src/features/notifications/components/GettingInformationScreen'
-import { getPidAttributesForDisplay } from '../../hooks'
+import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
+import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
 import { activityStorage } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
@@ -32,34 +32,46 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const { pin } = useGlobalSearchParams<{ pin?: string }>()
   const params = useLocalSearchParams<Query>()
   const { seedCredential } = useSeedCredentialPidData()
-  // TODO: update to useAcceptOpenIdPresentation
+  const pushToWallet = usePushToWallet()
+  const { credential: pidCredential } = usePidCredential()
+
   const [credentialsForRequest, setCredentialsForRequest] =
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
   const [isSharing, setIsSharing] = useState(false)
-  const [showGettingInfo, setShowGettingInfo] = useState(true)
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowGettingInfo(false)
-    }, 1000) // 1 second delay
+  // TODO: If i have the same credentials twice, it will return a submission with two of the same credentials.
+  const submission = useMemo(() => {
+    if (!credentialsForRequest) return undefined
 
-    return () => clearTimeout(timer)
-  }, [])
+    const formattedSubmission = formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
+    const containsPid = formattedSubmission.entries.some((entry) =>
+      entry.credentials.some((cred) => cred.metadata?.type === pidCredential?.type)
+    )
 
-  const submission = useMemo(
-    () =>
-      credentialsForRequest
-        ? formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
-        : undefined,
-    [credentialsForRequest]
-  )
+    if (containsPid && pidCredential) {
+      return {
+        ...formattedSubmission,
+        entries: formattedSubmission.entries.map((entry) => {
+          return {
+            ...entry,
+            credentials: entry.credentials.map((cred) => {
+              if (cred.metadata?.type === pidCredential?.type) {
+                return {
+                  ...cred,
+                  credentialName: pidCredential.display.name,
+                  backgroundImage: pidCredential.display.backgroundImage,
+                  backgroundColor: pidCredential.display.backgroundColor,
+                }
+              }
+              return cred
+            }),
+          }
+        }),
+      }
+    }
 
-  const pushToWallet = useCallback(() => {
-    router.back()
-
-    // If we do a PIN confirmation we need to go back twice
-    if (router.canGoBack()) router.back()
-  }, [router.back, router.canGoBack])
+    return formattedSubmission
+  }, [credentialsForRequest, pidCredential])
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -83,10 +95,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast])
 
-  const seedGetPin = () => {
-    router.push('/pinConfirmation')
-  }
-
   const onProofAccept = useCallback(async () => {
     if (!submission || !credentialsForRequest) return
 
@@ -102,11 +110,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
 
       const credential = submission.entries[0]?.credentials[0]
-      const disclosedPayload = getPidAttributesForDisplay(
-        credential.disclosedPayload ?? {},
-        credential.metadata ?? ({} as CredentialMetadata),
-        credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-      )
+      const isPid = credential?.metadata?.type === pidCredential?.type
+      const disclosedPayload = isPid
+        ? getPidAttributesForDisplay(
+            credential.disclosedPayload ?? {},
+            credential.metadata ?? ({} as CredentialMetadata),
+            credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+          )
+        : credential?.disclosedPayload
 
       await activityStorage.addActivity(agent, {
         id: utils.uuid(),
@@ -115,11 +126,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         date: new Date().toISOString(),
         entityHost: credentialsForRequest.verifierHostName as string,
       })
-
-      toast.show('Information has been successfully shared.', {
-        customData: { preset: 'success' },
-      })
-      pushToWallet()
     } catch (error) {
       if (error instanceof BiometricAuthenticationCancelledError) {
         toast.show('Biometric authentication cancelled', {
@@ -137,7 +143,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
       pushToWallet()
     }
-  }, [submission, credentialsForRequest, agent, pushToWallet, toast.show])
+  }, [submission, credentialsForRequest, agent, pushToWallet, toast.show, pidCredential])
 
   useEffect(() => {
     if (!pin) return
@@ -182,11 +188,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [pin, router, toast.show, agent, pushToWallet, params.uri, onProofAccept, credentialsForRequest])
 
-  // This needs to have a minimum delay to show the animation
-  if (!submission || !credentialsForRequest || showGettingInfo) {
-    return <GettingInformationScreen type="presentation" />
-  }
-
   const onProofDecline = async () => {
     pushToWallet()
     toast.show('Information request has been declined.')
@@ -194,13 +195,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   return (
     <FunkePresentationNotificationScreen
-      onAccept={seedCredential ? seedGetPin : onProofAccept}
+      usePin={!!seedCredential}
+      onAccept={onProofAccept}
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
       verifierHost={
-        credentialsForRequest.verifierHostName ? `https://${credentialsForRequest.verifierHostName}` : undefined
+        credentialsForRequest?.verifierHostName ? `https://${credentialsForRequest.verifierHostName}` : undefined
       }
+      onComplete={() => pushToWallet('replace')}
     />
   )
 }

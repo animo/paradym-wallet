@@ -1,6 +1,6 @@
-import { Heading, Paragraph, YStack } from '@package/ui/src'
+import { Heading, Paragraph, Sheet, Stack } from '@package/ui'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { DualResponseButtons } from './DualResponseButtons'
-import { FloatingSheet } from './FloatingSheet'
 
 interface ConfirmationSheetProps {
   isOpen: boolean
@@ -9,24 +9,26 @@ interface ConfirmationSheetProps {
 }
 
 export function ConfirmationSheet({ isOpen, setIsOpen, onConfirm }: ConfirmationSheetProps) {
+  const { bottom } = useSafeAreaInsets()
+
   return (
-    <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
-      <YStack gap="$3">
-        <Heading fontWeight="$semiBold" py="$2">
-          Do you want to restart?
-        </Heading>
-        <Paragraph>You will lose all progress.</Paragraph>
-      </YStack>
-      <DualResponseButtons
-        variant="confirmation"
-        align="horizontal"
-        acceptText="Restart"
-        declineText="Cancel"
-        onAccept={onConfirm}
-        onDecline={() => {
-          setIsOpen(false)
-        }}
-      />
-    </FloatingSheet>
+    <Sheet isOpen={isOpen} setIsOpen={setIsOpen}>
+      <Stack p="$4" gap="$6" pb={bottom}>
+        <Stack gap="$3">
+          <Heading variant="h2">Are you sure you want to stop?</Heading>
+          <Paragraph secondary>If you stop, no data will be shared.</Paragraph>
+        </Stack>
+        <Stack btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
+          <DualResponseButtons
+            align="horizontal"
+            variant="confirmation"
+            acceptText="Yes, stop"
+            declineText="No"
+            onAccept={onConfirm}
+            onDecline={() => setIsOpen(false)}
+          />
+        </Stack>
+      </Stack>
+    </Sheet>
   )
 }

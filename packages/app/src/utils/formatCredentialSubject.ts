@@ -1,5 +1,7 @@
 import { sanitizeString } from '@package/utils'
 
+export const OMITTED_CREDENTIAL_ATTRIBUTES = ['type', 'holder', 'issuer', 'issuedAt']
+
 export type CredentialAttributeRowString = {
   key?: string
   value: string

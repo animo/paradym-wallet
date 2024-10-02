@@ -27,7 +27,8 @@ const Btn = styled(TButton, {
 export const SolidButton = styled(Btn, {
   name: 'SolidButton',
   backgroundColor: '$grey-900',
-  color: '$grey-100',
+  color: '$white',
+  fontWeight: '$semiBold',
 })
 
 export const OutlineButton = styled(Btn, {
@@ -35,6 +36,7 @@ export const OutlineButton = styled(Btn, {
   backgroundColor: '$white',
   color: '$grey-900',
   borderColor: '$grey-300',
+  fontWeight: '$semiBold',
 })
 
 export const TextButton = styled(Btn, {

@@ -58,7 +58,7 @@ const config = createTamagui({
   themes: {
     light: {
       ...tokens.color,
-      tableBackgroundColor: tokens.color['grey-100'],
+      tableBackgroundColor: '#F3F3F3',
       tableBorderColor: tokens.color['grey-200'],
     },
   },

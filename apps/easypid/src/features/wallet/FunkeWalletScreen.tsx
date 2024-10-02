@@ -1,41 +1,34 @@
 import {
+  AnimatedStack,
+  BASE_CREDENTIAL_CARD_HEIGHT,
   Button,
+  FlexPage,
   Heading,
   HeroIcons,
-  IdCard,
-  Page,
+  IconContainer,
+  Loader,
+  LucideIcons,
   Paragraph,
   ScrollView,
-  Spinner,
-  WelcomePopup,
+  Spacer,
+  Stack,
   XStack,
   YStack,
   useScaleAnimation,
 } from '@package/ui'
-import { usePathname } from 'expo-router'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
 
-import { useActivities } from '@easypid/features/activity/activityRecord'
-import { usePidCredential } from '@easypid/hooks'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useNetworkCallback } from '@package/app/src/hooks'
-import { ActivityRowItem } from 'packages/app'
-import { useEffect } from 'react'
-import Animated from 'react-native-reanimated'
-import germanIssuerImage from '../../../assets/german-issuer-image.png'
-import { useHasSeenIntroTooltip } from '../onboarding/hasFinishedOnboarding'
+import { type CredentialDisplay, useCredentialsForDisplay } from 'packages/agent/src'
+import { FunkeCredentialCard } from 'packages/app'
+import { FadeIn, FadeInDown, ZoomIn, useAnimatedStyle } from 'react-native-reanimated'
 
 export function FunkeWalletScreen() {
-  const onResetWallet = useWalletReset()
   const { push } = useRouter()
-  const pathname = usePathname()
-  const { isLoading, credential } = usePidCredential()
-  const { bottom } = useSafeAreaInsets()
-  const navigateToPidDetail = () => push('/credentials/pid')
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
-  const { activities, isLoading: isLoadingActivities } = useActivities()
-  const [hasSeenIntroTooltip, setHasSeenIntroTooltip] = useHasSeenIntroTooltip()
+  const { isLoading, credentials } = useCredentialsForDisplay()
+  const onResetWallet = useWalletReset()
 
   const {
     pressStyle: qrPressStyle,
@@ -43,132 +36,159 @@ export function FunkeWalletScreen() {
     handlePressOut: qrHandlePressOut,
   } = useScaleAnimation({ scaleInValue: 0.95 })
 
-  const {
-    pressStyle: activityPressStyle,
-    handlePressIn: activityHandlePressIn,
-    handlePressOut: activityHandlePressOut,
-  } = useScaleAnimation({ scaleInValue: 0.99 })
+  return (
+    <FlexPage p={0} safeArea="b" gap={0}>
+      <XStack px="$4" py="$2" ai="center" justifyContent="space-between">
+        <IconContainer icon={<HeroIcons.Menu />} onPress={() => push('/menu')} />
+        <IconContainer icon={<LucideIcons.History />} onPress={() => push('/activity')} />
+      </XStack>
+      <AnimatedStack
+        style={qrPressStyle}
+        onPressIn={qrHandlePressIn}
+        onPressOut={qrHandlePressOut}
+        onPress={navigateToScanner}
+        alignItems="center"
+        gap="$2"
+        py="$6"
+        mx="$4"
+        borderBottomWidth="$0.5"
+        borderColor="$grey-200"
+      >
+        <YStack bg="#2A337E1A" br="$12">
+          <Stack
+            bg="$primary-500"
+            br="$12"
+            p="$4"
+            m="$2.5"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowColor="$grey-600"
+            shadowOpacity={0.3}
+            shadowRadius={5}
+          >
+            <HeroIcons.QrCode strokeWidth={1.5} color="$white" size={48} />
+          </Stack>
+        </YStack>
+        <Paragraph fontWeight="$bold" color="$primary-500">
+          Scan QR-Code
+        </Paragraph>
+      </AnimatedStack>
+      {credentials.length === 0 ? (
+        <AnimatedStack
+          entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
+          ai="center"
+          gap="$4"
+          p="$4"
+          fg={1}
+          mt="$10"
+        >
+          <YStack gap="$2">
+            <Heading ta="center" variant="h3" fontWeight="$semiBold">
+              There's nothing here, yet
+            </Heading>
+            <Paragraph ta="center">Setup your ID or use the QR scanner to receive credentials.</Paragraph>
+          </YStack>
+          <AnimatedStack
+            entering={ZoomIn.delay(500).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
+          >
+            <Button.Solid
+              h="$3.5"
+              px="$5"
+              br="$12"
+              bg="$grey-100"
+              color="$grey-900"
+              flexDirection="row"
+              onPress={onResetWallet}
+              scaleOnPress
+            >
+              Setup ID
+            </Button.Solid>
+          </AnimatedStack>
+        </AnimatedStack>
+      ) : isLoading ? (
+        <YStack ai="center" jc="center" fg={1}>
+          <Loader />
+          <Spacer size="$12" />
+        </YStack>
+      ) : (
+        <ScrollView p="$4" py="$7" gap="$2">
+          <AnimatedStack
+            entering={FadeInDown.springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
+            position="relative"
+            mb={BASE_CREDENTIAL_CARD_HEIGHT + credentials.length * 72}
+          >
+            {credentials.map((credential, idx) => (
+              <AnimatedCredentialCard key={credential.id} display={credential.display} index={idx} />
+            ))}
+          </AnimatedStack>
+        </ScrollView>
+      )}
+      <AnimatedStack entering={FadeIn.delay(700)} flexDirection="column" gap="$1" ai="center" jc="center" opacity={0.8}>
+        <Paragraph pt="$4" variant="sub" fontSize={13} fontWeight="$medium" ta="center" px="$4">
+          Learn more about{' '}
+          <Paragraph
+            onPress={() => push('/menu/about')}
+            variant="annotation"
+            fontSize={13}
+            fontWeight="$semiBold"
+            color="$primary-500"
+          >
+            using this wallet
+          </Paragraph>
+          .
+        </Paragraph>
+      </AnimatedStack>
+    </FlexPage>
+  )
+}
 
-  const {
-    handlePressIn: menuHandlePressIn,
-    handlePressOut: menuHandlePressOut,
-    pressStyle: menuPressStyle,
-  } = useScaleAnimation({ scaleInValue: 0.9 })
+function AnimatedCredentialCard({
+  display,
+  index,
+}: {
+  display: CredentialDisplay
+  index: number
+}) {
+  const { push } = useRouter()
 
-  const onCloseIntroTooltip = () => {
-    setHasSeenIntroTooltip(true)
-  }
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (pathname === '/') return
-    if (!hasSeenIntroTooltip) {
-      onCloseIntroTooltip()
+  const animatedStyle = useAnimatedStyle(() => {
+    const baseMargin = index * 72
+
+    return {
+      marginTop: baseMargin,
     }
-  }, [pathname, hasSeenIntroTooltip])
-
-  if (isLoading || isLoadingActivities) {
-    return (
-      <Page jc="center" ai="center">
-        <Spinner />
-      </Page>
-    )
-  }
+  })
 
   return (
-    <>
-      {!hasSeenIntroTooltip && <WelcomePopup bottom={bottom} onClose={onCloseIntroTooltip} />}
-      <XStack position="absolute" width="100%" zIndex={5} justifyContent="center" bottom={Math.max(bottom, 16) ?? '$6'}>
-        <YStack bg="#e9e9eb" br="$12">
-          <Animated.View style={qrPressStyle}>
-            <YStack
-              bg="$grey-900"
-              br="$12"
-              p="$3.5"
-              m="$2.5"
-              shadowOffset={{ width: 0, height: 2 }}
-              shadowColor="$grey-600"
-              shadowOpacity={0.3}
-              shadowRadius={5}
-              onPressIn={qrHandlePressIn}
-              onPressOut={qrHandlePressOut}
-              onPress={() => {
-                navigateToScanner()
-                onCloseIntroTooltip()
-              }}
-            >
-              <HeroIcons.QrCode color="$grey-100" size={48} />
-            </YStack>
-          </Animated.View>
-        </YStack>
-      </XStack>
-      <YStack bg="$background" py="$4" height="100%" position="relative">
-        <ScrollView px="$4" gap="$2">
-          <YStack gap="$6">
-            <XStack ai="center" justifyContent="space-between">
-              <Heading variant="h1" fontSize={32} fontWeight="$bold">
-                {credential ? `${credential.userName}'s wallet` : 'Wallet'}
-              </Heading>
-              <Animated.View style={menuPressStyle}>
-                <XStack onPressIn={menuHandlePressIn} onPressOut={menuHandlePressOut} onPress={() => push('/menu')}>
-                  <HeroIcons.Menu size={28} color="$black" />
-                </XStack>
-              </Animated.View>
-            </XStack>
-            <IdCard
-              isNotReceived={!credential}
-              issuerImage={germanIssuerImage}
-              onPress={credential ? navigateToPidDetail : onResetWallet}
-              hideUserName
-            />
-            <YStack gap="$4" w="100%">
-              <XStack ai="center" justifyContent="space-between">
-                <Heading variant="h3">Recent activity</Heading>
-              </XStack>
-
-              {activities.length === 0 ? (
-                <YStack gap="$2" py="$8" ai="center" justifyContent="center" flex={1}>
-                  <Heading variant="sub2">Nothing to see here, for now</Heading>
-                  <Paragraph variant="sub" ta="center">
-                    Setup your ID or use the QR scanner to receive credentials.
-                  </Paragraph>
-                </YStack>
-              ) : (
-                <>
-                  <YStack gap="$4" w="100%">
-                    {activities.slice(0, 3).map((activity) => (
-                      <ActivityRowItem
-                        key={activity.id}
-                        id={activity.id}
-                        subtitle={activity.entityName ?? activity.entityHost}
-                        date={new Date(activity.date)}
-                        type={activity.type}
-                      />
-                    ))}
-                  </YStack>
-                  {activities.length > 3 && (
-                    <Animated.View style={activityPressStyle}>
-                      <Button.Text
-                        onPress={() => push('/activity')}
-                        p="$2"
-                        mt={-12}
-                        ml={-4}
-                        jc="flex-start"
-                        color="$primary-500"
-                        fontWeight="$semiBold"
-                        fontSize="$3"
-                        onPressIn={activityHandlePressIn}
-                        onPressOut={activityHandlePressOut}
-                      >
-                        View all activity <HeroIcons.ArrowRight ml={-8} color="$primary-500" size={18} />
-                      </Button.Text>
-                    </Animated.View>
-                  )}
-                </>
-              )}
-            </YStack>
-          </YStack>
-        </ScrollView>
-      </YStack>
-    </>
+    <AnimatedStack position="absolute" width="100%" style={animatedStyle}>
+      {display.name === 'Urn:eu.europa.ec.eudi:pid:1' ? (
+        <FunkeCredentialCard
+          issuerImage={{
+            url: 'https://i.imgur.com/0j9sTb8.png',
+            altText: 'Logo of German Government',
+          }}
+          backgroundImage={{
+            url: 'https://i.imgur.com/Cvyjzuc.png',
+            altText: 'Background Image',
+          }}
+          issuerName="Germany"
+          textColor="#2F3544"
+          name="Personalausweis"
+          bgColor="#CCCEBF"
+          shadow={false}
+          onPress={() => push('/credentials/pid')}
+        />
+      ) : (
+        <FunkeCredentialCard
+          issuerImage={display.issuer.logo}
+          backgroundImage={display.backgroundImage}
+          textColor={display.textColor}
+          name={display.name}
+          issuerName={display.issuer.name}
+          subtitle={display.description}
+          bgColor={display.backgroundColor}
+          shadow={false}
+        />
+      )}
+    </AnimatedStack>
   )
 }

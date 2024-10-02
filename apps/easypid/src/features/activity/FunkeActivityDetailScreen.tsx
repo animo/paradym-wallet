@@ -31,15 +31,12 @@ export function FunkeActivityDetailScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   return (
-    <YStack bg="$background" height="100%">
-      <Spacer size="$13" />
-      <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
+    <FlexPage p="0">
+      <YStack borderWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack g="xl" p="$4" marginBottom={bottom}>
           {activity.disclosedPayload ? (
             <>
-              <IdCard small issuerImage={germanIssuerImage} />
-
               <Stack g="md">
                 <Heading variant="h1">{activityTitleMap[activity.type]}</Heading>
                 <Paragraph color="$grey-700">
@@ -57,9 +54,9 @@ export function FunkeActivityDetailScreen() {
           ) : (
             <Paragraph>Disclosed information could not be shown.</Paragraph>
           )}
-          <TextBackButton />
         </YStack>
       </ScrollView>
-    </YStack>
+      <TextBackButton />
+    </FlexPage>
   )
 }

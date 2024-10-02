@@ -560,6 +560,8 @@ export const getCredentialsForProofRequest = async ({
     throw new Error('No presentation exchange found in authorization request.')
   }
 
+  console.log('resolved', JSON.stringify(resolved, null, 2))
+
   return {
     ...resolved.presentationExchange,
     authorizationRequest: resolved.authorizationRequest,

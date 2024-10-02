@@ -1,4 +1,4 @@
-import type { NativeScrollEvent, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native'
+import Animated from 'react-native-reanimated'
 import { ScrollView, type ScrollViewProps, type StackProps, Stack as TStack, styled } from 'tamagui'
 
 export const Stack = styled(TStack, {
@@ -19,10 +19,10 @@ export const Stack = styled(TStack, {
       },
       true: {
         elevation: 4,
-        shadowOffset: { width: 5, height: 5 },
+        shadowOffset: { width: 3, height: 3 },
         shadowColor: 'grey',
-        shadowOpacity: 0.5,
-        shadowRadius: 10,
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
       },
     },
     border: {
@@ -117,14 +117,17 @@ export const ZStack = styled(
 interface ScrollableStackProps extends StackProps {
   layout?: 'x' | 'y' | 'z'
   scrollViewProps?: ScrollViewProps
+  ref?: React.Ref<ScrollView>
 }
 
-export const ScrollableStack = ({ layout, scrollViewProps, children, ...props }: ScrollableStackProps) => {
+export const ScrollableStack = ({ layout, scrollViewProps, children, ref, ...props }: ScrollableStackProps) => {
   const AlignedStack = layout === 'x' ? XStack : layout === 'y' ? YStack : layout === 'z' ? ZStack : Stack
 
   return (
-    <ScrollView w={scrollViewProps?.w ?? '100%'} alwaysBounceVertical={false} {...scrollViewProps}>
+    <ScrollView ref={ref} w={scrollViewProps?.w ?? '100%'} alwaysBounceVertical={false} {...scrollViewProps}>
       <AlignedStack {...props}>{children}</AlignedStack>
     </ScrollView>
   )
 }
+
+export const AnimatedStack = Animated.createAnimatedComponent(Stack)

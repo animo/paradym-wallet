@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   CornerDownRight,
   FileBadge,
+  History,
   Inbox,
   ListFilter,
   RefreshCw,
@@ -20,8 +21,10 @@ import {
   ArrowsRightLeftIcon,
   BackspaceIcon,
   Bars3Icon,
+  BuildingOfficeIcon,
   ChatBubbleBottomCenterTextIcon,
   CheckCircleIcon,
+  CheckIcon,
   ChevronRightIcon,
   CircleStackIcon,
   Cog8ToothIcon,
@@ -36,6 +39,7 @@ import {
   InformationCircleIcon,
   KeyIcon,
   LockClosedIcon,
+  NoSymbolIcon,
   QrCodeIcon,
   QuestionMarkCircleIcon,
   QueueListIcon,
@@ -45,6 +49,13 @@ import {
   XCircleIcon,
   XMarkIcon,
 } from 'react-native-heroicons/outline'
+import {
+  CheckCircleIcon as CheckCircleFilledIcon,
+  ExclamationCircleIcon as ExclamationCircleFilledIcon,
+  InformationCircleIcon as InformationCircleFilledIcon,
+  ShieldCheckIcon as ShieldCheckFilledIcon,
+} from 'react-native-heroicons/solid'
+
 import { styled } from 'tamagui'
 
 export const LucideIcons = {
@@ -58,6 +69,7 @@ export const LucideIcons = {
   Inbox,
   X,
   RefreshCw,
+  History,
 }
 
 export interface HeroIconProps extends SvgProps {
@@ -78,6 +90,7 @@ function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
 
 export type HeroIcon = ReturnType<typeof wrapHeroIcon>
 export const HeroIcons = {
+  BuildingOffice: wrapHeroIcon(BuildingOfficeIcon),
   GlobeAlt: wrapHeroIcon(GlobeAltIcon),
   Key: wrapHeroIcon(KeyIcon),
   Identification: wrapHeroIcon(IdentificationIcon),
@@ -110,4 +123,10 @@ export const HeroIcons = {
   ChevronRight: wrapHeroIcon(ChevronRightIcon),
   Menu: wrapHeroIcon(Bars3Icon),
   Interaction: wrapHeroIcon(ArrowsRightLeftIcon),
+  ExclamationCircleFilled: wrapHeroIcon(ExclamationCircleFilledIcon),
+  NoSymbol: wrapHeroIcon(NoSymbolIcon),
+  ShieldCheckFilled: wrapHeroIcon(ShieldCheckFilledIcon),
+  Check: wrapHeroIcon(CheckIcon),
+  InformationCircleFilled: wrapHeroIcon(InformationCircleFilledIcon),
+  CheckCircleFilled: wrapHeroIcon(CheckCircleFilledIcon),
 } as const

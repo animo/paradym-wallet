@@ -48,7 +48,7 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       disabled={disabled}
       h="$6"
       w="33.33%"
-      borderRightWidth={0.5}
+      borderRightWidth="$0.5"
       borderColor="$grey-200"
     >
       {character === PinValues.Backspace ? (
@@ -60,7 +60,7 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
             {character}
           </Text>
           {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
-          <Text color="$grey-600" fontSize={15} fontFamily="$medium">
+          <Text color="$grey-500" fontSize={13} fontFamily="$medium">
             {letterMap[character].toLocaleUpperCase()}
           </Text>
         </YStack>
@@ -83,8 +83,15 @@ export const PinPad = ({ onPressPinNumber, disabled }: PinPadProps) => {
   ]
 
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (
-    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-    <XStack key={rowIndex} borderTopWidth={0.5} bc="$grey-200" borderColor="$grey-200" w="100%" justifyContent="center">
+    <XStack
+      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+      key={rowIndex}
+      borderTopWidth="$0.5"
+      bc="$grey-200"
+      borderColor="$grey-200"
+      w="100%"
+      justifyContent="center"
+    >
       {rowItems.map((value, columnIndex) => (
         <PinNumber
           key={`${value}:${columnIndex}:${

@@ -1,0 +1,156 @@
+import type { ClaimFormat } from '@credo-ts/core'
+import { getPidAttributesForDisplay, getPidDisclosedAttributeNames, usePidCredential } from '@easypid/hooks'
+import type { CredentialMetadata, DisplayImage, FormattedSubmission } from '@package/agent/src'
+import { useHasInternetConnection } from '@package/app/src/hooks'
+import { OMITTED_CREDENTIAL_ATTRIBUTES } from '@package/app/src/utils'
+import { Card, Heading, HeroIcons, IconContainer, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import { capitalizeFirstLetter } from '@package/utils/src'
+import { useRouter } from 'expo-router'
+import { useMemo } from 'react'
+import { Circle } from 'tamagui'
+
+export type RequestedAttributesSectionProps = {
+  submission: FormattedSubmission
+}
+
+export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
+  const { credential: pidCredential } = usePidCredential()
+
+  return (
+    <YStack gap="$4">
+      <YStack gap="$2">
+        <Circle size="$2.5" mb="$2" backgroundColor="$primary-500">
+          <HeroIcons.CircleStack color="$white" size={18} />
+        </Circle>
+        <Heading variant="h3" fontWeight="$semiBold">
+          Requested data
+        </Heading>
+        <YStack gap="$4">
+          {submission.entries.map((entry) => (
+            <YStack gap="$4" key={entry.inputDescriptorId}>
+              <Paragraph>
+                {entry.isSatisfied ? 'The following will be shared.' : `You don't have the requested credential.`}
+              </Paragraph>
+              {entry.credentials.map((credential) => {
+                if (credential.metadata?.type === pidCredential?.type) {
+                  const disclosedAttributes = getPidDisclosedAttributeNames(
+                    credential?.disclosedPayload ?? {},
+                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                  )
+
+                  const disclosedPayload = getPidAttributesForDisplay(
+                    credential?.disclosedPayload ?? {},
+                    credential?.metadata ?? ({} as CredentialMetadata),
+                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                  )
+
+                  return (
+                    <CardWithAttributes
+                      key={credential.id as string}
+                      id={credential.id as string}
+                      name={pidCredential?.display.name as string}
+                      backgroundImage={pidCredential?.display.backgroundImage}
+                      backgroundColor={pidCredential?.display.backgroundColor}
+                      disclosedAttributes={disclosedAttributes}
+                      disclosedPayload={disclosedPayload}
+                    />
+                  )
+                }
+                return (
+                  <CardWithAttributes
+                    key={credential.id}
+                    id={credential.id}
+                    name={credential.credentialName}
+                    backgroundImage={credential.backgroundImage}
+                    backgroundColor={credential.backgroundColor}
+                    disclosedAttributes={credential.requestedAttributes ?? []}
+                    disclosedPayload={credential?.disclosedPayload ?? {}}
+                  />
+                )
+              })}
+            </YStack>
+          ))}
+        </YStack>
+      </YStack>
+    </YStack>
+  )
+}
+
+export function CardWithAttributes({
+  id,
+  name,
+  backgroundColor,
+  backgroundImage,
+  disclosedAttributes,
+  disclosedPayload,
+}: {
+  id: string
+  name: string
+  backgroundColor?: string
+  backgroundImage?: DisplayImage
+  disclosedAttributes: string[]
+  disclosedPayload: Record<string, unknown>
+}) {
+  const router = useRouter()
+  const hasInternet = useHasInternetConnection()
+
+  const filteredDisclosedAttributes = disclosedAttributes.filter(
+    (attribute) => !OMITTED_CREDENTIAL_ATTRIBUTES.includes(attribute)
+  )
+
+  const groupedAttributes = useMemo(() => {
+    const result: Array<[string, string | undefined]> = []
+    for (let i = 0; i < filteredDisclosedAttributes.length; i += 2) {
+      result.push([filteredDisclosedAttributes[i], filteredDisclosedAttributes[i + 1]])
+    }
+    return result
+  }, [filteredDisclosedAttributes])
+
+  const onPress = () => {
+    router.push(
+      `/credentials/pidRequestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${filteredDisclosedAttributes.length}`
+    )
+  }
+
+  return (
+    <Card br="$6" borderWidth="$0.5" borderColor="$borderTranslucent" overflow="hidden" onPress={onPress}>
+      <Stack p="$5" pos="relative" bg={backgroundColor ?? '$grey-900'}>
+        {hasInternet && (
+          <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
+            <Image
+              src={backgroundImage?.url ?? ''}
+              alt={backgroundImage?.altText ?? ''}
+              resizeMode="cover"
+              height="100%"
+              width="100%"
+            />
+          </Stack>
+        )}
+      </Stack>
+      <YStack px="$4" pt="$3" pb="$4" gap="$4" bg="$white">
+        <Heading variant="h2">
+          {filteredDisclosedAttributes.length} from {name}
+        </Heading>
+        <YStack gap="$2" fg={1} pr="$4">
+          {groupedAttributes.map(([first, second]) => (
+            <XStack key={first + second} gap="$4">
+              <Stack flexGrow={1} flexBasis={0}>
+                <Paragraph variant="sub" color="#415963">
+                  {capitalizeFirstLetter(first)}
+                </Paragraph>
+              </Stack>
+              <Stack flexGrow={1} flexBasis={0}>
+                <Paragraph variant="sub" color="#415963">
+                  {second ? capitalizeFirstLetter(second) : ''}
+                </Paragraph>
+              </Stack>
+            </XStack>
+          ))}
+          <Stack pos="absolute" bottom="$0" right="$0">
+            <IconContainer icon={<HeroIcons.ArrowRight />} />
+          </Stack>
+        </YStack>
+      </YStack>
+    </Card>
+  )
+}

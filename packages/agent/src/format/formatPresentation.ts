@@ -1,6 +1,6 @@
 import { ClaimFormat, type DifPexCredentialsForRequest } from '@credo-ts/core'
 
-import { type CredentialMetadata, filterAndMapSdJwtKeys, getCredentialForDisplay } from '../display'
+import { type CredentialMetadata, type DisplayImage, filterAndMapSdJwtKeys, getCredentialForDisplay } from '../display'
 
 export interface FormattedSubmission {
   name: string
@@ -25,6 +25,7 @@ export interface FormattedSubmissionEntry {
     disclosedPayload?: Record<string, unknown>
     metadata?: CredentialMetadata
     backgroundColor?: string
+    backgroundImage?: DisplayImage
     claimFormat: ClaimFormat | 'AnonCreds'
   }>
 }
@@ -62,6 +63,7 @@ export function formatDifPexCredentialsForRequest(
             disclosedPayload,
             metadata,
             backgroundColor: display.backgroundColor,
+            backgroundImage: display.backgroundImage,
             claimFormat,
           }
         }),
