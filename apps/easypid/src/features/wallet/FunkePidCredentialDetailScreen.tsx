@@ -1,13 +1,13 @@
-import { Heading, IdCard, ScrollView, Spacer, Stack, YStack, useToastController } from '@package/ui'
+import { Heading, MiniCard, ScrollView, Spacer, Stack, YStack, useToastController } from '@package/ui'
 import React from 'react'
 
 import { CredentialAttributes } from '@package/app/src/components'
-import { useScrollViewPosition } from '@package/app/src/hooks'
+import { useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
 
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import germanIssuerImage from '../../../assets/german-issuer-image.png'
+import pidBackgroundImage from '../../../assets/pid-background.png'
 import { usePidCredential } from '../../hooks'
 
 export function FunkePidCredentialDetailScreen() {
@@ -16,6 +16,7 @@ export function FunkePidCredentialDetailScreen() {
   const { bottom } = useSafeAreaInsets()
   const { isLoading, credential } = usePidCredential()
   const router = useRouter()
+  const hasInternet = useHasInternetConnection()
   if (isLoading) {
     return null
   }
@@ -36,7 +37,7 @@ export function FunkePidCredentialDetailScreen() {
       <YStack borderWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack g="xl" p="$4" marginBottom={bottom}>
-          <IdCard issuerImage={germanIssuerImage} small />
+          <MiniCard backgroundImage={pidBackgroundImage} backgroundColor={'$grey-100'} hasInternet={hasInternet} />
           <Stack g="md">
             <Heading variant="h1">Personalausweis</Heading>
             <CredentialAttributes

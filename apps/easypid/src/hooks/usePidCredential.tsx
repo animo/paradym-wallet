@@ -413,26 +413,8 @@ export function usePidCredential() {
         id: credential.id,
         type: credential.metadata.type,
         attributes,
+        display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
-        display: {
-          issuer: {
-            name: 'Germany',
-            locale: 'de',
-            logo: {
-              url: 'https://i.imgur.com/0j9sTb8.png',
-              altText: 'Logo of German Government',
-            },
-          },
-          name: 'Personalausweis',
-          description: 'This is a personal ID',
-          locale: 'de',
-          textColor: '#2F3544',
-          backgroundColor: '#CCCEBF',
-          backgroundImage: {
-            url: 'https://i.imgur.com/Cvyjzuc.png',
-            altText: 'Background Image',
-          },
-        },
         attributesForDisplay: getSdJwtPidAttributesForDisplay(attributes, credential.metadata),
       }
     }
@@ -451,4 +433,26 @@ export function usePidCredential() {
     isLoading: false,
     credential: pidCredential,
   } as const
+}
+
+export const usePidDisplay = () => {
+  return {
+    issuer: {
+      name: 'Germany',
+      locale: 'de',
+      logo: {
+        url: require('../../assets/german-issuer-image.png'),
+        altText: 'Logo of German Government',
+      },
+    },
+    name: 'Personalausweis',
+    description: 'This is a personal ID',
+    locale: 'de',
+    textColor: '#2F3544',
+    backgroundColor: '#CCCEBF',
+    backgroundImage: {
+      url: require('../../assets/pid-background.png'),
+      altText: 'Background Image',
+    },
+  }
 }

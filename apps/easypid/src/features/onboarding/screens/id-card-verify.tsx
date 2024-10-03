@@ -2,6 +2,7 @@ import { Button, IdCard, Spinner, YStack } from '@package/ui'
 import React, { useState } from 'react'
 
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
+import pidBackgroundImage from '../../../../assets/pid-background.png'
 
 export interface OnboardingIdCardVerifyProps {
   goToNextStep: () => Promise<void>
@@ -20,7 +21,7 @@ export function OnboardingIdCardVerify({ goToNextStep }: OnboardingIdCardVerifyP
   }
   return (
     <YStack jc="space-between" fg={1}>
-      <IdCard hideUserName icon="biometric" issuerImage={germanIssuerImage} />
+      <IdCard backgroundImage={pidBackgroundImage} hideUserName icon="biometric" issuerImage={germanIssuerImage} />
       <Button.Solid scaleOnPress onPress={onUnlockWithBiometrics} disabled={isLoading}>
         {isLoading ? <Spinner variant="dark" /> : 'Unlock with biometrics'}
       </Button.Solid>

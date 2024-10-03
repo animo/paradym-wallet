@@ -1,8 +1,9 @@
-import { IdCard, Paragraph, PinPad, PinValues, ScrollableStack, Stack, XStack, YStack } from '@package/ui'
+import { IdCard, Paragraph, PinPad, PinValues, Stack, XStack, YStack } from '@package/ui'
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
+import pidBackgroundImage from '../../../../assets/pid-background.png'
 
 export interface OnboardingIdCardPinEnterProps {
   goToNextStep: (idCardPin: string) => Promise<void>
@@ -58,8 +59,13 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
 
   return (
     <YStack fg={1} jc="space-between">
-      <ScrollableStack gap="$6" pos="relative" jc="center">
-        <IdCard icon={isLoading ? 'loading' : 'locked'} issuerImage={germanIssuerImage} hideUserName />
+      <Stack gap="$6" pos="relative" jc="center">
+        <IdCard
+          backgroundImage={pidBackgroundImage}
+          icon={isLoading ? 'loading' : 'locked'}
+          issuerImage={germanIssuerImage}
+          hideUserName
+        />
         <XStack pos="absolute" gap="$3" justifyContent="center" w="100%">
           {pinValues.map((digit, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
@@ -71,7 +77,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
             </YStack>
           ))}
         </XStack>
-      </ScrollableStack>
+      </Stack>
       <PinPad onPressPinNumber={onPressPinNumber} disabled={isLoading} />
     </YStack>
   )

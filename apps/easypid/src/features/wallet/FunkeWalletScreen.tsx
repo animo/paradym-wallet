@@ -18,6 +18,7 @@ import {
 } from '@package/ui'
 import { useRouter } from 'solito/router'
 
+import { usePidCredential } from '@easypid/hooks'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useNetworkCallback } from '@package/app/src/hooks'
 import { type CredentialDisplay, useCredentialsForDisplay } from 'packages/agent/src'
@@ -29,6 +30,7 @@ export function FunkeWalletScreen() {
   const navigateToScanner = useNetworkCallback(() => push('/scan'))
   const { isLoading, credentials } = useCredentialsForDisplay()
   const onResetWallet = useWalletReset()
+  const { credential: pidCredential } = usePidCredential()
 
   const {
     pressStyle: qrPressStyle,
@@ -115,7 +117,11 @@ export function FunkeWalletScreen() {
         <ScrollView p="$4" py="$7" gap="$2">
           <AnimatedStack position="relative" mb={BASE_CREDENTIAL_CARD_HEIGHT + credentials.length * 72}>
             {credentials.map((credential, idx) => (
-              <AnimatedCredentialCard key={credential.id} display={credential.display} index={idx} />
+              <AnimatedCredentialCard
+                key={credential.id}
+                display={credential.id === pidCredential?.id ? pidCredential?.display : credential.display}
+                index={idx}
+              />
             ))}
           </AnimatedStack>
         </ScrollView>
@@ -157,33 +163,17 @@ function AnimatedCredentialCard({
   })
 
   return (
-    <AnimatedStack position="absolute" width="100%" style={animatedStyle}>
-      {display.name === 'Urn:eu.europa.ec.eudi:pid:1' ? (
-        <FunkeCredentialCard
-          issuerImage={{
-            url: 'https://i.imgur.com/0j9sTb8.png',
-            altText: 'Logo of German Government',
-          }}
-          backgroundImage={{
-            url: 'https://i.imgur.com/Cvyjzuc.png',
-            altText: 'Background Image',
-          }}
-          textColor="#2F3544"
-          name="Personalausweis"
-          bgColor="#CCCEBF"
-          shadow={false}
-          onPress={() => push('/credentials/pid')}
-        />
-      ) : (
-        <FunkeCredentialCard
-          issuerImage={display.issuer.logo}
-          backgroundImage={display.backgroundImage}
-          textColor={display.textColor}
-          name={display.name}
-          bgColor={display.backgroundColor}
-          shadow={false}
-        />
-      )}
+    <AnimatedStack key="?123" position="absolute" width="100%" style={animatedStyle}>
+      <FunkeCredentialCard
+        issuerImage={display.issuer.logo}
+        backgroundImage={display.backgroundImage}
+        textColor={display.textColor}
+        name={display.name}
+        bgColor={display.backgroundColor}
+        shadow={false}
+        // FIXME: Should not always route to PID page.
+        onPress={() => push('/credentials/pid')}
+      />
     </AnimatedStack>
   )
 }

@@ -15,8 +15,6 @@ export type RequestedAttributesSectionProps = {
 
 export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
   const { credential: pidCredential } = usePidCredential()
-  // TODO: New way of showing the branding of the pid is now here instead of in the submission.
-  // So we need to add it here now.
 
   return (
     <YStack gap="$4">
@@ -28,11 +26,13 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
           Requested data
         </Heading>
         <YStack gap="$4">
+          <Paragraph>
+            {submission.areAllSatisfied
+              ? 'The following will be shared.'
+              : `You don't have the requested credential(s).`}
+          </Paragraph>
           {submission.entries.map((entry) => (
             <YStack gap="$4" key={entry.inputDescriptorId}>
-              <Paragraph>
-                {entry.isSatisfied ? 'The following will be shared.' : `You don't have the requested credential.`}
-              </Paragraph>
               {entry.credentials.map((credential) => {
                 if (credential.metadata?.type === pidCredential?.type) {
                   const disclosedAttributes = getPidDisclosedAttributeNames(
@@ -91,7 +91,7 @@ export function CardWithAttributes({
   backgroundColor?: string
   backgroundImage?: DisplayImage
   disclosedAttributes: string[]
-  disclosedPayload: Record<string, unknown>
+  disclosedPayload?: Record<string, unknown>
 }) {
   const router = useRouter()
   const hasInternet = useHasInternetConnection()
@@ -148,9 +148,11 @@ export function CardWithAttributes({
               </Stack>
             </XStack>
           ))}
-          <Stack pos="absolute" bottom="$0" right="$0">
-            <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />
-          </Stack>
+          {disclosedPayload && (
+            <Stack pos="absolute" bottom="$0" right="$0">
+              <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />
+            </Stack>
+          )}
         </YStack>
       </YStack>
     </Card>

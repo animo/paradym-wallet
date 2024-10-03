@@ -51,7 +51,7 @@ export default function AppLayout() {
 
   // Wallet is locked. Redirect to authentication screen
   if (isWalletLocked) {
-    return <Redirect href="/authenticate" />
+    return <Redirect href="/onboarding" />
   }
 
   const headerNormalOptions = {

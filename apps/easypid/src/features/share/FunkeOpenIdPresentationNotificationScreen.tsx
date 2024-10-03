@@ -44,7 +44,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     if (!credentialsForRequest) return undefined
 
     const formattedSubmission = formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
-
     // Filter to keep only the first credential for each type
     const filteredSubmission = {
       ...formattedSubmission,

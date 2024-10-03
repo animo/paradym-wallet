@@ -3,6 +3,7 @@ import React from 'react'
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated'
 
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
+import pidBackgroundImage from '../../../../assets/pid-background.png'
 
 export interface OnboardingIdCardFetchProps {
   goToNextStep: () => void
@@ -13,6 +14,7 @@ export function OnboardingIdCardFetch({ goToNextStep, userName }: OnboardingIdCa
   return (
     <YStack justifyContent="space-between" flex-1>
       <IdCard
+        backgroundImage={pidBackgroundImage}
         icon={userName ? 'complete' : 'loading'}
         hideUserName={!userName}
         issuerImage={germanIssuerImage}

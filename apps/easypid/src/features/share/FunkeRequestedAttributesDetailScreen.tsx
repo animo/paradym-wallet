@@ -1,4 +1,4 @@
-import { Heading, Image, Paragraph, ScrollView, Spacer, Stack, YStack, useToastController } from '@package/ui'
+import { Heading, Image, MiniCard, Paragraph, ScrollView, Spacer, Stack, YStack, useToastController } from '@package/ui'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
@@ -61,27 +61,11 @@ export function FunkeRequestedAttributesDetailScreen({
       >
         <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle} height={scrollViewHeight}>
           <YStack g="xl" pad="lg" py="$4">
-            <Stack
-              p="$2"
-              h="$8"
-              w="$12"
-              br="$4"
-              overflow="hidden"
-              pos="relative"
-              bg={activeCredential?.display.backgroundColor ?? '$grey-900'}
-            >
-              {hasInternet && activeCredential?.display.backgroundImage?.url && (
-                <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
-                  <Image
-                    src={activeCredential?.display.backgroundImage?.url ?? ''}
-                    alt={activeCredential?.display.backgroundImage?.altText ?? ''}
-                    resizeMode="cover"
-                    height="100%"
-                    width="100%"
-                  />
-                </Stack>
-              )}
-            </Stack>
+            <MiniCard
+              backgroundImage={activeCredential?.display.backgroundImage?.url}
+              backgroundColor={activeCredential?.display.backgroundColor ?? '$grey-900'}
+              hasInternet={hasInternet}
+            />
             <Stack g="md">
               <Heading variant="h1">
                 {disclosedAttributeLength} attributes from {activeCredential?.display.name}
