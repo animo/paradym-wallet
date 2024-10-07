@@ -8,7 +8,7 @@ import {
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
-import { useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
 import { ClaimFormat, utils } from '@credo-ts/core'
@@ -26,14 +26,22 @@ import { FunkePresentationNotificationScreen } from './FunkePresentationNotifica
 
 type Query = { uri?: string; data?: string }
 
+export interface PresentationRequestResult {
+  status: 'success' | 'error'
+  result: {
+    title: string
+    message?: string
+  }
+  redirectToWallet?: boolean
+}
+
 export function FunkeOpenIdPresentationNotificationScreen() {
-  const { agent } = useAppAgent()
-  const router = useRouter()
   const toast = useToastController()
-  const { pin } = useGlobalSearchParams<{ pin?: string }>()
   const params = useLocalSearchParams<Query>()
-  const { seedCredential } = useSeedCredentialPidData()
   const pushToWallet = usePushToWallet()
+
+  const { agent } = useAppAgent()
+  const { seedCredential } = useSeedCredentialPidData()
   const { credential: pidCredential } = usePidCredential()
 
   const [credentialsForRequest, setCredentialsForRequest] =
@@ -90,8 +98,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast])
 
-  const onProofAccept = useCallback(async () => {
-    if (!submission || !credentialsForRequest) return
+  const onProofAccept = useCallback(async (): Promise<PresentationRequestResult> => {
+    if (!submission || !credentialsForRequest)
+      return {
+        status: 'error',
+        result: {
+          title: 'No credentials selected',
+        },
+      }
 
     setIsSharing(true)
 
@@ -121,35 +135,43 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         date: new Date().toISOString(),
         entityHost: credentialsForRequest.verifierHostName as string,
       })
-    } catch (error) {
-      if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show('Biometric authentication cancelled', {
-          customData: { preset: 'danger' },
-        })
-        setIsSharing(false)
-        return
-      }
 
-      toast.show('Presentation could not be shared.', {
-        customData: { preset: 'danger' },
-      })
+      return {
+        status: 'success',
+        result: {
+          title: 'Presentation shared',
+        },
+      }
+    } catch (error) {
+      setIsSharing(false)
+      if (error instanceof BiometricAuthenticationCancelledError) {
+        return {
+          status: 'error',
+          result: {
+            title: 'Biometric authentication cancelled',
+          },
+        }
+      }
       agent.config.logger.error('Error accepting presentation', {
         error,
       })
-      pushToWallet()
+      return {
+        status: 'error',
+        redirectToWallet: true,
+        result: {
+          title: 'Presentation could not be shared.',
+        },
+      }
     }
-  }, [submission, credentialsForRequest, agent, pushToWallet, toast.show, pidCredential])
+  }, [submission, credentialsForRequest, agent, pidCredential])
 
-  useEffect(() => {
-    if (!pin) return
-
-    requestSdJwtVcFromSeedCredential({
+  const onProofAcceptWithSeedCredential = async (pin: string): Promise<PresentationRequestResult> => {
+    return await requestSdJwtVcFromSeedCredential({
       agent: agent as unknown as EasyPIDAppAgent,
       authorizationRequestUri: params.uri ?? 'TODO: this is temp anyways',
       pidPin: pin,
-      incorrectPin: false,
     })
-      .then((sdJwtVc) => {
+      .then(async (sdJwtVc) => {
         // We add the newly retrieved SD-JWT VC as the first credential in the credentials for request
         // So it will automatically be selected when creating the presentation
         const entry = credentialsForRequest?.credentialsForRequest.requirements[0].submissionEntry[0]
@@ -160,28 +182,46 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           disclosedPayload: {},
         })
 
-        return onProofAccept()
+        return await onProofAccept()
       })
       .catch((error) => {
         if (error instanceof PidIssuerPinInvalidError) {
-          router.setParams({ pinResult: 'error', pin: undefined })
-          return
+          return {
+            status: 'error',
+            result: {
+              title: 'Wrong PIN',
+              message: 'Use your app PIN to confirm the request.',
+            },
+          }
         }
 
         if (error instanceof PidIssuerPinLockedError) {
-          router.replace('pinLocked')
-          return
+          // FIXME: Redirect to a wallet reset screen.
+          return {
+            status: 'error',
+            redirectToWallet: true,
+            result: {
+              title: 'Too many incorrect attempts',
+              message:
+                'You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.',
+            },
+          }
         }
 
-        toast.show('Presentation could not be shared.', {
-          customData: { preset: 'danger' },
-        })
         agent.config.logger.error('Error accepting presentation', {
           error,
         })
-        pushToWallet()
+
+        return {
+          status: 'error',
+          redirectToWallet: true,
+          result: {
+            title: 'Presentation could not be shared.',
+            message: 'Please try again.',
+          },
+        }
       })
-  }, [pin, router, toast.show, agent, pushToWallet, params.uri, onProofAccept, credentialsForRequest])
+  }
 
   const onProofDecline = async () => {
     pushToWallet()
@@ -192,6 +232,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     <FunkePresentationNotificationScreen
       usePin={!!seedCredential}
       onAccept={onProofAccept}
+      onAcceptWithPin={onProofAcceptWithSeedCredential}
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}

@@ -1,28 +1,36 @@
-import { useWizard } from '@package/app'
-import { Heading, Paragraph, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
+import { usePushToWallet, useWizard } from '@package/app'
+import { Heading, Paragraph, PinDotsInput, type PinDotsInputRef, YStack, useToastController } from '@package/ui'
 import { useRef, useState } from 'react'
+import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
 
-export const PinSlide = ({ onPinComplete, isLoading }: { onPinComplete: () => Promise<void>; isLoading: boolean }) => {
+interface PinSlideProps {
+  onPinComplete: (pin: string) => Promise<PresentationRequestResult>
+  isLoading: boolean
+}
+
+export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
   const { onNext } = useWizard()
+  const toast = useToastController()
+  const pushToWallet = usePushToWallet()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const pinRef = useRef<PinDotsInputRef>(null)
 
-  const unlockUsingPin = async (pin: string) => {
-    // The pin is passed to the presentation request and from there we know if it's correct or not
-    // For now, lets just mock.
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    return
-  }
-
   const onPinEnterComplete = (pin: string) => {
     setIsSubmitting(true)
-    unlockUsingPin(pin)
-      .then(() => {
-        onPinComplete().then(() => onNext())
-      })
-      .catch((e) => {
+
+    onPinComplete(pin)
+      .then((r) => {
+        if (r.status === 'success') return onNext()
+
+        toast.show(r.result.title, {
+          message: r.result.message,
+          customData: { preset: r.redirectToWallet ? 'danger' : 'warning' },
+        })
+
         pinRef.current?.shake()
         pinRef.current?.clear()
+
+        if (r.redirectToWallet) return pushToWallet()
       })
       .finally(() => setIsSubmitting(false))
   }

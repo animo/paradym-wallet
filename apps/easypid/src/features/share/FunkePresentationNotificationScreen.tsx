@@ -3,6 +3,7 @@ import type { FormattedSubmission } from '@package/agent'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
+import type { PresentationRequestResult } from './FunkeOpenIdPresentationNotificationScreen'
 import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
@@ -10,7 +11,8 @@ import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 interface FunkePresentationNotificationScreenProps {
   usePin: boolean
   isAccepting: boolean
-  onAccept: () => Promise<void>
+  onAccept: () => Promise<PresentationRequestResult>
+  onAcceptWithPin: (pin: string) => Promise<PresentationRequestResult>
   onDecline: () => void
   onComplete: () => void
   submission?: FormattedSubmission
@@ -20,6 +22,7 @@ interface FunkePresentationNotificationScreenProps {
 export function FunkePresentationNotificationScreen({
   usePin,
   onAccept,
+  onAcceptWithPin,
   onDecline,
   isAccepting,
   submission,
@@ -58,7 +61,7 @@ export function FunkePresentationNotificationScreen({
           usePin && {
             step: 'pin-enter',
             progress: 66,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAccept} />,
+            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
           },
           {
             step: 'success',

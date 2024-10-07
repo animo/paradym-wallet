@@ -4,10 +4,11 @@ import { useWizard } from '@package/app'
 import { Button, Heading, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
 import { Circle, Spacer } from 'tamagui'
+import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface ShareCredentialsSlideProps {
-  onAccept?: () => Promise<void>
+  onAccept?: () => Promise<PresentationRequestResult>
   submission?: FormattedSubmission
   onDecline: () => void
   verifierName?: string

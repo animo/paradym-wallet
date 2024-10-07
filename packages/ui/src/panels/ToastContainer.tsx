@@ -9,7 +9,7 @@ declare module '@tamagui/toast' {
     /**
      * @default "none"
      */
-    preset?: 'danger' | 'success' | 'none'
+    preset?: 'danger' | 'success' | 'warning' | 'none'
   }
 }
 
@@ -17,12 +17,13 @@ interface ToastContainerProps {
   title: string
   message?: string
   safeAreaMargin?: boolean
-  variant?: 'danger' | 'success' | 'none'
+  variant?: 'danger' | 'success' | 'warning' | 'none'
 }
 
 const iconMapping = {
   danger: <HeroIcons.ExclamationCircleFilled size={20} color="$color.danger-500" />,
   success: <HeroIcons.CheckCircleFilled size={20} color="$color.positive-500" />,
+  warning: <HeroIcons.ExclamationCircleFilled size={20} color="$color.warning-500" />,
   none: <HeroIcons.InformationCircleFilled size={20} color="$color.primary-500" />,
 }
 

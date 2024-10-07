@@ -314,12 +314,10 @@ export const requestSdJwtVcFromSeedCredential = async ({
   agent,
   authorizationRequestUri,
   pidPin,
-  incorrectPin,
 }: {
   agent: EasyPIDAppAgent
   authorizationRequestUri: string
   pidPin: string
-  incorrectPin?: boolean
 }) => {
   try {
     await agent.context.wallet.createKey({
