@@ -67,7 +67,7 @@ export default function AppLayout() {
     <AgentProvider agent={secureUnlock.context.agent}>
       <WalletJsonStoreProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
         <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
-          <Stack key="1234" screenOptions={{ headerShown: false }}>
+          <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen
               options={{
                 presentation: 'modal',
