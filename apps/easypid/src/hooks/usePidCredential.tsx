@@ -449,7 +449,7 @@ export const usePidDisplay = () => {
     description: 'This is a personal ID',
     locale: 'de',
     textColor: '#2F3544',
-    backgroundColor: '#CCCEBF',
+    backgroundColor: '#F1F2F0',
     backgroundImage: {
       url: require('../../assets/pid-background.png'),
       altText: 'Background Image',

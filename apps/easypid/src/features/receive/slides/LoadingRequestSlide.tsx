@@ -38,7 +38,7 @@ export const LoadingRequestSlide = ({ isLoading, isError }: LoadingRequestSlideP
               <Loader />
             </Stack>
             <Heading variant="sub1">Please wait</Heading>
-            <Paragraph>Fetching card information</Paragraph>
+            <Paragraph>Fetching information</Paragraph>
           </YStack>
         </AnimatedStack>
       </AnimatedStack>

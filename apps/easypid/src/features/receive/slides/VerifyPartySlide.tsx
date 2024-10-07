@@ -13,7 +13,7 @@ interface VerifyPartySlideProps {
 export const VerifyPartySlide = ({ name, issuer, logo }: VerifyPartySlideProps) => {
   const { onNext, onCancel } = useWizard()
 
-  if (name && issuer && logo && logo.url) {
+  if (name && issuer) {
     const urlPattern = /did:web:metadata\.([a-zA-Z0-9.-]+):/
     const match = issuer.match(urlPattern)
     const extractedUrl = match ? match[1] : 'Example.com'
@@ -29,9 +29,15 @@ export const VerifyPartySlide = ({ name, issuer, logo }: VerifyPartySlideProps) 
           <Stack gap="$4">
             <Stack alignSelf="flex-start">
               <XStack pos="relative">
-                <YStack br="$2" overflow="hidden" height={72} width={72} bg="$grey-900">
-                  <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
-                </YStack>
+                {logo?.url ? (
+                  <YStack br="$4" overflow="hidden" height={72} width={72} bg="$grey-900">
+                    <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
+                  </YStack>
+                ) : (
+                  <XStack p="$4" bg="$grey-100" borderRadius="$4">
+                    <HeroIcons.BuildingOffice color="$grey-800" size={32} />
+                  </XStack>
+                )}
                 <Stack pos="absolute" top="$-2" right="$-2">
                   <Stack bg="$positive-500" br="$12" p="$1.5">
                     <HeroIcons.ShieldCheck strokeWidth={2} color="$white" size={16} />
@@ -85,7 +91,7 @@ export const VerifyPartySlide = ({ name, issuer, logo }: VerifyPartySlideProps) 
         <DualResponseButtons
           align="horizontal"
           onAccept={() => onNext()}
-          onDecline={() => onCancel}
+          onDecline={() => onCancel()}
           acceptText="Yes, continue"
           declineText="Stop"
         />

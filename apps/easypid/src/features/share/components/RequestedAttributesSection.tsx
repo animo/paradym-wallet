@@ -4,7 +4,7 @@ import type { CredentialMetadata, DisplayImage, FormattedSubmission } from '@pac
 import { useHasInternetConnection } from '@package/app/src/hooks'
 import { OMITTED_CREDENTIAL_ATTRIBUTES } from '@package/app/src/utils'
 import { Card, Heading, HeroIcons, IconContainer, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
-import { capitalizeFirstLetter } from '@package/utils/src'
+import { sanitizeString } from '@package/utils/src'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { Circle } from 'tamagui'
@@ -138,12 +138,12 @@ export function CardWithAttributes({
             <XStack key={first + second} gap="$4">
               <Stack flexGrow={1} flexBasis={0}>
                 <Paragraph variant="sub" color="#415963">
-                  {capitalizeFirstLetter(first)}
+                  {sanitizeString(first)}
                 </Paragraph>
               </Stack>
               <Stack flexGrow={1} flexBasis={0}>
                 <Paragraph variant="sub" color="#415963">
-                  {second ? capitalizeFirstLetter(second) : ''}
+                  {second ? sanitizeString(second) : ''}
                 </Paragraph>
               </Stack>
             </XStack>

@@ -15,9 +15,10 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { BlurView } from 'expo-blur'
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 
+import { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useHasInternetConnection } from '../hooks'
 
 type FunkeCredentialCardProps = {
@@ -41,6 +42,7 @@ export function FunkeCredentialCard({
   shadow = true,
   isLoading,
 }: FunkeCredentialCardProps) {
+  const [isLoaded, setIsLoaded] = useState(false)
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
   const hasInternet = useHasInternetConnection()
 
@@ -55,6 +57,12 @@ export function FunkeCredentialCard({
   )
 
   const bgColorValue = backgroundImage?.url ? '$transparent' : bgColor ?? '$grey-900'
+
+  const fadeInStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(isLoaded ? 1 : 0, { duration: 200 }),
+    }
+  })
 
   return (
     <AnimatedStack
@@ -95,13 +103,16 @@ export function FunkeCredentialCard({
           <Card.Background>
             {hasInternet ? (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
-                <Image
-                  src={backgroundImage.url}
-                  alt={backgroundImage.altText}
-                  width="100%"
-                  height="100%"
-                  resizeMode="cover"
-                />
+                <AnimatedStack width="100%" height="100%" style={fadeInStyle}>
+                  <Image
+                    isImageLoaded={() => setIsLoaded(true)}
+                    src={backgroundImage.url}
+                    alt={backgroundImage.altText}
+                    width="100%"
+                    height="100%"
+                    resizeMode="cover"
+                  />
+                </AnimatedStack>
               </YStack>
             ) : (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'} />

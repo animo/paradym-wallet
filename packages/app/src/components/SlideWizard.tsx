@@ -96,7 +96,6 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
   const onBack = useCallback(() => {
     if (isCompleted || currentStepIndex === 0 || steps[currentStepIndex].backIsCancel) {
       handleCancel()
-      animateTransition(false)
     } else {
       direction.value = 'backward'
       animateTransition(false)
@@ -110,6 +109,7 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
         direction.value = 'forward'
         animateTransition(true, slide)
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        // TODO: complete progress bar
       }
     },
     [currentStepIndex, steps.length, animateTransition, direction]

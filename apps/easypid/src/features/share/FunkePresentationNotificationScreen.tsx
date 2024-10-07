@@ -60,7 +60,7 @@ export function FunkePresentationNotificationScreen({
           },
           usePin && {
             step: 'pin-enter',
-            progress: 66,
+            progress: 82.5,
             screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
           },
           {

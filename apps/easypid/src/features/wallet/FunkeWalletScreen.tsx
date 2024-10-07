@@ -152,7 +152,7 @@ function AnimatedCredentialCard({
   display: CredentialDisplay
   index: number
 }) {
-  const { push } = useRouter()
+  // const { push } = useRouter()
 
   const animatedStyle = useAnimatedStyle(() => {
     const baseMargin = index * 72
@@ -172,7 +172,7 @@ function AnimatedCredentialCard({
         bgColor={display.backgroundColor}
         shadow={false}
         // FIXME: Should not always route to PID page.
-        onPress={() => push('/credentials/pid')}
+        // onPress={() => push('/credentials/pid')}
       />
     </AnimatedStack>
   )
