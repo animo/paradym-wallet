@@ -31,8 +31,8 @@ export const TableRow = ({ variant = 'card', attribute, value, isLastRow, onPres
       >
         <XStack f={1}>
           <YStack gap="$1.5" f={1} justifyContent="flex-start">
-            {attribute && <Paragraph secondary>{attribute}</Paragraph>}
-            {value && <Paragraph>{value}</Paragraph>}
+            {attribute && <Paragraph variant="annotation">{attribute}</Paragraph>}
+            {value && <Paragraph color="$grey-900">{value}</Paragraph>}
             {/* Render image on the left if no value */}
             {!value && renderedImage}
           </YStack>

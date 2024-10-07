@@ -73,12 +73,7 @@ export function FunkeRequestedAttributesDetailScreen({
               {activeCredential?.display.issuer && (
                 <Paragraph color="$grey-700">Issued by {activeCredential?.display.issuer.name}</Paragraph>
               )}
-              <CredentialAttributes
-                variant="free"
-                subject={disclosedPayload}
-                headerTitle="Attributes"
-                headerStyle="small"
-              />
+              <CredentialAttributes subject={disclosedPayload} headerTitle="Attributes" headerStyle="small" />
             </Stack>
           </YStack>
         </ScrollView>

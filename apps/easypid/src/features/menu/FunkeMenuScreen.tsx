@@ -12,22 +12,22 @@ import Animated from 'react-native-reanimated'
 const menuItems = [
   {
     title: 'Activity',
-    icon: HeroIcons.Activity,
+    icon: HeroIcons.QueueListFilled,
     href: '/activity',
   },
   {
     title: 'Settings',
-    icon: HeroIcons.Settings,
+    icon: HeroIcons.Cog8ToothFilled,
     href: 'menu/settings',
   },
   {
     title: 'Feedback',
-    icon: HeroIcons.Feedback,
+    icon: HeroIcons.ChatBubbleBottomCenterTextFilled,
     href: 'menu/feedback',
   },
   {
     title: 'About the wallet',
-    icon: HeroIcons.InformationCircle,
+    icon: HeroIcons.InformationCircleFilled,
     href: 'menu/about',
   },
 ]
@@ -41,8 +41,8 @@ export function FunkeMenuScreen() {
     <MenuItem
       key="id"
       item={{
-        href: 'credentials/pid',
-        icon: HeroIcons.Identification,
+        href: `credentials/${credential.id}`,
+        icon: HeroIcons.IdentificationFilled,
         title: 'Your digital ID',
       }}
       idx={0}
@@ -52,7 +52,7 @@ export function FunkeMenuScreen() {
       key="id"
       item={{
         href: '/',
-        icon: HeroIcons.Identification,
+        icon: HeroIcons.IdentificationFilled,
         title: 'Setup digital ID',
       }}
       onPress={onResetWallet}
@@ -81,7 +81,6 @@ export function FunkeMenuScreen() {
             {menuItems.map((item, idx) => (
               <MenuItem key={item.title} item={item} idx={idx} />
             ))}
-
             <YStack py="$4" ai="center">
               <YStack px="$4" w="60%">
                 <Button.Solid scaleOnPress onPress={onResetWallet}>
@@ -91,8 +90,10 @@ export function FunkeMenuScreen() {
             </YStack>
           </YStack>
         </YStack>
-        <TextBackButton />
       </ScrollView>
+      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <TextBackButton />
+      </YStack>
     </FlexPage>
   )
 }

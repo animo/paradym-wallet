@@ -74,14 +74,19 @@ export default function AppLayout() {
               }}
               name="(home)/scan"
             />
-            <Stack.Screen name="notifications/openIdPresentation" />
+            <Stack.Screen
+              name="notifications/openIdPresentation"
+              options={{
+                gestureEnabled: false,
+              }}
+            />
             <Stack.Screen
               name="notifications/openIdCredential"
               options={{
                 gestureEnabled: false,
               }}
             />
-            <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
+            <Stack.Screen name="credentials/[id]" options={headerNormalOptions} />
             <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
             <Stack.Screen name="menu/index" options={headerNormalOptions} />
             <Stack.Screen name="menu/feedback" options={headerNormalOptions} />

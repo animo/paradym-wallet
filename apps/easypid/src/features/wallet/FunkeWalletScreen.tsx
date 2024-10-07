@@ -53,7 +53,7 @@ export function FunkeWalletScreen() {
           alignItems="center"
           gap="$2"
           py="$6"
-          mx="$4"
+          px="$4"
           borderBottomWidth="$0.5"
           borderColor="$grey-200"
         >
@@ -120,6 +120,7 @@ export function FunkeWalletScreen() {
               <AnimatedCredentialCard
                 key={credential.id}
                 display={credential.id === pidCredential?.id ? pidCredential?.display : credential.display}
+                id={credential.id}
                 index={idx}
               />
             ))}
@@ -147,12 +148,14 @@ export function FunkeWalletScreen() {
 
 function AnimatedCredentialCard({
   display,
+  id,
   index,
 }: {
   display: CredentialDisplay
+  id: string
   index: number
 }) {
-  // const { push } = useRouter()
+  const { push } = useRouter()
 
   const animatedStyle = useAnimatedStyle(() => {
     const baseMargin = index * 72
@@ -171,8 +174,7 @@ function AnimatedCredentialCard({
         name={display.name}
         bgColor={display.backgroundColor}
         shadow={false}
-        // FIXME: Should not always route to PID page.
-        // onPress={() => push('/credentials/pid')}
+        onPress={() => push(`/credentials/${id}`)}
       />
     </AnimatedStack>
   )

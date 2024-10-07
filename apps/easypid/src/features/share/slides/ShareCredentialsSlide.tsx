@@ -1,5 +1,5 @@
 import type { FormattedSubmission } from '@package/agent'
-import { DualResponseButtons } from '@package/app'
+import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
 import { Button, Heading, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
@@ -24,6 +24,7 @@ export const ShareCredentialsSlide = ({
 }: ShareCredentialsSlideProps) => {
   const { onNext } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
+  const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
 
   if (!submission) {
     return null
@@ -46,11 +47,23 @@ export const ShareCredentialsSlide = ({
         <Heading>Do you want to share{verifierName && ` with ${verifierName}`}?</Heading>
         <YStack
           fg={1}
+          btw="$0.5"
+          px="$4"
+          mx="$-4"
+          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
           onLayout={(event) => {
             if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
           }}
         >
-          <ScrollView contentContainerStyle={{ gap: '$6' }} px="$4" mx="$-4" maxHeight={scrollViewHeight} bg="$white">
+          <ScrollView
+            onScroll={handleScroll}
+            scrollEventThrottle={scrollEventThrottle}
+            contentContainerStyle={{ gap: '$6' }}
+            px="$4"
+            mx="$-4"
+            maxHeight={scrollViewHeight}
+            bg="$white"
+          >
             <RequestedAttributesSection submission={submission} />
             <YStack gap="$2">
               <Circle size="$2" mb="$2" backgroundColor="$primary-500">

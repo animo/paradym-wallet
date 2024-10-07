@@ -52,6 +52,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     if (!credentialsForRequest) return undefined
 
     const formattedSubmission = formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
+
     // Filter to keep only the first credential for each type
     const filteredSubmission = {
       ...formattedSubmission,
@@ -75,6 +76,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
     return filteredSubmission
   }, [credentialsForRequest])
+
+  const usePin = useMemo(() => {
+    const isPidInSubmission =
+      submission?.entries.some((entry) =>
+        entry.credentials.some((credential) => credential.id === pidCredential?.id)
+      ) ?? false
+    return isPidInSubmission && !!seedCredential
+  }, [submission, pidCredential, seedCredential])
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -230,7 +239,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   return (
     <FunkePresentationNotificationScreen
-      usePin={!!seedCredential}
+      usePin={usePin}
       onAccept={onProofAccept}
       onAcceptWithPin={onProofAcceptWithSeedCredential}
       onDecline={onProofDecline}

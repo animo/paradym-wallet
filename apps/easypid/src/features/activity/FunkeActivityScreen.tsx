@@ -2,7 +2,7 @@ import { ActivityRowItem } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import { FlexPage, Heading, Loader, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
 import { TextBackButton } from 'packages/app/src'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useActivities } from './activityRecord'
 
 export function FunkeActivityScreen() {
@@ -10,7 +10,7 @@ export function FunkeActivityScreen() {
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
-  const groupedActivities = React.useMemo(() => {
+  const groupedActivities = useMemo(() => {
     return activities.reduce(
       (acc, activity) => {
         const date = new Date(activity.date)
@@ -51,35 +51,35 @@ export function FunkeActivityScreen() {
           scrollEventThrottle={scrollEventThrottle}
           contentContainerStyle={{ minHeight: '85%' }}
         >
-          <YStack fg={1} px="$4" gap="$4" jc="space-between">
-            <YStack gap="$4">
-              {Object.entries(groupedActivities).map(([key, groupActivities]) => {
-                const [year, month] = key.split('-')
-                const date = new Date(Number.parseInt(year), Number.parseInt(month))
-                return (
-                  <React.Fragment key={key}>
-                    <Stack bbw={1} btw={1} borderColor="$grey-200" px="$4" py="$3" mx={-18}>
-                      <Heading variant="h3" fontWeight="$semiBold">
-                        {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
-                      </Heading>
-                    </Stack>
-                    {groupActivities.map((activity) => (
-                      <ActivityRowItem
-                        key={activity.id}
-                        id={activity.id}
-                        subtitle={activity.entityName ?? activity.entityHost}
-                        date={new Date(activity.date)}
-                        type={activity.type}
-                      />
-                    ))}
-                  </React.Fragment>
-                )
-              })}
-            </YStack>
-            <TextBackButton />
+          <YStack fg={1} px="$4" gap="$4">
+            {Object.entries(groupedActivities).map(([key, groupActivities]) => {
+              const [year, month] = key.split('-')
+              const date = new Date(Number.parseInt(year), Number.parseInt(month))
+              return (
+                <React.Fragment key={key}>
+                  <Stack bbw={1} btw={1} borderColor="$grey-200" px="$4" py="$3" mx={-18}>
+                    <Heading variant="h3" fontWeight="$semiBold">
+                      {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                    </Heading>
+                  </Stack>
+                  {groupActivities.map((activity) => (
+                    <ActivityRowItem
+                      key={activity.id}
+                      id={activity.id}
+                      subtitle={activity.entityName ?? activity.entityHost}
+                      date={new Date(activity.date)}
+                      type={activity.type}
+                    />
+                  ))}
+                </React.Fragment>
+              )
+            })}
           </YStack>
         </ScrollView>
       )}
+      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <TextBackButton />
+      </YStack>
     </FlexPage>
   )
 }

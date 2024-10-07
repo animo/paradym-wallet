@@ -120,17 +120,7 @@ export function FunkeCredentialCard({
           </Card.Background>
         )}
         {isLoading && (
-          <XStack
-            p="$2"
-            overflow="hidden"
-            bg="#0000001A"
-            br="$12"
-            ai="center"
-            gap="$2"
-            bottom="$5"
-            left="$5"
-            pos="absolute"
-          >
+          <XStack overflow="hidden" bg="#0000001A" br="$12" ai="center" gap="$2" bottom="$5" left="$5" pos="absolute">
             <BlurView intensity={20} tint="light" style={StyleSheet.absoluteFillObject} />
             <Loader variant="dark" />
           </XStack>

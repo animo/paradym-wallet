@@ -15,7 +15,13 @@ import {
   useSpringify,
 } from '@package/ui'
 import * as Haptics from 'expo-haptics'
-import { CredentialAttributes, DualResponseButtons, FunkeCredentialCard, useWizard } from 'packages/app/src'
+import {
+  CredentialAttributes,
+  DualResponseButtons,
+  FunkeCredentialCard,
+  useScrollViewPosition,
+  useWizard,
+} from 'packages/app/src'
 import { useEffect, useState } from 'react'
 import {
   FadeIn,
@@ -50,6 +56,7 @@ export const OfferCredentialSlide = ({
   const isInitialRender = useInitialRender()
   const [isCompleted, setIsCompleted] = useState(false)
   const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const scale = useSharedValue(1)
 
   const hideTextWhileStoring = isStoring && !isCompleted
@@ -177,10 +184,28 @@ export const OfferCredentialSlide = ({
               isLoading={isStoring && !isCompleted}
             />
           </AnimatedStack>
-          <AnimatedStack fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
+          <AnimatedStack
+            fg={1}
+            btw="$0.5"
+            px="$4"
+            mx="$-4"
+            borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+            onLayout={(event) => {
+              if (!scrollViewHeight) {
+                setScrollViewHeight(event.nativeEvent.layout.height)
+              }
+            }}
+          >
             {!isStoringOrCompleted ? (
-              <ScrollView py="$4" px="$4" mx="$-4" maxHeight={scrollViewHeight} bg="$white">
-                <CredentialAttributes variant="free" subject={attributes} disableHeader />
+              <ScrollView
+                onScroll={handleScroll}
+                scrollEventThrottle={scrollEventThrottle}
+                px="$4"
+                mx="$-4"
+                maxHeight={scrollViewHeight}
+                bg="$white"
+              >
+                <CredentialAttributes subject={attributes} disableHeader />
                 <Spacer size="$6" />
               </ScrollView>
             ) : (
@@ -195,7 +220,7 @@ export const OfferCredentialSlide = ({
         entering={isCompleted ? FadeIn.duration(300).delay(500) : undefined}
         exiting={FadeOut.duration(100)}
         btw="$0.5"
-        borderColor={isCompleted ? '$background' : '$grey-200'}
+        borderColor={isStoringOrCompleted ? '$background' : '$grey-200'}
         pt="$4"
         mx="$-4"
         px="$4"

@@ -31,13 +31,13 @@ export function FunkeActivityDetailScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   return (
-    <FlexPage p="0">
-      <YStack borderWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
+    <FlexPage p={0} gap={0}>
+      <YStack borderWidth="$0.5" p="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack g="xl" p="$4" marginBottom={bottom}>
+        <YStack gap="$4" p="$4" marginBottom={bottom}>
           {activity.disclosedPayload ? (
             <>
-              <Stack g="md">
+              <Stack gap="$2">
                 <Heading variant="h1">{activityTitleMap[activity.type]}</Heading>
                 <Paragraph color="$grey-700">
                   You have shared this data with {activity.entityName ?? activity.entityHost} on{' '}
@@ -49,14 +49,16 @@ export function FunkeActivityDetailScreen() {
                   .
                 </Paragraph>
               </Stack>
-              <CredentialAttributes subject={activity.disclosedPayload} headerTitle="Attributes" headerStyle="small" />
+              <CredentialAttributes disableHeader subject={activity.disclosedPayload} headerStyle="small" />
             </>
           ) : (
             <Paragraph>Disclosed information could not be shown.</Paragraph>
           )}
         </YStack>
       </ScrollView>
-      <TextBackButton />
+      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <TextBackButton />
+      </YStack>
     </FlexPage>
   )
 }

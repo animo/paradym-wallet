@@ -50,9 +50,13 @@ import {
   XMarkIcon,
 } from 'react-native-heroicons/outline'
 import {
+  ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
   CheckCircleIcon as CheckCircleFilledIcon,
+  Cog8ToothIcon as Cog8ToothFilledIcon,
   ExclamationCircleIcon as ExclamationCircleFilledIcon,
+  IdentificationIcon as IdentificationFilledIcon,
   InformationCircleIcon as InformationCircleFilledIcon,
+  QueueListIcon as QueueListFilledIcon,
   ShieldCheckIcon as ShieldCheckFilledIcon,
 } from 'react-native-heroicons/solid'
 
@@ -129,4 +133,8 @@ export const HeroIcons = {
   Check: wrapHeroIcon(CheckIcon),
   InformationCircleFilled: wrapHeroIcon(InformationCircleFilledIcon),
   CheckCircleFilled: wrapHeroIcon(CheckCircleFilledIcon),
+  QueueListFilled: wrapHeroIcon(QueueListFilledIcon),
+  ChatBubbleBottomCenterTextFilled: wrapHeroIcon(ChatBubbleBottomCenterTextFilledIcon),
+  Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
+  IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
 } as const

@@ -1,5 +1,15 @@
 import type { ActivityType } from '@easypid/features/activity/activityRecord'
-import { Heading, HeroIcons, Paragraph, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
+import {
+  Heading,
+  HeroIcons,
+  Paragraph,
+  Stack,
+  ToastContainer,
+  XStack,
+  YStack,
+  useScaleAnimation,
+  useToastController,
+} from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import Animated from 'react-native-reanimated'
 import { useRouter } from 'solito/router'
@@ -23,16 +33,19 @@ interface ActivityRowItemProps {
 
 export function ActivityRowItem({ id, subtitle, date, type = 'shared' }: ActivityRowItemProps) {
   const router = useRouter()
+  const toast = useToastController()
   const Icon = interactionIcons[type]
   const Title = activityTitleMap[type]
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   const onLinkPress = () => {
-    if (type === 'received') {
-      return router.push('/credentials/pid')
-    }
-    return router.push(`/activity/${id}`)
+    if (type === 'shared') return router.push(`/activity/${id}`)
+    return toast.show('Currently unavailable.', {
+      customData: {
+        preset: 'warning',
+      },
+    })
   }
 
   return (
