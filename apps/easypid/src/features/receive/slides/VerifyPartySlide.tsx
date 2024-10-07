@@ -6,20 +6,16 @@ import { Linking } from 'react-native'
 
 interface VerifyPartySlideProps {
   name?: string
-  issuer?: string
+  domain?: string
   logo?: DisplayImage
 }
 
-export const VerifyPartySlide = ({ name, issuer, logo }: VerifyPartySlideProps) => {
+export const VerifyPartySlide = ({ name, domain, logo }: VerifyPartySlideProps) => {
   const { onNext, onCancel } = useWizard()
 
-  if (name && issuer) {
-    const urlPattern = /did:web:metadata\.([a-zA-Z0-9.-]+):/
-    const match = issuer.match(urlPattern)
-    const extractedUrl = match ? match[1] : 'Example.com'
-
+  if (name && domain) {
     const openUrl = () => {
-      Linking.openURL(`https://${extractedUrl}`)
+      Linking.openURL(`https://${domain}`)
     }
 
     return (
@@ -48,7 +44,7 @@ export const VerifyPartySlide = ({ name, issuer, logo }: VerifyPartySlideProps) 
             <Paragraph>
               Watch out for fraud. Only continue if the QR-code is on{' '}
               <Paragraph onPress={openUrl} fontWeight="$semiBold" color="$primary-500">
-                {extractedUrl}
+                {domain}
               </Paragraph>
               .
             </Paragraph>

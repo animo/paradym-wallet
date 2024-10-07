@@ -43,6 +43,7 @@ export interface CredentialDisplay {
 
 export interface CredentialIssuerDisplay {
   name: string
+  domain?: string
   locale?: string
   logo?: DisplayImage
 }
@@ -152,6 +153,10 @@ function getOpenId4VcIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetada
   // Last fallback: use issuer id from openid4vc
   if (!issuerDisplay.name && openId4VcMetadata?.issuer.id) {
     issuerDisplay.name = getHostNameFromUrl(openId4VcMetadata.issuer.id)
+  }
+
+  if (openId4VcMetadata?.issuer.id) {
+    issuerDisplay.domain = getHostNameFromUrl(openId4VcMetadata.issuer.id)
   }
 
   return {
@@ -451,10 +456,4 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     } as CredentialMetadata,
     claimFormat: credentialRecord.credential.claimFormat,
   }
-}
-
-export const getReadableNameFromHost = (host: string) => {
-  const parts = host.split('.')
-  const domainName = parts.length >= 2 ? parts[parts.length - 2] : host
-  return domainName.charAt(0).toUpperCase() + domainName.slice(1)
 }

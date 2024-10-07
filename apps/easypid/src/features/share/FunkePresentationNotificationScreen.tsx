@@ -42,7 +42,9 @@ export function FunkePresentationNotificationScreen({
             step: 'verify-issuer',
             progress: 33,
             backIsCancel: true,
-            screen: <VerifyPartySlide key="verify-issuer" name={verifierName} />,
+            // FIXME: Verifier info for proof requests will be added with OpenID Federation
+            // For now, it will only use the domain from the request
+            screen: <VerifyPartySlide key="verify-issuer" name={verifierName} domain={verifierName} />,
           },
           {
             step: 'share-credentials',

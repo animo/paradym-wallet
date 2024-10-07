@@ -4,7 +4,6 @@ import {
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
-  getReadableNameFromHost,
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -20,6 +19,7 @@ import {
 } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
+import { getHostNameFromUrl } from 'packages/utils/src/url'
 import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
 import { activityStorage } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
@@ -236,7 +236,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
-      verifierName={getReadableNameFromHost(credentialsForRequest?.verifierHostName ?? 'Party.com')}
+      verifierName={credentialsForRequest?.verifierHostName ?? 'Party.com'}
       onComplete={() => pushToWallet('replace')}
     />
   )

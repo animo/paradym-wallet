@@ -112,7 +112,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
               key="verify-issuer"
               name={credential?.display.issuer.name}
               logo={credential?.display.issuer.logo}
-              issuer={credential?.metadata.issuer as string}
+              domain={credential?.display.issuer.domain}
             />
           ),
         },
