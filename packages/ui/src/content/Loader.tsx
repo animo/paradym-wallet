@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing } from 'react-native-reanimated'
-import { Circle, type StackProps, useTheme } from 'tamagui'
+import { Circle, type StackProps } from 'tamagui'
 
 interface LoaderProps extends StackProps {
   size?: 'small' | 'large'
@@ -43,10 +43,10 @@ export function Loader({ size = 'small', variant = 'light', ...props }: LoaderPr
         style={[
           {
             position: 'absolute',
-            borderLeftColor: 'transparent',
-            borderBottomColor: 'transparent',
-            borderRightColor: 'transparent',
-            borderRadius: '50%', // This will round the edges
+            borderLeftColor: '#00000001',
+            borderBottomColor: '#00000001',
+            borderRightColor: '#00000001',
+            borderRadius: circleSize / 2, // This will round the edges
           },
           animatedStyles,
         ]}

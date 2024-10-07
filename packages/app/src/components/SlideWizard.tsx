@@ -1,4 +1,4 @@
-import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Spacer, Stack } from '@package/ui'
+import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack } from '@package/ui'
 import * as Haptics from 'expo-haptics'
 import { useCallback, useRef, useState } from 'react'
 import type { ScrollView } from 'react-native'
@@ -22,7 +22,7 @@ type SlideWizardProps = {
 }
 
 export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle, onContentSizeChange, onLayout, isScrollable } =
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle, onContentSizeChange, onLayout } =
     useScrollViewPosition(0)
   const { bottom } = useSafeAreaInsets()
   const direction = useSharedValue<'forward' | 'backward'>('forward')
@@ -109,7 +109,6 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
         direction.value = 'forward'
         animateTransition(true, slide)
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-        // TODO: complete progress bar
       }
     },
     [currentStepIndex, steps.length, animateTransition, direction]
@@ -148,7 +147,6 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
             px="$4"
           >
             {steps[currentStepIndex].screen}
-            {isScrollable && <Spacer h="$9" />}
           </ScrollableStack>
         </AnimatedStack>
       </FlexPage>

@@ -45,19 +45,16 @@ export function FunkeWalletScreen() {
           <IconContainer icon={<HeroIcons.Menu />} onPress={() => push('/menu')} />
           <IconContainer icon={<LucideIcons.History />} onPress={() => push('/activity')} />
         </XStack>
-        <AnimatedStack
-          style={qrPressStyle}
-          onPressIn={qrHandlePressIn}
-          onPressOut={qrHandlePressOut}
-          onPress={navigateToScanner}
-          alignItems="center"
-          gap="$2"
-          py="$6"
-          px="$4"
-          borderBottomWidth="$0.5"
-          borderColor="$grey-200"
-        >
-          <YStack bg="#2A337E1A" br="$12">
+        <Stack alignItems="center" gap="$2" py="$6" px="$4" borderBottomWidth="$0.5" borderColor="$grey-200">
+          <AnimatedStack
+            flexDirection="column"
+            style={qrPressStyle}
+            onPressIn={qrHandlePressIn}
+            onPressOut={qrHandlePressOut}
+            onPress={navigateToScanner}
+            bg="#2A337E1A"
+            br="$12"
+          >
             <Stack
               bg="$primary-500"
               br="$12"
@@ -70,11 +67,11 @@ export function FunkeWalletScreen() {
             >
               <HeroIcons.QrCode strokeWidth={1.5} color="$white" size={48} />
             </Stack>
-          </YStack>
+          </AnimatedStack>
           <Paragraph fontWeight="$bold" color="$primary-500">
             Scan QR-Code
           </Paragraph>
-        </AnimatedStack>
+        </Stack>
       </AnimatedStack>
       {credentials.length === 0 ? (
         <AnimatedStack
@@ -166,7 +163,7 @@ function AnimatedCredentialCard({
   })
 
   return (
-    <AnimatedStack key="?123" position="absolute" width="100%" style={animatedStyle}>
+    <AnimatedStack position="absolute" width="100%" style={animatedStyle}>
       <FunkeCredentialCard
         issuerImage={display.issuer.logo}
         backgroundImage={display.backgroundImage}
