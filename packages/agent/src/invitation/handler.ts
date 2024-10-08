@@ -9,6 +9,8 @@ import type {
   OutOfBandRecord,
   P256Jwk,
   ProofStateChangedEvent,
+  W3cJsonLdVerifiableCredential,
+  W3cJwtVerifiableCredential,
 } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
@@ -32,9 +34,9 @@ import {
   Jwt,
   KeyBackend,
   KeyType,
-  Mdoc,
-  MdocRecord,
-  MdocRepository,
+  // Mdoc,
+  // MdocRecord,
+  // MdocRepository,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
@@ -347,15 +349,15 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
           : undefined
 
-        const shouldKeyBeHardwareBackedForMsoMdoc =
-          offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
-          pidSchemes?.msoMdocDoctypes.includes(offeredCredentialConfiguration.doctype)
+        // const shouldKeyBeHardwareBackedForMsoMdoc =
+        //   offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
+        //   pidSchemes?.msoMdocDoctypes.includes(offeredCredentialConfiguration.doctype)
 
         const shouldKeyBeHardwareBackedForSdJwtVc =
           offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
           pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
 
-        const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
+        const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc // || shouldKeyBeHardwareBackedForMsoMdoc
 
         const key = await agent.wallet.createKey({
           keyType,
@@ -392,8 +394,8 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         // Otherwise we also support plain jwk for sd-jwt only
         if (
           supportsJwk &&
-          (credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc ||
-            credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc)
+          credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc /*  ||
+            credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc) */
         ) {
           return {
             method: 'jwk',
@@ -410,20 +412,23 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     })
 
     return credentials.map((credential, index) => {
-      let record: SdJwtVcRecord | W3cCredentialRecord | MdocRecord
+      let record: SdJwtVcRecord | W3cCredentialRecord // | MdocRecord
+
+      if (typeof credential === 'string') return credential
 
       if ('compact' in credential.credential) {
         // TODO: add claimFormat to SdJwtVc
         record = new SdJwtVcRecord({
           compactSdJwtVc: credential.credential.compact,
         })
-      } else if (credential.credential instanceof Mdoc) {
+        /* } else if (credential.credential instanceof Mdoc) {
         record = new MdocRecord({
           mdoc: credential.credential,
         })
+      */
       } else {
         record = new W3cCredentialRecord({
-          credential: credential.credential,
+          credential: credential.credential as W3cJwtVerifiableCredential | W3cJsonLdVerifiableCredential,
           // We don't support expanded types right now, but would become problem when we support JSON-LD
           tags: {},
         })
@@ -635,13 +640,13 @@ export const shareProof = async ({
 
 export async function storeCredential(
   agent: EitherAgent,
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord // | MdocRecord
 ) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
-  } else if (credentialRecord instanceof MdocRecord) {
+  } /* else if (credentialRecord instanceof MdocRecord) {
     await agent.dependencyManager.resolve(MdocRepository).save(agent.context, credentialRecord)
-  } else {
+  } */ else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
   }
 }
@@ -653,10 +658,10 @@ export async function deleteCredential(agent: EitherAgent, credentialId: Credent
   } else if (credentialId.startsWith('sd-jwt-vc')) {
     const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
     await agent.sdJwtVc.deleteById(sdJwtVcId)
-  } else if (credentialId.startsWith('mdoc-')) {
+  } /* else if (credentialId.startsWith('mdoc-')) {
     const mdocId = credentialId.replace('mdoc-', '')
     await agent.mdoc.deleteById(mdocId)
-  }
+  } */
 }
 
 /**
