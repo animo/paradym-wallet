@@ -15,15 +15,15 @@ export function Sheet({ children, isOpen, setIsOpen, ...props }: SheetProps) {
       dismissOnSnapToBottom
       animationConfig={{
         type: 'spring',
-        stiffness: 180,
-        damping: 24,
+        stiffness: 60,
+        damping: 36,
         mass: 0.2,
       }}
       {...props}
     >
       <TamaguiSheet.Overlay
         style={{
-          backgroundColor: '#00000033',
+          backgroundColor: '#00000026',
         }}
         animation="quick"
         enterStyle={{ opacity: 0 }}

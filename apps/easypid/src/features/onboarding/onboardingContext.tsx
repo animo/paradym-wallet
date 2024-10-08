@@ -294,11 +294,9 @@ export function OnboardingContextProvider({
     if (nextStep) {
       setCurrentStepName(nextStep.step)
     } else {
-      // Navigate to the actual app.
-      setHasFinishedOnboarding(true)
-      router.replace('/')
+      finishOnboarding()
     }
-  }, [currentStepName, router, setHasFinishedOnboarding])
+  }, [currentStepName])
 
   const goToPreviousStep = useCallback(() => {
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
@@ -311,7 +309,11 @@ export function OnboardingContextProvider({
 
   const finishOnboarding = useCallback(() => {
     setHasFinishedOnboarding(true)
-    router.replace('/')
+    // The Onboarding fades out based on the mmkv value
+    // Wait 500ms before navigating to home
+    setTimeout(() => {
+      router.replace('/')
+    }, 500)
   }, [router, setHasFinishedOnboarding])
 
   const onPinEnter = async (pin: string) => {
@@ -704,11 +706,12 @@ export function OnboardingContextProvider({
 
           const issuerName = getOpenId4VcCredentialMetadata(credential)?.issuer.display?.[0]?.name
           await activityStorage.addActivity(secureUnlock.context.agent, {
-            id: credential.id,
+            id: utils.uuid(),
             type: 'received',
             date: new Date().toISOString(),
             entityHost: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             entityName: issuerName,
+            credentialId: credential.id,
           })
         } /* else if (credential instanceof MdocRecord) {
           await storeCredential(secureUnlock.context.agent, credential)

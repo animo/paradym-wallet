@@ -1,4 +1,4 @@
-import { FlexPage, Heading, IdCard, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, IdCard, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
 import React from 'react'
 import { createParam } from 'solito'
 
@@ -31,18 +31,20 @@ export function FunkeActivityDetailScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   return (
-    <YStack bg="$background" height="100%">
-      <Spacer size="$13" />
-      <YStack borderWidth={0.5} borderColor={isScrolledByOffset ? '$grey-300' : '$background'} />
+    <FlexPage p={0} gap={0}>
+      <YStack bbw="$0.5" p="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack g="xl" p="$4" marginBottom={bottom}>
+        <YStack jc="center" ai="center" p="$4">
+          <HeroIcons.ShieldCheckFilled strokeWidth={2} color="$positive-500" size={56} />
+        </YStack>
+        <YStack gap="$4" px="$4" marginBottom={bottom}>
           {activity.disclosedPayload ? (
             <>
-              <IdCard small issuerImage={germanIssuerImage} />
-
-              <Stack g="md">
-                <Heading variant="h1">{activityTitleMap[activity.type]}</Heading>
-                <Paragraph color="$grey-700">
+              <Stack gap="$2" ai="center">
+                <Heading textAlign="center" variant="h1">
+                  {activityTitleMap[activity.type]}
+                </Heading>
+                <Paragraph textAlign="center" color="$grey-700">
                   You have shared this data with {activity.entityName ?? activity.entityHost} on{' '}
                   {new Date(activity.date).toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -52,14 +54,16 @@ export function FunkeActivityDetailScreen() {
                   .
                 </Paragraph>
               </Stack>
-              <CredentialAttributes subject={activity.disclosedPayload} headerTitle="Attributes" headerStyle="small" />
+              <CredentialAttributes disableHeader subject={activity.disclosedPayload} headerStyle="small" />
             </>
           ) : (
             <Paragraph>Disclosed information could not be shown.</Paragraph>
           )}
-          <TextBackButton />
         </YStack>
       </ScrollView>
-    </YStack>
+      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <TextBackButton />
+      </YStack>
+    </FlexPage>
   )
 }

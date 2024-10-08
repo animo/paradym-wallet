@@ -7,8 +7,10 @@ interface Activity {
   id: string
   type: ActivityType
   date: string
-
   disclosedPayload?: Record<string, unknown>
+
+  // only relevant for received activity
+  credentialId?: string
 
   // host of the entity interacted with
   // e.g. funke.animo.id

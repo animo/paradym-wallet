@@ -18,7 +18,6 @@ import { Alert } from 'react-native'
 import Animated, { FadingTransition } from 'react-native-reanimated'
 
 import { generateKeypair } from '@animo-id/expo-secure-environment'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import inAppLogo from '../../../../assets/icon.png'
 
 export interface OnboardingWelcomeProps {

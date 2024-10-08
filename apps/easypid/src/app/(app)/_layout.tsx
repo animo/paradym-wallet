@@ -7,10 +7,8 @@ import { seedCredentialStorage } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
 import { type CredentialDataHandlerOptions, DeeplinkHandler } from '@package/app'
-import { HeroIcons, XStack, useScaleAnimation } from '@package/ui'
+import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
-import Reanimated, { FadeIn } from 'react-native-reanimated'
-import Animated from 'react-native-reanimated'
 import { useTheme } from 'tamagui'
 
 const jsonRecordIds = [seedCredentialStorage.recordId, activityStorage.recordId]
@@ -26,7 +24,6 @@ export default function AppLayout() {
   const secureUnlock = useSecureUnlock()
   const theme = useTheme()
   const router = useRouter()
-  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.9 })
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -34,6 +31,7 @@ export default function AppLayout() {
   const [resetWalletState, setResetWalletState] = useState<'resetting' | 'reset'>()
   const shouldResetWallet =
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
+  const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
 
   useEffect(() => {
     if (resetWalletState || !shouldResetWallet) return
@@ -52,7 +50,7 @@ export default function AppLayout() {
   }
 
   // Wallet is locked. Redirect to authentication screen
-  if (secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key') {
+  if (isWalletLocked) {
     return <Redirect href="/authenticate" />
   }
 
@@ -61,20 +59,7 @@ export default function AppLayout() {
     headerTransparent: true,
     headerTintColor: theme['primary-500'].val,
     headerTitle: '',
-    headerLeft: () => (
-      <Animated.View style={pressStyle}>
-        <XStack
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-          onPress={() => router.back()}
-          p="$2"
-          ml={-4}
-          ai="center"
-        >
-          <HeroIcons.ArrowLeft size={28} color="$black" />
-        </XStack>
-      </Animated.View>
-    ),
+    headerLeft: () => <IconContainer icon={<HeroIcons.ArrowLeft />} onPress={() => router.back()} />,
   }
 
   // Render the normal wallet, which is everything inside (app)
@@ -82,30 +67,36 @@ export default function AppLayout() {
     <AgentProvider agent={secureUnlock.context.agent}>
       <WalletJsonStoreProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
         <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
-          <Reanimated.View
-            style={{ flex: 1 }}
-            entering={FadeIn.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05).delay(800)}
-          >
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen
-                options={{
-                  presentation: 'modal',
-                }}
-                name="(home)/scan"
-              />
-              <Stack.Screen name="notifications/openIdPresentation" />
-              <Stack.Screen name="credentials/pid" options={headerNormalOptions} />
-              <Stack.Screen name="credentials/pidRequestedAttributes" options={headerNormalOptions} />
-              <Stack.Screen name="menu/index" options={headerNormalOptions} />
-              <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
-              <Stack.Screen name="menu/settings" options={headerNormalOptions} />
-              <Stack.Screen name="menu/about" options={headerNormalOptions} />
-              <Stack.Screen name="activity/index" options={headerNormalOptions} />
-              <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
-              <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
-              <Stack.Screen name="pinLocked" options={headerNormalOptions} />
-            </Stack>
-          </Reanimated.View>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              options={{
+                presentation: 'modal',
+              }}
+              name="(home)/scan"
+            />
+            <Stack.Screen
+              name="notifications/openIdPresentation"
+              options={{
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="notifications/openIdCredential"
+              options={{
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen name="credentials/[id]" options={headerNormalOptions} />
+            <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
+            <Stack.Screen name="menu/index" options={headerNormalOptions} />
+            <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
+            <Stack.Screen name="menu/settings" options={headerNormalOptions} />
+            <Stack.Screen name="menu/about" options={headerNormalOptions} />
+            <Stack.Screen name="activity/index" options={headerNormalOptions} />
+            <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
+            <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
+            <Stack.Screen name="pinLocked" options={headerNormalOptions} />
+          </Stack>
         </DeeplinkHandler>
       </WalletJsonStoreProvider>
     </AgentProvider>

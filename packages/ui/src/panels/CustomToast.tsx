@@ -14,13 +14,12 @@ export const CustomToast = () => {
       key={currentToast.id}
       duration={currentToast.duration}
       viewportName={currentToast.viewportName}
-      p={0}
+      p="$4"
       width="100%"
     >
       <ToastContainer
         title={currentToast.title}
         message={currentToast.message}
-        safeAreaMargin
         variant={currentToast.customData?.preset}
       />
     </Toast>

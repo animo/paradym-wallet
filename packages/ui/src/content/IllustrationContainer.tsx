@@ -27,7 +27,7 @@ export function IllustrationContainer({
   pulse,
   variant = 'feature',
 }: { children: React.ReactNode; pulse?: boolean; variant?: IllustrationContainerVariant }) {
-  const bgColor = variant === 'feature' ? '#D5DDF0CC' : '#F8E5ECCC'
+  const bgColor = variant === 'feature' ? '#D5DDF0CC' : '#FDF5F5CC'
 
   return (
     <Stack bg={bgColor} br="$4" overflow="hidden">
@@ -44,8 +44,8 @@ export const CircleContainer = ({
   children,
   variant = 'feature',
 }: { children: React.ReactNode; variant?: IllustrationContainerVariant }) => {
-  const bgColor = variant === 'feature' ? '#4365DE33' : '#E5598633'
-  const innerBgColor = variant === 'feature' ? '#4365DE99' : '#E5598699'
+  const bgColor = variant === 'feature' ? '#4365DE33' : '#DC313033'
+  const innerBgColor = variant === 'feature' ? '#4365DE99' : '#DC313099'
 
   return (
     <Stack h={156} w={156} bg={bgColor} br={999} jc="center" ai="center">

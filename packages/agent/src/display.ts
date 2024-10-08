@@ -43,6 +43,7 @@ export interface CredentialDisplay {
 
 export interface CredentialIssuerDisplay {
   name: string
+  domain?: string
   locale?: string
   logo?: DisplayImage
 }
@@ -152,6 +153,10 @@ function getOpenId4VcIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetada
   // Last fallback: use issuer id from openid4vc
   if (!issuerDisplay.name && openId4VcMetadata?.issuer.id) {
     issuerDisplay.name = getHostNameFromUrl(openId4VcMetadata.issuer.id)
+  }
+
+  if (openId4VcMetadata?.issuer.id) {
+    issuerDisplay.domain = getHostNameFromUrl(openId4VcMetadata.issuer.id)
   }
 
   return {

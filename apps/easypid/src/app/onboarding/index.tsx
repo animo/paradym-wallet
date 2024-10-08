@@ -1,10 +1,11 @@
-import { useOnboardingContext } from '@easypid/features/onboarding'
+import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
 import { FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
 import type React from 'react'
 import { Alert } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
 
 export default function OnboardingScreens() {
+  const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const onboardingContext = useOnboardingContext()
 
   const onReset = () => {
@@ -21,6 +22,8 @@ export default function OnboardingScreens() {
       },
     ])
   }
+
+  if (hasFinishedOnboarding) return null
 
   let page: React.JSX.Element
   if (onboardingContext.page.type === 'fullscreen') {

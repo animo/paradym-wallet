@@ -7,6 +7,7 @@ type CredentialAttributesProps = {
   disableHeader?: boolean
   headerTitle?: string
   headerStyle?: 'regular' | 'small'
+  noBorder?: boolean
 }
 
 export function CredentialAttributes({
@@ -21,31 +22,29 @@ export function CredentialAttributes({
     <YStack g="md">
       {tables.map((table, index) => (
         <YStack key={`${table.parent}-${table.depth}-${table.title}-${index}`} g="md" pt={table.parent ? 0 : '$2'}>
-          <XStack gap="$2">
-            {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
-            {(!disableHeader || table.title) && (
-              <Heading
-                variant={headerStyle === 'small' ? 'h4' : 'h3'}
-                pl={headerStyle === 'regular' && '$2'}
-                fontWeight={headerStyle === 'small' ? '$semiBold' : '$medium'}
-                secondary
-              >
-                {table.title ?? headerTitle ?? 'Credential information'}
-              </Heading>
-            )}
-            {table.parent && (
-              <Paragraph mt="$1" variant="sub" secondary>
-                part of {table.parent}
-              </Paragraph>
-            )}
-          </XStack>
+          {table.title && (
+            <XStack gap="$2">
+              {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
+              {(!disableHeader || table.title) && (
+                <Heading
+                  variant={headerStyle === 'small' ? 'h4' : 'h3'}
+                  pl={headerStyle === 'regular' && '$2'}
+                  fontWeight={headerStyle === 'small' ? '$semiBold' : '$medium'}
+                  secondary
+                >
+                  {table.title ?? headerTitle ?? 'Credential information'}
+                </Heading>
+              )}
+              {table.parent && (
+                <Paragraph mt="$1" variant="sub" secondary>
+                  part of {table.parent}
+                </Paragraph>
+              )}
+            </XStack>
+          )}
 
           <TableContainer>
             {table.rows.map((row, idx) => (
-              // TODO: We should create a bottom sheet overlay to show the full attribute and value
-              // as now it's sometimes cut off because the attribute value is too long for the view.
-              // however, we can't overlay a Tamagui Sheet over a modal screen
-              // so we probably need a custom implementation for this.
               <TableRow
                 key={row.key ?? (row.type === 'imageAndString' || row.type === 'string' ? row.value : row.image)}
                 attribute={row.key}
