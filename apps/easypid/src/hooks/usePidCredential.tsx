@@ -406,7 +406,9 @@ export function usePidCredential() {
   const { isLoading: isSeedCredentialLoading } = useSeedCredentialPidData()
 
   const pidCredential = useMemo(() => {
-    const credential = credentials.find((cred) => cred.metadata.type === 'urn:eu.europa.ec.eudi:pid:1')
+    const credential = credentials.find(
+      (cred) => cred.metadata.type === 'https://example.bmi.bund.de/credential/pid/1.0'
+    )
     if (credential) {
       const attributes = credential.attributes as PidSdJwtVcAttributes
       return {

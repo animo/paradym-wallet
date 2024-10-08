@@ -69,6 +69,7 @@ export function FunkeActivityScreen() {
                       subtitle={activity.entityName ?? activity.entityHost}
                       date={new Date(activity.date)}
                       type={activity.type}
+                      credentialId={activity.credentialId}
                     />
                   ))}
                 </React.Fragment>

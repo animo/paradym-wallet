@@ -1,5 +1,6 @@
 import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
+import { utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
 import {
   acquireAccessToken,
@@ -70,11 +71,12 @@ export function FunkeOpenIdCredentialNotificationScreen() {
         const { metadata, display } = getCredentialForDisplay(credentialRecord)
 
         await activityStorage.addActivity(agent, {
-          id: credentialRecord.id,
+          id: utils.uuid(),
           type: 'received',
           date: new Date().toISOString(),
           entityHost: getHostNameFromUrl(metadata.issuer) as string,
           entityName: display.issuer.name,
+          credentialId: credentialRecord.id,
         })
 
         setIsAccepted(true)

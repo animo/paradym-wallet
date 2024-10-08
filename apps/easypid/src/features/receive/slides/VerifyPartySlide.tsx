@@ -36,7 +36,7 @@ export const VerifyPartySlide = ({ name, domain, logo }: VerifyPartySlideProps) 
                 )}
                 <Stack pos="absolute" top="$-2" right="$-2">
                   <Stack bg="$positive-500" br="$12" p="$1.5">
-                    <HeroIcons.ShieldCheck strokeWidth={2} color="$white" size={16} />
+                    <HeroIcons.ShieldCheckFilled strokeWidth={2} color="$white" size={16} />
                   </Stack>
                 </Stack>
               </XStack>

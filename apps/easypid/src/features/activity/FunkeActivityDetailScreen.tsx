@@ -1,4 +1,4 @@
-import { FlexPage, Heading, IdCard, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, IdCard, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
 import React from 'react'
 import { createParam } from 'solito'
 
@@ -32,14 +32,19 @@ export function FunkeActivityDetailScreen() {
 
   return (
     <FlexPage p={0} gap={0}>
-      <YStack borderWidth="$0.5" p="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
+      <YStack bbw="$0.5" p="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack gap="$4" p="$4" marginBottom={bottom}>
+        <YStack jc="center" ai="center" p="$4">
+          <HeroIcons.ShieldCheckFilled strokeWidth={2} color="$positive-500" size={56} />
+        </YStack>
+        <YStack gap="$4" px="$4" marginBottom={bottom}>
           {activity.disclosedPayload ? (
             <>
-              <Stack gap="$2">
-                <Heading variant="h1">{activityTitleMap[activity.type]}</Heading>
-                <Paragraph color="$grey-700">
+              <Stack gap="$2" ai="center">
+                <Heading textAlign="center" variant="h1">
+                  {activityTitleMap[activity.type]}
+                </Heading>
+                <Paragraph textAlign="center" color="$grey-700">
                   You have shared this data with {activity.entityName ?? activity.entityHost} on{' '}
                   {new Date(activity.date).toLocaleDateString('en-US', {
                     year: 'numeric',

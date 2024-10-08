@@ -706,11 +706,12 @@ export function OnboardingContextProvider({
 
           const issuerName = getOpenId4VcCredentialMetadata(credential)?.issuer.display?.[0]?.name
           await activityStorage.addActivity(secureUnlock.context.agent, {
-            id: credential.id,
+            id: utils.uuid(),
             type: 'received',
             date: new Date().toISOString(),
             entityHost: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             entityName: issuerName,
+            credentialId: credential.id,
           })
         } else if (credential instanceof MdocRecord) {
           await storeCredential(secureUnlock.context.agent, credential)

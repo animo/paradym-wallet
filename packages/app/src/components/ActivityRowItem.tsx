@@ -4,7 +4,6 @@ import {
   HeroIcons,
   Paragraph,
   Stack,
-  ToastContainer,
   XStack,
   YStack,
   useScaleAnimation,
@@ -15,7 +14,7 @@ import Animated from 'react-native-reanimated'
 import { useRouter } from 'solito/router'
 
 const interactionIcons = {
-  received: HeroIcons.CreditCard,
+  received: HeroIcons.CreditCardFilled,
   shared: HeroIcons.Interaction,
 }
 
@@ -29,9 +28,10 @@ interface ActivityRowItemProps {
   subtitle: string
   date: Date
   type: ActivityType
+  credentialId?: string
 }
 
-export function ActivityRowItem({ id, subtitle, date, type = 'shared' }: ActivityRowItemProps) {
+export function ActivityRowItem({ id, subtitle, date, type = 'shared', credentialId }: ActivityRowItemProps) {
   const router = useRouter()
   const toast = useToastController()
   const Icon = interactionIcons[type]
@@ -41,6 +41,7 @@ export function ActivityRowItem({ id, subtitle, date, type = 'shared' }: Activit
 
   const onLinkPress = () => {
     if (type === 'shared') return router.push(`/activity/${id}`)
+    if (type === 'received' && credentialId) return router.push(`/credentials/${credentialId}`)
     return toast.show('Currently unavailable.', {
       customData: {
         preset: 'warning',
@@ -52,7 +53,7 @@ export function ActivityRowItem({ id, subtitle, date, type = 'shared' }: Activit
     <Animated.View style={pressStyle}>
       <XStack ai="center" gap="$4" w="100%" onPress={onLinkPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
         <Stack jc="center" ai="center" w={48} h={48} br="$12" bg="$primary-500" p="$4">
-          <Icon color="$white" />
+          <Icon strokeWidth={2} color="$white" />
         </Stack>
         <YStack gap="$1" jc="space-between" fg={1} w="75%">
           <XStack jc="space-between">
