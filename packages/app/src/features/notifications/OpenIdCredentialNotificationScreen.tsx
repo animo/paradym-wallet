@@ -46,8 +46,11 @@ export function OpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        if (credentialRecord.type === 'MdocRecord') {
-          throw new Error('mdoc not supported')
+        // if (credentialRecord.type === 'MdocRecord') {
+        //   throw new Error('mdoc not supported')
+        // }
+        if (typeof credentialRecord === 'string') {
+          throw new Error('b prime not supported')
         }
         setCredentialRecord(credentialRecord)
       } catch (e: unknown) {
