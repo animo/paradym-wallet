@@ -3,7 +3,7 @@ import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
-import { ClaimFormat, Hasher, JsonTransformer, Mdoc, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
+import { ClaimFormat, Hasher, JsonTransformer, /* Mdoc, MdocRecord, */ SdJwtVcRecord } from '@credo-ts/core'
 import { getHostNameFromUrl, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
@@ -361,7 +361,7 @@ export function getDisclosedAttributePaths(payload: object, prefix = ''): Array<
   return attributes
 }
 
-export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord) {
+export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord /* | MdocRecord */) {
   if (credentialRecord instanceof SdJwtVcRecord) {
     // FIXME: we should probably add a decode method on the SdJwtVcRecord
     // as you now need the agent context to decode the sd-jwt vc, while that's
@@ -389,32 +389,32 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       claimFormat: ClaimFormat.SdJwtVc,
     }
   }
-  if (credentialRecord instanceof MdocRecord) {
-    const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
-    const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
-    const credentialDisplay = getMdocCredentialDisplay({}, openId4VcMetadata)
+  // if (credentialRecord instanceof MdocRecord) {
+  //   const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+  //   const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
+  //   const credentialDisplay = getMdocCredentialDisplay({}, openId4VcMetadata)
 
-    const mdocInstance = Mdoc.fromIssuerSignedHex(credentialRecord.issuerSignedHex)
+  //   const mdocInstance = Mdoc.fromIssuerSignedHex(credentialRecord.issuerSignedHex)
 
-    const attributes = Object.fromEntries(Object.values(mdocInstance.namespaces).flatMap((a) => Object.entries(a)))
+  //   const attributes = Object.fromEntries(Object.values(mdocInstance.namespaces).flatMap((a) => Object.entries(a)))
 
-    return {
-      id: `mdoc-${credentialRecord.id}` satisfies CredentialForDisplayId,
-      createdAt: credentialRecord.createdAt,
-      display: {
-        ...credentialDisplay,
-        issuer: issuerDisplay,
-      },
-      attributes,
-      // TODO:
-      metadata: {
-        holder: 'Unknown',
-        issuer: 'Unknown',
-        type: mdocInstance.docType,
-      } satisfies CredentialMetadata,
-      claimFormat: ClaimFormat.MsoMdoc,
-    }
-  }
+  //   return {
+  //     id: `mdoc-${credentialRecord.id}` satisfies CredentialForDisplayId,
+  //     createdAt: credentialRecord.createdAt,
+  //     display: {
+  //       ...credentialDisplay,
+  //       issuer: issuerDisplay,
+  //     },
+  //     attributes,
+  //     // TODO:
+  //     metadata: {
+  //       holder: 'Unknown',
+  //       issuer: 'Unknown',
+  //       type: mdocInstance.docType,
+  //     } satisfies CredentialMetadata,
+  //     claimFormat: ClaimFormat.MsoMdoc,
+  //   }
+  // }
 
   const credential = JsonTransformer.toJSON(
     credentialRecord.credential.claimFormat === ClaimFormat.JwtVc

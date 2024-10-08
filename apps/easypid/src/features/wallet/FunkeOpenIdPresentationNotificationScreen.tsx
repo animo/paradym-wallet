@@ -105,7 +105,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       const disclosedPayload = getPidAttributesForDisplay(
         credential.disclosedPayload ?? {},
         credential.metadata ?? ({} as CredentialMetadata),
-        credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+        credential.claimFormat as ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
       )
 
       await activityStorage.addActivity(agent, {

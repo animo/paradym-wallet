@@ -105,10 +105,10 @@ export const initializeFullAgent = async ({
   walletKey: string
   keyDerivation: 'raw' | 'derive'
 }) => {
-  // FIXME: in the easypid app importing the cheqd module gives errors. As we're not using cheqd in the EasyPid wallet
-  // we protect it like this, but I think the Paradym Wallet must be broken as well then?!?
-  const { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } =
-    require('@credo-ts/cheqd') as typeof import('@credo-ts/cheqd')
+  // // FIXME: in the easypid app importing the cheqd module gives errors. As we're not using cheqd in the EasyPid wallet
+  // // we protect it like this, but I think the Paradym Wallet must be broken as well then?!?
+  // const { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } =
+  //   require('@credo-ts/cheqd') as typeof import('@credo-ts/cheqd')
 
   const agent = new Agent({
     dependencies: agentDependencies,
@@ -131,13 +131,13 @@ export const initializeFullAgent = async ({
           new WebDidResolver(),
           new KeyDidResolver(),
           new JwkDidResolver(),
-          new CheqdDidResolver(),
+          // new CheqdDidResolver(),
           new IndyVdrSovDidResolver(),
           new IndyVdrIndyDidResolver(),
         ],
       }),
       anoncreds: new AnonCredsModule({
-        registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
+        registries: [new IndyVdrAnonCredsRegistry() /* new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry() */],
         anoncreds,
       }),
 
@@ -153,18 +153,18 @@ export const initializeFullAgent = async ({
       connections: new ConnectionsModule({
         autoAcceptConnections: true,
       }),
-      cheqd: new CheqdModule(
-        new CheqdModuleConfig({
-          networks: [
-            {
-              network: 'testnet',
-            },
-            {
-              network: 'mainnet',
-            },
-          ],
-        })
-      ),
+      // cheqd: new CheqdModule(
+      //   new CheqdModuleConfig({
+      //     networks: [
+      //       {
+      //         network: 'testnet',
+      //       },
+      //       {
+      //         network: 'mainnet',
+      //       },
+      //     ],
+      //   })
+      // ),
       credentials: new CredentialsModule({
         autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
         credentialProtocols: [

@@ -28,31 +28,32 @@
 			"typescript": "~5.3.3",
 			"@unimodules/react-native-adapter": "./noop",
 			"@unimodules/core": "./noop",
-			"@hyperledger/anoncreds-react-native": "^0.2.2",
+			"@hyperledger/anoncreds-react-native": "^0.2.4",
 			"@hyperledger/aries-askar-react-native": "^0.2.3",
 			"@hyperledger/indy-vdr-react-native": "^0.2.0",
-			"@credo-ts/anoncreds": "0.5.11-pr-1996-20240827124430",
-			"@credo-ts/askar": "0.5.11-pr-1996-20240827124430",
-			"@credo-ts/cheqd": "0.5.11-pr-1996-20240827124430",
-			"@credo-ts/core": "0.5.11-pr-1996-20240827124430",
-			"@credo-ts/indy-vdr": "0.5.11-pr-1996-20240827124430",
-			"@credo-ts/openid4vc": "0.5.11-pr-1996-20240827124430",
-			"@credo-ts/question-answer": "0.5.11-pr-1996-20240827124430",
+			"@credo-ts/anoncreds": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/anoncreds?funke",
+			"@credo-ts/askar": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke",
+			"@credo-ts/cheqd": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/cheqd?funke",
+			"@credo-ts/core": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/core?funke",
+			"@credo-ts/indy-vdr": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/indy-vdr?funke",
+			"@credo-ts/openid4vc": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/openid4vc?funke",
+			"@credo-ts/question-answer": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/question-answer?funke",
+			"@credo-ts/react-native": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/react-native?funke",
 			"@credo-ts/react-hooks": "0.6.1",
-			"@credo-ts/react-native": "0.5.11-pr-1996-20240827124430",
 			"@animo-id/expo-secure-environment": "0.1.0-alpha.5",
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
 			"react-native": "0.74.5",
-			"@sphereon/did-auth-siop": "file:./sphereon-did-auth-siop-0.16.0.tgz",
-			"@sphereon/oid4vc-common": "0.16.1-next.14"
+			"@sphereon/did-auth-siop": "https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke",
+			"@sphereon/oid4vc-common": "https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke",
+			"@sphereon/oid4vci-common": "https://gitpkg.vercel.app/animo/OID4VC/packages/oid4vci-common?funke",
+			"@sphereon/oid4vci-issuer": "https://gitpkg.vercel.app/animo/OID4VC/packages/issuer?funke",
+			"@sphereon/oid4vci-client": "https://gitpkg.vercel.app/animo/OID4VC/packages/client?funke",
+			"@sphereon/jarm": "https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke",
+			"@sphereon/ssi-types": "0.29.1-unstable.208"
 		},
 		"patchedDependencies": {
-			"@credo-ts/openid4vc@0.5.11-pr-1996-20240827124430": "patches/@credo-ts__openid4vc@0.5.11-pr-1996-20240827124430.patch",
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@hyperledger/anoncreds-react-native@0.2.2": "patches/@hyperledger__anoncreds-react-native@0.2.2.patch",
-			"@sphereon/oid4vci-client@0.16.1-next.14": "patches/@sphereon__oid4vci-client@0.16.1-next.14.patch",
-			"@sphereon/oid4vci-common@0.16.1-next.14": "patches/@sphereon__oid4vci-common@0.16.1-next.14.patch",
-			"@sphereon/oid4vc-common@0.16.1-next.14": "patches/@sphereon__oid4vc-common@0.16.1-next.14.patch"
+			"@credo-ts/openid4vc@0.5.11": "patches/@credo-ts__openid4vc@0.5.11.patch"
 		}
 	}
 }
