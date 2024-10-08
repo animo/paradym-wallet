@@ -48,10 +48,10 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        if (credentialRecord.type === 'MdocRecord') {
-          throw new Error('mdoc not supported')
-        }
-        setCredentialRecord(credentialRecord)
+        // if (credentialRecord.type === 'MdocRecord') {
+        //   throw new Error('mdoc not supported')
+        // }
+        setCredentialRecord(credentialRecord as W3cCredentialRecord | SdJwtVcRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error: e,
