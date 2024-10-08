@@ -422,7 +422,7 @@ export const requestSdJwtVcFromSeedCredential = async ({
 
     const [firstCredential] = credentialAndNotifications
     if (!firstCredential) throw new Error('Error retrieving credential.')
-    if (typeof firstCredential === 'string') throw new Error('string cred now allowed here')
+    if (typeof firstCredential === 'string') throw new Error('string cred not allowed here')
 
     let record: SdJwtVcRecord
 
