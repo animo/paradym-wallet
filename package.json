@@ -2,7 +2,7 @@
 	"name": "wallets",
 	"private": true,
 	"scripts": {
-		"postinstall": "pnpm deps:check && rm -rf node_modules/@credo-ts/anoncreds/src node_modules/@credo-ts/askar/src node_modules/@credo-ts/cheqd/src node_modules/@credo-ts/core/src node_modules/@credo-ts/indy-vdr/src node_modules/@credo-ts/openid4vc/src node_modules/@credo-ts/question-answer/src node_modules/@credo-ts/react-native/src",
+		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
 		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
