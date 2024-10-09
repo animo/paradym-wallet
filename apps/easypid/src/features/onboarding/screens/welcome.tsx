@@ -35,12 +35,18 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
   const [isBlockedByHsm, setIsBlockedByHsm] = useState(false)
 
   const onPressFlow = () => {
-    const newFlow = selectedFlow === 'c' ? 'bprime' : 'c'
-    setSelectedFlow(newFlow)
-    toast.show(`${readableFlow[newFlow]} flow activated!`, {
-      type: 'info',
-      message: `You are now using the ${readableFlow[newFlow]} flow.`,
+    return toast.show("B' flow is currently unavailable", {
+      type: 'warning',
+      customData: {
+        preset: 'warning',
+      },
     })
+    // const newFlow = selectedFlow === 'c' ? 'bprime' : 'c'
+    // setSelectedFlow(newFlow)
+    // toast.show(`${readableFlow[newFlow]} flow activated!`, {
+    //   type: 'info',
+    //   message: `You are now using the ${readableFlow[newFlow]} flow.`,
+    // })
   }
 
   useEffect(() => {
