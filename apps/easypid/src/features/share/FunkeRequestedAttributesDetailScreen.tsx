@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 interface FunkeRequestedAttributesDetailScreenProps {
   id: string
   disclosedPayload: Record<string, unknown>
-  disclosedAttributeLength: string
+  disclosedAttributeLength: number
 }
 
 export function FunkeRequestedAttributesDetailScreen({
@@ -68,7 +68,8 @@ export function FunkeRequestedAttributesDetailScreen({
             />
             <Stack g="md">
               <Heading variant="h1">
-                {disclosedAttributeLength} attributes from {activeCredential?.display.name}
+                {disclosedAttributeLength} attribute{disclosedAttributeLength > 1 ? 's' : ''} from{' '}
+                {activeCredential?.display.name}
               </Heading>
               {activeCredential?.display.issuer && (
                 <Paragraph color="$grey-700">Issued by {activeCredential?.display.issuer.name}</Paragraph>

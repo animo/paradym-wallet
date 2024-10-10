@@ -144,7 +144,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           }
         })
       })
-      // How do  do this for multiple credentials?
 
       await activityStorage.addActivity(agent, {
         id: utils.uuid(),

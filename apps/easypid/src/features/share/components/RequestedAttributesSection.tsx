@@ -98,7 +98,7 @@ export function CardWithAttributes({
   const router = useRouter()
   const hasInternet = useHasInternetConnection()
 
-  const filteredDisclosedAttributes = disclosedAttributes.filter(
+  const filteredDisclosedAttributes = [...disclosedAttributes].filter(
     (attribute) => !OMITTED_CREDENTIAL_ATTRIBUTES.includes(attribute)
   )
 
@@ -112,7 +112,9 @@ export function CardWithAttributes({
 
   const onPress = () => {
     router.push(
-      `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${filteredDisclosedAttributes.length}`
+      `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
+        JSON.stringify(disclosedPayload ?? {})
+      )}&disclosedAttributeLength=${filteredDisclosedAttributes?.length}`
     )
   }
 
