@@ -12,7 +12,7 @@ export default function Screen() {
     <FunkeRequestedAttributesDetailScreen
       id={id}
       disclosedPayload={JSON.parse(disclosedPayload)}
-      disclosedAttributeLength={disclosedAttributeLength}
+      disclosedAttributeLength={Number.parseInt(disclosedAttributeLength)}
     />
   )
 }
