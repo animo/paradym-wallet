@@ -67,6 +67,15 @@ export function FunkeActivityDetailScreen() {
                       disclosedPayload={activityCredential.disclosedPayload ?? {}}
                     />
                   )
+                return (
+                  <CardWithAttributes
+                    key={activityCredential.id}
+                    id={activityCredential.id}
+                    name="Unknown credential"
+                    disclosedAttributes={activityCredential.disclosedAttributes ?? []}
+                    disclosedPayload={activityCredential.disclosedPayload ?? {}}
+                  />
+                )
               })
             ) : (
               <Paragraph variant="annotation" ta="center">
