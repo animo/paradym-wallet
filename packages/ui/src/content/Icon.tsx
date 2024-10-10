@@ -52,6 +52,7 @@ import {
 import {
   ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
   CheckCircleIcon as CheckCircleFilledIcon,
+  CircleStackIcon as CircleStackFilledIcon,
   Cog8ToothIcon as Cog8ToothFilledIcon,
   CreditCardIcon as CreditCardFilledIcon,
   ExclamationCircleIcon as ExclamationCircleFilledIcon,
@@ -116,6 +117,7 @@ export const HeroIcons = {
   XCircle: wrapHeroIcon(XCircleIcon),
   InformationCircle: wrapHeroIcon(InformationCircleIcon),
   CircleStack: wrapHeroIcon(CircleStackIcon),
+  CircleStackFilled: wrapHeroIcon(CircleStackFilledIcon),
   X: wrapHeroIcon(XMarkIcon),
   QrCode: wrapHeroIcon(QrCodeIcon),
   QuestionMarkCircle: wrapHeroIcon(QuestionMarkCircleIcon),

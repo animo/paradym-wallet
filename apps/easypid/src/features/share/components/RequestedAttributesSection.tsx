@@ -20,7 +20,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
     <YStack gap="$4">
       <YStack gap="$2">
         <Circle size="$2.5" mb="$2" backgroundColor="$primary-500">
-          <HeroIcons.CircleStack color="$white" size={18} />
+          <HeroIcons.CircleStackFilled color="$white" size={16} />
         </Circle>
         <Heading variant="h3" fontWeight="$semiBold">
           Requested data
@@ -85,6 +85,7 @@ export function CardWithAttributes({
   backgroundImage,
   disclosedAttributes,
   disclosedPayload,
+  disableNavigation = false,
 }: {
   id: string
   name: string
@@ -92,6 +93,7 @@ export function CardWithAttributes({
   backgroundImage?: DisplayImage
   disclosedAttributes: string[]
   disclosedPayload?: Record<string, unknown>
+  disableNavigation?: boolean
 }) {
   const router = useRouter()
   const hasInternet = useHasInternetConnection()
@@ -110,12 +112,20 @@ export function CardWithAttributes({
 
   const onPress = () => {
     router.push(
-      `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(JSON.stringify(disclosedPayload ?? {}))}&disclosedAttributeLength=${filteredDisclosedAttributes.length}`
+      `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
+        JSON.stringify(disclosedPayload ?? {})
+      )}&disclosedAttributeLength=${filteredDisclosedAttributes?.length}`
     )
   }
 
   return (
-    <Card br="$6" borderWidth="$0.5" borderColor="$borderTranslucent" overflow="hidden" onPress={onPress}>
+    <Card
+      br="$6"
+      borderWidth="$0.5"
+      borderColor="$borderTranslucent"
+      overflow="hidden"
+      onPress={disableNavigation ? undefined : onPress}
+    >
       <Stack p="$5" pos="relative" bg={backgroundColor ?? '$grey-900'}>
         {hasInternet && backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
@@ -148,7 +158,7 @@ export function CardWithAttributes({
               </Stack>
             </XStack>
           ))}
-          {disclosedPayload && (
+          {!disableNavigation && disclosedPayload && (
             <Stack pos="absolute" bottom="$0" right="$0">
               <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />
             </Stack>

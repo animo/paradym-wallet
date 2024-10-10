@@ -3,23 +3,29 @@ import { useMemo } from 'react'
 
 export type ActivityType = 'shared' | 'received'
 
-interface Activity {
+interface BaseActivity {
   id: string
   type: ActivityType
   date: string
-  disclosedPayload?: Record<string, unknown>
-
-  // only relevant for received activity
-  credentialId?: string
-
-  // host of the entity interacted with
-  // e.g. funke.animo.id
   entityHost: string
-
-  // name of the entity interacted with
-  // e.g. Animo Solutions
   entityName?: string
 }
+
+interface PresentationActivity extends BaseActivity {
+  type: 'shared'
+  credentials?: Array<{
+    id: string
+    disclosedAttributes: string[]
+    disclosedPayload: Record<string, unknown>
+  }>
+}
+
+interface IssuanceActivity extends BaseActivity {
+  type: 'received'
+  credentialIds: string[]
+}
+
+export type Activity = PresentationActivity | IssuanceActivity
 
 interface ActivityRecord {
   activities: Activity[]
