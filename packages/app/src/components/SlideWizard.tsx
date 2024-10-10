@@ -124,7 +124,7 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
   return (
     <WizardProvider value={contextValue}>
       <FlexPage safeArea="t" p="$0" jc="space-between" gap="$0" background="$background">
-        <Stack px="$4" pb="$2" bbw={1} borderColor={isScrolledByOffset ? '$grey-100' : '$background'}>
+        <Stack px="$4" py="$2" bbw={1} borderColor={isScrolledByOffset ? '$grey-100' : '$background'}>
           <ProgressHeader
             progress={isCompleted ? 100 : steps[currentStepIndex].progress}
             onBack={onBack}

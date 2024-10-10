@@ -70,7 +70,7 @@ export const OfferCredentialSlide = ({
   const { display, attributes } = getCredentialForDisplay(credentialRecord)
 
   const handleAccept = async () => {
-    await onAccept().then(completeProgressBar)
+    await onAccept()
   }
 
   const handleDecline = () => {
@@ -132,8 +132,9 @@ export const OfferCredentialSlide = ({
   useEffect(() => {
     if (isAccepted && isAllowedToComplete) {
       setIsCompleted(true)
+      completeProgressBar()
     }
-  }, [isAccepted, isAllowedToComplete])
+  }, [isAccepted, isAllowedToComplete, completeProgressBar])
 
   return (
     <YStack fg={1} jc="space-between">
