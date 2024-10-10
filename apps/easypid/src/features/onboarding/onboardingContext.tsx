@@ -711,7 +711,7 @@ export function OnboardingContextProvider({
             date: new Date().toISOString(),
             entityHost: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             entityName: issuerName,
-            credentialId: credential.id,
+            credentialIds: [credential.id],
           })
         } /* else if (credential instanceof MdocRecord) {
           await storeCredential(secureUnlock.context.agent, credential)
@@ -735,6 +735,8 @@ export function OnboardingContextProvider({
             date: new Date().toISOString(),
             entityHost: getHostNameFromUrl(iss) as string,
             entityName: issuerName,
+            // FIXME: No credential id, unsure how to get it
+            credentialIds: [],
           })
         }
       }

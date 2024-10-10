@@ -440,7 +440,7 @@ export function usePidCredential() {
 export const usePidDisplay = () => {
   return {
     issuer: {
-      name: 'Germany',
+      name: 'Bundesdruckerei',
       locale: 'de',
       logo: {
         url: require('../../assets/german-issuer-image.png'),

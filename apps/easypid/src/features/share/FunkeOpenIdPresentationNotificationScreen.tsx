@@ -19,7 +19,6 @@ import {
 } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
-import { getHostNameFromUrl } from 'packages/utils/src/url'
 import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
 import { activityStorage } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
@@ -127,20 +126,30 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         allowUntrustedCertificate: true,
       })
 
-      const credential = submission.entries[0]?.credentials[0]
-      const disclosedPayload =
-        credential?.metadata?.type === pidCredential?.type
-          ? getPidAttributesForDisplay(
-              credential.disclosedPayload ?? {},
-              credential.metadata ?? ({} as CredentialMetadata),
-              credential.claimFormat as ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
-            )
-          : credential?.disclosedPayload
+      const credentialsWithDisclosedPayload = submission.entries.flatMap((entry) => {
+        return entry.credentials.map((credential) => {
+          const disclosedPayload =
+            credential.metadata?.type === pidCredential?.type
+              ? getPidAttributesForDisplay(
+                  credential.disclosedPayload ?? {},
+                  credential.metadata ?? ({} as CredentialMetadata),
+                  credential.claimFormat as ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+                )
+              : credential.disclosedPayload
+
+          return {
+            id: credential.id,
+            disclosedAttributes: credential.requestedAttributes ?? [],
+            disclosedPayload,
+          }
+        })
+      })
+      // How do  do this for multiple credentials?
 
       await activityStorage.addActivity(agent, {
         id: utils.uuid(),
         type: 'shared',
-        disclosedPayload,
+        credentials: credentialsWithDisclosedPayload,
         date: new Date().toISOString(),
         entityHost: credentialsForRequest.verifierHostName as string,
       })

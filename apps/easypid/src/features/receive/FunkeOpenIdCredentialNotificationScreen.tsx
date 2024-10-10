@@ -76,7 +76,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           date: new Date().toISOString(),
           entityHost: getHostNameFromUrl(metadata.issuer) as string,
           entityName: display.issuer.name,
-          credentialId: credentialRecord.id,
+          credentialIds: [credentialRecord.id],
         })
 
         setIsAccepted(true)
