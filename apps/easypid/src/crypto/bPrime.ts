@@ -350,7 +350,6 @@ export const requestSdJwtVcFromSeedCredential = async ({
 
     const tokenResponse = await agent.modules.openId4VcHolder.requestToken({
       resolvedCredentialOffer,
-      // @ts-ignore
       dPopKeyJwk: P256Jwk.fromJson(deviceKeyPair.asJwk() as unknown as JwkJson),
       getCreateJwtCallback: getCreateJwtCallbackForBPrime,
       customBody: {
@@ -408,7 +407,6 @@ export const requestSdJwtVcFromSeedCredential = async ({
         }
       },
       ...tokenResponse,
-      // @ts-ignore
       additionalCredentialRequestPayloadClaims: {
         verifier_ka: rpEphPub,
       },
@@ -549,4 +547,5 @@ export const convertAndStorePidDataIntoFakeSdJwtVc = async (
   })
   setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
   await storeCredential(agent, sdJwtVcRecord)
+  return sdJwtVcRecord
 }

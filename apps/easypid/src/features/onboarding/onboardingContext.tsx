@@ -693,8 +693,6 @@ export function OnboardingContextProvider({
 
       for (const credential of credentials) {
         if (credential instanceof SdJwtVcRecord) {
-          await storeCredential(secureUnlock.context.agent, credential)
-
           const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
             credential.compactSdJwtVc
           )
@@ -718,27 +716,7 @@ export function OnboardingContextProvider({
 
           // NOTE: we don't set the userName here as we always get SD-JWT VC and MODC at the same time currently
           // so it should be set
-        } */ else {
-          const payload = credential.credential.split('.')[1]
-          const {
-            iss,
-            pid_data: { given_name, family_name },
-          } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
-          setUserName(
-            `${capitalizeFirstLetter(given_name.toLowerCase())} ${capitalizeFirstLetter(family_name.toLowerCase())}`
-          )
-
-          const issuerName = credential.openId4VcMetadata.issuer.display?.[0]?.name
-          await activityStorage.addActivity(secureUnlock.context.agent, {
-            id: utils.uuid(),
-            type: 'received',
-            date: new Date().toISOString(),
-            entityHost: getHostNameFromUrl(iss) as string,
-            entityName: issuerName,
-            // FIXME: No credential id, unsure how to get it
-            credentialIds: [],
-          })
-        }
+        } */
       }
 
       setCurrentStepName('id-card-complete')

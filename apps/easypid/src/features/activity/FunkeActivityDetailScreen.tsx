@@ -71,7 +71,7 @@ export function FunkeActivityDetailScreen() {
                   <CardWithAttributes
                     key={activityCredential.id}
                     id={activityCredential.id}
-                    name="Unknown credential"
+                    name="Deleted credential"
                     disclosedAttributes={activityCredential.disclosedAttributes ?? []}
                     disclosedPayload={activityCredential.disclosedPayload ?? {}}
                   />

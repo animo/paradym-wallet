@@ -57,9 +57,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     },
   ]
 
-  public abstract retrieveCredentials(): Promise<
-    Array<SdJwtVcRecord /* | MdocRecord */ | { credential: string; openId4VcMetadata: OpenId4VcCredentialMetadata }>
-  >
+  public abstract retrieveCredentials(): Promise<Array<SdJwtVcRecord /* | MdocRecord */>>
 
   protected constructor(
     options: ReceivePidUseCaseFlowOptions & ExtraOptions,
