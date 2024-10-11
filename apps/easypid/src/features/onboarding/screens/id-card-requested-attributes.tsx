@@ -32,6 +32,7 @@ export function OnboardingIdCardRequestedAttributes({
             backgroundImage={display?.backgroundImage}
             backgroundColor={display?.backgroundColor}
             disclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}
+            disableNavigation
           />
         </YStack>
       </YStack>

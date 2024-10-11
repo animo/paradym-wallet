@@ -41,7 +41,7 @@ export function ProgressHeader({
 
   return (
     <YStack gap="$4" {...props}>
-      <XStack jc="space-between">
+      <XStack mx="$-1" jc="space-between">
         {onBack ? <IconContainer icon={<HeroIcons.ArrowLeft />} onPress={onBack} /> : <Stack />}
         {onCancel ? <IconContainer icon={<HeroIcons.X />} onPress={onCancel} /> : <Stack />}
       </XStack>

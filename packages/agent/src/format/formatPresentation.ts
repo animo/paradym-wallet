@@ -59,7 +59,7 @@ export function formatDifPexCredentialsForRequest(
             id: verifiableCredential.credentialRecord.id,
             credentialName: display.name,
             issuerName: display.issuer.name,
-            requestedAttributes: [...Object.keys(attributes), ...Object.keys(metadata)],
+            requestedAttributes: [...Object.keys(disclosedPayload)],
             disclosedPayload,
             metadata,
             backgroundColor: display.backgroundColor,

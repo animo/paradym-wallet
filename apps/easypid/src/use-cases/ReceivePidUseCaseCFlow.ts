@@ -5,6 +5,7 @@ import {
   type SdJwtVcRecord,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  storeCredential,
 } from '@package/agent'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 import { C_SD_JWT_OFFER } from './bdrPidIssuerOffers'
@@ -60,6 +61,8 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         if (credentialRecord.type !== 'SdJwtVcRecord' /*&& credentialRecord.type !== 'MdocRecord' */) {
           throw new Error(`Unexpected record type ${credentialRecord.type}`)
         }
+
+        await storeCredential(this.options.agent, credentialRecord)
       }
 
       return credentialRecords as Array<SdJwtVcRecord /*| MdocRecord */>

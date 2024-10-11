@@ -64,10 +64,9 @@ export const ShareCredentialsSlide = ({
             maxHeight={scrollViewHeight}
             bg="$white"
           >
-            <RequestedAttributesSection submission={submission} />
             <YStack gap="$2">
               <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-                <HeroIcons.InformationCircle color="$white" size={18} />
+                <HeroIcons.InformationCircleFilled color="$white" size={16} />
               </Circle>
               <Heading variant="h3" fontWeight="$semiBold">
                 Reason for request
@@ -78,6 +77,7 @@ export const ShareCredentialsSlide = ({
                   'No information was provided on the purpose of the data request. Be cautious'}
               </Paragraph>
             </YStack>
+            <RequestedAttributesSection submission={submission} />
             <Spacer />
           </ScrollView>
         </YStack>

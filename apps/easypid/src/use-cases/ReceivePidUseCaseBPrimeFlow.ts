@@ -83,9 +83,9 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
 
       const payload = credential.split('.')[1]
       const { pid_data } = JSON.parse(TypedArrayEncoder.fromBase64(payload).toString())
-      await convertAndStorePidDataIntoFakeSdJwtVc(this.options.agent, pid_data, openId4VcMetadata)
+      const sdJwtVc = await convertAndStorePidDataIntoFakeSdJwtVc(this.options.agent, pid_data, openId4VcMetadata)
 
-      return [{ credential, openId4VcMetadata }]
+      return [sdJwtVc]
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
       if (error instanceof BiometricAuthenticationError) {
