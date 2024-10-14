@@ -136,6 +136,7 @@ export function FunkeRequestedAttributesDetailScreen({
                       headerTitle="Metadata"
                       subject={displayedMetadata}
                       headerStyle="small"
+                      showDevProps
                     />
                   )}
                 </AnimatedStack>

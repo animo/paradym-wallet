@@ -40,21 +40,33 @@ export type CredentialAttributeTable = {
  * @param depth the current depth of the nested objects within the credential subject. Starts at 0 for the top-level object.
  * @param parent the title of the parent object of the current nested object. Undefined for the top-level object.
  * @param title the title of the current nested object. This corresponds to the key of the nested object within the parent object.
+ * @param showDevProps if we should show the dev related properties. See DEV_PROPS.
  * @returns an array of CredentialAttributeTable objects, each representing a table with rows of key-value pairs. Nested objects are represented as separate tables.
  */
-export function formatCredentialSubject(
-  subject: Record<string, unknown> | Array<string | number | boolean>,
-  depth = 0,
-  parent?: string,
+interface FormatCredentialSubjectProps {
+  subject: Record<string, unknown> | Array<string | number | boolean>
+  depth?: number
+  parent?: string
   title?: string
-): CredentialAttributeTable[] {
+  showDevProps?: boolean
+}
+
+const DEV_PROPS = ['id', 'type']
+
+export function formatCredentialSubject({
+  subject,
+  depth = 0,
+  parent,
+  title,
+  showDevProps,
+}: FormatCredentialSubjectProps): CredentialAttributeTable[] {
   const stringRows: CredentialAttributeRow[] = []
   const objectTables: CredentialAttributeTable[] = []
 
   const isArray = Array.isArray(subject)
   for (const [key, value] of Object.entries(subject)) {
     // omit properties with no value
-    if (value === undefined) continue
+    if (value === undefined || (showDevProps && DEV_PROPS.includes(key))) continue
 
     if (typeof value === 'string' && value.startsWith('data:image/')) {
       stringRows.push({
@@ -78,7 +90,15 @@ export function formatCredentialSubject(
       Array.isArray(value) &&
       value.every((v) => typeof v === 'boolean' || typeof v === 'string' || typeof v === 'number')
     ) {
-      objectTables.push(...formatCredentialSubject(value, depth + 1, title, isArray ? undefined : sanitizeString(key)))
+      objectTables.push(
+        ...formatCredentialSubject({
+          subject: value,
+          depth: depth + 1,
+          parent: title,
+          title: isArray ? undefined : sanitizeString(key),
+          showDevProps,
+        })
+      )
     }
     // FIXME: Handle arrays
     else if (typeof value === 'object' && value !== null) {
@@ -93,7 +113,13 @@ export function formatCredentialSubject(
         }
       } else {
         objectTables.push(
-          ...formatCredentialSubject(value as Record<string, unknown>, depth + 1, title, sanitizeString(key))
+          ...formatCredentialSubject({
+            subject: value as Record<string, unknown>,
+            depth: depth + 1,
+            parent: title,
+            title: sanitizeString(key),
+            showDevProps,
+          })
         )
       }
     }

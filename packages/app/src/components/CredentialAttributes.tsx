@@ -8,6 +8,7 @@ type CredentialAttributesProps = {
   headerTitle?: string
   headerStyle?: 'regular' | 'small'
   noBorder?: boolean
+  showDevProps?: boolean
 }
 
 export function CredentialAttributes({
@@ -15,9 +16,12 @@ export function CredentialAttributes({
   disableHeader = false,
   headerTitle,
   headerStyle = 'regular',
+  showDevProps = false,
 }: CredentialAttributesProps) {
-  const tables = formatCredentialSubject(subject)
-  console.log('tables', JSON.stringify(tables, null, 2))
+  const tables = formatCredentialSubject({
+    subject,
+    showDevProps,
+  })
 
   return (
     <YStack g="md">
