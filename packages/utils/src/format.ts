@@ -56,3 +56,15 @@ export function formatRelativeDate(date: Date, now: Date = new Date()): string {
   const years = Math.floor(days / 365)
   return `${years} ${years === 1 ? 'year' : 'years'} ago`
 }
+
+export function formatDate(input: string | Date): string {
+  const date = input instanceof Date ? input : new Date(input)
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  })
+}

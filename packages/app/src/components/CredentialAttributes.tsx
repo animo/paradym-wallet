@@ -17,12 +17,13 @@ export function CredentialAttributes({
   headerStyle = 'regular',
 }: CredentialAttributesProps) {
   const tables = formatCredentialSubject(subject)
+  console.log('tables', JSON.stringify(tables, null, 2))
 
   return (
     <YStack g="md">
       {tables.map((table, index) => (
         <YStack key={`${table.parent}-${table.depth}-${table.title}-${index}`} g="md" pt={table.parent ? 0 : '$2'}>
-          {table.title && (
+          {(table.title || headerTitle) && (
             <XStack gap="$2">
               {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
               {(!disableHeader || table.title) && (

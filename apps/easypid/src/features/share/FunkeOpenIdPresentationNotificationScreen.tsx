@@ -242,7 +242,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   const onProofDecline = async () => {
     pushToWallet()
-    toast.show('Information request has been declined.')
+    toast.show('Information request has been declined.', { customData: { preset: 'danger' } })
   }
 
   return (

@@ -53,11 +53,11 @@ export function formatCredentialSubject(
 
   const isArray = Array.isArray(subject)
   for (const [key, value] of Object.entries(subject)) {
-    // omit id and type
-    if (key === 'id' || key === 'type') continue
-
     // omit properties with no value
     if (value === undefined) continue
+
+    console.log('value', value)
+    console.log('type', typeof value)
 
     if (typeof value === 'string' && value.startsWith('data:image/')) {
       stringRows.push({
@@ -81,6 +81,7 @@ export function formatCredentialSubject(
       Array.isArray(value) &&
       value.every((v) => typeof v === 'boolean' || typeof v === 'string' || typeof v === 'number')
     ) {
+      console.log('ik ga hier in', value)
       objectTables.push(...formatCredentialSubject(value, depth + 1, title, isArray ? undefined : sanitizeString(key)))
     }
     // FIXME: Handle arrays
