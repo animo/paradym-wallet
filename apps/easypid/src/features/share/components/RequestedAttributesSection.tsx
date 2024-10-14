@@ -19,12 +19,12 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
   return (
     <YStack gap="$4">
       <YStack gap="$2">
-        <Circle size="$2.5" mb="$2" backgroundColor="$primary-500">
-          <HeroIcons.CircleStackFilled color="$white" size={16} />
-        </Circle>
-        <Heading variant="h3" fontWeight="$semiBold">
-          Requested data
-        </Heading>
+        <XStack gap="$2" ai="center">
+          <HeroIcons.CircleStackFilled color="$primary-500" size={20} />
+          <Heading variant="sub1" fontWeight="$semiBold">
+            Requested information
+          </Heading>
+        </XStack>
         <YStack gap="$4">
           <Paragraph>
             {submission.areAllSatisfied

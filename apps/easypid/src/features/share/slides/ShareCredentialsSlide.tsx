@@ -1,7 +1,7 @@
 import type { FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
+import { Button, Heading, HeroIcons, Paragraph, ScrollView, XStack, YStack } from '@package/ui'
 import { useState } from 'react'
 import { Circle, Spacer } from 'tamagui'
 import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
@@ -65,12 +65,12 @@ export const ShareCredentialsSlide = ({
             bg="$white"
           >
             <YStack gap="$2">
-              <Circle size="$2" mb="$2" backgroundColor="$primary-500">
-                <HeroIcons.InformationCircleFilled color="$white" size={16} />
-              </Circle>
-              <Heading variant="h3" fontWeight="$semiBold">
-                Reason for request
-              </Heading>
+              <XStack gap="$2" ai="center">
+                <HeroIcons.InformationCircleFilled color="$primary-500" size={20} />
+                <Heading variant="sub1" fontWeight="$semiBold">
+                  Reason for request
+                </Heading>
+              </XStack>
               <Paragraph size="$3" secondary>
                 {submission.purpose ??
                   submission.entries[0].description ??
