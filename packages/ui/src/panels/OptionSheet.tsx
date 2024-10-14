@@ -11,7 +11,7 @@ export function OptionSheet({ isOpen, setIsOpen, bottomPadding = 0, items }: Opt
   return (
     <Sheet isOpen={isOpen} setIsOpen={setIsOpen}>
       <Stack p="$4" gap="$3" pb={bottomPadding}>
-        <Heading ta="center" variant="h4">
+        <Heading ta="center" color="$grey-900" variant="h3">
           More actions
         </Heading>
         <Stack mx="$-4" borderBottomWidth="$0.5" borderColor="$grey-200" />
@@ -65,7 +65,7 @@ export function OptionSheetItem({ icon, title, onPress }: OptionSheetItemProps) 
       onPress={onPress}
     >
       {icon && <Stack>{icon}</Stack>}
-      <Heading variant="sub1" fg={1}>
+      <Heading variant="sub1" color="$grey-700" fg={1}>
         {title}
       </Heading>
     </AnimatedStack>

@@ -155,7 +155,7 @@ export function FunkeRequestedAttributesDetailScreen({
         items={[
           {
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
-            title: isMetadataVisible ? 'Hide metadata' : 'Show metadata',
+            title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
             onPress: toggleMetadataVisibility,
           },
         ]}

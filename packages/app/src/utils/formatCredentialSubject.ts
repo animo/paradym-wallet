@@ -66,7 +66,7 @@ export function formatCredentialSubject({
   const isArray = Array.isArray(subject)
   for (const [key, value] of Object.entries(subject)) {
     // omit properties with no value
-    if (value === undefined || (showDevProps && DEV_PROPS.includes(key))) continue
+    if (value === undefined || (!showDevProps && DEV_PROPS.includes(key))) continue
 
     if (typeof value === 'string' && value.startsWith('data:image/')) {
       stringRows.push({
