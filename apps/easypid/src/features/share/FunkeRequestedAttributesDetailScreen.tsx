@@ -7,10 +7,8 @@ import {
   OptionSheet,
   Paragraph,
   ScrollView,
-  Sheet,
   Spacer,
   Stack,
-  XStack,
   YStack,
   useSpringify,
   useToastController,
@@ -73,19 +71,6 @@ export function FunkeRequestedAttributesDetailScreen({
     return null
   }
 
-  const displayedMetadata = useMemo(() => {
-    const metadata: Record<string, unknown> = {
-      type: credential.metadata.type,
-      issuer: credential.metadata.issuer,
-    }
-
-    if (credential.metadata.issuedAt) metadata.issuedAt = formatDate(credential.metadata.issuedAt)
-    if (credential.metadata.validFrom) metadata.validFrom = formatDate(credential.metadata.validFrom)
-    if (credential.metadata.validUntil) metadata.validUntil = formatDate(credential.metadata.validUntil)
-
-    return metadata
-  }, [credential])
-
   const toggleMetadataVisibility = () => {
     setIsSheetOpen(false) // Close the sheet first
     setTimeout(() => {
@@ -131,7 +116,7 @@ export function FunkeRequestedAttributesDetailScreen({
                     <CredentialAttributes
                       key="metadata"
                       headerTitle="Metadata"
-                      subject={displayedMetadata}
+                      subject={activeCredential?.metadata as Record<string, unknown>}
                       headerStyle="small"
                       showDevProps
                     />

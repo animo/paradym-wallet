@@ -4,7 +4,7 @@ import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
 import { ClaimFormat, Hasher, JsonTransformer, /* Mdoc, MdocRecord, */ SdJwtVcRecord } from '@credo-ts/core'
-import { getHostNameFromUrl, sanitizeString } from '@package/utils'
+import { formatDate, getHostNameFromUrl, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
@@ -305,9 +305,9 @@ export interface CredentialMetadata {
   type: string
   issuer: string
   holder?: string | Record<string, unknown>
-  validUntil?: Date
-  validFrom?: Date
-  issuedAt?: Date
+  validUntil?: string
+  validFrom?: string
+  issuedAt?: string
 }
 
 export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
@@ -331,13 +331,13 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   }
 
   if (iat) {
-    credentialMetadata.issuedAt = new Date(iat * 1000)
+    credentialMetadata.issuedAt = formatDate(new Date(iat * 1000))
   }
   if (exp) {
-    credentialMetadata.validUntil = new Date(exp * 1000)
+    credentialMetadata.validUntil = formatDate(new Date(exp * 1000))
   }
   if (nbf) {
-    credentialMetadata.validFrom = new Date(nbf * 1000)
+    credentialMetadata.validFrom = formatDate(new Date(nbf * 1000))
   }
 
   return {
@@ -449,11 +449,12 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       holder: credentialRecord.credential.credentialSubjectIds[0],
       issuer: credentialRecord.credential.issuerId,
       type: credentialRecord.credential.type[credentialRecord.credential.type.length - 1],
-      issuedAt: new Date(credentialRecord.credential.issuanceDate),
+      issuedAt: formatDate(new Date(credentialRecord.credential.issuanceDate)),
       validUntil: credentialRecord.credential.expirationDate
-        ? new Date(credentialRecord.credential.expirationDate)
+        ? formatDate(new Date(credentialRecord.credential.expirationDate))
         : undefined,
-    } as CredentialMetadata,
+      validFrom: undefined,
+    } satisfies CredentialMetadata,
     claimFormat: credentialRecord.credential.claimFormat,
   }
 }
