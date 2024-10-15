@@ -60,9 +60,7 @@ export function FunkeRequestedAttributesDetailScreen({
     })
   }, [navigation])
 
-  if (isLoading) {
-    return null
-  }
+  if (isLoading) return null
 
   if (!credential) {
     toast.show('Error getting credential details', {
@@ -81,7 +79,6 @@ export function FunkeRequestedAttributesDetailScreen({
       issuer: credential.metadata.issuer,
     }
 
-    // Add optional fields only if they are present
     if (credential.metadata.issuedAt) metadata.issuedAt = formatDate(credential.metadata.issuedAt)
     if (credential.metadata.validFrom) metadata.validFrom = formatDate(credential.metadata.validFrom)
     if (credential.metadata.validUntil) metadata.validUntil = formatDate(credential.metadata.validUntil)
