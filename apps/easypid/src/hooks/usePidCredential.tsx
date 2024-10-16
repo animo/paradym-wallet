@@ -418,6 +418,7 @@ export function usePidCredential() {
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
         attributesForDisplay: getSdJwtPidAttributesForDisplay(attributes, credential.metadata),
+        metadata: credential.metadata,
       }
     }
 

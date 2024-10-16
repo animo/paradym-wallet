@@ -1,6 +1,6 @@
 import { Sheet as TamaguiSheet, type SheetProps as TamaguiSheetProps } from 'tamagui'
 
-interface SheetProps extends TamaguiSheetProps {
+export interface SheetProps extends TamaguiSheetProps {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
 }
