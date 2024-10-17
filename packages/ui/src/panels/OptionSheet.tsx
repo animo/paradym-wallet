@@ -1,21 +1,27 @@
-import { AnimatedStack, Button, Heading, Paragraph, Stack } from '../base'
+import { AnimatedStack, Heading, Stack, XStack } from '../base'
+import { HeroIcons } from '../content'
 import { useScaleAnimation } from '../hooks'
-import { Sheet, type SheetProps } from './Sheet'
+import { FloatingSheet } from './FloatingSheet'
+import type { SheetProps } from './Sheet'
 
 interface OptionSheetProps extends SheetProps {
-  bottomPadding?: number
   items: OptionSheetItemProps[]
 }
 
-export function OptionSheet({ isOpen, setIsOpen, bottomPadding = 0, items }: OptionSheetProps) {
+export function OptionSheet({ isOpen, setIsOpen, items }: OptionSheetProps) {
   return (
-    <Sheet isOpen={isOpen} setIsOpen={setIsOpen}>
-      <Stack p="$4" gap="$3" pb={bottomPadding}>
-        <Heading ta="center" color="$grey-900" variant="h3">
-          More actions
-        </Heading>
-        <Stack mx="$-4" borderBottomWidth="$0.5" borderColor="$grey-200" />
-        <Stack my="$-1">
+    <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
+      <Stack p="$4" gap="$4">
+        <XStack jc="space-between">
+          <Heading color="$grey-900" variant="h2">
+            More actions
+          </Heading>
+          <Stack br="$12" p="$2" bg="$grey-50" onPress={() => setIsOpen(false)}>
+            <HeroIcons.X size={16} strokeWidth={2.5} color="$grey-500" />
+          </Stack>
+        </XStack>
+        <Stack borderBottomWidth="$0.5" borderColor="$grey-100" />
+        <Stack>
           {items.map((item) => (
             <OptionSheetItem
               key={item.title}
@@ -28,17 +34,8 @@ export function OptionSheet({ isOpen, setIsOpen, bottomPadding = 0, items }: Opt
             />
           ))}
         </Stack>
-        <Button.Outline
-          bg="$grey-100"
-          color="$grey-900"
-          borderColor="$grey-200"
-          scaleOnPress
-          onPress={() => setIsOpen(false)}
-        >
-          <Paragraph fontWeight="$semiBold">Close</Paragraph>
-        </Button.Outline>
       </Stack>
-    </Sheet>
+    </FloatingSheet>
   )
 }
 
@@ -57,15 +54,16 @@ export function OptionSheetItem({ icon, title, onPress }: OptionSheetItemProps) 
       jc="space-between"
       gap="$4"
       ai="center"
-      p="$2"
-      py="$4"
+      p="$3"
+      bg="$grey-50"
+      br="$8"
       style={pressStyle}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={onPress}
     >
       {icon && <Stack>{icon}</Stack>}
-      <Heading variant="sub2" color="$grey-700" fg={1}>
+      <Heading variant="sub2" fg={1}>
         {title}
       </Heading>
     </AnimatedStack>

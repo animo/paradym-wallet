@@ -26,8 +26,8 @@ type FunkeCredentialCardProps = {
   name: string
   bgColor?: string
   textColor?: string
-  issuerImage?: DisplayImage
-  backgroundImage?: DisplayImage
+  issuerImage?: DisplayImage | { url?: string | number; altText?: string }
+  backgroundImage?: DisplayImage | { url?: string | number; altText?: string }
   shadow?: boolean
   isLoading?: boolean
 }
@@ -56,7 +56,7 @@ export function FunkeCredentialCard({
     </XStack>
   )
 
-  const bgColorValue = backgroundImage?.url ? '$transparent' : bgColor ?? '$grey-900'
+  const bgColorValue = bgColor ?? '$grey-900'
 
   const fadeInStyle = useAnimatedStyle(() => {
     return {

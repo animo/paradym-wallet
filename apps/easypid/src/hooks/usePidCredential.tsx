@@ -3,6 +3,8 @@ import { useSeedCredentialPidData } from '@easypid/storage'
 import { type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
 import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 import { useMemo } from 'react'
+import germanIssuerImage from '../../assets/german-issuer-image.png'
+import pidBackgroundImage from '../../assets/pid-background.png'
 
 type Attributes = {
   given_name: string
@@ -444,7 +446,7 @@ export const usePidDisplay = () => {
       name: 'Bundesdruckerei',
       locale: 'de',
       logo: {
-        url: require('../../assets/german-issuer-image.png'),
+        url: germanIssuerImage,
         altText: 'Logo of German Government',
       },
     },
@@ -454,7 +456,7 @@ export const usePidDisplay = () => {
     textColor: '#2F3544',
     backgroundColor: '#F1F2F0',
     backgroundImage: {
-      url: require('../../assets/pid-background.png'),
+      url: pidBackgroundImage,
       altText: 'Background Image',
     },
   }

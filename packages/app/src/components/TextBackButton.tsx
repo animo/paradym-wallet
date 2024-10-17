@@ -6,7 +6,7 @@ export function TextBackButton() {
 
   return (
     <Button.Text color="$primary-500" fontWeight="$semiBold" onPress={() => router.back()} scaleOnPress>
-      <HeroIcons.ArrowLeft mr={-4} color="$primary-500" size={20} /> Back
+      <HeroIcons.ArrowLeft mr={-4} color="$primary-500" strokeWidth={2} size={20} /> Back
     </Button.Text>
   )
 }

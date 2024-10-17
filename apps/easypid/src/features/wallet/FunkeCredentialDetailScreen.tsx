@@ -1,12 +1,23 @@
-import { FlexPage, Heading, MiniCard, Paragraph, ScrollView, Stack, YStack, useToastController } from '@package/ui'
-import React from 'react'
+import {
+  AnimatedStack,
+  FlexPage,
+  Heading,
+  HeroIcons,
+  InfoButton,
+  Paragraph,
+  ScrollView,
+  Stack,
+  YStack,
+  useToastController,
+} from '@package/ui'
+import React, { useState } from 'react'
 
-import { CredentialAttributes } from '@package/app/src/components'
-import { useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
-import { TextBackButton } from 'packages/app'
+import { useHasInternetConnection, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
+import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
 import { useRouter } from 'expo-router'
 import { useCredentialsForDisplay } from 'packages/agent/src'
+import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createParam } from 'solito'
 import { usePidCredential } from '../../hooks'
@@ -26,6 +37,13 @@ export function FunkeCredentialDetailScreen() {
   const credential = credentials.find((cred) => cred.id.includes(params.id))
   const activeCredential = pidCredential?.id.includes(params.id) ? pidCredential : credential
 
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  useHeaderRightAction({
+    icon: <HeroIcons.Trash />,
+    onPress: () => setIsSheetOpen(true),
+  })
+
   if (!activeCredential) {
     toast.show('Credential not found', {
       customData: {
@@ -36,32 +54,72 @@ export function FunkeCredentialDetailScreen() {
     return
   }
 
+  const onCardAttributesPress = () => {
+    router.push({
+      pathname: '/credentials/[id]/attributes',
+      params: {
+        attributes: JSON.stringify(activeCredential.attributes),
+        metadata: JSON.stringify(activeCredential.metadata),
+      },
+    })
+  }
+
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack
-        w="100%"
-        top={0}
-        p="$4"
-        borderBottomWidth="$0.5"
-        borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
-      />
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack gap="$4" p="$4" marginBottom={bottom}>
-          <MiniCard
-            backgroundImage={activeCredential.display.backgroundImage?.url}
-            backgroundColor={activeCredential.display.backgroundColor ?? '$grey-900'}
-            hasInternet={hasInternet}
-          />
-          <Stack gap="$2">
-            <Heading variant="h1">{activeCredential.display.name}</Heading>
-            {activeCredential.display.issuer && <Paragraph>Issued by {activeCredential.display.issuer.name}</Paragraph>}
-          </Stack>
-          <CredentialAttributes subject={activeCredential.attributes} disableHeader headerStyle="small" />
+    <>
+      <FlexPage gap="$0" paddingHorizontal="$0">
+        <YStack
+          w="100%"
+          top={0}
+          p="$4"
+          borderBottomWidth="$0.5"
+          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+        />
+        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+          <YStack ai="center" gap="$6" p="$4" marginBottom={bottom}>
+            <AnimatedStack width="100%" mt="$-3" mb="$-5" scale={0.75}>
+              <FunkeCredentialCard
+                issuerImage={{
+                  url: activeCredential.display.issuer.logo?.url,
+                  altText: activeCredential.display.issuer.logo?.altText,
+                }}
+                textColor={activeCredential.display.textColor}
+                name={activeCredential.display.name}
+                backgroundImage={{
+                  url: activeCredential.display.backgroundImage?.url,
+                  altText: activeCredential.display.backgroundImage?.altText,
+                }}
+                bgColor={activeCredential.display.backgroundColor ?? '$grey-900'}
+              />
+            </AnimatedStack>
+            <Stack gap="$2">
+              <Heading ta="center" variant="h1">
+                Card details
+              </Heading>
+              <Paragraph numberOfLines={1} ta="center">
+                Issued by {activeCredential.display.issuer.name}
+              </Paragraph>
+            </Stack>
+            <YStack w="100%" gap="$2">
+              <CardInfoLifecycle />
+              <InfoButton
+                variant="view"
+                title="Card attributes"
+                description="View attributes of the card"
+                onPress={onCardAttributesPress}
+              />
+            </YStack>
+          </YStack>
+        </ScrollView>
+        <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+          <TextBackButton />
         </YStack>
-      </ScrollView>
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
-        <TextBackButton />
-      </YStack>
-    </FlexPage>
+      </FlexPage>
+      <DeleteCredentialSheet
+        isSheetOpen={isSheetOpen}
+        setIsSheetOpen={setIsSheetOpen}
+        id={activeCredential.id}
+        name={activeCredential.display.name}
+      />
+    </>
   )
 }

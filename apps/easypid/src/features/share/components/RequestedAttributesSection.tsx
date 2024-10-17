@@ -3,7 +3,19 @@ import { getPidAttributesForDisplay, getPidDisclosedAttributeNames, usePidCreden
 import type { CredentialMetadata, DisplayImage, FormattedSubmission } from '@package/agent/src'
 import { useHasInternetConnection } from '@package/app/src/hooks'
 import { OMITTED_CREDENTIAL_ATTRIBUTES } from '@package/app/src/utils'
-import { Card, Heading, HeroIcons, IconContainer, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import {
+  AnimatedStack,
+  Card,
+  Heading,
+  HeroIcons,
+  IconContainer,
+  Image,
+  Paragraph,
+  Stack,
+  XStack,
+  YStack,
+  useScaleAnimation,
+} from '@package/ui'
 import { sanitizeString } from '@package/utils/src'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
@@ -19,12 +31,9 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
   return (
     <YStack gap="$4">
       <YStack gap="$2">
-        <XStack gap="$2" ai="center">
-          <HeroIcons.CircleStackFilled color="$primary-500" size={20} />
-          <Heading variant="sub1" fontWeight="$semiBold">
-            Requested information
-          </Heading>
-        </XStack>
+        <Heading variant="sub1" fontWeight="$semiBold">
+          Requested information
+        </Heading>
         <YStack gap="$4">
           <Paragraph>
             {submission.areAllSatisfied
@@ -90,11 +99,12 @@ export function CardWithAttributes({
   id: string
   name: string
   backgroundColor?: string
-  backgroundImage?: DisplayImage
+  backgroundImage?: DisplayImage | { url?: number | string; altText: string }
   disclosedAttributes: string[]
   disclosedPayload?: Record<string, unknown>
   disableNavigation?: boolean
 }) {
+  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const router = useRouter()
   const hasInternet = useHasInternetConnection()
 
@@ -119,11 +129,14 @@ export function CardWithAttributes({
   }
 
   return (
-    <Card
+    <AnimatedStack
       br="$6"
       borderWidth="$0.5"
       borderColor="$borderTranslucent"
       overflow="hidden"
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={disableNavigation ? undefined : pressStyle}
       onPress={disableNavigation ? undefined : onPress}
     >
       <Stack p="$5" pos="relative" bg={backgroundColor ?? '$grey-900'}>
@@ -165,6 +178,6 @@ export function CardWithAttributes({
           )}
         </YStack>
       </YStack>
-    </Card>
+    </AnimatedStack>
   )
 }

@@ -50,7 +50,7 @@ export const VerifyPartySlide = ({ name, domain, logo }: VerifyPartySlideProps) 
             </Paragraph>
           </Stack>
         </YStack>
-        <Stack btw={1} borderColor="$grey-100" pt="$4" mx="$-4" px="$4">
+        <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">
           <DualResponseButtons
             align="horizontal"
             onAccept={() => onNext()}
