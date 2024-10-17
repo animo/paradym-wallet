@@ -107,15 +107,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             </Paragraph>
           </YStack>
           <XStack gap="$2">
-            <Button.Outline
-              scaleOnPress
-              fg={0}
-              width="$buttonHeight"
-              bg="$grey-100"
-              color="$grey-900"
-              borderColor="$grey-200"
-              onPress={onPressFlow}
-            >
+            <Button.Outline scaleOnPress fg={0} width="$buttonHeight" bg="$grey-100" onPress={onPressFlow}>
               <Paragraph fontWeight="$semiBold">{selectedFlow === 'c' ? 'C' : "B'"}</Paragraph>
             </Button.Outline>
             <Button.Solid

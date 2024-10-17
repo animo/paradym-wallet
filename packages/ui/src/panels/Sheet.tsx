@@ -1,12 +1,13 @@
-import { Sheet as TamaguiSheet, type SheetProps as TamaguiSheetProps } from 'tamagui'
+import { Portal, Sheet as TamaguiSheet, type SheetProps as TamaguiSheetProps } from 'tamagui'
 
 export interface SheetProps extends TamaguiSheetProps {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
+  portalKey?: string
 }
 
-export function Sheet({ children, isOpen, setIsOpen, ...props }: SheetProps) {
-  return (
+export function Sheet({ children, isOpen, setIsOpen, portalKey, ...props }: SheetProps) {
+  const sheetComponent = (
     <TamaguiSheet
       dismissOnOverlayPress
       onOpenChange={setIsOpen}
@@ -15,9 +16,9 @@ export function Sheet({ children, isOpen, setIsOpen, ...props }: SheetProps) {
       dismissOnSnapToBottom
       animationConfig={{
         type: 'spring',
-        stiffness: 60,
-        damping: 36,
-        mass: 0.2,
+        stiffness: 160,
+        damping: 10,
+        mass: 0.22,
       }}
       {...props}
     >
@@ -32,4 +33,6 @@ export function Sheet({ children, isOpen, setIsOpen, ...props }: SheetProps) {
       <TamaguiSheet.Frame>{children}</TamaguiSheet.Frame>
     </TamaguiSheet>
   )
+
+  return portalKey ? <Portal key={portalKey}>{sheetComponent}</Portal> : sheetComponent
 }

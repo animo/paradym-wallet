@@ -1,9 +1,9 @@
 import type { FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, HeroIcons, Paragraph, ScrollView, XStack, YStack } from '@package/ui'
+import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { useState } from 'react'
-import { Circle, Spacer } from 'tamagui'
+import { Spacer } from 'tamagui'
 import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
@@ -65,17 +65,21 @@ export const ShareCredentialsSlide = ({
             bg="$white"
           >
             <YStack gap="$2">
-              <XStack gap="$2" ai="center">
-                <HeroIcons.InformationCircleFilled color="$primary-500" size={20} />
-                <Heading variant="sub1" fontWeight="$semiBold">
-                  Reason for request
-                </Heading>
+              <Heading variant="sub1" fontWeight="$semiBold">
+                Reason for request
+              </Heading>
+              <XStack gap="$4" bg="$grey-50" br="$8" p="$4" bw="$0.5" borderColor="$grey-100">
+                <Stack>
+                  <XStack p="$3" bg="$grey-200" borderRadius="$4">
+                    <HeroIcons.BuildingOffice color="$grey-800" />
+                  </XStack>
+                </Stack>
+                <Paragraph numberOfLines={5} f={1} variant="sub">
+                  {submission.purpose ??
+                    submission.entries[0].description ??
+                    'No information was provided on the purpose of the data request. Be cautious'}
+                </Paragraph>
               </XStack>
-              <Paragraph size="$3" secondary>
-                {submission.purpose ??
-                  submission.entries[0].description ??
-                  'No information was provided on the purpose of the data request. Be cautious'}
-              </Paragraph>
             </YStack>
             <RequestedAttributesSection submission={submission} />
             <Spacer />
@@ -83,7 +87,7 @@ export const ShareCredentialsSlide = ({
         </YStack>
       </YStack>
 
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+      <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
         {submission.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"

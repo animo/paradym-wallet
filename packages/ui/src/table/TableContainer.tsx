@@ -12,7 +12,7 @@ export const TableContainer = ({ children, padY, padX }: PropsWithChildren<Table
     <YStack
       bw={1}
       borderColor="$tableBorderColor"
-      br="$4"
+      br="$6"
       bg="$white"
       width="100%"
       px={padX ?? 0}

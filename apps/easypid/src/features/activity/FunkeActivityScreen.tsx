@@ -1,8 +1,9 @@
 import { ActivityRowItem } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
-import { FlexPage, Heading, Loader, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
+import { AnimatedStack, FlexPage, Heading, Loader, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
 import { TextBackButton } from 'packages/app/src'
 import React, { useMemo } from 'react'
+import { FadeInDown } from 'react-native-reanimated'
 import { useActivities } from './activityRecord'
 
 export function FunkeActivityScreen() {
@@ -36,10 +37,19 @@ export function FunkeActivityScreen() {
         </YStack>
       </YStack>
       {activities.length === 0 ? (
-        <YStack jc="space-between" fg={1} pb="$4">
-          <Paragraph px="$4">No activity yet.</Paragraph>
-          <TextBackButton />
-        </YStack>
+        <AnimatedStack
+          flexDirection="column"
+          entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
+          gap="$2"
+          jc="center"
+          p="$4"
+          fg={1}
+        >
+          <Heading ta="center" variant="h3" fontWeight="$semiBold">
+            There's nothing here, yet
+          </Heading>
+          <Paragraph ta="center">Activity will appear here once you share or receive credentials.</Paragraph>
+        </AnimatedStack>
       ) : isLoadingActivities ? (
         <YStack fg={1} ai="center" jc="center">
           <Loader />

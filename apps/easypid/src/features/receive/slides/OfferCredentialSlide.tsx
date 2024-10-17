@@ -206,7 +206,13 @@ export const OfferCredentialSlide = ({
                 maxHeight={scrollViewHeight}
                 bg="$white"
               >
-                <CredentialAttributes subject={attributes} disableHeader />
+                <CredentialAttributes
+                  headerStyle="small"
+                  borderStyle="large"
+                  attributeWeight="medium"
+                  subject={attributes}
+                  disableHeader
+                />
                 <Spacer size="$6" />
               </ScrollView>
             ) : (
@@ -222,9 +228,8 @@ export const OfferCredentialSlide = ({
         exiting={FadeOut.duration(100)}
         btw="$0.5"
         borderColor={isStoringOrCompleted ? '$background' : '$grey-200'}
-        pt="$4"
+        p="$4"
         mx="$-4"
-        px="$4"
         bg="$background"
       >
         {isStoringOrCompleted ? (

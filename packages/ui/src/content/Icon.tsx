@@ -46,23 +46,28 @@ import {
   QueueListIcon,
   ShieldCheckIcon,
   StarIcon,
+  TrashIcon,
   UserIcon,
   XCircleIcon,
   XMarkIcon,
 } from 'react-native-heroicons/outline'
 import {
+  ArchiveBoxXMarkIcon as ArchiveBoxXMarkFilledIcon,
   ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
   CheckCircleIcon as CheckCircleFilledIcon,
   CircleStackIcon as CircleStackFilledIcon,
+  ClockIcon as ClockFilledIcon,
   Cog8ToothIcon as Cog8ToothFilledIcon,
   CreditCardIcon as CreditCardFilledIcon,
   ExclamationCircleIcon as ExclamationCircleFilledIcon,
+  ExclamationTriangleIcon as ExclamationTriangleFilledIcon,
   EyeIcon as EyeFilledIcon,
   EyeSlashIcon as EyeSlashFilledIcon,
   IdentificationIcon as IdentificationFilledIcon,
   InformationCircleIcon as InformationCircleFilledIcon,
   QueueListIcon as QueueListFilledIcon,
   ShieldCheckIcon as ShieldCheckFilledIcon,
+  TrashIcon as TrashFilledIcon,
 } from 'react-native-heroicons/solid'
 
 import { styled } from 'tamagui'
@@ -99,6 +104,10 @@ function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
 
 export type HeroIcon = ReturnType<typeof wrapHeroIcon>
 export const HeroIcons = {
+  Trash: wrapHeroIcon(TrashIcon),
+  TrashFilled: wrapHeroIcon(TrashFilledIcon),
+  ArchiveBoxXMarkFilled: wrapHeroIcon(ArchiveBoxXMarkFilledIcon),
+  ClockFilled: wrapHeroIcon(ClockFilledIcon),
   BuildingOffice: wrapHeroIcon(BuildingOfficeIcon),
   GlobeAlt: wrapHeroIcon(GlobeAltIcon),
   Key: wrapHeroIcon(KeyIcon),
@@ -138,6 +147,7 @@ export const HeroIcons = {
   Menu: wrapHeroIcon(Bars3Icon),
   Interaction: wrapHeroIcon(ArrowsRightLeftIcon),
   ExclamationCircleFilled: wrapHeroIcon(ExclamationCircleFilledIcon),
+  ExclamationTriangleFilled: wrapHeroIcon(ExclamationTriangleFilledIcon),
   NoSymbol: wrapHeroIcon(NoSymbolIcon),
   ShieldCheckFilled: wrapHeroIcon(ShieldCheckFilledIcon),
   Check: wrapHeroIcon(CheckIcon),
