@@ -6,7 +6,7 @@ import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { seedCredentialStorage } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
-import { type CredentialDataHandlerOptions, DeeplinkHandler } from '@package/app'
+import { type CredentialDataHandlerOptions, DeeplinkHandler, useHaptics } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'tamagui'
@@ -24,6 +24,7 @@ export default function AppLayout() {
   const secureUnlock = useSecureUnlock()
   const theme = useTheme()
   const router = useRouter()
+  const { withHaptics } = useHaptics()
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -59,7 +60,7 @@ export default function AppLayout() {
     headerTransparent: true,
     headerTintColor: theme['primary-500'].val,
     headerTitle: '',
-    headerLeft: () => <IconContainer icon={<HeroIcons.ArrowLeft />} onPress={() => router.back()} />,
+    headerLeft: () => <IconContainer icon={<HeroIcons.ArrowLeft />} onPress={withHaptics(() => router.back())} />,
   }
 
   // Render the normal wallet, which is everything inside (app)

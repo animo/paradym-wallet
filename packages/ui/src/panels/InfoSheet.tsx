@@ -37,10 +37,10 @@ export interface InfoSheetProps extends SheetProps {
   variant?: keyof typeof infoSheetVariants
   title: string
   description: string
-  bottomPadding?: number
+  onClose?: () => void
 }
 
-export function InfoSheet({ isOpen, setIsOpen, title, description, variant = 'default' }: InfoSheetProps) {
+export function InfoSheet({ isOpen, setIsOpen, title, description, onClose, variant = 'default' }: InfoSheetProps) {
   return (
     <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
       <Stack ai="center" jc="center" h="$12" bg={infoSheetVariants[variant].background}>
@@ -59,7 +59,7 @@ export function InfoSheet({ isOpen, setIsOpen, title, description, variant = 'de
         </Heading>
         <Paragraph>{description}</Paragraph>
         <Stack />
-        <Button.Solid scaleOnPress onPress={() => setIsOpen(false)}>
+        <Button.Solid scaleOnPress onPress={onClose}>
           Got it
         </Button.Solid>
       </Stack>

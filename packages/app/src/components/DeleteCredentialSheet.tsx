@@ -3,6 +3,7 @@ import { type CredentialForDisplayId, deleteCredential, useAgent } from '@packag
 import { Heading, HeroIcons, Paragraph, Stack, XStack, useToastController } from '@package/ui'
 import { FloatingSheet } from '@package/ui/src/panels/FloatingSheet'
 import { useState } from 'react'
+import { useHaptics } from '../hooks'
 import { DualResponseButtons } from './DualResponseButtons'
 
 interface DeleteCredentialSheetProps {
@@ -17,15 +18,16 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
   const toast = useToastController()
   const { agent } = useAgent()
   const [isLoading, setIsLoading] = useState(false)
+  const { withHaptics } = useHaptics()
 
-  const onDeleteCredential = async () => {
+  const onDeleteCredential = withHaptics(async () => {
     if (credential && id === credential?.id) {
-      toast.show('Personalausweis can not be deleted', {
+      toast.show('Personalausweis can not be archived', {
         customData: {
           preset: 'warning',
         },
       })
-      setIsSheetOpen(false)
+      onCancel()
       return
     }
 
@@ -33,13 +35,13 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
 
     try {
       await deleteCredential(agent, id)
-      toast.show('Credential deleted', {
+      toast.show('Card successfully archived', {
         customData: {
           preset: 'success',
         },
       })
     } catch (error) {
-      toast.show('Error deleting credential', {
+      toast.show('Error deleting card', {
         customData: {
           preset: 'danger',
         },
@@ -48,7 +50,9 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
     }
 
     setIsLoading(false)
-  }
+  })
+
+  const onCancel = withHaptics(() => setIsSheetOpen(false))
 
   return (
     <FloatingSheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
@@ -57,7 +61,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
           <Heading color="$grey-900" variant="h2">
             Archive card?
           </Heading>
-          <Stack br="$12" p="$2" bg="$grey-50" onPress={() => setIsSheetOpen(false)}>
+          <Stack br="$12" p="$2" bg="$grey-50" onPress={onCancel}>
             <HeroIcons.X size={16} strokeWidth={2.5} color="$grey-500" />
           </Stack>
         </XStack>
@@ -70,7 +74,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
           acceptText="Delete"
           declineText="Cancel"
           onAccept={onDeleteCredential}
-          onDecline={() => setIsSheetOpen(false)}
+          onDecline={onCancel}
           removeBottomPadding
         />
       </Stack>

@@ -5,12 +5,9 @@ import { useHaptics } from '../hooks/useHaptics'
 
 export function CardInfoLifecycle() {
   const [isOpen, setIsOpen] = useState(false)
-  const { light } = useHaptics()
+  const { withHaptics } = useHaptics()
 
-  const onPress = () => {
-    setIsOpen(true)
-    light()
-  }
+  const onPress = withHaptics(() => setIsOpen(!isOpen))
 
   return (
     <>
@@ -24,6 +21,7 @@ export function CardInfoLifecycle() {
       <InfoSheet
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        onClose={onPress}
         variant="positive"
         title="Card is active"
         description="Your credentials may expire or require an active internet connection to validate."

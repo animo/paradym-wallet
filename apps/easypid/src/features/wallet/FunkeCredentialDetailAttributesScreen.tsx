@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react'
 
 import { CredentialAttributes } from '@package/app/src/components'
-import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
+import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
 
 import { useNavigation, useRouter } from 'expo-router'
@@ -37,17 +37,17 @@ export function FunkeCredentialDetailAttributesScreen({
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const [isMetadataVisible, setIsMetadataVisible] = useState(false)
-
+  const { withHaptics } = useHaptics()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [elementPosition, setElementPosition] = useState(0)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
 
   useHeaderRightAction({
     icon: <HeroIcons.EllipsisHorizontal />,
-    onPress: () => setIsSheetOpen(true),
+    onPress: withHaptics(() => setIsSheetOpen(true)),
   })
 
-  const toggleMetadataVisibility = () => {
+  const toggleMetadataVisibility = withHaptics(() => {
     setIsSheetOpen(false)
 
     // Delay to allow the sheet to close
@@ -68,7 +68,7 @@ export function FunkeCredentialDetailAttributesScreen({
         }, 300)
       }
     }, 200)
-  }
+  })
 
   if (!attributes) {
     toast.show('No attributes found', {

@@ -20,7 +20,7 @@ import { useRouter } from 'solito/router'
 
 import { usePidCredential } from '@easypid/hooks'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
-import { useNetworkCallback } from '@package/app/src/hooks'
+import { useHaptics, useNetworkCallback } from '@package/app/src/hooks'
 import { type CredentialDisplay, useCredentialsForDisplay } from 'packages/agent/src'
 import { FunkeCredentialCard } from 'packages/app'
 import { FadeIn, FadeInDown, ZoomIn, useAnimatedStyle } from 'react-native-reanimated'
@@ -153,6 +153,7 @@ function AnimatedCredentialCard({
   index: number
 }) {
   const { push } = useRouter()
+  const { withHaptics } = useHaptics()
 
   const animatedStyle = useAnimatedStyle(() => {
     const baseMargin = index * 72
@@ -171,7 +172,7 @@ function AnimatedCredentialCard({
         name={display.name}
         bgColor={display.backgroundColor}
         shadow={false}
-        onPress={() => push(`/credentials/${id}`)}
+        onPress={withHaptics(() => push(`/credentials/${id}`))}
       />
     </AnimatedStack>
   )

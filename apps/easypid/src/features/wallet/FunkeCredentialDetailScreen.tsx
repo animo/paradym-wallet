@@ -12,11 +12,12 @@ import {
 } from '@package/ui'
 import React, { useState } from 'react'
 
-import { useHasInternetConnection, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
+import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
 import { useRouter } from 'expo-router'
 import { useCredentialsForDisplay } from 'packages/agent/src'
+import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createParam } from 'solito'
@@ -30,7 +31,7 @@ export function FunkeCredentialDetailScreen() {
   const router = useRouter()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const hasInternet = useHasInternetConnection()
+  const { withHaptics } = useHaptics()
 
   const { credentials } = useCredentialsForDisplay()
   const { credential: pidCredential } = usePidCredential()
@@ -41,7 +42,7 @@ export function FunkeCredentialDetailScreen() {
 
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
-    onPress: () => setIsSheetOpen(true),
+    onPress: withHaptics(() => setIsSheetOpen(true)),
   })
 
   if (!activeCredential) {
@@ -54,7 +55,7 @@ export function FunkeCredentialDetailScreen() {
     return
   }
 
-  const onCardAttributesPress = () => {
+  const onCardAttributesPress = withHaptics(() => {
     router.push({
       pathname: '/credentials/[id]/attributes',
       params: {
@@ -62,7 +63,7 @@ export function FunkeCredentialDetailScreen() {
         metadata: JSON.stringify(activeCredential.metadata),
       },
     })
-  }
+  })
 
   return (
     <>
