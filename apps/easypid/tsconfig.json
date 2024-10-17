@@ -10,7 +10,6 @@
 		"./src/**/*.ts",
 		"./src/**/*.tsx",
 		"tamagui.config.ts",
-		"index.ts",
-		"../../packages/app/src/components/CardInfoLifecycle.tsx"
+		"index.ts"
 	]
 }

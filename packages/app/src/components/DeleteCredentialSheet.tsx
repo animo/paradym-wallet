@@ -5,17 +5,14 @@ import { FloatingSheet } from '@package/ui/src/panels/FloatingSheet'
 import { useState } from 'react'
 import { DualResponseButtons } from './DualResponseButtons'
 
-export function DeleteCredentialSheet({
-  isSheetOpen,
-  setIsSheetOpen,
-  id,
-  name,
-}: {
-  name: string
+interface DeleteCredentialSheetProps {
   isSheetOpen: boolean
   setIsSheetOpen: (isOpen: boolean) => void
   id: CredentialForDisplayId
-}) {
+  name: string
+}
+
+export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }: DeleteCredentialSheetProps) {
   const { credential } = usePidCredential()
   const toast = useToastController()
   const { agent } = useAgent()
