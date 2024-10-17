@@ -18,20 +18,19 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
   const toast = useToastController()
   const { agent } = useAgent()
   const [isLoading, setIsLoading] = useState(false)
-  const { withHaptics } = useHaptics()
+  const { withHaptics, error, success } = useHaptics()
 
-  const onDeleteCredential = withHaptics(async () => {
+  const onDeleteCredential = async () => {
     if (credential && id === credential?.id) {
       toast.show('Personalausweis can not be archived', {
         customData: {
           preset: 'warning',
         },
       })
-      onCancel()
+      setIsSheetOpen(false)
+      error()
       return
     }
-
-    setIsLoading(true)
 
     try {
       await deleteCredential(agent, id)
@@ -40,6 +39,8 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
           preset: 'success',
         },
       })
+      success()
+      setIsSheetOpen(false)
     } catch (error) {
       toast.show('Error deleting card', {
         customData: {
@@ -50,7 +51,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
     }
 
     setIsLoading(false)
-  })
+  }
 
   const onCancel = withHaptics(() => setIsSheetOpen(false))
 

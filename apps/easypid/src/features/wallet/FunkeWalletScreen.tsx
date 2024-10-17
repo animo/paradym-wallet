@@ -27,10 +27,14 @@ import { FadeIn, FadeInDown, ZoomIn, useAnimatedStyle } from 'react-native-reani
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
-  const navigateToScanner = useNetworkCallback(() => push('/scan'))
   const { isLoading, credentials } = useCredentialsForDisplay()
   const onResetWallet = useWalletReset()
   const { credential: pidCredential } = usePidCredential()
+  const { withHaptics } = useHaptics()
+
+  const pushToMenu = withHaptics(() => push('/menu'))
+  const pushToActivity = withHaptics(() => push('/activity'))
+  const pushToScanner = withHaptics(() => push('/scan'))
 
   const {
     pressStyle: qrPressStyle,
@@ -42,8 +46,8 @@ export function FunkeWalletScreen() {
     <FlexPage p={0} safeArea="b" gap={0}>
       <AnimatedStack entering={FadeIn.duration(200)}>
         <XStack px="$4" py="$2" ai="center" justifyContent="space-between">
-          <IconContainer icon={<HeroIcons.Menu />} onPress={() => push('/menu')} />
-          <IconContainer icon={<LucideIcons.History />} onPress={() => push('/activity')} />
+          <IconContainer icon={<HeroIcons.Menu />} onPress={pushToMenu} />
+          <IconContainer icon={<LucideIcons.History />} onPress={pushToActivity} />
         </XStack>
         <Stack alignItems="center" gap="$2" py="$6" px="$4" borderBottomWidth="$0.5" borderColor="$grey-200">
           <AnimatedStack
@@ -51,7 +55,7 @@ export function FunkeWalletScreen() {
             style={qrPressStyle}
             onPressIn={qrHandlePressIn}
             onPressOut={qrHandlePressOut}
-            onPress={navigateToScanner}
+            onPress={useNetworkCallback(pushToScanner)}
             bg="#2A337E1A"
             br="$12"
           >
