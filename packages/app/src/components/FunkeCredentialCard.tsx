@@ -26,8 +26,8 @@ type FunkeCredentialCardProps = {
   name: string
   bgColor?: string
   textColor?: string
-  issuerImage?: DisplayImage | { url?: string | number; altText?: string }
-  backgroundImage?: DisplayImage | { url?: string | number; altText?: string }
+  issuerImage?: DisplayImage
+  backgroundImage?: DisplayImage
   shadow?: boolean
   isLoading?: boolean
 }

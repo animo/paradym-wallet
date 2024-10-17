@@ -99,7 +99,7 @@ export function CardWithAttributes({
   id: string
   name: string
   backgroundColor?: string
-  backgroundImage?: DisplayImage | { url?: number | string; altText: string }
+  backgroundImage?: DisplayImage
   disclosedAttributes: string[]
   disclosedPayload?: Record<string, unknown>
   disableNavigation?: boolean
