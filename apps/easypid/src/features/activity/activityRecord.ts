@@ -1,23 +1,38 @@
-import { type EasyPIDAppAgent, getWalletJsonStore, useWalletJsonRecord } from '@package/agent'
+import { utils } from '@credo-ts/core'
+import { type DisplayImage, type EasyPIDAppAgent, getWalletJsonStore, useWalletJsonRecord } from '@package/agent'
+import { getHostNameFromUrl } from 'packages/utils/src'
 import { useMemo } from 'react'
 
 export type ActivityType = 'shared' | 'received'
+export type ActivityStatus = 'success' | 'failed' | 'stopped'
+export type SharingFailureReason = 'missing_credentials' | 'unknown'
 
 interface BaseActivity {
   id: string
   type: ActivityType
+  status: ActivityStatus
   date: string
-  entityHost: string
-  entityName?: string
+  entity: {
+    did: string
+    host?: string
+    name?: string
+    logo?: DisplayImage
+    backgroundColor?: string
+  }
 }
 
 interface PresentationActivity extends BaseActivity {
   type: 'shared'
-  credentials?: Array<{
-    id: string
-    disclosedAttributes: string[]
-    disclosedPayload: Record<string, unknown>
-  }>
+  request: {
+    credentials: Array<{
+      id: string
+      disclosedAttributes: string[]
+      disclosedPayload: Record<string, unknown>
+    }>
+    name?: string
+    purpose?: string
+    failureReason?: SharingFailureReason
+  }
 }
 
 interface IssuanceActivity extends BaseActivity {
@@ -31,7 +46,7 @@ interface ActivityRecord {
   activities: Activity[]
 }
 
-const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_WALLET_ACTIVITY_RECORD')
+const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: _activityStorage.recordId,
   addActivity: async (agent: EasyPIDAppAgent, activity: Activity) => {
@@ -61,4 +76,71 @@ export const useActivities = () => {
     activities,
     isLoading,
   }
+}
+
+export const addReceivedActivity = async (
+  agent: EasyPIDAppAgent,
+  input: {
+    did: string
+    name: string
+    logo?: DisplayImage
+    backgroundColor?: string
+    credentialIds: string[]
+  }
+) => {
+  await activityStorage.addActivity(agent, {
+    id: utils.uuid(),
+    date: new Date().toISOString(),
+    type: 'received',
+    status: 'success',
+    entity: {
+      did: input.did,
+      name: input.name,
+      host: getHostNameFromUrl(input.did) as string,
+      logo: input.logo,
+      backgroundColor: input.backgroundColor,
+    },
+    credentialIds: input.credentialIds,
+  } as IssuanceActivity)
+}
+
+export const addSharedActivity = async (
+  agent: EasyPIDAppAgent,
+  input: {
+    status: ActivityStatus
+    entity: {
+      did: string
+      name?: string
+      logo?: DisplayImage
+    }
+    request: {
+      credentials: Array<{
+        id: string
+        disclosedAttributes: string[]
+        disclosedPayload: Record<string, unknown>
+      }>
+      name?: string
+      purpose?: string
+      failureReason?: SharingFailureReason
+    }
+  }
+) => {
+  await activityStorage.addActivity(agent, {
+    id: utils.uuid(),
+    date: new Date().toISOString(),
+    type: 'shared',
+    status: input.status,
+    entity: {
+      did: input.entity.did,
+      name: input.entity.name,
+      host: getHostNameFromUrl(input.entity.did) as string,
+      logo: input.entity.logo,
+    },
+    request: {
+      name: input.request.name,
+      purpose: input.request.purpose,
+      credentials: input.request.credentials,
+      failureReason: input.request.failureReason,
+    },
+  } as PresentationActivity)
 }

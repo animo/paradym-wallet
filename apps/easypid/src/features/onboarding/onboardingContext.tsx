@@ -1,6 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
-import { /*MdocRecord, */ TypedArrayEncoder, utils } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { PinPossiblyReusedError, ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
@@ -14,19 +13,19 @@ import { resetWallet } from '@easypid/utils/resetWallet'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
+  type DisplayImage,
   SdJwtVcRecord,
   getOpenId4VcCredentialMetadata,
-  storeCredential,
 } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
-import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
+import { capitalizeFirstLetter, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import type { PidSdJwtVcAttributes } from '../../hooks'
-import { activityStorage } from '../activity/activityRecord'
+import { type PidSdJwtVcAttributes, usePidDisplay } from '../../hooks'
+import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
@@ -260,6 +259,7 @@ export function OnboardingContextProvider({
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
+  const pidDisplay = usePidDisplay()
 
   const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
@@ -702,13 +702,11 @@ export function OnboardingContextProvider({
             )}`
           )
 
-          const issuerName = getOpenId4VcCredentialMetadata(credential)?.issuer.display?.[0]?.name
-          await activityStorage.addActivity(secureUnlock.context.agent, {
-            id: utils.uuid(),
-            type: 'received',
-            date: new Date().toISOString(),
-            entityHost: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
-            entityName: issuerName,
+          await addReceivedActivity(secureUnlock.context.agent, {
+            did: parsed.prettyClaims.iss,
+            name: pidDisplay?.issuer.name,
+            logo: pidDisplay?.issuer.logo,
+            backgroundColor: '#ffffff',
             credentialIds: [credential.id],
           })
         } /* else if (credential instanceof MdocRecord) {

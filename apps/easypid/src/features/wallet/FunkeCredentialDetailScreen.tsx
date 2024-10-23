@@ -97,7 +97,7 @@ export function FunkeCredentialDetailScreen() {
                 Card details
               </Heading>
               <Paragraph numberOfLines={1} ta="center">
-                Issued by {activeCredential.display.issuer.name}
+                Issued by {activeCredential.display.issuer.name}.
               </Paragraph>
             </Stack>
             <YStack w="100%" gap="$2">

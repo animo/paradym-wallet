@@ -53,8 +53,8 @@ export const PresentationSuccessSlide = ({ verifierName, onComplete }: Presentat
             jc="center"
             ai="center"
             top="10%"
-            h="$6"
-            w="$6"
+            h="$5"
+            w="$5"
             bg="$grey-900"
             br="$12"
           >

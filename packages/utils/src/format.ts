@@ -31,15 +31,26 @@ export function sanitizeString(
  * @param now Optional reference date (defaults to current date)
  * @returns A string representation of the relative time
  */
-export function formatRelativeDate(date: Date, now: Date = new Date()): string {
+export function formatRelativeDate(date: Date, now: Date = new Date(), includeTime = false): string {
   const msPerDay = 24 * 60 * 60 * 1000
   const days = Math.round((now.getTime() - date.getTime()) / msPerDay)
 
+  const formatTime = (d: Date) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })
+  const formatFullDate = (d: Date) =>
+    d.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    })
+
   if (days === 0) {
-    return 'Today'
+    return includeTime ? `Today at ${formatTime(date)}` : 'Today'
   }
   if (days === 1) {
-    return 'Yesterday'
+    return includeTime ? `Yesterday at ${formatTime(date)}` : 'Yesterday'
   }
   if (days > 1 && days <= 7) {
     return `${days} days ago`
@@ -53,8 +64,7 @@ export function formatRelativeDate(date: Date, now: Date = new Date()): string {
     return `${months} ${months === 1 ? 'month' : 'months'} ago`
   }
 
-  const years = Math.floor(days / 365)
-  return `${years} ${years === 1 ? 'year' : 'years'} ago`
+  return formatFullDate(date)
 }
 
 export function formatDate(input: string | Date): string {

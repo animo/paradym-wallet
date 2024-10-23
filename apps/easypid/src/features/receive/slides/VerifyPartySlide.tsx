@@ -8,9 +8,10 @@ interface VerifyPartySlideProps {
   name?: string
   domain?: string
   logo?: DisplayImage
+  backgroundColor?: string
 }
 
-export const VerifyPartySlide = ({ name, domain, logo }: VerifyPartySlideProps) => {
+export const VerifyPartySlide = ({ name, domain, logo, backgroundColor }: VerifyPartySlideProps) => {
   const { onNext, onCancel } = useWizard()
 
   if (name && domain) {
@@ -26,7 +27,7 @@ export const VerifyPartySlide = ({ name, domain, logo }: VerifyPartySlideProps) 
             <Stack alignSelf="flex-start">
               <XStack pos="relative">
                 {logo?.url ? (
-                  <YStack br="$4" overflow="hidden" height={72} width={72} bg="$grey-900">
+                  <YStack br="$4" overflow="hidden" height={72} width={72} bg={backgroundColor}>
                     <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
                   </YStack>
                 ) : (

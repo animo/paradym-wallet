@@ -129,7 +129,7 @@ export function FunkeRequestedAttributesDetailScreen({
                   {activeCredential?.display.name}
                 </Heading>
                 {activeCredential?.display.issuer && (
-                  <Paragraph color="$grey-700">Issued by {activeCredential?.display.issuer.name}</Paragraph>
+                  <Paragraph>Issued by {activeCredential?.display.issuer.name}.</Paragraph>
                 )}
                 <CredentialAttributes
                   subject={disclosedPayload}
