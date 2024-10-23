@@ -1,6 +1,5 @@
 import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
-import { utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
 import {
   acquireAccessToken,
@@ -11,10 +10,9 @@ import {
 } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
-import { getHostNameFromUrl } from 'packages/utils/src'
 import { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { activityStorage } from '../activity/activityRecord'
+import { addReceivedActivity } from '../activity/activityRecord'
 import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { OfferCredentialSlide } from './slides/OfferCredentialSlide'
@@ -48,9 +46,6 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        // if (credentialRecord.type === 'MdocRecord') {
-        //   throw new Error('mdoc not supported')
-        // }
         setCredentialRecord(credentialRecord as W3cCredentialRecord | SdJwtVcRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
@@ -70,12 +65,11 @@ export function FunkeOpenIdCredentialNotificationScreen() {
       .then(async () => {
         const { metadata, display } = getCredentialForDisplay(credentialRecord)
 
-        await activityStorage.addActivity(agent, {
-          id: utils.uuid(),
-          type: 'received',
-          date: new Date().toISOString(),
-          entityHost: getHostNameFromUrl(metadata.issuer) as string,
-          entityName: display.issuer.name,
+        await addReceivedActivity(agent, {
+          did: metadata.issuer,
+          name: display.issuer.name,
+          logo: display.issuer.logo ? display.issuer.logo : undefined,
+          backgroundColor: display.backgroundColor, // Might not be accurate for issuer image
           credentialIds: [credentialRecord.id],
         })
 
@@ -115,6 +109,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
               name={credential?.display.issuer.name}
               logo={credential?.display.issuer.logo}
               domain={credential?.display.issuer.domain}
+              backgroundColor={credential?.display.backgroundColor}
             />
           ),
         },

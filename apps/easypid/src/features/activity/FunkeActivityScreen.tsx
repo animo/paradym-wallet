@@ -29,11 +29,9 @@ export function FunkeActivityScreen() {
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack gap="$4" p="$4">
+        <YStack gap="$2" p="$4">
           <Stack h="$1" />
-          <Heading variant="h1" fontWeight="$bold">
-            Activity
-          </Heading>
+          <Heading variant="h1">Activity</Heading>
         </YStack>
       </YStack>
       {activities.length === 0 ? (
@@ -76,9 +74,12 @@ export function FunkeActivityScreen() {
                     <ActivityRowItem
                       key={activity.id}
                       id={activity.id}
-                      subtitle={activity.entityName ?? activity.entityHost}
+                      logo={activity.entity.logo}
+                      backgroundColor={activity.entity.backgroundColor}
+                      subtitle={activity.entity.name ?? activity.entity.host ?? 'Unknown'}
                       date={new Date(activity.date)}
                       type={activity.type}
+                      status={activity.status}
                       // FIXME: Handle multiple credentials received in one request
                       credentialId={activity.type === 'received' ? activity.credentialIds?.[0] : undefined}
                     />

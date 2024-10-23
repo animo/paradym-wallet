@@ -10,7 +10,7 @@ import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
-import { ClaimFormat, utils } from '@credo-ts/core'
+import { ClaimFormat } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
 import {
   PidIssuerPinInvalidError,
@@ -20,7 +20,7 @@ import {
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
-import { activityStorage } from '../activity/activityRecord'
+import { addSharedActivity } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
 type Query = { uri?: string; data?: string }
@@ -76,6 +76,29 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     return filteredSubmission
   }, [credentialsForRequest])
 
+  const credentialsWithDisclosedPayload = useMemo(
+    () =>
+      submission?.entries.flatMap((entry) => {
+        return entry.credentials.map((credential) => {
+          const disclosedPayload =
+            credential.metadata?.type === pidCredential?.type
+              ? getPidAttributesForDisplay(
+                  credential.disclosedPayload ?? {},
+                  credential.metadata ?? ({} as CredentialMetadata),
+                  credential.claimFormat as ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+                )
+              : credential.disclosedPayload
+
+          return {
+            id: credential.id,
+            disclosedAttributes: credential.requestedAttributes ?? [],
+            disclosedPayload,
+          }
+        })
+      }),
+    [submission, pidCredential]
+  )
+
   const usePin = useMemo(() => {
     const isPidInSubmission =
       submission?.entries.some((entry) =>
@@ -126,31 +149,17 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         allowUntrustedCertificate: true,
       })
 
-      const credentialsWithDisclosedPayload = submission.entries.flatMap((entry) => {
-        return entry.credentials.map((credential) => {
-          const disclosedPayload =
-            credential.metadata?.type === pidCredential?.type
-              ? getPidAttributesForDisplay(
-                  credential.disclosedPayload ?? {},
-                  credential.metadata ?? ({} as CredentialMetadata),
-                  credential.claimFormat as ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
-                )
-              : credential.disclosedPayload
-
-          return {
-            id: credential.id,
-            disclosedAttributes: credential.requestedAttributes ?? [],
-            disclosedPayload,
-          }
-        })
-      })
-
-      await activityStorage.addActivity(agent, {
-        id: utils.uuid(),
-        type: 'shared',
-        credentials: credentialsWithDisclosedPayload,
-        date: new Date().toISOString(),
-        entityHost: credentialsForRequest.verifierHostName as string,
+      await addSharedActivity(agent, {
+        status: 'success',
+        entity: {
+          name: credentialsForRequest.verifierHostName,
+          did: credentialsForRequest.authorizationRequest.issuer as string,
+        },
+        request: {
+          name: submission.name,
+          purpose: submission.purpose,
+          credentials: credentialsWithDisclosedPayload ?? [],
+        },
       })
 
       return {
@@ -180,7 +189,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         },
       }
     }
-  }, [submission, credentialsForRequest, agent, pidCredential])
+  }, [submission, credentialsForRequest, agent, credentialsWithDisclosedPayload])
 
   const onProofAcceptWithSeedCredential = async (pin: string): Promise<PresentationRequestResult> => {
     return await requestSdJwtVcFromSeedCredential({
@@ -241,6 +250,31 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   }
 
   const onProofDecline = async () => {
+    const activityData = {
+      entity: {
+        did: credentialsForRequest?.authorizationRequest.issuer as string,
+        name: credentialsForRequest?.verifierHostName,
+      },
+      request: {
+        name: submission?.name,
+        purpose: submission?.purpose,
+        credentials: credentialsWithDisclosedPayload ?? [],
+      },
+    }
+
+    if (submission?.areAllSatisfied) {
+      await addSharedActivity(agent, { ...activityData, status: 'stopped' })
+    } else {
+      await addSharedActivity(agent, {
+        ...activityData,
+        status: 'failed',
+        request: {
+          ...activityData.request,
+          failureReason: submission ? 'missing_credentials' : 'unknown',
+        },
+      })
+    }
+
     pushToWallet()
     toast.show('Information request has been declined.', { customData: { preset: 'danger' } })
   }

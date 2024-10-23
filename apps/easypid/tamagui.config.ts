@@ -43,6 +43,11 @@ const tokens = createTokens({
     'primary-700': '#3341C2',
     'primary-800': '#2F379E',
     'primary-900': '#2A337E',
+    'feature-300': '#DFA6FF',
+    'feature-400': '#CA79FF',
+    'feature-500': '#A000F8',
+    'feature-600': '#8600D1',
+    'feature-700': '#7E00CC',
   },
 })
 

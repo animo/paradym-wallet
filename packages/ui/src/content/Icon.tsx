@@ -41,6 +41,7 @@ import {
   KeyIcon,
   LockClosedIcon,
   NoSymbolIcon,
+  PlusIcon,
   QrCodeIcon,
   QuestionMarkCircleIcon,
   QueueListIcon,
@@ -63,12 +64,15 @@ import {
   ExclamationTriangleIcon as ExclamationTriangleFilledIcon,
   EyeIcon as EyeFilledIcon,
   EyeSlashIcon as EyeSlashFilledIcon,
+  HandRaisedIcon as HandRaisedFilledIcon,
   IdentificationIcon as IdentificationFilledIcon,
   InformationCircleIcon as InformationCircleFilledIcon,
   QueueListIcon as QueueListFilledIcon,
   ShieldCheckIcon as ShieldCheckFilledIcon,
   TrashIcon as TrashFilledIcon,
 } from 'react-native-heroicons/solid'
+
+import { ExclamationIcon } from '../../assets/Exclamation'
 
 import { styled } from 'tamagui'
 
@@ -104,6 +108,7 @@ function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
 
 export type HeroIcon = ReturnType<typeof wrapHeroIcon>
 export const HeroIcons = {
+  Plus: wrapHeroIcon(PlusIcon),
   Trash: wrapHeroIcon(TrashIcon),
   TrashFilled: wrapHeroIcon(TrashFilledIcon),
   ArchiveBoxXMarkFilled: wrapHeroIcon(ArchiveBoxXMarkFilledIcon),
@@ -126,6 +131,7 @@ export const HeroIcons = {
   CreditCardFilled: wrapHeroIcon(CreditCardFilledIcon),
   DevicePhoneMobile: wrapHeroIcon(DevicePhoneMobileIcon),
   HandRaised: wrapHeroIcon(HandRaisedIcon),
+  HandRaisedFilled: wrapHeroIcon(HandRaisedFilledIcon),
   XCircle: wrapHeroIcon(XCircleIcon),
   InformationCircle: wrapHeroIcon(InformationCircleIcon),
   CircleStack: wrapHeroIcon(CircleStackIcon),
@@ -158,3 +164,23 @@ export const HeroIcons = {
   Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
   IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
 } as const
+
+export const CustomIcons = {
+  Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
+}
+
+function wrapLocalSvg(SvgComponent: React.ComponentType<SvgProps>) {
+  return styled(
+    forwardRef((props: HeroIconProps, ref) => {
+      const { size, ...restProps } = props
+      return <SvgComponent width={size} height={size} {...restProps} />
+    }),
+    {},
+    {
+      accept: {
+        color: 'color',
+        size: 'size',
+      },
+    }
+  )
+}

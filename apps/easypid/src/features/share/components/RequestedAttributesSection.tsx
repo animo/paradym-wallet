@@ -19,7 +19,6 @@ import {
 import { sanitizeString } from '@package/utils/src'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
-import { Circle } from 'tamagui'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission
@@ -32,7 +31,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
     <YStack gap="$4">
       <YStack gap="$2">
         <Heading variant="sub1" fontWeight="$semiBold">
-          Requested information
+          Requested Information
         </Heading>
         <YStack gap="$4">
           <Paragraph>
@@ -160,14 +159,10 @@ export function CardWithAttributes({
           {groupedAttributes.map(([first, second]) => (
             <XStack key={first + second} gap="$4">
               <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph variant="sub" color="#415963">
-                  {sanitizeString(first)}
-                </Paragraph>
+                <Paragraph>{sanitizeString(first)}</Paragraph>
               </Stack>
               <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph variant="sub" color="#415963">
-                  {second ? sanitizeString(second) : ''}
-                </Paragraph>
+                <Paragraph>{second ? sanitizeString(second) : ''}</Paragraph>
               </Stack>
             </XStack>
           ))}
