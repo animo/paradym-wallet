@@ -115,7 +115,7 @@ export function ActivityRowItem({
           <XStack jc="space-between">
             <Paragraph>{Title}</Paragraph>
             <Paragraph variant="annotation" color="$grey-500" fontWeight="$regular">
-              {formatRelativeDate(new Date('2024-01-01T15:30:00Z'))}
+              {formatRelativeDate(date)}
             </Paragraph>
           </XStack>
           <Heading variant="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
