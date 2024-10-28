@@ -234,7 +234,7 @@ export const OfferCredentialSlide = ({
       >
         {isStoringOrCompleted ? (
           <Button.Solid opacity={isCompleted ? 1 : 0} onPress={onComplete}>
-            Go to wallet
+            Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
           </Button.Solid>
         ) : (
           <DualResponseButtons align="horizontal" onAccept={handleAccept} onDecline={handleDecline} />

@@ -88,6 +88,7 @@ export const addReceivedActivity = async (
   input: {
     did: string
     name: string
+    domain?: string
     logo?: DisplayImage
     backgroundColor?: string
     credentialIds: string[]
@@ -101,7 +102,7 @@ export const addReceivedActivity = async (
     entity: {
       did: input.did,
       name: input.name,
-      host: getHostNameFromUrl(input.did) as string,
+      host: input.domain ? input.domain : (getHostNameFromUrl(input.did) as string),
       logo: input.logo,
       backgroundColor: input.backgroundColor,
     },

@@ -1,6 +1,7 @@
 import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import { useAppAgent } from '@easypid/agent'
+import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import {
   acquireAccessToken,
   getCredentialForDisplay,
@@ -10,7 +11,7 @@ import {
 } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createParam } from 'solito'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
@@ -57,6 +58,12 @@ export function FunkeOpenIdCredentialNotificationScreen() {
     void requestCredential(params)
   }, [params, agent])
 
+  const issuerMetadata = useMemo(
+    () =>
+      credential?.display.issuer.domain ? getOpenIdFedIssuerMetadata(credential.display.issuer.domain) : undefined,
+    [credential]
+  )
+
   const onCredentialAccept = async () => {
     if (!credentialRecord) return
 
@@ -67,6 +74,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
 
         await addReceivedActivity(agent, {
           did: metadata.issuer,
+          domain: display.issuer.domain,
           name: display.issuer.name,
           logo: display.issuer.logo ? display.issuer.logo : undefined,
           backgroundColor: display.backgroundColor, // Might not be accurate for issuer image
@@ -106,9 +114,9 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           screen: (
             <VerifyPartySlide
               key="verify-issuer"
-              name={credential?.display.issuer.name}
-              logo={credential?.display.issuer.logo}
-              domain={credential?.display.issuer.domain as string}
+              name={issuerMetadata?.display.name ?? 'Unknown'}
+              logo={issuerMetadata?.display.logo}
+              host={credential?.display.issuer.domain as string}
               backgroundColor={credential?.display.backgroundColor}
             />
           ),

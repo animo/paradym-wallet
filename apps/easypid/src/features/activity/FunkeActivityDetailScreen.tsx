@@ -1,16 +1,4 @@
-import {
-  Circle,
-  FlexPage,
-  Heading,
-  HeroIcons,
-  Image,
-  MessageBox,
-  Paragraph,
-  ScrollView,
-  Stack,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { Circle, FlexPage, Heading, HeroIcons, Image, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import React from 'react'
 import { createParam } from 'solito'
 

@@ -21,7 +21,7 @@ import { useSeedCredentialPidData } from '@easypid/storage'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
-import { addSharedActivity } from '../activity/activityRecord'
+import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
 type Query = { uri?: string; data?: string }
@@ -42,6 +42,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const { agent } = useAppAgent()
   const { seedCredential } = useSeedCredentialPidData()
   const { credential: pidCredential } = usePidCredential()
+  const { activities } = useActivities()
 
   const [credentialsForRequest, setCredentialsForRequest] =
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
@@ -51,6 +52,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     () => credentialsForRequest && getOpenIdFedIssuerMetadata(credentialsForRequest?.verifierHostName ?? ''),
     [credentialsForRequest]
   )
+  const lastInteractionDate = useMemo(() => {
+    const activity = activities.find(
+      (activity) => activity.entity.did === credentialsForRequest?.authorizationRequest.issuer
+    )
+    return activity?.date
+  }, [activities, credentialsForRequest])
 
   const submission = useMemo(() => {
     if (!credentialsForRequest) return undefined
@@ -294,7 +301,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
-      verifierName={credentialsForRequest?.verifierHostName ?? 'Party.com'}
+      host={credentialsForRequest?.verifierHostName as string}
+      verifierName={fedDisplayData?.display.name ?? (credentialsForRequest?.verifierHostName as string)}
+      logo={fedDisplayData?.display.logo}
+      lastInteractionDate={lastInteractionDate}
+      approvalsCount={fedDisplayData?.approvals.length}
       onComplete={() => pushToWallet('replace')}
     />
   )

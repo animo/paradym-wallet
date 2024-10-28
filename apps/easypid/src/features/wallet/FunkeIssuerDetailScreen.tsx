@@ -21,14 +21,14 @@ import { Linking } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface FunkeIssuerDetailScreenProps {
-  domain: string
+  host: string
 }
 
-export function FunkeIssuerDetailScreen({ domain }: FunkeIssuerDetailScreenProps) {
+export function FunkeIssuerDetailScreen({ host }: FunkeIssuerDetailScreenProps) {
   const toast = useToastController()
   const router = useRouter()
   const { withHaptics, error } = useHaptics()
-  const data = getOpenIdFedIssuerMetadata(domain)
+  const data = getOpenIdFedIssuerMetadata(host)
 
   if (!data) {
     router.back()
@@ -45,7 +45,7 @@ export function FunkeIssuerDetailScreen({ domain }: FunkeIssuerDetailScreenProps
   const scrollViewRef = useRef<ScrollViewRefType>(null)
 
   const openDomain = withHaptics(() => {
-    Linking.openURL(`https://${domain}`)
+    Linking.openURL(`https://${host}`)
   })
 
   return (
@@ -72,7 +72,7 @@ export function FunkeIssuerDetailScreen({ domain }: FunkeIssuerDetailScreenProps
             <YStack>
               <Heading variant="h2">{data.display.name}</Heading>
               <Paragraph onPress={openDomain} fontWeight="$medium" color="$primary-500">
-                {domain}
+                {host}
               </Paragraph>
             </YStack>
           </XStack>

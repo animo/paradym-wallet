@@ -1,9 +1,9 @@
 // lets create some fake data
 
-const DEFAULT_FUNKE_DOMAIN = 'funke.animo.id'
+const DEFAULT_FUNKE_HOST = 'funke.animo.id'
 
 const FUNKE_ISSUER_DATA = {
-  domain: DEFAULT_FUNKE_DOMAIN,
+  host: DEFAULT_FUNKE_HOST,
   did: 'did:web:funke',
   display: {
     name: 'Animo',
@@ -46,9 +46,31 @@ const FUNKE_ISSUER_DATA = {
   certifications: ['eIDAS compliant', 'ISO/IEC 27001'],
 }
 
-export const getOpenIdFedIssuerMetadata = (domain: string) => {
-  if (domain === FUNKE_ISSUER_DATA.domain) {
+export type TempOpenIdFedApproval = (typeof FUNKE_ISSUER_DATA.approvals)[number]
+
+const DEFAULT_PARADYM_HOST = 'agent.paradym.id'
+
+const PARADYM_ISSUER_DATA = {
+  host: DEFAULT_PARADYM_HOST,
+  did: 'did:web:paradym',
+  display: {
+    name: 'Paradym',
+    logo: {
+      url: 'https://paradym.id/favicon/apple-touch-icon.png',
+      altText: 'Paradym logo',
+    },
+  },
+  approvals: [],
+  certifications: [],
+}
+
+export const getOpenIdFedIssuerMetadata = (host: string) => {
+  if (host === FUNKE_ISSUER_DATA.host) {
     return FUNKE_ISSUER_DATA
+  }
+
+  if (host === PARADYM_ISSUER_DATA.host) {
+    return PARADYM_ISSUER_DATA
   }
 
   return null

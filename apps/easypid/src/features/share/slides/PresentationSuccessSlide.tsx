@@ -76,7 +76,7 @@ export const PresentationSuccessSlide = ({ verifierName, onComplete }: Presentat
       </YStack>
       <Stack gap="$2" borderTopWidth="$0.5" borderColor="$grey-200" p="$4" mx="$-4">
         <Button.Solid scaleOnPress onPress={onComplete}>
-          Go to wallet
+          Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
       </Stack>
     </YStack>

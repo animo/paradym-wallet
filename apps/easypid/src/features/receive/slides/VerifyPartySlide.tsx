@@ -1,5 +1,4 @@
-import { useActivities } from '@easypid/features/activity/activityRecord'
-import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
+import type { TempOpenIdFedApproval } from '@easypid/utils/issuer'
 import type { DisplayImage } from '@package/agent'
 
 import { Circle, Heading, HeroIcons, Image, InfoButton, Paragraph, Stack, XStack, YStack } from '@package/ui'
@@ -8,32 +7,32 @@ import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
 import { formatRelativeDate } from 'packages/utils/src'
 
 interface VerifyPartySlideProps {
-  domain: string
-  name?: string
+  host: string
+  name: string
   logo?: DisplayImage
   backgroundColor?: string
+  lastInteractionDate?: string
+  approvalsCount?: number
 }
 
-export const VerifyPartySlide = ({ domain, name, logo, backgroundColor }: VerifyPartySlideProps) => {
+export const VerifyPartySlide = ({
+  host,
+  name,
+  logo,
+  backgroundColor,
+  lastInteractionDate,
+  approvalsCount,
+}: VerifyPartySlideProps) => {
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
-  const { activities } = useActivities()
   const { withHaptics } = useHaptics()
 
-  const lastInteraction = activities.find((activity) => activity.entity.host === domain)
-
-  const fedDisplayData = getOpenIdFedIssuerMetadata(domain)
-  if (fedDisplayData) {
-    name = fedDisplayData.display.name
-    logo = fedDisplayData.display.logo
-  }
-
   const onPressVerifiedIssuer = withHaptics(() => {
-    router.push(`/issuer?domain=${domain}`)
+    router.push(`/issuer?host=${host}`)
   })
 
   const onPressInteraction = withHaptics(() => {
-    router.push(`/activity?host=${domain}`)
+    router.push(`/activity?host=${host}`)
   })
 
   return (
@@ -60,25 +59,25 @@ export const VerifyPartySlide = ({ domain, name, logo, backgroundColor }: Verify
         </YStack>
 
         <YStack gap="$4">
-          {fedDisplayData ? (
+          {approvalsCount ? (
             <InfoButton
               variant="positive"
               title="Verified organisation"
-              description={`Approved by ${fedDisplayData.approvals.length} organisations`}
+              description={`Approved by ${approvalsCount} organisations`}
               onPress={onPressVerifiedIssuer}
             />
           ) : (
             <InfoButton variant="unknown" title="Unverified organization" description="No approvals found" />
           )}
           <InfoButton
-            variant={lastInteraction ? 'interaction-success' : 'interaction-new'}
-            title={lastInteraction ? 'Previous interactions' : 'First time interaction'}
+            variant={lastInteractionDate ? 'interaction-success' : 'interaction-new'}
+            title={lastInteractionDate ? 'Previous interactions' : 'First time interaction'}
             description={
-              lastInteraction
-                ? `Last interaction: ${formatRelativeDate(new Date(lastInteraction.date))}`
+              lastInteractionDate
+                ? `Last interaction: ${formatRelativeDate(new Date(lastInteractionDate))}`
                 : 'No previous interactions found'
             }
-            onPress={lastInteraction ? onPressInteraction : undefined}
+            onPress={lastInteractionDate ? onPressInteraction : undefined}
           />
         </YStack>
       </YStack>

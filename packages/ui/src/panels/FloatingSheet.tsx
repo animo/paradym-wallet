@@ -20,8 +20,8 @@ export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: Floatin
         dismissOnSnapToBottom
         animationConfig={{
           type: 'spring',
-          stiffness: 160,
-          damping: 10,
+          stiffness: 140,
+          damping: 9,
           mass: 0.22,
         }}
         {...props}
