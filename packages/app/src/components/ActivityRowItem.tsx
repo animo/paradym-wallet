@@ -68,10 +68,9 @@ export function ActivityRowItem({
   const router = useRouter()
   const toast = useToastController()
 
-  // @ts-expect-error
-  const Icon = activityInteractions[type][status]
-  // @ts-expect-error
-  const Title = activityInteractions[type][status].text
+  const Icon = type === 'received' ? activityInteractions.received.success : activityInteractions[type][status]
+  const Title =
+    type === 'received' ? activityInteractions.received.success.text : activityInteractions[type][status].text
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
   const { withHaptics } = useHaptics()
@@ -108,6 +107,7 @@ export function ActivityRowItem({
             )}
           </Stack>
           <Stack overflow="hidden" pos="absolute" bg={Icon.color} br="$12" p="$1" bw="$1" boc="$white">
+            {/* @ts-expect-error size prop is correct here */}
             <Icon.icon strokeWidth={3} size={10} color="$white" />
           </Stack>
         </Stack>

@@ -1,4 +1,4 @@
-import type { FormattedSubmission } from '@package/agent'
+import type { DisplayImage, FormattedSubmission } from '@package/agent'
 
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
@@ -9,24 +9,33 @@ import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface FunkePresentationNotificationScreenProps {
+  host: string
+  verifierName: string
+  logo?: DisplayImage
+  lastInteractionDate?: string
+  approvalsCount?: number
+
+  submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
   onAccept: () => Promise<PresentationRequestResult>
   onAcceptWithPin: (pin: string) => Promise<PresentationRequestResult>
   onDecline: () => void
   onComplete: () => void
-  submission?: FormattedSubmission
-  verifierName?: string
 }
 
 export function FunkePresentationNotificationScreen({
+  host,
+  verifierName,
+  logo,
+  lastInteractionDate,
+  approvalsCount,
   usePin,
   onAccept,
   onAcceptWithPin,
   onDecline,
   isAccepting,
   submission,
-  verifierName,
   onComplete,
 }: FunkePresentationNotificationScreenProps) {
   return (
@@ -44,7 +53,16 @@ export function FunkePresentationNotificationScreen({
             backIsCancel: true,
             // FIXME: Verifier info for proof requests will be added with OpenID Federation
             // For now, it will only use the domain from the request
-            screen: <VerifyPartySlide key="verify-issuer" name={verifierName} domain={verifierName} />,
+            screen: (
+              <VerifyPartySlide
+                key="verify-issuer"
+                name={verifierName}
+                host={host}
+                logo={logo}
+                lastInteractionDate={lastInteractionDate}
+                approvalsCount={approvalsCount}
+              />
+            ),
           },
           {
             step: 'share-credentials',
@@ -54,6 +72,7 @@ export function FunkePresentationNotificationScreen({
                 key="share-credentials"
                 onAccept={usePin ? undefined : onAccept}
                 onDecline={onDecline}
+                logo={logo}
                 verifierName={verifierName}
                 submission={submission}
                 isAccepting={isAccepting}

@@ -6,8 +6,8 @@ import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 import { useActivities } from './activityRecord'
 
-export function FunkeActivityScreen() {
-  const { activities, isLoading: isLoadingActivities } = useActivities()
+export function FunkeActivityScreen({ host }: { host?: string }) {
+  const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { host } })
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
@@ -66,7 +66,7 @@ export function FunkeActivityScreen() {
               return (
                 <React.Fragment key={key}>
                   <Stack bbw={1} btw={1} borderColor="$grey-200" px="$4" py="$3" mx={-18}>
-                    <Heading variant="h3" fontWeight="$semiBold">
+                    <Heading variant="sub2">
                       {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
                     </Heading>
                   </Stack>

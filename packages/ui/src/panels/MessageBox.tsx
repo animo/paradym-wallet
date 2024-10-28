@@ -31,13 +31,14 @@ const messageBoxVariants = {
 interface MessageBoxProps {
   message: string
   variant?: keyof typeof messageBoxVariants
+  textVariant?: 'normal' | 'sub'
   icon?: ReactElement
 }
 
-export function MessageBox({ message, variant = 'default', icon }: MessageBoxProps) {
+export function MessageBox({ message, textVariant = 'normal', variant = 'default', icon }: MessageBoxProps) {
   return (
-    <XStack gap="$2" p="$4" bg={messageBoxVariants[variant].bg} borderRadius="$8">
-      <Paragraph f={1} color={messageBoxVariants[variant].color}>
+    <XStack gap="$2" p="$3.5" bg={messageBoxVariants[variant].bg} borderRadius="$8">
+      <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
         {message}
       </Paragraph>
       {icon && (

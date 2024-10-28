@@ -150,7 +150,14 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
           </ScrollableStack>
         </AnimatedStack>
       </FlexPage>
-      <ConfirmationSheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen} onConfirm={onConfirmCancel} />
+      <ConfirmationSheet
+        type="floating"
+        title="Stop sharing?"
+        description="If you stop, no data will be shared."
+        isOpen={isSheetOpen}
+        setIsOpen={setIsSheetOpen}
+        onConfirm={onConfirmCancel}
+      />
     </WizardProvider>
   )
 }

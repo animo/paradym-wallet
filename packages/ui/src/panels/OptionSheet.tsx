@@ -63,7 +63,7 @@ export function OptionSheetItem({ icon, title, onPress }: OptionSheetItemProps) 
       onPress={onPress}
     >
       {icon && <Stack>{icon}</Stack>}
-      <Heading variant="sub2" fg={1}>
+      <Heading variant="sub1" fg={1} fontSize="$3" color="$grey-700">
         {title}
       </Heading>
     </AnimatedStack>

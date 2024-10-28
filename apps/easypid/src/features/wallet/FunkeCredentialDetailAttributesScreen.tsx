@@ -3,22 +3,22 @@ import {
   FlexPage,
   Heading,
   HeroIcons,
-  IconContainer,
   MessageBox,
   OptionSheet,
   ScrollView,
   type ScrollViewRefType,
   YStack,
+  useScrollToggle,
   useSpringify,
   useToastController,
 } from '@package/ui'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import { CredentialAttributes } from '@package/app/src/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
 
-import { useNavigation, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -36,38 +36,26 @@ export function FunkeCredentialDetailAttributesScreen({
   const router = useRouter()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const [isMetadataVisible, setIsMetadataVisible] = useState(false)
   const { withHaptics } = useHaptics()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [elementPosition, setElementPosition] = useState(0)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
+
+  const {
+    isVisible: isMetadataVisible,
+    setElementPosition,
+    toggle,
+  } = useScrollToggle({
+    scrollRef: scrollViewRef,
+  })
 
   useHeaderRightAction({
     icon: <HeroIcons.EllipsisHorizontal />,
     onPress: withHaptics(() => setIsSheetOpen(true)),
   })
 
-  const toggleMetadataVisibility = withHaptics(() => {
+  const handleToggleMetadata = withHaptics(() => {
     setIsSheetOpen(false)
-
-    // Delay to allow the sheet to close
-    setTimeout(() => {
-      const newMetadataVisibility = !isMetadataVisible
-
-      if (!newMetadataVisibility) {
-        // If metadata is set to false, scroll to 0 immediately
-        scrollViewRef.current?.scrollTo({ y: 0, animated: true })
-        setTimeout(() => {
-          setIsMetadataVisible(false)
-        }, 100)
-      } else {
-        // Delay 300ms and then scroll
-        setIsMetadataVisible(true)
-        setTimeout(() => {
-          scrollViewRef.current?.scrollTo({ y: elementPosition, animated: true })
-        }, 300)
-      }
-    }, 200)
+    toggle()
   })
 
   if (!attributes) {
@@ -135,7 +123,7 @@ export function FunkeCredentialDetailAttributesScreen({
           {
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
             title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
-            onPress: toggleMetadataVisibility,
+            onPress: handleToggleMetadata,
           },
         ]}
       />

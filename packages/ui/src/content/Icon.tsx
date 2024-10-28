@@ -169,9 +169,13 @@ export const CustomIcons = {
   Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
 }
 
-function wrapLocalSvg(SvgComponent: React.ComponentType<SvgProps>) {
+export type CustomIconProps = SvgProps & {
+  size?: NumberProp
+}
+
+function wrapLocalSvg(SvgComponent: React.ComponentType<CustomIconProps>) {
   return styled(
-    forwardRef((props: HeroIconProps, ref) => {
+    forwardRef((props: CustomIconProps, ref) => {
       const { size, ...restProps } = props
       return <SvgComponent width={size} height={size} {...restProps} />
     }),
