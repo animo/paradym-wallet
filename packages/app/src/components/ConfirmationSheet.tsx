@@ -47,7 +47,6 @@ export function ConfirmationSheet({
             declineText="No"
             onAccept={onConfirm}
             onDecline={onCancel || (() => setIsOpen(false))}
-            removeBottomPadding
           />
         </Stack>
       </FloatingSheet>

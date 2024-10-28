@@ -8,7 +8,6 @@ interface DualResponseButtonProps {
   declineText?: string
   variant?: 'confirmation' | 'regular'
   align?: 'horizontal' | 'vertical'
-  removeBottomPadding?: boolean
 }
 
 export function DualResponseButtons({
@@ -19,13 +18,10 @@ export function DualResponseButtons({
   acceptText = 'Accept',
   declineText = 'Decline',
   variant = 'regular',
-  removeBottomPadding = false,
 }: DualResponseButtonProps) {
   return (
     <YStack
       gap={align === 'horizontal' ? '$4' : '$2'}
-      pt="$2"
-      pb={removeBottomPadding ? '$0' : '$2'}
       flexDirection={align === 'horizontal' ? 'row-reverse' : 'column'}
     >
       <Button.Solid

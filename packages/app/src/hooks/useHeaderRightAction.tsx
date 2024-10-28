@@ -5,13 +5,14 @@ import { type ReactElement, useEffect } from 'react'
 interface UseHeaderRightActionProps {
   icon: ReactElement
   onPress: () => void
+  renderCondition?: boolean
 }
 
-export function useHeaderRightAction({ icon, onPress }: UseHeaderRightActionProps) {
+export function useHeaderRightAction({ icon, onPress, renderCondition }: UseHeaderRightActionProps) {
   const navigation = useNavigation()
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <IconContainer icon={icon} onPress={onPress} />,
+      headerRight: () => (renderCondition ? <IconContainer icon={icon} onPress={onPress} /> : undefined),
     })
-  }, [navigation, icon, onPress])
+  }, [navigation, icon, onPress, renderCondition])
 }

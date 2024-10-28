@@ -5,19 +5,19 @@ import * as Haptics from 'expo-haptics'
 type HapticType = 'light' | 'heavy' | 'success' | 'error'
 
 export function useHaptics() {
-  const light = useCallback(() => {
+  const lightHaptic = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
   }, [])
 
-  const heavy = useCallback(() => {
+  const heavyHaptic = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
   }, [])
 
-  const success = useCallback(() => {
+  const successHaptic = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
   }, [])
 
-  const error = useCallback(() => {
+  const errorHaptic = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
   }, [])
 
@@ -29,22 +29,22 @@ export function useHaptics() {
       return (...args) => {
         switch (hapticType) {
           case 'heavy':
-            heavy()
+            heavyHaptic()
             break
           case 'success':
-            success()
+            successHaptic()
             break
           case 'error':
-            error()
+            errorHaptic()
             break
           default:
-            light()
+            lightHaptic()
         }
         return callback(...args) as ReturnType<T>
       }
     },
-    [light, heavy, success, error]
+    [lightHaptic, heavyHaptic, successHaptic, errorHaptic]
   )
 
-  return { light, heavy, success, error, withHaptics }
+  return { lightHaptic, heavyHaptic, successHaptic, errorHaptic, withHaptics }
 }
