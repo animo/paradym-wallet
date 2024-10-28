@@ -1,7 +1,21 @@
+import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import type { FormattedSubmission } from '@package/agent'
-import { DualResponseButtons, useScrollViewPosition } from '@package/app'
+import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import {
+  Button,
+  Circle,
+  Heading,
+  HeroIcons,
+  Image,
+  MessageBox,
+  Paragraph,
+  ScrollView,
+  Stack,
+  XStack,
+  YStack,
+  useToastController,
+} from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
@@ -25,8 +39,14 @@ export const ShareCredentialsSlide = ({
   const { onNext } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
+  const pushToWallet = usePushToWallet()
+  const toast = useToastController()
+  const fedDisplayData = getOpenIdFedIssuerMetadata(verifierName as string)
+  if (fedDisplayData) verifierName = fedDisplayData.display.name
 
   if (!submission) {
+    toast.show('No credentials to share!', { customData: { preset: 'danger' } })
+    pushToWallet()
     return null
   }
 
@@ -43,17 +63,17 @@ export const ShareCredentialsSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$6" fg={1}>
-        <Heading>Do you want to share{verifierName && ` with ${verifierName}`}?</Heading>
+      <YStack gap="$4" fg={1}>
+        <Heading>Want to share{verifierName && ` with ${verifierName}`}?</Heading>
         <YStack
           fg={1}
-          btw="$0.5"
           px="$4"
           mx="$-4"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
           onLayout={(event) => {
             if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
           }}
+          btw="$0.5"
+          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
         >
           <ScrollView
             onScroll={handleScroll}
@@ -61,20 +81,35 @@ export const ShareCredentialsSlide = ({
             contentContainerStyle={{ gap: '$6' }}
             px="$4"
             mx="$-4"
+            pt="$4"
             maxHeight={scrollViewHeight}
             bg="$white"
           >
             <YStack gap="$2">
-              <Heading variant="sub1" fontWeight="$semiBold">
-                Verifier's Intent
-              </Heading>
-              <MessageBox
-                variant="light"
-                message={
-                  submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
-                }
-                icon={<HeroIcons.ChatBubbleBottomCenterTextFilled color="$grey-700" />}
-              />
+              <XStack gap="$2">
+                <Heading variant="sub2">PURPOSE</Heading>
+              </XStack>
+
+              <XStack gap="$2" bg="$grey-50" px="$4" py="$3" borderRadius="$8">
+                <Paragraph f={1}>
+                  {submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'}
+                </Paragraph>
+
+                <Circle size="$4">
+                  {fedDisplayData?.display.logo?.url ? (
+                    <Image
+                      circle
+                      src={fedDisplayData.display.logo.url}
+                      alt={fedDisplayData.display.logo.altText}
+                      width="100%"
+                      height="100%"
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <HeroIcons.BuildingOffice color="$grey-800" size={36} />
+                  )}
+                </Circle>
+              </XStack>
             </YStack>
             <RequestedAttributesSection submission={submission} />
             <Spacer />

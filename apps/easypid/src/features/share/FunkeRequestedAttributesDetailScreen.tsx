@@ -20,8 +20,7 @@ import { useRouter } from 'solito/router'
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
 import { useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
 
-import { usePidCredential } from '@easypid/hooks'
-import { useCredentialsForDisplay } from '@package/agent'
+import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useNavigation } from 'expo-router'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -41,15 +40,13 @@ export function FunkeRequestedAttributesDetailScreen({
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const { isLoading, credentials } = useCredentialsForDisplay()
+  const { isLoading, credentials } = useCredentialsWithCustomDisplay()
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const [isMetadataVisible, setIsMetadataVisible] = useState(false)
   const navigation = useNavigation()
 
-  const { credential: pidCredential } = usePidCredential()
-  const credential = credentials.find((cred) => cred.id.includes(id))
-  const activeCredential = pidCredential?.id.includes(id) ? pidCredential : credential
+  const activeCredential = credentials.find((cred) => cred.id.includes(id))
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [elementPosition, setElementPosition] = useState(0)
@@ -87,7 +84,7 @@ export function FunkeRequestedAttributesDetailScreen({
 
   if (isLoading) return null
 
-  if (!credential) {
+  if (!activeCredential) {
     toast.show('Error getting credential details', {
       message: 'Credential not found',
       customData: {

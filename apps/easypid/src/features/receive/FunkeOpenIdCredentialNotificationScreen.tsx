@@ -108,7 +108,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
               key="verify-issuer"
               name={credential?.display.issuer.name}
               logo={credential?.display.issuer.logo}
-              domain={credential?.display.issuer.domain}
+              domain={credential?.display.issuer.domain as string}
               backgroundColor={credential?.display.backgroundColor}
             />
           ),

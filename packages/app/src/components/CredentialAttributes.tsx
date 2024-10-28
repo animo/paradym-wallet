@@ -36,9 +36,9 @@ export function CredentialAttributes({
               {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
               {(!disableHeader || table.title) && (
                 <Heading
-                  variant={headerStyle === 'small' ? 'h4' : 'h3'}
+                  variant={headerStyle === 'small' ? 'sub2' : 'h3'}
                   pl={headerStyle === 'regular' && '$2'}
-                  fontWeight={headerStyle === 'small' ? '$semiBold' : '$medium'}
+                  // fontWeight={headerStyle === 'small' ? '$semiBold' : '$medium'}
                   secondary
                 >
                   {table.title ?? headerTitle ?? 'Credential information'}

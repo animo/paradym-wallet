@@ -1,90 +1,88 @@
+import { useActivities } from '@easypid/features/activity/activityRecord'
+import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import type { DisplayImage } from '@package/agent'
 
-import { Heading, HeroIcons, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
-import { DualResponseButtons, useWizard } from 'packages/app/src'
-import { Linking } from 'react-native'
+import { Circle, Heading, HeroIcons, Image, InfoButton, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import { useRouter } from 'expo-router'
+import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
+import { formatRelativeDate } from 'packages/utils/src'
 
 interface VerifyPartySlideProps {
+  domain: string
   name?: string
-  domain?: string
   logo?: DisplayImage
   backgroundColor?: string
 }
 
-export const VerifyPartySlide = ({ name, domain, logo, backgroundColor }: VerifyPartySlideProps) => {
+export const VerifyPartySlide = ({ domain, name, logo, backgroundColor }: VerifyPartySlideProps) => {
+  const router = useRouter()
   const { onNext, onCancel } = useWizard()
+  const { activities } = useActivities()
+  const { withHaptics } = useHaptics()
 
-  if (name && domain) {
-    const openUrl = () => {
-      Linking.openURL(`https://${domain}`)
-    }
+  const lastInteraction = activities.find((activity) => activity.entity.host === domain)
 
-    return (
-      <YStack fg={1} jc="space-between">
-        <YStack gap="$6">
-          <Heading>Do you recognize {name}?</Heading>
-          <Stack gap="$4">
-            <Stack alignSelf="flex-start">
-              <XStack pos="relative">
-                {logo?.url ? (
-                  <YStack br="$4" overflow="hidden" height={72} width={72} bg={backgroundColor}>
-                    <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
-                  </YStack>
-                ) : (
-                  <XStack p="$4" bg="$grey-100" borderRadius="$4">
-                    <HeroIcons.BuildingOffice color="$grey-800" size={32} />
-                  </XStack>
-                )}
-                <Stack pos="absolute" top="$-2" right="$-2">
-                  <Stack bg="$positive-500" br="$12" p="$1.5">
-                    <HeroIcons.ShieldCheckFilled strokeWidth={2} color="$white" size={16} />
-                  </Stack>
-                </Stack>
-              </XStack>
-            </Stack>
-            <Paragraph>
-              Watch out for fraud. Only continue if the QR-code is on{' '}
-              <Paragraph onPress={openUrl} fontWeight="$semiBold" color="$primary-500">
-                {domain}
-              </Paragraph>
-              .
-            </Paragraph>
-          </Stack>
-        </YStack>
-        <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">
-          <DualResponseButtons
-            align="horizontal"
-            onAccept={() => onNext()}
-            onDecline={() => onCancel()}
-            acceptText="Yes, continue"
-            declineText="Stop"
-          />
-        </Stack>
-      </YStack>
-    )
+  const fedDisplayData = getOpenIdFedIssuerMetadata(domain)
+  if (fedDisplayData) {
+    name = fedDisplayData.display.name
+    logo = fedDisplayData.display.logo
   }
+
+  const onPressVerifiedIssuer = withHaptics(() => {
+    router.push(`/issuer?domain=${domain}`)
+  })
+
+  const onPressInteraction = withHaptics(() => {
+    router.push(`/activity?host=${domain}`)
+  })
 
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$6">
-        <Heading>This is an unknown party, do you want to continue?</Heading>
-        <Stack gap="$4">
-          <Stack alignSelf="flex-start">
-            <XStack pos="relative">
-              <XStack p="$4" bg="$grey-100" borderRadius="$4">
-                <HeroIcons.BuildingOffice color="$grey-800" size={32} />
-              </XStack>
-              <Stack pos="absolute" top="$-2" right="$-2">
-                <HeroIcons.ExclamationCircleFilled color="$grey-700" />
-              </Stack>
-            </XStack>
+        <YStack gap="$4">
+          <XStack ai="center" pt="$4" jc="center">
+            <Circle size={88} bw="$0.5" borderColor="$grey-100" bg={backgroundColor ?? '$grey-50'}>
+              {logo?.url ? (
+                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
+              ) : (
+                <HeroIcons.BuildingOffice color="$grey-800" size={36} />
+              )}
+            </Circle>
+          </XStack>
+          <Stack gap="$2">
+            <Heading variant="h2" numberOfLines={2} center fontSize={24}>
+              Interact with {name}?
+            </Heading>
+            <Paragraph center px="$4">
+              {name} want’s to request information from your credentials.
+            </Paragraph>
           </Stack>
-          <Paragraph>
-            There is little or no data found about this party. Are you sure you want to share with this party?
-          </Paragraph>
-        </Stack>
+        </YStack>
+
+        <YStack gap="$4">
+          {fedDisplayData ? (
+            <InfoButton
+              variant="positive"
+              title="Verified organisation"
+              description={`Approved by ${fedDisplayData.approvals.length} organisations`}
+              onPress={onPressVerifiedIssuer}
+            />
+          ) : (
+            <InfoButton variant="unknown" title="Unverified organization" description="No approvals found" />
+          )}
+          <InfoButton
+            variant={lastInteraction ? 'interaction-success' : 'interaction-new'}
+            title={lastInteraction ? 'Previous interactions' : 'First time interaction'}
+            description={
+              lastInteraction
+                ? `Last interaction: ${formatRelativeDate(new Date(lastInteraction.date))}`
+                : 'No previous interactions found'
+            }
+            onPress={lastInteraction ? onPressInteraction : undefined}
+          />
+        </YStack>
       </YStack>
-      <Stack borderTopWidth="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4">
+      <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">
         <DualResponseButtons
           align="horizontal"
           onAccept={() => onNext()}

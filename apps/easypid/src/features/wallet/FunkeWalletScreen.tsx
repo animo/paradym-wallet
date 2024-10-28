@@ -18,18 +18,17 @@ import {
 } from '@package/ui'
 import { useRouter } from 'solito/router'
 
-import { usePidCredential } from '@easypid/hooks'
+import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useHaptics, useNetworkCallback } from '@package/app/src/hooks'
-import { type CredentialDisplay, useCredentialsForDisplay } from 'packages/agent/src'
+import type { CredentialDisplay } from 'packages/agent/src'
 import { FunkeCredentialCard } from 'packages/app'
 import { FadeIn, FadeInDown, ZoomIn, useAnimatedStyle } from 'react-native-reanimated'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
-  const { isLoading, credentials } = useCredentialsForDisplay()
+  const { isLoading, credentials } = useCredentialsWithCustomDisplay()
   const onResetWallet = useWalletReset()
-  const { credential: pidCredential } = usePidCredential()
   const { withHaptics } = useHaptics()
 
   const pushToMenu = withHaptics(() => push('/menu'))
@@ -118,12 +117,7 @@ export function FunkeWalletScreen() {
         <ScrollView p="$4" py="$7" gap="$2">
           <AnimatedStack position="relative" mb={BASE_CREDENTIAL_CARD_HEIGHT + credentials.length * 72}>
             {credentials.map((credential, idx) => (
-              <AnimatedCredentialCard
-                key={credential.id}
-                display={credential.id === pidCredential?.id ? pidCredential?.display : credential.display}
-                id={credential.id}
-                index={idx}
-              />
+              <AnimatedCredentialCard key={credential.id} display={credential.display} id={credential.id} index={idx} />
             ))}
           </AnimatedStack>
         </ScrollView>

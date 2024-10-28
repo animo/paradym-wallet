@@ -1,14 +1,25 @@
-import { Circle, FlexPage, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
+import {
+  Circle,
+  FlexPage,
+  Heading,
+  HeroIcons,
+  Image,
+  MessageBox,
+  Paragraph,
+  ScrollView,
+  Stack,
+  XStack,
+  YStack,
+} from '@package/ui'
 import React from 'react'
 import { createParam } from 'solito'
 
-import { TextBackButton, activityInteractions } from '@package/app'
+import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import { CardWithAttributes, TextBackButton, activityInteractions } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
-import { useCredentialsForDisplay } from 'packages/agent/src'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
-import { CardWithAttributes } from '../share/components/RequestedAttributesSection'
 import { useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
 
@@ -20,7 +31,7 @@ export function FunkeActivityDetailScreen() {
   const { bottom } = useSafeAreaInsets()
 
   const { activities } = useActivities()
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentialsWithCustomDisplay()
   const activity = activities.find((activity) => activity.id === params.id)
 
   if (!activity || activity.type === 'received') {
@@ -53,22 +64,36 @@ export function FunkeActivityDetailScreen() {
               </Heading>
               <Paragraph textAlign="center">{formatRelativeDate(new Date(activity.date), undefined, true)}</Paragraph>
             </Stack>
-            <Stack gap="$4">
-              <Stack h="$0.5" bg="$grey-50" mx="$-4" />
-              <Stack gap="$2">
-                <Heading variant="sub1" fontWeight="$semiBold">
-                  Verifier's Intent
-                </Heading>
+            <Stack h={1} my="$2" bg="$grey-100" />
+            <Stack gap="$6">
+              <Stack gap="$3">
+                <Heading variant="sub2">Purpose</Heading>
+                <YStack gap="$2">
+                  <XStack gap="$2" bg="$grey-50" px="$4" py="$3" borderRadius="$8">
+                    <Paragraph f={1}>
+                      {activity.request.purpose ?? 'No information was provided on the purpose of the data request.'}
+                    </Paragraph>
 
-                <MessageBox
-                  variant="light"
-                  message={activity.request.purpose ?? ''}
-                  icon={<HeroIcons.ChatBubbleBottomCenterTextFilled color="$grey-700" />}
-                />
+                    <Circle size="$4">
+                      {activity.entity.logo?.url ? (
+                        <Image
+                          circle
+                          src={activity.entity.logo.url}
+                          alt={activity.entity.name}
+                          width="100%"
+                          height="100%"
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <HeroIcons.BuildingOffice color="$grey-800" size={36} />
+                      )}
+                    </Circle>
+                  </XStack>
+                </YStack>
               </Stack>
-              <Stack gap="$4">
+              <Stack gap="$3">
                 <Stack gap="$2">
-                  <Heading variant="sub1" fontWeight="$semiBold">
+                  <Heading variant="sub2">
                     {activity.status === 'success' ? 'Shared attributes' : 'Requested information'}
                   </Heading>
                   <Paragraph>
@@ -87,6 +112,8 @@ export function FunkeActivityDetailScreen() {
                           key={credential.id}
                           id={credential.id}
                           name={credential.display.name}
+                          issuerImage={credential.display.issuer.logo}
+                          textColor={credential.display.textColor}
                           backgroundColor={credential.display.backgroundColor}
                           backgroundImage={credential.display.backgroundImage}
                           disclosedAttributes={activityCredential.disclosedAttributes ?? []}

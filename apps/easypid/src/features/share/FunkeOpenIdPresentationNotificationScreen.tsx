@@ -18,6 +18,7 @@ import {
   requestSdJwtVcFromSeedCredential,
 } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
+import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
 import { addSharedActivity } from '../activity/activityRecord'
@@ -38,7 +39,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
-
   const { agent } = useAppAgent()
   const { seedCredential } = useSeedCredentialPidData()
   const { credential: pidCredential } = usePidCredential()
@@ -46,6 +46,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const [credentialsForRequest, setCredentialsForRequest] =
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
   const [isSharing, setIsSharing] = useState(false)
+
+  const fedDisplayData = useMemo(
+    () => credentialsForRequest && getOpenIdFedIssuerMetadata(credentialsForRequest?.verifierHostName ?? ''),
+    [credentialsForRequest]
+  )
 
   const submission = useMemo(() => {
     if (!credentialsForRequest) return undefined
@@ -152,8 +157,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       await addSharedActivity(agent, {
         status: 'success',
         entity: {
-          name: credentialsForRequest.verifierHostName,
+          name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest.verifierHostName,
           did: credentialsForRequest.authorizationRequest.issuer as string,
+          logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
         },
         request: {
           name: submission.name,
@@ -189,7 +195,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         },
       }
     }
-  }, [submission, credentialsForRequest, agent, credentialsWithDisclosedPayload])
+  }, [submission, credentialsForRequest, agent, credentialsWithDisclosedPayload, fedDisplayData])
 
   const onProofAcceptWithSeedCredential = async (pin: string): Promise<PresentationRequestResult> => {
     return await requestSdJwtVcFromSeedCredential({
@@ -253,7 +259,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     const activityData = {
       entity: {
         did: credentialsForRequest?.authorizationRequest.issuer as string,
-        name: credentialsForRequest?.verifierHostName,
+        name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest?.verifierHostName,
+        logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
       },
       request: {
         name: submission?.name,
