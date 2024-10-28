@@ -40,9 +40,9 @@ export function FunkeActivityDetailScreen() {
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack gap="$4" marginBottom={bottom}>
           <Stack h="$8" jc="center" ai="center" pos="relative">
-            <Circle pos="absolute" size="$7" bg={Icon.color} opacity={0.1} />
-            <Circle pos="absolute" size="$5" bg={Icon.color} opacity={0.3} />
-            <Circle size="$3" bg={Icon.color}>
+            <Circle pos="absolute" size={72} bg={Icon.color} opacity={0.1} />
+            <Circle pos="absolute" size={58} bg={Icon.color} opacity={0.2} />
+            <Circle size="$4" bg={Icon.color}>
               <Icon.icon strokeWidth={2} color="$white" />
             </Circle>
           </Stack>
@@ -98,7 +98,7 @@ export function FunkeActivityDetailScreen() {
                         backgroundColor="$primary-500"
                         disclosedAttributes={activityCredential.disclosedAttributes ?? []}
                         disclosedPayload={activityCredential.disclosedPayload ?? {}}
-                        disableNavigation={activity.status !== 'success'}
+                        disableNavigation={true}
                       />
                     )
                   })
