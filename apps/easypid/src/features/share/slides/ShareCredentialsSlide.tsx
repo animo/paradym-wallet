@@ -1,5 +1,5 @@
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
-import type { FormattedSubmission } from '@package/agent'
+import type { DisplayImage, FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
 import {
@@ -22,6 +22,8 @@ import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotifi
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface ShareCredentialsSlideProps {
+  logo?: DisplayImage
+
   onAccept?: () => Promise<PresentationRequestResult>
   submission?: FormattedSubmission
   onDecline: () => void
@@ -30,6 +32,7 @@ interface ShareCredentialsSlideProps {
 }
 
 export const ShareCredentialsSlide = ({
+  logo,
   submission,
   onAccept,
   onDecline,
@@ -41,8 +44,6 @@ export const ShareCredentialsSlide = ({
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const pushToWallet = usePushToWallet()
   const toast = useToastController()
-  const fedDisplayData = getOpenIdFedIssuerMetadata(verifierName as string)
-  if (fedDisplayData) verifierName = fedDisplayData.display.name
 
   if (!submission) {
     toast.show('No credentials to share!', { customData: { preset: 'danger' } })
@@ -96,15 +97,8 @@ export const ShareCredentialsSlide = ({
                 </Paragraph>
 
                 <Circle size="$4">
-                  {fedDisplayData?.display.logo?.url ? (
-                    <Image
-                      circle
-                      src={fedDisplayData.display.logo.url}
-                      alt={fedDisplayData.display.logo.altText}
-                      width="100%"
-                      height="100%"
-                      resizeMode="cover"
-                    />
+                  {logo?.url ? (
+                    <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
                   ) : (
                     <HeroIcons.BuildingOffice color="$grey-800" size={36} />
                   )}

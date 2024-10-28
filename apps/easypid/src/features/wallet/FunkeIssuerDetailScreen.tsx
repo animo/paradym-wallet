@@ -79,7 +79,7 @@ export function FunkeIssuerDetailScreen({ host }: FunkeIssuerDetailScreenProps) 
           <YStack gap="$4" py="$2">
             <YStack gap="$2">
               <Heading variant="sub2">Approvals</Heading>
-              <Paragraph>A list of companies that have approved {data.display.name}.</Paragraph>
+              <Paragraph>A list of entities that have approved {data.display.name}.</Paragraph>
             </YStack>
             <YStack gap="$2">
               {data.approvals.map((approval) => (
@@ -106,8 +106,8 @@ export function FunkeIssuerDetailScreen({ host }: FunkeIssuerDetailScreenProps) 
           </YStack>
           <YStack gap="$4" py="$2">
             <YStack gap="$2">
-              <Heading variant="sub2">Certifications</Heading>
-              <Paragraph>Trust marks acquired by {data.display.name}.</Paragraph>
+              <Heading variant="sub2">Trust marks</Heading>
+              <Paragraph>Certifications that verify {data.display.name}'s security and quality standards.</Paragraph>
             </YStack>
             <XStack flexWrap="wrap" gap="$2">
               {data.certifications.map((certification) => (

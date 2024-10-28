@@ -85,12 +85,9 @@ export function FunkeActivityDetailScreen() {
                     {activity.status === 'success' ? 'Shared attributes' : 'Requested information'}
                   </Heading>
                   <Paragraph>
-                    {activity.status === 'success'
-                      ? `These ${activity.request.credentials.length} credentials were shared.`
-                      : 'No attributes were shared.'}
+                    {activity.status === 'success' ? 'Credentials were shared' : 'No credentials were shared.'}
                   </Paragraph>
                 </Stack>
-
                 {activity.request.credentials && activity.request.credentials.length > 0 ? (
                   activity.request.credentials.map((activityCredential) => {
                     const credential = credentials.find((credential) => credential.id.includes(activityCredential.id))

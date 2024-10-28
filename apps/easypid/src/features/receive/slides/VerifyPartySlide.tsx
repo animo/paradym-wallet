@@ -53,7 +53,7 @@ export const VerifyPartySlide = ({
               Interact with {name}?
             </Heading>
             <Paragraph center px="$4">
-              {name} want’s to request information from your credentials.
+              {name} wants to request information from you.
             </Paragraph>
           </Stack>
         </YStack>

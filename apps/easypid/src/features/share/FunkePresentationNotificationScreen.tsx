@@ -72,6 +72,7 @@ export function FunkePresentationNotificationScreen({
                 key="share-credentials"
                 onAccept={usePin ? undefined : onAccept}
                 onDecline={onDecline}
+                logo={logo}
                 verifierName={verifierName}
                 submission={submission}
                 isAccepting={isAccepting}
