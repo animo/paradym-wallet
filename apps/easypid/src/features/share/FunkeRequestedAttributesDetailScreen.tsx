@@ -11,6 +11,7 @@ import {
   Spacer,
   Stack,
   YStack,
+  useScrollToggle,
   useSpringify,
   useToastController,
 } from '@package/ui'
@@ -18,7 +19,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
-import { useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
+import { useHaptics, useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
 
 import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useNavigation } from 'expo-router'
@@ -43,13 +44,12 @@ export function FunkeRequestedAttributesDetailScreen({
   const { isLoading, credentials } = useCredentialsWithCustomDisplay()
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
-  const [isMetadataVisible, setIsMetadataVisible] = useState(false)
+  const { withHaptics } = useHaptics()
   const navigation = useNavigation()
 
   const activeCredential = credentials.find((cred) => cred.id.includes(id))
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [elementPosition, setElementPosition] = useState(0)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
 
   useEffect(() => {
@@ -58,29 +58,18 @@ export function FunkeRequestedAttributesDetailScreen({
     })
   }, [navigation])
 
-  const toggleMetadataVisibility = () => {
+  const {
+    isVisible: isMetadataVisible,
+    setElementPosition,
+    toggle,
+  } = useScrollToggle({
+    scrollRef: scrollViewRef,
+  })
+
+  const handleToggleMetadata = withHaptics(() => {
     setIsSheetOpen(false)
-
-    // Delay to allow the sheet to close
-    setTimeout(() => {
-      const newMetadataVisibility = !isMetadataVisible
-
-      if (!newMetadataVisibility) {
-        // If metadata is set to false, scroll to 0 immediately
-        scrollViewRef.current?.scrollTo({ y: 0, animated: true })
-        setTimeout(() => {
-          setIsMetadataVisible(false)
-        }, 100)
-      } else {
-        // Delay 300ms and then scroll
-        setIsMetadataVisible(true)
-        setTimeout(() => {
-          // 164 is added to account for the absolute position of the header
-          scrollViewRef.current?.scrollTo({ y: elementPosition + 164, animated: true })
-        }, 300)
-      }
-    }, 200)
-  }
+    toggle()
+  })
 
   if (isLoading) return null
 
@@ -167,7 +156,7 @@ export function FunkeRequestedAttributesDetailScreen({
           {
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
             title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
-            onPress: toggleMetadataVisibility,
+            onPress: handleToggleMetadata,
           },
         ]}
       />
