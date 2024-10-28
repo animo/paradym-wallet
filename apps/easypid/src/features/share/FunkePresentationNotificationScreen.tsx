@@ -10,7 +10,7 @@ import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface FunkePresentationNotificationScreenProps {
   host: string
-  verifierName: string
+  verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
   approvalsCount?: number
@@ -51,8 +51,6 @@ export function FunkePresentationNotificationScreen({
             step: 'verify-issuer',
             progress: 33,
             backIsCancel: true,
-            // FIXME: Verifier info for proof requests will be added with OpenID Federation
-            // For now, it will only use the domain from the request
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"

@@ -19,6 +19,7 @@ import {
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
+import { RequestPurposeSection } from '../components/RequestPurposeSection'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface ShareCredentialsSlideProps {
@@ -65,7 +66,7 @@ export const ShareCredentialsSlide = ({
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4" fg={1}>
-        <Heading>Want to share{verifierName && ` with ${verifierName}`}?</Heading>
+        <Heading>Review the request</Heading>
         <YStack
           fg={1}
           px="$4"
@@ -86,25 +87,12 @@ export const ShareCredentialsSlide = ({
             maxHeight={scrollViewHeight}
             bg="$white"
           >
-            <YStack gap="$2">
-              <XStack gap="$2">
-                <Heading variant="sub2">PURPOSE</Heading>
-              </XStack>
-
-              <XStack gap="$2" bg="$grey-50" px="$4" py="$3" borderRadius="$8">
-                <Paragraph f={1}>
-                  {submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'}
-                </Paragraph>
-
-                <Circle size="$4">
-                  {logo?.url ? (
-                    <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
-                  ) : (
-                    <HeroIcons.BuildingOffice color="$grey-800" size={36} />
-                  )}
-                </Circle>
-              </XStack>
-            </YStack>
+            <RequestPurposeSection
+              purpose={
+                submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
+              }
+              logo={logo}
+            />
             <RequestedAttributesSection submission={submission} />
             <Spacer />
           </ScrollView>

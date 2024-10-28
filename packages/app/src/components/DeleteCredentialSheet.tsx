@@ -1,5 +1,7 @@
 import { type CredentialForDisplayId, deleteCredential, useAgent } from '@package/agent/src'
 import { useToastController } from '@package/ui'
+import { useNavigation } from 'expo-router'
+import { router } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
 
@@ -13,10 +15,12 @@ interface DeleteCredentialSheetProps {
 export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }: DeleteCredentialSheetProps) {
   const toast = useToastController()
   const { agent } = useAgent()
+  const navigation = useNavigation()
   const { withHaptics, successHaptic, errorHaptic } = useHaptics()
 
   const onDeleteCredential = async () => {
     try {
+      navigation.goBack()
       await deleteCredential(agent, id)
       toast.show('Card successfully archived', {
         customData: {

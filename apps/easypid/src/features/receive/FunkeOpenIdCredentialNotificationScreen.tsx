@@ -13,7 +13,7 @@ import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useEffect, useMemo, useState } from 'react'
 import { createParam } from 'solito'
-import { addReceivedActivity } from '../activity/activityRecord'
+import { addReceivedActivity, useActivities } from '../activity/activityRecord'
 import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { OfferCredentialSlide } from './slides/OfferCredentialSlide'
@@ -27,6 +27,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   const { agent } = useAppAgent()
   const toast = useToastController()
   const { params } = useParams()
+  const { activities } = useActivities()
   const pushToWallet = usePushToWallet()
 
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord>()
@@ -63,6 +64,11 @@ export function FunkeOpenIdCredentialNotificationScreen() {
       credential?.display.issuer.domain ? getOpenIdFedIssuerMetadata(credential.display.issuer.domain) : undefined,
     [credential]
   )
+
+  const lastInteractionDate = useMemo(() => {
+    const activity = activities.find((activity) => activity.entity.did === credential?.metadata.issuer)
+    return activity?.date
+  }, [activities, credential])
 
   const onCredentialAccept = async () => {
     if (!credentialRecord) return
@@ -114,10 +120,12 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           screen: (
             <VerifyPartySlide
               key="verify-issuer"
-              name={issuerMetadata?.display.name ?? 'Unknown'}
-              logo={issuerMetadata?.display.logo}
+              name={issuerMetadata?.display.name ?? credential?.display.issuer.name}
+              logo={issuerMetadata?.display.logo ?? credential?.display.issuer.logo}
               host={credential?.display.issuer.domain as string}
               backgroundColor={credential?.display.backgroundColor}
+              lastInteractionDate={lastInteractionDate}
+              approvalsCount={issuerMetadata?.approvals.length}
             />
           ),
         },

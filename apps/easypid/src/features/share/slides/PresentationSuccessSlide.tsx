@@ -64,9 +64,10 @@ export const PresentationSuccessSlide = ({ verifierName, onComplete }: Presentat
         <YStack gap="$4" p="$4" ai="center">
           <Heading>Success!</Heading>
           <Paragraph ta="center">
-            Your information has been shared{' '}
+            Your information has been shared
             {verifierName && (
               <>
+                {' '}
                 with <Paragraph fontWeight="$semiBold">{verifierName}</Paragraph>
               </>
             )}

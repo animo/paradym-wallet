@@ -93,7 +93,7 @@ export function CardWithAttributes({
               {name.toLocaleUpperCase()}
             </Heading>
           </YStack>
-          <XStack>
+          <XStack h="$3">
             {issuerImage?.url && <Image src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />}
           </XStack>
         </XStack>

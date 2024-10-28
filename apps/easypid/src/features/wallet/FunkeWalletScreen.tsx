@@ -23,7 +23,7 @@ import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useHaptics, useNetworkCallback } from '@package/app/src/hooks'
 import type { CredentialDisplay } from 'packages/agent/src'
 import { FunkeCredentialCard } from 'packages/app'
-import { FadeIn, FadeInDown, ZoomIn, useAnimatedStyle } from 'react-native-reanimated'
+import { FadeIn, FadeInDown, LinearTransition, ZoomIn, useAnimatedStyle } from 'react-native-reanimated'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
@@ -162,7 +162,12 @@ function AnimatedCredentialCard({
   })
 
   return (
-    <AnimatedStack position="absolute" width="100%" style={animatedStyle}>
+    <AnimatedStack
+      position="absolute"
+      width="100%"
+      style={animatedStyle}
+      layout={LinearTransition.duration(300).springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05)}
+    >
       <FunkeCredentialCard
         issuerImage={display.issuer.logo}
         backgroundImage={display.backgroundImage}

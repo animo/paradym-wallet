@@ -1,4 +1,3 @@
-import type { TempOpenIdFedApproval } from '@easypid/utils/issuer'
 import type { DisplayImage } from '@package/agent'
 
 import { Circle, Heading, HeroIcons, Image, InfoButton, Paragraph, Stack, XStack, YStack } from '@package/ui'
@@ -8,7 +7,7 @@ import { formatRelativeDate } from 'packages/utils/src'
 
 interface VerifyPartySlideProps {
   host: string
-  name: string
+  name?: string
   logo?: DisplayImage
   backgroundColor?: string
   lastInteractionDate?: string
@@ -50,10 +49,12 @@ export const VerifyPartySlide = ({
           </XStack>
           <Stack gap="$2">
             <Heading variant="h2" numberOfLines={2} center fontSize={24}>
-              Interact with {name}?
+              {name ? `Interact with ${name}?` : 'Organization not verified'}
             </Heading>
             <Paragraph center px="$4">
-              {name} wants to request information from you.
+              {name
+                ? `${name} wants to request information from you.`
+                : 'An unknown organization wants to request information from you.'}
             </Paragraph>
           </Stack>
         </YStack>
@@ -67,7 +68,7 @@ export const VerifyPartySlide = ({
               onPress={onPressVerifiedIssuer}
             />
           ) : (
-            <InfoButton variant="unknown" title="Unverified organization" description="No approvals found" />
+            <InfoButton variant="unknown" title="Unverified organization" description="No trust approvals found" />
           )}
           <InfoButton
             variant={lastInteractionDate ? 'interaction-success' : 'interaction-new'}

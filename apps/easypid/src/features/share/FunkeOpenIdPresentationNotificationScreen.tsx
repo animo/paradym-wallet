@@ -302,7 +302,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       submission={submission}
       isAccepting={isSharing}
       host={credentialsForRequest?.verifierHostName as string}
-      verifierName={fedDisplayData?.display.name ?? (credentialsForRequest?.verifierHostName as string)}
+      verifierName={fedDisplayData?.display.name}
       logo={fedDisplayData?.display.logo}
       lastInteractionDate={lastInteractionDate}
       approvalsCount={fedDisplayData?.approvals.length}

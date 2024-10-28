@@ -1,4 +1,4 @@
-import { Circle, FlexPage, Heading, HeroIcons, Image, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
 import React from 'react'
 import { createParam } from 'solito'
 
@@ -8,6 +8,7 @@ import { useScrollViewPosition } from '@package/app/src/hooks'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'solito/router'
+import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
 
@@ -54,31 +55,13 @@ export function FunkeActivityDetailScreen() {
             </Stack>
             <Stack h={1} my="$2" bg="$grey-100" />
             <Stack gap="$6">
-              <Stack gap="$3">
-                <Heading variant="sub2">Purpose</Heading>
-                <YStack gap="$2">
-                  <XStack gap="$2" bg="$grey-50" px="$4" py="$3" borderRadius="$8">
-                    <Paragraph f={1}>
-                      {activity.request.purpose ?? 'No information was provided on the purpose of the data request.'}
-                    </Paragraph>
-
-                    <Circle size="$4">
-                      {activity.entity.logo?.url ? (
-                        <Image
-                          circle
-                          src={activity.entity.logo.url}
-                          alt={activity.entity.name}
-                          width="100%"
-                          height="100%"
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <HeroIcons.BuildingOffice color="$grey-800" size={36} />
-                      )}
-                    </Circle>
-                  </XStack>
-                </YStack>
-              </Stack>
+              <RequestPurposeSection
+                purpose={
+                  activity.request.purpose ??
+                  'No information was provided on the purpose of the data request. Be cautious'
+                }
+                logo={activity.entity.logo}
+              />
               <Stack gap="$3">
                 <Stack gap="$2">
                   <Heading variant="sub2">
@@ -111,6 +94,8 @@ export function FunkeActivityDetailScreen() {
                         key={activityCredential.id}
                         id={activityCredential.id}
                         name="Deleted credential"
+                        textColor="$grey-100"
+                        backgroundColor="$primary-500"
                         disclosedAttributes={activityCredential.disclosedAttributes ?? []}
                         disclosedPayload={activityCredential.disclosedPayload ?? {}}
                         disableNavigation={activity.status !== 'success'}
