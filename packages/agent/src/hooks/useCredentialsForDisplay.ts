@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
+import { pidSchemes } from '../../../../apps/easypid/src/constants'
 import { getCredentialForDisplay } from '../display'
 import { useMdocRecords, useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
-import { pidSchemes } from '../../../../apps/easypid/src/constants'
 
 export const useCredentialsForDisplay = () => {
   const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()
