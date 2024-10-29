@@ -37,13 +37,13 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
                 if (credential.metadata?.type === pidCredential?.type) {
                   const disclosedAttributes = getPidDisclosedAttributeNames(
                     credential?.disclosedPayload ?? {},
-                    credential?.claimFormat as ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                   )
 
                   const disclosedPayload = getPidAttributesForDisplay(
                     credential?.disclosedPayload ?? {},
                     credential?.metadata ?? ({} as CredentialMetadata),
-                    credential?.claimFormat as ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                   )
 
                   return (
