@@ -127,9 +127,6 @@ export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAt
     attributeGroups.push(['Age over', age_equal_or_over])
   }
 
-  // Metadata
-  attributeGroups.push(['Metadata', getPidMetadataAttributesForDisplay(attributes, metadata, ClaimFormat.SdJwtVc)])
-
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
       attributeNameMapping[key] ?? sanitizeString(key),
@@ -198,8 +195,6 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
   if (Object.keys(ageOver).length > 0) {
     attributeGroups.push(['Age over', ageOver])
   }
-
-  attributeGroups.push(['Metadata', getPidMetadataAttributesForDisplay(attributes, metadata, ClaimFormat.MsoMdoc)])
 
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
@@ -409,7 +404,7 @@ export function usePidCredential() {
         attributes,
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
-        attributesForDisplay: getPidAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
+        attributesForDisplay: getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc),
         metadata: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
       }
     }

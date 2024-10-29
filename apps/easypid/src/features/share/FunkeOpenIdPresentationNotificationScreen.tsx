@@ -96,7 +96,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
             credential.metadata?.type === pidCredential?.type
               ? getPidAttributesForDisplay(
                   credential.disclosedPayload ?? {},
-                  credential.metadata ?? ({} as CredentialMetadata),
                   credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                 )
               : credential.disclosedPayload
