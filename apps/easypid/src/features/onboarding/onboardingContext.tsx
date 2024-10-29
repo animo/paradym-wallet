@@ -1,6 +1,6 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
-import { /*MdocRecord, */ TypedArrayEncoder, utils } from '@credo-ts/core'
+import { MdocRecord, utils } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { PinPossiblyReusedError, ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
@@ -711,12 +711,7 @@ export function OnboardingContextProvider({
             entityName: issuerName,
             credentialIds: [credential.id],
           })
-        } /* else if (credential instanceof MdocRecord) {
-          await storeCredential(secureUnlock.context.agent, credential)
-
-          // NOTE: we don't set the userName here as we always get SD-JWT VC and MODC at the same time currently
-          // so it should be set
-        } */
+        }
       }
 
       setCurrentStepName('id-card-complete')

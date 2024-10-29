@@ -1,4 +1,4 @@
-import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import { utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
@@ -30,7 +30,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   const { params } = useParams()
   const pushToWallet = usePushToWallet()
 
-  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord>()
+  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord | MdocRecord>()
   const [errorReason, setErrorReason] = useState<string>()
   const [isAccepted, setIsAccepted] = useState(false)
   const [isStoring, setIsStoring] = useState(false)
@@ -48,10 +48,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        // if (credentialRecord.type === 'MdocRecord') {
-        //   throw new Error('mdoc not supported')
-        // }
-        setCredentialRecord(credentialRecord as W3cCredentialRecord | SdJwtVcRecord)
+        setCredentialRecord(credentialRecord as W3cCredentialRecord | SdJwtVcRecord | MdocRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error: e,

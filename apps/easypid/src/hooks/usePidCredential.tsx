@@ -3,6 +3,7 @@ import { useSeedCredentialPidData } from '@easypid/storage'
 import { type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
 import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 import { useMemo } from 'react'
+import { pidSchemes } from '../constants'
 
 type Attributes = {
   given_name: string
@@ -78,7 +79,7 @@ const attributeNameMapping = {
 export function getPidAttributesForDisplay(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
   metadata: CredentialMetadata,
-  claimFormat: ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
     return getSdJwtPidAttributesForDisplay(attributes, metadata)
@@ -242,7 +243,7 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
 
 export function getPidDisclosedAttributeNames(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  claimFormat: ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
     return getSdJwtPidDisclosedAttributeNames(attributes)
@@ -406,9 +407,7 @@ export function usePidCredential() {
   const { isLoading: isSeedCredentialLoading } = useSeedCredentialPidData()
 
   const pidCredential = useMemo(() => {
-    const credential = credentials.find(
-      (cred) => cred.metadata.type === 'https://example.bmi.bund.de/credential/pid/1.0'
-    )
+    const credential = credentials.find((cred) => pidSchemes.sdJwtVcVcts.includes(cred.metadata.type))
     if (credential) {
       const attributes = credential.attributes as PidSdJwtVcAttributes
       return {
