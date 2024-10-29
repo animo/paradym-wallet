@@ -1,14 +1,12 @@
-import { type SdJwtVcRecord, type W3cCredentialRecord, getCredentialForDisplay } from '@package/agent'
+import { type MdocRecord, type SdJwtVcRecord, type W3cCredentialRecord, getCredentialForDisplay } from '@package/agent'
 import {
   AnimatedStack,
   Button,
   Heading,
   HeroIcons,
-  Loader,
   Paragraph,
   ScrollView,
   Spacer,
-  Stack,
   XStack,
   YStack,
   useInitialRender,
@@ -35,7 +33,7 @@ import {
 } from 'react-native-reanimated'
 
 interface OfferCredentialSlideProps {
-  credentialRecord?: SdJwtVcRecord | W3cCredentialRecord
+  credentialRecord?: SdJwtVcRecord | W3cCredentialRecord | MdocRecord
   isStoring: boolean
   isAccepted: boolean
   onAccept: () => Promise<void>

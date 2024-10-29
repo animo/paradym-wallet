@@ -1,4 +1,4 @@
-// import type { MdocRecord } from '@credo-ts/core'
+import type { MdocRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
@@ -8,7 +8,7 @@ import {
   storeCredential,
 } from '@package/agent'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
-import { C_SD_JWT_OFFER } from './bdrPidIssuerOffers'
+import { C_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
   private static REDIRECT_URI = 'https://funke.animo.id/redirect'
@@ -16,7 +16,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
     const resolved = await resolveOpenId4VciOffer({
       agent: options.agent,
-      offer: { uri: C_SD_JWT_OFFER },
+      offer: { uri: C_SD_JWT_MDOC_OFFER },
       authorization: {
         clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
         redirectUri: ReceivePidUseCaseCFlow.REDIRECT_URI,
@@ -58,14 +58,14 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
 
       for (const credentialRecord of credentialRecords) {
         if (typeof credentialRecord === 'string') throw new Error('No string expected for c flow')
-        if (credentialRecord.type !== 'SdJwtVcRecord' /*&& credentialRecord.type !== 'MdocRecord' */) {
+        if (credentialRecord.type !== 'SdJwtVcRecord' && credentialRecord.type !== 'MdocRecord') {
           throw new Error(`Unexpected record type ${credentialRecord.type}`)
         }
 
         await storeCredential(this.options.agent, credentialRecord)
       }
 
-      return credentialRecords as Array<SdJwtVcRecord /*| MdocRecord */>
+      return credentialRecords as Array<SdJwtVcRecord | MdocRecord>
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
       if (error instanceof BiometricAuthenticationError) {

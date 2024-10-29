@@ -30,7 +30,6 @@ import {
   V2ProofProtocol,
   WebDidResolver,
   WsOutboundTransport,
-  X509Module,
 } from '@credo-ts/core'
 import {
   IndyVdrAnonCredsRegistry,

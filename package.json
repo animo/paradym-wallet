@@ -48,12 +48,10 @@
 			"@sphereon/oid4vci-common": "https://gitpkg.vercel.app/animo/OID4VC/packages/oid4vci-common?funke",
 			"@sphereon/oid4vci-issuer": "https://gitpkg.vercel.app/animo/OID4VC/packages/issuer?funke",
 			"@sphereon/oid4vci-client": "https://gitpkg.vercel.app/animo/OID4VC/packages/client?funke",
-			"@sphereon/jarm": "https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke",
-			"@sphereon/ssi-types": "0.29.1-unstable.208"
+			"@sphereon/jarm": "https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke"
 		},
 		"patchedDependencies": {
-			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@credo-ts/openid4vc@0.5.11": "patches/@credo-ts__openid4vc@0.5.11.patch"
+			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch"
 		}
 	}
 }

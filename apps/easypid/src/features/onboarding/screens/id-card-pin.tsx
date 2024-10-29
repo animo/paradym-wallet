@@ -71,7 +71,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
             // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
             <YStack key={index} maxWidth={24} flex-1 justifyContent="center" alignItems="center">
               <Paragraph lineHeight={32} size="$6" color="$grey-900" fontWeight="$medium">
-                {digit ?? ' '}
+                {digit ? '*' : ' '}
               </Paragraph>
               <Stack borderBottomWidth={1.5} borderBottomColor="$grey-900" width="100%" />
             </YStack>
