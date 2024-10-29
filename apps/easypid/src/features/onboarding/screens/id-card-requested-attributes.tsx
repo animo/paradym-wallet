@@ -1,7 +1,7 @@
-import { CardWithAttributes } from '@easypid/features/share/components/RequestedAttributesSection'
 import { usePidDisplay } from '@easypid/hooks'
 import { Button, Heading, HeroIcons, Paragraph, Stack, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
+import { CardWithAttributes } from 'packages/app/src'
 import { Circle } from 'tamagui'
 
 interface OnboardingIdCardRequestedAttributesProps {

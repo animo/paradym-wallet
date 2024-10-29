@@ -27,12 +27,12 @@ interface FunkeIssuerDetailScreenProps {
 export function FunkeIssuerDetailScreen({ host }: FunkeIssuerDetailScreenProps) {
   const toast = useToastController()
   const router = useRouter()
-  const { withHaptics, error } = useHaptics()
+  const { withHaptics, errorHaptic } = useHaptics()
   const data = getOpenIdFedIssuerMetadata(host)
 
   if (!data) {
     router.back()
-    error()
+    errorHaptic()
     return toast.show('Currently unavailable.', {
       customData: {
         preset: 'warning',
