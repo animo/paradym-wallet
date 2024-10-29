@@ -8,7 +8,7 @@ interface UseHeaderRightActionProps {
   renderCondition?: boolean
 }
 
-export function useHeaderRightAction({ icon, onPress, renderCondition }: UseHeaderRightActionProps) {
+export function useHeaderRightAction({ icon, onPress, renderCondition = true }: UseHeaderRightActionProps) {
   const navigation = useNavigation()
   useEffect(() => {
     navigation.setOptions({

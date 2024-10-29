@@ -15,8 +15,8 @@ import React, { useState } from 'react'
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
+import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useRouter } from 'expo-router'
-import { useCredentialsForDisplay } from 'packages/agent/src'
 import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -33,7 +33,7 @@ export function FunkeCredentialDetailScreen() {
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
 
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentialsWithCustomDisplay()
   const { credential: pidCredential } = usePidCredential()
   const isPidCredential = pidCredential?.id.includes(params.id)
   const credential = isPidCredential ? pidCredential : credentials.find((cred) => cred.id.includes(params.id))
