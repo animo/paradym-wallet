@@ -5,6 +5,7 @@ import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 import { useMemo } from 'react'
 import germanIssuerImage from '../../assets/german-issuer-image.png'
 import pidBackgroundImage from '../../assets/pid-background.png'
+import { pidSchemes } from '../constants'
 
 type Attributes = {
   given_name: string
@@ -80,7 +81,7 @@ const attributeNameMapping = {
 export function getPidAttributesForDisplay(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
   metadata: CredentialMetadata,
-  claimFormat: ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
     return getSdJwtPidAttributesForDisplay(attributes, metadata)
@@ -130,21 +131,8 @@ export function getSdJwtPidAttributesForDisplay(
     attributeGroups.push(['Age over', age_equal_or_over])
   }
 
-  // TODO: how to disclose holder?
-  const { holder, issuedAt, validUntil, type, ...metadataRest } = metadata
-
   // Metadata
-  attributeGroups.push([
-    'Credential Information',
-    {
-      issuing_authority,
-      issuing_country,
-      ...metadataRest,
-      issuedAt: issuedAt?.toLocaleString(),
-      expiresAt: validUntil?.toLocaleString(),
-      credentialType: type,
-    },
-  ])
+  attributeGroups.push(['Metadata', getPidMetadataAttributesForDisplay(attributes, metadata, ClaimFormat.SdJwtVc)])
 
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
@@ -215,23 +203,7 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
     attributeGroups.push(['Age over', ageOver])
   }
 
-  // TODO: how to disclose holder?
-  const { holder, type, issuer, ...metadataRest } = metadata
-
-  // Metadata
-  attributeGroups.push([
-    'Credential Information',
-    {
-      issuing_authority,
-      issuing_country,
-      ...metadataRest,
-      // TODO: we need to extract some issuer value from mdoc, but not sure
-      issuer: undefined,
-      issuedAt: issuance_date,
-      expiresAt: expiry_date,
-      credentialType: type,
-    },
-  ])
+  attributeGroups.push(['Metadata', getPidMetadataAttributesForDisplay(attributes, metadata, ClaimFormat.MsoMdoc)])
 
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
@@ -242,9 +214,46 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
   ])
 }
 
+export function getPidMetadataAttributesForDisplay(
+  attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
+  metadata: CredentialMetadata,
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+) {
+  if (claimFormat === ClaimFormat.SdJwtVc) {
+    const { holder, issuedAt, validUntil, type, ...metadataRest } = metadata
+    const { issuing_authority, issuing_country } = attributes
+
+    return {
+      issuing_authority,
+      issuing_country,
+      ...metadataRest,
+      issuedAt: issuedAt?.toLocaleString(),
+      expiresAt: validUntil?.toLocaleString(),
+      credentialType: type,
+    }
+  }
+
+  if (claimFormat === ClaimFormat.MsoMdoc) {
+    const { holder, issuedAt, validUntil, type, ...metadataRest } = metadata
+    const { issuing_authority, issuing_country, issuance_date, expiry_date, ...remainingAttributes } =
+      attributes as PidMdocAttributes
+
+    return {
+      issuing_authority,
+      issuing_country,
+      ...metadataRest,
+      // TODO: we need to extract some issuer value from mdoc, but not sure
+      issuer: undefined,
+      issuedAt: issuance_date,
+      expiresAt: expiry_date,
+      credentialType: type,
+    }
+  }
+}
+
 export function getPidDisclosedAttributeNames(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  claimFormat: ClaimFormat.SdJwtVc /* | ClaimFormat.MsoMdoc */
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
     return getSdJwtPidDisclosedAttributeNames(attributes)
@@ -408,9 +417,7 @@ export function usePidCredential() {
   const { isLoading: isSeedCredentialLoading } = useSeedCredentialPidData()
 
   const pidCredential = useMemo(() => {
-    const credential = credentials.find(
-      (cred) => cred.metadata.type === 'https://example.bmi.bund.de/credential/pid/1.0'
-    )
+    const credential = credentials.find((cred) => pidSchemes.sdJwtVcVcts.includes(cred.metadata.type))
     if (credential) {
       const attributes = credential.attributes as PidSdJwtVcAttributes
       return {
@@ -419,8 +426,8 @@ export function usePidCredential() {
         attributes,
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
-        attributesForDisplay: getSdJwtPidAttributesForDisplay(attributes, credential.metadata),
-        metadata: credential.metadata,
+        attributesForDisplay: getPidAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
+        metadata: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
       }
     }
 

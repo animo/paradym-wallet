@@ -1,4 +1,4 @@
-import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import {
   acquireAccessToken,
@@ -26,7 +26,7 @@ export function OpenIdCredentialNotificationScreen() {
   const toast = useToastController()
   const { params } = useParams()
 
-  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord>()
+  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord | MdocRecord>()
   const [isStoring, setIsStoring] = useState(false)
 
   const pushToWallet = useCallback(() => {
@@ -46,9 +46,6 @@ export function OpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        // if (credentialRecord.type === 'MdocRecord') {
-        //   throw new Error('mdoc not supported')
-        // }
         if (typeof credentialRecord === 'string') {
           throw new Error('b prime not supported')
         }

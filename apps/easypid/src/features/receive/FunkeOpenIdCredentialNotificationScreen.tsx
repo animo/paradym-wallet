@@ -1,4 +1,4 @@
-import type { SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import { useAppAgent } from '@easypid/agent'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
@@ -30,7 +30,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   const { activities } = useActivities()
   const pushToWallet = usePushToWallet()
 
-  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord>()
+  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord | MdocRecord>()
   const [errorReason, setErrorReason] = useState<string>()
   const [isAccepted, setIsAccepted] = useState(false)
   const [isStoring, setIsStoring] = useState(false)
@@ -48,7 +48,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        setCredentialRecord(credentialRecord as W3cCredentialRecord | SdJwtVcRecord)
+        setCredentialRecord(credentialRecord as W3cCredentialRecord | SdJwtVcRecord | MdocRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error: e,

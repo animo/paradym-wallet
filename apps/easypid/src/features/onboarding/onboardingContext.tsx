@@ -13,9 +13,7 @@ import { resetWallet } from '@easypid/utils/resetWallet'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
-  type DisplayImage,
   SdJwtVcRecord,
-  getOpenId4VcCredentialMetadata,
 } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
@@ -709,12 +707,7 @@ export function OnboardingContextProvider({
             backgroundColor: '#ffffff',
             credentialIds: [credential.id],
           })
-        } /* else if (credential instanceof MdocRecord) {
-          await storeCredential(secureUnlock.context.agent, credential)
-
-          // NOTE: we don't set the userName here as we always get SD-JWT VC and MODC at the same time currently
-          // so it should be set
-        } */
+        }
       }
 
       setCurrentStepName('id-card-complete')
