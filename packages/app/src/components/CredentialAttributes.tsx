@@ -7,6 +7,8 @@ type CredentialAttributesProps = {
   disableHeader?: boolean
   headerTitle?: string
   headerStyle?: 'regular' | 'small'
+  borderStyle?: 'large' | 'small'
+  attributeWeight?: 'regular' | 'medium'
   noBorder?: boolean
   showDevProps?: boolean
 }
@@ -16,6 +18,8 @@ export function CredentialAttributes({
   disableHeader = false,
   headerTitle,
   headerStyle = 'regular',
+  borderStyle = 'small',
+  attributeWeight = 'regular',
   showDevProps = false,
 }: CredentialAttributesProps) {
   const tables = formatCredentialSubject({
@@ -56,6 +60,8 @@ export function CredentialAttributes({
                 value={row.type === 'string' || row.type === 'imageAndString' ? row.value : undefined}
                 isLastRow={idx === table.rows.length - 1}
                 image={row.type === 'image' || row.type === 'imageAndString' ? row.image : undefined}
+                borderStyle={borderStyle}
+                attributeWeight={attributeWeight}
               />
             ))}
           </TableContainer>

@@ -3,6 +3,8 @@ import { useSeedCredentialPidData } from '@easypid/storage'
 import { type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
 import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 import { useMemo } from 'react'
+import germanIssuerImage from '../../assets/german-issuer-image.png'
+import pidBackgroundImage from '../../assets/pid-background.png'
 import { pidSchemes } from '../constants'
 
 type Attributes = {
@@ -78,20 +80,16 @@ const attributeNameMapping = {
 
 export function getPidAttributesForDisplay(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  metadata: CredentialMetadata,
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
-    return getSdJwtPidAttributesForDisplay(attributes, metadata)
+    return getSdJwtPidAttributesForDisplay(attributes)
   }
 
-  return getMdocPidAttributesForDisplay(attributes, metadata)
+  return getMdocPidAttributesForDisplay(attributes)
 }
 
-export function getSdJwtPidAttributesForDisplay(
-  attributes: Partial<PidSdJwtVcAttributes | Attributes>,
-  metadata: CredentialMetadata
-) {
+export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const {
@@ -129,22 +127,6 @@ export function getSdJwtPidAttributesForDisplay(
     attributeGroups.push(['Age over', age_equal_or_over])
   }
 
-  // TODO: how to disclose holder?
-  const { holder, issuedAt, validUntil, type, ...metadataRest } = metadata
-
-  // Metadata
-  attributeGroups.push([
-    'Credential Information',
-    {
-      issuing_authority,
-      issuing_country,
-      ...metadataRest,
-      issuedAt: issuedAt?.toLocaleString(),
-      expiresAt: validUntil?.toLocaleString(),
-      credentialType: type,
-    },
-  ])
-
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
       attributeNameMapping[key] ?? sanitizeString(key),
@@ -154,7 +136,7 @@ export function getSdJwtPidAttributesForDisplay(
   ])
 }
 
-export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>, metadata: CredentialMetadata) {
+export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const {
@@ -214,24 +196,6 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
     attributeGroups.push(['Age over', ageOver])
   }
 
-  // TODO: how to disclose holder?
-  const { holder, type, issuer, ...metadataRest } = metadata
-
-  // Metadata
-  attributeGroups.push([
-    'Credential Information',
-    {
-      issuing_authority,
-      issuing_country,
-      ...metadataRest,
-      // TODO: we need to extract some issuer value from mdoc, but not sure
-      issuer: undefined,
-      issuedAt: issuance_date,
-      expiresAt: expiry_date,
-      credentialType: type,
-    },
-  ])
-
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
       attributeNameMapping[key] ?? sanitizeString(key),
@@ -241,17 +205,51 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
   ])
 }
 
+export function getPidMetadataAttributesForDisplay(
+  attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
+  metadata: CredentialMetadata,
+  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+) {
+  if (claimFormat === ClaimFormat.SdJwtVc) {
+    const { holder, issuedAt, validUntil, type, ...metadataRest } = metadata
+    const { issuing_authority, issuing_country } = attributes
+
+    return {
+      issuing_authority,
+      issuing_country,
+      ...metadataRest,
+      issuedAt: issuedAt?.toLocaleString(),
+      expiresAt: validUntil?.toLocaleString(),
+      credentialType: type,
+    }
+  }
+
+  if (claimFormat === ClaimFormat.MsoMdoc) {
+    const { holder, issuedAt, validUntil, type, ...metadataRest } = metadata
+    const { issuing_authority, issuing_country, issuance_date, expiry_date, ...remainingAttributes } =
+      attributes as PidMdocAttributes
+
+    return {
+      issuing_authority,
+      issuing_country,
+      ...metadataRest,
+      // TODO: we need to extract some issuer value from mdoc, but not sure
+      issuer: undefined,
+      issuedAt: issuance_date,
+      expiresAt: expiry_date,
+      credentialType: type,
+    }
+  }
+}
+
 export function getPidDisclosedAttributeNames(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
-  if (claimFormat === ClaimFormat.SdJwtVc) {
-    return getSdJwtPidDisclosedAttributeNames(attributes)
-  }
-
-  return getMdocPidDisclosedAttributeNames(attributes)
+  return claimFormat === ClaimFormat.SdJwtVc
+    ? getSdJwtPidDisclosedAttributeNames(attributes)
+    : getMdocPidDisclosedAttributeNames(attributes)
 }
-
 export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAttributes>) {
   const disclosedAttributeNames: string[] = []
   const {
@@ -382,21 +380,6 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
     }
   }
 
-  if (issuing_authority) {
-    disclosedAttributeNames.push('Issuing authority')
-  }
-  if (issuing_country) {
-    disclosedAttributeNames.push('Issuing country')
-  }
-
-  disclosedAttributeNames.push('Issuer')
-  disclosedAttributeNames.push('Issued at')
-
-  // FIXME: should not be included in case of B' flow ( or at least currnetlh the count doesn't match with the displayed attributes)
-  disclosedAttributeNames.push('Expires at')
-
-  disclosedAttributeNames.push('Credential type')
-
   return disclosedAttributeNames
 }
 
@@ -413,11 +396,10 @@ export function usePidCredential() {
       return {
         id: credential.id,
         type: credential.metadata.type,
-        attributes,
+        attributes: getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc),
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
-        attributesForDisplay: getSdJwtPidAttributesForDisplay(attributes, credential.metadata),
-        metadata: credential.metadata,
+        metadata: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
       }
     }
 
@@ -443,7 +425,7 @@ export const usePidDisplay = () => {
       name: 'Bundesdruckerei',
       locale: 'de',
       logo: {
-        url: require('../../assets/german-issuer-image.png'),
+        url: germanIssuerImage,
         altText: 'Logo of German Government',
       },
     },
@@ -453,7 +435,7 @@ export const usePidDisplay = () => {
     textColor: '#2F3544',
     backgroundColor: '#F1F2F0',
     backgroundImage: {
-      url: require('../../assets/pid-background.png'),
+      url: pidBackgroundImage,
       altText: 'Background Image',
     },
   }

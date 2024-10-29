@@ -1,7 +1,7 @@
-import { Stack } from '@package/ui/src'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Portal } from 'tamagui'
 import { Sheet as TamaguiSheet, type SheetProps as TamaguiSheetProps } from 'tamagui'
+import { Stack } from '../base'
 
 export interface FloatingSheetProps extends TamaguiSheetProps {
   isOpen: boolean
@@ -20,9 +20,9 @@ export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: Floatin
         dismissOnSnapToBottom
         animationConfig={{
           type: 'spring',
-          stiffness: 180,
-          damping: 24,
-          mass: 0.2,
+          stiffness: 160,
+          damping: 10,
+          mass: 0.22,
         }}
         {...props}
       >
@@ -34,10 +34,11 @@ export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: Floatin
           enterStyle={{ opacity: 0 }}
           exitStyle={{ opacity: 0 }}
         />
-        <TamaguiSheet.Frame elevation={1} gap="$6" br="$6" w="92%" p="$4" mx="auto">
-          {children}
+        <TamaguiSheet.Frame bg="transparent" px="$4" mb={bottom}>
+          <Stack bg="$white" br="$8" overflow="hidden">
+            {children}
+          </Stack>
         </TamaguiSheet.Frame>
-        <Stack h={bottom} />
       </TamaguiSheet>
     </Portal>
   )
