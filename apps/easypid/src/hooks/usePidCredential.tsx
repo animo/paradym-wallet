@@ -80,20 +80,16 @@ const attributeNameMapping = {
 
 export function getPidAttributesForDisplay(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  metadata: CredentialMetadata,
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
-    return getSdJwtPidAttributesForDisplay(attributes, metadata)
+    return getSdJwtPidAttributesForDisplay(attributes)
   }
 
-  return getMdocPidAttributesForDisplay(attributes, metadata)
+  return getMdocPidAttributesForDisplay(attributes)
 }
 
-export function getSdJwtPidAttributesForDisplay(
-  attributes: Partial<PidSdJwtVcAttributes | Attributes>,
-  metadata: CredentialMetadata
-) {
+export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const {
@@ -131,9 +127,6 @@ export function getSdJwtPidAttributesForDisplay(
     attributeGroups.push(['Age over', age_equal_or_over])
   }
 
-  // Metadata
-  attributeGroups.push(['Metadata', getPidMetadataAttributesForDisplay(attributes, metadata, ClaimFormat.SdJwtVc)])
-
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
       attributeNameMapping[key] ?? sanitizeString(key),
@@ -143,7 +136,7 @@ export function getSdJwtPidAttributesForDisplay(
   ])
 }
 
-export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>, metadata: CredentialMetadata) {
+export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const {
@@ -203,8 +196,6 @@ export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttrib
     attributeGroups.push(['Age over', ageOver])
   }
 
-  attributeGroups.push(['Metadata', getPidMetadataAttributesForDisplay(attributes, metadata, ClaimFormat.MsoMdoc)])
-
   return Object.fromEntries([
     ...Object.entries(remainingAttributes).map(([key, value]) => [
       attributeNameMapping[key] ?? sanitizeString(key),
@@ -255,13 +246,10 @@ export function getPidDisclosedAttributeNames(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
-  if (claimFormat === ClaimFormat.SdJwtVc) {
-    return getSdJwtPidDisclosedAttributeNames(attributes)
-  }
-
-  return getMdocPidDisclosedAttributeNames(attributes)
+  return claimFormat === ClaimFormat.SdJwtVc
+    ? getSdJwtPidDisclosedAttributeNames(attributes)
+    : getMdocPidDisclosedAttributeNames(attributes)
 }
-
 export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAttributes>) {
   const disclosedAttributeNames: string[] = []
   const {
@@ -392,21 +380,6 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
     }
   }
 
-  if (issuing_authority) {
-    disclosedAttributeNames.push('Issuing authority')
-  }
-  if (issuing_country) {
-    disclosedAttributeNames.push('Issuing country')
-  }
-
-  disclosedAttributeNames.push('Issuer')
-  disclosedAttributeNames.push('Issued at')
-
-  // FIXME: should not be included in case of B' flow ( or at least currnetlh the count doesn't match with the displayed attributes)
-  disclosedAttributeNames.push('Expires at')
-
-  disclosedAttributeNames.push('Credential type')
-
   return disclosedAttributeNames
 }
 
@@ -423,10 +396,9 @@ export function usePidCredential() {
       return {
         id: credential.id,
         type: credential.metadata.type,
-        attributes,
+        attributes: getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc),
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
-        attributesForDisplay: getPidAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
         metadata: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
       }
     }

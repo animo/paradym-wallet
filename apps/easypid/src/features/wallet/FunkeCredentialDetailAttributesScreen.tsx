@@ -3,7 +3,6 @@ import {
   FlexPage,
   Heading,
   HeroIcons,
-  IconContainer,
   MessageBox,
   OptionSheet,
   ScrollView,
@@ -18,7 +17,7 @@ import { CredentialAttributes } from '@package/app/src/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
 
-import { useNavigation, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

@@ -5,7 +5,6 @@ import { useHasInternetConnection } from '@package/app/src/hooks'
 import { OMITTED_CREDENTIAL_ATTRIBUTES } from '@package/app/src/utils'
 import {
   AnimatedStack,
-  Card,
   Heading,
   HeroIcons,
   IconContainer,
@@ -19,7 +18,6 @@ import {
 import { sanitizeString } from '@package/utils/src'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
-import { Circle } from 'tamagui'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission
@@ -51,7 +49,6 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
 
                   const disclosedPayload = getPidAttributesForDisplay(
                     credential?.disclosedPayload ?? {},
-                    credential?.metadata ?? ({} as CredentialMetadata),
                     credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                   )
 
