@@ -8,6 +8,7 @@ interface DualResponseButtonProps {
   declineText?: string
   variant?: 'confirmation' | 'regular'
   align?: 'horizontal' | 'vertical'
+  removeBottomPadding?: boolean
 }
 
 export function DualResponseButtons({
@@ -18,6 +19,7 @@ export function DualResponseButtons({
   acceptText = 'Accept',
   declineText = 'Decline',
   variant = 'regular',
+  removeBottomPadding = false,
 }: DualResponseButtonProps) {
   return (
     <YStack

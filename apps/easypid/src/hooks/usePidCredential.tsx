@@ -80,20 +80,16 @@ const attributeNameMapping = {
 
 export function getPidAttributesForDisplay(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  metadata: CredentialMetadata,
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
-    return getSdJwtPidAttributesForDisplay(attributes, metadata)
+    return getSdJwtPidAttributesForDisplay(attributes)
   }
 
-  return getMdocPidAttributesForDisplay(attributes, metadata)
+  return getMdocPidAttributesForDisplay(attributes)
 }
 
-export function getSdJwtPidAttributesForDisplay(
-  attributes: Partial<PidSdJwtVcAttributes | Attributes>,
-  metadata: CredentialMetadata
-) {
+export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const {
@@ -143,7 +139,7 @@ export function getSdJwtPidAttributesForDisplay(
   ])
 }
 
-export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>, metadata: CredentialMetadata) {
+export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const {
@@ -258,13 +254,10 @@ export function getPidDisclosedAttributeNames(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
-  if (claimFormat === ClaimFormat.SdJwtVc) {
-    return getSdJwtPidDisclosedAttributeNames(attributes)
-  }
-
-  return getMdocPidDisclosedAttributeNames(attributes)
+  return claimFormat === ClaimFormat.SdJwtVc
+    ? getSdJwtPidDisclosedAttributeNames(attributes)
+    : getMdocPidDisclosedAttributeNames(attributes)
 }
-
 export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAttributes>) {
   const disclosedAttributeNames: string[] = []
   const {
@@ -394,21 +387,6 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
       disclosedAttributeNames.push(`Age over ${age}`)
     }
   }
-
-  if (issuing_authority) {
-    disclosedAttributeNames.push('Issuing authority')
-  }
-  if (issuing_country) {
-    disclosedAttributeNames.push('Issuing country')
-  }
-
-  disclosedAttributeNames.push('Issuer')
-  disclosedAttributeNames.push('Issued at')
-
-  // FIXME: should not be included in case of B' flow ( or at least currnetlh the count doesn't match with the displayed attributes)
-  disclosedAttributeNames.push('Expires at')
-
-  disclosedAttributeNames.push('Credential type')
 
   return disclosedAttributeNames
 }

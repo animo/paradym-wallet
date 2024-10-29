@@ -1,6 +1,6 @@
 import type { ClaimFormat } from '@credo-ts/core'
 import { getPidAttributesForDisplay, getPidDisclosedAttributeNames, usePidCredential } from '@easypid/hooks'
-import type { CredentialMetadata, FormattedSubmission } from '@package/agent/src'
+import type { FormattedSubmission } from '@package/agent/src'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { CardWithAttributes } from 'packages/app/src'
 
@@ -18,7 +18,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         <YStack gap="$4">
           <Paragraph>
             {submission.areAllSatisfied
-              ? 'Only the following attributes will be shared. Nothing more.'
+              ? 'Onsly the following attributes will be shared. Nothing more.'
               : `You don't have the requested credential(s).`}
           </Paragraph>
           {submission.entries.map((entry) => (
@@ -32,7 +32,6 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
 
                   const disclosedPayload = getPidAttributesForDisplay(
                     credential?.disclosedPayload ?? {},
-                    credential?.metadata ?? ({} as CredentialMetadata),
                     credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                   )
 
