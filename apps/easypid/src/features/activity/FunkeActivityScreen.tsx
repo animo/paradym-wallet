@@ -76,7 +76,7 @@ export function FunkeActivityScreen({ host }: { host?: string }) {
                       id={activity.id}
                       logo={activity.entity.logo}
                       backgroundColor={activity.entity.backgroundColor}
-                      subtitle={activity.entity.name ?? activity.entity.host ?? 'Unknown'}
+                      subtitle={activity.entity.name ?? activity.entity.host ?? 'Unknown party'}
                       date={new Date(activity.date)}
                       type={activity.type}
                       status={activity.status}

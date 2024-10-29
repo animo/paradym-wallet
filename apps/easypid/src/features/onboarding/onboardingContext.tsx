@@ -704,7 +704,7 @@ export function OnboardingContextProvider({
             did: parsed.prettyClaims.iss,
             name: pidDisplay?.issuer.name,
             logo: pidDisplay?.issuer.logo,
-            backgroundColor: '#ffffff',
+            backgroundColor: '#ffffff', // PID Logo needs white background
             credentialIds: [credential.id],
           })
         }

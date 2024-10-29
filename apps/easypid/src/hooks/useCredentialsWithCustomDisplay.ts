@@ -1,4 +1,4 @@
-import { useCredentialsForDisplay } from 'packages/agent/src'
+import { type CredentialForDisplay, useCredentialsForDisplay } from 'packages/agent/src'
 import { usePidCredential } from './usePidCredential'
 
 export const useCredentialsWithCustomDisplay = () => {
@@ -10,8 +10,7 @@ export const useCredentialsWithCustomDisplay = () => {
     (credential) => credential.metadata.type === pidCredential.credential?.type
   )
   if (index !== -1 && pidCredential.credential) {
-    // @ts-expect-error
-    credentials.credentials[index] = pidCredential.credential
+    credentials.credentials[index] = pidCredential.credential as CredentialForDisplay
   }
 
   return credentials
