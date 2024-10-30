@@ -119,7 +119,6 @@ export function FunkeOpenIdCredentialNotificationScreen() {
               host={credential?.display.issuer.domain as string}
               backgroundColor={credential?.display.backgroundColor}
               lastInteractionDate={activities[0]?.date}
-              approvalsCount={0}
             />
           ),
         },
