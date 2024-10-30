@@ -9,7 +9,6 @@ import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface FunkePresentationNotificationScreenProps {
-  did: string
   host: string
   verifierName?: string
   logo?: DisplayImage
@@ -26,7 +25,6 @@ interface FunkePresentationNotificationScreenProps {
 }
 
 export function FunkePresentationNotificationScreen({
-  did,
   host,
   verifierName,
   logo,
@@ -58,7 +56,6 @@ export function FunkePresentationNotificationScreen({
                 key="verify-issuer"
                 name={verifierName}
                 host={host}
-                did={did}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
                 approvalsCount={approvalsCount}

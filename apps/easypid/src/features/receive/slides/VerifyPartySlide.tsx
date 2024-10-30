@@ -6,7 +6,6 @@ import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
 import { formatRelativeDate } from 'packages/utils/src'
 
 interface VerifyPartySlideProps {
-  did: string
   host: string
   name?: string
   logo?: DisplayImage
@@ -16,7 +15,6 @@ interface VerifyPartySlideProps {
 }
 
 export const VerifyPartySlide = ({
-  did,
   host,
   name,
   logo,
@@ -33,7 +31,7 @@ export const VerifyPartySlide = ({
   })
 
   const onPressInteraction = withHaptics(() => {
-    router.push(`/activity?did=${did}`)
+    router.push(`/activity?host=${host}`)
   })
 
   return (

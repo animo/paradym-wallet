@@ -6,8 +6,8 @@ import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 import { useActivities } from './activityRecord'
 
-export function FunkeActivityScreen({ did }: { did?: string }) {
-  const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { did } })
+export function FunkeActivityScreen({ host }: { host?: string }) {
+  const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { host } })
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
