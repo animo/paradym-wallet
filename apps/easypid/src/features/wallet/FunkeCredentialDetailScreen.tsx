@@ -60,8 +60,8 @@ export function FunkeCredentialDetailScreen() {
     router.push({
       pathname: '/credentials/[id]/attributes',
       params: {
-        attributes: JSON.stringify(credential.attributes),
-        metadata: JSON.stringify(credential.metadata),
+        attributes: JSON.stringify(credential.attributesForDisplay ?? credential.attributes),
+        metadata: JSON.stringify(credential.metadataForDisplay ?? credential.metadata),
       },
     })
   })

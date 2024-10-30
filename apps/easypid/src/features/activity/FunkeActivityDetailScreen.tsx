@@ -93,8 +93,7 @@ export function FunkeActivityDetailScreen() {
                         />
                       )
 
-                    // @ts-expect-error
-                    if (isPidCredential(credential.type)) {
+                    if (isPidCredential(credential.metadata.type)) {
                       return (
                         <CardWithAttributes
                           key={pidCredential?.id}

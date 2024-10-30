@@ -401,11 +401,12 @@ export function usePidCredential() {
         type: credential.metadata.type,
         claimFormat: ClaimFormat.SdJwtVc,
         createdAt: credential.createdAt,
-        attributes,
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
+        attributes,
         attributesForDisplay: getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc),
-        metadata: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
+        metadata: credential.metadata,
+        metadataForDisplay: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
       }
     }
 

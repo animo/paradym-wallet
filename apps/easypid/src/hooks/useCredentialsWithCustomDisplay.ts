@@ -1,5 +1,10 @@
 import { type CredentialForDisplay, useCredentialsForDisplay } from 'packages/agent/src'
-import { usePidCredential } from './usePidCredential'
+import { type PidSdJwtVcAttributes, usePidCredential } from './usePidCredential'
+
+type CustomCredentialForDisplay = CredentialForDisplay & {
+  attributesForDisplay: PidSdJwtVcAttributes
+  metadataForDisplay: Record<string, unknown>
+}
 
 export const useCredentialsWithCustomDisplay = () => {
   const credentials = useCredentialsForDisplay()
@@ -13,5 +18,8 @@ export const useCredentialsWithCustomDisplay = () => {
     credentials.credentials[index] = pidCredential.credential as CredentialForDisplay
   }
 
-  return credentials
+  return credentials as {
+    credentials: CustomCredentialForDisplay[]
+    isLoading: boolean
+  }
 }
