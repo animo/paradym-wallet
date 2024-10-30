@@ -41,6 +41,10 @@ export function FunkeWalletScreen() {
     handlePressOut: qrHandlePressOut,
   } = useScaleAnimation({ scaleInValue: 0.95 })
 
+  const onTestFlow = () => {
+    push('/notifications/openIdCredentialAuthFlow?uri=test&data=test')
+  }
+
   return (
     <FlexPage p={0} safeArea="b" gap={0}>
       <AnimatedStack entering={FadeIn.duration(200)}>
@@ -74,6 +78,18 @@ export function FunkeWalletScreen() {
           <Paragraph fontWeight="$bold" color="$primary-500">
             Scan QR-Code
           </Paragraph>
+          <Button.Solid
+            h="$3.5"
+            px="$5"
+            br="$12"
+            bg="$grey-100"
+            color="$grey-900"
+            flexDirection="row"
+            onPress={onTestFlow}
+            scaleOnPress
+          >
+            Test
+          </Button.Solid>
         </Stack>
       </AnimatedStack>
       {credentials.length === 0 ? (

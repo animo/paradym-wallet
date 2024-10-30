@@ -72,9 +72,9 @@ import {
   TrashIcon as TrashFilledIcon,
 } from 'react-native-heroicons/solid'
 
-import { ExclamationIcon } from '../../assets/Exclamation'
-
 import { styled } from 'tamagui'
+import { ConnectIcon } from '../../assets/Connect'
+import { ExclamationIcon } from '../../assets/Exclamation'
 
 export const LucideIcons = {
   Trash2,
@@ -167,6 +167,7 @@ export const HeroIcons = {
 
 export const CustomIcons = {
   Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
+  Connect: wrapLocalSvg(ConnectIcon as React.ComponentType<SvgProps>),
 }
 
 export type CustomIconProps = SvgProps & {
@@ -183,7 +184,6 @@ function wrapLocalSvg(SvgComponent: React.ComponentType<CustomIconProps>) {
     {
       accept: {
         color: 'color',
-        size: 'size',
       },
     }
   )

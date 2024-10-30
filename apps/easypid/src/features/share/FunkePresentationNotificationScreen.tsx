@@ -54,6 +54,7 @@ export function FunkePresentationNotificationScreen({
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"
+                type="request"
                 name={verifierName}
                 host={host}
                 logo={logo}

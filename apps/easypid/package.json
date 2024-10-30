@@ -46,6 +46,7 @@
 		"expo-status-bar": "~1.12.1",
 		"expo-system-ui": "~3.0.6",
 		"expo-updates": "~0.25.16",
+		"expo-web-browser": "~13.0.3",
 		"react": "*",
 		"react-native": "*",
 		"react-native-argon2": "^2.0.1",

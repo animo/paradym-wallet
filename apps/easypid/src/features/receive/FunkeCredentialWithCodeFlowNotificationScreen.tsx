@@ -2,18 +2,13 @@ import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/ag
 
 import { useAppAgent } from '@easypid/agent'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
-import {
-  acquireAccessToken,
-  getCredentialForDisplay,
-  receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
-  storeCredential,
-} from '@package/agent'
+
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useEffect, useMemo, useState } from 'react'
 import { createParam } from 'solito'
-import { addReceivedActivity, useActivities } from '../activity/activityRecord'
+import { useActivities } from '../activity/activityRecord'
+import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { OfferCredentialSlide } from './slides/OfferCredentialSlide'
@@ -21,77 +16,70 @@ import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
 type Query = { uri?: string; data?: string }
 
+export type AuthCodeFlowDetails = {
+  domain: string
+  redirectUri: string
+  openUrl: string
+}
+
 const { useParams } = createParam<Query>()
 
-export function FunkeOpenIdCredentialNotificationScreen() {
+// Step 1 - Loading the request
+// Step 2 - Verify the issuer
+// Step 3 - Auth code flow explanation
+// Step 4 - Open browser
+// Step 5 - Loading screen with browser redirect data
+// Step 6 - Show credential received and accept or decline
+
+export function FunkeCredentialWithCodeFlowNotificationScreen() {
   const { agent } = useAppAgent()
   const toast = useToastController()
   const { params } = useParams()
   const { activities } = useActivities()
   const pushToWallet = usePushToWallet()
 
-  const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord | MdocRecord>()
   const [errorReason, setErrorReason] = useState<string>()
   const [isAccepted, setIsAccepted] = useState(false)
   const [isStoring, setIsStoring] = useState(false)
 
-  const credential = credentialRecord ? getCredentialForDisplay(credentialRecord) : undefined
-
-  useEffect(() => {
-    const requestCredential = async (params: Query) => {
-      try {
-        const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({ agent, offer: params })
-        const tokenResponse = await acquireAccessToken({ agent, resolvedCredentialOffer })
-        const [credentialRecord] = await receiveCredentialFromOpenId4VciOffer({
-          agent,
-          resolvedCredentialOffer,
-          accessToken: tokenResponse,
-        })
-
-        setCredentialRecord(credentialRecord as W3cCredentialRecord | SdJwtVcRecord | MdocRecord)
-      } catch (e: unknown) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
-          error: e,
-        })
-        setErrorReason('Credential information could not be extracted')
-      }
-    }
-    void requestCredential(params)
-  }, [params, agent])
+  const [credentialRecord, setCredentialRecord] = useState<SdJwtVcRecord | W3cCredentialRecord | MdocRecord>()
+  const [authCodeFlowDetails, setAuthCodeFlowDetails] = useState<AuthCodeFlowDetails>()
 
   const issuerMetadata = useMemo(
-    () =>
-      credential?.display.issuer.domain ? getOpenIdFedIssuerMetadata(credential.display.issuer.domain) : undefined,
-    [credential]
+    () => getOpenIdFedIssuerMetadata(authCodeFlowDetails?.domain as string),
+    [authCodeFlowDetails?.domain]
   )
 
   const lastInteractionDate = useMemo(() => {
-    const activity = activities.find((activity) => activity.entity.host === credential?.display.issuer.domain)
+    const activity = activities.find((activity) => activity.entity.host === authCodeFlowDetails?.domain)
     return activity?.date
-  }, [activities, credential])
+  }, [activities, authCodeFlowDetails?.domain])
+
+  useEffect(() => {
+    const requestAuthCodeFlowDetails = async (params: Query) => {
+      // === IMPLEMENT HERE ===
+      setAuthCodeFlowDetails({
+        domain: 'funke.animo.id',
+        redirectUri: 'easypid://',
+        openUrl: 'https://example.com',
+      })
+    }
+    void requestAuthCodeFlowDetails(params)
+  }, [params])
+
+  const onAuthFlowCallback = (result: Record<string, unknown>) => {
+    // === IMPLEMENT HERE ===
+    // Use result to obtain credential record
+    setCredentialRecord({} as SdJwtVcRecord)
+  }
 
   const onCredentialAccept = async () => {
-    if (!credentialRecord) return
-
     setIsStoring(true)
-    await storeCredential(agent, credentialRecord)
+    await Promise.resolve()
       .then(async () => {
-        const { display } = getCredentialForDisplay(credentialRecord)
-
-        await addReceivedActivity(agent, {
-          host: display.issuer.domain,
-          name: display.issuer.name,
-          logo: display.issuer.logo ? display.issuer.logo : undefined,
-          backgroundColor: display.backgroundColor, // Might not be accurate for issuer image
-          credentialIds: [credentialRecord.id],
-        })
-
         setIsAccepted(true)
       })
       .catch((e) => {
-        agent.config.logger.error("Couldn't store credential", {
-          error: e as unknown,
-        })
         setErrorReason('Couldn’t store credential')
       })
   }
@@ -110,7 +98,9 @@ export function FunkeOpenIdCredentialNotificationScreen() {
         {
           step: 'loading-request',
           progress: 16.5,
-          screen: <LoadingRequestSlide key="loading-request" isLoading={!credentialRecord} isError={!!errorReason} />,
+          screen: (
+            <LoadingRequestSlide key="loading-request" isLoading={!authCodeFlowDetails} isError={!!errorReason} />
+          ),
         },
         {
           step: 'verify-issuer',
@@ -120,18 +110,34 @@ export function FunkeOpenIdCredentialNotificationScreen() {
             <VerifyPartySlide
               key="verify-issuer"
               type="offer"
-              name={issuerMetadata?.display.name ?? credential?.display.issuer.name}
-              logo={issuerMetadata?.display.logo ?? credential?.display.issuer.logo}
-              host={credential?.display.issuer.domain as string}
-              backgroundColor={credential?.display.backgroundColor}
+              name={issuerMetadata?.display.name ?? 'Example Issuer'}
+              logo={issuerMetadata?.display.logo}
+              host={authCodeFlowDetails?.domain as string}
               lastInteractionDate={lastInteractionDate}
               approvalsCount={issuerMetadata?.approvals.length}
             />
           ),
         },
         {
-          step: 'offer-credential',
+          step: 'auth-code-flow',
+          progress: 49.5,
+          screen: (
+            <AuthCodeFlowSlide
+              key="auth-code-flow"
+              authCodeFlowDetails={authCodeFlowDetails}
+              onAuthFlowCallback={onAuthFlowCallback}
+              onCancel={onCredentialDecline}
+            />
+          ),
+        },
+        {
+          step: 'loading-browser',
           progress: 66,
+          screen: <LoadingRequestSlide key="loading-browser" isLoading={!credentialRecord} isError={!!errorReason} />,
+        },
+        {
+          step: 'offer-credential',
+          progress: 83,
           screen: (
             <OfferCredentialSlide
               key="offer-credential"

@@ -162,6 +162,9 @@ importers:
       expo-updates:
         specifier: ~0.25.16
         version: 0.25.27(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))
+      expo-web-browser:
+        specifier: ~13.0.3
+        version: 13.0.3(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -6155,6 +6158,11 @@ packages:
   expo-updates@0.25.27:
     resolution: {integrity: sha512-1hyYZqBEXcAiEuSRPJ6dINTndGlWi6/bwlyYGjSnyoYfu/vzZQrJ+XA8JUP4EvJ3b0g8a0UOIjlDJ9ke9kMcfg==}
     hasBin: true
+    peerDependencies:
+      expo: '*'
+
+  expo-web-browser@13.0.3:
+    resolution: {integrity: sha512-HXb7y82ApVJtqk8tManyudtTrCtx8xcUnVzmJECeHCB0SsWSQ+penVLZxJkcyATWoJOsFMnfVSVdrTcpKKGszQ==}
     peerDependencies:
       expo: '*'
 
@@ -17632,7 +17640,7 @@ snapshots:
       did-resolver: 4.1.0
       elliptic: 6.6.0
       js-sha3: 0.8.0
-      multiformats: 9.7.1
+      multiformats: 9.9.0
       uint8arrays: 3.1.1
 
   did-jwt@7.4.7:
@@ -17644,7 +17652,7 @@ snapshots:
       canonicalize: 2.0.0
       did-resolver: 4.1.0
       multibase: 4.0.6
-      multiformats: 9.7.1
+      multiformats: 9.9.0
       uint8arrays: 3.1.1
 
   did-jwt@8.0.4:
@@ -18328,6 +18336,10 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  expo-web-browser@13.0.3(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))):
+    dependencies:
+      expo: 51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
 
   expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)):
     dependencies:
