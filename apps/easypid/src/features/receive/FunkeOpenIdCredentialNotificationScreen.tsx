@@ -76,7 +76,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           host: display.issuer.domain,
           name: display.issuer.name,
           logo: display.issuer.logo ? display.issuer.logo : undefined,
-          backgroundColor: display.backgroundColor, // Might not be accurate for issuer image
+          backgroundColor: '#ffffff', // Default to a white background for now
           credentialIds: [credentialRecord.id],
         })
 
@@ -117,7 +117,6 @@ export function FunkeOpenIdCredentialNotificationScreen() {
               name={credential?.display.issuer.name}
               logo={credential?.display.issuer.logo}
               host={credential?.display.issuer.domain as string}
-              backgroundColor={credential?.display.backgroundColor}
               lastInteractionDate={activities[0]?.date}
             />
           ),

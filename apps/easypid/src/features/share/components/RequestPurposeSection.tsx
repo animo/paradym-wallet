@@ -16,7 +16,7 @@ export function RequestPurposeSection({ purpose, logo }: RequestPurposeSectionPr
         icon={
           <Circle size="$4" overflow="hidden">
             {logo?.url ? (
-              <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
+              <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="contain" />
             ) : (
               <Stack bg="$grey-200" width="100%" height="100%" ai="center" jc="center">
                 <HeroIcons.BuildingOffice color="$grey-800" size={24} />
