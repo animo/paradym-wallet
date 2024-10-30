@@ -8,7 +8,7 @@ interface IconContainerProps extends StackProps {
   scaleOnPress?: boolean
 }
 
-export function IconContainer({ icon, scaleOnPress, ...props }: IconContainerProps) {
+export function IconContainer({ icon, scaleOnPress = true, ...props }: IconContainerProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: scaleOnPress ? 0.9 : 1 })
 
   return (
