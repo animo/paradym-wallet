@@ -188,7 +188,7 @@ export const OfferCredentialSlide = ({
             btw="$0.5"
             px="$4"
             mx="$-4"
-            borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+            borderColor={isScrolledByOffset && !isStoringOrCompleted ? '$grey-200' : '$background'}
             onLayout={(event) => {
               if (!scrollViewHeight) {
                 setScrollViewHeight(event.nativeEvent.layout.height)

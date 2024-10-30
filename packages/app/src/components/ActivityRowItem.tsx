@@ -107,7 +107,6 @@ export function ActivityRowItem({
             )}
           </Stack>
           <Stack overflow="hidden" pos="absolute" bg={Icon.color} br="$12" p="$1" bw="$1" boc="$white">
-            {/* @ts-expect-error size prop is correct here */}
             <Icon.icon strokeWidth={3} size={10} color="$white" />
           </Stack>
         </Stack>

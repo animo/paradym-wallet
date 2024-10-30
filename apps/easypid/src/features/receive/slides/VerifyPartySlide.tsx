@@ -6,6 +6,7 @@ import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
 import { formatRelativeDate } from 'packages/utils/src'
 
 interface VerifyPartySlideProps {
+  type: 'offer' | 'request'
   host: string
   name?: string
   logo?: DisplayImage
@@ -15,6 +16,7 @@ interface VerifyPartySlideProps {
 }
 
 export const VerifyPartySlide = ({
+  type,
   host,
   name,
   logo,
@@ -31,7 +33,7 @@ export const VerifyPartySlide = ({
   })
 
   const onPressInteraction = withHaptics(() => {
-    router.push(`/activity?host=${host}`)
+    router.push(`/activity?host=${host}&name=${name}`)
   })
 
   return (
@@ -51,11 +53,17 @@ export const VerifyPartySlide = ({
             <Heading variant="h2" numberOfLines={2} center fontSize={24}>
               {name ? `Interact with ${name}?` : 'Organization not verified'}
             </Heading>
-            <Paragraph center px="$4">
-              {name
-                ? `${name} wants to request information from you.`
-                : 'An unknown organization wants to request information from you.'}
-            </Paragraph>
+            {type === 'offer' ? (
+              <Paragraph center px="$4">
+                {name ? `${name} wants to offer you a card.` : 'An unknown organization wants to offer you a card.'}
+              </Paragraph>
+            ) : (
+              <Paragraph center px="$4">
+                {name
+                  ? `${name} wants to request information from you.`
+                  : 'An unknown organization wants to request information from you.'}
+              </Paragraph>
+            )}
           </Stack>
         </YStack>
 
