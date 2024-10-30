@@ -1,5 +1,10 @@
 import type { ClaimFormat } from '@credo-ts/core'
-import { getPidAttributesForDisplay, getPidDisclosedAttributeNames, usePidCredential } from '@easypid/hooks'
+import {
+  getPidAttributesForDisplay,
+  getPidDisclosedAttributeNames,
+  isPidCredential,
+  usePidCredential,
+} from '@easypid/hooks'
 import type { FormattedSubmission } from '@package/agent/src'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { CardWithAttributes } from 'packages/app/src'
@@ -18,34 +23,30 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         <YStack gap="$4">
           <Paragraph>
             {submission.areAllSatisfied
-              ? 'Onsly the following attributes will be shared. Nothing more.'
+              ? 'Only the following attributes will be shared. Nothing more.'
               : `You don't have the requested credential(s).`}
           </Paragraph>
           {submission.entries.map((entry) => (
             <YStack gap="$4" key={entry.inputDescriptorId}>
               {entry.credentials.map((credential) => {
-                if (credential.metadata?.type === pidCredential?.type) {
-                  const disclosedAttributes = getPidDisclosedAttributeNames(
-                    credential?.disclosedPayload ?? {},
-                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                  )
-
-                  const disclosedPayload = getPidAttributesForDisplay(
-                    credential?.disclosedPayload ?? {},
-                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                  )
-
+                if (isPidCredential(credential.metadata?.type)) {
                   return (
                     <CardWithAttributes
-                      key={credential.id as string}
-                      id={credential.id as string}
+                      key={pidCredential?.id}
+                      id={pidCredential?.id as string}
                       name={pidCredential?.display.name as string}
                       issuerImage={pidCredential?.display.issuer.logo}
                       backgroundImage={pidCredential?.display.backgroundImage}
                       backgroundColor={pidCredential?.display.backgroundColor}
                       textColor={pidCredential?.display.textColor}
-                      disclosedAttributes={disclosedAttributes}
-                      disclosedPayload={disclosedPayload}
+                      disclosedAttributes={getPidDisclosedAttributeNames(
+                        credential?.disclosedPayload ?? {},
+                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                      )}
+                      disclosedPayload={getPidAttributesForDisplay(
+                        credential?.disclosedPayload ?? {},
+                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                      )}
                     />
                   )
                 }

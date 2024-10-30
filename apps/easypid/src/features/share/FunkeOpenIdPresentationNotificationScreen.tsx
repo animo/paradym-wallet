@@ -20,7 +20,7 @@ import {
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
-import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
+import { getPidAttributesForDisplay, isPidCredential, usePidCredential } from '../../hooks'
 import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
@@ -92,22 +92,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     () =>
       submission?.entries.flatMap((entry) => {
         return entry.credentials.map((credential) => {
-          const disclosedPayload =
-            credential.metadata?.type === pidCredential?.type
-              ? getPidAttributesForDisplay(
-                  credential.disclosedPayload ?? {},
-                  credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                )
-              : credential.disclosedPayload
-
           return {
             id: credential.id,
             disclosedAttributes: credential.requestedAttributes ?? [],
-            disclosedPayload,
+            disclosedPayload: credential.disclosedPayload ?? {},
           }
         })
       }),
-    [submission, pidCredential]
+    [submission]
   )
 
   const usePin = useMemo(() => {
@@ -300,6 +292,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
+      did={credentialsForRequest?.authorizationRequest.issuer as string}
       host={credentialsForRequest?.verifierHostName as string}
       verifierName={fedDisplayData?.display.name}
       logo={fedDisplayData?.display.logo}

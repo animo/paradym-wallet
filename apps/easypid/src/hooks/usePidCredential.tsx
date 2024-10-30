@@ -397,7 +397,7 @@ export function usePidCredential() {
     if (credential) {
       const attributes = credential.attributes as PidSdJwtVcAttributes
       return {
-        id: credential.id as `sd-jwt-vc-${string}`,
+        id: credential.id,
         type: credential.metadata.type,
         claimFormat: ClaimFormat.SdJwtVc,
         createdAt: credential.createdAt,
@@ -423,6 +423,12 @@ export function usePidCredential() {
     isLoading: false,
     credential: pidCredential,
   } as const
+}
+
+export function isPidCredential(credentialType?: string) {
+  return credentialType
+    ? pidSchemes.sdJwtVcVcts.includes(credentialType) || pidSchemes.msoMdocDoctypes.includes(credentialType)
+    : false
 }
 
 export const usePidDisplay = () => {

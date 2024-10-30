@@ -2,6 +2,9 @@ import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from 
 import React from 'react'
 import { createParam } from 'solito'
 
+import type { ClaimFormat } from '@credo-ts/core'
+import { getPidDisclosedAttributeNames, isPidCredential, usePidCredential } from '@easypid/hooks'
+import { getPidAttributesForDisplay } from '@easypid/hooks'
 import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { CardWithAttributes, TextBackButton, activityInteractions } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
@@ -18,6 +21,7 @@ export function FunkeActivityDetailScreen() {
   const { params } = useParams()
   const router = useRouter()
   const { bottom } = useSafeAreaInsets()
+  const { credential: pidCredential } = usePidCredential()
 
   const { activities } = useActivities()
   const { credentials } = useCredentialsWithCustomDisplay()
@@ -74,6 +78,44 @@ export function FunkeActivityDetailScreen() {
                 {activity.request.credentials && activity.request.credentials.length > 0 ? (
                   activity.request.credentials.map((activityCredential) => {
                     const credential = credentials.find((credential) => credential.id.includes(activityCredential.id))
+
+                    if (!credential)
+                      return (
+                        <CardWithAttributes
+                          key={activityCredential.id}
+                          id={activityCredential.id}
+                          name="Deleted credential"
+                          textColor="$grey-100"
+                          backgroundColor="$primary-500"
+                          disclosedAttributes={activityCredential.disclosedAttributes ?? []}
+                          disclosedPayload={activityCredential.disclosedPayload ?? {}}
+                          disableNavigation={true}
+                        />
+                      )
+
+                    // @ts-expect-error
+                    if (isPidCredential(credential.type)) {
+                      return (
+                        <CardWithAttributes
+                          key={pidCredential?.id}
+                          id={pidCredential?.id as string}
+                          name={pidCredential?.display.name as string}
+                          issuerImage={pidCredential?.display.issuer.logo}
+                          backgroundImage={pidCredential?.display.backgroundImage}
+                          backgroundColor={pidCredential?.display.backgroundColor}
+                          textColor={pidCredential?.display.textColor}
+                          disclosedAttributes={getPidDisclosedAttributeNames(
+                            activityCredential?.disclosedPayload ?? {},
+                            credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                          )}
+                          disclosedPayload={getPidAttributesForDisplay(
+                            activityCredential?.disclosedPayload ?? {},
+                            credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                          )}
+                        />
+                      )
+                    }
+
                     if (credential)
                       return (
                         <CardWithAttributes
@@ -89,18 +131,6 @@ export function FunkeActivityDetailScreen() {
                           disableNavigation={activity.status !== 'success'}
                         />
                       )
-                    return (
-                      <CardWithAttributes
-                        key={activityCredential.id}
-                        id={activityCredential.id}
-                        name="Deleted credential"
-                        textColor="$grey-100"
-                        backgroundColor="$primary-500"
-                        disclosedAttributes={activityCredential.disclosedAttributes ?? []}
-                        disclosedPayload={activityCredential.disclosedPayload ?? {}}
-                        disableNavigation={true}
-                      />
-                    )
                   })
                 ) : (
                   <FailedReasonContainer reason={activity.request.failureReason ?? 'unknown'} />
