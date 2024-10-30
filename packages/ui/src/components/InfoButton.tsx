@@ -30,6 +30,18 @@ const infoButtonVariants = {
     icon: <HeroIcons.Eye color="$white" />,
     accent: '$primary-500',
   },
+  'interaction-success': {
+    icon: <HeroIcons.Interaction color="$white" />,
+    accent: '$positive-500',
+  },
+  'interaction-new': {
+    icon: <HeroIcons.Interaction color="$white" />,
+    accent: '$grey-500',
+  },
+  unknown: {
+    icon: <HeroIcons.ExclamationCircleFilled color="$white" />,
+    accent: '$grey-500',
+  },
 }
 
 interface InfoButtonProps {
@@ -64,18 +76,18 @@ export function InfoButton({
       gap="$4"
       br="$8"
       bg={isPressable ? '$grey-50' : '$white'}
-      p="$4"
+      p="$3.5"
       bw="$0.5"
       borderColor="$grey-100"
       onPress={onPress}
     >
-      <Circle size="$4" br="$12" bg={infoButtonVariants[variant].accent}>
+      <Circle size="$3.5" br="$12" bg={infoButtonVariants[variant].accent}>
         {image ? <Image src={image.src} alt={image.alt} width={24} height={24} /> : infoButtonVariants[variant].icon}
       </Circle>
       <XStack fg={1} ai="center" jc="space-between">
-        <YStack>
-          <Heading variant="h3">{title}</Heading>
-          <Paragraph fontWeight="$regular">{description}</Paragraph>
+        <YStack gap="$1">
+          <Heading variant="sub1">{title}</Heading>
+          <Paragraph fontSize={15}>{description}</Paragraph>
         </YStack>
         {isPressable && (
           <Stack>

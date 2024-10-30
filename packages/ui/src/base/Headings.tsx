@@ -28,6 +28,11 @@ export const Heading = styled(THeading, {
         opacity: 0.85,
       },
     },
+    center: {
+      true: {
+        textAlign: 'center',
+      },
+    },
     variant: {
       h1: {
         name: 'H1',
@@ -69,9 +74,11 @@ export const Heading = styled(THeading, {
         lineHeight: '$4',
       },
       sub2: {
-        size: '$3',
+        fontSize: 15,
         fontFamily: '$body',
-        fontWeight: '$semiBold',
+        fontWeight: '$bold',
+        textTransform: 'uppercase',
+        color: '$grey-700',
         letterSpacing: '$5',
         lineHeight: '$3',
       },

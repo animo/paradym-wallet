@@ -1,13 +1,30 @@
-import type { FormattedSubmission } from '@package/agent'
-import { DualResponseButtons, useScrollViewPosition } from '@package/app'
+import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
+import type { DisplayImage, FormattedSubmission } from '@package/agent'
+import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import {
+  Button,
+  Circle,
+  Heading,
+  HeroIcons,
+  Image,
+  MessageBox,
+  Paragraph,
+  ScrollView,
+  Stack,
+  XStack,
+  YStack,
+  useToastController,
+} from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
+import { RequestPurposeSection } from '../components/RequestPurposeSection'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface ShareCredentialsSlideProps {
+  logo?: DisplayImage
+
   onAccept?: () => Promise<PresentationRequestResult>
   submission?: FormattedSubmission
   onDecline: () => void
@@ -16,6 +33,7 @@ interface ShareCredentialsSlideProps {
 }
 
 export const ShareCredentialsSlide = ({
+  logo,
   submission,
   onAccept,
   onDecline,
@@ -25,8 +43,12 @@ export const ShareCredentialsSlide = ({
   const { onNext } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
+  const pushToWallet = usePushToWallet()
+  const toast = useToastController()
 
   if (!submission) {
+    toast.show('No credentials to share!', { customData: { preset: 'danger' } })
+    pushToWallet()
     return null
   }
 
@@ -43,17 +65,17 @@ export const ShareCredentialsSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$6" fg={1}>
-        <Heading>Do you want to share{verifierName && ` with ${verifierName}`}?</Heading>
+      <YStack gap="$4" fg={1}>
+        <Heading>Review the request</Heading>
         <YStack
           fg={1}
-          btw="$0.5"
           px="$4"
           mx="$-4"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
           onLayout={(event) => {
             if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
           }}
+          btw="$0.5"
+          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
         >
           <ScrollView
             onScroll={handleScroll}
@@ -61,26 +83,16 @@ export const ShareCredentialsSlide = ({
             contentContainerStyle={{ gap: '$6' }}
             px="$4"
             mx="$-4"
+            pt="$4"
             maxHeight={scrollViewHeight}
             bg="$white"
           >
-            <YStack gap="$2">
-              <Heading variant="sub1" fontWeight="$semiBold">
-                Reason for request
-              </Heading>
-              <XStack gap="$4" bg="$grey-50" br="$8" p="$4" bw="$0.5" borderColor="$grey-100">
-                <Stack>
-                  <XStack p="$3" bg="$grey-200" borderRadius="$4">
-                    <HeroIcons.BuildingOffice color="$grey-800" />
-                  </XStack>
-                </Stack>
-                <Paragraph numberOfLines={5} f={1} variant="sub">
-                  {submission.purpose ??
-                    submission.entries[0].description ??
-                    'No information was provided on the purpose of the data request. Be cautious'}
-                </Paragraph>
-              </XStack>
-            </YStack>
+            <RequestPurposeSection
+              purpose={
+                submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
+              }
+              logo={logo}
+            />
             <RequestedAttributesSection submission={submission} />
             <Spacer />
           </ScrollView>

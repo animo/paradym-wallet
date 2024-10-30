@@ -10,7 +10,7 @@ import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
-import { ClaimFormat, utils } from '@credo-ts/core'
+import { ClaimFormat } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
 import {
   PidIssuerPinInvalidError,
@@ -18,9 +18,10 @@ import {
   requestSdJwtVcFromSeedCredential,
 } from '@easypid/crypto/bPrime'
 import { useSeedCredentialPidData } from '@easypid/storage'
+import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
-import { activityStorage } from '../activity/activityRecord'
+import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
 type Query = { uri?: string; data?: string }
@@ -38,14 +39,25 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
-
   const { agent } = useAppAgent()
   const { seedCredential } = useSeedCredentialPidData()
   const { credential: pidCredential } = usePidCredential()
+  const { activities } = useActivities()
 
   const [credentialsForRequest, setCredentialsForRequest] =
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
   const [isSharing, setIsSharing] = useState(false)
+
+  const fedDisplayData = useMemo(
+    () => credentialsForRequest && getOpenIdFedIssuerMetadata(credentialsForRequest?.verifierHostName ?? ''),
+    [credentialsForRequest]
+  )
+  const lastInteractionDate = useMemo(() => {
+    const activity = activities.find(
+      (activity) => activity.entity.did === credentialsForRequest?.authorizationRequest.issuer
+    )
+    return activity?.date
+  }, [activities, credentialsForRequest])
 
   const submission = useMemo(() => {
     if (!credentialsForRequest) return undefined
@@ -75,6 +87,28 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
     return filteredSubmission
   }, [credentialsForRequest])
+
+  const credentialsWithDisclosedPayload = useMemo(
+    () =>
+      submission?.entries.flatMap((entry) => {
+        return entry.credentials.map((credential) => {
+          const disclosedPayload =
+            credential.metadata?.type === pidCredential?.type
+              ? getPidAttributesForDisplay(
+                  credential.disclosedPayload ?? {},
+                  credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                )
+              : credential.disclosedPayload
+
+          return {
+            id: credential.id,
+            disclosedAttributes: credential.requestedAttributes ?? [],
+            disclosedPayload,
+          }
+        })
+      }),
+    [submission, pidCredential]
+  )
 
   const usePin = useMemo(() => {
     const isPidInSubmission =
@@ -126,30 +160,18 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         allowUntrustedCertificate: true,
       })
 
-      const credentialsWithDisclosedPayload = submission.entries.flatMap((entry) => {
-        return entry.credentials.map((credential) => {
-          const disclosedPayload =
-            credential.metadata?.type === pidCredential?.type
-              ? getPidAttributesForDisplay(
-                  credential.disclosedPayload ?? {},
-                  credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                )
-              : credential.disclosedPayload
-
-          return {
-            id: credential.id,
-            disclosedAttributes: credential.requestedAttributes ?? [],
-            disclosedPayload,
-          }
-        })
-      })
-
-      await activityStorage.addActivity(agent, {
-        id: utils.uuid(),
-        type: 'shared',
-        credentials: credentialsWithDisclosedPayload,
-        date: new Date().toISOString(),
-        entityHost: credentialsForRequest.verifierHostName as string,
+      await addSharedActivity(agent, {
+        status: 'success',
+        entity: {
+          name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest.verifierHostName,
+          did: credentialsForRequest.authorizationRequest.issuer as string,
+          logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
+        },
+        request: {
+          name: submission.name,
+          purpose: submission.purpose,
+          credentials: credentialsWithDisclosedPayload ?? [],
+        },
       })
 
       return {
@@ -179,7 +201,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         },
       }
     }
-  }, [submission, credentialsForRequest, agent, pidCredential])
+  }, [submission, credentialsForRequest, agent, credentialsWithDisclosedPayload, fedDisplayData])
 
   const onProofAcceptWithSeedCredential = async (pin: string): Promise<PresentationRequestResult> => {
     return await requestSdJwtVcFromSeedCredential({
@@ -240,6 +262,32 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   }
 
   const onProofDecline = async () => {
+    const activityData = {
+      entity: {
+        did: credentialsForRequest?.authorizationRequest.issuer as string,
+        name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest?.verifierHostName,
+        logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
+      },
+      request: {
+        name: submission?.name,
+        purpose: submission?.purpose,
+        credentials: credentialsWithDisclosedPayload ?? [],
+      },
+    }
+
+    if (submission?.areAllSatisfied) {
+      await addSharedActivity(agent, { ...activityData, status: 'stopped' })
+    } else {
+      await addSharedActivity(agent, {
+        ...activityData,
+        status: 'failed',
+        request: {
+          ...activityData.request,
+          failureReason: submission ? 'missing_credentials' : 'unknown',
+        },
+      })
+    }
+
     pushToWallet()
     toast.show('Information request has been declined.', { customData: { preset: 'danger' } })
   }
@@ -252,7 +300,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={submission}
       isAccepting={isSharing}
-      verifierName={credentialsForRequest?.verifierHostName ?? 'Party.com'}
+      host={credentialsForRequest?.verifierHostName as string}
+      verifierName={fedDisplayData?.display.name}
+      logo={fedDisplayData?.display.logo}
+      lastInteractionDate={lastInteractionDate}
+      approvalsCount={fedDisplayData?.approvals.length}
       onComplete={() => pushToWallet('replace')}
     />
   )

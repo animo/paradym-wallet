@@ -240,6 +240,9 @@ export function getPidMetadataAttributesForDisplay(
       credentialType: type,
     }
   }
+
+  // default to regular metadata
+  return metadata
 }
 
 export function getPidDisclosedAttributeNames(
@@ -394,11 +397,14 @@ export function usePidCredential() {
     if (credential) {
       const attributes = credential.attributes as PidSdJwtVcAttributes
       return {
-        id: credential.id,
+        id: credential.id as `sd-jwt-vc-${string}`,
         type: credential.metadata.type,
-        attributes: getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc),
+        claimFormat: ClaimFormat.SdJwtVc,
+        createdAt: credential.createdAt,
+        attributes,
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
+        attributesForDisplay: getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc),
         metadata: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
       }
     }

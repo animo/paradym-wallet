@@ -1,7 +1,7 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
-import { utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
+import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import {
   acquireAccessToken,
   getCredentialForDisplay,
@@ -11,10 +11,9 @@ import {
 } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
-import { getHostNameFromUrl } from 'packages/utils/src'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createParam } from 'solito'
-import { activityStorage } from '../activity/activityRecord'
+import { addReceivedActivity, useActivities } from '../activity/activityRecord'
 import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { OfferCredentialSlide } from './slides/OfferCredentialSlide'
@@ -28,6 +27,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   const { agent } = useAppAgent()
   const toast = useToastController()
   const { params } = useParams()
+  const { activities } = useActivities()
   const pushToWallet = usePushToWallet()
 
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord | MdocRecord>()
@@ -59,6 +59,17 @@ export function FunkeOpenIdCredentialNotificationScreen() {
     void requestCredential(params)
   }, [params, agent])
 
+  const issuerMetadata = useMemo(
+    () =>
+      credential?.display.issuer.domain ? getOpenIdFedIssuerMetadata(credential.display.issuer.domain) : undefined,
+    [credential]
+  )
+
+  const lastInteractionDate = useMemo(() => {
+    const activity = activities.find((activity) => activity.entity.did === credential?.metadata.issuer)
+    return activity?.date
+  }, [activities, credential])
+
   const onCredentialAccept = async () => {
     if (!credentialRecord) return
 
@@ -67,12 +78,12 @@ export function FunkeOpenIdCredentialNotificationScreen() {
       .then(async () => {
         const { metadata, display } = getCredentialForDisplay(credentialRecord)
 
-        await activityStorage.addActivity(agent, {
-          id: utils.uuid(),
-          type: 'received',
-          date: new Date().toISOString(),
-          entityHost: getHostNameFromUrl(metadata.issuer) as string,
-          entityName: display.issuer.name,
+        await addReceivedActivity(agent, {
+          did: metadata.issuer,
+          domain: display.issuer.domain,
+          name: display.issuer.name,
+          logo: display.issuer.logo ? display.issuer.logo : undefined,
+          backgroundColor: display.backgroundColor, // Might not be accurate for issuer image
           credentialIds: [credentialRecord.id],
         })
 
@@ -109,9 +120,12 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           screen: (
             <VerifyPartySlide
               key="verify-issuer"
-              name={credential?.display.issuer.name}
-              logo={credential?.display.issuer.logo}
-              domain={credential?.display.issuer.domain}
+              name={issuerMetadata?.display.name ?? credential?.display.issuer.name}
+              logo={issuerMetadata?.display.logo ?? credential?.display.issuer.logo}
+              host={credential?.display.issuer.domain as string}
+              backgroundColor={credential?.display.backgroundColor}
+              lastInteractionDate={lastInteractionDate}
+              approvalsCount={issuerMetadata?.approvals.length}
             />
           ),
         },

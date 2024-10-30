@@ -4,12 +4,14 @@ import { pidSchemes } from '../../../../apps/easypid/src/constants'
 import { getCredentialForDisplay } from '../display'
 import { useMdocRecords, useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
 
+export type CredentialForDisplay = ReturnType<typeof getCredentialForDisplay>
+
 export const useCredentialsForDisplay = () => {
   const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()
   const { sdJwtVcRecords, isLoading: isLoadingSdJwt } = useSdJwtVcRecords()
   const { mdocRecords, isLoading: isLoadingMdoc } = useMdocRecords()
 
-  const credentials = useMemo(() => {
+  const credentials = useMemo((): CredentialForDisplay[] => {
     // FIXME: we need a better to filter out duplicate PID credential, as now agent depends on code from the easypid wallet
     const mdocRecordsWithoutPid = mdocRecords.filter((c) => !pidSchemes.msoMdocDoctypes.includes(c.getTags().docType))
 

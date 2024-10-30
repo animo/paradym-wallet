@@ -21,11 +21,13 @@ export interface FormattedSubmissionEntry {
     id: string
     credentialName: string
     issuerName?: string
+    issuerImage?: DisplayImage
     requestedAttributes?: string[]
     disclosedPayload?: Record<string, unknown>
     metadata?: CredentialMetadata
     backgroundColor?: string
     backgroundImage?: DisplayImage
+    textColor?: string
     claimFormat: ClaimFormat | 'AnonCreds'
   }>
 }
@@ -59,10 +61,12 @@ export function formatDifPexCredentialsForRequest(
             id: verifiableCredential.credentialRecord.id,
             credentialName: display.name,
             issuerName: display.issuer.name,
+            issuerImage: display.issuer.logo,
             requestedAttributes: [...Object.keys(disclosedPayload)],
             disclosedPayload,
             metadata,
             backgroundColor: display.backgroundColor,
+            textColor: display.textColor,
             backgroundImage: display.backgroundImage,
             claimFormat,
           }

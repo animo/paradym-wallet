@@ -32,7 +32,7 @@ export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideP
       </YStack>
       <Stack borderTopWidth="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4">
         <Button.Solid scaleOnPress onPress={onCancel}>
-          Go to wallet
+          Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
       </Stack>
     </YStack>

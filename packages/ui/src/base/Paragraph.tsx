@@ -25,6 +25,11 @@ export const Paragraph = styled(SizableText, {
         color: '$grey-600',
       },
     },
+    center: {
+      true: {
+        textAlign: 'center',
+      },
+    },
     emphasis: {
       true: {
         fontWeight: '$bold',

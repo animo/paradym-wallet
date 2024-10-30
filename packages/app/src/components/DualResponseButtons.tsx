@@ -24,8 +24,6 @@ export function DualResponseButtons({
   return (
     <YStack
       gap={align === 'horizontal' ? '$4' : '$2'}
-      pt="$2"
-      pb={removeBottomPadding ? '$0' : '$2'}
       flexDirection={align === 'horizontal' ? 'row-reverse' : 'column'}
     >
       <Button.Solid

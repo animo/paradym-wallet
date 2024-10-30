@@ -15,8 +15,8 @@ import React, { useState } from 'react'
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
+import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useRouter } from 'expo-router'
-import { useCredentialsForDisplay } from 'packages/agent/src'
 import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -33,19 +33,20 @@ export function FunkeCredentialDetailScreen() {
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
 
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentialsWithCustomDisplay()
   const { credential: pidCredential } = usePidCredential()
-  const credential = credentials.find((cred) => cred.id.includes(params.id))
-  const activeCredential = pidCredential?.id.includes(params.id) ? pidCredential : credential
+  const isPidCredential = pidCredential?.id.includes(params.id)
+  const credential = isPidCredential ? pidCredential : credentials.find((cred) => cred.id.includes(params.id))
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
     onPress: withHaptics(() => setIsSheetOpen(true)),
+    renderCondition: !isPidCredential,
   })
 
-  if (!activeCredential) {
+  if (!credential) {
     toast.show('Credential not found', {
       customData: {
         preset: 'danger',
@@ -59,8 +60,8 @@ export function FunkeCredentialDetailScreen() {
     router.push({
       pathname: '/credentials/[id]/attributes',
       params: {
-        attributes: JSON.stringify(activeCredential.attributes),
-        metadata: JSON.stringify(activeCredential.metadata),
+        attributes: JSON.stringify(credential.attributes),
+        metadata: JSON.stringify(credential.metadata),
       },
     })
   })
@@ -80,16 +81,16 @@ export function FunkeCredentialDetailScreen() {
             <AnimatedStack width="100%" mt="$-3" mb="$-5" scale={0.75}>
               <FunkeCredentialCard
                 issuerImage={{
-                  url: activeCredential.display.issuer.logo?.url,
-                  altText: activeCredential.display.issuer.logo?.altText,
+                  url: credential.display.issuer.logo?.url,
+                  altText: credential.display.issuer.logo?.altText,
                 }}
-                textColor={activeCredential.display.textColor}
-                name={activeCredential.display.name}
+                textColor={credential.display.textColor}
+                name={credential.display.name}
                 backgroundImage={{
-                  url: activeCredential.display.backgroundImage?.url,
-                  altText: activeCredential.display.backgroundImage?.altText,
+                  url: credential.display.backgroundImage?.url,
+                  altText: credential.display.backgroundImage?.altText,
                 }}
-                bgColor={activeCredential.display.backgroundColor ?? '$grey-900'}
+                bgColor={credential.display.backgroundColor ?? '$grey-900'}
               />
             </AnimatedStack>
             <Stack gap="$2">
@@ -97,7 +98,7 @@ export function FunkeCredentialDetailScreen() {
                 Card details
               </Heading>
               <Paragraph numberOfLines={1} ta="center">
-                Issued by {activeCredential.display.issuer.name}
+                Issued by {credential.display.issuer.name}.
               </Paragraph>
             </Stack>
             <YStack w="100%" gap="$2">
@@ -118,8 +119,8 @@ export function FunkeCredentialDetailScreen() {
       <DeleteCredentialSheet
         isSheetOpen={isSheetOpen}
         setIsSheetOpen={setIsSheetOpen}
-        id={activeCredential.id}
-        name={activeCredential.display.name}
+        id={credential.id}
+        name={credential.display.name}
       />
     </>
   )

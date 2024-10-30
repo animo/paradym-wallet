@@ -31,30 +31,28 @@ export function sanitizeString(
  * @param now Optional reference date (defaults to current date)
  * @returns A string representation of the relative time
  */
-export function formatRelativeDate(date: Date, now: Date = new Date()): string {
+export function formatRelativeDate(date: Date, now: Date = new Date(), includeTime = false): string {
   const msPerDay = 24 * 60 * 60 * 1000
   const days = Math.round((now.getTime() - date.getTime()) / msPerDay)
 
+  const formatTime = (d: Date) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })
+
   if (days === 0) {
-    return 'Today'
+    return includeTime ? `Today at ${formatTime(date)}` : 'Today'
   }
   if (days === 1) {
-    return 'Yesterday'
+    return includeTime ? `Yesterday at ${formatTime(date)}` : 'Yesterday'
   }
-  if (days > 1 && days <= 7) {
-    return `${days} days ago`
-  }
-  if (days > 7 && days <= 30) {
-    const weeks = Math.floor(days / 7)
-    return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`
-  }
-  if (days > 30 && days <= 365) {
-    const months = Math.floor(days / 30)
-    return `${months} ${months === 1 ? 'month' : 'months'} ago`
-  }
-
-  const years = Math.floor(days / 365)
-  return `${years} ${years === 1 ? 'year' : 'years'} ago`
+  return `${
+    date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) +
+    (date.getDate() === 1 || date.getDate() === 21 || date.getDate() === 31
+      ? 'st'
+      : date.getDate() === 2 || date.getDate() === 22
+        ? 'nd'
+        : date.getDate() === 3 || date.getDate() === 23
+          ? 'rd'
+          : 'th')
+  } ${includeTime ? `at ${formatTime(date)}` : ''}`
 }
 
 export function formatDate(input: string | Date): string {

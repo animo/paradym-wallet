@@ -53,8 +53,8 @@ export const PresentationSuccessSlide = ({ verifierName, onComplete }: Presentat
             jc="center"
             ai="center"
             top="10%"
-            h="$6"
-            w="$6"
+            h="$5"
+            w="$5"
             bg="$grey-900"
             br="$12"
           >
@@ -64,9 +64,10 @@ export const PresentationSuccessSlide = ({ verifierName, onComplete }: Presentat
         <YStack gap="$4" p="$4" ai="center">
           <Heading>Success!</Heading>
           <Paragraph ta="center">
-            Your information has been shared{' '}
+            Your information has been shared
             {verifierName && (
               <>
+                {' '}
                 with <Paragraph fontWeight="$semiBold">{verifierName}</Paragraph>
               </>
             )}
@@ -76,7 +77,7 @@ export const PresentationSuccessSlide = ({ verifierName, onComplete }: Presentat
       </YStack>
       <Stack gap="$2" borderTopWidth="$0.5" borderColor="$grey-200" p="$4" mx="$-4">
         <Button.Solid scaleOnPress onPress={onComplete}>
-          Go to wallet
+          Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
       </Stack>
     </YStack>

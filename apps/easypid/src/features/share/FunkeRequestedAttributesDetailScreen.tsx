@@ -11,6 +11,7 @@ import {
   Spacer,
   Stack,
   YStack,
+  useScrollToggle,
   useSpringify,
   useToastController,
 } from '@package/ui'
@@ -18,10 +19,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
-import { useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
+import { useHaptics, useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
 
-import { usePidCredential } from '@easypid/hooks'
-import { useCredentialsForDisplay } from '@package/agent'
+import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useNavigation } from 'expo-router'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -41,18 +41,15 @@ export function FunkeRequestedAttributesDetailScreen({
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const { isLoading, credentials } = useCredentialsForDisplay()
+  const { isLoading, credentials } = useCredentialsWithCustomDisplay()
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
-  const [isMetadataVisible, setIsMetadataVisible] = useState(false)
+  const { withHaptics } = useHaptics()
   const navigation = useNavigation()
 
-  const { credential: pidCredential } = usePidCredential()
-  const credential = credentials.find((cred) => cred.id.includes(id))
-  const activeCredential = pidCredential?.id.includes(id) ? pidCredential : credential
+  const activeCredential = credentials.find((cred) => cred.id.includes(id))
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [elementPosition, setElementPosition] = useState(0)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
 
   useEffect(() => {
@@ -61,33 +58,22 @@ export function FunkeRequestedAttributesDetailScreen({
     })
   }, [navigation])
 
-  const toggleMetadataVisibility = () => {
+  const {
+    isVisible: isMetadataVisible,
+    setElementPosition,
+    toggle,
+  } = useScrollToggle({
+    scrollRef: scrollViewRef,
+  })
+
+  const handleToggleMetadata = withHaptics(() => {
     setIsSheetOpen(false)
-
-    // Delay to allow the sheet to close
-    setTimeout(() => {
-      const newMetadataVisibility = !isMetadataVisible
-
-      if (!newMetadataVisibility) {
-        // If metadata is set to false, scroll to 0 immediately
-        scrollViewRef.current?.scrollTo({ y: 0, animated: true })
-        setTimeout(() => {
-          setIsMetadataVisible(false)
-        }, 100)
-      } else {
-        // Delay 300ms and then scroll
-        setIsMetadataVisible(true)
-        setTimeout(() => {
-          // 164 is added to account for the absolute position of the header
-          scrollViewRef.current?.scrollTo({ y: elementPosition + 164, animated: true })
-        }, 300)
-      }
-    }, 200)
-  }
+    toggle()
+  })
 
   if (isLoading) return null
 
-  if (!credential) {
+  if (!activeCredential) {
     toast.show('Error getting credential details', {
       message: 'Credential not found',
       customData: {
@@ -129,7 +115,7 @@ export function FunkeRequestedAttributesDetailScreen({
                   {activeCredential?.display.name}
                 </Heading>
                 {activeCredential?.display.issuer && (
-                  <Paragraph color="$grey-700">Issued by {activeCredential?.display.issuer.name}</Paragraph>
+                  <Paragraph>Issued by {activeCredential?.display.issuer.name}.</Paragraph>
                 )}
                 <CredentialAttributes
                   subject={disclosedPayload}
@@ -170,7 +156,7 @@ export function FunkeRequestedAttributesDetailScreen({
           {
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
             title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
-            onPress: toggleMetadataVisibility,
+            onPress: handleToggleMetadata,
           },
         ]}
       />
