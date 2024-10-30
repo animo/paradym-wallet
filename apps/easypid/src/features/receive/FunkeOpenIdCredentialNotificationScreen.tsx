@@ -1,7 +1,6 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import { useAppAgent } from '@easypid/agent'
-import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import {
   acquireAccessToken,
   getCredentialForDisplay,
@@ -27,7 +26,6 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   const { agent } = useAppAgent()
   const toast = useToastController()
   const { params } = useParams()
-  const { activities } = useActivities()
   const pushToWallet = usePushToWallet()
 
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord | MdocRecord>()
@@ -36,6 +34,13 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   const [isStoring, setIsStoring] = useState(false)
 
   const credential = credentialRecord ? getCredentialForDisplay(credentialRecord) : undefined
+
+  const { activities } = useActivities({
+    filters: {
+      host: credential?.display.issuer.domain,
+      name: credential?.display.issuer.name,
+    },
+  })
 
   useEffect(() => {
     const requestCredential = async (params: Query) => {
@@ -58,15 +63,6 @@ export function FunkeOpenIdCredentialNotificationScreen() {
     }
     void requestCredential(params)
   }, [params, agent])
-
-  const lastInteractionDate = useMemo(() => {
-    const activity = activities.find((activity) => {
-      const hostMatch = activity.entity.host === credential?.display.issuer.domain
-      const nameMatch = activity.entity.name === credential?.display.issuer.name
-      return hostMatch && nameMatch
-    })
-    return activity?.date
-  }, [activities, credential])
 
   const onCredentialAccept = async () => {
     if (!credentialRecord) return
@@ -122,7 +118,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
               logo={credential?.display.issuer.logo}
               host={credential?.display.issuer.domain as string}
               backgroundColor={credential?.display.backgroundColor}
-              lastInteractionDate={lastInteractionDate}
+              lastInteractionDate={activities[0]?.date}
               approvalsCount={0}
             />
           ),
