@@ -33,7 +33,7 @@ export const VerifyPartySlide = ({
   })
 
   const onPressInteraction = withHaptics(() => {
-    router.push(`/activity?host=${host}`)
+    router.push(`/activity?host=${host}&name=${name}`)
   })
 
   return (

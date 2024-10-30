@@ -59,14 +59,12 @@ export function FunkeOpenIdCredentialNotificationScreen() {
     void requestCredential(params)
   }, [params, agent])
 
-  const issuerMetadata = useMemo(
-    () =>
-      credential?.display.issuer.domain ? getOpenIdFedIssuerMetadata(credential.display.issuer.domain) : undefined,
-    [credential]
-  )
-
   const lastInteractionDate = useMemo(() => {
-    const activity = activities.find((activity) => activity.entity.host === credential?.display.issuer.domain)
+    const activity = activities.find((activity) => {
+      const hostMatch = activity.entity.host === credential?.display.issuer.domain
+      const nameMatch = activity.entity.name === credential?.display.issuer.name
+      return hostMatch && nameMatch
+    })
     return activity?.date
   }, [activities, credential])
 
@@ -120,12 +118,12 @@ export function FunkeOpenIdCredentialNotificationScreen() {
             <VerifyPartySlide
               key="verify-issuer"
               type="offer"
-              name={issuerMetadata?.display.name ?? credential?.display.issuer.name}
-              logo={issuerMetadata?.display.logo ?? credential?.display.issuer.logo}
+              name={credential?.display.issuer.name}
+              logo={credential?.display.issuer.logo}
               host={credential?.display.issuer.domain as string}
               backgroundColor={credential?.display.backgroundColor}
               lastInteractionDate={lastInteractionDate}
-              approvalsCount={issuerMetadata?.approvals.length}
+              approvalsCount={0}
             />
           ),
         },

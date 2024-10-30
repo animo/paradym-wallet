@@ -2,7 +2,6 @@ const DEFAULT_FUNKE_HOST = 'funke.animo.id'
 
 const FUNKE_ISSUER_DATA = {
   host: DEFAULT_FUNKE_HOST,
-  did: 'did:web:funke',
   display: {
     name: 'Animo',
     logo: {
