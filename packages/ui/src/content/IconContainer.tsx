@@ -9,7 +9,7 @@ interface IconContainerProps extends StackProps {
 }
 
 export function IconContainer({ icon, scaleOnPress, ...props }: IconContainerProps) {
-  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.9 })
+  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: scaleOnPress ? 0.9 : 1 })
 
   return (
     <AnimatedStack p="$2" m="$-2" style={pressStyle} onPressIn={handlePressIn} onPressOut={handlePressOut} {...props}>

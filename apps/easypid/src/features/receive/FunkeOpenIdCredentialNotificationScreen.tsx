@@ -119,6 +119,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
           screen: (
             <VerifyPartySlide
               key="verify-issuer"
+              type="offer"
               name={issuerMetadata?.display.name ?? credential?.display.issuer.name}
               logo={issuerMetadata?.display.logo ?? credential?.display.issuer.logo}
               host={credential?.display.issuer.domain as string}
