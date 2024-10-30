@@ -397,15 +397,16 @@ export function usePidCredential() {
     if (credential) {
       const attributes = credential.attributes as PidSdJwtVcAttributes
       return {
-        id: credential.id as `sd-jwt-vc-${string}`,
+        id: credential.id,
         type: credential.metadata.type,
         claimFormat: ClaimFormat.SdJwtVc,
         createdAt: credential.createdAt,
-        attributes,
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
+        attributes,
         attributesForDisplay: getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc),
-        metadata: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
+        metadata: credential.metadata,
+        metadataForDisplay: getPidMetadataAttributesForDisplay(attributes, credential.metadata, ClaimFormat.SdJwtVc),
       }
     }
 
@@ -423,6 +424,12 @@ export function usePidCredential() {
     isLoading: false,
     credential: pidCredential,
   } as const
+}
+
+export function isPidCredential(credentialType?: string) {
+  return credentialType
+    ? pidSchemes.sdJwtVcVcts.includes(credentialType) || pidSchemes.msoMdocDoctypes.includes(credentialType)
+    : false
 }
 
 export const usePidDisplay = () => {

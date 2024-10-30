@@ -66,7 +66,7 @@ export function FunkeOpenIdCredentialNotificationScreen() {
   )
 
   const lastInteractionDate = useMemo(() => {
-    const activity = activities.find((activity) => activity.entity.did === credential?.metadata.issuer)
+    const activity = activities.find((activity) => activity.entity.host === credential?.display.issuer.domain)
     return activity?.date
   }, [activities, credential])
 
@@ -76,11 +76,10 @@ export function FunkeOpenIdCredentialNotificationScreen() {
     setIsStoring(true)
     await storeCredential(agent, credentialRecord)
       .then(async () => {
-        const { metadata, display } = getCredentialForDisplay(credentialRecord)
+        const { display } = getCredentialForDisplay(credentialRecord)
 
         await addReceivedActivity(agent, {
-          did: metadata.issuer,
-          domain: display.issuer.domain,
+          host: display.issuer.domain,
           name: display.issuer.name,
           logo: display.issuer.logo ? display.issuer.logo : undefined,
           backgroundColor: display.backgroundColor, // Might not be accurate for issuer image

@@ -28,7 +28,6 @@ interface ShareCredentialsSlideProps {
   onAccept?: () => Promise<PresentationRequestResult>
   submission?: FormattedSubmission
   onDecline: () => void
-  verifierName?: string
   isAccepting: boolean
 }
 
@@ -37,7 +36,6 @@ export const ShareCredentialsSlide = ({
   submission,
   onAccept,
   onDecline,
-  verifierName,
   isAccepting,
 }: ShareCredentialsSlideProps) => {
   const { onNext } = useWizard()
@@ -54,7 +52,12 @@ export const ShareCredentialsSlide = ({
 
   const handleAccept = async () => {
     if (onAccept) {
-      await onAccept()
+      const result = await onAccept()
+      if (result.status === 'error') {
+        toast.show(result.result.title, { message: result.result.message, customData: { preset: 'danger' } })
+        pushToWallet()
+        return
+      }
     }
     onNext()
   }

@@ -71,7 +71,6 @@ export function FunkePresentationNotificationScreen({
                 onAccept={usePin ? undefined : onAccept}
                 onDecline={onDecline}
                 logo={logo}
-                verifierName={verifierName}
                 submission={submission}
                 isAccepting={isAccepting}
               />

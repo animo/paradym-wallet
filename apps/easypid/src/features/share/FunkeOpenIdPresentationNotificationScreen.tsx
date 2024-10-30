@@ -1,6 +1,5 @@
 import {
   BiometricAuthenticationCancelledError,
-  type CredentialMetadata,
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
@@ -20,7 +19,7 @@ import {
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
-import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
+import { usePidCredential } from '../../hooks'
 import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
@@ -53,9 +52,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     [credentialsForRequest]
   )
   const lastInteractionDate = useMemo(() => {
-    const activity = activities.find(
-      (activity) => activity.entity.did === credentialsForRequest?.authorizationRequest.issuer
-    )
+    const activity = activities.find((activity) => activity.entity.host === credentialsForRequest?.verifierHostName)
     return activity?.date
   }, [activities, credentialsForRequest])
 
@@ -92,22 +89,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     () =>
       submission?.entries.flatMap((entry) => {
         return entry.credentials.map((credential) => {
-          const disclosedPayload =
-            credential.metadata?.type === pidCredential?.type
-              ? getPidAttributesForDisplay(
-                  credential.disclosedPayload ?? {},
-                  credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                )
-              : credential.disclosedPayload
-
           return {
             id: credential.id,
             disclosedAttributes: credential.requestedAttributes ?? [],
-            disclosedPayload,
+            disclosedPayload: credential.disclosedPayload ?? {},
           }
         })
       }),
-    [submission, pidCredential]
+    [submission]
   )
 
   const usePin = useMemo(() => {
@@ -164,8 +153,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         status: 'success',
         entity: {
           name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest.verifierHostName,
-          did: credentialsForRequest.authorizationRequest.issuer as string,
           logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
+          host: credentialsForRequest.verifierHostName as string,
         },
         request: {
           name: submission.name,
@@ -264,7 +253,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const onProofDecline = async () => {
     const activityData = {
       entity: {
-        did: credentialsForRequest?.authorizationRequest.issuer as string,
+        host: credentialsForRequest?.verifierHostName as string,
         name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest?.verifierHostName,
         logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
       },

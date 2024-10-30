@@ -86,9 +86,8 @@ export const useActivities = ({ filters }: { filters?: { host?: string } } = {})
 export const addReceivedActivity = async (
   agent: EasyPIDAppAgent,
   input: {
-    did: string
     name: string
-    domain?: string
+    host?: string
     logo?: DisplayImage
     backgroundColor?: string
     credentialIds: string[]
@@ -100,9 +99,8 @@ export const addReceivedActivity = async (
     type: 'received',
     status: 'success',
     entity: {
-      did: input.did,
       name: input.name,
-      host: input.domain ? input.domain : (getHostNameFromUrl(input.did) as string),
+      host: input.host,
       logo: input.logo,
       backgroundColor: input.backgroundColor,
     },
@@ -115,7 +113,7 @@ export const addSharedActivity = async (
   input: {
     status: ActivityStatus
     entity: {
-      did: string
+      host: string
       name?: string
       logo?: DisplayImage
     }
@@ -137,9 +135,8 @@ export const addSharedActivity = async (
     type: 'shared',
     status: input.status,
     entity: {
-      did: input.entity.did,
       name: input.entity.name,
-      host: getHostNameFromUrl(input.entity.did) as string,
+      host: input.entity.host,
       logo: input.entity.logo,
     },
     request: {
