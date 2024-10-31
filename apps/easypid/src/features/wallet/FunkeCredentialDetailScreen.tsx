@@ -97,7 +97,7 @@ export function FunkeCredentialDetailScreen() {
               <Heading ta="center" variant="h1">
                 Card details
               </Heading>
-              <Paragraph numberOfLines={1} ta="center">
+              <Paragraph numberOfLines={2} ta="center">
                 Issued by {credential.display.issuer.name}.
               </Paragraph>
             </Stack>

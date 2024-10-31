@@ -135,7 +135,7 @@ export function FunkeRequestedAttributesDetailScreen({
                       headerTitle="Metadata"
                       borderStyle="large"
                       attributeWeight="medium"
-                      subject={activeCredential?.metadata as Record<string, unknown>}
+                      subject={activeCredential.metadataForDisplay ?? activeCredential?.metadata}
                       headerStyle="small"
                       showDevProps
                     />

@@ -101,13 +101,12 @@ export function ActivityRowItem({
             overflow="hidden"
           >
             {logo?.url ? (
-              <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="cover" />
+              <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="contain" />
             ) : (
               <HeroIcons.BuildingOffice strokeWidth={2} color="$grey-500" />
             )}
           </Stack>
           <Stack overflow="hidden" pos="absolute" bg={Icon.color} br="$12" p="$1" bw="$1" boc="$white">
-            {/* @ts-expect-error size prop is correct here */}
             <Icon.icon strokeWidth={3} size={10} color="$white" />
           </Stack>
         </Stack>

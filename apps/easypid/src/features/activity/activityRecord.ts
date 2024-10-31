@@ -1,6 +1,5 @@
 import { utils } from '@credo-ts/core'
 import { type DisplayImage, type EasyPIDAppAgent, getWalletJsonStore, useWalletJsonRecord } from '@package/agent'
-import { getHostNameFromUrl } from 'packages/utils/src'
 import { useMemo } from 'react'
 
 export type ActivityType = 'shared' | 'received'
@@ -63,7 +62,7 @@ export const activityStorage = {
   },
 }
 
-export const useActivities = ({ filters }: { filters?: { host?: string } } = {}) => {
+export const useActivities = ({ filters }: { filters?: { host?: string; name?: string } } = {}) => {
   const { record, isLoading } = useWalletJsonRecord<ActivityRecord>(activityStorage.recordId)
 
   const activities = useMemo(() => {
@@ -72,10 +71,11 @@ export const useActivities = ({ filters }: { filters?: { host?: string } } = {})
     return [...record.activities]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .filter((activity) => {
-        if (filters?.host) return activity.entity.host === filters.host
-        return true
+        const hostMatch = !filters?.host || activity.entity.host === filters.host
+        const nameMatch = !filters?.name || activity.entity.name === filters.name
+        return hostMatch && nameMatch
       })
-  }, [record?.activities, filters?.host])
+  }, [record?.activities, filters?.host, filters?.name])
 
   return {
     activities,
