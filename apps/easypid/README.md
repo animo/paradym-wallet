@@ -25,7 +25,7 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 Credential detail
 - 🟢 Delete QEAA
 - 🟢 Transaction history
-- 🟢 SD-JWT VC Type Metadata
+- 🔴 SD-JWT VC Type Metadata
 - 🟠 Revocation SD-JWT VC
 - 🔴 Revocation Mdoc
 
@@ -40,7 +40,6 @@ The identity wallet contains the following features, you can see the full flow w
 **Obtain (Q)EAAs from issuer**
 - 🟢 SD-JWT VC using OpenID4VCI
 - 🟢 mDOC using OpenID4VCI
-- 🟢 Branding & metadata
 - 🔴 PID presentation during (Q)EAA issuance
 - 🔴 Batch issuance and single use credentials
 - 🔴 Authorization code flow
@@ -58,9 +57,11 @@ The identity wallet contains the following features, you can see the full flow w
 - 🔴 Query language
 - Android
   - 🟢 Android-Android over NFC for device engagement
+  - 🔴 SD-JWT VC using OpenID4VP over BLE
+  - 🔴 mDOC over BLE
 - iOS
   - 🔴 SD-JWT VC using OpenID4VP over BLE
-  - 🔴 mDOC using OpenID4VP over OpenID4VP
+  - 🔴 mDOC over BLE
 
 **HSM**
   - 🟢 On device HSM
@@ -197,19 +198,6 @@ The following standards and specifications were implemented.
 - 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
   - Missing verifier_attestation, `haip://` scheme and wallet attestation
 - 🟠 [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
-
-## Interoperability 
-
-The status of interoperability with other SPRIN-D teams
-
-- 🟢 [Animo Playground (issuer/verifier)](https://funke.animo.id/)
-- 🔴 [Authada](https://id.staging.authada.de/eudi/verifier/home)
-- 🟢 [Sphereon](https://funke.demo.sphereon.com/)
-- 🔴 [Ubique](https://any-eudi-verifier.ubique.ch/schnapsladen)
-- 🔴 [wwWallet](https://verifier.funke.wwwallet.org/verifier/public/definitions/presentation-request/FunkePID)
-- 🔴 [Google](https://ws.utopia-central-registry.org/server/verifier.html) - We parse the request successfully but the presentation definition does not matcht the PID SD-JWT structure (known by them)
-- 🔴 [Lissi](https://kyc-demo.azurewebsites.net/)
-- 🔴 [Samsung](https://verifier.eudiw.dev/home)
 
 ## Changelog
 
