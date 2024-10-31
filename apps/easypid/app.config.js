@@ -63,12 +63,14 @@ const config = {
   },
   plugins: [
     '@animo-id/expo-ausweis-sdk',
+    '@animo-id/expo-mdoc-data-transfer',
     [
       'expo-build-properties',
       {
         android: {
           minSdkVersion: 26,
           useLegacyPackaging: true,
+          extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
         },
       },
     ],
