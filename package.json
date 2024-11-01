@@ -42,7 +42,7 @@
 			"@credo-ts/react-hooks": "0.6.1",
 			"@animo-id/expo-secure-environment": "0.1.0-alpha.5",
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
-			"react-native": "0.74.5",
+			"react-native": "0.75.2",
 			"@sphereon/did-auth-siop": "https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke",
 			"@sphereon/oid4vc-common": "https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke",
 			"@sphereon/oid4vci-common": "https://gitpkg.vercel.app/animo/OID4VC/packages/oid4vci-common?funke",

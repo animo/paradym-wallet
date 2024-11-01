@@ -63,7 +63,7 @@ const config = {
   },
   plugins: [
     '@animo-id/expo-ausweis-sdk',
-    '@animo-id/expo-mdoc-data-transfer',
+    ['@animo-id/expo-mdoc-data-transfer', { ios: { buildStatic: ['RNReanimated'] } }],
     [
       'expo-build-properties',
       {
@@ -71,6 +71,10 @@ const config = {
           minSdkVersion: 26,
           useLegacyPackaging: true,
           extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
+        },
+        ios: {
+          useFrameworks: 'dynamic',
+          deploymentTarget: '14.0',
         },
       },
     ],
