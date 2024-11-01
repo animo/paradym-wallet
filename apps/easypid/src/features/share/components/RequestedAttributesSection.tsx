@@ -1,6 +1,11 @@
 import type { ClaimFormat } from '@credo-ts/core'
-import { getPidAttributesForDisplay, getPidDisclosedAttributeNames, usePidCredential } from '@easypid/hooks'
-import { type FormattedSubmission, getCredentialDisplayId } from '@package/agent/src'
+import {
+  getPidAttributesForDisplay,
+  getPidDisclosedAttributeNames,
+  isPidCredential,
+  usePidCredential,
+} from '@easypid/hooks'
+import type { FormattedSubmission } from '@package/agent/src'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { CardWithAttributes } from 'packages/app/src'
 
@@ -9,7 +14,7 @@ export type RequestedAttributesSectionProps = {
 }
 
 export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
-  const { credentialIds: pidCredentialIds, pidCredentialForDisplay: pidCredential } = usePidCredential()
+  const { pidCredentialForDisplay } = usePidCredential()
 
   return (
     <YStack gap="$4">
@@ -18,44 +23,37 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         <YStack gap="$4">
           <Paragraph>
             {submission.areAllSatisfied
-              ? 'Onsly the following attributes will be shared. Nothing more.'
+              ? 'Only the following attributes will be shared. Nothing more.'
               : `You don't have the requested credential(s).`}
           </Paragraph>
           {submission.entries.map((entry) => (
             <YStack gap="$4" key={entry.inputDescriptorId}>
               {entry.credentials.map((credential) => {
-                const credentialDisplayId = getCredentialDisplayId(credential.id, credential.claimFormat)
-                console.log(credentialDisplayId, credential.id, credential.claimFormat)
-                if (pidCredentialIds?.includes(credentialDisplayId)) {
-                  const disclosedAttributes = getPidDisclosedAttributeNames(
-                    credential?.disclosedPayload ?? {},
-                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                  )
-
-                  const disclosedPayload = getPidAttributesForDisplay(
-                    credential?.disclosedPayload ?? {},
-                    credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                  )
-                  console.log(credential?.disclosedPayload)
-
+                if (isPidCredential(credential.metadata?.type)) {
                   return (
                     <CardWithAttributes
-                      key={credentialDisplayId}
-                      id={credentialDisplayId}
-                      name={pidCredential?.display.name as string}
-                      issuerImage={pidCredential?.display.issuer.logo}
-                      backgroundImage={pidCredential?.display.backgroundImage}
-                      backgroundColor={pidCredential?.display.backgroundColor}
-                      textColor={pidCredential?.display.textColor}
-                      disclosedAttributes={disclosedAttributes}
-                      disclosedPayload={disclosedPayload}
+                      key={pidCredentialForDisplay?.id}
+                      id={pidCredentialForDisplay?.id as string}
+                      name={pidCredentialForDisplay?.display.name as string}
+                      issuerImage={pidCredentialForDisplay?.display.issuer.logo}
+                      backgroundImage={pidCredentialForDisplay?.display.backgroundImage}
+                      backgroundColor={pidCredentialForDisplay?.display.backgroundColor}
+                      textColor={pidCredentialForDisplay?.display.textColor}
+                      disclosedAttributes={getPidDisclosedAttributeNames(
+                        credential?.disclosedPayload ?? {},
+                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                      )}
+                      disclosedPayload={getPidAttributesForDisplay(
+                        credential?.disclosedPayload ?? {},
+                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                      )}
                     />
                   )
                 }
                 return (
                   <CardWithAttributes
-                    key={credentialDisplayId}
-                    id={credentialDisplayId}
+                    key={credential.id}
+                    id={credential.id}
                     name={credential.credentialName}
                     backgroundImage={credential.backgroundImage}
                     backgroundColor={credential.backgroundColor}

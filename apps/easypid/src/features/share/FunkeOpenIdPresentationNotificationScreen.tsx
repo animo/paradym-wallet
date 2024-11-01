@@ -2,7 +2,6 @@ import {
   BiometricAuthenticationCancelledError,
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
-  getCredentialDisplayId,
   getCredentialsForProofRequest,
   shareProof,
 } from '@package/agent'
@@ -20,7 +19,7 @@ import {
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
-import { getPidAttributesForDisplay, usePidCredential } from '../../hooks'
+import { isPidCredential } from '../../hooks'
 import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
@@ -41,7 +40,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
   const { seedCredential } = useSeedCredentialPidData()
-  const { credentialIds: pidCredentialIds } = usePidCredential()
   const { activities } = useActivities()
 
   const [credentialsForRequest, setCredentialsForRequest] =
@@ -53,9 +51,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     [credentialsForRequest]
   )
   const lastInteractionDate = useMemo(() => {
-    const activity = activities.find(
-      (activity) => activity.entity.did === credentialsForRequest?.authorizationRequest.issuer
-    )
+    const activity = activities.find((activity) => activity.entity.host === credentialsForRequest?.verifierHostName)
     return activity?.date
   }, [activities, credentialsForRequest])
 
@@ -92,34 +88,23 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     () =>
       submission?.entries.flatMap((entry) => {
         return entry.credentials.map((credential) => {
-          const disclosedPayload = pidCredentialIds?.includes(
-            getCredentialDisplayId(credential.id, credential.claimFormat)
-          )
-            ? getPidAttributesForDisplay(
-                credential.disclosedPayload ?? {},
-                credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-              )
-            : credential.disclosedPayload
-
           return {
             id: credential.id,
             disclosedAttributes: credential.requestedAttributes ?? [],
-            disclosedPayload,
+            disclosedPayload: credential.disclosedPayload ?? {},
           }
         })
       }),
-    [submission, pidCredentialIds]
+    [submission]
   )
 
   const usePin = useMemo(() => {
     const isPidInSubmission =
       submission?.entries.some((entry) =>
-        entry.credentials.some((credential) =>
-          pidCredentialIds?.includes(getCredentialDisplayId(credential.id, credential.claimFormat))
-        )
+        entry.credentials.some((credential) => isPidCredential(credential.metadata?.type))
       ) ?? false
     return isPidInSubmission && !!seedCredential
-  }, [submission, pidCredentialIds, seedCredential])
+  }, [submission, seedCredential])
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -167,8 +152,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         status: 'success',
         entity: {
           name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest.verifierHostName,
-          did: credentialsForRequest.authorizationRequest.issuer as string,
           logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
+          host: credentialsForRequest.verifierHostName as string,
         },
         request: {
           name: submission.name,
@@ -267,7 +252,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const onProofDecline = async () => {
     const activityData = {
       entity: {
-        did: credentialsForRequest?.authorizationRequest.issuer as string,
+        host: credentialsForRequest?.verifierHostName as string,
         name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest?.verifierHostName,
         logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
       },

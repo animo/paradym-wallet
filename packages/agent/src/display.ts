@@ -1,9 +1,16 @@
-import type { W3cCredentialRecord } from '@credo-ts/core'
+import type { JwkJson, W3cCredentialRecord } from '@credo-ts/core'
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
-
-import { ClaimFormat, Hasher, JsonTransformer, Mdoc, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
+import {
+  ClaimFormat,
+  Hasher,
+  JsonTransformer,
+  Mdoc,
+  MdocRecord,
+  SdJwtVcRecord,
+  TypedArrayEncoder,
+} from '@credo-ts/core'
 import { formatDate, getHostNameFromUrl, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
@@ -305,10 +312,23 @@ function getSdJwtCredentialDisplay(
 export interface CredentialMetadata {
   type: string
   issuer: string
-  holder?: string | Record<string, unknown>
+  holder?: string
   validUntil?: string
   validFrom?: string
   issuedAt?: string
+}
+
+function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
+  try {
+    return TypedArrayEncoder.toBase64URL(
+      Hasher.hash(
+        JSON.stringify({ k: jwk.k, e: jwk.e, crv: jwk.crv, kty: jwk.kty, n: jwk.n, x: jwk.x, y: jwk.y }),
+        'sha-256'
+      )
+    )
+  } catch (e) {
+    return undefined
+  }
 }
 
 export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
@@ -325,10 +345,12 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, ...visibleProperties } = sdJwtVcPayload as SdJwtVcPayload
 
+  console.log(cnf)
+  const holder = cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as JwkJson) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
     issuer: iss,
-    holder: cnf,
+    holder,
   }
 
   if (iat) {
@@ -415,7 +437,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       attributes,
       // TODO:
       metadata: {
-        holder: 'Unknown',
+        // holder: 'Unknown',
         issuer: 'Unknown',
         type: mdocInstance.docType,
       } satisfies CredentialMetadata,

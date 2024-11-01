@@ -1,6 +1,11 @@
-import { type CredentialForDisplayId, useCredentialsForDisplay } from 'packages/agent/src'
+import { type CredentialForDisplay, type CredentialForDisplayId, useCredentialsForDisplay } from '@package/agent'
 import { useMemo } from 'react'
-import { usePidCredential } from './usePidCredential'
+import { type PidSdJwtVcAttributes, usePidCredential } from './usePidCredential'
+
+type CustomCredentialForDisplay = CredentialForDisplay & {
+  attributesForDisplay?: PidSdJwtVcAttributes
+  metadataForDisplay?: Record<string, unknown>
+}
 
 export const useCredentialsWithCustomDisplayById = (id: CredentialForDisplayId) => {
   const { credentials, isLoading } = useCredentialsWithCustomDisplay(true)
@@ -39,5 +44,8 @@ export const useCredentialsWithCustomDisplay = (includeHiddenCredentials = false
     ]
   }, [credentials, pidCredential, pidCredentials, pidCredentialIds, includeHiddenCredentials])
 
-  return { credentials: filteredCredentials, isLoading: isLoadingCredentialsForDisplay || isLoadingPidCredential }
+  return {
+    credentials: filteredCredentials as CustomCredentialForDisplay[],
+    isLoading: isLoadingCredentialsForDisplay || isLoadingPidCredential,
+  }
 }

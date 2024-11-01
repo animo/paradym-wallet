@@ -54,6 +54,7 @@ export function FunkePresentationNotificationScreen({
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"
+                type="request"
                 name={verifierName}
                 host={host}
                 logo={logo}
@@ -71,7 +72,6 @@ export function FunkePresentationNotificationScreen({
                 onAccept={usePin ? undefined : onAccept}
                 onDecline={onDecline}
                 logo={logo}
-                verifierName={verifierName}
                 submission={submission}
                 isAccepting={isAccepting}
               />

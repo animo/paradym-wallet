@@ -394,7 +394,8 @@ export function usePidCredential() {
         display: usePidDisplay(),
         userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
         attributesForDisplay: getPidAttributesForDisplay(attributes, claimFormat),
-        metadata: getPidMetadataAttributesForDisplay(attributes, pidCredential.metadata, claimFormat),
+        metadata: pidCredential.metadata,
+        metadataForDisplay: getPidMetadataAttributesForDisplay(attributes, pidCredential.metadata, ClaimFormat.SdJwtVc),
       }
     })
   }, [credentials])
@@ -412,6 +413,12 @@ export function usePidCredential() {
     credentialIds: pidCredentials.map((p) => p.id),
     credentials: pidCredentials,
   } as const
+}
+
+export function isPidCredential(credentialType?: string) {
+  return credentialType
+    ? pidSchemes.sdJwtVcVcts.includes(credentialType) || pidSchemes.msoMdocDoctypes.includes(credentialType)
+    : false
 }
 
 export const usePidDisplay = () => {

@@ -29,6 +29,7 @@ export function OnboardingIdCardRequestedAttributes({
           <CardWithAttributes
             id="pid-display"
             name="eID card"
+            issuerImage={display?.issuer.logo}
             backgroundImage={display?.backgroundImage}
             backgroundColor={display?.backgroundColor}
             disclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}

@@ -22,6 +22,7 @@ import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createParam } from 'solito'
+import { isPidCredential } from '../../hooks'
 
 const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
@@ -39,7 +40,7 @@ export function FunkeCredentialDetailScreen() {
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
     onPress: withHaptics(() => setIsSheetOpen(true)),
-    renderCondition: !credential?.isPid,
+    renderCondition: isPidCredential(credential?.metadata.type),
   })
 
   if (!credential) {
@@ -56,8 +57,8 @@ export function FunkeCredentialDetailScreen() {
     router.push({
       pathname: '/credentials/[id]/attributes',
       params: {
-        attributes: JSON.stringify(credential.attributes),
-        metadata: JSON.stringify(credential.metadata),
+        attributes: JSON.stringify(credential.attributesForDisplay ?? credential.attributes),
+        metadata: JSON.stringify(credential.metadataForDisplay ?? credential.metadata),
       },
     })
   })
@@ -93,7 +94,7 @@ export function FunkeCredentialDetailScreen() {
               <Heading ta="center" variant="h1">
                 Card details
               </Heading>
-              <Paragraph numberOfLines={1} ta="center">
+              <Paragraph numberOfLines={2} ta="center">
                 Issued by {credential.display.issuer.name}.
               </Paragraph>
             </Stack>

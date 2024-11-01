@@ -17,7 +17,7 @@ import {
 } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
-import { capitalizeFirstLetter, sleep } from '@package/utils'
+import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
@@ -701,7 +701,7 @@ export function OnboardingContextProvider({
           )
 
           await addReceivedActivity(secureUnlock.context.agent, {
-            did: parsed.prettyClaims.iss,
+            host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: pidDisplay?.issuer.name,
             logo: pidDisplay?.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background

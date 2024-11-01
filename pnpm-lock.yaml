@@ -57,6 +57,9 @@ importers:
       '@animo-id/expo-ausweis-sdk':
         specifier: 0.0.1-alpha.14
         version: 0.0.1-alpha.14(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+      '@animo-id/expo-mdoc-data-transfer':
+        specifier: 0.0.1-alpha.1
+        version: 0.0.1-alpha.1(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       '@animo-id/expo-secure-environment':
         specifier: 0.1.0-alpha.5
         version: 0.1.0-alpha.5(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -740,6 +743,13 @@ packages:
 
   '@animo-id/expo-ausweis-sdk@0.0.1-alpha.14':
     resolution: {integrity: sha512-LJJyuVvljHqrzEjm0MtVx/SgH4Q+dWilzI1cxb1QqsMUWJgDfB9on3+/hJKSnleeaTR5VcByEudWcgR45424wQ==}
+    peerDependencies:
+      expo: '*'
+      react: 18.2.0
+      react-native: 0.74.5
+
+  '@animo-id/expo-mdoc-data-transfer@0.0.1-alpha.1':
+    resolution: {integrity: sha512-0+V9CRDZP4oMlk6OkkTqiCUQnNv2zSSat/avIMhVmKGJ8mqf1fmGJ9Im4z+a3dPC6W6xjCVGl/otY1Yeba5bwg==}
     peerDependencies:
       expo: '*'
       react: 18.2.0
@@ -9588,6 +9598,15 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
 
   '@animo-id/expo-ausweis-sdk@0.0.1-alpha.14(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@expo/config-plugins': 8.0.10
+      expo: 51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
+      react: 18.2.0
+      react-native: 0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.2.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@animo-id/expo-mdoc-data-transfer@0.0.1-alpha.1(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@expo/config-plugins': 8.0.10
       expo: 51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))

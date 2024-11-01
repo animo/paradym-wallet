@@ -183,7 +183,6 @@ function wrapLocalSvg(SvgComponent: React.ComponentType<CustomIconProps>) {
     {
       accept: {
         color: 'color',
-        size: 'size',
       },
     }
   )
