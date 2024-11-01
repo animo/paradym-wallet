@@ -1,6 +1,6 @@
 import type { ClaimFormat } from '@credo-ts/core'
 import { getPidAttributesForDisplay, getPidDisclosedAttributeNames, usePidCredential } from '@easypid/hooks'
-import type { FormattedSubmission } from '@package/agent/src'
+import { getCredentialDisplayId, type FormattedSubmission } from '@package/agent/src'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { CardWithAttributes } from 'packages/app/src'
 
@@ -9,7 +9,7 @@ export type RequestedAttributesSectionProps = {
 }
 
 export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
-  const { credential: pidCredential } = usePidCredential()
+  const { credentialIds: pidCredentialIds, pidCredentialForDisplay: pidCredential } = usePidCredential()
 
   return (
     <YStack gap="$4">
@@ -24,7 +24,9 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
           {submission.entries.map((entry) => (
             <YStack gap="$4" key={entry.inputDescriptorId}>
               {entry.credentials.map((credential) => {
-                if (credential.metadata?.type === pidCredential?.type) {
+                const credentialDisplayId = getCredentialDisplayId(credential.id, credential.claimFormat)
+                console.log(credentialDisplayId, credential.id, credential.claimFormat)
+                if (pidCredentialIds?.includes(credentialDisplayId)) {
                   const disclosedAttributes = getPidDisclosedAttributeNames(
                     credential?.disclosedPayload ?? {},
                     credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
@@ -34,11 +36,12 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
                     credential?.disclosedPayload ?? {},
                     credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                   )
+                  console.log(credential?.disclosedPayload)
 
                   return (
                     <CardWithAttributes
-                      key={credential.id as string}
-                      id={credential.id as string}
+                      key={credentialDisplayId}
+                      id={credentialDisplayId}
                       name={pidCredential?.display.name as string}
                       issuerImage={pidCredential?.display.issuer.logo}
                       backgroundImage={pidCredential?.display.backgroundImage}
@@ -51,8 +54,8 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
                 }
                 return (
                   <CardWithAttributes
-                    key={credential.id}
-                    id={credential.id}
+                    key={credentialDisplayId}
+                    id={credentialDisplayId}
                     name={credential.credentialName}
                     backgroundImage={credential.backgroundImage}
                     backgroundColor={credential.backgroundColor}

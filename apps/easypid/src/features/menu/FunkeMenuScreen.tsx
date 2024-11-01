@@ -35,13 +35,13 @@ const menuItems = [
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
-  const { credential } = usePidCredential()
+  const { pidCredentialForDisplay } = usePidCredential()
 
-  const idItem = credential ? (
+  const idItem = pidCredentialForDisplay ? (
     <MenuItem
       key="id"
       item={{
-        href: `credentials/${credential.id}`,
+        href: `credentials/${pidCredentialForDisplay.id}`,
         icon: HeroIcons.IdentificationFilled,
         title: 'Your digital ID',
       }}

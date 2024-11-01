@@ -21,13 +21,14 @@ import { useRouter } from 'solito/router'
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
 import { useHaptics, useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
 
-import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import { useCredentialsWithCustomDisplayById } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useNavigation } from 'expo-router'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import type { CredentialForDisplayId } from '@package/agent'
 
 interface FunkeRequestedAttributesDetailScreenProps {
-  id: string
+  id: CredentialForDisplayId
   disclosedPayload: Record<string, unknown>
   disclosedAttributeLength: number
 }
@@ -41,13 +42,11 @@ export function FunkeRequestedAttributesDetailScreen({
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const { isLoading, credentials } = useCredentialsWithCustomDisplay()
+  const { credential: activeCredential, isLoading } = useCredentialsWithCustomDisplayById(id)
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { withHaptics } = useHaptics()
   const navigation = useNavigation()
-
-  const activeCredential = credentials.find((cred) => cred.id.includes(id))
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const scrollViewRef = useRef<ScrollViewRefType>(null)

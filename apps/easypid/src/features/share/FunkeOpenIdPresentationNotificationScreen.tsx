@@ -1,10 +1,10 @@
 import {
   BiometricAuthenticationCancelledError,
-  type CredentialMetadata,
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
   shareProof,
+  getCredentialDisplayId,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
@@ -41,7 +41,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
   const { seedCredential } = useSeedCredentialPidData()
-  const { credential: pidCredential } = usePidCredential()
+  const { credentialIds: pidCredentialIds } = usePidCredential()
   const { activities } = useActivities()
 
   const [credentialsForRequest, setCredentialsForRequest] =
@@ -92,13 +92,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     () =>
       submission?.entries.flatMap((entry) => {
         return entry.credentials.map((credential) => {
-          const disclosedPayload =
-            credential.metadata?.type === pidCredential?.type
-              ? getPidAttributesForDisplay(
-                  credential.disclosedPayload ?? {},
-                  credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                )
-              : credential.disclosedPayload
+          const disclosedPayload = pidCredentialIds?.includes(
+            getCredentialDisplayId(credential.id, credential.claimFormat)
+          )
+            ? getPidAttributesForDisplay(
+                credential.disclosedPayload ?? {},
+                credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+              )
+            : credential.disclosedPayload
 
           return {
             id: credential.id,
@@ -107,16 +108,18 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           }
         })
       }),
-    [submission, pidCredential]
+    [submission, pidCredentialIds]
   )
 
   const usePin = useMemo(() => {
     const isPidInSubmission =
       submission?.entries.some((entry) =>
-        entry.credentials.some((credential) => credential.id === pidCredential?.id)
+        entry.credentials.some((credential) =>
+          pidCredentialIds?.includes(getCredentialDisplayId(credential.id, credential.claimFormat))
+        )
       ) ?? false
     return isPidInSubmission && !!seedCredential
-  }, [submission, pidCredential, seedCredential])
+  }, [submission, pidCredentialIds, seedCredential])
 
   useEffect(() => {
     if (credentialsForRequest) return
