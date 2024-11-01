@@ -1,6 +1,6 @@
 import type { ClaimFormat } from '@credo-ts/core'
 import { getPidAttributesForDisplay, getPidDisclosedAttributeNames, usePidCredential } from '@easypid/hooks'
-import { getCredentialDisplayId, type FormattedSubmission } from '@package/agent/src'
+import { type FormattedSubmission, getCredentialDisplayId } from '@package/agent/src'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { CardWithAttributes } from 'packages/app/src'
 

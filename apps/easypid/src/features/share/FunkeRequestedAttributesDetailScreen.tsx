@@ -22,10 +22,10 @@ import { CredentialAttributes, TextBackButton } from '@package/app/src/component
 import { useHaptics, useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
 
 import { useCredentialsWithCustomDisplayById } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import type { CredentialForDisplayId } from '@package/agent'
 import { useNavigation } from 'expo-router'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import type { CredentialForDisplayId } from '@package/agent'
 
 interface FunkeRequestedAttributesDetailScreenProps {
   id: CredentialForDisplayId

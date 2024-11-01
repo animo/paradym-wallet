@@ -1,6 +1,6 @@
 import { type CredentialForDisplayId, useCredentialsForDisplay } from 'packages/agent/src'
-import { usePidCredential } from './usePidCredential'
 import { useMemo } from 'react'
+import { usePidCredential } from './usePidCredential'
 
 export const useCredentialsWithCustomDisplayById = (id: CredentialForDisplayId) => {
   const { credentials, isLoading } = useCredentialsWithCustomDisplay(true)

@@ -16,12 +16,12 @@ import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/ho
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
 import { useCredentialsWithCustomDisplayById } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import type { CredentialForDisplayId } from '@package/agent'
 import { useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createParam } from 'solito'
-import type { CredentialForDisplayId } from '@package/agent'
 
 const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 

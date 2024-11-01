@@ -1,6 +1,6 @@
 import { ClaimFormat } from '@credo-ts/core'
 import { useSeedCredentialPidData } from '@easypid/storage'
-import { type CredentialMetadata, useCredentialsForDisplay, type CredentialForDisplayId } from '@package/agent'
+import { type CredentialForDisplayId, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
 import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 import { useMemo } from 'react'
 import germanIssuerImage from '../../assets/german-issuer-image.png'

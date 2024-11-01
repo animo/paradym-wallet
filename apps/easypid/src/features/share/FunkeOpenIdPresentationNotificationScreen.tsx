@@ -2,9 +2,9 @@ import {
   BiometricAuthenticationCancelledError,
   type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
+  getCredentialDisplayId,
   getCredentialsForProofRequest,
   shareProof,
-  getCredentialDisplayId,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
