@@ -199,7 +199,7 @@ export function getPidMetadataAttributesForDisplay(
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
 ) {
   if (claimFormat === ClaimFormat.SdJwtVc) {
-    const { holder, issuedAt, validUntil, type, ...metadataRest } = metadata
+    const { issuedAt, validUntil, type, ...metadataRest } = metadata
 
     return {
       ...metadataRest,

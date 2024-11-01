@@ -1,7 +1,4 @@
 import type { JwkJson, W3cCredentialRecord } from '@credo-ts/core'
-import type { CredentialForDisplayId } from './hooks'
-import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
-import type { W3cCredentialJson, W3cIssuerJson } from './types'
 import {
   ClaimFormat,
   Hasher,
@@ -13,6 +10,9 @@ import {
 } from '@credo-ts/core'
 import { formatDate, getHostNameFromUrl, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
+import type { CredentialForDisplayId } from './hooks'
+import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
+import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
 
@@ -320,12 +320,13 @@ export interface CredentialMetadata {
 
 function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
   try {
-    return TypedArrayEncoder.toBase64URL(
+    const thumbprint = TypedArrayEncoder.toBase64URL(
       Hasher.hash(
         JSON.stringify({ k: jwk.k, e: jwk.e, crv: jwk.crv, kty: jwk.kty, n: jwk.n, x: jwk.x, y: jwk.y }),
         'sha-256'
       )
     )
+    return `urn:ietf:params:oauth:jwk-thumbprint:sha-256:${thumbprint}`
   } catch (e) {
     return undefined
   }
@@ -345,7 +346,6 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, ...visibleProperties } = sdJwtVcPayload as SdJwtVcPayload
 
-  console.log(cnf)
   const holder = cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as JwkJson) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
