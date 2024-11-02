@@ -40,7 +40,7 @@ export function FunkeCredentialDetailScreen() {
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
     onPress: withHaptics(() => setIsSheetOpen(true)),
-    renderCondition: isPidCredential(credential?.metadata.type),
+    renderCondition: !isPidCredential(credential?.metadata.type),
   })
 
   if (!credential) {
