@@ -23,7 +23,6 @@ export const trustedX509Certificates = [
   animoFunkeRelyingPartyCertificate,
   ubiqueRootCertificate,
   oldAnimoFunkeRelyingPartyCertificate,
-  'MIIBQDCB6KADAgECAhB4Pa/TJGJ5OihZO+hyyBfpMAoGCCqGSM49BAMCMA0xCzAJBgNVBAYTAk5MMB4XDTcwMDEwMTAwMDAwMFoXDTI1MTEyMjA4MjIxMlowDTELMAkGA1UEBhMCTkwwOTATBgcqhkjOPQIBBggqhkjOPQMBBwMiAALcD1XzKepFxWMAOqV+ln1fybBt7DRO5CV0f9A6mRp2xaNKMEgwRgYDVR0RBD8wPYI7NDk3YS0yNDAyLTQwMDAtMTI1Ni02NTZkLTU0ZTktMjE1MC0zM2NmLTVkYzMubmdyb2stZnJlZS5hcHAwCgYIKoZIzj0EAwIDRwAwRAIgZBBWcc6NSnvVl3GXMyOw/7I/e93WjofuAuyEFNQ4Td4CIHeFFfwjsK81ZFew+fW1YaBnhob1WX4EREVTvRTCS4K4',
 ]
 
 // https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#pid-contents
