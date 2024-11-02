@@ -11,7 +11,9 @@ export const useCredentialsWithCustomDisplayById = (id: CredentialForDisplayId) 
   const { credentials, isLoading } = useCredentialsWithCustomDisplay(true)
 
   return {
-    credential: useMemo(() => credentials.find((c) => c.id === id), [id, credentials]),
+    // NOTE: we support both the prefixed id and non-prefixed. We should fix the input id
+    // but for now this is the easiest approach
+    credential: useMemo(() => credentials.find((c) => c.id === id || c.id.endsWith(id)), [id, credentials]),
     isLoading,
   }
 }

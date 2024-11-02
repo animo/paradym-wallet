@@ -1,6 +1,12 @@
 import { ClaimFormat, type DifPexCredentialsForRequest } from '@credo-ts/core'
 
-import { type CredentialMetadata, type DisplayImage, filterAndMapSdJwtKeys, getCredentialForDisplay } from '../display'
+import {
+  type CredentialMetadata,
+  type DisplayImage,
+  filterAndMapSdJwtKeys,
+  getCredentialForDisplay,
+  recursivelyMapAttribues,
+} from '../display'
 
 export interface FormattedSubmission {
   name: string
@@ -44,6 +50,8 @@ export function formatDifPexCredentialsForRequest(
         isSatisfied: submission.verifiableCredentials.length >= 1,
 
         credentials: submission.verifiableCredentials.map((verifiableCredential) => {
+          // FIXME: this should also just return the correct branding for the PID already.
+          // Will solve a lot of complexity
           const { display, attributes, metadata, claimFormat } = getCredentialForDisplay(
             verifiableCredential.credentialRecord
           )
@@ -53,7 +61,9 @@ export function formatDifPexCredentialsForRequest(
             disclosedPayload = filterAndMapSdJwtKeys(verifiableCredential.disclosedPayload).visibleProperties
           } else if (verifiableCredential.type === ClaimFormat.MsoMdoc) {
             disclosedPayload = Object.fromEntries(
-              Object.values(verifiableCredential.disclosedPayload).flatMap((entry) => Object.entries(entry))
+              Object.values(verifiableCredential.disclosedPayload).flatMap((entry) =>
+                Object.entries(entry).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+              )
             )
           }
 

@@ -8,7 +8,7 @@ import {
   SdJwtVcRecord,
   TypedArrayEncoder,
 } from '@credo-ts/core'
-import { formatDate, getHostNameFromUrl, sanitizeString } from '@package/utils'
+import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
@@ -364,7 +364,9 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   }
 
   return {
-    visibleProperties,
+    visibleProperties: Object.fromEntries(
+      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+    ),
     metadata: credentialMetadata,
   }
 }
@@ -424,7 +426,9 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
 
     const mdocInstance = Mdoc.fromBase64Url(credentialRecord.base64Url)
     const attributes = Object.fromEntries(
-      Object.values(mdocInstance.issuerSignedNamespaces).flatMap((a) => Object.entries(a))
+      Object.values(mdocInstance.issuerSignedNamespaces).flatMap((v) =>
+        Object.entries(v).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+      )
     )
 
     return {
@@ -481,4 +485,37 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     } satisfies CredentialMetadata,
     claimFormat: credentialRecord.credential.claimFormat,
   }
+}
+
+type MappedAttributesReturnType =
+  | string
+  | number
+  | boolean
+  | { [key: string]: MappedAttributesReturnType }
+  | null
+  | undefined
+  | Array<MappedAttributesReturnType>
+export function recursivelyMapAttribues(value: unknown): MappedAttributesReturnType {
+  if (value instanceof Uint8Array) {
+    const imageMimeType = detectImageMimeType(value)
+    if (imageMimeType) {
+      return `data:${imageMimeType};base64,${TypedArrayEncoder.toBase64(value)}`
+    }
+
+    // TODO: what to do with a buffer that is not an image?
+    return TypedArrayEncoder.toUtf8String(value)
+  }
+  if (value === null || value === undefined || typeof value === 'number' || typeof value === 'boolean') return value
+
+  if (value instanceof Date || (typeof value === 'string' && isDateString(value))) {
+    // TODO: handle DateOnly (should be handled as time is 0 then)
+    return formatDate(value)
+  }
+  if (typeof value === 'string') return value
+  if (value instanceof Map) {
+    return Object.fromEntries(Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
+  }
+  if (Array.isArray(value)) return value.map(recursivelyMapAttribues)
+
+  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
 }

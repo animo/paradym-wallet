@@ -320,15 +320,7 @@ export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAtt
 
 export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
   const disclosedAttributeNames: string[] = []
-  const {
-    place_of_birth,
-    age_equal_or_over,
-    address,
-    nationalities,
-    issuing_authority,
-    issuing_country,
-    ...remainingAttributes
-  } = attributes
+  const { place_of_birth, age_equal_or_over, address, nationalities, ...remainingAttributes } = attributes
 
   for (const attribute of Object.keys(remainingAttributes)) {
     disclosedAttributeNames.push(attributeNameMapping[attribute] ?? sanitizeString(attribute))
