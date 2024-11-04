@@ -15,15 +15,16 @@ import React, { useState } from 'react'
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
-import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import { useCredentialsWithCustomDisplayById } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import type { CredentialForDisplayId } from '@package/agent'
 import { useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createParam } from 'solito'
-import { usePidCredential } from '../../hooks'
+import { isPidCredential } from '../../hooks'
 
-const { useParams } = createParam<{ id: string }>()
+const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
 export function FunkeCredentialDetailScreen() {
   const toast = useToastController()
@@ -33,17 +34,13 @@ export function FunkeCredentialDetailScreen() {
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
 
-  const { credentials } = useCredentialsWithCustomDisplay()
-  const { credential: pidCredential } = usePidCredential()
-  const isPidCredential = pidCredential?.id.includes(params.id)
-  const credential = isPidCredential ? pidCredential : credentials.find((cred) => cred.id.includes(params.id))
-
+  const { credential } = useCredentialsWithCustomDisplayById(params.id)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
     onPress: withHaptics(() => setIsSheetOpen(true)),
-    renderCondition: !isPidCredential,
+    renderCondition: !isPidCredential(credential?.metadata.type),
   })
 
   if (!credential) {

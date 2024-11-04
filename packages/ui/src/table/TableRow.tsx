@@ -37,7 +37,7 @@ export const TableRow = ({
         opacity: onPress ? 0.8 : 1,
       }}
     >
-      <XStack f={1}>
+      <XStack f={1} alignItems="center">
         <YStack gap="$1.5" f={1} justifyContent="flex-start">
           {attribute && (
             <Paragraph

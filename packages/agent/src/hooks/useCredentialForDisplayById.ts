@@ -23,6 +23,5 @@ export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId
     return getCredentialForDisplay(c)
   }
 
-  // TODO: add mdoc
   return null
 }
