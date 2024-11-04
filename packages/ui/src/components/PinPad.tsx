@@ -1,4 +1,4 @@
-import { Text, useTheme } from 'tamagui'
+import { Text } from 'tamagui'
 import { Stack, XStack, YStack } from '../base'
 import { HeroIcons } from '../content'
 
@@ -12,10 +12,11 @@ export enum PinValues {
   Seven = '7',
   Eight = '8',
   Nine = '9',
-  Empty = '',
   Zero = '0',
   Backspace = 'backspace',
+  Biometrics = 'biometrics',
 }
+
 const letterMap: Record<PinValues, string> = {
   [PinValues.One]: '',
   [PinValues.Two]: 'abc',
@@ -27,7 +28,7 @@ const letterMap: Record<PinValues, string> = {
   [PinValues.Eight]: 'tuv',
   [PinValues.Nine]: 'wxyz',
   [PinValues.Zero]: '',
-  [PinValues.Empty]: '',
+  [PinValues.Biometrics]: '',
   [PinValues.Backspace]: '',
 }
 
@@ -41,9 +42,8 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       fg={1}
       jc="center"
       ai="center"
-      backgroundColor={character === PinValues.Backspace ? '$grey-200' : '$white'}
+      backgroundColor={[PinValues.Backspace, PinValues.Biometrics].includes(character) ? '$grey-200' : '$white'}
       pressStyle={{ opacity: 0.5, backgroundColor: '$grey-100' }}
-      opacity={character === PinValues.Empty ? 0 : 1}
       onPress={() => onPressPinNumber(character)}
       disabled={disabled}
       h="$6"
@@ -53,6 +53,8 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
     >
       {character === PinValues.Backspace ? (
         <HeroIcons.Backspace color="$grey-900" size={24} />
+      ) : character === PinValues.Biometrics ? (
+        <HeroIcons.FingerPrint color="$grey-900" size={24} />
       ) : (
         <YStack ai="center" gap="$1">
           {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
@@ -79,7 +81,7 @@ export const PinPad = ({ onPressPinNumber, disabled }: PinPadProps) => {
     [PinValues.One, PinValues.Two, PinValues.Three],
     [PinValues.Four, PinValues.Five, PinValues.Six],
     [PinValues.Seven, PinValues.Eight, PinValues.Nine],
-    [PinValues.Empty, PinValues.Zero, PinValues.Backspace],
+    [PinValues.Biometrics, PinValues.Zero, PinValues.Backspace],
   ]
 
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (

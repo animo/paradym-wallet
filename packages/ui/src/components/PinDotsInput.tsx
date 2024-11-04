@@ -17,6 +17,7 @@ interface PinDotsInputProps {
   onPinComplete: (pin: string) => void
   isLoading?: boolean
   useNativeKeyboard?: boolean
+  onBiometricsTap?: () => void
 }
 
 export interface PinDotsInputRef {
@@ -28,7 +29,7 @@ export interface PinDotsInputRef {
 
 export const PinDotsInput = forwardRef(
   (
-    { onPinComplete, pinLength, isLoading, useNativeKeyboard = true }: PinDotsInputProps,
+    { onPinComplete, pinLength, isLoading, useNativeKeyboard = true, onBiometricsTap }: PinDotsInputProps,
     ref: ForwardedRef<PinDotsInputRef>
   ) => {
     const [pin, setPin] = useState('')
@@ -91,7 +92,8 @@ export const PinDotsInput = forwardRef(
         return
       }
 
-      if (character === PinValues.Empty) {
+      if (character === PinValues.Biometrics) {
+        onBiometricsTap?.()
         return
       }
 
