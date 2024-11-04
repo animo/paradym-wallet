@@ -1,6 +1,6 @@
 import { Text } from 'tamagui'
 import { Stack, XStack, YStack } from '../base'
-import { HeroIcons } from '../content'
+import { CustomIcons, HeroIcons } from '../content'
 
 export enum PinValues {
   One = '1',
@@ -15,7 +15,8 @@ export enum PinValues {
   Zero = '0',
   Backspace = 'backspace',
   Empty = '',
-  Biometrics = 'biometrics',
+  Fingerprint = 'fingerprint',
+  FaceId = 'faceid',
 }
 
 const letterMap: Record<PinValues, string> = {
@@ -29,7 +30,8 @@ const letterMap: Record<PinValues, string> = {
   [PinValues.Eight]: 'tuv',
   [PinValues.Nine]: 'wxyz',
   [PinValues.Zero]: '',
-  [PinValues.Biometrics]: '',
+  [PinValues.Fingerprint]: '',
+  [PinValues.FaceId]: '',
   [PinValues.Empty]: '',
   [PinValues.Backspace]: '',
 }
@@ -45,7 +47,9 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       jc="center"
       ai="center"
       backgroundColor={
-        [PinValues.Backspace, PinValues.Biometrics, PinValues.Empty].includes(character) ? '$grey-200' : '$white'
+        [PinValues.Backspace, PinValues.Fingerprint, PinValues.FaceId, PinValues.Empty].includes(character)
+          ? '$grey-200'
+          : '$white'
       }
       pressStyle={{ opacity: 0.5, backgroundColor: '$grey-100' }}
       onPress={() => onPressPinNumber(character)}
@@ -57,8 +61,10 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
     >
       {character === PinValues.Backspace ? (
         <HeroIcons.Backspace color="$grey-900" size={24} />
-      ) : character === PinValues.Biometrics ? (
+      ) : character === PinValues.Fingerprint ? (
         <HeroIcons.FingerPrint color="$grey-900" size={24} />
+      ) : character === PinValues.FaceId ? (
+        <CustomIcons.FaceId color="$grey-900" size={24} />
       ) : (
         <YStack ai="center" gap="$1">
           {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
@@ -78,15 +84,20 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
 export interface PinPadProps {
   onPressPinNumber: (character: PinValues) => void
   useBiometricsPad?: boolean
+  biometricsType?: 'face' | 'fingerprint'
   disabled?: boolean
 }
 
-export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled }: PinPadProps) => {
+export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled, biometricsType }: PinPadProps) => {
   const pinValues = [
     [PinValues.One, PinValues.Two, PinValues.Three],
     [PinValues.Four, PinValues.Five, PinValues.Six],
     [PinValues.Seven, PinValues.Eight, PinValues.Nine],
-    [useBiometricsPad ? PinValues.Biometrics : PinValues.Empty, PinValues.Zero, PinValues.Backspace],
+    [
+      useBiometricsPad ? (biometricsType === 'face' ? PinValues.FaceId : PinValues.Fingerprint) : PinValues.Empty,
+      PinValues.Zero,
+      PinValues.Backspace,
+    ],
   ]
 
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (

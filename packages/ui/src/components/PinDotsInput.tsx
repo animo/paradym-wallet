@@ -18,6 +18,7 @@ interface PinDotsInputProps {
   isLoading?: boolean
   useNativeKeyboard?: boolean
   onBiometricsTap?: () => void
+  biometricsType?: 'face' | 'fingerprint'
 }
 
 export interface PinDotsInputRef {
@@ -29,7 +30,14 @@ export interface PinDotsInputRef {
 
 export const PinDotsInput = forwardRef(
   (
-    { onPinComplete, pinLength, isLoading, useNativeKeyboard = true, onBiometricsTap }: PinDotsInputProps,
+    {
+      onPinComplete,
+      pinLength,
+      isLoading,
+      useNativeKeyboard = true,
+      onBiometricsTap,
+      biometricsType,
+    }: PinDotsInputProps,
     ref: ForwardedRef<PinDotsInputRef>
   ) => {
     const [pin, setPin] = useState('')
@@ -96,7 +104,7 @@ export const PinDotsInput = forwardRef(
         return
       }
 
-      if (character === PinValues.Biometrics && onBiometricsTap) {
+      if ([PinValues.Fingerprint, PinValues.FaceId].includes(character) && onBiometricsTap) {
         onBiometricsTap()
         return
       }
@@ -166,6 +174,7 @@ export const PinDotsInput = forwardRef(
             onPressPinNumber={onPressPinNumber}
             disabled={isInLoadingState}
             useBiometricsPad={!!onBiometricsTap}
+            biometricsType={biometricsType}
           />
         )}
       </YStack>

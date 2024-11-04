@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 import React from 'react'
 import { AppState, type AppStateStatus } from 'react-native'
 
-const BACKGROUND_TIME_THRESHOLD = 3000 // FIXME
+const BACKGROUND_TIME_THRESHOLD = 30000 // 30 seconds
 
 export function BackgroundLockProvider({ children }: PropsWithChildren) {
   const secureUnlock = useSecureUnlock()

@@ -2,6 +2,7 @@ import { Redirect } from 'expo-router'
 
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import {
   FlexPage,
@@ -25,6 +26,7 @@ export default function Authenticate() {
 
   const toast = useToastController()
   const secureUnlock = useSecureUnlock()
+  const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const isLoading =
@@ -106,6 +108,7 @@ export default function Authenticate() {
         onPinComplete={unlockUsingPin}
         onBiometricsTap={unlockUsingBiometrics}
         useNativeKeyboard={false}
+        biometricsType={biometricsType ?? 'fingerprint'}
       />
     </FlexPage>
   )
