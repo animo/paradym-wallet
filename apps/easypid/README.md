@@ -43,6 +43,7 @@ The identity wallet contains the following features, you can see the full flow w
 - 🔴 PID presentation during (Q)EAA issuance
 - 🔴 Batch issuance and single use credentials
 - 🔴 Authorization code flow
+- 🔴 Client attestations
 
 **Present attestations remotely** 
 - 🟢 PID SD-JWT VC using OpenID4VP
@@ -52,9 +53,9 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟠 Combined presentations
 - 🟢 Cross-device QR flow
 - 🟢 Same-device flow
+- 🔴 New VP query language
 
 **Present attestations in-person**
-- 🔴 Query language
 - Android
   - 🟢 Android-Android over NFC for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
@@ -72,6 +73,12 @@ The identity wallet contains the following features, you can see the full flow w
 - 🔴 HAIP compliance
 - 🔴 WCAG 2.1 compliance
 - 🔴 AI-based oversharing detection
+
+**[Test issuer/verifier](https://funke.animo.id/)** 
+
+- 🟢 Issue QEAAs
+- 🟢 Verify PID
+- 🔴 Verify mixed PID-QEAA requests
 
 The identity wallet contains the following temporary features for development and testing:
 
