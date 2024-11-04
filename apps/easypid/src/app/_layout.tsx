@@ -36,9 +36,7 @@ export default function RootLayout() {
         >
           <BackgroundLockProvider>
             <NoInternetToastProvider>
-              <DeeplinkHandler>
-                <Slot />
-              </DeeplinkHandler>
+              <Slot />
             </NoInternetToastProvider>
           </BackgroundLockProvider>
         </ThemeProvider>
