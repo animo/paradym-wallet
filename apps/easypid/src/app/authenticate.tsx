@@ -4,16 +4,9 @@ import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import {
-  FlexPage,
-  Heading,
-  HeroIcons,
-  PinDotsInput,
-  type PinDotsInputRef,
-  YStack,
-  useToastController,
-} from '@package/ui'
+import { FlexPage, Heading, HeroIcons, YStack, useToastController } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
+import { PinDotsInput, type PinDotsInputRef } from 'packages/app/src'
 import { useEffect, useRef, useState } from 'react'
 import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'

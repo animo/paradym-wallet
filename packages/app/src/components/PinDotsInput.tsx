@@ -9,8 +9,9 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Circle, Input } from 'tamagui'
-import { XStack, YStack } from '../base'
-import { PinPad, PinValues } from './PinPad'
+import { XStack, YStack } from '../../../ui/src/base'
+import { PinPad, PinValues } from '../../../ui/src/components/PinPad'
+import { useHaptics } from '../hooks'
 
 interface PinDotsInputProps {
   pinLength: number
@@ -40,6 +41,7 @@ export const PinDotsInput = forwardRef(
     }: PinDotsInputProps,
     ref: ForwardedRef<PinDotsInputRef>
   ) => {
+    const { withHaptics, errorHaptic } = useHaptics()
     const [pin, setPin] = useState('')
     const inputRef = useRef<TextInput>(null)
 
@@ -52,12 +54,13 @@ export const PinDotsInput = forwardRef(
 
     // Shake animation
     const startShakeAnimation = useCallback(() => {
+      errorHaptic()
       shakeAnimation.value = withRepeat(
         withSequence(...[10, -7.5, 5, -2.5, 0].map((toValue) => withTiming(toValue, { duration: 75 }))),
         1,
         true
       )
-    }, [shakeAnimation])
+    }, [shakeAnimation, errorHaptic])
 
     useEffect(() => {
       translationAnimations.forEach((animation, index) => {
@@ -94,7 +97,7 @@ export const PinDotsInput = forwardRef(
       [startShakeAnimation]
     )
 
-    const onPressPinNumber = (character: PinValues) => {
+    const onPressPinNumber = withHaptics((character: PinValues) => {
       if (character === PinValues.Backspace) {
         setPin((pin) => pin.slice(0, pin.length - 1))
         return
@@ -119,7 +122,7 @@ export const PinDotsInput = forwardRef(
 
         return newPin
       })
-    }
+    })
 
     const onChangePin = (newPin: string) => {
       if (isLoading) return
