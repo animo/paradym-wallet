@@ -13,7 +13,7 @@ import {
   useToastController,
 } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
 

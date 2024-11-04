@@ -92,8 +92,12 @@ export const PinDotsInput = forwardRef(
         return
       }
 
-      if (character === PinValues.Biometrics) {
-        onBiometricsTap?.()
+      if (character === PinValues.Empty) {
+        return
+      }
+
+      if (character === PinValues.Biometrics && onBiometricsTap) {
+        onBiometricsTap()
         return
       }
 
@@ -158,7 +162,11 @@ export const PinDotsInput = forwardRef(
             secureTextEntry
           />
         ) : (
-          <PinPad onPressPinNumber={onPressPinNumber} disabled={isInLoadingState} />
+          <PinPad
+            onPressPinNumber={onPressPinNumber}
+            disabled={isInLoadingState}
+            useBiometricsPad={!!onBiometricsTap}
+          />
         )}
       </YStack>
     )

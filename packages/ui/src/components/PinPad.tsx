@@ -14,6 +14,7 @@ export enum PinValues {
   Nine = '9',
   Zero = '0',
   Backspace = 'backspace',
+  Empty = '',
   Biometrics = 'biometrics',
 }
 
@@ -29,6 +30,7 @@ const letterMap: Record<PinValues, string> = {
   [PinValues.Nine]: 'wxyz',
   [PinValues.Zero]: '',
   [PinValues.Biometrics]: '',
+  [PinValues.Empty]: '',
   [PinValues.Backspace]: '',
 }
 
@@ -42,7 +44,9 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       fg={1}
       jc="center"
       ai="center"
-      backgroundColor={[PinValues.Backspace, PinValues.Biometrics].includes(character) ? '$grey-200' : '$white'}
+      backgroundColor={
+        [PinValues.Backspace, PinValues.Biometrics, PinValues.Empty].includes(character) ? '$grey-200' : '$white'
+      }
       pressStyle={{ opacity: 0.5, backgroundColor: '$grey-100' }}
       onPress={() => onPressPinNumber(character)}
       disabled={disabled}
@@ -73,15 +77,16 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
 
 export interface PinPadProps {
   onPressPinNumber: (character: PinValues) => void
+  useBiometricsPad?: boolean
   disabled?: boolean
 }
 
-export const PinPad = ({ onPressPinNumber, disabled }: PinPadProps) => {
+export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled }: PinPadProps) => {
   const pinValues = [
     [PinValues.One, PinValues.Two, PinValues.Three],
     [PinValues.Four, PinValues.Five, PinValues.Six],
     [PinValues.Seven, PinValues.Eight, PinValues.Nine],
-    [PinValues.Biometrics, PinValues.Zero, PinValues.Backspace],
+    [useBiometricsPad ? PinValues.Biometrics : PinValues.Empty, PinValues.Zero, PinValues.Backspace],
   ]
 
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (
