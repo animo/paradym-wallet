@@ -1,10 +1,4 @@
-import {
-  BackgroundLockProvider,
-  DeeplinkHandler,
-  NoInternetToastProvider,
-  Provider,
-  useTransparentNavigationBar,
-} from '@package/app'
+import { BackgroundLockProvider, NoInternetToastProvider, Provider, useTransparentNavigationBar } from '@package/app'
 import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Slot } from 'expo-router'
