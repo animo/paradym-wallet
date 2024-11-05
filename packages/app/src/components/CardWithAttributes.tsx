@@ -74,6 +74,9 @@ export function CardWithAttributes({
       onPressOut={handlePressOut}
       style={disableNavigation ? undefined : pressStyle}
       onPress={disableNavigation ? undefined : onPress}
+      accessible={true}
+      accessibilityRole={disableNavigation ? undefined : 'button'}
+      aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
       <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
         {hasInternet && backgroundImage?.url && (

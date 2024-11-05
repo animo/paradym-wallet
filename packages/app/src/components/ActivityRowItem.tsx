@@ -87,7 +87,17 @@ export function ActivityRowItem({
 
   return (
     <Animated.View style={pressStyle}>
-      <XStack ai="center" gap="$4" w="100%" onPress={onLinkPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+      <XStack
+        accessible={true}
+        accessibilityRole="button"
+        aria-label={`${Title} activity from ${subtitle}`}
+        ai="center"
+        gap="$4"
+        w="100%"
+        onPress={onLinkPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
         <Stack pos="relative">
           <Stack
             jc="center"

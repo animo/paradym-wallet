@@ -4,11 +4,13 @@ import { DualResponseButtons } from './DualResponseButtons'
 
 const DEFAULT_TITLE = 'Are you sure you want to stop?'
 const DEFAULT_DESCRIPTION = 'This action cannot be undone.'
+const DEFAULT_CONFIRM_TEXT = 'Yes, stop'
 
 interface ConfirmationSheetProps {
   type?: 'regular' | 'floating'
   title?: string
   description?: string
+  confirmText?: string
   isOpen: boolean
   setIsOpen: (open: boolean) => void
   onConfirm: () => void
@@ -19,6 +21,7 @@ export function ConfirmationSheet({
   type = 'regular',
   title,
   description,
+  confirmText,
   isOpen,
   setIsOpen,
   onConfirm,
@@ -43,7 +46,7 @@ export function ConfirmationSheet({
           <DualResponseButtons
             align="horizontal"
             variant="confirmation"
-            acceptText="Yes, stop"
+            acceptText={confirmText || DEFAULT_CONFIRM_TEXT}
             declineText="No"
             onAccept={onConfirm}
             onDecline={onCancel || (() => setIsOpen(false))}
@@ -64,7 +67,7 @@ export function ConfirmationSheet({
           <DualResponseButtons
             align="horizontal"
             variant="confirmation"
-            acceptText="Yes, stop"
+            acceptText={confirmText || DEFAULT_CONFIRM_TEXT}
             declineText="No"
             onAccept={onConfirm}
             onDecline={onCancel || (() => setIsOpen(false))}

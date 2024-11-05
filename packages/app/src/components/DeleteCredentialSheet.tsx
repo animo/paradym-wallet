@@ -49,6 +49,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
       setIsOpen={setIsSheetOpen}
       title="Archive card?"
       description={`This will make '${name}' unusable and delete it from your wallet.`}
+      confirmText="Yes, archive"
       onConfirm={onDeleteCredential}
       onCancel={onCancel}
     />

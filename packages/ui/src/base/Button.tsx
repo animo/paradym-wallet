@@ -5,6 +5,10 @@ import { useScaleAnimation } from '../hooks/useScaleAnimation'
 
 const Btn = styled(TButton, {
   name: 'Button',
+  tag: 'button',
+  accessible: true,
+  accessibilityRole: 'button',
+  userSelect: 'auto',
   borderRadius: '$button',
   fontFamily: '$default',
   fontWeight: '$medium',

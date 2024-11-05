@@ -9,7 +9,7 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
   return (
     <YStack fg={1} jc="space-between">
       <YStack flex={1} overflow="hidden">
-        <ScrollableStack gap="$2" pb="$4">
+        <ScrollableStack gap="$2" pb="$4" accessible={true} accessibilityRole="list">
           <OnboardingStepItem
             stepName="step 1"
             title="Secure the wallet"

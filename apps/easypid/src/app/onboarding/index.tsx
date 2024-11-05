@@ -1,12 +1,25 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
 import { FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
 import type React from 'react'
-import { Alert } from 'react-native'
+import { useEffect, useRef } from 'react'
+import { AccessibilityInfo, Alert } from 'react-native'
+import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
 
 export default function OnboardingScreens() {
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const onboardingContext = useOnboardingContext()
+  const headerRef = useRef(null)
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: When the step changes, move accessibility focus to the header
+  useEffect(() => {
+    if (headerRef.current) {
+      const handle = findNodeHandle(headerRef.current)
+      if (handle) {
+        AccessibilityInfo.setAccessibilityFocus(handle)
+      }
+    }
+  }, [onboardingContext.currentStep])
 
   const onReset = () => {
     Alert.alert('Reset Onboarding', 'Are you sure you want to reset the onboarding process?', [
@@ -42,7 +55,9 @@ export default function OnboardingScreens() {
         >
           <YStack fg={1} gap="$6">
             <YStack gap="$3">
-              <Heading variant="h1">{onboardingContext.page.title}</Heading>
+              <Heading ref={headerRef} variant="h1">
+                {onboardingContext.page.title}
+              </Heading>
               {onboardingContext.page.subtitle && <Paragraph>{onboardingContext.page.subtitle}</Paragraph>}
               {onboardingContext.page.caption && (
                 <Paragraph>

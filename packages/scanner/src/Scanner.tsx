@@ -1,6 +1,17 @@
 import type { StyleProp, ViewStyle } from 'react-native'
 
-import { AnimatePresence, Button, Heading, LucideIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
+import {
+  AnimatePresence,
+  Button,
+  Heading,
+  LucideIcons,
+  Page,
+  Paragraph,
+  Spacer,
+  Stack,
+  XStack,
+  YStack,
+} from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
 import { useCallback, useEffect, useState } from 'react'
@@ -82,9 +93,21 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       </MaskedView>
       <YStack jc="center" ai="center" gap="$4">
         {onCancel && (
-          <Button.Text bg="$darkTranslucent" h="$2" br="$12" onPress={onCancel}>
-            Cancel
-          </Button.Text>
+          <XStack>
+            <Button.Solid
+              h="$3.5"
+              px="$5"
+              br="$12"
+              bg="$grey-100"
+              color="$grey-900"
+              flexDirection="row"
+              onPress={onCancel}
+              scaleOnPress
+              alignSelf="center"
+            >
+              Cancel
+            </Button.Solid>
+          </XStack>
         )}
         <XStack maxHeight="$10">
           <AnimatePresence>

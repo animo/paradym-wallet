@@ -46,6 +46,9 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       fg={1}
       jc="center"
       ai="center"
+      accessible={true}
+      accessibilityRole="button"
+      aria-label={character === PinValues.Backspace ? 'Backspace' : `Pin number ${character}`}
       backgroundColor={
         [PinValues.Backspace, PinValues.Fingerprint, PinValues.FaceId, PinValues.Empty].includes(character)
           ? '$grey-200'

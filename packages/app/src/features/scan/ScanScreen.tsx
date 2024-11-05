@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '../../hooks'
-import { isAndroid } from '../../utils'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
@@ -49,7 +48,7 @@ export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScree
   }
 
   // Only show cancel button on Android
-  const onCancel = isAndroid() ? () => back() : undefined
+  const onCancel = () => back()
 
   return (
     <>
