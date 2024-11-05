@@ -2,6 +2,7 @@ import { IdCard, Paragraph, PinPad, PinValues, Stack, XStack, YStack } from '@pa
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 
+import { useHaptics } from 'packages/app/src/hooks/useHaptics'
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
 import pidBackgroundImage from '../../../../assets/pid-background.png'
 
@@ -14,6 +15,7 @@ const pinLength = 6
 export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: OnboardingIdCardPinEnterProps, ref) => {
   const [pin, setPin] = useState('')
   const inputRef = useRef<TextInput>(null)
+  const { withHaptics } = useHaptics()
 
   useImperativeHandle(ref, () => ({
     focus: () => inputRef.current?.focus(),
@@ -35,7 +37,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
     }
   }
 
-  const onPressPinNumber = (character: PinValues) => {
+  const onPressPinNumber = withHaptics((character: PinValues) => {
     if (character === PinValues.Backspace) {
       setPin((pin) => pin.slice(0, pin.length - 1))
       return
@@ -55,7 +57,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
 
       return newPin
     })
-  }
+  })
 
   return (
     <YStack fg={1} jc="space-between">

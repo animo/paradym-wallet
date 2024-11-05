@@ -1,6 +1,6 @@
-import { Text, useTheme } from 'tamagui'
+import { Text } from 'tamagui'
 import { Stack, XStack, YStack } from '../base'
-import { HeroIcons } from '../content'
+import { CustomIcons, HeroIcons } from '../content'
 
 export enum PinValues {
   One = '1',
@@ -12,10 +12,13 @@ export enum PinValues {
   Seven = '7',
   Eight = '8',
   Nine = '9',
-  Empty = '',
   Zero = '0',
   Backspace = 'backspace',
+  Empty = '',
+  Fingerprint = 'fingerprint',
+  FaceId = 'faceid',
 }
+
 const letterMap: Record<PinValues, string> = {
   [PinValues.One]: '',
   [PinValues.Two]: 'abc',
@@ -27,6 +30,8 @@ const letterMap: Record<PinValues, string> = {
   [PinValues.Eight]: 'tuv',
   [PinValues.Nine]: 'wxyz',
   [PinValues.Zero]: '',
+  [PinValues.Fingerprint]: '',
+  [PinValues.FaceId]: '',
   [PinValues.Empty]: '',
   [PinValues.Backspace]: '',
 }
@@ -41,9 +46,12 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       fg={1}
       jc="center"
       ai="center"
-      backgroundColor={character === PinValues.Backspace ? '$grey-200' : '$white'}
+      backgroundColor={
+        [PinValues.Backspace, PinValues.Fingerprint, PinValues.FaceId, PinValues.Empty].includes(character)
+          ? '$grey-200'
+          : '$white'
+      }
       pressStyle={{ opacity: 0.5, backgroundColor: '$grey-100' }}
-      opacity={character === PinValues.Empty ? 0 : 1}
       onPress={() => onPressPinNumber(character)}
       disabled={disabled}
       h="$6"
@@ -53,6 +61,10 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
     >
       {character === PinValues.Backspace ? (
         <HeroIcons.Backspace color="$grey-900" size={24} />
+      ) : character === PinValues.Fingerprint ? (
+        <HeroIcons.FingerPrint color="$grey-900" size={24} />
+      ) : character === PinValues.FaceId ? (
+        <CustomIcons.FaceId color="$grey-900" size={24} />
       ) : (
         <YStack ai="center" gap="$1">
           {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
@@ -71,15 +83,21 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
 
 export interface PinPadProps {
   onPressPinNumber: (character: PinValues) => void
+  useBiometricsPad?: boolean
+  biometricsType?: 'face' | 'fingerprint'
   disabled?: boolean
 }
 
-export const PinPad = ({ onPressPinNumber, disabled }: PinPadProps) => {
+export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled, biometricsType }: PinPadProps) => {
   const pinValues = [
     [PinValues.One, PinValues.Two, PinValues.Three],
     [PinValues.Four, PinValues.Five, PinValues.Six],
     [PinValues.Seven, PinValues.Eight, PinValues.Nine],
-    [PinValues.Empty, PinValues.Zero, PinValues.Backspace],
+    [
+      useBiometricsPad ? (biometricsType === 'face' ? PinValues.FaceId : PinValues.Fingerprint) : PinValues.Empty,
+      PinValues.Zero,
+      PinValues.Backspace,
+    ],
   ]
 
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (

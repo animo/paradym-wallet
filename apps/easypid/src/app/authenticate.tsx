@@ -2,9 +2,11 @@ import { Redirect } from 'expo-router'
 
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import { FlexPage, Heading, HeroIcons, PinDotsInput, type PinDotsInputRef, YStack } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, YStack, useToastController } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
+import { PinDotsInput, type PinDotsInputRef } from 'packages/app/src'
 import { useEffect, useRef, useState } from 'react'
 import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
@@ -15,17 +17,20 @@ import { useResetWalletDevMenu } from '../utils/resetWallet'
 export default function Authenticate() {
   useResetWalletDevMenu()
 
+  const toast = useToastController()
   const secureUnlock = useSecureUnlock()
+  const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: canTryUnlockingUsingBiometrics not needed
   useEffect(() => {
     if (secureUnlock.state === 'locked' && secureUnlock.canTryUnlockingUsingBiometrics) {
       secureUnlock.tryUnlockingUsingBiometrics()
     }
-  }, [secureUnlock])
+  }, [secureUnlock.state])
 
   useEffect(() => {
     if (secureUnlock.state !== 'acquired-wallet-key') return
@@ -62,6 +67,18 @@ export default function Authenticate() {
 
   void SplashScreen.hideAsync()
 
+  const unlockUsingBiometrics = async () => {
+    if (secureUnlock.state === 'locked') {
+      secureUnlock.tryUnlockingUsingBiometrics()
+    } else {
+      toast.show('You PIN is required to unlock the app', {
+        customData: {
+          preset: 'danger',
+        },
+      })
+    }
+  }
+
   const unlockUsingPin = async (pin: string) => {
     if (secureUnlock.state !== 'locked') return
     await secureUnlock.unlockUsingPin(pin)
@@ -82,7 +99,9 @@ export default function Authenticate() {
         ref={pinInputRef}
         pinLength={6}
         onPinComplete={unlockUsingPin}
+        onBiometricsTap={unlockUsingBiometrics}
         useNativeKeyboard={false}
+        biometricsType={biometricsType ?? 'fingerprint'}
       />
     </FlexPage>
   )

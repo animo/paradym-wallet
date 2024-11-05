@@ -15,7 +15,6 @@ const jsonRecordIds = [seedCredentialStorage.recordId, activityStorage.recordId]
 
 // When deeplink routing we want to push
 export const credentialDataHandlerOptions = {
-  allowedInvitationTypes: ['openid-authorization-request'],
   routeMethod: 'push',
 } satisfies CredentialDataHandlerOptions
 

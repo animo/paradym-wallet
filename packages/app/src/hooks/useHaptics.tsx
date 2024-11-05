@@ -22,11 +22,9 @@ export function useHaptics() {
   }, [])
 
   const withHaptics = useCallback(
-    <T extends (...args: unknown[]) => unknown>(
-      callback: T,
-      hapticType: HapticType = 'light'
-    ): ((...args: Parameters<T>) => ReturnType<T>) => {
-      return (...args) => {
+    // biome-ignore lint/suspicious/noExplicitAny: should work no matter what the callback returns
+    <T extends (...args: any[]) => any>(callback: T, hapticType: HapticType = 'light'): T => {
+      return ((...args) => {
         switch (hapticType) {
           case 'heavy':
             heavyHaptic()
@@ -40,8 +38,8 @@ export function useHaptics() {
           default:
             lightHaptic()
         }
-        return callback(...args) as ReturnType<T>
-      }
+        return callback(...args)
+      }) as T
     },
     [lightHaptic, heavyHaptic, successHaptic, errorHaptic]
   )

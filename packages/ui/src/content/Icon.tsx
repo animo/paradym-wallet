@@ -73,6 +73,7 @@ import {
 } from 'react-native-heroicons/solid'
 
 import { ExclamationIcon } from '../../assets/Exclamation'
+import { FaceIdIcon } from '../../assets/FaceId'
 
 import { styled } from 'tamagui'
 
@@ -167,6 +168,7 @@ export const HeroIcons = {
 
 export const CustomIcons = {
   Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
+  FaceId: wrapLocalSvg(FaceIdIcon as React.ComponentType<SvgProps>),
 }
 
 export type CustomIconProps = SvgProps & {
