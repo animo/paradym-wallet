@@ -7,7 +7,6 @@ import {
   OptionSheet,
   Paragraph,
   ScrollView,
-  type ScrollViewRefType,
   Spacer,
   Stack,
   YStack,
@@ -15,8 +14,9 @@ import {
   useSpringify,
   useToastController,
 } from '@package/ui'
+import type { ScrollViewRefType } from '@package/ui'
+import { useRouter } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'solito/router'
 
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
 import { useHaptics, useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'

@@ -78,6 +78,8 @@ const config = {
         ],
       },
     ],
+    'expo-router',
+    'expo-secure-store',
   ],
   assetBundlePatterns: ['**/*'],
   ios: {

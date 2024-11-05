@@ -1,8 +1,8 @@
 import { parseDidCommInvitation, receiveOutOfBandInvitation, useAgent } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { useRouter } from 'expo-router'
 import React, { useCallback, useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { useRouter } from 'solito/router'
 
 import { DidCommCredentialNotificationScreen } from './DidCommCredentialNotificationScreen'
 import { DidCommPresentationNotificationScreen } from './DidCommPresentationNotificationScreen'

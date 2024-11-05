@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing } from 'react-native-reanimated'
-import { Circle, type StackProps } from 'tamagui'
+import { Circle } from 'tamagui'
 
-interface LoaderProps extends StackProps {
+type LoaderProps = {
   size?: 'small' | 'large'
   variant?: 'light' | 'dark'
 }

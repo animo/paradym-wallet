@@ -1,6 +1,6 @@
 import { type InvitationType, type ParseInvitationResultError, parseInvitationUrl } from '@package/agent'
 import * as Haptics from 'expo-haptics'
-import { useRouter } from 'solito/router'
+import { useRouter } from 'expo-router'
 
 export interface CredentialDataHandlerOptions {
   allowedInvitationTypes?: Array<InvitationType>
@@ -45,13 +45,12 @@ export const useCredentialDataHandler = () => {
       routeMethod(
         {
           pathname: '/notifications/openIdCredential',
-          query: {
+          params: {
             uri: invitationData.format === 'url' ? encodeURIComponent(invitationData.data as string) : undefined,
             data:
               invitationData.format === 'parsed' ? encodeURIComponent(JSON.stringify(invitationData.data)) : undefined,
           },
         },
-        undefined,
         transitionOptions
       )
       return { success: true } as const
@@ -61,12 +60,11 @@ export const useCredentialDataHandler = () => {
       routeMethod(
         {
           pathname: '/notifications/openIdPresentation',
-          query: {
+          params: {
             uri: invitationData.format === 'url' ? encodeURIComponent(invitationData.data as string) : undefined,
             data: invitationData.format === 'parsed' ? encodeURIComponent(invitationData.data as string) : undefined,
           },
         },
-        undefined,
         transitionOptions
       )
       return { success: true } as const
@@ -76,14 +74,13 @@ export const useCredentialDataHandler = () => {
       routeMethod(
         {
           pathname: '/notifications/didcomm',
-          query: {
+          params: {
             invitation:
               invitationData.format === 'parsed' ? encodeURIComponent(JSON.stringify(invitationData.data)) : undefined,
             invitationUrl:
               invitationData.format === 'url' ? encodeURIComponent(invitationData.data as string) : undefined,
           },
         },
-        undefined,
         transitionOptions
       )
       return { success: true } as const

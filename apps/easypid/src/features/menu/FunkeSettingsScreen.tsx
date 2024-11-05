@@ -1,6 +1,6 @@
 import { Button, FlexPage, Heading, HeroIcons, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
+import { useRouter } from 'expo-router'
 import React from 'react'
-import { useRouter } from 'solito/router'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
 

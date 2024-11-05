@@ -12,9 +12,9 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
+import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { useRouter } from 'solito/router'
 
 import { useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

@@ -1,7 +1,7 @@
 import { useAgent, useDidCommCredentialActions } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { useRouter } from 'expo-router'
 import React from 'react'
-import { useRouter } from 'solito/router'
 
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'

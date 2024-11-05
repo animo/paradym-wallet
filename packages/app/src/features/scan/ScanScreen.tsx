@@ -1,8 +1,8 @@
 import { QrScanner } from '@package/scanner'
 import { Page, Paragraph, Spinner } from '@package/ui'
 import { useIsFocused } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
-import { useRouter } from 'solito/router'
 
 import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '../../hooks'
 import { isAndroid } from '../../utils'
@@ -11,9 +11,10 @@ const unsupportedUrlPrefixes = ['_oob=']
 
 interface QrScannerScreenProps {
   credentialDataHandlerOptions?: CredentialDataHandlerOptions
+  appName: string
 }
 
-export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScreenProps) {
+export function QrScannerScreen({ credentialDataHandlerOptions, appName }: QrScannerScreenProps) {
   const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
 
@@ -54,6 +55,7 @@ export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScree
   return (
     <>
       <QrScanner
+        appName={appName}
         onScan={(data) => {
           void onScan(data)
         }}

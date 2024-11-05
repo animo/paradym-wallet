@@ -63,7 +63,10 @@ const config = {
   },
   plugins: [
     '@animo-id/expo-ausweis-sdk',
-    '@animo-id/expo-mdoc-data-transfer',
+    [
+      '@animo-id/expo-mdoc-data-transfer',
+      { ios: { buildStatic: ['RNReanimated', 'RNScreens', 'IndyVdr', 'Anoncreds', 'AriesAskar'] } },
+    ],
     [
       'expo-build-properties',
       {
@@ -71,6 +74,11 @@ const config = {
           minSdkVersion: 26,
           useLegacyPackaging: true,
           extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
+        },
+        ios: {
+          deploymentTarget: '16.0',
+          useFrameworks: 'dynamic',
+          newArchEnabled: false,
         },
       },
     ],
@@ -90,6 +98,8 @@ const config = {
       },
     ],
     'expo-router',
+    ['expo-camera', { recordAudioAndroid: false }],
+    'expo-secure-store',
   ],
   assetBundlePatterns: ['**/*'],
   ios: {

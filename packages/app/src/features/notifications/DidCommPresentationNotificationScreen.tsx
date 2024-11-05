@@ -1,7 +1,7 @@
 import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
-import { useRouter } from 'solito/router'
 
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'

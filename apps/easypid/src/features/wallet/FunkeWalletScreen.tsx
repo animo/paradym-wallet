@@ -16,7 +16,7 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
-import { useRouter } from 'solito/router'
+import { useRouter } from 'expo-router'
 
 import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
