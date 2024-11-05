@@ -2,12 +2,12 @@ import type { DisplayImage } from '@package/agent'
 import {
   AnimatedStack,
   Card,
-  Heading,
   HeroIcons,
   IconContainer,
   Image,
   Loader,
   LucideIcons,
+  Paragraph,
   Spacer,
   XStack,
   YStack,
@@ -49,7 +49,7 @@ export function FunkeCredentialCard({
   textColor = textColor ? textColor : getTextColorBasedOnBg(bgColor ?? '#000')
 
   const icon = issuerImage?.url ? (
-    <Image src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />
+    <Image src={issuerImage.url} width={36} height={36} />
   ) : (
     <XStack width={36} height={36} bg="$lightTranslucent" ai="center" jc="center" br="$12">
       <LucideIcons.FileBadge size={20} strokeWidth={2.5} color="$grey-100" />
@@ -84,13 +84,16 @@ export function FunkeCredentialCard({
         backgroundColor="transparent"
         onPress={onPress}
         overflow="hidden"
+        accessible={true}
+        accessibilityRole={onPress ? 'button' : undefined}
+        aria-label={`${name.toLocaleUpperCase()} credential`}
       >
         <Card.Header p={0}>
           <XStack jc="space-between">
             <YStack f={1}>
-              <Heading variant="sub2" fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
+              <Paragraph fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
                 {name.toLocaleUpperCase()}
-              </Heading>
+              </Paragraph>
             </YStack>
             <XStack>{icon}</XStack>
           </XStack>
@@ -100,7 +103,7 @@ export function FunkeCredentialCard({
           {onPress && <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight color={textColor} />} />}
         </Card.Footer>
         {backgroundImage?.url && (
-          <Card.Background>
+          <Card.Background accessible={false}>
             {hasInternet ? (
               <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
                 <AnimatedStack width="100%" height="100%" style={fadeInStyle}>

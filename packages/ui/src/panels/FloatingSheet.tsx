@@ -1,8 +1,9 @@
+import { useEffect, useRef } from 'react'
+import { AccessibilityInfo, findNodeHandle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Portal } from 'tamagui'
+import { Portal, Text, VisuallyHidden } from 'tamagui'
 import { Sheet as TamaguiSheet, type SheetProps as TamaguiSheetProps } from 'tamagui'
 import { Stack } from '../base'
-
 export interface FloatingSheetProps extends TamaguiSheetProps {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
@@ -10,6 +11,18 @@ export interface FloatingSheetProps extends TamaguiSheetProps {
 
 export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: FloatingSheetProps) {
   const { bottom } = useSafeAreaInsets()
+
+  const sheetRef = useRef(null)
+
+  useEffect(() => {
+    if (isOpen && sheetRef.current) {
+      const handle = findNodeHandle(sheetRef.current)
+      if (handle) {
+        AccessibilityInfo.setAccessibilityFocus(handle)
+      }
+    }
+  }, [isOpen])
+
   return (
     <Portal key="root">
       <TamaguiSheet
@@ -24,6 +37,8 @@ export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: Floatin
           damping: 9,
           mass: 0.22,
         }}
+        modal
+        aria-modal={true}
         {...props}
       >
         <TamaguiSheet.Overlay
@@ -36,6 +51,9 @@ export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: Floatin
         />
         <TamaguiSheet.Frame bg="transparent" px="$4" mb={bottom}>
           <Stack bg="$white" br="$8" overflow="hidden">
+            <VisuallyHidden ref={sheetRef}>
+              <Text>Options opened</Text>
+            </VisuallyHidden>
             {children}
           </Stack>
         </TamaguiSheet.Frame>

@@ -6,13 +6,24 @@ import { useScaleAnimation } from '../hooks'
 interface IconContainerProps extends StackProps {
   icon: React.ReactElement
   scaleOnPress?: boolean
+  'aria-label'?: string
 }
 
-export function IconContainer({ icon, scaleOnPress = true, ...props }: IconContainerProps) {
+export function IconContainer({ icon, scaleOnPress = true, 'aria-label': ariaLabel, ...props }: IconContainerProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: scaleOnPress ? 0.9 : 1 })
 
   return (
-    <AnimatedStack p="$2" m="$-2" style={pressStyle} onPressIn={handlePressIn} onPressOut={handlePressOut} {...props}>
+    <AnimatedStack
+      accessible={true}
+      accessibilityRole="button"
+      p="$2"
+      m="$-2"
+      style={pressStyle}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      aria-label={ariaLabel}
+      {...props}
+    >
       {cloneElement(icon, {
         strokeWidth: icon.props.strokeWidth ?? 2,
         size: icon.props.size ?? 24,

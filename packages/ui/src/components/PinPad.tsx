@@ -1,4 +1,4 @@
-import { Text, useTheme } from 'tamagui'
+import { Text } from 'tamagui'
 import { Stack, XStack, YStack } from '../base'
 import { HeroIcons } from '../content'
 
@@ -41,6 +41,9 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       fg={1}
       jc="center"
       ai="center"
+      accessible={true}
+      accessibilityRole="button"
+      aria-label={character === PinValues.Backspace ? 'Backspace' : `Pin number ${character}`}
       backgroundColor={character === PinValues.Backspace ? '$grey-200' : '$white'}
       pressStyle={{ opacity: 0.5, backgroundColor: '$grey-100' }}
       opacity={character === PinValues.Empty ? 0 : 1}
