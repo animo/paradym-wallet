@@ -30,7 +30,7 @@ export default function Authenticate() {
     if (secureUnlock.state === 'locked' && secureUnlock.canTryUnlockingUsingBiometrics) {
       secureUnlock.tryUnlockingUsingBiometrics()
     }
-  }, [])
+  }, [secureUnlock.state])
 
   useEffect(() => {
     if (secureUnlock.state !== 'acquired-wallet-key') return
