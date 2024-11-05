@@ -1,4 +1,4 @@
-import { NoInternetToastProvider, Provider, useTransparentNavigationBar } from '@package/app'
+import { BackgroundLockProvider, NoInternetToastProvider, Provider, useTransparentNavigationBar } from '@package/app'
 import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Slot } from 'expo-router'
@@ -28,9 +28,11 @@ export default function RootLayout() {
             },
           }}
         >
-          <NoInternetToastProvider>
-            <Slot />
-          </NoInternetToastProvider>
+          <BackgroundLockProvider>
+            <NoInternetToastProvider>
+              <Slot />
+            </NoInternetToastProvider>
+          </BackgroundLockProvider>
         </ThemeProvider>
       </SecureUnlockProvider>
     </Provider>

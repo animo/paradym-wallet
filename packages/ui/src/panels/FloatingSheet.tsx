@@ -49,7 +49,7 @@ export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: Floatin
           enterStyle={{ opacity: 0 }}
           exitStyle={{ opacity: 0 }}
         />
-        <TamaguiSheet.Frame bg="transparent" px="$4" mb={bottom}>
+        <TamaguiSheet.Frame bg="transparent" px="$4" mb={bottom || '$4'}>
           <Stack bg="$white" br="$8" overflow="hidden">
             <VisuallyHidden ref={sheetRef}>
               <Text>Options opened</Text>

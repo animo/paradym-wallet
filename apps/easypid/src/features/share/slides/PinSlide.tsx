@@ -1,5 +1,5 @@
-import { usePushToWallet, useWizard } from '@package/app'
-import { Heading, Paragraph, PinDotsInput, type PinDotsInputRef, YStack, useToastController } from '@package/ui'
+import { PinDotsInput, type PinDotsInputRef, usePushToWallet, useWizard } from '@package/app'
+import { Heading, Paragraph, YStack, useToastController } from '@package/ui'
 import { useRef, useState } from 'react'
 import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
 
