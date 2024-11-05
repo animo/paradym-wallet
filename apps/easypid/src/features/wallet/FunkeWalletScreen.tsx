@@ -45,10 +45,18 @@ export function FunkeWalletScreen() {
     <FlexPage p={0} safeArea="b" gap={0}>
       <AnimatedStack entering={FadeIn.duration(200)}>
         <XStack px="$4" py="$2" ai="center" justifyContent="space-between">
-          <IconContainer icon={<HeroIcons.Menu />} onPress={pushToMenu} />
-          <IconContainer icon={<LucideIcons.History />} onPress={pushToActivity} />
+          <IconContainer aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
+          <IconContainer aria-label="Activity" icon={<LucideIcons.History />} onPress={pushToActivity} />
         </XStack>
-        <Stack alignItems="center" gap="$2" py="$6" px="$4" borderBottomWidth="$0.5" borderColor="$grey-200">
+        <Stack
+          accessible={true}
+          alignItems="center"
+          gap="$2"
+          py="$6"
+          px="$4"
+          borderBottomWidth="$0.5"
+          borderColor="$grey-200"
+        >
           <AnimatedStack
             flexDirection="column"
             style={qrPressStyle}
@@ -115,7 +123,7 @@ export function FunkeWalletScreen() {
         </YStack>
       ) : (
         <ScrollView p="$4" py="$7" gap="$2">
-          <AnimatedStack position="relative" mb={BASE_CREDENTIAL_CARD_HEIGHT + credentials.length * 72}>
+          <AnimatedStack mb={BASE_CREDENTIAL_CARD_HEIGHT + credentials.length * 72}>
             {credentials.map((credential, idx) => (
               <AnimatedCredentialCard key={credential.id} display={credential.display} id={credential.id} index={idx} />
             ))}

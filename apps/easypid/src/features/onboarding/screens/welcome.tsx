@@ -4,6 +4,7 @@ import {
   FlexPage,
   Heading,
   HeroIcons,
+  IconContainer,
   IllustrationContainerBackground,
   Paragraph,
   Stack,
@@ -87,7 +88,9 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
       <FlexPage p={0} fg={1} jc="space-between" bg="#00000000">
         <YStack px="$4" gap="$4" flex-1 justifyContent="space-between">
           <YStack ai="flex-end">
-            <Stack
+            <IconContainer
+              aria-label="Info"
+              icon={<HeroIcons.QuestionMarkCircle />}
               p="$2"
               onPress={() => {
                 Alert.alert(
@@ -95,9 +98,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
                   `\nThis is your digital wallet. With it, you can store and share information about yourself. \n\n You can switch between the C and B' flow by pressing the grey button in the bottom left.`
                 )
               }}
-            >
-              <HeroIcons.QuestionMarkCircle color="$grey-900" />
-            </Stack>
+            />
           </YStack>
           <Stack h="$10" />
           <YStack gap="$4" jc="center" ai="center">
