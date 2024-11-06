@@ -12,7 +12,7 @@
 		"@tamagui/themes": "1.109.5",
 		"@tamagui/toast": "1.109.5",
 		"react-native-heroicons": "^4.0.0",
-		"react-native-reanimated": "~3.15.0",
+		"react-native-reanimated": "~3.15.5",
 		"tamagui": "1.109.5"
 	}
 }
