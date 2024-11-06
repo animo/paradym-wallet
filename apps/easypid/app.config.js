@@ -65,7 +65,7 @@ const config = {
     '@animo-id/expo-ausweis-sdk',
     [
       '@animo-id/expo-mdoc-data-transfer',
-      { ios: { buildStatic: ['RNReanimated', 'RNScreens', 'IndyVdr', 'Anoncreds', 'AriesAskar'] } },
+      { ios: { buildStatic: ['RNReanimated', 'RNScreens'] } },
     ],
     [
       'expo-build-properties',
