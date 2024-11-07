@@ -99,7 +99,7 @@ export function FunkeCredentialDetailScreen() {
               </Paragraph>
             </Stack>
             <YStack w="100%" gap="$2">
-              <CardInfoLifecycle />
+              <CardInfoLifecycle validFrom={credential.validFrom} validUntil={credential.validUntil} />
               <InfoButton
                 variant="view"
                 title="Card attributes"

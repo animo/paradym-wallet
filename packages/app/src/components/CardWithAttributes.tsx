@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { useHasInternetConnection } from '../hooks'
 import { OMITTED_CREDENTIAL_ATTRIBUTES } from '../utils'
+import { BlurBadge } from './BlurBadge'
 
 interface CardWithAttributesProps {
   id: string
@@ -27,6 +28,8 @@ interface CardWithAttributesProps {
   disclosedAttributes: string[]
   disclosedPayload?: Record<string, unknown>
   disableNavigation?: boolean
+  isExpired?: boolean
+  isRevoked?: boolean
 }
 
 export function CardWithAttributes({
@@ -39,6 +42,8 @@ export function CardWithAttributes({
   disclosedAttributes,
   disclosedPayload,
   disableNavigation = false,
+  isExpired = false,
+  isRevoked = false,
 }: CardWithAttributesProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const router = useRouter()
@@ -64,6 +69,9 @@ export function CardWithAttributes({
     )
   }
 
+  const isRevokedOrExpired = isRevoked || isExpired
+  const disabledNav = disableNavigation || !disclosedPayload || isRevokedOrExpired
+
   return (
     <AnimatedStack
       br="$6"
@@ -72,10 +80,10 @@ export function CardWithAttributes({
       overflow="hidden"
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={disableNavigation ? undefined : pressStyle}
-      onPress={disableNavigation ? undefined : onPress}
+      style={disabledNav ? undefined : pressStyle}
+      onPress={disabledNav ? undefined : onPress}
       accessible={true}
-      accessibilityRole={disableNavigation ? undefined : 'button'}
+      accessibilityRole={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
       <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
@@ -97,7 +105,9 @@ export function CardWithAttributes({
             </Heading>
           </YStack>
           <XStack h="$3">
-            {issuerImage?.url && <Image src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />}
+            {issuerImage?.url && !isRevokedOrExpired && (
+              <Image src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />
+            )}
           </XStack>
         </XStack>
       </Stack>
@@ -113,13 +123,19 @@ export function CardWithAttributes({
               </Stack>
             </XStack>
           ))}
-          {!disableNavigation && disclosedPayload && (
+          {!disabledNav && (
             <Stack pos="absolute" bottom="$0" right="$0">
               <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />
             </Stack>
           )}
         </YStack>
       </YStack>
+      <Stack bg="$grey-900" pos="absolute" top="$0" left="$0" right="$0" bottom="$0" opacity={0.2} zIndex={0} />
+      {(isRevoked || isExpired) && (
+        <Stack pos="absolute" top="$3.5" right="$2.5">
+          <BlurBadge tint="dark" color={textColor} label={isExpired ? 'Card expired' : 'Card revoked'} />
+        </Stack>
+      )}
     </AnimatedStack>
   )
 }

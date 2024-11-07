@@ -2,6 +2,7 @@ import { Circle } from 'tamagui'
 import { AnimatedStack, Heading, Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons, Image } from '../content'
 import { useScaleAnimation } from '../hooks'
+import type { StatusVariant } from '../utils/variants'
 
 const infoButtonVariants = {
   default: {
@@ -45,7 +46,7 @@ const infoButtonVariants = {
 }
 
 interface InfoButtonProps {
-  variant?: keyof typeof infoButtonVariants
+  variant?: StatusVariant | keyof typeof infoButtonVariants
   image?: {
     src: string | number
     alt: string
