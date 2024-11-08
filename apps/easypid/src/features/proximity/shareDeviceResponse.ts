@@ -1,9 +1,15 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
-import { Key, KeyType, TypedArrayEncoder, getJwkFromKey } from '@credo-ts/core'
+import { TypedArrayEncoder } from '@credo-ts/core'
 import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
-import { deviceKeyPair } from '@easypid/storage/pidPin'
 import type { EasyPIDAppAgent } from '@package/agent'
-import { DeviceRequest, DeviceResponse, MDoc, type MdocContext, parseIssuerSigned } from '@protokoll/mdoc-client'
+import {
+  COSEKey,
+  DeviceRequest,
+  DeviceResponse,
+  MDoc,
+  type MdocContext,
+  parseIssuerSigned,
+} from '@protokoll/mdoc-client'
 
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
@@ -27,16 +33,23 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
 
   const mdt = mdocDataTransfer.instance()
 
-  const key = Key.fromPublicKey(deviceKeyPair.publicKey(), KeyType.P256)
-  const devicePublicKey = getJwkFromKey(key)
+  const mso = mdoc.documents[0].issuerSigned.issuerAuth.decodedPayload
+  const deviceKeyInfo = mso.deviceKeyInfo
+  if (!deviceKeyInfo?.deviceKey) {
+    throw new Error('Device key info is missing')
+  }
+
+  const publicDeviceJwk = COSEKey.import(deviceKeyInfo.deviceKey).toJWK()
 
   const deviceRequest = DeviceRequest.parse(options.deviceRequest)
 
   const deviceResponse = await DeviceResponse.from(mdoc)
     .usingSessionTranscriptBytes(options.sessionTranscript)
     .usingDeviceRequest(deviceRequest)
-    .authenticateWithSignature(devicePublicKey, 'ES256')
+    .authenticateWithSignature(publicDeviceJwk, 'ES256')
     .sign(mdocContext)
+
+  console.log(deviceResponse.encode())
 
   await mdt.sendDeviceResponse(deviceResponse.encode())
 }

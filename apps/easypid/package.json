@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@animo-id/expo-ausweis-sdk": "*",
-		"@animo-id/expo-mdoc-data-transfer": "0.0.1-alpha.1",
+		"@animo-id/expo-mdoc-data-transfer": "*",
 		"@animo-id/expo-secure-environment": "*",
 		"@credo-ts/core": "*",
 		"@expo-google-fonts/open-sans": "^0.2.3",
