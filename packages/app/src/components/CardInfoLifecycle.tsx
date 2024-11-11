@@ -111,10 +111,10 @@ function CardInfoLimitedByDate({ validUntil, validFrom }: { validUntil?: Date; v
   const onPress = withHaptics(() => setIsOpen(!isOpen))
 
   useEffect(() => {
-    if (validFrom && validFrom > new Date()) {
-      setState('not-yet-active')
-    } else if (validUntil && validUntil < new Date()) {
+    if (validUntil && validUntil < new Date()) {
       setState('expired')
+    } else if (validFrom && validFrom > new Date()) {
+      setState('not-yet-active')
     } else if (validUntil && validUntil > new Date()) {
       setState('will-expire')
     } else {

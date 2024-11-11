@@ -30,6 +30,7 @@ interface CardWithAttributesProps {
   disableNavigation?: boolean
   isExpired?: boolean
   isRevoked?: boolean
+  isNotYetActive?: boolean
 }
 
 export function CardWithAttributes({
@@ -42,6 +43,7 @@ export function CardWithAttributes({
   disclosedAttributes,
   disclosedPayload,
   disableNavigation = false,
+  isNotYetActive = false,
   isExpired = false,
   isRevoked = false,
 }: CardWithAttributesProps) {
@@ -131,9 +133,13 @@ export function CardWithAttributes({
         </YStack>
       </YStack>
       <Stack bg="$grey-900" pos="absolute" top="$0" left="$0" right="$0" bottom="$0" opacity={0.2} zIndex={0} />
-      {(isRevoked || isExpired) && (
+      {(isRevoked || isExpired || isNotYetActive) && (
         <Stack pos="absolute" top="$3.5" right="$2.5">
-          <BlurBadge tint="dark" color={textColor} label={isExpired ? 'Card expired' : 'Card revoked'} />
+          <BlurBadge
+            tint="dark"
+            color={textColor}
+            label={isExpired ? 'Card expired' : isRevoked ? 'Card revoked' : 'Card inactive'}
+          />
         </Stack>
       )}
     </AnimatedStack>

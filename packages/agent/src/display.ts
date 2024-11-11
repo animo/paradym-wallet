@@ -453,6 +453,8 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
         type: mdocInstance.docType,
       } satisfies CredentialMetadata,
       claimFormat: ClaimFormat.MsoMdoc,
+      validUntil: mdocInstance.validityInfo.validUntil,
+      validFrom: mdocInstance.validityInfo.validFrom,
     }
   }
 
@@ -494,6 +496,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     validUntil: credentialRecord.credential.expirationDate
       ? new Date(credentialRecord.credential.expirationDate)
       : undefined,
+    validFrom: credentialRecord.credential.issuanceDate,
   }
 }
 
