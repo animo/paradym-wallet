@@ -171,7 +171,6 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         if (!canTryUnlockingUsingBiometrics) return null
 
         setIsUnlocking(true)
-        setCanTryUnlockingUsingBiometrics(false)
         setBiometricsUnlockAttempts((attempts) => attempts + 1)
         try {
           const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
@@ -188,8 +187,8 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
             setCanTryUnlockingUsingBiometrics(false)
           }
           // If other error, we will allow up to three attempts
-          else if (biometricsUnlockAttempts < 3) {
-            setCanTryUnlockingUsingBiometrics(true)
+          else if (biometricsUnlockAttempts > 3) {
+            setCanTryUnlockingUsingBiometrics(false)
           }
         } finally {
           setIsUnlocking(false)
