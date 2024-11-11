@@ -3,7 +3,9 @@ import type { StyleProp, ViewStyle } from 'react-native'
 import {
   AnimatePresence,
   Button,
+  Circle,
   Heading,
+  HeroIcons,
   LucideIcons,
   Page,
   Paragraph,
@@ -72,7 +74,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       )}
       <YStack zi="$5" ai="center">
         <Heading variant="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
-          Use the camera to scan a QR code
+          Point your camera at a QR Code
         </Heading>
       </YStack>
       <MaskedView
@@ -93,20 +95,26 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       </MaskedView>
       <YStack jc="center" ai="center" gap="$4">
         {onCancel && (
-          <XStack>
+          <XStack jc="space-between" w="100%">
+            <Circle bg="$grey-400" size="$3.5" onPress={onCancel}>
+              <HeroIcons.Bolt color="$grey-900" size={20} />
+            </Circle>
             <Button.Solid
               h="$3.5"
-              px="$5"
               br="$12"
-              bg="$grey-100"
+              bg="$grey-400"
               color="$grey-900"
               flexDirection="row"
               onPress={onCancel}
               scaleOnPress
               alignSelf="center"
             >
-              Cancel
+              My QR-Code
+              <HeroIcons.QrCode ml="$-1" color="$grey-900" size={20} />
             </Button.Solid>
+            <Circle bg="$grey-400" size="$3.5" onPress={onCancel}>
+              <HeroIcons.X color="$grey-900" size={20} strokeWidth={2} />
+            </Circle>
           </XStack>
         )}
         <XStack maxHeight="$10">
@@ -129,7 +137,9 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 gap="$2"
               >
                 <LucideIcons.AlertOctagon size={16} />
-                <Paragraph variant="sub">{helpText}</Paragraph>
+                <Paragraph variant="caption" color="$grey-900">
+                  {helpText}
+                </Paragraph>
               </XStack>
             )}
           </AnimatePresence>

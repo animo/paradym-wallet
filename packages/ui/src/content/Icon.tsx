@@ -54,6 +54,7 @@ import {
 } from 'react-native-heroicons/outline'
 import {
   ArchiveBoxXMarkIcon as ArchiveBoxXMarkFilledIcon,
+  BoltIcon as BoltFilledIcon,
   ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
   CheckCircleIcon as CheckCircleFilledIcon,
   CircleStackIcon as CircleStackFilledIcon,
@@ -119,6 +120,7 @@ export const HeroIcons = {
   Key: wrapHeroIcon(KeyIcon),
   Identification: wrapHeroIcon(IdentificationIcon),
   Star: wrapHeroIcon(StarIcon),
+  Bolt: wrapHeroIcon(BoltFilledIcon),
   ShieldCheck: wrapHeroIcon(ShieldCheckIcon),
   ArrowPath: wrapHeroIcon(ArrowPathIcon),
   LockClosed: wrapHeroIcon(LockClosedIcon),
