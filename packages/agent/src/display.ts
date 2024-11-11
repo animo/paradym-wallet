@@ -496,7 +496,9 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     validUntil: credentialRecord.credential.expirationDate
       ? new Date(credentialRecord.credential.expirationDate)
       : undefined,
-    validFrom: credentialRecord.credential.issuanceDate,
+    validFrom: credentialRecord.credential.issuanceDate
+      ? new Date(credentialRecord.credential.issuanceDate)
+      : undefined,
   }
 }
 
