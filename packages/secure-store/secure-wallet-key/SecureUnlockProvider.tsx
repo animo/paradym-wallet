@@ -187,7 +187,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
             setCanTryUnlockingUsingBiometrics(false)
           }
           // If other error, we will allow up to three attempts
-          else if (biometricsUnlockAttempts < 3) {
+          else if (biometricsUnlockAttempts > 3) {
             setCanTryUnlockingUsingBiometrics(false)
           }
         } finally {
