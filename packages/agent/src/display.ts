@@ -368,6 +368,11 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
       Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttribues(value)])
     ),
     metadata: credentialMetadata,
+    raw: {
+      issuedAt: iat ? new Date(iat * 1000) : undefined,
+      validUntil: exp ? new Date(exp * 1000) : undefined,
+      validFrom: nbf ? new Date(nbf * 1000) : undefined,
+    },
   }
 }
 
@@ -417,6 +422,8 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       attributes: mapped.visibleProperties,
       metadata: mapped.metadata,
       claimFormat: ClaimFormat.SdJwtVc,
+      validUntil: mapped.raw.validUntil,
+      validFrom: mapped.raw.validFrom,
     }
   }
   if (credentialRecord instanceof MdocRecord) {
@@ -446,6 +453,8 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
         type: mdocInstance.docType,
       } satisfies CredentialMetadata,
       claimFormat: ClaimFormat.MsoMdoc,
+      validUntil: mdocInstance.validityInfo.validUntil,
+      validFrom: mdocInstance.validityInfo.validFrom,
     }
   }
 
@@ -484,6 +493,12 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       validFrom: undefined,
     } satisfies CredentialMetadata,
     claimFormat: credentialRecord.credential.claimFormat,
+    validUntil: credentialRecord.credential.expirationDate
+      ? new Date(credentialRecord.credential.expirationDate)
+      : undefined,
+    validFrom: credentialRecord.credential.issuanceDate
+      ? new Date(credentialRecord.credential.issuanceDate)
+      : undefined,
   }
 }
 

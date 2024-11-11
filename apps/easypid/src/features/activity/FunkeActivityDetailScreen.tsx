@@ -93,6 +93,14 @@ export function FunkeActivityDetailScreen() {
                         />
                       )
 
+                    const isExpired = credential.metadata.validUntil
+                      ? new Date(credential.metadata.validUntil) < new Date()
+                      : false
+
+                    const isNotYetActive = credential.metadata.validFrom
+                      ? new Date(credential.metadata.validFrom) > new Date()
+                      : false
+
                     if (isPidCredential(credential.metadata.type)) {
                       return (
                         <CardWithAttributes
@@ -111,6 +119,8 @@ export function FunkeActivityDetailScreen() {
                             activityCredential?.disclosedPayload ?? {},
                             credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                           )}
+                          isExpired={isExpired}
+                          isNotYetActive={isNotYetActive}
                         />
                       )
                     }
@@ -128,6 +138,8 @@ export function FunkeActivityDetailScreen() {
                           disclosedAttributes={activityCredential.disclosedAttributes ?? []}
                           disclosedPayload={activityCredential.disclosedPayload ?? {}}
                           disableNavigation={activity.status !== 'success'}
+                          isExpired={isExpired}
+                          isNotYetActive={isNotYetActive}
                         />
                       )
                   })

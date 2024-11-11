@@ -9,6 +9,7 @@ import {
   LucideIcons,
   Paragraph,
   Spacer,
+  Stack,
   XStack,
   YStack,
   getTextColorBasedOnBg,
@@ -20,6 +21,7 @@ import { StyleSheet } from 'react-native'
 
 import { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useHasInternetConnection } from '../hooks'
+import { BlurBadge } from './BlurBadge'
 
 type FunkeCredentialCardProps = {
   onPress?(): void
@@ -30,6 +32,8 @@ type FunkeCredentialCardProps = {
   backgroundImage?: DisplayImage
   shadow?: boolean
   isLoading?: boolean
+  isExpired?: boolean
+  isRevoked?: boolean
 }
 
 export function FunkeCredentialCard({
@@ -41,6 +45,8 @@ export function FunkeCredentialCard({
   backgroundImage,
   shadow = true,
   isLoading,
+  isExpired,
+  isRevoked,
 }: FunkeCredentialCardProps) {
   const [isLoaded, setIsLoaded] = useState(false)
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
@@ -127,6 +133,11 @@ export function FunkeCredentialCard({
             <BlurView intensity={20} tint="light" style={StyleSheet.absoluteFillObject} />
             <Loader variant="dark" />
           </XStack>
+        )}
+        {(isExpired || isRevoked) && (
+          <Stack pos="absolute" bottom="$5" left="$5">
+            <BlurBadge color={textColor} label={isExpired ? 'Expired' : 'Revoked'} />
+          </Stack>
         )}
       </Card>
     </AnimatedStack>
