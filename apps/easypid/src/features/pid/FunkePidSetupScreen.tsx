@@ -48,7 +48,6 @@ export function FunkePidSetupScreen() {
   const [idCardPin, setIdCardPin] = useState<string>()
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
-  const [allowSimulatorCard, setAllowSimulatorCard] = useState(false)
   const [idCardScanningState, setIdCardScanningState] = useState<{
     showScanModal: boolean
     isCardAttached?: boolean
@@ -115,7 +114,7 @@ export function FunkePidSetupScreen() {
           // Navigate to the id-card-pin and show a toast
           promise.then(() => {
             pushToWallet()
-            toast.show('Invalid PIN entered for eID Card. Please try again', {
+            toast.show('Invalid eID card PIN entered', {
               customData: { preset: 'danger' },
             })
           })
@@ -133,9 +132,12 @@ export function FunkePidSetupScreen() {
     onEnterPinRef.current.onEnterPin = onEnterPin
   }, [onEnterPin])
 
-  const onIdCardStart = async (walletPin: string) => {
+  const onIdCardStart = async ({
+    walletPin,
+    allowSimulatorCard,
+  }: { walletPin: string; allowSimulatorCard: boolean }) => {
     if (secureUnlock.state !== 'unlocked') {
-      toast.show('Secure unlock state is not unlocked', { customData: { preset: 'danger' } })
+      toast.show('Wallet not unlocked', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
@@ -178,33 +180,27 @@ export function FunkePidSetupScreen() {
 
   const onWalletPinEnter = async (pin: string) => {
     // FIXME: We need to check if the pin is correct, but wallet is not locked.
+    // PIN is also not used now, as we only do C flow.
+
     // await secureUnlock.unlockUsingPin(pin).then(() => {
     //   setWalletPin(pin)
     // })
 
     const isSimulatorPinCode = pin === '276536'
-    if (isSimulatorPinCode) setAllowSimulatorCard(true)
-
-    await onIdCardStart(pin)
+    await onIdCardStart({ walletPin: pin, allowSimulatorCard: isSimulatorPinCode })
   }
 
-  const onIdCardPinEnter = (pin: string) => {
-    setIdCardPin(pin)
-  }
-
-  // This is not awaited, this pushes the screen forward manually
-  // But we can't do that here.
-  // We need to wait for the scan to complete, and then
+  const onIdCardPinEnter = (pin: string) => setIdCardPin(pin)
 
   const onStartScanning = async () => {
     if (receivePidUseCase?.state !== 'id-card-auth') {
-      toast.show('receivePidUseCaseState is not id-card-auth', { customData: { preset: 'danger' } })
+      toast.show('Not ready to receive PID', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
 
     if (secureUnlock.state !== 'unlocked') {
-      toast.show('secureUnlock.state is not unlocked', { customData: { preset: 'danger' } })
+      toast.show('Wallet not unlocked', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
@@ -229,7 +225,6 @@ export function FunkePidSetupScreen() {
       const reason = (error as CardScanningErrorDetails).reason
       if (reason === 'user_cancelled' || reason === 'cancelled') {
         toast.show('eID card scanning cancelled', {
-          message: 'Please try again.',
           customData: {
             preset: 'danger',
           },
@@ -252,7 +247,7 @@ export function FunkePidSetupScreen() {
 
   const onScanningComplete = async () => {
     if (!receivePidUseCase) {
-      toast.show('receivePidUseCase is undefined', { customData: { preset: 'danger' } })
+      toast.show('Not ready to receive PID', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
@@ -295,13 +290,13 @@ export function FunkePidSetupScreen() {
 
   const retrieveCredential = async () => {
     if (receivePidUseCase?.state !== 'retrieve-credential') {
-      toast.show('ReceivePidUseCaseState is not retrieve-credential', { customData: { preset: 'danger' } })
+      toast.show('Not ready to retrieve PID', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
 
     if (secureUnlock.state !== 'unlocked') {
-      toast.show('Secure unlock state is not unlocked', { customData: { preset: 'danger' } })
+      toast.show('Wallet not unlocked', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
@@ -330,8 +325,6 @@ export function FunkePidSetupScreen() {
           })
         }
       }
-
-      // setCurrentStepName('id-card-complete')
     } catch (error) {
       if (error instanceof BiometricAuthenticationCancelledError) {
         toast.show('Biometric authentication cancelled', {
@@ -359,12 +352,12 @@ export function FunkePidSetupScreen() {
       steps={[
         {
           step: 'id-card-start',
-          progress: 13.5,
+          progress: 20,
           screen: <PidSetupStartSlide {...getSlideContent('id-card-start')} />,
         },
         {
           step: 'id-card-pin',
-          progress: 13.5,
+          progress: 30,
           screen: (
             <PidWalletPinSlide
               title="Enter your app PIN code"
@@ -375,7 +368,7 @@ export function FunkePidSetupScreen() {
         },
         {
           step: 'id-card-requested-attributes',
-          progress: 13.5,
+          progress: 40,
           screen: (
             <PidReviewRequestSlide
               {...getSlideContent('id-card-requested-attributes')}
@@ -385,7 +378,7 @@ export function FunkePidSetupScreen() {
         },
         {
           step: 'id-card-pin',
-          progress: 13.5,
+          progress: 50,
           screen: (
             <PidEidCardPinSlide
               {...getSlideContent('id-card-pin')}
@@ -395,7 +388,7 @@ export function FunkePidSetupScreen() {
         },
         {
           step: 'id-card-start-scan',
-          progress: 13.5,
+          progress: 60,
           screen: (
             <PidCardScanSlide
               {...getSlideContent('id-card-start-scan')}
@@ -413,7 +406,7 @@ export function FunkePidSetupScreen() {
         },
         {
           step: 'id-card-fetch',
-          progress: 13.5,
+          progress: 80,
           screen: (
             <PidIdCardFetchSlide
               {...getSlideContent('id-card-fetch')}

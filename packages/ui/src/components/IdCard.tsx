@@ -8,7 +8,7 @@ import Animated, {
   useAnimatedStyle,
   withDelay,
 } from 'react-native-reanimated'
-import { Circle, Spacer } from 'tamagui'
+import { Circle } from 'tamagui'
 import { AnimatedStack, Paragraph, Stack, XStack, YStack } from '../base'
 import { HeroIcons, Image } from '../content'
 import { useScaleAnimation } from '../hooks'
@@ -103,7 +103,7 @@ export function IdCard({ icon, issuerImage, backgroundImage, userName, onPress, 
             {onPress && <HeroIcons.ArrowRight color="$black" />}
           </XStack>
         </XStack>
-        <Stack zIndex="$-1" position="absolute" top={0} left={0} right={0} bottom={0}>
+        <Stack zIndex="$-1" position="absolute" bg="#F1F2F0" top={0} left={0} right={0} bottom={0}>
           <Image src={backgroundImage} width="100%" resizeMode="cover" height="100%" />
         </Stack>
       </YStack>
