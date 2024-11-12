@@ -85,7 +85,7 @@ export function InfoButton({
       bw="$0.5"
       accessible={true}
       accessibilityRole={onPress ? 'button' : undefined}
-      aria-label={ariaLabel ?? `${title} ${description}`}
+      aria-label={ariaLabel ?? `${title}. ${description}`}
       borderColor="$grey-100"
       onPress={onPress}
     >
