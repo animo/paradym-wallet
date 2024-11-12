@@ -67,6 +67,7 @@ import {
   HandRaisedIcon as HandRaisedFilledIcon,
   IdentificationIcon as IdentificationFilledIcon,
   InformationCircleIcon as InformationCircleFilledIcon,
+  MagnifyingGlassIcon,
   QueueListIcon as QueueListFilledIcon,
   ShieldCheckIcon as ShieldCheckFilledIcon,
   TrashIcon as TrashFilledIcon,
@@ -164,6 +165,7 @@ export const HeroIcons = {
   ChatBubbleBottomCenterTextFilled: wrapHeroIcon(ChatBubbleBottomCenterTextFilledIcon),
   Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
   IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
+  MagnifyingGlass: wrapHeroIcon(MagnifyingGlassIcon),
 } as const
 
 export const CustomIcons = {

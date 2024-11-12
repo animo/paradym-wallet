@@ -55,6 +55,7 @@ interface InfoButtonProps {
   description: string
   onPress?: () => void
   routingType?: 'push' | 'modal'
+  noIcon?: boolean
 }
 
 export function InfoButton({
@@ -64,6 +65,7 @@ export function InfoButton({
   description,
   onPress,
   routingType = 'push',
+  noIcon,
 }: InfoButtonProps) {
   const isPressable = !!onPress
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
@@ -85,9 +87,11 @@ export function InfoButton({
       borderColor="$grey-100"
       onPress={onPress}
     >
-      <Circle size="$3.5" br="$12" bg={infoButtonVariants[variant].accent}>
-        {image ? <Image src={image.src} alt={image.alt} width={24} height={24} /> : infoButtonVariants[variant].icon}
-      </Circle>
+      {!noIcon && (
+        <Circle size="$3.5" br="$12" bg={infoButtonVariants[variant].accent}>
+          {image ? <Image src={image.src} alt={image.alt} width={24} height={24} /> : infoButtonVariants[variant].icon}
+        </Circle>
+      )}
       <XStack fg={1} ai="center" jc="space-between">
         <YStack gap="$1">
           <Heading variant="sub1">{title}</Heading>
