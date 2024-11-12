@@ -160,7 +160,7 @@ export function FunkeWalletScreen() {
                     />
                   ))}
                 </Stack>
-                {credentials.length > 1 && (
+                {credentials.length > 2 && (
                   <Button.Solid
                     bw="$0.5"
                     borderColor="$grey-100"
