@@ -36,5 +36,13 @@ export function LatestActivityCard() {
 
   if (!content) return null
 
-  return <InfoButton noIcon title={content.title} description={content.description} onPress={pushToActivity} />
+  return (
+    <InfoButton
+      ariaLabel="Recent activity"
+      noIcon
+      title={content.title}
+      description={content.description}
+      onPress={pushToActivity}
+    />
+  )
 }

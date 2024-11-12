@@ -56,6 +56,7 @@ interface InfoButtonProps {
   onPress?: () => void
   routingType?: 'push' | 'modal'
   noIcon?: boolean
+  ariaLabel?: string
 }
 
 export function InfoButton({
@@ -66,6 +67,7 @@ export function InfoButton({
   onPress,
   routingType = 'push',
   noIcon,
+  ariaLabel,
 }: InfoButtonProps) {
   const isPressable = !!onPress
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
@@ -83,7 +85,7 @@ export function InfoButton({
       bw="$0.5"
       accessible={true}
       accessibilityRole={onPress ? 'button' : undefined}
-      aria-label={`${title} ${description}`}
+      aria-label={ariaLabel ?? `${title} ${description}`}
       borderColor="$grey-100"
       onPress={onPress}
     >

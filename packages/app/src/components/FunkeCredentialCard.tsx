@@ -92,7 +92,7 @@ export function FunkeCredentialCard({
         overflow="hidden"
         accessible={true}
         accessibilityRole={onPress ? 'button' : undefined}
-        aria-label={`${name.toLocaleUpperCase()} credential`}
+        aria-label="Credential"
       >
         <Card.Header p={0}>
           <XStack jc="space-between">
