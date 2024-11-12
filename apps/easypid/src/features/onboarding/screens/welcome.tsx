@@ -14,11 +14,12 @@ import {
 import { useToastController } from '@package/ui'
 import { Image } from '@tamagui/image'
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Alert } from 'react-native'
 import Animated, { FadingTransition } from 'react-native-reanimated'
 
-import { generateKeypair } from '@animo-id/expo-secure-environment'
+import { setFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
+import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import inAppLogo from '../../../../assets/icon.png'
 
 export interface OnboardingWelcomeProps {
@@ -27,18 +28,15 @@ export interface OnboardingWelcomeProps {
 
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
   const toast = useToastController()
-  const [isBlockedByHsm, setIsBlockedByHsm] = useState(false)
 
   useEffect(() => {
-    try {
-      generateKeypair('123', false)
-    } catch (error) {
-      setIsBlockedByHsm(true)
-      Alert.alert(
-        'Your device is not supported',
-        'This device does not have a secure enclave. This is required as an additional layer of security for your digital identity. Unfortunately, this means you are unable to use the EasyPID wallet with this device.'
-      )
-    }
+    // TODO: token and URL should be set via environment variables
+    // TODO: walletServiceProvider should be in a react context so we can reuse it in other components
+    const walletServiceProvider = new WalletServiceProviderClient(
+      'no-token-for-now',
+      'https://bcc1-94-157-0-163.ngrok-free.app'
+    )
+    setFallbackSecureEnvironment(walletServiceProvider)
   }, [])
 
   return (
@@ -88,20 +86,8 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </YStack>
           <XStack gap="$2">
             <Button.Solid
-              opacity={isBlockedByHsm ? 0.8 : 1}
               flexGrow={1}
-              scaleOnPress={!isBlockedByHsm}
-              onPress={() => {
-                if (isBlockedByHsm) {
-                  toast.show('Your device is not supported', {
-                    type: 'error',
-                    message:
-                      'Your device does not have a secure enclave. This is required as an additional layer of security for your digital identity.',
-                  })
-                } else {
-                  goToNextStep()
-                }
-              }}
+              onPress={ goToNextStep}
             >
               Get Started
             </Button.Solid>
