@@ -1,4 +1,4 @@
-import { useLatestActivity } from '@easypid/features/activity/activityRecord'
+import { useActivities } from '@easypid/features/activity/activityRecord'
 import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { InfoButton } from '@package/ui/src'
 import { useRouter } from 'expo-router'
@@ -9,7 +9,8 @@ import { useMemo } from 'react'
 export function LatestActivityCard() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
-  const latestActivity = useLatestActivity()
+  const { activities } = useActivities()
+  const latestActivity = activities[0]
   const { credentials } = useCredentialsWithCustomDisplay()
 
   const pushToActivity = withHaptics(() => push('/activity'))

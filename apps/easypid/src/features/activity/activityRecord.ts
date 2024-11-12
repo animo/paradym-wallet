@@ -83,11 +83,6 @@ export const useActivities = ({ filters }: { filters?: { host?: string; name?: s
   }
 }
 
-export const useLatestActivity = () => {
-  const { activities } = useActivities()
-  return activities[0]
-}
-
 export const addReceivedActivity = async (
   agent: EasyPIDAppAgent,
   input: {

@@ -155,10 +155,10 @@ function FunkeCredentialRowCard({ name, backgroundColor, textColor, logo, onPres
     >
       {icon}
       <YStack gap="$1" jc="center" fg={1}>
-        <Paragraph fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
+        <Paragraph mt="$-1.5" fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
           {name.toLocaleUpperCase()}
         </Paragraph>
-        <Paragraph variant="sub" secondary color={textColor}>
+        <Paragraph variant="sub" opacity={0.9} color={textColor}>
           Issued on {formatDate(new Date(), { includeTime: false })}
         </Paragraph>
       </YStack>

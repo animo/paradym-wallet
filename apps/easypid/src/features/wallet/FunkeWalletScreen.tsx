@@ -75,7 +75,7 @@ export function FunkeWalletScreen() {
           paddingBottom: bottom,
         }}
       >
-        <YStack>
+        <YStack fg={1}>
           <Stack accessible={true} alignItems="center" pt="$6" pb="$4">
             <AnimatedStack
               flexDirection="column"
