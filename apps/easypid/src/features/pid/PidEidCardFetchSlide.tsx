@@ -11,8 +11,10 @@ interface PidIdCardFetchSlideProps {
 }
 
 export function PidIdCardFetchSlide({ title, subtitle, userName, onFetch, onComplete }: PidIdCardFetchSlideProps) {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We fetch when this slide is mounted
   useEffect(() => {
+    // We can't navigate to the next step from the SlideWizard, so we start the fetching of the credential
+    // when this slide is mounted.
     void onFetch()
   }, [])
 
