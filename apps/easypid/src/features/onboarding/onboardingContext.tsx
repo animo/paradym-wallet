@@ -48,79 +48,7 @@ type Page =
       animationKey?: string
     }
 
-// Same animation key means the content won't fade out and then in again. So if the two screens have most content in common
-// this looks nicer.
-const onboardingSteps = [
-  {
-    step: 'welcome',
-    alternativeFlow: false,
-    progress: 0,
-    page: {
-      type: 'fullscreen',
-    },
-    Screen: OnboardingWelcome,
-  },
-  {
-    step: 'introduction-steps',
-    alternativeFlow: false,
-    progress: 16.5,
-    page: {
-      type: 'content',
-      animation: 'delayed',
-      title: 'Get your digital identity',
-      subtitle: 'Before you can use the app we will go through the following steps.',
-    },
-    Screen: OnboardingIntroductionSteps,
-  },
-
-  {
-    step: 'pin',
-    alternativeFlow: false,
-    progress: 33,
-    page: {
-      type: 'content',
-      title: 'Choose a 6-digit PIN',
-      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
-      animationKey: 'pin',
-    },
-    Screen: OnboardingPinEnter,
-  },
-  {
-    step: 'pin-reenter',
-    alternativeFlow: false,
-    progress: 33,
-    page: {
-      type: 'content',
-      title: 'Repeat your PIN',
-      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
-      animationKey: 'pin',
-    },
-    Screen: OnboardingPinEnter,
-  },
-  {
-    step: 'biometrics',
-    alternativeFlow: false,
-    progress: 33,
-    page: {
-      type: 'content',
-      title: 'Set up biometrics',
-      subtitle:
-        'Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.',
-    },
-    Screen: OnboardingBiometrics,
-  },
-  {
-    step: 'biometrics-disabled',
-    progress: 33,
-    alternativeFlow: true,
-    page: {
-      type: 'content',
-      title: 'You need to enable biometrics',
-      subtitle:
-        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
-    },
-    Screen: OnboardingBiometrics,
-  },
+export const pidSetupSteps = [
   {
     step: 'id-card-start',
     alternativeFlow: false,
@@ -223,7 +151,9 @@ const onboardingSteps = [
     },
     Screen: OnboardingIdCardFetch,
   },
-] as const satisfies Array<{
+] as const satisfies Array<OnboardingStep>
+
+type OnboardingStep = {
   step: string
   progress: number
   page: Page
@@ -231,10 +161,83 @@ const onboardingSteps = [
   alternativeFlow: boolean
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   Screen: React.FunctionComponent<any>
-}>
+}
+
+export const onboardingSteps = [
+  {
+    step: 'welcome',
+    alternativeFlow: false,
+    progress: 0,
+    page: {
+      type: 'fullscreen',
+    },
+    Screen: OnboardingWelcome,
+  },
+  {
+    step: 'introduction-steps',
+    alternativeFlow: false,
+    progress: 16.5,
+    page: {
+      type: 'content',
+      animation: 'delayed',
+      title: 'Get your digital identity',
+      subtitle: 'Before you can use the app we will go through the following steps.',
+    },
+    Screen: OnboardingIntroductionSteps,
+  },
+
+  {
+    step: 'pin',
+    alternativeFlow: false,
+    progress: 33,
+    page: {
+      type: 'content',
+      title: 'Choose a 6-digit PIN',
+      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
+      animationKey: 'pin',
+    },
+    Screen: OnboardingPinEnter,
+  },
+  {
+    step: 'pin-reenter',
+    alternativeFlow: false,
+    progress: 33,
+    page: {
+      type: 'content',
+      title: 'Repeat your PIN',
+      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
+      animationKey: 'pin',
+    },
+    Screen: OnboardingPinEnter,
+  },
+  {
+    step: 'biometrics',
+    alternativeFlow: false,
+    progress: 33,
+    page: {
+      type: 'content',
+      title: 'Set up biometrics',
+      subtitle:
+        'Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.',
+    },
+    Screen: OnboardingBiometrics,
+  },
+  {
+    step: 'biometrics-disabled',
+    progress: 33,
+    alternativeFlow: true,
+    page: {
+      type: 'content',
+      title: 'You need to enable biometrics',
+      subtitle:
+        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
+    },
+    Screen: OnboardingBiometrics,
+  },
+  ...pidSetupSteps,
+] as const satisfies Array<OnboardingStep>
 
 export type OnboardingSteps = typeof onboardingSteps
-export type OnboardingStep = OnboardingSteps[number]
 
 export type OnboardingContext = {
   currentStep: OnboardingStep['step']

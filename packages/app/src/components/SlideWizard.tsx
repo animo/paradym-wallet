@@ -19,9 +19,13 @@ type SlideWizardProps = {
   steps: SlideStep[]
   onCancel: () => void
   isError?: boolean
+  confirmation?: {
+    title: string
+    description: string
+  }
 }
 
-export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
+export function SlideWizard({ steps, onCancel, isError, confirmation }: SlideWizardProps) {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle, onContentSizeChange, onLayout } =
     useScrollViewPosition(0)
   const { bottom } = useSafeAreaInsets()
@@ -152,8 +156,8 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
       </FlexPage>
       <ConfirmationSheet
         type="floating"
-        title="Stop sharing?"
-        description="If you stop, no data will be shared."
+        title={confirmation?.title ?? 'Stop sharing?'}
+        description={confirmation?.description ?? 'If you stop, no data will be shared.'}
         isOpen={isSheetOpen}
         setIsOpen={setIsSheetOpen}
         onConfirm={onConfirmCancel}

@@ -19,7 +19,6 @@ import {
 import { useRouter } from 'solito/router'
 
 import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
-import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useHaptics, useNetworkCallback } from '@package/app/src/hooks'
 import type { CredentialDisplay } from 'packages/agent/src'
 import { FunkeCredentialCard } from 'packages/app'
@@ -28,12 +27,12 @@ import { FadeIn, FadeInDown, LinearTransition, ZoomIn, useAnimatedStyle } from '
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { isLoading, credentials } = useCredentialsWithCustomDisplay()
-  const onResetWallet = useWalletReset()
   const { withHaptics } = useHaptics()
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToActivity = withHaptics(() => push('/activity'))
   const pushToScanner = withHaptics(() => push('/scan'))
+  const pushToPidSetup = withHaptics(() => push('/pidSetup'))
 
   const {
     pressStyle: qrPressStyle,
@@ -103,13 +102,13 @@ export function FunkeWalletScreen() {
             entering={ZoomIn.delay(500).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
           >
             <Button.Solid
+              onPress={pushToPidSetup}
               h="$3.5"
               px="$5"
               br="$12"
               bg="$grey-100"
               color="$grey-900"
               flexDirection="row"
-              onPress={onResetWallet}
               scaleOnPress
             >
               Setup ID

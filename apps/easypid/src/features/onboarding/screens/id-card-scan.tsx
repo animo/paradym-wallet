@@ -2,13 +2,13 @@ import { AnimatedNfcScan, Button, NfcScannerModalAndroid, Stack, YStack } from '
 
 import { Platform } from 'react-native'
 
-interface OnboardingIdCardScanProps {
+export interface OnboardingIdCardScanProps {
   isCardAttached?: boolean
   scanningState: 'readyToScan' | 'scanning' | 'complete' | 'error'
   progress: number
   showScanModal: boolean
   onCancel: () => void
-  onStartScanning?: () => void
+  onStartScanning?: () => Promise<void>
 }
 
 export function OnboardingIdCardScan({
