@@ -55,6 +55,7 @@ import {
 import {
   ArchiveBoxXMarkIcon as ArchiveBoxXMarkFilledIcon,
   BoltIcon as BoltFilledIcon,
+  CameraIcon as CameraFilledIcon,
   ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
   CheckCircleIcon as CheckCircleFilledIcon,
   CircleStackIcon as CircleStackFilledIcon,
@@ -166,6 +167,7 @@ export const HeroIcons = {
   ChatBubbleBottomCenterTextFilled: wrapHeroIcon(ChatBubbleBottomCenterTextFilledIcon),
   Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
   IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
+  CameraFilled: wrapHeroIcon(CameraFilledIcon),
 } as const
 
 export const CustomIcons = {

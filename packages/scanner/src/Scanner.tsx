@@ -1,19 +1,6 @@
 import type { StyleProp, ViewStyle } from 'react-native'
 
-import {
-  AnimatePresence,
-  Button,
-  Circle,
-  Heading,
-  HeroIcons,
-  LucideIcons,
-  Page,
-  Paragraph,
-  Spacer,
-  Stack,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { AnimatePresence, Button, Heading, LucideIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
 import { useCallback, useEffect, useState } from 'react'
@@ -74,7 +61,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       )}
       <YStack zi="$5" ai="center">
         <Heading variant="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
-          Point your camera at a QR Code
+          Use the camera to scan a QR code
         </Heading>
       </YStack>
       <MaskedView
@@ -95,28 +82,23 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       </MaskedView>
       <YStack jc="center" ai="center" gap="$4">
         {onCancel && (
-          <XStack jc="space-between" w="100%">
-            <Circle bg="$grey-400" size="$3.5" onPress={onCancel}>
-              <HeroIcons.Bolt color="$grey-900" size={20} />
-            </Circle>
+          <XStack>
             <Button.Solid
               h="$3.5"
+              px="$5"
               br="$12"
-              bg="$grey-400"
+              bg="$grey-100"
               color="$grey-900"
               flexDirection="row"
               onPress={onCancel}
               scaleOnPress
               alignSelf="center"
             >
-              My QR-Code
-              <HeroIcons.QrCode ml="$-1" color="$grey-900" size={20} />
+              Cancel
             </Button.Solid>
-            <Circle bg="$grey-400" size="$3.5" onPress={onCancel}>
-              <HeroIcons.X color="$grey-900" size={20} strokeWidth={2} />
-            </Circle>
           </XStack>
         )}
+        {/* TODO move this to the top */}
         <XStack maxHeight="$10">
           <AnimatePresence>
             {helpText && (
@@ -137,9 +119,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 gap="$2"
               >
                 <LucideIcons.AlertOctagon size={16} />
-                <Paragraph variant="caption" color="$grey-900">
-                  {helpText}
-                </Paragraph>
+                <Paragraph variant="sub">{helpText}</Paragraph>
               </XStack>
             )}
           </AnimatePresence>
