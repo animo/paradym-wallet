@@ -1,5 +1,5 @@
 import { type ReactElement, cloneElement } from 'react'
-import { Paragraph, Stack, XStack } from '../base'
+import { Heading, Paragraph, Stack, XStack, YStack } from '../base'
 
 const messageBoxVariants = {
   light: {
@@ -30,17 +30,21 @@ const messageBoxVariants = {
 
 interface MessageBoxProps {
   message: string
+  title?: string
   variant?: keyof typeof messageBoxVariants
   textVariant?: 'normal' | 'sub'
   icon?: ReactElement
 }
 
-export function MessageBox({ message, textVariant = 'normal', variant = 'default', icon }: MessageBoxProps) {
+export function MessageBox({ message, textVariant = 'normal', variant = 'default', icon, title }: MessageBoxProps) {
   return (
     <XStack gap="$2" p="$3.5" bg={messageBoxVariants[variant].bg} borderRadius="$8">
-      <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
-        {message}
-      </Paragraph>
+      <YStack gap="$2" f={1}>
+        {title && <Heading variant="sub2">{title}</Heading>}
+        <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
+          {message}
+        </Paragraph>
+      </YStack>
       {icon && (
         <Stack ai="center" jc="center">
           {cloneElement(icon, { color: messageBoxVariants[variant].color })}

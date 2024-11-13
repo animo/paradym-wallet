@@ -18,25 +18,30 @@ import {
 } from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
-import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
 import { RequestPurposeSection } from '../components/RequestPurposeSection'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
+import type { PresentationRequestResult } from '../components/utils'
 
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
 
   onAccept?: () => Promise<PresentationRequestResult>
-  submission?: FormattedSubmission
   onDecline: () => void
+  submission?: FormattedSubmission
   isAccepting: boolean
+
+  verifierName?: string
+  isOffline?: boolean
 }
 
 export const ShareCredentialsSlide = ({
   logo,
   submission,
+  verifierName,
   onAccept,
   onDecline,
   isAccepting,
+  isOffline,
 }: ShareCredentialsSlideProps) => {
   const { onNext } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -90,12 +95,21 @@ export const ShareCredentialsSlide = ({
             maxHeight={scrollViewHeight}
             bg="$white"
           >
-            <RequestPurposeSection
-              purpose={
-                submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
-              }
-              logo={logo}
-            />
+            {isOffline ? (
+              <MessageBox
+                variant="light"
+                title="This is an offline request"
+                message={`Information about ${verifierName ?? 'the organisation'} could not be shown. Carefully consider if you trust this party.`}
+                icon={<HeroIcons.ExclamationTriangleFilled />}
+              />
+            ) : (
+              <RequestPurposeSection
+                purpose={
+                  submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
+                }
+                logo={logo}
+              />
+            )}
             <RequestedAttributesSection submission={submission} />
             <Spacer />
           </ScrollView>

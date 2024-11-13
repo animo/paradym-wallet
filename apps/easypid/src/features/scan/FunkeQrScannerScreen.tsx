@@ -16,7 +16,7 @@ import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import QRCode from 'react-native-qrcode-svg'
 
-import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '@package/app'
+import { type CredentialDataHandlerOptions, useCredentialDataHandler, useHaptics } from '@package/app'
 import { useWindowDimensions } from 'react-native'
 import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -33,13 +33,14 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
   const { bottom } = useSafeAreaInsets()
+  const isFocused = useIsFocused()
 
   const [showMyQrCode, setShowMyQrCode] = useState(false)
-
   const [helpText, setHelpText] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const isFocused = useIsFocused()
+
+  const onCancel = () => back()
 
   const onScan = async (scannedData: string) => {
     if (isProcessing || !isFocused) return
@@ -66,19 +67,25 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
     setIsProcessing(false)
   }
 
-  // Only show cancel button on Android
-  const onCancel = () => back()
-
-  // my god how is this so hard
-  // on click on QR button -> fade to black background
-  // on click off -> fade out component and then face out background
-
   const animatedQrOverlayOpacity = useAnimatedStyle(
     () => ({
       opacity: withTiming(showMyQrCode ? 1 : 0, { duration: showMyQrCode ? 300 : 200 }),
     }),
     [showMyQrCode]
   )
+
+  const handleQrButtonPress = () => {
+    if (showMyQrCode) {
+      pushToOfflinePresentation()
+      return
+    }
+    setShowMyQrCode(!showMyQrCode)
+  }
+
+  // For testing purposes
+  const { withHaptics } = useHaptics()
+  const { replace } = useRouter()
+  const pushToOfflinePresentation = withHaptics(() => replace('/notifications/offlinePresentation'))
 
   return (
     <>
@@ -135,7 +142,7 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
         <AnimatedStack
           alignItems="center"
           layout={useSpringify(LinearTransition)}
-          onPress={() => setShowMyQrCode(!showMyQrCode)}
+          onPress={handleQrButtonPress}
           bg="$grey-100"
           br="$12"
           py="$2.5"
