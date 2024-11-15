@@ -30,11 +30,12 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
   const toast = useToastController()
 
   useEffect(() => {
-    // TODO: token and URL should be set via environment variables
     // TODO: walletServiceProvider should be in a react context so we can reuse it in other components
+    const walletServiceProviderAuthToken = process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_AUTH_TOKEN
+    const walletServiceProviderUrl = process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL
     const walletServiceProvider = new WalletServiceProviderClient(
-      'no-token-for-now',
-      'https://bcc1-94-157-0-163.ngrok-free.app'
+      walletServiceProviderAuthToken as string,
+      walletServiceProviderUrl as string
     )
     setFallbackSecureEnvironment(walletServiceProvider)
   }, [])

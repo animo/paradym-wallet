@@ -18,7 +18,6 @@ export class WalletServiceProviderClient implements SecureEnvironment {
       body: JSON.stringify({ data: new Array(...message), keyId }),
     })
     const parsedData = (await response.json()) as { signature: Array<number> }
-    console.log(parsedData)
 
     if (!parsedData.signature) {
       throw new Error('No signature property found on the response of the wallet service provider')
@@ -33,11 +32,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
       headers: this.headers,
       body: JSON.stringify({ keyType: 'P256', keyId: id }),
     })
-    const parsedData = (await response.json()) as { key: string }
-
-    if (!parsedData.key) {
-      throw new Error('No key property found on the response of the wallet service provider')
-    }
+    await response.text()
   }
 
   public async getPublicBytesForKeyId(keyId: string): Promise<Uint8Array> {
