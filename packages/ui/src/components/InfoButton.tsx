@@ -88,10 +88,14 @@ export function InfoButton({
       <Circle size="$3.5" br="$12" bg={infoButtonVariants[variant].accent}>
         {image ? <Image src={image.src} alt={image.alt} width={24} height={24} /> : infoButtonVariants[variant].icon}
       </Circle>
-      <XStack fg={1} ai="center" jc="space-between">
-        <YStack gap="$1">
-          <Heading variant="sub1">{title}</Heading>
-          <Paragraph fontSize={15}>{description}</Paragraph>
+      <XStack fg={1} f={1} ai="center" jc="space-between">
+        <YStack f={1} gap="$1">
+          <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} variant="sub1">
+            {title}
+          </Heading>
+          <Paragraph numberOfLines={2} fontSize={15}>
+            {description}
+          </Paragraph>
         </YStack>
         {isPressable && (
           <Stack>
