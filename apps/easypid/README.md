@@ -4,25 +4,86 @@
 
 <h1 align="center"><b>Animo EasyPID</b></h1>
 
-This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers. For more information on the project reach out to <ana@animo.id>.
+This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers and can be tested/used with our [playground environment](https://funke.animo.id/). For more information on the project reach out to <ana@animo.id>. 
 
 During the project an identity wallet and a test relying party was delivered.
 
+
+## Features
 The identity wallet contains the following features, you can see the full flow without running the app in the [Figma design](https://www.figma.com/proto/gBBLERk7lkE27bw8Vm3es4/Funke?show-proto-sidebar=1):
 
-- Onboard user
-- Set up PIN
-- Set up biometrics
-- Authentication using biometrics or PIN
-- Obtain PID from PID provider ([C option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md))
-- Obtain PID from PID provider ([B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md))
-- Present attestations remotely using cross-device QR flow
-- Present attestations remotely using same-device flow
-- About the app
+
+**General App**
+- 🟢 Onboard user
+- 🟢 Set up PIN
+- 🟢 Set up biometrics
+- 🟢 History
+- 🟠 About the app
+- 🟢 Authentication using biometrics or PIN
+
+**Credential Management**
+- 🟢 Credential detail
+- 🟢 Delete QEAA
+- 🟢 Transaction history
+- 🔴 SD-JWT VC Type Metadata
+- 🟠 Revocation SD-JWT VC
+- 🔴 Revocation Mdoc
+
+**Obtain PID from PID provider**
+- 🟢 SD JWT VC using OpenID4VCI 
+- 🟢 Mdoc using OpenID4VCI 
+- 🟢 [C option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
+- 🔴 [C' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
+- 🟢 [B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options) *temporarily disabled*
+
+
+**Obtain (Q)EAAs from issuer**
+- 🟢 SD-JWT VC using OpenID4VCI
+- 🟢 mDOC using OpenID4VCI
+- 🔴 PID presentation during (Q)EAA issuance
+- 🔴 Batch issuance and single use credentials
+- 🔴 Authorization code flow
+- 🔴 Client attestations
+
+**Present attestations remotely** 
+- 🟢 PID SD-JWT VC using OpenID4VP
+- 🟢 PID mDOC using OpenID4VP
+- 🟢 QEAA SD JWT VC using OpenID4VP
+- 🔴 QEAA Mdoc using OpenID4VP
+- 🟠 Combined presentations
+- 🟢 Cross-device QR flow
+- 🟢 Same-device flow
+- 🔴 New VP query language
+
+**Present attestations in-person**
+- Android
+  - 🟢 Android-Android over NFC for device engagement
+  - 🔴 SD-JWT VC using OpenID4VP over BLE
+  - 🔴 mDOC over BLE
+- iOS
+  - 🔴 SD-JWT VC using OpenID4VP over BLE
+  - 🔴 mDOC over BLE
+
+**HSM**
+  - 🟢 On device HSM
+  - 🔴 Cloud-backed HSM
+
+**Other**
+- 🔴 Trust establishment using OpenID Federation Draft 34
+- 🔴 HAIP compliance
+- 🔴 WCAG 2.1 compliance
+- 🔴 AI-based oversharing detection
+
+**[Test issuer/verifier](https://funke.animo.id/)** 
+
+- 🟢 Issue QEAAs
+- 🟢 Verify PID
+- 🔴 Verify mixed PID-QEAA requests
 
 The identity wallet contains the following temporary features for development and testing:
 
 - Switch between C and B' PID flow
+- Using a simulated eID test card
 - Reset wallet
 
  <div align="center">
@@ -35,7 +96,7 @@ The identity wallet contains the following temporary features for development an
 
 ## Install
 
-The prototype app is currently pusblished privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app. If not, please reach out to us at ana@animo.id.
+The prototype app is currently pusblished privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
 
 ## Try it out
 
@@ -55,6 +116,7 @@ Here's some resources and tips that might be helpful while testing the app.
 
 This app requires devices with:
 
+- Android 8+
 - Hardware Security Module (HSM)
 - Biometric support (e.g., fingerprint sensor, face recognition)
 
@@ -62,7 +124,8 @@ Android devices without these features will not be able to run the app.
 
 #### iOS
 
-Compatible with iPhone 5s and later models.
+Compatible with iPhone 5s and later models. This app requires devices with:
+- iOS 14+
 
 ### While testing
 
@@ -136,13 +199,12 @@ The following standards and specifications were implemented.
 - 🟢[OpenID for Verifiable Presentations - Draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0-20.html)
 - 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
 - 🟢 [Self-Issued OpenID Provider V2 - Draft 13](https://openid.net/specs/openid-connect-self-issued-v2-1_0-13.html)
-- 🟡 [ISO 18013-5](https://www.iso.org/standard/69084.html)
-  - Missing deviceSigned signing and verification
+- 🟢 [ISO 18013-5](https://www.iso.org/standard/69084.html)
 - 🟡 [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
   - Missing JWT Secured Authorization Response Mode
 - 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
   - Missing verifier_attestation, `haip://` scheme and wallet attestation
-- 🔴 [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
+- 🟠 [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
 
 ## Changelog
 

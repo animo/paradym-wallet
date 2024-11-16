@@ -1,4 +1,3 @@
-export * from './PinDotsInput'
 export * from './ProgressHeader'
 export * from './OnboardingStepItem'
 export * from './IdCard'

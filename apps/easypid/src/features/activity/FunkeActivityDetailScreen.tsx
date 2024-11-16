@@ -21,7 +21,7 @@ export function FunkeActivityDetailScreen() {
   const { params } = useParams()
   const router = useRouter()
   const { bottom } = useSafeAreaInsets()
-  const { credential: pidCredential } = usePidCredential()
+  const { pidCredentialForDisplay } = usePidCredential()
 
   const { activities } = useActivities()
   const { credentials } = useCredentialsWithCustomDisplay()
@@ -93,16 +93,24 @@ export function FunkeActivityDetailScreen() {
                         />
                       )
 
+                    const isExpired = credential.metadata.validUntil
+                      ? new Date(credential.metadata.validUntil) < new Date()
+                      : false
+
+                    const isNotYetActive = credential.metadata.validFrom
+                      ? new Date(credential.metadata.validFrom) > new Date()
+                      : false
+
                     if (isPidCredential(credential.metadata.type)) {
                       return (
                         <CardWithAttributes
-                          key={pidCredential?.id}
-                          id={pidCredential?.id as string}
-                          name={pidCredential?.display.name as string}
-                          issuerImage={pidCredential?.display.issuer.logo}
-                          backgroundImage={pidCredential?.display.backgroundImage}
-                          backgroundColor={pidCredential?.display.backgroundColor}
-                          textColor={pidCredential?.display.textColor}
+                          key={pidCredentialForDisplay?.id}
+                          id={pidCredentialForDisplay?.id as string}
+                          name={pidCredentialForDisplay?.display.name as string}
+                          issuerImage={pidCredentialForDisplay?.display.issuer.logo}
+                          backgroundImage={pidCredentialForDisplay?.display.backgroundImage}
+                          backgroundColor={pidCredentialForDisplay?.display.backgroundColor}
+                          textColor={pidCredentialForDisplay?.display.textColor}
                           disclosedAttributes={getPidDisclosedAttributeNames(
                             activityCredential?.disclosedPayload ?? {},
                             credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
@@ -111,6 +119,8 @@ export function FunkeActivityDetailScreen() {
                             activityCredential?.disclosedPayload ?? {},
                             credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                           )}
+                          isExpired={isExpired}
+                          isNotYetActive={isNotYetActive}
                         />
                       )
                     }
@@ -128,6 +138,8 @@ export function FunkeActivityDetailScreen() {
                           disclosedAttributes={activityCredential.disclosedAttributes ?? []}
                           disclosedPayload={activityCredential.disclosedPayload ?? {}}
                           disableNavigation={activity.status !== 'success'}
+                          isExpired={isExpired}
+                          isNotYetActive={isNotYetActive}
                         />
                       )
                   })

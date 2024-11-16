@@ -40,6 +40,7 @@ import {
   InformationCircleIcon,
   KeyIcon,
   LockClosedIcon,
+  MagnifyingGlassIcon,
   NoSymbolIcon,
   PlusIcon,
   QrCodeIcon,
@@ -72,9 +73,11 @@ import {
   TrashIcon as TrashFilledIcon,
 } from 'react-native-heroicons/solid'
 
+import { ExclamationIcon } from '../../assets/Exclamation'
+import { FaceIdIcon } from '../../assets/FaceId'
+
 import { styled } from 'tamagui'
 import { ConnectIcon } from '../../assets/Connect'
-import { ExclamationIcon } from '../../assets/Exclamation'
 
 export const LucideIcons = {
   Trash2,
@@ -163,11 +166,13 @@ export const HeroIcons = {
   ChatBubbleBottomCenterTextFilled: wrapHeroIcon(ChatBubbleBottomCenterTextFilledIcon),
   Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
   IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
+  MagnifyingGlass: wrapHeroIcon(MagnifyingGlassIcon),
 } as const
 
 export const CustomIcons = {
   Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
   Connect: wrapLocalSvg(ConnectIcon as React.ComponentType<SvgProps>),
+  FaceId: wrapLocalSvg(FaceIdIcon as React.ComponentType<SvgProps>),
 }
 
 export type CustomIconProps = SvgProps & {

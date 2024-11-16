@@ -35,13 +35,13 @@ const menuItems = [
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
-  const { credential } = usePidCredential()
+  const { pidCredentialForDisplay } = usePidCredential()
 
-  const idItem = credential ? (
+  const idItem = pidCredentialForDisplay ? (
     <MenuItem
       key="id"
       item={{
-        href: `credentials/${credential.id}`,
+        href: `credentials/${pidCredentialForDisplay.id}`,
         icon: HeroIcons.IdentificationFilled,
         title: 'Your digital ID',
       }}
@@ -110,6 +110,9 @@ const MenuItem = ({ item, idx, onPress }: { item: (typeof menuItems)[number]; id
       mx="$4"
       borderBottomWidth={idx === menuItems.length - 1 ? 0 : '$0.5'}
       borderColor="$grey-200"
+      accessible={true}
+      accessibilityRole="button"
+      aria-label={item.title}
     >
       <Animated.View style={pressStyle}>
         <XStack jc="space-between" w="100%">

@@ -1,11 +1,18 @@
-import type { W3cCredentialRecord } from '@credo-ts/core'
+import type { JwkJson, W3cCredentialRecord } from '@credo-ts/core'
+import {
+  ClaimFormat,
+  Hasher,
+  JsonTransformer,
+  Mdoc,
+  MdocRecord,
+  SdJwtVcRecord,
+  TypedArrayEncoder,
+} from '@credo-ts/core'
+import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
+import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
-
-import { ClaimFormat, Hasher, JsonTransformer, Mdoc, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import { formatDate, getHostNameFromUrl, sanitizeString } from '@package/utils'
-import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 
 import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
 
@@ -305,10 +312,24 @@ function getSdJwtCredentialDisplay(
 export interface CredentialMetadata {
   type: string
   issuer: string
-  holder?: string | Record<string, unknown>
+  holder?: string
   validUntil?: string
   validFrom?: string
   issuedAt?: string
+}
+
+function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
+  try {
+    const thumbprint = TypedArrayEncoder.toBase64URL(
+      Hasher.hash(
+        JSON.stringify({ k: jwk.k, e: jwk.e, crv: jwk.crv, kty: jwk.kty, n: jwk.n, x: jwk.x, y: jwk.y }),
+        'sha-256'
+      )
+    )
+    return `urn:ietf:params:oauth:jwk-thumbprint:sha-256:${thumbprint}`
+  } catch (e) {
+    return undefined
+  }
 }
 
 export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
@@ -325,10 +346,11 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, ...visibleProperties } = sdJwtVcPayload as SdJwtVcPayload
 
+  const holder = cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as JwkJson) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
     issuer: iss,
-    holder: cnf,
+    holder,
   }
 
   if (iat) {
@@ -342,8 +364,15 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   }
 
   return {
-    visibleProperties,
+    visibleProperties: Object.fromEntries(
+      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+    ),
     metadata: credentialMetadata,
+    raw: {
+      issuedAt: iat ? new Date(iat * 1000) : undefined,
+      validUntil: exp ? new Date(exp * 1000) : undefined,
+      validFrom: nbf ? new Date(nbf * 1000) : undefined,
+    },
   }
 }
 
@@ -393,6 +422,8 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       attributes: mapped.visibleProperties,
       metadata: mapped.metadata,
       claimFormat: ClaimFormat.SdJwtVc,
+      validUntil: mapped.raw.validUntil,
+      validFrom: mapped.raw.validFrom,
     }
   }
   if (credentialRecord instanceof MdocRecord) {
@@ -402,7 +433,9 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
 
     const mdocInstance = Mdoc.fromBase64Url(credentialRecord.base64Url)
     const attributes = Object.fromEntries(
-      Object.values(mdocInstance.issuerSignedNamespaces).flatMap((a) => Object.entries(a))
+      Object.values(mdocInstance.issuerSignedNamespaces).flatMap((v) =>
+        Object.entries(v).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+      )
     )
 
     return {
@@ -415,11 +448,13 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       attributes,
       // TODO:
       metadata: {
-        holder: 'Unknown',
+        // holder: 'Unknown',
         issuer: 'Unknown',
         type: mdocInstance.docType,
       } satisfies CredentialMetadata,
       claimFormat: ClaimFormat.MsoMdoc,
+      validUntil: mdocInstance.validityInfo.validUntil,
+      validFrom: mdocInstance.validityInfo.validFrom,
     }
   }
 
@@ -458,5 +493,44 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       validFrom: undefined,
     } satisfies CredentialMetadata,
     claimFormat: credentialRecord.credential.claimFormat,
+    validUntil: credentialRecord.credential.expirationDate
+      ? new Date(credentialRecord.credential.expirationDate)
+      : undefined,
+    validFrom: credentialRecord.credential.issuanceDate
+      ? new Date(credentialRecord.credential.issuanceDate)
+      : undefined,
   }
+}
+
+type MappedAttributesReturnType =
+  | string
+  | number
+  | boolean
+  | { [key: string]: MappedAttributesReturnType }
+  | null
+  | undefined
+  | Array<MappedAttributesReturnType>
+export function recursivelyMapAttribues(value: unknown): MappedAttributesReturnType {
+  if (value instanceof Uint8Array) {
+    const imageMimeType = detectImageMimeType(value)
+    if (imageMimeType) {
+      return `data:${imageMimeType};base64,${TypedArrayEncoder.toBase64(value)}`
+    }
+
+    // TODO: what to do with a buffer that is not an image?
+    return TypedArrayEncoder.toUtf8String(value)
+  }
+  if (value === null || value === undefined || typeof value === 'number' || typeof value === 'boolean') return value
+
+  if (value instanceof Date || (typeof value === 'string' && isDateString(value))) {
+    // TODO: handle DateOnly (should be handled as time is 0 then)
+    return formatDate(value)
+  }
+  if (typeof value === 'string') return value
+  if (value instanceof Map) {
+    return Object.fromEntries(Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
+  }
+  if (Array.isArray(value)) return value.map(recursivelyMapAttribues)
+
+  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
 }

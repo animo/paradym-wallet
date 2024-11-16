@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { ReactNode } from 'react'
 
-import { InvitationQrTypes, type InvitationType } from '@package/agent'
+import { InvitationQrTypes } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { CommonActions } from '@react-navigation/native'
 import * as Linking from 'expo-linking'

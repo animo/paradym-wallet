@@ -19,7 +19,7 @@ import {
 import { useSeedCredentialPidData } from '@easypid/storage'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
-import { usePidCredential } from '../../hooks'
+import { isPidCredential } from '../../hooks'
 import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 
@@ -40,7 +40,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
   const { seedCredential } = useSeedCredentialPidData()
-  const { credential: pidCredential } = usePidCredential()
   const { activities } = useActivities()
 
   const [credentialsForRequest, setCredentialsForRequest] =
@@ -102,10 +101,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const usePin = useMemo(() => {
     const isPidInSubmission =
       submission?.entries.some((entry) =>
-        entry.credentials.some((credential) => credential.id === pidCredential?.id)
+        entry.credentials.some((credential) => isPidCredential(credential.metadata?.type))
       ) ?? false
     return isPidInSubmission && !!seedCredential
-  }, [submission, pidCredential, seedCredential])
+  }, [submission, seedCredential])
 
   useEffect(() => {
     if (credentialsForRequest) return

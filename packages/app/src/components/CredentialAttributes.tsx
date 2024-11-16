@@ -3,7 +3,8 @@ import { Heading, LucideIcons, Paragraph, TableContainer, TableRow, XStack, YSta
 import { formatCredentialSubject } from '../utils'
 
 type CredentialAttributesProps = {
-  subject: Record<string, unknown>
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  subject: Record<string, any>
   disableHeader?: boolean
   headerTitle?: string
   headerStyle?: 'regular' | 'small'
