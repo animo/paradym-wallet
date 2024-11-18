@@ -12,6 +12,7 @@ import type {
   ReceivePidUseCaseFlowOptions,
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
+import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError } from 'packages/agent/src'
 import { useToastController } from 'packages/ui/src'
@@ -20,24 +21,12 @@ import type React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { addReceivedActivity } from '../activity/activityRecord'
-import { pidSetupSteps } from '../onboarding/onboardingContext'
 import { PidCardScanSlide } from './PidCardScanSlide'
 import { PidIdCardFetchSlide } from './PidEidCardFetchSlide'
 import { PidEidCardPinSlide } from './PidEidCardPinSlide'
 import { PidReviewRequestSlide } from './PidReviewRequestSlide'
 import { PidSetupStartSlide } from './PidSetupStartSlide'
 import { PidWalletPinSlide } from './PidWalletPinSlide'
-
-const getSlideContent = (stepId: string) => {
-  const step = pidSetupSteps.find((s) => s.step === stepId)
-  return {
-    title: step?.page.title as string,
-    // @ts-expect-error can be undefined and thats fine
-    subtitle: step?.page.subtitle,
-    // @ts-expect-error can be undefined and thats fine
-    caption: step?.page.caption,
-  }
-}
 
 export function FunkePidSetupScreen() {
   const toast = useToastController()
@@ -48,12 +37,7 @@ export function FunkePidSetupScreen() {
   const [idCardPin, setIdCardPin] = useState<string>()
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
-  const [idCardScanningState, setIdCardScanningState] = useState<{
-    showScanModal: boolean
-    isCardAttached?: boolean
-    progress: number
-    state: 'readyToScan' | 'scanning' | 'complete' | 'error'
-  }>({
+  const [idCardScanningState, setIdCardScanningState] = useState<CardScanningState>({
     isCardAttached: undefined,
     progress: 0,
     state: 'readyToScan',
@@ -186,7 +170,7 @@ export function FunkePidSetupScreen() {
     //   setWalletPin(pin)
     // })
 
-    const isSimulatorPinCode = pin === '276536'
+    const isSimulatorPinCode = pin === SIMULATOR_PIN
     await onIdCardStart({ walletPin: pin, allowSimulatorCard: isSimulatorPinCode })
   }
 
@@ -354,7 +338,7 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-start',
           progress: 20,
-          screen: <PidSetupStartSlide {...getSlideContent('id-card-start')} />,
+          screen: <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} />,
         },
         {
           step: 'id-card-pin',
@@ -373,7 +357,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidReviewRequestSlide
-              {...getSlideContent('id-card-requested-attributes')}
+              {...getPidSetupSlideContent('id-card-requested-attributes')}
               requestedAttributes={eidCardRequestedAccessRights}
             />
           ),
@@ -384,7 +368,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidEidCardPinSlide
-              {...getSlideContent('id-card-pin')}
+              {...getPidSetupSlideContent('id-card-pin')}
               onEnterPin={onIdCardPinReEnter ?? onIdCardPinEnter}
             />
           ),
@@ -395,7 +379,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidCardScanSlide
-              {...getSlideContent('id-card-start-scan')}
+              {...getPidSetupSlideContent('id-card-start-scan')}
               progress={idCardScanningState.progress}
               scanningState={idCardScanningState.state}
               isCardAttached={idCardScanningState.isCardAttached}
@@ -414,7 +398,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidIdCardFetchSlide
-              {...getSlideContent('id-card-fetch')}
+              {...getPidSetupSlideContent('id-card-fetch')}
               userName={userName}
               onFetch={onScanningComplete}
               onComplete={() => pushToWallet('replace')}

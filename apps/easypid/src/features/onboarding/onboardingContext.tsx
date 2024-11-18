@@ -11,6 +11,14 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { resetWallet } from '@easypid/utils/resetWallet'
 import {
+  type CardScanningState,
+  type OnboardingPage,
+  type OnboardingStep,
+  type PidFlowTypes,
+  SIMULATOR_PIN,
+  pidSetupSteps,
+} from '@easypid/utils/sharedPidSetup'
+import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
   SdJwtVcRecord,
@@ -26,142 +34,9 @@ import { type PidSdJwtVcAttributes, usePidDisplay } from '../../hooks'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
-import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
-import { OnboardingIdCardFetch } from './screens/id-card-fetch'
-import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
-import { OnboardingIdCardRequestedAttributes } from './screens/id-card-requested-attributes'
-import { OnboardingIdCardScan } from './screens/id-card-scan'
-import { OnboardingIdCardStart } from './screens/id-card-start'
-import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
-
-type Page =
-  | { type: 'fullscreen' }
-  | {
-      type: 'content'
-      title: string
-      animation?: 'default' | 'delayed'
-      subtitle?: string
-      caption?: string
-      animationKey?: string
-    }
-
-export const pidSetupSteps = [
-  {
-    step: 'id-card-start',
-    alternativeFlow: false,
-    progress: 49.5,
-    page: {
-      type: 'content',
-      title: 'Scan your eID card to retrieve your data',
-      subtitle: 'Add your personal details once using your eID card and its PIN.',
-      caption: 'Your eID PIN was issued to you when you received your eID card.',
-    },
-    Screen: OnboardingIdCardStart,
-  },
-  {
-    step: 'id-card-requested-attributes',
-    alternativeFlow: false,
-    progress: 49.5,
-    page: {
-      type: 'content',
-      title: 'Review the request',
-    },
-    Screen: OnboardingIdCardRequestedAttributes,
-  },
-  {
-    step: 'id-card-pin',
-    alternativeFlow: false,
-    progress: 49.5,
-    page: {
-      type: 'content',
-      title: 'Enter your eID card PIN',
-    },
-    Screen: OnboardingIdCardPinEnter,
-  },
-  {
-    step: 'id-card-start-scan',
-    alternativeFlow: false,
-    progress: 66,
-    page: {
-      type: 'content',
-      title: 'Scan your eID card',
-      subtitle: 'Place your device on top of your eID card to scan it.',
-      animationKey: 'id-card-scan',
-    },
-    Screen: OnboardingIdCardScan,
-  },
-  {
-    step: 'id-card-scan',
-    alternativeFlow: false,
-    progress: 66,
-    page: {
-      type: 'content',
-      title: 'Scan your eID card',
-      subtitle: 'Place your device on top of your eID card to scan it.',
-      animationKey: 'id-card-scan',
-    },
-    Screen: OnboardingIdCardScan,
-  },
-  {
-    step: 'id-card-fetch',
-    alternativeFlow: false,
-    progress: 82.5,
-    page: {
-      type: 'content',
-      title: 'Fetching information',
-    },
-    Screen: OnboardingIdCardFetch,
-  },
-  {
-    step: 'id-card-verify',
-    progress: 82.5,
-    alternativeFlow: true,
-    page: {
-      type: 'content',
-      title: 'We need to verify it’s you',
-      subtitle: 'Your biometrics are required to verify your identity.',
-      animationKey: 'id-card',
-    },
-    Screen: OnboardingIdCardVerify,
-  },
-  {
-    step: 'id-card-biometrics-disabled',
-    progress: 82.5,
-    alternativeFlow: true,
-    page: {
-      type: 'content',
-      title: 'You need to enable biometrics',
-      subtitle:
-        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
-    },
-    Screen: OnboardingIdCardBiometricsDisabled,
-  },
-  {
-    step: 'id-card-complete',
-    progress: 100,
-    alternativeFlow: false,
-    page: {
-      type: 'content',
-      title: 'Success!',
-      subtitle: 'Your information has been retrieved from your eID card.',
-      animationKey: 'id-card-success',
-    },
-    Screen: OnboardingIdCardFetch,
-  },
-] as const satisfies Array<OnboardingStep>
-
-type OnboardingStep = {
-  step: string
-  progress: number
-  page: Page
-  // if true will not be navigated to by goToNextStep
-  alternativeFlow: boolean
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  Screen: React.FunctionComponent<any>
-}
 
 export const onboardingSteps = [
   {
@@ -237,12 +112,10 @@ export const onboardingSteps = [
   ...pidSetupSteps,
 ] as const satisfies Array<OnboardingStep>
 
-export type OnboardingSteps = typeof onboardingSteps
-
 export type OnboardingContext = {
   currentStep: OnboardingStep['step']
   progress: number
-  page: Page
+  page: OnboardingPage
   screen: React.JSX.Element
   reset: () => void
 }
@@ -262,7 +135,7 @@ export function OnboardingContextProvider({
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
   const pidDisplay = usePidDisplay()
 
-  const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
+  const [selectedFlow, setSelectedFlow] = useState<PidFlowTypes>('c')
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
   const [allowSimulatorCard, setAllowSimulatorCard] = useState(false)
@@ -271,12 +144,7 @@ export function OnboardingContextProvider({
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
   const [agent, setAgent] = useState<AppAgent>()
-  const [idCardScanningState, setIdCardScanningState] = useState<{
-    showScanModal: boolean
-    isCardAttached?: boolean
-    progress: number
-    state: 'readyToScan' | 'scanning' | 'complete' | 'error'
-  }>({
+  const [idCardScanningState, setIdCardScanningState] = useState<CardScanningState>({
     isCardAttached: undefined,
     progress: 0,
     state: 'readyToScan',
@@ -346,7 +214,7 @@ export function OnboardingContextProvider({
   const onPinReEnter = async (pin: string) => {
     // Spells BROKEN on the pin pad (with letters)
     // Allows bypassing the eID card and use a simulator card
-    const isSimulatorPinCode = pin === '276536'
+    const isSimulatorPinCode = pin === SIMULATOR_PIN
 
     if (isSimulatorPinCode) {
       setAllowSimulatorCard(true)
