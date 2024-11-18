@@ -5,7 +5,6 @@ import {
   Heading,
   HeroIcons,
   IconContainer,
-  Loader,
   Paragraph,
   ScrollView,
   Spacer,
@@ -19,8 +18,7 @@ import { useRouter } from 'solito/router'
 import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useHaptics, useNetworkCallback, useScrollViewPosition } from '@package/app/src/hooks'
 import { FunkeCredentialCard } from 'packages/app'
-import { useState } from 'react'
-import { FadeInDown, ZoomIn } from 'react-native-reanimated'
+import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { LatestActivityCard } from './components/LatestActivityCard'
 
@@ -138,7 +136,7 @@ export function FunkeWalletScreen() {
                 <Heading px="$2" variant="sub2">
                   Recently used
                 </Heading>
-                <Stack gap="$4">
+                <AnimatedStack gap="$4" entering={FadeIn}>
                   {credentials.slice(0, 2).map((credential) => (
                     <FunkeCredentialCard
                       key={credential.id}
@@ -151,7 +149,7 @@ export function FunkeWalletScreen() {
                       onPress={withHaptics(() => push(`/credentials/${credential.id}`))}
                     />
                   ))}
-                </Stack>
+                </AnimatedStack>
                 {credentials.length > 2 && (
                   <Button.Solid
                     bw="$0.5"

@@ -103,7 +103,7 @@ export function IdCard({ icon, issuerImage, backgroundImage, userName, onPress, 
             {onPress && <HeroIcons.ArrowRight color="$black" />}
           </XStack>
         </XStack>
-        <Stack zIndex="$-1" position="absolute" bg="#F1F2F0" top={0} left={0} right={0} bottom={0}>
+        <Stack zIndex="$-1" position="absolute" bg="$idCardBackground" top={0} left={0} right={0} bottom={0}>
           <Image src={backgroundImage} width="100%" resizeMode="cover" height="100%" />
         </Stack>
       </YStack>
