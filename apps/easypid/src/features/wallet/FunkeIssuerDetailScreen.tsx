@@ -96,7 +96,7 @@ export function FunkeIssuerDetailScreen({ host }: FunkeIssuerDetailScreenProps) 
                   <Circle overflow="hidden" size="$4" bg="$grey-50">
                     <Image src={approval.ownedBy.display.logo.url} height="100%" width="100%" />
                   </Circle>
-                  <YStack gap="$1">
+                  <YStack gap="$1" f={1}>
                     <Heading variant="h3">{approval.name}</Heading>
                     <Paragraph fontSize={15}>Owned by {approval.ownedBy.display.name}</Paragraph>
                   </YStack>

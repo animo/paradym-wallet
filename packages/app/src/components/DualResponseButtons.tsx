@@ -1,4 +1,5 @@
 import { Button, Spinner, YStack } from '@package/ui'
+import { PixelRatio } from 'react-native'
 
 interface DualResponseButtonProps {
   isLoading?: boolean
@@ -19,8 +20,10 @@ export function DualResponseButtons({
   acceptText = 'Accept',
   declineText = 'Decline',
   variant = 'regular',
-  removeBottomPadding = false,
 }: DualResponseButtonProps) {
+  // Give accept button more space to avoid truncation when OS font is scaled
+  const giveAcceptButtonMoreSpace = PixelRatio.getFontScale() > 1.2 && acceptText.length > 6
+
   return (
     <YStack
       gap={align === 'horizontal' ? '$4' : '$2'}
@@ -28,6 +31,7 @@ export function DualResponseButtons({
     >
       <Button.Solid
         f={1}
+        fg={giveAcceptButtonMoreSpace ? 2 : 1}
         disabled={isLoading}
         onPress={onAccept}
         {...(variant === 'confirmation' ? { bg: '$danger-500' } : {})}
