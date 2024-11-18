@@ -224,12 +224,13 @@ export function FunkePidSetupScreen() {
 
       const reason = (error as CardScanningErrorDetails).reason
       if (reason === 'user_cancelled' || reason === 'cancelled') {
-        toast.show('eID card scanning cancelled', {
+        toast.show('Card scanning cancelled', {
           customData: {
             preset: 'danger',
           },
         })
         setIsScanning(false)
+        pushToWallet()
       } else {
         toast.show('Something went wrong', {
           message: 'Please try again.',
@@ -369,6 +370,7 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-requested-attributes',
           progress: 40,
+          backIsCancel: true,
           screen: (
             <PidReviewRequestSlide
               {...getSlideContent('id-card-requested-attributes')}
@@ -379,6 +381,7 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-pin',
           progress: 50,
+          backIsCancel: true,
           screen: (
             <PidEidCardPinSlide
               {...getSlideContent('id-card-pin')}
@@ -389,6 +392,7 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-start-scan',
           progress: 60,
+          backIsCancel: true,
           screen: (
             <PidCardScanSlide
               {...getSlideContent('id-card-start-scan')}
@@ -407,6 +411,7 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-fetch',
           progress: 80,
+          backIsCancel: true,
           screen: (
             <PidIdCardFetchSlide
               {...getSlideContent('id-card-fetch')}

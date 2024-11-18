@@ -1,6 +1,5 @@
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useWizard } from 'packages/app/src'
-import { useState } from 'react'
 import { OnboardingIdCardStart } from '../onboarding/screens/id-card-start'
 
 interface PidSetupStartSlideProps {
@@ -11,17 +10,6 @@ interface PidSetupStartSlideProps {
 
 export function PidSetupStartSlide({ title, subtitle, caption }: PidSetupStartSlideProps) {
   const { onNext } = useWizard()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const onContinue = async () => {
-    if (isLoading) return
-    setIsLoading(true)
-
-    // Do logic
-
-    onNext()
-    setIsLoading(false)
-  }
 
   return (
     <YStack fg={1} jc="space-between">
@@ -37,7 +25,7 @@ export function PidSetupStartSlide({ title, subtitle, caption }: PidSetupStartSl
         </YStack>
       </YStack>
       <YStack fg={1} pt="$6">
-        <OnboardingIdCardStart goToNextStep={onContinue} />
+        <OnboardingIdCardStart goToNextStep={async () => onNext()} />
       </YStack>
     </YStack>
   )
