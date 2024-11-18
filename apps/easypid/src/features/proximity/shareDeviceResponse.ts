@@ -44,12 +44,10 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
   const deviceRequest = DeviceRequest.parse(options.deviceRequest)
 
   const deviceResponse = await DeviceResponse.from(mdoc)
-    .usingSessionTranscriptBytes(options.sessionTranscript)
+    .usingSessionTranscriptBytes(new Uint8Array(options.sessionTranscript))
     .usingDeviceRequest(deviceRequest)
     .authenticateWithSignature(publicDeviceJwk, 'ES256')
     .sign(mdocContext)
-
-  console.log(deviceResponse.encode())
 
   await mdt.sendDeviceResponse(deviceResponse.encode())
 }

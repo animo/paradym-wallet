@@ -22,13 +22,11 @@
 	"pnpm": {
 		"overrides": {
 			"typescript": "~5.3.3",
-
 			"@unimodules/react-native-adapter": "./noop",
 			"@unimodules/core": "./noop",
 			"@hyperledger/anoncreds-react-native": "^0.2.4",
 			"@hyperledger/aries-askar-react-native": "^0.2.3",
 			"@hyperledger/indy-vdr-react-native": "^0.2.0",
-
 			"@credo-ts/anoncreds": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/anoncreds?funke",
 			"@credo-ts/askar": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke",
 			"@credo-ts/cheqd": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/cheqd?funke",
@@ -38,26 +36,25 @@
 			"@credo-ts/question-answer": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/question-answer?funke",
 			"@credo-ts/react-native": "https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/react-native?funke",
 			"@credo-ts/react-hooks": "0.6.1",
-
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
 			"@animo-id/expo-secure-environment": "0.1.0-alpha.5",
-			"@animo-id/expo-mdoc-data-transfer": "0.0.3-alpha.4",
-
+			"@animo-id/expo-mdoc-data-transfer": "0.0.3-alpha.6",
 			"@types/react": "~18.2.79",
 			"react": "18.3.1",
 			"react-docgen-typescript": "2.2.2",
 			"react-native": "~0.75.0",
 			"react-native-reanimated": "~3.15.5",
-
 			"@sphereon/did-auth-siop": "https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke",
 			"@sphereon/oid4vc-common": "https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke",
 			"@sphereon/oid4vci-common": "https://gitpkg.vercel.app/animo/OID4VC/packages/oid4vci-common?funke",
 			"@sphereon/oid4vci-issuer": "https://gitpkg.vercel.app/animo/OID4VC/packages/issuer?funke",
 			"@sphereon/oid4vci-client": "https://gitpkg.vercel.app/animo/OID4VC/packages/client?funke",
-			"@sphereon/jarm": "https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke"
+			"@sphereon/jarm": "https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke",
+			"@protokoll/mdoc-client": "0.2.36"
 		},
 		"patchedDependencies": {
-			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch"
+			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
+			"@protokoll/mdoc-client": "patches/@protokoll__mdoc-client.patch"
 		}
 	}
 }
