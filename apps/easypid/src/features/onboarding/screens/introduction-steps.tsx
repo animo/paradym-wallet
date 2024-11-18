@@ -13,20 +13,14 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
           <OnboardingStepItem
             stepName="step 1"
             title="Secure the wallet"
-            description="Set up a security PIN and biometrics to secure the wallet."
+            description="Choose a 6-digit PIN and set up biometrics to secure the wallet."
             icon={<HeroIcons.Key color="$white" size={20} />}
           />
           <OnboardingStepItem
             stepName="step 2"
             title="Scan your physical ID card"
-            description="Use your ID card PIN to retrieve your identity information."
+            description="Use your ID card PIN to retrieve your  identity information."
             icon={<HeroIcons.Identification color="$white" size={20} />}
-          />
-          <OnboardingStepItem
-            stepName="step 3"
-            title="Claim your identity"
-            description="Validate your information and complete the app setup."
-            icon={<HeroIcons.Star color="$white" size={20} />}
           />
         </ScrollableStack>
       </YStack>

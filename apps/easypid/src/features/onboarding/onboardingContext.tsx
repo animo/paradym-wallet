@@ -22,10 +22,12 @@ import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
+import inAppLogo from '../../../assets/icon.png'
 import { type PidSdJwtVcAttributes, usePidDisplay } from '../../hooks'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
+import { OnboardingDataProtection } from './screens/data-protection'
 import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
 import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
@@ -35,6 +37,7 @@ import { OnboardingIdCardStart } from './screens/id-card-start'
 import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
+import { OnboardingWalletExplanation } from './screens/wallet-explanation'
 import OnboardingWelcome from './screens/welcome'
 
 type Page =
@@ -61,14 +64,73 @@ const onboardingSteps = [
     Screen: OnboardingWelcome,
   },
   {
-    step: 'introduction-steps',
+    step: 'wallet-explanation-1',
     alternativeFlow: false,
-    progress: 16.5,
+    progress: 15,
+    page: {
+      animation: 'delayed',
+      type: 'content',
+      title: 'This is your wallet',
+      subtitle:
+        'Add digital cards with your information, and share them easily with others. It’s like having your wallet on your phone.',
+    },
+    Screen: OnboardingWalletExplanation,
+  },
+  {
+    step: 'wallet-explanation-2',
+    alternativeFlow: false,
+    progress: 15,
     page: {
       type: 'content',
-      animation: 'delayed',
-      title: 'Get your digital identity',
-      subtitle: 'Before you can use the app we will go through the following steps.',
+      title: 'What is it for?',
+      subtitle:
+        'The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.',
+    },
+    Screen: OnboardingWalletExplanation,
+  },
+  {
+    step: 'wallet-explanation-3',
+    alternativeFlow: false,
+    progress: 15,
+    page: {
+      type: 'content',
+      title: 'Why is it useful?',
+      subtitle:
+        'The wallet lets you see exactly what data is being requested, and you control whether to share it or not. In many cases sharing data digitally can be faster and more secure.',
+    },
+    Screen: OnboardingWalletExplanation,
+  },
+  {
+    step: 'wallet-explanation-4',
+    alternativeFlow: false,
+    progress: 15,
+    page: {
+      type: 'content',
+      title: 'How does it work?',
+      subtitle:
+        'Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.',
+    },
+    Screen: OnboardingWalletExplanation,
+  },
+  {
+    step: 'data-protection',
+    alternativeFlow: false,
+    progress: 25,
+    page: {
+      type: 'content',
+      title: 'Protect your data',
+      subtitle: 'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
+    },
+    Screen: OnboardingDataProtection,
+  },
+  {
+    step: 'introduction-steps',
+    alternativeFlow: false,
+    progress: 35,
+    page: {
+      type: 'content',
+      title: 'Set up your wallet',
+      subtitle: 'Before you can use the app, we will guide you through these steps.',
     },
     Screen: OnboardingIntroductionSteps,
   },
@@ -76,7 +138,7 @@ const onboardingSteps = [
   {
     step: 'pin',
     alternativeFlow: false,
-    progress: 33,
+    progress: 45,
     page: {
       type: 'content',
       title: 'Choose a 6-digit PIN',
@@ -88,7 +150,7 @@ const onboardingSteps = [
   {
     step: 'pin-reenter',
     alternativeFlow: false,
-    progress: 33,
+    progress: 45,
     page: {
       type: 'content',
       title: 'Repeat your PIN',
@@ -100,7 +162,7 @@ const onboardingSteps = [
   {
     step: 'biometrics',
     alternativeFlow: false,
-    progress: 33,
+    progress: 55,
     page: {
       type: 'content',
       title: 'Set up biometrics',
@@ -111,7 +173,7 @@ const onboardingSteps = [
   },
   {
     step: 'biometrics-disabled',
-    progress: 33,
+    progress: 55,
     alternativeFlow: true,
     page: {
       type: 'content',
@@ -124,7 +186,7 @@ const onboardingSteps = [
   {
     step: 'id-card-start',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 65,
     page: {
       type: 'content',
       title: 'Scan your eID card to retrieve your data',
@@ -136,7 +198,7 @@ const onboardingSteps = [
   {
     step: 'id-card-requested-attributes',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 65,
     page: {
       type: 'content',
       title: 'Review the request',
@@ -146,7 +208,7 @@ const onboardingSteps = [
   {
     step: 'id-card-pin',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 65,
     page: {
       type: 'content',
       title: 'Enter your eID card PIN',
@@ -156,7 +218,7 @@ const onboardingSteps = [
   {
     step: 'id-card-start-scan',
     alternativeFlow: false,
-    progress: 66,
+    progress: 75,
     page: {
       type: 'content',
       title: 'Scan your eID card',
@@ -168,7 +230,7 @@ const onboardingSteps = [
   {
     step: 'id-card-scan',
     alternativeFlow: false,
-    progress: 66,
+    progress: 75,
     page: {
       type: 'content',
       title: 'Scan your eID card',
@@ -180,7 +242,7 @@ const onboardingSteps = [
   {
     step: 'id-card-fetch',
     alternativeFlow: false,
-    progress: 82.5,
+    progress: 85,
     page: {
       type: 'content',
       title: 'Fetching information',
@@ -189,7 +251,7 @@ const onboardingSteps = [
   },
   {
     step: 'id-card-verify',
-    progress: 82.5,
+    progress: 90,
     alternativeFlow: true,
     page: {
       type: 'content',
@@ -201,7 +263,7 @@ const onboardingSteps = [
   },
   {
     step: 'id-card-biometrics-disabled',
-    progress: 82.5,
+    progress: 90,
     alternativeFlow: true,
     page: {
       type: 'content',
@@ -821,6 +883,38 @@ export function OnboardingContextProvider({
         }}
         showScanModal={currentStep.step !== 'id-card-scan' ? false : idCardScanningState.showScanModal ?? true}
         onStartScanning={currentStep.step === 'id-card-start-scan' ? onStartScanning : undefined}
+      />
+    )
+  } else if (currentStep.step === 'wallet-explanation-1') {
+    screen = (
+      <currentStep.Screen
+        image={require('../../../assets/icon.png')}
+        onSkip={() => setCurrentStepName('data-protection')}
+        goToNextStep={goToNextStep}
+      />
+    )
+  } else if (currentStep.step === 'wallet-explanation-2') {
+    screen = (
+      <currentStep.Screen
+        image={inAppLogo}
+        onSkip={() => setCurrentStepName('data-protection')}
+        goToNextStep={goToNextStep}
+      />
+    )
+  } else if (currentStep.step === 'wallet-explanation-3') {
+    screen = (
+      <currentStep.Screen
+        image={inAppLogo}
+        onSkip={() => setCurrentStepName('data-protection')}
+        goToNextStep={goToNextStep}
+      />
+    )
+  } else if (currentStep.step === 'wallet-explanation-4') {
+    screen = (
+      <currentStep.Screen
+        image={inAppLogo}
+        onSkip={() => setCurrentStepName('data-protection')}
+        goToNextStep={goToNextStep}
       />
     )
   } else {
