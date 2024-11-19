@@ -63,7 +63,14 @@ const config = {
   },
   plugins: [
     '@animo-id/expo-ausweis-sdk',
-    '@animo-id/expo-mdoc-data-transfer',
+    [
+      '@animo-id/expo-mdoc-data-transfer',
+      {
+        ios: {
+          buildStatic: [],
+        },
+      },
+    ],
     [
       'expo-build-properties',
       {
