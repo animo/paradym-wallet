@@ -55,9 +55,11 @@ export default function OnboardingScreens() {
         >
           <YStack fg={1} gap="$6">
             <YStack gap="$3">
-              <Heading ref={headerRef} variant="h1">
-                {onboardingContext.page.title}
-              </Heading>
+              {onboardingContext.page.title && (
+                <Heading ref={headerRef} variant="h1">
+                  {onboardingContext.page.title}
+                </Heading>
+              )}
               {onboardingContext.page.subtitle && <Paragraph>{onboardingContext.page.subtitle}</Paragraph>}
               {onboardingContext.page.caption && (
                 <Paragraph>

@@ -22,7 +22,6 @@ import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import inAppLogo from '../../../assets/icon.png'
 import { type PidSdJwtVcAttributes, usePidDisplay } from '../../hooks'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
@@ -64,54 +63,17 @@ const onboardingSteps = [
     Screen: OnboardingWelcome,
   },
   {
-    step: 'wallet-explanation-1',
+    step: 'wallet-explanation',
     alternativeFlow: false,
     progress: 15,
     page: {
       animation: 'delayed',
       type: 'content',
-      title: 'This is your wallet',
-      subtitle:
-        'Add digital cards with your information, and share them easily with others. It’s like having your wallet on your phone.',
+      title: '',
     },
     Screen: OnboardingWalletExplanation,
   },
-  {
-    step: 'wallet-explanation-2',
-    alternativeFlow: false,
-    progress: 15,
-    page: {
-      type: 'content',
-      title: 'What is it for?',
-      subtitle:
-        'The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.',
-    },
-    Screen: OnboardingWalletExplanation,
-  },
-  {
-    step: 'wallet-explanation-3',
-    alternativeFlow: false,
-    progress: 15,
-    page: {
-      type: 'content',
-      title: 'Why is it useful?',
-      subtitle:
-        'The wallet lets you see exactly what data is being requested, and you control whether to share it or not. In many cases sharing data digitally can be faster and more secure.',
-    },
-    Screen: OnboardingWalletExplanation,
-  },
-  {
-    step: 'wallet-explanation-4',
-    alternativeFlow: false,
-    progress: 15,
-    page: {
-      type: 'content',
-      title: 'How does it work?',
-      subtitle:
-        'Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.',
-    },
-    Screen: OnboardingWalletExplanation,
-  },
+
   {
     step: 'data-protection',
     alternativeFlow: false,
@@ -885,38 +847,8 @@ export function OnboardingContextProvider({
         onStartScanning={currentStep.step === 'id-card-start-scan' ? onStartScanning : undefined}
       />
     )
-  } else if (currentStep.step === 'wallet-explanation-1') {
-    screen = (
-      <currentStep.Screen
-        image={require('../../../assets/icon.png')}
-        onSkip={() => setCurrentStepName('data-protection')}
-        goToNextStep={goToNextStep}
-      />
-    )
-  } else if (currentStep.step === 'wallet-explanation-2') {
-    screen = (
-      <currentStep.Screen
-        image={inAppLogo}
-        onSkip={() => setCurrentStepName('data-protection')}
-        goToNextStep={goToNextStep}
-      />
-    )
-  } else if (currentStep.step === 'wallet-explanation-3') {
-    screen = (
-      <currentStep.Screen
-        image={inAppLogo}
-        onSkip={() => setCurrentStepName('data-protection')}
-        goToNextStep={goToNextStep}
-      />
-    )
-  } else if (currentStep.step === 'wallet-explanation-4') {
-    screen = (
-      <currentStep.Screen
-        image={inAppLogo}
-        onSkip={() => setCurrentStepName('data-protection')}
-        goToNextStep={goToNextStep}
-      />
-    )
+  } else if (currentStep.step === 'wallet-explanation') {
+    screen = <currentStep.Screen onSkip={() => setCurrentStepName('data-protection')} goToNextStep={goToNextStep} />
   } else {
     screen = <currentStep.Screen goToNextStep={goToNextStep} />
   }
