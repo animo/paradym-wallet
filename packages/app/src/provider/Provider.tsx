@@ -14,16 +14,7 @@ export function Provider({ children, ...rest }: PropsWithChildren<TamaguiProvide
   return (
     <TamaguiProvider disableInjectCSS defaultTheme="light" {...rest}>
       <PortalProvider shouldAddRootHost>
-        <ToastProvider
-          swipeDirection="up"
-          duration={6000}
-          native={
-            [
-              /* uncomment the next line to do native toasts on mobile. NOTE: it'll require you making a dev build and won't work with Expo Go */
-              // 'mobile'
-            ]
-          }
-        >
+        <ToastProvider swipeDirection="up" duration={6000} native={['mobile']}>
           <QueryClientProvider client={queryClient}>
             <GestureHandlerRootView style={{ flex: 1 }}>{children}</GestureHandlerRootView>
           </QueryClientProvider>

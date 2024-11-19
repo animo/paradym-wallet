@@ -25,6 +25,7 @@
 					"../../node_modules/@expo-google-fonts/open-sans/OpenSans_700Bold.ttf"
 				]
 			}
-		]
+		],
+		"expo-router"
 	]
 }
