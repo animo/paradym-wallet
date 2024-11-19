@@ -11,10 +11,10 @@ import {
 import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
 import { decodeSdJwtSync, getClaimsSync } from '@sd-jwt/decode'
 import type { CredentialForDisplayId } from './hooks'
-import type { OpenId4VcCredentialMetadata } from './openid4vc/metadata'
+import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
-import { getOpenId4VcCredentialMetadata } from './openid4vc/metadata'
+import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 
 type JffW3cCredentialJson = W3cCredentialJson & {
   name?: string
@@ -81,7 +81,7 @@ function getW3cIssuerDisplay(
 
       if (openidIssuerDisplay.logo) {
         issuerDisplay.logo = {
-          url: openidIssuerDisplay.logo?.url,
+          url: openidIssuerDisplay.logo?.uri,
           altText: openidIssuerDisplay.logo?.alt_text,
         }
       }
@@ -91,7 +91,7 @@ function getW3cIssuerDisplay(
     const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
       issuerDisplay.logo = {
-        url: openidCredentialDisplay.logo?.url,
+        url: openidCredentialDisplay.logo?.uri,
         altText: openidCredentialDisplay.logo?.alt_text,
       }
     }
@@ -130,7 +130,9 @@ function getW3cIssuerDisplay(
   }
 }
 
-function getOpenId4VcIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetadata | null): CredentialIssuerDisplay {
+export function getOpenId4VcIssuerDisplay(
+  openId4VcMetadata?: OpenId4VcCredentialMetadata | null
+): CredentialIssuerDisplay {
   const issuerDisplay: Partial<CredentialIssuerDisplay> = {}
 
   // Try to extract from openid metadata first
@@ -142,7 +144,7 @@ function getOpenId4VcIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetada
 
       if (openidIssuerDisplay.logo) {
         issuerDisplay.logo = {
-          url: openidIssuerDisplay.logo?.url,
+          url: openidIssuerDisplay.logo?.uri,
           altText: openidIssuerDisplay.logo?.alt_text,
         }
       }
@@ -152,7 +154,7 @@ function getOpenId4VcIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetada
     const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
       issuerDisplay.logo = {
-        url: openidCredentialDisplay.logo?.url,
+        url: openidCredentialDisplay.logo?.uri,
         altText: openidCredentialDisplay.logo?.alt_text,
       }
     }
@@ -173,30 +175,35 @@ function getOpenId4VcIssuerDisplay(openId4VcMetadata?: OpenId4VcCredentialMetada
   }
 }
 
+export function getOpenId4VcCredentialDisplay(openId4VcMetadata: OpenId4VcCredentialMetadata) {
+  const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+
+  const credentialDisplay: Omit<CredentialDisplay, 'name'> & { name?: string } = {
+    name: openidCredentialDisplay?.name,
+    description: openidCredentialDisplay?.description,
+    textColor: openidCredentialDisplay?.text_color,
+    backgroundColor: openidCredentialDisplay?.background_color,
+    backgroundImage: openidCredentialDisplay?.background_image
+      ? {
+          url: openidCredentialDisplay.background_image.uri,
+        }
+      : undefined,
+    issuer: getOpenId4VcIssuerDisplay(openId4VcMetadata),
+  }
+
+  // NOTE: logo is used in issuer display (not sure if that's right though)
+
+  return credentialDisplay
+}
+
 function getW3cCredentialDisplay(
   credential: W3cCredentialJson,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
 ) {
-  const credentialDisplay: Partial<CredentialDisplay> = {}
+  let credentialDisplay: Partial<CredentialDisplay> = {}
 
   if (openId4VcMetadata) {
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
-
-    if (openidCredentialDisplay) {
-      credentialDisplay.name = openidCredentialDisplay.name
-      credentialDisplay.description = openidCredentialDisplay.description
-      credentialDisplay.textColor = openidCredentialDisplay.text_color
-      credentialDisplay.backgroundColor = openidCredentialDisplay.background_color
-
-      if (openidCredentialDisplay.background_image) {
-        credentialDisplay.backgroundImage = {
-          url: openidCredentialDisplay.background_image.url,
-          altText: openidCredentialDisplay.background_image.alt_text,
-        }
-      }
-
-      // NOTE: logo is used in issuer display (not sure if that's right though)
-    }
+    credentialDisplay = getOpenId4VcCredentialDisplay(openId4VcMetadata)
   }
 
   // If openid metadata is not available, try to extract display metadata from the credential based on JFF metadata
@@ -222,6 +229,7 @@ function getW3cCredentialDisplay(
 
   return {
     ...credentialDisplay,
+    issuer: getW3cIssuerDisplay(credential, openId4VcMetadata),
     // Last fallback, if there's really no name for the credential, we use a generic name
     // TODO: use on-device AI to determine a name for the credential based on the credential data
     name: credentialDisplay.name ?? 'Credential',
@@ -232,26 +240,10 @@ function getMdocCredentialDisplay(
   credentialPayload: Record<string, unknown>,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
 ) {
-  const credentialDisplay: Partial<CredentialDisplay> = {}
+  let credentialDisplay: Partial<CredentialDisplay> = {}
 
   if (openId4VcMetadata) {
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
-
-    if (openidCredentialDisplay) {
-      credentialDisplay.name = openidCredentialDisplay.name
-      credentialDisplay.description = openidCredentialDisplay.description
-      credentialDisplay.textColor = openidCredentialDisplay.text_color
-      credentialDisplay.backgroundColor = openidCredentialDisplay.background_color
-
-      if (openidCredentialDisplay.background_image) {
-        credentialDisplay.backgroundImage = {
-          url: openidCredentialDisplay.background_image.url,
-          altText: openidCredentialDisplay.background_image.alt_text,
-        }
-      }
-
-      // NOTE: logo is used in issuer display (not sure if that's right though)
-    }
+    credentialDisplay = getOpenId4VcCredentialDisplay(openId4VcMetadata)
   }
 
   // TODO: mdoc
@@ -273,26 +265,10 @@ function getSdJwtCredentialDisplay(
   credentialPayload: Record<string, unknown>,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
 ) {
-  const credentialDisplay: Partial<CredentialDisplay> = {}
+  let credentialDisplay: Partial<CredentialDisplay> = {}
 
   if (openId4VcMetadata) {
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
-
-    if (openidCredentialDisplay) {
-      credentialDisplay.name = openidCredentialDisplay.name
-      credentialDisplay.description = openidCredentialDisplay.description
-      credentialDisplay.textColor = openidCredentialDisplay.text_color
-      credentialDisplay.backgroundColor = openidCredentialDisplay.background_color
-
-      if (openidCredentialDisplay.background_image) {
-        credentialDisplay.backgroundImage = {
-          url: openidCredentialDisplay.background_image.url,
-          altText: openidCredentialDisplay.background_image.alt_text,
-        }
-      }
-
-      // NOTE: logo is used in issuer display (not sure if that's right though)
-    }
+    credentialDisplay = getOpenId4VcCredentialDisplay(openId4VcMetadata)
   }
 
   // If there's no name for the credential, we extract it from the last type
@@ -428,8 +404,8 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
   }
   if (credentialRecord instanceof MdocRecord) {
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
-    const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
     const credentialDisplay = getMdocCredentialDisplay({}, openId4VcMetadata)
+    const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
 
     const mdocInstance = Mdoc.fromBase64Url(credentialRecord.base64Url)
     const attributes = Object.fromEntries(

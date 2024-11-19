@@ -1,30 +1,49 @@
+import { useWizard } from '@package/app'
 import { CustomIcons, Heading, IllustrationContainer, Paragraph, YStack, useToastController } from '@package/ui'
 import * as WebBrowser from 'expo-web-browser'
-import { DualResponseButtons } from 'packages/app/src/components/DualResponseButtons'
-import type { AuthCodeFlowDetails } from '../FunkeCredentialWithCodeFlowNotificationScreen'
+import { DualResponseButtons } from '@package/app/src/components/DualResponseButtons'
 
-interface AuthCodeFlowSlideProps {
-  authCodeFlowDetails?: AuthCodeFlowDetails
-  onAuthFlowCallback: (result: Record<string, unknown>) => void
-  onCancel: () => void
+export type AuthCodeFlowDetails = {
+  domain: string
+  redirectUri: string
+  openUrl: string
 }
 
-export const AuthCodeFlowSlide = ({ authCodeFlowDetails, onAuthFlowCallback, onCancel }: AuthCodeFlowSlideProps) => {
+interface AuthCodeFlowSlideProps {
+  authCodeFlowDetails: AuthCodeFlowDetails
+  onAuthFlowCallback: (authorizationCode: string) => void
+  onCancel: () => void
+  onError: () => void
+}
+
+export const AuthCodeFlowSlide = ({
+  authCodeFlowDetails,
+  onAuthFlowCallback,
+  onCancel,
+  onError,
+}: AuthCodeFlowSlideProps) => {
   const toast = useToastController()
+  const { onNext, onCancel: wizardOnCancel } = useWizard()
 
   const onPressContinue = async () => {
-    if (!authCodeFlowDetails) return
-    const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl)
+    const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
 
     if (result.type !== 'success') {
-      toast.show('Authorization not succeeded', { customData: { preset: 'warning' } })
+      toast.show('Authorization failed', { customData: { preset: 'warning' } })
+
+      result.type === 'cancel' || result.type === 'dismiss' ? onCancel() : onError()
       return
     }
 
-    // === IMPLEMENT HERE ===
-    onAuthFlowCallback({
-      result,
-    })
+    const authorizationCode = new URL(result.url).searchParams.get('code')
+    if (!authorizationCode) {
+      toast.show('Authorization failed', { customData: { preset: 'warning' } })
+      onError()
+      return
+    }
+
+    onNext()
+    onAuthFlowCallback(authorizationCode)
   }
 
   return (
@@ -46,7 +65,7 @@ export const AuthCodeFlowSlide = ({ authCodeFlowDetails, onAuthFlowCallback, onC
           acceptText="Authenticate"
           declineText="Stop"
           onAccept={onPressContinue}
-          onDecline={onCancel}
+          onDecline={wizardOnCancel}
         />
       </YStack>
     </YStack>

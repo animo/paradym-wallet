@@ -1,4 +1,10 @@
-import { type MdocRecord, type SdJwtVcRecord, type W3cCredentialRecord, getCredentialForDisplay } from '@package/agent'
+import {
+  type MdocRecord,
+  type SdJwtVcRecord,
+  type W3cCredentialRecord,
+  getCredentialForDisplay,
+  type CredentialDisplay,
+} from '@package/agent'
 import {
   AnimatedStack,
   Button,
@@ -33,7 +39,10 @@ import {
 } from 'react-native-reanimated'
 
 interface OfferCredentialSlideProps {
-  credentialRecord?: SdJwtVcRecord | W3cCredentialRecord | MdocRecord
+  // credentialRecord?: SdJwtVcRecord | W3cCredentialRecord | MdocRecord
+  // If no attributes, we should at least render the metadata attributes placeholders
+  attributes?: Record<string, unknown>
+  display: CredentialDisplay
   isStoring: boolean
   isAccepted: boolean
   onAccept: () => Promise<void>
@@ -42,14 +51,15 @@ interface OfferCredentialSlideProps {
 }
 
 export const OfferCredentialSlide = ({
-  credentialRecord,
   isAccepted,
   isStoring,
   onAccept,
   onDecline,
   onComplete,
+  display,
+  attributes,
 }: OfferCredentialSlideProps) => {
-  const { completeProgressBar } = useWizard()
+  const { completeProgressBar, onNext, onBack, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const isInitialRender = useInitialRender()
   const [isCompleted, setIsCompleted] = useState(false)
@@ -61,11 +71,11 @@ export const OfferCredentialSlide = ({
   const isStoringOrCompleted = isStoring || isCompleted
   const waitForAcceptState = !isCompleted && !isStoring
 
-  if (!credentialRecord) {
-    return null
-  }
+  // if (!credentialRecord) {
+  //   return null
+  // }
 
-  const { display, attributes } = getCredentialForDisplay(credentialRecord)
+  // const { display, attributes } = getCredentialForDisplay(credentialRecord)
 
   const handleAccept = async () => {
     await onAccept()
@@ -195,7 +205,7 @@ export const OfferCredentialSlide = ({
               }
             }}
           >
-            {!isStoringOrCompleted ? (
+            {!isStoringOrCompleted && attributes ? (
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={scrollEventThrottle}

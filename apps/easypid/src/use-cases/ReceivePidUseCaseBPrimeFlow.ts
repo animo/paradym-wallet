@@ -8,7 +8,8 @@ import {
 } from '@easypid/crypto/bPrime'
 import {
   BiometricAuthenticationError,
-  acquireAccessToken,
+  OpenId4VciAuthorizationFlow,
+  acquireAuthorizationCodeAccessToken,
   receiveCredentialFromOpenId4VciOfferAuthenticatedChannel,
   resolveOpenId4VciOffer,
 } from '@package/agent'
@@ -24,8 +25,6 @@ export interface ReceivePidUseCaseBPrimeOptions extends ReceivePidUseCaseFlowOpt
 export class PinPossiblyReusedError extends Error {}
 
 export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePidUseCaseBPrimeOptions> {
-  private static REDIRECT_URI = 'https://funke.animo.id/redirect'
-
   static async initialize(options: ReceivePidUseCaseBPrimeOptions) {
     const headers = {
       client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-client-attestation',
@@ -43,7 +42,10 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
       customHeaders: headers,
     })
 
-    if (!resolved.resolvedAuthorizationRequest) {
+    if (
+      !resolved.resolvedAuthorizationRequest ||
+      resolved.resolvedAuthorizationRequest.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
+    ) {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
@@ -68,13 +70,11 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
 
       const deviceKeyPublicKeyBytes = deviceKeyPair.publicKey()
       const deviceKey = Key.fromPublicKey(deviceKeyPublicKeyBytes, KeyType.P256)
-      const credentialConfigurationIdToRequest = this.resolvedCredentialOffer.offeredCredentials[0].id
       const { credential, openId4VcMetadata } = await receiveCredentialFromOpenId4VciOfferAuthenticatedChannel({
         deviceKey,
         agent: this.options.agent,
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
-        credentialConfigurationIdToRequest,
         clientId: ReceivePidUseCaseBPrimeFlow.CLIENT_ID,
         pidSchemes,
       })
@@ -122,12 +122,12 @@ export class ReceivePidUseCaseBPrimeFlow extends ReceivePidUseCaseFlow<ReceivePi
         pinNonce
       )
 
-      this.accessToken = await acquireAccessToken({
+      this.accessToken = await acquireAuthorizationCodeAccessToken({
         resolvedCredentialOffer: this.resolvedCredentialOffer,
-        resolvedAuthorizationRequest: {
-          ...this.resolvedAuthorizationRequest,
-          code,
-        },
+        authorizationCode: code,
+        clientId: ReceivePidUseCaseFlow.CLIENT_ID,
+        codeVerifier: this.resolvedAuthorizationRequest.codeVerifier,
+        redirectUri: ReceivePidUseCaseFlow.REDIRECT_URI,
         agent: this.options.agent,
         dPopKeyJwk: P256Jwk.fromJson(deviceKeyPair.asJwk() as unknown as JwkJson),
       })

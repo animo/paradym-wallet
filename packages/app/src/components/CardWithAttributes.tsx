@@ -88,7 +88,7 @@ export function CardWithAttributes({
       accessibilityRole={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
+      <Stack px="$4" py="$3" pos="relative" backgroundColor={'green'} bg={backgroundColor ?? '$grey-900'}>
         {hasInternet && backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
@@ -132,7 +132,8 @@ export function CardWithAttributes({
           )}
         </YStack>
       </YStack>
-      <Stack bg="$grey-900" pos="absolute" top="$0" left="$0" right="$0" bottom="$0" opacity={0.2} zIndex={0} />
+      {/* FIXME: should this only be shown if expired? */}
+      {/* <Stack bg="$grey-900" pos="absolute" top="$0" left="$0" right="$0" bottom="$0" opacity={0.2} zIndex={0} /> */}
       {(isRevoked || isExpired || isNotYetActive) && (
         <Stack pos="absolute" top="$3.5" right="$2.5">
           <BlurBadge

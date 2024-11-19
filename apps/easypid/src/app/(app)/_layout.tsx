@@ -86,12 +86,6 @@ export default function AppLayout() {
                 gestureEnabled: false,
               }}
             />
-            <Stack.Screen
-              name="notifications/openIdCredentialAuthFlow"
-              options={{
-                gestureEnabled: false,
-              }}
-            />
             <Stack.Screen name="credentials/index" options={headerNormalOptions} />
             <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
             <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
