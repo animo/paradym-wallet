@@ -13,7 +13,6 @@ import {
   type CardScanningState,
   type OnboardingPage,
   type OnboardingStep,
-  type PidFlowTypes,
   SIMULATOR_PIN,
   pidSetupSteps,
 } from '@easypid/utils/sharedPidSetup'
@@ -36,6 +35,7 @@ import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
+import { useShouldUseCloudHsm } from './useShouldUseCloudHsm'
 
 export const onboardingSteps = [
   {
@@ -132,6 +132,7 @@ export function OnboardingContextProvider({
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
+  const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
   const pidDisplay = usePidDisplay()
 
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
@@ -627,7 +628,15 @@ export function OnboardingContextProvider({
 
   let screen: React.JSX.Element
   if (currentStep.step === 'welcome') {
-    screen = <currentStep.Screen goToNextStep={goToNextStep} />
+    screen = (
+      <currentStep.Screen
+        goToNextStep={() => {
+          // TODO: make configurable
+          // setShouldUseCloudHsm(true)
+          goToNextStep()
+        }}
+      />
+    )
   } else if (currentStep.step === 'pin' || currentStep.step === 'pin-reenter') {
     screen = (
       <currentStep.Screen

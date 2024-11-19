@@ -1,6 +1,6 @@
 import { MMKV, useMMKVBoolean } from 'react-native-mmkv'
 
-const mmkv = new MMKV()
+export const mmkv = new MMKV()
 
 export function useHasFinishedOnboarding() {
   return useMMKVBoolean('hasFinishedOnboarding', mmkv)

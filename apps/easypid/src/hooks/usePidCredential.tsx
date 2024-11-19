@@ -386,13 +386,14 @@ export function usePidCredential() {
         attributesForDisplay: getPidAttributesForDisplay(attributes, claimFormat),
         metadata: pidCredential.metadata,
         metadataForDisplay: getPidMetadataAttributesForDisplay(attributes, pidCredential.metadata, ClaimFormat.SdJwtVc),
+        record: pidCredential.record,
       }
     })
   }, [credentials])
 
   if (isLoading) {
     return {
-      credential: undefined,
+      credentials: undefined,
       isLoading: true,
     } as const
   }

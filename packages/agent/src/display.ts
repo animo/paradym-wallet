@@ -411,6 +411,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       claimFormat: ClaimFormat.SdJwtVc,
       validUntil: mapped.raw.validUntil,
       validFrom: mapped.raw.validFrom,
+      record: credentialRecord,
     }
   }
   if (credentialRecord instanceof MdocRecord) {
@@ -442,6 +443,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       claimFormat: ClaimFormat.MsoMdoc,
       validUntil: mdocInstance.validityInfo.validUntil,
       validFrom: mdocInstance.validityInfo.validFrom,
+      record: credentialRecord,
     }
   }
 
@@ -486,6 +488,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     validFrom: credentialRecord.credential.issuanceDate
       ? new Date(credentialRecord.credential.issuanceDate)
       : undefined,
+    record: credentialRecord,
   }
 }
 

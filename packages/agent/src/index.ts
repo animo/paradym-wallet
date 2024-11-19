@@ -2,11 +2,16 @@ import 'react-native-get-random-values'
 import 'fast-text-encoding'
 
 import { Buffer } from '@credo-ts/core'
+export {
+  setRefreshCredentialMetadata,
+  RefreshCredentialMetadata,
+  getRefreshCredentialMetadata,
+} from './openid4vc/refreshMetadata'
 
 // @ts-ignore
 global.Buffer = Buffer
 
-export type { OpenId4VciTxCode } from '@credo-ts/openid4vc'
+export type { OpenId4VciTxCode, OpenId4VciDpopRequestOptions } from '@credo-ts/openid4vc'
 export {
   initializeFullAgent,
   initializeEasyPIDAgent,

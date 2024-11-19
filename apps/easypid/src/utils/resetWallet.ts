@@ -9,6 +9,7 @@ import {
   removeHasFinishedOnboarding,
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
+import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {
   if (secureUnlock.state === 'unlocked') {
@@ -24,8 +25,8 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
   if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
 
   // I think removing triggers the biometrics somehow, but we increase the version
-  // await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
-  // await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
+  await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
+  await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
 
   // Update wallet key version
   const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
@@ -33,6 +34,7 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
 
   removeHasFinishedOnboarding()
   removeHasSeenIntroTooltip()
+  removeShouldUseCloudHsm()
 
   if (secureUnlock.state !== 'initializing') {
     secureUnlock.reinitialize()
