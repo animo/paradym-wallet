@@ -23,6 +23,5 @@ export {
   formatDifPexCredentialsForRequest,
 } from './format/formatPresentation'
 export * from './mediation'
-export * from './crypto'
 export * from './storage'
 export * from './openid4vc/metadata'

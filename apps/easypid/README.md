@@ -176,12 +176,6 @@ The [app pacakge](packages/app) and [ui pacakge](packages/ui) contain the underl
 
 The C flow supported in the Pardaym Wallet is mostly implemetned in Credo, the underlying identity framework we use. 
 
-For the B' flow, more custom work was needed and this is implemented in the following files:
-- [src/crypto/bPrime.ts](src/crypto/bPrime.ts)
-- [src/crypto/aes.ts](src/crypto/aes.ts)
-
-The crypto for the B' flow is implemented using Aries Askar.
-
 ## Tech stack / base components
 
 The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenId4Vc](https://github.com/Sphereon-Opensource/OID4VC) [Mdoc](https://github.com/Sphereon-Opensource/mdoc-cbor-crypto-multiplatform) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.

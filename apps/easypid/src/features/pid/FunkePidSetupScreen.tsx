@@ -2,10 +2,6 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { type PidSdJwtVcAttributes, usePidDisplay } from '@easypid/hooks'
-import {
-  PinPossiblyReusedError,
-  type ReceivePidUseCaseBPrimeFlow,
-} from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -35,7 +31,7 @@ export function FunkePidSetupScreen() {
   const pidDisplay = usePidDisplay()
 
   const [idCardPin, setIdCardPin] = useState<string>()
-  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
+  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
   const [idCardScanningState, setIdCardScanningState] = useState<CardScanningState>({
     isCardAttached: undefined,
@@ -255,21 +251,12 @@ export function FunkePidSetupScreen() {
 
       await retrieveCredential()
     } catch (error) {
-      if (error instanceof PinPossiblyReusedError) {
-        toast.show('Have you used this PIN before?', {
-          customData: {
-            preset: 'danger',
-          },
-        })
-        pushToWallet()
-      } else {
-        toast.show('Something went wrong', {
-          customData: {
-            preset: 'danger',
-          },
-        })
-        pushToWallet()
-      }
+      toast.show('Something went wrong', {
+        customData: {
+          preset: 'danger',
+        },
+      })
+      pushToWallet()
     }
   }
 
