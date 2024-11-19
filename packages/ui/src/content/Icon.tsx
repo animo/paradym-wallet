@@ -40,6 +40,7 @@ import {
   InformationCircleIcon,
   KeyIcon,
   LockClosedIcon,
+  MagnifyingGlassIcon,
   NoSymbolIcon,
   PlusIcon,
   QrCodeIcon,
@@ -168,6 +169,7 @@ export const HeroIcons = {
   Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
   IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
   CameraFilled: wrapHeroIcon(CameraFilledIcon),
+  MagnifyingGlass: wrapHeroIcon(MagnifyingGlassIcon),
 } as const
 
 export const CustomIcons = {

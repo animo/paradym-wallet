@@ -146,7 +146,7 @@ export const PinDotsInput = forwardRef(
                   size="$1.5"
                   backgroundColor={filled ? '$primary-500' : '$background'}
                   borderColor="$primary-500"
-                  borderWidth="$0.5"
+                  borderWidth="$1"
                 />
               </Animated.View>
             ))}

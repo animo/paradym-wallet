@@ -47,6 +47,12 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
                         credential?.disclosedPayload ?? {},
                         credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
                       )}
+                      isExpired={
+                        credential.metadata?.validUntil ? new Date(credential.metadata.validUntil) < new Date() : false
+                      }
+                      isNotYetActive={
+                        credential.metadata?.validFrom ? new Date(credential.metadata.validFrom) > new Date() : false
+                      }
                     />
                   )
                 }
@@ -61,6 +67,12 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
                     textColor={credential.textColor}
                     disclosedAttributes={credential.requestedAttributes ?? []}
                     disclosedPayload={credential?.disclosedPayload ?? {}}
+                    isExpired={
+                      credential.metadata?.validUntil ? new Date(credential.metadata.validUntil) < new Date() : false
+                    }
+                    isNotYetActive={
+                      credential.metadata?.validFrom ? new Date(credential.metadata.validFrom) > new Date() : false
+                    }
                   />
                 )
               })}

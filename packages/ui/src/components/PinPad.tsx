@@ -71,11 +71,11 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       ) : (
         <YStack ai="center" gap="$1">
           {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
-          <Text color="$grey-900" fontWeight="$semiBold" fontSize={24} fontFamily="$body">
+          <Text maxFontSizeMultiplier={1.2} color="$grey-900" fontWeight="$semiBold" fontSize={24} fontFamily="$body">
             {character}
           </Text>
           {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
-          <Text color="$grey-500" fontSize={13} fontFamily="$medium">
+          <Text maxFontSizeMultiplier={1.2} color="$grey-500" fontSize={13} fontFamily="$medium">
             {letterMap[character].toLocaleUpperCase()}
           </Text>
         </YStack>

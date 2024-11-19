@@ -3,6 +3,7 @@ import { Button, Heading, Paragraph, Stack } from '../base'
 import { HeroIcons } from '../content/Icon'
 
 import { cloneElement } from 'react'
+import type { StatusVariant } from '../utils/variants'
 import { FloatingSheet } from './FloatingSheet'
 import type { SheetProps } from './Sheet'
 
@@ -34,7 +35,7 @@ const infoSheetVariants = {
 }
 
 export interface InfoSheetProps extends SheetProps {
-  variant?: keyof typeof infoSheetVariants
+  variant?: StatusVariant
   title: string
   description: string
   onClose?: () => void
