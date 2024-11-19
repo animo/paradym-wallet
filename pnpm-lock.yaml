@@ -220,9 +220,6 @@ importers:
       '@tamagui/babel-plugin':
         specifier: 1.109.5
         version: 1.109.5(react@18.3.1)
-      babel-plugin-syntax-hermes-parser:
-        specifier: ^0.25.0
-        version: 0.25.0
       expo-build-properties:
         specifier: ^0.12.5
         version: 0.12.5(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))
@@ -5137,9 +5134,6 @@ packages:
   babel-plugin-syntax-hermes-parser@0.23.1:
     resolution: {integrity: sha512-uNLD0tk2tLUjGFdmCk+u/3FEw2o+BAwW4g+z2QVlxJrzZYOOPADroEcNtTPt5lNiScctaUmnsTkVEnOwZUOLhA==}
 
-  babel-plugin-syntax-hermes-parser@0.25.0:
-    resolution: {integrity: sha512-QUFu3FP0Ub/p0ilSizpS1CwHIZcF5OvZwzJu8PK1zy6U7Q++n9fGwi79c5yh2O2h2CagYDcLY9ngLKwT41D4qg==}
-
   babel-plugin-transform-flow-enums@0.0.2:
     resolution: {integrity: sha512-g4aaCrDDOsWjbm0PUUeVnkcVd6AKJsVc/MbnPhEotEpkeJQP6b8nzewohQi7+QS8UyPehOhGWn0nOwjvWpmMvQ==}
 
@@ -6933,9 +6927,6 @@ packages:
   hermes-estree@0.24.0:
     resolution: {integrity: sha512-LyoXLB7IFzeZW0EvAbGZacbxBN7t6KKSDqFJPo3Ydow7wDlrDjXwsdiAHV6XOdvEN9MEuWXsSIFN4tzpyrXIHw==}
 
-  hermes-estree@0.25.0:
-    resolution: {integrity: sha512-xjILoUIyOpLoOHqj8UJs/HNYQ279IfLKTTv9nmXKNT2+QKT/TQF9AyQFrRMo+3xwZoO7k4azocYpCzA1cSvBDg==}
-
   hermes-parser@0.19.1:
     resolution: {integrity: sha512-Vp+bXzxYJWrpEuJ/vXxUsLnt0+y4q9zyi4zUlkLqD8FKv4LjIfOvP69R/9Lty3dCyKh0E2BU7Eypqr63/rKT/A==}
 
@@ -6947,9 +6938,6 @@ packages:
 
   hermes-parser@0.24.0:
     resolution: {integrity: sha512-IJooSvvu2qNRe7oo9Rb04sUT4omtZqZqf9uq9WM25Tb6v3usmvA93UqfnnoWs5V0uYjEl9Al6MNU10MCGKLwpg==}
-
-  hermes-parser@0.25.0:
-    resolution: {integrity: sha512-CeAdhgMfbZcrYh+HHKVKsj7VNhOTr0jiLFlcVVoRORbZ/Nr4J90WjEq2CZoahgH15/DYY/VBhuLqpIzJqfdBEQ==}
 
   highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
@@ -18222,10 +18210,6 @@ snapshots:
     dependencies:
       hermes-parser: 0.23.1
 
-  babel-plugin-syntax-hermes-parser@0.25.0:
-    dependencies:
-      hermes-parser: 0.25.0
-
   babel-plugin-transform-flow-enums@0.0.2(@babel/core@7.26.0):
     dependencies:
       '@babel/plugin-syntax-flow': 7.26.0(@babel/core@7.26.0)
@@ -20576,8 +20560,6 @@ snapshots:
 
   hermes-estree@0.24.0: {}
 
-  hermes-estree@0.25.0: {}
-
   hermes-parser@0.19.1:
     dependencies:
       hermes-estree: 0.19.1
@@ -20593,10 +20575,6 @@ snapshots:
   hermes-parser@0.24.0:
     dependencies:
       hermes-estree: 0.24.0
-
-  hermes-parser@0.25.0:
-    dependencies:
-      hermes-estree: 0.25.0
 
   highlight.js@10.7.3: {}
 
