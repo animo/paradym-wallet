@@ -30,12 +30,12 @@ export function FunkeOfflineSharingScreen({
       steps={[
         {
           step: 'loading-request',
-          progress: 16.5,
+          progress: 33.3,
           screen: <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
         },
         {
           step: 'share-credentials',
-          progress: 66,
+          progress: 66.6,
           screen: (
             <ShareCredentialsSlide
               key="share-credentials"
