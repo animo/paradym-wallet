@@ -1,7 +1,7 @@
 import { useWizard } from '@package/app'
+import { DualResponseButtons } from '@package/app/src/components/DualResponseButtons'
 import { CustomIcons, Heading, IllustrationContainer, Paragraph, YStack, useToastController } from '@package/ui'
 import * as WebBrowser from 'expo-web-browser'
-import { DualResponseButtons } from '@package/app/src/components/DualResponseButtons'
 
 export type AuthCodeFlowDetails = {
   domain: string

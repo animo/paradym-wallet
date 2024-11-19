@@ -132,16 +132,17 @@ export function CardWithAttributes({
           )}
         </YStack>
       </YStack>
-      {/* FIXME: should this only be shown if expired? */}
-      {/* <Stack bg="$grey-900" pos="absolute" top="$0" left="$0" right="$0" bottom="$0" opacity={0.2} zIndex={0} /> */}
       {(isRevoked || isExpired || isNotYetActive) && (
-        <Stack pos="absolute" top="$3.5" right="$2.5">
-          <BlurBadge
-            tint="dark"
-            color={textColor}
-            label={isExpired ? 'Card expired' : isRevoked ? 'Card revoked' : 'Card inactive'}
-          />
-        </Stack>
+        <>
+          <Stack bg="$grey-900" pos="absolute" top="$0" left="$0" right="$0" bottom="$0" opacity={0.2} zIndex={0} />
+          <Stack pos="absolute" top="$3.5" right="$2.5">
+            <BlurBadge
+              tint="dark"
+              color={textColor}
+              label={isExpired ? 'Card expired' : isRevoked ? 'Card revoked' : 'Card inactive'}
+            />
+          </Stack>
+        </>
       )}
     </AnimatedStack>
   )

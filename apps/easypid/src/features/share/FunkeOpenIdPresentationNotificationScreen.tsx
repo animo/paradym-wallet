@@ -1,6 +1,5 @@
 import {
   BiometricAuthenticationCancelledError,
-  type EasyPIDAppAgent,
   formatDifPexCredentialsForRequest,
   getCredentialsForProofRequest,
   shareProof,
@@ -9,14 +8,7 @@ import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
-import { ClaimFormat } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
-import {
-  PidIssuerPinInvalidError,
-  PidIssuerPinLockedError,
-  requestSdJwtVcFromSeedCredential,
-} from '@easypid/crypto/bPrime'
-import { useSeedCredentialPidData } from '@easypid/storage'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { isPidCredential } from '../../hooks'
@@ -39,7 +31,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
-  const { seedCredential } = useSeedCredentialPidData()
   const { activities } = useActivities()
 
   const [credentialsForRequest, setCredentialsForRequest] =
@@ -60,8 +51,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       credentialsForRequest?.formattedSubmission?.entries.some((entry) =>
         entry.credentials.some((credential) => isPidCredential(credential.metadata?.type))
       ) ?? false
-    return isPidInSubmission && !!seedCredential
-  }, [credentialsForRequest, seedCredential])
+    // TODO: usePin when HSM or no PID
+    return !isPidInSubmission
+  }, [credentialsForRequest])
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -159,64 +151,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     }
   }, [credentialsForRequest, agent, fedDisplayData])
 
-  const onProofAcceptWithSeedCredential = async (pin: string): Promise<PresentationRequestResult> => {
-    return await requestSdJwtVcFromSeedCredential({
-      agent: agent as unknown as EasyPIDAppAgent,
-      authorizationRequestUri: params.uri ?? 'TODO: this is temp anyways',
-      pidPin: pin,
-    })
-      .then(async (sdJwtVc) => {
-        // We add the newly retrieved SD-JWT VC as the first credential in the credentials for request
-        // So it will automatically be selected when creating the presentation
-        const entry = credentialsForRequest?.credentialsForRequest.requirements[0].submissionEntry[0]
-        entry?.verifiableCredentials.unshift({
-          type: ClaimFormat.SdJwtVc,
-          // FIXME: we don't have the disclosures anymore. Need to reapply limit disclosure
-          credentialRecord: sdJwtVc,
-          disclosedPayload: {},
-        })
-
-        return await onProofAccept()
-      })
-      .catch((error) => {
-        if (error instanceof PidIssuerPinInvalidError) {
-          return {
-            status: 'error',
-            result: {
-              title: 'Wrong PIN',
-              message: 'Use your app PIN to confirm the request.',
-            },
-          }
-        }
-
-        if (error instanceof PidIssuerPinLockedError) {
-          // FIXME: Redirect to a wallet reset screen.
-          return {
-            status: 'error',
-            redirectToWallet: true,
-            result: {
-              title: 'Too many incorrect attempts',
-              message:
-                'You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.',
-            },
-          }
-        }
-
-        agent.config.logger.error('Error accepting presentation', {
-          error,
-        })
-
-        return {
-          status: 'error',
-          redirectToWallet: true,
-          result: {
-            title: 'Presentation could not be shared.',
-            message: 'Please try again.',
-          },
-        }
-      })
-  }
-
   const onProofDecline = async () => {
     // TODO: only add first one to activity?
     const credentialsWithDisclosedPayload = credentialsForRequest?.formattedSubmission.entries.flatMap((entry) => {
@@ -263,7 +197,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     <FunkePresentationNotificationScreen
       usePin={usePin}
       onAccept={onProofAccept}
-      onAcceptWithPin={onProofAcceptWithSeedCredential}
+      // TODO: accept with pin
+      onAcceptWithPin={onProofAccept}
       onDecline={onProofDecline}
       submission={credentialsForRequest?.formattedSubmission}
       isAccepting={isSharing}

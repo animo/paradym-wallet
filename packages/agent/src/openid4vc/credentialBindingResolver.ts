@@ -8,9 +8,9 @@ import {
   getJwkFromKey,
 } from '@credo-ts/core'
 import {
-  OpenId4VciCredentialFormatProfile,
   type OpenId4VciCredentialBindingResolver,
   type OpenId4VciCredentialConfigurationSupportedWithFormats,
+  OpenId4VciCredentialFormatProfile,
   type OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
 

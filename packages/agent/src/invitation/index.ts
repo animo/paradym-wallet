@@ -30,7 +30,6 @@ export {
   type CredentialsForProofRequest,
   receiveOutOfBandInvitation,
   receiveCredentialFromOpenId4VciOffer,
-  receiveCredentialFromOpenId4VciOfferAuthenticatedChannel,
   acquireAuthorizationCodeAccessToken,
   acquirePreAuthorizedAccessToken,
   resolveOpenId4VciOffer,

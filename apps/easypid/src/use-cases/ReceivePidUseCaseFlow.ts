@@ -4,9 +4,9 @@ import type { AppAgent } from '@easypid/agent'
 import {
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedCredentialOffer,
+  type OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
   type SdJwtVcRecord,
   acquireAuthorizationCodeAccessToken,
-  type OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
 } from '@package/agent'
 
 export interface ReceivePidUseCaseFlowOptions

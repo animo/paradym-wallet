@@ -1,8 +1,6 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
-import { deviceKeyPair } from '@easypid/storage/pidPin'
-import { PinPossiblyReusedError, ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -10,6 +8,14 @@ import type {
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { resetWallet } from '@easypid/utils/resetWallet'
+import {
+  type CardScanningState,
+  type OnboardingPage,
+  type OnboardingStep,
+  type PidFlowTypes,
+  SIMULATOR_PIN,
+  pidSetupSteps,
+} from '@easypid/utils/sharedPidSetup'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
@@ -26,31 +32,11 @@ import { type PidSdJwtVcAttributes, usePidDisplay } from '../../hooks'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
-import { OnboardingIdCardBiometricsDisabled } from './screens/id-card-biometrics-disabled'
-import { OnboardingIdCardFetch } from './screens/id-card-fetch'
-import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
-import { OnboardingIdCardRequestedAttributes } from './screens/id-card-requested-attributes'
-import { OnboardingIdCardScan } from './screens/id-card-scan'
-import { OnboardingIdCardStart } from './screens/id-card-start'
-import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import OnboardingWelcome from './screens/welcome'
 
-type Page =
-  | { type: 'fullscreen' }
-  | {
-      type: 'content'
-      title: string
-      animation?: 'default' | 'delayed'
-      subtitle?: string
-      caption?: string
-      animationKey?: string
-    }
-
-// Same animation key means the content won't fade out and then in again. So if the two screens have most content in common
-// this looks nicer.
-const onboardingSteps = [
+export const onboardingSteps = [
   {
     step: 'welcome',
     alternativeFlow: false,
@@ -121,125 +107,13 @@ const onboardingSteps = [
     },
     Screen: OnboardingBiometrics,
   },
-  {
-    step: 'id-card-start',
-    alternativeFlow: false,
-    progress: 49.5,
-    page: {
-      type: 'content',
-      title: 'Scan your eID card to retrieve your data',
-      subtitle: 'Add your personal details once using your eID card and its PIN.',
-      caption: 'Your eID PIN was issued to you when you received your eID card.',
-    },
-    Screen: OnboardingIdCardStart,
-  },
-  {
-    step: 'id-card-requested-attributes',
-    alternativeFlow: false,
-    progress: 49.5,
-    page: {
-      type: 'content',
-      title: 'Review the request',
-    },
-    Screen: OnboardingIdCardRequestedAttributes,
-  },
-  {
-    step: 'id-card-pin',
-    alternativeFlow: false,
-    progress: 49.5,
-    page: {
-      type: 'content',
-      title: 'Enter your eID card PIN',
-    },
-    Screen: OnboardingIdCardPinEnter,
-  },
-  {
-    step: 'id-card-start-scan',
-    alternativeFlow: false,
-    progress: 66,
-    page: {
-      type: 'content',
-      title: 'Scan your eID card',
-      subtitle: 'Place your device on top of your eID card to scan it.',
-      animationKey: 'id-card-scan',
-    },
-    Screen: OnboardingIdCardScan,
-  },
-  {
-    step: 'id-card-scan',
-    alternativeFlow: false,
-    progress: 66,
-    page: {
-      type: 'content',
-      title: 'Scan your eID card',
-      subtitle: 'Place your device on top of your eID card to scan it.',
-      animationKey: 'id-card-scan',
-    },
-    Screen: OnboardingIdCardScan,
-  },
-  {
-    step: 'id-card-fetch',
-    alternativeFlow: false,
-    progress: 82.5,
-    page: {
-      type: 'content',
-      title: 'Fetching information',
-    },
-    Screen: OnboardingIdCardFetch,
-  },
-  {
-    step: 'id-card-verify',
-    progress: 82.5,
-    alternativeFlow: true,
-    page: {
-      type: 'content',
-      title: 'We need to verify it’s you',
-      subtitle: 'Your biometrics are required to verify your identity.',
-      animationKey: 'id-card',
-    },
-    Screen: OnboardingIdCardVerify,
-  },
-  {
-    step: 'id-card-biometrics-disabled',
-    progress: 82.5,
-    alternativeFlow: true,
-    page: {
-      type: 'content',
-      title: 'You need to enable biometrics',
-      subtitle:
-        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
-    },
-    Screen: OnboardingIdCardBiometricsDisabled,
-  },
-  {
-    step: 'id-card-complete',
-    progress: 100,
-    alternativeFlow: false,
-    page: {
-      type: 'content',
-      title: 'Success!',
-      subtitle: 'Your information has been retrieved from your eID card.',
-      animationKey: 'id-card-success',
-    },
-    Screen: OnboardingIdCardFetch,
-  },
-] as const satisfies Array<{
-  step: string
-  progress: number
-  page: Page
-  // if true will not be navigated to by goToNextStep
-  alternativeFlow: boolean
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  Screen: React.FunctionComponent<any>
-}>
-
-export type OnboardingSteps = typeof onboardingSteps
-export type OnboardingStep = OnboardingSteps[number]
+  ...pidSetupSteps,
+] as const satisfies Array<OnboardingStep>
 
 export type OnboardingContext = {
   currentStep: OnboardingStep['step']
   progress: number
-  page: Page
+  page: OnboardingPage
   screen: React.JSX.Element
   reset: () => void
 }
@@ -259,8 +133,7 @@ export function OnboardingContextProvider({
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
   const pidDisplay = usePidDisplay()
 
-  const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
-  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
+  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
   const [allowSimulatorCard, setAllowSimulatorCard] = useState(false)
 
@@ -268,12 +141,7 @@ export function OnboardingContextProvider({
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
   const [agent, setAgent] = useState<AppAgent>()
-  const [idCardScanningState, setIdCardScanningState] = useState<{
-    showScanModal: boolean
-    isCardAttached?: boolean
-    progress: number
-    state: 'readyToScan' | 'scanning' | 'complete' | 'error'
-  }>({
+  const [idCardScanningState, setIdCardScanningState] = useState<CardScanningState>({
     isCardAttached: undefined,
     progress: 0,
     state: 'readyToScan',
@@ -319,12 +187,6 @@ export function OnboardingContextProvider({
     goToNextStep()
   }
 
-  const selectFlow = (flow: 'c' | 'bprime') => {
-    setSelectedFlow(flow)
-
-    goToNextStep()
-  }
-
   // Bit sad but if we try to call this in the initializeAgent callback sometimes the state hasn't updated
   // in the secure unlock yet, which means that it will throw an error, so we use an effect. Probably need
   // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
@@ -343,7 +205,7 @@ export function OnboardingContextProvider({
   const onPinReEnter = async (pin: string) => {
     // Spells BROKEN on the pin pad (with letters)
     // Allows bypassing the eID card and use a simulator card
-    const isSimulatorPinCode = pin === '276536'
+    const isSimulatorPinCode = pin === SIMULATOR_PIN
 
     if (isSimulatorPinCode) {
       setAllowSimulatorCard(true)
@@ -361,25 +223,14 @@ export function OnboardingContextProvider({
       return
     }
 
-    return (
-      secureUnlock
-        .setup(walletPin as string)
-        .then(({ walletKey }) => initializeAgent(walletKey))
-        // After `initializeAgent` function is finished we can assume that `setAgent(agent)` is called and the agent is set
-        // We store the wallet pin as the pid pin. We do this to avoid a double key derivation which is too much of a slow down
-        // In the future we can possibly sync the key derivation between what the
-        // Architecture Proposal suggests and what we require to do for our wallet storage
-        .then(() => {
-          if (selectedFlow === 'bprime') {
-            deviceKeyPair.generate()
-          }
-        })
-        .then(goToNextStep)
-        .catch((e) => {
-          reset({ error: e, resetToStep: 'welcome' })
-          throw e
-        })
-    )
+    return secureUnlock
+      .setup(walletPin as string)
+      .then(({ walletKey }) => initializeAgent(walletKey))
+      .then(goToNextStep)
+      .catch((e) => {
+        reset({ error: e, resetToStep: 'welcome' })
+        throw e
+      })
   }
 
   const onEnableBiometricsDisabled = async () => {
@@ -652,19 +503,9 @@ export function OnboardingContextProvider({
 
       // Acquire access token
       await receivePidUseCase.acquireAccessToken()
-
-      if (selectedFlow === 'c') {
-        // For c flow we need to do a biometrics check, so we first inform the user of that
-        setCurrentStepName('id-card-verify')
-      } else if (selectedFlow === 'bprime') {
-        await retrieveCredential()
-      }
+      setCurrentStepName('id-card-verify')
     } catch (error) {
-      if (error instanceof PinPossiblyReusedError) {
-        await reset({ resetToStep: 'pin', error, toastMessage: 'Have you used this PIN before?' })
-      } else {
-        await reset({ resetToStep: 'id-card-pin', error })
-      }
+      await reset({ resetToStep: 'id-card-pin', error })
     }
   }
 
@@ -762,12 +603,7 @@ export function OnboardingContextProvider({
     } as const satisfies ReceivePidUseCaseFlowOptions
 
     if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {
-      const flow =
-        selectedFlow === 'c'
-          ? ReceivePidUseCaseCFlow.initialize(baseOptions)
-          : ReceivePidUseCaseBPrimeFlow.initialize({ ...baseOptions, pidPin: walletPin.split('').map(Number) })
-
-      return flow
+      return ReceivePidUseCaseCFlow.initialize(baseOptions)
         .then(async ({ accessRights, authFlow }) => {
           setReceivePidUseCase(authFlow)
           setEidCardRequestedAccessRights(accessRights)
@@ -785,7 +621,7 @@ export function OnboardingContextProvider({
 
   let screen: React.JSX.Element
   if (currentStep.step === 'welcome') {
-    screen = <currentStep.Screen goToNextStep={selectFlow} />
+    screen = <currentStep.Screen goToNextStep={goToNextStep} />
   } else if (currentStep.step === 'pin' || currentStep.step === 'pin-reenter') {
     screen = (
       <currentStep.Screen

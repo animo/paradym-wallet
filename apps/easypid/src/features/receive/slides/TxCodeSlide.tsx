@@ -1,9 +1,9 @@
-import { CustomIcons, Heading, IllustrationContainer, Paragraph, YStack } from '@package/ui'
 import type { OpenId4VciTxCode } from '@package/agent'
-import { Input } from 'tamagui'
+import { useWizard } from '@package/app'
+import { CustomIcons, Heading, IllustrationContainer, Paragraph, YStack } from '@package/ui'
 import { useState } from 'react'
 import type { NativeSyntheticEvent, TextInputSubmitEditingEventData } from 'react-native'
-import { useWizard } from '@package/app'
+import { Input } from 'tamagui'
 
 interface TxCodeSlideProps {
   txCode: OpenId4VciTxCode

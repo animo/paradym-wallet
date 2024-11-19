@@ -1,9 +1,9 @@
 import {
+  type CredentialDisplay,
   type MdocRecord,
   type SdJwtVcRecord,
   type W3cCredentialRecord,
   getCredentialForDisplay,
-  type CredentialDisplay,
 } from '@package/agent'
 import {
   AnimatedStack,

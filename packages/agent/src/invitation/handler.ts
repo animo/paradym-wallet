@@ -2,7 +2,9 @@ import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
+  JwkDidCreateOptions,
   Key,
+  KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
   P256Jwk,
@@ -17,7 +19,7 @@ import type {
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
 import { Linking } from 'react-native'
-import type { EasyPIDAppAgent, EitherAgent, FullAppAgent } from '../agent'
+import type { EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -25,7 +27,9 @@ import {
   CredentialState,
   JwaSignatureAlgorithm,
   Jwt,
+  KeyBackend,
   KeyType,
+  Mdoc,
   MdocRecord,
   MdocRepository,
   OutOfBandRepository,
@@ -33,7 +37,6 @@ import {
   ProofState,
   type SdJwtVcRecord,
   SdJwtVcRepository,
-  TypedArrayEncoder,
   V2OfferCredentialMessage,
   V2RequestPresentationMessage,
   W3cCredentialRecord,
@@ -51,9 +54,12 @@ import {
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
-import { deviceKeyPair } from '@easypid/storage/pidPin'
 import q from 'query-string'
+import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
+import { formatDifPexCredentialsForRequest } from '../format/formatPresentation'
 import type { CredentialForDisplayId } from '../hooks'
+import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
+import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import {
   type OpenId4VcCredentialMetadata,
   extractOpenId4VcCredentialMetadata,
@@ -61,10 +67,6 @@ import {
 } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
-import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
-import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
-import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
-import { formatDifPexCredentialsForRequest } from '../format/formatPresentation'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -129,43 +131,6 @@ export async function resolveOpenId4VciOffer({
   }
 }
 
-export async function popCallbackForBPrime(jwt: {
-  header: Record<string, unknown>
-  payload: Record<string, unknown>
-}) {
-  const header = {
-    ...jwt.header,
-    alg: 'ES256',
-  }
-
-  const payload = jwt.payload
-
-  const toBeSigned = `${TypedArrayEncoder.toBase64URL(
-    TypedArrayEncoder.fromString(JSON.stringify(header))
-  )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
-  const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
-  const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
-  return jws
-}
-
-export function getCreateJwtCallbackForBPrime() {
-  return async (_jwtIssuer: unknown, jwt: { header: Record<string, unknown>; payload: Record<string, unknown> }) => {
-    const header = {
-      ...jwt.header,
-      alg: 'ES256',
-    }
-
-    const payload = jwt.payload
-
-    const toBeSigned = `${TypedArrayEncoder.toBase64URL(
-      TypedArrayEncoder.fromString(JSON.stringify(header))
-    )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
-    const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
-    const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
-    return jws
-  }
-}
-
 export async function acquirePreAuthorizedAccessToken({
   agent,
   resolvedCredentialOffer,
@@ -214,104 +179,21 @@ export async function acquireAuthorizationCodeAccessToken({
   authorizationCode,
   clientId,
   redirectUri,
-  dPopKeyJwk,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  dPopKeyJwk?: P256Jwk
-
   codeVerifier?: string
   authorizationCode: string
   clientId: string
   redirectUri?: string
 }) {
   return await agent.modules.openId4VcHolder.requestToken({
-    // resolvedAuthorizationRequest,
     resolvedCredentialOffer,
     code: authorizationCode,
     codeVerifier,
     redirectUri,
     clientId,
-
-    // Added in patch but not in types
-    // @ts-ignore
-    dPopKeyJwk,
-    getCreateJwtCallback: getCreateJwtCallbackForBPrime,
   })
-}
-
-export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
-  agent,
-  resolvedCredentialOffer,
-  credentialConfigurationIdToRequest,
-  accessToken,
-  clientId,
-  pidSchemes,
-  deviceKey,
-  customHeaders,
-}: {
-  agent: EasyPIDAppAgent
-  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  credentialConfigurationIdToRequest?: string
-  clientId?: string
-  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
-  deviceKey: Key
-  customHeaders?: Record<string, unknown>
-
-  // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
-  accessToken: OpenId4VciRequestTokenResponse
-}): Promise<{ credential: string; openId4VcMetadata: OpenId4VcCredentialMetadata }> => {
-  const configurationId =
-    credentialConfigurationIdToRequest ?? resolvedCredentialOffer.credentialOfferPayload.credential_configuration_ids[0]
-  const offeredCredentialToRequest = resolvedCredentialOffer.offeredCredentialConfigurations[
-    configurationId
-  ] as OpenId4VciCredentialConfigurationSupportedWithFormats
-
-  // By default request the first offered credential
-  if (!offeredCredentialToRequest) {
-    throw new Error(
-      `Parameter 'credentialConfigurationIdToRequest' with value ${credentialConfigurationIdToRequest} is not a credential_configuration_id in the credential offer.`
-    )
-  }
-
-  const credentials = (await agent.modules.openId4VcHolder.requestCredentials({
-    resolvedCredentialOffer,
-    ...accessToken,
-    clientId,
-    credentialConfigurationIds: [configurationId],
-    verifyCredentialStatus: false,
-    allowedProofOfPossessionSignatureAlgorithms: [JwaSignatureAlgorithm.EdDSA, JwaSignatureAlgorithm.ES256],
-    credentialBindingResolver: async ({ keyTypes, supportsJwk }) => {
-      if (!supportsJwk) {
-        throw Error('Issuer does not support JWK')
-      }
-
-      if (!keyTypes.includes(KeyType.P256)) {
-        throw new Error(`invalid key type used '${keyTypes.join(', ')}' and only  ${KeyType.P256} is allowed.`)
-      }
-      return {
-        method: 'jwk',
-        jwk: getJwkFromKey(deviceKey),
-      }
-    },
-    // Added in patch but not in types
-    // @ts-ignore
-    popCallback: popCallbackForBPrime,
-    getCreateJwtCallback: getCreateJwtCallbackForBPrime,
-    customBody: { format: 'jwt' },
-    // FIXME: return type has changed, need to update the patch
-  })) as unknown as Array<string>
-
-  const credential = credentials[0]
-  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
-    id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
-    display: resolvedCredentialOffer.metadata.credentialIssuer.display,
-  })
-
-  return {
-    credential,
-    openId4VcMetadata,
-  }
 }
 
 export const receiveCredentialFromOpenId4VciOffer = async ({

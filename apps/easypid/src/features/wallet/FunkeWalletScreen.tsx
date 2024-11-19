@@ -5,7 +5,6 @@ import {
   Heading,
   HeroIcons,
   IconContainer,
-  Loader,
   Paragraph,
   ScrollView,
   Spacer,
@@ -17,22 +16,20 @@ import {
 import { useRouter } from 'solito/router'
 
 import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
-import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useHaptics, useNetworkCallback, useScrollViewPosition } from '@package/app/src/hooks'
 import { FunkeCredentialCard } from 'packages/app'
-import { useState } from 'react'
-import { FadeInDown, ZoomIn } from 'react-native-reanimated'
+import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { LatestActivityCard } from './components/LatestActivityCard'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { isLoading, credentials } = useCredentialsWithCustomDisplay()
-  const onResetWallet = useWalletReset()
   const { withHaptics } = useHaptics()
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
+  const pushToPidSetup = withHaptics(() => push('/pidSetup'))
   const pushToCards = withHaptics(() => push('/credentials'))
 
   const {
@@ -43,7 +40,6 @@ export function FunkeWalletScreen() {
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const [scrollViewHeight, setScrollViewHeight] = useState(0)
 
   return (
     <FlexPage p={0} safeArea={false} gap={0}>
@@ -66,13 +62,10 @@ export function FunkeWalletScreen() {
         onScroll={handleScroll}
         scrollEventThrottle={scrollEventThrottle}
         px="$4"
-        onLayout={(e) => {
-          setScrollViewHeight(e.nativeEvent.layout.height)
-        }}
         contentContainerStyle={{
-          minHeight: credentials.length <= 1 ? scrollViewHeight : '100%',
           justifyContent: 'space-between',
           paddingBottom: bottom,
+          flexGrow: 1,
         }}
       >
         <YStack fg={1}>
@@ -103,14 +96,16 @@ export function FunkeWalletScreen() {
               Scan QR-Code
             </Button.Text>
           </Stack>
-          {credentials.length === 0 && !isLoading ? (
+          {isLoading ? (
+            <YStack ai="center" jc="center" fg={1} />
+          ) : credentials.length === 0 && !isLoading ? (
             <AnimatedStack
               entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
               ai="center"
               gap="$4"
               p="$4"
-              fg={1}
               mt="$10"
+              fg={1}
             >
               <YStack gap="$2">
                 <Heading ta="center" variant="h3" fontWeight="$semiBold">
@@ -127,26 +122,21 @@ export function FunkeWalletScreen() {
                   br="$12"
                   bg="$grey-100"
                   color="$grey-900"
-                  onPress={onResetWallet}
+                  onPress={pushToPidSetup}
                   scaleOnPress
                 >
                   Setup ID
                 </Button.Solid>
               </AnimatedStack>
             </AnimatedStack>
-          ) : isLoading ? (
-            <YStack ai="center" jc="center" fg={1}>
-              <Loader />
-              <Spacer size="$12" />
-            </YStack>
-          ) : (
+          ) : credentials.length !== 0 && !isLoading ? (
             <Stack gap="$6">
               <LatestActivityCard />
               <YStack gap="$4">
                 <Heading px="$2" variant="sub2">
                   Recently used
                 </Heading>
-                <Stack gap="$4">
+                <AnimatedStack gap="$4" entering={FadeIn}>
                   {credentials.slice(0, 2).map((credential) => (
                     <FunkeCredentialCard
                       key={credential.id}
@@ -159,7 +149,7 @@ export function FunkeWalletScreen() {
                       onPress={withHaptics(() => push(`/credentials/${credential.id}`))}
                     />
                   ))}
-                </Stack>
+                </AnimatedStack>
                 {credentials.length > 2 && (
                   <Button.Solid
                     bw="$0.5"
@@ -175,10 +165,12 @@ export function FunkeWalletScreen() {
                 )}
               </YStack>
             </Stack>
+          ) : (
+            <Stack fg={1} />
           )}
         </YStack>
         <Spacer h="$3" />
-        <XStack flexDirection="column" gap="$1" ai="center" jc="center">
+        <XStack flexDirection="column" gap="$1" ai="center" jc="flex-end">
           <Paragraph
             onPress={() => push('/menu/about')}
             variant="sub"

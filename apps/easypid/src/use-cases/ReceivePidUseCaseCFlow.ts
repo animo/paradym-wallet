@@ -2,11 +2,11 @@ import type { MdocRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
+  OpenId4VciAuthorizationFlow,
   type SdJwtVcRecord,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   storeCredential,
-  OpenId4VciAuthorizationFlow,
 } from '@package/agent'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 import { C_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'

@@ -51,7 +51,7 @@ export function FunkeMenuScreen() {
     <MenuItem
       key="id"
       item={{
-        href: '/',
+        href: '/pidSetup',
         icon: HeroIcons.IdentificationFilled,
         title: 'Setup digital ID',
       }}

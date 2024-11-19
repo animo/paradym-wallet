@@ -1,8 +1,8 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
 import type {
-  OpenId4VciCredentialIssuerMetadataDisplay,
   OpenId4VciCredentialConfigurationSupported,
   OpenId4VciCredentialConfigurationSupportedWithFormats,
+  OpenId4VciCredentialIssuerMetadataDisplay,
 } from '@credo-ts/openid4vc'
 
 export interface OpenId4VcCredentialMetadata {

@@ -65,6 +65,7 @@ const config = createTamagui({
       ...tokens.color,
       tableBackgroundColor: tokens.color['grey-50'],
       tableBorderColor: '#ffffff',
+      idCardBackground: '#F1F2F0',
     },
   },
 })

@@ -1,21 +1,21 @@
 import {
-  resolveOpenId4VciOffer,
-  type OpenId4VciResolvedCredentialOffer,
-  type OpenId4VciResolvedAuthorizationRequest,
+  BiometricAuthenticationCancelledError,
+  type CredentialsForProofRequest,
   OpenId4VciAuthorizationFlow,
-  getOpenId4VcCredentialDisplay,
-  extractOpenId4VcCredentialMetadata,
-  acquirePreAuthorizedAccessToken,
   type OpenId4VciRequestTokenResponse,
-  receiveCredentialFromOpenId4VciOffer,
-  storeCredential,
-  getCredentialForDisplay,
+  type OpenId4VciResolvedAuthorizationRequest,
+  type OpenId4VciResolvedCredentialOffer,
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
+  acquirePreAuthorizedAccessToken,
+  extractOpenId4VcCredentialMetadata,
+  getCredentialForDisplay,
   getCredentialsForProofRequest,
-  type CredentialsForProofRequest,
+  getOpenId4VcCredentialDisplay,
+  receiveCredentialFromOpenId4VciOffer,
+  resolveOpenId4VciOffer,
   shareProof,
-  BiometricAuthenticationCancelledError,
+  storeCredential,
 } from '@package/agent'
 
 import { useAppAgent } from '@easypid/agent'
@@ -24,14 +24,14 @@ import { SlideWizard, usePushToWallet } from '@package/app'
 import { useCallback, useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { addReceivedActivity, useActivities } from '../activity/activityRecord'
-import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
-import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
-import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
-import { VerifyPartySlide } from './slides/VerifyPartySlide'
-import { CredentialCardSlide } from './slides/CredentialCardSlide'
-import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
-import { TxCodeSlide } from './slides/TxCodeSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
+import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
+import { CredentialCardSlide } from './slides/CredentialCardSlide'
+import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
+import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
+import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
+import { TxCodeSlide } from './slides/TxCodeSlide'
+import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
 type Query = { uri?: string; data?: string }
 

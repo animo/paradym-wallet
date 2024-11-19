@@ -3,8 +3,8 @@ import {
   Mdoc,
   MdocRecord,
   SdJwtVcRecord,
-  W3cCredentialRecord,
   type VerifiableCredential,
+  W3cCredentialRecord,
 } from '@credo-ts/core'
 
 export function encodeCredential(credential: VerifiableCredential): Record<string, unknown> | string {

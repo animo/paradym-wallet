@@ -46,11 +46,7 @@ export function OpenIdCredentialNotificationScreen() {
           accessToken: tokenResponse,
         })
 
-        // TODO: support batch
         const credentialRecord = credenitalResponses[0].credential
-        if (typeof credentialRecord === 'string') {
-          throw new Error('b prime not supported')
-        }
         setCredentialRecord(credentialRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {

@@ -5,14 +5,14 @@ import { useState } from 'react'
 
 interface OnboardingIdCardStartScanProps {
   goToNextStep: () => Promise<void>
-  onSkipCardSetup: () => void
+  onSkipCardSetup?: () => void
 }
 
 export function OnboardingIdCardStart({ goToNextStep, onSkipCardSetup }: OnboardingIdCardStartScanProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const onSetupLater = () => {
-    if (isLoading) return
+    if (isLoading || !onSkipCardSetup) return
 
     setIsLoading(true)
     onSkipCardSetup()
@@ -38,9 +38,11 @@ export function OnboardingIdCardStart({ goToNextStep, onSkipCardSetup }: Onboard
         </ScrollView>
       </YStack>
       <YStack gap="$4" alignItems="center">
-        <Button.Text disabled={isLoading} icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
-          Set up later
-        </Button.Text>
+        {onSkipCardSetup && (
+          <Button.Text disabled={isLoading} icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
+            Set up later
+          </Button.Text>
+        )}
         <Button.Solid scaleOnPress disabled={isLoading} onPress={onContinue}>
           {isLoading ? <Spinner variant="dark" /> : 'Continue'}
         </Button.Solid>
