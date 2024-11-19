@@ -14,7 +14,6 @@ export {
 export {
   receiveOutOfBandInvitation,
   receiveCredentialFromOpenId4VciOffer,
-  receiveCredentialFromOpenId4VciOfferAuthenticatedChannel,
   acquireAccessToken,
   resolveOpenId4VciOffer,
   storeCredential,

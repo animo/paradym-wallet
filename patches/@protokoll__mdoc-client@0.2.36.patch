@@ -1,20 +1,20 @@
 diff --git a/dist/src/mdoc/model/device-response.js b/dist/src/mdoc/model/device-response.js
-index 690940a79a8ea60bea82aac530825374577d309e..a74e93d6f8b49338e42b0e249978f3ece2e42b05 100644
+index 690940a79a8ea60bea82aac530825374577d309e..8c9ff5ed182fc886bb25f83da4bdc5522b9b0a20 100644
 --- a/dist/src/mdoc/model/device-response.js
 +++ b/dist/src/mdoc/model/device-response.js
 @@ -264,6 +264,7 @@ class DeviceResponse {
              jwk: this.devicePrivateKey,
          });
          sign1.signature = signature;
-+        sign1.payload = null
++        sign1.payload = null;
          return { deviceSignature: sign1 };
      }
  }
 diff --git a/dist/src/mdoc/model/device-signed-document.js b/dist/src/mdoc/model/device-signed-document.js
-index b96a6bf841292c046047ccdd9b256a5cbf8a8562..852913f10ee0c60ce7577d488e1e8a45beb38455 100644
+index b96a6bf841292c046047ccdd9b256a5cbf8a8562..0f8403d53aacd38723f85bed8c6e51d701b18830 100644
 --- a/dist/src/mdoc/model/device-signed-document.js
 +++ b/dist/src/mdoc/model/device-signed-document.js
-@@ -19,24 +19,23 @@ class DeviceSignedDocument extends issuer_signed_document_js_1.IssuerSignedDocum
+@@ -19,13 +19,6 @@ class DeviceSignedDocument extends issuer_signed_document_js_1.IssuerSignedDocum
          const doc = super.prepare();
          const deviceSignature = this.deviceSigned.deviceAuth.deviceSignature?.getContentForEncoding();
          const deviceMac = this.deviceSigned.deviceAuth.deviceMac?.getContentForEncoding();
@@ -25,10 +25,10 @@ index b96a6bf841292c046047ccdd9b256a5cbf8a8562..852913f10ee0c60ce7577d488e1e8a45
 -        if (deviceSignature) {
 -            deviceSignature[2] = undefined;
 -        }
--        //
+         //
          doc.set('deviceSigned', {
              ...this.deviceSigned,
-             nameSpaces: data_item_js_1.DataItem.fromData(this.deviceSigned.nameSpaces),
+@@ -33,10 +26,17 @@ class DeviceSignedDocument extends issuer_signed_document_js_1.IssuerSignedDocum
              // TODO: ERRORS MISSING
              deviceAuth: {
                  ...this.deviceSigned.deviceAuth,
@@ -48,7 +48,7 @@ index b96a6bf841292c046047ccdd9b256a5cbf8a8562..852913f10ee0c60ce7577d488e1e8a45
      }
      /**
 diff --git a/dist/src/mdoc/model/pex-limit-disclosure.js b/dist/src/mdoc/model/pex-limit-disclosure.js
-index 2be88974a9e98b6699d9e8e76259f6d4f123f8dd..acce89c4bb6cf3bcad2e880d136645d4df51408c 100644
+index 2be88974a9e98b6699d9e8e76259f6d4f123f8dd..ef8ab814973e1c1c0fc52d9dca3be80bc309c3c6 100644
 --- a/dist/src/mdoc/model/pex-limit-disclosure.js
 +++ b/dist/src/mdoc/model/pex-limit-disclosure.js
 @@ -6,7 +6,6 @@ const limitDisclosureToDeviceRequestNameSpaces = (mdoc, deviceRequestNameSpaces)
