@@ -23,6 +23,7 @@ import { FunkeCredentialCard } from 'packages/app'
 import { useState } from 'react'
 import { FadeInDown, ZoomIn } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { MdocQrCode } from '../proximity'
 import { LatestActivityCard } from './components/LatestActivityCard'
 
 export function FunkeWalletScreen() {
@@ -103,6 +104,7 @@ export function FunkeWalletScreen() {
               Scan QR-Code
             </Button.Text>
           </Stack>
+          <MdocQrCode />
           {credentials.length === 0 && !isLoading ? (
             <AnimatedStack
               entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
