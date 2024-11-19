@@ -19,9 +19,13 @@ type SlideWizardProps = {
   steps: SlideStep[]
   onCancel: () => void
   isError?: boolean
+  confirmation?: {
+    title: string
+    description: string
+  }
 }
 
-export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
+export function SlideWizard({ steps, onCancel, isError, confirmation }: SlideWizardProps) {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle, onContentSizeChange, onLayout } =
     useScrollViewPosition(0)
   const { bottom } = useSafeAreaInsets()
@@ -33,6 +37,7 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [isCompleted, setIsCompleted] = useState(false)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [isNavigating, setIsNavigating] = useState(false)
 
   const scrollToTop = useCallback(() => {
     scrollViewRef.current?.scrollTo({ y: 0, animated: false })
@@ -79,7 +84,10 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
         opacity.value = withTiming(1, { duration: fadeInDuration, easing: easeOut })
         translateX.value = withSequence(
           withTiming(isForward ? distance : -distance, { duration: 0 }),
-          withTiming(0, { duration: fadeInDuration, easing: easeOut })
+          withTiming(0, { duration: fadeInDuration, easing: easeOut }, () => {
+            // Reset navigation state
+            runOnJS(setIsNavigating)(false)
+          })
         )
       }, fadeOutDuration + delay)
     },
@@ -94,24 +102,28 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
   }
 
   const onBack = useCallback(() => {
+    if (isNavigating) return
     if (isCompleted || currentStepIndex === 0 || steps[currentStepIndex].backIsCancel) {
       handleCancel()
     } else {
+      setIsNavigating(true)
       direction.value = 'backward'
       animateTransition(false)
       void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     }
-  }, [currentStepIndex, animateTransition, direction, handleCancel, steps, isCompleted])
+  }, [currentStepIndex, animateTransition, direction, handleCancel, steps, isCompleted, isNavigating])
 
   const onNext = useCallback(
     (slide?: string) => {
+      if (isNavigating) return
       if (currentStepIndex < steps.length - 1) {
+        setIsNavigating(true)
         direction.value = 'forward'
         animateTransition(true, slide)
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }
     },
-    [currentStepIndex, steps.length, animateTransition, direction]
+    [currentStepIndex, steps.length, animateTransition, direction, isNavigating]
   )
 
   const completeProgressBar = useCallback(() => {
@@ -152,8 +164,8 @@ export function SlideWizard({ steps, onCancel, isError }: SlideWizardProps) {
       </FlexPage>
       <ConfirmationSheet
         type="floating"
-        title="Stop sharing?"
-        description="If you stop, no data will be shared."
+        title={confirmation?.title ?? 'Stop sharing?'}
+        description={confirmation?.description ?? 'If you stop, no data will be shared.'}
         isOpen={isSheetOpen}
         setIsOpen={setIsSheetOpen}
         onConfirm={onConfirmCancel}

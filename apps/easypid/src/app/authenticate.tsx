@@ -22,15 +22,26 @@ export default function Authenticate() {
   const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
+  const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
+  // After resetting the wallet, we want to avoid prompting for face id immediately
+  // So we add an artificial delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAllowedToUnlockWithFaceId(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: canTryUnlockingUsingBiometrics not needed
   useEffect(() => {
-    if (secureUnlock.state === 'locked' && secureUnlock.canTryUnlockingUsingBiometrics) {
+    if (secureUnlock.state === 'locked' && secureUnlock.canTryUnlockingUsingBiometrics && isAllowedToUnlockWithFaceId) {
       secureUnlock.tryUnlockingUsingBiometrics()
     }
-  }, [secureUnlock.state])
+  }, [secureUnlock.state, isAllowedToUnlockWithFaceId])
 
   useEffect(() => {
     if (secureUnlock.state !== 'acquired-wallet-key') return
