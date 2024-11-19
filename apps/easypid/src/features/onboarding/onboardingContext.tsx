@@ -65,7 +65,7 @@ const onboardingSteps = [
   {
     step: 'wallet-explanation',
     alternativeFlow: false,
-    progress: 15,
+    progress: 0.1,
     page: {
       animation: 'delayed',
       type: 'content',
@@ -79,6 +79,7 @@ const onboardingSteps = [
     alternativeFlow: false,
     progress: 25,
     page: {
+      animation: 'delayed',
       type: 'content',
       title: 'Protect your data',
       subtitle: 'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',

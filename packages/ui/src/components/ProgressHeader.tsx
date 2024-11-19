@@ -1,6 +1,7 @@
 import { type ComponentProps, useEffect } from 'react'
 import {
   Easing,
+  FadeIn,
   LinearTransition,
   interpolateColor,
   useAnimatedStyle,
@@ -45,28 +46,30 @@ export function ProgressHeader({
         {onBack ? <IconContainer aria-label="Back" icon={<HeroIcons.ArrowLeft />} onPress={onBack} /> : <Stack />}
         {onCancel ? <IconContainer aria-label="Cancel" icon={<HeroIcons.X />} onPress={onCancel} /> : <Stack />}
       </XStack>
-      <Stack mb="$4" mx={variant === 'small' ? '$-4' : '$0'}>
-        {variant === 'small' ? (
-          <Stack pos="absolute" h={1} w="100%" bg="$grey-200" />
-        ) : (
-          <Stack pos="absolute" h={12} w="100%" br={24} bg="$grey-200" />
-        )}
-        <AnimatedStack
-          accessibilityRole="progressbar"
-          layout={
-            isError
-              ? LinearTransition.duration(1000).easing(Easing.out(Easing.ease))
-              : LinearTransition.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05)
-          }
-          h={variant === 'small' ? 4 : 12}
-          w={`${progress}%`}
-          style={animatedStyle}
-          borderTopLeftRadius={variant === 'small' ? 0 : 24}
-          borderBottomLeftRadius={variant === 'small' ? 0 : 24}
-          borderTopRightRadius={variant === 'small' ? (progress === 100 ? 0 : 2) : 24}
-          borderBottomRightRadius={variant === 'small' ? (progress === 100 ? 0 : 2) : 24}
-        />
-      </Stack>
+      {progress > 1 && (
+        <AnimatedStack entering={FadeIn.delay(300)} mb="$4" mx={variant === 'small' ? '$-4' : '$0'}>
+          {variant === 'small' ? (
+            <Stack pos="absolute" h={1} w="100%" bg="$grey-200" />
+          ) : (
+            <Stack pos="absolute" h={12} w="100%" br={24} bg="$grey-200" />
+          )}
+          <AnimatedStack
+            accessibilityRole="progressbar"
+            layout={
+              isError
+                ? LinearTransition.duration(1000).easing(Easing.out(Easing.ease))
+                : LinearTransition.springify().damping(24).mass(0.8).stiffness(200).restSpeedThreshold(0.05)
+            }
+            h={variant === 'small' ? 4 : 12}
+            w={`${progress}%`}
+            style={animatedStyle}
+            borderTopLeftRadius={variant === 'small' ? 0 : 24}
+            borderBottomLeftRadius={variant === 'small' ? 0 : 24}
+            borderTopRightRadius={variant === 'small' ? (progress === 100 ? 0 : 2) : 24}
+            borderBottomRightRadius={variant === 'small' ? (progress === 100 ? 0 : 2) : 24}
+          />
+        </AnimatedStack>
+      )}
     </YStack>
   )
 }

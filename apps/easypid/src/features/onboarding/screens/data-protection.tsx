@@ -20,7 +20,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
       </YStack>
       <YStack gap="$4" alignItems="center">
         <Button.Text onPress={onPressPrivacy} py="$2" textAlign="center">
-          Read the Privacy Policy
+          Read the Privacy Policy <HeroIcons.Link size={20} />
         </Button.Text>
         <Button.Solid scaleOnPress onPress={goToNextStep}>
           Continue

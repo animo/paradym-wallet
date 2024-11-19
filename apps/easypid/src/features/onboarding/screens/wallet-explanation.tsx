@@ -1,8 +1,18 @@
-import { AnimatedStack, Button, Heading, HeroIcons, IllustrationContainer, XStack, YStack } from '@package/ui'
+import {
+  AnimatedStack,
+  Button,
+  Heading,
+  HeroIcons,
+  IllustrationContainer,
+  Paragraph,
+  XStack,
+  YStack,
+  useSpringify,
+} from '@package/ui'
 import { Image } from '@tamagui/image'
 import React, { useState } from 'react'
 
-import { FadeInRight, FadeOutLeft } from 'react-native-reanimated'
+import { LinearTransition, SlideInRight, SlideOutLeft } from 'react-native-reanimated'
 import appIcon from '../../../../assets/icon.png'
 
 interface OnboardingWalletExplanationProps {
@@ -13,19 +23,27 @@ interface OnboardingWalletExplanationProps {
 const SLIDES = [
   {
     image: appIcon,
-    title: 'Slide 1',
+    title: 'This is your wallet',
+    subtitle:
+      'Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.',
   },
   {
     image: appIcon,
-    title: 'Slide 2',
+    title: 'What is it for?',
+    subtitle:
+      'The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.',
   },
   {
     image: appIcon,
-    title: 'Slide 3',
+    title: 'Why is it useful?',
+    subtitle:
+      'The wallet lets you see exactly what data is being requested, and you control whether to share it or not. In many cases sharing data digitally can be faster and more secure.',
   },
   {
     image: appIcon,
-    title: 'Slide 4',
+    title: 'How does it work?',
+    subtitle:
+      'Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.',
   },
 ]
 
@@ -45,41 +63,41 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
   }
 
   return (
-    <YStack fg={1} jc="space-between">
+    <YStack fg={1} gap="$6" jc="space-between">
       <AnimatedStack
         flexDirection="column"
         key={currentSlide}
-        entering={FadeInRight.delay(100).duration(150)}
-        exiting={FadeOutLeft.duration(150)}
+        entering={useSpringify(SlideInRight)}
+        exiting={useSpringify(SlideOutLeft)}
         flex={1}
-        mt="$-6"
         gap="$3"
+        mt="$-4"
       >
         <Heading variant="h1">{SLIDES[currentSlide].title}</Heading>
+        <Paragraph>{SLIDES[currentSlide].subtitle}</Paragraph>
         <IllustrationContainer variant="feature">
           <Image br="$6" source={SLIDES[currentSlide].image} width={64} height={64} />
         </IllustrationContainer>
       </AnimatedStack>
 
+      {/* Slide indicators */}
+      <AnimatedStack flexDirection="row" jc="center" gap="$2" mt="$4">
+        {SLIDES.map((_, index) => (
+          <AnimatedStack
+            key={`indicator-${index}-${currentSlide === index}`}
+            h="$0.75"
+            layout={useSpringify(LinearTransition)}
+            w={currentSlide === index ? '$2' : '$1'}
+            br="$12"
+            bg={currentSlide === index ? '$primary-500' : '$grey-100'}
+          />
+        ))}
+      </AnimatedStack>
+
       <YStack gap="$4">
-        {/* Slide indicators */}
-        <XStack jc="center" gap="$2" mt="$4">
-          {SLIDES.map((_, index) => (
-            <YStack
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-              key={index}
-              h="$0.75"
-              w="$1"
-              br="$12"
-              bg={currentSlide === index ? '$primary-500' : '$grey-100'}
-            />
-          ))}
-        </XStack>
-        <XStack jc="center">
-          <Button.Text onPress={onSkip}>
-            <HeroIcons.ArrowRight size={20} /> Skip introduction
-          </Button.Text>
-        </XStack>
+        <Button.Text onPress={onSkip}>
+          <HeroIcons.ArrowRight size={20} /> Skip explanation
+        </Button.Text>
         <Button.Solid onPress={handleNext}>
           {currentSlide === SLIDES.length - 1 ? 'Get Started' : 'Continue'}
         </Button.Solid>
