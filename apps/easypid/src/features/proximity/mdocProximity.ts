@@ -46,7 +46,11 @@ export const getMdocQrCode = async () => {
  */
 export const waitForDeviceRequest = async () => {
   const mdt = mdocDataTransfer.instance()
-  return await mdt.waitForDeviceRequest()
+  const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
+  const decodedDeviceRequest = DeviceRequest.parse(deviceRequest)
+  const requestedItems = decodedDeviceRequest.docRequests.map((d) => d.itemsRequest.data.nameSpaces)
+
+  return { deviceRequest, sessionTranscript, requestedItems }
 }
 
 /**
