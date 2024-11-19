@@ -2,7 +2,7 @@
 	"name": "wallets",
 	"private": true,
 	"scripts": {
-		"postinstall": "check-dependency-version-consistency .",
+		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
 		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
