@@ -111,7 +111,7 @@ export const signPinNonceAndDeviceKeyWithPinDerivedEphPriv = async (
 
   const payload = Buffer.from([
     ...TypedArrayEncoder.fromString(pinNonce),
-    ...TypedArrayEncoder.fromString(TypedArrayEncoder.toBase64URL(deviceKeyPair.asJwkInBytes())),
+    ...TypedArrayEncoder.fromString(TypedArrayEncoder.toBase64URL(await deviceKeyPair.asJwkInBytes())),
   ])
 
   const toBeSigned = `${TypedArrayEncoder.toBase64URL(
