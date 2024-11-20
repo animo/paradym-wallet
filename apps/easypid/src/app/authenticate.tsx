@@ -29,9 +29,7 @@ export default function Authenticate() {
   // After resetting the wallet, we want to avoid prompting for face id immediately
   // So we add an artificial delay
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAllowedToUnlockWithFaceId(true)
-    }, 500)
+    const timer = setTimeout(() => setIsAllowedToUnlockWithFaceId(true), 500)
 
     return () => clearTimeout(timer)
   }, [])
