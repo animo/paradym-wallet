@@ -27,7 +27,8 @@ export const requestMdocPermissions = async () => {
 export const checkMdocPermissions = async () => {
   if (Platform.OS !== 'android') return
 
-  // We assume if you don't have the first permission, you dont have the others either
+  // We assume if you don't have the first permission, you don't have the others either
+  // As we can not check multiple at once
   return await PermissionsAndroid.check(PERMISSIONS[1])
 }
 
