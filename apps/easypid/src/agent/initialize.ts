@@ -21,7 +21,10 @@ export async function initializeAppAgent({
    * Setup specific for the Wallet Service provider
    *
    */
-  const wsp = new WalletServiceProviderClient(process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL as string, agent)
+  const wsp = new WalletServiceProviderClient(
+    process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL ?? 'https://wsp.funke.animo.id',
+    agent
+  )
   if (registerWallet) {
     await wsp.createSalt()
     await wsp.register()
