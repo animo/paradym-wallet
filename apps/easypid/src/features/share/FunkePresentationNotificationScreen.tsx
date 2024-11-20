@@ -9,7 +9,7 @@ import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface FunkePresentationNotificationScreenProps {
-  host: string
+  entityId: string
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
@@ -25,7 +25,7 @@ interface FunkePresentationNotificationScreenProps {
 }
 
 export function FunkePresentationNotificationScreen({
-  host,
+  entityId,
   verifierName,
   logo,
   lastInteractionDate,
@@ -55,11 +55,8 @@ export function FunkePresentationNotificationScreen({
               <VerifyPartySlide
                 key="verify-issuer"
                 type="request"
-                // FIXME
-                // TODO
-                entityId={'TODO FIXME AAAA'}
+                entityId={entityId}
                 name={verifierName}
-                host={host}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
                 approvalsCount={approvalsCount}

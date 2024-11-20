@@ -112,6 +112,7 @@ export const addSharedActivity = async (
   input: {
     status: ActivityStatus
     entity: {
+      id: string
       host: string
       name?: string
       logo?: DisplayImage
@@ -134,6 +135,7 @@ export const addSharedActivity = async (
     type: 'shared',
     status: input.status,
     entity: {
+      id: input.entity.id,
       name: input.entity.name,
       host: input.entity.host,
       logo: input.entity.logo,

@@ -60,11 +60,7 @@ import { formatDifPexCredentialsForRequest } from '../format/formatPresentation'
 import type { CredentialForDisplayId } from '../hooks'
 import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
-import {
-  type OpenId4VcCredentialMetadata,
-  extractOpenId4VcCredentialMetadata,
-  setOpenId4VcCredentialMetadata,
-} from '../openid4vc/displayMetadata'
+import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
@@ -432,12 +428,27 @@ export const getCredentialsForProofRequest = async ({
     }),
   }
 
+  const clientMetadata = resolved.authorizationRequest.payload?.client_metadata as
+    | {
+        client_name?: string
+        logo_uri?: string
+      }
+    | undefined
+
   return {
     ...resolved.presentationExchange,
     authorizationRequest: resolved.authorizationRequest,
-    verifierHostName: resolved.authorizationRequest.responseURI
-      ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
-      : undefined,
+    verifier: {
+      hostName: resolved.authorizationRequest.responseURI
+        ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
+        : undefined,
+      entityId: resolved.authorizationRequest.payload?.iss as string,
+
+      logo: {
+        url: clientMetadata?.logo_uri,
+      },
+      name: clientMetadata?.client_name,
+    },
     formattedSubmission: filteredSubmission,
   } as const
 }

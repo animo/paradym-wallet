@@ -1,9 +1,4 @@
-import {
-  BiometricAuthenticationCancelledError,
-  formatDifPexCredentialsForRequest,
-  getCredentialsForProofRequest,
-  shareProof,
-} from '@package/agent'
+import { BiometricAuthenticationCancelledError, getCredentialsForProofRequest, shareProof } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
@@ -31,20 +26,20 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
-  const { activities } = useActivities()
 
   const [credentialsForRequest, setCredentialsForRequest] =
     useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
   const [isSharing, setIsSharing] = useState(false)
+  const { activities } = useActivities({
+    filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
+  })
 
+  // TODO: this should be returnd by getCredentialsForProofRequest
   const fedDisplayData = useMemo(
-    () => credentialsForRequest && getOpenIdFedIssuerMetadata(credentialsForRequest?.verifierHostName ?? ''),
+    () => credentialsForRequest && getOpenIdFedIssuerMetadata(credentialsForRequest.verifier.entityId),
     [credentialsForRequest]
   )
-  const lastInteractionDate = useMemo(() => {
-    const activity = activities.find((activity) => activity.entity.host === credentialsForRequest?.verifierHostName)
-    return activity?.date
-  }, [activities, credentialsForRequest])
+  const lastInteractionDate = activities?.[0]?.date
 
   const usePin = useMemo(() => {
     const isPidInSubmission =
@@ -111,9 +106,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       await addSharedActivity(agent, {
         status: 'success',
         entity: {
-          name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest.verifierHostName,
+          id: credentialsForRequest.verifier.entityId,
+          name: fedDisplayData
+            ? fedDisplayData.display.name
+            : credentialsForRequest.verifier.name ?? credentialsForRequest.verifier.hostName,
           logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
-          host: credentialsForRequest.verifierHostName as string,
+          host: credentialsForRequest.verifier.hostName as string,
         },
         request: {
           name: credentialsForRequest.formattedSubmission.name,
@@ -165,8 +163,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
     const activityData = {
       entity: {
-        host: credentialsForRequest?.verifierHostName as string,
-        name: fedDisplayData ? fedDisplayData.display.name : credentialsForRequest?.verifierHostName,
+        id: credentialsForRequest?.verifier.entityId as string,
+        host: credentialsForRequest?.verifier.hostName as string,
+        name: fedDisplayData
+          ? fedDisplayData.display.name
+          : credentialsForRequest?.verifier.name ?? credentialsForRequest?.verifier.hostName,
         logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
       },
       request: {
@@ -202,9 +203,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={credentialsForRequest?.formattedSubmission}
       isAccepting={isSharing}
-      host={credentialsForRequest?.verifierHostName as string}
-      verifierName={fedDisplayData?.display.name}
-      logo={fedDisplayData?.display.logo}
+      entityId={credentialsForRequest?.verifier.entityId as string}
+      // TODO: unify the fed display data with the other display data
+      verifierName={fedDisplayData?.display.name ?? credentialsForRequest?.verifier.name}
+      logo={fedDisplayData?.display.logo ?? credentialsForRequest?.verifier.logo}
       lastInteractionDate={lastInteractionDate}
       approvalsCount={fedDisplayData?.approvals.length}
       onComplete={() => pushToWallet('replace')}

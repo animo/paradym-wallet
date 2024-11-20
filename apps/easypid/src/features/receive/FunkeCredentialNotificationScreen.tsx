@@ -9,6 +9,7 @@ import {
   acquireAuthorizationCodeUsingPresentation,
   acquirePreAuthorizedAccessToken,
   extractOpenId4VcCredentialMetadata,
+  getCredentialDisplayWithDefaults,
   getCredentialForDisplay,
   getCredentialsForProofRequest,
   getOpenId4VcCredentialDisplay,
@@ -67,7 +68,8 @@ export function FunkeCredentialNotificationScreen() {
       // TODO: handle empty configuration ids
       resolvedCredentialOffer.credentialOfferPayload.credential_configuration_ids[0]
     ]
-  const credentialDisplay =
+
+  const credentialDisplay = getCredentialDisplayWithDefaults(
     configuration && issuerMetadata
       ? getOpenId4VcCredentialDisplay(
           extractOpenId4VcCredentialMetadata(configuration, {
@@ -75,16 +77,15 @@ export function FunkeCredentialNotificationScreen() {
             id: issuerMetadata?.credential_issuer,
           })
         )
-      : undefined
-  if (credentialDisplay && !credentialDisplay.name) {
-    credentialDisplay.name = 'Credential'
-  }
+      : {}
+  )
 
   const preAuthGrant =
     resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
   const txCode = preAuthGrant?.tx_code
   const { activities } = useActivities({ filters: { entityId: issuerMetadata?.credential_issuer } })
 
+  // TODO: fed metadata should be returned by get crednetial offer method from agent package
   // TODO: add issuer metadata
   // const issuerMetadata = useMemo(
   //   () => getOpenIdFedIssuerMetadata(authCodeFlowDetails?.domain as string),
@@ -122,7 +123,7 @@ export function FunkeCredentialNotificationScreen() {
       const { display } = getCredentialForDisplay(credentialRecord)
       await storeCredential(agent, credentialRecord)
       await addReceivedActivity(agent, {
-        // TODO: should entity id be the `iss` of the credential, or the oid4vci issuer?
+        // TODO: should host be entityId or the iss?
         entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
         host: display.issuer.domain,
         name: display.issuer.name,
@@ -287,9 +288,8 @@ export function FunkeCredentialNotificationScreen() {
             <VerifyPartySlide
               key="verify-issuer"
               type="offer"
-              name={credentialDisplay?.issuer?.name}
-              logo={credentialDisplay?.issuer?.logo}
-              host={credentialDisplay?.issuer?.domain as string}
+              name={credentialDisplay.issuer.name}
+              logo={credentialDisplay.issuer.logo}
               entityId={issuerMetadata?.credential_issuer as string}
               lastInteractionDate={activities[0]?.date}
               approvalsCount={0}
@@ -303,6 +303,7 @@ export function FunkeCredentialNotificationScreen() {
             <CredentialCardSlide key="credential-card" display={credentialDisplay} onContinue={onCheckCardContinue} />
           ),
         },
+        // TODO: verify entity slide??
         resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
           ? {
               step: 'presentation-during-issuance',
@@ -314,10 +315,11 @@ export function FunkeCredentialNotificationScreen() {
                     key="share-credentials"
                     // TODO: add user pin
                     onAccept={onPresentationAccept}
-                    onDecline={() => {}}
-                    // TODO:
-                    // logo={}
-                    submission={credentialsForRequest?.formattedSubmission}
+                    onDecline={() => {
+                      setErrorReason('Presentation declined')
+                    }}
+                    logo={credentialsForRequest.verifier.logo}
+                    submission={credentialsForRequest.formattedSubmission}
                     isAccepting={isSharingPresentation}
                   />
                 ) : null,

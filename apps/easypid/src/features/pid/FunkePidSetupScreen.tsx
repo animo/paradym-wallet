@@ -275,6 +275,7 @@ export function FunkePidSetupScreen() {
 
     try {
       // Retrieve Credential
+
       const credentials = await receivePidUseCase.retrieveCredentials()
 
       for (const credential of credentials) {
@@ -289,6 +290,8 @@ export function FunkePidSetupScreen() {
           )
 
           await addReceivedActivity(secureUnlock.context.agent, {
+            // TODO: should host be entityId or the iss?
+            entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: pidDisplay?.issuer.name,
             logo: pidDisplay?.issuer.logo,

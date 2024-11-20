@@ -542,6 +542,7 @@ export function OnboardingContextProvider({
           )
 
           await addReceivedActivity(secureUnlock.context.agent, {
+            entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: pidDisplay?.issuer.name,
             logo: pidDisplay?.issuer.logo,

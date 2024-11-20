@@ -29,7 +29,7 @@ export type CardScanningErrorDetails = Parameters<AusweisAuthFlowOptions['onErro
 export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   protected options: ReceivePidUseCaseFlowOptions & ExtraOptions
 
-  protected resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  public resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   protected resolvedAuthorizationRequest: OpenId4VciResolvedOauth2RedirectAuthorizationRequest
   protected idCardAuthFlow!: AusweisAuthFlow
   protected accessToken?: OpenId4VciRequestTokenResponse

@@ -18,7 +18,6 @@ interface VerifyPartySlideProps {
 
 export const VerifyPartySlide = ({
   type,
-  host,
   entityId,
   name,
   logo,

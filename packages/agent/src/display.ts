@@ -175,6 +175,17 @@ export function getOpenId4VcIssuerDisplay(
   }
 }
 
+export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<CredentialDisplay>): CredentialDisplay {
+  return {
+    ...credentialDisplay,
+    name: credentialDisplay?.name ?? 'Credential',
+    issuer: {
+      ...credentialDisplay?.issuer,
+      name: credentialDisplay?.issuer?.name ?? 'Unknown',
+    },
+  }
+}
+
 export function getOpenId4VcCredentialDisplay(openId4VcMetadata: OpenId4VcCredentialMetadata) {
   const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
 
