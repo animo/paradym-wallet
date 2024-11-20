@@ -6,6 +6,7 @@ import {
   type VerifiableCredential,
   W3cCredentialRecord,
 } from '@credo-ts/core'
+import { pidBdrSdJwtTypeMetadata } from './pidBdrSdJwtTypeMetadata'
 
 export function encodeCredential(credential: VerifiableCredential): Record<string, unknown> | string {
   const credentialResult = credentialWithClaimFormat(credential)
@@ -25,8 +26,15 @@ export function credentialRecordFromCredential(credential: VerifiableCredential)
   const credentialResult = credentialWithClaimFormat(credential)
 
   if (credentialResult.claimFormat === ClaimFormat.SdJwtVc) {
+    // NOTE: temp override to use sd-jwt type metadata even if vct is old url
+    const typeMetadata =
+      credentialResult.credential.payload.vct === 'https://example.bmi.bund.de/credential/pid/1.0'
+        ? pidBdrSdJwtTypeMetadata
+        : credentialResult.credential.typeMetadata
+
     return new SdJwtVcRecord({
       compactSdJwtVc: credentialResult.credential.compact,
+      typeMetadata,
     })
   }
 
