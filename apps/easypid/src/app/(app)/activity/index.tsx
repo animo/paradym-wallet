@@ -2,7 +2,7 @@ import { FunkeActivityScreen } from '@easypid/features/activity/FunkeActivityScr
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
-  const { host, name } = useLocalSearchParams()
+  const { entityId } = useLocalSearchParams<{ entityId?: string }>()
 
-  return <FunkeActivityScreen host={host as string} name={name as string} />
+  return <FunkeActivityScreen entityId={entityId} />
 }

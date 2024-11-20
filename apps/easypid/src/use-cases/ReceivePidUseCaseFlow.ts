@@ -3,10 +3,10 @@ import type { MdocRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import {
   type OpenId4VciRequestTokenResponse,
-  type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
+  type OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
   type SdJwtVcRecord,
-  acquireAccessToken,
+  acquireAuthorizationCodeAccessToken,
 } from '@package/agent'
 
 export interface ReceivePidUseCaseFlowOptions
@@ -29,8 +29,8 @@ export type CardScanningErrorDetails = Parameters<AusweisAuthFlowOptions['onErro
 export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   protected options: ReceivePidUseCaseFlowOptions & ExtraOptions
 
-  protected resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  protected resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest
+  public resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  protected resolvedAuthorizationRequest: OpenId4VciResolvedOauth2RedirectAuthorizationRequest
   protected idCardAuthFlow!: AusweisAuthFlow
   protected accessToken?: OpenId4VciRequestTokenResponse
   protected refreshUrl?: string
@@ -38,6 +38,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   protected authenticationPromise?: Promise<void>
   protected accessRights: Promise<string[]>
 
+  static REDIRECT_URI = 'https://funke.animo.id/redirect'
   static CLIENT_ID = '7598ca4c-cc2e-4ff1-a4b4-ed58f249e274'
 
   protected currentState: ReceivePidUseCaseState = 'id-card-auth'
@@ -60,7 +61,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
 
   protected constructor(
     options: ReceivePidUseCaseFlowOptions & ExtraOptions,
-    resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest,
+    resolvedAuthorizationRequest: OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
     resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   ) {
     this.resolvedAuthorizationRequest = resolvedAuthorizationRequest
@@ -145,12 +146,12 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
         return
       }
 
-      this.accessToken = await acquireAccessToken({
+      this.accessToken = await acquireAuthorizationCodeAccessToken({
         resolvedCredentialOffer: this.resolvedCredentialOffer,
-        resolvedAuthorizationRequest: {
-          ...this.resolvedAuthorizationRequest,
-          code: authorizationCode,
-        },
+        authorizationCode,
+        codeVerifier: this.resolvedAuthorizationRequest.codeVerifier,
+        clientId: ReceivePidUseCaseFlow.CLIENT_ID,
+        redirectUri: ReceivePidUseCaseFlow.REDIRECT_URI,
         agent: this.options.agent,
       })
 
@@ -187,7 +188,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
       this.errorCallbacks.push(errorCallback)
 
       this.idCardAuthFlow.start({
-        tcTokenUrl: this.resolvedAuthorizationRequest.authorizationRequestUri,
+        tcTokenUrl: this.resolvedAuthorizationRequest.authorizationRequestUrl,
       })
     })
 

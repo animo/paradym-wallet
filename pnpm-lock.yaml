@@ -11,34 +11,33 @@ overrides:
   '@hyperledger/anoncreds-react-native': ^0.2.4
   '@hyperledger/aries-askar-react-native': ^0.2.3
   '@hyperledger/indy-vdr-react-native': ^0.2.0
-  '@credo-ts/anoncreds': 0.5.13-alpha-20241107100446
-  '@credo-ts/askar': 0.5.13-alpha-20241107100446
-  '@credo-ts/cheqd': 0.5.13-alpha-20241107100446
-  '@credo-ts/core': 0.5.13-alpha-20241107100446
-  '@credo-ts/indy-vdr': 0.5.13-alpha-20241107100446
-  '@credo-ts/openid4vc': 0.5.13-alpha-20241107100446
-  '@credo-ts/question-answer': 0.5.13-alpha-20241107100446
-  '@credo-ts/react-native': 0.5.13-alpha-20241107100446
+  '@credo-ts/anoncreds': 0.6.0-alpha-20241119125554
+  '@credo-ts/askar': 0.6.0-alpha-20241119125554
+  '@credo-ts/cheqd': 0.6.0-alpha-20241119125554
+  '@credo-ts/core': 0.6.0-alpha-20241119125554
+  '@credo-ts/indy-vdr': 0.6.0-alpha-20241119125554
+  '@credo-ts/openid4vc': 0.6.0-alpha-20241119125554
+  '@credo-ts/question-answer': 0.6.0-alpha-20241119125554
+  '@credo-ts/react-native': 0.6.0-alpha-20241119125554
   '@credo-ts/react-hooks': 0.6.1
   '@animo-id/expo-ausweis-sdk': 0.0.1-alpha.14
   '@animo-id/expo-secure-environment': 0.1.0-alpha.9
   '@animo-id/expo-mdoc-data-transfer': 0.0.3-alpha.7
   '@types/react': ~18.2.79
   react-docgen-typescript: 2.2.2
-  '@protokoll/mdoc-client': 0.2.36
   react: 18.3.1
-  react-natve: ~0.74.5
+  react-native: ~0.74.5
 
 patchedDependencies:
-  '@credo-ts/askar':
-    hash: 4wb5tld3uksumc6v2hlk2mb74a
-    path: patches/@credo-ts__askar.patch
+  '@animo-id/mdoc@0.2.38':
+    hash: zifb323ygrtdb6olnw5okh7czy
+    path: patches/@animo-id__mdoc@0.2.38.patch
+  '@credo-ts/askar@0.6.0-alpha-20241119125554':
+    hash: zbu2rcss5evxukkhh5w5venkba
+    path: patches/@credo-ts__askar@0.6.0-alpha-20241119125554.patch
   '@hyperledger/indy-vdr-react-native@0.2.2':
     hash: jtxhiuxe2e3i7qwlurpufqwh5a
     path: patches/@hyperledger__indy-vdr-react-native@0.2.2.patch
-  '@protokoll/mdoc-client@0.2.36':
-    hash: hjh76hcm7u7iov3yy6qyowzflu
-    path: patches/@protokoll__mdoc-client@0.2.36.patch
 
 importers:
 
@@ -61,13 +60,13 @@ importers:
         version: 0.0.1-alpha.14(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 0.0.3-alpha.7
-        version: 0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)
+        version: 0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)
       '@animo-id/expo-secure-environment':
         specifier: 0.1.0-alpha.9
         version: 0.1.0-alpha.9(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       '@credo-ts/core':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@expo-google-fonts/open-sans':
         specifier: ^0.2.3
         version: 0.2.3
@@ -99,8 +98,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utils
       '@protokoll/mdoc-client':
-        specifier: 0.2.36
-        version: 0.2.36(patch_hash=hjh76hcm7u7iov3yy6qyowzflu)(typescript@5.3.3)
+        specifier: '*'
+        version: 0.2.36(typescript@5.3.3)
       '@react-native-community/blur':
         specifier: ^4.3.2
         version: 4.4.1(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -170,6 +169,9 @@ importers:
       expo-updates:
         specifier: ~0.25.16
         version: 0.25.27(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))
+      expo-web-browser:
+        specifier: ~13.0.3
+        version: 13.0.3(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -528,32 +530,32 @@ importers:
   packages/agent:
     dependencies:
       '@credo-ts/anoncreds':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@credo-ts/askar':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(patch_hash=4wb5tld3uksumc6v2hlk2mb74a)(@animo-id/expo-secure-environment@0.1.0-alpha.9(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(patch_hash=zbu2rcss5evxukkhh5w5venkba)(@animo-id/expo-secure-environment@0.1.0-alpha.9(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@credo-ts/cheqd':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@credo-ts/core':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@credo-ts/indy-vdr':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@credo-ts/openid4vc':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/question-answer':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@credo-ts/react-hooks':
         specifier: 0.6.1
-        version: 0.6.1(@credo-ts/core@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(react@18.3.1)
+        version: 0.6.1(@credo-ts/core@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(react@18.3.1)
       '@credo-ts/react-native':
-        specifier: 0.5.13-alpha-20241107100446
-        version: 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native-fs@2.20.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native-get-random-values@1.11.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-alpha-20241119125554
+        version: 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native-fs@2.20.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native-get-random-values@1.11.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-react-native':
         specifier: ^0.2.4
         version: 0.2.4(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -571,7 +573,7 @@ importers:
         version: 5.59.16(react@18.3.1)
       credo-ts-didweb-anoncreds:
         specifier: 0.0.1-alpha.13
-        version: 0.0.1-alpha.13(@credo-ts/anoncreds@0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@credo-ts/core@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4)
+        version: 0.0.1-alpha.13(@credo-ts/anoncreds@0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(@credo-ts/core@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4)
       expo:
         specifier: '*'
         version: 51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
@@ -702,7 +704,7 @@ importers:
         specifier: ~13.0.1
         version: 13.0.2(expo@52.0.0-preview.21(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@expo/metro-runtime@3.2.3(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)))(graphql@15.8.0)(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))
       react-native:
-        specifier: '*'
+        specifier: ~0.74.5
         version: 0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)
       react-native-argon2:
         specifier: ^2.0.1
@@ -765,7 +767,7 @@ packages:
     peerDependencies:
       expo: '*'
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.7':
     resolution: {integrity: sha512-owHGj02XzGeBsHLi8ZJyN8AiiS4rgO22oFlKuZPyrmylUemz15CzB2tnIa8W1KKM7MnCrWXENFV5a6VC/gLqag==}
@@ -778,7 +780,19 @@ packages:
     peerDependencies:
       expo: '*'
       react: 18.3.1
-      react-native: 0.74.5
+      react-native: ~0.74.5
+
+  '@animo-id/mdoc@0.2.38':
+    resolution: {integrity: sha512-98KQ0jvwTYsFOffTGvvHXBDo23b5xmhYjPiMIX6e807I6iS4fZZ9ypfBySdA5IiGUvXELKqEv27AUaayQa/9bg==}
+
+  '@animo-id/oauth2-utils@0.1.3':
+    resolution: {integrity: sha512-PzAx57LbDmmhI1qnF6Y/soYHLyHXxheSzlle+8rHexZmnWHXwxJ5nyOn/EQhGOqk5UEXLHYsD+27oyrMH3iR4A==}
+
+  '@animo-id/oauth2@0.1.3':
+    resolution: {integrity: sha512-e4i+9nn3hyaxJ5LFTRb8Ri43VCAN5xpOvD0o2DcL6U90Y5ih3L+GVU6pzYylwk0iX/VD/HCMayDvF9qusDBh4w==}
+
+  '@animo-id/oid4vci@0.1.3':
+    resolution: {integrity: sha512-01ka6sIQUVXNcrw6/fcWCbFpso60bb9Ejv4WUunA/7pGiowdzmmf4aaMRd2em/v5riRpo2tsIqv23SAbyTl41A==}
 
   '@astronautlabs/jsonpath@1.1.2':
     resolution: {integrity: sha512-FqL/muoreH7iltYC1EB5Tvox5E8NSOOPGkgns4G+qxRKl6k5dxEVljUjB5NcKESzkqwnUqWjSZkL61XGYOuV+A==}
@@ -1668,13 +1682,13 @@ packages:
   '@cosmjs/utils@0.30.1':
     resolution: {integrity: sha512-KvvX58MGMWh7xA+N+deCfunkA/ZNDvFLw4YbOmX3f/XBIkqrVY7qlotfy2aNb1kgp6h4B6Yc8YawJPDTfvWX7g==}
 
-  '@credo-ts/anoncreds@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-wsVNp2PkrZ/SnUVWr6xizjKou2xe5DQFxLrgVEd+DiNtnP6gYuS/qNCXouBHrhSL5RJDILaZCPyjzklOPRvQdw==}
+  '@credo-ts/anoncreds@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-A2IuQk01CnHjduO44W3LM8OimZCHCGs81pTkKEP395m/PnGo9n/nmSXB2gsQkB1h41MBMypXHZjE4E9t9wueeg==}
     peerDependencies:
       '@hyperledger/anoncreds-shared': ^0.2.2
 
-  '@credo-ts/askar@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-GFDh/0jgK8daajTDIO6PJFc1FqOGQGBbS/itJanH6EI2dp9fuGIXk06Cr2zUgm1laa4lIB7XNwoB+y6wNOPrnQ==}
+  '@credo-ts/askar@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-Ue12HCt2QZacKFF7ZMNRfnEFbDYHbLMyDjT9CVPjd/80cgxViOsdtvVa///r/yxPiPpBsuVxs3oBP7RwYkUKTA==}
     peerDependencies:
       '@animo-id/expo-secure-environment': 0.1.0-alpha.9
       '@hyperledger/aries-askar-shared': ^0.2.3
@@ -1682,34 +1696,34 @@ packages:
       '@animo-id/expo-secure-environment':
         optional: true
 
-  '@credo-ts/cheqd@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-snRQ25jST5hYFODkus4csYDZ/4moGSvupFeytNQzBLiGVG3iidkOa1un4Fw7n7TwBbNMH8SQbREYi7pHJtxtIA==}
+  '@credo-ts/cheqd@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-/GCp+IwkZ/W0m8WZ+HfMY+2Es8JgemZP+LQPR7JyTLObLy10heaQK86nqf+yG00eZN5tpGlfIutmIYf2LW12JQ==}
 
-  '@credo-ts/core@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-NdR/1QZPgFtnRUhbn8EALSHu3K2zO4TZglrFb6cbuvRdm4fXxHMcGod3gbt8LmXdyPIEFGs6T6CTWfyrV/QHKg==}
+  '@credo-ts/core@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-bhy+CS/j9fXbtdYK4tAhvhey9gajh0xgqaPOrVG1lkLLDAkOgWRu2+hdTJhsWroMYKicSIeDF2wnbrvlyTdmMQ==}
 
-  '@credo-ts/indy-vdr@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-4k++wPUPuYAp+oRp53azlBCfwtWlhUoJAgbsPV+Go5WtfW+ALOP3qf1HbTg8IkLSDOiPgZTwfMCWgucHRROYvw==}
+  '@credo-ts/indy-vdr@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-LG5pkKrpIIF9Iv4GNTuDWBPy/0oo6L6ePACBomYHvUvODqsHVElUVWmFi7P+rrBcdHQjxmfPQoT2VVtjIFtclA==}
     peerDependencies:
       '@hyperledger/indy-vdr-shared': ^0.2.2
 
-  '@credo-ts/openid4vc@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-XH9lY6mJXm0AFX7FMLFRpmqh4L688A6RDOEjpPhs6KvCOkRCTab7Oa8ZPwN9VQJMdtrUnhPtnL4MV8fm7j+ogA==}
+  '@credo-ts/openid4vc@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-OgRThR/E+ixiHJ8xJkaG8+Kr1adH8cZoMIFBakrqmQkXxImRjH9AsUdswTq05agxy3Kx0Lu0eGZjg2HcR/EykQ==}
 
-  '@credo-ts/question-answer@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-HqdBDmnNDnpCxilBLLqz8Ev1qtW3td5ki9+jwSzRErkKGFUgg+4xkWwSITwYtJe1sgWIThgAD80JLt5WM3b4Ow==}
+  '@credo-ts/question-answer@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-YNpvVDYtgLdRKgplwDGkHdmvwpKbKFT/op0ixU8NdGwbNHYoprUVTlAVo0NSS4ZhzPvkwIj/5fjNaNqZhpGUPQ==}
 
   '@credo-ts/react-hooks@0.6.1':
     resolution: {integrity: sha512-lZt1N5oKzYfh9DMUBauX9Q2irJPxbztfK9zkYU93mhSV7jF5up0X/TdWxj85l9Guu7iL84JDQJY11CpIHquPOQ==}
     peerDependencies:
-      '@credo-ts/core': 0.5.13-alpha-20241107100446
-      '@credo-ts/question-answer': 0.5.13-alpha-20241107100446
+      '@credo-ts/core': 0.6.0-alpha-20241119125554
+      '@credo-ts/question-answer': 0.6.0-alpha-20241119125554
       react: 18.3.1
 
-  '@credo-ts/react-native@0.5.13-alpha-20241107100446':
-    resolution: {integrity: sha512-phIk3bYFrB75ALxWfidrUvI7CclJwQXNXuSt1k0Ob1uTE8FTSyTwx/w92bHKAsClKUvCcQVp8iJhSM6zjXGzHA==}
+  '@credo-ts/react-native@0.6.0-alpha-20241119125554':
+    resolution: {integrity: sha512-CMOSnnfk0m8dMy+ol78ZYXMvGQy+I/AVK5illF1qOv2KZwKPVG4KEJIWGInsxmFM8L0qe2dVjWgo8IRjiDidgg==}
     peerDependencies:
-      react-native: '>=0.71.4'
+      react-native: ~0.74.5
       react-native-fs: ^2.20.0
       react-native-get-random-values: ^1.8.0
 
@@ -2340,7 +2354,7 @@ packages:
   '@expo/metro-runtime@3.2.3':
     resolution: {integrity: sha512-v5ji+fAGi7B9YavrxvekuF8gXEV/5fz0+PhaED5AaFDnbGB4IJIbpaiqK9nqZV1axjGZNQSw6Q8TsnFetCR3bQ==}
     peerDependencies:
-      react-native: '*'
+      react-native: ~0.74.5
 
   '@expo/osascript@2.1.3':
     resolution: {integrity: sha512-aOEkhPzDsaAfolSswObGiYW0Pf0ROfR9J2NBRLQACdQ6uJlyAMiPF45DVEVknAU9juKh0y8ZyvC9LXqLEJYohA==}
@@ -2409,7 +2423,7 @@ packages:
     resolution: {integrity: sha512-/9tXRdwhPFUQhReb4XLWMClVDIi1620+pHDxfqPXXkRrH2cTIb9AJu3Cg7XszbXNArPdrPsB7OILrq92TOVVNg==}
     peerDependencies:
       react: 18.3.1
-      react-native: '>=0.64.0'
+      react-native: ~0.74.5
 
   '@floating-ui/react@0.26.27':
     resolution: {integrity: sha512-jLP72x0Kr2CgY6eTYi/ra3VA9LOkTo4C+DUTrbFgFOExKy3omYVmwMjNKqxAHdsnyLS96BIDLcO2SlnsNf8KUQ==}
@@ -2435,7 +2449,7 @@ packages:
     resolution: {integrity: sha512-j5ThXXaMKHN6GV2bSgQjRFf18R6LFh7b6q5/B0mPd/p2JVk5TA+n884vhcSIuSEoT13ZCLwiTZQtX7EF+3CVPw==}
     peerDependencies:
       react: 18.3.1
-      react-native: '0.76'
+      react-native: ~0.74.5
 
   '@hyperledger/anoncreds-shared@0.2.4':
     resolution: {integrity: sha512-OKw8/KXU5bAVA2fhm8pI3BLyJOIzOrEWz6sqX8QQSILNgx2hrEcN1OCSYTudcLAfID3fGRvr1X3vLzlRo19IVg==}
@@ -2444,7 +2458,7 @@ packages:
     resolution: {integrity: sha512-Q9KS49OXNZSO1XahEfOYz+No4+gr/fZqFlU8p+BBoGwfq5UFLCvdsNGHCkKrSfclSooG3egAf6MLrM7IkBwdhw==}
     peerDependencies:
       react: 18.3.1
-      react-native: '0.76'
+      react-native: ~0.74.5
 
   '@hyperledger/aries-askar-shared@0.2.3':
     resolution: {integrity: sha512-g9lao8qa80kPCLqqp02ovNqEfQIrm6cAf4xZVzD5P224VmOhf4zM6AKplQTvQx7USNKoXroe93JrOOSVxPeqrA==}
@@ -2453,7 +2467,7 @@ packages:
     resolution: {integrity: sha512-BiDEPwPXUx5bmADDeidDmisJN+hBX4GMCnIY9r7aKIWfpX7Dn2E67E/IAEH6lW7zkYZnUWcXlHI4ybWGWTNxCQ==}
     peerDependencies:
       react: 18.3.1
-      react-native: '0.76'
+      react-native: ~0.74.5
 
   '@hyperledger/indy-vdr-shared@0.2.2':
     resolution: {integrity: sha512-9425MHU3K+/ahccCRjOIX3Z/51gqxvp3Nmyujyqlx9cd7PWG2Rianx7iNWecFBkdAEqS0DfHsb6YqqH39YZp/A==}
@@ -3112,13 +3126,13 @@ packages:
   '@react-native-async-storage/async-storage@1.23.1':
     resolution: {integrity: sha512-Qd2kQ3yi6Y3+AcUlrHxSLlnBvpdCEMVGFlVBneVOjaFaPU61g1huc38g339ysXspwY1QZA2aNhrk/KlHGO+ewA==}
     peerDependencies:
-      react-native: 0.74.5
+      react-native: ~0.74.5
 
   '@react-native-community/blur@4.4.1':
     resolution: {integrity: sha512-XBSsRiYxE/MOEln2ayunShfJtWztHwUxLFcSL20o+HNNRnuUDv+GXkF6FmM2zE8ZUfrnhQ/zeTqvnuDPGw6O8A==}
     peerDependencies:
       react: 18.3.1
-      react-native: '0.76'
+      react-native: ~0.74.5
 
   '@react-native-community/cli-clean@13.6.9':
     resolution: {integrity: sha512-7Dj5+4p9JggxuVNOjPbduZBAP1SUgNhLKVw5noBUzT/3ZpUZkDM+RCSwyoyg8xKWoE4OrdUAXwAFlMcFDPKykA==}
@@ -3172,7 +3186,7 @@ packages:
     peerDependencies:
       expo: '>=50.0.0'
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
       react-native-windows: '*'
     peerDependenciesMeta:
       expo:
@@ -3183,7 +3197,7 @@ packages:
   '@react-native-community/netinfo@11.3.1':
     resolution: {integrity: sha512-UBnJxyV0b7i9Moa97Av+HKho1ByzX0DtbJXzUQS5E3xhQs6P2D/Os0iw3ouy7joY1TVd6uIhplPbr7l1SJNaNQ==}
     peerDependencies:
-      react-native: 0.74.5
+      react-native: ~0.74.5
 
   '@react-native-community/slider@4.5.5':
     resolution: {integrity: sha512-x2N415pg4ZxIltArOKczPwn7JEYh+1OxQ4+hTnafomnMsqs65HZuEWcX+Ch8c5r8V83DiunuQUf5hWGWlw8hQQ==}
@@ -3192,7 +3206,7 @@ packages:
     resolution: {integrity: sha512-uVm8U6nwFIlUd1iDIB5cS+lDadApKR+l8k4k84d9hn+GN4lzAIJhUZ9syYX7c022MxNgAlbxoFLt0pqKoyaAGg==}
     peerDependencies:
       react: 18.3.1
-      react-native: 0.74.5
+      react-native: ~0.74.5
 
   '@react-native/assets-registry@0.74.88':
     resolution: {integrity: sha512-tOvA+ikxa0Yxk3gLWR4+Pp4Y6Se+JEs6XXabX4/jgxIDnDfhT/czFNhqH/hdk4uOT8uVJGnilvevsia2TCFMiw==}
@@ -3333,7 +3347,7 @@ packages:
     peerDependencies:
       '@types/react': ~18.2.79
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -3344,7 +3358,7 @@ packages:
     peerDependencies:
       '@types/react': ~18.2.79
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -3354,7 +3368,7 @@ packages:
     peerDependencies:
       '@react-navigation/native': ^6.0.0
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
       react-native-safe-area-context: '>= 3.0.0'
       react-native-screens: '>= 3.0.0'
 
@@ -3368,7 +3382,7 @@ packages:
     peerDependencies:
       '@react-navigation/native': ^6.0.0
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
       react-native-safe-area-context: '>= 3.0.0'
 
   '@react-navigation/native-stack@6.9.26':
@@ -3376,7 +3390,7 @@ packages:
     peerDependencies:
       '@react-navigation/native': ^6.0.0
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
       react-native-safe-area-context: '>= 3.0.0'
       react-native-screens: '>= 3.0.0'
 
@@ -3384,7 +3398,7 @@ packages:
     resolution: {integrity: sha512-mIT9MiL/vMm4eirLcmw2h6h/Nm5FICtnYSdohq4vTLA2FF/6PNhByM7s8ffqoVfE5L0uAa6Xda1B7oddolUiGg==}
     peerDependencies:
       react: 18.3.1
-      react-native: '0.76'
+      react-native: ~0.74.5
 
   '@react-navigation/routers@6.1.9':
     resolution: {integrity: sha512-lTM8gSFHSfkJvQkxacGM6VJtBt61ip2XO54aNfswD+KMw6eeZ4oehl7m0me3CR9hnDE4+60iAZR8sAhvCiI3NA==}
@@ -3516,23 +3530,6 @@ packages:
   '@sphereon/oid4vc-common@0.16.1-fix.173':
     resolution: {integrity: sha512-+AAUvEEFs0vzz1mrgjSgvDkcBtr18d2XEVgJex7QlAqxCKVGfjzZlqL2Q2vOLKYVaXsazhD5LnYiY6B5WMTC3Q==}
     engines: {node: '>=18'}
-
-  '@sphereon/oid4vci-client@0.16.1-fix.173':
-    resolution: {integrity: sha512-t7i+iZwDHTQKeTq+u9NufXoE5Qsrt9bvspSD6uWYjwidQBAtD4LZHuGyHbygOyVAIX+LUMmZA3A2/ciL29Ra9w==}
-    engines: {node: '>=18'}
-
-  '@sphereon/oid4vci-common@0.16.1-fix.173':
-    resolution: {integrity: sha512-nSjOoR1SxF5+S10qjHHLG21bWx8MVbDjERag1zWb7ADlZDO8GXgPqzzEvm1BodW7yci5ugiKOyjIdbPMpg9aFQ==}
-    engines: {node: '>=18'}
-
-  '@sphereon/oid4vci-issuer@0.16.1-fix.173':
-    resolution: {integrity: sha512-pP1yH5O2Wplypb/lRHU3hKVzj5cbH4XTdC9CqvWYeWpfvrXfEGtI0amoaNC3NyWjR3FO904lwuSpxh28Xc+MLw==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      awesome-qr: ^2.1.5-rc.0
-    peerDependenciesMeta:
-      awesome-qr:
-        optional: true
 
   '@sphereon/pex-models@2.3.1':
     resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
@@ -3677,13 +3674,13 @@ packages:
     resolution: {integrity: sha512-vMIWVK+bVAwmHl9d3V/m5RkgisrB1kntgVwUngipMz9I0QqdMxtV/ctLrE7F7yPrS7742q5vAUfouBi+mL3Xaw==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   '@storybook/addon-ondevice-backgrounds@7.6.20':
     resolution: {integrity: sha512-FxwwEKT+kkFCaxRudCHvMhV7b5nINi7GsJcbct1JBbNh9BEP03GRKvJQwpPuZjLjLkIqOECVIWlaCPVjrLAs+g==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   '@storybook/addon-ondevice-controls@7.6.20':
     resolution: {integrity: sha512-lKeTq7DmabDv3TWoqv2Ys47L4KyJXxhND9lMHJLNWvdxIL/B5MwbNBliSf3HC31ZbZ5TODmeqSvGyWNOLDjyaA==}
@@ -3691,13 +3688,13 @@ packages:
       '@react-native-community/datetimepicker': '*'
       '@react-native-community/slider': '*'
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   '@storybook/addon-ondevice-notes@7.6.20':
     resolution: {integrity: sha512-IO7n/NOkq6ad8GkSFXt6HsryYZ4fCR3Vnn0usgQmV5JmD8slWnvK4u21dQSYGGLY4S91qxQjD7P7G0VCIwWq4w==}
     peerDependencies:
       react: 18.3.1
-      react-native: '0.76'
+      react-native: ~0.74.5
 
   '@storybook/addon-outline@7.6.20':
     resolution: {integrity: sha512-TdsIQZf/TcDsGoZ1XpO+9nBc4OKqcMIzY4SrI8Wj9dzyFLQ37s08gnZr9POci8AEv62NTUOVavsxcafllkzqDQ==}
@@ -3868,7 +3865,7 @@ packages:
     resolution: {integrity: sha512-vwMmR2xUAu4f1BSqJIIy/CbmhOyTCu385RZO8+5nf0ym73NDtwLks6Crp71xcy9fR/NDOHHADO2c4YPSpYyifA==}
     peerDependencies:
       react: 18.3.1
-      react-native: '0.76'
+      react-native: ~0.74.5
 
   '@storybook/react-native@7.6.20':
     resolution: {integrity: sha512-zDhTzLFJg1iNwVLcUWL4ieU5gM8+DSql6+XS14ARaaHNEAUSOo4j59VY2XUWIKUW8znhIxdDMOGGZYfc6PvFlg==}
@@ -3876,7 +3873,7 @@ packages:
     hasBin: true
     peerDependencies:
       react: 18.3.1
-      react-native: '>=0.57.0'
+      react-native: ~0.74.5
       react-native-safe-area-context: '*'
 
   '@storybook/react-webpack5@7.6.20':
@@ -4216,7 +4213,7 @@ packages:
     resolution: {integrity: sha512-XyfueguL6ygsgxLOEW7gKCW3ic7l65f9mmd5nJrqsepOhsp4+PwALJ0Jr9ZKu00Ly4OZEqYJY+mW9VbazwzFdw==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   '@tamagui/linear-gradient@1.109.5':
     resolution: {integrity: sha512-EiF6PoiLGajVLvOmhekfTQp+ldziXImnz4QgtvO25BOoj4aMXYlTGwywv0QzMBn0/NAOOeIVRxWCPD2OmwVeDg==}
@@ -4276,7 +4273,7 @@ packages:
   '@tamagui/react-native-media-driver@1.109.5':
     resolution: {integrity: sha512-56tgbn4jPAViCkWvJ+RmcLRYU9sQRbe1l73njnFv5wA9qGneSnsyAPKdpYiZRonVTcJvI/D1ONWctuTdVMN5KQ==}
     peerDependencies:
-      react-native: '*'
+      react-native: ~0.74.5
 
   '@tamagui/react-native-use-pressable@1.109.5':
     resolution: {integrity: sha512-eR4jaCZI+doWt1Tan4sv7mmlgrYCdpX7fdh6tlfkZd4D2xxloww0lADxiyToZwB8CXOhFUH1AzA9s7fd/zxQSA==}
@@ -4596,6 +4593,9 @@ packages:
 
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
+
+  '@types/node@18.18.8':
+    resolution: {integrity: sha512-OLGBaaK5V3VRBS1bAkMVP2/W9B+H8meUfl866OrMNQqt7wDgdpWPp5o6gmIc9pB+lIQHSq4ZL8ypeH1vPxcPaQ==}
 
   '@types/node@18.19.63':
     resolution: {integrity: sha512-hcUB7THvrGmaEcPcvUZCZtQ2Z3C+UR/aOcraBLCvTsFMh916Gc1kCCYcfcMuB76HM2pSerxl1PoP3KnmHzd9Lw==}
@@ -5267,7 +5267,7 @@ packages:
     peerDependencies:
       expo: '*'
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
@@ -5616,8 +5616,8 @@ packages:
   credo-ts-didweb-anoncreds@0.0.1-alpha.13:
     resolution: {integrity: sha512-0x8lipY82+ALdTu+gVRe6RKvoJRvn2/Bhj/klk8PhmvWAAQXVMvzVOmUrw0BLTQ+19+koY1yufltglWXxRMxqA==}
     peerDependencies:
-      '@credo-ts/anoncreds': 0.5.13-alpha-20241107100446
-      '@credo-ts/core': 0.5.13-alpha-20241107100446
+      '@credo-ts/anoncreds': 0.6.0-alpha-20241119125554
+      '@credo-ts/core': 0.6.0-alpha-20241119125554
       '@hyperledger/anoncreds-shared': ^0.2.1
 
   cross-env@7.0.3:
@@ -6190,7 +6190,7 @@ packages:
     peerDependencies:
       expo: '*'
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   expo-barcode-scanner@13.0.1:
     resolution: {integrity: sha512-xBGLT1An2gpAMIQRTLU3oHydKohX8r8F9/ait1Fk9Vgd0GraFZbP4IiT7nHMlaw4H6E7Muucf7vXpGV6u7d4HQ==}
@@ -6216,7 +6216,7 @@ packages:
     resolution: {integrity: sha512-Z4QrHuy2fDOP0xv9bNeX7dKaZ1GSBA5ExmtuSKX3hN1S1Gsllb/VxOYEaLUWk8xncQlbf2vEAHcMbHGo8U/3cA==}
     peerDependencies:
       expo: '*'
-      react-native: '*'
+      react-native: ~0.74.5
 
   expo-dev-client@4.0.29:
     resolution: {integrity: sha512-aANlw9dC4PJEPaRNpe+X5xwyYI+aCIcbZklAAsFlkv2/05gLrsvAFgmQpRtowAzF+VggHWde1eKUOeUccAYIEg==}
@@ -6250,7 +6250,7 @@ packages:
     resolution: {integrity: sha512-WlapfOybGI4A7AeMWXoMWXgKFz3WMffEB+SLceyyTxuLIyAvqj8eU4B6+eWgYIflG6j5SvcyBALquoACGBVaHw==}
     peerDependencies:
       expo: '*'
-      react-native: '*'
+      react-native: ~0.74.5
 
   expo-font@12.0.10:
     resolution: {integrity: sha512-Q1i2NuYri3jy32zdnBaHHCya1wH1yMAsI+3CCmj9zlQzlhsS9Bdwcj2W3c5eU5FvH2hsNQy4O+O1NnM6o/pDaQ==}
@@ -6339,7 +6339,7 @@ packages:
       expo-constants: '*'
       expo-linking: '*'
       expo-status-bar: '*'
-      react-native-reanimated: '*'
+      react-native-reanimated: ~3.15.5
       react-native-safe-area-context: '*'
       react-native-screens: '*'
     peerDependenciesMeta:
@@ -6367,7 +6367,7 @@ packages:
     resolution: {integrity: sha512-vxxdpvpNDMTEc5uTiIrbTvySKKUsOACmfl8OZuUdjNle05oGqwtq3v5YObwym/njSByjoyuZX8UpXBZnxvarwQ==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   expo-structured-headers@3.8.0:
     resolution: {integrity: sha512-R+gFGn0x5CWl4OVlk2j1bJTJIz4KO8mPoCHpRHmfqMjmrMvrOM0qQSY3V5NHXwp1yT/L2v8aUmFQsBRIdvi1XA==}
@@ -6388,6 +6388,11 @@ packages:
     peerDependencies:
       expo: '*'
 
+  expo-web-browser@13.0.3:
+    resolution: {integrity: sha512-HXb7y82ApVJtqk8tManyudtTrCtx8xcUnVzmJECeHCB0SsWSQ+penVLZxJkcyATWoJOsFMnfVSVdrTcpKKGszQ==}
+    peerDependencies:
+      expo: '*'
+
   expo@51.0.38:
     resolution: {integrity: sha512-/B9npFkOPmv6WMIhdjQXEY0Z9k/67UZIVkodW8JxGIXwKUZAGHL+z1R5hTtWimpIrvVhyHUFU3f8uhfEKYhHNQ==}
     hasBin: true
@@ -6403,7 +6408,7 @@ packages:
       '@expo/dom-webview': '*'
       '@expo/metro-runtime': '*'
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
       react-native-webview: '*'
     peerDependenciesMeta:
       '@expo/dom-webview':
@@ -8808,7 +8813,7 @@ packages:
   react-native-fs@2.20.0:
     resolution: {integrity: sha512-VkTBzs7fIDUiy/XajOSNk0XazFE9l+QlMAce7lGuebZcag5CnjszB+u4BdqzwaQOdcYb5wsJIsqq4kxInIRpJQ==}
     peerDependencies:
-      react-native: '*'
+      react-native: ~0.74.5
       react-native-windows: '*'
     peerDependenciesMeta:
       react-native-windows:
@@ -8818,12 +8823,12 @@ packages:
     resolution: {integrity: sha512-vGFlrDKlmyI+BT+FemqVxmvO7nqxU33cgXVsn6IKAFishvlG3oV2Ds67D5nPkHMea8T+s1IcuMm0bF8ntZtAyg==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   react-native-get-random-values@1.11.0:
     resolution: {integrity: sha512-4BTbDbRmS7iPdhYLRcz3PGFIpFJBwNZg9g42iwa2P6FOv9vZj/xJc678RZXnLNZzd0qd7Q3CCF6Yd+CU2eoXKQ==}
     peerDependencies:
-      react-native: '>=0.56'
+      react-native: ~0.74.5
 
   react-native-helmet-async@2.0.4:
     resolution: {integrity: sha512-m3CkXWss6B1dd6mCMleLpzDCJJGGaHOLQsUzZv8kAASJmMfmVT4d2fx375iXKTRWT25ThBfae3dECuX5cq/8hg==}
@@ -8843,19 +8848,19 @@ packages:
     resolution: {integrity: sha512-B/nHcsJ/lFie/GCmQKU1EJeDNTYRRY/sHMQEC9nzJ5uN8pm5F0KTFfC/UZn/Jb9x8Mi/S0neBw54UL+sygphUg==}
     peerDependencies:
       react: 18.3.1
-      react-native: '>=0.50.4'
+      react-native: ~0.74.5
 
   react-native-mmkv@2.12.2:
     resolution: {integrity: sha512-6058Aq0p57chPrUutLGe9fYoiDVDNMU2PKV+lLFUJ3GhoHvUrLdsS1PDSCLr00yqzL4WJQ7TTzH+V8cpyrNcfg==}
     peerDependencies:
       react: 18.3.1
-      react-native: '>=0.71.0'
+      react-native: ~0.74.5
 
   react-native-modal-datetime-picker@14.0.1:
     resolution: {integrity: sha512-wQt4Pjxt2jiTsVhLMG0E7WrRTYBEQx2d/nUrFVCbRqJ7lrXocXaT5UZsyMpV93TnKcyut62OprbO88wYq/vh0g==}
     peerDependencies:
       '@react-native-community/datetimepicker': '>=3.0.0'
-      react-native: '>=0.65.0'
+      react-native: ~0.74.5
 
   react-native-modal-selector@2.1.2:
     resolution: {integrity: sha512-+Cvoz/yNUFmfIkJ7xkmlLR2nhJOUhx00S6BPqp2Ruy8LkmaiNr7WMZ4BzsgzylyEgZ84Q+42HQ0v0QzJYobviA==}
@@ -8864,7 +8869,7 @@ packages:
     resolution: {integrity: sha512-7Bx23ZdFNJJdVXyW9BJmFWdI5kccjnpotzmL3exkV0irUKTmj51jesxpn5sqtgVdYFE4IUVoGzdS+8qg6Ua9BA==}
     peerDependencies:
       react: 18.3.1
-      react-native: '>=0.63.4'
+      react-native: ~0.74.5
       react-native-svg: '>=13.2.0'
 
   react-native-reanimated@3.10.1:
@@ -8872,36 +8877,36 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   react-native-safe-area-context@4.10.5:
     resolution: {integrity: sha512-Wyb0Nqw2XJ6oZxW/cK8k5q7/UAhg/wbEG6UVf89rQqecDZTDA5ic//P9J6VvJRVZerzGmxWQpVuM7f+PRYUM4g==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   react-native-screens@3.31.1:
     resolution: {integrity: sha512-8fRW362pfZ9y4rS8KY5P3DFScrmwo/vu1RrRMMx0PNHbeC9TLq0Kw1ubD83591yz64gLNHFLTVkTJmWeWCXKtQ==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   react-native-screens@4.0.0-beta.16:
     resolution: {integrity: sha512-djzJDTAkarRcIpsda8jOWJcKI3sc1Iwxzlenb3tuzUxvWwJRA7MmudHCBRyAEPnJaGb/Z6ql8oHBxkYCMUbPnQ==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   react-native-securerandom@0.1.1:
     resolution: {integrity: sha512-CozcCx0lpBLevxiXEb86kwLRalBCHNjiGPlw3P7Fi27U6ZLdfjOCNRHD1LtBKcvPvI3TvkBXB3GOtLvqaYJLGw==}
     peerDependencies:
-      react-native: '*'
+      react-native: ~0.74.5
 
   react-native-svg@15.9.0:
     resolution: {integrity: sha512-pwo7hteAM0P8jNpPGQtiSd0SnbBhE8tNd94LT8AcZcbnH5AJdXBIcXU4+tWYYeGUjiNAH2E5d0T5XIfnvaz1gA==}
     peerDependencies:
       react: 18.3.1
-      react-native: '*'
+      react-native: ~0.74.5
 
   react-native-swipe-gestures@1.0.5:
     resolution: {integrity: sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==}
@@ -10437,16 +10442,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)':
+  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)':
     dependencies:
       '@expo/config-plugins': 8.0.11
       expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
       react: 18.3.1
-      react-native: 0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)
+      react-native: 0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
-      - '@react-native-community/cli-server-api'
       - '@types/react'
       - bufferutil
       - encoding
@@ -10471,6 +10475,32 @@ snapshots:
       expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
       react: 18.3.1
       react-native: 0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)
+
+  '@animo-id/mdoc@0.2.38(patch_hash=zifb323ygrtdb6olnw5okh7czy)':
+    dependencies:
+      compare-versions: 6.1.1
+
+  '@animo-id/oauth2-utils@0.1.3(typescript@5.3.3)':
+    dependencies:
+      buffer: 6.0.3
+      valibot: 0.42.1(typescript@5.3.3)
+    transitivePeerDependencies:
+      - typescript
+
+  '@animo-id/oauth2@0.1.3(typescript@5.3.3)':
+    dependencies:
+      '@animo-id/oauth2-utils': 0.1.3(typescript@5.3.3)
+      valibot: 0.42.1(typescript@5.3.3)
+    transitivePeerDependencies:
+      - typescript
+
+  '@animo-id/oid4vci@0.1.3(typescript@5.3.3)':
+    dependencies:
+      '@animo-id/oauth2': 0.1.3(typescript@5.3.3)
+      '@animo-id/oauth2-utils': 0.1.3(typescript@5.3.3)
+      valibot: 0.42.1(typescript@5.3.3)
+    transitivePeerDependencies:
+      - typescript
 
   '@astronautlabs/jsonpath@1.1.2':
     dependencies:
@@ -11624,10 +11654,10 @@ snapshots:
 
   '@cosmjs/utils@0.30.1': {}
 
-  '@credo-ts/anoncreds@0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/anoncreds@0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-shared': 0.2.4
       '@sphereon/pex-models': 2.3.1
       big-integer: 1.6.52
@@ -11641,12 +11671,11 @@ snapshots:
       - expo
       - react-native
       - supports-color
-      - typescript
       - web-streams-polyfill
 
-  '@credo-ts/askar@0.5.13-alpha-20241107100446(patch_hash=4wb5tld3uksumc6v2hlk2mb74a)(@animo-id/expo-secure-environment@0.1.0-alpha.9(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/askar@0.6.0-alpha-20241119125554(patch_hash=zbu2rcss5evxukkhh5w5venkba)(@animo-id/expo-secure-environment@0.1.0-alpha.9(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@hyperledger/aries-askar-shared': 0.2.3
       bn.js: 5.2.1
       class-transformer: 0.5.1
@@ -11661,18 +11690,17 @@ snapshots:
       - expo
       - react-native
       - supports-color
-      - typescript
       - web-streams-polyfill
 
-  '@credo-ts/cheqd@0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/cheqd@0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@cheqd/sdk': 2.5.1
       '@cheqd/ts-proto': 2.3.2
       '@cosmjs/crypto': 0.30.1
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
-      '@credo-ts/anoncreds': 0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@stablelib/ed25519': 1.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -11687,12 +11715,12 @@ snapshots:
       - expo
       - react-native
       - supports-color
-      - typescript
       - utf-8-validate
       - web-streams-polyfill
 
-  '@credo-ts/core@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/core@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
+      '@animo-id/mdoc': 0.2.38(patch_hash=zifb323ygrtdb6olnw5okh7czy)
       '@digitalcredentials/jsonld': 6.0.0(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@digitalcredentials/jsonld-signatures': 9.4.0(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@digitalcredentials/vc': 6.0.1(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
@@ -11703,7 +11731,6 @@ snapshots:
       '@peculiar/asn1-schema': 2.3.13
       '@peculiar/asn1-x509': 2.3.13
       '@peculiar/x509': 1.12.3
-      '@protokoll/mdoc-client': 0.2.36(patch_hash=hjh76hcm7u7iov3yy6qyowzflu)(typescript@5.3.3)
       '@sd-jwt/core': 0.7.2
       '@sd-jwt/decode': 0.7.2
       '@sd-jwt/jwt-status-list': 0.7.2
@@ -11741,11 +11768,11 @@ snapshots:
       - expo
       - react-native
       - supports-color
-      - typescript
       - web-streams-polyfill
 
-  '@credo-ts/core@0.5.13-alpha-20241107100446(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/core@0.6.0-alpha-20241119125554(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
+      '@animo-id/mdoc': 0.2.38(patch_hash=zifb323ygrtdb6olnw5okh7czy)
       '@digitalcredentials/jsonld': 6.0.0(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@digitalcredentials/jsonld-signatures': 9.4.0(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@digitalcredentials/vc': 6.0.1(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
@@ -11756,7 +11783,6 @@ snapshots:
       '@peculiar/asn1-schema': 2.3.13
       '@peculiar/asn1-x509': 2.3.13
       '@peculiar/x509': 1.12.3
-      '@protokoll/mdoc-client': 0.2.36(patch_hash=hjh76hcm7u7iov3yy6qyowzflu)(typescript@5.3.3)
       '@sd-jwt/core': 0.7.2
       '@sd-jwt/decode': 0.7.2
       '@sd-jwt/jwt-status-list': 0.7.2
@@ -11794,13 +11820,12 @@ snapshots:
       - expo
       - react-native
       - supports-color
-      - typescript
       - web-streams-polyfill
 
-  '@credo-ts/indy-vdr@0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/indy-vdr@0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(@hyperledger/indy-vdr-shared@0.2.2)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/anoncreds': 0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@hyperledger/indy-vdr-shared': 0.2.2
     transitivePeerDependencies:
       - '@hyperledger/anoncreds-shared'
@@ -11809,24 +11834,22 @@ snapshots:
       - expo
       - react-native
       - supports-color
-      - typescript
       - web-streams-polyfill
 
-  '@credo-ts/openid4vc@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/openid4vc@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@animo-id/oauth2': 0.1.3(typescript@5.3.3)
+      '@animo-id/oid4vci': 0.1.3(typescript@5.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@sphereon/did-auth-siop': 0.16.1-fix.173(typescript@5.3.3)
       '@sphereon/oid4vc-common': 0.16.1-fix.173
-      '@sphereon/oid4vci-client': 0.16.1-fix.173
-      '@sphereon/oid4vci-common': 0.16.1-fix.173
-      '@sphereon/oid4vci-issuer': 0.16.1-fix.173
       '@sphereon/ssi-types': 0.30.2-next.135
       class-transformer: 0.5.1
       rxjs: 7.8.1
+      zod: 3.23.8
     transitivePeerDependencies:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
-      - awesome-qr
       - better-sqlite3
       - domexception
       - encoding
@@ -11850,9 +11873,9 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/question-answer@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/question-answer@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.1
@@ -11862,20 +11885,19 @@ snapshots:
       - expo
       - react-native
       - supports-color
-      - typescript
       - web-streams-polyfill
 
-  '@credo-ts/react-hooks@0.6.1(@credo-ts/core@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(react@18.3.1)':
+  '@credo-ts/react-hooks@0.6.1(@credo-ts/core@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(@credo-ts/question-answer@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(react@18.3.1)':
     dependencies:
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/question-answer': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@credo-ts/question-answer': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       react: 18.3.1
       rxjs: 7.8.1
 
-  '@credo-ts/react-native@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native-fs@2.20.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native-get-random-values@1.11.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/react-native@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native-fs@2.20.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native-get-random-values@1.11.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)':
     dependencies:
       '@azure/core-asynciterator-polyfill': 1.0.2
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       events: 3.3.0
       react-native: 0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1)
       react-native-fs: 2.20.0(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))
@@ -11885,7 +11907,6 @@ snapshots:
       - encoding
       - expo
       - supports-color
-      - typescript
       - web-streams-polyfill
 
   '@digitalbazaar/bitstring@3.1.0':
@@ -13519,7 +13540,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@protokoll/mdoc-client@0.2.36(patch_hash=hjh76hcm7u7iov3yy6qyowzflu)(typescript@5.3.3)':
+  '@protokoll/mdoc-client@0.2.36(typescript@5.3.3)':
     dependencies:
       '@protokoll/core': 0.2.36(typescript@5.3.3)
       compare-versions: 6.1.1
@@ -14641,7 +14662,7 @@ snapshots:
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
-      '@types/node': 18.19.63
+      '@types/node': 18.18.8
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -14809,91 +14830,6 @@ snapshots:
       jwt-decode: 4.0.0
       sha.js: 2.4.11
       uint8arrays: 3.1.1
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
-      - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-
-  '@sphereon/oid4vci-client@0.16.1-fix.173':
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-fix.173
-      '@sphereon/oid4vci-common': 0.16.1-fix.173
-      '@sphereon/ssi-types': 0.30.1
-      cross-fetch: 3.1.8
-      debug: 4.3.7
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
-      - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-
-  '@sphereon/oid4vci-common@0.16.1-fix.173':
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-fix.173
-      '@sphereon/ssi-types': 0.30.1
-      cross-fetch: 3.1.8
-      debug: 4.3.7
-      jwt-decode: 4.0.0
-      uint8arrays: 3.1.1
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@sap/hana-client'
-      - better-sqlite3
-      - encoding
-      - hdb-pool
-      - ioredis
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-
-  '@sphereon/oid4vci-issuer@0.16.1-fix.173':
-    dependencies:
-      '@sphereon/oid4vc-common': 0.16.1-fix.173
-      '@sphereon/oid4vci-common': 0.16.1-fix.173
-      '@sphereon/ssi-types': 0.30.1
       uuid: 9.0.1
     transitivePeerDependencies:
       - '@google-cloud/spanner'
@@ -17245,7 +17181,11 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 22.8.6
+      '@types/node': 18.18.8
+
+  '@types/node@18.18.8':
+    dependencies:
+      undici-types: 5.26.5
 
   '@types/node@18.19.63':
     dependencies:
@@ -18427,10 +18367,10 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@credo-ts/anoncreds@0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@credo-ts/core@0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4):
+  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@credo-ts/anoncreds@0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(@credo-ts/core@0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4):
     dependencies:
-      '@credo-ts/anoncreds': 0.5.13-alpha-20241107100446(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.5.13-alpha-20241107100446(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.6.0-alpha-20241119125554(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-alpha-20241119125554(expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-shared': 0.2.4
       canonicalize: 1.0.8
       query-string: 7.1.3
@@ -19540,6 +19480,10 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  expo-web-browser@13.0.3(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))):
+    dependencies:
+      expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
 
   expo@51.0.38(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)):
     dependencies:

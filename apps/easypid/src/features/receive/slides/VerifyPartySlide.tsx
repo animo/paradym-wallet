@@ -7,8 +7,9 @@ import { formatRelativeDate } from 'packages/utils/src'
 
 interface VerifyPartySlideProps {
   type: 'offer' | 'request'
-  host: string
+  host?: string
   name?: string
+  entityId: string
   logo?: DisplayImage
   backgroundColor?: string
   lastInteractionDate?: string
@@ -17,7 +18,7 @@ interface VerifyPartySlideProps {
 
 export const VerifyPartySlide = ({
   type,
-  host,
+  entityId,
   name,
   logo,
   backgroundColor,
@@ -29,11 +30,11 @@ export const VerifyPartySlide = ({
   const { withHaptics } = useHaptics()
 
   const onPressVerifiedIssuer = withHaptics(() => {
-    router.push(`/issuer?host=${host}`)
+    router.push(`/issuer?entityId=${entityId}`)
   })
 
   const onPressInteraction = withHaptics(() => {
-    router.push(`/activity?host=${host}&name=${name}`)
+    router.push(`/activity?entityId=${entityId}`)
   })
 
   return (

@@ -11,7 +11,7 @@ import {
   getDidCommCredentialExchangeDisplayMetadata,
   openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
 } from '../didcomm/metadata'
-import { setOpenId4VcCredentialMetadata } from '../openid4vc/metadata'
+import { setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 
 function useOfferAttributes(credentialExchangeId: string) {
   const { agent } = useAgent()

@@ -1,7 +1,7 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
 
 import {
-  acquireAccessToken,
+  acquirePreAuthorizedAccessToken,
   getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
@@ -39,13 +39,14 @@ export function OpenIdCredentialNotificationScreen() {
       try {
         // Only supports pre-auth flow
         const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({ agent, offer: params })
-        const tokenResponse = await acquireAccessToken({ agent, resolvedCredentialOffer })
-        const [credentialRecord] = await receiveCredentialFromOpenId4VciOffer({
+        const tokenResponse = await acquirePreAuthorizedAccessToken({ agent, resolvedCredentialOffer })
+        const credenitalResponses = await receiveCredentialFromOpenId4VciOffer({
           agent,
           resolvedCredentialOffer,
           accessToken: tokenResponse,
         })
 
+        const credentialRecord = credenitalResponses[0].credential
         setCredentialRecord(credentialRecord)
       } catch (e: unknown) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {

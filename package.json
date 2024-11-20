@@ -28,28 +28,27 @@
 			"@hyperledger/anoncreds-react-native": "^0.2.4",
 			"@hyperledger/aries-askar-react-native": "^0.2.3",
 			"@hyperledger/indy-vdr-react-native": "^0.2.0",
-			"@credo-ts/anoncreds": "0.5.13-alpha-20241107100446",
-			"@credo-ts/askar": "0.5.13-alpha-20241107100446",
-			"@credo-ts/cheqd": "0.5.13-alpha-20241107100446",
-			"@credo-ts/core": "0.5.13-alpha-20241107100446",
-			"@credo-ts/indy-vdr": "0.5.13-alpha-20241107100446",
-			"@credo-ts/openid4vc": "0.5.13-alpha-20241107100446",
-			"@credo-ts/question-answer": "0.5.13-alpha-20241107100446",
-			"@credo-ts/react-native": "0.5.13-alpha-20241107100446",
+			"@credo-ts/anoncreds": "0.6.0-alpha-20241119125554",
+			"@credo-ts/askar": "0.6.0-alpha-20241119125554",
+			"@credo-ts/cheqd": "0.6.0-alpha-20241119125554",
+			"@credo-ts/core": "0.6.0-alpha-20241119125554",
+			"@credo-ts/indy-vdr": "0.6.0-alpha-20241119125554",
+			"@credo-ts/openid4vc": "0.6.0-alpha-20241119125554",
+			"@credo-ts/question-answer": "0.6.0-alpha-20241119125554",
+			"@credo-ts/react-native": "0.6.0-alpha-20241119125554",
 			"@credo-ts/react-hooks": "0.6.1",
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
 			"@animo-id/expo-secure-environment": "0.1.0-alpha.9",
 			"@animo-id/expo-mdoc-data-transfer": "0.0.3-alpha.7",
 			"@types/react": "~18.2.79",
 			"react-docgen-typescript": "2.2.2",
-			"@protokoll/mdoc-client": "0.2.36",
 			"react": "18.3.1",
-			"react-natve": "~0.74.5"
+			"react-native": "~0.74.5"
 		},
 		"patchedDependencies": {
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@protokoll/mdoc-client@0.2.36": "patches/@protokoll__mdoc-client@0.2.36.patch",
-			"@credo-ts/askar": "patches/@credo-ts__askar.patch"
+			"@credo-ts/askar@0.6.0-alpha-20241119125554": "patches/@credo-ts__askar@0.6.0-alpha-20241119125554.patch",
+			"@animo-id/mdoc@0.2.38": "patches/@animo-id__mdoc@0.2.38.patch"
 		}
 	}
 }

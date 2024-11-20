@@ -1,21 +1,7 @@
-import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import {
-  Button,
-  Circle,
-  Heading,
-  HeroIcons,
-  Image,
-  MessageBox,
-  Paragraph,
-  ScrollView,
-  Stack,
-  XStack,
-  YStack,
-  useToastController,
-} from '@package/ui'
+import { Button, Heading, Paragraph, ScrollView, YStack, useToastController } from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
@@ -25,8 +11,8 @@ import { RequestedAttributesSection } from '../components/RequestedAttributesSec
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
 
-  onAccept?: () => Promise<PresentationRequestResult>
-  submission?: FormattedSubmission
+  onAccept?: () => Promise<PresentationRequestResult> | Promise<void>
+  submission: FormattedSubmission
   onDecline: () => void
   isAccepting: boolean
 }
@@ -44,16 +30,11 @@ export const ShareCredentialsSlide = ({
   const pushToWallet = usePushToWallet()
   const toast = useToastController()
 
-  if (!submission) {
-    toast.show('No credentials to share!', { customData: { preset: 'danger' } })
-    pushToWallet()
-    return null
-  }
-
   const handleAccept = async () => {
     if (onAccept) {
+      // TODO: move to level higher
       const result = await onAccept()
-      if (result.status === 'error') {
+      if (result?.status === 'error') {
         toast.show(result.result.title, { message: result.result.message, customData: { preset: 'danger' } })
         pushToWallet()
         return

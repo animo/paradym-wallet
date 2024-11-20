@@ -9,7 +9,7 @@ import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface FunkePresentationNotificationScreenProps {
-  host: string
+  entityId: string
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
@@ -25,7 +25,7 @@ interface FunkePresentationNotificationScreenProps {
 }
 
 export function FunkePresentationNotificationScreen({
-  host,
+  entityId,
   verifierName,
   logo,
   lastInteractionDate,
@@ -45,18 +45,18 @@ export function FunkePresentationNotificationScreen({
           {
             step: 'loading-request',
             progress: 16.5,
-            screen: <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
+            screen: () => <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
           },
           {
             step: 'verify-issuer',
             progress: 33,
             backIsCancel: true,
-            screen: (
+            screen: () => (
               <VerifyPartySlide
                 key="verify-issuer"
                 type="request"
+                entityId={entityId}
                 name={verifierName}
-                host={host}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
                 approvalsCount={approvalsCount}
@@ -66,27 +66,28 @@ export function FunkePresentationNotificationScreen({
           {
             step: 'share-credentials',
             progress: 66,
-            screen: (
-              <ShareCredentialsSlide
-                key="share-credentials"
-                onAccept={usePin ? undefined : onAccept}
-                onDecline={onDecline}
-                logo={logo}
-                submission={submission}
-                isAccepting={isAccepting}
-              />
-            ),
+            screen: () =>
+              submission ? (
+                <ShareCredentialsSlide
+                  key="share-credentials"
+                  onAccept={usePin ? undefined : onAccept}
+                  onDecline={onDecline}
+                  logo={logo}
+                  submission={submission}
+                  isAccepting={isAccepting}
+                />
+              ) : null,
           },
           usePin && {
             step: 'pin-enter',
             progress: 82.5,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
+            screen: () => <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
           },
           {
             step: 'success',
             progress: 100,
             backIsCancel: true,
-            screen: <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
+            screen: () => <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
           },
         ].filter(Boolean) as SlideStep[]
       }

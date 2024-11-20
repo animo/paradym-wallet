@@ -6,6 +6,7 @@ import { Buffer } from '@credo-ts/core'
 // @ts-ignore
 global.Buffer = Buffer
 
+export type { OpenId4VciTxCode } from '@credo-ts/openid4vc'
 export {
   initializeFullAgent,
   initializeEasyPIDAgent,
@@ -25,4 +26,4 @@ export {
 export * from './mediation'
 export * from './crypto'
 export * from './storage'
-export * from './openid4vc/metadata'
+export * from './openid4vc/displayMetadata'

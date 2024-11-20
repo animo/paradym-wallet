@@ -77,6 +77,7 @@ import { ExclamationIcon } from '../../assets/Exclamation'
 import { FaceIdIcon } from '../../assets/FaceId'
 
 import { styled } from 'tamagui'
+import { ConnectIcon } from '../../assets/Connect'
 
 export const LucideIcons = {
   Trash2,
@@ -170,6 +171,7 @@ export const HeroIcons = {
 
 export const CustomIcons = {
   Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
+  Connect: wrapLocalSvg(ConnectIcon as React.ComponentType<SvgProps>),
   FaceId: wrapLocalSvg(FaceIdIcon as React.ComponentType<SvgProps>),
 }
 

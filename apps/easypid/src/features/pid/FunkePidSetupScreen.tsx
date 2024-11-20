@@ -275,6 +275,7 @@ export function FunkePidSetupScreen() {
 
     try {
       // Retrieve Credential
+
       const credentials = await receivePidUseCase.retrieveCredentials()
 
       for (const credential of credentials) {
@@ -289,6 +290,8 @@ export function FunkePidSetupScreen() {
           )
 
           await addReceivedActivity(secureUnlock.context.agent, {
+            // TODO: should host be entityId or the iss?
+            entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: pidDisplay?.issuer.name,
             logo: pidDisplay?.issuer.logo,
@@ -325,12 +328,12 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-start',
           progress: 20,
-          screen: <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} />,
+          screen: () => <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} />,
         },
         {
           step: 'id-card-pin',
           progress: 30,
-          screen: (
+          screen: () => (
             <PidWalletPinSlide
               title="Enter your app PIN code"
               subtitle="Enter the PIN code you use to unlock your wallet."
@@ -342,7 +345,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-requested-attributes',
           progress: 40,
           backIsCancel: true,
-          screen: (
+          screen: () => (
             <PidReviewRequestSlide
               {...getPidSetupSlideContent('id-card-requested-attributes')}
               requestedAttributes={eidCardRequestedAccessRights}
@@ -353,7 +356,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-pin',
           progress: 50,
           backIsCancel: true,
-          screen: (
+          screen: () => (
             <PidEidCardPinSlide
               {...getPidSetupSlideContent('id-card-pin')}
               onEnterPin={onIdCardPinReEnter ?? onIdCardPinEnter}
@@ -364,7 +367,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-start-scan',
           progress: 60,
           backIsCancel: true,
-          screen: (
+          screen: () => (
             <PidCardScanSlide
               {...getPidSetupSlideContent('id-card-start-scan')}
               progress={idCardScanningState.progress}
@@ -383,7 +386,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-fetch',
           progress: 80,
           backIsCancel: true,
-          screen: (
+          screen: () => (
             <PidIdCardFetchSlide
               {...getPidSetupSlideContent('id-card-fetch')}
               userName={userName}
