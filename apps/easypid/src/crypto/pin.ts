@@ -25,7 +25,7 @@ import { easyPidAes256Gcm } from './aes'
  * @todo Might be good later to add methods like `signWithPidPin`
  *
  */
-export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Array<number>) => {
+export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Array<number>, salt?: string) => {
   const pinSecret = await easyPidAes256Gcm.aes256GcmEncrypt({
     agentContext,
     data: new Uint8Array(pin),
@@ -33,7 +33,7 @@ export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Arra
 
   const pinSeed = await kdf.derive(
     TypedArrayEncoder.toUtf8String(new Uint8Array(pin)),
-    TypedArrayEncoder.toUtf8String(pinSecret)
+    salt ?? TypedArrayEncoder.toUtf8String(pinSecret)
   )
 
   const askarKey = AskarKey.fromSecretBytes({
@@ -111,7 +111,7 @@ export const signPinNonceAndDeviceKeyWithPinDerivedEphPriv = async (
 
   const payload = Buffer.from([
     ...TypedArrayEncoder.fromString(pinNonce),
-    ...TypedArrayEncoder.fromString(TypedArrayEncoder.toBase64URL(deviceKeyPair.asJwkInBytes())),
+    ...TypedArrayEncoder.fromString(TypedArrayEncoder.toBase64URL(await deviceKeyPair.asJwkInBytes())),
   ])
 
   const toBeSigned = `${TypedArrayEncoder.toBase64URL(

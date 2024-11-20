@@ -38,7 +38,7 @@
 			"@credo-ts/react-native": "0.6.0-alpha-20241119125554",
 			"@credo-ts/react-hooks": "0.6.1",
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
-			"@animo-id/expo-secure-environment": "0.1.0-alpha.5",
+			"@animo-id/expo-secure-environment": "0.1.0-alpha.9",
 			"@animo-id/expo-mdoc-data-transfer": "0.0.3-alpha.7",
 			"@types/react": "~18.2.79",
 			"react-docgen-typescript": "2.2.2",
@@ -46,7 +46,9 @@
 			"react-native": "~0.74.5"
 		},
 		"patchedDependencies": {
-			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch"
+			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
+			"@credo-ts/askar@0.6.0-alpha-20241119125554": "patches/@credo-ts__askar@0.6.0-alpha-20241119125554.patch",
+			"@animo-id/mdoc@0.2.38": "patches/@animo-id__mdoc@0.2.38.patch"
 		}
 	}
 }
