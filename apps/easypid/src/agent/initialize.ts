@@ -1,7 +1,6 @@
 import { setFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
 import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
-import { createSalt } from '@easypid/crypto/salt'
 import { initializeEasyPIDAgent } from '@package/agent'
 
 export async function initializeAppAgent({
@@ -24,7 +23,7 @@ export async function initializeAppAgent({
    */
   const wsp = new WalletServiceProviderClient(process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL as string, agent)
   if (registerWallet) {
-    await createSalt(agent)
+    await wsp.createSalt()
     await wsp.register()
   }
   setFallbackSecureEnvironment(wsp)

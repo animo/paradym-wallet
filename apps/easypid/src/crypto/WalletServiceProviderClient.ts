@@ -1,20 +1,22 @@
 import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
 import {
-  type AgentContext,
+  CredoWebCrypto,
   type JwsProtectedHeaderOptions,
   JwsService,
   JwtPayload,
+  TypedArrayEncoder,
   getJwkFromKey,
 } from '@credo-ts/core'
 import type { EasyPIDAppAgent } from 'packages/agent/src'
 import { deriveKeypairFromPin } from './pin'
-import { getOrCreateSalt } from './salt'
 
 let __pin: Array<number> | undefined
 export const setWalletServiceProviderPin = (pin?: Array<number>) => {
   __pin = pin
 }
 export const getWalletServiceProviderPin = () => __pin
+
+const GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID = 'GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID'
 
 export class WalletServiceProviderClient implements SecureEnvironment {
   private headers: Headers = new Headers({
@@ -37,7 +39,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
         'Pin not set! call `setWalletServiceProviderPin(pin)` before calling a method on the WalletServiceProvider'
       )
     const jwsService = this.agent.context.dependencyManager.resolve(JwsService)
-    const salt = await getOrCreateSalt(this.agent)
+    const salt = await this.getOrCreateSalt()
     const key = await deriveKeypairFromPin(this.agent.context, pin, salt)
 
     const payload = new JwtPayload({
@@ -93,5 +95,30 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     }
 
     return new Uint8Array(publicKey)
+  }
+
+  public async createSalt() {
+    const maybeSalt = await this.getSalt()
+    if (maybeSalt) return maybeSalt
+
+    const crypto = new CredoWebCrypto(this.agent.context)
+
+    const saltBytes = crypto.getRandomValues(new Uint8Array(12))
+    const saltString = TypedArrayEncoder.toBase64URL(saltBytes)
+    await this.agent.genericRecords.save({
+      content: { salt: saltString },
+      id: GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID,
+    })
+    return saltString
+  }
+
+  private async getSalt(): Promise<string | null> {
+    return (await this.agent.genericRecords.findById(GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID))?.content
+      .salt as string
+  }
+
+  private async getOrCreateSalt() {
+    const maybeSalt = await this.getSalt()
+    return maybeSalt ?? (await this.createSalt())
   }
 }
