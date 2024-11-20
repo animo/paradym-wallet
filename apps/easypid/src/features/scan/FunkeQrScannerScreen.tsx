@@ -3,25 +3,27 @@ import {
   AnimatedStack,
   Heading,
   HeroIcons,
-  IconContainer,
   Loader,
   Page,
   Paragraph,
   Spinner,
   Stack,
   useSpringify,
+  useToastController,
 } from '@package/ui'
 import { useIsFocused } from '@react-navigation/native'
 import { useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import QRCode from 'react-native-qrcode-svg'
 
-import { type CredentialDataHandlerOptions, useCredentialDataHandler, useHaptics } from '@package/app'
-import { useWindowDimensions } from 'react-native'
+import { type CredentialDataHandlerOptions, isAndroid, useCredentialDataHandler, useHaptics } from '@package/app'
+import { Platform, useWindowDimensions } from 'react-native'
 import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { pidSchemes } from '@easypid/constants'
 import easypidLogo from '../../../assets/easypid.png'
+import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
@@ -32,13 +34,28 @@ interface QrScannerScreenProps {
 export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScannerScreenProps) {
   const { back } = useRouter()
   const { handleCredentialData } = useCredentialDataHandler()
-  const { bottom } = useSafeAreaInsets()
+  const { bottom, top } = useSafeAreaInsets()
+  const toast = useToastController()
   const isFocused = useIsFocused()
 
   const [showMyQrCode, setShowMyQrCode] = useState(false)
   const [helpText, setHelpText] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [qrCodeData, setQrCodeData] = useState<string>()
+  const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
+
+  useEffect(() => {
+    void checkMdocPermissions().then((result) => setArePermissionsGranted(!!result))
+  }, [])
+
+  useEffect(() => {
+    if (showMyQrCode) {
+      void getMdocQrCode().then(setQrCodeData)
+    } else {
+      setQrCodeData(undefined)
+    }
+  }, [showMyQrCode])
 
   const onCancel = () => back()
 
@@ -74,18 +91,20 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
     [showMyQrCode]
   )
 
-  const handleQrButtonPress = () => {
-    if (showMyQrCode) {
-      pushToOfflinePresentation()
+  const handleQrButtonPress = async () => {
+    if (Platform.OS === 'ios') {
+      toast.show('This feature is not supported on iOS yet.', { customData: { preset: 'warning' } })
       return
     }
-    setShowMyQrCode(!showMyQrCode)
-  }
 
-  // For testing purposes
-  const { withHaptics } = useHaptics()
-  const { replace } = useRouter()
-  const pushToOfflinePresentation = withHaptics(() => replace('/notifications/offlinePresentation'))
+    if (arePermissionsGranted) {
+      setShowMyQrCode(true)
+    } else {
+      // FIXME: probably need to handle when you cancel the permission request
+      // Or when you are blocked from asking (user needs to manually change in settings)
+      await requestMdocPermissions().then(() => setArePermissionsGranted(true))
+    }
+  }
 
   return (
     <>
@@ -95,7 +114,7 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
         }}
         helpText={helpText}
       />
-      <Stack zi="$5" position="absolute" top={0} right={0} bottom={0}>
+      <Stack zi="$5" position="absolute" top={isAndroid() ? top : 0} right={0} bottom={0}>
         <Stack
           accessibilityRole="button"
           aria-label={`Close QR ${showMyQrCode ? 'scanner' : 'screen'}`}
@@ -107,7 +126,7 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
       </Stack>
 
       <AnimatedStack bg="$black" style={animatedQrOverlayOpacity} pos="absolute" top={0} left={0} right={0} bottom={0}>
-        {showMyQrCode && <FunkeQrOverlay />}
+        {showMyQrCode && <FunkeQrOverlay qrCodeData={qrCodeData} />}
       </AnimatedStack>
 
       {isLoading && (
@@ -174,20 +193,47 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   )
 }
 
-function FunkeQrOverlay() {
+function FunkeQrOverlay({ qrCodeData }: { qrCodeData?: string }) {
   const { width } = useWindowDimensions()
-  const { bottom } = useSafeAreaInsets()
-
-  const [isQrVisible, setIsQrVisible] = useState(false)
+  const { bottom, top } = useSafeAreaInsets()
+  const { withHaptics } = useHaptics()
+  const { replace } = useRouter()
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsQrVisible(true)
-    }, 1000)
-  }, [])
+    if (qrCodeData) {
+      void waitForDeviceRequest().then((data) => {
+        if (data) {
+          // Take the Doc item that matches with the mdoc pid type
+          // Only support one doc item for now
+
+          const requestedNamespace = data.requestedItems[0][pidSchemes.msoMdocDoctypes[0]]
+          if (!requestedNamespace) throw new Error('Unsupported credential requested.')
+
+          pushToOfflinePresentation({
+            sessionTranscript: Buffer.from(data.sessionTranscript).toString('base64'),
+            deviceRequest: Buffer.from(data.deviceRequest).toString('base64'),
+            requestedAttributes: Object.entries(requestedNamespace).map(([key]) => key),
+          })
+          return
+        }
+      })
+    }
+  }, [qrCodeData])
+
+  // Navigate to offline presentation route
+  const pushToOfflinePresentation = withHaptics(
+    (data: { sessionTranscript: string; deviceRequest: string; requestedAttributes: string[] }) =>
+      replace({
+        pathname: '/notifications/offlinePresentation',
+        params: {
+          ...data,
+          requestedAttributes: JSON.stringify(data.requestedAttributes), // Add this change
+        },
+      })
+  )
 
   return (
-    <Page bg="$black" ai="center" pb={bottom}>
+    <Page bg="$black" ai="center" pt={isAndroid() ? top : 0} pb={bottom}>
       <AnimatedStack pt="$8" maxWidth="90%" gap="$2" entering={FadeIn.duration(200).delay(300)}>
         <Heading variant="h1" lineHeight={36} ta="center" dark>
           Share with QR code
@@ -195,14 +241,14 @@ function FunkeQrOverlay() {
         <Paragraph color="$grey-400">A verifier needs to scan your QR-Code.</Paragraph>
       </AnimatedStack>
       <AnimatedStack entering={FadeIn.duration(200).delay(300)} fg={1} pb="$12" jc="center">
-        {isQrVisible ? (
+        {qrCodeData ? (
           <Stack bg="$white" br="$8" p="$5">
             <QRCode
               logoBorderRadius={12}
               logoMargin={4}
               logo={easypidLogo}
               size={Math.min(width * 0.75, 272)}
-              value="http://awesome.link.qr"
+              value={qrCodeData}
             />
           </Stack>
         ) : (

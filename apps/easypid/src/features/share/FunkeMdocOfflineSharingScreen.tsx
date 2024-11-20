@@ -3,81 +3,109 @@ import { useAppAgent } from '@easypid/agent'
 import { usePidCredential } from '@easypid/hooks'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
-import { useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
-import { addSharedActivity } from '../activity/activityRecord'
+import { useMemo, useState } from 'react'
+import { type ActivityStatus, addSharedActivity } from '../activity/activityRecord'
+import { shareDeviceResponse } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { PresentationRequestResult } from './components/utils'
 
-type Query = { uri?: string; data?: string }
+type FunkeMdocOfflineSharingScreenProps = {
+  sessionTranscript: Uint8Array
+  deviceRequest: Uint8Array
+  requestedAttributes: string[]
+}
 
 // Entry point for offline sharing with Mdoc
-export function FunkeMdocOfflineSharingScreen() {
+export function FunkeMdocOfflineSharingScreen({
+  sessionTranscript,
+  deviceRequest,
+  requestedAttributes,
+}: FunkeMdocOfflineSharingScreenProps) {
   const toast = useToastController()
-  const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
-  const { pidCredentialForDisplay } = usePidCredential()
+  const { credentials } = usePidCredential()
+  const mdocPidCredential = credentials?.find((cred) => cred.claimFormat === ClaimFormat.MsoMdoc)
 
-  const [verifierName, setVerifierName] = useState<string>()
-  const [verifierHostName, setVerifierHostName] = useState<string>()
-  const [credentialsForRequest, setCredentialsForRequest] = useState<Record<string, unknown>>()
-  const [submission, setSubmission] = useState<Record<string, unknown>>()
   const [isProcessing, setIsProcessing] = useState(false)
 
-  useEffect(() => {
-    // ==== PARSE PARAMS ====
-    // ==== SET CREDENTIALS FOR REQUEST ====
-    // ==== FORMAT CREDENTIALS FOR REQUEST INTO SUBMISSION ====
+  // FIXME: should probably move this into a format function somewhere
 
-    // ==== EXAMPLE SUBMISSION ====
-    setSubmission({
-      name: 'Personal Info Request',
+  const disclosedPayloadForDisplay = useMemo(
+    () =>
+      requestedAttributes
+        ? requestedAttributes?.reduce(
+            (acc, attr) => ({
+              ...acc,
+              [attr]: mdocPidCredential?.attributes[attr],
+            }),
+            {}
+          )
+        : {},
+    [mdocPidCredential, requestedAttributes]
+  )
+
+  const submission = useMemo(() => {
+    if (!mdocPidCredential || !requestedAttributes || !disclosedPayloadForDisplay) return
+
+    return {
+      name: 'PID Request',
       areAllSatisfied: true,
       entries: [
         {
           inputDescriptorId: '123',
           isSatisfied: true,
-          name: 'Personal Info',
+          name: 'PID Request',
           credentials: [
             {
-              id: pidCredentialForDisplay?.id,
-              credentialName: pidCredentialForDisplay?.display.name,
-              issuerName: pidCredentialForDisplay?.display.issuer.name,
-              issuerImage: pidCredentialForDisplay?.display.issuer.logo,
-              requestedAttributes: ['Given name'],
-              disclosedPayload: {
-                'Given name': pidCredentialForDisplay?.attributesForDisplay['Given name'],
-              },
+              id: mdocPidCredential?.id,
+              credentialName: mdocPidCredential?.display.name,
+              issuerName: mdocPidCredential?.display.issuer.name,
+              issuerImage: mdocPidCredential?.display.issuer.logo,
+              requestedAttributes: requestedAttributes,
+              disclosedPayload: disclosedPayloadForDisplay,
               claimFormat: ClaimFormat.MsoMdoc,
-              metadata: pidCredentialForDisplay?.metadata,
-              backgroundColor: pidCredentialForDisplay?.display.backgroundColor,
-              textColor: pidCredentialForDisplay?.display.textColor,
-              backgroundImage: pidCredentialForDisplay?.display.backgroundImage,
+              metadata: mdocPidCredential?.metadata,
+              backgroundColor: mdocPidCredential?.display.backgroundColor,
+              textColor: mdocPidCredential?.display.textColor,
+              backgroundImage: mdocPidCredential?.display.backgroundImage,
             },
           ],
         },
       ],
-    })
-  }, [pidCredentialForDisplay])
+    }
+  }, [mdocPidCredential, requestedAttributes, disclosedPayloadForDisplay])
 
   const onProofAccept = async (): Promise<PresentationRequestResult> => {
+    if (!submission) {
+      return {
+        status: 'error',
+        result: {
+          title: 'No submission found.',
+        },
+      }
+    }
+
     setIsProcessing(true)
 
-    // ==== ADD ACCEPT LOGIC HERE ====
+    // Once this returns we just assume it's successful
+    try {
+      await shareDeviceResponse({
+        agent,
+        deviceRequest,
+        sessionTranscript,
+      })
+    } catch (error) {
+      await addActivity('failed')
+      return {
+        status: 'error',
+        result: {
+          title: 'Failed to share proof.',
+        },
+      }
+    }
 
-    await addSharedActivity(agent, {
-      status: 'success',
-      entity: {
-        name: verifierName ?? 'Unknown party',
-        host: verifierHostName ?? 'https://example.com',
-      },
-      request: {
-        name: submission?.name as string,
-        purpose: submission?.purpose as string,
-        credentials: [],
-      },
-    })
+    await addActivity('success')
 
     setIsProcessing(false)
 
@@ -92,21 +120,7 @@ export function FunkeMdocOfflineSharingScreen() {
   const onProofDecline = async () => {
     setIsProcessing(true)
 
-    // ==== ADD DECLINE LOGIC HERE ====
-
-    await addSharedActivity(agent, {
-      status: 'failed',
-      entity: {
-        name: verifierName ?? 'Unknown party',
-        host: verifierHostName ?? 'https://example.com',
-      },
-      request: {
-        name: submission?.name as string,
-        purpose: submission?.purpose as string,
-        credentials: [],
-        failureReason: submission ? 'missing_credentials' : 'unknown',
-      },
-    })
+    await addActivity('stopped')
 
     setIsProcessing(false)
 
@@ -114,9 +128,31 @@ export function FunkeMdocOfflineSharingScreen() {
     toast.show('Proof has been declined.', { customData: { preset: 'danger' } })
   }
 
+  const addActivity = async (status: ActivityStatus) => {
+    await addSharedActivity(agent, {
+      status,
+      entity: {
+        name: 'Unknown party',
+        host: 'https://example.com',
+      },
+      request: {
+        name: submission?.name as string,
+        credentials: [
+          {
+            id: mdocPidCredential?.id as string,
+            disclosedAttributes: requestedAttributes,
+            disclosedPayload: disclosedPayloadForDisplay,
+          },
+        ],
+        failureReason: status === 'failed' ? 'unknown' : undefined,
+      },
+    })
+  }
+
+  // FIXME: Consider re-using the regular flow with an isOffline flag
   return (
     <FunkeOfflineSharingScreen
-      verifierName={verifierName}
+      verifierName="Unknown party"
       isAccepting={isProcessing}
       submission={submission}
       onAccept={onProofAccept}
