@@ -1,6 +1,7 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -198,6 +199,7 @@ export function OnboardingContextProvider({
     const agent = await initializeAppAgent({
       walletKey,
       walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
+      registerWallet: true,
     })
     setAgent(agent)
   }, [])
@@ -225,7 +227,10 @@ export function OnboardingContextProvider({
 
     return secureUnlock
       .setup(walletPin as string)
-      .then(({ walletKey }) => initializeAgent(walletKey))
+      .then(({ walletKey }) => {
+        setWalletServiceProviderPin((walletPin as string).split('').map(Number))
+        return initializeAgent(walletKey)
+      })
       .then(goToNextStep)
       .catch((e) => {
         reset({ error: e, resetToStep: 'welcome' })

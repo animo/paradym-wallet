@@ -11,15 +11,11 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { useToastController } from '@package/ui'
 import { Image } from '@tamagui/image'
 import type React from 'react'
-import { useEffect } from 'react'
 import { Alert } from 'react-native'
 import Animated, { FadingTransition } from 'react-native-reanimated'
 
-import { setFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
-import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import inAppLogo from '../../../../assets/icon.png'
 
 export interface OnboardingWelcomeProps {
@@ -27,19 +23,6 @@ export interface OnboardingWelcomeProps {
 }
 
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
-  const toast = useToastController()
-
-  useEffect(() => {
-    // TODO: walletServiceProvider should be in a react context so we can reuse it in other components
-    const walletServiceProviderAuthToken = process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_AUTH_TOKEN
-    const walletServiceProviderUrl = process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL
-    const walletServiceProvider = new WalletServiceProviderClient(
-      walletServiceProviderAuthToken as string,
-      walletServiceProviderUrl as string
-    )
-    setFallbackSecureEnvironment(walletServiceProvider)
-  }, [])
-
   return (
     <Animated.View style={{ flexGrow: 1 }} layout={FadingTransition}>
       <Stack
@@ -86,10 +69,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             </Paragraph>
           </YStack>
           <XStack gap="$2">
-            <Button.Solid
-              flexGrow={1}
-              onPress={ goToNextStep}
-            >
+            <Button.Solid flexGrow={1} onPress={goToNextStep}>
               Get Started
             </Button.Solid>
           </XStack>
