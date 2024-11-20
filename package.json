@@ -39,7 +39,7 @@
 			"@credo-ts/react-hooks": "0.6.1",
 			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
 			"@animo-id/expo-secure-environment": "0.1.0-alpha.5",
-			"@animo-id/expo-mdoc-data-transfer": "0.0.3-alpha.6",
+			"@animo-id/expo-mdoc-data-transfer": "0.0.3-alpha.7",
 			"@types/react": "~18.2.79",
 			"react-docgen-typescript": "2.2.2",
 			"react": "18.2.0",
