@@ -9,7 +9,6 @@ import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 // UI Slides for offline sharing (ideally should be used for both Mdoc and SdJwt)
 
 interface FunkeOfflineSharingScreenProps {
-  verifierName?: string
   submission?: Record<string, unknown>
   isAccepting: boolean
   onAccept: () => Promise<PresentationRequestResult>
@@ -18,7 +17,6 @@ interface FunkeOfflineSharingScreenProps {
 }
 
 export function FunkeOfflineSharingScreen({
-  verifierName,
   submission,
   isAccepting,
   onAccept,
@@ -43,7 +41,6 @@ export function FunkeOfflineSharingScreen({
               onAccept={undefined} // onAccept is handled in the next slide
               onDecline={onDecline}
               submission={submission as unknown as FormattedSubmission}
-              verifierName={verifierName}
               isAccepting={isAccepting}
               isOffline
             />
@@ -58,7 +55,7 @@ export function FunkeOfflineSharingScreen({
           step: 'success',
           progress: 100,
           backIsCancel: true,
-          screen: () => <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
+          screen: () => <PresentationSuccessSlide onComplete={onComplete} />,
         },
       ]}
       onCancel={onDecline}

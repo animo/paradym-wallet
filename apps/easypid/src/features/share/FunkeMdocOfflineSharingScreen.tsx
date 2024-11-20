@@ -151,7 +151,6 @@ export function FunkeMdocOfflineSharingScreen({
   // FIXME: Consider re-using the regular flow with an isOffline flag
   return (
     <FunkeOfflineSharingScreen
-      verifierName="Unknown party"
       isAccepting={isProcessing}
       submission={submission}
       onAccept={onProofAccept}

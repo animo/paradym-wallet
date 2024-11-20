@@ -16,14 +16,12 @@ interface ShareCredentialsSlideProps {
   onDecline: () => void
   isAccepting: boolean
 
-  verifierName?: string
   isOffline?: boolean
 }
 
 export const ShareCredentialsSlide = ({
   logo,
   submission,
-  verifierName,
   onAccept,
   onDecline,
   isAccepting,
@@ -80,7 +78,7 @@ export const ShareCredentialsSlide = ({
               <MessageBox
                 variant="light"
                 title="This is an offline request"
-                message={`Information about ${verifierName ?? 'the organisation'} could not be shown. Carefully consider if you trust this party.`}
+                message="Information about the verifier could not be shown. Carefully consider if you trust this party."
                 icon={<HeroIcons.ExclamationTriangleFilled />}
               />
             ) : (
