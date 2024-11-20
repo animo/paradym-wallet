@@ -18,6 +18,7 @@ import {
   ArrowLeftIcon,
   ArrowPathIcon,
   ArrowRightIcon,
+  ArrowTopRightOnSquareIcon,
   ArrowsRightLeftIcon,
   BackspaceIcon,
   Bars3Icon,
@@ -39,6 +40,7 @@ import {
   IdentificationIcon,
   InformationCircleIcon,
   KeyIcon,
+  LinkIcon,
   LockClosedIcon,
   MagnifyingGlassIcon,
   NoSymbolIcon,
@@ -167,6 +169,7 @@ export const HeroIcons = {
   Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
   IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
   MagnifyingGlass: wrapHeroIcon(MagnifyingGlassIcon),
+  Link: wrapHeroIcon(LinkIcon),
 } as const
 
 export const CustomIcons = {
