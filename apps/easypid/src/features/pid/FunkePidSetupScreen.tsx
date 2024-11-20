@@ -43,6 +43,8 @@ export function FunkePidSetupScreen() {
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
   const [userName, setUserName] = useState<string>()
   const [isScanning, setIsScanning] = useState(false)
+  const [isAcquiringAccessToken, setIsAcquiringAccessToken] = useState(false)
+  const [isRetrievingCredential, setIsRetrievingCredential] = useState(false)
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
     (options) => {
@@ -227,11 +229,14 @@ export function FunkePidSetupScreen() {
   }
 
   const onScanningComplete = async () => {
+    if (isAcquiringAccessToken) return
     if (!receivePidUseCase) {
       toast.show('Not ready to receive PID', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
+
+    setIsAcquiringAccessToken(true)
 
     try {
       setIdCardScanningState((state) => ({
@@ -261,6 +266,7 @@ export function FunkePidSetupScreen() {
   }
 
   const retrieveCredential = async () => {
+    if (isRetrievingCredential) return
     if (receivePidUseCase?.state !== 'retrieve-credential') {
       toast.show('Not ready to retrieve PID', { customData: { preset: 'danger' } })
       pushToWallet()
@@ -272,6 +278,8 @@ export function FunkePidSetupScreen() {
       pushToWallet()
       return
     }
+
+    setIsRetrievingCredential(true)
 
     try {
       // Retrieve Credential
@@ -316,7 +324,6 @@ export function FunkePidSetupScreen() {
         pushToWallet()
         return
       }
-
       toast.show('Something went wrong', { customData: { preset: 'danger' } })
       pushToWallet()
     }
