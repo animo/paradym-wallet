@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react'
 import QRCode from 'react-native-qrcode-svg'
 
 import { type CredentialDataHandlerOptions, isAndroid, useCredentialDataHandler, useHaptics } from '@package/app'
-import { Platform, useWindowDimensions } from 'react-native'
+import { Alert, Linking, Platform, useWindowDimensions } from 'react-native'
 import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -46,7 +46,10 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
 
   useEffect(() => {
-    void checkMdocPermissions().then((result) => setArePermissionsGranted(!!result))
+    void checkMdocPermissions().then((result) => {
+      console.log('checkMdocPermissions', result)
+      setArePermissionsGranted(!!result)
+    })
   }, [])
 
   useEffect(() => {
@@ -84,27 +87,46 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
     setIsProcessing(false)
   }
 
-  const animatedQrOverlayOpacity = useAnimatedStyle(
-    () => ({
-      opacity: withTiming(showMyQrCode ? 1 : 0, { duration: showMyQrCode ? 300 : 200 }),
-    }),
-    [showMyQrCode]
-  )
-
   const handleQrButtonPress = async () => {
-    if (Platform.OS === 'ios') {
-      toast.show('This feature is not supported on iOS yet.', { customData: { preset: 'warning' } })
+    if (Platform.OS !== 'android') {
+      toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
       return
     }
 
     if (arePermissionsGranted) {
       setShowMyQrCode(true)
     } else {
-      // FIXME: probably need to handle when you cancel the permission request
-      // Or when you are blocked from asking (user needs to manually change in settings)
-      await requestMdocPermissions().then(() => setArePermissionsGranted(true))
+      const permissions = await requestMdocPermissions()
+      if (!permissions) {
+        toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
+        return
+      }
+
+      // Check if any permission is in 'never_ask_again' state
+      const hasNeverAskAgain = Object.values(permissions).some((status) => status === 'never_ask_again')
+
+      if (hasNeverAskAgain) {
+        Alert.alert(
+          'Please enable required permissions in your phone settings',
+          'Sharing with QR-Code needs access to Bluetooth and Location.',
+          [
+            {
+              text: 'Open Settings',
+              onPress: () => Linking.openSettings(),
+            },
+          ]
+        )
+        return
+      }
     }
   }
+
+  const animatedQrOverlayOpacity = useAnimatedStyle(
+    () => ({
+      opacity: withTiming(showMyQrCode ? 1 : 0, { duration: showMyQrCode ? 300 : 200 }),
+    }),
+    [showMyQrCode]
+  )
 
   return (
     <>
