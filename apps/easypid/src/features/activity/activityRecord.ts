@@ -12,7 +12,9 @@ interface BaseActivity {
   status: ActivityStatus
   date: string
   entity: {
-    did: string
+    // entity id can either be: did or https url
+    id: string
+    did?: string
     host?: string
     name?: string
     logo?: DisplayImage
@@ -62,7 +64,7 @@ export const activityStorage = {
   },
 }
 
-export const useActivities = ({ filters }: { filters?: { host?: string; name?: string } } = {}) => {
+export const useActivities = ({ filters }: { filters?: { entityId?: string } } = {}) => {
   const { record, isLoading } = useWalletJsonRecord<ActivityRecord>(activityStorage.recordId)
 
   const activities = useMemo(() => {
@@ -70,12 +72,8 @@ export const useActivities = ({ filters }: { filters?: { host?: string; name?: s
 
     return [...record.activities]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .filter((activity) => {
-        const hostMatch = !filters?.host || activity.entity.host === filters.host
-        const nameMatch = !filters?.name || activity.entity.name === filters.name
-        return hostMatch && nameMatch
-      })
-  }, [record?.activities, filters?.host, filters?.name])
+      .filter((activity) => activity.entity.id === filters?.entityId)
+  }, [record?.activities, filters?.entityId])
 
   return {
     activities,
@@ -86,6 +84,7 @@ export const useActivities = ({ filters }: { filters?: { host?: string; name?: s
 export const addReceivedActivity = async (
   agent: EasyPIDAppAgent,
   input: {
+    entityId: string
     name: string
     host?: string
     logo?: DisplayImage
@@ -113,6 +112,7 @@ export const addSharedActivity = async (
   input: {
     status: ActivityStatus
     entity: {
+      id: string
       host: string
       name?: string
       logo?: DisplayImage
@@ -135,6 +135,7 @@ export const addSharedActivity = async (
     type: 'shared',
     status: input.status,
     entity: {
+      id: input.entity.id,
       name: input.entity.name,
       host: input.entity.host,
       logo: input.entity.logo,

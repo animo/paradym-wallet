@@ -9,27 +9,22 @@ import type {
   OutOfBandRecord,
   P256Jwk,
   ProofStateChangedEvent,
-  W3cJsonLdVerifiableCredential,
-  W3cJwtVerifiableCredential,
 } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
   OpenId4VcSiopVerifiedAuthorizationRequest,
+  OpenId4VciCredentialConfigurationSupportedWithFormats,
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedAuthorizationRequest,
-  OpenId4VciResolvedAuthorizationRequestWithCode,
   OpenId4VciResolvedCredentialOffer,
-  OpenId4VciTokenRequestOptions,
 } from '@credo-ts/openid4vc'
 import { Linking } from 'react-native'
-import type { EasyPIDAppAgent, EitherAgent, FullAppAgent } from '../agent'
+import type { EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import {
   CredentialEventTypes,
   CredentialState,
-  DidJwk,
-  DidKey,
   JwaSignatureAlgorithm,
   Jwt,
   KeyBackend,
@@ -40,9 +35,8 @@ import {
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
-  SdJwtVcRecord,
+  type SdJwtVcRecord,
   SdJwtVcRepository,
-  TypedArrayEncoder,
   V2OfferCredentialMessage,
   V2RequestPresentationMessage,
   W3cCredentialRecord,
@@ -52,18 +46,21 @@ import {
   parseMessageType,
 } from '@credo-ts/core'
 import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
-import { OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
+import {
+  getOfferedCredentials,
+  getScopesFromCredentialConfigurationsSupported,
+  preAuthorizedCodeGrantIdentifier,
+} from '@credo-ts/openid4vc'
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
-import { deviceKeyPair } from '@easypid/storage/pidPin'
 import q from 'query-string'
+import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
+import { formatDifPexCredentialsForRequest } from '../format/formatPresentation'
 import type { CredentialForDisplayId } from '../hooks'
-import {
-  type OpenId4VcCredentialMetadata,
-  extractOpenId4VcCredentialMetadata,
-  setOpenId4VcCredentialMetadata,
-} from '../openid4vc/metadata'
+import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
+import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
+import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
@@ -100,28 +97,22 @@ export async function resolveOpenId4VciOffer({
   // NOTE: we always assume scopes are used at the moment
   if (resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
     // If only authorization_code grant is valid and user didn't provide authorization details we can't continue
-    if (
-      !resolvedCredentialOffer.credentialOfferPayload.grants['urn:ietf:params:oauth:grant-type:pre-authorized_code'] &&
-      !authorization
-    ) {
+    if (!resolvedCredentialOffer.credentialOfferPayload.grants[preAuthorizedCodeGrantIdentifier] && !authorization) {
       throw new Error(
         "Missing 'authorization' parameter with 'clientId' and 'redirectUri' and authorization code flow is only allowed grant type on offer."
       )
     }
 
-    const uniqueScopes = Array.from(
-      new Set(
-        resolvedCredentialOffer.offeredCredentials.map((o) => o.scope).filter((s): s is string => s !== undefined)
-      )
-    )
-
+    // TODO: authorization should only be initiated after we know which credentials we're going to request
     if (authorization) {
       resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveIssuanceAuthorizationRequest(
         resolvedCredentialOffer,
         {
-          scope: uniqueScopes,
           redirectUri: authorization.redirectUri,
           clientId: authorization.clientId,
+          scope: getScopesFromCredentialConfigurationsSupported(
+            resolvedCredentialOffer.offeredCredentialConfigurations
+          ),
           // Added in patch but not in types
           // @ts-ignore
           customHeaders,
@@ -136,144 +127,69 @@ export async function resolveOpenId4VciOffer({
   }
 }
 
-export async function popCallbackForBPrime(jwt: {
-  header: Record<string, unknown>
-  payload: Record<string, unknown>
+export async function acquirePreAuthorizedAccessToken({
+  agent,
+  resolvedCredentialOffer,
+  txCode,
+}: {
+  agent: EitherAgent
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  txCode?: string
 }) {
-  const header = {
-    ...jwt.header,
-    alg: 'ES256',
-  }
-
-  const payload = jwt.payload
-
-  const toBeSigned = `${TypedArrayEncoder.toBase64URL(
-    TypedArrayEncoder.fromString(JSON.stringify(header))
-  )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
-  const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
-  const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
-  return jws
+  return await agent.modules.openId4VcHolder.requestToken({
+    resolvedCredentialOffer,
+    txCode,
+  })
 }
 
-export function getCreateJwtCallbackForBPrime() {
-  return async (_jwtIssuer: unknown, jwt: { header: Record<string, unknown>; payload: Record<string, unknown> }) => {
-    const header = {
-      ...jwt.header,
-      alg: 'ES256',
-    }
-
-    const payload = jwt.payload
-
-    const toBeSigned = `${TypedArrayEncoder.toBase64URL(
-      TypedArrayEncoder.fromString(JSON.stringify(header))
-    )}.${TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(JSON.stringify(payload)))}`
-    const signature = await deviceKeyPair.sign(new Uint8Array(TypedArrayEncoder.fromString(toBeSigned)))
-    const jws = `${toBeSigned}.${TypedArrayEncoder.toBase64URL(signature)}`
-    return jws
-  }
-}
-
-export async function acquireAccessToken({
+export async function acquireAuthorizationCodeUsingPresentation({
   resolvedCredentialOffer,
   agent,
-  resolvedAuthorizationRequest,
+  authSession,
+  presentationDuringIssuanceSession,
   dPopKeyJwk,
 }: {
   agent: EitherAgent
-  resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequestWithCode
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   dPopKeyJwk?: P256Jwk
+  authSession: string
+  presentationDuringIssuanceSession?: string
 }) {
-  let tokenOptions: OpenId4VciTokenRequestOptions = {
+  return await agent.modules.openId4VcHolder.retrieveAuthorizationCodeUsingPresentation({
+    authSession,
+    dpop: dPopKeyJwk
+      ? {
+          alg: dPopKeyJwk.supportedSignatureAlgorithms[0],
+          jwk: dPopKeyJwk,
+        }
+      : undefined,
     resolvedCredentialOffer,
-  }
-
-  if (resolvedAuthorizationRequest) {
-    tokenOptions = {
-      resolvedAuthorizationRequest,
-      resolvedCredentialOffer,
-      code: resolvedAuthorizationRequest.code,
-      // Added in patch but not in types
-      // @ts-ignore
-      dPopKeyJwk,
-      getCreateJwtCallback: getCreateJwtCallbackForBPrime,
-    }
-  }
-
-  return await agent.modules.openId4VcHolder.requestToken(tokenOptions)
+    presentationDuringIssuanceSession,
+  })
 }
 
-export const receiveCredentialFromOpenId4VciOfferAuthenticatedChannel = async ({
-  agent,
+export async function acquireAuthorizationCodeAccessToken({
   resolvedCredentialOffer,
-  credentialConfigurationIdToRequest,
-  accessToken,
+  agent,
+  codeVerifier,
+  authorizationCode,
   clientId,
-  pidSchemes,
-  deviceKey,
-  customHeaders,
+  redirectUri,
 }: {
-  agent: EasyPIDAppAgent
+  agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  credentialConfigurationIdToRequest?: string
-  clientId?: string
-  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
-  deviceKey: Key
-  customHeaders?: Record<string, unknown>
-
-  // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
-  accessToken: OpenId4VciRequestTokenResponse
-}): Promise<{ credential: string; openId4VcMetadata: OpenId4VcCredentialMetadata }> => {
-  // By default request the first offered credential
-  // TODO: extract the first supported offered credential
-  const offeredCredentialToRequest = credentialConfigurationIdToRequest
-    ? resolvedCredentialOffer.offeredCredentials.find((offered) => offered.id === credentialConfigurationIdToRequest)
-    : resolvedCredentialOffer.offeredCredentials[0]
-  if (!offeredCredentialToRequest) {
-    throw new Error(
-      `Parameter 'credentialConfigurationIdToRequest' with value ${credentialConfigurationIdToRequest} is not a credential_configuration_id in the credential offer.`
-    )
-  }
-
-  // FIXME: return credential_supported entry for credential so it's easy to store metadata
-  const credentials = (await agent.modules.openId4VcHolder.requestCredentials({
+  codeVerifier?: string
+  authorizationCode: string
+  clientId: string
+  redirectUri?: string
+}) {
+  return await agent.modules.openId4VcHolder.requestToken({
     resolvedCredentialOffer,
-    ...accessToken,
-    // Added in patch but not in types
-    // @ts-ignore
-    popCallback: popCallbackForBPrime,
-    getCreateJwtCallback: getCreateJwtCallbackForBPrime,
-    customBody: { format: 'jwt' },
+    code: authorizationCode,
+    codeVerifier,
+    redirectUri,
     clientId,
-    credentialsToRequest: [offeredCredentialToRequest.id],
-    verifyCredentialStatus: false,
-    allowedProofOfPossessionSignatureAlgorithms: [JwaSignatureAlgorithm.EdDSA, JwaSignatureAlgorithm.ES256],
-    credentialBindingResolver: async ({ keyType, supportsJwk }) => {
-      if (!supportsJwk) {
-        throw Error('Issuer does not support JWK')
-      }
-
-      if (keyType !== KeyType.P256) {
-        throw new Error(`invalid key type used '${keyType}' and only  ${KeyType.P256} is allowed.`)
-      }
-      return {
-        method: 'jwk',
-        jwk: getJwkFromKey(deviceKey),
-      }
-    },
-  })) as unknown as Array<string>
-
-  const credential = credentials[0]
-  // FIXME: not sure if the index of credentials will match?
-  const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialToRequest, {
-    id: resolvedCredentialOffer.metadata.issuer,
-    display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
   })
-
-  return {
-    credential,
-    openId4VcMetadata,
-  }
 }
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
@@ -293,26 +209,25 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
 }) => {
-  // By default request the first offered credential
-  // TODO: extract the first supported offered credential
-  const offeredCredentialsToRequest = credentialConfigurationIdsToRequest
-    ? resolvedCredentialOffer.offeredCredentials.filter((offered) =>
-        credentialConfigurationIdsToRequest.includes(offered.id)
-      )
-    : [resolvedCredentialOffer.offeredCredentials[0]]
-  if (offeredCredentialsToRequest.length === 0) {
+  const offeredCredentialsToRequest = getOfferedCredentials(
+    credentialConfigurationIdsToRequest ?? [
+      resolvedCredentialOffer.credentialOfferPayload.credential_configuration_ids[0],
+    ],
+    resolvedCredentialOffer.offeredCredentialConfigurations
+  ) as OpenId4VciCredentialConfigurationSupportedWithFormats
+
+  if (Object.keys(offeredCredentialsToRequest).length === 0) {
     throw new Error(
       `Parameter 'credentialConfigurationIdsToRequest' with values ${credentialConfigurationIdsToRequest} is not a credential_configuration_id in the credential offer.`
     )
   }
 
   try {
-    // FIXME: return credential_supported entry for credential so it's easy to store metadata
     const credentials = await agent.modules.openId4VcHolder.requestCredentials({
       resolvedCredentialOffer,
       ...accessToken,
       clientId,
-      credentialsToRequest: credentialConfigurationIdsToRequest,
+      credentialConfigurationIds: Object.keys(offeredCredentialsToRequest),
       verifyCredentialStatus: false,
       allowedProofOfPossessionSignatureAlgorithms: [
         // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
@@ -321,127 +236,49 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         JwaSignatureAlgorithm.EdDSA,
         JwaSignatureAlgorithm.ES256,
       ],
-      credentialBindingResolver: async ({
-        supportedDidMethods,
-        keyType,
-        supportsAllDidMethods,
-        supportsJwk,
-        credentialFormat,
-        supportedCredentialId,
-      }) => {
-        // First, we try to pick a did method
-        // Prefer did:jwk, otherwise use did:key, otherwise use undefined
-        let didMethod: 'key' | 'jwk' | undefined =
-          supportsAllDidMethods || supportedDidMethods?.includes('did:jwk')
-            ? 'jwk'
-            : supportedDidMethods?.includes('did:key')
-              ? 'key'
-              : undefined
-
-        // If supportedDidMethods is undefined, and supportsJwk is false, we will default to did:key
-        // this is important as part of MATTR launchpad support which MUST use did:key but doesn't
-        // define which did methods they support
-        if (!supportedDidMethods && !supportsJwk) {
-          didMethod = 'key'
-        }
-
-        const offeredCredentialConfiguration = supportedCredentialId
-          ? resolvedCredentialOffer.offeredCredentialConfigurations[supportedCredentialId]
-          : undefined
-
-        const shouldKeyBeHardwareBackedForMsoMdoc =
-          offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
-          pidSchemes?.msoMdocDoctypes.includes(offeredCredentialConfiguration.doctype)
-
-        const shouldKeyBeHardwareBackedForSdJwtVc =
-          offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
-          pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
-
-        const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
-
-        const key = await agent.wallet.createKey({
-          keyType,
-          keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
-        })
-
-        if (didMethod) {
-          const didResult = await agent.dids.create<JwkDidCreateOptions | KeyDidCreateOptions>({
-            method: didMethod,
-            options: {
-              key,
-            },
-          })
-
-          if (didResult.didState.state !== 'finished') {
-            throw new Error('DID creation failed.')
-          }
-
-          let verificationMethodId: string
-          if (didMethod === 'jwk') {
-            const didJwk = DidJwk.fromDid(didResult.didState.did)
-            verificationMethodId = didJwk.verificationMethodId
-          } else {
-            const didKey = DidKey.fromDid(didResult.didState.did)
-            verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
-          }
-
-          return {
-            didUrl: verificationMethodId,
-            method: 'did',
-          }
-        }
-
-        // Otherwise we also support plain jwk for sd-jwt only
-        if (
-          supportsJwk &&
-          (credentialFormat === OpenId4VciCredentialFormatProfile.SdJwtVc ||
-            credentialFormat === OpenId4VciCredentialFormatProfile.MsoMdoc)
-        ) {
-          return {
-            method: 'jwk',
-            jwk: getJwkFromKey(key),
-          }
-        }
-
-        throw new Error(
-          `No supported binding method could be found. Supported methods are did:key and did:jwk, or plain jwk for sd-jwt/mdoc. Issuer supports ${
-            supportsJwk ? 'jwk, ' : ''
-          }${supportedDidMethods?.join(', ') ?? 'Unknown'}`
-        )
-      },
+      credentialBindingResolver: getCredentialBindingResolver({
+        pidSchemes,
+        resolvedCredentialOffer,
+      }),
     })
 
-    return credentials.map((credential, index) => {
-      let record: SdJwtVcRecord | W3cCredentialRecord | MdocRecord
+    return credentials.credentials.map(({ credentials, ...credentialResponse }) => {
+      const configuration = resolvedCredentialOffer.offeredCredentialConfigurations[
+        credentialResponse.credentialConfigurationId
+      ] as OpenId4VciCredentialConfigurationSupportedWithFormats
 
-      if (typeof credential === 'string') return credential
+      const firstCredential = credentials[0]
+      if (typeof firstCredential === 'string') {
+        return {
+          ...credentialResponse,
+          configuration,
+          credential: firstCredential,
+        }
+      }
 
-      if ('compact' in credential.credential) {
-        // TODO: add claimFormat to SdJwtVc
-        record = new SdJwtVcRecord({
-          compactSdJwtVc: credential.credential.compact,
-        })
-      } else if (credential.credential instanceof Mdoc) {
-        record = new MdocRecord({
-          mdoc: credential.credential,
-        })
-      } else {
-        record = new W3cCredentialRecord({
-          credential: credential.credential as W3cJwtVerifiableCredential | W3cJsonLdVerifiableCredential,
-          // We don't support expanded types right now, but would become problem when we support JSON-LD
-          tags: {},
+      const record = credentialRecordFromCredential(firstCredential)
+
+      // OpenID4VC metadata
+      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(configuration, {
+        id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+        display: resolvedCredentialOffer.metadata.credentialIssuer.display,
+      })
+      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+      // Match metadata
+      if (credentials.length > 1) {
+        setBatchCredentialMetadata(record, {
+          additionalCredentials: credentials.slice(1).map(encodeCredential) as
+            | Array<string>
+            | Array<Record<string, unknown>>,
         })
       }
 
-      // FIXME: not sure if the index of credentials will match?
-      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(offeredCredentialsToRequest[index], {
-        id: resolvedCredentialOffer.metadata.issuer,
-        display: resolvedCredentialOffer.metadata.credentialIssuerMetadata.display,
-      })
-
-      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-      return record
+      return {
+        ...credentialResponse,
+        configuration,
+        credential: record,
+      }
     })
   } catch (error) {
     // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
@@ -455,6 +292,7 @@ const extractCertificateFromJwt = (jwt: string) => {
   const jwtHeader = Jwt.fromSerializedJwt(jwt).header
   return Array.isArray(jwtHeader.x5c) && typeof jwtHeader.x5c[0] === 'string' ? jwtHeader.x5c[0] : null
 }
+
 /**
  * This is a temp method to allow for untrusted certificates to still work with the wallet.
  */
@@ -517,6 +355,7 @@ export async function withTrustedCertificate<T>(
   }
 }
 
+export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
 export const getCredentialsForProofRequest = async ({
   agent,
   data,
@@ -564,12 +403,53 @@ export const getCredentialsForProofRequest = async ({
     throw new Error('No presentation exchange found in authorization request.')
   }
 
+  const formattedSubmission = formatDifPexCredentialsForRequest(resolved.presentationExchange.credentialsForRequest)
+
+  // TODO: why do we filter? It will otherwise also just pick the first one?
+  // I think because of sharing activity. But that can be solved differently
+  // Filter to keep only the first credential for each type
+  const filteredSubmission = {
+    ...formattedSubmission,
+    entries: formattedSubmission.entries.map((entry) => {
+      const uniqueCredentials = new Map()
+      return {
+        ...entry,
+        credentials: entry.credentials
+          .filter((credential) => credential.metadata?.type)
+          .filter((credential) => {
+            const type = credential.metadata?.type
+            if (!uniqueCredentials.has(type)) {
+              uniqueCredentials.set(type, credential)
+              return true
+            }
+            return false
+          }),
+      }
+    }),
+  }
+
+  const clientMetadata = resolved.authorizationRequest.payload?.client_metadata as
+    | {
+        client_name?: string
+        logo_uri?: string
+      }
+    | undefined
+
   return {
     ...resolved.presentationExchange,
     authorizationRequest: resolved.authorizationRequest,
-    verifierHostName: resolved.authorizationRequest.responseURI
-      ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
-      : undefined,
+    verifier: {
+      hostName: resolved.authorizationRequest.responseURI
+        ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
+        : undefined,
+      entityId: resolved.authorizationRequest.payload?.iss as string,
+
+      logo: {
+        url: clientMetadata?.logo_uri,
+      },
+      name: clientMetadata?.client_name,
+    },
+    formattedSubmission: filteredSubmission,
   } as const
 }
 
@@ -622,8 +502,8 @@ export const shareProof = async ({
 
     // if redirect_uri is provided, open it in the browser
     // Even if the response returned an error, we must open this uri
-    if (typeof result.serverResponse.body === 'object' && typeof result.serverResponse.body.redirect_uri === 'string') {
-      await Linking.openURL(result.serverResponse.body.redirect_uri)
+    if (result.redirectUri) {
+      await Linking.openURL(result.redirectUri)
     }
 
     if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {

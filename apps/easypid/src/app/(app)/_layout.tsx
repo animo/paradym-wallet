@@ -3,7 +3,6 @@ import { Redirect, Stack, useRouter } from 'expo-router'
 import { useSecureUnlock } from '@easypid/agent'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
-import { seedCredentialStorage } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
 import { type CredentialDataHandlerOptions, DeeplinkHandler, useHaptics } from '@package/app'
@@ -11,7 +10,7 @@ import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'tamagui'
 
-const jsonRecordIds = [seedCredentialStorage.recordId, activityStorage.recordId]
+const jsonRecordIds = [activityStorage.recordId]
 
 // When deeplink routing we want to push
 export const credentialDataHandlerOptions = {

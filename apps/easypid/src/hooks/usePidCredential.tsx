@@ -1,5 +1,4 @@
 import { ClaimFormat } from '@credo-ts/core'
-import { useSeedCredentialPidData } from '@easypid/storage'
 import { type CredentialForDisplayId, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
 import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 import { useMemo } from 'react'
@@ -364,7 +363,6 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
 // This way we can just treat it as any other credential and don't need to special case it anywhere
 export function usePidCredential() {
   const { isLoading, credentials } = useCredentialsForDisplay()
-  const { isLoading: isSeedCredentialLoading } = useSeedCredentialPidData()
 
   const pidCredentials = useMemo(() => {
     const pidCredentials = credentials.filter(
@@ -392,7 +390,7 @@ export function usePidCredential() {
     })
   }, [credentials])
 
-  if (isLoading || isSeedCredentialLoading) {
+  if (isLoading) {
     return {
       credential: undefined,
       isLoading: true,

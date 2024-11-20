@@ -54,7 +54,7 @@ interface InfoButtonProps {
   title: string
   description: string
   onPress?: () => void
-  routingType?: 'push' | 'modal'
+  routingType?: 'push' | 'modal' | 'external'
   noIcon?: boolean
   ariaLabel?: string
 }
@@ -107,6 +107,8 @@ export function InfoButton({
           <Stack>
             {routingType === 'push' ? (
               <HeroIcons.ChevronRight size={20} color="$grey-500" />
+            ) : routingType === 'external' ? (
+              <HeroIcons.Link size={20} color="$grey-500" />
             ) : (
               <HeroIcons.InformationCircle size={20} color="$grey-500" />
             )}

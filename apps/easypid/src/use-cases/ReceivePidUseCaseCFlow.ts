@@ -2,6 +2,7 @@ import type { MdocRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
+  OpenId4VciAuthorizationFlow,
   type SdJwtVcRecord,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
@@ -11,8 +12,6 @@ import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './Rece
 import { C_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
-  private static REDIRECT_URI = 'https://funke.animo.id/redirect'
-
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
     const resolved = await resolveOpenId4VciOffer({
       agent: options.agent,
@@ -23,7 +22,10 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       },
     })
 
-    if (!resolved.resolvedAuthorizationRequest) {
+    if (
+      !resolved.resolvedAuthorizationRequest ||
+      resolved.resolvedAuthorizationRequest.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
+    ) {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
@@ -46,8 +48,10 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         throw new Error('Expected accessToken be defined in state retrieve-credential')
       }
 
-      const credentialConfigurationIdsToRequest = this.resolvedCredentialOffer.offeredCredentials.map((o) => o.id)
-      const credentialRecords = await receiveCredentialFromOpenId4VciOffer({
+      const credentialConfigurationIdsToRequest = Object.keys(
+        this.resolvedCredentialOffer.offeredCredentialConfigurations
+      )
+      const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
         agent: this.options.agent,
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
@@ -56,16 +60,19 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         pidSchemes,
       })
 
-      for (const credentialRecord of credentialRecords) {
+      const credentialRecords: Array<SdJwtVcRecord | MdocRecord> = []
+      for (const credentialResponse of credentialResponses) {
+        const credentialRecord = credentialResponse.credential
         if (typeof credentialRecord === 'string') throw new Error('No string expected for c flow')
         if (credentialRecord.type !== 'SdJwtVcRecord' && credentialRecord.type !== 'MdocRecord') {
           throw new Error(`Unexpected record type ${credentialRecord.type}`)
         }
 
+        credentialRecords.push(credentialRecord)
         await storeCredential(this.options.agent, credentialRecord)
       }
 
-      return credentialRecords as Array<SdJwtVcRecord | MdocRecord>
+      return credentialRecords
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
       if (error instanceof BiometricAuthenticationError) {

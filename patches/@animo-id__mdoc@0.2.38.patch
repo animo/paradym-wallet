@@ -1,0 +1,86 @@
+diff --git a/dist/index.js b/dist/index.js
+index e1fd0582c0c7659b1f6159e630d9b06b40a91eb6..31594d4eefd90f1018ec168a2d114939489afe32 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -3411,22 +3411,23 @@ var DeviceSignedDocument = class extends IssuerSignedDocument {
+     const doc = super.prepare();
+     const deviceSignature = this.deviceSigned.deviceAuth.deviceSignature?.getContentForEncoding();
+     const deviceMac = this.deviceSigned.deviceAuth.deviceMac?.getContentForEncoding();
+-    if (deviceMac) {
+-      deviceMac[2] = void 0;
+-    }
+-    if (deviceSignature) {
+-      deviceSignature[2] = void 0;
+-    }
++
+     doc.set("deviceSigned", {
+       ...this.deviceSigned,
+       nameSpaces: DataItem.fromData(this.deviceSigned.nameSpaces),
+       // TODO: ERRORS MISSING
+       deviceAuth: {
+         ...this.deviceSigned.deviceAuth,
+-        deviceSignature,
++        deviceSignature: [...deviceSignature],
+         deviceMac
+       }
+     });
++    if (deviceMac) {
++      deviceMac[2] = undefined;
++    }
++    if (deviceSignature) {
++      deviceSignature[2] = undefined;
++    }
+     return doc;
+   }
+   /**
+@@ -4039,6 +4040,7 @@ var DeviceResponse = class _DeviceResponse {
+       jwk: this.devicePrivateKey
+     });
+     sign1.signature = signature;
++    sign1.payload = null;
+     return { deviceSignature: sign1 };
+   }
+ };
+diff --git a/dist/index.mjs b/dist/index.mjs
+index d39f75a60c8169c070f31b95705e18116fc50e7a..2e52066c847afd23deb2f4f18dc6cad0fd5e3512 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -3361,22 +3361,23 @@ var DeviceSignedDocument = class extends IssuerSignedDocument {
+     const doc = super.prepare();
+     const deviceSignature = this.deviceSigned.deviceAuth.deviceSignature?.getContentForEncoding();
+     const deviceMac = this.deviceSigned.deviceAuth.deviceMac?.getContentForEncoding();
+-    if (deviceMac) {
+-      deviceMac[2] = void 0;
+-    }
+-    if (deviceSignature) {
+-      deviceSignature[2] = void 0;
+-    }
++
+     doc.set("deviceSigned", {
+       ...this.deviceSigned,
+       nameSpaces: DataItem.fromData(this.deviceSigned.nameSpaces),
+       // TODO: ERRORS MISSING
+       deviceAuth: {
+         ...this.deviceSigned.deviceAuth,
+-        deviceSignature,
++        deviceSignature: [...deviceSignature],
+         deviceMac
+       }
+     });
++    if (deviceMac) {
++      deviceMac[2] = undefined;
++    }
++    if (deviceSignature) {
++      deviceSignature[2] = undefined;
++    }
+     return doc;
+   }
+   /**
+@@ -3989,6 +3990,7 @@ var DeviceResponse = class _DeviceResponse {
+       jwk: this.devicePrivateKey
+     });
+     sign1.signature = signature;
++    sign1.payload = null;
+     return { deviceSignature: sign1 };
+   }
+ };

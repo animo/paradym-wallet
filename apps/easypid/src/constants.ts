@@ -1,4 +1,3 @@
-export const EASYPID_WALLET_SEED_CREDENTIAL_RECORD_ID = 'EASYPID_WALLET_SEED_CREDENTIAL_RECORD_ID'
 export const EASYPID_WALLET_PID_PIN_KEY_ID = 'EASYPID_WALLET_PID_PIN_KEY_ID_NO_BIOMETRICS'
 export const EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID'
 
@@ -23,6 +22,7 @@ export const trustedX509Certificates = [
   animoFunkeRelyingPartyCertificate,
   ubiqueRootCertificate,
   oldAnimoFunkeRelyingPartyCertificate,
+  'MIIBKTCBz6ADAgECAhB6T2+09ZDXvmIu0tNzisQWMAoGCCqGSM49BAMCMA0xCzAJBgNVBAYTAk5MMB4XDTcwMDEwMTAwMDAwMFoXDTI1MTEyMjA4MjIxMlowDTELMAkGA1UEBhMCTkwwOTATBgcqhkjOPQIBBggqhkjOPQMBBwMiAALcD1XzKepFxWMAOqV+ln1fybBt7DRO5CV0f9A6mRp2xaMxMC8wLQYDVR0RBCYwJIIiMTkxYi0xMDktMzctMTQ4LTE0OC5uZ3Jvay1mcmVlLmFwcDAKBggqhkjOPQQDAgNJADBGAiEA5oy5/mmbcGuLRlDyXPPVecmrKAaoqDIARdwepx4dIj0CIQCdpXI7GbjIVun1unF4OIzA3IzingADBsjEQvQwuD9s0Q==',
 ]
 
 // https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#pid-contents

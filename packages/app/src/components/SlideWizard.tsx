@@ -1,5 +1,6 @@
 import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack } from '@package/ui'
 import * as Haptics from 'expo-haptics'
+import type React from 'react'
 import { useCallback, useRef, useState } from 'react'
 import type { ScrollView } from 'react-native'
 import { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
@@ -11,12 +12,13 @@ import { WizardProvider } from './WizardContext'
 export type SlideStep = {
   step: string
   progress: number
-  screen: React.ReactNode
+  screen: () => React.ReactNode
   backIsCancel?: boolean
 }
 
 type SlideWizardProps = {
   steps: SlideStep[]
+  errorScreen?: () => React.ReactNode
   onCancel: () => void
   isError?: boolean
   confirmation?: {
@@ -25,7 +27,7 @@ type SlideWizardProps = {
   }
 }
 
-export function SlideWizard({ steps, onCancel, isError, confirmation }: SlideWizardProps) {
+export function SlideWizard({ steps, onCancel, isError, errorScreen, confirmation }: SlideWizardProps) {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle, onContentSizeChange, onLayout } =
     useScrollViewPosition(0)
   const { bottom } = useSafeAreaInsets()
@@ -103,7 +105,7 @@ export function SlideWizard({ steps, onCancel, isError, confirmation }: SlideWiz
 
   const onBack = useCallback(() => {
     if (isNavigating) return
-    if (isCompleted || currentStepIndex === 0 || steps[currentStepIndex].backIsCancel) {
+    if (isCompleted || isError || currentStepIndex === 0 || steps[currentStepIndex].backIsCancel) {
       handleCancel()
     } else {
       setIsNavigating(true)
@@ -111,7 +113,7 @@ export function SlideWizard({ steps, onCancel, isError, confirmation }: SlideWiz
       animateTransition(false)
       void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     }
-  }, [currentStepIndex, animateTransition, direction, handleCancel, steps, isCompleted, isNavigating])
+  }, [currentStepIndex, animateTransition, direction, handleCancel, steps, isCompleted, isNavigating, isError])
 
   const onNext = useCallback(
     (slide?: string) => {
@@ -132,13 +134,14 @@ export function SlideWizard({ steps, onCancel, isError, confirmation }: SlideWiz
   }, [])
 
   const contextValue = { onNext, onBack, onCancel: handleCancel, completeProgressBar }
+  const Screen = isError && errorScreen ? errorScreen : steps[currentStepIndex].screen
 
   return (
     <WizardProvider value={contextValue}>
       <FlexPage safeArea="t" p="$0" jc="space-between" gap="$0" background="$background">
         <Stack px="$4" py="$2" bbw={1} borderColor={isScrolledByOffset ? '$grey-100' : '$background'}>
           <ProgressHeader
-            progress={isCompleted ? 100 : steps[currentStepIndex].progress}
+            progress={isCompleted || isError ? 100 : steps[currentStepIndex].progress}
             onBack={onBack}
             onCancel={() => setIsSheetOpen(true)}
             color={isError ? 'danger' : 'primary'}
@@ -158,7 +161,7 @@ export function SlideWizard({ steps, onCancel, isError, confirmation }: SlideWiz
             fg={1}
             px="$4"
           >
-            {steps[currentStepIndex].screen}
+            <Screen />
           </ScrollableStack>
         </AnimatedStack>
       </FlexPage>

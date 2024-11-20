@@ -18,6 +18,7 @@ import {
   ArrowLeftIcon,
   ArrowPathIcon,
   ArrowRightIcon,
+  ArrowTopRightOnSquareIcon,
   ArrowsRightLeftIcon,
   BackspaceIcon,
   Bars3Icon,
@@ -39,6 +40,7 @@ import {
   IdentificationIcon,
   InformationCircleIcon,
   KeyIcon,
+  LinkIcon,
   LockClosedIcon,
   MagnifyingGlassIcon,
   NoSymbolIcon,
@@ -79,6 +81,7 @@ import { ExclamationIcon } from '../../assets/Exclamation'
 import { FaceIdIcon } from '../../assets/FaceId'
 
 import { styled } from 'tamagui'
+import { ConnectIcon } from '../../assets/Connect'
 
 export const LucideIcons = {
   Trash2,
@@ -170,10 +173,12 @@ export const HeroIcons = {
   IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
   CameraFilled: wrapHeroIcon(CameraFilledIcon),
   MagnifyingGlass: wrapHeroIcon(MagnifyingGlassIcon),
+  Link: wrapHeroIcon(LinkIcon),
 } as const
 
 export const CustomIcons = {
   Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
+  Connect: wrapLocalSvg(ConnectIcon as React.ComponentType<SvgProps>),
   FaceId: wrapLocalSvg(FaceIdIcon as React.ComponentType<SvgProps>),
 }
 

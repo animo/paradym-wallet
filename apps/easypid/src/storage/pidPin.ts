@@ -6,14 +6,14 @@ export const deviceKeyPair = {
   generate: () => generateKeypair(EASYPID_WALLET_PID_PIN_KEY_ID, false),
   sign: async (message: Uint8Array) => sign(EASYPID_WALLET_PID_PIN_KEY_ID, message, false),
   publicKey: () => getPublicBytesForKeyId(EASYPID_WALLET_PID_PIN_KEY_ID),
-  asJwkInBytes: () =>
+  asJwkInBytes: async () =>
     Key.fromPublicBytes({
-      publicKey: deviceKeyPair.publicKey(),
+      publicKey: await deviceKeyPair.publicKey(),
       algorithm: KeyAlgs.EcSecp256r1,
     }).jwkPublic.toUint8Array(),
-  asJwk: () =>
+  asJwk: async () =>
     Key.fromPublicBytes({
-      publicKey: deviceKeyPair.publicKey(),
+      publicKey: await deviceKeyPair.publicKey(),
       algorithm: KeyAlgs.EcSecp256r1,
     }).jwkPublic,
 }

@@ -1,12 +1,13 @@
-import { Button, FlexPage, Heading, HeroIcons, ScrollView, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
 import React from 'react'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
+import { Button, FlexPage, Heading, HeroIcons, ScrollView, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
 
 import { usePidCredential } from '@easypid/hooks'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { TextBackButton } from '@package/app'
 import { Link } from 'expo-router'
+import { Linking } from 'react-native'
 import Animated from 'react-native-reanimated'
 
 const menuItems = [
@@ -129,6 +130,20 @@ const MenuItem = ({ item, idx, onPress }: { item: (typeof menuItems)[number]; id
       </Animated.View>
     </XStack>
   )
+
+  // Temporary placeholder for the feedback screen
+  if (item.href === 'menu/feedback') {
+    return (
+      <Stack
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Funke EUDI Wallet')}
+        asChild
+      >
+        {content}
+      </Stack>
+    )
+  }
 
   if (item.href === '/') {
     return (

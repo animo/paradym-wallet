@@ -1,8 +1,7 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
-import { deviceKeyPair } from '@easypid/storage/pidPin'
-import { PinPossiblyReusedError, ReceivePidUseCaseBPrimeFlow } from '@easypid/use-cases/ReceivePidUseCaseBPrimeFlow'
+import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -135,8 +134,7 @@ export function OnboardingContextProvider({
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
   const pidDisplay = usePidDisplay()
 
-  const [selectedFlow, setSelectedFlow] = useState<PidFlowTypes>('c')
-  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow | ReceivePidUseCaseBPrimeFlow>()
+  const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
   const [allowSimulatorCard, setAllowSimulatorCard] = useState(false)
 
@@ -190,12 +188,6 @@ export function OnboardingContextProvider({
     goToNextStep()
   }
 
-  const selectFlow = (flow: 'c' | 'bprime') => {
-    setSelectedFlow(flow)
-
-    goToNextStep()
-  }
-
   // Bit sad but if we try to call this in the initializeAgent callback sometimes the state hasn't updated
   // in the secure unlock yet, which means that it will throw an error, so we use an effect. Probably need
   // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
@@ -207,6 +199,7 @@ export function OnboardingContextProvider({
     const agent = await initializeAppAgent({
       walletKey,
       walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
+      registerWallet: true,
     })
     setAgent(agent)
   }, [])
@@ -232,25 +225,17 @@ export function OnboardingContextProvider({
       return
     }
 
-    return (
-      secureUnlock
-        .setup(walletPin as string)
-        .then(({ walletKey }) => initializeAgent(walletKey))
-        // After `initializeAgent` function is finished we can assume that `setAgent(agent)` is called and the agent is set
-        // We store the wallet pin as the pid pin. We do this to avoid a double key derivation which is too much of a slow down
-        // In the future we can possibly sync the key derivation between what the
-        // Architecture Proposal suggests and what we require to do for our wallet storage
-        .then(() => {
-          if (selectedFlow === 'bprime') {
-            deviceKeyPair.generate()
-          }
-        })
-        .then(goToNextStep)
-        .catch((e) => {
-          reset({ error: e, resetToStep: 'welcome' })
-          throw e
-        })
-    )
+    return secureUnlock
+      .setup(walletPin as string)
+      .then(({ walletKey }) => {
+        setWalletServiceProviderPin((walletPin as string).split('').map(Number))
+        return initializeAgent(walletKey)
+      })
+      .then(goToNextStep)
+      .catch((e) => {
+        reset({ error: e, resetToStep: 'welcome' })
+        throw e
+      })
   }
 
   const onEnableBiometricsDisabled = async () => {
@@ -523,19 +508,9 @@ export function OnboardingContextProvider({
 
       // Acquire access token
       await receivePidUseCase.acquireAccessToken()
-
-      if (selectedFlow === 'c') {
-        // For c flow we need to do a biometrics check, so we first inform the user of that
-        setCurrentStepName('id-card-verify')
-      } else if (selectedFlow === 'bprime') {
-        await retrieveCredential()
-      }
+      setCurrentStepName('id-card-verify')
     } catch (error) {
-      if (error instanceof PinPossiblyReusedError) {
-        await reset({ resetToStep: 'pin', error, toastMessage: 'Have you used this PIN before?' })
-      } else {
-        await reset({ resetToStep: 'id-card-pin', error })
-      }
+      await reset({ resetToStep: 'id-card-pin', error })
     }
   }
 
@@ -572,6 +547,7 @@ export function OnboardingContextProvider({
           )
 
           await addReceivedActivity(secureUnlock.context.agent, {
+            entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: pidDisplay?.issuer.name,
             logo: pidDisplay?.issuer.logo,
@@ -633,12 +609,7 @@ export function OnboardingContextProvider({
     } as const satisfies ReceivePidUseCaseFlowOptions
 
     if (!receivePidUseCase && receivePidUseCaseState !== 'initializing') {
-      const flow =
-        selectedFlow === 'c'
-          ? ReceivePidUseCaseCFlow.initialize(baseOptions)
-          : ReceivePidUseCaseBPrimeFlow.initialize({ ...baseOptions, pidPin: walletPin.split('').map(Number) })
-
-      return flow
+      return ReceivePidUseCaseCFlow.initialize(baseOptions)
         .then(async ({ accessRights, authFlow }) => {
           setReceivePidUseCase(authFlow)
           setEidCardRequestedAccessRights(accessRights)
@@ -656,7 +627,7 @@ export function OnboardingContextProvider({
 
   let screen: React.JSX.Element
   if (currentStep.step === 'welcome') {
-    screen = <currentStep.Screen goToNextStep={selectFlow} />
+    screen = <currentStep.Screen goToNextStep={goToNextStep} />
   } else if (currentStep.step === 'pin' || currentStep.step === 'pin-reenter') {
     screen = (
       <currentStep.Screen
