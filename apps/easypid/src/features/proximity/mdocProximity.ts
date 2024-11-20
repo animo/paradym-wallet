@@ -1,12 +1,5 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
-import {
-  COSEKey,
-  DeviceRequest,
-  DeviceResponse,
-  MDoc,
-  type MdocContext,
-  parseIssuerSigned,
-} from '@animo-id/mdoc'
+import { COSEKey, DeviceRequest, DeviceResponse, MDoc, type MdocContext, parseIssuerSigned } from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
 import type { EasyPIDAppAgent } from '@package/agent'
