@@ -64,6 +64,9 @@ importers:
       '@animo-id/expo-secure-environment':
         specifier: 0.1.0-alpha.9
         version: 0.1.0-alpha.9(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
+      '@animo-id/mdoc':
+        specifier: '*'
+        version: 0.2.38(patch_hash=zifb323ygrtdb6olnw5okh7czy)
       '@credo-ts/core':
         specifier: 0.6.0-alpha-20241119125554
         version: 0.6.0-alpha-20241119125554(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(web-streams-polyfill@3.3.3)
@@ -100,9 +103,6 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../../packages/utils
-      '@protokoll/mdoc-client':
-        specifier: '*'
-        version: 0.2.36(typescript@5.3.3)
       '@react-native-community/blur':
         specifier: ^4.3.2
         version: 4.4.1(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -2617,12 +2617,6 @@ packages:
 
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
-
-  '@protokoll/core@0.2.36':
-    resolution: {integrity: sha512-4VHOLNX9XiExUXGCGuT1SnbhhJT4RZCRQnQFqFZ1b6bEnxLQvmy8W06ZdZYuXOcW4IdCfWq0qI/wWs+cKOV1Pw==}
-
-  '@protokoll/mdoc-client@0.2.36':
-    resolution: {integrity: sha512-8RXjZFLGERBS3qBcnB33Ldjv/HryT2F+gCrvVvzpFi6CvMH29NvuuLxd52GN8JBCNT7r03i/0GPfQX03jidDCg==}
 
   '@radix-ui/number@1.0.1':
     resolution: {integrity: sha512-T5gIdVO2mmPW3NNhjNgEP3cqMXjXL9UbO0BzWcXfvdBs+BohbQxvd/K5hSVKmn9/lbTdsQVKbUcP5WLCwvUbBg==}
@@ -9781,14 +9775,6 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  valibot@0.37.0:
-    resolution: {integrity: sha512-FQz52I8RXgFgOHym3XHYSREbNtkgSjF9prvMFH1nBsRyfL6SfCzoT1GuSDTlbsuPubM7/6Kbw0ZMQb8A+V+VsQ==}
-    peerDependencies:
-      typescript: ~5.3.3
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   valibot@0.42.1:
     resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
     peerDependencies:
@@ -12950,19 +12936,6 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.0': {}
-
-  '@protokoll/core@0.2.36(typescript@5.3.3)':
-    dependencies:
-      valibot: 0.37.0(typescript@5.3.3)
-    transitivePeerDependencies:
-      - typescript
-
-  '@protokoll/mdoc-client@0.2.36(typescript@5.3.3)':
-    dependencies:
-      '@protokoll/core': 0.2.36(typescript@5.3.3)
-      compare-versions: 6.1.1
-    transitivePeerDependencies:
-      - typescript
 
   '@radix-ui/number@1.0.1':
     dependencies:
@@ -22914,10 +22887,6 @@ snapshots:
   uuid@8.3.2: {}
 
   uuid@9.0.1: {}
-
-  valibot@0.37.0(typescript@5.3.3):
-    optionalDependencies:
-      typescript: 5.3.3
 
   valibot@0.42.1(typescript@5.3.3):
     optionalDependencies:

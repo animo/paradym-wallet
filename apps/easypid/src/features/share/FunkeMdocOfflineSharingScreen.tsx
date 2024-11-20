@@ -1,4 +1,4 @@
-import { ClaimFormat } from '@credo-ts/core'
+import { ClaimFormat, utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
 import { usePidCredential } from '@easypid/hooks'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
@@ -28,8 +28,6 @@ export function FunkeMdocOfflineSharingScreen({
   const mdocPidCredential = credentials?.find((cred) => cred.claimFormat === ClaimFormat.MsoMdoc)
 
   const [isProcessing, setIsProcessing] = useState(false)
-
-  // FIXME: should probably move this into a format function somewhere
 
   const disclosedPayloadForDisplay = useMemo(
     () =>
@@ -132,6 +130,7 @@ export function FunkeMdocOfflineSharingScreen({
     await addSharedActivity(agent, {
       status,
       entity: {
+        id: utils.uuid(),
         name: 'Unknown party',
         host: 'https://example.com',
       },
