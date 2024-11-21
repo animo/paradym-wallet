@@ -14,6 +14,7 @@ interface VerifyPartySlideProps {
   backgroundColor?: string
   lastInteractionDate?: string
   approvalsCount?: number
+  onContinue?: () => void
 }
 
 export const VerifyPartySlide = ({
@@ -24,10 +25,16 @@ export const VerifyPartySlide = ({
   backgroundColor,
   lastInteractionDate,
   approvalsCount,
+  onContinue,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
+
+  const handleContinue = () => {
+    onContinue?.()
+    onNext()
+  }
 
   const onPressVerifiedIssuer = withHaptics(() => {
     router.push(`/issuer?entityId=${entityId}`)
@@ -94,7 +101,7 @@ export const VerifyPartySlide = ({
       <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">
         <DualResponseButtons
           align="horizontal"
-          onAccept={() => onNext()}
+          onAccept={handleContinue}
           onDecline={() => onCancel()}
           acceptText="Yes, continue"
           declineText="Stop"

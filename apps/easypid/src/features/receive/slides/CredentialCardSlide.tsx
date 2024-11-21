@@ -1,46 +1,64 @@
 import type { CredentialDisplay } from '@package/agent'
-import { AnimatedStack, Heading, Stack, YStack, useInitialRender, useSpringify } from '@package/ui'
-import { DualResponseButtons, FunkeCredentialCard, useWizard } from 'packages/app/src'
-import { FadeIn, LinearTransition } from 'react-native-reanimated'
+import { Heading, MiniCardRowItem, Paragraph, Stack, YStack } from '@package/ui'
+import { DualResponseButtons, useHasInternetConnection, useWizard } from 'packages/app/src'
 
 interface CredentialCardSlideProps {
+  type: 'presentation' | 'pin' | 'noAuth'
   display: CredentialDisplay
-  onContinue: () => void
 }
 
-export const CredentialCardSlide = ({ display, onContinue }: CredentialCardSlideProps) => {
+const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: string) => {
+  switch (type) {
+    case 'presentation':
+      return {
+        title: 'Share who you are',
+        subtitle: `To receive this card from ${issuerName}, you need to share your identity.`,
+      }
+    case 'pin':
+      return {
+        title: 'Card offered',
+        subtitle: `To receive this card from ${issuerName}, you need to enter your PIN.`,
+      }
+    default:
+      return {
+        title: 'Card offered',
+        subtitle: `${issuerName} wants to give you the following card:`,
+      }
+  }
+}
+
+export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCardSlideProps) => {
   const { onNext, onCancel } = useWizard()
-  const isInitialRender = useInitialRender()
+  const hasInternet = useHasInternetConnection()
+
+  const content = getContentType(type, display.issuer.name)
 
   const goToNextSlide = () => {
     onNext()
-    onContinue()
   }
 
   return (
     <YStack fg={1} jc="space-between">
-      <AnimatedStack gap="$4" fg={1}>
-        <AnimatedStack layout={useSpringify(LinearTransition)}>
-          <AnimatedStack key="info-title" entering={!isInitialRender ? FadeIn.duration(300) : undefined}>
-            <Heading>Do you want to accept this card?</Heading>
-          </AnimatedStack>
-        </AnimatedStack>
-        <AnimatedStack layout={useSpringify(LinearTransition)} borderColor="$grey-100">
-          <FunkeCredentialCard
-            issuerImage={display.issuer.logo}
-            textColor={display.textColor}
-            name={display.name}
-            backgroundImage={display.backgroundImage}
-            bgColor={display.backgroundColor}
-          />
-        </AnimatedStack>
-      </AnimatedStack>
+      <YStack gap="$6" fg={1}>
+        <YStack gap="$4">
+          <Heading>{content.title}</Heading>
+          <Paragraph>{content.subtitle}</Paragraph>
+        </YStack>
+        <MiniCardRowItem
+          name={display.name}
+          subtitle={display.issuer.name}
+          issuerImageUri={display.issuer.logo?.url}
+          backgroundImageUri={display.backgroundImage?.url}
+          backgroundColor={display.backgroundColor ?? '$grey-900'}
+          hasInternet={hasInternet}
+        />
+      </YStack>
       <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">
         <DualResponseButtons
           align="horizontal"
           onAccept={() => goToNextSlide()}
           onDecline={() => onCancel()}
-          acceptText="Yes, continue"
+          acceptText="Continue"
           declineText="Stop"
         />
       </Stack>

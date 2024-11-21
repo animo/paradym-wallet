@@ -45,13 +45,13 @@ export function FunkePresentationNotificationScreen({
           {
             step: 'loading-request',
             progress: 16.5,
-            screen: () => <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
+            screen: <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
           },
           {
             step: 'verify-issuer',
             progress: 33,
             backIsCancel: true,
-            screen: () => (
+            screen: (
               <VerifyPartySlide
                 key="verify-issuer"
                 type="request"
@@ -63,31 +63,30 @@ export function FunkePresentationNotificationScreen({
               />
             ),
           },
-          {
+          submission && {
             step: 'share-credentials',
             progress: 66,
-            screen: () =>
-              submission ? (
-                <ShareCredentialsSlide
-                  key="share-credentials"
-                  onAccept={usePin ? undefined : onAccept}
-                  onDecline={onDecline}
-                  logo={logo}
-                  submission={submission}
-                  isAccepting={isAccepting}
-                />
-              ) : null,
+            screen: (
+              <ShareCredentialsSlide
+                key="share-credentials"
+                onAccept={usePin ? undefined : onAccept}
+                onDecline={onDecline}
+                logo={logo}
+                submission={submission}
+                isAccepting={isAccepting}
+              />
+            ),
           },
           usePin && {
             step: 'pin-enter',
             progress: 82.5,
-            screen: () => <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
+            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
           },
           {
             step: 'success',
             progress: 100,
             backIsCancel: true,
-            screen: () => <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
+            screen: <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
           },
         ].filter(Boolean) as SlideStep[]
       }
