@@ -12,7 +12,7 @@ import { WizardProvider } from './WizardContext'
 export type SlideStep = {
   step: string
   progress: number
-  screen: () => React.ReactNode
+  screen: (() => React.ReactNode) | React.ReactElement
   backIsCancel?: boolean
 }
 
@@ -161,7 +161,7 @@ export function SlideWizard({ steps, onCancel, isError, errorScreen, confirmatio
             fg={1}
             px="$4"
           >
-            <Screen />
+            {typeof Screen === 'function' ? <Screen /> : Screen}
           </ScrollableStack>
         </AnimatedStack>
       </FlexPage>
