@@ -43,8 +43,6 @@ export function FunkePidSetupScreen() {
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
   const [userName, setUserName] = useState<string>()
   const [isScanning, setIsScanning] = useState(false)
-  const [isAcquiringAccessToken, setIsAcquiringAccessToken] = useState(false)
-  const [isRetrievingCredential, setIsRetrievingCredential] = useState(false)
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
     (options) => {
@@ -229,14 +227,11 @@ export function FunkePidSetupScreen() {
   }
 
   const onScanningComplete = async () => {
-    if (isAcquiringAccessToken) return
     if (!receivePidUseCase) {
       toast.show('Not ready to receive PID', { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
-
-    setIsAcquiringAccessToken(true)
 
     try {
       setIdCardScanningState((state) => ({
@@ -266,7 +261,6 @@ export function FunkePidSetupScreen() {
   }
 
   const retrieveCredential = async () => {
-    if (isRetrievingCredential) return
     if (receivePidUseCase?.state !== 'retrieve-credential') {
       toast.show('Not ready to retrieve PID', { customData: { preset: 'danger' } })
       pushToWallet()
@@ -278,8 +272,6 @@ export function FunkePidSetupScreen() {
       pushToWallet()
       return
     }
-
-    setIsRetrievingCredential(true)
 
     try {
       // Retrieve Credential
@@ -324,6 +316,7 @@ export function FunkePidSetupScreen() {
         pushToWallet()
         return
       }
+
       toast.show('Something went wrong', { customData: { preset: 'danger' } })
       pushToWallet()
     }
@@ -335,12 +328,12 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-start',
           progress: 20,
-          screen: () => <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} />,
+          screen: <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} />,
         },
         {
           step: 'id-card-pin',
           progress: 30,
-          screen: () => (
+          screen: (
             <PidWalletPinSlide
               title="Enter your app PIN code"
               subtitle="Enter the PIN code you use to unlock your wallet."
@@ -352,7 +345,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-requested-attributes',
           progress: 40,
           backIsCancel: true,
-          screen: () => (
+          screen: (
             <PidReviewRequestSlide
               {...getPidSetupSlideContent('id-card-requested-attributes')}
               requestedAttributes={eidCardRequestedAccessRights}
@@ -363,7 +356,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-pin',
           progress: 50,
           backIsCancel: true,
-          screen: () => (
+          screen: (
             <PidEidCardPinSlide
               {...getPidSetupSlideContent('id-card-pin')}
               onEnterPin={onIdCardPinReEnter ?? onIdCardPinEnter}
@@ -374,7 +367,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-start-scan',
           progress: 60,
           backIsCancel: true,
-          screen: () => (
+          screen: (
             <PidCardScanSlide
               {...getPidSetupSlideContent('id-card-start-scan')}
               progress={idCardScanningState.progress}
@@ -393,7 +386,7 @@ export function FunkePidSetupScreen() {
           step: 'id-card-fetch',
           progress: 80,
           backIsCancel: true,
-          screen: () => (
+          screen: (
             <PidIdCardFetchSlide
               {...getPidSetupSlideContent('id-card-fetch')}
               userName={userName}
