@@ -17,7 +17,7 @@ const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
     case 'pin':
       return {
         title: 'Card offered',
-        subtitle: `To receive this card from ${issuerName}, you need to enter your PIN.`,
+        subtitle: `To receive this card from ${issuerName}, you need to enter a transaction PIN.`,
       }
     default:
       return {
