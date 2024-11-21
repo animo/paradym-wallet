@@ -4,6 +4,7 @@ import { Circle, Heading, HeroIcons, Image, InfoButton, Paragraph, Stack, XStack
 import { useRouter } from 'expo-router'
 import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
 import { formatRelativeDate } from 'packages/utils/src'
+import { useState } from 'react'
 
 interface VerifyPartySlideProps {
   type: 'offer' | 'request'
@@ -14,7 +15,7 @@ interface VerifyPartySlideProps {
   backgroundColor?: string
   lastInteractionDate?: string
   approvalsCount?: number
-  onContinue?: () => void
+  onContinue?: () => Promise<void>
 }
 
 export const VerifyPartySlide = ({
@@ -30,10 +31,15 @@ export const VerifyPartySlide = ({
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleContinue = () => {
-    onContinue?.()
+  const handleContinue = async () => {
+    setIsLoading(true)
+    if (onContinue) {
+      await onContinue()
+    }
     onNext()
+    setIsLoading(false)
   }
 
   const onPressVerifiedIssuer = withHaptics(() => {
@@ -105,6 +111,7 @@ export const VerifyPartySlide = ({
           onDecline={() => onCancel()}
           acceptText="Yes, continue"
           declineText="Stop"
+          isLoading={isLoading}
         />
       </Stack>
     </YStack>
