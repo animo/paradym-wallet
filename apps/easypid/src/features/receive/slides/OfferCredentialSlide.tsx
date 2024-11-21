@@ -59,7 +59,7 @@ export const OfferCredentialSlide = ({
   display,
   attributes,
 }: OfferCredentialSlideProps) => {
-  const { completeProgressBar, onNext, onBack, onCancel } = useWizard()
+  const { completeProgressBar } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const isInitialRender = useInitialRender()
   const [isCompleted, setIsCompleted] = useState(false)
