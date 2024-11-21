@@ -22,7 +22,7 @@ const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
     default:
       return {
         title: 'Card offered',
-        subtitle: `${issuerName} wants to give you the following card:`,
+        subtitle: `${issuerName} wants to issue you the following card:`,
       }
   }
 }
