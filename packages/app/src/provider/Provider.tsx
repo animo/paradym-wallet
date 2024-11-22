@@ -14,7 +14,7 @@ export function Provider({ children, ...rest }: PropsWithChildren<TamaguiProvide
   return (
     <TamaguiProvider disableInjectCSS defaultTheme="light" {...rest}>
       <PortalProvider shouldAddRootHost>
-        <ToastProvider swipeDirection="up" duration={6000} native={['mobile']}>
+        <ToastProvider swipeDirection="up" duration={6000}>
           <QueryClientProvider client={queryClient}>
             <GestureHandlerRootView style={{ flex: 1 }}>{children}</GestureHandlerRootView>
           </QueryClientProvider>

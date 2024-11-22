@@ -1,7 +1,8 @@
-import { setFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
+import { setFallbackSecureEnvironment, shouldUseFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
 import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import { initializeEasyPIDAgent } from '@package/agent'
+import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function initializeAppAgent({
   walletKey,
@@ -29,6 +30,7 @@ export async function initializeAppAgent({
     await wsp.createSalt()
     await wsp.register()
   }
+  if (getShouldUseCloudHsm()) shouldUseFallbackSecureEnvironment(true)
   setFallbackSecureEnvironment(wsp)
 
   return agent

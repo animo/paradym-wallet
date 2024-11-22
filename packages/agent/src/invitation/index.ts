@@ -31,12 +31,11 @@ export {
   receiveOutOfBandInvitation,
   receiveCredentialFromOpenId4VciOffer,
   acquireAuthorizationCodeAccessToken,
+  acquireRefreshTokenAccessToken,
   acquirePreAuthorizedAccessToken,
   resolveOpenId4VciOffer,
-  storeCredential,
   getCredentialsForProofRequest,
   shareProof,
-  deleteCredential,
   withTrustedCertificate,
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'

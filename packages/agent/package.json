@@ -4,6 +4,8 @@
 	"private": true,
 	"main": "src/index.ts",
 	"dependencies": {
+		"@animo-id/oid4vci": "*",
+		"@animo-id/oauth2": "*",
 		"@credo-ts/anoncreds": "*",
 		"@credo-ts/askar": "*",
 		"@credo-ts/cheqd": "*",

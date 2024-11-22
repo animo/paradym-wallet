@@ -5,8 +5,17 @@ import {
   SdJwtVcRecord,
   type VerifiableCredential,
   W3cCredentialRecord,
+  W3cJsonLdVerifiableCredential,
+  W3cJwtVerifiableCredential,
+  type W3cVerifiableCredential,
 } from '@credo-ts/core'
 import { pidBdrSdJwtTypeMetadata } from './pidBdrSdJwtTypeMetadata'
+
+export function decodeW3cCredential(credential: Record<string, unknown> | string): W3cVerifiableCredential {
+  return typeof credential === 'string'
+    ? W3cJwtVerifiableCredential.fromSerializedJwt(credential)
+    : W3cJsonLdVerifiableCredential.fromJson(credential)
+}
 
 export function encodeCredential(credential: VerifiableCredential): Record<string, unknown> | string {
   const credentialResult = credentialWithClaimFormat(credential)
