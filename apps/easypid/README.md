@@ -15,63 +15,78 @@ The identity wallet contains the following features, you can see the full flow w
 
 **General App**
 - 🟢 Onboard user
-- 🟢 Set up PIN
-- 🟢 Set up biometrics
-- 🟢 History
+  - 🟢 Set up PIN
+  - 🟢 Set up biometrics
+  - 🟠 Accept privacy policy
+  - 🟢 Onboarding instruction
+  - 🔴 Skippable identity instruction
+- 🟠 Home screen
+- 🟠 Activity
 - 🟠 About the app
-- 🟢 Authentication using biometrics or PIN
+- 🔴 Credential overview
+- 🔴 German language option
 
 **Credential Management**
 - 🟢 Credential detail
 - 🟢 Delete QEAA
-- 🟢 Transaction history
-- 🔴 SD-JWT VC Type Metadata
+- 🟠 SD-JWT VC Type Metadata
+   - Resolved and base is used, but not claim metadata or SVG template yet
 - 🟠 Revocation SD-JWT VC
 - 🔴 Revocation Mdoc
+- 🔴 Re-receive the PID
 
 **Obtain PID from PID provider**
 - 🟢 SD JWT VC using OpenID4VCI 
 - 🟢 Mdoc using OpenID4VCI 
 - 🟢 [C option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
-- 🔴 [C' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
+- 🟠 [C' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
 - 🟢 [B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options) *temporarily disabled*
+- 🟢 Receive the PID from inside of the wallet
 
 
 **Obtain (Q)EAAs from issuer**
 - 🟢 SD-JWT VC using OpenID4VCI
 - 🟢 mDOC using OpenID4VCI
-- 🔴 PID presentation during (Q)EAA issuance
-- 🔴 Batch issuance and single use credentials
-- 🔴 Authorization code flow
+- 🟢 PID presentation during (Q)EAA issuance
+- 🟠 Batch issuance and single use credentials
+- 🟢 Authorization code flow
 - 🔴 Client attestations
 
 **Present attestations remotely** 
 - 🟢 PID SD-JWT VC using OpenID4VP
 - 🟢 PID mDOC using OpenID4VP
 - 🟢 QEAA SD JWT VC using OpenID4VP
-- 🔴 QEAA Mdoc using OpenID4VP
-- 🟠 Combined presentations
+- 🟢 QEAA Mdoc using OpenID4VP
+- 🟢 Combined presentations
 - 🟢 Cross-device QR flow
 - 🟢 Same-device flow
-- 🔴 New VP query language
+- 🟢 SD-JWT OID4VC conformance test suite
+- 🟢 mDOC OID4VC conformance test suite 
+- 🟠 New VP query language
 
 **Present attestations in-person**
 - Android
   - 🟢 Android-Android over NFC for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
-  - 🔴 mDOC over BLE
+  - 🟠 mDOC over BLE
 - iOS
   - 🔴 SD-JWT VC using OpenID4VP over BLE
   - 🔴 mDOC over BLE
 
 **HSM**
   - 🟢 On device HSM
-  - 🔴 Cloud-backed HSM
+  - 🟠 Cloud-backed HSM
+
+**Trust Establishment using OpenID Federation Draft 40**
+- 🟢 Issuer and verifier entity configuration
+- 🟠 Verifier e2e flow with the right keys
+- 🟠 Functions for showing everything in the wallet
+- 🔴 Issuer e2e flow 
+- 🔴 Wallet in the OpenID Federation
 
 **Other**
-- 🔴 Trust establishment using OpenID Federation Draft 34
 - 🔴 HAIP compliance
-- 🔴 WCAG 2.1 compliance
+- 🟠 WCAG 2.1 compliance
 - 🔴 AI-based oversharing detection
 
 **[Test issuer/verifier](https://funke.animo.id/)** 
@@ -82,7 +97,6 @@ The identity wallet contains the following features, you can see the full flow w
 
 The identity wallet contains the following temporary features for development and testing:
 
-- Switch between C and B' PID flow
 - Using a simulated eID test card
 - Reset wallet
 
@@ -96,7 +110,7 @@ The identity wallet contains the following temporary features for development an
 
 ## Install
 
-The prototype app is currently pusblished privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
+The prototype app is currently published privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
 
 ## Try it out
 
