@@ -1,5 +1,5 @@
 import { useMMKVBoolean } from 'react-native-mmkv'
-import { mmkv } from './hasFinishedOnboarding'
+import { mmkv } from '../../storage/mmkv'
 
 export function getShouldUseCloudHsm() {
   return mmkv.getBoolean('shouldUseCloudHsm')

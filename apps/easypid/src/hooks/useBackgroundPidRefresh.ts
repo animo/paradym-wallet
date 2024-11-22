@@ -1,4 +1,4 @@
-import { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { getBatchCredentialMetadata } from '@package/agent/src/openid4vc/batchMetadata'
 import { useHasInternetConnection } from '@package/app'
 import { useEffect, useMemo, useState } from 'react'
@@ -20,16 +20,14 @@ async function refreshPid({ agent, sdJwt, mdoc }: { agent: AppAgent; sdJwt?: SdJ
 }
 
 export function useBackgroundPidRefresh(batchThreshold: number) {
-  const { credentials } = usePidCredential()
+  const { sdJwt, mdoc } = usePidCredential()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const hasInternet = useHasInternetConnection()
   const shouldUseCloudHsm = useShouldUseCloudHsm()
   const { agent } = useAppAgent()
 
-  const { sdJwt, mdoc } = useMemo(() => {
+  const { shouldRefreshMdoc, shouldRefreshSdJwt } = useMemo(() => {
     if (!shouldUseCloudHsm) return {}
-    const sdJwt = credentials?.find((c) => c.record instanceof SdJwtVcRecord)?.record as SdJwtVcRecord | undefined
-    const mdoc = credentials?.find((c) => c.record instanceof MdocRecord)?.record as MdocRecord | undefined
 
     let shouldRefreshSdJwt = false
     if (sdJwt) {
@@ -48,41 +46,22 @@ export function useBackgroundPidRefresh(batchThreshold: number) {
     }
 
     return {
-      sdJwt: sdJwt
-        ? {
-            record: sdJwt,
-            shouldRefresh: shouldRefreshSdJwt,
-          }
-        : undefined,
-      mdoc: mdoc
-        ? {
-            record: mdoc,
-            shouldRefresh: shouldRefreshMdoc,
-          }
-        : undefined,
+      shouldRefreshSdJwt,
+      shouldRefreshMdoc,
     }
-  }, [credentials, batchThreshold, shouldUseCloudHsm])
+  }, [sdJwt, mdoc, batchThreshold, shouldUseCloudHsm])
 
   useEffect(() => {
     if (isRefreshing || !hasInternet || !shouldUseCloudHsm) return
 
-    if (sdJwt?.shouldRefresh || mdoc?.shouldRefresh) {
+    if (shouldRefreshMdoc || shouldRefreshSdJwt) {
       setIsRefreshing(true)
 
       refreshPid({
         agent,
-        sdJwt: sdJwt?.shouldRefresh ? sdJwt?.record : undefined,
-        mdoc: mdoc?.shouldRefresh ? mdoc?.record : undefined,
+        sdJwt: shouldRefreshSdJwt ? sdJwt : undefined,
+        mdoc: shouldRefreshMdoc ? mdoc : undefined,
       }).finally(() => setIsRefreshing(false))
     }
-  }, [
-    sdJwt?.shouldRefresh,
-    mdoc?.shouldRefresh,
-    hasInternet,
-    agent,
-    isRefreshing,
-    mdoc?.record,
-    sdJwt?.record,
-    shouldUseCloudHsm,
-  ])
+  }, [shouldRefreshMdoc, shouldRefreshSdJwt, hasInternet, agent, isRefreshing, mdoc, sdJwt, shouldUseCloudHsm])
 }

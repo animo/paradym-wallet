@@ -1,4 +1,4 @@
-import { ClaimFormat } from '@credo-ts/core'
+import { ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { type CredentialForDisplayId, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
 import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 import { useMemo } from 'react'
@@ -403,6 +403,9 @@ export function usePidCredential() {
     pidCredentialForDisplay: pidCredentials[0] as (typeof pidCredentials)[number] | undefined,
     credentialIds: pidCredentials.map((p) => p.id),
     credentials: pidCredentials,
+    mdoc: pidCredentials.find((c): c is typeof c & { record: MdocRecord } => c.record instanceof MdocRecord)?.record,
+    sdJwt: pidCredentials.find((c): c is typeof c & { record: SdJwtVcRecord } => c.record instanceof SdJwtVcRecord)
+      ?.record,
   } as const
 }
 
