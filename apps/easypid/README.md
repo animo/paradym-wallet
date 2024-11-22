@@ -39,7 +39,7 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 SD JWT VC using OpenID4VCI 
 - 🟢 Mdoc using OpenID4VCI 
 - 🟢 [C option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
-- 🟠 [C' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
+- 🟢 [C' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
 - 🟢 [B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options) *temporarily disabled*
 - 🟢 Receive the PID from inside of the wallet
 
