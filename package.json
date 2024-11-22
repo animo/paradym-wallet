@@ -24,14 +24,11 @@
 		"overrides": {
 			"@unimodules/react-native-adapter": "catalog:",
 			"@unimodules/core": "catalog:",
-			"react-docgen-typescript": "catalog:",
-			"@sphereon/did-auth-siop": "catalog:",
-			"@sphereon/jarm": "catalog:",
-			"@sphereon/oid4vc-common": "catalog:"
+			"react-docgen-typescript": "catalog:"
 		},
 		"patchedDependencies": {
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@credo-ts/askar@0.6.0-pr-2100-20241121224952": "patches/@credo-ts__askar@0.6.0-pr-2100-20241121224952.patch",
+			"@credo-ts/askar@0.6.0-alpha-20241120153226": "patches/@credo-ts__askar@0.6.0-alpha-20241120153226.patch",
 			"@animo-id/mdoc@0.2.38": "patches/@animo-id__mdoc@0.2.38.patch"
 		}
 	},
