@@ -632,7 +632,7 @@ export function OnboardingContextProvider({
       <currentStep.Screen
         goToNextStep={() => {
           // TODO: make configurable
-          // setShouldUseCloudHsm(true)
+          setShouldUseCloudHsm(true)
           goToNextStep()
         }}
       />
