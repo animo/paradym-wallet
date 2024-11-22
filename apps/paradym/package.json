@@ -10,10 +10,10 @@
 		"prebuild": "APP_VARIANT=development pnpm expo prebuild --no-install"
 	},
 	"dependencies": {
-		"@animo-id/expo-secure-environment": "*",
-		"@hyperledger/anoncreds-react-native": "*",
-		"@hyperledger/aries-askar-react-native": "*",
-		"@hyperledger/indy-vdr-react-native": "*",
+		"@animo-id/expo-secure-environment": "catalog:",
+		"@hyperledger/anoncreds-react-native": "catalog:",
+		"@hyperledger/aries-askar-react-native": "catalog:",
+		"@hyperledger/indy-vdr-react-native": "catalog:",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
 		"@package/ui": "workspace:*",
@@ -39,8 +39,8 @@
 		"expo-status-bar": "~1.12.1",
 		"expo-system-ui": "~3.0.6",
 		"expo-updates": "~0.25.16",
-		"react": "*",
-		"react-native": "*",
+		"react": "catalog:",
+		"react-native": "catalog:",
 		"react-native-fs": "^2.20.0",
 		"react-native-gesture-handler": "~2.16.2",
 		"react-native-get-random-values": "~1.11.0",
@@ -52,6 +52,6 @@
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
 		"@tamagui/babel-plugin": "1.109.5",
-		"typescript": "*"
+		"typescript": "catalog:"
 	}
 }

@@ -1,15 +1,8 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
+import { COSEKey, DeviceRequest, DeviceResponse, MDoc, type MdocContext, parseIssuerSigned } from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
 import type { EasyPIDAppAgent } from '@package/agent'
-import {
-  COSEKey,
-  DeviceRequest,
-  DeviceResponse,
-  MDoc,
-  type MdocContext,
-  parseIssuerSigned,
-} from '@protokoll/mdoc-client'
 import { type Permission, PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
