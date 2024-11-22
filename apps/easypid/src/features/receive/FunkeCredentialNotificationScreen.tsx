@@ -1,10 +1,13 @@
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
+  type MdocRecord,
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
+  type SdJwtVcRecord,
+  type W3cCredentialRecord,
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
   acquirePreAuthorizedAccessToken,
@@ -59,6 +62,8 @@ export function FunkeCredentialNotificationScreen() {
 
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
+  const [credentialAttributes, setCredentialAttributes] = useState<Record<string, unknown>>()
+  const [receivedRecord, setReceivedRecord] = useState<SdJwtVcRecord | MdocRecord | W3cCredentialRecord>()
 
   // TODO: where to transform?
   // Combine oid4vci issuer metadata and openid fed into one pipeline. If openid it's trusted
@@ -120,21 +125,29 @@ export function FunkeCredentialNotificationScreen() {
       })
 
       const credentialRecord = credentialResponses[0].credential
-      const { display } = getCredentialForDisplay(credentialRecord)
-      await storeCredential(agent, credentialRecord)
-      await addReceivedActivity(agent, {
-        // TODO: should host be entityId or the iss?
-        entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
-        host: display.issuer.domain,
-        name: display.issuer.name,
-        logo: display.issuer.logo ? display.issuer.logo : undefined,
-        backgroundColor: '#ffffff', // Default to a white background for now
-        credentialIds: [credentialRecord.id],
-      })
-      setIsCompleted(true)
+      const { attributes } = getCredentialForDisplay(credentialRecord)
+      setCredentialAttributes(attributes)
+      setReceivedRecord(credentialRecord)
     },
     [agent]
   )
+
+  const onCompleteCredentialRetrieval = async () => {
+    if (!receivedRecord) return
+
+    await storeCredential(agent, receivedRecord)
+    await addReceivedActivity(agent, {
+      // TODO: should host be entityId or the iss?
+      entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer as string,
+      host: credentialDisplay.issuer.domain,
+      name: credentialDisplay.issuer.name,
+      logo: credentialDisplay.issuer.logo ? credentialDisplay.issuer.logo : undefined,
+      backgroundColor: '#ffffff', // Default to a white background for now
+      credentialIds: [receivedRecord.id],
+    })
+
+    setIsCompleted(true)
+  }
 
   const acquireCredentialsAuth = useCallback(
     async (authorizationCode: string) => {
@@ -270,13 +283,23 @@ export function FunkeCredentialNotificationScreen() {
   const onCancel = () => pushToWallet('back')
   const onGoToWallet = () => pushToWallet('replace')
 
+  const isAuthFlow =
+    resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance &&
+    credentialsForRequest
+
+  const isPreAuthWithTxFlow = preAuthGrant && txCode
+
+  const isBrowserAuthFlow =
+    resolvedCredentialOffer &&
+    resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.Oauth2Redirect
+
   return (
     <SlideWizard
       steps={[
         {
           step: 'loading-request',
           progress: 16.5,
-          screen: () => (
+          screen: (
             <LoadingRequestSlide key="loading-request" isLoading={!resolvedCredentialOffer} isError={!!errorReason} />
           ),
         },
@@ -284,7 +307,7 @@ export function FunkeCredentialNotificationScreen() {
           step: 'verify-issuer',
           progress: 33,
           backIsCancel: true,
-          screen: () => (
+          screen: (
             <VerifyPartySlide
               key="verify-issuer"
               type="offer"
@@ -293,57 +316,19 @@ export function FunkeCredentialNotificationScreen() {
               entityId={issuerMetadata?.credential_issuer as string}
               lastInteractionDate={activities[0]?.date}
               approvalsCount={0}
+              onContinue={onCheckCardContinue}
             />
           ),
         },
-        {
-          step: 'check-card',
-          progress: 49.5,
-          screen: () => (
-            <CredentialCardSlide key="credential-card" display={credentialDisplay} onContinue={onCheckCardContinue} />
-          ),
-        },
-        // TODO: verify entity slide??
-        resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
-          ? {
-              step: 'presentation-during-issuance',
-              progress: 49.5,
-              backIsCancel: true,
-              screen: () =>
-                credentialsForRequest ? (
-                  <ShareCredentialsSlide
-                    key="share-credentials"
-                    // TODO: add user pin
-                    onAccept={onPresentationAccept}
-                    onDecline={() => {
-                      setErrorReason('Presentation declined')
-                    }}
-                    logo={credentialsForRequest.verifier.logo}
-                    submission={credentialsForRequest.formattedSubmission}
-                    isAccepting={isSharingPresentation}
-                  />
-                ) : null,
-            }
-          : undefined,
-        // Only when doing pre auth and we need to enter a tx code (pin)
-        preAuthGrant && txCode
-          ? {
-              step: 'tx-code',
-              progress: 49.5,
-              backIsCancel: true,
-              screen: () => <TxCodeSlide txCode={txCode} onTxCode={onSubmitTxCode} />,
-            }
-          : undefined,
-        // Only when doing browser auth
-        resolvedCredentialOffer &&
-        resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.Oauth2Redirect
+        isBrowserAuthFlow
           ? {
               step: 'auth-code-flow',
               progress: 49.5,
               backIsCancel: true,
-              screen: () => (
+              screen: (
                 <AuthCodeFlowSlide
                   key="auth-code-flow"
+                  display={credentialDisplay}
                   authCodeFlowDetails={{
                     openUrl: resolvedAuthorizationRequest.authorizationRequestUrl,
                     redirectUri: authorization.redirectUri,
@@ -359,17 +344,56 @@ export function FunkeCredentialNotificationScreen() {
                 />
               ),
             }
+          : {
+              step: 'check-card',
+              progress: 49.5,
+              screen: (
+                <CredentialCardSlide
+                  key="credential-card"
+                  type={isAuthFlow ? 'presentation' : isPreAuthWithTxFlow ? 'pin' : 'noAuth'}
+                  display={credentialDisplay}
+                />
+              ),
+            },
+        // TODO: verify entity slide??
+        isAuthFlow
+          ? {
+              step: 'presentation-during-issuance',
+              progress: 66,
+              backIsCancel: true,
+              screen: (
+                <ShareCredentialsSlide
+                  key="share-credentials"
+                  // TODO: add user pin
+                  onAccept={onPresentationAccept}
+                  logo={credentialsForRequest.verifier.logo}
+                  submission={credentialsForRequest.formattedSubmission}
+                  isAccepting={isSharingPresentation}
+                />
+              ),
+            }
           : undefined,
+        isPreAuthWithTxFlow
+          ? {
+              step: 'tx-code',
+              progress: 66,
+              backIsCancel: true,
+              screen: <TxCodeSlide txCode={txCode} onTxCode={onSubmitTxCode} />,
+            }
+          : undefined,
+
         {
           step: 'retrieve-credential',
-          progress: 66,
+          progress: 82.5,
           backIsCancel: true,
-          screen: () => (
+          screen: (
             <CredentialRetrievalSlide
               key="retrieve-credential"
               onGoToWallet={onGoToWallet}
               display={credentialDisplay}
+              attributes={credentialAttributes ?? {}}
               isCompleted={isCompleted}
+              onAccept={onCompleteCredentialRetrieval}
             />
           ),
         },

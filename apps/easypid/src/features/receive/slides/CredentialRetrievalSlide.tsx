@@ -5,13 +5,21 @@ import {
   Heading,
   HeroIcons,
   Paragraph,
+  ScrollView,
+  Spacer,
   XStack,
   YStack,
   useInitialRender,
   useSpringify,
 } from '@package/ui'
 import * as Haptics from 'expo-haptics'
-import { FunkeCredentialCard, useWizard } from 'packages/app/src'
+import {
+  CredentialAttributes,
+  DualResponseButtons,
+  FunkeCredentialCard,
+  useScrollViewPosition,
+  useWizard,
+} from 'packages/app/src'
 import { useEffect, useState } from 'react'
 import {
   FadeIn,
@@ -25,19 +33,44 @@ import {
 } from 'react-native-reanimated'
 
 interface CredentialRetrievalSlideProps {
+  attributes: Record<string, unknown>
   display: CredentialDisplay
   isCompleted: boolean
+  onAccept: () => Promise<void>
   onGoToWallet: () => void
 }
 
-export const CredentialRetrievalSlide = ({ display, isCompleted, onGoToWallet }: CredentialRetrievalSlideProps) => {
-  const { completeProgressBar } = useWizard()
+export const CredentialRetrievalSlide = ({
+  attributes,
+  display,
+  isCompleted,
+  onAccept,
+  onGoToWallet,
+}: CredentialRetrievalSlideProps) => {
+  const { completeProgressBar, onCancel } = useWizard()
   const isInitialRender = useInitialRender()
-  const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
   const scale = useSharedValue(1)
+  const [scrollViewHeight, setScrollViewHeight] = useState<number>()
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
+  const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
+  const [isStoring, setIsStoring] = useState(false)
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
+  const isStoringOrCompleted = isStoring || isCompleted
+
+  const handleAccept = async () => {
+    setIsStoring(true)
+    await onAccept()
+  }
+
+  const handleDecline = () => {
+    onCancel()
+  }
 
   useEffect(() => {
+    if (isStoring) {
+      scale.value = withTiming(0.9, { duration: 2000 })
+    }
     if (isCompleteAndAllowed) {
       scale.value = withSpring(1, {
         damping: 4,
@@ -46,10 +79,8 @@ export const CredentialRetrievalSlide = ({ display, isCompleted, onGoToWallet }:
         restDisplacementThreshold: 0.01,
         restSpeedThreshold: 0.01,
       })
-    } else {
-      scale.value = withTiming(0.9, { duration: 2000 })
     }
-  }, [isCompleteAndAllowed, scale])
+  }, [isStoring, isCompleteAndAllowed, scale])
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -57,69 +88,79 @@ export const CredentialRetrievalSlide = ({ display, isCompleted, onGoToWallet }:
     }
   }, [])
 
-  // Slow haptic when isStoring and a hard tick when isCompleted
+  // Haptic feedback for storing and completion states
   useEffect(() => {
-    let interval: NodeJS.Timeout | undefined
+    if (isStoring && !isCompleteAndAllowed) {
+      // Initial haptic feedback when storing starts
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
 
-    if (isCompleteAndAllowed) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-    } else {
-      interval = setInterval(() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      const interval = setInterval(async () => {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }, 300)
-    }
 
-    return () => {
-      if (interval) {
-        clearInterval(interval)
-      }
+      return () => clearInterval(interval)
     }
-  }, [isCompleteAndAllowed])
+  }, [isStoring, isCompleteAndAllowed])
 
   // Delay the completion by 1 second to show the storing animation
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAllowedToComplete(true)
-    }, 1000)
+    if (isStoring) {
+      const timer = setTimeout(() => {
+        setIsAllowedToComplete(true)
+      }, 1000)
 
-    return () => clearTimeout(timer)
-  }, [])
+      return () => clearTimeout(timer)
+    }
+  }, [isStoring])
 
   // Wait for the credential to be accepted and the minimum animation time to be reached
   useEffect(() => {
     if (isCompleteAndAllowed) {
       completeProgressBar()
+      setIsStoring(false)
     }
   }, [isCompleteAndAllowed, completeProgressBar])
 
   return (
     <YStack fg={1} jc="space-between">
       <AnimatedStack gap="$4" fg={1}>
-        <AnimatedStack key="success-icon" opacity={isCompleteAndAllowed ? 1 : 0} entering={useSpringify(ZoomIn)}>
-          <XStack pt="$4" jc="center">
-            <HeroIcons.ShieldCheckFilled color="$primary-500" size={48} />
-          </XStack>
-        </AnimatedStack>
+        {isStoringOrCompleted && (
+          <AnimatedStack
+            key={isCompleteAndAllowed ? 'success-icon' : 'info-icon'}
+            opacity={isCompleteAndAllowed ? 1 : 0}
+            entering={useSpringify(ZoomIn)}
+          >
+            <XStack pt="$4" jc="center">
+              <HeroIcons.ShieldCheckFilled color="$primary-500" size={48} />
+            </XStack>
+          </AnimatedStack>
+        )}
         <AnimatedStack layout={useSpringify(LinearTransition)}>
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-title' : 'info-title'}
             entering={!isInitialRender ? FadeIn.duration(300) : undefined}
-            opacity={isCompleteAndAllowed ? 1 : 0}
-            exiting={FadeOut.duration(100)}
+            opacity={isStoring ? 0 : 1}
+            exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
-            <Heading ta="center">Success!</Heading>
+            {isCompleteAndAllowed ? (
+              <Heading ta="center">Success!</Heading>
+            ) : (
+              <Heading>Is the information correct?</Heading>
+            )}
           </AnimatedStack>
         </AnimatedStack>
         <AnimatedStack layout={useSpringify(LinearTransition)}>
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-text' : 'info-text'}
             entering={!isInitialRender ? FadeIn.duration(300) : undefined}
-            opacity={isCompleteAndAllowed ? 1 : 0}
-            exiting={FadeOut.duration(100)}
+            opacity={isStoring ? 0 : 1}
+            exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
-            <Paragraph ta="center" mt="$-2" mb="$6">
-              Card successfully added to your wallet!
-            </Paragraph>
+            {isStoringOrCompleted ? (
+              <Paragraph ta="center" mt="$-2" mb="$6">
+                Card successfully added to your wallet!
+              </Paragraph>
+            ) : null}
           </AnimatedStack>
         </AnimatedStack>
         <AnimatedStack layout={useSpringify(LinearTransition)} fg={1}>
@@ -130,23 +171,23 @@ export const CredentialRetrievalSlide = ({ display, isCompleted, onGoToWallet }:
               name={display.name}
               backgroundImage={display.backgroundImage}
               bgColor={display.backgroundColor}
-              isLoading={!isCompleteAndAllowed}
+              isLoading={isStoring && !isCompleteAndAllowed}
             />
           </AnimatedStack>
-          {/* TODO: render attributes when retrieved? */}
-          {/* <AnimatedStack
+          <AnimatedStack
             fg={1}
             btw="$0.5"
             px="$4"
             mx="$-4"
-            borderColor={isScrolledByOffset && !isCompleted ? '$grey-200' : '$background'}
+            borderColor={isScrolledByOffset && !isStoringOrCompleted ? '$grey-200' : '$background'}
             onLayout={(event) => {
+              // Set the initial height of the stack to define the maxHeight of the scrollView
               if (!scrollViewHeight) {
                 setScrollViewHeight(event.nativeEvent.layout.height)
               }
             }}
           >
-            {!isCompleted && attributes ? (
+            {!isStoringOrCompleted ? (
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={scrollEventThrottle}
@@ -155,19 +196,21 @@ export const CredentialRetrievalSlide = ({ display, isCompleted, onGoToWallet }:
                 maxHeight={scrollViewHeight}
                 bg="$white"
               >
-                <CredentialAttributes
-                  headerStyle="small"
-                  borderStyle="large"
-                  attributeWeight="medium"
-                  subject={attributes}
-                  disableHeader
-                />
+                {scrollViewHeight && (
+                  <CredentialAttributes
+                    headerStyle="small"
+                    borderStyle="large"
+                    attributeWeight="medium"
+                    subject={attributes}
+                    disableHeader
+                  />
+                )}
                 <Spacer size="$6" />
               </ScrollView>
             ) : (
               <Spacer size="$6" />
             )}
-          </AnimatedStack> */}
+          </AnimatedStack>
         </AnimatedStack>
       </AnimatedStack>
       <AnimatedStack
@@ -176,14 +219,18 @@ export const CredentialRetrievalSlide = ({ display, isCompleted, onGoToWallet }:
         entering={isCompleteAndAllowed ? FadeIn.duration(300).delay(500) : undefined}
         exiting={FadeOut.duration(100)}
         btw="$0.5"
-        borderColor={isCompleteAndAllowed ? '$background' : '$grey-200'}
+        borderColor={isStoringOrCompleted ? '$background' : '$grey-200'}
         p="$4"
         mx="$-4"
         bg="$background"
       >
-        <Button.Solid opacity={isCompleteAndAllowed ? 1 : 0} onPress={onGoToWallet}>
-          Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
-        </Button.Solid>
+        {isStoringOrCompleted ? (
+          <Button.Solid opacity={isCompleteAndAllowed ? 1 : 0} onPress={onGoToWallet}>
+            Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
+          </Button.Solid>
+        ) : (
+          <DualResponseButtons align="horizontal" onAccept={handleAccept} onDecline={handleDecline} />
+        )}
       </AnimatedStack>
     </YStack>
   )

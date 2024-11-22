@@ -1,15 +1,21 @@
-import { FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
+import { FlexPage, Heading, InfoButton, Paragraph, Stack, YStack } from '@package/ui'
 import React from 'react'
 
-import { useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
+import { Linking } from 'react-native'
 
 export function FunkeAboutScreen() {
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+  const openContact = () => {
+    Linking.openURL('mailto:ana@animo.id?subject=Reach out from Funke EUDI Wallet')
+  }
+
+  const openPrivacyPolicy = () => {
+    Linking.openURL('https://paradym.id/wallet-privacy-policy')
+  }
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
+      <YStack w="100%" top={0}>
         <YStack gap="$4" p="$4">
           <Stack h="$1" />
           <Heading variant="h1" fontWeight="$bold">
@@ -17,16 +23,33 @@ export function FunkeAboutScreen() {
           </Heading>
         </YStack>
       </YStack>
-      <ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={scrollEventThrottle}
-        contentContainerStyle={{ minHeight: '85%' }}
-      >
-        <YStack fg={1} px="$4" jc="space-between">
-          <Paragraph color="$grey-700">This page is under construction.</Paragraph>
-          <TextBackButton />
+
+      <YStack fg={1} px="$4" gap="$4">
+        <YStack gap="$2">
+          <Paragraph color="$grey-700">
+            This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It
+            serves as a prototype for future wallet providers.
+          </Paragraph>
+          <Paragraph>
+            For more information on the project visit sprind.org or reach out to{' '}
+            <Paragraph fontWeight="$semiBold" color="$primary-500" onPress={openContact}>
+              ana@animo.id
+            </Paragraph>
+          </Paragraph>
         </YStack>
-      </ScrollView>
+        <YStack gap="$2">
+          <InfoButton
+            variant="view"
+            title="Privacy Policy"
+            description="Open the privacy policy"
+            routingType="external"
+            onPress={openPrivacyPolicy}
+          />
+        </YStack>
+      </YStack>
+      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <TextBackButton />
+      </YStack>
     </FlexPage>
   )
 }
