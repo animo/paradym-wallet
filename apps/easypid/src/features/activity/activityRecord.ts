@@ -118,11 +118,15 @@ export const addSharedActivity = async (
       logo?: DisplayImage
     }
     request: {
-      credentials: Array<{
-        id: string
-        disclosedAttributes: string[]
-        disclosedPayload: Record<string, unknown>
-      }>
+      credentials: Array<
+        | {
+            id: string
+            disclosedAttributes: string[]
+            disclosedPayload: Record<string, unknown>
+          }
+        // means the credential wasn't present
+        | { name: string; requestedAttributes: string[] }
+      >
       name?: string
       purpose?: string
       failureReason?: SharingFailureReason

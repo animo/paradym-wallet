@@ -588,6 +588,9 @@ importers:
       '@animo-id/oid4vci':
         specifier: 'catalog:'
         version: 0.1.4-alpha-20241120145259(typescript@5.3.3)
+      '@astronautlabs/jsonpath':
+        specifier: ^1.1.2
+        version: 1.1.2
       '@credo-ts/anoncreds':
         specifier: 'catalog:'
         version: 0.6.0-pr-2100-20241121224952(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
@@ -838,8 +841,8 @@ packages:
     resolution: {integrity: sha512-ZnEnayIbjDarLizdT1FDhx1N00kObEs8uT+X60zattWXufrhaetlHZwMI2mK8eqK1bdiyVE/g0Gd+BcfinU4Jw==}
     peerDependencies:
       expo: '*'
-      react: 18.3.1
-      react-native: ~0.74.5
+      react: '*'
+      react-native: '*'
 
   '@animo-id/mdoc@0.2.38':
     resolution: {integrity: sha512-98KQ0jvwTYsFOffTGvvHXBDo23b5xmhYjPiMIX6e807I6iS4fZZ9ypfBySdA5IiGUvXELKqEv27AUaayQa/9bg==}
@@ -4654,6 +4657,9 @@ packages:
 
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
+
+  '@types/node@18.18.8':
+    resolution: {integrity: sha512-OLGBaaK5V3VRBS1bAkMVP2/W9B+H8meUfl866OrMNQqt7wDgdpWPp5o6gmIc9pB+lIQHSq4ZL8ypeH1vPxcPaQ==}
 
   '@types/node@18.19.63':
     resolution: {integrity: sha512-hcUB7THvrGmaEcPcvUZCZtQ2Z3C+UR/aOcraBLCvTsFMh916Gc1kCCYcfcMuB76HM2pSerxl1PoP3KnmHzd9Lw==}
@@ -14640,7 +14646,7 @@ snapshots:
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
-      '@types/node': 18.19.63
+      '@types/node': 18.18.8
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -17160,7 +17166,11 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 22.8.6
+      '@types/node': 18.18.8
+
+  '@types/node@18.18.8':
+    dependencies:
+      undici-types: 5.26.5
 
   '@types/node@18.19.63':
     dependencies:

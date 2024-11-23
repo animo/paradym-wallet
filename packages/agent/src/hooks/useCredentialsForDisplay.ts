@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
 
-import { getCredentialForDisplay } from '../display'
+import { type CredentialForDisplay, getCredentialForDisplay } from '../display'
 import { useMdocRecords, useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
-
-export type CredentialForDisplay = ReturnType<typeof getCredentialForDisplay>
 
 export const useCredentialsForDisplay = () => {
   const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()

@@ -1,4 +1,9 @@
-import { BiometricAuthenticationCancelledError, getCredentialsForProofRequest, shareProof } from '@package/agent'
+import {
+  BiometricAuthenticationCancelledError,
+  type CredentialsForProofRequest,
+  getCredentialsForProofRequest,
+  shareProof,
+} from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
@@ -9,6 +14,7 @@ import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { isPidCredential } from '../../hooks'
 import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
+import { excludeUndefined } from '@package/utils'
 
 type Query = { uri?: string; data?: string }
 
@@ -27,8 +33,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
 
-  const [credentialsForRequest, setCredentialsForRequest] =
-    useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
+  const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [isSharing, setIsSharing] = useState(false)
   const { activities } = useActivities({
     filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
@@ -43,9 +48,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   const usePin = useMemo(() => {
     const isPidInSubmission =
-      credentialsForRequest?.formattedSubmission?.entries.some((entry) =>
-        entry.credentials.some((credential) => isPidCredential(credential.metadata?.type))
-      ) ?? false
+      credentialsForRequest?.formattedSubmission?.entries.some((entry) => {
+        if (!entry.isSatisfied) return false
+        // TODO: once we support credential selection [0] should be updated
+        return isPidCredential(entry.credentials[0].credential.metadata.type)
+      }) ?? false
     // TODO: usePin when HSM or no PID
     return !isPidInSubmission
   }, [credentialsForRequest])
@@ -86,22 +93,23 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     try {
       await shareProof({
         agent,
-        authorizationRequest: credentialsForRequest.authorizationRequest,
-        credentialsForRequest: credentialsForRequest.credentialsForRequest,
+        resolvedRequest: credentialsForRequest,
         selectedCredentials: {},
         allowUntrustedCertificate: true,
       })
 
-      // TODO: only add first one to activity?
-      const credentialsWithDisclosedPayload = credentialsForRequest.formattedSubmission.entries.flatMap((entry) => {
-        return entry.credentials.map((credential) => {
+      const credentialsWithDisclosedPayload = credentialsForRequest.formattedSubmission.entries
+        .map((entry) => {
+          if (!entry.isSatisfied) return undefined
+          // TODO: once we support credential selection we shouldn't pick [0] but the selected credential
+          const credential = entry.credentials[0]
           return {
-            id: credential.id,
+            id: credential.credential.id,
             disclosedAttributes: credential.requestedAttributes ?? [],
             disclosedPayload: credential.disclosedPayload ?? {},
           }
         })
-      })
+        .filter(excludeUndefined)
 
       await addSharedActivity(agent, {
         status: 'success',
@@ -150,15 +158,21 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   }, [credentialsForRequest, agent, fedDisplayData])
 
   const onProofDecline = async () => {
-    // TODO: only add first one to activity?
-    const credentialsWithDisclosedPayload = credentialsForRequest?.formattedSubmission.entries.flatMap((entry) => {
-      return entry.credentials.map((credential) => {
+    const credentialsWithDisclosedPayload = credentialsForRequest?.formattedSubmission.entries.map((entry) => {
+      if (!entry.isSatisfied) {
         return {
-          id: credential.id,
-          disclosedAttributes: credential.requestedAttributes ?? [],
-          disclosedPayload: credential.disclosedPayload ?? {},
+          name: entry.name,
+          requestedAttributes: entry.requestedAttributes,
         }
-      })
+      }
+
+      // TODO: once we support selection we should update [0] to the selected credential
+      const credential = entry.credentials[0]
+      return {
+        id: credential.credential.id,
+        disclosedAttributes: credential.requestedAttributes ?? [],
+        disclosedPayload: credential.disclosedPayload ?? {},
+      }
     })
 
     const activityData = {
@@ -185,7 +199,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         status: 'failed',
         request: {
           ...activityData.request,
-          failureReason: credentialsForRequest?.formattedSubmission ? 'missing_credentials' : 'unknown',
+          failureReason: credentialsForRequest ? 'missing_credentials' : 'unknown',
         },
       })
     }

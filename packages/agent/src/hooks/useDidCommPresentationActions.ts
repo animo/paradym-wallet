@@ -6,16 +6,22 @@ import type {
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/core'
-import type { FormattedSubmission, FormattedSubmissionEntry } from '../format/formatPresentation'
+import type {
+  FormattedSubmission,
+  FormattedSubmissionEntry,
+  FormattedSubmissionEntrySatisfiedCredential,
+} from '../format/formatPresentation'
 
-import { ClaimFormat, CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
+import { CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
 import { useConnectionById, useProofById } from '@credo-ts/react-hooks'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 
 import { useAgent } from '../agent'
-import { getDidCommCredentialExchangeDisplayMetadata } from '../didcomm/metadata'
+import type { NonEmptyArray } from '@package/utils'
+import { getCredential } from '../storage'
+import { getCredentialForDisplay } from '../display'
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
   const { agent } = useAgent()
@@ -129,31 +135,40 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         mergeOrSetEntry('predicate', groupName, [formatPredicate(requestedPredicate)], predicateArray)
       }
 
-      const entriesArray = Array.from(entries.entries()).map(([entryHash, entry]): FormattedSubmissionEntry => {
-        return {
-          inputDescriptorId: entryHash,
-          credentials: entry.matches.map((match) => {
-            const credentialExchange = credentialExchanges.find((c) =>
-              c.credentials.find((cc) => cc.credentialRecordId === match.credentialId)
-            )
-            const credentialDisplayMetadata = credentialExchange
-              ? getDidCommCredentialExchangeDisplayMetadata(credentialExchange)
-              : undefined
-
+      const entriesArray = await Promise.all(
+        Array.from(entries.entries()).map(async ([entryHash, entry]): Promise<FormattedSubmissionEntry> => {
+          if (entry.matches.length === 0) {
             return {
-              id: match.credentialId,
-              credentialName: credentialDisplayMetadata?.credentialName ?? 'Credential',
-              isSatisfied: true,
-              issuerName: credentialDisplayMetadata?.issuerName ?? 'Unknown',
+              inputDescriptorId: entryHash,
+              isSatisfied: false,
+              // TODO: we can fetch the schema name based on requirements
+              name: 'Credential',
               requestedAttributes: Array.from(entry.requestedAttributes),
-              claimFormat: 'AnonCreds',
             }
-          }),
-          isSatisfied: entry.matches.length > 0,
-          // TODO: we can fetch the schema name based on requirements
-          name: 'Credential',
-        }
-      })
+          }
+
+          const credentials = (await Promise.all(
+            entry.matches.map(async (match): Promise<FormattedSubmissionEntrySatisfiedCredential> => {
+              const credential = await getCredential(agent, `w3c-credential-${match.credentialId}`)
+              const credentialForDisplay = getCredentialForDisplay(credential)
+
+              return {
+                credential: credentialForDisplay,
+                // TODO: we don't show this yet on anoncreds screen, but we should add it
+                disclosedPayload: {},
+                requestedAttributes: Array.from(entry.requestedAttributes),
+              }
+            })
+          )) as NonEmptyArray<FormattedSubmissionEntrySatisfiedCredential>
+
+          return {
+            inputDescriptorId: entryHash,
+            credentials,
+            isSatisfied: true,
+            name: credentials[0].credential.display.name,
+          }
+        })
+      )
 
       const submission: FormattedSubmission = {
         areAllSatisfied: entriesArray.every((entry) => entry.isSatisfied),

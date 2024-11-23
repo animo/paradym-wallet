@@ -361,7 +361,7 @@ export function filterAndMapSdJwtKeys(sdJwtVcPayload: Record<string, unknown>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, ...visibleProperties } = sdJwtVcPayload as SdJwtVcPayload
 
-  const holder = cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as JwkJson) : undefined
+  const holder = cnf ? (cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as JwkJson) : undefined) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
     issuer: iss,
@@ -411,6 +411,7 @@ export function getDisclosedAttributePaths(payload: object, prefix = ''): Array<
   return attributes
 }
 
+export type CredentialForDisplay = ReturnType<typeof getCredentialForDisplay>
 export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord) {
   if (credentialRecord instanceof SdJwtVcRecord) {
     // FIXME: we should probably add a decode method on the SdJwtVcRecord

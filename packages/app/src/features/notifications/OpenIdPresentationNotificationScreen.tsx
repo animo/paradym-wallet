@@ -68,8 +68,7 @@ export function OpenIdPresentationNotificationScreen() {
 
     shareProof({
       agent,
-      authorizationRequest: credentialsForRequest.authorizationRequest,
-      credentialsForRequest: credentialsForRequest.credentialsForRequest,
+      resolvedRequest: credentialsForRequest,
       selectedCredentials,
     })
       .then(() => {

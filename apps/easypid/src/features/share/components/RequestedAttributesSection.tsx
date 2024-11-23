@@ -28,54 +28,63 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
           </Paragraph>
           {submission.entries.map((entry) => (
             <YStack gap="$4" key={entry.inputDescriptorId}>
-              {entry.credentials.map((credential) => {
-                if (isPidCredential(credential.metadata?.type)) {
+              {entry.isSatisfied ? (
+                entry.credentials.map((credential) => {
+                  const isPid = isPidCredential(credential.credential.metadata?.type)
+                  // FIXME: this renders sd-jwt even if mdoc is requested
+                  // FIXME: pid credential display metadata and disclosed attributes
+                  //  should happen on a higher level
+                  const credentialForDisplay =
+                    isPid && pidCredentialForDisplay ? pidCredentialForDisplay : credential.credential
+                  const disclosedPayload = isPid
+                    ? getPidAttributesForDisplay(
+                        credential?.disclosedPayload ?? {},
+                        credential?.credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                      )
+                    : credential?.disclosedPayload
+                  const disclosedAttributes = isPid
+                    ? getPidDisclosedAttributeNames(
+                        credential?.disclosedPayload ?? {},
+                        credential?.credential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+                      )
+                    : credential.requestedAttributes
+
                   return (
                     <CardWithAttributes
-                      key={pidCredentialForDisplay?.id}
-                      id={pidCredentialForDisplay?.id as string}
-                      name={pidCredentialForDisplay?.display.name as string}
-                      issuerImage={pidCredentialForDisplay?.display.issuer.logo}
-                      backgroundImage={pidCredentialForDisplay?.display.backgroundImage}
-                      backgroundColor={pidCredentialForDisplay?.display.backgroundColor}
-                      textColor={pidCredentialForDisplay?.display.textColor}
-                      disclosedAttributes={getPidDisclosedAttributeNames(
-                        credential?.disclosedPayload ?? {},
-                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                      )}
-                      disclosedPayload={getPidAttributesForDisplay(
-                        credential?.disclosedPayload ?? {},
-                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                      )}
+                      key={entry.inputDescriptorId}
+                      id={credentialForDisplay.id}
+                      name={credentialForDisplay.display.name}
+                      backgroundImage={credentialForDisplay.display.backgroundImage}
+                      backgroundColor={credentialForDisplay.display.backgroundColor}
+                      issuerImage={credentialForDisplay.display.issuer.logo}
+                      textColor={credentialForDisplay.display.textColor}
+                      disclosedAttributes={disclosedAttributes ?? []}
+                      disclosedPayload={disclosedPayload ?? {}}
                       isExpired={
-                        credential.metadata?.validUntil ? new Date(credential.metadata.validUntil) < new Date() : false
+                        credentialForDisplay.metadata?.validUntil
+                          ? new Date(credentialForDisplay.metadata.validUntil) < new Date()
+                          : false
                       }
                       isNotYetActive={
-                        credential.metadata?.validFrom ? new Date(credential.metadata.validFrom) > new Date() : false
+                        credentialForDisplay.metadata?.validFrom
+                          ? new Date(credentialForDisplay.metadata.validFrom) > new Date()
+                          : false
                       }
                     />
                   )
-                }
-                return (
-                  <CardWithAttributes
-                    key={credential.id}
-                    id={credential.id}
-                    name={credential.credentialName}
-                    backgroundImage={credential.backgroundImage}
-                    backgroundColor={credential.backgroundColor}
-                    issuerImage={credential.issuerImage}
-                    textColor={credential.textColor}
-                    disclosedAttributes={credential.requestedAttributes ?? []}
-                    disclosedPayload={credential?.disclosedPayload ?? {}}
-                    isExpired={
-                      credential.metadata?.validUntil ? new Date(credential.metadata.validUntil) < new Date() : false
-                    }
-                    isNotYetActive={
-                      credential.metadata?.validFrom ? new Date(credential.metadata.validFrom) > new Date() : false
-                    }
-                  />
-                )
-              })}
+                })
+              ) : (
+                // FIXME: if not present we should still show the pid requested attributes
+                // But mapping should happen on higher layer
+                <CardWithAttributes
+                  key={entry.inputDescriptorId}
+                  // Navigation is disabled
+                  id={entry.inputDescriptorId}
+                  name={entry.name}
+                  disableNavigation
+                  disclosedAttributes={entry.requestedAttributes}
+                />
+              )}
             </YStack>
           ))}
         </YStack>

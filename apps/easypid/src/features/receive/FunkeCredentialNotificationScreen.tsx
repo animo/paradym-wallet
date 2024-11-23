@@ -250,8 +250,7 @@ export function FunkeCredentialNotificationScreen() {
     try {
       const { presentationDuringIssuanceSession } = await shareProof({
         agent,
-        authorizationRequest: credentialsForRequest.authorizationRequest,
-        credentialsForRequest: credentialsForRequest.credentialsForRequest,
+        resolvedRequest: credentialsForRequest,
         selectedCredentials: {},
         allowUntrustedCertificate: true,
       })
