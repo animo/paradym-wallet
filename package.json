@@ -27,7 +27,10 @@
 			"react-docgen-typescript": "catalog:",
 			"@sphereon/did-auth-siop": "catalog:",
 			"@sphereon/jarm": "catalog:",
-			"@sphereon/oid4vc-common": "catalog:"
+			"@sphereon/oid4vc-common": "catalog:",
+			"@animo-id/oid4vci": "catalog:",
+			"@animo-id/oauth2": "catalog:",
+			"@animo-id/oauth2-utils": "catalog:"
 		},
 		"patchedDependencies": {
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",

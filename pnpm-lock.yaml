@@ -13,17 +13,11 @@ catalogs:
       specifier: 0.0.3-alpha.7
       version: 0.0.3-alpha.7
     '@animo-id/expo-secure-environment':
-      specifier: 0.1.0-alpha.10
-      version: 0.1.0-alpha.10
+      specifier: 0.1.0-alpha.11
+      version: 0.1.0-alpha.11
     '@animo-id/mdoc':
       specifier: 0.2.38
       version: 0.2.38
-    '@animo-id/oauth2':
-      specifier: 0.1.4-alpha-20241120145259
-      version: 0.1.4-alpha-20241120145259
-    '@animo-id/oid4vci':
-      specifier: 0.1.4-alpha-20241120145259
-      version: 0.1.4-alpha-20241120145259
     '@credo-ts/anoncreds':
       specifier: 0.6.0-pr-2100-20241121224952
       version: 0.6.0-pr-2100-20241121224952
@@ -80,6 +74,9 @@ overrides:
   '@sphereon/did-auth-siop': https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke
   '@sphereon/jarm': https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke
   '@sphereon/oid4vc-common': https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke
+  '@animo-id/oid4vci': 0.1.4-alpha-20241120145259
+  '@animo-id/oauth2': 0.1.4-alpha-20241120145259
+  '@animo-id/oauth2-utils': 0.1.4-alpha-20241120145259
 
 patchedDependencies:
   '@animo-id/mdoc@0.2.38':
@@ -116,7 +113,7 @@ importers:
         version: 0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
-        version: 0.1.0-alpha.10(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
+        version: 0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       '@animo-id/mdoc':
         specifier: 'catalog:'
         version: 0.2.38(patch_hash=zifb323ygrtdb6olnw5okh7czy)
@@ -285,7 +282,7 @@ importers:
     dependencies:
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
-        version: 0.1.0-alpha.10(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
+        version: 0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
         version: 0.2.4(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -583,10 +580,10 @@ importers:
   packages/agent:
     dependencies:
       '@animo-id/oauth2':
-        specifier: 'catalog:'
+        specifier: 0.1.4-alpha-20241120145259
         version: 0.1.4-alpha-20241120145259(typescript@5.3.3)
       '@animo-id/oid4vci':
-        specifier: 'catalog:'
+        specifier: 0.1.4-alpha-20241120145259
         version: 0.1.4-alpha-20241120145259(typescript@5.3.3)
       '@astronautlabs/jsonpath':
         specifier: ^1.1.2
@@ -837,8 +834,8 @@ packages:
       expo: '>= 51'
       react: '*'
 
-  '@animo-id/expo-secure-environment@0.1.0-alpha.10':
-    resolution: {integrity: sha512-ZnEnayIbjDarLizdT1FDhx1N00kObEs8uT+X60zattWXufrhaetlHZwMI2mK8eqK1bdiyVE/g0Gd+BcfinU4Jw==}
+  '@animo-id/expo-secure-environment@0.1.0-alpha.11':
+    resolution: {integrity: sha512-cAwsK8QWZc4ywxH6r0sqrH5yGdp5bKkw3fUr41CSs/TDZ42FIMeIK+tEdc78Bp+szykEywnnZpaAKdoTAd3ebw==}
     peerDependencies:
       expo: '*'
       react: '*'
@@ -847,20 +844,11 @@ packages:
   '@animo-id/mdoc@0.2.38':
     resolution: {integrity: sha512-98KQ0jvwTYsFOffTGvvHXBDo23b5xmhYjPiMIX6e807I6iS4fZZ9ypfBySdA5IiGUvXELKqEv27AUaayQa/9bg==}
 
-  '@animo-id/oauth2-utils@0.1.3':
-    resolution: {integrity: sha512-PzAx57LbDmmhI1qnF6Y/soYHLyHXxheSzlle+8rHexZmnWHXwxJ5nyOn/EQhGOqk5UEXLHYsD+27oyrMH3iR4A==}
-
   '@animo-id/oauth2-utils@0.1.4-alpha-20241120145259':
     resolution: {integrity: sha512-gbc2bOpnM101KTmVtZJwbo9IAn3bn5Ah1UMUdQbdxD8M2DPAMuvM1j4JxVsIn46DGoPUWW0uGspGXAjxFv2x5g==}
 
-  '@animo-id/oauth2@0.1.3':
-    resolution: {integrity: sha512-e4i+9nn3hyaxJ5LFTRb8Ri43VCAN5xpOvD0o2DcL6U90Y5ih3L+GVU6pzYylwk0iX/VD/HCMayDvF9qusDBh4w==}
-
   '@animo-id/oauth2@0.1.4-alpha-20241120145259':
     resolution: {integrity: sha512-w3lCkPh0I15Nbq0RZvQTBreDLcsIicCXmeNRUQx3xrrd25+GSaBoIMQel299I07ozDjDn9VptMCJGXNSSNBMyw==}
-
-  '@animo-id/oid4vci@0.1.3':
-    resolution: {integrity: sha512-01ka6sIQUVXNcrw6/fcWCbFpso60bb9Ejv4WUunA/7pGiowdzmmf4aaMRd2em/v5riRpo2tsIqv23SAbyTl41A==}
 
   '@animo-id/oid4vci@0.1.4-alpha-20241120145259':
     resolution: {integrity: sha512-OkqVn2XSlyMYZV+WyPcjh7Iz9dJx6ZTYlMiIc4/qM3j5cQeVf70wKwVZLzBLMrdiQWBw2l+AC7cPtTjl25F/MA==}
@@ -10521,7 +10509,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@animo-id/expo-secure-environment@0.1.0-alpha.10(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)':
+  '@animo-id/expo-secure-environment@0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@peculiar/asn1-ecc': 2.3.14
       '@peculiar/asn1-schema': 2.3.13
@@ -10534,13 +10522,6 @@ snapshots:
     dependencies:
       compare-versions: 6.1.1
 
-  '@animo-id/oauth2-utils@0.1.3(typescript@5.3.3)':
-    dependencies:
-      buffer: 6.0.3
-      valibot: 0.42.1(typescript@5.3.3)
-    transitivePeerDependencies:
-      - typescript
-
   '@animo-id/oauth2-utils@0.1.4-alpha-20241120145259(typescript@5.3.3)':
     dependencies:
       buffer: 6.0.3
@@ -10548,24 +10529,9 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@animo-id/oauth2@0.1.3(typescript@5.3.3)':
-    dependencies:
-      '@animo-id/oauth2-utils': 0.1.3(typescript@5.3.3)
-      valibot: 0.42.1(typescript@5.3.3)
-    transitivePeerDependencies:
-      - typescript
-
   '@animo-id/oauth2@0.1.4-alpha-20241120145259(typescript@5.3.3)':
     dependencies:
       '@animo-id/oauth2-utils': 0.1.4-alpha-20241120145259(typescript@5.3.3)
-      valibot: 0.42.1(typescript@5.3.3)
-    transitivePeerDependencies:
-      - typescript
-
-  '@animo-id/oid4vci@0.1.3(typescript@5.3.3)':
-    dependencies:
-      '@animo-id/oauth2': 0.1.3(typescript@5.3.3)
-      '@animo-id/oauth2-utils': 0.1.3(typescript@5.3.3)
       valibot: 0.42.1(typescript@5.3.3)
     transitivePeerDependencies:
       - typescript
@@ -11920,8 +11886,8 @@ snapshots:
 
   '@credo-ts/openid4vc@0.6.0-pr-2100-20241121224952(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@animo-id/oauth2': 0.1.3(typescript@5.3.3)
-      '@animo-id/oid4vci': 0.1.3(typescript@5.3.3)
+      '@animo-id/oauth2': 0.1.4-alpha-20241120145259(typescript@5.3.3)
+      '@animo-id/oid4vci': 0.1.4-alpha-20241120145259(typescript@5.3.3)
       '@credo-ts/core': 0.6.0-pr-2100-20241121224952(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@15.1.0)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@sphereon/did-auth-siop': https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke(typescript@5.3.3)
       '@sphereon/oid4vc-common': https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke
