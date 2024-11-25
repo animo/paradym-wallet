@@ -1,8 +1,9 @@
-import { IdCard, Paragraph, PinPad, PinValues, Stack, XStack, YStack } from '@package/ui'
+import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 
 import { useHaptics } from 'packages/app/src/hooks/useHaptics'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
 import pidBackgroundImage from '../../../../assets/pid-background.png'
 
@@ -16,6 +17,10 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
   const [pin, setPin] = useState('')
   const inputRef = useRef<TextInput>(null)
   const { withHaptics } = useHaptics()
+
+  // Make the pin pad fixed to the bottom of the screen on smaller devices
+  const { bottom } = useSafeAreaInsets()
+  const shouldStickToBottom = bottom < 16
 
   useImperativeHandle(ref, () => ({
     focus: () => inputRef.current?.focus(),
@@ -60,26 +65,28 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
   })
 
   return (
-    <YStack fg={1} jc="space-between">
-      <Stack gap="$6" pos="relative" jc="center">
-        <IdCard
-          backgroundImage={pidBackgroundImage}
-          icon={isLoading ? 'loading' : 'locked'}
-          issuerImage={germanIssuerImage}
-          hideUserName
-        />
-        <XStack pos="absolute" gap="$3" justifyContent="center" w="100%">
-          {pinValues.map((digit, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
-            <YStack key={index} maxWidth={24} flex-1 justifyContent="center" alignItems="center">
-              <Paragraph lineHeight={32} size="$6" color="$grey-900" fontWeight="$medium">
-                {digit ? '*' : ' '}
-              </Paragraph>
-              <Stack borderBottomWidth={1.5} borderBottomColor="$grey-900" width="100%" />
-            </YStack>
-          ))}
-        </XStack>
-      </Stack>
+    <YStack fg={1} jc="space-between" mb={shouldStickToBottom ? -16 : undefined}>
+      <ScrollView flex={1}>
+        <Stack jc="center">
+          <IdCard
+            backgroundImage={pidBackgroundImage}
+            icon={isLoading ? 'loading' : 'locked'}
+            issuerImage={germanIssuerImage}
+            hideUserName
+          />
+          <XStack pos="absolute" gap="$3" justifyContent="center" w="100%">
+            {pinValues.map((digit, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
+              <YStack key={index} maxWidth={24} flex-1 justifyContent="center" alignItems="center">
+                <Paragraph lineHeight={32} size="$6" color="$grey-900" fontWeight="$medium">
+                  {digit ? '*' : ' '}
+                </Paragraph>
+                <Stack borderBottomWidth={1.5} borderBottomColor="$grey-900" width="100%" />
+              </YStack>
+            ))}
+          </XStack>
+        </Stack>
+      </ScrollView>
       <PinPad onPressPinNumber={onPressPinNumber} disabled={isLoading} />
     </YStack>
   )

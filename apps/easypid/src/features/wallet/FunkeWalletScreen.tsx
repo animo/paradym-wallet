@@ -7,7 +7,6 @@ import {
   IconContainer,
   Paragraph,
   ScrollView,
-  Spacer,
   Stack,
   XStack,
   YStack,
@@ -169,23 +168,6 @@ export function FunkeWalletScreen() {
             <Stack fg={1} />
           )}
         </YStack>
-        <Spacer h="$3" />
-        <XStack flexDirection="column" gap="$1" ai="center" jc="flex-end">
-          <Paragraph
-            onPress={() => push('/menu/about')}
-            variant="sub"
-            fontSize={13}
-            fontWeight="$medium"
-            ta="center"
-            px="$4"
-          >
-            Learn more about{' '}
-            <Paragraph variant="annotation" fontSize={13} fontWeight="$semiBold" color="$primary-500">
-              using this wallet
-            </Paragraph>
-            .
-          </Paragraph>
-        </XStack>
       </ScrollView>
     </FlexPage>
   )

@@ -88,13 +88,14 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   const handleQrButtonPress = async () => {
     if (Platform.OS !== 'android') {
       toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
+      back()
       return
     }
 
     if (arePermissionsGranted) {
       setShowMyQrCode(true)
     } else {
-      const permissions = {}
+      const permissions = await requestMdocPermissions()
       if (!permissions) {
         toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
         return

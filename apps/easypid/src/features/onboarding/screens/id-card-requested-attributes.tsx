@@ -1,12 +1,12 @@
 import { bdrPidCredentialDisplay, bdrPidIssuerDisplay } from '@easypid/use-cases/bdrPidMetadata'
-import { Button, HeroIcons, Paragraph, YStack } from '@package/ui'
+import { Button, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import { CardWithAttributes } from 'packages/app/src'
 import { useState } from 'react'
 
 interface OnboardingIdCardRequestedAttributesProps {
   goToNextStep: () => void
-  onSkipCardSetup: () => void
+  onSkipCardSetup?: () => void
   requestedAttributes: string[]
 }
 
@@ -21,26 +21,30 @@ export function OnboardingIdCardRequestedAttributes({
     if (isLoading) return
 
     setIsLoading(true)
-    onSkipCardSetup()
+    onSkipCardSetup?.()
     setIsLoading(false)
   }
 
   return (
     <YStack flexBasis={0} flexGrow={1} justifyContent="space-between">
-      <YStack gap="$4">
-        <Paragraph mt="$-4">These {requestedAttributes.length} attributes will be read from your eID card.</Paragraph>
-        <CardWithAttributes
-          name="eID card"
-          issuerImage={{ url: bdrPidIssuerDisplay.logo }}
-          backgroundImage={{ url: bdrPidCredentialDisplay.backgroundImage }}
-          backgroundColor={bdrPidCredentialDisplay.backgroundColor}
-          formattedDisclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}
-        />
-      </YStack>
+      <ScrollView mt="$-4">
+        <YStack gap="$4">
+          <Paragraph>These {requestedAttributes.length} attributes will be read from your eID card.</Paragraph>
+          <CardWithAttributes
+            name="eID card"
+            issuerImage={{ url: bdrPidIssuerDisplay.logo }}
+            backgroundImage={{ url: bdrPidCredentialDisplay.backgroundImage }}
+            backgroundColor={bdrPidCredentialDisplay.backgroundColor}
+            formattedDisclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}
+          />
+        </YStack>
+      </ScrollView>
       <YStack gap="$4" alignItems="center">
-        <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
-          Set up later
-        </Button.Text>
+        {onSkipCardSetup && (
+          <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
+            Set up later
+          </Button.Text>
+        )}
         <Button.Solid scaleOnPress onPress={goToNextStep}>
           Continue
         </Button.Solid>

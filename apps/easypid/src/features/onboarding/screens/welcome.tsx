@@ -16,12 +16,12 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
         pos="absolute"
         source={welcomeBackground}
         resizeMode="cover"
-        h={Dimensions.get('window').height / 1.8}
+        h={Dimensions.get('window').height / 2}
         mt="$-4"
         w="100%"
         top={0}
       />
-      <FlexPage p={0} fg={1} jc="space-between" backgroundColor="$transparent">
+      <FlexPage safeArea="y" p={0} fg={1} jc="space-between" backgroundColor="$transparent">
         <YStack px="$4" gap="$4" flex-1 justifyContent="space-between">
           <YStack ai="flex-end">
             <IconContainer

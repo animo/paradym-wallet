@@ -1,5 +1,5 @@
 import { useCanUseSecureEnclave } from '@easypid/hooks/useCanUseSecureEnclave'
-import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
+import { Button, HeroIcons, ScrollView, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useImageScaler } from 'packages/app/src/hooks'
 import React, { useState } from 'react'
 import { Linking, Platform } from 'react-native'
@@ -57,7 +57,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack f={1} ai="center" onLayout={onLayout}>
+      <YStack ai="center" onLayout={onLayout}>
         <YStack height={height} mt="$4">
           <ProtectData />
         </YStack>
