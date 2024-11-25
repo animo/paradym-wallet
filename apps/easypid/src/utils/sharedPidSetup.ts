@@ -1,3 +1,4 @@
+import { OnboardingDataProtection } from '@easypid/features/onboarding/screens/data-protection'
 import { OnboardingIdCardBiometricsDisabled } from '@easypid/features/onboarding/screens/id-card-biometrics-disabled'
 import { OnboardingIdCardFetch } from '@easypid/features/onboarding/screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from '@easypid/features/onboarding/screens/id-card-pin'
@@ -19,41 +20,41 @@ export interface CardScanningState {
 
 export const pidSetupSteps = [
   {
-    step: 'id-card-start',
+    step: 'data-protection',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 50,
     page: {
       type: 'content',
-      title: 'Scan your eID card to retrieve your data',
-      subtitle: 'Add your personal details once using your eID card and its PIN.',
-      caption: 'Your eID PIN was issued to you when you received your eID card.',
+      title: 'Protect your data',
+      subtitle: 'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
     },
-    Screen: OnboardingIdCardStart,
+    Screen: OnboardingDataProtection,
   },
   {
     step: 'id-card-requested-attributes',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 60,
     page: {
       type: 'content',
-      title: 'Review the request',
+      title: 'Get your national identity card',
     },
     Screen: OnboardingIdCardRequestedAttributes,
   },
   {
     step: 'id-card-pin',
     alternativeFlow: false,
-    progress: 49.5,
+    progress: 60,
     page: {
       type: 'content',
       title: 'Enter your eID card PIN',
+      subtitle: 'This is required to read data from your card.',
     },
     Screen: OnboardingIdCardPinEnter,
   },
   {
     step: 'id-card-start-scan',
     alternativeFlow: false,
-    progress: 66,
+    progress: 70,
     page: {
       type: 'content',
       title: 'Scan your eID card',
@@ -65,7 +66,7 @@ export const pidSetupSteps = [
   {
     step: 'id-card-scan',
     alternativeFlow: false,
-    progress: 66,
+    progress: 70,
     page: {
       type: 'content',
       title: 'Scan your eID card',
@@ -77,28 +78,28 @@ export const pidSetupSteps = [
   {
     step: 'id-card-fetch',
     alternativeFlow: false,
-    progress: 82.5,
+    progress: 80,
     page: {
       type: 'content',
-      title: 'Fetching information',
+      title: 'Getting eID information',
     },
     Screen: OnboardingIdCardFetch,
   },
   {
     step: 'id-card-verify',
-    progress: 82.5,
+    progress: 90,
     alternativeFlow: true,
     page: {
       type: 'content',
-      title: 'We need to verify it’s you',
-      subtitle: 'Your biometrics are required to verify your identity.',
+      title: 'Confirm it’s you',
+      subtitle: 'We need your biometrics to verify your identity.',
       animationKey: 'id-card',
     },
     Screen: OnboardingIdCardVerify,
   },
   {
     step: 'id-card-biometrics-disabled',
-    progress: 82.5,
+    progress: 90,
     alternativeFlow: true,
     page: {
       type: 'content',

@@ -77,6 +77,7 @@ overrides:
   '@animo-id/oid4vci': 0.1.4
   '@animo-id/oauth2': 0.1.4
   '@animo-id/oauth2-utils': 0.1.4
+  dcql: 0.2.13
 
 patchedDependencies:
   '@credo-ts/askar@0.6.0-pr-2100-20241124170219':
@@ -5562,8 +5563,8 @@ packages:
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
-  dcql@0.2.14:
-    resolution: {integrity: sha512-vT0EZOs0k1gllaixZWRO8QjcTnlhUOZm5IDcPSjufHk0N7qS+LefHcXK+3EO9HKJ5NX8fgbO/sS4IxVHXuruUg==}
+  dcql@0.2.13:
+    resolution: {integrity: sha512-XfePsSz9ULj9HH3VFNguzK/xlFnliKDX2iUDb1tIrn97S+TfftcFo+jipw16m9jPlWLhhBx48QniF0D8KotIWA==}
 
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -11314,7 +11315,7 @@ snapshots:
       buffer: 6.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
-      dcql: 0.2.14(typescript@5.3.3)
+      dcql: 0.2.13(typescript@5.3.3)
       did-resolver: 4.1.0
       lru_map: 0.4.1
       luxon: 3.5.0
@@ -17173,7 +17174,7 @@ snapshots:
 
   dayjs@1.11.13: {}
 
-  dcql@0.2.14(typescript@5.3.3):
+  dcql@0.2.13(typescript@5.3.3):
     dependencies:
       valibot: 0.37.0(typescript@5.3.3)
     transitivePeerDependencies:

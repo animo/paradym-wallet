@@ -28,7 +28,7 @@ export function FunkeAboutScreen() {
         <YStack gap="$2">
           <Paragraph color="$grey-700">
             This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It
-            serves as a prototype for future wallet providers.
+            serves as a prototype for future wallet providers. All code is available under Apache 2.0.
           </Paragraph>
           <Paragraph>
             For more information on the project visit sprind.org or reach out to{' '}

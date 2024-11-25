@@ -104,7 +104,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
           </Button.Solid>
           {currentSlide !== SLIDES.length - 1 && (
             <Button.Text onPress={onSkip}>
-              <HeroIcons.ArrowRight size={20} /> Skip explanation
+              <HeroIcons.ArrowRight color="$primary-500" size={20} /> Skip explanation
             </Button.Text>
           )}
         </YStack>
