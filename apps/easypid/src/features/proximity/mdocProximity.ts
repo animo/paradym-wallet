@@ -21,7 +21,15 @@ const PERMISSIONS = [
 
 export const requestMdocPermissions = async () => {
   if (Platform.OS !== 'android') return
-  await PermissionsAndroid.requestMultiple(PERMISSIONS)
+  return await PermissionsAndroid.requestMultiple(PERMISSIONS)
+}
+
+export const checkMdocPermissions = async () => {
+  if (Platform.OS !== 'android') return
+
+  // We assume if you don't have the first permission, you don't have the others either
+  // As we can not check multiple at once
+  return await PermissionsAndroid.check(PERMISSIONS[1])
 }
 
 export const getMdocQrCode = async () => {

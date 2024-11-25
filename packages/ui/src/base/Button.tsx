@@ -33,6 +33,21 @@ export const SolidButton = styled(Btn, {
   backgroundColor: '$grey-900',
   color: '$white',
   fontWeight: '$semiBold',
+  variants: {
+    small: {
+      true: {
+        h: '$3.5',
+        px: '$5',
+        br: '$12',
+      },
+    },
+    light: {
+      true: {
+        bg: '$grey-100',
+        color: '$grey-900',
+      },
+    },
+  },
 })
 
 export const OutlineButton = styled(Btn, {

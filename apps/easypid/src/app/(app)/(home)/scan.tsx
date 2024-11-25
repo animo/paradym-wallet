@@ -1,4 +1,5 @@
-import { type CredentialDataHandlerOptions, QrScannerScreen } from '@package/app'
+import { FunkeQrScannerScreen } from '@easypid/features/scan/FunkeQrScannerScreen'
+import type { CredentialDataHandlerOptions } from '@package/app'
 
 // When going form the scanner we want to replace (as we have the modal)
 export const credentialDataHandlerOptions = {
@@ -6,5 +7,5 @@ export const credentialDataHandlerOptions = {
 } satisfies CredentialDataHandlerOptions
 
 export default function Screen() {
-  return <QrScannerScreen credentialDataHandlerOptions={credentialDataHandlerOptions} />
+  return <FunkeQrScannerScreen credentialDataHandlerOptions={credentialDataHandlerOptions} />
 }

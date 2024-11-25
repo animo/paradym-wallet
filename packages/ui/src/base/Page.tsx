@@ -1,4 +1,4 @@
-import { YStack, styled } from 'tamagui'
+import { styled } from 'tamagui'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Stack } from './Stacks'

@@ -21,6 +21,7 @@
 		"@hyperledger/indy-vdr-react-native": "catalog:",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
+		"@package/scanner": "workspace:*",
 		"@package/secure-store": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@package/utils": "workspace:*",

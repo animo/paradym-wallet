@@ -9,17 +9,9 @@ import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { isPidCredential } from '../../hooks'
 import { addSharedActivity, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
+import type { PresentationRequestResult } from './components/utils'
 
 type Query = { uri?: string; data?: string }
-
-export interface PresentationRequestResult {
-  status: 'success' | 'error'
-  result: {
-    title: string
-    message?: string
-  }
-  redirectToWallet?: boolean
-}
 
 export function FunkeOpenIdPresentationNotificationScreen() {
   const toast = useToastController()
