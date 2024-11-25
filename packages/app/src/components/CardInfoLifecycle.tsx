@@ -180,8 +180,6 @@ function getCardInfoLimitedByDateVariant(
   const hasMoreThanTwoWeeksUntilExpiry =
     validUntil && validUntil.getTime() - new Date().getTime() > 14 * 24 * 60 * 60 * 1000
 
-  console.log('hasMoreThanTwoWeeksUntilExpiry', validUntil)
-
   return {
     active: {
       variant: 'positive',
