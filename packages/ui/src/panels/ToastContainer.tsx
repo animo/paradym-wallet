@@ -92,7 +92,7 @@ export const ToastContainer = ({ title, message, variant = 'none' }: ToastContai
           )}
         </YStack>
       </XStack>
-      <Toast.Close m="$-1" onPress={() => toast.hide()}>
+      <Toast.Close accessibilityRole="button" m="$-1" onPress={() => toast.hide()}>
         <LucideIcons.X size="$1" color="$grey-400" />
       </Toast.Close>
     </AnimatedStack>
