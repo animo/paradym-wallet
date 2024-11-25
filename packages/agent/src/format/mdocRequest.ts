@@ -116,9 +116,8 @@ export async function getSubmissionForMdocDocumentRequest(
       .filter((m): m is NonNullable<typeof m> => m !== undefined)
 
     if (matchingMdocs.length === 0) {
-      console.log(Array.from(docRequest.itemsRequest.data.nameSpaces.entries()))
-      const requestedAttributePaths = Array.from(docRequest.itemsRequest.data.nameSpaces.entries()).flatMap(
-        ([namespace, value]) => Array.from(value.keys()).map((key) => [namespace, key])
+      const requestedAttributePaths = Array.from(docRequest.itemsRequest.data.nameSpaces.values()).flatMap((value) =>
+        Array.from(value.keys()).map((key) => [key])
       )
 
       return {
