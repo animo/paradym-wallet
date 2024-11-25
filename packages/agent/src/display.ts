@@ -550,9 +550,6 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
-    console.log(credentialDisplay.name, hasRefreshToken)
-    console.log(getRefreshCredentialMetadata(credentialRecord))
-
     // TODO: handle claim / display mapping here
     return {
       id: credentialForDisplayId,
