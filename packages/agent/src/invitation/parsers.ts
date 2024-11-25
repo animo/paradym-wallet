@@ -36,6 +36,7 @@ export enum InvitationQrTypes {
   DIDCOMM = 'didcomm://',
   HTTPS = 'https://',
   HAIP = 'haip://',
+  EASY_PID = 'id.animo.ausweis:',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {

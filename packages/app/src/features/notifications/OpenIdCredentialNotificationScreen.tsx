@@ -13,6 +13,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 
+import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 
@@ -22,17 +23,12 @@ const { useParams } = createParam<Query>()
 
 export function OpenIdCredentialNotificationScreen() {
   const { agent } = useAgent()
-  const router = useRouter()
   const toast = useToastController()
   const { params } = useParams()
+  const pushToWallet = usePushToWallet()
 
   const [credentialRecord, setCredentialRecord] = useState<W3cCredentialRecord | SdJwtVcRecord | MdocRecord>()
   const [isStoring, setIsStoring] = useState(false)
-
-  const pushToWallet = useCallback(() => {
-    router.back()
-    router.push('/')
-  }, [router.back, router.push])
 
   useEffect(() => {
     const requestCredential = async (params: Query) => {

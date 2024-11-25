@@ -6,10 +6,10 @@ import {
   useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { useRouter } from 'solito/router'
 
+import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
@@ -19,9 +19,9 @@ const { useParams } = createParam<Query>()
 
 export function OpenIdPresentationNotificationScreen() {
   const { agent } = useAgent()
-  const router = useRouter()
   const toast = useToastController()
   const { params } = useParams()
+  const pushToWallet = usePushToWallet()
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [isSharing, setIsSharing] = useState(false)
@@ -29,11 +29,6 @@ export function OpenIdPresentationNotificationScreen() {
   const [selectedCredentials, setSelectedCredentials] = useState<{
     [inputDescriptorId: string]: string
   }>({})
-
-  const pushToWallet = useCallback(() => {
-    router.back()
-    router.push('/')
-  }, [router.back, router.push])
 
   useEffect(() => {
     async function handleRequest() {

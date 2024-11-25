@@ -1,8 +1,8 @@
 import { useAgent, useDidCommCredentialActions } from '@package/agent'
 import { useToastController } from '@package/ui'
 import React from 'react'
-import { useRouter } from 'solito/router'
 
+import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 
@@ -15,16 +15,11 @@ export function DidCommCredentialNotificationScreen({
 }: DidCommCredentialNotificationScreenProps) {
   const { agent } = useAgent()
 
-  const router = useRouter()
   const toast = useToastController()
+  const pushToWallet = usePushToWallet()
 
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
-
-  const pushToWallet = () => {
-    router.back()
-    router.push('/')
-  }
 
   if (!credentialExchange || !attributes || !display) {
     return <GettingInformationScreen type="credential" />

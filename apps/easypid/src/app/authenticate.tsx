@@ -1,6 +1,6 @@
-import { Redirect } from 'expo-router'
+import { Redirect, useLocalSearchParams, useNavigation } from 'expo-router'
 
-import { WalletInvalidKeyError } from '@credo-ts/core'
+import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
@@ -18,12 +18,14 @@ import { useResetWalletDevMenu } from '../utils/resetWallet'
 export default function Authenticate() {
   useResetWalletDevMenu()
 
+  const { redirectAfterUnlock } = useLocalSearchParams<{ redirectAfterUnlock?: string }>()
   const toast = useToastController()
   const secureUnlock = useSecureUnlock()
   const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
+  const navigation = useNavigation()
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
@@ -71,11 +73,16 @@ export default function Authenticate() {
       })
   }, [secureUnlock, isInitializingAgent])
 
-  if (
-    secureUnlock.state === 'initializing' ||
-    secureUnlock.state === 'not-configured' ||
-    secureUnlock.state === 'unlocked'
-  ) {
+  if (secureUnlock.state === 'unlocked') {
+    // Expo and urls as query params don't go well together, so we encoded the url as base64
+    const redirect = redirectAfterUnlock
+      ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(redirectAfterUnlock))
+      : '/'
+
+    return <Redirect href={redirect} />
+  }
+
+  if (secureUnlock.state === 'initializing' || secureUnlock.state === 'not-configured') {
     return <Redirect href="/" />
   }
 

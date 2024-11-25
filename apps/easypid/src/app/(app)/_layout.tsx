@@ -1,5 +1,6 @@
-import { Redirect, Stack, useRouter } from 'expo-router'
+import { Redirect, Stack, useGlobalSearchParams, useLocalSearchParams, usePathname, useRouter } from 'expo-router'
 
+import { TypedArrayEncoder } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
@@ -24,6 +25,9 @@ export default function AppLayout() {
   const theme = useTheme()
   const router = useRouter()
   const { withHaptics } = useHaptics()
+  const [redirectAfterUnlocked, setRedirectAfterUnlocked] = useState<string>()
+  const pathname = usePathname()
+  const params = useGlobalSearchParams()
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -40,6 +44,27 @@ export default function AppLayout() {
     resetWallet(secureUnlock).then(() => setResetWalletState('reset'))
   }, [secureUnlock, resetWalletState, shouldResetWallet])
 
+  // If we are intializing and the wallet was opened using a deeplinkg we will be redirected
+  // to the authentication screen. We first save the redirection url and use that when navigation
+  // to the auth screen
+  if (
+    (secureUnlock.state === 'initializing' || isWalletLocked) &&
+    pathname &&
+    pathname !== '/' &&
+    !redirectAfterUnlocked
+  ) {
+    // Expo and urls as query params don't go well together, so we encoded the url as base64
+    const encodedRedirect = TypedArrayEncoder.toBase64URL(
+      TypedArrayEncoder.fromString(`${pathname}?${new URLSearchParams(params as Record<string, string>).toString()}`)
+    )
+    setRedirectAfterUnlocked(encodedRedirect)
+  }
+
+  // Clear the redirection in case the wallet is locked in the background
+  if (secureUnlock.state !== 'initializing' && secureUnlock.state !== 'locked' && redirectAfterUnlocked) {
+    setRedirectAfterUnlocked(undefined)
+  }
+
   // This should show the splash screen
   if (secureUnlock.state === 'initializing' || (shouldResetWallet && resetWalletState !== 'reset')) {
     return null
@@ -50,8 +75,14 @@ export default function AppLayout() {
   }
 
   // Wallet is locked. Redirect to authentication screen
+  // We optionally pass an encoded redirect url that we should navigate to
+  // after the user has unlocked the wallet
   if (isWalletLocked) {
-    return <Redirect href="/authenticate" />
+    return (
+      <Redirect
+        href={redirectAfterUnlocked ? `/authenticate?redirectAfterUnlock=${redirectAfterUnlocked}` : '/authenticate'}
+      />
+    )
   }
 
   const headerNormalOptions = {
@@ -67,48 +98,46 @@ export default function AppLayout() {
     <AgentProvider agent={secureUnlock.context.agent}>
       <WalletJsonStoreProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
         <WithBackgroundPidRefresh>
-          <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen
-                options={{
-                  presentation: 'modal',
-                }}
-                name="(home)/scan"
-              />
-              <Stack.Screen
-                name="notifications/openIdPresentation"
-                options={{
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen
-                name="notifications/openIdCredential"
-                options={{
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen
-                name="notifications/offlinePresentation"
-                options={{
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen name="credentials/index" options={headerNormalOptions} />
-              <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
-              <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
-              <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
-              <Stack.Screen name="menu/index" options={headerNormalOptions} />
-              <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
-              <Stack.Screen name="menu/settings" options={headerNormalOptions} />
-              <Stack.Screen name="menu/about" options={headerNormalOptions} />
-              <Stack.Screen name="activity/index" options={headerNormalOptions} />
-              <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
-              <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
-              <Stack.Screen name="pinLocked" options={headerNormalOptions} />
-              <Stack.Screen name="issuer" options={headerNormalOptions} />
-              <Stack.Screen name="pidSetup" />
-            </Stack>
-          </DeeplinkHandler>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              options={{
+                presentation: 'modal',
+              }}
+              name="(home)/scan"
+            />
+            <Stack.Screen
+              name="notifications/openIdPresentation"
+              options={{
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="notifications/openIdCredential"
+              options={{
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="notifications/offlinePresentation"
+              options={{
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen name="credentials/index" options={headerNormalOptions} />
+            <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
+            <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
+            <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
+            <Stack.Screen name="menu/index" options={headerNormalOptions} />
+            <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
+            <Stack.Screen name="menu/settings" options={headerNormalOptions} />
+            <Stack.Screen name="menu/about" options={headerNormalOptions} />
+            <Stack.Screen name="activity/index" options={headerNormalOptions} />
+            <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
+            <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
+            <Stack.Screen name="pinLocked" options={headerNormalOptions} />
+            <Stack.Screen name="issuer" options={headerNormalOptions} />
+            <Stack.Screen name="pidSetup" />
+          </Stack>
         </WithBackgroundPidRefresh>
       </WalletJsonStoreProvider>
     </AgentProvider>
