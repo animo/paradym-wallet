@@ -145,22 +145,10 @@ const onboardingSteps = [
     },
     Screen: OnboardingDataProtection,
   },
-  // {
-  //   step: 'id-card-start',
-  //   alternativeFlow: false,
-  //   progress: 65,
-  //   page: {
-  //     type: 'content',
-  //     title: 'Get your national identity card',
-  //     subtitle: 'Add your personal details once using your eID card and its PIN.',
-  //     caption: 'Your eID PIN was issued to you when you received your eID card.',
-  //   },
-  //   Screen: OnboardingIdCardStart,
-  // },
   {
     step: 'id-card-requested-attributes',
     alternativeFlow: false,
-    progress: 65,
+    progress: 60,
     page: {
       type: 'content',
       title: 'Get your national identity card',
@@ -170,7 +158,7 @@ const onboardingSteps = [
   {
     step: 'id-card-pin',
     alternativeFlow: false,
-    progress: 65,
+    progress: 60,
     page: {
       type: 'content',
       title: 'Enter your eID card PIN',
@@ -181,7 +169,7 @@ const onboardingSteps = [
   {
     step: 'id-card-start-scan',
     alternativeFlow: false,
-    progress: 75,
+    progress: 70,
     page: {
       type: 'content',
       title: 'Scan your eID card',
@@ -193,7 +181,7 @@ const onboardingSteps = [
   {
     step: 'id-card-scan',
     alternativeFlow: false,
-    progress: 75,
+    progress: 70,
     page: {
       type: 'content',
       title: 'Scan your eID card',
@@ -205,7 +193,7 @@ const onboardingSteps = [
   {
     step: 'id-card-fetch',
     alternativeFlow: false,
-    progress: 85,
+    progress: 80,
     page: {
       type: 'content',
       title: 'Getting eID information',
