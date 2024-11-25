@@ -8,6 +8,7 @@ import { FlexPage, Heading, HeroIcons, YStack, useToastController } from '@packa
 import * as SplashScreen from 'expo-splash-screen'
 import { PinDotsInput, type PinDotsInputRef } from 'packages/app/src'
 import { useEffect, useRef, useState } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
 
@@ -33,6 +34,10 @@ export default function Authenticate() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  // Make the pin pad fixed to the bottom of the screen on smaller devices
+  const { bottom } = useSafeAreaInsets()
+  const shouldStickToBottom = bottom < 16
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: canTryUnlockingUsingBiometrics not needed
   useEffect(() => {
@@ -95,23 +100,25 @@ export default function Authenticate() {
 
   return (
     <FlexPage flex-1 safeArea="y" alignItems="center">
-      <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
-        <Circle size="$4" backgroundColor="$grey-100">
-          <HeroIcons.LockClosed strokeWidth={2} color="$grey-700" />
-        </Circle>
-        <Heading variant="h2" fontWeight="$semiBold">
-          Enter your app PIN code
-        </Heading>
+      <YStack fg={1} gap="$6" mb={shouldStickToBottom ? -16 : undefined}>
+        <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
+          <Circle size="$4" backgroundColor="$grey-100">
+            <HeroIcons.LockClosed strokeWidth={2} color="$grey-700" />
+          </Circle>
+          <Heading variant="h2" fontWeight="$semiBold">
+            Enter your app PIN code
+          </Heading>
+        </YStack>
+        <PinDotsInput
+          isLoading={isLoading}
+          ref={pinInputRef}
+          pinLength={6}
+          onPinComplete={unlockUsingPin}
+          onBiometricsTap={unlockUsingBiometrics}
+          useNativeKeyboard={false}
+          biometricsType={biometricsType ?? 'fingerprint'}
+        />
       </YStack>
-      <PinDotsInput
-        isLoading={isLoading}
-        ref={pinInputRef}
-        pinLength={6}
-        onPinComplete={unlockUsingPin}
-        onBiometricsTap={unlockUsingBiometrics}
-        useNativeKeyboard={false}
-        biometricsType={biometricsType ?? 'fingerprint'}
-      />
     </FlexPage>
   )
 }

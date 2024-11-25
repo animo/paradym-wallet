@@ -1,5 +1,5 @@
 import { useCanUseSecureEnclave } from '@easypid/hooks/useCanUseSecureEnclave'
-import { Button, HeroIcons, ScrollView, Spinner, XStack, YStack, useToastController } from '@package/ui'
+import { Button, HeroIcons, Paragraph, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useImageScaler } from 'packages/app/src/hooks'
 import React, { useState } from 'react'
 import { Linking, Platform } from 'react-native'
@@ -57,7 +57,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack ai="center" onLayout={onLayout}>
+      <YStack f={1} ai="center" onLayout={onLayout}>
         <YStack height={height} mt="$4">
           <ProtectData />
         </YStack>
@@ -67,7 +67,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
           Read the Privacy Policy
         </Button.Text>
         <XStack gap="$2" width="100%">
-          <Button.Outline bg="$grey-100" scaleOnPress fg={0} width="$buttonHeight" onPress={onToggleCloudHsm}>
+          <Button.Outline bg="$grey-100" scaleOnPress width="$buttonHeight" onPress={onToggleCloudHsm}>
             {shouldUseCloudHsm ? <HeroIcons.Cloud /> : <HeroIcons.DevicePhoneMobile />}
           </Button.Outline>
           <Button.Solid scaleOnPress flexGrow={1} disabled={isLoading} onPress={onContinue}>
