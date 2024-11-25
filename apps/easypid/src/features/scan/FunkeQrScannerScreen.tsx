@@ -22,7 +22,7 @@ import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import easypidLogo from '../../../assets/icon-rounded.png'
-// import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
+import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
@@ -44,20 +44,20 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
 
-  // useEffect(() => {
-  //   void checkMdocPermissions().then((result) => {
-  //     console.log('checkMdocPermissions', result)
-  //     setArePermissionsGranted(!!result)
-  //   })
-  // }, [])
+  useEffect(() => {
+    void checkMdocPermissions().then((result) => {
+      console.log('checkMdocPermissions', result)
+      setArePermissionsGranted(!!result)
+    })
+  }, [])
 
-  // useEffect(() => {
-  //   if (showMyQrCode) {
-  //     void getMdocQrCode().then(setQrCodeData)
-  //   } else {
-  //     setQrCodeData(undefined)
-  //   }
-  // }, [showMyQrCode])
+  useEffect(() => {
+    if (showMyQrCode) {
+      void getMdocQrCode().then(setQrCodeData)
+    } else {
+      setQrCodeData(undefined)
+    }
+  }, [showMyQrCode])
 
   const onCancel = () => back()
 
@@ -86,39 +86,39 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
     setIsProcessing(false)
   }
 
-  // const handleQrButtonPress = async () => {
-  //   if (Platform.OS !== 'android') {
-  //     toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
-  //     return
-  //   }
+  const handleQrButtonPress = async () => {
+    if (Platform.OS !== 'android') {
+      toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
+      return
+    }
 
-  //   if (arePermissionsGranted) {
-  //     setShowMyQrCode(true)
-  //   } else {
-  //     const permissions = await requestMdocPermissions()
-  //     if (!permissions) {
-  //       toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
-  //       return
-  //     }
+    if (arePermissionsGranted) {
+      setShowMyQrCode(true)
+    } else {
+      const permissions = await requestMdocPermissions()
+      if (!permissions) {
+        toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
+        return
+      }
 
-  //     // Check if any permission is in 'never_ask_again' state
-  //     const hasNeverAskAgain = Object.values(permissions).some((status) => status === 'never_ask_again')
+      // Check if any permission is in 'never_ask_again' state
+      const hasNeverAskAgain = Object.values(permissions).some((status) => status === 'never_ask_again')
 
-  //     if (hasNeverAskAgain) {
-  //       Alert.alert(
-  //         'Please enable required permissions in your phone settings',
-  //         'Sharing with QR-Code needs access to Bluetooth and Location.',
-  //         [
-  //           {
-  //             text: 'Open Settings',
-  //             onPress: () => Linking.openSettings(),
-  //           },
-  //         ]
-  //       )
-  //       return
-  //     }
-  //   }
-  // }
+      if (hasNeverAskAgain) {
+        Alert.alert(
+          'Please enable required permissions in your phone settings',
+          'Sharing with QR-Code needs access to Bluetooth and Location.',
+          [
+            {
+              text: 'Open Settings',
+              onPress: () => Linking.openSettings(),
+            },
+          ]
+        )
+        return
+      }
+    }
+  }
 
   const animatedQrOverlayOpacity = useAnimatedStyle(
     () => ({
