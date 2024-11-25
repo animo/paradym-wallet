@@ -17,6 +17,7 @@ interface ProgressHeaderProps extends ComponentProps<typeof YStack> {
   progress: number
   onBack?: () => void
   onCancel?: () => void
+  enterAnimation?: boolean
 }
 
 export function ProgressHeader({
@@ -25,6 +26,7 @@ export function ProgressHeader({
   onBack,
   onCancel,
   color = 'primary',
+  enterAnimation = false,
   ...props
 }: ProgressHeaderProps) {
   const isError = color === 'danger'
@@ -47,7 +49,11 @@ export function ProgressHeader({
         {onCancel ? <IconContainer aria-label="Cancel" icon={<HeroIcons.X />} onPress={onCancel} /> : <Stack />}
       </XStack>
       {progress > 1 && (
-        <AnimatedStack entering={FadeIn.delay(200)} mb="$4" mx={variant === 'small' ? '$-4' : '$0'}>
+        <AnimatedStack
+          entering={enterAnimation ? FadeIn.delay(200) : undefined}
+          mb="$4"
+          mx={variant === 'small' ? '$-4' : '$0'}
+        >
           {variant === 'small' ? (
             <Stack pos="absolute" h={1} w="100%" bg="$grey-200" />
           ) : (

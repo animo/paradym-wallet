@@ -1,6 +1,7 @@
 import { Button, HeroIcons, InfoButton, InfoSheet, Stack, useToastController } from '@package/ui'
 import type { StatusVariant } from '@package/ui/src/utils/variants'
 import { formatDate, formatDaysString, getDaysUntil } from '@package/utils/src'
+import { useRouter } from 'expo-router'
 import React, { useEffect, useMemo } from 'react'
 import { useState } from 'react'
 import { useHaptics } from '../hooks/useHaptics'
@@ -43,35 +44,36 @@ interface CardInfoLifecycleProps {
   validUntil?: Date
   validFrom?: Date
   isRevoked?: boolean
-  batchLeft?: number
+  hasRefreshToken?: boolean
 }
 
-export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, batchLeft }: CardInfoLifecycleProps) {
-  const toast = useToastController()
+export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefreshToken }: CardInfoLifecycleProps) {
+  const { push } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
 
   const state = useMemo(() => {
     if (isRevoked) return 'revoked'
-    if (batchLeft) return 'batch'
 
     return 'active'
-  }, [isRevoked, batchLeft])
+  }, [isRevoked])
 
   const onPress = withHaptics(() => setIsOpen(!isOpen))
 
+  // TODO: Check if refresh token is expired
+  // Should also make sure that pid setup works when refresh token is expired
+  const isRefreshTokenExpired = false
   const onPressValidate = withHaptics(() => {
-    // Implement navigation to the setup eID card flow.
-    toast.show('Coming soon', { customData: { preset: 'warning' } })
+    withHaptics(() => push('/pidSetup'))
   })
 
   if (validUntil || validFrom) {
-    return <CardInfoLimitedByDate validUntil={validUntil} validFrom={validFrom} />
+    return <CardInfoLimitedByDate validUntil={validUntil} validFrom={validFrom} hasRefreshToken={hasRefreshToken} />
   }
 
   return (
     <>
-      {batchLeft && batchLeft <= 5 && (
+      {isRefreshTokenExpired && (
         <Stack pb="$4">
           <Button.Solid bg="$grey-50" bw="$0.5" borderColor="$grey-200" color="$grey-900" onPress={onPressValidate}>
             Refresh card <HeroIcons.ArrowPath ml="$-2" size={20} color="$grey-700" />
@@ -82,11 +84,7 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, batchLeft 
         routingType="modal"
         variant={cardInfoLifecycleVariant[state].variant}
         title={cardInfoLifecycleVariant[state].title}
-        description={
-          batchLeft
-            ? `${batchLeft} ${cardInfoLifecycleVariant[state].description}`
-            : cardInfoLifecycleVariant[state].description
-        }
+        description={cardInfoLifecycleVariant[state].description}
         onPress={onPress}
       />
       <InfoSheet
@@ -103,7 +101,11 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, batchLeft 
 
 type CardInfoLimitedByDateState = 'not-yet-active' | 'active' | 'will-expire' | 'expired'
 
-function CardInfoLimitedByDate({ validUntil, validFrom }: { validUntil?: Date; validFrom?: Date }) {
+function CardInfoLimitedByDate({
+  validUntil,
+  validFrom,
+  hasRefreshToken,
+}: { validUntil?: Date; validFrom?: Date; hasRefreshToken?: boolean }) {
   const [state, setState] = useState<CardInfoLimitedByDateState>('active')
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
@@ -111,16 +113,27 @@ function CardInfoLimitedByDate({ validUntil, validFrom }: { validUntil?: Date; v
   const onPress = withHaptics(() => setIsOpen(!isOpen))
 
   useEffect(() => {
+    // If both are passed, then the credential is expired
     if (validUntil && validUntil < new Date()) {
       setState('expired')
+
+      // If validFrom is in the future, then the credential is not yet active
     } else if (validFrom && validFrom > new Date()) {
       setState('not-yet-active')
+
+      // If it has a refresh token, then the credential is set to active (unless already expired)
+    } else if (hasRefreshToken) {
+      setState('active')
+
+      // If validUntil is in the future, then the credential will expire
     } else if (validUntil && validUntil > new Date()) {
+      // Expiry notice will be shown if validUntil less than 2 weeks away
+      // As defined in getCardInfoLimitedByDateVariant below
       setState('will-expire')
     } else {
       setState('active')
     }
-  }, [validUntil, validFrom])
+  }, [validUntil, validFrom, hasRefreshToken])
 
   const content = getCardInfoLimitedByDateVariant(validUntil, validFrom)[state]
 
@@ -163,6 +176,10 @@ function getCardInfoLimitedByDateVariant(
   const activeString = validFrom && `This card will be active in ${activeDaysString}, on ${formatDate(validFrom)}.`
   const expiryString = validUntil && `This card expires in ${expiryDaysString}, on ${formatDate(validUntil)}.`
 
+  // Check if card expires in more than 2 weeks (14 days)
+  const hasMoreThanTwoWeeksUntilExpiry =
+    validUntil && validUntil.getTime() - new Date().getTime() > 14 * 24 * 60 * 60 * 1000
+
   return {
     active: {
       variant: 'positive',
@@ -183,9 +200,9 @@ function getCardInfoLimitedByDateVariant(
       sheetDescription: (validityPeriod ?? activeString) as string,
     },
     'will-expire': {
-      variant: 'warning',
-      title: 'Card will expire',
-      description: `Expires in ${expiryDaysString}`,
+      variant: hasMoreThanTwoWeeksUntilExpiry ? 'positive' : 'warning',
+      title: hasMoreThanTwoWeeksUntilExpiry ? 'Card is active' : 'Card will expire',
+      description: hasMoreThanTwoWeeksUntilExpiry ? 'No actions required' : `Expires in ${expiryDaysString}`,
       sheetDescription: (validityPeriod ?? expiryString) as string,
     },
   }

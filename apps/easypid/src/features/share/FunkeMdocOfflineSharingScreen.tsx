@@ -9,7 +9,7 @@ import {
   addSharedActivity,
   addSharedActivityForCredentialsForRequest,
 } from '../activity/activityRecord'
-import { shareDeviceResponse } from '../proximity'
+// import { shareDeviceResponse } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { PresentationRequestResult } from './components/utils'
 
@@ -70,12 +70,12 @@ export function FunkeMdocOfflineSharingScreen({
 
     // Once this returns we just assume it's successful
     try {
-      await shareDeviceResponse({
-        agent,
-        deviceRequest,
-        sessionTranscript,
-        submission,
-      })
+      // await shareDeviceResponse({
+      //   agent,
+      //   deviceRequest,
+      //   sessionTranscript,
+      //   submission,
+      // })
     } catch (error) {
       await addActivity('failed')
       return {

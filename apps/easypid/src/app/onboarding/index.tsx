@@ -45,7 +45,7 @@ export default function OnboardingScreens() {
     page = (
       <FlexPage gap="$2" jc="space-between">
         <Animated.View entering={FadeIn.delay(300)}>
-          <ProgressHeader progress={onboardingContext.progress} onBack={onReset} />
+          <ProgressHeader enterAnimation progress={onboardingContext.progress} onBack={onReset} />
         </Animated.View>
 
         <Animated.View

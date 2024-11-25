@@ -100,6 +100,7 @@ export function FunkeCredentialDetailScreen() {
               <CardInfoLifecycle
                 validFrom={credential.metadata.validFrom ? new Date(credential.metadata.validFrom) : undefined}
                 validUntil={credential.metadata.validUntil ? new Date(credential.metadata.validUntil) : undefined}
+                hasRefreshToken={credential.hasRefreshToken}
               />
               <InfoButton
                 variant="view"

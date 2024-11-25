@@ -1,6 +1,6 @@
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useWizard } from 'packages/app/src'
-import { OnboardingIdCardStart } from '../onboarding/screens/id-card-start'
+import { OnboardingDataProtection } from '../onboarding/screens/data-protection'
 
 interface PidSetupStartSlideProps {
   title: string
@@ -20,7 +20,7 @@ export function PidSetupStartSlide({ title, subtitle, onStart }: PidSetupStartSl
         </YStack>
       </YStack>
       <YStack fg={1} pt="$6">
-        <OnboardingIdCardStart
+        <OnboardingDataProtection
           goToNextStep={async (shouldUseCloudHsm) => {
             onNext()
             onStart(shouldUseCloudHsm)

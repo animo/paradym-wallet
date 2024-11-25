@@ -424,7 +424,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidIdCardFetchSlide
-              {...getPidSetupSlideContent('id-card-fetch')}
+              {...getPidSetupSlideContent(userName ? 'id-card-complete' : 'id-card-fetch')}
               userName={userName}
               onComplete={() => pushToWallet('replace')}
             />

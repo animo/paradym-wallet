@@ -63,8 +63,8 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
         </YStack>
       </YStack>
       <YStack gap="$4" alignItems="center">
-        <Button.Text onPress={onPressPrivacy} py="$2" textAlign="center">
-          Read the Privacy Policy <HeroIcons.Link color="$primary-500" size={20} />
+        <Button.Text onPress={onPressPrivacy} icon={HeroIcons.Link} color="$primary-500" py="$2" textAlign="center">
+          Read the Privacy Policy
         </Button.Text>
         <XStack gap="$2" width="100%">
           <Button.Outline bg="$grey-100" scaleOnPress fg={0} width="$buttonHeight" onPress={onToggleCloudHsm}>

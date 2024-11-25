@@ -22,7 +22,7 @@ import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import easypidLogo from '../../../assets/icon-rounded.png'
-import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
+// import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
@@ -44,20 +44,19 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
 
-  useEffect(() => {
-    void checkMdocPermissions().then((result) => {
-      console.log('checkMdocPermissions', result)
-      setArePermissionsGranted(!!result)
-    })
-  }, [])
+  // useEffect(() => {
+  //   void checkMdocPermissions().then((result) => {
+  //     setArePermissionsGranted(!!result)
+  //   })
+  // }, [])
 
-  useEffect(() => {
-    if (showMyQrCode) {
-      void getMdocQrCode().then(setQrCodeData)
-    } else {
-      setQrCodeData(undefined)
-    }
-  }, [showMyQrCode])
+  // useEffect(() => {
+  //   if (showMyQrCode) {
+  //     void getMdocQrCode().then(setQrCodeData)
+  //   } else {
+  //     setQrCodeData(undefined)
+  //   }
+  // }, [showMyQrCode])
 
   const onCancel = () => back()
 
@@ -95,7 +94,7 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
     if (arePermissionsGranted) {
       setShowMyQrCode(true)
     } else {
-      const permissions = await requestMdocPermissions()
+      const permissions = {}
       if (!permissions) {
         toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
         return
