@@ -31,6 +31,7 @@ export {
   FormattedSubmissionEntrySatisfiedCredential,
   formatDifPexCredentialsForRequest,
 } from './format/formatPresentation'
+export { getSubmissionForMdocDocumentRequest } from './format/mdocRequest'
 export * from './mediation'
 export * from './crypto'
 export * from './storage'

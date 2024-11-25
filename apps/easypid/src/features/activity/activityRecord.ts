@@ -142,7 +142,7 @@ export const addSharedActivity = async (
 
 export function addSharedActivityForCredentialsForRequest(
   agent: AppAgent,
-  credentialsForRequest: CredentialsForProofRequest,
+  credentialsForRequest: Pick<CredentialsForProofRequest, 'verifier' | 'formattedSubmission'>,
   status: ActivityStatus
 ) {
   return addSharedActivity(agent, {
@@ -154,8 +154,8 @@ export function addSharedActivityForCredentialsForRequest(
       logo: credentialsForRequest.verifier.logo,
     },
     request: {
-      name: credentialsForRequest?.formattedSubmission?.name,
-      purpose: credentialsForRequest?.formattedSubmission?.purpose,
+      name: credentialsForRequest.formattedSubmission.name,
+      purpose: credentialsForRequest.formattedSubmission.purpose,
       credentials: getDisclosedCredentialForSubmission(credentialsForRequest.formattedSubmission),
       failureReason:
         status === 'failed'

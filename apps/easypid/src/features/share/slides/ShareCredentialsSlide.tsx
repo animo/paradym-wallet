@@ -1,12 +1,12 @@
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, Paragraph, ScrollView, YStack, useToastController } from '@package/ui'
+import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack, useToastController } from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
-import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
 import { RequestPurposeSection } from '../components/RequestPurposeSection'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
+import type { PresentationRequestResult } from '../components/utils'
 
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
@@ -14,6 +14,8 @@ interface ShareCredentialsSlideProps {
   onDecline?: () => void
   submission: FormattedSubmission
   isAccepting: boolean
+
+  isOffline?: boolean
 }
 
 export const ShareCredentialsSlide = ({
@@ -22,6 +24,7 @@ export const ShareCredentialsSlide = ({
   onAccept,
   onDecline,
   isAccepting,
+  isOffline,
 }: ShareCredentialsSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -70,12 +73,21 @@ export const ShareCredentialsSlide = ({
             maxHeight={scrollViewHeight}
             bg="$white"
           >
-            <RequestPurposeSection
-              purpose={
-                submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
-              }
-              logo={logo}
-            />
+            {isOffline ? (
+              <MessageBox
+                variant="light"
+                title="This is an offline request"
+                message="Information about the verifier could not be shown. Carefully consider if you trust this party."
+                icon={<HeroIcons.ExclamationTriangleFilled />}
+              />
+            ) : (
+              <RequestPurposeSection
+                purpose={
+                  submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
+                }
+                logo={logo}
+              />
+            )}
             <RequestedAttributesSection submission={submission} />
             <Spacer />
           </ScrollView>

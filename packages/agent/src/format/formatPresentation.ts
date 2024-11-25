@@ -3,11 +3,7 @@ import {
   type DcqlQueryResult,
   type DifPexCredentialsForRequest,
   type DifPresentationExchangeDefinitionV2,
-  Hasher,
 } from '@credo-ts/core'
-import { decodeSdJwtVc } from '@credo-ts/core/build/modules/sd-jwt-vc/decodeSdJwtVc'
-import { decodeSdJwtSync } from '@sd-jwt/decode'
-import { selectDisclosures } from '@sd-jwt/present'
 
 import { JSONPath } from '@astronautlabs/jsonpath'
 import type { NonEmptyArray } from '@package/utils'

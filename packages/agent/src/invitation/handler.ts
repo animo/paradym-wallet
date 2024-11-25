@@ -466,9 +466,11 @@ export const getCredentialsForProofRequest = async ({
         : undefined,
       entityId: resolved.authorizationRequest.payload?.iss as string,
 
-      logo: {
-        url: clientMetadata?.logo_uri,
-      },
+      logo: clientMetadata?.logo_uri
+        ? {
+            url: clientMetadata?.logo_uri,
+          }
+        : undefined,
       name: clientMetadata?.client_name,
     },
     formattedSubmission,

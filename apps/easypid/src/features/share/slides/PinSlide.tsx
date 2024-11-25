@@ -1,7 +1,7 @@
 import { PinDotsInput, type PinDotsInputRef, usePushToWallet, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack, useToastController } from '@package/ui'
 import { useRef, useState } from 'react'
-import type { PresentationRequestResult } from '../FunkeOpenIdPresentationNotificationScreen'
+import type { PresentationRequestResult } from '../components/utils'
 
 interface PinSlideProps {
   onPinComplete: (pin: string) => Promise<PresentationRequestResult> | Promise<void>
