@@ -1,9 +1,8 @@
-import { usePidDisplay } from '@easypid/hooks'
-import { Button, Heading, HeroIcons, Paragraph, Stack, YStack } from '@package/ui'
+import { bdrPidCredentialDisplay, bdrPidIssuerDisplay } from '@easypid/use-cases/bdrPidMetadata'
+import { Button, HeroIcons, Paragraph, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import { CardWithAttributes } from 'packages/app/src'
 import { useState } from 'react'
-import { Circle } from 'tamagui'
 
 interface OnboardingIdCardRequestedAttributesProps {
   goToNextStep: () => void
@@ -16,8 +15,6 @@ export function OnboardingIdCardRequestedAttributes({
   onSkipCardSetup,
   requestedAttributes,
 }: OnboardingIdCardRequestedAttributesProps) {
-  const display = usePidDisplay()
-
   const [isLoading, setIsLoading] = useState(false)
 
   const onSetupLater = () => {
@@ -33,13 +30,11 @@ export function OnboardingIdCardRequestedAttributes({
       <YStack gap="$4">
         <Paragraph mt="$-4">These {requestedAttributes.length} attributes will be read from your eID card.</Paragraph>
         <CardWithAttributes
-          id="pid-display"
           name="eID card"
-          issuerImage={display?.issuer.logo}
-          backgroundImage={display?.backgroundImage}
-          backgroundColor={display?.backgroundColor}
-          disclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}
-          disableNavigation
+          issuerImage={{ url: bdrPidIssuerDisplay.logo }}
+          backgroundImage={{ url: bdrPidCredentialDisplay.backgroundImage }}
+          backgroundColor={bdrPidCredentialDisplay.backgroundColor}
+          formattedDisclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}
         />
       </YStack>
       <YStack gap="$4" alignItems="center">

@@ -1,4 +1,3 @@
-import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
 import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
 import {
   AnimatedStack,
@@ -19,14 +18,14 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
-import type { DisplayImage } from 'packages/agent/src'
+import { type DisplayImage, useCredentialsForDisplay } from 'packages/agent/src'
 import { TextBackButton } from 'packages/app/src'
 import { formatDate } from 'packages/utils/src'
 import React, { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function FunkeCredentialsScreen() {
-  const { credentials, isLoading: isLoadingCredentials } = useCredentialsWithCustomDisplay()
+  const { credentials, isLoading: isLoadingCredentials } = useCredentialsForDisplay()
 
   const [searchQuery, setSearchQuery] = useState('')
   const filteredCredentials = useMemo(() => {

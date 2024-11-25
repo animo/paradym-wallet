@@ -18,14 +18,16 @@ import { CredentialAttributes } from '@package/app/src/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
 
+import { type CredentialMetadata, metadataForDisplay } from '@package/agent'
 import { useRouter } from 'expo-router'
 import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+// TODO: we should pass the credential for display here
 interface FunkeCredentialDetailAttributesScreenProps {
   attributes: Record<string, unknown>
-  metadata: Record<string, unknown>
+  metadata: CredentialMetadata
 }
 
 export function FunkeCredentialDetailAttributesScreen({
@@ -104,7 +106,7 @@ export function FunkeCredentialDetailAttributesScreen({
                   headerTitle="Metadata"
                   borderStyle="large"
                   attributeWeight="medium"
-                  subject={metadata}
+                  subject={metadataForDisplay(metadata)}
                   headerStyle="small"
                   showDevProps
                 />

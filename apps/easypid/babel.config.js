@@ -3,6 +3,7 @@ module.exports = (api) => {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      'babel-plugin-syntax-hermes-parser',
       [
         'module-resolver',
         {

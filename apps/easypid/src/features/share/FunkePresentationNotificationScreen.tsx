@@ -3,13 +3,13 @@ import type { DisplayImage, FormattedSubmission } from '@package/agent'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
-import type { PresentationRequestResult } from './FunkeOpenIdPresentationNotificationScreen'
+import type { PresentationRequestResult } from './components/utils'
 import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface FunkePresentationNotificationScreenProps {
-  host: string
+  entityId: string
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
@@ -18,21 +18,19 @@ interface FunkePresentationNotificationScreenProps {
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
-  onAccept: () => Promise<PresentationRequestResult>
-  onAcceptWithPin: (pin: string) => Promise<PresentationRequestResult>
+  onAccept: (pin?: string) => Promise<PresentationRequestResult>
   onDecline: () => void
   onComplete: () => void
 }
 
 export function FunkePresentationNotificationScreen({
-  host,
+  entityId,
   verifierName,
   logo,
   lastInteractionDate,
   approvalsCount,
   usePin,
   onAccept,
-  onAcceptWithPin,
   onDecline,
   isAccepting,
   submission,
@@ -55,15 +53,15 @@ export function FunkePresentationNotificationScreen({
               <VerifyPartySlide
                 key="verify-issuer"
                 type="request"
+                entityId={entityId}
                 name={verifierName}
-                host={host}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
                 approvalsCount={approvalsCount}
               />
             ),
           },
-          {
+          submission && {
             step: 'share-credentials',
             progress: 66,
             screen: (
@@ -80,7 +78,7 @@ export function FunkePresentationNotificationScreen({
           usePin && {
             step: 'pin-enter',
             progress: 82.5,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
+            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAccept} />,
           },
           {
             step: 'success',

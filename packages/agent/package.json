@@ -4,15 +4,18 @@
 	"private": true,
 	"main": "src/index.ts",
 	"dependencies": {
-		"@credo-ts/anoncreds": "*",
-		"@credo-ts/askar": "*",
-		"@credo-ts/cheqd": "*",
-		"@credo-ts/core": "*",
-		"@credo-ts/indy-vdr": "*",
-		"@credo-ts/openid4vc": "*",
-		"@credo-ts/question-answer": "*",
-		"@credo-ts/react-hooks": "*",
-		"@credo-ts/react-native": "*",
+		"@animo-id/oid4vci": "catalog:",
+		"@astronautlabs/jsonpath": "^1.1.2",
+		"@animo-id/oauth2": "catalog:",
+		"@credo-ts/anoncreds": "catalog:",
+		"@credo-ts/askar": "catalog:",
+		"@credo-ts/cheqd": "catalog:",
+		"@credo-ts/core": "catalog:",
+		"@credo-ts/indy-vdr": "catalog:",
+		"@credo-ts/openid4vc": "catalog:",
+		"@credo-ts/question-answer": "catalog:",
+		"@credo-ts/react-hooks": "catalog:",
+		"@credo-ts/react-native": "catalog:",
 		"@package/utils": "workspace:*",
 		"@tanstack/react-query": "^5",
 		"credo-ts-didweb-anoncreds": "0.0.1-alpha.13",
@@ -21,10 +24,10 @@
 		"rxjs": "^7.8.1"
 	},
 	"peerDependencies": {
-		"@hyperledger/anoncreds-react-native": "*",
-		"@hyperledger/aries-askar-react-native": "*",
-		"@hyperledger/indy-vdr-react-native": "*",
-		"expo": "*"
+		"@hyperledger/anoncreds-react-native": "catalog:",
+		"@hyperledger/aries-askar-react-native": "catalog:",
+		"@hyperledger/indy-vdr-react-native": "catalog:",
+		"expo": "catalog:"
 	},
 	"devDependencies": {
 		"@types/fast-text-encoding": "^1.0.3"

@@ -1,17 +1,6 @@
 import type { FormattedSubmission } from '@package/agent'
 
-import {
-  Button,
-  Heading,
-  LucideIcons,
-  Paragraph,
-  ScrollView,
-  Sheet,
-  Stack,
-  TableContainer,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { Button, Heading, Paragraph, ScrollView, Sheet, Stack, TableContainer, XStack, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import React, { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -86,7 +75,9 @@ export function PresentationNotificationScreen({
             <YStack gap="$4">
               {submission.entries.map((s, i) => {
                 const selectedCredentialId = selectedCredentials[s.inputDescriptorId]
-                const selectedCredential = s.credentials.find((c) => c.id === selectedCredentialId) ?? s.credentials[0]
+                const selectedCredential = s.isSatisfied
+                  ? s.credentials.find((c) => c.credential.id === selectedCredentialId) ?? s.credentials[0]
+                  : undefined
 
                 return (
                   <YStack key={s.inputDescriptorId}>
@@ -101,10 +92,10 @@ export function PresentationNotificationScreen({
                         <XStack justifyContent="space-between" alignItems="center">
                           <Stack flex={1}>
                             <CredentialRowCard
-                              issuer={selectedCredential?.issuerName}
-                              name={selectedCredential?.credentialName ?? s.name}
+                              issuer={selectedCredential?.credential.display.issuer.name}
+                              name={selectedCredential?.credential.display.name ?? s.name ?? 'Credential'}
                               hideBorder={true}
-                              bgColor={selectedCredential?.backgroundColor}
+                              bgColor={selectedCredential?.credential.display.backgroundColor}
                             />
                           </Stack>
                           {/* // FIXME: disable credential selection until we have better UX */}
@@ -124,21 +115,37 @@ export function PresentationNotificationScreen({
                           </Paragraph>
                         )}
                       </YStack>
-                      {s.isSatisfied && selectedCredential?.requestedAttributes ? (
+                      {s.isSatisfied ? (
                         <YStack px="$3" pb="$3" gap="$2">
                           <Paragraph variant="sub">The following information will be presented:</Paragraph>
                           <YStack flexDirection="row" flexWrap="wrap">
-                            {selectedCredential.requestedAttributes.map((a) => (
-                              <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
-                                • {sanitizeString(a)}
-                              </Paragraph>
-                            ))}
+                            {Array.from(new Set(selectedCredential?.disclosed.paths.map((path) => path[0])))?.map(
+                              (a) => (
+                                <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
+                                  • {sanitizeString(a)}
+                                </Paragraph>
+                              )
+                            )}
                           </YStack>
                         </YStack>
                       ) : (
-                        <Paragraph px="$3" pb="$3" variant="sub" color="$danger-500">
-                          This credential is not present in your wallet.
-                        </Paragraph>
+                        <YStack px="$3" pb="$3" gap="$2">
+                          <Paragraph px="$3" pb="$3" variant="sub" color="$danger-500">
+                            This credential is not present in your wallet.{' '}
+                            {s.requestedAttributePaths.length > 0 ? 'The folloing information is requested:' : ''}
+                          </Paragraph>
+                          {s.requestedAttributePaths.length > 0 && (
+                            <YStack flexDirection="row" flexWrap="wrap">
+                              {Array.from(new Set(s.requestedAttributePaths.map((p) => p[0])))
+                                .filter((a): a is string => typeof a === 'string')
+                                .map((a) => (
+                                  <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
+                                    • {sanitizeString(a)}
+                                  </Paragraph>
+                                ))}
+                            </YStack>
+                          )}
+                        </YStack>
                       )}
                     </YStack>
                   </YStack>
@@ -170,19 +177,20 @@ export function PresentationNotificationScreen({
             Select the credential you want to use
           </Heading>
           <TableContainer>
-            {currentSubmissionEntry?.credentials.map((c, credentialIndex) => (
-              <CredentialRowCard
-                onPress={() => {
-                  onSelectCredentialForInputDescriptor(currentSubmissionEntry.inputDescriptorId, c.id)
-                  setChangeSubmissionCredentialIndex(-1)
-                }}
-                key={c.id}
-                issuer={c.issuerName}
-                name={c.credentialName}
-                hideBorder={credentialIndex === currentSubmissionEntry.credentials.length - 1}
-                bgColor={c.backgroundColor}
-              />
-            ))}
+            {currentSubmissionEntry?.isSatisfied &&
+              currentSubmissionEntry?.credentials.map((c, credentialIndex) => (
+                <CredentialRowCard
+                  onPress={() => {
+                    onSelectCredentialForInputDescriptor(currentSubmissionEntry.inputDescriptorId, c.credential.id)
+                    setChangeSubmissionCredentialIndex(-1)
+                  }}
+                  key={c.credential.id}
+                  issuer={c.credential.display.issuer.name}
+                  name={c.credential.display.name}
+                  hideBorder={credentialIndex === currentSubmissionEntry.credentials.length - 1}
+                  bgColor={c.credential.display.backgroundColor}
+                />
+              ))}
           </TableContainer>
         </Stack>
       </Sheet>

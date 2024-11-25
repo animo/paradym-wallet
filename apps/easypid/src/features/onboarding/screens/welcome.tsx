@@ -1,64 +1,15 @@
-import {
-  Button,
-  FlexPage,
-  Heading,
-  HeroIcons,
-  IconContainer,
-  Paragraph,
-  Stack,
-  XStack,
-  YStack,
-  useToastController,
-} from '@package/ui'
+import { Button, FlexPage, Heading, HeroIcons, IconContainer, Paragraph, Stack, XStack, YStack } from '@package/ui'
 import { Image } from '@tamagui/image'
 import type React from 'react'
-import { useEffect, useState } from 'react'
 import { Alert, Dimensions } from 'react-native'
 
-import { generateKeypair } from '@animo-id/expo-secure-environment'
 import welcomeBackground from '../../../../assets/home-bg.png'
 
 export interface OnboardingWelcomeProps {
-  goToNextStep: (selectedFlow: 'c' | 'bprime') => void
-}
-
-const readableFlow = {
-  c: 'C',
-  bprime: "B'",
+  goToNextStep: () => void
 }
 
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
-  const toast = useToastController()
-  const [selectedFlow, setSelectedFlow] = useState<'c' | 'bprime'>('c')
-  const [isBlockedByHsm, setIsBlockedByHsm] = useState(false)
-
-  const onPressFlow = () => {
-    return toast.show("B' flow is currently unavailable", {
-      type: 'warning',
-      customData: {
-        preset: 'warning',
-      },
-    })
-    // const newFlow = selectedFlow === 'c' ? 'bprime' : 'c'
-    // setSelectedFlow(newFlow)
-    // toast.show(`${readableFlow[newFlow]} flow activated!`, {
-    //   type: 'info',
-    //   message: `You are now using the ${readableFlow[newFlow]} flow.`,
-    // })
-  }
-
-  useEffect(() => {
-    try {
-      generateKeypair('123', false)
-    } catch (error) {
-      setIsBlockedByHsm(true)
-      Alert.alert(
-        'Your device is not supported',
-        'This device does not have a secure enclave. This is required as an additional layer of security for your digital identity. Unfortunately, this means you are unable to use the EasyPID wallet with this device.'
-      )
-    }
-  }, [])
-
   return (
     <YStack fg={1} pos="relative">
       <Image
@@ -80,7 +31,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
               onPress={() => {
                 Alert.alert(
                   'This is the EasyPID wallet',
-                  `\nThis is your digital wallet. With it, you can store and share information about yourself. \n\n You can switch between the C and B' flow by pressing the grey button in the bottom left.`
+                  '\nThis is your digital wallet. With it, you can store and share information about yourself.'
                 )
               }}
             />
@@ -93,25 +44,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             </Paragraph>
           </YStack>
           <XStack gap="$2">
-            <Button.Outline scaleOnPress fg={0} width="$buttonHeight" bg="$grey-100" onPress={onPressFlow}>
-              <Paragraph fontWeight="$semiBold">{selectedFlow === 'c' ? 'C' : "B'"}</Paragraph>
-            </Button.Outline>
-            <Button.Solid
-              opacity={isBlockedByHsm ? 0.8 : 1}
-              flexGrow={1}
-              scaleOnPress={!isBlockedByHsm}
-              onPress={() => {
-                if (isBlockedByHsm) {
-                  toast.show('Your device is not supported', {
-                    type: 'error',
-                    message:
-                      'Your device does not have a secure enclave. This is required as an additional layer of security for your digital identity.',
-                  })
-                } else {
-                  goToNextStep(selectedFlow)
-                }
-              }}
-            >
+            <Button.Solid flexGrow={1} onPress={goToNextStep}>
               Get Started
             </Button.Solid>
           </XStack>

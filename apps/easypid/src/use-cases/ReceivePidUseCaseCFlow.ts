@@ -2,28 +2,49 @@ import type { MdocRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
+  OpenId4VciAuthorizationFlow,
   type SdJwtVcRecord,
+  getCredentialCategoryMetadata,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  setCredentialCategoryMetadata,
+  setOpenId4VcCredentialMetadata,
+  setRefreshCredentialMetadata,
   storeCredential,
 } from '@package/agent'
+import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
-import { C_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
+import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
+import {
+  bdrPidCredentialDisplay,
+  bdrPidIssuerDisplay,
+  bdrPidOpenId4VcMetadata,
+  bdrPidSdJwtTypeMetadata,
+} from './bdrPidMetadata'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
-  private static REDIRECT_URI = 'https://funke.animo.id/redirect'
-
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
     const resolved = await resolveOpenId4VciOffer({
       agent: options.agent,
-      offer: { uri: C_SD_JWT_MDOC_OFFER },
+      offer: { uri: C_PRIME_SD_JWT_MDOC_OFFER },
       authorization: {
         clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
         redirectUri: ReceivePidUseCaseCFlow.REDIRECT_URI,
       },
     })
 
-    if (!resolved.resolvedAuthorizationRequest) {
+    // NOTE: the bdr pid issuer does not include in their metadata that they support batch while they do support is
+    // and Credo checks for this. We modify the metadata so we can still use batch issuance
+    if (!resolved.resolvedCredentialOffer.metadata.credentialIssuer.batch_credential_issuance) {
+      resolved.resolvedCredentialOffer.metadata.credentialIssuer.batch_credential_issuance = {
+        batch_size: 10,
+      }
+    }
+
+    if (
+      !resolved.resolvedAuthorizationRequest ||
+      resolved.resolvedAuthorizationRequest.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
+    ) {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
@@ -46,26 +67,62 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         throw new Error('Expected accessToken be defined in state retrieve-credential')
       }
 
-      const credentialConfigurationIdsToRequest = this.resolvedCredentialOffer.offeredCredentials.map((o) => o.id)
-      const credentialRecords = await receiveCredentialFromOpenId4VciOffer({
+      const credentialConfigurationIdsToRequest = Object.keys(
+        this.resolvedCredentialOffer.offeredCredentialConfigurations
+      )
+      const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
         agent: this.options.agent,
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdsToRequest,
         clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
+        requestBatch: getShouldUseCloudHsm() ? 2 : false,
         pidSchemes,
       })
 
-      for (const credentialRecord of credentialRecords) {
-        if (typeof credentialRecord === 'string') throw new Error('No string expected for c flow')
+      const credentialRecords: Array<SdJwtVcRecord | MdocRecord> = []
+      for (const credentialResponse of credentialResponses) {
+        const credentialRecord = credentialResponse.credential
+
         if (credentialRecord.type !== 'SdJwtVcRecord' && credentialRecord.type !== 'MdocRecord') {
           throw new Error(`Unexpected record type ${credentialRecord.type}`)
         }
 
+        // NOTE: temp override to use hardcoded type metadata.
+        // it uses parts of our branding (as the type metadata doesn't contain
+        // rendering and a very weird long name)
+        if (credentialRecord.type === 'SdJwtVcRecord') {
+          credentialRecord.typeMetadata = bdrPidSdJwtTypeMetadata
+        }
+
+        setCredentialCategoryMetadata(credentialRecord, {
+          credentialCategory: 'DE-PID',
+          // prioritize sd-jwt for PID
+          displayPriority: credentialRecord.type === 'SdJwtVcRecord',
+          canDeleteCredential: false,
+        })
+
+        // Override openid4vc metadata
+        setOpenId4VcCredentialMetadata(
+          credentialRecord,
+          bdrPidOpenId4VcMetadata(this.resolvedCredentialOffer.credentialOfferPayload.credential_issuer)
+        )
+
+        // It seems the refresh token can be re-used, so we store it on all the records
+        if (this.accessToken.accessTokenResponse.refresh_token) {
+          setRefreshCredentialMetadata(credentialRecord, {
+            refreshToken: this.accessToken.accessTokenResponse.refresh_token,
+            dpop: this.accessToken.dpop
+              ? { alg: this.accessToken.dpop.alg, jwk: this.accessToken.dpop.jwk.toJson() }
+              : undefined,
+          })
+        }
+
+        credentialRecords.push(credentialRecord)
         await storeCredential(this.options.agent, credentialRecord)
       }
 
-      return credentialRecords as Array<SdJwtVcRecord | MdocRecord>
+      return credentialRecords
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
       if (error instanceof BiometricAuthenticationError) {

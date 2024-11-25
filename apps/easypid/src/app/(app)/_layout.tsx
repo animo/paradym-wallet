@@ -3,15 +3,15 @@ import { Redirect, Stack, useRouter } from 'expo-router'
 import { useSecureUnlock } from '@easypid/agent'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
-import { seedCredentialStorage } from '@easypid/storage'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
 import { type CredentialDataHandlerOptions, DeeplinkHandler, useHaptics } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'tamagui'
+import { WithBackgroundPidRefresh } from '../../features/pid/WithBackPidRefresh'
 
-const jsonRecordIds = [seedCredentialStorage.recordId, activityStorage.recordId]
+const jsonRecordIds = [activityStorage.recordId]
 
 // When deeplink routing we want to push
 export const credentialDataHandlerOptions = {
@@ -66,41 +66,50 @@ export default function AppLayout() {
   return (
     <AgentProvider agent={secureUnlock.context.agent}>
       <WalletJsonStoreProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
-        <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen
-              options={{
-                presentation: 'modal',
-              }}
-              name="(home)/scan"
-            />
-            <Stack.Screen
-              name="notifications/openIdPresentation"
-              options={{
-                gestureEnabled: false,
-              }}
-            />
-            <Stack.Screen
-              name="notifications/openIdCredential"
-              options={{
-                gestureEnabled: false,
-              }}
-            />
-            <Stack.Screen name="credentials/index" options={headerNormalOptions} />
-            <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
-            <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
-            <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
-            <Stack.Screen name="menu/index" options={headerNormalOptions} />
-            <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
-            <Stack.Screen name="menu/settings" options={headerNormalOptions} />
-            <Stack.Screen name="menu/about" options={headerNormalOptions} />
-            <Stack.Screen name="activity/index" options={headerNormalOptions} />
-            <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
-            <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
-            <Stack.Screen name="pinLocked" options={headerNormalOptions} />
-            <Stack.Screen name="issuer" options={headerNormalOptions} />
-          </Stack>
-        </DeeplinkHandler>
+        <WithBackgroundPidRefresh>
+          <DeeplinkHandler credentialDataHandlerOptions={credentialDataHandlerOptions}>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen
+                options={{
+                  presentation: 'modal',
+                }}
+                name="(home)/scan"
+              />
+              <Stack.Screen
+                name="notifications/openIdPresentation"
+                options={{
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="notifications/openIdCredential"
+                options={{
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="notifications/offlinePresentation"
+                options={{
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen name="credentials/index" options={headerNormalOptions} />
+              <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
+              <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
+              <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
+              <Stack.Screen name="menu/index" options={headerNormalOptions} />
+              <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
+              <Stack.Screen name="menu/settings" options={headerNormalOptions} />
+              <Stack.Screen name="menu/about" options={headerNormalOptions} />
+              <Stack.Screen name="activity/index" options={headerNormalOptions} />
+              <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
+              <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
+              <Stack.Screen name="pinLocked" options={headerNormalOptions} />
+              <Stack.Screen name="issuer" options={headerNormalOptions} />
+              <Stack.Screen name="pidSetup" />
+            </Stack>
+          </DeeplinkHandler>
+        </WithBackgroundPidRefresh>
       </WalletJsonStoreProvider>
     </AgentProvider>
   )

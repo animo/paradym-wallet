@@ -30,16 +30,18 @@ const invitationSchemes = [
   'openid-credential-offer',
   'openid-vc',
   'openid4vp',
-  'animo-easypid',
+  'id.animo.ausweis',
   'haip',
 ]
+
+const associatedDomains = ['funke.animo.id']
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
   name: `EasyPID${variant.name}`,
-  scheme: 'animo-easypid',
+  scheme: 'id.animo.ausweis',
   slug: 'ausweis-wallet',
   owner: 'animo-id',
   version,
@@ -63,7 +65,14 @@ const config = {
   },
   plugins: [
     '@animo-id/expo-ausweis-sdk',
-    '@animo-id/expo-mdoc-data-transfer',
+    [
+      '@animo-id/expo-mdoc-data-transfer',
+      {
+        ios: {
+          buildStatic: [],
+        },
+      },
+    ],
     [
       'expo-build-properties',
       {
@@ -107,6 +116,7 @@ const config = {
         },
       ],
     },
+    associatedDomains: associatedDomains.map((host) => `applinks:${host}`),
   },
   android: {
     adaptiveIcon: {
@@ -122,6 +132,18 @@ const config = {
           scheme,
         },
       })),
+      ...associatedDomains.flatMap((host) =>
+        ['/invitation', '/wallet/redirect'].map((path) => ({
+          action: 'VIEW',
+          category: ['DEFAULT', 'BROWSABLE'],
+          autoVerify: true,
+          data: {
+            scheme: 'https',
+            host,
+            pathPrefix: path,
+          },
+        }))
+      ),
     ],
   },
   experiments: {

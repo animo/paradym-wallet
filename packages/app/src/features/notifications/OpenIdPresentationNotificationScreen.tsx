@@ -1,6 +1,6 @@
 import {
   BiometricAuthenticationCancelledError,
-  formatDifPexCredentialsForRequest,
+  type CredentialsForProofRequest,
   getCredentialsForProofRequest,
   shareProof,
   useAgent,
@@ -23,18 +23,8 @@ export function OpenIdPresentationNotificationScreen() {
   const toast = useToastController()
   const { params } = useParams()
 
-  // TODO: update to useAcceptOpenIdPresentation
-  const [credentialsForRequest, setCredentialsForRequest] =
-    useState<Awaited<ReturnType<typeof getCredentialsForProofRequest>>>()
+  const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [isSharing, setIsSharing] = useState(false)
-
-  const submission = useMemo(
-    () =>
-      credentialsForRequest
-        ? formatDifPexCredentialsForRequest(credentialsForRequest.credentialsForRequest)
-        : undefined,
-    [credentialsForRequest]
-  )
 
   const [selectedCredentials, setSelectedCredentials] = useState<{
     [inputDescriptorId: string]: string
@@ -69,7 +59,7 @@ export function OpenIdPresentationNotificationScreen() {
     void handleRequest()
   }, [params, toast.show, agent, pushToWallet, toast])
 
-  if (!submission || !credentialsForRequest) {
+  if (!credentialsForRequest) {
     return <GettingInformationScreen type="presentation" />
   }
 
@@ -78,8 +68,7 @@ export function OpenIdPresentationNotificationScreen() {
 
     shareProof({
       agent,
-      authorizationRequest: credentialsForRequest.authorizationRequest,
-      credentialsForRequest: credentialsForRequest.credentialsForRequest,
+      resolvedRequest: credentialsForRequest,
       selectedCredentials,
     })
       .then(() => {
@@ -116,9 +105,9 @@ export function OpenIdPresentationNotificationScreen() {
     <PresentationNotificationScreen
       onAccept={onProofAccept}
       onDecline={onProofDecline}
-      submission={submission}
+      submission={credentialsForRequest.formattedSubmission}
       isAccepting={isSharing}
-      verifierName={credentialsForRequest.verifierHostName}
+      verifierName={credentialsForRequest.verifier.name ?? credentialsForRequest.verifier.hostName}
       selectedCredentials={selectedCredentials}
       onSelectCredentialForInputDescriptor={(inputDescriptorId: string, credentialId: string) =>
         setSelectedCredentials((selectedCredentials) => ({

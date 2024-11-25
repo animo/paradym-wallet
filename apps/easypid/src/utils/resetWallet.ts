@@ -9,6 +9,7 @@ import {
   removeHasFinishedOnboarding,
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
+import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {
   if (secureUnlock.state === 'unlocked') {
@@ -33,6 +34,7 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
 
   removeHasFinishedOnboarding()
   removeHasSeenIntroTooltip()
+  removeShouldUseCloudHsm()
 
   if (secureUnlock.state !== 'initializing') {
     secureUnlock.reinitialize()

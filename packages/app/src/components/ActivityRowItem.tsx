@@ -1,5 +1,5 @@
 import type { ActivityType } from '@easypid/features/activity/activityRecord'
-import type { DisplayImage } from '@package/agent/src'
+import type { CredentialForDisplayId, DisplayImage } from '@package/agent/src'
 import {
   CustomIcons,
   Heading,
@@ -52,7 +52,7 @@ interface ActivityRowItemProps {
   subtitle: string
   date: Date
   type: ActivityType
-  credentialId?: string
+  credentialId?: CredentialForDisplayId
 }
 
 export function ActivityRowItem({

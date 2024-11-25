@@ -68,6 +68,7 @@ const config = {
   },
   plugins: [
     [
+      'expo-router',
       'expo-font',
       {
         fonts: [

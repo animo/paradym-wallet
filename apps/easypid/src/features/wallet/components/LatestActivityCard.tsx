@@ -1,5 +1,5 @@
 import { useActivities } from '@easypid/features/activity/activityRecord'
-import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import { useCredentialsForDisplay } from '@package/agent'
 import { InfoButton } from '@package/ui/src'
 import { useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app/src/hooks'
@@ -11,7 +11,7 @@ export function LatestActivityCard() {
   const { withHaptics } = useHaptics()
   const { activities } = useActivities()
   const latestActivity = activities[0]
-  const { credentials } = useCredentialsWithCustomDisplay()
+  const { credentials } = useCredentialsForDisplay()
 
   const pushToActivity = withHaptics(() => push('/activity'))
 
@@ -25,7 +25,7 @@ export function LatestActivityCard() {
       }
     }
     if (latestActivity.type === 'received') {
-      const credential = credentials.find((c) => c.id.includes(latestActivity.credentialIds[0]))
+      const credential = credentials.find((c) => c.id === latestActivity.credentialIds[0])
       return {
         title: formatRelativeDate(new Date(latestActivity.date)),
         description: `Added ${credential?.display.name ?? '1 card'}`,

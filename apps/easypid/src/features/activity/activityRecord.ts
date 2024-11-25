@@ -1,6 +1,17 @@
 import { utils } from '@credo-ts/core'
-import { type DisplayImage, type EasyPIDAppAgent, getWalletJsonStore, useWalletJsonRecord } from '@package/agent'
+import {
+  type CredentialForDisplayId,
+  type CredentialsForProofRequest,
+  type DisplayImage,
+  type EasyPIDAppAgent,
+  type FormattedSubmission,
+  getDisclosedAttributeNamesForDisplay,
+  getUnsatisfiedAttributePathsForDisplay,
+  getWalletJsonStore,
+  useWalletJsonRecord,
+} from '@package/agent'
 import { useMemo } from 'react'
+import type { AppAgent } from '../../agent'
 
 export type ActivityType = 'shared' | 'received'
 export type ActivityStatus = 'success' | 'failed' | 'stopped'
@@ -12,7 +23,9 @@ interface BaseActivity {
   status: ActivityStatus
   date: string
   entity: {
-    did: string
+    // entity id can either be: did or https url
+    id: string
+    did?: string
     host?: string
     name?: string
     logo?: DisplayImage
@@ -20,14 +33,23 @@ interface BaseActivity {
   }
 }
 
+export interface PresentationActivityCredentialNotFound {
+  attributeNames: string[]
+  name?: string
+}
+
+export interface PresentationActivityCredential {
+  id: CredentialForDisplayId
+  name?: string
+  attributeNames: string[]
+  attributes: Record<string, unknown>
+  metadata: Record<string, unknown>
+}
+
 interface PresentationActivity extends BaseActivity {
   type: 'shared'
   request: {
-    credentials: Array<{
-      id: string
-      disclosedAttributes: string[]
-      disclosedPayload: Record<string, unknown>
-    }>
+    credentials: Array<PresentationActivityCredential | PresentationActivityCredentialNotFound>
     name?: string
     purpose?: string
     failureReason?: SharingFailureReason
@@ -36,7 +58,7 @@ interface PresentationActivity extends BaseActivity {
 
 interface IssuanceActivity extends BaseActivity {
   type: 'received'
-  credentialIds: string[]
+  credentialIds: CredentialForDisplayId[]
 }
 
 export type Activity = PresentationActivity | IssuanceActivity
@@ -62,7 +84,7 @@ export const activityStorage = {
   },
 }
 
-export const useActivities = ({ filters }: { filters?: { host?: string; name?: string } } = {}) => {
+export const useActivities = ({ filters }: { filters?: { entityId?: string } } = {}) => {
   const { record, isLoading } = useWalletJsonRecord<ActivityRecord>(activityStorage.recordId)
 
   const activities = useMemo(() => {
@@ -70,12 +92,8 @@ export const useActivities = ({ filters }: { filters?: { host?: string; name?: s
 
     return [...record.activities]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .filter((activity) => {
-        const hostMatch = !filters?.host || activity.entity.host === filters.host
-        const nameMatch = !filters?.name || activity.entity.name === filters.name
-        return hostMatch && nameMatch
-      })
-  }, [record?.activities, filters?.host, filters?.name])
+      .filter((activity) => !filters?.entityId || activity.entity.id === filters?.entityId)
+  }, [record?.activities, filters?.entityId])
 
   return {
     activities,
@@ -86,11 +104,12 @@ export const useActivities = ({ filters }: { filters?: { host?: string; name?: s
 export const addReceivedActivity = async (
   agent: EasyPIDAppAgent,
   input: {
+    entityId: string
     name: string
     host?: string
     logo?: DisplayImage
     backgroundColor?: string
-    credentialIds: string[]
+    credentialIds: CredentialForDisplayId[]
   }
 ) => {
   await activityStorage.addActivity(agent, {
@@ -99,51 +118,74 @@ export const addReceivedActivity = async (
     type: 'received',
     status: 'success',
     entity: {
+      id: input.entityId,
       name: input.name,
       host: input.host,
       logo: input.logo,
       backgroundColor: input.backgroundColor,
     },
     credentialIds: input.credentialIds,
-  } as IssuanceActivity)
+  })
 }
 
 export const addSharedActivity = async (
   agent: EasyPIDAppAgent,
-  input: {
-    status: ActivityStatus
-    entity: {
-      host: string
-      name?: string
-      logo?: DisplayImage
-    }
-    request: {
-      credentials: Array<{
-        id: string
-        disclosedAttributes: string[]
-        disclosedPayload: Record<string, unknown>
-      }>
-      name?: string
-      purpose?: string
-      failureReason?: SharingFailureReason
-    }
-  }
+  input: Omit<PresentationActivity, 'type' | 'date' | 'id'>
 ) => {
   await activityStorage.addActivity(agent, {
+    ...input,
     id: utils.uuid(),
     date: new Date().toISOString(),
     type: 'shared',
-    status: input.status,
+  })
+}
+
+export function addSharedActivityForCredentialsForRequest(
+  agent: AppAgent,
+  credentialsForRequest: Pick<CredentialsForProofRequest, 'verifier' | 'formattedSubmission'>,
+  status: ActivityStatus
+) {
+  return addSharedActivity(agent, {
+    status,
     entity: {
-      name: input.entity.name,
-      host: input.entity.host,
-      logo: input.entity.logo,
+      id: credentialsForRequest.verifier.entityId,
+      host: credentialsForRequest.verifier.hostName,
+      name: credentialsForRequest?.verifier.name,
+      logo: credentialsForRequest.verifier.logo,
     },
     request: {
-      name: input.request.name,
-      purpose: input.request.purpose,
-      credentials: input.request.credentials,
-      failureReason: input.request.failureReason,
+      name: credentialsForRequest.formattedSubmission.name,
+      purpose: credentialsForRequest.formattedSubmission.purpose,
+      credentials: getDisclosedCredentialForSubmission(credentialsForRequest.formattedSubmission),
+      failureReason:
+        status === 'failed'
+          ? !credentialsForRequest.formattedSubmission.areAllSatisfied
+            ? 'missing_credentials'
+            : 'unknown'
+          : undefined,
     },
-  } as PresentationActivity)
+  })
+}
+
+export function getDisclosedCredentialForSubmission(
+  formattedSubmission: FormattedSubmission
+): Array<PresentationActivityCredentialNotFound | PresentationActivityCredential> {
+  return formattedSubmission.entries.map((entry) => {
+    if (!entry.isSatisfied) {
+      return {
+        name: entry.name,
+        attributeNames: getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths),
+      } satisfies PresentationActivityCredentialNotFound
+    }
+
+    // TODO: once we support selection we should update [0] to the selected credential
+    const credential = entry.credentials[0]
+
+    return {
+      id: credential.credential.id,
+      attributeNames: getDisclosedAttributeNamesForDisplay(credential),
+      attributes: credential.disclosed.attributes,
+      metadata: credential.disclosed.metadata as unknown as Record<string, unknown>,
+    } satisfies PresentationActivityCredential
+  })
 }
