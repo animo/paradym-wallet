@@ -24,7 +24,8 @@ export const bdrPidOpenId4VcMetadata = (credentialIssuer: string): OpenId4VcCred
           locale: 'en-US',
           name: bdrPidIssuerDisplay.name,
           logo: {
-            uri: bdrPidIssuerDisplay.logo,
+            // FIXME
+            uri: bdrPidIssuerDisplay.logo as unknown as string,
           },
         },
       ],
@@ -36,7 +37,8 @@ export const bdrPidOpenId4VcMetadata = (credentialIssuer: string): OpenId4VcCred
           background_color: bdrPidCredentialDisplay.backgroundColor,
           text_color: bdrPidCredentialDisplay.textColor,
           background_image: {
-            uri: bdrPidCredentialDisplay.backgroundImage,
+            // FIXME
+            uri: bdrPidCredentialDisplay.backgroundImage as unknown as string,
           },
           locale: 'en-US',
         },
@@ -65,7 +67,8 @@ export const bdrPidSdJwtTypeMetadata: SdJwtVcTypeMetadata = {
           logo: {
             // TODO: can we store local file path in a record? I think we might have to
             // add an identifier and replace it before rendering..
-            uri: bdrPidCredentialDisplay.backgroundImage,
+            // FIXME:
+            uri: bdrPidCredentialDisplay.backgroundImage as unknown as string,
           },
         },
       },

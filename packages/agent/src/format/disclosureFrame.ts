@@ -1,50 +1,63 @@
+import { Hasher } from '@credo-ts/core'
+import { decodeSdJwtVc } from '@credo-ts/core/build/modules/sd-jwt-vc/decodeSdJwtVc'
+import { decodeSdJwtSync } from '@sd-jwt/decode'
+import { selectDisclosures } from '@sd-jwt/present'
+
+// TODO: remove once available in Credo
+export function applyLimitdisclosureForSdJwtRequestedPayload(
+  compactSdJwtVc: string,
+  requestedPayload: Record<string, unknown>
+) {
+  const decoded = decodeSdJwtSync(compactSdJwtVc, Hasher.hash)
+  const presentationFrame = buildDisclosureFrameFromPayload(requestedPayload)
+
+  const requiredDisclosures = selectDisclosures(
+    decoded.jwt.payload,
+    // Map to sd-jwt disclosure format
+    decoded.disclosures.map((d) => ({
+      digest: d.digestSync({ alg: 'sha-256', hasher: Hasher.hash }),
+      encoded: d.encode(),
+      key: d.key,
+      salt: d.salt,
+      value: d.value,
+    })),
+    presentationFrame as {
+      [x: string]: boolean | undefined
+    }
+  )
+  const [jwt] = compactSdJwtVc.split('~')
+  const sdJwt = `${jwt}~${requiredDisclosures.map((d) => d.encoded).join('~')}~`
+  const disclosedDecoded = decodeSdJwtVc(sdJwt)
+  return disclosedDecoded
+}
+
 type DisclosureFrame = {
   [key: string]: boolean | DisclosureFrame
 }
 
-export function buildDisclosureFrameFromPaths(paths: (string | number | null)[][]): DisclosureFrame {
+export function buildDisclosureFrameFromPayload(input: Record<string, unknown>): DisclosureFrame {
+  // Handle objects recursively
   const result: DisclosureFrame = {}
 
-  // Sort paths by length ascending to ensure shallow paths override deeper ones
-  const sortedPaths = [...paths].sort((a, b) => a.length - b.length)
+  // Base case: input is null or undefined
+  if (input === null || input === undefined) {
+    return result
+  }
 
-  for (const path of sortedPaths) {
-    let current = result
-    let hasArrayMarker = false
+  for (const [key, value] of Object.entries(input)) {
+    // Ignore non-value values
+    if (value === null || value === undefined) continue
 
-    // First, check if path contains any array markers (number or null)
-    for (const segment of path) {
-      if (segment === null || typeof segment === 'number') {
-        hasArrayMarker = true
-        break
-      }
-    }
-
-    if (hasArrayMarker) {
-      // If path contains array marker, set the first segment to true
-      const firstSegment = String(path[0])
-      result[firstSegment] = true
-      continue
-    }
-
-    // Handle non-array paths normally
-    for (let i = 0; i < path.length; i++) {
-      const segment = String(path[i])
-
-      if (i === path.length - 1) {
-        current[segment] = true
-        if (typeof current[segment] === 'object') {
-          current[segment] = true
-        }
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) {
+        // TODO: Array disclosure frames are not yet supported - treating entire array as disclosed
+        result[key] = true
       } else {
-        if (current[segment] === true) {
-          break
-        }
-        if (!current[segment]) {
-          current[segment] = {}
-        }
-        current = current[segment] as DisclosureFrame
+        result[key] = buildDisclosureFrameFromPayload(value as Record<string, unknown>)
       }
+    } else {
+      // Handle primitive values
+      result[key] = true
     }
   }
 

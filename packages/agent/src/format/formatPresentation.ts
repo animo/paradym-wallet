@@ -18,7 +18,7 @@ import {
   getCredentialForDisplay,
   getDisclosedAttributePathArrays,
 } from '../display'
-import { buildDisclosureFrameFromPaths } from './disclosureFrame'
+import { applyLimitdisclosureForSdJwtRequestedPayload } from './disclosureFrame'
 
 export interface FormattedSubmission {
   name?: string
@@ -214,38 +214,14 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
       if (match.output.credentialFormat === 'vc+sd-jwt') {
         if (match.record.type !== 'SdJwtVcRecord') throw new Error('Expected SdJwtRecord')
 
-        // FIXME: this returns the wrong credential index so we only can work now with one sd-jwt in query
-        // let credential = dcqlQueryResult.credentials[match.credential_index]
-        const credentials = dcqlQueryResult.credentials.filter((c) => c.format === 'vc+sd-jwt')
-        const [credential] = credentials
-        if (credentials.length > 1 || !credential || credential.format !== 'vc+sd-jwt')
-          throw new Error('Expected vc+sd-jwt credential match')
+        if (queryCredential.format !== 'vc+sd-jwt') {
+          throw new Error(`Expected queryr credential format ${queryCredential.format} to be vc+sd-jwt`)
+        }
 
-        // TODO: This should be handled by credo
-        const decoded = decodeSdJwtSync(match.record.compactSdJwtVc, Hasher.hash)
-        const claimSet = credential.claim_sets?.[match.claim_set_index ?? 0]
-
-        const paths =
-          credential.claims?.filter((c) => !claimSet || !c.id || claimSet.includes(c.id)).map((c) => c.path) ?? []
-
-        const presentationFrame = buildDisclosureFrameFromPaths(paths)
-
-        const requiredDisclosures = selectDisclosures(
-          decoded.jwt.payload,
-          // Map to sd-jwt disclosure format
-          decoded.disclosures.map((d) => ({
-            digest: d.digestSync({ alg: 'sha-256', hasher: Hasher.hash }),
-            encoded: d.encode(),
-            key: d.key,
-            salt: d.salt,
-            value: d.value,
-          })),
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-          presentationFrame as any
+        const disclosedDecoded = applyLimitdisclosureForSdJwtRequestedPayload(
+          match.record.compactSdJwtVc,
+          match.output.claims
         )
-        const [jwt] = match.record.compactSdJwtVc.split('~')
-        const sdJwt = `${jwt}~${requiredDisclosures.map((d) => d.digest).join('~')}~`
-        const disclosedDecoded = decodeSdJwtVc(sdJwt)
 
         const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(disclosedDecoded.prettyClaims)
         disclosed = {

@@ -38,5 +38,5 @@
 			"@sphereon/kmp-mdl-mdoc": "patches/@sphereon__kmp-mdl-mdoc.patch"
 		}
 	},
-	"packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b"
+	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
 }

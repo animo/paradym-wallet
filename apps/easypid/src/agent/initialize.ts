@@ -32,7 +32,6 @@ export async function initializeAppAgent({
   }
 
   const shouldUseCloudHsm = getShouldUseCloudHsm()
-  console.log('should use cloud hsm', shouldUseCloudHsm)
   if (shouldUseCloudHsm) shouldUseFallbackSecureEnvironment(true)
   setFallbackSecureEnvironment(wsp)
 

@@ -12,7 +12,6 @@ export function useShouldUseCloudHsm() {
 
   const setShouldUseCloudHsm = useCallback(
     (shouldUseCloudHsm: boolean) => {
-      console.log('setting cloud hsm and fallback provider', shouldUseCloudHsm)
       _setShouldUseCloudHsm(shouldUseCloudHsm)
       shouldUseFallbackSecureEnvironment(shouldUseCloudHsm)
     },
