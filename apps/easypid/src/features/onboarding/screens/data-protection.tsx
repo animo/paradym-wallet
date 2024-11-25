@@ -1,4 +1,5 @@
 import { Button, HeroIcons, Spinner, YStack } from '@package/ui'
+import { useImageScaler } from 'packages/app/src/hooks'
 import React, { useState } from 'react'
 import { Linking } from 'react-native'
 import { ProtectData } from './assets/ProtectData'
@@ -12,6 +13,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
     Linking.openURL('https://paradym.id/wallet-privacy-policy')
   }
 
+  const { height, onLayout } = useImageScaler()
   const [isLoading, setIsLoading] = useState(false)
 
   const onContinue = () => {
@@ -23,8 +25,10 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack f={1} ai="center" mt="$-8" mb="$8" p="$8">
-        <ProtectData />
+      <YStack f={1} ai="center" onLayout={onLayout}>
+        <YStack height={height} mt="$4">
+          <ProtectData />
+        </YStack>
       </YStack>
       <YStack gap="$4" alignItems="center">
         <Button.Text onPress={onPressPrivacy} py="$2" textAlign="center">

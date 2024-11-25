@@ -1,4 +1,5 @@
 import { Button, Spinner, YStack } from '@package/ui'
+import { useImageScaler } from 'packages/app/src/hooks'
 import type React from 'react'
 import { useState } from 'react'
 import { SetUpBiometrics } from './assets/SetUpBiometrics'
@@ -10,6 +11,7 @@ interface OnboardingBiometricsProps {
 
 export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBiometricsProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const { height, onLayout } = useImageScaler()
 
   const onEnableBiometrics = () => {
     if (isLoading) return
@@ -23,8 +25,10 @@ export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBio
 
   return (
     <YStack fg={1} jc="space-between" gap="$6">
-      <YStack f={1} ai="center" mt="$-8" mb="$8" p="$8">
-        <SetUpBiometrics />
+      <YStack f={1} ai="center" onLayout={onLayout}>
+        <YStack height={height} mt="$4">
+          <SetUpBiometrics />
+        </YStack>
       </YStack>
       <Button.Solid fg={1} scaleOnPress disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
         {isLoading ? <Spinner variant="dark" /> : actionText}

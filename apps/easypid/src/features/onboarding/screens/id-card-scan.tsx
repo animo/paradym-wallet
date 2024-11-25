@@ -1,5 +1,6 @@
 import { Button, NfcScannerModalAndroid, YStack } from '@package/ui'
 
+import { useImageScaler } from 'packages/app/src/hooks'
 import { Platform } from 'react-native'
 import { ScanCard } from './assets/ScanCard'
 
@@ -20,11 +21,15 @@ export function OnboardingIdCardScan({
   showScanModal,
   onStartScanning,
 }: OnboardingIdCardScanProps) {
+  const { height, onLayout } = useImageScaler()
+
   return (
     <>
       <YStack fg={1} jc="space-between">
-        <YStack f={1} ai="center" mt="$-8" mb="$8" p="$12">
-          <ScanCard />
+        <YStack f={1} ai="center" onLayout={onLayout}>
+          <YStack height={height} mt="$4">
+            <ScanCard />
+          </YStack>
         </YStack>
         <YStack gap="$4" alignItems="center" opacity={onStartScanning ? 1 : 0}>
           <Button.Solid scaleOnPress onPress={onStartScanning}>

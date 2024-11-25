@@ -6,6 +6,8 @@ import { LinearTransition } from 'react-native-reanimated'
 import Carousel from 'react-native-reanimated-carousel'
 import type { ICarouselInstance } from 'react-native-reanimated-carousel'
 
+import { useImageScaler } from 'packages/app/src/hooks'
+import { ScanCard } from './assets/ScanCard'
 import { WalletExplanation } from './assets/WalletExplanation'
 import { WalletHowItWorks } from './assets/WalletHowItWorks'
 import { WalletStoring } from './assets/WalletStoring'
@@ -17,7 +19,7 @@ interface OnboardingWalletExplanationProps {
 
 const SLIDES = [
   {
-    image: <WalletExplanation />,
+    image: <ScanCard />,
     title: 'This is your wallet',
     subtitle:
       'Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.',
@@ -38,9 +40,9 @@ const SLIDES = [
 
 export function OnboardingWalletExplanation({ onSkip, goToNextStep }: OnboardingWalletExplanationProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const width = Dimensions.get('window').width
-  const [availableImageHeight, setAvailableImageHeight] = useState(0)
+  const { width } = Dimensions.get('window')
   const carouselRef = useRef<ICarouselInstance>(null)
+  const { height, onLayout } = useImageScaler()
 
   const handleNext = () => {
     if (currentSlide === SLIDES.length - 1) {
@@ -52,7 +54,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
 
   return (
     <YStack fg={1} gap="$6" jc="space-between">
-      <YStack fg={1}>
+      <YStack fg={1} mt="$-5">
         <Carousel
           ref={carouselRef}
           loop={false}
@@ -72,8 +74,10 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
             <AnimatedStack flexDirection="column" flex={1} gap="$3" pr={36}>
               <Heading variant="h1">{item.title}</Heading>
               <Paragraph>{item.subtitle}</Paragraph>
-              <YStack ai="center" f={1} mt="$-4" p="$4">
-                {item.image}
+              <YStack ai="center" f={1} onLayout={onLayout} pos="relative">
+                <YStack height={height} mt="$4">
+                  {item.image}
+                </YStack>
               </YStack>
             </AnimatedStack>
           )}
