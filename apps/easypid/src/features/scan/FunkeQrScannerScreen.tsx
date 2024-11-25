@@ -129,12 +129,14 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
 
   return (
     <>
-      <QrScanner
-        onScan={(data) => {
-          void onScan(data)
-        }}
-        helpText={helpText}
-      />
+      {!showMyQrCode && (
+        <QrScanner
+          onScan={(data) => {
+            void onScan(data)
+          }}
+          helpText={helpText}
+        />
+      )}
       <Stack zi="$5" position="absolute" top={isAndroid() ? top : 0} right={0} bottom={0}>
         <Stack
           accessibilityRole="button"
