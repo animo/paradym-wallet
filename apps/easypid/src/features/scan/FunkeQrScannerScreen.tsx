@@ -46,7 +46,6 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
 
   useEffect(() => {
     void checkMdocPermissions().then((result) => {
-      console.log('checkMdocPermissions', result)
       setArePermissionsGranted(!!result)
     })
   }, [])

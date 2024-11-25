@@ -1,5 +1,16 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
-import { COSEKey, DeviceRequest, DeviceResponse, MDoc, type MdocContext, parseIssuerSigned } from '@animo-id/mdoc'
+import {
+  COSEKey,
+  DataItem,
+  DeviceRequest,
+  DeviceResponse,
+  MDoc,
+  type MdocContext,
+  cborDecode,
+  cborEncode,
+  parseIssuerSigned,
+  uint8ArrayToHex,
+} from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
 import type { EasyPIDAppAgent, FormattedSubmission, MdocRecord } from '@package/agent'
@@ -49,9 +60,10 @@ export const getMdocQrCode = async () => {
 export const waitForDeviceRequest = async () => {
   const mdt = mdocDataTransfer.instance()
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
-  const decodedDeviceRequest = DeviceRequest.parse(deviceRequest)
 
-  return { deviceRequest, sessionTranscript }
+  const encodedSessionTranscript = cborEncode(DataItem.fromData(cborDecode(sessionTranscript)))
+
+  return { deviceRequest, sessionTranscript: encodedSessionTranscript }
 }
 
 /**
@@ -85,8 +97,8 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
 
   const mdt = mdocDataTransfer.instance()
 
-  if (mdoc.documents.length > 0) {
-    throw new Error('Only one mdoc supported at the moment due to only bein able to sign with one device key')
+  if (mdoc.documents.length > 1) {
+    throw new Error('Only one mdoc supported at the moment due to only being able to sign with one device key')
   }
   const mso = mdoc.documents[0].issuerSigned.issuerAuth.decodedPayload
   const deviceKeyInfo = mso.deviceKeyInfo
@@ -98,7 +110,7 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
   const deviceRequest = DeviceRequest.parse(options.deviceRequest)
 
   const deviceResponse = await DeviceResponse.from(mdoc)
-    .usingSessionTranscriptBytes(new Uint8Array(options.sessionTranscript))
+    .usingSessionTranscriptBytes(options.sessionTranscript)
     .usingDeviceRequest(deviceRequest)
     .authenticateWithSignature(publicDeviceJwk, 'ES256')
     .sign(mdocContext)

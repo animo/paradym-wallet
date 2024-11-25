@@ -1,14 +1,9 @@
-import { utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
 import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
 import { useEffect, useState } from 'react'
-import {
-  type ActivityStatus,
-  addSharedActivity,
-  addSharedActivityForCredentialsForRequest,
-} from '../activity/activityRecord'
+import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { PresentationRequestResult } from './components/utils'
@@ -54,7 +49,7 @@ export function FunkeMdocOfflineSharingScreen({
 
         pushToWallet()
       })
-  })
+  }, [agent, deviceRequest, toast.show, pushToWallet])
 
   const onProofAccept = async (): Promise<PresentationRequestResult> => {
     if (!submission) {
@@ -77,6 +72,7 @@ export function FunkeMdocOfflineSharingScreen({
         submission,
       })
     } catch (error) {
+      agent.config.logger.error('Could not share device response', { error })
       await addActivity('failed')
       return {
         status: 'error',
