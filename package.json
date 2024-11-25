@@ -34,8 +34,8 @@
 		},
 		"patchedDependencies": {
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@credo-ts/askar@0.6.0-pr-2100-20241121224952": "patches/@credo-ts__askar@0.6.0-pr-2100-20241121224952.patch",
-			"@animo-id/mdoc@0.2.38": "patches/@animo-id__mdoc@0.2.38.patch"
+			"@credo-ts/askar@0.6.0-pr-2100-20241124170219": "patches/@credo-ts__askar@0.6.0-pr-2100-20241124170219.patch",
+			"@sphereon/kmp-mdl-mdoc": "patches/@sphereon__kmp-mdl-mdoc.patch"
 		}
 	},
 	"packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b"

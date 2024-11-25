@@ -14,6 +14,7 @@ import {
   extractOpenId4VcCredentialMetadata,
   getCredentialDisplayWithDefaults,
   getCredentialForDisplay,
+  getCredentialForDisplayId,
   getCredentialsForProofRequest,
   getOpenId4VcCredentialDisplay,
   receiveCredentialFromOpenId4VciOffer,
@@ -25,9 +26,13 @@ import {
 import { useAppAgent } from '@easypid/agent'
 
 import { SlideWizard, usePushToWallet } from '@package/app'
+import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
 import { createParam } from 'solito'
+import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addReceivedActivity, useActivities } from '../activity/activityRecord'
+import { PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
@@ -50,6 +55,7 @@ const { useParams } = createParam<Query>()
 export function FunkeCredentialNotificationScreen() {
   const { agent } = useAppAgent()
   const { params } = useParams()
+  const toast = useToastController()
 
   const pushToWallet = usePushToWallet()
 
@@ -85,6 +91,7 @@ export function FunkeCredentialNotificationScreen() {
       : {}
   )
 
+  const shouldUsePinForPresentation = useShouldUsePinForSubmission(credentialsForRequest)
   const preAuthGrant =
     resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
   const txCode = preAuthGrant?.tx_code
@@ -132,6 +139,12 @@ export function FunkeCredentialNotificationScreen() {
     [agent]
   )
 
+  // TODO: Should we add this to the activitiy? We also don't do it for issuance
+  const onProofDecline = async () => {
+    toast.show('Information request has been declined.', { customData: { preset: 'danger' } })
+    pushToWallet('back')
+  }
+
   const onCompleteCredentialRetrieval = async () => {
     if (!receivedRecord) return
 
@@ -141,9 +154,9 @@ export function FunkeCredentialNotificationScreen() {
       entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer as string,
       host: credentialDisplay.issuer.domain,
       name: credentialDisplay.issuer.name,
-      logo: credentialDisplay.issuer.logo ? credentialDisplay.issuer.logo : undefined,
+      logo: credentialDisplay.issuer.logo,
       backgroundColor: '#ffffff', // Default to a white background for now
-      credentialIds: [receivedRecord.id],
+      credentialIds: [getCredentialForDisplayId(receivedRecord)],
     })
 
     setIsCompleted(true)
@@ -234,50 +247,70 @@ export function FunkeCredentialNotificationScreen() {
     [acquireCredentialsPreAuth]
   )
 
-  const onPresentationAccept = useCallback(async () => {
-    if (
-      !credentialsForRequest ||
-      !resolvedCredentialOffer ||
-      !resolvedAuthorizationRequest ||
-      resolvedAuthorizationRequest.authorizationFlow !== OpenId4VciAuthorizationFlow.PresentationDuringIssuance
-    ) {
-      setErrorReason('Presentation information could not be extracted.')
-      return
-    }
-
-    setIsSharingPresentation(true)
-
-    try {
-      const { presentationDuringIssuanceSession } = await shareProof({
-        agent,
-        resolvedRequest: credentialsForRequest,
-        selectedCredentials: {},
-        allowUntrustedCertificate: true,
-      })
-
-      const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({
-        resolvedCredentialOffer,
-        authSession: resolvedAuthorizationRequest.authSession,
-        presentationDuringIssuanceSession,
-        agent,
-      })
-
-      await acquireCredentialsAuth(authorizationCode)
-
-      setIsSharingPresentation(false)
-    } catch (error) {
-      setIsSharingPresentation(false)
-      if (error instanceof BiometricAuthenticationCancelledError) {
-        setErrorReason('Biometric authentication cancelled')
+  const onPresentationAccept = useCallback(
+    async (pin?: string) => {
+      if (
+        !credentialsForRequest ||
+        !resolvedCredentialOffer ||
+        !resolvedAuthorizationRequest ||
+        resolvedAuthorizationRequest.authorizationFlow !== OpenId4VciAuthorizationFlow.PresentationDuringIssuance
+      ) {
+        setErrorReason('Presentation information could not be extracted.')
         return
       }
 
-      agent.config.logger.error('Error accepting presentation', {
-        error,
-      })
-      setErrorReason('Presentation could not be shared.')
-    }
-  }, [credentialsForRequest, agent, acquireCredentialsAuth, resolvedAuthorizationRequest, resolvedCredentialOffer])
+      setIsSharingPresentation(true)
+
+      if (shouldUsePinForPresentation) {
+        // TODO: we should handle invalid pin
+        if (!pin) {
+          setErrorReason('Presentation information could not be extracted.')
+          return
+        }
+        // TODO: maybe provide to shareProof method?
+        setWalletServiceProviderPin(pin.split('').map(Number))
+      }
+
+      try {
+        const { presentationDuringIssuanceSession } = await shareProof({
+          agent,
+          resolvedRequest: credentialsForRequest,
+          selectedCredentials: {},
+          allowUntrustedCertificate: true,
+        })
+
+        const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({
+          resolvedCredentialOffer,
+          authSession: resolvedAuthorizationRequest.authSession,
+          presentationDuringIssuanceSession,
+          agent,
+        })
+
+        await acquireCredentialsAuth(authorizationCode)
+
+        setIsSharingPresentation(false)
+      } catch (error) {
+        setIsSharingPresentation(false)
+        if (error instanceof BiometricAuthenticationCancelledError) {
+          setErrorReason('Biometric authentication cancelled')
+          return
+        }
+
+        agent.config.logger.error('Error accepting presentation', {
+          error,
+        })
+        setErrorReason('Presentation could not be shared.')
+      }
+    },
+    [
+      credentialsForRequest,
+      agent,
+      acquireCredentialsAuth,
+      resolvedAuthorizationRequest,
+      resolvedCredentialOffer,
+      shouldUsePinForPresentation,
+    ]
+  )
 
   const onCancel = () => pushToWallet('back')
   const onGoToWallet = () => pushToWallet('replace')
@@ -363,12 +396,21 @@ export function FunkeCredentialNotificationScreen() {
               screen: (
                 <ShareCredentialsSlide
                   key="share-credentials"
-                  // TODO: add user pin
-                  onAccept={onPresentationAccept}
+                  onAccept={shouldUsePinForPresentation ? undefined : onPresentationAccept}
+                  onDecline={onProofDecline}
                   logo={credentialsForRequest.verifier.logo}
                   submission={credentialsForRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
                 />
+              ),
+            }
+          : undefined,
+        isAuthFlow && shouldUsePinForPresentation
+          ? {
+              step: 'pin-enter',
+              progress: 82.5,
+              screen: (
+                <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinComplete={onPresentationAccept} />
               ),
             }
           : undefined,

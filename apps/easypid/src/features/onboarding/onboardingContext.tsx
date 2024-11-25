@@ -20,6 +20,8 @@ import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
   SdJwtVcRecord,
+  getCredentialForDisplay,
+  getCredentialForDisplayId,
 } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
@@ -28,7 +30,7 @@ import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import { type PidSdJwtVcAttributes, usePidDisplay } from '../../hooks'
+import type { PidSdJwtVcAttributes } from '../../hooks'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
@@ -133,7 +135,6 @@ export function OnboardingContextProvider({
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
-  const pidDisplay = usePidDisplay()
 
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
@@ -211,6 +212,11 @@ export function OnboardingContextProvider({
     const isSimulatorPinCode = pin === SIMULATOR_PIN
 
     if (isSimulatorPinCode) {
+      toast.show('Simulator eID card activated', {
+        customData: {
+          preset: 'success',
+        },
+      })
       setAllowSimulatorCard(true)
     } else if (!walletPin || walletPin !== pin) {
       toast.show('Pin entries do not match', {
@@ -505,11 +511,15 @@ export function OnboardingContextProvider({
       await new Promise((resolve) => setTimeout(resolve, 1000))
       setIdCardScanningState((state) => ({ ...state, showScanModal: false }))
       await new Promise((resolve) => setTimeout(resolve, Platform.OS === 'android' ? 500 : 1000))
-      setCurrentStepName('id-card-fetch')
+
+      setCurrentStepName(shouldUseCloudHsm ? 'id-card-fetch' : 'id-card-verify')
 
       // Acquire access token
       await receivePidUseCase.acquireAccessToken()
-      setCurrentStepName('id-card-verify')
+
+      if (shouldUseCloudHsm) {
+        await retrieveCredential()
+      }
     } catch (error) {
       await reset({ resetToStep: 'id-card-pin', error })
     }
@@ -547,13 +557,14 @@ export function OnboardingContextProvider({
             )}`
           )
 
+          const { display } = getCredentialForDisplay(credential)
           await addReceivedActivity(secureUnlock.context.agent, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
-            name: pidDisplay?.issuer.name,
-            logo: pidDisplay?.issuer.logo,
+            name: display.issuer.name,
+            logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
-            credentialIds: [credential.id],
+            credentialIds: [getCredentialForDisplayId(credential)],
           })
         }
       }
@@ -581,7 +592,9 @@ export function OnboardingContextProvider({
     Linking.openSettings().then(() => setCurrentStepName('id-card-verify'))
   }
 
-  const onIdCardStart = async () => {
+  const onIdCardStart = async (shouldUseCloudHsm: boolean) => {
+    setShouldUseCloudHsm(shouldUseCloudHsm)
+
     if (secureUnlock.state !== 'unlocked') {
       await reset({
         error: 'onIdCardStart: Secure unlock state is not unlocked',
@@ -628,15 +641,7 @@ export function OnboardingContextProvider({
 
   let screen: React.JSX.Element
   if (currentStep.step === 'welcome') {
-    screen = (
-      <currentStep.Screen
-        goToNextStep={() => {
-          // TODO: make configurable
-          setShouldUseCloudHsm(true)
-          goToNextStep()
-        }}
-      />
-    )
+    screen = <currentStep.Screen goToNextStep={goToNextStep} />
   } else if (currentStep.step === 'pin' || currentStep.step === 'pin-reenter') {
     screen = (
       <currentStep.Screen

@@ -1,6 +1,7 @@
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
+  DifPresentationExchangeDefinitionV2,
   OutOfBandInvitation,
   OutOfBandRecord,
   P256Jwk,
@@ -440,7 +441,7 @@ export const getCredentialsForProofRequest = async ({
   if (resolved.presentationExchange) {
     formattedSubmission = formatDifPexCredentialsForRequest(
       resolved.presentationExchange.credentialsForRequest,
-      resolved.presentationExchange.definition
+      resolved.presentationExchange.definition as DifPresentationExchangeDefinitionV2
     )
   } else if (resolved.dcql) {
     formattedSubmission = formatDcqlCredentialsForRequest(resolved.dcql.queryResult)

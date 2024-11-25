@@ -18,8 +18,7 @@ interface FunkePresentationNotificationScreenProps {
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
-  onAccept: () => Promise<PresentationRequestResult>
-  onAcceptWithPin: (pin: string) => Promise<PresentationRequestResult>
+  onAccept: (pin?: string) => Promise<PresentationRequestResult>
   onDecline: () => void
   onComplete: () => void
 }
@@ -32,7 +31,6 @@ export function FunkePresentationNotificationScreen({
   approvalsCount,
   usePin,
   onAccept,
-  onAcceptWithPin,
   onDecline,
   isAccepting,
   submission,
@@ -80,7 +78,7 @@ export function FunkePresentationNotificationScreen({
           usePin && {
             step: 'pin-enter',
             progress: 82.5,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAcceptWithPin} />,
+            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAccept} />,
           },
           {
             step: 'success',

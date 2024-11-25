@@ -1,20 +1,27 @@
 import {
   ClaimFormat,
-  type DifPexCredentialsForRequest,
   type DcqlQueryResult,
-  type DifPresentationExchangeDefinition,
+  type DifPexCredentialsForRequest,
+  type DifPresentationExchangeDefinitionV2,
+  Hasher,
 } from '@credo-ts/core'
+import { decodeSdJwtVc } from '@credo-ts/core/build/modules/sd-jwt-vc/decodeSdJwtVc'
+import { decodeSdJwtSync } from '@sd-jwt/decode'
+import { selectDisclosures } from '@sd-jwt/present'
 
-import {
-  filterAndMapSdJwtKeys,
-  getCredentialForDisplay,
-  recursivelyMapAttribues,
-  type CredentialForDisplay,
-} from '../display'
 import { JSONPath } from '@astronautlabs/jsonpath'
 import type { NonEmptyArray } from '@package/utils'
+import {
+  type CredentialForDisplay,
+  getAttributesAndMetadataForMdocPayload,
+  getAttributesAndMetadataForSdJwtPayload,
+  getCredentialForDisplay,
+  getDisclosedAttributePathArrays,
+} from '../display'
+import { buildDisclosureFrameFromPaths } from './disclosureFrame'
+
 export interface FormattedSubmission {
-  name: string
+  name?: string
   purpose?: string
   areAllSatisfied: boolean
   entries: FormattedSubmissionEntry[]
@@ -22,8 +29,16 @@ export interface FormattedSubmission {
 
 export interface FormattedSubmissionEntrySatisfiedCredential {
   credential: CredentialForDisplay
-  disclosedPayload?: Record<string, unknown>
-  requestedAttributes?: string[]
+
+  /**
+   * If not present the whole credential will be disclosed
+   */
+  disclosed: {
+    attributes: CredentialForDisplay['attributes']
+    metadata: CredentialForDisplay['metadata']
+
+    paths: string[][]
+  }
 }
 
 export interface FormattedSubmissionEntrySatisfied {
@@ -35,7 +50,7 @@ export interface FormattedSubmissionEntrySatisfied {
    */
   inputDescriptorId: string
 
-  name: string
+  name?: string
   description?: string
 
   /**
@@ -58,7 +73,7 @@ export interface FormattedSubmissionEntryNotSatisfied {
    */
   inputDescriptorId: string
 
-  name: string
+  name?: string
   description?: string
 
   /**
@@ -66,14 +81,14 @@ export interface FormattedSubmissionEntryNotSatisfied {
    */
   isSatisfied: false
 
-  requestedAttributes: string[]
+  requestedAttributePaths: Array<Array<string | number | null>>
 }
 
 export type FormattedSubmissionEntry = FormattedSubmissionEntryNotSatisfied | FormattedSubmissionEntrySatisfied
 
 export function formatDifPexCredentialsForRequest(
   credentialsForRequest: DifPexCredentialsForRequest,
-  definition: DifPresentationExchangeDefinition
+  definition: DifPresentationExchangeDefinitionV2
 ): FormattedSubmission {
   const entries = credentialsForRequest.requirements.flatMap((requirement) => {
     // We take the first needsCount entries. Even if not satisfied we will just show these first entries as missing (otherwise it becomes too complex)
@@ -84,58 +99,79 @@ export function formatDifPexCredentialsForRequest(
       if (submission.verifiableCredentials.length >= 1) {
         return {
           inputDescriptorId: submission.inputDescriptorId,
-          name: submission.name ?? 'Unknown',
+          name: submission.name,
           description: submission.purpose,
           isSatisfied: true,
-          credentials: submission.verifiableCredentials.map((verifiableCredential) => {
-            // FIXME: this should also just return the correct branding for the PID already.
-            // Will solve a lot of complexity
-            const credentialForDisplay = getCredentialForDisplay(verifiableCredential.credentialRecord)
+          credentials: submission.verifiableCredentials.map(
+            (verifiableCredential): FormattedSubmissionEntrySatisfiedCredential => {
+              const credentialForDisplay = getCredentialForDisplay(verifiableCredential.credentialRecord)
 
-            let disclosedPayload = credentialForDisplay.attributes
-            if (verifiableCredential.type === ClaimFormat.SdJwtVc) {
-              disclosedPayload = filterAndMapSdJwtKeys(verifiableCredential.disclosedPayload).visibleProperties
-            } else if (verifiableCredential.type === ClaimFormat.MsoMdoc) {
-              disclosedPayload = Object.fromEntries(
-                Object.values(verifiableCredential.disclosedPayload).flatMap((entry) =>
-                  Object.entries(entry).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+              // By default the whole credential is disclosed
+              let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
+              if (verifiableCredential.type === ClaimFormat.SdJwtVc) {
+                const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
+                  verifiableCredential.disclosedPayload
                 )
-              )
-            }
+                disclosed = {
+                  attributes,
+                  metadata,
+                  paths: getDisclosedAttributePathArrays(attributes, 2),
+                }
+              } else if (verifiableCredential.type === ClaimFormat.MsoMdoc) {
+                disclosed = {
+                  ...getAttributesAndMetadataForMdocPayload(
+                    verifiableCredential.disclosedPayload,
+                    verifiableCredential.credentialRecord.credential
+                  ),
+                  paths: getDisclosedAttributePathArrays(verifiableCredential.disclosedPayload, 2),
+                }
+              } else {
+                disclosed = {
+                  attributes: credentialForDisplay.attributes,
+                  metadata: credentialForDisplay.metadata,
+                  paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
+                }
+              }
 
-            return {
-              credential: credentialForDisplay,
-              disclosedPayload,
-              requestedAttributes: [...Object.keys(disclosedPayload)],
+              return {
+                credential: credentialForDisplay,
+                disclosed,
+              }
             }
-          }) as NonEmptyArray<FormattedSubmissionEntrySatisfiedCredential>,
+          ) as NonEmptyArray<FormattedSubmissionEntrySatisfiedCredential>,
         }
       }
 
       // Try to determine requested attributes for credential
       const inputDescriptor = definition.input_descriptors.find(({ id }) => id === submission.inputDescriptorId)
-      const requestedAttriutes =
+      const requestedAttributePaths =
         inputDescriptor?.constraints?.fields
           ?.map((a) =>
-            simplifyJsonPath(a.path[0])
-              ?.filter((entry): entry is string => entry !== null)
-              .join(' ')
+            simplifyJsonPath(a.path[0], inputDescriptor.format?.mso_mdoc ? ClaimFormat.MsoMdoc : undefined)?.filter(
+              (entry): entry is string => entry !== null
+            )
           )
-          .filter((path): path is string => path !== undefined) ?? []
+          .filter((path): path is string[] => path !== undefined) ?? []
+
+      const docType = inputDescriptor?.format?.mso_mdoc ? inputDescriptor.id : undefined
+      const vctField = inputDescriptor?.format?.['vc+sd-jwt']
+        ? inputDescriptor.constraints.fields?.find((field) => field.path.includes('$.vct'))
+        : undefined
+      const vct = (vctField?.filter?.const ?? vctField?.filter?.enum?.[0]) as string | undefined
 
       return {
         inputDescriptorId: submission.inputDescriptorId,
-        name: submission.name ?? 'Unknown',
-        description: submission.purpose,
+        name: requirement.name ?? docType ?? vct?.replace('https://', ''),
+        description: requirement.purpose,
         isSatisfied: false,
-        requestedAttributes: requestedAttriutes,
+        requestedAttributePaths: requestedAttributePaths,
       }
     })
   })
 
   return {
     areAllSatisfied: entries.every((entry) => entry.isSatisfied),
-    name: credentialsForRequest.name ?? 'Unknown',
+    name: credentialsForRequest.name,
     purpose: credentialsForRequest.purpose,
     entries,
   }
@@ -167,26 +203,74 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
           isSatisfied: false,
           inputDescriptorId: credentialId,
           name: placeholderCredential.credentialName,
-          requestedAttributes: placeholderCredential.requestedAttributes ?? [],
+          requestedAttributePaths: placeholderCredential.requestedAttributePaths ?? [],
         })
         continue
       }
 
-      // FIXME: this should also just return the correct branding for the PID already.
-      // Will solve a lot of complexity
       const credentialForDisplay = getCredentialForDisplay(match.record)
 
-      let disclosedPayload = credentialForDisplay.attributes
-      if (match.success && 'vct' in match.output) {
-        // FIXME: SD-JWT selective disclosure is NOT applied here, we should create a presentation frame based on this, or better
-        // if the credo layer for DCQL handles this.
-        disclosedPayload = filterAndMapSdJwtKeys(match.output.claims).visibleProperties
-      } else if (match.success && 'namespaces' in match.output) {
-        disclosedPayload = Object.fromEntries(
-          Object.values(match.output.namespaces).flatMap((entry) =>
-            Object.entries(entry).map(([key, value]) => [key, recursivelyMapAttribues(value)])
-          )
+      let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
+      if (match.output.credentialFormat === 'vc+sd-jwt') {
+        if (match.record.type !== 'SdJwtVcRecord') throw new Error('Expected SdJwtRecord')
+
+        // FIXME: this returns the wrong credential index so we only can work now with one sd-jwt in query
+        // let credential = dcqlQueryResult.credentials[match.credential_index]
+        const credentials = dcqlQueryResult.credentials.filter((c) => c.format === 'vc+sd-jwt')
+        const [credential] = credentials
+        if (credentials.length > 1 || !credential || credential.format !== 'vc+sd-jwt')
+          throw new Error('Expected vc+sd-jwt credential match')
+
+        // TODO: This should be handled by credo
+        const decoded = decodeSdJwtSync(match.record.compactSdJwtVc, Hasher.hash)
+        const claimSet = credential.claim_sets?.[match.claim_set_index ?? 0]
+
+        const paths =
+          credential.claims?.filter((c) => !claimSet || !c.id || claimSet.includes(c.id)).map((c) => c.path) ?? []
+
+        const presentationFrame = buildDisclosureFrameFromPaths(paths)
+
+        const requiredDisclosures = selectDisclosures(
+          decoded.jwt.payload,
+          // Map to sd-jwt disclosure format
+          decoded.disclosures.map((d) => ({
+            digest: d.digestSync({ alg: 'sha-256', hasher: Hasher.hash }),
+            encoded: d.encode(),
+            key: d.key,
+            salt: d.salt,
+            value: d.value,
+          })),
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          presentationFrame as any
         )
+        const [jwt] = match.record.compactSdJwtVc.split('~')
+        const sdJwt = `${jwt}~${requiredDisclosures.map((d) => d.digest).join('~')}~`
+        const disclosedDecoded = decodeSdJwtVc(sdJwt)
+
+        const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(disclosedDecoded.prettyClaims)
+        disclosed = {
+          attributes,
+          metadata,
+          paths: getDisclosedAttributePathArrays(attributes, 2),
+        }
+      } else if (match.output.credentialFormat === 'mso_mdoc') {
+        if (match.record.type !== 'MdocRecord') throw new Error('Expected MdocRecord')
+
+        // FIXME: the disclosed payload here doesn't have the correct encoding anymore
+        // once we serialize input??
+        disclosed = {
+          ...getAttributesAndMetadataForMdocPayload(match.output.namespaces, match.record.credential),
+          paths: getDisclosedAttributePathArrays(match.output.namespaces, 2),
+        }
+      } else {
+        if (match.record.type !== 'W3cCredentialRecord') throw new Error('Expected W3cCredentialRecord')
+
+        // All paths disclosed for W3C
+        disclosed = {
+          attributes: credentialForDisplay.attributes,
+          metadata: credentialForDisplay.metadata,
+          paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
+        }
       }
 
       entries.push({
@@ -194,8 +278,7 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
         credentials: [
           {
             credential: credentialForDisplay,
-            disclosedPayload,
-            requestedAttributes: Object.keys(disclosedPayload),
+            disclosed,
           },
         ],
         isSatisfied: true,
@@ -206,8 +289,6 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
 
   return {
     areAllSatisfied: entries.every((entry) => entry.isSatisfied),
-    // TOOD:
-    name: '',
     purpose: credentialSets.map((s) => s.purpose).find((purpose): purpose is string => typeof purpose === 'string'),
     entries,
   }
@@ -217,30 +298,29 @@ function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryRe
   if (credential.format === 'mso_mdoc') {
     return {
       claimFormat: ClaimFormat.MsoMdoc,
-      credentialName: `${credential.meta?.doctype_value}` ?? 'Unknown',
-      requestedAttributes: credential.claims?.map((c) => c.claim_name),
+      credentialName: credential.meta?.doctype_value ?? 'Unknown',
+      requestedAttributePaths: credential.claims?.map((c) => [c.claim_name]),
     }
   }
 
   if (credential.format === 'vc+sd-jwt') {
     return {
       claimFormat: ClaimFormat.SdJwtVc,
-      credentialName: `${credential.meta?.vct_values?.[0]}` ?? 'Unknown',
-      requestedAttributes: credential.claims?.map((c) => c.path.join('.')),
+      credentialName: credential.meta?.vct_values?.[0].replace('https://', ''),
+      requestedAttributePaths: credential.claims?.map((c) => c.path),
     }
   }
 
   return {
     claimFormat: ClaimFormat.JwtVc,
-    credentialName: 'Unknown',
-    requestedAttributes: credential.claims?.map((c) => c.path.join('.')),
+    requestedAttributePaths: credential.claims?.map((c) => c.path),
   }
 }
 
 /**
  * null means the query should not be rendered
  */
-function simplifyJsonPath(path: string, filterKeys: string[] = []) {
+function simplifyJsonPath(path: string, format?: ClaimFormat, filterKeys: string[] = []) {
   try {
     const parsedPath: Array<{
       scope: string
@@ -254,29 +334,35 @@ function simplifyJsonPath(path: string, filterKeys: string[] = []) {
 
     const simplified: Array<string | null> = []
 
-    for (const entry of parsedPath) {
-      // Skip entries we want to remove
-      const value = entry.expression.value
-      if (['vc', 'vp', 'credentialSubject'].includes(value)) {
-        continue
+    if (format === ClaimFormat.MsoMdoc) {
+      if (parsedPath.length === 3) {
+        simplified.push(parsedPath[2].expression.value)
       }
+    } else {
+      for (const entry of parsedPath) {
+        // Skip entries we want to remove
+        const value = entry.expression.value
+        if (['vc', 'vp', 'credentialSubject'].includes(value)) {
+          continue
+        }
 
-      // Remove root
-      if (entry.expression.type === 'root') {
-        continue
-      }
+        // Remove root
+        if (entry.expression.type === 'root') {
+          continue
+        }
 
-      if (
-        entry.expression.type === 'wildcard' ||
-        (entry.expression.type === 'numeric_literal' && !Number.isNaN(value))
-      ) {
-        // Replace wildcards and numeric indices with null
-        simplified.push(null)
-      }
+        if (
+          entry.expression.type === 'wildcard' ||
+          (entry.expression.type === 'numeric_literal' && !Number.isNaN(value))
+        ) {
+          // Replace wildcards and numeric indices with null
+          simplified.push(null)
+        }
 
-      if (entry.expression.type === 'identifier') {
-        // Return the identifier value for normal entries
-        simplified.push(value)
+        if (entry.expression.type === 'identifier') {
+          // Return the identifier value for normal entries
+          simplified.push(value)
+        }
       }
     }
 

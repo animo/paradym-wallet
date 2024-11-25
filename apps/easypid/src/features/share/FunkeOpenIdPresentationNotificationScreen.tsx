@@ -11,10 +11,10 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { useAppAgent } from '@easypid/agent'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
-import { isPidCredential } from '../../hooks'
-import { addSharedActivity, useActivities } from '../activity/activityRecord'
+import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
+import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
-import { excludeUndefined } from '@package/utils'
 
 type Query = { uri?: string; data?: string }
 
@@ -38,24 +38,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const { activities } = useActivities({
     filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
   })
+  const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest)
 
   // TODO: this should be returnd by getCredentialsForProofRequest
+  // TODO: addSharedActivityForCredentialsForRequest should take into account fed display metadata
   const fedDisplayData = useMemo(
     () => credentialsForRequest && getOpenIdFedIssuerMetadata(credentialsForRequest.verifier.entityId),
     [credentialsForRequest]
   )
   const lastInteractionDate = activities?.[0]?.date
-
-  const usePin = useMemo(() => {
-    const isPidInSubmission =
-      credentialsForRequest?.formattedSubmission?.entries.some((entry) => {
-        if (!entry.isSatisfied) return false
-        // TODO: once we support credential selection [0] should be updated
-        return isPidCredential(entry.credentials[0].credential.metadata.type)
-      }) ?? false
-    // TODO: usePin when HSM or no PID
-    return !isPidInSubmission
-  }, [credentialsForRequest])
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -79,129 +70,84 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast])
 
-  const onProofAccept = useCallback(async (): Promise<PresentationRequestResult> => {
-    if (!credentialsForRequest)
-      return {
-        status: 'error',
-        result: {
-          title: 'No credentials selected',
-        },
-      }
-
-    setIsSharing(true)
-
-    try {
-      await shareProof({
-        agent,
-        resolvedRequest: credentialsForRequest,
-        selectedCredentials: {},
-        allowUntrustedCertificate: true,
-      })
-
-      const credentialsWithDisclosedPayload = credentialsForRequest.formattedSubmission.entries
-        .map((entry) => {
-          if (!entry.isSatisfied) return undefined
-          // TODO: once we support credential selection we shouldn't pick [0] but the selected credential
-          const credential = entry.credentials[0]
-          return {
-            id: credential.credential.id,
-            disclosedAttributes: credential.requestedAttributes ?? [],
-            disclosedPayload: credential.disclosedPayload ?? {},
-          }
-        })
-        .filter(excludeUndefined)
-
-      await addSharedActivity(agent, {
-        status: 'success',
-        entity: {
-          id: credentialsForRequest.verifier.entityId,
-          name: fedDisplayData
-            ? fedDisplayData.display.name
-            : credentialsForRequest.verifier.name ?? credentialsForRequest.verifier.hostName,
-          logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
-          host: credentialsForRequest.verifier.hostName as string,
-        },
-        request: {
-          name: credentialsForRequest.formattedSubmission.name,
-          purpose: credentialsForRequest.formattedSubmission.purpose,
-          credentials: credentialsWithDisclosedPayload ?? [],
-        },
-      })
-
-      return {
-        status: 'success',
-        result: {
-          title: 'Presentation shared',
-        },
-      }
-    } catch (error) {
-      setIsSharing(false)
-      if (error instanceof BiometricAuthenticationCancelledError) {
+  const onProofAccept = useCallback(
+    async (pin?: string): Promise<PresentationRequestResult> => {
+      if (!credentialsForRequest)
         return {
           status: 'error',
           result: {
-            title: 'Biometric authentication cancelled',
+            title: 'No credentials selected',
+          },
+        }
+
+      setIsSharing(true)
+
+      if (shouldUsePin) {
+        // TODO: we should handle invalid pin
+        if (!pin) {
+          return {
+            status: 'error',
+            result: {
+              title: 'Authentication failed',
+            },
+          }
+        }
+        // TODO: maybe provide to shareProof method?
+        setWalletServiceProviderPin(pin.split('').map(Number))
+      }
+
+      try {
+        await shareProof({
+          agent,
+          resolvedRequest: credentialsForRequest,
+          selectedCredentials: {},
+          allowUntrustedCertificate: true,
+        })
+
+        await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'success')
+        return {
+          status: 'success',
+          result: {
+            title: 'Presentation shared',
+          },
+        }
+      } catch (error) {
+        setIsSharing(false)
+        if (error instanceof BiometricAuthenticationCancelledError) {
+          return {
+            status: 'error',
+            result: {
+              title: 'Biometric authentication cancelled',
+            },
+          }
+        }
+
+        if (credentialsForRequest) {
+          await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'failed')
+        }
+
+        agent.config.logger.error('Error accepting presentation', {
+          error,
+        })
+        return {
+          status: 'error',
+          redirectToWallet: true,
+          result: {
+            title: 'Presentation could not be shared.',
           },
         }
       }
-      agent.config.logger.error('Error accepting presentation', {
-        error,
-      })
-      return {
-        status: 'error',
-        redirectToWallet: true,
-        result: {
-          title: 'Presentation could not be shared.',
-        },
-      }
-    }
-  }, [credentialsForRequest, agent, fedDisplayData])
+    },
+    [credentialsForRequest, agent, shouldUsePin]
+  )
 
   const onProofDecline = async () => {
-    const credentialsWithDisclosedPayload = credentialsForRequest?.formattedSubmission.entries.map((entry) => {
-      if (!entry.isSatisfied) {
-        return {
-          name: entry.name,
-          requestedAttributes: entry.requestedAttributes,
-        }
-      }
-
-      // TODO: once we support selection we should update [0] to the selected credential
-      const credential = entry.credentials[0]
-      return {
-        id: credential.credential.id,
-        disclosedAttributes: credential.requestedAttributes ?? [],
-        disclosedPayload: credential.disclosedPayload ?? {},
-      }
-    })
-
-    const activityData = {
-      entity: {
-        id: credentialsForRequest?.verifier.entityId as string,
-        host: credentialsForRequest?.verifier.hostName as string,
-        name: fedDisplayData
-          ? fedDisplayData.display.name
-          : credentialsForRequest?.verifier.name ?? credentialsForRequest?.verifier.hostName,
-        logo: fedDisplayData ? fedDisplayData.display.logo : undefined,
-      },
-      request: {
-        name: credentialsForRequest?.formattedSubmission?.name,
-        purpose: credentialsForRequest?.formattedSubmission?.purpose,
-        credentials: credentialsWithDisclosedPayload ?? [],
-      },
-    }
-
-    if (credentialsForRequest?.formattedSubmission?.areAllSatisfied) {
-      await addSharedActivity(agent, { ...activityData, status: 'stopped' })
-    } else {
-      await addSharedActivity(agent, {
-        ...activityData,
-        status: 'failed',
-        request: {
-          ...activityData.request,
-          failureReason: credentialsForRequest ? 'missing_credentials' : 'unknown',
-        },
-      })
+    if (credentialsForRequest) {
+      await addSharedActivityForCredentialsForRequest(
+        agent,
+        credentialsForRequest,
+        credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed'
+      )
     }
 
     pushToWallet()
@@ -210,17 +156,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   return (
     <FunkePresentationNotificationScreen
-      usePin={usePin}
+      usePin={shouldUsePin ?? false}
       onAccept={onProofAccept}
-      // TODO: accept with pin
-      onAcceptWithPin={onProofAccept}
       onDecline={onProofDecline}
       submission={credentialsForRequest?.formattedSubmission}
       isAccepting={isSharing}
       entityId={credentialsForRequest?.verifier.entityId as string}
-      // TODO: unify the fed display data with the other display data
-      verifierName={fedDisplayData?.display.name ?? credentialsForRequest?.verifier.name}
-      logo={fedDisplayData?.display.logo ?? credentialsForRequest?.verifier.logo}
+      verifierName={credentialsForRequest?.verifier.name}
+      logo={credentialsForRequest?.verifier.logo}
       lastInteractionDate={lastInteractionDate}
       approvalsCount={fedDisplayData?.approvals.length}
       onComplete={() => pushToWallet('replace')}

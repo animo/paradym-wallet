@@ -1,7 +1,7 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
-import { type PidSdJwtVcAttributes, usePidDisplay } from '@easypid/hooks'
+import type { PidSdJwtVcAttributes } from '@easypid/hooks'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -9,17 +9,25 @@ import type {
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
-import { SlideWizard, usePushToWallet } from '@package/app'
-import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError } from 'packages/agent/src'
+import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
+import {
+  BiometricAuthenticationCancelledError,
+  BiometricAuthenticationNotEnabledError,
+  getCredentialForDisplay,
+  getCredentialForDisplayId,
+} from 'packages/agent/src'
 import { useToastController } from 'packages/ui/src'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from 'packages/utils/src'
 import type React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
+import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { addReceivedActivity } from '../activity/activityRecord'
+import { useShouldUseCloudHsm } from '../onboarding/useShouldUseCloudHsm'
 import { PidCardScanSlide } from './PidCardScanSlide'
 import { PidIdCardFetchSlide } from './PidEidCardFetchSlide'
 import { PidEidCardPinSlide } from './PidEidCardPinSlide'
+import { PidIdCardVerifySlide } from './PidEidCardVerifySlide'
 import { PidReviewRequestSlide } from './PidReviewRequestSlide'
 import { PidSetupStartSlide } from './PidSetupStartSlide'
 import { PidWalletPinSlide } from './PidWalletPinSlide'
@@ -28,7 +36,6 @@ export function FunkePidSetupScreen() {
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const secureUnlock = useSecureUnlock()
-  const pidDisplay = usePidDisplay()
 
   const [idCardPin, setIdCardPin] = useState<string>()
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
@@ -43,6 +50,9 @@ export function FunkePidSetupScreen() {
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
   const [userName, setUserName] = useState<string>()
   const [isScanning, setIsScanning] = useState(false)
+  const [allowSimulatorCard, setAllowSimulatorCard] = useState(false)
+  const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
+  const slideWizardRef = useRef<SlideWizardRef>(null)
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
     (options) => {
@@ -166,9 +176,25 @@ export function FunkePidSetupScreen() {
     //   setWalletPin(pin)
     // })
 
+    // If pin is simulator pin we require the user to retry so that second time
+    // they can set the real pin
     const isSimulatorPinCode = pin === SIMULATOR_PIN
-    await onIdCardStart({ walletPin: pin, allowSimulatorCard: isSimulatorPinCode })
+    if (isSimulatorPinCode) {
+      toast.show('Simulator eID card activated', {
+        message: 'Enter your real PIN to continue',
+        customData: {
+          preset: 'success',
+        },
+      })
+      setAllowSimulatorCard(true)
+      throw new Error('Retry')
+    }
+
+    if (shouldUseCloudHsm) setWalletServiceProviderPin(pin.split('').map(Number))
+    await onIdCardStart({ walletPin: pin, allowSimulatorCard: allowSimulatorCard })
   }
+
+  const onStart = (shouldUseCloudHsm: boolean) => setShouldUseCloudHsm(shouldUseCloudHsm)
 
   const onIdCardPinEnter = (pin: string) => setIdCardPin(pin)
 
@@ -224,14 +250,6 @@ export function FunkePidSetupScreen() {
 
       return
     }
-  }
-
-  const onScanningComplete = async () => {
-    if (!receivePidUseCase) {
-      toast.show('Not ready to receive PID', { customData: { preset: 'danger' } })
-      pushToWallet()
-      return
-    }
 
     try {
       setIdCardScanningState((state) => ({
@@ -249,7 +267,11 @@ export function FunkePidSetupScreen() {
       // Acquire access token
       await receivePidUseCase.acquireAccessToken()
 
-      await retrieveCredential()
+      slideWizardRef.current?.goToNextSlide()
+      // If not using cloud hsm we first want approval from the user
+      if (shouldUseCloudHsm) {
+        await retrieveCredential()
+      }
     } catch (error) {
       toast.show('Something went wrong', {
         customData: {
@@ -275,7 +297,6 @@ export function FunkePidSetupScreen() {
 
     try {
       // Retrieve Credential
-
       const credentials = await receivePidUseCase.retrieveCredentials()
 
       for (const credential of credentials) {
@@ -289,14 +310,15 @@ export function FunkePidSetupScreen() {
             )}`
           )
 
+          const { display } = getCredentialForDisplay(credential)
           await addReceivedActivity(secureUnlock.context.agent, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
-            name: pidDisplay?.issuer.name,
-            logo: pidDisplay?.issuer.logo,
+            name: display.issuer.name,
+            logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
-            credentialIds: [credential.id],
+            credentialIds: [getCredentialForDisplayId(credential)],
           })
         }
       }
@@ -324,11 +346,12 @@ export function FunkePidSetupScreen() {
 
   return (
     <SlideWizard
+      ref={slideWizardRef}
       steps={[
         {
           step: 'id-card-start',
           progress: 20,
-          screen: <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} />,
+          screen: <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} onStart={onStart} />,
         },
         {
           step: 'id-card-pin',
@@ -382,20 +405,32 @@ export function FunkePidSetupScreen() {
             />
           ),
         },
+        !shouldUseCloudHsm
+          ? {
+              step: 'id-card-verify',
+              progress: 80,
+              backIsCancel: true,
+              screen: (
+                <PidIdCardVerifySlide
+                  {...getPidSetupSlideContent('id-card-verify')}
+                  onVerifyWithBiometrics={retrieveCredential}
+                />
+              ),
+            }
+          : undefined,
         {
           step: 'id-card-fetch',
-          progress: 80,
+          progress: 90,
           backIsCancel: true,
           screen: (
             <PidIdCardFetchSlide
               {...getPidSetupSlideContent('id-card-fetch')}
               userName={userName}
-              onFetch={onScanningComplete}
               onComplete={() => pushToWallet('replace')}
             />
           ),
         },
-      ]}
+      ].filter((s): s is NonNullable<typeof s> => s !== undefined)}
       confirmation={{
         title: 'Stop ID Setup?',
         description: 'If you stop, you can do the setup later.',

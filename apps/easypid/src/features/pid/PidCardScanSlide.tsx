@@ -16,9 +16,7 @@ export function PidCardScanSlide({ title, subtitle, onStartScanning, ...props }:
     if (isLoading) return
     setIsLoading(true)
 
-    await onStartScanning?.().then(() => {
-      onNext()
-    })
+    await onStartScanning?.()
 
     setIsLoading(false)
   }

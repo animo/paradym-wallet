@@ -31,7 +31,7 @@ export function useBackgroundPidRefresh(batchThreshold: number) {
 
     let shouldRefreshSdJwt = false
     if (sdJwt) {
-      const sdJwtBatch = getBatchCredentialMetadata(sdJwt)
+      const sdJwtBatch = getBatchCredentialMetadata(sdJwt.record)
       if (sdJwtBatch) {
         shouldRefreshSdJwt = sdJwtBatch.additionalCredentials.length <= batchThreshold
       }
@@ -39,7 +39,7 @@ export function useBackgroundPidRefresh(batchThreshold: number) {
 
     let shouldRefreshMdoc = false
     if (mdoc) {
-      const mdocBatch = getBatchCredentialMetadata(mdoc)
+      const mdocBatch = getBatchCredentialMetadata(mdoc.record)
       if (mdocBatch) {
         shouldRefreshMdoc = mdocBatch.additionalCredentials.length <= batchThreshold
       }
@@ -59,8 +59,8 @@ export function useBackgroundPidRefresh(batchThreshold: number) {
 
       refreshPid({
         agent,
-        sdJwt: shouldRefreshSdJwt ? sdJwt : undefined,
-        mdoc: shouldRefreshMdoc ? mdoc : undefined,
+        sdJwt: shouldRefreshSdJwt ? sdJwt?.record : undefined,
+        mdoc: shouldRefreshMdoc ? mdoc?.record : undefined,
       }).finally(() => setIsRefreshing(false))
     }
   }, [shouldRefreshMdoc, shouldRefreshSdJwt, hasInternet, agent, isRefreshing, mdoc, sdJwt, shouldUseCloudHsm])

@@ -2,10 +2,7 @@ import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from 
 import React from 'react'
 import { createParam } from 'solito'
 
-import type { ClaimFormat } from '@credo-ts/core'
-import { getPidDisclosedAttributeNames, isPidCredential, usePidCredential } from '@easypid/hooks'
-import { getPidAttributesForDisplay } from '@easypid/hooks'
-import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import { useCredentialsForDisplay } from '@package/agent'
 import { CardWithAttributes, TextBackButton, activityInteractions } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import { formatRelativeDate } from 'packages/utils/src'
@@ -21,10 +18,9 @@ export function FunkeActivityDetailScreen() {
   const { params } = useParams()
   const router = useRouter()
   const { bottom } = useSafeAreaInsets()
-  const { pidCredentialForDisplay } = usePidCredential()
 
   const { activities } = useActivities()
-  const { credentials } = useCredentialsWithCustomDisplay()
+  const { credentials } = useCredentialsForDisplay()
   const activity = activities.find((activity) => activity.id === params.id)
 
   if (!activity || activity.type === 'received') {
@@ -77,55 +73,30 @@ export function FunkeActivityDetailScreen() {
                 </Stack>
                 {activity.request.credentials && activity.request.credentials.length > 0 ? (
                   activity.request.credentials.map((activityCredential) => {
-                    const credential = credentials.find((credential) => credential.id.includes(activityCredential.id))
+                    if ('id' in activityCredential) {
+                      const credential = credentials.find((credential) => credential.id === activityCredential.id)
 
-                    if (!credential)
-                      return (
-                        <CardWithAttributes
-                          key={activityCredential.id}
-                          id={activityCredential.id}
-                          name="Deleted credential"
-                          textColor="$grey-100"
-                          backgroundColor="$primary-500"
-                          disclosedAttributes={activityCredential.disclosedAttributes ?? []}
-                          disclosedPayload={activityCredential.disclosedPayload ?? {}}
-                          disableNavigation={true}
-                        />
-                      )
+                      if (!credential) {
+                        return (
+                          <CardWithAttributes
+                            id={activityCredential.id}
+                            name="Deleted credential"
+                            textColor="$grey-100"
+                            backgroundColor="$primary-500"
+                            formattedDisclosedAttributes={activityCredential.attributeNames}
+                            disclosedPayload={activityCredential.attributes}
+                          />
+                        )
+                      }
 
-                    const isExpired = credential.metadata.validUntil
-                      ? new Date(credential.metadata.validUntil) < new Date()
-                      : false
+                      const isExpired = credential.metadata.validUntil
+                        ? new Date(credential.metadata.validUntil) < new Date()
+                        : false
 
-                    const isNotYetActive = credential.metadata.validFrom
-                      ? new Date(credential.metadata.validFrom) > new Date()
-                      : false
+                      const isNotYetActive = credential.metadata.validFrom
+                        ? new Date(credential.metadata.validFrom) > new Date()
+                        : false
 
-                    if (isPidCredential(credential.metadata.type)) {
-                      return (
-                        <CardWithAttributes
-                          key={pidCredentialForDisplay?.id}
-                          id={pidCredentialForDisplay?.id as string}
-                          name={pidCredentialForDisplay?.display.name as string}
-                          issuerImage={pidCredentialForDisplay?.display.issuer.logo}
-                          backgroundImage={pidCredentialForDisplay?.display.backgroundImage}
-                          backgroundColor={pidCredentialForDisplay?.display.backgroundColor}
-                          textColor={pidCredentialForDisplay?.display.textColor}
-                          disclosedAttributes={getPidDisclosedAttributeNames(
-                            activityCredential?.disclosedPayload ?? {},
-                            credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                          )}
-                          disclosedPayload={getPidAttributesForDisplay(
-                            activityCredential?.disclosedPayload ?? {},
-                            credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                          )}
-                          isExpired={isExpired}
-                          isNotYetActive={isNotYetActive}
-                        />
-                      )
-                    }
-
-                    if (credential)
                       return (
                         <CardWithAttributes
                           key={credential.id}
@@ -135,13 +106,13 @@ export function FunkeActivityDetailScreen() {
                           textColor={credential.display.textColor}
                           backgroundColor={credential.display.backgroundColor}
                           backgroundImage={credential.display.backgroundImage}
-                          disclosedAttributes={activityCredential.disclosedAttributes ?? []}
-                          disclosedPayload={activityCredential.disclosedPayload ?? {}}
-                          disableNavigation={activity.status !== 'success'}
+                          formattedDisclosedAttributes={activityCredential.attributeNames}
+                          disclosedPayload={activityCredential.attributes}
                           isExpired={isExpired}
                           isNotYetActive={isNotYetActive}
                         />
                       )
+                    }
                   })
                 ) : (
                   <FailedReasonContainer reason={activity.request.failureReason ?? 'unknown'} />

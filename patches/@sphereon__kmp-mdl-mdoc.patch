@@ -1,0 +1,26 @@
+diff --git a/Kermit-kermit-core.js b/Kermit-kermit-core.js
+index 93569e524f6b1242126e7af92704eb8b79b55147..3c3a45cee75f78bee5d0bab2af03fdc037f59c1a 100644
+--- a/Kermit-kermit-core.js
++++ b/Kermit-kermit-core.js
+@@ -278,7 +278,7 @@
+     console.info(output);
+   };
+   protoOf(ConsoleActual).t2c = function (output) {
+-    console.log(output);
++    // console.log(output);
+   };
+   var ConsoleActual_instance;
+   function ConsoleActual_getInstance() {
+diff --git a/kotlin-kotlin-stdlib.js b/kotlin-kotlin-stdlib.js
+index 790ac68db8a3209bebee844156ca2fd39b20d4f4..e9d838571fc0480bc156eb6568044397a2768be0 100644
+--- a/kotlin-kotlin-stdlib.js
++++ b/kotlin-kotlin-stdlib.js
+@@ -5799,7 +5799,7 @@ if (typeof String.prototype.startsWith === 'undefined') {
+     this.f9_1 = this.f9_1 + s;
+   };
+   protoOf(BufferedOutputToConsoleLog).g9 = function () {
+-    console.log(this.f9_1);
++    // console.log(this.f9_1);
+     this.f9_1 = '';
+   };
+   function BufferedOutput() {

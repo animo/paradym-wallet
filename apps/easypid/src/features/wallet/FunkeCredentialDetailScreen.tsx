@@ -15,14 +15,12 @@ import React, { useState } from 'react'
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
-import { useCredentialsWithCustomDisplayById } from '@easypid/hooks/useCredentialsWithCustomDisplay'
-import type { CredentialForDisplayId } from '@package/agent'
+import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
 import { useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createParam } from 'solito'
-import { isPidCredential } from '../../hooks'
 
 const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
@@ -34,13 +32,13 @@ export function FunkeCredentialDetailScreen() {
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
 
-  const { credential } = useCredentialsWithCustomDisplayById(params.id)
+  const { credential } = useCredentialForDisplayById(params.id)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
     onPress: withHaptics(() => setIsSheetOpen(true)),
-    renderCondition: !isPidCredential(credential?.metadata.type),
+    renderCondition: credential?.category?.canDeleteCredential ?? true,
   })
 
   if (!credential) {
@@ -57,8 +55,8 @@ export function FunkeCredentialDetailScreen() {
     router.push({
       pathname: '/credentials/[id]/attributes',
       params: {
-        attributes: JSON.stringify(credential.attributesForDisplay ?? credential.attributes),
-        metadata: JSON.stringify(credential.metadataForDisplay ?? credential.metadata),
+        attributes: JSON.stringify(credential.attributes),
+        metadata: JSON.stringify(credential.metadata),
       },
     })
   })
@@ -99,7 +97,10 @@ export function FunkeCredentialDetailScreen() {
               </Paragraph>
             </Stack>
             <YStack w="100%" gap="$2">
-              <CardInfoLifecycle validFrom={credential.validFrom} validUntil={credential.validUntil} />
+              <CardInfoLifecycle
+                validFrom={credential.metadata.validFrom ? new Date(credential.metadata.validFrom) : undefined}
+                validUntil={credential.metadata.validUntil ? new Date(credential.metadata.validUntil) : undefined}
+              />
               <InfoButton
                 variant="view"
                 title="Card attributes"

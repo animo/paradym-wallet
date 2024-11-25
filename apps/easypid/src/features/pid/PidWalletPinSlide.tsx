@@ -17,9 +17,14 @@ export function PidWalletPinSlide({ title, subtitle, onEnterPin }: PidWalletPinS
     if (isLoading) return
     setIsLoading(true)
 
-    await onEnterPin(pin).then(() => {
-      onNext()
-    })
+    await onEnterPin(pin)
+      .then(() => {
+        onNext()
+      })
+      .catch(() => {
+        ref.current?.shake()
+        ref.current?.clear()
+      })
 
     setIsLoading(false)
   }

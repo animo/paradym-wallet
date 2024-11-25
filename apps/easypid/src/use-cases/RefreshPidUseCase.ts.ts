@@ -9,8 +9,9 @@ import {
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   setRefreshCredentialMetadata,
-  storeCredential,
+  updateCredential,
 } from '@package/agent'
+import { getBatchCredentialMetadata, setBatchCredentialMetadata } from '@package/agent/src/openid4vc/batchMetadata'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
@@ -93,7 +94,7 @@ export class RefreshPidUseCase {
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       credentialConfigurationIdsToRequest,
       clientId: RefreshPidUseCase.CLIENT_ID,
-      requestBatch: 10,
+      requestBatch: 2,
       pidSchemes,
     })
 
@@ -109,13 +110,24 @@ export class RefreshPidUseCase {
       setRefreshCredentialMetadata(credentialRecord, existingRefreshMetadata)
 
       if (credentialRecord instanceof SdJwtVcRecord && sdJwt) {
-        credentialRecords.push(credentialRecord)
-        await storeCredential(this.options.agent, credentialRecord)
-        await this.options.agent.sdJwtVc.deleteById(sdJwt.id)
+        credentialRecords.push(sdJwt)
+
+        // Update existing record based on new credentials
+        const batchMetadata = getBatchCredentialMetadata(credentialRecord)
+        if (batchMetadata) setBatchCredentialMetadata(sdJwt, batchMetadata)
+        sdJwt.compactSdJwtVc = credentialRecord.compactSdJwtVc
+
+        // Should we update the type metadata as well? For now we use hardcoded anyway
+        await updateCredential(this.options.agent, sdJwt)
       } else if (credentialRecord instanceof MdocRecord && mdoc) {
-        credentialRecords.push(credentialRecord)
-        await storeCredential(this.options.agent, credentialRecord)
-        await this.options.agent.mdoc.deleteById(mdoc.id)
+        credentialRecords.push(mdoc)
+
+        // Update existing record based on new credentials
+        const batchMetadata = getBatchCredentialMetadata(credentialRecord)
+        if (batchMetadata) setBatchCredentialMetadata(mdoc, batchMetadata)
+        mdoc.base64Url = credentialRecord.base64Url
+
+        await updateCredential(this.options.agent, mdoc)
       }
     }
 

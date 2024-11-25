@@ -1,10 +1,6 @@
 import { ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import { type CredentialForDisplayId, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
-import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
-import { useMemo } from 'react'
-import germanIssuerImage from '../../assets/german-issuer-image.png'
-import pidBackgroundImage from '../../assets/pid-background.png'
-import { pidSchemes } from '../constants'
+import { type CredentialForDisplay, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
+import { sanitizeString } from '@package/utils'
 
 type Attributes = {
   given_name: string
@@ -359,37 +355,11 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
   return disclosedAttributeNames
 }
 
-// TODO: Is it possible we add the branding/display elements when the PID is added to the wallet
-// This way we can just treat it as any other credential and don't need to special case it anywhere
 export function usePidCredential() {
-  const { isLoading, credentials } = useCredentialsForDisplay()
-
-  const pidCredentials = useMemo(() => {
-    const pidCredentials = credentials.filter(
-      (cred) =>
-        pidSchemes.sdJwtVcVcts.includes(cred.metadata.type) || pidSchemes.msoMdocDoctypes.includes(cred.metadata.type)
-    )
-
-    if (pidCredentials.length === 0) return []
-
-    return pidCredentials.map((pidCredential) => {
-      const attributes = pidCredential.attributes as PidSdJwtVcAttributes | PidMdocAttributes
-      const claimFormat = pidCredential.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-      return {
-        id: pidCredential.id as CredentialForDisplayId,
-        type: pidCredential.metadata.type,
-        claimFormat: pidCredential.claimFormat,
-        createdAt: pidCredential.createdAt,
-        attributes: pidCredential.attributes,
-        display: usePidDisplay(),
-        userName: `${capitalizeFirstLetter(attributes.given_name.toLowerCase())}`,
-        attributesForDisplay: getPidAttributesForDisplay(attributes, claimFormat),
-        metadata: pidCredential.metadata,
-        metadataForDisplay: getPidMetadataAttributesForDisplay(attributes, pidCredential.metadata, ClaimFormat.SdJwtVc),
-        record: pidCredential.record,
-      }
-    })
-  }, [credentials])
+  const { isLoading, credentials } = useCredentialsForDisplay({
+    removeCanonicalRecords: false,
+    credentialCategory: 'DE-PID',
+  })
 
   if (isLoading) {
     return {
@@ -398,41 +368,19 @@ export function usePidCredential() {
     } as const
   }
 
+  const credential =
+    credentials.find((c) => c.category?.displayPriority) ?? (credentials[0] as CredentialForDisplay | undefined)
+
   return {
     isLoading: false,
-    pidCredentialForDisplay: pidCredentials[0] as (typeof pidCredentials)[number] | undefined,
-    credentialIds: pidCredentials.map((p) => p.id),
-    credentials: pidCredentials,
-    mdoc: pidCredentials.find((c): c is typeof c & { record: MdocRecord } => c.record instanceof MdocRecord)?.record,
-    sdJwt: pidCredentials.find((c): c is typeof c & { record: SdJwtVcRecord } => c.record instanceof SdJwtVcRecord)
-      ?.record,
+    credential,
+    credentials,
+    mdoc: credentials.find(
+      (c): c is typeof c & { record: MdocRecord; claimFormat: ClaimFormat.MsoMdoc } => c.record instanceof MdocRecord
+    ),
+    sdJwt: credentials.find(
+      (c): c is typeof c & { record: SdJwtVcRecord; claimFormat: ClaimFormat.SdJwtVc } =>
+        c.record instanceof SdJwtVcRecord
+    ),
   } as const
-}
-
-export function isPidCredential(credentialType?: string) {
-  return credentialType
-    ? pidSchemes.sdJwtVcVcts.includes(credentialType) || pidSchemes.msoMdocDoctypes.includes(credentialType)
-    : false
-}
-
-export const usePidDisplay = () => {
-  return {
-    issuer: {
-      name: 'Bundesdruckerei',
-      locale: 'de',
-      logo: {
-        url: germanIssuerImage,
-        altText: 'Logo of German Government',
-      },
-    },
-    name: 'Personalausweis',
-    description: 'This is a personal ID',
-    locale: 'de',
-    textColor: '#2F3544',
-    backgroundColor: '#F1F2F0',
-    backgroundImage: {
-      url: pidBackgroundImage,
-      altText: 'Background Image',
-    },
-  }
 }

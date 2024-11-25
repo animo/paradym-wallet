@@ -93,7 +93,7 @@ export function PresentationNotificationScreen({
                           <Stack flex={1}>
                             <CredentialRowCard
                               issuer={selectedCredential?.credential.display.issuer.name}
-                              name={selectedCredential?.credential.display.name ?? s.name}
+                              name={selectedCredential?.credential.display.name ?? s.name ?? 'Credential'}
                               hideBorder={true}
                               bgColor={selectedCredential?.credential.display.backgroundColor}
                             />
@@ -119,26 +119,30 @@ export function PresentationNotificationScreen({
                         <YStack px="$3" pb="$3" gap="$2">
                           <Paragraph variant="sub">The following information will be presented:</Paragraph>
                           <YStack flexDirection="row" flexWrap="wrap">
-                            {selectedCredential?.requestedAttributes?.map((a) => (
-                              <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
-                                • {sanitizeString(a)}
-                              </Paragraph>
-                            ))}
+                            {Array.from(new Set(selectedCredential?.disclosed.paths.map((path) => path[0])))?.map(
+                              (a) => (
+                                <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
+                                  • {sanitizeString(a)}
+                                </Paragraph>
+                              )
+                            )}
                           </YStack>
                         </YStack>
                       ) : (
                         <YStack px="$3" pb="$3" gap="$2">
                           <Paragraph px="$3" pb="$3" variant="sub" color="$danger-500">
                             This credential is not present in your wallet.{' '}
-                            {s.requestedAttributes.length > 0 ? 'The folloing information is requested:' : ''}
+                            {s.requestedAttributePaths.length > 0 ? 'The folloing information is requested:' : ''}
                           </Paragraph>
-                          {s.requestedAttributes.length > 0 && (
+                          {s.requestedAttributePaths.length > 0 && (
                             <YStack flexDirection="row" flexWrap="wrap">
-                              {s.requestedAttributes.map((a) => (
-                                <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
-                                  • {sanitizeString(a)}
-                                </Paragraph>
-                              ))}
+                              {Array.from(new Set(s.requestedAttributePaths.map((p) => p[0])))
+                                .filter((a): a is string => typeof a === 'string')
+                                .map((a) => (
+                                  <Paragraph flexBasis="50%" key={a} variant="annotation" secondary>
+                                    • {sanitizeString(a)}
+                                  </Paragraph>
+                                ))}
                             </YStack>
                           )}
                         </YStack>

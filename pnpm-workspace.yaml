@@ -7,14 +7,14 @@ catalog:
   react: 18.3.1
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
-  "@credo-ts/anoncreds": 0.6.0-pr-2100-20241121224952
-  "@credo-ts/askar": 0.6.0-pr-2100-20241121224952
-  "@credo-ts/cheqd": 0.6.0-pr-2100-20241121224952
-  "@credo-ts/core": 0.6.0-pr-2100-20241121224952
-  "@credo-ts/indy-vdr": 0.6.0-pr-2100-20241121224952
-  "@credo-ts/openid4vc": 0.6.0-pr-2100-20241121224952
-  "@credo-ts/question-answer": 0.6.0-pr-2100-20241121224952
-  "@credo-ts/react-native": 0.6.0-pr-2100-20241121224952
+  "@credo-ts/anoncreds": 0.6.0-pr-2100-20241124170219
+  "@credo-ts/askar": 0.6.0-pr-2100-20241124170219
+  "@credo-ts/cheqd": 0.6.0-pr-2100-20241124170219
+  "@credo-ts/core": 0.6.0-pr-2100-20241124170219
+  "@credo-ts/indy-vdr": 0.6.0-pr-2100-20241124170219
+  "@credo-ts/openid4vc": 0.6.0-pr-2100-20241124170219
+  "@credo-ts/question-answer": 0.6.0-pr-2100-20241124170219
+  "@credo-ts/react-native": 0.6.0-pr-2100-20241124170219
   "@credo-ts/react-hooks": 0.6.1
   "@hyperledger/anoncreds-react-native": ^0.2.4
   "@hyperledger/aries-askar-react-native": ^0.2.3
@@ -24,12 +24,12 @@ catalog:
   "@sphereon/jarm": https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke
   "@sphereon/oid4vc-common": https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke
   "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
-  "@animo-id/oid4vci": 0.1.4-alpha-20241120145259
-  "@animo-id/oauth2": 0.1.4-alpha-20241120145259
-  "@animo-id/oauth2-utils": 0.1.4-alpha-20241120145259
+  "@animo-id/oid4vci": 0.1.4
+  "@animo-id/oauth2": 0.1.4
+  "@animo-id/oauth2-utils": 0.1.4
   "@animo-id/expo-secure-environment": 0.1.0-alpha.11
   "@animo-id/expo-mdoc-data-transfer": 0.0.3-alpha.7
-  "@animo-id/mdoc": 0.2.38
+  "@animo-id/mdoc": 0.2.39
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"
   expo: ~51.0.39

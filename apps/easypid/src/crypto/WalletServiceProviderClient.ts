@@ -10,10 +10,12 @@ import {
 import type { EasyPIDAppAgent } from 'packages/agent/src'
 import { deriveKeypairFromPin } from './pin'
 
+// TODO: should auto reset after X seconds
 let __pin: Array<number> | undefined
 export const setWalletServiceProviderPin = (pin?: Array<number>) => {
   __pin = pin
 }
+
 export const getWalletServiceProviderPin = () => __pin
 
 const GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID = 'GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID'

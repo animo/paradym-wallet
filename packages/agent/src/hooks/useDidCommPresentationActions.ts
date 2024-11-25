@@ -18,10 +18,10 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 
-import { useAgent } from '../agent'
 import type { NonEmptyArray } from '@package/utils'
-import { getCredential } from '../storage'
+import { useAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
+import { getCredential } from '../storage'
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
   const { agent } = useAgent()
@@ -143,7 +143,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               isSatisfied: false,
               // TODO: we can fetch the schema name based on requirements
               name: 'Credential',
-              requestedAttributes: Array.from(entry.requestedAttributes),
+              requestedAttributePaths: Array.from(entry.requestedAttributes).map((a) => [a]),
             }
           }
 
@@ -154,9 +154,12 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
               return {
                 credential: credentialForDisplay,
-                // TODO: we don't show this yet on anoncreds screen, but we should add it
-                disclosedPayload: {},
-                requestedAttributes: Array.from(entry.requestedAttributes),
+                disclosed: {
+                  // TODO: we don't show this yet on anoncreds screen, but we should add it
+                  attributes: {},
+                  metadata: credentialForDisplay.metadata,
+                  paths: Array.from(entry.requestedAttributes).map((a) => [a]),
+                },
               }
             })
           )) as NonEmptyArray<FormattedSubmissionEntrySatisfiedCredential>

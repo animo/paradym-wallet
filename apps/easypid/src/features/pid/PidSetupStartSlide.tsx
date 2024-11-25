@@ -6,9 +6,10 @@ interface PidSetupStartSlideProps {
   title: string
   subtitle?: string
   caption?: string
+  onStart: (useShouldUseCloudHsm: boolean) => void
 }
 
-export function PidSetupStartSlide({ title, subtitle, caption }: PidSetupStartSlideProps) {
+export function PidSetupStartSlide({ title, subtitle, caption, onStart }: PidSetupStartSlideProps) {
   const { onNext } = useWizard()
 
   return (
@@ -25,7 +26,12 @@ export function PidSetupStartSlide({ title, subtitle, caption }: PidSetupStartSl
         </YStack>
       </YStack>
       <YStack fg={1} pt="$6">
-        <OnboardingIdCardStart goToNextStep={async () => onNext()} />
+        <OnboardingIdCardStart
+          goToNextStep={async (shouldUseCloudHsm) => {
+            onNext()
+            onStart(shouldUseCloudHsm)
+          }}
+        />
       </YStack>
     </YStack>
   )

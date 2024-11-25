@@ -82,6 +82,15 @@ export const Heading = styled(THeading, {
         letterSpacing: '$5',
         lineHeight: '$3',
       },
+      sub3: {
+        fontSize: 13,
+        fontFamily: '$body',
+        fontWeight: '$bold',
+        textTransform: 'uppercase',
+        color: '$grey-600',
+        letterSpacing: '$5',
+        lineHeight: '$3',
+      },
     },
   } as const,
   defaultVariants: {
