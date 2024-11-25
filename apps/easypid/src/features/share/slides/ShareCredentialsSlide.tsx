@@ -10,10 +10,9 @@ import type { PresentationRequestResult } from '../components/utils'
 
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
-
   onAccept?: () => Promise<PresentationRequestResult> | Promise<void>
+  onDecline?: () => void
   submission: FormattedSubmission
-  onDecline: () => void
   isAccepting: boolean
 
   isOffline?: boolean
@@ -27,7 +26,7 @@ export const ShareCredentialsSlide = ({
   isAccepting,
   isOffline,
 }: ShareCredentialsSlideProps) => {
-  const { onNext } = useWizard()
+  const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const pushToWallet = usePushToWallet()
@@ -47,7 +46,7 @@ export const ShareCredentialsSlide = ({
   }
 
   const handleDecline = () => {
-    onDecline()
+    onCancel()
   }
 
   return (

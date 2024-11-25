@@ -13,42 +13,27 @@
 		"style:fix": "biome check --write --unsafe"
 	},
 	"engines": {
-		"node": ">=18.0.0"
+		"node": ">=20.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.1",
 		"check-dependency-version-consistency": "^3.0.3",
-		"typescript": "*"
+		"typescript": "catalog:"
 	},
 	"pnpm": {
 		"overrides": {
-			"typescript": "~5.3.3",
-			"@unimodules/react-native-adapter": "./noop",
-			"@unimodules/core": "./noop",
-			"@hyperledger/anoncreds-react-native": "^0.2.4",
-			"@hyperledger/aries-askar-react-native": "^0.2.3",
-			"@hyperledger/indy-vdr-react-native": "^0.2.0",
-			"@credo-ts/anoncreds": "0.6.0-alpha-20241119125554",
-			"@credo-ts/askar": "0.6.0-alpha-20241119125554",
-			"@credo-ts/cheqd": "0.6.0-alpha-20241119125554",
-			"@credo-ts/core": "0.6.0-alpha-20241119125554",
-			"@credo-ts/indy-vdr": "0.6.0-alpha-20241119125554",
-			"@credo-ts/openid4vc": "0.6.0-alpha-20241119125554",
-			"@credo-ts/question-answer": "0.6.0-alpha-20241119125554",
-			"@credo-ts/react-native": "0.6.0-alpha-20241119125554",
-			"@credo-ts/react-hooks": "0.6.1",
-			"@animo-id/expo-ausweis-sdk": "0.0.1-alpha.14",
-			"@animo-id/expo-secure-environment": "0.1.0-alpha.9",
-			"@animo-id/expo-mdoc-data-transfer": "0.0.3-alpha.7",
-			"@types/react": "~18.2.79",
-			"react-docgen-typescript": "2.2.2",
-			"react": "18.3.1",
-			"react-native": "~0.74.5"
+			"@unimodules/react-native-adapter": "catalog:",
+			"@unimodules/core": "catalog:",
+			"react-docgen-typescript": "catalog:",
+			"@animo-id/oid4vci": "catalog:",
+			"@animo-id/oauth2": "catalog:",
+			"@animo-id/oauth2-utils": "catalog:"
 		},
 		"patchedDependencies": {
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@credo-ts/askar@0.6.0-alpha-20241119125554": "patches/@credo-ts__askar@0.6.0-alpha-20241119125554.patch",
+			"@credo-ts/askar@0.6.0-alpha-20241120153226": "patches/@credo-ts__askar@0.6.0-alpha-20241120153226.patch",
 			"@animo-id/mdoc@0.2.38": "patches/@animo-id__mdoc@0.2.38.patch"
 		}
-	}
+	},
+	"packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b"
 }

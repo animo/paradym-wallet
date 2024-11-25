@@ -2,7 +2,7 @@ import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack } from 
 import * as Haptics from 'expo-haptics'
 import type React from 'react'
 import { useCallback, useRef, useState } from 'react'
-import type { ScrollView } from 'react-native'
+import { Keyboard, type ScrollView } from 'react-native'
 import { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ConfirmationSheet } from '../components/ConfirmationSheet'
@@ -12,7 +12,7 @@ import { WizardProvider } from './WizardContext'
 export type SlideStep = {
   step: string
   progress: number
-  screen: () => React.ReactNode
+  screen: (() => React.ReactNode) | React.ReactElement
   backIsCancel?: boolean
 }
 
@@ -96,7 +96,10 @@ export function SlideWizard({ steps, onCancel, isError, errorScreen, confirmatio
     [opacity, translateX, updateStep, scrollToTop]
   )
 
-  const handleCancel = useCallback(() => setIsSheetOpen(true), [])
+  const handleCancel = useCallback(() => {
+    Keyboard.dismiss()
+    setIsSheetOpen(true)
+  }, [])
 
   const onConfirmCancel = () => {
     setIsSheetOpen(false)
@@ -143,7 +146,7 @@ export function SlideWizard({ steps, onCancel, isError, errorScreen, confirmatio
           <ProgressHeader
             progress={isCompleted || isError ? 100 : steps[currentStepIndex].progress}
             onBack={onBack}
-            onCancel={() => setIsSheetOpen(true)}
+            onCancel={handleCancel}
             color={isError ? 'danger' : 'primary'}
           />
         </Stack>
@@ -161,7 +164,7 @@ export function SlideWizard({ steps, onCancel, isError, errorScreen, confirmatio
             fg={1}
             px="$4"
           >
-            <Screen />
+            {typeof Screen === 'function' ? <Screen /> : Screen}
           </ScrollableStack>
         </AnimatedStack>
       </FlexPage>

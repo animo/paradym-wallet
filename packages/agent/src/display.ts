@@ -1,4 +1,4 @@
-import type { JwkJson, W3cCredentialRecord } from '@credo-ts/core'
+import type { JwkJson, SdJwtVcTypeMetadata, W3cCredentialRecord } from '@credo-ts/core'
 import {
   ClaimFormat,
   Hasher,
@@ -56,11 +56,11 @@ export interface CredentialIssuerDisplay {
   logo?: DisplayImage
 }
 
-function findDisplay<Display extends { locale?: string }>(display?: Display[]): Display | undefined {
+function findDisplay<Display extends { locale?: string; lang?: string }>(display?: Display[]): Display | undefined {
   if (!display) return undefined
 
-  let item = display.find((d) => d.locale?.startsWith('en-'))
-  if (!item) item = display.find((d) => !d.locale)
+  let item = display.find((d) => d.locale?.startsWith('en-') || d.lang?.startsWith('en-'))
+  if (!item) item = display.find((d) => !d.locale && !d.lang)
   if (!item) item = display[0]
 
   return item
@@ -186,6 +186,29 @@ export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<Cre
   }
 }
 
+export function getSdJwtTypeMetadataCredentialDisplay(
+  sdJwtTypeMetadata: SdJwtVcTypeMetadata
+): Omit<CredentialDisplay, 'issuer' | 'name'> & { name?: string } {
+  const typeMetadataDisplay = findDisplay(sdJwtTypeMetadata.display)
+
+  // TODO: support SVG rendering method
+
+  const credentialDisplay = {
+    name: typeMetadataDisplay?.name,
+    description: typeMetadataDisplay?.description,
+    textColor: typeMetadataDisplay?.rendering?.simple?.text_color,
+    backgroundColor: typeMetadataDisplay?.rendering?.simple?.background_color,
+    backgroundImage: typeMetadataDisplay?.rendering?.simple?.logo
+      ? {
+          url: typeMetadataDisplay?.rendering?.simple?.logo.uri,
+          altText: typeMetadataDisplay?.rendering?.simple?.logo.alt_text,
+        }
+      : undefined,
+  }
+
+  return credentialDisplay
+}
+
 export function getOpenId4VcCredentialDisplay(openId4VcMetadata: OpenId4VcCredentialMetadata) {
   const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
 
@@ -274,11 +297,16 @@ function getMdocCredentialDisplay(
 
 function getSdJwtCredentialDisplay(
   credentialPayload: Record<string, unknown>,
-  openId4VcMetadata?: OpenId4VcCredentialMetadata | null
+  openId4VcMetadata?: OpenId4VcCredentialMetadata | null,
+  typeMetadata?: SdJwtVcTypeMetadata | null
 ) {
   let credentialDisplay: Partial<CredentialDisplay> = {}
 
-  if (openId4VcMetadata) {
+  // TODO: should we combine them? I think not really needed if you have one of them
+  // Type metadata takes precendence.
+  if (typeMetadata) {
+    credentialDisplay = getSdJwtTypeMetadataCredentialDisplay(typeMetadata)
+  } else if (openId4VcMetadata) {
     credentialDisplay = getOpenId4VcCredentialDisplay(openId4VcMetadata)
   }
 
@@ -394,8 +422,9 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     )
 
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+    const sdJwtTypeMetadata = credentialRecord.typeMetadata
     const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
-    const credentialDisplay = getSdJwtCredentialDisplay(decodedPayload, openId4VcMetadata)
+    const credentialDisplay = getSdJwtCredentialDisplay(decodedPayload, openId4VcMetadata, sdJwtTypeMetadata)
 
     const mapped = filterAndMapSdJwtKeys(decodedPayload)
 
@@ -411,6 +440,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       claimFormat: ClaimFormat.SdJwtVc,
       validUntil: mapped.raw.validUntil,
       validFrom: mapped.raw.validFrom,
+      record: credentialRecord,
     }
   }
   if (credentialRecord instanceof MdocRecord) {
@@ -442,6 +472,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
       claimFormat: ClaimFormat.MsoMdoc,
       validUntil: mdocInstance.validityInfo.validUntil,
       validFrom: mdocInstance.validityInfo.validFrom,
+      record: credentialRecord,
     }
   }
 
@@ -486,6 +517,7 @@ export function getCredentialForDisplay(credentialRecord: W3cCredentialRecord | 
     validFrom: credentialRecord.credential.issuanceDate
       ? new Date(credentialRecord.credential.issuanceDate)
       : undefined,
+    record: credentialRecord,
   }
 }
 

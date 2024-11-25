@@ -2,9 +2,6 @@ import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
   DifPexCredentialsForRequest,
-  JwkDidCreateOptions,
-  Key,
-  KeyDidCreateOptions,
   OutOfBandInvitation,
   OutOfBandRecord,
   P256Jwk,
@@ -14,10 +11,12 @@ import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
   OpenId4VcSiopVerifiedAuthorizationRequest,
   OpenId4VciCredentialConfigurationSupportedWithFormats,
+  OpenId4VciDpopRequestOptions,
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
+import { getOid4vciCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import { Linking } from 'react-native'
 import type { EitherAgent, FullAppAgent } from '../agent'
 
@@ -25,28 +24,20 @@ import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-t
 import {
   CredentialEventTypes,
   CredentialState,
+  Hasher,
   JwaSignatureAlgorithm,
   Jwt,
-  KeyBackend,
-  KeyType,
-  Mdoc,
-  MdocRecord,
-  MdocRepository,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
-  type SdJwtVcRecord,
-  SdJwtVcRepository,
   V2OfferCredentialMessage,
   V2RequestPresentationMessage,
-  W3cCredentialRecord,
-  W3cCredentialRepository,
   X509ModuleConfig,
-  getJwkFromKey,
   parseMessageType,
 } from '@credo-ts/core'
 import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
 import {
+  OpenId4VciHolderService,
   getOfferedCredentials,
   getScopesFromCredentialConfigurationsSupported,
   preAuthorizedCodeGrantIdentifier,
@@ -54,10 +45,11 @@ import {
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
+import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@animo-id/oauth2'
 import q from 'query-string'
+import { handleBatchCredential } from '../batch'
 import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
 import { formatDifPexCredentialsForRequest } from '../format/formatPresentation'
-import type { CredentialForDisplayId } from '../hooks'
 import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
@@ -69,11 +61,13 @@ export async function resolveOpenId4VciOffer({
   offer,
   authorization,
   customHeaders,
+  fetchAuthorization = true,
 }: {
   agent: EitherAgent
   offer: { data?: string; uri?: string }
   authorization?: { clientId: string; redirectUri: string }
   customHeaders?: Record<string, unknown>
+  fetchAuthorization?: boolean
 }) {
   let offerUri = offer.uri
 
@@ -95,7 +89,7 @@ export async function resolveOpenId4VciOffer({
   let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
   // NOTE: we always assume scopes are used at the moment
-  if (resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
+  if (fetchAuthorization && resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
     // If only authorization_code grant is valid and user didn't provide authorization details we can't continue
     if (!resolvedCredentialOffer.credentialOfferPayload.grants[preAuthorizedCodeGrantIdentifier] && !authorization) {
       throw new Error(
@@ -168,6 +162,54 @@ export async function acquireAuthorizationCodeUsingPresentation({
   })
 }
 
+export async function acquireRefreshTokenAccessToken({
+  authorizationServer,
+  resolvedCredentialOffer,
+  agent,
+  clientId,
+  refreshToken,
+  dpop,
+}: {
+  agent: EitherAgent
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  authorizationServer: string
+  clientId: string
+  refreshToken: string
+  dpop?: OpenId4VciDpopRequestOptions
+}): Promise<OpenId4VciRequestTokenResponse> {
+  const oauth2Client = new Oauth2Client({ callbacks: getOid4vciCallbacks(agent.context) })
+
+  // TODO: dpop retry also for this method
+  const accessTokenResponse = await oauth2Client.retrieveRefreshTokenAccessToken({
+    refreshToken,
+    resource: resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
+    authorizationServerMetadata: getAuthorizationServerMetadataFromList(
+      resolvedCredentialOffer.metadata.authorizationServers,
+      authorizationServer
+    ),
+    additionalRequestPayload: {
+      client_id: clientId,
+    },
+    dpop: dpop
+      ? {
+          nonce: dpop.nonce,
+          signer: {
+            method: 'jwk',
+            alg: dpop.alg,
+            publicJwk: dpop.jwk.toJson(),
+          },
+        }
+      : undefined,
+  })
+
+  return {
+    accessToken: accessTokenResponse.accessTokenResponse.access_token,
+    cNonce: accessTokenResponse.accessTokenResponse.c_nonce,
+    dpop: dpop ? { ...dpop, nonce: accessTokenResponse.dpop?.nonce } : undefined,
+    accessTokenResponse: accessTokenResponse.accessTokenResponse,
+  }
+}
+
 export async function acquireAuthorizationCodeAccessToken({
   resolvedCredentialOffer,
   agent,
@@ -199,12 +241,14 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   accessToken,
   clientId,
   pidSchemes,
+  requestBatch,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdsToRequest?: string[]
   clientId?: string
   pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
+  requestBatch?: boolean | number
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
@@ -229,6 +273,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       clientId,
       credentialConfigurationIds: Object.keys(offeredCredentialsToRequest),
       verifyCredentialStatus: false,
+      requestBatch,
       allowedProofOfPossessionSignatureAlgorithms: [
         // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
         // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
@@ -248,14 +293,6 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       ] as OpenId4VciCredentialConfigurationSupportedWithFormats
 
       const firstCredential = credentials[0]
-      if (typeof firstCredential === 'string') {
-        return {
-          ...credentialResponse,
-          configuration,
-          credential: firstCredential,
-        }
-      }
-
       const record = credentialRecordFromCredential(firstCredential)
 
       // OpenID4VC metadata
@@ -474,20 +511,25 @@ export const shareProof = async ({
   // input descriptor has been provided in `selectedCredentials` we will use that. Otherwise
   // it will pick the first available credential.
   const credentials = Object.fromEntries(
-    credentialsForRequest.requirements.flatMap((requirement) =>
-      requirement.submissionEntry.map((entry) => {
-        const credentialId = selectedCredentials[entry.inputDescriptorId]
-        const credential =
-          entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
-          entry.verifiableCredentials[0]
+    await Promise.all(
+      credentialsForRequest.requirements.flatMap((requirement) =>
+        requirement.submissionEntry.map(async (entry) => {
+          const credentialId = selectedCredentials[entry.inputDescriptorId]
+          const credential =
+            entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
+            entry.verifiableCredentials[0]
 
-        return [entry.inputDescriptorId, [credential.credentialRecord]]
-      })
+          // Optionally use a batch credential
+          const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
+
+          return [entry.inputDescriptorId, [credentialRecord]] as [string, (typeof credentialRecord)[]]
+        })
+      )
     )
   )
 
   try {
-    // Temp solution to add and remove the trusted certicaite
+    // Temp solution to add and remove the trusted certificate
     const certificate =
       authorizationRequest.jwt && allowUntrustedCertificate ? extractCertificateFromJwt(authorizationRequest.jwt) : null
 
@@ -516,32 +558,6 @@ export const shareProof = async ({
   } catch (error) {
     // Handle biometric authentication errors
     throw BiometricAuthenticationError.tryParseFromError(error) ?? error
-  }
-}
-
-export async function storeCredential(
-  agent: EitherAgent,
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
-) {
-  if (credentialRecord instanceof W3cCredentialRecord) {
-    await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
-  } else if (credentialRecord instanceof MdocRecord) {
-    await agent.dependencyManager.resolve(MdocRepository).save(agent.context, credentialRecord)
-  } else {
-    await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
-  }
-}
-
-export async function deleteCredential(agent: EitherAgent, credentialId: CredentialForDisplayId) {
-  if (credentialId.startsWith('w3c-credential-')) {
-    const w3cCredentialId = credentialId.replace('w3c-credential-', '')
-    await agent.w3cCredentials.removeCredentialRecord(w3cCredentialId)
-  } else if (credentialId.startsWith('sd-jwt-vc')) {
-    const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
-    await agent.sdJwtVc.deleteById(sdJwtVcId)
-  } else if (credentialId.startsWith('mdoc-')) {
-    const mdocId = credentialId.replace('mdoc-', '')
-    await agent.mdoc.deleteById(mdocId)
   }
 }
 
