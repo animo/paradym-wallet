@@ -1,9 +1,9 @@
 import { parseDidCommInvitation, receiveOutOfBandInvitation, useAgent } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { useRouter } from 'solito/router'
 
+import { usePushToWallet } from '../../hooks'
 import { DidCommCredentialNotificationScreen } from './DidCommCredentialNotificationScreen'
 import { DidCommPresentationNotificationScreen } from './DidCommPresentationNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -27,7 +27,7 @@ export function DidCommNotificationScreen() {
   const { agent } = useAgent()
   const { params } = useParams()
   const toast = useToastController()
-  const router = useRouter()
+  const pushToWallet = usePushToWallet()
 
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
   const [notification, setNotification] = useState(
@@ -40,11 +40,6 @@ export function DidCommNotificationScreen() {
         ? ({ type: 'proofExchange', id: params.proofExchangeId } as const)
         : undefined
   )
-
-  const pushToWallet = useCallback(() => {
-    router.back()
-    router.push('/')
-  }, [router.back, router.push])
 
   useEffect(() => {
     async function handleInvitation() {

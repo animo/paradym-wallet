@@ -6,11 +6,10 @@ export function usePushToWallet() {
 
   const pushToWallet = useCallback(
     (variant: 'replace' | 'back' = 'back') => {
-      if (variant === 'replace') {
+      if (variant === 'replace' || !router.canGoBack()) {
         router.replace('/')
       } else {
         router.back()
-
         // If we do a PIN confirmation we need to go back twice
         if (router.canGoBack()) router.back()
       }

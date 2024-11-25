@@ -3,6 +3,7 @@ import { useToastController } from '@package/ui'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
+import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
@@ -13,8 +14,8 @@ interface DidCommPresentationNotificationScreenProps {
 export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCommPresentationNotificationScreenProps) {
   const { agent } = useAgent()
 
-  const router = useRouter()
   const toast = useToastController()
+  const pushToWallet = usePushToWallet()
 
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
@@ -22,11 +23,6 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   const [selectedCredentials, setSelectedCredentials] = useState<{
     [inputDescriptorId: string]: string
   }>({})
-
-  const pushToWallet = () => {
-    router.back()
-    router.push('/')
-  }
 
   if (!submission || !proofExchange) {
     return <GettingInformationScreen type="presentation" />
