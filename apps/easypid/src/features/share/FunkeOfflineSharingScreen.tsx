@@ -28,13 +28,13 @@ export function FunkeOfflineSharingScreen({
         {
           step: 'loading-request',
           progress: 25,
-          screen: () => <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
+          screen: <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
         },
         {
           step: 'share-credentials',
           progress: 50,
           backIsCancel: true,
-          screen: () => (
+          screen: (
             <ShareCredentialsSlide
               key="share-credentials"
               onAccept={undefined} // onAccept is handled in the next slide
@@ -48,13 +48,13 @@ export function FunkeOfflineSharingScreen({
         {
           step: 'pin-enter',
           progress: 75,
-          screen: () => <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAccept} />,
+          screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAccept} />,
         },
         {
           step: 'success',
           progress: 100,
           backIsCancel: true,
-          screen: () => <PresentationSuccessSlide onComplete={onComplete} />,
+          screen: <PresentationSuccessSlide onComplete={onComplete} />,
         },
       ]}
       onCancel={onDecline}

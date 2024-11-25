@@ -49,7 +49,7 @@ export function FunkeMdocOfflineSharingScreen({
 
         pushToWallet()
       })
-  })
+  }, [agent, deviceRequest, toast.show, pushToWallet])
 
   const onProofAccept = async (): Promise<PresentationRequestResult> => {
     if (!submission) {
@@ -72,6 +72,7 @@ export function FunkeMdocOfflineSharingScreen({
         submission,
       })
     } catch (error) {
+      agent.config.logger.error('Could not share device response', { error })
       await addActivity('failed')
       return {
         status: 'error',
