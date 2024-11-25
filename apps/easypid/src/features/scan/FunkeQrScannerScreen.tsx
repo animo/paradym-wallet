@@ -22,7 +22,7 @@ import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import easypidLogo from '../../../assets/icon-rounded.png'
-// import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
+import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
@@ -44,19 +44,19 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
 
-  // useEffect(() => {
-  //   void checkMdocPermissions().then((result) => {
-  //     setArePermissionsGranted(!!result)
-  //   })
-  // }, [])
+  useEffect(() => {
+    void checkMdocPermissions().then((result) => {
+      setArePermissionsGranted(!!result)
+    })
+  }, [])
 
-  // useEffect(() => {
-  //   if (showMyQrCode) {
-  //     void getMdocQrCode().then(setQrCodeData)
-  //   } else {
-  //     setQrCodeData(undefined)
-  //   }
-  // }, [showMyQrCode])
+  useEffect(() => {
+    if (showMyQrCode) {
+      void getMdocQrCode().then(setQrCodeData)
+    } else {
+      setQrCodeData(undefined)
+    }
+  }, [showMyQrCode])
 
   const onCancel = () => back()
 
@@ -181,7 +181,7 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
         <AnimatedStack
           alignItems="center"
           layout={useSpringify(LinearTransition)}
-          // onPress={handleQrButtonPress}
+          onPress={handleQrButtonPress}
           bg="$grey-100"
           br="$12"
           py="$2.5"
@@ -219,19 +219,19 @@ function FunkeQrOverlay({ qrCodeData }: { qrCodeData?: string }) {
   const { withHaptics } = useHaptics()
   const { replace } = useRouter()
 
-  // useEffect(() => {
-  //   if (qrCodeData) {
-  //     void waitForDeviceRequest().then((data) => {
-  //       if (data) {
-  //         pushToOfflinePresentation({
-  //           sessionTranscript: Buffer.from(data.sessionTranscript).toString('base64'),
-  //           deviceRequest: Buffer.from(data.deviceRequest).toString('base64'),
-  //         })
-  //         return
-  //       }
-  //     })
-  //   }
-  // }, [qrCodeData])
+  useEffect(() => {
+    if (qrCodeData) {
+      void waitForDeviceRequest().then((data) => {
+        if (data) {
+          pushToOfflinePresentation({
+            sessionTranscript: Buffer.from(data.sessionTranscript).toString('base64'),
+            deviceRequest: Buffer.from(data.deviceRequest).toString('base64'),
+          })
+          return
+        }
+      })
+    }
+  }, [qrCodeData])
 
   // Navigate to offline presentation route
   const pushToOfflinePresentation = withHaptics((data: { sessionTranscript: string; deviceRequest: string }) =>
