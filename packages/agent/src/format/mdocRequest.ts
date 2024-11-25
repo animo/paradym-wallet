@@ -1,10 +1,4 @@
-import {
-  DeviceRequest,
-  type IssuerSignedDocument,
-  type IssuerSignedItem,
-  MDoc,
-  parseIssuerSigned,
-} from '@animo-id/mdoc'
+import { DeviceRequest, type IssuerSignedDocument, type IssuerSignedItem, parseIssuerSigned } from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import type { EitherAgent } from '../agent'
 import { getAttributesAndMetadataForMdocPayload, getCredentialForDisplay } from '../display'
@@ -122,11 +116,10 @@ export async function getSubmissionForMdocDocumentRequest(
       .filter((m): m is NonNullable<typeof m> => m !== undefined)
 
     if (matchingMdocs.length === 0) {
-      const requestedAttributePaths = Array.from(docRequest.itemsRequest.data.nameSpaces.entries())
-        .flatMap(([namespace, value]) =>
-          Array.from(value.entries()).map(([key, isDisclosed]) => (isDisclosed ? [namespace, key] : undefined))
-        )
-        .filter((path): path is [string, string] => path !== undefined)
+      console.log(Array.from(docRequest.itemsRequest.data.nameSpaces.entries()))
+      const requestedAttributePaths = Array.from(docRequest.itemsRequest.data.nameSpaces.entries()).flatMap(
+        ([namespace, value]) => Array.from(value.keys()).map((key) => [namespace, key])
+      )
 
       return {
         inputDescriptorId: docRequest.itemsRequest.data.docType,
