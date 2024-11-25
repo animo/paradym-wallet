@@ -538,7 +538,7 @@ export function getCredentialForDisplay(
 ): CredentialForDisplay {
   const credentialCategoryMetadata = getCredentialCategoryMetadata(credentialRecord)
   const credentialForDisplayId = getCredentialForDisplayId(credentialRecord)
-  const hasRefreshToken = getRefreshCredentialMetadata(credentialRecord) !== undefined
+  const hasRefreshToken = getRefreshCredentialMetadata(credentialRecord) !== null
 
   if (credentialRecord instanceof SdJwtVcRecord) {
     const sdJwtVc = credentialRecord.credential
