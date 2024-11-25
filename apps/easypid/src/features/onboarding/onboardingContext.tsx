@@ -36,6 +36,7 @@ import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
+import { OnboardingWalletExplanation } from './screens/wallet-explanation'
 import OnboardingWelcome from './screens/welcome'
 import { useShouldUseCloudHsm } from './useShouldUseCloudHsm'
 
@@ -50,14 +51,26 @@ export const onboardingSteps = [
     Screen: OnboardingWelcome,
   },
   {
+    step: 'wallet-explanation',
+    alternativeFlow: false,
+    progress: 0.1,
+    page: {
+      animation: 'delayed',
+      type: 'content',
+      title: '',
+    },
+    Screen: OnboardingWalletExplanation,
+  },
+
+  {
     step: 'introduction-steps',
     alternativeFlow: false,
-    progress: 16.5,
+    progress: 20,
     page: {
-      type: 'content',
       animation: 'delayed',
-      title: 'Get your digital identity',
-      subtitle: 'Before you can use the app we will go through the following steps.',
+      type: 'content',
+      title: 'Set up your wallet',
+      subtitle: 'Before you can use the app, we will guide you through these steps.',
     },
     Screen: OnboardingIntroductionSteps,
   },
@@ -65,7 +78,7 @@ export const onboardingSteps = [
   {
     step: 'pin',
     alternativeFlow: false,
-    progress: 33,
+    progress: 30,
     page: {
       type: 'content',
       title: 'Choose a 6-digit PIN',
@@ -77,7 +90,7 @@ export const onboardingSteps = [
   {
     step: 'pin-reenter',
     alternativeFlow: false,
-    progress: 33,
+    progress: 30,
     page: {
       type: 'content',
       title: 'Repeat your PIN',
@@ -89,7 +102,7 @@ export const onboardingSteps = [
   {
     step: 'biometrics',
     alternativeFlow: false,
-    progress: 33,
+    progress: 40,
     page: {
       type: 'content',
       title: 'Set up biometrics',
@@ -100,7 +113,7 @@ export const onboardingSteps = [
   },
   {
     step: 'biometrics-disabled',
-    progress: 33,
+    progress: 40,
     alternativeFlow: true,
     page: {
       type: 'content',
@@ -404,7 +417,7 @@ export function OnboardingContextProvider({
       setAgent(undefined)
     }
 
-    if (stepsToCompleteAfterReset.includes('id-card-start')) {
+    if (stepsToCompleteAfterReset.includes('id-card-requested-attributes')) {
       // We don't need to handle error
       await receivePidUseCase?.cancelIdCardScanning().catch(() => {})
       setReceivePidUseCaseState(undefined)
@@ -493,7 +506,7 @@ export function OnboardingContextProvider({
           },
         })
       } else {
-        await reset({ resetToStep: 'id-card-start', error })
+        await reset({ resetToStep: 'data-protection', error })
       }
 
       return
@@ -630,7 +643,7 @@ export function OnboardingContextProvider({
           goToNextStep()
         })
         .catch(async (e) => {
-          await reset({ error: e, resetToStep: 'id-card-start' })
+          await reset({ error: e, resetToStep: 'data-protection' })
           throw e
         })
     }
@@ -653,10 +666,16 @@ export function OnboardingContextProvider({
     screen = <currentStep.Screen goToNextStep={onEnableBiometrics} actionText="Activate Biometrics" />
   } else if (currentStep.step === 'biometrics-disabled') {
     screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Go to settings" />
-  } else if (currentStep.step === 'id-card-start') {
-    screen = <currentStep.Screen goToNextStep={onIdCardStart} onSkipCardSetup={finishOnboarding} />
+  } else if (currentStep.step === 'data-protection') {
+    screen = <currentStep.Screen goToNextStep={onIdCardStart} />
   } else if (currentStep.step === 'id-card-requested-attributes') {
-    screen = <currentStep.Screen goToNextStep={goToNextStep} requestedAttributes={eidCardRequestedAccessRights ?? []} />
+    screen = (
+      <currentStep.Screen
+        goToNextStep={goToNextStep}
+        onSkipCardSetup={finishOnboarding}
+        requestedAttributes={eidCardRequestedAccessRights ?? []}
+      />
+    )
   } else if (currentStep.step === 'id-card-pin') {
     screen = <currentStep.Screen goToNextStep={onIdCardPinReEnter ?? onIdCardPinEnter} />
   } else if (currentStep.step === 'id-card-complete') {
@@ -679,6 +698,8 @@ export function OnboardingContextProvider({
         onStartScanning={currentStep.step === 'id-card-start-scan' ? onStartScanning : undefined}
       />
     )
+  } else if (currentStep.step === 'wallet-explanation') {
+    screen = <currentStep.Screen onSkip={() => setCurrentStepName('introduction-steps')} goToNextStep={goToNextStep} />
   } else {
     screen = <currentStep.Screen goToNextStep={goToNextStep} />
   }

@@ -1,11 +1,12 @@
 import type { TamaguiProviderProps } from '@package/ui'
 import { PortalProvider } from '@tamagui/portal'
 
-import { CustomToast, TamaguiProvider, ToastProvider } from '@package/ui'
+import { TamaguiProvider, ToastProvider } from '@package/ui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import type { PropsWithChildren } from 'react'
+import { CustomToast } from '../components'
 import { ToastViewport } from './ToastViewport'
 
 const queryClient = new QueryClient()

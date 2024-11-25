@@ -11,13 +11,13 @@ const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
   switch (type) {
     case 'presentation':
       return {
-        title: 'Sharing required',
-        subtitle: `To receive this card from ${issuerName}, you need to share existing cards in your wallet.`,
+        title: 'Card offered',
+        subtitle: `To receive this card from ${issuerName}, you need to share cards from your wallet.`,
       }
     case 'pin':
       return {
         title: 'Card offered',
-        subtitle: `To receive this card from ${issuerName}, you need to enter a transaction PIN.`,
+        subtitle: `To receive this card from ${issuerName}, you need to enter a PIN.`,
       }
     default:
       return {

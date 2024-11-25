@@ -16,8 +16,8 @@ export function IconContainer({ icon, scaleOnPress = true, 'aria-label': ariaLab
     <AnimatedStack
       accessible={true}
       accessibilityRole="button"
-      p="$2"
-      m="$-2"
+      p="$3"
+      m="$-3"
       style={pressStyle}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}

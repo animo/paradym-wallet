@@ -1,6 +1,8 @@
-import { AnimatedNfcScan, Button, NfcScannerModalAndroid, Stack, YStack } from '@package/ui'
+import { Button, NfcScannerModalAndroid, YStack } from '@package/ui'
 
+import { useImageScaler } from 'packages/app/src/hooks'
 import { Platform } from 'react-native'
+import { ScanCard } from './assets/ScanCard'
 
 export interface OnboardingIdCardScanProps {
   isCardAttached?: boolean
@@ -19,21 +21,22 @@ export function OnboardingIdCardScan({
   showScanModal,
   onStartScanning,
 }: OnboardingIdCardScanProps) {
+  const { height, onLayout } = useImageScaler()
+
   return (
     <>
-      <Stack flex-1>
-        <YStack ai="center" w="45%">
-          <AnimatedNfcScan />
+      <YStack fg={1} jc="space-between">
+        <YStack f={1} ai="center" onLayout={onLayout}>
+          <YStack height={height} mt="$4">
+            <ScanCard />
+          </YStack>
         </YStack>
-
-        <Stack flex-1 justifyContent="flex-end">
-          {onStartScanning && (
-            <Button.Solid scaleOnPress onPress={onStartScanning}>
-              Start scanning
-            </Button.Solid>
-          )}
-        </Stack>
-      </Stack>
+        <YStack gap="$4" alignItems="center" opacity={onStartScanning ? 1 : 0}>
+          <Button.Solid scaleOnPress onPress={onStartScanning}>
+            Start scanning
+          </Button.Solid>
+        </YStack>
+      </YStack>
       {Platform.OS === 'android' && (
         <NfcScannerModalAndroid
           onCancel={onCancel}

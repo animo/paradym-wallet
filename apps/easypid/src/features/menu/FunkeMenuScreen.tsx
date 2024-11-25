@@ -12,6 +12,11 @@ import Animated from 'react-native-reanimated'
 
 const menuItems = [
   {
+    title: 'Cards',
+    icon: HeroIcons.CreditCardFilled,
+    href: '/credentials',
+  },
+  {
     title: 'Activity',
     icon: HeroIcons.QueueListFilled,
     href: '/activity',

@@ -1,15 +1,14 @@
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useWizard } from 'packages/app/src'
-import { OnboardingIdCardStart } from '../onboarding/screens/id-card-start'
+import { OnboardingDataProtection } from '../onboarding/screens/data-protection'
 
 interface PidSetupStartSlideProps {
   title: string
   subtitle?: string
-  caption?: string
   onStart: (useShouldUseCloudHsm: boolean) => void
 }
 
-export function PidSetupStartSlide({ title, subtitle, caption, onStart }: PidSetupStartSlideProps) {
+export function PidSetupStartSlide({ title, subtitle, onStart }: PidSetupStartSlideProps) {
   const { onNext } = useWizard()
 
   return (
@@ -18,15 +17,10 @@ export function PidSetupStartSlide({ title, subtitle, caption, onStart }: PidSet
         <YStack gap="$3">
           <Heading variant="h1">{title}</Heading>
           {subtitle && <Paragraph>{subtitle}</Paragraph>}
-          {caption && (
-            <Paragraph>
-              <Paragraph emphasis>Remember:</Paragraph> {caption}
-            </Paragraph>
-          )}
         </YStack>
       </YStack>
       <YStack fg={1} pt="$6">
-        <OnboardingIdCardStart
+        <OnboardingDataProtection
           goToNextStep={async (shouldUseCloudHsm) => {
             onNext()
             onStart(shouldUseCloudHsm)

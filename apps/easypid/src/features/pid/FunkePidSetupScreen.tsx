@@ -351,7 +351,7 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-start',
           progress: 20,
-          screen: <PidSetupStartSlide {...getPidSetupSlideContent('id-card-start')} onStart={onStart} />,
+          screen: <PidSetupStartSlide {...getPidSetupSlideContent('data-protection')} onStart={onStart} />,
         },
         {
           step: 'id-card-pin',
@@ -424,7 +424,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidIdCardFetchSlide
-              {...getPidSetupSlideContent('id-card-fetch')}
+              {...getPidSetupSlideContent(userName ? 'id-card-complete' : 'id-card-fetch')}
               userName={userName}
               onComplete={() => pushToWallet('replace')}
             />

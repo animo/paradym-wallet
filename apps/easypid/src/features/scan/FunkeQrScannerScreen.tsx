@@ -21,7 +21,7 @@ import { Alert, Linking, Platform, useWindowDimensions } from 'react-native'
 import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import easypidLogo from '../../../assets/easypid.png'
+import easypidLogo from '../../../assets/icon-rounded.png'
 import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
 
 const unsupportedUrlPrefixes = ['_oob=']
@@ -88,6 +88,7 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
   const handleQrButtonPress = async () => {
     if (Platform.OS !== 'android') {
       toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
+      back()
       return
     }
 

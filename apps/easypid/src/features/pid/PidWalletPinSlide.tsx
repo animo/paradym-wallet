@@ -1,6 +1,7 @@
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { PinDotsInput, type PinDotsInputRef, useWizard } from 'packages/app/src'
 import { useRef, useState } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface PidWalletPinSlideProps {
   title: string

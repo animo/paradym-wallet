@@ -1,6 +1,17 @@
 import type { DisplayImage } from '@package/agent'
 
-import { Circle, Heading, HeroIcons, Image, InfoButton, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import {
+  Circle,
+  Heading,
+  HeroIcons,
+  Image,
+  InfoButton,
+  Paragraph,
+  ScrollView,
+  Stack,
+  XStack,
+  YStack,
+} from '@package/ui'
 import { useRouter } from 'expo-router'
 import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
 import { formatRelativeDate } from 'packages/utils/src'
@@ -52,7 +63,7 @@ export const VerifyPartySlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$6">
+      <ScrollView contentContainerStyle={{ gap: '$6' }}>
         <YStack gap="$4">
           <XStack ai="center" pt="$4" jc="center">
             <Circle size={88} bw="$0.5" borderColor="$grey-100" bg={backgroundColor ?? '$white'}>
@@ -103,7 +114,7 @@ export const VerifyPartySlide = ({
             onPress={lastInteractionDate ? onPressInteraction : undefined}
           />
         </YStack>
-      </YStack>
+      </ScrollView>
       <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">
         <DualResponseButtons
           align="horizontal"

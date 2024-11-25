@@ -45,8 +45,9 @@ export default function OnboardingScreens() {
     page = (
       <FlexPage gap="$2" jc="space-between">
         <Animated.View entering={FadeIn.delay(300)}>
-          <ProgressHeader key="header" progress={onboardingContext.progress} onBack={onReset} />
+          <ProgressHeader enterAnimation progress={onboardingContext.progress} onBack={onReset} />
         </Animated.View>
+
         <Animated.View
           key={onboardingContext.page.animationKey ?? onboardingContext.currentStep}
           entering={pageContentTransition.entering[onboardingContext.page.animation ?? 'default']}
@@ -55,9 +56,11 @@ export default function OnboardingScreens() {
         >
           <YStack fg={1} gap="$6">
             <YStack gap="$3">
-              <Heading ref={headerRef} variant="h1">
-                {onboardingContext.page.title}
-              </Heading>
+              {onboardingContext.page.title && (
+                <Heading ref={headerRef} variant="h1">
+                  {onboardingContext.page.title}
+                </Heading>
+              )}
               {onboardingContext.page.subtitle && <Paragraph>{onboardingContext.page.subtitle}</Paragraph>}
               {onboardingContext.page.caption && (
                 <Paragraph>

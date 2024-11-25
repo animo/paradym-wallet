@@ -22,6 +22,7 @@ import type { W3cCredentialJson, W3cIssuerJson } from './types'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
+import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
 
 /**
  * Paths that were requested but couldn't be satisfied.
@@ -130,6 +131,8 @@ export interface CredentialMetadata {
   validFrom?: string
   issuedAt?: string
 
+  hasRefreshToken?: boolean
+
   // TODO: define and render
   status?: unknown
 }
@@ -157,6 +160,7 @@ export interface CredentialForDisplay {
   record: W3cCredentialRecord | MdocRecord | SdJwtVcRecord
 
   category: CredentialCategoryMetadata | null
+  hasRefreshToken: boolean
 }
 
 function findDisplay<Display extends { locale?: string; lang?: string }>(display?: Display[]): Display | undefined {
@@ -534,6 +538,7 @@ export function getCredentialForDisplay(
 ): CredentialForDisplay {
   const credentialCategoryMetadata = getCredentialCategoryMetadata(credentialRecord)
   const credentialForDisplayId = getCredentialForDisplayId(credentialRecord)
+  const hasRefreshToken = getRefreshCredentialMetadata(credentialRecord) !== undefined
 
   if (credentialRecord instanceof SdJwtVcRecord) {
     const sdJwtVc = credentialRecord.credential
@@ -558,6 +563,7 @@ export function getCredentialForDisplay(
       claimFormat: ClaimFormat.SdJwtVc,
       record: credentialRecord,
       category: credentialCategoryMetadata,
+      hasRefreshToken,
     }
   }
   if (credentialRecord instanceof MdocRecord) {
@@ -583,6 +589,7 @@ export function getCredentialForDisplay(
       claimFormat: ClaimFormat.MsoMdoc,
       record: credentialRecord,
       category: credentialCategoryMetadata,
+      hasRefreshToken,
     }
   }
   if (credentialRecord instanceof W3cCredentialRecord) {
@@ -622,6 +629,7 @@ export function getCredentialForDisplay(
       claimFormat: credentialRecord.credential.claimFormat,
       record: credentialRecord,
       category: credentialCategoryMetadata,
+      hasRefreshToken,
     }
   }
 
