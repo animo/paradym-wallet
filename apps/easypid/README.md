@@ -4,9 +4,7 @@
 
 <h1 align="center"><b>Animo EasyPID</b></h1>
 
-This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers and can be tested/used with our [playground environment](https://funke.animo.id/). For more information on the project reach out to <ana@animo.id>. 
-
-During the project an identity wallet and a test relying party was delivered.
+This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers and can be tested/used with our [Funke playground environment](https://funke.animo.id/). For more information on the project reach out to <ana@animo.id>. 
 
 
 ## Features
@@ -17,14 +15,14 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 Onboard user
   - 🟢 Set up PIN
   - 🟢 Set up biometrics
-  - 🟠 Accept privacy policy
+  - 🟢 Accept privacy policy
   - 🟢 Onboarding instruction
-  - 🔴 Skippable identity instruction
+  - 🟢 Skippable identity instruction
 - 🟠 Home screen
 - 🟠 Activity
-- 🟠 About the app
-- 🔴 Credential overview
-- 🔴 German language option
+- 🟢 About the app
+- 🟢 Credential overview
+- 🔴 Support for translation files
 
 **Credential Management**
 - 🟢 Credential detail
@@ -48,7 +46,7 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 SD-JWT VC using OpenID4VCI
 - 🟢 mDOC using OpenID4VCI
 - 🟢 PID presentation during (Q)EAA issuance
-- 🟠 Batch issuance and single use credentials
+- 🟠 Batch issuance and single-use credentials
 - 🟢 Authorization code flow
 - 🔴 Client attestations
 
@@ -62,20 +60,20 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 Same-device flow
 - 🟢 SD-JWT OID4VC conformance test suite
 - 🟢 mDOC OID4VC conformance test suite 
-- 🟠 New VP query language
+- 🟢 New VP query language
 
 **Present attestations in-person**
 - Android
-  - 🟢 Android-Android over NFC for device engagement
+  - 🟢 Android-Android QR for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
-  - 🟠 mDOC over BLE
+  - 🟢 mDOC over BLE
 - iOS
   - 🔴 SD-JWT VC using OpenID4VP over BLE
   - 🔴 mDOC over BLE
 
 **HSM**
   - 🟢 On device HSM
-  - 🟠 Cloud-backed HSM
+  - 🟢 Cloud-backed HSM
 
 **Trust Establishment using OpenID Federation Draft 40**
 - 🟢 Issuer and verifier entity configuration
@@ -85,20 +83,20 @@ The identity wallet contains the following features, you can see the full flow w
 - 🔴 Wallet in the OpenID Federation
 
 **Other**
-- 🔴 HAIP compliance
-- 🟠 WCAG 2.1 compliance
+- 🟠 HAIP compliance
+- 🟠 WCAG 2.2 compliance
 - 🔴 AI-based oversharing detection
 
 **[Test issuer/verifier](https://funke.animo.id/)** 
 
 - 🟢 Issue QEAAs
 - 🟢 Verify PID
-- 🔴 Verify mixed PID-QEAA requests
+- 🟢 Verify mixed PID-QEAA requests
 
 The identity wallet contains the following temporary features for development and testing:
 
-- Using a simulated eID test card
-- Reset wallet
+- Use a simulated eID test card. How: choose PIN 276536 (BROKEN) as the 6-digit PIN during wallet setup 
+- Reset the wallet. How: go to the menu and choose 'reset wallet'
 
  <div align="center">
   <img src="assets/screen1.png" width="30%" />
@@ -114,15 +112,15 @@ The prototype app is currently published privately to select parties. If you're 
 
 ## Try it out
 
-Here's some resources and tips that might be helpful while testing the app.
+Here are some resources and tips that might be helpful while testing the app.
 
 ### Before you start
 
-- Make sure you are have access to the BDR PID issuer which is behind a firewall
-- Have an eID card ready
-- Have the [test relying party](https://funke.animo.id/) ready
-    - The test relying party enables you to select a credential type and request type to verify the PID credential. 
-    - It will display a QR code as well as relevant information, 
+- Make sure you have access to the BDR PID issuer, which is behind a firewall
+- Have an eID card ready or understand how to receive the simulated eID
+- Have the [playground](https://funke.animo.id/) ready as a test relying party and/or test (Q)EAA issuer
+    - The playground enables you to select different flows for issuing and verifying credentials
+    - It will display a QR code as well as relevant information for testing and debugging
 
 ### Device Compatibility
 
@@ -203,16 +201,16 @@ The following section lists the software components used to create the EasyPID w
 
 The following standards and specifications were implemented.
 
-- 🟢 [OpenID for Verifiable Credential Issuance - ID 1 / Draft 13](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html)
+- 🟢 [OpenID for Verifiable Credential Issuance - ID 1 / Draft 14](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-14.html)
 - 🟢[OpenID for Verifiable Presentations - Draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0-20.html)
+   - Supports DCQL from draft 22
 - 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
 - 🟢 [Self-Issued OpenID Provider V2 - Draft 13](https://openid.net/specs/openid-connect-self-issued-v2-1_0-13.html)
 - 🟢 [ISO 18013-5](https://www.iso.org/standard/69084.html)
-- 🟡 [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
-  - Missing JWT Secured Authorization Response Mode
+- 🟢 [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
 - 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
-  - Missing verifier_attestation, `haip://` scheme and wallet attestation
-- 🟠 [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
+  - Missing verifier_attestation and wallet attestation
+- 🟠 [OpenID Federation - Draft 40](https://openid.net/specs/openid-federation-1_0-40.html)
 
 ## Changelog
 
