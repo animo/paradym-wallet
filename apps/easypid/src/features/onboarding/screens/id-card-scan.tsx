@@ -21,7 +21,7 @@ export function OnboardingIdCardScan({
   showScanModal,
   onStartScanning,
 }: OnboardingIdCardScanProps) {
-  const { height, onLayout } = useImageScaler()
+  const { height, onLayout } = useImageScaler({ scaleFactor: 0.6 })
 
   return (
     <>

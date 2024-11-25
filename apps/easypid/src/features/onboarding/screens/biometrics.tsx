@@ -11,7 +11,7 @@ interface OnboardingBiometricsProps {
 
 export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBiometricsProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const { height, onLayout } = useImageScaler()
+  const { height, onLayout } = useImageScaler({ scaleFactor: 0.6 })
 
   const onEnableBiometrics = () => {
     if (isLoading) return

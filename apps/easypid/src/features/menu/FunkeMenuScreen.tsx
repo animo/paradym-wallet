@@ -89,7 +89,13 @@ export function FunkeMenuScreen() {
             ))}
             <YStack py="$4" ai="center">
               <YStack px="$4" w="60%">
-                <Button.Solid scaleOnPress onPress={onResetWallet}>
+                <Button.Solid
+                  accessible={true}
+                  accessibilityRole="button"
+                  aria-label="Reset wallet"
+                  scaleOnPress
+                  onPress={onResetWallet}
+                >
                   Reset wallet
                 </Button.Solid>
               </YStack>
