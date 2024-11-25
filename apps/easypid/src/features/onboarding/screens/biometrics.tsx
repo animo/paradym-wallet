@@ -1,6 +1,7 @@
-import { Button, HeroIcons, IllustrationContainer, Spinner, YStack } from '@package/ui'
+import { Button, Spinner, YStack } from '@package/ui'
 import type React from 'react'
 import { useState } from 'react'
+import { SetUpBiometrics } from './assets/SetUpBiometrics'
 
 interface OnboardingBiometricsProps {
   goToNextStep: () => Promise<void>
@@ -22,9 +23,9 @@ export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBio
 
   return (
     <YStack fg={1} jc="space-between" gap="$6">
-      <IllustrationContainer>
-        <HeroIcons.FingerPrint color="$grey-100" size={72} />
-      </IllustrationContainer>
+      <YStack f={1} ai="center" mt="$-8" mb="$8" p="$8">
+        <SetUpBiometrics />
+      </YStack>
       <Button.Solid fg={1} scaleOnPress disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
         {isLoading ? <Spinner variant="dark" /> : actionText}
       </Button.Solid>

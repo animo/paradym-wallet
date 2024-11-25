@@ -2,21 +2,34 @@ import { usePidDisplay } from '@easypid/hooks'
 import { Button, Heading, HeroIcons, Paragraph, Stack, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import { CardWithAttributes } from 'packages/app/src'
+import { useState } from 'react'
 import { Circle } from 'tamagui'
 
 interface OnboardingIdCardRequestedAttributesProps {
   goToNextStep: () => void
+  onSkipCardSetup: () => void
   requestedAttributes: string[]
 }
 
 export function OnboardingIdCardRequestedAttributes({
   goToNextStep,
+  onSkipCardSetup,
   requestedAttributes,
 }: OnboardingIdCardRequestedAttributesProps) {
   const display = usePidDisplay()
 
+  const [isLoading, setIsLoading] = useState(false)
+
+  const onSetupLater = () => {
+    if (isLoading) return
+
+    setIsLoading(true)
+    onSkipCardSetup()
+    setIsLoading(false)
+  }
+
   return (
-    <Stack flexBasis={0} flexGrow={1} justifyContent="space-between">
+    <YStack flexBasis={0} flexGrow={1} justifyContent="space-between">
       <YStack gap="$2">
         <Circle size="$2.5" mb="$2" backgroundColor="$primary-500">
           <HeroIcons.CircleStack color="$white" size={18} />
@@ -37,11 +50,14 @@ export function OnboardingIdCardRequestedAttributes({
           />
         </YStack>
       </YStack>
-      <Stack>
+      <YStack gap="$4" alignItems="center">
+        <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
+          Set up later
+        </Button.Text>
         <Button.Solid scaleOnPress onPress={goToNextStep}>
           Continue
         </Button.Solid>
-      </Stack>
-    </Stack>
+      </YStack>
+    </YStack>
   )
 }

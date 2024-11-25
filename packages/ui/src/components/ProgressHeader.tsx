@@ -47,7 +47,7 @@ export function ProgressHeader({
         {onCancel ? <IconContainer aria-label="Cancel" icon={<HeroIcons.X />} onPress={onCancel} /> : <Stack />}
       </XStack>
       {progress > 1 && (
-        <AnimatedStack entering={FadeIn.delay(300)} mb="$4" mx={variant === 'small' ? '$-4' : '$0'}>
+        <AnimatedStack entering={FadeIn.delay(200)} mb="$4" mx={variant === 'small' ? '$-4' : '$0'}>
           {variant === 'small' ? (
             <Stack pos="absolute" h={1} w="100%" bg="$grey-200" />
           ) : (

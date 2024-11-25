@@ -1,25 +1,22 @@
 import {
   Button,
-  CircleContainer,
   FlexPage,
   Heading,
   HeroIcons,
   IconContainer,
-  IllustrationContainerBackground,
   Paragraph,
   Stack,
   XStack,
   YStack,
+  useToastController,
 } from '@package/ui'
-import { useToastController } from '@package/ui'
 import { Image } from '@tamagui/image'
 import type React from 'react'
 import { useEffect, useState } from 'react'
-import { Alert } from 'react-native'
-import Animated, { FadingTransition } from 'react-native-reanimated'
+import { Alert, Dimensions } from 'react-native'
 
 import { generateKeypair } from '@animo-id/expo-secure-environment'
-import inAppLogo from '../../../../assets/icon.png'
+import welcomeBackground from '../../../../assets/home-bg.png'
 
 export interface OnboardingWelcomeProps {
   goToNextStep: (selectedFlow: 'c' | 'bprime') => void
@@ -63,29 +60,17 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
   }, [])
 
   return (
-    <Animated.View style={{ flexGrow: 1 }} layout={FadingTransition}>
-      <Stack
-        h="60%"
-        w="150%"
-        mt="-10%"
-        left="-25%"
-        bg="#D5DDF0CC"
-        position="absolute"
+    <YStack fg={1} pos="relative">
+      <Image
+        pos="absolute"
+        source={welcomeBackground}
+        resizeMode="cover"
+        h={Dimensions.get('window').height / 1.8}
+        mt="$-4"
+        w="100%"
         top={0}
-        flex={1}
-        ai="center"
-        jc="flex-end"
-        br={200}
-        overflow="hidden"
-      >
-        <IllustrationContainerBackground />
-        <YStack mb="$10">
-          <CircleContainer>
-            <Image br="$6" source={inAppLogo} width={64} height={64} />
-          </CircleContainer>
-        </YStack>
-      </Stack>
-      <FlexPage p={0} fg={1} jc="space-between" bg="#00000000">
+      />
+      <FlexPage p={0} fg={1} jc="space-between" backgroundColor="$transparent">
         <YStack px="$4" gap="$4" flex-1 justifyContent="space-between">
           <YStack ai="flex-end">
             <IconContainer
@@ -132,6 +117,6 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </XStack>
         </YStack>
       </FlexPage>
-    </Animated.View>
+    </YStack>
   )
 }

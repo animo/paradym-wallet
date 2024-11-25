@@ -32,7 +32,6 @@ import { OnboardingIdCardFetch } from './screens/id-card-fetch'
 import { OnboardingIdCardPinEnter } from './screens/id-card-pin'
 import { OnboardingIdCardRequestedAttributes } from './screens/id-card-requested-attributes'
 import { OnboardingIdCardScan } from './screens/id-card-scan'
-import { OnboardingIdCardStart } from './screens/id-card-start'
 import { OnboardingIdCardVerify } from './screens/id-card-verify'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
@@ -75,22 +74,11 @@ const onboardingSteps = [
   },
 
   {
-    step: 'data-protection',
-    alternativeFlow: false,
-    progress: 25,
-    page: {
-      animation: 'delayed',
-      type: 'content',
-      title: 'Protect your data',
-      subtitle: 'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
-    },
-    Screen: OnboardingDataProtection,
-  },
-  {
     step: 'introduction-steps',
     alternativeFlow: false,
-    progress: 35,
+    progress: 20,
     page: {
+      animation: 'delayed',
       type: 'content',
       title: 'Set up your wallet',
       subtitle: 'Before you can use the app, we will guide you through these steps.',
@@ -101,7 +89,7 @@ const onboardingSteps = [
   {
     step: 'pin',
     alternativeFlow: false,
-    progress: 45,
+    progress: 30,
     page: {
       type: 'content',
       title: 'Choose a 6-digit PIN',
@@ -113,7 +101,7 @@ const onboardingSteps = [
   {
     step: 'pin-reenter',
     alternativeFlow: false,
-    progress: 45,
+    progress: 30,
     page: {
       type: 'content',
       title: 'Repeat your PIN',
@@ -125,7 +113,7 @@ const onboardingSteps = [
   {
     step: 'biometrics',
     alternativeFlow: false,
-    progress: 55,
+    progress: 40,
     page: {
       type: 'content',
       title: 'Set up biometrics',
@@ -136,7 +124,7 @@ const onboardingSteps = [
   },
   {
     step: 'biometrics-disabled',
-    progress: 55,
+    progress: 40,
     alternativeFlow: true,
     page: {
       type: 'content',
@@ -147,24 +135,35 @@ const onboardingSteps = [
     Screen: OnboardingBiometrics,
   },
   {
-    step: 'id-card-start',
+    step: 'data-protection',
     alternativeFlow: false,
-    progress: 65,
+    progress: 50,
     page: {
       type: 'content',
-      title: 'Scan your eID card to retrieve your data',
-      subtitle: 'Add your personal details once using your eID card and its PIN.',
-      caption: 'Your eID PIN was issued to you when you received your eID card.',
+      title: 'Protect your data',
+      subtitle: 'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
     },
-    Screen: OnboardingIdCardStart,
+    Screen: OnboardingDataProtection,
   },
+  // {
+  //   step: 'id-card-start',
+  //   alternativeFlow: false,
+  //   progress: 65,
+  //   page: {
+  //     type: 'content',
+  //     title: 'Get your national identity card',
+  //     subtitle: 'Add your personal details once using your eID card and its PIN.',
+  //     caption: 'Your eID PIN was issued to you when you received your eID card.',
+  //   },
+  //   Screen: OnboardingIdCardStart,
+  // },
   {
     step: 'id-card-requested-attributes',
     alternativeFlow: false,
     progress: 65,
     page: {
       type: 'content',
-      title: 'Review the request',
+      title: 'Get your national identity card',
     },
     Screen: OnboardingIdCardRequestedAttributes,
   },
@@ -175,6 +174,7 @@ const onboardingSteps = [
     page: {
       type: 'content',
       title: 'Enter your eID card PIN',
+      subtitle: 'This is required to read data from your card.',
     },
     Screen: OnboardingIdCardPinEnter,
   },
@@ -208,7 +208,7 @@ const onboardingSteps = [
     progress: 85,
     page: {
       type: 'content',
-      title: 'Fetching information',
+      title: 'Getting eID information',
     },
     Screen: OnboardingIdCardFetch,
   },
@@ -218,8 +218,8 @@ const onboardingSteps = [
     alternativeFlow: true,
     page: {
       type: 'content',
-      title: 'We need to verify it’s you',
-      subtitle: 'Your biometrics are required to verify your identity.',
+      title: 'Confirm it’s you',
+      subtitle: 'We need your biometrics to verify your identity.',
       animationKey: 'id-card',
     },
     Screen: OnboardingIdCardVerify,
@@ -566,7 +566,7 @@ export function OnboardingContextProvider({
       setAgent(undefined)
     }
 
-    if (stepsToCompleteAfterReset.includes('id-card-start')) {
+    if (stepsToCompleteAfterReset.includes('id-card-requested-attributes')) {
       // We don't need to handle error
       await receivePidUseCase?.cancelIdCardScanning().catch(() => {})
       setReceivePidUseCaseState(undefined)
@@ -655,7 +655,7 @@ export function OnboardingContextProvider({
           },
         })
       } else {
-        await reset({ resetToStep: 'id-card-start', error })
+        await reset({ resetToStep: 'data-protection', error })
       }
 
       return
@@ -799,7 +799,7 @@ export function OnboardingContextProvider({
           goToNextStep()
         })
         .catch(async (e) => {
-          await reset({ error: e, resetToStep: 'id-card-start' })
+          await reset({ error: e, resetToStep: 'data-protection' })
           throw e
         })
     }
@@ -822,10 +822,16 @@ export function OnboardingContextProvider({
     screen = <currentStep.Screen goToNextStep={onEnableBiometrics} actionText="Activate Biometrics" />
   } else if (currentStep.step === 'biometrics-disabled') {
     screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Go to settings" />
-  } else if (currentStep.step === 'id-card-start') {
-    screen = <currentStep.Screen goToNextStep={onIdCardStart} onSkipCardSetup={finishOnboarding} />
+  } else if (currentStep.step === 'data-protection') {
+    screen = <currentStep.Screen goToNextStep={onIdCardStart} />
   } else if (currentStep.step === 'id-card-requested-attributes') {
-    screen = <currentStep.Screen goToNextStep={goToNextStep} requestedAttributes={eidCardRequestedAccessRights ?? []} />
+    screen = (
+      <currentStep.Screen
+        goToNextStep={goToNextStep}
+        onSkipCardSetup={finishOnboarding}
+        requestedAttributes={eidCardRequestedAccessRights ?? []}
+      />
+    )
   } else if (currentStep.step === 'id-card-pin') {
     screen = <currentStep.Screen goToNextStep={onIdCardPinReEnter ?? onIdCardPinEnter} />
   } else if (currentStep.step === 'id-card-complete') {
@@ -849,7 +855,7 @@ export function OnboardingContextProvider({
       />
     )
   } else if (currentStep.step === 'wallet-explanation') {
-    screen = <currentStep.Screen onSkip={() => setCurrentStepName('data-protection')} goToNextStep={goToNextStep} />
+    screen = <currentStep.Screen onSkip={() => setCurrentStepName('introduction-steps')} goToNextStep={goToNextStep} />
   } else {
     screen = <currentStep.Screen goToNextStep={goToNextStep} />
   }
