@@ -53,10 +53,9 @@ export function CredentialDetailScreen() {
     return null
   }
 
-  const credentialForDisplay = useCredentialForDisplayById(params.id)
-  if (!credentialForDisplay) return null
-
-  const { attributes, display } = credentialForDisplay
+  const { credential } = useCredentialForDisplayById(params.id)
+  if (!credential) return null
+  const { attributes, display } = credential
 
   const onDeleteCredential = async () => {
     setIsLoading(true)

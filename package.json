@@ -25,15 +25,18 @@
 			"@unimodules/react-native-adapter": "catalog:",
 			"@unimodules/core": "catalog:",
 			"react-docgen-typescript": "catalog:",
+			"@sphereon/did-auth-siop": "catalog:",
+			"@sphereon/jarm": "catalog:",
+			"@sphereon/oid4vc-common": "catalog:",
 			"@animo-id/oid4vci": "catalog:",
 			"@animo-id/oauth2": "catalog:",
 			"@animo-id/oauth2-utils": "catalog:"
 		},
 		"patchedDependencies": {
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
-			"@credo-ts/askar@0.6.0-alpha-20241120153226": "patches/@credo-ts__askar@0.6.0-alpha-20241120153226.patch",
-			"@animo-id/mdoc@0.2.38": "patches/@animo-id__mdoc@0.2.38.patch"
+			"@credo-ts/askar@0.6.0-pr-2100-20241124170219": "patches/@credo-ts__askar@0.6.0-pr-2100-20241124170219.patch",
+			"@sphereon/kmp-mdl-mdoc": "patches/@sphereon__kmp-mdl-mdoc.patch"
 		}
 	},
-	"packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b"
+	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
 }

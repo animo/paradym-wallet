@@ -26,9 +26,14 @@ export * from './hooks'
 export {
   FormattedSubmission,
   FormattedSubmissionEntry,
+  FormattedSubmissionEntryNotSatisfied,
+  FormattedSubmissionEntrySatisfied,
+  FormattedSubmissionEntrySatisfiedCredential,
   formatDifPexCredentialsForRequest,
 } from './format/formatPresentation'
+export { getSubmissionForMdocDocumentRequest } from './format/mdocRequest'
 export * from './mediation'
 export * from './crypto'
 export * from './storage'
 export * from './openid4vc/displayMetadata'
+export * from './credentialCategoryMetadata'

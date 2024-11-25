@@ -13,7 +13,7 @@ import {
 } from '@package/ui'
 import { Image } from '@tamagui/image'
 import type React from 'react'
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import Animated, { FadingTransition } from 'react-native-reanimated'
 
 import inAppLogo from '../../../../assets/icon.png'
@@ -56,7 +56,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
               onPress={() => {
                 Alert.alert(
                   'This is the EasyPID wallet',
-                  `\nThis is your digital wallet. With it, you can store and share information about yourself. \n\n You can switch between the C and B' flow by pressing the grey button in the bottom left.`
+                  '\nThis is your digital wallet. With it, you can store and share information about yourself.'
                 )
               }}
             />

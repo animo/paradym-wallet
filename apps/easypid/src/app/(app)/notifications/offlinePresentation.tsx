@@ -2,17 +2,10 @@ import { FunkeMdocOfflineSharingScreen } from '@easypid/features/share/FunkeMdoc
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
-  const { sessionTranscript, deviceRequest, requestedAttributes } = useLocalSearchParams()
+  const { sessionTranscript, deviceRequest } = useLocalSearchParams()
 
   const sessionTranscriptArray = new Uint8Array(Buffer.from(sessionTranscript as string, 'base64'))
   const deviceRequestArray = new Uint8Array(Buffer.from(deviceRequest as string, 'base64'))
-  const requestedAttributesArray = JSON.parse(requestedAttributes as string)
 
-  return (
-    <FunkeMdocOfflineSharingScreen
-      sessionTranscript={sessionTranscriptArray}
-      deviceRequest={deviceRequestArray}
-      requestedAttributes={requestedAttributesArray}
-    />
-  )
+  return <FunkeMdocOfflineSharingScreen sessionTranscript={sessionTranscriptArray} deviceRequest={deviceRequestArray} />
 }

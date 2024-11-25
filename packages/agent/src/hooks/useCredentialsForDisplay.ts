@@ -1,11 +1,16 @@
 import { useMemo } from 'react'
 
-import { getCredentialForDisplay } from '../display'
+import type { CredentialCategoryMetadata } from '../credentialCategoryMetadata'
+import { type CredentialForDisplay, getCredentialForDisplay } from '../display'
 import { useMdocRecords, useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
 
-export type CredentialForDisplay = ReturnType<typeof getCredentialForDisplay>
-
-export const useCredentialsForDisplay = () => {
+export const useCredentialsForDisplay = ({
+  removeCanonicalRecords = true,
+  credentialCategory,
+}: {
+  removeCanonicalRecords?: boolean
+  credentialCategory?: CredentialCategoryMetadata['credentialCategory']
+} = {}) => {
   const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()
   const { sdJwtVcRecords, isLoading: isLoadingSdJwt } = useSdJwtVcRecords()
   const { mdocRecords, isLoading: isLoadingMdoc } = useMdocRecords()
@@ -16,14 +21,48 @@ export const useCredentialsForDisplay = () => {
     const uniformSdJwtVcRecords = sdJwtVcRecords.map(getCredentialForDisplay)
     const uniformMdocRecords = mdocRecords.map(getCredentialForDisplay)
 
-    // TODO: dedupe of MDOC/SD-JWT pid need to happen somewhere
+    const presentCategories = new Set<string>()
+
+    const allRecords = [...uniformW3cCredentialRecords, ...uniformSdJwtVcRecords, ...uniformMdocRecords]
+
+    // Make sure only one for each category is present
+    const finalRecords =
+      removeCanonicalRecords || credentialCategory
+        ? allRecords.filter((record, index) => {
+            if (credentialCategory) {
+              if (!record.category) return false
+              if (credentialCategory !== record.category.credentialCategory) return false
+            }
+
+            if (removeCanonicalRecords) {
+              if (!record.category) return true
+              if (presentCategories.has(record.category.credentialCategory)) return false
+
+              const shouldAddForCategory =
+                record.category.displayPriority ||
+                allRecords
+                  .slice(index + 1)
+                  .find(
+                    (r) =>
+                      r.category?.credentialCategory === record.category?.credentialCategory &&
+                      r.category?.displayPriority
+                  ) === undefined
+
+              if (shouldAddForCategory) {
+                presentCategories.add(record.category.credentialCategory)
+                return true
+              }
+            }
+
+            return true
+          })
+        : allRecords
+
     // Sort by creation date
-    const sortedRecords = [...uniformW3cCredentialRecords, ...uniformSdJwtVcRecords, ...uniformMdocRecords].sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-    )
+    const sortedRecords = finalRecords.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
     return sortedRecords
-  }, [w3cCredentialRecords, sdJwtVcRecords, mdocRecords])
+  }, [w3cCredentialRecords, sdJwtVcRecords, mdocRecords, removeCanonicalRecords, credentialCategory])
 
   return {
     credentials,

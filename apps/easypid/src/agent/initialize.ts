@@ -30,7 +30,9 @@ export async function initializeAppAgent({
     await wsp.createSalt()
     await wsp.register()
   }
-  if (getShouldUseCloudHsm()) shouldUseFallbackSecureEnvironment(true)
+
+  const shouldUseCloudHsm = getShouldUseCloudHsm()
+  if (shouldUseCloudHsm) shouldUseFallbackSecureEnvironment(true)
   setFallbackSecureEnvironment(wsp)
 
   return agent

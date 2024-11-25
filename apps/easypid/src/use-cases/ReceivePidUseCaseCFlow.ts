@@ -4,14 +4,23 @@ import {
   BiometricAuthenticationError,
   OpenId4VciAuthorizationFlow,
   type SdJwtVcRecord,
+  getCredentialCategoryMetadata,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  setCredentialCategoryMetadata,
+  setOpenId4VcCredentialMetadata,
   setRefreshCredentialMetadata,
   storeCredential,
 } from '@package/agent'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
+import {
+  bdrPidCredentialDisplay,
+  bdrPidIssuerDisplay,
+  bdrPidOpenId4VcMetadata,
+  bdrPidSdJwtTypeMetadata,
+} from './bdrPidMetadata'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
@@ -67,7 +76,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdsToRequest,
         clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
-        requestBatch: getShouldUseCloudHsm() ? 10 : false,
+        requestBatch: getShouldUseCloudHsm() ? 2 : false,
         pidSchemes,
       })
 
@@ -78,6 +87,26 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         if (credentialRecord.type !== 'SdJwtVcRecord' && credentialRecord.type !== 'MdocRecord') {
           throw new Error(`Unexpected record type ${credentialRecord.type}`)
         }
+
+        // NOTE: temp override to use hardcoded type metadata.
+        // it uses parts of our branding (as the type metadata doesn't contain
+        // rendering and a very weird long name)
+        if (credentialRecord.type === 'SdJwtVcRecord') {
+          credentialRecord.typeMetadata = bdrPidSdJwtTypeMetadata
+        }
+
+        setCredentialCategoryMetadata(credentialRecord, {
+          credentialCategory: 'DE-PID',
+          // prioritize sd-jwt for PID
+          displayPriority: credentialRecord.type === 'SdJwtVcRecord',
+          canDeleteCredential: false,
+        })
+
+        // Override openid4vc metadata
+        setOpenId4VcCredentialMetadata(
+          credentialRecord,
+          bdrPidOpenId4VcMetadata(this.resolvedCredentialOffer.credentialOfferPayload.credential_issuer)
+        )
 
         // It seems the refresh token can be re-used, so we store it on all the records
         if (this.accessToken.accessTokenResponse.refresh_token) {

@@ -1,11 +1,10 @@
-import type { ClaimFormat } from '@credo-ts/core'
 import {
-  getPidAttributesForDisplay,
-  getPidDisclosedAttributeNames,
-  isPidCredential,
-  usePidCredential,
-} from '@easypid/hooks'
-import type { FormattedSubmission } from '@package/agent/src'
+  type FormattedSubmission,
+  type FormattedSubmissionEntryNotSatisfied,
+  type FormattedSubmissionEntrySatisfied,
+  getDisclosedAttributeNamesForDisplay,
+  getUnsatisfiedAttributePathsForDisplay,
+} from '@package/agent'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { CardWithAttributes } from 'packages/app/src'
 
@@ -14,71 +13,70 @@ export type RequestedAttributesSectionProps = {
 }
 
 export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
-  const { pidCredentialForDisplay } = usePidCredential()
+  const satisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntrySatisfied => e.isSatisfied)
+  const unsatisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntryNotSatisfied => !e.isSatisfied)
 
   return (
     <YStack gap="$4">
-      <YStack gap="$2">
-        <Heading variant="sub2">REQUESTED ATTRIBUTES</Heading>
-        <YStack gap="$4">
+      <YStack gap="$4">
+        <YStack>
+          <Heading variant="sub2">{satisfiedEntries.length > 0 ? 'REQUESTED CARDS' : 'UNAVAILABLE CARDS'}</Heading>
           <Paragraph>
-            {submission.areAllSatisfied
-              ? 'Only the following attributes will be shared. Nothing more.'
-              : `You don't have the requested credential(s).`}
+            {unsatisfiedEntries.length === 0
+              ? 'Only the following attributes from your cards will be shared. Nothing more.'
+              : satisfiedEntries.length === 0
+                ? `You don't have the requested card(s).`
+                : `You don't have all of the requested cards.`}
           </Paragraph>
-          {submission.entries.map((entry) => (
-            <YStack gap="$4" key={entry.inputDescriptorId}>
-              {entry.credentials.map((credential) => {
-                if (isPidCredential(credential.metadata?.type)) {
-                  return (
-                    <CardWithAttributes
-                      key={pidCredentialForDisplay?.id}
-                      id={pidCredentialForDisplay?.id as string}
-                      name={pidCredentialForDisplay?.display.name as string}
-                      issuerImage={pidCredentialForDisplay?.display.issuer.logo}
-                      backgroundImage={pidCredentialForDisplay?.display.backgroundImage}
-                      backgroundColor={pidCredentialForDisplay?.display.backgroundColor}
-                      textColor={pidCredentialForDisplay?.display.textColor}
-                      disclosedAttributes={getPidDisclosedAttributeNames(
-                        credential?.disclosedPayload ?? {},
-                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                      )}
-                      disclosedPayload={getPidAttributesForDisplay(
-                        credential?.disclosedPayload ?? {},
-                        credential?.claimFormat as ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
-                      )}
-                      isExpired={
-                        credential.metadata?.validUntil ? new Date(credential.metadata.validUntil) < new Date() : false
-                      }
-                      isNotYetActive={
-                        credential.metadata?.validFrom ? new Date(credential.metadata.validFrom) > new Date() : false
-                      }
-                    />
-                  )
-                }
-                return (
-                  <CardWithAttributes
-                    key={credential.id}
-                    id={credential.id}
-                    name={credential.credentialName}
-                    backgroundImage={credential.backgroundImage}
-                    backgroundColor={credential.backgroundColor}
-                    issuerImage={credential.issuerImage}
-                    textColor={credential.textColor}
-                    disclosedAttributes={credential.requestedAttributes ?? []}
-                    disclosedPayload={credential?.disclosedPayload ?? {}}
-                    isExpired={
-                      credential.metadata?.validUntil ? new Date(credential.metadata.validUntil) < new Date() : false
-                    }
-                    isNotYetActive={
-                      credential.metadata?.validFrom ? new Date(credential.metadata.validFrom) > new Date() : false
-                    }
-                  />
-                )
-              })}
-            </YStack>
-          ))}
         </YStack>
+        {/* We always take the first one for now (no selection) */}
+        {satisfiedEntries.map(({ credentials: [credential], ...entry }) => {
+          return (
+            <CardWithAttributes
+              key={entry.inputDescriptorId}
+              id={credential.credential.id}
+              name={credential.credential.display.name}
+              backgroundImage={credential.credential.display.backgroundImage}
+              backgroundColor={credential.credential.display.backgroundColor}
+              issuerImage={credential.credential.display.issuer.logo}
+              textColor={credential.credential.display.textColor}
+              formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(credential)}
+              disclosedPayload={credential.disclosed.attributes}
+              isExpired={
+                credential.credential.metadata?.validUntil
+                  ? new Date(credential.credential.metadata.validUntil) < new Date()
+                  : false
+              }
+              isNotYetActive={
+                credential.credential.metadata?.validFrom
+                  ? new Date(credential.credential.metadata.validFrom) > new Date()
+                  : false
+              }
+            />
+          )
+        })}
+        {unsatisfiedEntries.length > 0 && (
+          <>
+            {satisfiedEntries.length !== 0 && (
+              <YStack>
+                <Heading variant="sub2">UNAVAILABLE CARDS</Heading>
+              </YStack>
+            )}
+            {unsatisfiedEntries.map((entry) => (
+              <CardWithAttributes
+                key={entry.inputDescriptorId}
+                name={entry.name ?? 'Credential'}
+                // We only have the attribute paths, no way to know how to render
+                // TODO: we could look at the vct?
+                // TODO: we should maybe support partial matches (i.e. vct matches), as then we can
+                // show a much better UI (you have the cred, but age is not valid, or this param is missing)
+                formattedDisclosedAttributes={getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths)}
+                backgroundColor="$grey-800"
+                textColor="$white"
+              />
+            ))}
+          </>
+        )}
       </YStack>
     </YStack>
   )

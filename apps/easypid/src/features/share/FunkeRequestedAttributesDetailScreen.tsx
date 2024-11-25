@@ -21,8 +21,7 @@ import { useRouter } from 'solito/router'
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
 import { useHaptics, useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
 
-import { useCredentialsWithCustomDisplayById } from '@easypid/hooks/useCredentialsWithCustomDisplay'
-import type { CredentialForDisplayId } from '@package/agent'
+import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { useNavigation } from 'expo-router'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -42,7 +41,7 @@ export function FunkeRequestedAttributesDetailScreen({
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const { credential: activeCredential, isLoading } = useCredentialsWithCustomDisplayById(id)
+  const { credential: activeCredential, isLoading } = useCredentialForDisplayById(id)
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { withHaptics } = useHaptics()
@@ -111,10 +110,10 @@ export function FunkeRequestedAttributesDetailScreen({
               <Stack g="md">
                 <Heading variant="h1">
                   {disclosedAttributeLength} attribute{disclosedAttributeLength > 1 ? 's' : ''} from{' '}
-                  {activeCredential?.display.name}
+                  {activeCredential.display.name}
                 </Heading>
-                {activeCredential?.display.issuer && (
-                  <Paragraph>Issued by {activeCredential?.display.issuer.name}.</Paragraph>
+                {activeCredential.display.issuer && (
+                  <Paragraph>Issued by {activeCredential.display.issuer.name}.</Paragraph>
                 )}
                 <CredentialAttributes
                   subject={disclosedPayload}
@@ -134,7 +133,7 @@ export function FunkeRequestedAttributesDetailScreen({
                       headerTitle="Metadata"
                       borderStyle="large"
                       attributeWeight="medium"
-                      subject={activeCredential.metadataForDisplay ?? activeCredential?.metadata}
+                      subject={metadataForDisplay(activeCredential.metadata)}
                       headerStyle="small"
                       showDevProps
                     />

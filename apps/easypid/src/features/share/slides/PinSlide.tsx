@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import type { PresentationRequestResult } from '../components/utils'
 
 interface PinSlideProps {
-  onPinComplete: (pin: string) => Promise<PresentationRequestResult>
+  onPinComplete: (pin: string) => Promise<PresentationRequestResult> | Promise<void>
   isLoading: boolean
 }
 
@@ -20,7 +20,7 @@ export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
 
     onPinComplete(pin)
       .then((r) => {
-        if (r.status === 'success') return onNext()
+        if (!r || r.status === 'success') return onNext()
 
         toast.show(r.result.title, {
           message: r.result.message,

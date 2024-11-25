@@ -21,7 +21,6 @@ import { Alert, Linking, Platform, useWindowDimensions } from 'react-native'
 import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { pidSchemes } from '@easypid/constants'
 import easypidLogo from '../../../assets/easypid.png'
 import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
 
@@ -225,16 +224,9 @@ function FunkeQrOverlay({ qrCodeData }: { qrCodeData?: string }) {
     if (qrCodeData) {
       void waitForDeviceRequest().then((data) => {
         if (data) {
-          // Take the Doc item that matches with the mdoc pid type
-          // Only support one doc item for now
-
-          const requestedNamespace = data.requestedItems[0][pidSchemes.msoMdocDoctypes[0]]
-          if (!requestedNamespace) throw new Error('Unsupported credential requested.')
-
           pushToOfflinePresentation({
             sessionTranscript: Buffer.from(data.sessionTranscript).toString('base64'),
             deviceRequest: Buffer.from(data.deviceRequest).toString('base64'),
-            requestedAttributes: Object.entries(requestedNamespace).map(([key]) => key),
           })
           return
         }
@@ -243,15 +235,11 @@ function FunkeQrOverlay({ qrCodeData }: { qrCodeData?: string }) {
   }, [qrCodeData])
 
   // Navigate to offline presentation route
-  const pushToOfflinePresentation = withHaptics(
-    (data: { sessionTranscript: string; deviceRequest: string; requestedAttributes: string[] }) =>
-      replace({
-        pathname: '/notifications/offlinePresentation',
-        params: {
-          ...data,
-          requestedAttributes: JSON.stringify(data.requestedAttributes), // Add this change
-        },
-      })
+  const pushToOfflinePresentation = withHaptics((data: { sessionTranscript: string; deviceRequest: string }) =>
+    replace({
+      pathname: '/notifications/offlinePresentation',
+      params: data,
+    })
   )
 
   return (

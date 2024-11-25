@@ -15,7 +15,7 @@ import {
 } from '@package/ui'
 import { useRouter } from 'solito/router'
 
-import { useCredentialsWithCustomDisplay } from '@easypid/hooks/useCredentialsWithCustomDisplay'
+import { useCredentialsForDisplay } from '@package/agent'
 import { useHaptics, useNetworkCallback, useScrollViewPosition } from '@package/app/src/hooks'
 import { FunkeCredentialCard } from 'packages/app'
 import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
@@ -24,7 +24,7 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
-  const { isLoading, credentials } = useCredentialsWithCustomDisplay()
+  const { isLoading, credentials } = useCredentialsForDisplay()
   const { withHaptics } = useHaptics()
 
   const pushToMenu = withHaptics(() => push('/menu'))

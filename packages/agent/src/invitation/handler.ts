@@ -1,7 +1,7 @@
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
-  DifPexCredentialsForRequest,
+  DifPresentationExchangeDefinitionV2,
   OutOfBandInvitation,
   OutOfBandRecord,
   P256Jwk,
@@ -9,7 +9,6 @@ import type {
 } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
-  OpenId4VcSiopVerifiedAuthorizationRequest,
   OpenId4VciCredentialConfigurationSupportedWithFormats,
   OpenId4VciDpopRequestOptions,
   OpenId4VciRequestTokenResponse,
@@ -24,7 +23,6 @@ import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-t
 import {
   CredentialEventTypes,
   CredentialState,
-  Hasher,
   JwaSignatureAlgorithm,
   Jwt,
   OutOfBandRepository,
@@ -37,7 +35,6 @@ import {
 } from '@credo-ts/core'
 import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
 import {
-  OpenId4VciHolderService,
   getOfferedCredentials,
   getScopesFromCredentialConfigurationsSupported,
   preAuthorizedCodeGrantIdentifier,
@@ -49,7 +46,11 @@ import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@animo-id/
 import q from 'query-string'
 import { handleBatchCredential } from '../batch'
 import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
-import { formatDifPexCredentialsForRequest } from '../format/formatPresentation'
+import {
+  type FormattedSubmission,
+  formatDcqlCredentialsForRequest,
+  formatDifPexCredentialsForRequest,
+} from '../format/formatPresentation'
 import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
@@ -436,33 +437,16 @@ export const getCredentialsForProofRequest = async ({
     agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
   )
 
-  if (!resolved.presentationExchange) {
-    throw new Error('No presentation exchange found in authorization request.')
-  }
-
-  const formattedSubmission = formatDifPexCredentialsForRequest(resolved.presentationExchange.credentialsForRequest)
-
-  // TODO: why do we filter? It will otherwise also just pick the first one?
-  // I think because of sharing activity. But that can be solved differently
-  // Filter to keep only the first credential for each type
-  const filteredSubmission = {
-    ...formattedSubmission,
-    entries: formattedSubmission.entries.map((entry) => {
-      const uniqueCredentials = new Map()
-      return {
-        ...entry,
-        credentials: entry.credentials
-          .filter((credential) => credential.metadata?.type)
-          .filter((credential) => {
-            const type = credential.metadata?.type
-            if (!uniqueCredentials.has(type)) {
-              uniqueCredentials.set(type, credential)
-              return true
-            }
-            return false
-          }),
-      }
-    }),
+  let formattedSubmission: FormattedSubmission
+  if (resolved.presentationExchange) {
+    formattedSubmission = formatDifPexCredentialsForRequest(
+      resolved.presentationExchange.credentialsForRequest,
+      resolved.presentationExchange.definition as DifPresentationExchangeDefinitionV2
+    )
+  } else if (resolved.dcql) {
+    formattedSubmission = formatDcqlCredentialsForRequest(resolved.dcql.queryResult)
+  } else {
+    throw new Error('No presentation exchange or dcql found in authorization request.')
   }
 
   const clientMetadata = resolved.authorizationRequest.payload?.client_metadata as
@@ -474,6 +458,7 @@ export const getCredentialsForProofRequest = async ({
 
   return {
     ...resolved.presentationExchange,
+    ...resolved.dcql,
     authorizationRequest: resolved.authorizationRequest,
     verifier: {
       hostName: resolved.authorizationRequest.responseURI
@@ -481,52 +466,63 @@ export const getCredentialsForProofRequest = async ({
         : undefined,
       entityId: resolved.authorizationRequest.payload?.iss as string,
 
-      logo: {
-        url: clientMetadata?.logo_uri,
-      },
+      logo: clientMetadata?.logo_uri
+        ? {
+            url: clientMetadata?.logo_uri,
+          }
+        : undefined,
       name: clientMetadata?.client_name,
     },
-    formattedSubmission: filteredSubmission,
+    formattedSubmission,
   } as const
 }
 
 export const shareProof = async ({
   agent,
-  authorizationRequest,
-  credentialsForRequest,
+  resolvedRequest,
   selectedCredentials,
   allowUntrustedCertificate = false,
 }: {
   agent: EitherAgent
-  authorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
-  credentialsForRequest: DifPexCredentialsForRequest
+  resolvedRequest: CredentialsForProofRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
   allowUntrustedCertificate?: boolean
 }) => {
-  if (!credentialsForRequest.areRequirementsSatisfied) {
+  const { authorizationRequest } = resolvedRequest
+  if (
+    !resolvedRequest.credentialsForRequest?.areRequirementsSatisfied &&
+    !resolvedRequest.queryResult?.canBeSatisfied
+  ) {
     throw new Error('Requirements from proof request are not satisfied')
   }
 
   // Map all requirements and entries to a credential record. If a credential record for an
   // input descriptor has been provided in `selectedCredentials` we will use that. Otherwise
   // it will pick the first available credential.
-  const credentials = Object.fromEntries(
-    await Promise.all(
-      credentialsForRequest.requirements.flatMap((requirement) =>
-        requirement.submissionEntry.map(async (entry) => {
-          const credentialId = selectedCredentials[entry.inputDescriptorId]
-          const credential =
-            entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
-            entry.verifiableCredentials[0]
+  const presentationExchangeCredentials = resolvedRequest.credentialsForRequest
+    ? Object.fromEntries(
+        await Promise.all(
+          resolvedRequest.credentialsForRequest.requirements.flatMap((requirement) =>
+            requirement.submissionEntry.slice(0, requirement.needsCount).map(async (entry) => {
+              const credentialId = selectedCredentials[entry.inputDescriptorId]
+              const credential =
+                entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
+                entry.verifiableCredentials[0]
 
-          // Optionally use a batch credential
-          const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
+              // Optionally use a batch credential
+              const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
 
-          return [entry.inputDescriptorId, [credentialRecord]] as [string, (typeof credentialRecord)[]]
-        })
+              return [entry.inputDescriptorId, [credentialRecord]] as [string, (typeof credentialRecord)[]]
+            })
+          )
+        )
       )
-    )
-  )
+    : undefined
+
+  // TODO: support credential selection for DCQL
+  const dcqlCredentials = resolvedRequest.queryResult
+    ? agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+    : undefined
 
   try {
     // Temp solution to add and remove the trusted certificate
@@ -536,9 +532,16 @@ export const shareProof = async ({
     const result = await withTrustedCertificate(agent, certificate, () =>
       agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
         authorizationRequest,
-        presentationExchange: {
-          credentials,
-        },
+        presentationExchange: presentationExchangeCredentials
+          ? {
+              credentials: presentationExchangeCredentials,
+            }
+          : undefined,
+        dcql: dcqlCredentials
+          ? {
+              credentials: dcqlCredentials,
+            }
+          : undefined,
       })
     )
 

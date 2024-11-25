@@ -9,10 +9,31 @@ import {
 import type { EitherAgent } from '../agent'
 import type { CredentialForDisplayId } from '../hooks'
 
-export async function updateCredential(
+type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+
+export async function getCredential(
   agent: EitherAgent,
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
-) {
+  credentialId: CredentialForDisplayId
+): Promise<CredentialRecord> {
+  if (credentialId.startsWith('w3c-credential-')) {
+    const w3cCredentialId = credentialId.replace('w3c-credential-', '')
+    return agent.w3cCredentials.getCredentialRecordById(w3cCredentialId)
+  }
+
+  if (credentialId.startsWith('sd-jwt-vc')) {
+    const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
+    return agent.sdJwtVc.getById(sdJwtVcId)
+  }
+
+  if (credentialId.startsWith('mdoc-')) {
+    const mdocId = credentialId.replace('mdoc-', '')
+    return agent.mdoc.getById(mdocId)
+  }
+
+  throw new Error('Unsupported record type')
+}
+
+export async function updateCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).update(agent.context, credentialRecord)
   } else if (credentialRecord instanceof MdocRecord) {
@@ -21,10 +42,7 @@ export async function updateCredential(
     await agent.dependencyManager.resolve(SdJwtVcRepository).update(agent.context, credentialRecord)
   }
 }
-export async function storeCredential(
-  agent: EitherAgent,
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
-) {
+export async function storeCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
   } else if (credentialRecord instanceof MdocRecord) {

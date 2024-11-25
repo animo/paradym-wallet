@@ -15,19 +15,17 @@ import { sanitizeString } from '@package/utils/src'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { useHasInternetConnection } from '../hooks'
-import { OMITTED_CREDENTIAL_ATTRIBUTES } from '../utils'
 import { BlurBadge } from './BlurBadge'
 
 interface CardWithAttributesProps {
-  id: string
+  id?: string
   name: string
   backgroundColor?: string
   textColor?: string
   issuerImage?: DisplayImage
   backgroundImage?: DisplayImage
-  disclosedAttributes: string[]
+  formattedDisclosedAttributes: string[]
   disclosedPayload?: Record<string, unknown>
-  disableNavigation?: boolean
   isExpired?: boolean
   isRevoked?: boolean
   isNotYetActive?: boolean
@@ -40,9 +38,8 @@ export function CardWithAttributes({
   issuerImage,
   textColor,
   backgroundImage,
-  disclosedAttributes,
+  formattedDisclosedAttributes,
   disclosedPayload,
-  disableNavigation = false,
   isNotYetActive = false,
   isExpired = false,
   isRevoked = false,
@@ -51,28 +48,24 @@ export function CardWithAttributes({
   const router = useRouter()
   const hasInternet = useHasInternetConnection()
 
-  const filteredDisclosedAttributes = disclosedAttributes.filter(
-    (attribute) => !OMITTED_CREDENTIAL_ATTRIBUTES.includes(attribute)
-  )
-
   const groupedAttributes = useMemo(() => {
     const result: Array<[string, string | undefined]> = []
-    for (let i = 0; i < filteredDisclosedAttributes.length; i += 2) {
-      result.push([filteredDisclosedAttributes[i], filteredDisclosedAttributes[i + 1]])
+    for (let i = 0; i < formattedDisclosedAttributes.length; i += 2) {
+      result.push([formattedDisclosedAttributes[i], formattedDisclosedAttributes[i + 1]])
     }
     return result
-  }, [filteredDisclosedAttributes])
+  }, [formattedDisclosedAttributes])
 
   const onPress = () => {
     router.push(
       `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
         JSON.stringify(disclosedPayload ?? {})
-      )}&disclosedAttributeLength=${filteredDisclosedAttributes?.length}`
+      )}&disclosedAttributeLength=${formattedDisclosedAttributes?.length}`
     )
   }
 
   const isRevokedOrExpired = isRevoked || isExpired
-  const disabledNav = disableNavigation || !disclosedPayload || isRevokedOrExpired
+  const disabledNav = !id || !disclosedPayload || isRevokedOrExpired
 
   return (
     <AnimatedStack
@@ -85,7 +78,7 @@ export function CardWithAttributes({
       style={disabledNav ? undefined : pressStyle}
       onPress={disabledNav ? undefined : onPress}
       accessible={true}
-      accessibilityRole={disabledNav ? undefined : 'button'}
+      role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
       <Stack px="$4" py="$3" pos="relative" backgroundColor={'green'} bg={backgroundColor ?? '$grey-900'}>

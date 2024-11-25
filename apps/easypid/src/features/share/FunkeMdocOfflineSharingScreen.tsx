@@ -1,10 +1,14 @@
-import { ClaimFormat, utils } from '@credo-ts/core'
+import { utils } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
-import { usePidCredential } from '@easypid/hooks'
+import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
-import { useMemo, useState } from 'react'
-import { type ActivityStatus, addSharedActivity } from '../activity/activityRecord'
+import { useEffect, useState } from 'react'
+import {
+  type ActivityStatus,
+  addSharedActivity,
+  addSharedActivityForCredentialsForRequest,
+} from '../activity/activityRecord'
 import { shareDeviceResponse } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { PresentationRequestResult } from './components/utils'
@@ -12,67 +16,45 @@ import type { PresentationRequestResult } from './components/utils'
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  requestedAttributes: string[]
 }
 
 // Entry point for offline sharing with Mdoc
 export function FunkeMdocOfflineSharingScreen({
   sessionTranscript,
   deviceRequest,
-  requestedAttributes,
 }: FunkeMdocOfflineSharingScreenProps) {
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
-  const { credentials } = usePidCredential()
-  const mdocPidCredential = credentials?.find((cred) => cred.claimFormat === ClaimFormat.MsoMdoc)
 
+  const [submission, setSubmission] = useState<FormattedSubmission>()
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const disclosedPayloadForDisplay = useMemo(
-    () =>
-      requestedAttributes
-        ? requestedAttributes?.reduce(
-            (acc, attr) => ({
-              ...acc,
-              [attr]: mdocPidCredential?.attributes[attr],
-            }),
-            {}
-          )
-        : {},
-    [mdocPidCredential, requestedAttributes]
-  )
+  useEffect(() => {
+    getSubmissionForMdocDocumentRequest(agent, deviceRequest)
+      .then((submission) => {
+        // We can't hare multiple documents at the moment
+        if (submission.entries.length > 1) {
+          toast.show('Presentation could not be shared.', {
+            message: 'Multiple cards requested, but only one card can be shared in-person',
+            customData: { preset: 'danger' },
+          })
+          pushToWallet()
+        } else {
+          setSubmission(submission)
+        }
+      })
+      .catch((error) => {
+        toast.show('Presentation information could not be extracted.', {
+          customData: { preset: 'danger' },
+        })
+        agent.config.logger.error('Error getting credentials for mdoc device request', {
+          error,
+        })
 
-  const submission = useMemo(() => {
-    if (!mdocPidCredential || !requestedAttributes || !disclosedPayloadForDisplay) return
-
-    return {
-      name: 'PID Request',
-      areAllSatisfied: true,
-      entries: [
-        {
-          inputDescriptorId: '123',
-          isSatisfied: true,
-          name: 'PID Request',
-          credentials: [
-            {
-              id: mdocPidCredential?.id,
-              credentialName: mdocPidCredential?.display.name,
-              issuerName: mdocPidCredential?.display.issuer.name,
-              issuerImage: mdocPidCredential?.display.issuer.logo,
-              requestedAttributes: requestedAttributes,
-              disclosedPayload: disclosedPayloadForDisplay,
-              claimFormat: ClaimFormat.MsoMdoc,
-              metadata: mdocPidCredential?.metadata,
-              backgroundColor: mdocPidCredential?.display.backgroundColor,
-              textColor: mdocPidCredential?.display.textColor,
-              backgroundImage: mdocPidCredential?.display.backgroundImage,
-            },
-          ],
-        },
-      ],
-    }
-  }, [mdocPidCredential, requestedAttributes, disclosedPayloadForDisplay])
+        pushToWallet()
+      })
+  })
 
   const onProofAccept = async (): Promise<PresentationRequestResult> => {
     if (!submission) {
@@ -92,6 +74,7 @@ export function FunkeMdocOfflineSharingScreen({
         agent,
         deviceRequest,
         sessionTranscript,
+        submission,
       })
     } catch (error) {
       await addActivity('failed')
@@ -127,25 +110,20 @@ export function FunkeMdocOfflineSharingScreen({
   }
 
   const addActivity = async (status: ActivityStatus) => {
-    await addSharedActivity(agent, {
-      status,
-      entity: {
-        id: utils.uuid(),
-        name: 'Unknown party',
-        host: 'https://example.com',
+    if (!submission) return
+    await addSharedActivityForCredentialsForRequest(
+      agent,
+      {
+        formattedSubmission: submission,
+        verifier: {
+          entityId: '6df3d57e-4c9c-41c3-bb9f-936d88c0968d',
+          hostName: undefined,
+          logo: undefined,
+          name: 'Unknown party',
+        },
       },
-      request: {
-        name: submission?.name as string,
-        credentials: [
-          {
-            id: mdocPidCredential?.id as string,
-            disclosedAttributes: requestedAttributes,
-            disclosedPayload: disclosedPayloadForDisplay,
-          },
-        ],
-        failureReason: status === 'failed' ? 'unknown' : undefined,
-      },
-    })
+      status
+    )
   }
 
   // FIXME: Consider re-using the regular flow with an isOffline flag

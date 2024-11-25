@@ -1,6 +1,53 @@
 import type { SdJwtVcTypeMetadata } from '@credo-ts/core'
+import type { OpenId4VcCredentialMetadata } from '@package/agent'
+import germanIssuerImage from '../../assets/german-issuer-image.png'
+import pidBackgroundImage from '../../assets/pid-background.png'
 
-export const pidBdrSdJwtTypeMetadata: SdJwtVcTypeMetadata = {
+export const bdrPidCredentialDisplay = {
+  name: 'Personalausweis',
+  backgroundImage: pidBackgroundImage,
+  backgroundColor: '#F1F2F0',
+  textColor: '#2F3544',
+}
+
+export const bdrPidIssuerDisplay = {
+  logo: germanIssuerImage,
+  name: 'Bundesdruckerei',
+}
+
+export const bdrPidOpenId4VcMetadata = (credentialIssuer: string): OpenId4VcCredentialMetadata => {
+  return {
+    issuer: {
+      id: credentialIssuer,
+      display: [
+        {
+          locale: 'en-US',
+          name: bdrPidIssuerDisplay.name,
+          logo: {
+            // FIXME
+            uri: bdrPidIssuerDisplay.logo as unknown as string,
+          },
+        },
+      ],
+    },
+    credential: {
+      display: [
+        {
+          name: bdrPidCredentialDisplay.name,
+          background_color: bdrPidCredentialDisplay.backgroundColor,
+          text_color: bdrPidCredentialDisplay.textColor,
+          background_image: {
+            // FIXME
+            uri: bdrPidCredentialDisplay.backgroundImage as unknown as string,
+          },
+          locale: 'en-US',
+        },
+      ],
+    },
+  }
+}
+
+export const bdrPidSdJwtTypeMetadata: SdJwtVcTypeMetadata = {
   // TODO: add vct to type interface in Credo
   // vct: 'https://metadata-8c062a.usercontent.opencode.de/pid.json',
   name: 'German Person Identification Data Credential - First Version',
@@ -9,8 +56,22 @@ export const pidBdrSdJwtTypeMetadata: SdJwtVcTypeMetadata = {
   display: [
     {
       lang: 'en-US',
-      name: 'German Person Identification Data Credential',
-      description: 'The core identification credential for all natural persons in Germany',
+      // Name from pid metadata is very long?!?
+      // name: 'German Person Identification Data Credential',
+      // description: 'The core identification credential for all natural persons in Germany',
+      name: bdrPidCredentialDisplay.name,
+      rendering: {
+        simple: {
+          background_color: bdrPidCredentialDisplay.backgroundColor,
+          text_color: bdrPidCredentialDisplay.textColor,
+          logo: {
+            // TODO: can we store local file path in a record? I think we might have to
+            // add an identifier and replace it before rendering..
+            // FIXME:
+            uri: bdrPidCredentialDisplay.backgroundImage as unknown as string,
+          },
+        },
+      },
     },
     {
       lang: 'de-DE',
