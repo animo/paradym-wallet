@@ -1,4 +1,4 @@
-import { Button, HeroIcons, InfoButton, InfoSheet, Stack, useToastController } from '@package/ui'
+import { Button, HeroIcons, InfoButton, InfoSheet, Stack } from '@package/ui'
 import type { StatusVariant } from '@package/ui/src/utils/variants'
 import { formatDate, formatDaysString, getDaysUntil } from '@package/utils/src'
 import { useRouter } from 'expo-router'
@@ -179,6 +179,8 @@ function getCardInfoLimitedByDateVariant(
   // Check if card expires in more than 2 weeks (14 days)
   const hasMoreThanTwoWeeksUntilExpiry =
     validUntil && validUntil.getTime() - new Date().getTime() > 14 * 24 * 60 * 60 * 1000
+
+  console.log('hasMoreThanTwoWeeksUntilExpiry', validUntil)
 
   return {
     active: {

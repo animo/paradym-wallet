@@ -68,7 +68,14 @@ export function FunkeWalletScreen() {
         }}
       >
         <YStack fg={1}>
-          <Stack accessible={true} alignItems="center" pt="$6" pb="$4">
+          <Stack
+            accessible={true}
+            aria-label="Scan QR-Code"
+            accessibilityRole="button"
+            alignItems="center"
+            pt="$6"
+            pb="$4"
+          >
             <AnimatedStack
               flexDirection="column"
               style={qrPressStyle}
