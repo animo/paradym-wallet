@@ -2,6 +2,7 @@ import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
   getCredentialsForProofRequest,
+  getDisclosedAttributeNamesForDisplay,
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -9,6 +10,8 @@ import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
+import { analyzeVerification } from '@easypid/use-cases/ValidateVerification'
+import type { VerificationAnalysisResponse } from '@easypid/use-cases/ValidateVerification'
 import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -61,6 +64,34 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         pushToWallet()
       })
   }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast])
+
+  const [verificationAnalysis, setVerificationAnalysis] = useState<{
+    isLoading: boolean
+    result: VerificationAnalysisResponse | undefined
+  }>({
+    isLoading: false,
+    result: undefined,
+  })
+
+  useEffect(() => {
+    if (!credentialsForRequest?.formattedSubmission) return
+    if (!credentialsForRequest?.formattedSubmission.areAllSatisfied) return
+
+    setVerificationAnalysis((prev) => ({ ...prev, isLoading: true }))
+
+    const submission = credentialsForRequest.formattedSubmission
+    const requestedCards = submission.entries.filter((entry) => entry.isSatisfied).flatMap((entry) => entry.credentials)
+
+    analyzeVerification({
+      name: submission.name ?? 'No name provided',
+      purpose: submission.purpose ?? 'No purpose provided',
+      cards: requestedCards.map((credential) => ({
+        name: credential.credential.display.name ?? 'Card name',
+        subtitle: credential.credential.display.description ?? 'Card description',
+        requestedAttributes: getDisclosedAttributeNamesForDisplay(credential),
+      })),
+    }).then((result) => setVerificationAnalysis((prev) => ({ ...prev, isLoading: false, result })))
+  }, [credentialsForRequest])
 
   const onProofAccept = useCallback(
     async (pin?: string): Promise<PresentationRequestResult> => {
@@ -159,6 +190,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       lastInteractionDate={lastInteractionDate}
       approvalsCount={fedDisplayData?.approvals.length}
       onComplete={() => pushToWallet('replace')}
+      verificationAnalysis={verificationAnalysis}
     />
   )
 }

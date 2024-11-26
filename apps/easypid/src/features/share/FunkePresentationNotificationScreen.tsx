@@ -1,5 +1,6 @@
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
 
+import type { VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
@@ -14,6 +15,7 @@ interface FunkePresentationNotificationScreenProps {
   logo?: DisplayImage
   lastInteractionDate?: string
   approvalsCount?: number
+  verificationAnalysis: VerificationAnalysisResult
 
   submission?: FormattedSubmission
   usePin: boolean
@@ -35,6 +37,7 @@ export function FunkePresentationNotificationScreen({
   isAccepting,
   submission,
   onComplete,
+  verificationAnalysis,
 }: FunkePresentationNotificationScreenProps) {
   return (
     <SlideWizard
@@ -72,6 +75,7 @@ export function FunkePresentationNotificationScreen({
                 logo={logo}
                 submission={submission}
                 isAccepting={isAccepting}
+                verificationAnalysis={verificationAnalysis}
               />
             ),
           },
