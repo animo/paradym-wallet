@@ -14,6 +14,7 @@ import {
 } from '@package/ui'
 import { useTrustedEntities } from 'packages/agent/src'
 import { TextBackButton, useScrollViewPosition } from 'packages/app/src'
+import React from 'react'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -36,6 +37,8 @@ export function FunkeFederationDetailScreen({
   const { bottom } = useSafeAreaInsets()
   const scrollViewRef = useRef<ScrollViewRefType>(null)
 
+  const filteredTrustedEntities = trustedEntities.filter((entity) => trustedEntityIds.includes(entity.entity_id))
+
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <YStack
@@ -53,7 +56,7 @@ export function FunkeFederationDetailScreen({
             message="Always consider whether sharing with a party is wise."
             icon={<HeroIcons.ExclamationTriangleFilled />}
           />
-          <XStack gap="$4" pt="$2">
+          <XStack gap="$4" pt="$2" ai="center">
             {logo ? (
               <Circle overflow="hidden" ai="center" jc="center" size="$6" bw={1} borderColor="$grey-200" bg="$grey-100">
                 <Image src={logo} height="100%" width="100%" />
@@ -63,36 +66,23 @@ export function FunkeFederationDetailScreen({
                 <HeroIcons.BuildingOffice color="$grey-700" />
               </Circle>
             )}
-            <YStack>
-              <Heading variant="h2">{name}</Heading>
-              <Paragraph fontWeight="$medium" color="$primary-500">
-                Website
-              </Paragraph>
-            </YStack>
+            <Heading variant="h2">{name}</Heading>
           </XStack>
           <YStack gap="$4" py="$2">
             <YStack gap="$2">
               <Heading variant="sub2">Trusted by</Heading>
               <Paragraph>
-                A list of organizations and whether they have approved{' '}
-                <Paragraph fontWeight="$semiBold">{name}</Paragraph>.
+                {filteredTrustedEntities.length > 0 ? (
+                  <>A list of organizations and whether they have approved {name}.</>
+                ) : (
+                  <>There are no organizations that have approved {name}.</>
+                )}
               </Paragraph>
             </YStack>
             <YStack gap="$2">
-              {trustedEntities.map((entity) => {
-                const isTrusted = trustedEntityIds.includes(entity.entity_id)
-
+              {filteredTrustedEntities.map((entity) => {
                 return (
-                  <XStack
-                    ai="center"
-                    key={entity.entity_id}
-                    br="$8"
-                    p="$3.5"
-                    gap="$3"
-                    bw="$0.5"
-                    borderColor={isTrusted ? '$success-500' : '$danger-300'}
-                    bg={isTrusted ? '$success-500' : '$danger-300'}
-                  >
+                  <XStack ai="center" key={entity.entity_id} br="$8" p="$3.5" gap="$3" bg="$grey-100">
                     {entity.logo_uri && (
                       <Circle overflow="hidden" size="$4" bg="$grey-50">
                         <Image src={entity.logo_uri} height="100%" width="100%" />
@@ -100,15 +90,7 @@ export function FunkeFederationDetailScreen({
                     )}
                     <XStack gap="$1" f={1} justifyContent="space-between">
                       <Heading variant="h2">{entity.organization_name}</Heading>
-                      <IconContainer
-                        icon={
-                          isTrusted ? (
-                            <HeroIcons.CheckCircleFilled color="$success-500" />
-                          ) : (
-                            <HeroIcons.X color="$danger-500" />
-                          )
-                        }
-                      />
+                      <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
                     </XStack>
                   </XStack>
                 )

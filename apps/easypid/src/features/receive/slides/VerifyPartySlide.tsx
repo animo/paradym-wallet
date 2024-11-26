@@ -59,7 +59,7 @@ export const VerifyPartySlide = ({
 
   const onPressVerifiedIssuer = withHaptics(() => {
     router.push(
-      `/issuer?name=${name}&logo=${logo?.url}&entityId=${entityId}&trustedEntityIds=${trustedEntityIds?.join(',') ?? ''}`
+      `/federation?name=${name}&logo=${logo?.url}&entityId=${entityId}&trustedEntityIds=${trustedEntityIds?.join(',') ?? ''}`
     )
   })
 
@@ -101,15 +101,15 @@ export const VerifyPartySlide = ({
         <YStack gap="$4">
           {trustedEntityIds && trustedEntityIds.length > 0 ? (
             <InfoButton
-              variant="unknown"
-              title="Verified organisation"
+              variant="info"
+              title="Recognized organisation"
               description={`Approved by ${trustedEntityIds?.length} organisations`}
               onPress={onPressVerifiedIssuer}
             />
           ) : (
             <InfoButton
-              variant="unknown"
-              title="Unverified organization"
+              variant="warning"
+              title="Unrecognized organisation"
               description="No trust approvals found"
               onPress={onPressVerifiedIssuer}
             />
