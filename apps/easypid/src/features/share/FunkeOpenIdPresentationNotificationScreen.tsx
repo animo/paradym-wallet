@@ -146,7 +146,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       entityId={credentialsForRequest?.verifier.entityId as string}
       verifierName={credentialsForRequest?.verifier.name}
       logo={credentialsForRequest?.verifier.logo}
-      trustedEntityIds={Object.keys(credentialsForRequest?.verifier.verifiedEntityIds ?? [])}
+      verifiedEntityIds={credentialsForRequest?.verifier.verifiedEntityIds}
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
     />

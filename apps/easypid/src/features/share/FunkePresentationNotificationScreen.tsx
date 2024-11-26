@@ -13,7 +13,7 @@ interface FunkePresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
-  trustedEntityIds?: string[]
+  verifiedEntityIds?: Record<string, boolean>
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
@@ -33,7 +33,7 @@ export function FunkePresentationNotificationScreen({
   isAccepting,
   submission,
   onComplete,
-  trustedEntityIds,
+  verifiedEntityIds,
 }: FunkePresentationNotificationScreenProps) {
   return (
     <SlideWizard
@@ -56,7 +56,7 @@ export function FunkePresentationNotificationScreen({
                 name={verifierName}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
-                trustedEntityIds={trustedEntityIds}
+                verifiedEntityIds={verifiedEntityIds}
               />
             ),
           },

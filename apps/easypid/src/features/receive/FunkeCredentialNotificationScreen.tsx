@@ -353,7 +353,6 @@ export function FunkeCredentialNotificationScreen() {
               entityId={issuerMetadata?.credential_issuer as string}
               lastInteractionDate={activities[0]?.date}
               onContinue={onCheckCardContinue}
-              trustedEntityIds={Object.keys(credentialsForRequest?.verifier.verifiedEntityIds ?? [])}
             />
           ),
         },

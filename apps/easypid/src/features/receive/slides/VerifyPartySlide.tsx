@@ -26,7 +26,7 @@ interface VerifyPartySlideProps {
   backgroundColor?: string
   lastInteractionDate?: string
   onContinue?: () => Promise<void>
-  trustedEntityIds?: string[]
+  verifiedEntityIds?: Record<string, boolean>
 }
 
 export const VerifyPartySlide = ({
@@ -37,12 +37,16 @@ export const VerifyPartySlide = ({
   backgroundColor,
   lastInteractionDate,
   onContinue,
-  trustedEntityIds,
+  verifiedEntityIds,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
+
+  const trustedEntityIds = Object.entries(verifiedEntityIds ?? {})
+    .filter(([_, isVerified]) => isVerified)
+    .map(([entityId]) => entityId)
 
   const handleContinue = async () => {
     setIsLoading(true)

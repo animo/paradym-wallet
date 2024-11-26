@@ -17,14 +17,19 @@ import { TextBackButton, useScrollViewPosition } from 'packages/app/src'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-interface FunkeIssuerDetailScreenProps {
+interface FunkeFederationDetailScreenProps {
   name: string
   logo?: string
   entityId?: string
   trustedEntityIds?: string[]
 }
 
-export function FunkeIssuerDetailScreen({ name, logo, entityId, trustedEntityIds = [] }: FunkeIssuerDetailScreenProps) {
+export function FunkeFederationDetailScreen({
+  name,
+  logo,
+  entityId,
+  trustedEntityIds = [],
+}: FunkeFederationDetailScreenProps) {
   const { trustedEntities } = useTrustedEntities()
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
