@@ -47,6 +47,7 @@ export const checkMdocPermissions = async () => {
 
 export const getMdocQrCode = async () => {
   const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  mdt.enableNfc()
   const qrData = await mdt.startQrEngagement()
   return qrData
 }
@@ -117,4 +118,9 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     .sign(mdocContext)
 
   await mdt.sendDeviceResponse(deviceResponse.encode())
+}
+
+export const shutdownDataTransfer = () => {
+  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  mdt.shutdown()
 }

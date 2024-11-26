@@ -10,8 +10,8 @@ catalogs:
       specifier: 0.0.1-alpha.14
       version: 0.0.1-alpha.14
     '@animo-id/expo-mdoc-data-transfer':
-      specifier: 0.0.3-alpha.7
-      version: 0.0.3-alpha.7
+      specifier: 0.0.3-alpha.8
+      version: 0.0.3-alpha.8
     '@animo-id/expo-secure-environment':
       specifier: 0.1.0-alpha.11
       version: 0.1.0-alpha.11
@@ -98,7 +98,7 @@ importers:
         version: 0.0.1-alpha.14(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
-        version: 0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)
+        version: 0.0.3-alpha.8(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
         version: 0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -213,6 +213,9 @@ importers:
       expo-web-browser:
         specifier: ~13.0.3
         version: 13.0.3(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))
+      fast-text-encoding:
+        specifier: ^1.0.6
+        version: 1.0.6
       react:
         specifier: 'catalog:'
         version: 18.3.1
@@ -814,8 +817,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.7':
-    resolution: {integrity: sha512-owHGj02XzGeBsHLi8ZJyN8AiiS4rgO22oFlKuZPyrmylUemz15CzB2tnIa8W1KKM7MnCrWXENFV5a6VC/gLqag==}
+  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.8':
+    resolution: {integrity: sha512-UmjgDagxpxcY+jeS2gHFEP5krKrgICx72WLzfSwsRIdDVXnPehKofjQegQ2IQ0rechrW+XgBxA1TEriXIbyy+g==}
     peerDependencies:
       expo: '>= 51'
       react: '*'
@@ -9900,9 +9903,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)':
+  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.8(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)':
     dependencies:
-      '@expo/config-plugins': 8.0.10
+      '@expo/config-plugins': 8.0.11
       expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
       react: 18.3.1
       react-native: 0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1)

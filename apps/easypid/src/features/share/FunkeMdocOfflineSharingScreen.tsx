@@ -4,7 +4,7 @@ import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
-import { shareDeviceResponse } from '../proximity'
+import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { PresentationRequestResult } from './components/utils'
 
@@ -101,8 +101,14 @@ export function FunkeMdocOfflineSharingScreen({
 
     setIsProcessing(false)
 
+    shutdownDataTransfer()
     pushToWallet()
     toast.show('Proof has been declined.', { customData: { preset: 'danger' } })
+  }
+
+  const onProofComplete = () => {
+    shutdownDataTransfer()
+    pushToWallet('replace')
   }
 
   const addActivity = async (status: ActivityStatus) => {
@@ -129,7 +135,7 @@ export function FunkeMdocOfflineSharingScreen({
       submission={submission}
       onAccept={onProofAccept}
       onDecline={onProofDecline}
-      onComplete={() => pushToWallet('replace')}
+      onComplete={onProofComplete}
     />
   )
 }
