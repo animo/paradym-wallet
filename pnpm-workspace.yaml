@@ -17,6 +17,7 @@ catalog:
   "@credo-ts/question-answer": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/question-answer?funke
   "@credo-ts/react-native": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/react-native?funke
   "@credo-ts/react-hooks": 0.6.1
+  "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": ^0.2.4
   "@hyperledger/aries-askar-react-native": ^0.2.3
   "@hyperledger/indy-vdr-react-native": ^0.2.0

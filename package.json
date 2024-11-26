@@ -41,7 +41,8 @@
 			"@credo-ts/openid4vc": "catalog:",
 			"@credo-ts/question-answer": "catalog:",
 			"@credo-ts/react-native": "catalog:",
-			"@sphereon/pex-models": "catalog:"
+			"@sphereon/pex-models": "catalog:",
+			"@openid-federation/core": "catalog:"
 		},
 		"patchedDependencies": {
 			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
