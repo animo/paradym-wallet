@@ -74,8 +74,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   })
 
   useEffect(() => {
-    if (!credentialsForRequest?.formattedSubmission) return
-    if (!credentialsForRequest?.formattedSubmission.areAllSatisfied) return
+    if (!credentialsForRequest?.formattedSubmission || !credentialsForRequest?.formattedSubmission.areAllSatisfied)
+      return
 
     setVerificationAnalysis((prev) => ({ ...prev, isLoading: true }))
 
