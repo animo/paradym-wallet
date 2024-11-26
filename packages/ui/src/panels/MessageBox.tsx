@@ -29,7 +29,7 @@ const messageBoxVariants = {
 }
 
 interface MessageBoxProps {
-  message?: string
+  message: string
   title?: string
   variant?: keyof typeof messageBoxVariants
   textVariant?: 'normal' | 'sub'
@@ -45,11 +45,9 @@ export function MessageBox({ message, textVariant = 'normal', variant = 'default
             {title}
           </Heading>
         )}
-        {message && (
-          <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
-            {message}
-          </Paragraph>
-        )}
+        <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
+          {message}
+        </Paragraph>
       </YStack>
       {icon && (
         <Stack ai="center" jc="center">
