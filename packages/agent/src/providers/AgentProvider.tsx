@@ -6,6 +6,7 @@ import NativeAgentProvider from '@credo-ts/react-hooks'
 import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
 import { MdocRecordProvider } from './MdocProvider'
 import { SdJwtVcRecordProvider } from './SdJwtVcsProvider'
+import { TrustedEntitiesProvider } from './TrustedEntitiesProvider'
 import { W3cCredentialRecordProvider } from './W3cCredentialsProvider'
 
 export interface AgentProviderProps {
@@ -17,7 +18,9 @@ export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProvid
     <W3cCredentialRecordProvider agent={agent}>
       <SdJwtVcRecordProvider agent={agent}>
         <MdocRecordProvider agent={agent}>
-          <ExchangeRecordDisplayMetadataProvider>{children}</ExchangeRecordDisplayMetadataProvider>
+          <ExchangeRecordDisplayMetadataProvider>
+            <TrustedEntitiesProvider agent={agent}>{children}</TrustedEntitiesProvider>
+          </ExchangeRecordDisplayMetadataProvider>
         </MdocRecordProvider>
       </SdJwtVcRecordProvider>
     </W3cCredentialRecordProvider>

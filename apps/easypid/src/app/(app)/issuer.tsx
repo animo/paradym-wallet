@@ -2,7 +2,16 @@ import { FunkeIssuerDetailScreen } from '@easypid/features/wallet/FunkeIssuerDet
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
-  const { host } = useLocalSearchParams()
+  const { entityId, trustedEntityIds, name, logo } = useLocalSearchParams()
 
-  return <FunkeIssuerDetailScreen host={host as string} />
+  const trustedEntityIdsArray = Array.isArray(trustedEntityIds) ? trustedEntityIds : trustedEntityIds?.split(',') ?? []
+
+  return (
+    <FunkeIssuerDetailScreen
+      entityId={entityId as string}
+      trustedEntityIds={trustedEntityIdsArray}
+      name={name as string}
+      logo={logo as string}
+    />
+  )
 }

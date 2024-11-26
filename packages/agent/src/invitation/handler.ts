@@ -54,6 +54,7 @@ import {
 import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
+import { TRUSTED_ENTITIES } from '../providers/TrustedEntitiesProvider'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
@@ -449,20 +450,21 @@ export async function withTrustedCertificate<T>(
 }
 
 export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
+
+export type GetCredentialsForProofRequestOptions = {
+  agent: EitherAgent
+  data?: string
+  uri?: string
+  allowUntrustedFederation?: boolean
+}
+
 export const getCredentialsForProofRequest = async ({
   agent,
   data,
   uri,
-  allowUntrustedFederation = true, // TODO: True for now
-}: {
-  agent: EitherAgent
-  // Either data or uri can be provided
-  data?: string
-  uri?: string
-  allowUntrustedFederation?: boolean
-}) => {
+  allowUntrustedFederation = true,
+}: GetCredentialsForProofRequestOptions) => {
   let requestUri: string
-
   let requestData = data
 
   const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
@@ -494,6 +496,22 @@ export const getCredentialsForProofRequest = async ({
   if (resolved.authorizationRequest.payload) {
     resolved.authorizationRequest.payload.client_metadata =
       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
+  }
+
+  let verifiedEntityIds: Record<string, boolean> = {}
+  if (entityId) {
+    const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+      entityId: entityId ?? '',
+      trustAnchorEntityIds: TRUSTED_ENTITIES,
+    })
+
+    // Return which resolved chains are actually resolved
+    verifiedEntityIds = Object.fromEntries(
+      resolvedChains.map((chain) => [
+        chain.trustAnchorEntityConfiguration.sub,
+        TRUSTED_ENTITIES.includes(chain.trustAnchorEntityConfiguration.sub),
+      ])
+    )
   }
 
   let formattedSubmission: FormattedSubmission
@@ -531,6 +549,7 @@ export const getCredentialsForProofRequest = async ({
           }
         : undefined,
       name: clientMetadata?.client_name,
+      verifiedEntityIds,
     },
     formattedSubmission,
   } as const

@@ -25,8 +25,8 @@ interface VerifyPartySlideProps {
   logo?: DisplayImage
   backgroundColor?: string
   lastInteractionDate?: string
-  approvalsCount?: number
   onContinue?: () => Promise<void>
+  trustedEntityIds?: string[]
 }
 
 export const VerifyPartySlide = ({
@@ -36,8 +36,8 @@ export const VerifyPartySlide = ({
   logo,
   backgroundColor,
   lastInteractionDate,
-  approvalsCount,
   onContinue,
+  trustedEntityIds,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
@@ -54,7 +54,9 @@ export const VerifyPartySlide = ({
   }
 
   const onPressVerifiedIssuer = withHaptics(() => {
-    router.push(`/issuer?entityId=${entityId}`)
+    router.push(
+      `/issuer?name=${name}&logo=${logo?.url}&entityId=${entityId}&trustedEntityIds=${trustedEntityIds?.join(',') ?? ''}`
+    )
   })
 
   const onPressInteraction = withHaptics(() => {
@@ -93,15 +95,20 @@ export const VerifyPartySlide = ({
         </YStack>
 
         <YStack gap="$4">
-          {approvalsCount ? (
+          {trustedEntityIds && trustedEntityIds.length > 0 ? (
             <InfoButton
-              variant="positive"
+              variant="unknown"
               title="Verified organisation"
-              description={`Approved by ${approvalsCount} organisations`}
+              description={`Approved by ${trustedEntityIds?.length} organisations`}
               onPress={onPressVerifiedIssuer}
             />
           ) : (
-            <InfoButton variant="unknown" title="Unverified organization" description="No trust approvals found" />
+            <InfoButton
+              variant="unknown"
+              title="Unverified organization"
+              description="No trust approvals found"
+              onPress={onPressVerifiedIssuer}
+            />
           )}
           <InfoButton
             variant={lastInteractionDate ? 'interaction-success' : 'interaction-new'}
