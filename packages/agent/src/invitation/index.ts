@@ -35,10 +35,10 @@ export {
   acquirePreAuthorizedAccessToken,
   resolveOpenId4VciOffer,
   getCredentialsForProofRequest,
-  shareProof,
   withTrustedCertificate,
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'
+export { shareProof } from './shareProof'
 export * from './error'
 
 export type { TrustedEntity } from './trustedEntities'
