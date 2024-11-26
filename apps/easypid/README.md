@@ -8,8 +8,7 @@ This app was created by [Animo Solutions](https://animo.id/) in the context of t
 
 
 ## Features
-The identity wallet contains the following features, you can see the full flow without running the app in the [Figma design](https://www.figma.com/proto/gBBLERk7lkE27bw8Vm3es4/Funke?show-proto-sidebar=1):
-
+The identity wallet contains the following features, you can see the full flow without running the app in the [video walkthrough](TODO:Add):
 
 **General App**
 - 🟢 Onboard user
@@ -18,8 +17,9 @@ The identity wallet contains the following features, you can see the full flow w
   - 🟢 Accept privacy policy
   - 🟢 Onboarding instruction
   - 🟢 Skippable identity instruction
-- 🟠 Home screen
+- 🟢 Home screen
 - 🟠 Activity
+     - Missing activity types for presentations, failed transactions and archived credentials.
 - 🟢 About the app
 - 🟢 Credential overview
 - 🔴 Support for translation files
@@ -31,7 +31,6 @@ The identity wallet contains the following features, you can see the full flow w
    - Resolved and base is used, but not claim metadata or SVG template yet
 - 🟠 Revocation SD-JWT VC
 - 🔴 Revocation Mdoc
-- 🔴 Re-receive the PID
 
 **Obtain PID from PID provider**
 - 🟢 SD JWT VC using OpenID4VCI 
@@ -40,6 +39,8 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 [C' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
 - 🟢 [B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options) *temporarily disabled*
 - 🟢 Receive the PID from inside of the wallet
+- 🟠 PID refresh (can refresh PID as long as refresh token is valid)
+   - Missing re-receive the PID based on eID card
 
 
 **Obtain (Q)EAAs from issuer**
@@ -47,6 +48,7 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 mDOC using OpenID4VCI
 - 🟢 PID presentation during (Q)EAA issuance
 - 🟠 Batch issuance and single-use credentials
+   - Implemented fully for PID. For non-PID: when the batch is gone the same credential is continually used
 - 🟢 Authorization code flow
 - 🔴 Client attestations
 
@@ -77,14 +79,14 @@ The identity wallet contains the following features, you can see the full flow w
 
 **Trust Establishment using OpenID Federation Draft 40**
 - 🟢 Issuer and verifier entity configuration
-- 🟠 Verifier e2e flow with the right keys
-- 🟠 Functions for showing everything in the wallet
+- 🟢 Verifier e2e flow 
 - 🔴 Issuer e2e flow 
 - 🔴 Wallet in the OpenID Federation
 
 **Other**
 - 🟠 HAIP compliance
 - 🟠 WCAG 2.2 compliance
+    - Missing keyboard accessibility for Android
 - 🔴 AI-based oversharing detection
 
 **[Test issuer/verifier](https://funke.animo.id/)** 
@@ -110,7 +112,7 @@ The identity wallet contains the following temporary features for development an
 
 The prototype app is currently published privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
 
-## Try it out
+## Testing
 
 Here are some resources and tips that might be helpful while testing the app.
 
@@ -118,9 +120,54 @@ Here are some resources and tips that might be helpful while testing the app.
 
 - Make sure you have access to the BDR PID issuer, which is behind a firewall
 - Have an eID card ready or understand how to receive the simulated eID
-- Have the [playground](https://funke.animo.id/) ready as a test relying party and/or test (Q)EAA issuer
-    - The playground enables you to select different flows for issuing and verifying credentials
-    - It will display a QR code as well as relevant information for testing and debugging
+- There is an option to reset the wallet during testing. It is located in the menu, which you can find on the home page.
+
+### Test flows
+
+The [playground](https://funke.animo.id/) functions as a test relying party and/or test (Q)EAA issuer. The playground enables you to select different flows for issuing and verifying credentials. It will display a QR code and relevant information for testing and debugging.
+
+To make sure you test all the flows, please reference the overview below.
+
+#### Verifier
+
+##### Rent a car
+
+Rent a car through TurboKeys or CheapCars.
+This use case requires you to have the PID and a Führerschein (drivers licence) in your wallet. 
+It showcases:
+- Requesting multiple credentials in one request
+- Requesting mixed credentials (SD-JWT / MDOC) in one request
+- The two different supported Query languages: DIF PEX and DCQL 
+- Support for trust federations - CheapCars does not have any trusting entities, while TurboKeys does
+- Smart AI warnings - CheapCars shows an over-asking warning to the user, while Turbokeys shows that it passes the overasking detection with a green mark.
+
+##### Government identification
+
+This use case requires you to have the PID.
+It showcases:
+- Requesting only the PID
+- The two different supported Query languages: DIF PEX and DCQL 
+- Support for trust federations - Die Bundesregierung is trusted by Europe
+
+##### Open a bank account
+
+Open a bank account at Open Horizon Bank
+This use case requres you to have the PID, Steur-ID, meltebestatigung and Gezundheidskarte
+It showcases:
+- Requesting multiple credentials in one request
+- The DIF PEX query language
+- Support for trust federations - several entities trust Open Horizon Bank. Because Europe trusts Open Horizon, it is also trusted by die Bundesregierung. 
+- Smart AI warnings - Open Horizon Bank shows an over-asking warning to the user.
+
+##### Get an e-prescription
+
+Get an e-prescription from Redcare Pharmacy
+This use case requires you to have the Gezundheidskarte (health card)
+It showcases:
+- Requesting only a QEAA
+- The DCQL query language
+- Support for trust federations - Redcare Pharmacy is trusted by several entities. Both Redcare and TurboKeys are trusted by the KvK entity.
+
 
 ### Device Compatibility
 
@@ -138,11 +185,6 @@ Android devices without these features will not be able to run the app.
 
 Compatible with iPhone 5s and later models. This app requires devices with:
 - iOS 14+
-
-### While testing
-
-- The very first screen has an option to switch between the C and B' flow for testing purposes. It is located on the left side besides the continue button.
-- There is an option to reset the wallet during testing. It is located in the menu, which you can find on the home page.
 
 ## Project Structure
 
