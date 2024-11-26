@@ -42,7 +42,6 @@ export default function AppLayout() {
     if (hasResetWallet && !shouldResetWallet) setHasResetWallet(false)
     if (!shouldResetWallet || hasResetWallet) return
 
-    console.log('Resetting wallet')
     setHasResetWallet(true)
     resetWallet(secureUnlock)
   }, [secureUnlock, hasResetWallet, shouldResetWallet])
