@@ -6,9 +6,9 @@ interface VerificationAnalysisIconProps {
 }
 
 export function VerificationAnalysisIcon({ verificationAnalysis }: VerificationAnalysisIconProps) {
-  if (!verificationAnalysis.result || verificationAnalysis.isLoading) return <Spinner scale={0.8} />
+  if (verificationAnalysis.isLoading) return <Spinner scale={0.8} />
 
-  if (verificationAnalysis.result.validRequest === 'could_not_determine') {
+  if (!verificationAnalysis.result || verificationAnalysis.result.validRequest === 'could_not_determine') {
     // AI doesn't know or an error was thrown
     return null
   }

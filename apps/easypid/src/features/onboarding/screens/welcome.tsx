@@ -16,7 +16,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
         pos="absolute"
         source={welcomeBackground}
         resizeMode="cover"
-        h={Dimensions.get('window').height / 2}
+        h={Dimensions.get('window').height / 1.8}
         mt="$-4"
         w="100%"
         top={0}
@@ -36,7 +36,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
               }}
             />
           </YStack>
-          <Stack h="$10" />
+          <Stack h="$11" />
           <YStack gap="$4" jc="center" ai="center">
             <Heading fontSize={32}>Animo EasyPID</Heading>
             <Paragraph px="$2" ta="center">

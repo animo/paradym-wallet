@@ -43,7 +43,14 @@ export const analyzeVerification = async ({
       throw new Error(`Request to AI returned ${response.status}`)
     }
 
-    return await response.json()
+    const data = await response.json()
+
+    console.debug(
+      'AI analysed verification request and returned the following response:',
+      JSON.stringify(data, null, 2)
+    )
+
+    return data
   } catch (error) {
     console.error('AI analysis failed:', error)
     return {

@@ -14,7 +14,8 @@ import {
 } from '@package/ui'
 import type { DisplayImage } from 'packages/agent/src'
 import { useState } from 'react'
-import { ZoomIn } from 'react-native-reanimated'
+import React from 'react'
+import { FadeIn, ZoomIn } from 'react-native-reanimated'
 import { VerificationAnalysisIcon } from './VerificationAnalysisIcon'
 
 interface RequestPurposeSectionProps {
@@ -35,10 +36,12 @@ export function RequestPurposeSection({ purpose, logo, verificationAnalysis }: R
       <YStack gap="$2">
         {verificationAnalysis?.result?.validRequest === 'no' && (
           <AnimatedStack
+            entering={FadeIn}
             style={pressStyle}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             onPress={toggleAnalysisModal}
+            mt="$-2"
             mb="$4"
           >
             <MessageBox
