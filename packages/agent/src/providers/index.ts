@@ -7,4 +7,3 @@ export {
 } from './W3cCredentialsProvider'
 export { useSdJwtVcRecordById, useSdJwtVcRecords, SdJwtVcRecord, SdJwtVc } from './SdJwtVcsProvider'
 export { useMdocRecordById, useMdocRecords, Mdoc, MdocRecord } from './MdocProvider'
-export { useTrustedEntities } from './TrustedEntitiesProvider'
