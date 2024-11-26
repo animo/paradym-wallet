@@ -9,10 +9,10 @@ import { updateCredential } from './storage'
  *
  * @todo: what if batch is gone?
  */
-export async function handleBatchCredential(
+export async function handleBatchCredential<CredentialRecord extends W3cCredentialRecord | SdJwtVcRecord | MdocRecord>(
   agent: EitherAgent,
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
-) {
+  credentialRecord: CredentialRecord
+): Promise<CredentialRecord> {
   const batchMetadata = getBatchCredentialMetadata(credentialRecord)
 
   if (batchMetadata) {
@@ -26,18 +26,18 @@ export async function handleBatchCredential(
       if (credentialRecord instanceof MdocRecord) {
         return new MdocRecord({
           mdoc: Mdoc.fromBase64Url(batchCredential as string),
-        })
+        }) as CredentialRecord
       }
       if (credentialRecord instanceof SdJwtVcRecord) {
         return new SdJwtVcRecord({
           compactSdJwtVc: batchCredential as string,
-        })
+        }) as CredentialRecord
       }
       if (credentialRecord instanceof W3cCredentialRecord) {
         return new W3cCredentialRecord({
           tags: { expandedTypes: [] },
           credential: decodeW3cCredential(batchCredential),
-        })
+        }) as CredentialRecord
       }
     }
   }
