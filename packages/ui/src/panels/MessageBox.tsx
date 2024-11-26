@@ -23,7 +23,7 @@ const messageBoxVariants = {
     color: '$white',
   },
   success: {
-    bg: '$success-500',
+    bg: '$positive-500',
     color: '$white',
   },
 }
@@ -40,7 +40,11 @@ export function MessageBox({ message, textVariant = 'normal', variant = 'default
   return (
     <XStack gap="$2" p="$3.5" bg={messageBoxVariants[variant].bg} borderRadius="$8">
       <YStack gap="$2" f={1}>
-        {title && <Heading variant="sub2">{title}</Heading>}
+        {title && (
+          <Heading variant="sub2" color={messageBoxVariants[variant].color}>
+            {title}
+          </Heading>
+        )}
         <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
           {message}
         </Paragraph>

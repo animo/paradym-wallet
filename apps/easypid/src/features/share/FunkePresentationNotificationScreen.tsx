@@ -1,5 +1,6 @@
 import type { DisplayImage, FormattedSubmission, TrustedEntity } from '@package/agent'
 
+import type { VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
@@ -13,6 +14,7 @@ interface FunkePresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
+  verificationAnalysis: VerificationAnalysisResult
   trustedEntities?: Array<TrustedEntity>
   submission?: FormattedSubmission
   usePin: boolean
@@ -33,6 +35,7 @@ export function FunkePresentationNotificationScreen({
   isAccepting,
   submission,
   onComplete,
+  verificationAnalysis,
   trustedEntities,
 }: FunkePresentationNotificationScreenProps) {
   return (
@@ -71,6 +74,7 @@ export function FunkePresentationNotificationScreen({
                 logo={logo}
                 submission={submission}
                 isAccepting={isAccepting}
+                verificationAnalysis={verificationAnalysis}
               />
             ),
           },

@@ -27,7 +27,7 @@ const infoSheetVariants = {
     background: '$warning-300',
   },
   danger: {
-    icon: <HeroIcons.ExclamationCircleFilled />,
+    icon: <HeroIcons.ExclamationTriangleFilled />,
     accent: '$danger-500',
     layer: '$danger-400',
     background: '$danger-300',
