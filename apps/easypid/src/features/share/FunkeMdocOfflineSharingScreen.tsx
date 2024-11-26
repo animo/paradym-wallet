@@ -122,6 +122,7 @@ export function FunkeMdocOfflineSharingScreen({
           hostName: undefined,
           logo: undefined,
           name: 'Unknown party',
+          verifiedEntityIds: undefined,
         },
       },
       status

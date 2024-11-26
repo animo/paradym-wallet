@@ -498,7 +498,7 @@ export const getCredentialsForProofRequest = async ({
       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
   }
 
-  let verifiedEntityIds: Record<string, boolean> = {}
+  let verifiedEntityIds: Record<string, boolean> | undefined = undefined
   if (entityId) {
     const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
       entityId: entityId ?? '',
