@@ -1,13 +1,14 @@
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
+  type FormattedSubmissionEntrySatisfied,
   getCredentialsForProofRequest,
   getDisclosedAttributeNamesForDisplay,
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
 import { analyzeVerification } from '@easypid/use-cases/ValidateVerification'
@@ -71,7 +72,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     setVerificationAnalysis((prev) => ({ ...prev, isLoading: true }))
 
     const submission = credentialsForRequest.formattedSubmission
-    const requestedCards = submission.entries.filter((entry) => entry.isSatisfied).flatMap((entry) => entry.credentials)
+    const requestedCards = submission.entries
+      .filter((entry): entry is FormattedSubmissionEntrySatisfied => entry.isSatisfied)
+      .flatMap((entry) => entry.credentials)
 
     analyzeVerification({
       name: submission.name ?? 'No name provided',

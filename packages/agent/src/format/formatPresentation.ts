@@ -14,7 +14,6 @@ import {
   getCredentialForDisplay,
   getDisclosedAttributePathArrays,
 } from '../display'
-import { applyLimitdisclosureForSdJwtRequestedPayload } from './disclosureFrame'
 
 export interface FormattedSubmission {
   name?: string
