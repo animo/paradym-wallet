@@ -1,17 +1,18 @@
 import { ClaimFormat, MdocRecord, getJwkFromJson } from '@credo-ts/core'
+import { SdJwtVcRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
+import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@package/agent'
 import {
-  type OpenId4VciRequestTokenResponse,
-  type OpenId4VciResolvedCredentialOffer,
-  SdJwtVcRecord,
   acquireRefreshTokenAccessToken,
-  getRefreshCredentialMetadata,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-  setRefreshCredentialMetadata,
-  updateCredential,
-} from '@package/agent'
+} from '@package/agent/src/invitation/handler'
 import { getBatchCredentialMetadata, setBatchCredentialMetadata } from '@package/agent/src/openid4vc/batchMetadata'
+import {
+  getRefreshCredentialMetadata,
+  setRefreshCredentialMetadata,
+} from '@package/agent/src/openid4vc/refreshMetadata'
+import { updateCredential } from '@package/agent/src/storage/credential'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
@@ -55,9 +56,11 @@ export class RefreshPidUseCase {
   public async retrieveCredentialsUsingExistingRecords({
     sdJwt,
     mdoc,
+    batchSize = 2,
   }: {
     sdJwt?: SdJwtVcRecord
     mdoc?: MdocRecord
+    batchSize?: number
   }) {
     const existingRefreshMetadata =
       (sdJwt ? getRefreshCredentialMetadata(sdJwt) : undefined) ??
@@ -94,7 +97,7 @@ export class RefreshPidUseCase {
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       credentialConfigurationIdsToRequest,
       clientId: RefreshPidUseCase.CLIENT_ID,
-      requestBatch: 2,
+      requestBatch: batchSize,
       pidSchemes,
     })
 
