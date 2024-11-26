@@ -8,8 +8,7 @@ index f4352d639a511347d9a087f4ba5c5afddec477ce..b67794d922ba8112dcca27b8166c2877
                  // Generate a hardware-backed P-256 keypair
 -                secureEnvironment.generateKeypair(kid);
 -                const publicKeyBytes = secureEnvironment.getPublicBytesForKeyId(kid);
-+                await secureEnvironment.generateKeypair(kid);
-+                const publicKeyBytes = await secureEnvironment.getPublicBytesForKeyId(kid);
++                const publicKeyBytes = await secureEnvironment.generateKeypair(kid);
                  const publicKeyBase58 = core_1.TypedArrayEncoder.toBase58(publicKeyBytes);
                  await this.storeSecureEnvironmentKeyById({
                      keyType,
