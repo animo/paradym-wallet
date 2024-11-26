@@ -247,8 +247,8 @@ export function OnboardingContextProvider({
 
     return secureUnlock
       .setup(walletPin as string)
-      .then(({ walletKey }) => {
-        setWalletServiceProviderPin((walletPin as string).split('').map(Number))
+      .then(async ({ walletKey }) => {
+        await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
         return initializeAgent(walletKey)
       })
       .then(goToNextStep)

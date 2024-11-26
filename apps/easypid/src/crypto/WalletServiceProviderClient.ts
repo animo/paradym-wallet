@@ -20,32 +20,34 @@ import { deriveKeypairFromPin } from './pin'
 
 // TODO: should auto reset after X seconds
 let __pin: Array<number> | undefined
-export const setWalletServiceProviderPin = async (pin: Array<number>) => {
+export const setWalletServiceProviderPin = async (pin: Array<number>, validatePin = true) => {
   const pinString = pin.join('')
-  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-  const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
-  const walletId = `easypid-wallet-${walletKeyVersion}`
-  const agent = new Agent({
-    config: {
-      label: 'pin_test_agent',
-      walletConfig: { id: walletId, key: walletKey, keyDerivationMethod: KeyDerivationMethod.Raw },
-    },
-    modules: {
-      askar: new AskarModule({ ariesAskar }),
-    },
-    dependencies: agentDependencies,
-  })
+  if (validatePin) {
+    const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+    const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
+    const walletId = `easypid-wallet-${walletKeyVersion}`
+    const agent = new Agent({
+      config: {
+        label: 'pin_test_agent',
+        walletConfig: { id: walletId, key: walletKey, keyDerivationMethod: KeyDerivationMethod.Raw },
+      },
+      modules: {
+        askar: new AskarModule({ ariesAskar }),
+      },
+      dependencies: agentDependencies,
+    })
 
-  try {
-    await agent.initialize()
-  } catch (e) {
-    if (e instanceof WalletInvalidKeyError) {
-      throw new InvalidPinError()
+    try {
+      await agent.initialize()
+    } catch (e) {
+      if (e instanceof WalletInvalidKeyError) {
+        throw new InvalidPinError()
+      }
+      throw e
     }
-    throw e
-  }
 
-  await agent.shutdown()
+    await agent.shutdown()
+  }
   __pin = pin
 }
 
