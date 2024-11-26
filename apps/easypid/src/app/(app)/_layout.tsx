@@ -1,4 +1,4 @@
-import { Redirect, Stack, useGlobalSearchParams, useLocalSearchParams, usePathname, useRouter } from 'expo-router'
+import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
@@ -135,7 +135,7 @@ export default function AppLayout() {
           <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
           <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
           <Stack.Screen name="pinLocked" options={headerNormalOptions} />
-          <Stack.Screen name="issuer" options={headerNormalOptions} />
+          <Stack.Screen name="federation" options={headerNormalOptions} />
           <Stack.Screen name="pidSetup" />
         </Stack>
       </WalletJsonStoreProvider>

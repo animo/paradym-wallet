@@ -55,6 +55,8 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
+import { TRUSTED_ENTITIES } from './trustedEntities'
+import type { TrustedEntity } from './trustedEntities'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -448,20 +450,21 @@ export async function withTrustedCertificate<T>(
 }
 
 export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
+
+export type GetCredentialsForProofRequestOptions = {
+  agent: EitherAgent
+  data?: string
+  uri?: string
+  allowUntrustedFederation?: boolean
+}
+
 export const getCredentialsForProofRequest = async ({
   agent,
   data,
   uri,
-  allowUntrustedFederation = true, // TODO: True for now
-}: {
-  agent: EitherAgent
-  // Either data or uri can be provided
-  data?: string
-  uri?: string
-  allowUntrustedFederation?: boolean
-}) => {
+  allowUntrustedFederation = true,
+}: GetCredentialsForProofRequestOptions) => {
   let requestUri: string
-
   let requestData = data
 
   const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
@@ -493,6 +496,23 @@ export const getCredentialsForProofRequest = async ({
   if (resolved.authorizationRequest.payload) {
     resolved.authorizationRequest.payload.client_metadata =
       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
+  }
+
+  let trustedEntities: Array<TrustedEntity> = []
+  if (entityId) {
+    const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+      entityId: entityId,
+      trustAnchorEntityIds: TRUSTED_ENTITIES,
+    })
+
+    trustedEntities = resolvedChains
+      .map((chain) => ({
+        entity_id: chain.trustAnchorEntityConfiguration.sub,
+        organization_name:
+          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
+        logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+      }))
+      .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
   }
 
   let formattedSubmission: FormattedSubmission
@@ -530,6 +550,7 @@ export const getCredentialsForProofRequest = async ({
           }
         : undefined,
       name: clientMetadata?.client_name,
+      trustedEntities,
     },
     formattedSubmission,
   } as const

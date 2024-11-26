@@ -9,7 +9,6 @@ import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
-import { getOpenIdFedIssuerMetadata } from '@easypid/utils/issuer'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
@@ -30,15 +29,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const { activities } = useActivities({
     filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
   })
-  const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest)
-
-  // TODO: this should be returnd by getCredentialsForProofRequest
-  // TODO: addSharedActivityForCredentialsForRequest should take into account fed display metadata
-  const fedDisplayData = useMemo(
-    () => credentialsForRequest && getOpenIdFedIssuerMetadata(credentialsForRequest.verifier.entityId),
-    [credentialsForRequest]
-  )
   const lastInteractionDate = activities?.[0]?.date
+  const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest)
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -154,8 +146,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       entityId={credentialsForRequest?.verifier.entityId as string}
       verifierName={credentialsForRequest?.verifier.name}
       logo={credentialsForRequest?.verifier.logo}
+      trustedEntities={credentialsForRequest?.verifier.trustedEntities}
       lastInteractionDate={lastInteractionDate}
-      approvalsCount={fedDisplayData?.approvals.length}
       onComplete={() => pushToWallet('replace')}
     />
   )

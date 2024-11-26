@@ -352,7 +352,6 @@ export function FunkeCredentialNotificationScreen() {
               logo={credentialDisplay.issuer.logo}
               entityId={issuerMetadata?.credential_issuer as string}
               lastInteractionDate={activities[0]?.date}
-              approvalsCount={0}
               onContinue={onCheckCardContinue}
             />
           ),

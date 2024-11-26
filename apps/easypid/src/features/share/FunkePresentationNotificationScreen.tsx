@@ -1,4 +1,4 @@
-import type { DisplayImage, FormattedSubmission } from '@package/agent'
+import type { DisplayImage, FormattedSubmission, TrustedEntity } from '@package/agent'
 
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
@@ -13,8 +13,7 @@ interface FunkePresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
-  approvalsCount?: number
-
+  trustedEntities?: Array<TrustedEntity>
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
@@ -28,13 +27,13 @@ export function FunkePresentationNotificationScreen({
   verifierName,
   logo,
   lastInteractionDate,
-  approvalsCount,
   usePin,
   onAccept,
   onDecline,
   isAccepting,
   submission,
   onComplete,
+  trustedEntities,
 }: FunkePresentationNotificationScreenProps) {
   return (
     <SlideWizard
@@ -57,7 +56,7 @@ export function FunkePresentationNotificationScreen({
                 name={verifierName}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
-                approvalsCount={approvalsCount}
+                trustedEntities={trustedEntities}
               />
             ),
           },
