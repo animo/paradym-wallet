@@ -32,17 +32,20 @@ export default function AppLayout() {
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
-  const [resetWalletState, setResetWalletState] = useState<'resetting' | 'reset'>()
+  const [hasResetWallet, setHasResetWallet] = useState(false)
   const shouldResetWallet =
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
   const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
 
   useEffect(() => {
-    if (resetWalletState || !shouldResetWallet) return
+    // Reset state
+    if (hasResetWallet && !shouldResetWallet) setHasResetWallet(false)
+    if (!shouldResetWallet || hasResetWallet) return
 
-    setResetWalletState('resetting')
-    resetWallet(secureUnlock).then(() => setResetWalletState('reset'))
-  }, [secureUnlock, resetWalletState, shouldResetWallet])
+    console.log('Resetting wallet')
+    setHasResetWallet(true)
+    resetWallet(secureUnlock)
+  }, [secureUnlock, hasResetWallet, shouldResetWallet])
 
   // If we are intializing and the wallet was opened using a deeplinkg we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
@@ -66,7 +69,7 @@ export default function AppLayout() {
   }
 
   // This should show the splash screen
-  if (secureUnlock.state === 'initializing' || (shouldResetWallet && resetWalletState !== 'reset')) {
+  if (secureUnlock.state === 'initializing' || shouldResetWallet) {
     return null
   }
 

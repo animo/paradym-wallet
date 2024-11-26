@@ -398,25 +398,15 @@ export const getCredentialsForProofRequest = async ({
   agent,
   data,
   uri,
-  allowUntrustedCertificates = false,
 }: {
   agent: EitherAgent
   // Either data or uri can be provided
   data?: string
   uri?: string
-  allowUntrustedCertificates?: boolean
 }) => {
   let requestUri: string
 
-  const { certificate = null, data: newData = null } = allowUntrustedCertificates
-    ? await extractCertificateFromAuthorizationRequest({ data, uri })
-    : {}
-
-  if (newData) {
-    // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
-    // but in the future we need to support the parsed request in Credo directly
-    requestUri = `openid://?request=${encodeURIComponent(newData)}`
-  } else if (data) {
+  if (data) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
     // but in the future we need to support the parsed request in Credo directly
     requestUri = `openid://?request=${encodeURIComponent(data)}`
@@ -432,10 +422,7 @@ export const getCredentialsForProofRequest = async ({
     requestUri,
   })
 
-  // Temp solution to add and remove the trusted certificate
-  const resolved = await withTrustedCertificate(agent, certificate, () =>
-    agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
-  )
+  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
 
   let formattedSubmission: FormattedSubmission
   if (resolved.presentationExchange) {
@@ -481,12 +468,10 @@ export const shareProof = async ({
   agent,
   resolvedRequest,
   selectedCredentials,
-  allowUntrustedCertificate = false,
 }: {
   agent: EitherAgent
   resolvedRequest: CredentialsForProofRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
-  allowUntrustedCertificate?: boolean
 }) => {
   const { authorizationRequest } = resolvedRequest
   if (
@@ -525,25 +510,19 @@ export const shareProof = async ({
     : undefined
 
   try {
-    // Temp solution to add and remove the trusted certificate
-    const certificate =
-      authorizationRequest.jwt && allowUntrustedCertificate ? extractCertificateFromJwt(authorizationRequest.jwt) : null
-
-    const result = await withTrustedCertificate(agent, certificate, () =>
-      agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
-        authorizationRequest,
-        presentationExchange: presentationExchangeCredentials
-          ? {
-              credentials: presentationExchangeCredentials,
-            }
-          : undefined,
-        dcql: dcqlCredentials
-          ? {
-              credentials: dcqlCredentials,
-            }
-          : undefined,
-      })
-    )
+    const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
+      authorizationRequest,
+      presentationExchange: presentationExchangeCredentials
+        ? {
+            credentials: presentationExchangeCredentials,
+          }
+        : undefined,
+      dcql: dcqlCredentials
+        ? {
+            credentials: dcqlCredentials,
+          }
+        : undefined,
+    })
 
     // if redirect_uri is provided, open it in the browser
     // Even if the response returned an error, we must open this uri
