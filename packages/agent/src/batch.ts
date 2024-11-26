@@ -63,7 +63,7 @@ export async function handleBatchCredential<CredentialRecord extends W3cCredenti
       batchSize: 5,
     })
       .catch((error) => {
-        // TOOD: we should handle the case where the refresh token is expired
+        // TODO: we should handle the case where the refresh token is expired
         agent.config.logger.error('Error refreshing pid', {
           error,
         })
