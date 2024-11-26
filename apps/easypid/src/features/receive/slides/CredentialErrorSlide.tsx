@@ -8,7 +8,7 @@ interface CredentialErrorSlideProps {
 export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideProps) => {
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$6">
+      <YStack bw={1} gap="$6">
         <YStack gap="$2">
           <YStack gap="$4">
             <Heading>Something went wrong</Heading>
@@ -30,7 +30,7 @@ export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideP
           )}
         </YStack>
       </YStack>
-      <Stack borderTopWidth="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4">
+      <Stack borderTopWidth="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4">
         <Button.Solid scaleOnPress onPress={onCancel}>
           Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
