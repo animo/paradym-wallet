@@ -326,6 +326,61 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 }
 
+const extractEntityIdFromJwt = (jwt: string): string | null => {
+  const jwtPayload = Jwt.fromSerializedJwt(jwt).payload
+
+  if (jwtPayload?.additionalClaims?.client_id_scheme !== 'entity_id') return null
+
+  const clientId = jwtPayload?.additionalClaims?.client_id
+  if (!clientId || typeof clientId !== 'string') return null
+
+  return clientId
+}
+
+/**
+ * This is a temp method to allow for untrusted certificates to still work with the wallet.
+ */
+export const extractEntityIdFromAuthorizationRequest = async ({
+  data,
+  uri,
+}: { data?: string; uri?: string }): Promise<{ data: string | null; entityId: string | null }> => {
+  try {
+    if (data) {
+      return {
+        data,
+        entityId: extractEntityIdFromJwt(data),
+      }
+    }
+
+    if (uri) {
+      const query = q.parseUrl(uri).query
+      if (query.request_uri && typeof query.request_uri === 'string') {
+        const result = await fetchInvitationDataUrl(query.request_uri)
+
+        if (
+          result.success &&
+          result.result.type === 'openid-authorization-request' &&
+          typeof result.result.data === 'string'
+        ) {
+          return {
+            data: result.result.data,
+            entityId: extractEntityIdFromJwt(result.result.data),
+          }
+        }
+      } else if (query.request && typeof query.request === 'string') {
+        return {
+          data: query.request,
+          entityId: extractEntityIdFromJwt(query.request),
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+
+  return { data: null, entityId: null }
+}
+
 const extractCertificateFromJwt = (jwt: string) => {
   const jwtHeader = Jwt.fromSerializedJwt(jwt).header
   return Array.isArray(jwtHeader.x5c) && typeof jwtHeader.x5c[0] === 'string' ? jwtHeader.x5c[0] : null
@@ -398,18 +453,27 @@ export const getCredentialsForProofRequest = async ({
   agent,
   data,
   uri,
+  allowUntrustedFederation = true, // TODO: True for now
 }: {
   agent: EitherAgent
   // Either data or uri can be provided
   data?: string
   uri?: string
+  allowUntrustedFederation?: boolean
 }) => {
   let requestUri: string
 
-  if (data) {
+  let requestData = data
+
+  const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
+    ? await extractEntityIdFromAuthorizationRequest({ data: requestData, uri })
+    : {}
+  requestData = fromFederationData ?? requestData
+
+  if (requestData) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
     // but in the future we need to support the parsed request in Credo directly
-    requestUri = `openid://?request=${encodeURIComponent(data)}`
+    requestUri = `openid://?request=${encodeURIComponent(requestData)}`
   } else if (uri) {
     requestUri = uri
   } else {
@@ -422,7 +486,15 @@ export const getCredentialsForProofRequest = async ({
     requestUri,
   })
 
-  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
+  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri, {
+    ...(entityId ? { federation: { trustedEntityIds: [entityId] } } : {}),
+  })
+
+  // TODO: Remove me when the new credo-ts version is used
+  if (resolved.authorizationRequest.payload) {
+    resolved.authorizationRequest.payload.client_metadata =
+      resolved.authorizationRequest.authorizationRequestPayload.client_metadata
+  }
 
   let formattedSubmission: FormattedSubmission
   if (resolved.presentationExchange) {
@@ -451,7 +523,7 @@ export const getCredentialsForProofRequest = async ({
       hostName: resolved.authorizationRequest.responseURI
         ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
         : undefined,
-      entityId: resolved.authorizationRequest.payload?.iss as string,
+      entityId: entityId ?? (resolved.authorizationRequest.payload?.iss as string),
 
       logo: clientMetadata?.logo_uri
         ? {
