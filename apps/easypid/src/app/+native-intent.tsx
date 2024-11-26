@@ -1,8 +1,8 @@
 import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
 import * as Haptics from 'expo-haptics'
-import { Platform } from 'react-native'
 import { router } from 'expo-router'
+import { Platform } from 'react-native'
 
 export async function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
   const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))

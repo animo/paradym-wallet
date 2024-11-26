@@ -13,6 +13,7 @@ import {
   Agent,
   AutoAcceptCredential,
   AutoAcceptProof,
+  ClaimFormat,
   ConnectionsModule,
   CredentialsModule,
   DidsModule,
@@ -23,6 +24,7 @@ import {
   KeyDidRegistrar,
   KeyDidResolver,
   LogLevel,
+  Mdoc,
   MediationRecipientModule,
   MediatorPickupStrategy,
   ProofsModule,
@@ -30,6 +32,7 @@ import {
   V2ProofProtocol,
   WebDidResolver,
   WsOutboundTransport,
+  X509Module,
 } from '@credo-ts/core'
 import {
   IndyVdrAnonCredsRegistry,
@@ -45,6 +48,7 @@ import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
+import { bdrPidIssuerCertificate, pidSchemes } from '../../../apps/easypid/src/constants'
 import { indyNetworks } from './indyNetworks'
 import { appLogger } from './logger'
 
@@ -80,15 +84,42 @@ export const initializeEasyPIDAgent = async ({
     modules: {
       ariesAskar: askarModule,
       openId4VcHolder: new OpenId4VcHolderModule(),
+      x509: new X509Module({
+        getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
+          if (verification.type === 'credential') {
+            // Only allow BDR certificate for PID credentials for now
+            if (
+              verification.credential instanceof Mdoc &&
+              pidSchemes.msoMdocDoctypes.includes(verification.credential.docType)
+            ) {
+              return [bdrPidIssuerCertificate]
+            }
+
+            if (
+              verification.credential.claimFormat === ClaimFormat.SdJwtVc &&
+              pidSchemes.sdJwtVcVcts.includes(verification.credential.payload.vct as string)
+            ) {
+              return [bdrPidIssuerCertificate]
+            }
+
+            // If not PID, we allow any certificate for now
+            return [certificateChain[0].toString('pem')]
+          }
+
+          // Allow any actor for auth requests for now
+          if (verification.type === 'oauth2SecuredAuthorizationRequest') {
+            return [certificateChain[0].toString('pem')]
+          }
+
+          return undefined
+        },
+        trustedCertificates:
+          trustedX509Certificates.length > 0 ? (trustedX509Certificates as [string, ...string[]]) : undefined,
+      }),
     },
   })
 
   await agent.initialize()
-
-  // Register the trusted x509 certificates
-  for (const trustedCertificate of trustedX509Certificates) {
-    agent.x509.addTrustedCertificate(trustedCertificate)
-  }
 
   return agent
 }

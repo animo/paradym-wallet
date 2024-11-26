@@ -74,11 +74,14 @@ export function FunkeCredentialNotificationScreen() {
   // TODO: where to transform?
   // Combine oid4vci issuer metadata and openid fed into one pipeline. If openid it's trusted
   const issuerMetadata = resolvedCredentialOffer?.metadata.credentialIssuer
-  const configuration =
-    resolvedCredentialOffer?.offeredCredentialConfigurations[
-      // TODO: handle empty configuration ids
-      resolvedCredentialOffer.credentialOfferPayload.credential_configuration_ids[0]
-    ]
+  // We want the first supported configuration id
+  // TODO: handle empty configuration ids
+  const configurationId = resolvedCredentialOffer?.offeredCredentialConfigurations
+    ? Object.keys(resolvedCredentialOffer.offeredCredentialConfigurations)[0]
+    : undefined
+  const configuration = configurationId
+    ? resolvedCredentialOffer?.offeredCredentialConfigurations[configurationId]
+    : undefined
 
   const credentialDisplay = getCredentialDisplayWithDefaults(
     configuration && issuerMetadata
@@ -122,11 +125,13 @@ export function FunkeCredentialNotificationScreen() {
     async (
       resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer,
       tokenResponse: OpenId4VciRequestTokenResponse,
+      configurationId: string,
       resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequest
     ) => {
       const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
         agent,
         resolvedCredentialOffer,
+        credentialConfigurationIdsToRequest: [configurationId],
         accessToken: tokenResponse,
         clientId: resolvedAuthorizationRequest ? authorization.clientId : undefined,
       })
@@ -164,7 +169,7 @@ export function FunkeCredentialNotificationScreen() {
 
   const acquireCredentialsAuth = useCallback(
     async (authorizationCode: string) => {
-      if (!resolvedCredentialOffer || !resolvedAuthorizationRequest) {
+      if (!resolvedCredentialOffer || !resolvedAuthorizationRequest || !configurationId) {
         setErrorReason('Credential information could not be extracted')
         return
       }
@@ -179,7 +184,7 @@ export function FunkeCredentialNotificationScreen() {
             'codeVerifier' in resolvedAuthorizationRequest ? resolvedAuthorizationRequest.codeVerifier : undefined,
         })
 
-        await retrieveCredentials(resolvedCredentialOffer, tokenResponse, resolvedAuthorizationRequest)
+        await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId, resolvedAuthorizationRequest)
       } catch (error) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
@@ -187,12 +192,12 @@ export function FunkeCredentialNotificationScreen() {
         setErrorReason('Error while retrieving credentials')
       }
     },
-    [resolvedCredentialOffer, resolvedAuthorizationRequest, retrieveCredentials, agent]
+    [resolvedCredentialOffer, resolvedAuthorizationRequest, retrieveCredentials, agent, configurationId]
   )
 
   const acquireCredentialsPreAuth = useCallback(
     async (txCode?: string) => {
-      if (!resolvedCredentialOffer) {
+      if (!resolvedCredentialOffer || !configurationId) {
         setErrorReason('Credential information could not be extracted')
         return
       }
@@ -203,7 +208,7 @@ export function FunkeCredentialNotificationScreen() {
           resolvedCredentialOffer,
           txCode,
         })
-        await retrieveCredentials(resolvedCredentialOffer, tokenResponse)
+        await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId)
       } catch (error) {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
@@ -211,7 +216,7 @@ export function FunkeCredentialNotificationScreen() {
         setErrorReason('Error while retrieving credentials')
       }
     },
-    [resolvedCredentialOffer, agent, retrieveCredentials]
+    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId]
   )
 
   const parsePresentationRequestUrl = useCallback(
@@ -219,7 +224,6 @@ export function FunkeCredentialNotificationScreen() {
       getCredentialsForProofRequest({
         agent,
         uri: oid4vpRequestUrl,
-        allowUntrustedCertificates: true,
       })
         .then(setCredentialsForRequest)
         .catch((error) => {
@@ -276,7 +280,6 @@ export function FunkeCredentialNotificationScreen() {
           agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
-          allowUntrustedCertificate: true,
         })
 
         const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({

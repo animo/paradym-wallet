@@ -12,6 +12,7 @@ import {
 import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {
+  console.log('Resetting wallet')
   if (secureUnlock.state === 'unlocked') {
     const agent = secureUnlock.context.agent
     secureUnlock.lock()
