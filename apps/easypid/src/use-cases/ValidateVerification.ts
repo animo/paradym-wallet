@@ -1,4 +1,4 @@
-const PLAYGROUND_URL = 'https://3a9c-84-241-196-229.ngrok-free.app'
+const PLAYGROUND_URL = 'https://funke.animo.id'
 
 export type VerificationAnalysisInput = {
   name: string

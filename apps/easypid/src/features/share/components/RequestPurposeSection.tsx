@@ -15,7 +15,7 @@ import {
 import type { DisplayImage } from 'packages/agent/src'
 import { useState } from 'react'
 import { ZoomIn } from 'react-native-reanimated'
-import { VerificationAnalysisSection } from './VerificationAnalysisSection'
+import { VerificationAnalysisIcon } from './VerificationAnalysisIcon'
 
 interface RequestPurposeSectionProps {
   purpose: string
@@ -53,7 +53,7 @@ export function RequestPurposeSection({ purpose, logo, verificationAnalysis }: R
           <Stack h="$2" w="$2" ai="center" jc="center">
             {verificationAnalysis && (
               <AnimatedStack key={verificationAnalysis.result?.validRequest} entering={ZoomIn}>
-                <VerificationAnalysisSection verificationAnalysis={verificationAnalysis} />
+                <VerificationAnalysisIcon verificationAnalysis={verificationAnalysis} />
               </AnimatedStack>
             )}
           </Stack>
