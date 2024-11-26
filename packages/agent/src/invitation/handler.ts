@@ -499,14 +499,14 @@ export const getCredentialsForProofRequest = async ({
       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
   }
 
-  let verifiedEntities: Array<TrustedEntity> = []
+  let trustedEntities: Array<TrustedEntity> = []
   if (entityId) {
     const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
       entityId: entityId,
       trustAnchorEntityIds: TRUSTED_ENTITIES,
     })
 
-    verifiedEntities = resolvedChains
+    trustedEntities = resolvedChains
       .map((chain) => ({
         entity_id: chain.trustAnchorEntityConfiguration.sub,
         organization_name:
@@ -551,7 +551,7 @@ export const getCredentialsForProofRequest = async ({
           }
         : undefined,
       name: clientMetadata?.client_name,
-      verifiedEntities,
+      trustedEntities,
     },
     formattedSubmission,
   } as const

@@ -26,7 +26,7 @@ interface VerifyPartySlideProps {
   backgroundColor?: string
   lastInteractionDate?: string
   onContinue?: () => Promise<void>
-  verifiedEntities?: Array<TrustedEntity>
+  trustedEntities?: Array<TrustedEntity>
 }
 
 export const VerifyPartySlide = ({
@@ -37,7 +37,7 @@ export const VerifyPartySlide = ({
   backgroundColor,
   lastInteractionDate,
   onContinue,
-  verifiedEntities,
+  trustedEntities,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
@@ -55,7 +55,7 @@ export const VerifyPartySlide = ({
 
   const onPressVerifiedIssuer = withHaptics(() => {
     router.push(
-      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&entityId=${encodeURIComponent(entityId)}&trustedEntities=${encodeURIComponent(JSON.stringify(verifiedEntities ?? []))}`
+      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&entityId=${encodeURIComponent(entityId)}&trustedEntities=${encodeURIComponent(JSON.stringify(trustedEntities ?? []))}`
     )
   })
 
@@ -95,11 +95,11 @@ export const VerifyPartySlide = ({
         </YStack>
 
         <YStack gap="$4">
-          {verifiedEntities && verifiedEntities.length > 0 ? (
+          {trustedEntities && trustedEntities.length > 0 ? (
             <InfoButton
               variant="info"
               title="Recognized organisation"
-              description={`Approved by ${verifiedEntities.length} organisations`}
+              description={`Approved by ${trustedEntities.length} organisations`}
               onPress={onPressVerifiedIssuer}
             />
           ) : (
