@@ -4,6 +4,7 @@ import {
   Button,
   Heading,
   HeroIcons,
+  Loader,
   Paragraph,
   ScrollView,
   Spacer,
@@ -57,6 +58,7 @@ export const CredentialRetrievalSlide = ({
   const [isStoring, setIsStoring] = useState(false)
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
   const isStoringOrCompleted = isStoring || isCompleted
+  const isAllowedToAccept = attributes && Object.keys(attributes).length > 0
 
   const handleAccept = async () => {
     setIsStoring(true)
@@ -195,15 +197,22 @@ export const CredentialRetrievalSlide = ({
                 mx="$-4"
                 maxHeight={scrollViewHeight}
                 bg="$white"
+                contentContainerStyle={{ flexGrow: 1 }}
               >
-                {scrollViewHeight && (
-                  <CredentialAttributes
-                    headerStyle="small"
-                    borderStyle="large"
-                    attributeWeight="medium"
-                    subject={attributes}
-                    disableHeader
-                  />
+                {scrollViewHeight && isAllowedToAccept ? (
+                  <AnimatedStack key="credential-attributes" entering={FadeIn.duration(200)}>
+                    <CredentialAttributes
+                      headerStyle="small"
+                      borderStyle="large"
+                      attributeWeight="medium"
+                      subject={attributes}
+                      disableHeader
+                    />
+                  </AnimatedStack>
+                ) : (
+                  <YStack fg={1} jc="center" ai="center">
+                    <Loader />
+                  </YStack>
                 )}
                 <Spacer size="$6" />
               </ScrollView>
@@ -229,7 +238,12 @@ export const CredentialRetrievalSlide = ({
             Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
           </Button.Solid>
         ) : (
-          <DualResponseButtons align="horizontal" onAccept={handleAccept} onDecline={handleDecline} />
+          <DualResponseButtons
+            align="horizontal"
+            isLoading={!isAllowedToAccept}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
+          />
         )}
       </AnimatedStack>
     </YStack>

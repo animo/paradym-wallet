@@ -7,7 +7,6 @@ import Carousel from 'react-native-reanimated-carousel'
 import type { ICarouselInstance } from 'react-native-reanimated-carousel'
 
 import { useImageScaler } from 'packages/app/src/hooks'
-import { ScanCard } from './assets/ScanCard'
 import { WalletExplanation } from './assets/WalletExplanation'
 import { WalletHowItWorks } from './assets/WalletHowItWorks'
 import { WalletStoring } from './assets/WalletStoring'
@@ -19,7 +18,7 @@ interface OnboardingWalletExplanationProps {
 
 const SLIDES = [
   {
-    image: <ScanCard />,
+    image: <WalletExplanation />,
     title: 'This is your wallet',
     subtitle:
       'Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.',
