@@ -128,12 +128,25 @@ The [playground](https://funke.animo.id/) functions as a test relying party and/
 
 To make sure you test all the flows, please reference the overview below.
 
+- Overasking warnings (AI) - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account)
+- Mixed Credential request - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account)
+- Multiple Credential request - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account)
+- Only PID verification - [UC-3](#government-identification)
+- Only QEAA verification - [UC-4](#ePrescriptions)
+- DIF PEX - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account), [UC-3](#government-identification)
+- DCQL - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account), [UC-4](#ePrescriptions)
+- OpenID Federation - All
+
 #### Verifier
 
-##### Rent a car
+All verifier flows can work with either OpenID Federation or X.509 certificates. You can choose this in the selection menu. 
+
+**UC 1 - Rent a car**
 
 Rent a car through TurboKeys or CheapCars.
+
 This use case requires you to have the PID and a Führerschein (drivers licence) in your wallet. 
+
 It showcases:
 - Requesting multiple credentials in one request
 - Requesting mixed credentials (SD-JWT / MDOC) in one request
@@ -141,15 +154,7 @@ It showcases:
 - Support for trust federations - CheapCars does not have any trusting entities, while TurboKeys does
 - Smart AI warnings - CheapCars shows an over-asking warning to the user, while Turbokeys shows that it passes the overasking detection with a green mark.
 
-##### Government identification
-
-This use case requires you to have the PID.
-It showcases:
-- Requesting only the PID
-- The two different supported Query languages: DIF PEX and DCQL 
-- Support for trust federations - Die Bundesregierung is trusted by Europe
-
-##### Open a bank account
+**UC 2 - Open a bank account**
 
 Open a bank account at Open Horizon Bank
 This use case requres you to have the PID, Steur-ID, meltebestatigung and Gezundheidskarte
@@ -159,7 +164,16 @@ It showcases:
 - Support for trust federations - several entities trust Open Horizon Bank. Because Europe trusts Open Horizon, it is also trusted by die Bundesregierung. 
 - Smart AI warnings - Open Horizon Bank shows an over-asking warning to the user.
 
-##### Get an e-prescription
+**UC 3 - Government identification**
+
+This use case requires you to have the PID.
+It showcases:
+- Requesting only the PID
+- The two different supported Query languages: DIF PEX and DCQL 
+- Support for trust federations - Die Bundesregierung is trusted by Europe
+
+
+**UC 4 - Get an e-prescription**
 
 Get an e-prescription from Redcare Pharmacy
 This use case requires you to have the Gezundheidskarte (health card)
@@ -224,11 +238,15 @@ Relevant links:
 
 ### App / UI Package
 
-The [app pacakge](packages/app) and [ui pacakge](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/paradym) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
+The [app package](packages/app) and [ui package](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/paradym) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
+
+### Documentation
+
+The [documentation](./documentation/) folder currently contains only the overview of the WCAG 2.2 accessibility compliance status with the accompanying todo's for next steps on accessibility. 
 
 ### PID Options
 
-The C flow supported in the Pardaym Wallet is mostly implemetned in Credo, the underlying identity framework we use. 
+The C flow supported in the Paradym Wallet is mostly implemented in [Credo](https://github.com/openwallet-foundation/credo-ts).
 
 ## Tech stack / base components
 
