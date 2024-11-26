@@ -1,8 +1,30 @@
 import { Mdoc, MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
-import type { EitherAgent } from './agent'
+import type { AppAgent } from '../../../apps/easypid/src/agent'
+import { RefreshPidUseCase } from '../../../apps/easypid/src/use-cases/RefreshPidUseCase'
+import type { EasyPIDAppAgent, EitherAgent } from './agent'
+import { getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import { decodeW3cCredential } from './format/credentialEncoding'
 import { getBatchCredentialMetadata } from './openid4vc/batchMetadata'
+import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
 import { updateCredential } from './storage'
+
+export async function refreshPid({
+  agent,
+  sdJwt,
+  mdoc,
+  batchSize,
+}: { agent: AppAgent; sdJwt?: SdJwtVcRecord; mdoc?: MdocRecord; batchSize?: number }) {
+  console.log('refreshing PID')
+  const useCase = await RefreshPidUseCase.initialize({
+    agent,
+  })
+
+  await useCase.retrieveCredentialsUsingExistingRecords({
+    sdJwt,
+    mdoc,
+    batchSize,
+  })
+}
 
 /**
  * If available, takes a credential from the batch.
@@ -14,31 +36,59 @@ export async function handleBatchCredential(
   credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
 ) {
   const batchMetadata = getBatchCredentialMetadata(credentialRecord)
+  if (!batchMetadata) return credentialRecord
 
-  if (batchMetadata) {
-    const batchCredential = batchMetadata.additionalCredentials.pop()
+  // TODO: maybe we should also store the main credential in the additional credentials (and rename it)
+  // As right now the main one is mostly for display
+  const batchCredential = batchMetadata.additionalCredentials.pop()
 
-    if (batchCredential) {
-      // Store the record with the used credential removed. Even if the presentation fails we remove it, as we want to be careful
-      // if the presentation was shared
-      await updateCredential(agent, credentialRecord)
+  // Store the record with the used credential removed. Even if the presentation fails we remove it, as we want to be careful
+  // if the presentation was shared
+  if (batchCredential) await updateCredential(agent, credentialRecord)
 
-      if (credentialRecord instanceof MdocRecord) {
-        return new MdocRecord({
-          mdoc: Mdoc.fromBase64Url(batchCredential as string),
+  // Try to refrehs the pid if we ran out
+  // TODO: we should probably move this somewhere else at some point
+  const categoryMetadata = getCredentialCategoryMetadata(credentialRecord)
+  const refreshMetadata = getRefreshCredentialMetadata(credentialRecord)
+  if (
+    categoryMetadata?.credentialCategory === 'DE-PID' &&
+    refreshMetadata &&
+    batchMetadata.additionalCredentials.length === 0
+  ) {
+    refreshPid({
+      agent: agent as EasyPIDAppAgent,
+      sdJwt: credentialRecord.type === 'SdJwtVcRecord' ? credentialRecord : undefined,
+      mdoc: credentialRecord.type === 'MdocRecord' ? credentialRecord : undefined,
+      // Get a batch of 5 for a single record type
+      batchSize: 5,
+    })
+      .catch((error) => {
+        // TOOD: we should handle the case where the refresh token is expired
+        agent.config.logger.error('Error refreshing pid', {
+          error,
         })
-      }
-      if (credentialRecord instanceof SdJwtVcRecord) {
-        return new SdJwtVcRecord({
-          compactSdJwtVc: batchCredential as string,
-        })
-      }
-      if (credentialRecord instanceof W3cCredentialRecord) {
-        return new W3cCredentialRecord({
-          tags: { expandedTypes: [] },
-          credential: decodeW3cCredential(batchCredential),
-        })
-      }
+      })
+      .then(() => {
+        agent.config.logger.debug('Successfully refreshed PID')
+      })
+  }
+
+  if (batchCredential) {
+    if (credentialRecord instanceof MdocRecord) {
+      return new MdocRecord({
+        mdoc: Mdoc.fromBase64Url(batchCredential as string),
+      })
+    }
+    if (credentialRecord instanceof SdJwtVcRecord) {
+      return new SdJwtVcRecord({
+        compactSdJwtVc: batchCredential as string,
+      })
+    }
+    if (credentialRecord instanceof W3cCredentialRecord) {
+      return new W3cCredentialRecord({
+        tags: { expandedTypes: [] },
+        credential: decodeW3cCredential(batchCredential),
+      })
     }
   }
 
