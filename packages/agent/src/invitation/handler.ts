@@ -44,7 +44,6 @@ import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@animo-id/oauth2'
 import q from 'query-string'
-import { handleBatchCredential } from '../batch'
 import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
 import {
   type FormattedSubmission,
@@ -56,6 +55,8 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
+import { TRUSTED_ENTITIES } from './trustedEntities'
+import type { TrustedEntity } from './trustedEntities'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -326,6 +327,61 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 }
 
+const extractEntityIdFromJwt = (jwt: string): string | null => {
+  const jwtPayload = Jwt.fromSerializedJwt(jwt).payload
+
+  if (jwtPayload?.additionalClaims?.client_id_scheme !== 'entity_id') return null
+
+  const clientId = jwtPayload?.additionalClaims?.client_id
+  if (!clientId || typeof clientId !== 'string') return null
+
+  return clientId
+}
+
+/**
+ * This is a temp method to allow for untrusted certificates to still work with the wallet.
+ */
+export const extractEntityIdFromAuthorizationRequest = async ({
+  data,
+  uri,
+}: { data?: string; uri?: string }): Promise<{ data: string | null; entityId: string | null }> => {
+  try {
+    if (data) {
+      return {
+        data,
+        entityId: extractEntityIdFromJwt(data),
+      }
+    }
+
+    if (uri) {
+      const query = q.parseUrl(uri).query
+      if (query.request_uri && typeof query.request_uri === 'string') {
+        const result = await fetchInvitationDataUrl(query.request_uri)
+
+        if (
+          result.success &&
+          result.result.type === 'openid-authorization-request' &&
+          typeof result.result.data === 'string'
+        ) {
+          return {
+            data: result.result.data,
+            entityId: extractEntityIdFromJwt(result.result.data),
+          }
+        }
+      } else if (query.request && typeof query.request === 'string') {
+        return {
+          data: query.request,
+          entityId: extractEntityIdFromJwt(query.request),
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+
+  return { data: null, entityId: null }
+}
+
 const extractCertificateFromJwt = (jwt: string) => {
   const jwtHeader = Jwt.fromSerializedJwt(jwt).header
   return Array.isArray(jwtHeader.x5c) && typeof jwtHeader.x5c[0] === 'string' ? jwtHeader.x5c[0] : null
@@ -394,32 +450,32 @@ export async function withTrustedCertificate<T>(
 }
 
 export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
+
+export type GetCredentialsForProofRequestOptions = {
+  agent: EitherAgent
+  data?: string
+  uri?: string
+  allowUntrustedFederation?: boolean
+}
+
 export const getCredentialsForProofRequest = async ({
   agent,
   data,
   uri,
-  allowUntrustedCertificates = false,
-}: {
-  agent: EitherAgent
-  // Either data or uri can be provided
-  data?: string
-  uri?: string
-  allowUntrustedCertificates?: boolean
-}) => {
+  allowUntrustedFederation = true,
+}: GetCredentialsForProofRequestOptions) => {
   let requestUri: string
+  let requestData = data
 
-  const { certificate = null, data: newData = null } = allowUntrustedCertificates
-    ? await extractCertificateFromAuthorizationRequest({ data, uri })
+  const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
+    ? await extractEntityIdFromAuthorizationRequest({ data: requestData, uri })
     : {}
+  requestData = fromFederationData ?? requestData
 
-  if (newData) {
+  if (requestData) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
     // but in the future we need to support the parsed request in Credo directly
-    requestUri = `openid://?request=${encodeURIComponent(newData)}`
-  } else if (data) {
-    // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
-    // but in the future we need to support the parsed request in Credo directly
-    requestUri = `openid://?request=${encodeURIComponent(data)}`
+    requestUri = `openid://?request=${encodeURIComponent(requestData)}`
   } else if (uri) {
     requestUri = uri
   } else {
@@ -432,10 +488,32 @@ export const getCredentialsForProofRequest = async ({
     requestUri,
   })
 
-  // Temp solution to add and remove the trusted certificate
-  const resolved = await withTrustedCertificate(agent, certificate, () =>
-    agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri)
-  )
+  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri, {
+    ...(entityId ? { federation: { trustedEntityIds: [entityId] } } : {}),
+  })
+
+  // TODO: Remove me when the new credo-ts version is used
+  if (resolved.authorizationRequest.payload) {
+    resolved.authorizationRequest.payload.client_metadata =
+      resolved.authorizationRequest.authorizationRequestPayload.client_metadata
+  }
+
+  let trustedEntities: Array<TrustedEntity> = []
+  if (entityId) {
+    const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+      entityId: entityId,
+      trustAnchorEntityIds: TRUSTED_ENTITIES,
+    })
+
+    trustedEntities = resolvedChains
+      .map((chain) => ({
+        entity_id: chain.trustAnchorEntityConfiguration.sub,
+        organization_name:
+          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
+        logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+      }))
+      .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
+  }
 
   let formattedSubmission: FormattedSubmission
   if (resolved.presentationExchange) {
@@ -464,7 +542,7 @@ export const getCredentialsForProofRequest = async ({
       hostName: resolved.authorizationRequest.responseURI
         ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
         : undefined,
-      entityId: resolved.authorizationRequest.payload?.iss as string,
+      entityId: entityId ?? (resolved.authorizationRequest.payload?.iss as string),
 
       logo: clientMetadata?.logo_uri
         ? {
@@ -472,96 +550,10 @@ export const getCredentialsForProofRequest = async ({
           }
         : undefined,
       name: clientMetadata?.client_name,
+      trustedEntities,
     },
     formattedSubmission,
   } as const
-}
-
-export const shareProof = async ({
-  agent,
-  resolvedRequest,
-  selectedCredentials,
-  allowUntrustedCertificate = false,
-}: {
-  agent: EitherAgent
-  resolvedRequest: CredentialsForProofRequest
-  selectedCredentials: { [inputDescriptorId: string]: string }
-  allowUntrustedCertificate?: boolean
-}) => {
-  const { authorizationRequest } = resolvedRequest
-  if (
-    !resolvedRequest.credentialsForRequest?.areRequirementsSatisfied &&
-    !resolvedRequest.queryResult?.canBeSatisfied
-  ) {
-    throw new Error('Requirements from proof request are not satisfied')
-  }
-
-  // Map all requirements and entries to a credential record. If a credential record for an
-  // input descriptor has been provided in `selectedCredentials` we will use that. Otherwise
-  // it will pick the first available credential.
-  const presentationExchangeCredentials = resolvedRequest.credentialsForRequest
-    ? Object.fromEntries(
-        await Promise.all(
-          resolvedRequest.credentialsForRequest.requirements.flatMap((requirement) =>
-            requirement.submissionEntry.slice(0, requirement.needsCount).map(async (entry) => {
-              const credentialId = selectedCredentials[entry.inputDescriptorId]
-              const credential =
-                entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
-                entry.verifiableCredentials[0]
-
-              // Optionally use a batch credential
-              const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
-
-              return [entry.inputDescriptorId, [credentialRecord]] as [string, (typeof credentialRecord)[]]
-            })
-          )
-        )
-      )
-    : undefined
-
-  // TODO: support credential selection for DCQL
-  const dcqlCredentials = resolvedRequest.queryResult
-    ? agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
-    : undefined
-
-  try {
-    // Temp solution to add and remove the trusted certificate
-    const certificate =
-      authorizationRequest.jwt && allowUntrustedCertificate ? extractCertificateFromJwt(authorizationRequest.jwt) : null
-
-    const result = await withTrustedCertificate(agent, certificate, () =>
-      agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
-        authorizationRequest,
-        presentationExchange: presentationExchangeCredentials
-          ? {
-              credentials: presentationExchangeCredentials,
-            }
-          : undefined,
-        dcql: dcqlCredentials
-          ? {
-              credentials: dcqlCredentials,
-            }
-          : undefined,
-      })
-    )
-
-    // if redirect_uri is provided, open it in the browser
-    // Even if the response returned an error, we must open this uri
-    if (result.redirectUri) {
-      await Linking.openURL(result.redirectUri)
-    }
-
-    if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
-      throw new Error(
-        `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
-      )
-    }
-
-    return result
-  } catch (error) {
-    // Handle biometric authentication errors
-    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
-  }
 }
 
 /**

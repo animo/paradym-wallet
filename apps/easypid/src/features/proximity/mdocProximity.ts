@@ -12,6 +12,7 @@ import {
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
 import type { EasyPIDAppAgent, FormattedSubmission, MdocRecord } from '@package/agent'
+import { handleBatchCredential } from '@package/agent/src/batch'
 import { type Permission, PermissionsAndroid, Platform } from 'react-native'
 
 const requireMdocDataTransfer = () =>
@@ -47,6 +48,7 @@ export const checkMdocPermissions = async () => {
 
 export const getMdocQrCode = async () => {
   const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  mdt.enableNfc()
   const qrData = await mdt.startQrEngagement()
   return qrData
 }
@@ -82,12 +84,22 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     throw new Error('Not all requirements are satisfied')
   }
 
-  const issuerSignedDocuments = options.submission.entries.map((e) => {
-    if (!e.isSatisfied) throw new Error(`Requirement for doctype ${e.inputDescriptorId} not satisfied`)
+  if (options.submission.entries.length > 1) {
+    throw new Error('Only one mdoc supported at the moment due to only being able to sign with one device key')
+  }
 
-    const credential = e.credentials[0].credential.record as MdocRecord
-    return parseIssuerSigned(TypedArrayEncoder.fromBase64(credential.base64Url), credential.getTags().docType)
-  })
+  const issuerSignedDocuments = await Promise.all(
+    options.submission.entries.map(async (e) => {
+      if (!e.isSatisfied) throw new Error(`Requirement for doctype ${e.inputDescriptorId} not satisfied`)
+
+      const credential = e.credentials[0].credential.record as MdocRecord
+
+      // Optionally handle batch issuance
+      const credentialRecord = await handleBatchCredential(options.agent, credential)
+
+      return parseIssuerSigned(TypedArrayEncoder.fromBase64(credentialRecord.base64Url), credential.getTags().docType)
+    })
+  )
 
   const mdoc = new MDoc(issuerSignedDocuments)
 
@@ -117,4 +129,9 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     .sign(mdocContext)
 
   await mdt.sendDeviceResponse(deviceResponse.encode())
+}
+
+export const shutdownDataTransfer = () => {
+  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  mdt.shutdown()
 }

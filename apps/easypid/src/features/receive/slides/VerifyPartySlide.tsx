@@ -1,4 +1,4 @@
-import type { DisplayImage } from '@package/agent'
+import type { DisplayImage, TrustedEntity } from '@package/agent'
 
 import {
   Circle,
@@ -25,8 +25,8 @@ interface VerifyPartySlideProps {
   logo?: DisplayImage
   backgroundColor?: string
   lastInteractionDate?: string
-  approvalsCount?: number
   onContinue?: () => Promise<void>
+  trustedEntities?: Array<TrustedEntity>
 }
 
 export const VerifyPartySlide = ({
@@ -36,8 +36,8 @@ export const VerifyPartySlide = ({
   logo,
   backgroundColor,
   lastInteractionDate,
-  approvalsCount,
   onContinue,
+  trustedEntities,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
@@ -54,7 +54,9 @@ export const VerifyPartySlide = ({
   }
 
   const onPressVerifiedIssuer = withHaptics(() => {
-    router.push(`/issuer?entityId=${entityId}`)
+    router.push(
+      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&entityId=${encodeURIComponent(entityId)}&trustedEntities=${encodeURIComponent(JSON.stringify(trustedEntities ?? []))}`
+    )
   })
 
   const onPressInteraction = withHaptics(() => {
@@ -93,15 +95,20 @@ export const VerifyPartySlide = ({
         </YStack>
 
         <YStack gap="$4">
-          {approvalsCount ? (
+          {trustedEntities && trustedEntities.length > 0 ? (
             <InfoButton
-              variant="positive"
-              title="Verified organisation"
-              description={`Approved by ${approvalsCount} organisations`}
+              variant="info"
+              title="Recognized organisation"
+              description={`Approved by ${trustedEntities.length} organisations`}
               onPress={onPressVerifiedIssuer}
             />
           ) : (
-            <InfoButton variant="unknown" title="Unverified organization" description="No trust approvals found" />
+            <InfoButton
+              variant="warning"
+              title="Unrecognized organisation"
+              description="No trust approvals found"
+              onPress={onPressVerifiedIssuer}
+            />
           )}
           <InfoButton
             variant={lastInteractionDate ? 'interaction-success' : 'interaction-new'}

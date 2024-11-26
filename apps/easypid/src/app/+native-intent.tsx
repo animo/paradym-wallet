@@ -1,3 +1,5 @@
+import 'fast-text-encoding'
+
 import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
 import * as Haptics from 'expo-haptics'

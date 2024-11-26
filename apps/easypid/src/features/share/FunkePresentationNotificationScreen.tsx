@@ -1,4 +1,4 @@
-import type { DisplayImage, FormattedSubmission } from '@package/agent'
+import type { DisplayImage, FormattedSubmission, TrustedEntity } from '@package/agent'
 
 import type { VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
 import { type SlideStep, SlideWizard } from '@package/app'
@@ -14,9 +14,8 @@ interface FunkePresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
-  approvalsCount?: number
   verificationAnalysis: VerificationAnalysisResult
-
+  trustedEntities?: Array<TrustedEntity>
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
@@ -30,7 +29,6 @@ export function FunkePresentationNotificationScreen({
   verifierName,
   logo,
   lastInteractionDate,
-  approvalsCount,
   usePin,
   onAccept,
   onDecline,
@@ -38,6 +36,7 @@ export function FunkePresentationNotificationScreen({
   submission,
   onComplete,
   verificationAnalysis,
+  trustedEntities,
 }: FunkePresentationNotificationScreenProps) {
   return (
     <SlideWizard
@@ -60,7 +59,7 @@ export function FunkePresentationNotificationScreen({
                 name={verifierName}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
-                approvalsCount={approvalsCount}
+                trustedEntities={trustedEntities}
               />
             ),
           },

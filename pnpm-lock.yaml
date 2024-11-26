@@ -10,8 +10,8 @@ catalogs:
       specifier: 0.0.1-alpha.14
       version: 0.0.1-alpha.14
     '@animo-id/expo-mdoc-data-transfer':
-      specifier: 0.0.3-alpha.7
-      version: 0.0.3-alpha.7
+      specifier: 0.0.3-alpha.8
+      version: 0.0.3-alpha.8
     '@animo-id/expo-secure-environment':
       specifier: 0.1.0-alpha.11
       version: 0.1.0-alpha.11
@@ -53,7 +53,7 @@ overrides:
   '@animo-id/oid4vci': 0.1.4
   '@animo-id/oauth2': 0.1.4
   '@animo-id/oauth2-utils': 0.1.4
-  dcql: 0.2.13
+  dcql: 0.2.17
   '@credo-ts/anoncreds': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/anoncreds?funke
   '@credo-ts/askar': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke
   '@credo-ts/node': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/node?funke
@@ -63,6 +63,8 @@ overrides:
   '@credo-ts/openid4vc': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/openid4vc?funke
   '@credo-ts/question-answer': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/question-answer?funke
   '@credo-ts/react-native': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/react-native?funke
+  '@sphereon/pex-models': 2.3.2
+  '@openid-federation/core': 0.1.1-alpha.17
 
 patchedDependencies:
   '@credo-ts/askar@0.5.13':
@@ -96,7 +98,7 @@ importers:
         version: 0.0.1-alpha.14(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
-        version: 0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)
+        version: 0.0.3-alpha.8(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
         version: 0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -211,6 +213,9 @@ importers:
       expo-web-browser:
         specifier: ~13.0.3
         version: 13.0.3(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))
+      fast-text-encoding:
+        specifier: ^1.0.6
+        version: 1.0.6
       react:
         specifier: 'catalog:'
         version: 18.3.1
@@ -585,7 +590,7 @@ importers:
         version: https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/anoncreds?funke(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/askar':
         specifier: https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke
-        version: https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke(patch_hash=zbu2rcss5evxukkhh5w5venkba)(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        version: https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke(patch_hash=zbu2rcss5evxukkhh5w5venkba)(@animo-id/expo-secure-environment@0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/cheqd':
         specifier: https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/cheqd?funke
         version: https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/cheqd?funke(@hyperledger/anoncreds-shared@0.2.4)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
@@ -812,8 +817,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.7':
-    resolution: {integrity: sha512-owHGj02XzGeBsHLi8ZJyN8AiiS4rgO22oFlKuZPyrmylUemz15CzB2tnIa8W1KKM7MnCrWXENFV5a6VC/gLqag==}
+  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.8':
+    resolution: {integrity: sha512-UmjgDagxpxcY+jeS2gHFEP5krKrgICx72WLzfSwsRIdDVXnPehKofjQegQ2IQ0rechrW+XgBxA1TEriXIbyy+g==}
     peerDependencies:
       expo: '>= 51'
       react: '*'
@@ -1739,7 +1744,7 @@ packages:
     resolution: {tarball: https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke}
     version: 0.5.13
     peerDependencies:
-      '@animo-id/expo-secure-environment': ^0.0.1-alpha.0
+      '@animo-id/expo-secure-environment': ^0.1.0-alpha.11
       '@hyperledger/aries-askar-shared': ^0.2.3
     peerDependenciesMeta:
       '@animo-id/expo-secure-environment':
@@ -2570,8 +2575,8 @@ packages:
     resolution: {integrity: sha512-q9CRWjpHCMIh5sVyefoD1cA7PkvILqCZsnSOEUUivORLjxCO/Irmue2DprETiNgEqktDBZaM1Bi+jrarx1XdCg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  '@openid-federation/core@0.1.1-alpha.13':
-    resolution: {integrity: sha512-QC4DSbiJ7eWstLs1O3XrX/yKFgaj+3ch8cA4N/02BywVNmkiYgW9qXhcvY50ULINuCeYdqIMIqCuHbaTa0A1hw==}
+  '@openid-federation/core@0.1.1-alpha.17':
+    resolution: {integrity: sha512-Bn5JaQzQnrQ2koPisiITHN69eOEewvs26EPyD4tp5XoR6Kdh9sy2f3w4hYV4MSaDwRorpRF7ttN6PGK1piMTng==}
 
   '@peculiar/asn1-cms@2.3.13':
     resolution: {integrity: sha512-joqu8A7KR2G85oLPq+vB+NFr2ro7Ls4ol13Zcse/giPSzUNN0n2k3v8kMpf6QdGUhI13e5SzQYN8AKP8sJ8v4w==}
@@ -3467,8 +3472,8 @@ packages:
     version: 0.16.0
     engines: {node: '>=18'}
 
-  '@sphereon/pex-models@2.3.1':
-    resolution: {integrity: sha512-SByU4cJ0XYA6VZQ/L6lsSiRcFtBPHbFioCeQ4GP7/W/jQ+PSBD7uK2oTnKQ9/0iEiMK/6JYqhKgLs4a9UX3UTQ==}
+  '@sphereon/pex-models@2.3.2':
+    resolution: {integrity: sha512-foFxfLkRwcn/MOp/eht46Q7wsvpQGlO7aowowIIb5Tz9u97kYZ2kz6K2h2ODxWuv5CRA7Q0MY8XUBGE2lfOhOQ==}
 
   '@sphereon/pex@5.0.0-unstable.24':
     resolution: {integrity: sha512-CZc+kr8cJqPsFSpg4kHyamr5oB5xLVP2E5eJ0pbetOfOE2uSxqk0/A8zGazcPhU1zZILrO51hD4vW/hJRgtKJQ==}
@@ -5529,8 +5534,8 @@ packages:
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
-  dcql@0.2.13:
-    resolution: {integrity: sha512-XfePsSz9ULj9HH3VFNguzK/xlFnliKDX2iUDb1tIrn97S+TfftcFo+jipw16m9jPlWLhhBx48QniF0D8KotIWA==}
+  dcql@0.2.17:
+    resolution: {integrity: sha512-YKNJR2anEiWooUCg7cJt/QmSFxpBS+SJQurcsNA60+8qUrjOuroh1Wd+lka/yOAV2VUdRzdNY6ISouxTV6SUaQ==}
 
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -9570,16 +9575,16 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  valibot@0.37.0:
-    resolution: {integrity: sha512-FQz52I8RXgFgOHym3XHYSREbNtkgSjF9prvMFH1nBsRyfL6SfCzoT1GuSDTlbsuPubM7/6Kbw0ZMQb8A+V+VsQ==}
+  valibot@0.42.1:
+    resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
       typescript:
         optional: true
 
-  valibot@0.42.1:
-    resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
+  valibot@1.0.0-beta.8:
+    resolution: {integrity: sha512-OPAwJZtowb0j91b+bd77+ny7D1VVzsCzD7Jl9waLUlMprTsfI9Y3HHbW3hAQD7wKDKHsmGEesuiYWaYvcZL2wg==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -9898,9 +9903,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.7(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)':
+  '@animo-id/expo-mdoc-data-transfer@0.0.3-alpha.8(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react@18.3.1)':
     dependencies:
-      '@expo/config-plugins': 8.0.10
+      '@expo/config-plugins': 8.0.11
       expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
       react: 18.3.1
       react-native: 0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1)
@@ -9922,6 +9927,16 @@ snapshots:
       expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
       react: 18.3.1
       react-native: 0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)
+
+  '@animo-id/expo-secure-environment@0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@peculiar/asn1-ecc': 2.3.14
+      '@peculiar/asn1-schema': 2.3.13
+      '@peculiar/asn1-x509': 2.3.13
+      expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
+      react: 18.3.1
+      react-native: 0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1)
+    optional: true
 
   '@animo-id/mdoc@0.2.39':
     dependencies:
@@ -9955,7 +9970,7 @@ snapshots:
       '@sd-jwt/decode': 0.7.2
       '@sd-jwt/present': 0.7.2
       '@sd-jwt/types': 0.7.2
-      '@sphereon/pex-models': 2.3.1
+      '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': 0.30.2-next.135
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
@@ -11122,7 +11137,7 @@ snapshots:
       '@astronautlabs/jsonpath': 1.1.2
       '@credo-ts/core': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/core?funke(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-shared': 0.2.4
-      '@sphereon/pex-models': 2.3.1
+      '@sphereon/pex-models': 2.3.2
       big-integer: 1.6.52
       bn.js: 5.2.1
       class-transformer: 0.5.1
@@ -11137,7 +11152,7 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/askar@https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke(patch_hash=zbu2rcss5evxukkhh5w5venkba)(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/askar@https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke(patch_hash=zbu2rcss5evxukkhh5w5venkba)(@animo-id/expo-secure-environment@0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(@hyperledger/aries-askar-shared@0.2.3)(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@credo-ts/core': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/core?funke(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@hyperledger/aries-askar-shared': 0.2.3
@@ -11146,6 +11161,8 @@ snapshots:
       class-validator: 0.14.1
       rxjs: 7.8.1
       tsyringe: 4.8.0
+    optionalDependencies:
+      '@animo-id/expo-secure-environment': 0.1.0-alpha.11(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - domexception
       - encoding
@@ -11204,7 +11221,7 @@ snapshots:
       '@sd-jwt/sd-jwt-vc': 0.7.2
       '@sd-jwt/types': 0.7.2
       '@sd-jwt/utils': 0.7.2
-      '@sphereon/pex-models': 2.3.1
+      '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': 0.30.2-next.135
       '@stablelib/ed25519': 1.0.3
       '@types/ws': 8.5.12
@@ -11214,7 +11231,7 @@ snapshots:
       buffer: 6.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
-      dcql: 0.2.13(typescript@5.3.3)
+      dcql: 0.2.17(typescript@5.3.3)
       did-resolver: 4.1.0
       lru_map: 0.4.1
       luxon: 3.5.0
@@ -11259,7 +11276,7 @@ snapshots:
       '@sd-jwt/sd-jwt-vc': 0.7.2
       '@sd-jwt/types': 0.7.2
       '@sd-jwt/utils': 0.7.2
-      '@sphereon/pex-models': 2.3.1
+      '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': 0.30.2-next.135
       '@stablelib/ed25519': 1.0.3
       '@types/ws': 8.5.12
@@ -11269,7 +11286,7 @@ snapshots:
       buffer: 6.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
-      dcql: 0.2.13(typescript@5.3.3)
+      dcql: 0.2.17(typescript@5.3.3)
       did-resolver: 4.1.0
       lru_map: 0.4.1
       luxon: 3.5.0
@@ -11312,7 +11329,7 @@ snapshots:
       '@animo-id/oauth2': 0.1.4(typescript@5.3.3)
       '@animo-id/oid4vci': 0.1.4(typescript@5.3.3)
       '@credo-ts/core': https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/core?funke(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.76.3(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@react-native-community/cli-server-api@13.6.9)(@types/react@18.2.79)(react@18.3.1))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
-      '@openid-federation/core': 0.1.1-alpha.13
+      '@openid-federation/core': 0.1.1-alpha.17
       '@sphereon/did-auth-siop': https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke(typescript@5.3.3)
       '@sphereon/oid4vc-common': https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke
       '@sphereon/ssi-types': 0.30.2-next.135
@@ -12456,7 +12473,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
 
-  '@openid-federation/core@0.1.1-alpha.13':
+  '@openid-federation/core@0.1.1-alpha.17':
     dependencies:
       buffer: 6.0.3
       zod: 3.23.8
@@ -13693,10 +13710,10 @@ snapshots:
       '@sphereon/jarm': https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke(typescript@5.3.3)
       '@sphereon/oid4vc-common': https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke
       '@sphereon/pex': 5.0.0-unstable.24
-      '@sphereon/pex-models': 2.3.1
+      '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': 0.30.2-next.279
       cross-fetch: 4.0.0
-      dcql: 0.2.13(typescript@5.3.3)
+      dcql: 0.2.17(typescript@5.3.3)
       debug: 4.3.7
       events: 3.3.0
       jwt-decode: 4.0.0
@@ -13733,7 +13750,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sphereon/pex-models@2.3.1': {}
+  '@sphereon/pex-models@2.3.2': {}
 
   '@sphereon/pex@5.0.0-unstable.24':
     dependencies:
@@ -13741,7 +13758,7 @@ snapshots:
       '@sd-jwt/decode': 0.7.2
       '@sd-jwt/present': 0.7.2
       '@sd-jwt/types': 0.7.2
-      '@sphereon/pex-models': 2.3.1
+      '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': 0.30.2-next.129
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
@@ -16966,9 +16983,9 @@ snapshots:
 
   dayjs@1.11.13: {}
 
-  dcql@0.2.13(typescript@5.3.3):
+  dcql@0.2.17(typescript@5.3.3):
     dependencies:
-      valibot: 0.37.0(typescript@5.3.3)
+      valibot: 1.0.0-beta.8(typescript@5.3.3)
     transitivePeerDependencies:
       - typescript
 
@@ -21849,11 +21866,11 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  valibot@0.37.0(typescript@5.3.3):
+  valibot@0.42.1(typescript@5.3.3):
     optionalDependencies:
       typescript: 5.3.3
 
-  valibot@0.42.1(typescript@5.3.3):
+  valibot@1.0.0-beta.8(typescript@5.3.3):
     optionalDependencies:
       typescript: 5.3.3
 
