@@ -75,23 +75,21 @@ export function FunkeFederationDetailScreen({
               </Paragraph>
             </YStack>
             <YStack gap="$2">
-              {trustedEntities.map((entity) => {
-                return (
-                  <XStack ai="center" key={entity.entity_id} br="$8" p="$3.5" gap="$3" bg="$grey-100">
-                    {entity.logo_uri && (
-                      <Circle overflow="hidden" size="$4" bg="$grey-50">
-                        <Image src={entity.logo_uri} height="100%" width="100%" />
-                      </Circle>
-                    )}
-                    <XStack gap="$1" f={1} justifyContent="space-between" ai="center">
-                      <Heading f={1} numberOfLines={2} variant="h2">
-                        {entity.organization_name}
-                      </Heading>
-                      <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
-                    </XStack>
+              {trustedEntities.map((entity) => (
+                <XStack ai="center" key={entity.entity_id} br="$8" p="$3.5" gap="$3" bg="$grey-100">
+                  {entity.logo_uri && (
+                    <Circle overflow="hidden" size="$4" bg="$grey-50">
+                      <Image src={entity.logo_uri} height="100%" width="100%" />
+                    </Circle>
+                  )}
+                  <XStack gap="$1" f={1} justifyContent="space-between" ai="center">
+                    <Heading f={1} numberOfLines={2} variant="h2">
+                      {entity.organization_name}
+                    </Heading>
+                    <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
                   </XStack>
-                )
-              })}
+                </XStack>
+              ))}
             </YStack>
           </YStack>
         </YStack>
