@@ -61,16 +61,18 @@ export function FunkeFederationDetailScreen({
                 <HeroIcons.BuildingOffice color="$grey-700" />
               </Circle>
             )}
-            <Heading variant="h2">{name}</Heading>
+            <Heading flex={1} numberOfLines={3} variant="h2">
+              {name || 'Unknown organization'}
+            </Heading>
           </XStack>
           <YStack gap="$4" py="$2">
             <YStack gap="$2">
               <Heading variant="sub2">Trusted by</Heading>
               <Paragraph>
                 {trustedEntities.length > 0 ? (
-                  <>A list of organizations and whether they have approved {name}.</>
+                  <>A list of organizations and whether they have approved {name || 'unknown organization'}.</>
                 ) : (
-                  <>There are no organizations that have approved {name}.</>
+                  <>There are no organizations that have approved {name || 'unknown organization'}.</>
                 )}
               </Paragraph>
             </YStack>

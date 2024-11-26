@@ -165,7 +165,6 @@ export function FunkeCredentialNotificationScreen() {
       backgroundColor: '#ffffff', // Default to a white background for now
       credentialIds: [getCredentialForDisplayId(receivedRecord)],
     })
-
     setIsCompleted(true)
   }
 

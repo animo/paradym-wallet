@@ -1,15 +1,31 @@
-import Animated, { useAnimatedProps } from 'react-native-reanimated'
+import { useEffect } from 'react'
+import Animated, { useAnimatedProps, useSharedValue, withSequence } from 'react-native-reanimated'
 import { withTiming } from 'react-native-reanimated'
 import { withRepeat } from 'react-native-reanimated'
 import { Defs, G, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
-// Create animated version of G component
-const AnimatedG = Animated.createAnimatedComponent(G)
+// biome-ignore lint/suspicious/noExplicitAny: By default G does not allow style, but Animated.createAnimatedComponent does
+const AnimatedG = Animated.createAnimatedComponent(G) as any
 
 export function ScanCard() {
+  const translateX = useSharedValue(0)
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    translateX.value = withRepeat(
+      withSequence(
+        withTiming(0, { duration: 500 }),
+        withTiming(120, { duration: 3000 }),
+        withTiming(120, { duration: 500 }),
+        withTiming(0, { duration: 500 })
+      ),
+      -1 // Infinite repeats
+    )
+  }, [])
+
   const animatedProps = useAnimatedProps(() => {
     return {
-      transform: [{ translateX: withRepeat(withTiming(100, { duration: 2500 }), -1, true) }],
+      transform: [{ translateX: translateX.value }],
     }
   })
 
@@ -67,7 +83,7 @@ export function ScanCard() {
         d="M22.357 173.723C22.1444 173.723 21.9319 173.66 21.7513 173.532L14.5469 168.527C14.0687 168.187 13.9412 167.528 14.2812 167.05C14.6213 166.572 15.2801 166.445 15.7583 166.785L22.0913 171.184L33.8861 154.448C34.2261 153.97 34.8849 153.853 35.3631 154.193C35.8413 154.533 35.9582 155.192 35.6181 155.67L23.2177 173.266C23.0158 173.564 22.6864 173.713 22.3463 173.713L22.357 173.723Z"
         fill="#7294E8"
       />
-      <AnimatedG animatedProps={animatedProps}>
+      <AnimatedG style={animatedProps}>
         <Path
           d="M121.405 51.4248L44.3483 64.4719C39.43 65.3046 36.118 69.9667 36.9508 74.885L43.8034 115.357C44.6361 120.275 49.2982 123.587 54.2165 122.754L131.273 109.707C136.192 108.875 139.504 104.213 138.671 99.2943L131.818 58.8223C130.986 53.9041 126.324 50.5921 121.405 51.4248Z"
           fill="white"
