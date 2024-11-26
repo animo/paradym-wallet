@@ -8,7 +8,7 @@ interface CredentialErrorSlideProps {
 export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideProps) => {
   return (
     <YStack fg={1} jc="space-between">
-      <YStack bw={1} gap="$6">
+      <YStack gap="$6">
         <YStack gap="$2">
           <YStack gap="$4">
             <Heading>Something went wrong</Heading>
