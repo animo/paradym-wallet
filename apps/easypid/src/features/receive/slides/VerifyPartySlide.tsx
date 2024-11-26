@@ -53,9 +53,13 @@ export const VerifyPartySlide = ({
     setIsLoading(false)
   }
 
+  const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entity_id === entityId)
+
+  const trustedEntitiesWithoutSelf = trustedEntities?.filter((entity) => entity.entity_id !== entityId)
+
   const onPressVerifiedIssuer = withHaptics(() => {
     router.push(
-      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&entityId=${encodeURIComponent(entityId)}&trustedEntities=${encodeURIComponent(JSON.stringify(trustedEntities ?? []))}`
+      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&entityId=${encodeURIComponent(entityId)}&trustedEntities=${encodeURIComponent(JSON.stringify(trustedEntitiesWithoutSelf ?? []))}`
     )
   })
 
@@ -95,11 +99,13 @@ export const VerifyPartySlide = ({
         </YStack>
 
         <YStack gap="$4">
-          {trustedEntities && trustedEntities.length > 0 ? (
+          {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
             <InfoButton
-              variant="info"
+              variant={entityIsTrustAnchor ? 'positive' : 'info'}
               title="Recognized organisation"
-              description={`Approved by ${trustedEntities.length} organisations`}
+              description={`Approved by ${trustedEntitiesWithoutSelf.length} organisation${
+                trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
+              }`}
               onPress={onPressVerifiedIssuer}
             />
           ) : (

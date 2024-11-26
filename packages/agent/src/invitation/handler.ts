@@ -492,14 +492,14 @@ export const getCredentialsForProofRequest = async ({
     ...(entityId ? { federation: { trustedEntityIds: [entityId] } } : {}),
   })
 
-  // TODO: Remove me when the new credo-ts version is used
-  if (resolved.authorizationRequest.payload) {
-    resolved.authorizationRequest.payload.client_metadata =
-      resolved.authorizationRequest.authorizationRequestPayload.client_metadata
-  }
-
   let trustedEntities: Array<TrustedEntity> = []
   if (entityId) {
+    // TODO: Remove me when the new credo-ts version is used
+    if (resolved.authorizationRequest.payload) {
+      resolved.authorizationRequest.payload.client_metadata =
+        resolved.authorizationRequest.authorizationRequestPayload.client_metadata
+    }
+
     const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
       entityId: entityId,
       trustAnchorEntityIds: TRUSTED_ENTITIES,
