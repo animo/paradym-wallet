@@ -46,7 +46,7 @@ export async function handleBatchCredential<CredentialRecord extends W3cCredenti
   // if the presentation was shared
   if (batchCredential) await updateCredential(agent, credentialRecord)
 
-  // Try to refrehs the pid if we ran out
+  // Try to refresh the pid when we run out
   // TODO: we should probably move this somewhere else at some point
   const categoryMetadata = getCredentialCategoryMetadata(credentialRecord)
   const refreshMetadata = getRefreshCredentialMetadata(credentialRecord)
