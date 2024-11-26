@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import type { PresentationRequestResult } from '../components/utils'
 
 interface PinSlideProps {
-  onPinComplete: (pin: string) => Promise<PresentationRequestResult> | Promise<void>
+  onPinComplete: (pin: string) => Promise<PresentationRequestResult | undefined>
   isLoading: boolean
 }
 

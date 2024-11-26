@@ -11,7 +11,7 @@ import type { PresentationRequestResult } from '../components/utils'
 
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
-  onAccept?: () => Promise<PresentationRequestResult> | Promise<void>
+  onAccept?: () => Promise<PresentationRequestResult | undefined>
   onDecline?: () => void
   submission: FormattedSubmission
   isAccepting: boolean

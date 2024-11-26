@@ -22,7 +22,13 @@ import { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import easypidLogo from '../../../assets/icon-rounded.png'
-import { checkMdocPermissions, getMdocQrCode, requestMdocPermissions, waitForDeviceRequest } from '../proximity'
+import {
+  checkMdocPermissions,
+  getMdocQrCode,
+  requestMdocPermissions,
+  shutdownDataTransfer,
+  waitForDeviceRequest,
+} from '../proximity'
 
 const unsupportedUrlPrefixes = ['_oob=']
 
@@ -58,7 +64,10 @@ export function FunkeQrScannerScreen({ credentialDataHandlerOptions }: QrScanner
     }
   }, [showMyQrCode])
 
-  const onCancel = () => back()
+  const onCancel = () => {
+    back()
+    shutdownDataTransfer()
+  }
 
   const onScan = async (scannedData: string) => {
     if (isProcessing || !isFocused) return
