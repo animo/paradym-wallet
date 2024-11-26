@@ -4,8 +4,8 @@ import { withTiming } from 'react-native-reanimated'
 import { withRepeat } from 'react-native-reanimated'
 import { Defs, G, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
-// Create animated version of G component
-const AnimatedG = Animated.createAnimatedComponent(G)
+// biome-ignore lint/suspicious/noExplicitAny: By default G does not allow style, but Animated.createAnimatedComponent does
+const AnimatedG = Animated.createAnimatedComponent(G) as any
 
 export function ScanCard() {
   const translateX = useSharedValue(0)
