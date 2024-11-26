@@ -134,6 +134,8 @@ export function FunkeCredentialNotificationScreen() {
         credentialConfigurationIdsToRequest: [configurationId],
         accessToken: tokenResponse,
         clientId: resolvedAuthorizationRequest ? authorization.clientId : undefined,
+        // Always request batch for non pid credentials
+        requestBatch: true,
       })
 
       const credentialRecord = credentialResponses[0].credential

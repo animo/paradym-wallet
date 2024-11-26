@@ -578,7 +578,18 @@ export const shareProof = async ({
 
   // TODO: support credential selection for DCQL
   const dcqlCredentials = resolvedRequest.queryResult
-    ? agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+    ? Object.fromEntries(
+        await Promise.all(
+          Object.entries(
+            agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+          ).map(async ([queryCredentialId, credential]) => {
+            // Optionally use a batch credential
+            const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
+
+            return [queryCredentialId, { ...credential, credentialRecord }]
+          })
+        )
+      )
     : undefined
 
   try {
