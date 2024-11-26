@@ -1,5 +1,7 @@
 const PLAYGROUND_URL = 'https://funke.animo.id'
 
+export const EXCLUDED_ATTRIBUTES_FOR_ANALYSIS = ['Issuing authority', 'Issuing country', 'Issued at', 'Expires at']
+
 export type VerificationAnalysisInput = {
   verifier: {
     name: string
@@ -31,12 +33,17 @@ export const analyzeVerification = async ({
   cards,
 }: VerificationAnalysisInput): Promise<VerificationAnalysisResponse> => {
   try {
+    const cardsWithoutExcludedAttributes = cards.map((card) => ({
+      ...card,
+      requestedAttributes: card.requestedAttributes.filter((attr) => !EXCLUDED_ATTRIBUTES_FOR_ANALYSIS.includes(attr)),
+    }))
+
     const response = await fetch(`${PLAYGROUND_URL}/api/validate-verification-request`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ verifier, name, purpose, cards }),
+      body: JSON.stringify({ verifier, name, purpose, cards: cardsWithoutExcludedAttributes }),
     })
 
     if (!response.ok) {

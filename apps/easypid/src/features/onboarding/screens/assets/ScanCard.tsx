@@ -8,24 +8,24 @@ import { Defs, G, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 const AnimatedG = Animated.createAnimatedComponent(G) as any
 
 export function ScanCard() {
-  const translateX = useSharedValue(0)
+  const xPosition = useSharedValue(0)
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    translateX.value = withRepeat(
+    xPosition.value = withRepeat(
       withSequence(
         withTiming(0, { duration: 500 }),
         withTiming(120, { duration: 3000 }),
         withTiming(120, { duration: 500 }),
         withTiming(0, { duration: 500 })
       ),
-      -1 // Infinite repeats
+      -1
     )
   }, [])
 
   const animatedProps = useAnimatedProps(() => {
     return {
-      transform: [{ translateX: translateX.value }],
+      x: xPosition.value,
     }
   })
 

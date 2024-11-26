@@ -7,6 +7,7 @@ import {
   IconContainer,
   Paragraph,
   ScrollView,
+  Spacer,
   Stack,
   XStack,
   YStack,
@@ -175,6 +176,7 @@ export function FunkeWalletScreen() {
             <Stack fg={1} />
           )}
         </YStack>
+        <Spacer h="$4" />
       </ScrollView>
     </FlexPage>
   )
