@@ -16,6 +16,7 @@ import { updateCredential } from '@package/agent/src/storage/credential'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
+import { batchCreateKeys } from '@easypid/crypto/batchCreateKeys'
 
 export interface RefreshPidUseCaseOptions {
   agent: AppAgent
@@ -99,6 +100,7 @@ export class RefreshPidUseCase {
       clientId: RefreshPidUseCase.CLIENT_ID,
       requestBatch: batchSize,
       pidSchemes,
+      batchCreateKeys: batchCreateKeys(this.options.agent)
     })
 
     const credentialRecords: Array<SdJwtVcRecord | MdocRecord> = []

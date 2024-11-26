@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import type { PresentationRequestResult } from '../components/utils'
 
 interface PinSlideProps {
-  onPinComplete: (pin: string) => Promise<PresentationRequestResult | void>
+  onPinComplete: (pin: string) => Promise<PresentationRequestResult | undefined>
   isLoading: boolean
 }
 
@@ -16,7 +16,6 @@ export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
   const pinRef = useRef<PinDotsInputRef>(null)
 
   const onPinEnterComplete = (pin: string) => {
-    console.log(pinRef)
     setIsSubmitting(true)
 
     onPinComplete(pin)
@@ -28,7 +27,6 @@ export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
           customData: { preset: r.redirectToWallet ? 'danger' : 'warning' },
         })
 
-        console.log(pinRef)
         pinRef.current?.shake()
         pinRef.current?.clear()
 

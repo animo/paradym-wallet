@@ -33,6 +33,7 @@ import { createParam } from 'solito'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addReceivedActivity, useActivities } from '../activity/activityRecord'
+import type { PresentationRequestResult } from '../share/components/utils'
 import { PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
@@ -42,7 +43,6 @@ import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
-import { PresentationRequestResult } from '../share/components/utils'
 
 type Query = { uri?: string; data?: string }
 
@@ -255,7 +255,7 @@ export function FunkeCredentialNotificationScreen() {
     [acquireCredentialsPreAuth]
   )
 
-  const onPresentationAccept: (pin?: string) => Promise<void | PresentationRequestResult> = useCallback(
+  const onPresentationAccept: (pin?: string) => Promise<undefined | PresentationRequestResult> = useCallback(
     async (pin?: string) => {
       if (
         !credentialsForRequest ||
@@ -428,11 +428,7 @@ export function FunkeCredentialNotificationScreen() {
               step: 'pin-enter',
               progress: 82.5,
               screen: (
-                <PinSlide
-                  key="pin-enter"
-                  isLoading={isSharingPresentation}
-                  onPinComplete={onPresentationAccept}
-                />
+                <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinComplete={onPresentationAccept} />
               ),
             }
           : undefined,

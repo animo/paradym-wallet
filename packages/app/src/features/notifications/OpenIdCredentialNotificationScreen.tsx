@@ -9,9 +9,8 @@ import {
   useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { useRouter } from 'solito/router'
 
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
@@ -40,6 +39,7 @@ export function OpenIdCredentialNotificationScreen() {
           agent,
           resolvedCredentialOffer,
           accessToken: tokenResponse,
+          batchCreateKeys
         })
 
         const credentialRecord = credenitalResponses[0].credential

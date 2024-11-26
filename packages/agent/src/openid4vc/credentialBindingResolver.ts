@@ -1,10 +1,14 @@
+import { assertAskarWallet } from '@credo-ts/askar/build/utils/assertAskarWallet'
 import {
   DidJwk,
   DidKey,
   DidsApi,
   type JwkDidCreateOptions,
+  Key,
   KeyBackend,
   type KeyDidCreateOptions,
+  KeyType,
+  TypedArrayEncoder,
   getJwkFromKey,
 } from '@credo-ts/core'
 import {
@@ -17,10 +21,15 @@ import {
 export function getCredentialBindingResolver({
   pidSchemes,
   resolvedCredentialOffer,
+  requestBatch,
+  batchCreateKeys,
 }: {
   pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
+  requestBatch?: number | boolean
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  batchCreateKeys?: (count: number) => Promise<Record<string, Uint8Array>>
 }): OpenId4VciCredentialBindingResolver {
+  const keys: Array<Key> = []
   return async ({
     supportedDidMethods,
     keyTypes,
@@ -62,10 +71,53 @@ export function getCredentialBindingResolver({
 
     const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
 
-    const key = await agentContext.wallet.createKey({
-      keyType: keyTypes[0],
-      keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
-    })
+    let key: Key | undefined
+    if (shouldKeyBeHardwareBacked && Number.isInteger(requestBatch)) {
+      // First credential of the batch
+      if (keys.length === 0) {
+        const schemeCount = Object.entries(pidSchemes ?? {}).length
+        const batchSize = Number(requestBatch) * schemeCount
+        agentContext.config.logger.debug(`Requesting a batch of '${batchSize}' keys...`)
+        const publicKeys = await batchCreateKeys?.(batchSize)
+        for (const [keyId, publicKey] of Object.entries(publicKeys ?? {})) {
+          const prefix = (publicKey[64] & 1) === 0 ? 0x02 : 0x03
+          const compressed = new Uint8Array(33)
+          compressed[0] = prefix
+          compressed.set(publicKey.slice(1, 33), 1)
+
+          const wallet = agentContext.wallet
+          assertAskarWallet(wallet)
+          const publicKeyBase58 = TypedArrayEncoder.toBase58(compressed)
+          await wallet.withSession(async (s) =>
+            s.insert({
+              name: publicKeyBase58,
+              category: 'SecureEnvironmentKeyRecord',
+              value: JSON.stringify({
+                keyId,
+                publicKeyBase58,
+                keyType: KeyType.P256,
+              }),
+              tags: {
+                keyType: KeyType.P256,
+              },
+            })
+          )
+
+          keys.push(Key.fromPublicKey(compressed, KeyType.P256))
+        }
+      }
+
+      key = keys.pop()
+    } else {
+      key = await agentContext.wallet.createKey({
+        keyType: keyTypes[0],
+        keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
+      })
+    }
+
+    if (!key) {
+      throw new Error('An error occurred while setting the key')
+    }
 
     if (didMethod) {
       const didsApi = agentContext.dependencyManager.resolve(DidsApi)

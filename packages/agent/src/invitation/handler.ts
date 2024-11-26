@@ -1,4 +1,5 @@
 import type {
+    Agent,
   ConnectionRecord,
   CredentialStateChangedEvent,
   DifPresentationExchangeDefinitionV2,
@@ -16,7 +17,6 @@ import type {
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
 import { getOid4vciCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import { Linking } from 'react-native'
 import type { EitherAgent, FullAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
@@ -244,6 +244,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   clientId,
   pidSchemes,
   requestBatch,
+  batchCreateKeys,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
@@ -251,6 +252,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   clientId?: string
   pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
   requestBatch?: boolean | number
+  batchCreateKeys?: (agent: Agent) => (count: number) => Promise<Record<string, Uint8Array>>
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
@@ -286,6 +288,8 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       credentialBindingResolver: getCredentialBindingResolver({
         pidSchemes,
         resolvedCredentialOffer,
+        requestBatch,
+        batchCreateKeys: batchCreateKeys?.(agent)
       }),
     })
 

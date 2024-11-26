@@ -4,6 +4,8 @@ import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProvid
 import { initializeEasyPIDAgent } from '@package/agent'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
+export const WSP_URL = process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL ?? 'https://wsp.funke.animo.id'
+
 export async function initializeAppAgent({
   walletKey,
   walletKeyVersion,
@@ -22,10 +24,7 @@ export async function initializeAppAgent({
    * Setup specific for the Wallet Service provider
    *
    */
-  const wsp = new WalletServiceProviderClient(
-    process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL ?? 'https://wsp.funke.animo.id',
-    agent
-  )
+  const wsp = new WalletServiceProviderClient(WSP_URL, agent)
   if (registerWallet) {
     await wsp.createSalt()
     await wsp.register()

@@ -14,7 +14,7 @@ import {
 import { agentDependencies } from '@credo-ts/react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import type { EasyPIDAppAgent } from '@package/agent'
-import { secureWalletKey } from 'packages/secure-store/secureUnlock'
+import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -44,6 +44,9 @@ export const setWalletServiceProviderPin = async (pin: Array<number>) => {
     }
     throw e
   }
+
+  await agent.shutdown()
+
   __pin = pin
 }
 
