@@ -1,4 +1,4 @@
-import type { DisplayImage } from '@package/agent'
+import type { DisplayImage, TrustedEntity } from '@package/agent'
 
 import {
   Circle,
@@ -26,7 +26,7 @@ interface VerifyPartySlideProps {
   backgroundColor?: string
   lastInteractionDate?: string
   onContinue?: () => Promise<void>
-  verifiedEntityIds?: Record<string, boolean>
+  verifiedEntities?: Array<TrustedEntity>
 }
 
 export const VerifyPartySlide = ({
@@ -37,16 +37,12 @@ export const VerifyPartySlide = ({
   backgroundColor,
   lastInteractionDate,
   onContinue,
-  verifiedEntityIds,
+  verifiedEntities,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
-
-  const trustedEntityIds = Object.entries(verifiedEntityIds ?? {})
-    .filter(([_, isVerified]) => isVerified)
-    .map(([entityId]) => entityId)
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -59,7 +55,7 @@ export const VerifyPartySlide = ({
 
   const onPressVerifiedIssuer = withHaptics(() => {
     router.push(
-      `/federation?name=${name}&logo=${logo?.url}&entityId=${entityId}&trustedEntityIds=${trustedEntityIds?.join(',') ?? ''}`
+      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&entityId=${encodeURIComponent(entityId)}&trustedEntities=${encodeURIComponent(JSON.stringify(verifiedEntities ?? []))}`
     )
   })
 
@@ -99,11 +95,11 @@ export const VerifyPartySlide = ({
         </YStack>
 
         <YStack gap="$4">
-          {trustedEntityIds && trustedEntityIds.length > 0 ? (
+          {verifiedEntities && verifiedEntities.length > 0 ? (
             <InfoButton
               variant="info"
               title="Recognized organisation"
-              description={`Approved by ${trustedEntityIds?.length} organisations`}
+              description={`Approved by ${verifiedEntities.length} organisations`}
               onPress={onPressVerifiedIssuer}
             />
           ) : (

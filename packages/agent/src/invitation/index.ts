@@ -40,3 +40,5 @@ export {
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'
 export * from './error'
+
+export type { TrustedEntity } from './trustedEntities'

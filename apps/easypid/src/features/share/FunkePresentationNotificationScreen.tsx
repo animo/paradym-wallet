@@ -1,6 +1,7 @@
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
 
 import { type SlideStep, SlideWizard } from '@package/app'
+import type { TrustedEntity } from 'packages/agent/src/invitation/handler'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import type { PresentationRequestResult } from './components/utils'
@@ -13,7 +14,7 @@ interface FunkePresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
-  verifiedEntityIds?: Record<string, boolean>
+  verifiedEntities?: Array<TrustedEntity>
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
@@ -33,7 +34,7 @@ export function FunkePresentationNotificationScreen({
   isAccepting,
   submission,
   onComplete,
-  verifiedEntityIds,
+  verifiedEntities,
 }: FunkePresentationNotificationScreenProps) {
   return (
     <SlideWizard
@@ -56,7 +57,7 @@ export function FunkePresentationNotificationScreen({
                 name={verifierName}
                 logo={logo}
                 lastInteractionDate={lastInteractionDate}
-                verifiedEntityIds={verifiedEntityIds}
+                verifiedEntities={verifiedEntities}
               />
             ),
           },

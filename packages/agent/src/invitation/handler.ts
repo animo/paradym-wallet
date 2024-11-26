@@ -54,9 +54,10 @@ import {
 import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
-import { TRUSTED_ENTITIES } from '../providers/TrustedEntitiesProvider'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
+import { TRUSTED_ENTITIES } from './trustedEntities'
+import type { TrustedEntity } from './trustedEntities'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -498,20 +499,21 @@ export const getCredentialsForProofRequest = async ({
       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
   }
 
-  let verifiedEntityIds: Record<string, boolean> | undefined = undefined
+  let verifiedEntities: Array<TrustedEntity> = []
   if (entityId) {
     const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
-      entityId: entityId ?? '',
+      entityId: entityId,
       trustAnchorEntityIds: TRUSTED_ENTITIES,
     })
 
-    // Return which resolved chains are actually resolved
-    verifiedEntityIds = Object.fromEntries(
-      resolvedChains.map((chain) => [
-        chain.trustAnchorEntityConfiguration.sub,
-        TRUSTED_ENTITIES.includes(chain.trustAnchorEntityConfiguration.sub),
-      ])
-    )
+    verifiedEntities = resolvedChains
+      .map((chain) => ({
+        entity_id: chain.trustAnchorEntityConfiguration.sub,
+        organization_name:
+          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
+        logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+      }))
+      .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
   }
 
   let formattedSubmission: FormattedSubmission
@@ -549,7 +551,7 @@ export const getCredentialsForProofRequest = async ({
           }
         : undefined,
       name: clientMetadata?.client_name,
-      verifiedEntityIds,
+      verifiedEntities,
     },
     formattedSubmission,
   } as const

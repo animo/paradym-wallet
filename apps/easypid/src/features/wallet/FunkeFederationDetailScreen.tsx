@@ -1,3 +1,4 @@
+import type { TrustedEntity } from '@package/agent'
 import {
   Circle,
   FlexPage,
@@ -12,32 +13,26 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { useTrustedEntities } from 'packages/agent/src'
 import { TextBackButton, useScrollViewPosition } from 'packages/app/src'
-import React from 'react'
-import { useRef } from 'react'
+import React, { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface FunkeFederationDetailScreenProps {
   name: string
   logo?: string
   entityId?: string
-  trustedEntityIds?: string[]
+  trustedEntities?: Array<TrustedEntity>
 }
 
 export function FunkeFederationDetailScreen({
   name,
   logo,
   entityId,
-  trustedEntityIds = [],
+  trustedEntities = [],
 }: FunkeFederationDetailScreenProps) {
-  const { trustedEntities } = useTrustedEntities()
-
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const scrollViewRef = useRef<ScrollViewRefType>(null)
-
-  const filteredTrustedEntities = trustedEntities.filter((entity) => trustedEntityIds.includes(entity.entity_id))
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -72,7 +67,7 @@ export function FunkeFederationDetailScreen({
             <YStack gap="$2">
               <Heading variant="sub2">Trusted by</Heading>
               <Paragraph>
-                {filteredTrustedEntities.length > 0 ? (
+                {trustedEntities.length > 0 ? (
                   <>A list of organizations and whether they have approved {name}.</>
                 ) : (
                   <>There are no organizations that have approved {name}.</>
@@ -80,7 +75,7 @@ export function FunkeFederationDetailScreen({
               </Paragraph>
             </YStack>
             <YStack gap="$2">
-              {filteredTrustedEntities.map((entity) => {
+              {trustedEntities.map((entity) => {
                 return (
                   <XStack ai="center" key={entity.entity_id} br="$8" p="$3.5" gap="$3" bg="$grey-100">
                     {entity.logo_uri && (
