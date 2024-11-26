@@ -25,6 +25,7 @@ import {
 
 import { useAppAgent } from '@easypid/agent'
 
+import { InvalidPinError } from '@easypid/crypto/error'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
@@ -32,6 +33,7 @@ import { createParam } from 'solito'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addReceivedActivity, useActivities } from '../activity/activityRecord'
+import type { PresentationRequestResult } from '../share/components/utils'
 import { PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
@@ -252,7 +254,7 @@ export function FunkeCredentialNotificationScreen() {
     [acquireCredentialsPreAuth]
   )
 
-  const onPresentationAccept = useCallback(
+  const onPresentationAccept: (pin?: string) => Promise<undefined | PresentationRequestResult> = useCallback(
     async (pin?: string) => {
       if (
         !credentialsForRequest ||
@@ -273,7 +275,18 @@ export function FunkeCredentialNotificationScreen() {
           return
         }
         // TODO: maybe provide to shareProof method?
-        setWalletServiceProviderPin(pin.split('').map(Number))
+        try {
+          await setWalletServiceProviderPin(pin.split('').map(Number))
+        } catch (e) {
+          if (e instanceof InvalidPinError) {
+            toast.show(e.message, { customData: { preset: 'danger' } })
+            setIsSharingPresentation(false)
+            return { status: 'error', result: { title: e.message }, redirectToWallet: false }
+          }
+
+          setErrorReason('Presentation information could not be extracted.')
+          return
+        }
       }
 
       try {
@@ -313,6 +326,7 @@ export function FunkeCredentialNotificationScreen() {
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,
       shouldUsePinForPresentation,
+      toast.show,
     ]
   )
 

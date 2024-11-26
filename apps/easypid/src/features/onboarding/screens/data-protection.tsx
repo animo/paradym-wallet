@@ -1,5 +1,5 @@
-import { useCanUseSecureEnclave } from '@easypid/hooks/useCanUseSecureEnclave'
-import { Button, HeroIcons, Paragraph, Spinner, XStack, YStack, useToastController } from '@package/ui'
+import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
+import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useImageScaler } from 'packages/app/src/hooks'
 import React, { useState } from 'react'
 import { Linking, Platform } from 'react-native'
@@ -11,7 +11,6 @@ interface OnboardingDataProtectionProps {
 
 export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtectionProps) {
   const toast = useToastController()
-  const canUseSecureEnclave = useCanUseSecureEnclave()
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useState(true)
 
   const { height, onLayout } = useImageScaler()
@@ -27,7 +26,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
   const onToggleCloudHsm = () => {
     const newShouldUseCloudHsm = !shouldUseCloudHsm
 
-    if (newShouldUseCloudHsm === false && !canUseSecureEnclave) {
+    if (newShouldUseCloudHsm === false && !isLocalSecureEnvironmentSupported()) {
       toast.show(`You device does not support on-device ${Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'}.`, {
         message: 'Only Cloud HSM supported for PID cryptogrpahic keys.',
         customData: {
