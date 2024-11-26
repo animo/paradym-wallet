@@ -99,7 +99,7 @@ export function InfoButton({
         </Circle>
       )}
       <XStack fg={1} f={1} ai="center" jc="space-between">
-        <YStack gap="$1" f={1} fg={1}>
+        <YStack gap="$1" fg={1}>
           <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} variant="sub1">
             {title}
           </Heading>

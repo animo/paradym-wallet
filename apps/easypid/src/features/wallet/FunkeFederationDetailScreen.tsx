@@ -83,8 +83,10 @@ export function FunkeFederationDetailScreen({
                         <Image src={entity.logo_uri} height="100%" width="100%" />
                       </Circle>
                     )}
-                    <XStack gap="$1" f={1} justifyContent="space-between">
-                      <Heading variant="h2">{entity.organization_name}</Heading>
+                    <XStack gap="$1" f={1} justifyContent="space-between" ai="center">
+                      <Heading f={1} numberOfLines={2} variant="h2">
+                        {entity.organization_name}
+                      </Heading>
                       <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
                     </XStack>
                   </XStack>
