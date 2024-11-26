@@ -1,6 +1,10 @@
 const PLAYGROUND_URL = 'https://funke.animo.id'
 
 export type VerificationAnalysisInput = {
+  verifier: {
+    name: string
+    domain: string
+  }
   name: string
   purpose: string
   cards: Array<{
@@ -21,6 +25,7 @@ export type VerificationAnalysisResult = {
 }
 
 export const analyzeVerification = async ({
+  verifier,
   name,
   purpose,
   cards,
@@ -31,7 +36,7 @@ export const analyzeVerification = async ({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, purpose, cards }),
+      body: JSON.stringify({ verifier, name, purpose, cards }),
     })
 
     if (!response.ok) {

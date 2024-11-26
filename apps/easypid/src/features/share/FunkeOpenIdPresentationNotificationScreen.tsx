@@ -77,6 +77,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       .flatMap((entry) => entry.credentials)
 
     analyzeVerification({
+      verifier: {
+        name: credentialsForRequest.verifier.name ?? 'No name provided',
+        domain: credentialsForRequest.verifier.hostName ?? 'No domain provided',
+      },
       name: submission.name ?? 'No name provided',
       purpose: submission.purpose ?? 'No purpose provided',
       cards: requestedCards.map((credential) => ({
