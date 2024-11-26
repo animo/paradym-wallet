@@ -11,6 +11,7 @@ import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState, useCallback } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
+import { InvalidPinError } from '@easypid/crypto/error'
 import { analyzeVerification } from '@easypid/use-cases/ValidateVerification'
 import type { VerificationAnalysisResponse } from '@easypid/use-cases/ValidateVerification'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
@@ -114,7 +115,25 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           }
         }
         // TODO: maybe provide to shareProof method?
-        setWalletServiceProviderPin(pin.split('').map(Number))
+        try {
+          await setWalletServiceProviderPin(pin.split('').map(Number))
+        } catch (e) {
+          if (e instanceof InvalidPinError) {
+            return {
+              status: 'error',
+              result: {
+                title: 'Authentication Failed',
+              },
+            }
+          }
+
+          return {
+            status: 'error',
+            result: {
+              title: 'Authentication failed',
+            },
+          }
+        }
       }
 
       try {

@@ -1,18 +1,49 @@
 import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
+import { AskarModule } from '@credo-ts/askar'
 import {
+  Agent,
   CredoWebCrypto,
   type JwsProtectedHeaderOptions,
   JwsService,
   JwtPayload,
+  KeyDerivationMethod,
   TypedArrayEncoder,
+  WalletInvalidKeyError,
   getJwkFromKey,
 } from '@credo-ts/core'
-import type { EasyPIDAppAgent } from 'packages/agent/src'
+import { agentDependencies } from '@credo-ts/react-native'
+import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import type { EasyPIDAppAgent } from '@package/agent'
+import { secureWalletKey } from 'packages/secure-store/secureUnlock'
+import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
 // TODO: should auto reset after X seconds
 let __pin: Array<number> | undefined
-export const setWalletServiceProviderPin = (pin?: Array<number>) => {
+export const setWalletServiceProviderPin = async (pin: Array<number>) => {
+  const pinString = pin.join('')
+  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+  const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
+  const walletId = `easypid-wallet-${walletKeyVersion}`
+  const agent = new Agent({
+    config: {
+      label: 'pin_test_agent',
+      walletConfig: { id: walletId, key: walletKey, keyDerivationMethod: KeyDerivationMethod.Raw },
+    },
+    modules: {
+      askar: new AskarModule({ ariesAskar }),
+    },
+    dependencies: agentDependencies,
+  })
+
+  try {
+    await agent.initialize()
+  } catch (e) {
+    if (e instanceof WalletInvalidKeyError) {
+      throw new InvalidPinError()
+    }
+    throw e
+  }
   __pin = pin
 }
 
@@ -29,10 +60,6 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     private hsmUrl: string,
     private agent: EasyPIDAppAgent
   ) {}
-
-  public async register() {
-    await this.post('register-wallet', {})
-  }
 
   private async post<T>(path: string, claims: Record<string, unknown>): Promise<T> {
     const pin = getWalletServiceProviderPin()
@@ -73,6 +100,22 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     return parsedData
   }
 
+  public async register() {
+    await this.post('register-wallet', {})
+  }
+
+  public async batchGenerateKeyPair(keyIds: string[]): Promise<Record<string, Uint8Array>> {
+    const { publicKeys } = await this.post<{ publicKeys: Record<string, Array<number>> }>('batch-create-key', {
+      keyIds,
+      keyType: 'P256',
+    })
+
+    return Object.entries(publicKeys).reduce(
+      (prev, [keyId, publicKey]) => ({ ...prev, [keyId]: new Uint8Array(publicKey) }),
+      {}
+    )
+  }
+
   public async sign(keyId: string, message: Uint8Array): Promise<Uint8Array> {
     const { signature } = await this.post<{ signature: Array<number> }>('sign', {
       data: new Array(...message),
@@ -86,8 +129,9 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     return new Uint8Array(signature)
   }
 
-  public async generateKeypair(id: string): Promise<void> {
-    await this.post('create-key', { keyType: 'P256', keyId: id })
+  public async generateKeypair(id: string): Promise<Uint8Array> {
+    const { publicKey } = await this.post<{ publicKey: Array<number> }>('create-key', { keyType: 'P256', keyId: id })
+    return new Uint8Array(publicKey)
   }
 
   public async getPublicBytesForKeyId(keyId: string): Promise<Uint8Array> {

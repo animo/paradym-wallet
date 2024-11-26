@@ -46,7 +46,6 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'
-import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
 import { bdrPidIssuerCertificate, pidSchemes } from '../../../apps/easypid/src/constants'
 import { indyNetworks } from './indyNetworks'

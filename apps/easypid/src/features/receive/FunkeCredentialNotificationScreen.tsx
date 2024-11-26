@@ -25,6 +25,7 @@ import {
 
 import { useAppAgent } from '@easypid/agent'
 
+import { InvalidPinError } from '@easypid/crypto/error'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
@@ -41,6 +42,7 @@ import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
+import { PresentationRequestResult } from '../share/components/utils'
 
 type Query = { uri?: string; data?: string }
 
@@ -253,7 +255,7 @@ export function FunkeCredentialNotificationScreen() {
     [acquireCredentialsPreAuth]
   )
 
-  const onPresentationAccept = useCallback(
+  const onPresentationAccept: (pin?: string) => Promise<void | PresentationRequestResult> = useCallback(
     async (pin?: string) => {
       if (
         !credentialsForRequest ||
@@ -274,7 +276,18 @@ export function FunkeCredentialNotificationScreen() {
           return
         }
         // TODO: maybe provide to shareProof method?
-        setWalletServiceProviderPin(pin.split('').map(Number))
+        try {
+          await setWalletServiceProviderPin(pin.split('').map(Number))
+        } catch (e) {
+          if (e instanceof InvalidPinError) {
+            toast.show(e.message, { customData: { preset: 'danger' } })
+            setIsSharingPresentation(false)
+            return { status: 'error', result: { title: e.message }, redirectToWallet: false }
+          }
+
+          setErrorReason('Presentation information could not be extracted.')
+          return
+        }
       }
 
       try {
@@ -314,6 +327,7 @@ export function FunkeCredentialNotificationScreen() {
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,
       shouldUsePinForPresentation,
+      toast.show,
     ]
   )
 
@@ -414,7 +428,11 @@ export function FunkeCredentialNotificationScreen() {
               step: 'pin-enter',
               progress: 82.5,
               screen: (
-                <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinComplete={onPresentationAccept} />
+                <PinSlide
+                  key="pin-enter"
+                  isLoading={isSharingPresentation}
+                  onPinComplete={onPresentationAccept}
+                />
               ),
             }
           : undefined,

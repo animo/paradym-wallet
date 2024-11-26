@@ -1,6 +1,7 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
+import { InvalidPinError } from '@easypid/crypto/error'
 import type { PidSdJwtVcAttributes } from '@easypid/hooks'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
@@ -190,7 +191,20 @@ export function FunkePidSetupScreen() {
       throw new Error('Retry')
     }
 
-    if (shouldUseCloudHsm) setWalletServiceProviderPin(pin.split('').map(Number))
+    if (shouldUseCloudHsm) {
+      try {
+        await setWalletServiceProviderPin(pin.split('').map(Number))
+      } catch (e) {
+        if (e instanceof InvalidPinError) {
+          toast.show(e.message, {
+            customData: {
+              preset: 'danger',
+            },
+          })
+        }
+        throw e
+      }
+    }
     await onIdCardStart({ walletPin: pin, allowSimulatorCard: allowSimulatorCard })
   }
 

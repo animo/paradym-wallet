@@ -1,4 +1,4 @@
-import { Redirect, useLocalSearchParams, useNavigation } from 'expo-router'
+import { Redirect, useLocalSearchParams } from 'expo-router'
 
 import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
@@ -25,7 +25,6 @@ export default function Authenticate() {
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
-  const navigation = useNavigation()
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
