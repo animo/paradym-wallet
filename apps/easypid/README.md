@@ -375,7 +375,6 @@ The following standards and specifications were implemented.
 ## Known Bugs
 
 - Entering incorrect PIN during presentation sharing will get stuck on the PIN loading screen (it does show correct PIN invalid toast).
-- The navigation when re-opening the app is broken. And also deeplinking does not work when the app is already open. This is quite impactful as it means you have to force close the app sometimes.
 - You have to force close the app when you use BLE for the first time after enabling location permission because the permission popup does not go away.
 
 ## Changelog
