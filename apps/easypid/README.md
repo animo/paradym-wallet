@@ -375,8 +375,13 @@ The following standards and specifications were implemented.
 
 #### 27-11-2024
 
+**Readme**
 - Extended this README document with additional testing information.
 - Added [Known Bugs](#known-bugs) section.
+- Replaced screenshot in readme
+
+**Wallet**
+- Fixed an issue with the app locking in the background [commit](https://github.com/animo/paradym-wallet/commit/6d5e2f176d32328e834b293c3389780fd9ca3d91)
 
 ### Phase 1
 
