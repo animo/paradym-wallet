@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react'
 import React from 'react'
 import { AppState, type AppStateStatus } from 'react-native'
 
-const BACKGROUND_TIME_THRESHOLD = 30000 // 30 seconds
+const BACKGROUND_TIME_THRESHOLD = 60000 // 60 seconds
 
 export function BackgroundLockProvider({ children }: PropsWithChildren) {
   const router = useRouter()
