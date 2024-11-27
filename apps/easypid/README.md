@@ -15,6 +15,8 @@
   &nbsp;|&nbsp;
   <a href="#tech-stack">Tech Stack</a>
   &nbsp;|&nbsp;
+  <a href="#known-bugs">Known Bugs</a>
+  &nbsp;|&nbsp;
   <a href="#changelog">Changelog</a>
 </p>
 
@@ -361,6 +363,12 @@ The following standards and specifications were implemented.
   - Missing `verifier_attestation` and wallet attestation
 - 🟠 [OpenID Federation - Draft 40](https://openid.net/specs/openid-federation-1_0-40.html)
 
+## Known Bugs
+
+- Entering incorrect PIN during presentation sharing will get stuck on the PIN loading screen (it does show correct PIN invalid toast).
+- The navigation when re-opening the app is broken. And also deeplinking does not work when the app is already open. This is quite impactful as it means you have to force close the app sometimes.
+- You have to force close the app when you use BLE for the first time after enabling location permission because the permission popup does not go away.
+
 ## Changelog
 
 ### Phase 2
@@ -368,6 +376,7 @@ The following standards and specifications were implemented.
 #### 27-11-2024
 
 - Extended this README document with additional testing information.
+- Added [Known Bugs](#known-bugs) section.
 
 ### Phase 1
 
