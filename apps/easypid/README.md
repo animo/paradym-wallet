@@ -375,7 +375,6 @@ The following standards and specifications were implemented.
 ## Known Bugs
 
 - Entering incorrect PIN during presentation sharing will get stuck on the PIN loading screen (it does show correct PIN invalid toast).
-- The navigation when re-opening the app is broken. And also deeplinking does not work when the app is already open. This is quite impactful as it means you have to force close the app sometimes.
 - You have to force close the app when you use BLE for the first time after enabling location permission because the permission popup does not go away.
 
 ## Changelog
@@ -392,6 +391,7 @@ The following standards and specifications were implemented.
 
 **Wallet**
 - Fixed an issue with the app locking in the background [commit](https://github.com/animo/paradym-wallet/commit/6d5e2f176d32328e834b293c3389780fd9ca3d91)
+- Fixed an issue where deeplinking didn't work on iOS if the wallet is already unlocked [commit](https://github.com/animo/paradym-wallet/commit/db12085d4c67e6688aa2f975d05783253eb06b5d)
 
 ### Phase 1
 
