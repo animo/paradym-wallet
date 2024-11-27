@@ -392,6 +392,7 @@ The following standards and specifications were implemented.
 
 **Wallet**
 - Fixed an issue with the app locking in the background [commit](https://github.com/animo/paradym-wallet/commit/6d5e2f176d32328e834b293c3389780fd9ca3d91)
+- Fixed an issue where deeplinking didn't work on iOS if the wallet is already unlocked [commit](https://github.com/animo/paradym-wallet/commit/db12085d4c67e6688aa2f975d05783253eb06b5d)
 
 ### Phase 1
 
