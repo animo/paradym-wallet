@@ -4,11 +4,38 @@
 
 <h1 align="center"><b>Animo EasyPID</b></h1>
 
+<p align="center">
+  <a href="#install">Install</a> 
+  &nbsp;|&nbsp;
+  <a href="#features">Features</a> 
+  &nbsp;|&nbsp;
+  <a href="#test">Test</a>
+  &nbsp;|&nbsp;
+  <a href="#project-structure">Project Structure</a>
+  &nbsp;|&nbsp;
+  <a href="#tech-stack">Tech Stack</a>
+  &nbsp;|&nbsp;
+  <a href="#changelog">Changelog</a>
+</p>
+
+---
+
 This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers and can be tested/used with our [Funke playground environment](https://funke.animo.id/). For more information on the project reach out to <ana@animo.id>. 
 
+<div align="center">
+  <img src="assets/screen1.png" width="30%" />
+  <img src="assets/screen2.png" width="30%" /> 
+  <img src="assets/screen3.png" width="30%" />
+</div>
+
+ <p align="center"><i>Impression of the EasyPID Wallet</i></p> 
+
+## Install
+
+The prototype app is currently published privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
 
 ## Features
-The identity wallet contains the following features, you can see the full flow without running the app in the [video walkthrough](TODO:Add):
+The identity wallet contains the following features, you can see the full flow without running the app in the video walkthrough (will be added next week):
 
 **General App**
 - 🟢 Onboard user
@@ -18,8 +45,7 @@ The identity wallet contains the following features, you can see the full flow w
   - 🟢 Onboarding instruction
   - 🟢 Skippable identity instruction
 - 🟢 Home screen
-- 🟠 Activity
-     - Missing activity types for presentations, failed transactions and archived credentials.
+- 🟢 Activity
 - 🟢 About the app
 - 🟢 Credential overview
 - 🔴 Support for translation files
@@ -67,6 +93,7 @@ The identity wallet contains the following features, you can see the full flow w
 **Present attestations in-person**
 - Android
   - 🟢 Android-Android QR for device engagement
+  - 🟢 Android-Android NFC for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
   - 🟢 mDOC over BLE
 - iOS
@@ -85,9 +112,11 @@ The identity wallet contains the following features, you can see the full flow w
 
 **Other**
 - 🟠 HAIP compliance
+  - Missing `verifier_attestation` and wallet attestations
 - 🟠 WCAG 2.2 compliance
     - Missing keyboard accessibility for Android
-- 🔴 AI-based oversharing detection
+- 🟠 AI-based oversharing detection
+  - Using cloud based AI model
 
 **[Test issuer/verifier](https://funke.animo.id/)** 
 
@@ -95,32 +124,24 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 Verify PID
 - 🟢 Verify mixed PID-QEAA requests
 
-The identity wallet contains the following temporary features for development and testing:
-
-- Use a simulated eID test card. How: choose PIN 276536 (BROKEN) as the 6-digit PIN during wallet setup 
-- Reset the wallet. How: go to the menu and choose 'reset wallet'
-
- <div align="center">
-  <img src="assets/screen1.png" width="30%" />
-  <img src="assets/screen2.png" width="30%" /> 
-  <img src="assets/screen3.png" width="30%" />
-</div>
-
- <p align="center"><i>Impression of the EasyPID Wallet</i></p> 
-
-## Install
-
-The prototype app is currently published privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
-
-## Testing
+## Test
 
 Here are some resources and tips that might be helpful while testing the app.
 
-### Before you start
+### Development Features
 
-- Make sure you have access to the BDR PID issuer, which is behind a firewall
-- Have an eID card ready or understand how to receive the simulated eID
-- There is an option to reset the wallet during testing. It is located in the menu, which you can find on the home page.
+The identity wallet contains the following temporary features for development and testing:
+
+- Use a simulated eID test card. 
+  - During onboarding: 
+    - First PIN: enter your desired PIN
+    - Pin re-enter: enter PIN 276536 (BROKEN). You will be notified the eID simulator card is activated
+  - Setup later:
+    - First PIN: enter PIN 276536 (BROKEN). You will be notified the eID simulator card is activated, and prompted to enter your real PIN now.
+- Reset the wallet
+  - Go to the menu and choose 'reset wallet'
+- Toggle Cloud HSM / Secure Enclave
+  - During PID retrieval (either during onboarding or setup later) there is a icon of a cloud. You can press this to toggle between Cloud HSM (default), and on-device Secure element (indicated by phone icon).
 
 ### Test flows
 
@@ -128,24 +149,51 @@ The [playground](https://funke.animo.id/) functions as a test relying party and/
 
 To make sure you test all the flows, please reference the overview below.
 
-- Overasking warnings (AI) - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account)
-- Mixed Credential request - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account)
-- Multiple Credential request - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account)
-- Only PID verification - [UC-3](#government-identification)
-- Only QEAA verification - [UC-4](#ePrescriptions)
-- DIF PEX - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account), [UC-3](#government-identification)
-- DCQL - [UC-1](#rent-a-car), [UC-2](#open-a-bank-account), [UC-4](#ePrescriptions)
+- Overasking warnings (AI/LLM) - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account)
+- Mixed Credential request - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account)
+- Multiple Credential request - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account)
+- Only PID verification - [UC-3](#uc-3---government-identification)
+- Only QEAA verification - [UC-4](#uc-4---get-an-e-prescription)
+- DIF PEX - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account), [UC-3](#uc-3---government-identification)
+- DCQL - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account), [UC-4](#uc-4---get-an-e-prescription)
 - OpenID Federation - All
+- Android In person / Proximity flow, [UC-5](#uc-5---proximity-flow)
+- Presentation during issuance [C-1](#c-1---mdl--führerschein)
+- Authorization code flow [C-4](#c-4---health-id--gesundheitskarte), [C-1](#c-1---mdl--führerschein)
+- Pre authorized code flow, [C-2](#c-2---residence--meldebestätigung), [C-3](#c-3---tax-id--steuer-id)
+
+#### Issuer
+
+##### C-1 - mDL / Führerschein
+
+Showcases:
+- SD-JWT and mDOC
+- Presenting PID during issuance
+
+##### C-2 - Residence / Meldebestätigung
+
+- SD-JWT and mDOC
+- Pre-authorized code flow with transaction code (PIN)
+
+##### C-3 - Tax ID / Steuer-ID
+
+- SD-JWT and mDOC
+- Pre-authorized code flow without transaction code
+
+##### C-4 - Health ID / Gesundheitskarte
+
+- SD-JWT and mDOC
+- Authorization code flow with external browser sign-in
 
 #### Verifier
 
 All verifier flows can work with either OpenID Federation or X.509 certificates. You can choose this in the selection menu. 
 
-**UC 1 - Rent a car**
+##### UC 1 - Rent a car
 
 Rent a car through TurboKeys or CheapCars.
 
-This use case requires you to have the PID and a Führerschein (drivers licence) in your wallet. 
+> This use case requires you to have the PID and a Führerschein (drivers licence) in your wallet. 
 
 It showcases:
 - Requesting multiple credentials in one request
@@ -153,35 +201,71 @@ It showcases:
 - The two different supported Query languages: DIF PEX and DCQL 
 - Support for trust federations - CheapCars does not have any trusting entities, while TurboKeys does
 - Smart AI warnings - CheapCars shows an over-asking warning to the user, while Turbokeys shows that it passes the overasking detection with a green mark.
+- Single use credentials (every time a new credential will be presented as long as the batch lasts).
 
-**UC 2 - Open a bank account**
+##### UC 2 - Open a bank account
 
 Open a bank account at Open Horizon Bank
-This use case requres you to have the PID, Steur-ID, meltebestatigung and Gezundheidskarte
+
+> This use case requres you to have the PID, Steur-ID, meltebestatigung and Gezundheidskarte
+
 It showcases:
 - Requesting multiple credentials in one request
 - The DIF PEX query language
 - Support for trust federations - several entities trust Open Horizon Bank. Because Europe trusts Open Horizon, it is also trusted by die Bundesregierung. 
 - Smart AI warnings - Open Horizon Bank shows an over-asking warning to the user.
+- Single use credentials (every time a new credential will be presented as long as the batch lasts).
 
-**UC 3 - Government identification**
+#####  UC 3 - Government identification
 
-This use case requires you to have the PID.
+> This use case requires you to have the PID.
+
 It showcases:
 - Requesting only the PID
 - The two different supported Query languages: DIF PEX and DCQL 
 - Support for trust federations - Die Bundesregierung is trusted by Europe
+- Single use credentials and backgroud PID referesh (every time a new credential will be presented, which can be seen in the playground).
 
 
-**UC 4 - Get an e-prescription**
+##### UC 4 - Get an e-prescription
 
 Get an e-prescription from Redcare Pharmacy
-This use case requires you to have the Gezundheidskarte (health card)
+
+> This use case requires you to have the Gezundheidskarte (health card)
+
 It showcases:
 - Requesting only a QEAA
 - The DCQL query language
 - Support for trust federations - Redcare Pharmacy is trusted by several entities. Both Redcare and TurboKeys are trusted by the KvK entity.
+- Single use credentials (every time a new credential will be presented as long as the batch lasts).
 
+##### UC 5 - Proximity Flow
+
+Present mDOC credential in person.
+
+> This use case requires you to have:
+>  - Two android devices (one with wallet, one with verifier)
+>  - Führerschein mDL (drivers licence) in your wallet
+>  - Android verifier application (download `appverifier-debug.apk` from this [Github release](https://github.com/animo/paradym-wallet/releases/tag/v1.6.0) on android device, and install the APK).
+
+It showcases:
+- Requesting mDOC in person
+- Requesting only a QEAA
+- Single use credentials (every time a new credential will be presented as long as the batch lasts). 
+
+How to:
+- Verifier:
+  - Open the verifier application and select either **older than 18**, or **older than 21**, or make a custom request (but make sure to only request from the base mDL propertiess, as the mDL issued currently does not include AAMVA related attributes).
+- Wallet
+  - Press "Scan QR-Code", then "Show my QR Code", enable permissions (Bluetooth and location, some devices require you to do this in the app settings, after which you may have to restart the app).
+- Connect:
+  - NFC: Tap the two devices against each other (make sure the NFC chips on the devices align)
+  - QR: Scan the wallet QR code with the verifier application
+  - Both: Select in the verifier app whether it should use Peripheral or Central mode (both work)
+- Wallet
+  - It should now redirect to the proof sharing screen alowing you to share the requested attributes
+- Verifier
+  - Once the wallet has shared the attributes it will show the attributes in the verifier app.
 
 ### Device Compatibility
 
@@ -216,7 +300,7 @@ Initially when the app is opened, the [`src/app/(app)/_layout.tsx`](src/app/(app
 
 ### Agent
 
-The agent contains the digital identity related wallet functionality. It uses an [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance to manage the wallet.
+The agent contains the digital identity related wallet functionality. It uses a [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance to manage the wallet.
 
 [Aries Askar](https://github.com/hyperledger/aries-askar) is used for cryptographic operations and encrypted storage of the wallet data. 
 
@@ -246,17 +330,22 @@ The [documentation](./documentation/) folder currently contains only the overvie
 
 ### PID Options
 
-The C flow supported in the Paradym Wallet is mostly implemented in [Credo](https://github.com/openwallet-foundation/credo-ts).
+The C/C' flow supported in the Paradym Wallet is mostly implemented in [Credo](https://github.com/openwallet-foundation/credo-ts).
 
-## Tech stack / base components
+## Tech stack
 
-The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenId4Vc](https://github.com/Sphereon-Opensource/OID4VC) [Mdoc](https://github.com/Sphereon-Opensource/mdoc-cbor-crypto-multiplatform) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.
+The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenID4VCI](https://github.com/animo/oid4vc-ts), [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC), [OpenID Federation](https://github.com/animo/openid-federation-ts), [Mdoc](https://github.com/animo/mdoc) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.
 
 - [Credo](https://github.com/openwallet-foundation/credo-ts)
-  - [OpenId4Vc](https://github.com/Sphereon-Opensource/OID4VC)
-  - [Mdoc](https://github.com/Sphereon-Opensource/mdoc-cbor-crypto-multiplatform)
+  - [OpenID4VCI](https://github.com/animo/oid4vc-ts)
+  - [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC)
+  - [Mdoc](https://github.com/animo/mdoc)
   - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
+  - [DCQL](https://github.com/auer-martin/dcql)
+  - [OpenID Federation](https://github.com/animo/openid-federation-ts)
 - [Expo Secure Environment](https://github.com/animo/expo-secure-environment)
+- [Expo Mdoc Data Transfer](https://github.com/animo/expo-mdoc-data-transfer)
+  - Based on EUDI Reference Implementation
 - [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk)
 
 The following standards and specifications were implemented.
@@ -269,11 +358,19 @@ The following standards and specifications were implemented.
 - 🟢 [ISO 18013-5](https://www.iso.org/standard/69084.html)
 - 🟢 [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
 - 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
-  - Missing verifier_attestation and wallet attestation
+  - Missing `verifier_attestation` and wallet attestation
 - 🟠 [OpenID Federation - Draft 40](https://openid.net/specs/openid-federation-1_0-40.html)
 
 ## Changelog
 
-### 02-09-2024
+### Phase 2
+
+#### 27-11-2024
+
+- Extended this README document with additional testing information.
+
+### Phase 1
+
+#### 02-09-2024
 
 - Redeployed test relying party to add a "Open in Wallet" button for same device flow ([commit](https://github.com/animo/openid4vc-playground-funke/commit/9a839521e8d70aaf92b7fa03fa037fc866644ad0))
