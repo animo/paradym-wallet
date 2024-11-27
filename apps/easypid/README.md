@@ -326,6 +326,14 @@ Relevant links:
 
 The [app package](packages/app) and [ui package](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/paradym) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
 
+### Wallet Service Provider
+
+The Wallet Service Provider (WSP) is a separate service that allows creating and signing with hardware based keys. The Wallet Service Provider currently uses Google Cloud HSM, and creates a separate key ring for each wallet. A wallet communicates to the Wallet Service Provider based on a key dervied from a salt and PIN.
+
+In the future this will be updated to also include a key attested by Google Play Integrity or Apple App Attest Service, ensuring the WSP is actually interacting with an instance of the EasyPID wallet, and keys are generated in the wallet. The service also allows issuance of Wallet Attestations, but these are not leveraged in the EasyPID yet, and the keys are also not verified by the Google Play Integrity or Apple App Attest Service.
+
+Wallet Service Provider Implementation: https://github.com/animo/funke-wallet-provider
+
 ### Documentation
 
 The [documentation](./documentation/) folder currently contains only the overview of the WCAG 2.2 accessibility compliance status with the accompanying todo's for next steps on accessibility. 
@@ -349,6 +357,7 @@ The following section lists the software components used to create the EasyPID w
 - [Expo Mdoc Data Transfer](https://github.com/animo/expo-mdoc-data-transfer)
   - Based on EUDI Reference Implementation
 - [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk)
+- [Wallet Service Provider Implementation](https://github.com/animo/funke-wallet-provider)
 
 The following standards and specifications were implemented.
 
@@ -379,6 +388,7 @@ The following standards and specifications were implemented.
 - Extended this README document with additional testing information.
 - Added [Known Bugs](#known-bugs) section.
 - Replaced screenshot in readme
+- Added a section about the Wallet Service Provider
 
 **Wallet**
 - Fixed an issue with the app locking in the background [commit](https://github.com/animo/paradym-wallet/commit/6d5e2f176d32328e834b293c3389780fd9ca3d91)
