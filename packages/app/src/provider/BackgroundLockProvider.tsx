@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react'
 
 import { useSecureUnlock } from '@package/secure-store/secure-wallet-key/SecureUnlockProvider'
+import { useRouter } from 'expo-router'
 import { useEffect, useRef } from 'react'
 import React from 'react'
 import { AppState, type AppStateStatus } from 'react-native'
@@ -8,6 +9,7 @@ import { AppState, type AppStateStatus } from 'react-native'
 const BACKGROUND_TIME_THRESHOLD = 30000 // 30 seconds
 
 export function BackgroundLockProvider({ children }: PropsWithChildren) {
+  const router = useRouter()
   const secureUnlock = useSecureUnlock()
   const backgroundTimeRef = useRef<Date | null>(null)
 
@@ -22,6 +24,7 @@ export function BackgroundLockProvider({ children }: PropsWithChildren) {
           if (timeInBackground > BACKGROUND_TIME_THRESHOLD && secureUnlock.state === 'unlocked') {
             console.log('App was in background for more than 30 seconds, locking')
             secureUnlock.lock()
+            router.replace('/authenticate')
           }
           backgroundTimeRef.current = null
         }
@@ -33,7 +36,7 @@ export function BackgroundLockProvider({ children }: PropsWithChildren) {
     return () => {
       subscription.remove()
     }
-  }, [secureUnlock])
+  }, [secureUnlock, router])
 
   return <>{children}</>
 }
