@@ -4,7 +4,6 @@ import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
-import { Platform } from 'react-native'
 
 export async function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
   const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))
@@ -13,7 +12,6 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
   try {
     const parseResult = await parseInvitationUrl(path)
     if (!parseResult.success) {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       return '/'
     }
 
@@ -32,10 +30,10 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     }
 
     if (redirectPath) {
-      // NOTE: on android it somehow doesn't handle the intent if the app is already open
+      // NOTE: it somehow doesn't handle the intent if the app is already open
       // so we replace the router to the path. I think it can break easily though if e.g.
       // the wallet is locked in the background. Not sure how to proceed, this is best effort fix
-      if (Platform.OS === 'android' && !initial) {
+      if (!initial) {
         router.replace(redirectPath)
         return null
       }
