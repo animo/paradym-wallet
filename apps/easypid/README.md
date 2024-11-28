@@ -386,6 +386,7 @@ The following standards and specifications were implemented.
 
 **Playground**
 - Changed text "Requires PIN" to "Requires transaction code"
+- Allow additional options for requesting mixed sd-jwt vc and mso_mdoc requests using DCQL [commit](https://github.com/animo/openid4vc-playground-funke/commit/2c2089f5e77227f592116e6af397b063acda67af)
 
 #### 27-11-2024
 
