@@ -123,7 +123,17 @@ export function FunkeCredentialNotificationScreen() {
   // )
 
   useEffect(() => {
-    resolveOpenId4VciOffer({ agent, offer: params, authorization })
+    resolveOpenId4VciOffer({
+      agent,
+      offer: {
+        // NOTE: the params can contain more than data and uri
+        // so it's important we only use these params, so the use
+        // effect doesn't run again the data nd uri
+        data: params.data,
+        uri: params.uri,
+      },
+      authorization,
+    })
       .then(({ resolvedAuthorizationRequest, resolvedCredentialOffer }) => {
         setResolvedCredentialOffer(resolvedCredentialOffer)
         setResolvedAuthorizationRequest(resolvedAuthorizationRequest)
@@ -134,7 +144,7 @@ export function FunkeCredentialNotificationScreen() {
         })
         setErrorReasonWithError('Credential information could not be extracted', error)
       })
-  }, [params, agent, setErrorReasonWithError])
+  }, [params.data, params.uri, agent, setErrorReasonWithError])
 
   const retrieveCredentials = useCallback(
     async (
@@ -363,6 +373,10 @@ export function FunkeCredentialNotificationScreen() {
     resolvedCredentialOffer &&
     resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.Oauth2Redirect
 
+  // These are callbacks to not change on every render
+  const onCancelAuthorization = useCallback(() => setErrorReason('Authorization cancelled'), [])
+  const onErrorAuthorization = useCallback(() => setErrorReason('Authorization failed'), [])
+
   return (
     <SlideWizard
       steps={[
@@ -404,12 +418,8 @@ export function FunkeCredentialNotificationScreen() {
                     domain: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
                   }}
                   onAuthFlowCallback={acquireCredentialsAuth}
-                  onCancel={() => {
-                    setErrorReason('Authorization cancelled')
-                  }}
-                  onError={() => {
-                    setErrorReason('Authorization failed')
-                  }}
+                  onCancel={onCancelAuthorization}
+                  onError={onErrorAuthorization}
                 />
               ),
             }

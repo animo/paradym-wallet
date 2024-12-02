@@ -10,6 +10,22 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
   if (!isRecognizedDeeplink) return path
 
   try {
+    // For the bdr mDL issuer we use authorized code flow, but they also
+    // redirect to the ausweis app. From the ausweis app we are then redirected
+    // back to the easypid wallet.
+    const parsedPath = new URL(path)
+    const credentialAuthorizationCode = parsedPath.searchParams.get('code')
+    if (
+      parsedPath.protocol === 'id.animo.ausweis:' &&
+      parsedPath.pathname === '/wallet/redirect' &&
+      credentialAuthorizationCode
+    ) {
+      // We just set the credentialAuthorizationCode, which should be handled by the browser
+      // auth session code in the credential screen that is open.
+      router.setParams({ credentialAuthorizationCode })
+      return null
+    }
+
     const parseResult = await parseInvitationUrl(path)
     if (!parseResult.success) {
       return '/'
