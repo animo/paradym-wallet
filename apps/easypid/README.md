@@ -374,13 +374,19 @@ The following standards and specifications were implemented.
 
 ## Known Bugs
 
-- Entering incorrect PIN during presentation sharing will get stuck on the PIN loading screen (it does show correct PIN invalid toast).
 - You have to force close the app when you use BLE for the first time after enabling location permission because the permission popup does not go away.
 - Installing the latest version of the app if you had a previous version of the application can cause you to get stuck in a broken state, even if the application is removed and reinstalled.
 
 ## Changelog
 
 ### Phase 2
+
+#### 02-12-2024
+
+**Wallet**
+- Added a development mode that shows internal error messages for easier debugging by LSPs [commit](https://github.com/animo/paradym-wallet/commit/a1aaf26655456082d15863d6f88edecfecaca598)
+- Fixed an issue where the PIN screen would get stuck in a loading state when an incorrect PIN was entered  [commit](https://github.com/animo/paradym-wallet/commit/0f65ef98f5f26c3afc0968e4f848bf538a86cfd7)
+- Fixed an issue with redirect based auth flow if the authorization flow left the in-app browser (e.g. when requiring authentication using the native AusweisApp with the eID card) [commit](https://github.com/animo/paradym-wallet/commit/eb333b81fe5662cc2f010e1ee9bbdc83a7e19aa3)
 
 #### 28-11-2024
 
