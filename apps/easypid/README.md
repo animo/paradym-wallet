@@ -376,10 +376,17 @@ The following standards and specifications were implemented.
 
 - Entering incorrect PIN during presentation sharing will get stuck on the PIN loading screen (it does show correct PIN invalid toast).
 - You have to force close the app when you use BLE for the first time after enabling location permission because the permission popup does not go away.
+- Installing the latest version of the app if you had a previous version of the application can cause you to get stuck in a broken state, even if the application is removed and reinstalled.
 
 ## Changelog
 
 ### Phase 2
+
+#### 28-11-2024
+
+**Playground**
+- Changed text "Requires PIN" to "Requires transaction code"
+- Allow additional options for requesting mixed sd-jwt vc and mso_mdoc requests using DCQL [commit](https://github.com/animo/openid4vc-playground-funke/commit/2c2089f5e77227f592116e6af397b063acda67af)
 
 #### 27-11-2024
 
