@@ -109,24 +109,26 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       setIsSharing(true)
 
       if (shouldUsePin) {
-        // TODO: we should handle invalid pin
         if (!pin) {
+          setIsSharing(false)
           return {
             status: 'error',
             result: {
               title: 'Authentication failed',
             },
+            redirectToWallet: true,
           }
         }
         // TODO: maybe provide to shareProof method?
         try {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (e) {
+          setIsSharing(false)
           if (e instanceof InvalidPinError) {
             return {
               status: 'error',
               result: {
-                title: 'Authentication Failed',
+                title: 'Invalid PIN entered',
               },
             }
           }
@@ -138,6 +140,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
               message:
                 e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
             },
+            redirectToWallet: true,
           }
         }
       }

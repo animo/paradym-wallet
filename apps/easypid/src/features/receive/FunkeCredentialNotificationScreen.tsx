@@ -289,7 +289,6 @@ export function FunkeCredentialNotificationScreen() {
       setIsSharingPresentation(true)
 
       if (shouldUsePinForPresentation) {
-        // TODO: we should handle invalid pin
         if (!pin) {
           setErrorReason('Presentation information could not be extracted.')
           return
@@ -299,7 +298,7 @@ export function FunkeCredentialNotificationScreen() {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (error) {
           if (error instanceof InvalidPinError) {
-            toast.show(error.message, { customData: { preset: 'danger' } })
+            toast.show('Invalid PIN entered', { customData: { preset: 'danger' } })
             setIsSharingPresentation(false)
             return { status: 'error', result: { title: error.message }, redirectToWallet: false }
           }
