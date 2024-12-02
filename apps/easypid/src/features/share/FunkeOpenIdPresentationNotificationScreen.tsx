@@ -12,6 +12,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
+import { useDevelopmentMode } from '@easypid/hooks'
 import { analyzeVerification } from '@easypid/use-cases/ValidateVerification'
 import type { VerificationAnalysisResponse } from '@easypid/use-cases/ValidateVerification'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
@@ -28,6 +29,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [isSharing, setIsSharing] = useState(false)
@@ -48,6 +50,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       .then(setCredentialsForRequest)
       .catch((error) => {
         toast.show('Presentation information could not be extracted.', {
+          message:
+            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
           customData: { preset: 'danger' },
         })
         agent.config.logger.error('Error getting credentials for request', {
@@ -56,7 +60,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
         pushToWallet()
       })
-  }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast])
+  }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast, isDevelopmentModeEnabled])
 
   const [verificationAnalysis, setVerificationAnalysis] = useState<{
     isLoading: boolean
@@ -131,6 +135,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
             status: 'error',
             result: {
               title: 'Authentication failed',
+              message:
+                e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
             },
           }
         }
@@ -173,11 +179,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           redirectToWallet: true,
           result: {
             title: 'Presentation could not be shared.',
+            message:
+              error instanceof Error && isDevelopmentModeEnabled
+                ? `Development mode error: ${error.message}`
+                : undefined,
           },
         }
       }
     },
-    [credentialsForRequest, agent, shouldUsePin]
+    [credentialsForRequest, agent, shouldUsePin, isDevelopmentModeEnabled]
   )
 
   const onProofDecline = async () => {
