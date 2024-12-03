@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useLLM } from '@easypid/llm/useLLM'
+import { useLLM } from '@easypid/llm'
 import type { OverAskingInput, OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { checkForOverAskingApi as analyzeVerificationApi } from '@easypid/use-cases/OverAskingApi'
 

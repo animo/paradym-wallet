@@ -2,7 +2,7 @@ import { HeroIcons } from '@package/ui/src/content/Icon'
 
 import { Switch } from '@package/ui/src/base/Switch'
 
-import { useIsDeviceCapable, useLLM } from '@easypid/llm/useLLM'
+import { useIsDeviceCapable, useLLM } from '@easypid/llm'
 import { ConfirmationSheet } from '@package/app/src/components/ConfirmationSheet'
 import { useHasInternetConnection, useIsConnectedToWifi } from 'packages/app/src/hooks'
 import { useToastController } from 'packages/ui/src'

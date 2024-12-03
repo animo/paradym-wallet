@@ -1,38 +1,20 @@
-import { mmkv } from '@easypid/storage/mmkv'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { LLAMA3_2_1B_QLORA_URL, LLAMA3_2_1B_TOKENIZER } from 'react-native-executorch'
-import { useMMKVBoolean } from 'react-native-mmkv'
 import RnExecutorch, { subscribeToDownloadProgress, subscribeToTokenGenerated } from './RnExecutorchModule'
 import { DEFAULT_CONTEXT_WINDOW_LENGTH, EOT_TOKEN } from './constants'
+import {
+  removeIsModelActivated,
+  removeIsModelDownloading,
+  removeIsModelReady,
+  useIsModelActivated,
+  useIsModelDownloading,
+  useIsModelReady,
+} from './state'
 import type { Model, ResourceSource } from './types'
 
 const interrupt = () => {
   RnExecutorch.interrupt()
-}
-
-export function useIsModelReady() {
-  return useMMKVBoolean('isModelReady', mmkv)
-}
-
-export function removeIsModelReady() {
-  mmkv.delete('isModelReady')
-}
-
-export function useIsModelActivated() {
-  return useMMKVBoolean('isModelActivated', mmkv)
-}
-
-export function removeIsModelActivated() {
-  mmkv.delete('isModelActivated')
-}
-
-export function useIsModelDownloading() {
-  return useMMKVBoolean('isModelDownloading', mmkv)
-}
-
-export function removeIsModelDownloading() {
-  mmkv.delete('isModelDownloading')
 }
 
 export const useLLM = ({
