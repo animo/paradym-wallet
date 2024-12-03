@@ -2,16 +2,46 @@ import { HeroIcons } from '@package/ui/src/content/Icon'
 
 import { Switch } from '@package/ui/src/base/Switch'
 
-import { useLLM } from '@easypid/llm/useLLM'
+import { useIsDeviceCapable, useLLM } from '@easypid/llm/useLLM'
 import { ConfirmationSheet } from '@package/app/src/components/ConfirmationSheet'
+import { useHasInternetConnection, useIsConnectedToWifi } from 'packages/app/src/hooks'
 import { useToastController } from 'packages/ui/src'
 import React, { useState } from 'react'
 
 export function LocalAiContainer() {
   const toast = useToastController()
+  const isConnectedToWifi = useIsConnectedToWifi()
+  const hasInternetConnection = useHasInternetConnection()
+  const isDeviceCapable = useIsDeviceCapable()
 
   const [isAiModelConfirmationOpen, setIsAiModelConfirmationOpen] = useState(false)
   const { loadModel, isModelReady, downloadProgress, removeModel, isModelActivated, isModelDownloading } = useLLM()
+
+  const onActivateModel = () => {
+    if (!isDeviceCapable) {
+      toast.show('Device not supported', {
+        message: 'This device is not powerful enough to run local AI models',
+        customData: {
+          preset: 'warning',
+        },
+      })
+      setIsAiModelConfirmationOpen(false)
+      return
+    }
+    if (!isConnectedToWifi && !hasInternetConnection) {
+      toast.show('WiFi connection required', {
+        message: 'Please connect to WiFi to activate and download the model',
+        customData: {
+          preset: 'warning',
+        },
+      })
+      setIsAiModelConfirmationOpen(false)
+      return
+    }
+
+    setIsAiModelConfirmationOpen(false)
+    loadModel()
+  }
 
   const handleAiModelChange = (value: boolean) => {
     if (isModelDownloading) {
@@ -39,26 +69,30 @@ export function LocalAiContainer() {
         icon={<HeroIcons.CpuChipFilled />}
         value={isModelActivated}
         description={
-          isModelReady
-            ? 'Model active and ready to use'
-            : downloadProgress
-              ? `Downloading model ${(downloadProgress * 100).toFixed(2)}%`
-              : ''
+          isModelActivated
+            ? isModelReady
+              ? 'Model active and ready to use'
+              : downloadProgress
+                ? `Downloading model ${(downloadProgress * 100).toFixed(2)}%`
+                : 'Getting ready...'
+            : ''
         }
         onChange={handleAiModelChange}
+        beta
       />
       <ConfirmationSheet
         type="floating"
         variant="regular"
         isOpen={isAiModelConfirmationOpen}
         setIsOpen={setIsAiModelConfirmationOpen}
-        title="Use local AI model"
+        title="Enable local AI model"
         confirmText="Enable"
-        description="This will use a local AI model to analyze verifications for overasking. This will take up to around 2GB of space on your device."
-        onConfirm={() => {
-          setIsAiModelConfirmationOpen(false)
-          loadModel()
-        }}
+        cancelText="Cancel"
+        description={[
+          'This will download a local AI model to your device which will take up to around 1.3GB of space.',
+          'This is an experimental feature. Only supported on high-end devices.',
+        ]}
+        onConfirm={onActivateModel}
       />
     </>
   )

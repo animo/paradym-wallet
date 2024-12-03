@@ -1,6 +1,6 @@
 import { mmkv } from '@easypid/storage/mmkv'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Image } from 'react-native'
+import { Platform } from 'react-native'
 import { LLAMA3_2_1B_QLORA_URL, LLAMA3_2_1B_TOKENIZER } from 'react-native-executorch'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import RnExecutorch, { subscribeToDownloadProgress, subscribeToTokenGenerated } from './RnExecutorchModule'
@@ -163,6 +163,8 @@ export const useLLM = ({
   }
 }
 
+// Check for incomplete model download from previous session
+// Used when the app is opened
 export function useCheckIncompleteDownload() {
   const [isModelActivated] = useIsModelActivated()
   const [isModelDownloading] = useIsModelDownloading()
@@ -177,4 +179,19 @@ export function useCheckIncompleteDownload() {
       removeIsModelDownloading()
     }
   }, [])
+}
+
+// TODO: Add expo-device to check if the device is capable
+export function useIsDeviceCapable(): boolean {
+  // For iOS, check if device is at least iPhone X or newer
+  if (Platform.OS === 'ios') {
+    return true
+  }
+
+  // For Android, check RAM
+  if (Platform.OS === 'android') {
+    return true
+  }
+
+  return false
 }

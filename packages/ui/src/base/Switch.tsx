@@ -13,11 +13,12 @@ type SettingsSwitchProps = {
   icon?: React.ReactElement
   disabled?: boolean
   onChange: (value: boolean) => void
+  beta?: boolean
 }
 
 const AnimatedSwitch = Animated.createAnimatedComponent(TamaguiSwitch)
 
-export function Switch({ id, label, value, disabled, onChange, icon, description }: SettingsSwitchProps) {
+export function Switch({ id, label, value, disabled, onChange, icon, description, beta }: SettingsSwitchProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: 0.95 })
 
   return (
@@ -29,9 +30,26 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
               {cloneElement(icon, { size: 20, color: value ? '$primary-500' : '$grey-500' })}
             </XStack>
           )}
-          <Label fontWeight="$semiBold" fontFamily="$default" fontSize={17} lineHeight="$5" letterSpacing="$8">
-            {label}
-          </Label>
+          <XStack gap="$2">
+            <Label
+              maxWidth={200}
+              numberOfLines={1}
+              fontWeight="$semiBold"
+              fontFamily="$default"
+              fontSize={17}
+              lineHeight="$5"
+              letterSpacing="$8"
+            >
+              {label}
+            </Label>
+            {beta && (
+              <YStack bg="$primary-100" h="$1.5" br="$12" mt="$0.5" px="$2">
+                <Paragraph h="$2" fontSize="$1" mt="$-1" fontWeight="$semiBold" color="$primary-500">
+                  BETA
+                </Paragraph>
+              </YStack>
+            )}
+          </XStack>
         </XStack>
         <AnimatedSwitch
           bw="$1"
