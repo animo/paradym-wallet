@@ -225,6 +225,9 @@ importers:
       react-native-argon2:
         specifier: ^2.0.1
         version: 2.0.1
+      react-native-executorch:
+        specifier: ^0.1.2
+        version: 0.1.2(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       react-native-fs:
         specifier: ^2.20.0
         version: 2.20.0(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))
@@ -8367,6 +8370,12 @@ packages:
 
   react-native-argon2@2.0.1:
     resolution: {integrity: sha512-/iOi0S+VVgS1gQGtQgL4ZxUVS4gz6Lav3bgIbtNmr9KbOunnBYzP6/yBe/XxkbpXvasHDwdQnuppOH/nuOBn7w==}
+
+  react-native-executorch@0.1.2:
+    resolution: {integrity: sha512-iexg2NDKO/ADVZtDYT99kap7kVJPtmTd8HbtLJRmVBT/tYhoXG9o5+vcHl5xIo9qlyZW8YqG047z4NtFAGDP1w==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
 
   react-native-fit-image@1.5.5:
     resolution: {integrity: sha512-Wl3Vq2DQzxgsWKuW4USfck9zS7YzhvLNPpkwUUCF90bL32e1a0zOVQ3WsJILJOwzmPdHfzZmWasiiAUNBkhNkg==}
@@ -20406,6 +20415,11 @@ snapshots:
   react-is@18.3.1: {}
 
   react-native-argon2@2.0.1: {}
+
+  react-native-executorch@0.1.2(react-native@0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-native: 0.74.5(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)
 
   react-native-fit-image@1.5.5:
     dependencies:

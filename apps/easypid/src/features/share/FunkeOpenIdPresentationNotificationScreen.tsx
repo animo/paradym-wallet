@@ -12,8 +12,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
-import { analyzeVerification } from '@easypid/use-cases/ValidateVerification'
-import type { VerificationAnalysisResponse } from '@easypid/use-cases/ValidateVerification'
+import { useOverAskingAi } from '@easypid/hooks'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
@@ -58,26 +57,24 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast])
 
-  const [verificationAnalysis, setVerificationAnalysis] = useState<{
-    isLoading: boolean
-    result: VerificationAnalysisResponse | undefined
-  }>({
-    isLoading: false,
-    result: undefined,
-  })
+  const { checkForOverAsking, isProcessingOverAsking, overAskingResponse } = useOverAskingAi()
 
   useEffect(() => {
-    if (!credentialsForRequest?.formattedSubmission || !credentialsForRequest?.formattedSubmission.areAllSatisfied) {
+    if (!credentialsForRequest?.formattedSubmission) {
       return
     }
-    setVerificationAnalysis((prev) => ({ ...prev, isLoading: true }))
+
+    if (isProcessingOverAsking || overAskingResponse) {
+      // Already generating or already has result
+      return
+    }
 
     const submission = credentialsForRequest.formattedSubmission
     const requestedCards = submission.entries
       .filter((entry): entry is FormattedSubmissionEntrySatisfied => entry.isSatisfied)
       .flatMap((entry) => entry.credentials)
 
-    analyzeVerification({
+    void checkForOverAsking({
       verifier: {
         name: credentialsForRequest.verifier.name ?? 'No name provided',
         domain: credentialsForRequest.verifier.hostName ?? 'No domain provided',
@@ -89,8 +86,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         subtitle: credential.credential.display.description ?? 'Card description',
         requestedAttributes: getDisclosedAttributeNamesForDisplay(credential),
       })),
-    }).then((result) => setVerificationAnalysis((prev) => ({ ...prev, isLoading: false, result })))
-  }, [credentialsForRequest])
+    })
+  }, [credentialsForRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
 
   const onProofAccept = useCallback(
     async (pin?: string): Promise<PresentationRequestResult> => {
@@ -206,7 +203,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       trustedEntities={credentialsForRequest?.verifier.trustedEntities}
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
-      verificationAnalysis={verificationAnalysis}
+      overAskingResponse={overAskingResponse}
     />
   )
 }

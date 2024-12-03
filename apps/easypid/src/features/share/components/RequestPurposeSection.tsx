@@ -1,4 +1,4 @@
-import type { VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
+import type { OverAskingResponse } from '@easypid/use-cases/ValidateVerification'
 import {
   AnimatedStack,
   Circle,
@@ -7,6 +7,7 @@ import {
   Image,
   InfoSheet,
   MessageBox,
+  Spinner,
   Stack,
   XStack,
   YStack,
@@ -16,15 +17,14 @@ import type { DisplayImage } from 'packages/agent/src'
 import { useState } from 'react'
 import React from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
-import { VerificationAnalysisIcon } from './VerificationAnalysisIcon'
 
 interface RequestPurposeSectionProps {
   purpose: string
   logo?: DisplayImage
-  verificationAnalysis?: VerificationAnalysisResult
+  overAskingResponse?: OverAskingResponse
 }
 
-export function RequestPurposeSection({ purpose, logo, verificationAnalysis }: RequestPurposeSectionProps) {
+export function RequestPurposeSection({ purpose, logo, overAskingResponse }: RequestPurposeSectionProps) {
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false)
 
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
@@ -34,7 +34,7 @@ export function RequestPurposeSection({ purpose, logo, verificationAnalysis }: R
   return (
     <>
       <YStack gap="$2">
-        {verificationAnalysis?.result?.validRequest === 'no' && (
+        {overAskingResponse?.validRequest === 'no' && (
           <AnimatedStack
             entering={FadeIn}
             style={pressStyle}
@@ -54,11 +54,15 @@ export function RequestPurposeSection({ purpose, logo, verificationAnalysis }: R
         <XStack gap="$2" jc="space-between" ai="center">
           <Heading variant="sub2">PURPOSE</Heading>
           <Stack h="$2" w="$2" ai="center" jc="center">
-            {verificationAnalysis && (
-              <AnimatedStack key={verificationAnalysis.result?.validRequest} entering={ZoomIn}>
-                <VerificationAnalysisIcon verificationAnalysis={verificationAnalysis} />
-              </AnimatedStack>
-            )}
+            <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>
+              {!overAskingResponse ? (
+                <Spinner scale={0.8} />
+              ) : overAskingResponse.validRequest === 'yes' ? (
+                <HeroIcons.CheckCircleFilled size={26} color="$positive-500" />
+              ) : overAskingResponse.validRequest === 'no' ? (
+                <HeroIcons.ExclamationTriangleFilled size={26} color="$danger-500" />
+              ) : null}
+            </AnimatedStack>
           </Stack>
         </XStack>
         <MessageBox

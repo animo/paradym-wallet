@@ -64,6 +64,7 @@ import {
   CircleStackIcon as CircleStackFilledIcon,
   ClockIcon as ClockFilledIcon,
   Cog8ToothIcon as Cog8ToothFilledIcon,
+  CpuChipIcon as CpuChipFilledIcon,
   CreditCardIcon as CreditCardFilledIcon,
   ExclamationCircleIcon as ExclamationCircleFilledIcon,
   ExclamationTriangleIcon as ExclamationTriangleFilledIcon,
@@ -175,6 +176,7 @@ export const HeroIcons = {
   MagnifyingGlass: wrapHeroIcon(MagnifyingGlassIcon),
   Link: wrapHeroIcon(LinkIcon),
   Cloud: wrapHeroIcon(CloudIcon),
+  CpuChipFilled: wrapHeroIcon(CpuChipFilledIcon),
 } as const
 
 export const CustomIcons = {

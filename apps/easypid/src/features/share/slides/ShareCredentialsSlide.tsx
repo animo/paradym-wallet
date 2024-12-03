@@ -1,4 +1,4 @@
-import type { VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
+import type { OverAskingResponse, VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
@@ -17,7 +17,7 @@ interface ShareCredentialsSlideProps {
   isAccepting: boolean
 
   isOffline?: boolean
-  verificationAnalysis?: VerificationAnalysisResult
+  overAskingResponse?: OverAskingResponse
 }
 
 export const ShareCredentialsSlide = ({
@@ -27,7 +27,7 @@ export const ShareCredentialsSlide = ({
   onDecline,
   isAccepting,
   isOffline,
-  verificationAnalysis,
+  overAskingResponse,
 }: ShareCredentialsSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -88,7 +88,7 @@ export const ShareCredentialsSlide = ({
                 purpose={
                   submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
                 }
-                verificationAnalysis={verificationAnalysis}
+                overAskingResponse={overAskingResponse}
                 logo={logo}
               />
             )}

@@ -55,6 +55,7 @@
 		"react": "catalog:",
 		"react-native": "catalog:",
 		"react-native-argon2": "^2.0.1",
+		"react-native-executorch": "^0.1.2",
 		"react-native-fs": "^2.20.0",
 		"react-native-gesture-handler": "~2.16.2",
 		"react-native-get-random-values": "~1.11.0",

@@ -16,14 +16,14 @@ export type VerificationAnalysisInput = {
   }>
 }
 
-export type VerificationAnalysisResponse = {
+export type OverAskingResponse = {
   validRequest: 'yes' | 'no' | 'could_not_determine'
   reason: string
 }
 
 export type VerificationAnalysisResult = {
   isLoading: boolean
-  result: VerificationAnalysisResponse | undefined
+  result: OverAskingResponse | undefined
 }
 
 export const analyzeVerification = async ({
@@ -31,7 +31,7 @@ export const analyzeVerification = async ({
   name,
   purpose,
   cards,
-}: VerificationAnalysisInput): Promise<VerificationAnalysisResponse> => {
+}: VerificationAnalysisInput): Promise<OverAskingResponse> => {
   try {
     const cardsWithoutExcludedAttributes = cards.map((card) => ({
       ...card,

@@ -117,6 +117,9 @@ const config = {
       ],
     },
     associatedDomains: associatedDomains.map((host) => `applinks:${host}`),
+    entitlements: {
+      'com.apple.developer.kernel.increased-memory-limit': true,
+    },
   },
   android: {
     adaptiveIcon: {
