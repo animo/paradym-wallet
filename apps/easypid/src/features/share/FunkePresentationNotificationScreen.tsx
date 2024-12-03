@@ -1,6 +1,6 @@
 import type { DisplayImage, FormattedSubmission, TrustedEntity } from '@package/agent'
 
-import type { OverAskingResponse, VerificationAnalysisResult } from '@easypid/use-cases/OverAskingApi'
+import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
