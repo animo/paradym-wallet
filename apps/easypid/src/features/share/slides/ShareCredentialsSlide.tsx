@@ -1,4 +1,4 @@
-import type { OverAskingResponse, VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
+import type { OverAskingResponse, VerificationAnalysisResult } from '@easypid/use-cases/OverAskingApi'
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'

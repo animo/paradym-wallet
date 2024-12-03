@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import { LLAMA3_2_1B_QLORA_URL, LLAMA3_2_1B_TOKENIZER } from 'react-native-executorch'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import RnExecutorch, { subscribeToDownloadProgress, subscribeToTokenGenerated } from './RnExecutorchModule'
-import { DEFAULT_CONTEXT_WINDOW_LENGTH, DEFAULT_SYSTEM_PROMPT, EOT_TOKEN } from './constants'
+import { DEFAULT_CONTEXT_WINDOW_LENGTH, EOT_TOKEN } from './constants'
 import type { Model, ResourceSource } from './types'
 
 const interrupt = () => {
@@ -38,13 +38,9 @@ export function removeIsModelDownloading() {
 export const useLLM = ({
   modelSource = LLAMA3_2_1B_QLORA_URL,
   tokenizerSource = LLAMA3_2_1B_TOKENIZER,
-  systemPrompt = DEFAULT_SYSTEM_PROMPT,
-  contextWindowLength = DEFAULT_CONTEXT_WINDOW_LENGTH,
 }: {
   modelSource?: ResourceSource
   tokenizerSource?: ResourceSource
-  systemPrompt?: string
-  contextWindowLength?: number
 } = {}): Model => {
   const [error, setError] = useState<string | null>(null)
   const [isModelActivated, setIsModelActivated] = useIsModelActivated()
@@ -54,6 +50,16 @@ export const useLLM = ({
   const [response, setResponse] = useState('')
   const [downloadProgress, setDownloadProgress] = useState(0)
   const initialized = useRef(false)
+
+  useEffect(() => {
+    if (!response) return
+    console.debug('Local LLM response', response)
+  }, [response])
+
+  useEffect(() => {
+    if (!error) return
+    console.debug('Local LLM error', error)
+  }, [error])
 
   useEffect(() => {
     const unsubscribeDownloadProgress = subscribeToDownloadProgress((data) => {
@@ -77,7 +83,7 @@ export const useLLM = ({
     try {
       try {
         setIsModelDownloading(true)
-        await RnExecutorch.loadLLM(modelSource, tokenizerSource, systemPrompt, contextWindowLength)
+        await RnExecutorch.loadLLM(modelSource, tokenizerSource, '', DEFAULT_CONTEXT_WINDOW_LENGTH)
         await RnExecutorch
       } catch (error) {
         console.log('ERROR LOADING MODEL', error)
@@ -92,15 +98,7 @@ export const useLLM = ({
       setError(message)
       initialized.current = false
     }
-  }, [
-    contextWindowLength,
-    modelSource,
-    systemPrompt,
-    tokenizerSource,
-    setIsModelReady,
-    setIsModelActivated,
-    setIsModelDownloading,
-  ])
+  }, [modelSource, tokenizerSource, setIsModelReady, setIsModelActivated, setIsModelDownloading])
 
   const generate = useCallback(
     async (input: string): Promise<void> => {

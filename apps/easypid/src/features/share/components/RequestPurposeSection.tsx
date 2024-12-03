@@ -1,4 +1,4 @@
-import type { OverAskingResponse } from '@easypid/use-cases/ValidateVerification'
+import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import {
   AnimatedStack,
   Circle,

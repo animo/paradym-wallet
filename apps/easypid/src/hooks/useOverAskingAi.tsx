@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 
 import { useLLM } from '@easypid/llm/useLLM'
-import type { OverAskingResponse, VerificationAnalysisInput } from '@easypid/use-cases/ValidateVerification'
-import { analyzeVerification as analyzeVerificationApi } from '@easypid/use-cases/ValidateVerification'
-
-// todos: add a timeout to both api and local calls
+import type { OverAskingInput, OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import { checkForOverAskingApi as analyzeVerificationApi } from '@easypid/use-cases/OverAskingApi'
 
 const fallbackResponse: OverAskingResponse = {
   validRequest: 'could_not_determine',
@@ -18,12 +16,7 @@ export function useOverAskingAi() {
   const { generate, response, error, isModelReady, isModelGenerating } = useLLM()
 
   useEffect(() => {
-    console.log('response', response)
-  }, [response])
-
-  useEffect(() => {
     if (error) {
-      console.error('Error generating using LLM:', error)
       setIsProcessingOverAsking(false)
       setOverAskingResponse(fallbackResponse)
       return
@@ -32,7 +25,7 @@ export function useOverAskingAi() {
     if (!response || isModelGenerating) return
 
     try {
-      const result = formatResult(response)
+      const result = formatLocalResult(response)
       setOverAskingResponse(result)
     } catch (e) {
       console.error('Error parsing AI response:', e)
@@ -41,18 +34,18 @@ export function useOverAskingAi() {
     }
   }, [response, isModelGenerating, error])
 
-  const checkForOverAsking = async (input: VerificationAnalysisInput) => {
+  const checkForOverAsking = async (input: OverAskingInput) => {
     setIsProcessingOverAsking(true)
     if (isModelReady) {
-      console.log('Model ready, using local LLM')
-      const prompt = formatPrompt(input)
+      console.debug('Local LLM ready, using local LLM')
+      const prompt = formatLocalPrompt(input)
       await generate(prompt)
     } else {
-      console.log('Local LLM not ready, using API')
+      console.debug('Local LLM not ready, using API')
       await analyzeVerificationApi(input)
         .then(setOverAskingResponse)
         .catch((e) => {
-          console.error('Error analyzing verification:', e)
+          console.error('Error analyzing verification using API:', e)
           setOverAskingResponse(fallbackResponse)
         })
         .finally(() => setIsProcessingOverAsking(false))
@@ -66,9 +59,15 @@ export function useOverAskingAi() {
   }
 }
 
-const formatResult = (response: string) => {
+// AI responds in XML format, so we need to parse it
+// Expected format:
+//  <response>
+//    <reason>Your concise reason for the assessment</reason>
+//    <valid_request>yes</valid_request> <!-- Use 'yes', 'no', or 'could_not_determine' -->
+//  </response>
+const formatLocalResult = (response: string) => {
   const match = response.match(/<response>([\s\S]*?)<\/response>/)
-  if (!match) return
+  if (!match) return fallbackResponse
 
   const responseContent = match[1]
 
@@ -85,13 +84,11 @@ const formatResult = (response: string) => {
   return fallbackResponse
 }
 
-const formatPrompt = (input: VerificationAnalysisInput) => {
+const formatLocalPrompt = (input: OverAskingInput) => {
   const cards = input.cards
-    .map(
-      (credential) =>
-        `${credential.name} - ${credential.subtitle}. Requested attributes: ${credential.requestedAttributes.join(', ')}`
-    )
+    .map((credential) => `- ${credential.name}. Requested attributes: ${credential.requestedAttributes.join(', ')}`)
     .join('\n')
+
   return `
 You are an AI assistant specializing in data privacy analysis. Your task is to evaluate data verification requests and determine if they are asking for an appropriate amount of information or if they are overasking.
 
@@ -105,10 +102,6 @@ ${input.verifier.name}
 ${input.verifier.domain}
 </verifier_domain>
 
-<request_name>
-${input.name}
-</request_name>
-
 <request_purpose>
 ${input.purpose}
 </request_purpose>
@@ -118,20 +111,13 @@ ${cards}
 </requested_cards>
 
 
-Provide a small evaluation of the request, and provide your final response in the following XML structure:
+Provide a short reason for your assessment of the request. Use the following XML structure:
 
 <response>
 <reason>Your concise reason for the assessment</reason>
 <valid_request>yes</valid_request> <!-- Use 'yes', 'no', or 'could_not_determine' -->
 </response>
 
-Example of a properly formatted response:
-
-<response>
-<reason>Request aligns with purpose. Information amount appropriate. Verifier seems legitimate.</reason>
-<valid_request>yes</valid_request>
-</response>
-
-Remember: Provide a concise reason and use the correct XML structure in your response. Do not add any text outside of the specified tags.
+Remember: DO NOT add any text outside of the specified tags. DO NOT bother responding with anything other than the XML structure.
 `
 }
