@@ -12,7 +12,7 @@ export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideP
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$6" fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
-        <ScrollView gap="$2" fg={1} maxHeight={scrollViewHeight}>
+        <ScrollView fg={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '$4' }}>
           <YStack gap="$4">
             <Heading>Something went wrong</Heading>
             <Stack alignSelf="flex-start">
