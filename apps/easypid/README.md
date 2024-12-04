@@ -382,6 +382,11 @@ The following standards and specifications were implemented.
 
 ### Phase 2
 
+#### 04-12-2024
+
+**Wallet**
+- Fixed an issue where the PID setup would get stuck if you skipped it during onboarding [commit](https://github.com/animo/openid4vc-playground-funke/commit/65178e776bc421b9ca413542ea0e86db4ad1ead4)
+
 #### 28-11-2024
 
 **Playground**
