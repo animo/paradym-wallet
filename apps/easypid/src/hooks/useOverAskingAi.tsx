@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useLLM } from '@easypid/llm'
 import type { OverAskingInput, OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
-import { checkForOverAskingApi as analyzeVerificationApi } from '@easypid/use-cases/OverAskingApi'
+import { EXCLUDED_ATTRIBUTES_FOR_ANALYSIS, checkForOverAskingApi } from '@easypid/use-cases/OverAskingApi'
 
 const fallbackResponse: OverAskingResponse = {
   validRequest: 'could_not_determine',
@@ -13,7 +13,7 @@ export function useOverAskingAi() {
   const [isProcessingOverAsking, setIsProcessingOverAsking] = useState(false)
   const [overAskingResponse, setOverAskingResponse] = useState<OverAskingResponse>()
 
-  const { generate, response, error, isModelReady, isModelGenerating } = useLLM()
+  const { generate, response, error, isModelReady, isModelGenerating, interrupt } = useLLM()
 
   useEffect(() => {
     if (error) {
@@ -42,7 +42,7 @@ export function useOverAskingAi() {
       await generate(prompt)
     } else {
       console.debug('Local LLM not ready, using API')
-      await analyzeVerificationApi(input)
+      await checkForOverAskingApi(input)
         .then(setOverAskingResponse)
         .catch((e) => {
           console.error('Error analyzing verification using API:', e)
@@ -52,19 +52,20 @@ export function useOverAskingAi() {
     }
   }
 
+  const stopOverAsking = () => {
+    if (isModelReady) interrupt()
+    if (!overAskingResponse) setOverAskingResponse(fallbackResponse)
+    setIsProcessingOverAsking(false)
+  }
+
   return {
     isProcessingOverAsking,
     checkForOverAsking,
     overAskingResponse,
+    stopOverAsking,
   }
 }
 
-// AI responds in XML format, so we need to parse it
-// Expected format:
-//  <response>
-//    <reason>Your concise reason for the assessment</reason>
-//    <valid_request>yes</valid_request> <!-- Use 'yes', 'no', or 'could_not_determine' -->
-//  </response>
 const formatLocalResult = (response: string) => {
   const match = response.match(/<response>([\s\S]*?)<\/response>/)
   if (!match) return fallbackResponse
@@ -86,38 +87,28 @@ const formatLocalResult = (response: string) => {
 
 const formatLocalPrompt = (input: OverAskingInput) => {
   const cards = input.cards
-    .map((credential) => `- ${credential.name}. Requested attributes: ${credential.requestedAttributes.join(', ')}`)
+    .map(
+      (credential) => `
+    <card>
+      <name>${credential.name}</name>
+      <requested_attributes>
+        ${credential.requestedAttributes
+          .filter((attr) => !EXCLUDED_ATTRIBUTES_FOR_ANALYSIS.includes(attr))
+          .map((attr) => `<attribute>${attr}</attribute>`)
+          .join('\n        ')}
+      </requested_attributes>
+    </card>`
+    )
     .join('\n')
 
   return `
-You are an AI assistant specializing in data privacy analysis. Your task is to evaluate data verification requests and determine if they are asking for an appropriate amount of information or if they are overasking.
-
-Here is the information for the current request:
-
-<verifier_name>
-${input.verifier.name}
-</verifier_name>
-
-<verifier_domain>
-${input.verifier.domain}
-</verifier_domain>
-
-<request_purpose>
-${input.purpose}
-</request_purpose>
-
-<requested_cards>
-${cards}
-</requested_cards>
-
-
-Provide a short reason for your assessment of the request. Use the following XML structure:
-
-<response>
-<reason>Your concise reason for the assessment</reason>
-<valid_request>yes</valid_request> <!-- Use 'yes', 'no', or 'could_not_determine' -->
-</response>
-
-Remember: DO NOT add any text outside of the specified tags. DO NOT bother responding with anything other than the XML structure.
+  <input>
+    <verifier_name>${input.verifier.name}</verifier_name>
+    <verifier_domain>${input.verifier.domain}</verifier_domain>
+    <request_purpose>${input.purpose}</request_purpose>
+    <requested_cards>
+      ${cards}
+    </requested_cards>
+  </input>
 `
 }

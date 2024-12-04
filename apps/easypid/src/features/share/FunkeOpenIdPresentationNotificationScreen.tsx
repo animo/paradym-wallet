@@ -57,10 +57,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast])
 
-  const { checkForOverAsking, isProcessingOverAsking, overAskingResponse } = useOverAskingAi()
+  const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
   useEffect(() => {
-    if (!credentialsForRequest?.formattedSubmission) {
+    if (!credentialsForRequest?.formattedSubmission || !credentialsForRequest?.formattedSubmission.areAllSatisfied) {
       return
     }
 
@@ -99,6 +99,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           },
         }
 
+      stopOverAsking()
       setIsSharing(true)
 
       if (shouldUsePin) {
@@ -174,10 +175,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
       }
     },
-    [credentialsForRequest, agent, shouldUsePin]
+    [credentialsForRequest, agent, shouldUsePin, stopOverAsking]
   )
 
   const onProofDecline = async () => {
+    stopOverAsking()
     if (credentialsForRequest) {
       await addSharedActivityForCredentialsForRequest(
         agent,

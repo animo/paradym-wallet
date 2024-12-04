@@ -418,6 +418,8 @@ export function FunkeCredentialNotificationScreen() {
                   logo={credentialsForRequest.verifier.logo}
                   submission={credentialsForRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
+                  // Not supported for this flow atm
+                  overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
                 />
               ),
             }

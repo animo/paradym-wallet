@@ -148,6 +148,9 @@ const config = {
         }))
       ),
     ],
+    config: {
+      largeHeap: true,
+    },
   },
   experiments: {
     tsconfigPaths: true,

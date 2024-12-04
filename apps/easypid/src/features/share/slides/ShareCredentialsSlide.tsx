@@ -88,7 +88,9 @@ export const ShareCredentialsSlide = ({
                 purpose={
                   submission.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
                 }
-                overAskingResponse={overAskingResponse}
+                overAskingResponse={
+                  submission.areAllSatisfied ? overAskingResponse : { validRequest: 'could_not_determine', reason: '' }
+                }
                 logo={logo}
               />
             )}

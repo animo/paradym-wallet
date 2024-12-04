@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { LLAMA3_2_1B_QLORA_URL, LLAMA3_2_1B_TOKENIZER } from 'react-native-executorch'
 import RnExecutorch, { subscribeToDownloadProgress, subscribeToTokenGenerated } from './RnExecutorchModule'
-import { DEFAULT_CONTEXT_WINDOW_LENGTH, EOT_TOKEN } from './constants'
+import { EOT_TOKEN } from './constants'
+import { OVERASKING_PROMPT } from './prompt'
 import {
   removeIsModelActivated,
   removeIsModelDownloading,
@@ -12,19 +13,14 @@ import {
   useIsModelDownloading,
   useIsModelReady,
 } from './state'
-import type { Model, ResourceSource } from './types'
+import type { Model } from './types'
 
 const interrupt = () => {
   RnExecutorch.interrupt()
 }
 
-export const useLLM = ({
-  modelSource = LLAMA3_2_1B_QLORA_URL,
-  tokenizerSource = LLAMA3_2_1B_TOKENIZER,
-}: {
-  modelSource?: ResourceSource
-  tokenizerSource?: ResourceSource
-} = {}): Model => {
+// FIXME: The model expects a system prompt on initializing, but this blocks it from being used for different tasks.
+export const useLLM = (): Model => {
   const [error, setError] = useState<string | null>(null)
   const [isModelActivated, setIsModelActivated] = useIsModelActivated()
   const [isModelDownloading, setIsModelDownloading] = useIsModelDownloading()
@@ -66,7 +62,7 @@ export const useLLM = ({
     try {
       try {
         setIsModelDownloading(true)
-        await RnExecutorch.loadLLM(modelSource, tokenizerSource, '', DEFAULT_CONTEXT_WINDOW_LENGTH)
+        await RnExecutorch.loadLLM(LLAMA3_2_1B_QLORA_URL, LLAMA3_2_1B_TOKENIZER, OVERASKING_PROMPT, 2)
         await RnExecutorch
       } catch (error) {
         console.log('ERROR LOADING MODEL', error)
@@ -81,7 +77,7 @@ export const useLLM = ({
       setError(message)
       initialized.current = false
     }
-  }, [modelSource, tokenizerSource, setIsModelReady, setIsModelActivated, setIsModelDownloading])
+  }, [setIsModelReady, setIsModelActivated, setIsModelDownloading])
 
   const generate = useCallback(
     async (input: string): Promise<void> => {
