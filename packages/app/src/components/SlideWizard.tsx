@@ -165,7 +165,7 @@ export const SlideWizard = forwardRef(
               color={isError ? 'danger' : 'primary'}
             />
           </Stack>
-          <AnimatedStack style={animatedStyles} flex={1} jc="space-between">
+          <AnimatedStack style={animatedStyles} fg={1} pos="relative" jc="space-between">
             <ScrollableStack
               scrollViewProps={{
                 // @ts-expect-error
