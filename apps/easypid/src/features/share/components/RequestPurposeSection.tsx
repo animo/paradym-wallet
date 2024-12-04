@@ -14,6 +14,7 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import type { DisplayImage } from 'packages/agent/src'
+import { isAndroid } from 'packages/app/src'
 import { useState } from 'react'
 import React from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
@@ -41,7 +42,7 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             onPress={toggleAnalysisModal}
-            mt="$-2"
+            mt={isAndroid() ? '$0' : '$-2'}
             mb="$4"
           >
             <MessageBox

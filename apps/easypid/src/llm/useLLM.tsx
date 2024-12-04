@@ -1,3 +1,4 @@
+import * as Device from 'expo-device'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { LLAMA3_2_1B_QLORA_URL, LLAMA3_2_1B_TOKENIZER } from 'react-native-executorch'
@@ -161,16 +162,20 @@ export function useCheckIncompleteDownload() {
   }, [])
 }
 
-// TODO: Add expo-device to check if the device is capable
 export function useIsDeviceCapable(): boolean {
-  // For iOS, check if device is at least iPhone X or newer
+  // For iOS, check if device is at least iPhone 12 or newer
   if (Platform.OS === 'ios') {
-    return true
+    const modelId = Device.modelId ?? ''
+    // iPhone 12 series and newer start with iPhone13 (iPhone12 = iPhone13,2)
+    return /iPhone1[3-9]/.test(modelId) || /iPhone[2-9][0-9]/.test(modelId)
   }
 
-  // For Android, check RAM
+  // For Android, check for minimum 4GB RAM
   if (Platform.OS === 'android') {
-    return true
+    const totalMemory = Device.totalMemory ?? 0
+    // totalMemory is in bytes, convert 4GB to bytes (4 * 1024 * 1024 * 1024)
+    const MIN_REQUIRED_RAM = 4 * 1024 * 1024 * 1024
+    return totalMemory >= MIN_REQUIRED_RAM
   }
 
   return false
