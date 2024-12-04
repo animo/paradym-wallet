@@ -4,7 +4,6 @@ import {
   BiometricAuthenticationError,
   OpenId4VciAuthorizationFlow,
   type SdJwtVcRecord,
-  getCredentialCategoryMetadata,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   setCredentialCategoryMetadata,
@@ -15,12 +14,7 @@ import {
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
-import {
-  bdrPidCredentialDisplay,
-  bdrPidIssuerDisplay,
-  bdrPidOpenId4VcMetadata,
-  bdrPidSdJwtTypeMetadata,
-} from './bdrPidMetadata'
+import { bdrPidOpenId4VcMetadata, bdrPidSdJwtTypeMetadata } from './bdrPidMetadata'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
@@ -53,7 +47,8 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       resolved.resolvedAuthorizationRequest,
       resolved.resolvedCredentialOffer
     )
-    authFlow.startAuthFlow()
+    // We handle the error differently
+    authFlow.startAuthFlow().catch(() => {})
     const accessRights = await authFlow.accessRights
     authFlow.options.onStateChange?.('id-card-auth')
     return { authFlow, accessRights }

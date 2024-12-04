@@ -170,13 +170,6 @@ export function FunkePidSetupScreen() {
   }
 
   const onWalletPinEnter = async (pin: string) => {
-    // FIXME: We need to check if the pin is correct, but wallet is not locked.
-    // PIN is also not used now, as we only do C flow.
-
-    // await secureUnlock.unlockUsingPin(pin).then(() => {
-    //   setWalletPin(pin)
-    // })
-
     // If pin is simulator pin we require the user to retry so that second time
     // they can set the real pin
     const isSimulatorPinCode = pin === SIMULATOR_PIN
@@ -211,6 +204,12 @@ export function FunkePidSetupScreen() {
   const onStart = (shouldUseCloudHsm: boolean) => setShouldUseCloudHsm(shouldUseCloudHsm)
 
   const onIdCardPinEnter = (pin: string) => setIdCardPin(pin)
+  const onCancel = useCallback(() => {
+    // We just want to make sure to cancel, don't care about the result
+    void receivePidUseCase?.cancelIdCardScanning().catch(() => {})
+
+    pushToWallet()
+  }, [receivePidUseCase, pushToWallet])
 
   const onStartScanning = async () => {
     if (receivePidUseCase?.state !== 'id-card-auth') {
@@ -449,7 +448,7 @@ export function FunkePidSetupScreen() {
         title: 'Stop ID Setup?',
         description: 'If you stop, you can do the setup later.',
       }}
-      onCancel={pushToWallet}
+      onCancel={onCancel}
     />
   )
 }

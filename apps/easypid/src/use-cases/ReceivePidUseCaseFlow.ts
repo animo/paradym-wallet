@@ -1,4 +1,10 @@
-import { AusweisAuthFlow, type AusweisAuthFlowOptions, sendCommand } from '@animo-id/expo-ausweis-sdk'
+import {
+  AusweisAuthFlow,
+  type AusweisAuthFlowOptions,
+  addMessageListener,
+  initializeSdk,
+  sendCommand,
+} from '@animo-id/expo-ausweis-sdk'
 import type { MdocRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type {
@@ -165,9 +171,56 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     }
   }
 
+  /**
+   * We always try to gracefully shut the auth flow down
+   * but somtimes due to an error it may not be the case
+   * we make sure to always clean running auth flow before we
+   * start a new one
+   */
+  private async cancelPotentiallyAbandonedAuthFlow() {
+    await initializeSdk()
+
+    const cancelPromise = new Promise((resolve, reject) => {
+      let hasCancelled = false
+      const subscription = addMessageListener((message) => {
+        // Auth flow is now cancelled
+        if (message.msg === 'AUTH' && message.result?.reason === 'User_Cancelled') {
+          subscription.remove()
+          resolve(undefined)
+          return
+        }
+
+        if (message.msg === 'STATUS' && !hasCancelled) {
+          // Auth flow is active, we need to cancel
+          if (message.workflow === 'AUTH') {
+            hasCancelled = true
+            sendCommand({ cmd: 'CANCEL' })
+            return
+          }
+
+          // Auth flow is not active, no need to cancel
+          subscription.remove()
+          resolve(undefined)
+          return
+        }
+      })
+
+      sendCommand({ cmd: 'GET_STATUS' })
+    })
+
+    return cancelPromise
+  }
+
   protected async startAuthFlow() {
     if (this.idCardAuthFlow.isActive) {
       throw new Error('authentication flow already active')
+    }
+
+    try {
+      await this.cancelPotentiallyAbandonedAuthFlow()
+    } catch (error) {
+      console.error('here', error)
+      return
     }
 
     // We return an authentication promise to make it easier to track the state
