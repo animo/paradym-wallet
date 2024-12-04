@@ -159,19 +159,21 @@ export function useCheckIncompleteDownload() {
 }
 
 export function useIsDeviceCapable(): boolean {
-  // For iOS, check if device is at least iPhone 12 or newer
+  // For iOS, check if device is at least iPhone 12 or newer and iOS 17.0 or newer
   if (Platform.OS === 'ios') {
     const modelId = Device.modelId ?? ''
+    const systemVersion = Number.parseFloat(Device.osVersion ?? '0')
     // iPhone 12 series and newer start with iPhone13 (iPhone12 = iPhone13,2)
-    return /iPhone1[3-9]/.test(modelId) || /iPhone[2-9][0-9]/.test(modelId)
+    const isSupportedModel = /iPhone1[3-9]/.test(modelId) || /iPhone[2-9][0-9]/.test(modelId)
+    return isSupportedModel && systemVersion >= 17.0
   }
 
-  // For Android, check for minimum 4GB RAM
+  // For Android, check for minimum 4GB RAM and Android 13 or newer
   if (Platform.OS === 'android') {
     const totalMemory = Device.totalMemory ?? 0
-    // totalMemory is in bytes, convert 4GB to bytes (4 * 1024 * 1024 * 1024)
     const MIN_REQUIRED_RAM = 4 * 1024 * 1024 * 1024
-    return totalMemory >= MIN_REQUIRED_RAM
+    const systemVersion = Number.parseInt(Device.osVersion ?? '0', 10)
+    return totalMemory >= MIN_REQUIRED_RAM && systemVersion >= 13
   }
 
   return false
