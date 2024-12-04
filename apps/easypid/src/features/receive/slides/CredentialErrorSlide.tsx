@@ -1,4 +1,5 @@
-import { Button, Heading, HeroIcons, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { useState } from 'react'
 
 interface CredentialErrorSlideProps {
   reason?: string
@@ -6,10 +7,12 @@ interface CredentialErrorSlideProps {
 }
 
 export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideProps) => {
+  const [scrollViewHeight, setScrollViewHeight] = useState(0)
+
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$6">
-        <YStack gap="$2">
+      <YStack gap="$6" fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
+        <ScrollView gap="$2" fg={1} maxHeight={scrollViewHeight}>
           <YStack gap="$4">
             <Heading>Something went wrong</Heading>
             <Stack alignSelf="flex-start">
@@ -22,13 +25,15 @@ export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideP
               again later.
             </Paragraph>
           </YStack>
-          {reason && (
-            <Paragraph variant="sub">
-              <Paragraph variant="caption">Reason: </Paragraph>
-              {reason}
-            </Paragraph>
+          {reason && scrollViewHeight !== 0 && (
+            <YStack>
+              <Paragraph variant="sub">
+                <Paragraph variant="caption">Reason: </Paragraph>
+                {reason}
+              </Paragraph>
+            </YStack>
           )}
-        </YStack>
+        </ScrollView>
       </YStack>
       <Stack borderTopWidth="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4">
         <Button.Solid scaleOnPress onPress={onCancel}>
