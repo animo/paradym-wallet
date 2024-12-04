@@ -24,7 +24,7 @@ export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
 
         toast.show(r.result.title, {
           message: r.result.message,
-          customData: { preset: r.redirectToWallet ? 'danger' : 'warning' },
+          customData: { preset: 'danger' },
         })
 
         pinRef.current?.shake()
@@ -39,7 +39,7 @@ export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
     <YStack fg={1} jc="space-between">
       <YStack gap="$4">
         <Heading>Send data with your PIN code</Heading>
-        <Paragraph>Use your security PIN to confirm the request.</Paragraph>
+        <Paragraph>Use your app PIN code to confirm the request.</Paragraph>
       </YStack>
       <YStack fg={1} mt="$10">
         <PinDotsInput

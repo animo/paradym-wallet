@@ -26,6 +26,7 @@ import {
 import { useAppAgent } from '@easypid/agent'
 
 import { InvalidPinError } from '@easypid/crypto/error'
+import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
@@ -63,6 +64,7 @@ export function FunkeCredentialNotificationScreen() {
 
   const [errorReason, setErrorReason] = useState<string>()
   const [isCompleted, setIsCompleted] = useState(false)
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [resolvedCredentialOffer, setResolvedCredentialOffer] = useState<OpenId4VciResolvedCredentialOffer>()
   const [resolvedAuthorizationRequest, setResolvedAuthorizationRequest] =
@@ -96,6 +98,17 @@ export function FunkeCredentialNotificationScreen() {
       : {}
   )
 
+  const setErrorReasonWithError = useCallback(
+    (baseMessage: string, error: unknown) => {
+      if (isDevelopmentModeEnabled && error instanceof Error) {
+        setErrorReason(`${baseMessage}\n\nDevelopment mode error:\n${error.message}`)
+      } else {
+        setErrorReason(baseMessage)
+      }
+    },
+    [isDevelopmentModeEnabled]
+  )
+
   const shouldUsePinForPresentation = useShouldUsePinForSubmission(credentialsForRequest)
   const preAuthGrant =
     resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
@@ -110,7 +123,17 @@ export function FunkeCredentialNotificationScreen() {
   // )
 
   useEffect(() => {
-    resolveOpenId4VciOffer({ agent, offer: params, authorization })
+    resolveOpenId4VciOffer({
+      agent,
+      offer: {
+        // NOTE: the params can contain more than data and uri
+        // so it's important we only use these params, so the use
+        // effect doesn't run again the data nd uri
+        data: params.data,
+        uri: params.uri,
+      },
+      authorization,
+    })
       .then(({ resolvedAuthorizationRequest, resolvedCredentialOffer }) => {
         setResolvedCredentialOffer(resolvedCredentialOffer)
         setResolvedAuthorizationRequest(resolvedAuthorizationRequest)
@@ -119,9 +142,9 @@ export function FunkeCredentialNotificationScreen() {
         agent.config.logger.error(`Couldn't resolve OpenID4VCI offer`, {
           error,
         })
-        setErrorReason('Credential information could not be extracted')
+        setErrorReasonWithError('Credential information could not be extracted', error)
       })
-  }, [params, agent])
+  }, [params.data, params.uri, agent, setErrorReasonWithError])
 
   const retrieveCredentials = useCallback(
     async (
@@ -192,10 +215,17 @@ export function FunkeCredentialNotificationScreen() {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
-        setErrorReason('Error while retrieving credentials')
+        setErrorReasonWithError('Error while retrieving credentials', error)
       }
     },
-    [resolvedCredentialOffer, resolvedAuthorizationRequest, retrieveCredentials, agent, configurationId]
+    [
+      resolvedCredentialOffer,
+      resolvedAuthorizationRequest,
+      retrieveCredentials,
+      agent,
+      configurationId,
+      setErrorReasonWithError,
+    ]
   )
 
   const acquireCredentialsPreAuth = useCallback(
@@ -216,10 +246,10 @@ export function FunkeCredentialNotificationScreen() {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
-        setErrorReason('Error while retrieving credentials')
+        setErrorReasonWithError('Error while retrieving credentials', error)
       }
     },
-    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId]
+    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError]
   )
 
   const parsePresentationRequestUrl = useCallback(
@@ -230,12 +260,12 @@ export function FunkeCredentialNotificationScreen() {
       })
         .then(setCredentialsForRequest)
         .catch((error) => {
-          setErrorReason('Presentation information could not be extracted.')
+          setErrorReasonWithError('Presentation information could not be extracted.', error)
           agent.config.logger.error('Error getting credentials for request', {
             error,
           })
         }),
-    [agent]
+    [agent, setErrorReasonWithError]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -269,7 +299,6 @@ export function FunkeCredentialNotificationScreen() {
       setIsSharingPresentation(true)
 
       if (shouldUsePinForPresentation) {
-        // TODO: we should handle invalid pin
         if (!pin) {
           setErrorReason('Presentation information could not be extracted.')
           return
@@ -277,14 +306,14 @@ export function FunkeCredentialNotificationScreen() {
         // TODO: maybe provide to shareProof method?
         try {
           await setWalletServiceProviderPin(pin.split('').map(Number))
-        } catch (e) {
-          if (e instanceof InvalidPinError) {
-            toast.show(e.message, { customData: { preset: 'danger' } })
+        } catch (error) {
+          if (error instanceof InvalidPinError) {
+            toast.show('Invalid PIN entered', { customData: { preset: 'danger' } })
             setIsSharingPresentation(false)
-            return { status: 'error', result: { title: e.message }, redirectToWallet: false }
+            return { status: 'error', result: { title: error.message }, redirectToWallet: false }
           }
 
-          setErrorReason('Presentation information could not be extracted.')
+          setErrorReasonWithError('Presentation information could not be extracted', error)
           return
         }
       }
@@ -316,7 +345,7 @@ export function FunkeCredentialNotificationScreen() {
         agent.config.logger.error('Error accepting presentation', {
           error,
         })
-        setErrorReason('Presentation could not be shared.')
+        setErrorReasonWithError('Presentation could not be shared.', error)
       }
     },
     [
@@ -327,6 +356,7 @@ export function FunkeCredentialNotificationScreen() {
       resolvedCredentialOffer,
       shouldUsePinForPresentation,
       toast.show,
+      setErrorReasonWithError,
     ]
   )
 
@@ -342,6 +372,10 @@ export function FunkeCredentialNotificationScreen() {
   const isBrowserAuthFlow =
     resolvedCredentialOffer &&
     resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.Oauth2Redirect
+
+  // These are callbacks to not change on every render
+  const onCancelAuthorization = useCallback(() => setErrorReason('Authorization cancelled'), [])
+  const onErrorAuthorization = useCallback(() => setErrorReason('Authorization failed'), [])
 
   return (
     <SlideWizard
@@ -384,12 +418,8 @@ export function FunkeCredentialNotificationScreen() {
                     domain: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
                   }}
                   onAuthFlowCallback={acquireCredentialsAuth}
-                  onCancel={() => {
-                    setErrorReason('Authorization cancelled')
-                  }}
-                  onError={() => {
-                    setErrorReason('Authorization failed')
-                  }}
+                  onCancel={onCancelAuthorization}
+                  onError={onErrorAuthorization}
                 />
               ),
             }
