@@ -89,7 +89,7 @@ export const useLLM = (): Model => {
       }
 
       try {
-        setResponse('') // This might be causing issues - let's move it
+        setResponse('')
         setIsModelGenerating(true)
         await RnExecutorch.runInference(input)
       } catch (err) {
