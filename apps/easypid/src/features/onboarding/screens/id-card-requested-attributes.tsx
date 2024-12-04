@@ -1,7 +1,7 @@
 import { bdrPidCredentialDisplay, bdrPidIssuerDisplay } from '@easypid/use-cases/bdrPidMetadata'
+import { CardWithAttributes } from '@package/app'
 import { Button, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
-import { CardWithAttributes } from 'packages/app/src'
 import { useState } from 'react'
 
 interface OnboardingIdCardRequestedAttributesProps {

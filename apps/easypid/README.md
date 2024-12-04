@@ -381,12 +381,13 @@ The following standards and specifications were implemented.
 
 ### Phase 2
 
-#### 02-12-2024
+#### 04-12-2024
 
 **Wallet**
 - Added a development mode that shows internal error messages for easier debugging by LSPs [commit](https://github.com/animo/paradym-wallet/commit/a1aaf26655456082d15863d6f88edecfecaca598)
 - Fixed an issue where the PIN screen would get stuck in a loading state when an incorrect PIN was entered  [commit](https://github.com/animo/paradym-wallet/commit/0f65ef98f5f26c3afc0968e4f848bf538a86cfd7)
 - Fixed an issue with redirect based auth flow if the authorization flow left the in-app browser (e.g. when requiring authentication using the native AusweisApp with the eID card) [commit](https://github.com/animo/paradym-wallet/commit/eb333b81fe5662cc2f010e1ee9bbdc83a7e19aa3)
+- Fixed an issue where the PID setup would get stuck if you skipped it during onboarding [commit](https://github.com/animo/openid4vc-playground-funke/commit/65178e776bc421b9ca413542ea0e86db4ad1ead4)
 
 #### 28-11-2024
 
