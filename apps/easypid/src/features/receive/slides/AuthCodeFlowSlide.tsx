@@ -1,8 +1,10 @@
 import { useHasInternetConnection, useWizard } from '@package/app'
 import { DualResponseButtons } from '@package/app/src/components/DualResponseButtons'
 import { Heading, MiniCardRowItem, Paragraph, YStack, useToastController } from '@package/ui'
+import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import type { CredentialDisplay } from 'packages/agent/src'
+import { useEffect, useState } from 'react'
 
 export type AuthCodeFlowDetails = {
   domain: string
@@ -28,26 +30,55 @@ export const AuthCodeFlowSlide = ({
   const toast = useToastController()
   const { onNext, onCancel: wizardOnCancel } = useWizard()
   const hasInternet = useHasInternetConnection()
+  const { credentialAuthorizationCode } = useGlobalSearchParams<{ credentialAuthorizationCode?: string }>()
+  const [browserResult, setBrowserResult] = useState<WebBrowser.WebBrowserAuthSessionResult>()
+  const [hasHandledResult, setHasHandledResult] = useState(false)
+
+  useEffect(() => {
+    if (hasHandledResult) return
+
+    // NOTE: credentialAuthorizationCode is set in +native-intent
+    // after an external browser or app redirects back to us. In some
+    // cases the in-app browser is exited (e.g. when authenticating from
+    // a native app) and thus we need to manually dimiss the auth session
+    // and instead use the auth code from there.
+    if (credentialAuthorizationCode) {
+      WebBrowser.dismissAuthSession()
+      setHasHandledResult(true)
+      onNext()
+      onAuthFlowCallback(credentialAuthorizationCode)
+    } else if (browserResult) {
+      if (browserResult.type !== 'success') {
+        toast.show('Authorization failed', { customData: { preset: 'warning' } })
+
+        browserResult.type === 'cancel' || browserResult.type === 'dismiss' ? onCancel() : onError()
+        return
+      }
+
+      const authorizationCode = new URL(browserResult.url).searchParams.get('code')
+      if (!authorizationCode) {
+        toast.show('Authorization failed', { customData: { preset: 'warning' } })
+        onError()
+        return
+      }
+
+      onNext()
+      onAuthFlowCallback(authorizationCode)
+    }
+  }, [
+    browserResult,
+    hasHandledResult,
+    credentialAuthorizationCode,
+    onAuthFlowCallback,
+    toast.show,
+    onCancel,
+    onError,
+    onNext,
+  ])
 
   const onPressContinue = async () => {
     const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
-
-    if (result.type !== 'success') {
-      toast.show('Authorization failed', { customData: { preset: 'warning' } })
-
-      result.type === 'cancel' || result.type === 'dismiss' ? onCancel() : onError()
-      return
-    }
-
-    const authorizationCode = new URL(result.url).searchParams.get('code')
-    if (!authorizationCode) {
-      toast.show('Authorization failed', { customData: { preset: 'warning' } })
-      onError()
-      return
-    }
-
-    onNext()
-    onAuthFlowCallback(authorizationCode)
+    setBrowserResult(result)
   }
 
   return (

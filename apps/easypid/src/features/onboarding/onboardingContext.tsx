@@ -190,13 +190,16 @@ export function OnboardingContextProvider({
   }, [currentStepName])
 
   const finishOnboarding = useCallback(() => {
+    // We don't need to handle the error if it's not active, but it's important we cancel
+    receivePidUseCase?.cancelIdCardScanning().catch(() => {})
+
     setHasFinishedOnboarding(true)
     // The Onboarding fades out based on the mmkv value
     // Wait 500ms before navigating to home
     setTimeout(() => {
       router.replace('/')
     }, 500)
-  }, [router, setHasFinishedOnboarding])
+  }, [router, setHasFinishedOnboarding, receivePidUseCase])
 
   const onPinEnter = async (pin: string) => {
     setWalletPin(pin)
