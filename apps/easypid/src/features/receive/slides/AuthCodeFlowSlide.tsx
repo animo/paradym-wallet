@@ -5,6 +5,7 @@ import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import type { CredentialDisplay } from 'packages/agent/src'
 import { useEffect, useState } from 'react'
+import { Platform } from 'react-native'
 
 export type AuthCodeFlowDetails = {
   domain: string
@@ -43,7 +44,11 @@ export const AuthCodeFlowSlide = ({
     // a native app) and thus we need to manually dimiss the auth session
     // and instead use the auth code from there.
     if (credentialAuthorizationCode) {
-      WebBrowser.dismissAuthSession()
+      // Not available on Android
+      if (Platform.OS === 'ios') {
+        WebBrowser.dismissAuthSession()
+      }
+
       setHasHandledResult(true)
       onNext()
       onAuthFlowCallback(credentialAuthorizationCode)
