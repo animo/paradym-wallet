@@ -1,15 +1,15 @@
-import { Button, FlexPage, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, ScrollView, Stack, Switch, YStack } from '@package/ui'
 import React from 'react'
-import { useRouter } from 'solito/router'
-import { Label, Switch } from 'tamagui'
+
+import { TextBackButton } from 'packages/app/src'
+import { LocalAiContainer } from './components/LocalAiContainer'
 
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 
 export function FunkeSettingsScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-  const router = useRouter()
-  const [isDevelpomentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
+  const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -27,26 +27,19 @@ export function FunkeSettingsScreen() {
         contentContainerStyle={{ minHeight: '85%' }}
       >
         <YStack fg={1} px="$4" jc="space-between">
-          <YStack>
-            <Paragraph color="$grey-700" py="$4">
-              This page is under construction. More options will be added.
-            </Paragraph>
-            <XStack jc="space-between" ai="center">
-              <Label>Development Mode</Label>
-              <Switch
-                size="$5"
-                checked={isDevelpomentModeEnabled}
-                onCheckedChange={setIsDevelopmentModeEnabled}
-                animation="quick"
-                backgroundColor={isDevelpomentModeEnabled ? '$primary-500' : '$primary-300'}
-              >
-                <Switch.Thumb animation="quick" backgroundColor="$grey-200" />
-              </Switch>
-            </XStack>
+          <YStack gap="$4" py="$2">
+            <Switch
+              id="development-mode"
+              label="Development Mode"
+              icon={<HeroIcons.CommandLineFilled />}
+              value={isDevelopmentModeEnabled ?? false}
+              onChange={setIsDevelopmentModeEnabled}
+            />
+            <LocalAiContainer />
           </YStack>
-          <Button.Text color="$primary-500" fontWeight="$semiBold" fontSize="$4" onPress={() => router.back()}>
-            <HeroIcons.ArrowLeft mr={-4} color="$primary-500" size={20} /> Back
-          </Button.Text>
+          <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+            <TextBackButton />
+          </YStack>
         </YStack>
       </ScrollView>
     </FlexPage>

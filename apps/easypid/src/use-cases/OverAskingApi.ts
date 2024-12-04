@@ -2,7 +2,7 @@ const PLAYGROUND_URL = 'https://funke.animo.id'
 
 export const EXCLUDED_ATTRIBUTES_FOR_ANALYSIS = ['Issuing authority', 'Issuing country', 'Issued at', 'Expires at']
 
-export type VerificationAnalysisInput = {
+export type OverAskingInput = {
   verifier: {
     name: string
     domain: string
@@ -16,22 +16,17 @@ export type VerificationAnalysisInput = {
   }>
 }
 
-export type VerificationAnalysisResponse = {
+export type OverAskingResponse = {
   validRequest: 'yes' | 'no' | 'could_not_determine'
   reason: string
 }
 
-export type VerificationAnalysisResult = {
-  isLoading: boolean
-  result: VerificationAnalysisResponse | undefined
-}
-
-export const analyzeVerification = async ({
+export const checkForOverAskingApi = async ({
   verifier,
   name,
   purpose,
   cards,
-}: VerificationAnalysisInput): Promise<VerificationAnalysisResponse> => {
+}: OverAskingInput): Promise<OverAskingResponse> => {
   try {
     const cardsWithoutExcludedAttributes = cards.map((card) => ({
       ...card,

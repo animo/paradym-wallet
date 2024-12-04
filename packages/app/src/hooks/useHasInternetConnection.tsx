@@ -7,3 +7,8 @@ export const useHasInternetConnection = () => {
 
   return (isConnected && isInternetReachable) ?? false
 }
+
+export const useIsConnectedToWifi = () => {
+  const { type } = useNetInfo()
+  return type === 'wifi'
+}

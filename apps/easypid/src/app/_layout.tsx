@@ -6,6 +6,7 @@ import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 
+import { useCheckIncompleteDownload } from '@easypid/llm'
 import tamaguiConfig from '../../tamagui.config'
 
 void SplashScreen.preventAutoHideAsync()
@@ -17,6 +18,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   useTransparentNavigationBar()
+  useCheckIncompleteDownload()
 
   return (
     <Provider config={tamaguiConfig}>

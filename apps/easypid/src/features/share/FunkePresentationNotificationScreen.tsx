@@ -1,6 +1,6 @@
 import type { DisplayImage, FormattedSubmission, TrustedEntity } from '@package/agent'
 
-import type { VerificationAnalysisResult } from '@easypid/use-cases/ValidateVerification'
+import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
@@ -14,7 +14,7 @@ interface FunkePresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   lastInteractionDate?: string
-  verificationAnalysis: VerificationAnalysisResult
+  overAskingResponse?: OverAskingResponse
   trustedEntities?: Array<TrustedEntity>
   submission?: FormattedSubmission
   usePin: boolean
@@ -35,7 +35,7 @@ export function FunkePresentationNotificationScreen({
   isAccepting,
   submission,
   onComplete,
-  verificationAnalysis,
+  overAskingResponse,
   trustedEntities,
 }: FunkePresentationNotificationScreenProps) {
   return (
@@ -74,7 +74,7 @@ export function FunkePresentationNotificationScreen({
                 logo={logo}
                 submission={submission}
                 isAccepting={isAccepting}
-                verificationAnalysis={verificationAnalysis}
+                overAskingResponse={overAskingResponse}
               />
             ),
           },

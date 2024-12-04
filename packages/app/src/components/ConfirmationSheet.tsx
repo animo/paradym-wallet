@@ -8,8 +8,10 @@ const DEFAULT_CONFIRM_TEXT = 'Yes, stop'
 
 interface ConfirmationSheetProps {
   type?: 'regular' | 'floating'
+  variant?: 'confirmation' | 'regular'
   title?: string
-  description?: string
+  description?: string | string[]
+  cancelText?: string
   confirmText?: string
   isOpen: boolean
   setIsOpen: (open: boolean) => void
@@ -19,9 +21,11 @@ interface ConfirmationSheetProps {
 
 export function ConfirmationSheet({
   type = 'regular',
+  variant = 'confirmation',
   title,
   description,
   confirmText,
+  cancelText,
   isOpen,
   setIsOpen,
   onConfirm,
@@ -42,12 +46,16 @@ export function ConfirmationSheet({
             </Stack>
           </XStack>
           <Stack borderBottomWidth="$0.5" borderColor="$grey-100" />
-          <Paragraph>{description || DEFAULT_DESCRIPTION}</Paragraph>
+          {Array.isArray(description) ? (
+            description.map((desc) => <Paragraph key={desc}>{desc}</Paragraph>)
+          ) : (
+            <Paragraph>{description || DEFAULT_DESCRIPTION}</Paragraph>
+          )}
           <DualResponseButtons
             align="horizontal"
-            variant="confirmation"
+            variant={variant}
             acceptText={confirmText || DEFAULT_CONFIRM_TEXT}
-            declineText="No"
+            declineText={cancelText || 'No'}
             onAccept={onConfirm}
             onDecline={onCancel || (() => setIsOpen(false))}
           />
@@ -61,14 +69,18 @@ export function ConfirmationSheet({
       <Stack p="$4" gap="$6" pb={bottom}>
         <Stack gap="$3">
           <Heading variant="h2">{title || DEFAULT_TITLE}</Heading>
-          <Paragraph secondary>{description || DEFAULT_DESCRIPTION}</Paragraph>
+          {Array.isArray(description) ? (
+            description.map((desc) => <Paragraph key={desc}>{desc}</Paragraph>)
+          ) : (
+            <Paragraph>{description || DEFAULT_DESCRIPTION}</Paragraph>
+          )}
         </Stack>
         <Stack btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
           <DualResponseButtons
             align="horizontal"
-            variant="confirmation"
+            variant={variant}
             acceptText={confirmText || DEFAULT_CONFIRM_TEXT}
-            declineText="No"
+            declineText={cancelText || 'No'}
             onAccept={onConfirm}
             onDecline={onCancel || (() => setIsOpen(false))}
           />
