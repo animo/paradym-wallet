@@ -219,7 +219,6 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     try {
       await this.cancelPotentiallyAbandonedAuthFlow()
     } catch (error) {
-      console.error('here', error)
       return
     }
 
