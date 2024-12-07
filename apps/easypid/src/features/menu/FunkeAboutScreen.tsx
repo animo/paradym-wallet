@@ -2,7 +2,7 @@ import { FlexPage, Heading, InfoButton, Paragraph, Stack, YStack } from '@packag
 import React from 'react'
 
 import { TextBackButton } from 'packages/app'
-import { Linking, Platform } from 'react-native'
+import { Linking } from 'react-native'
 
 import pj from '../../../package.json'
 
