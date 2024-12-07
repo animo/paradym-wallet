@@ -381,6 +381,11 @@ The following standards and specifications were implemented.
 
 ### Phase 2
 
+#### 07-12-2024
+
+**Wallet**
+- Fixed an issue where each credential in a requested batch would use the same key in the `cnf` claim [commit](https://github.com/animo/paradym-wallet/commit/040ac73d7eb461be53b460b8f77661d533ddd72c)
+
 #### 04-12-2024
 
 **Wallet**
