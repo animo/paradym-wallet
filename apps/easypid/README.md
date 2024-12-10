@@ -381,6 +381,11 @@ The following standards and specifications were implemented.
 
 ### Phase 2
 
+#### 10-12-2024
+
+**Wallet**
+- Fixed an issue where access token was retrieved twice for authorization code flow, resulting in an error during issuance  [commit](https://github.com/animo/paradym-wallet/commit/3eda4ec1fc09107b0ea2682f8f863f4e2ff38c3a)
+
 #### 07-12-2024
 
 **Wallet**
