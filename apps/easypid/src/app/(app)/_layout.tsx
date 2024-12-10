@@ -38,7 +38,10 @@ export default function AppLayout() {
 
   useEffect(() => {
     // Reset state
-    if (hasResetWallet && !shouldResetWallet) setHasResetWallet(false)
+    if (hasResetWallet && !shouldResetWallet) {
+      setHasResetWallet(false)
+      return
+    }
     if (!shouldResetWallet || hasResetWallet) return
 
     setHasResetWallet(true)

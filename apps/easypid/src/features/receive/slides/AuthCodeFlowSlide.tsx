@@ -67,6 +67,7 @@ export const AuthCodeFlowSlide = ({
         return
       }
 
+      setHasHandledResult(true)
       onNext()
       onAuthFlowCallback(authorizationCode)
     }
