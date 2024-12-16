@@ -99,6 +99,12 @@ const config = {
       },
     ],
     'expo-router',
+    [
+      'expo-camera',
+      {
+        cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
+      },
+    ],
   ],
   assetBundlePatterns: ['**/*'],
   ios: {
