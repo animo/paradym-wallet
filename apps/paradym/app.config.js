@@ -70,6 +70,12 @@ const config = {
     [
       'expo-router',
       'expo-font',
+      [
+        'expo-camera',
+        {
+          cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
+        },
+      ],
       {
         fonts: [
           '../../node_modules/@tamagui/font-inter/otf/Inter-Regular.otf',

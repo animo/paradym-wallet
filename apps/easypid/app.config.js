@@ -74,6 +74,12 @@ const config = {
       },
     ],
     [
+      'expo-camera',
+      {
+        cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
+      },
+    ],
+    [
       'expo-build-properties',
       {
         android: {
@@ -99,12 +105,6 @@ const config = {
       },
     ],
     'expo-router',
-    [
-      'expo-camera',
-      {
-        cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
-      },
-    ],
   ],
   assetBundlePatterns: ['**/*'],
   ios: {

@@ -740,6 +740,9 @@ importers:
       '@package/ui':
         specifier: workspace:*
         version: link:../ui
+      expo:
+        specifier: 'catalog:'
+        version: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
     devDependencies:
       '@react-native-masked-view/masked-view':
         specifier: 0.3.1

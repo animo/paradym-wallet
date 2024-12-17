@@ -83,11 +83,6 @@ export function FunkeCredentialDetailAttributesScreen({
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack gap="$4" p="$4" marginBottom={bottom}>
             <Heading variant="h1">Card attributes</Heading>
-            <MessageBox
-              icon={<HeroIcons.EyeSlash />}
-              variant="info"
-              message="This overview is only for you. Only share information using a QR code."
-            />
             <CredentialAttributes
               headerStyle="small"
               borderStyle="large"
