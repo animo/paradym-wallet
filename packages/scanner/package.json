@@ -9,12 +9,13 @@
 	"devDependencies": {
 		"@react-native-masked-view/masked-view": "0.3.1",
 		"@types/react": "~18.2.79",
-		"expo-barcode-scanner": "~13.0.1",
+		"expo-camera": "~15.0.16",
 		"react-native": "catalog:"
 	},
 	"peerDependencies": {
 		"@react-native-masked-view/masked-view": "0.3.1",
-		"expo-barcode-scanner": "~13.0.1",
+		"expo": "catalog:",
+		"expo-camera": "~15.0.16",
 		"react-native": "catalog:"
 	}
 }

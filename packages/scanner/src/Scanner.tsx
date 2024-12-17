@@ -1,8 +1,8 @@
 import type { StyleProp, ViewStyle } from 'react-native'
 
-import { AnimatePresence, Button, Heading, LucideIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
+import { AnimatePresence, Button, Heading, HeroIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
-import { BarCodeScanner as ExpoBarCodeScanner } from 'expo-barcode-scanner'
+import { Camera, CameraView } from 'expo-camera'
 import { useCallback, useEffect, useState } from 'react'
 import { Dimensions, Linking, Platform, StyleSheet } from 'react-native'
 
@@ -16,12 +16,12 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
   const [hasPermission, setHasPermission] = useState<boolean>()
 
   useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await ExpoBarCodeScanner.requestPermissionsAsync()
+    const getCameraPermissions = async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync()
       setHasPermission(status === 'granted')
     }
 
-    void getBarCodeScannerPermissions()
+    void getCameraPermissions()
   }, [])
 
   const _openAppSetting = useCallback(() => {
@@ -44,7 +44,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
           Please allow camera access
         </Heading>
         <Paragraph textAlign="center">
-          This allows Paradym to scan QR codes that include credentials or data requests.
+          This allows the app to scan QR codes that include credentials or data requests.
         </Paragraph>
         <Button.Text onPress={() => _openAppSetting()}>Open settings</Button.Text>
       </Page>
@@ -54,15 +54,44 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
   return (
     <Page f={1} fd="column" jc="space-between" bg="$black">
       {hasPermission && (
-        <ExpoBarCodeScanner
+        <CameraView
           style={[cameraStyle, StyleSheet.absoluteFill]}
-          onBarCodeScanned={({ data }) => onScan(data)}
+          onBarcodeScanned={({ data }) => onScan(data)}
+          barcodeScannerSettings={{
+            barcodeTypes: ['qr'],
+          }}
         />
       )}
       <YStack zi="$5" ai="center">
         <Heading variant="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
           Use the camera to scan a QR code
         </Heading>
+        <XStack maxHeight="$10">
+          <AnimatePresence>
+            {helpText && (
+              <XStack
+                key="scan-help-text"
+                enterStyle={{ opacity: 0, scale: 0.5, y: 25 }}
+                exitStyle={{ opacity: 0, scale: 1, y: 25 }}
+                y={0}
+                opacity={1}
+                scale={1}
+                animation="quick"
+                bg="$warning-500"
+                br="$12"
+                px="$3"
+                h="$3"
+                gap="$2"
+                ai="center"
+              >
+                <HeroIcons.ExclamationTriangleFilled size={14} mt="$0.5" color="$grey-800" />
+                <Paragraph variant="sub" fontWeight="$semiBold" color="$grey-800">
+                  {helpText}
+                </Paragraph>
+              </XStack>
+            )}
+          </AnimatePresence>
+        </XStack>
       </YStack>
       <MaskedView
         style={StyleSheet.absoluteFill}
@@ -98,32 +127,6 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
             </Button.Solid>
           </XStack>
         )}
-        {/* TODO move this to the top */}
-        <XStack maxHeight="$10">
-          <AnimatePresence>
-            {helpText && (
-              <XStack
-                key="scan-help-text"
-                enterStyle={{ opacity: 0, scale: 0.5, y: 25 }}
-                exitStyle={{ opacity: 0, scale: 1, y: 25 }}
-                y={0}
-                opacity={1}
-                scale={1}
-                animation="quick"
-                bg="$warning-500"
-                br="$12"
-                px="$4"
-                py="$2"
-                jc="center"
-                ai="center"
-                gap="$2"
-              >
-                <LucideIcons.AlertOctagon size={16} />
-                <Paragraph variant="sub">{helpText}</Paragraph>
-              </XStack>
-            )}
-          </AnimatePresence>
-        </XStack>
         <Spacer />
       </YStack>
     </Page>

@@ -74,6 +74,12 @@ const config = {
       },
     ],
     [
+      'expo-camera',
+      {
+        cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
+      },
+    ],
+    [
       'expo-build-properties',
       {
         android: {
