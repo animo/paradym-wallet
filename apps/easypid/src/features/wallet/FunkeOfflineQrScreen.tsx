@@ -57,22 +57,23 @@ export function FunkeOfflineQrScreen() {
     })
   )
 
-  // useEffect(() => {
-  //   // Cleanup function that runs when component unmounts
-  //   return () => {
-  //     shutdownDataTransfer()
-  //   }
-  // }, [])
+  useEffect(() => {
+    // Cleanup function that runs when component unmounts
+    return () => {
+      shutdownDataTransfer()
+    }
+  }, [])
 
   const onCancel = () => {
     back()
     shutdownDataTransfer()
   }
 
-  // if (Platform.OS === 'ios') {
-  //   toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
-  //   return back()
-  // }
+  if (Platform.OS === 'ios') {
+    toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
+    back()
+    return
+  }
 
   return (
     <Page bg="$black" ai="center">
