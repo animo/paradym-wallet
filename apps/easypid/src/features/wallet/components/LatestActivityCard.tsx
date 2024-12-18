@@ -28,7 +28,7 @@ export function LatestActivityCard() {
       const credential = credentials.find((c) => c.id === latestActivity.credentialIds[0])
       return {
         title: formatRelativeDate(new Date(latestActivity.date)),
-        description: `Added ${credential?.display.name ?? '1 card'}`,
+        description: `Added ${credential?.display.name}`,
       }
     }
     return null

@@ -81,6 +81,8 @@ import {
 
 import { ExclamationIcon } from '../../assets/Exclamation'
 import { FaceIdIcon } from '../../assets/FaceId'
+import { PeopleIcon } from '../../assets/People'
+import { QrIcon } from '../../assets/Qr'
 
 import { styled } from 'tamagui'
 import { ConnectIcon } from '../../assets/Connect'
@@ -185,6 +187,8 @@ export const CustomIcons = {
   Exclamation: wrapLocalSvg(ExclamationIcon as React.ComponentType<SvgProps>),
   Connect: wrapLocalSvg(ConnectIcon as React.ComponentType<SvgProps>),
   FaceId: wrapLocalSvg(FaceIdIcon as React.ComponentType<SvgProps>),
+  Qr: wrapLocalSvg(QrIcon as React.ComponentType<SvgProps>),
+  People: wrapLocalSvg(PeopleIcon as React.ComponentType<SvgProps>),
 }
 
 export type CustomIconProps = SvgProps & {

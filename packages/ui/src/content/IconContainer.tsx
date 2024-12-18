@@ -1,15 +1,22 @@
 import { cloneElement } from 'react'
-import type { StackProps } from 'tamagui'
+import { Circle, type StackProps } from 'tamagui'
 import { AnimatedStack } from '../base'
 import { useScaleAnimation } from '../hooks'
 
-interface IconContainerProps extends StackProps {
+interface IconContainerProps extends Omit<StackProps, 'bg'> {
   icon: React.ReactElement
   scaleOnPress?: boolean
+  bg?: boolean
   'aria-label'?: string
 }
 
-export function IconContainer({ icon, scaleOnPress = true, 'aria-label': ariaLabel, ...props }: IconContainerProps) {
+export function IconContainer({
+  icon,
+  scaleOnPress = true,
+  bg = false,
+  'aria-label': ariaLabel,
+  ...props
+}: IconContainerProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: scaleOnPress ? 0.9 : 1 })
 
   return (
@@ -22,8 +29,10 @@ export function IconContainer({ icon, scaleOnPress = true, 'aria-label': ariaLab
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       aria-label={ariaLabel}
+      pos="relative"
       {...props}
     >
+      {bg && <Circle pos="absolute" bg="$white" m="$2" size={36} />}
       {cloneElement(icon, {
         strokeWidth: icon.props.strokeWidth ?? 2,
         size: icon.props.size ?? 24,
