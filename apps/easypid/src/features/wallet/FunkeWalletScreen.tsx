@@ -12,11 +12,13 @@ import {
   XStack,
   YStack,
   useSpringify,
+  useToastController,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
 
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useHaptics } from '@package/app/src/hooks'
+import { Platform } from 'react-native'
 import { FadeIn } from 'react-native-reanimated'
 import { Blob } from '../../../assets/Blob'
 import { ActionCard } from './components/ActionCard'
@@ -26,6 +28,7 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
+  const toast = useToastController()
 
   const { userName, isLoading } = useFirstNameFromPidCredential()
 
@@ -33,20 +36,27 @@ export function FunkeWalletScreen() {
   const pushToScanner = withHaptics(() => push('/scan'))
   const pushToPidSetup = withHaptics(() => push('/pidSetup'))
   const pushToAbout = withHaptics(() => push('/menu/about'))
-  const pushToOffline = withHaptics(() => push('/offline'))
+  const pushToOffline = () => {
+    if (Platform.OS === 'ios') {
+      toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
+      return
+    }
+
+    withHaptics(() => push('/offline'))()
+  }
 
   return (
     <YStack pos="relative" fg={1}>
       <YStack pos="absolute" h="50%" w="100%">
-        <Blob />
+        <Blob key=" 123444535r5ffff4" />
       </YStack>
 
       <FlexPage safeArea="y" fg={1} flex-1={false} bg="transparent">
         <XStack py="$3">
-          <IconContainer bg aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
+          <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
         </XStack>
 
-        <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)}>
+        <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>
           <ScrollView contentContainerStyle={{ fg: 1 }}>
             <YStack fg={1} f={1} gap="$4">
               <YStack ai="center" jc="center" gap="$2">
@@ -58,19 +68,19 @@ export function FunkeWalletScreen() {
                 >
                   {userName ? `Hello, ${userName}!` : 'Hello!'}
                 </Heading>
-                <Paragraph>Select what you want to do</Paragraph>
+                <Paragraph>Receive or share from your wallet</Paragraph>
               </YStack>
-              <XStack gap="$4" jc="center" py="$3">
+              <XStack gap="$4" jc="center" py="$2" w="95%" mx="auto">
                 <ActionCard
                   variant="primary"
                   icon={<CustomIcons.Qr color="white" />}
-                  title="QR-code"
+                  title="Scan QR-code"
                   onPress={pushToScanner}
                 />
                 <ActionCard
                   variant="secondary"
                   icon={<CustomIcons.People size={26} />}
-                  title="In-person"
+                  title="Present In-person"
                   onPress={pushToOffline}
                 />
               </XStack>
@@ -81,7 +91,7 @@ export function FunkeWalletScreen() {
                   </Button.Text>
                 ) : (
                   <Button.Text scaleOnPress bg="transparent" onPress={pushToPidSetup}>
-                    Setup your ID
+                    Setup your ID <HeroIcons.ArrowRight ml="$-2.5" color="$primary-500" size={16} />
                   </Button.Text>
                 )}
               </XStack>

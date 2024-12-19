@@ -6,14 +6,14 @@ import { useScaleAnimation } from '../hooks'
 interface IconContainerProps extends Omit<StackProps, 'bg'> {
   icon: React.ReactElement
   scaleOnPress?: boolean
-  bg?: boolean
+  bg?: 'white' | 'grey' | 'transparent'
   'aria-label'?: string
 }
 
 export function IconContainer({
   icon,
   scaleOnPress = true,
-  bg = false,
+  bg = 'grey',
   'aria-label': ariaLabel,
   ...props
 }: IconContainerProps) {
@@ -23,16 +23,15 @@ export function IconContainer({
     <AnimatedStack
       accessible={true}
       accessibilityRole="button"
-      p="$3"
-      m="$-3"
       style={pressStyle}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       aria-label={ariaLabel}
-      pos="relative"
+      bg={bg === 'white' ? '$white' : bg === 'grey' ? '$grey-50' : 'transparent'}
+      br="$12"
+      p="$2"
       {...props}
     >
-      {bg && <Circle pos="absolute" bg="$white" m="$2" size={36} />}
       {cloneElement(icon, {
         strokeWidth: icon.props.strokeWidth ?? 2,
         size: icon.props.size ?? 24,

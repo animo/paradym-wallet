@@ -1,3 +1,4 @@
+import { mmkv } from '@easypid/storage/mmkv'
 import {
   AnimatedStack,
   Button,
@@ -14,26 +15,93 @@ import {
 import { useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app/src'
 import { useEffect, useState } from 'react'
-import { Platform, useWindowDimensions } from 'react-native'
+import { Alert, Linking, useWindowDimensions } from 'react-native'
+import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
 import easypidLogo from '../../../assets/icon-rounded.png'
-import { checkMdocPermissions, shutdownDataTransfer, waitForDeviceRequest } from '../proximity'
+import {
+  checkMdocPermissions,
+  getMdocQrCode,
+  requestMdocPermissions,
+  shutdownDataTransfer,
+  waitForDeviceRequest,
+} from '../proximity'
 
 export function FunkeOfflineQrScreen() {
   const { withHaptics } = useHaptics()
   const { replace, back } = useRouter()
   const { width } = useWindowDimensions()
   const toast = useToastController()
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
+  const [arePermissionsRequested, setArePermissionsRequested] = useMMKVBoolean('arePermissionsRequested', mmkv)
 
   useEffect(() => {
     void checkMdocPermissions().then((result) => {
       setArePermissionsGranted(!!result)
+      if (!result) {
+        void requestPermissions()
+      }
     })
   }, [])
+
+  useEffect(() => {
+    if (arePermissionsGranted) {
+      void getMdocQrCode().then(setQrCodeData)
+    } else {
+      setQrCodeData(undefined)
+    }
+  }, [arePermissionsGranted])
+
+  const handlePermissions = async () => {
+    const permissions = await requestMdocPermissions()
+
+    if (!permissions) {
+      toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
+      return { granted: false, shouldShowSettings: false }
+    }
+
+    // Check if any permission is in 'never_ask_again' state
+    const hasNeverAskAgain = Object.values(permissions).some((status) => status === 'never_ask_again')
+
+    if (hasNeverAskAgain) {
+      return { granted: false, shouldShowSettings: true }
+    }
+
+    const permissionStatus = await checkMdocPermissions()
+    return { granted: !!permissionStatus, shouldShowSettings: false }
+  }
+
+  const requestPermissions = async () => {
+    // First request without checking the never_ask_again state
+    if (!arePermissionsRequested) {
+      const { granted } = await handlePermissions()
+      setArePermissionsRequested(true)
+      setArePermissionsGranted(granted)
+      return
+    }
+
+    // Subsequent requests need to check for the never_ask_again state
+    const { granted, shouldShowSettings } = await handlePermissions()
+
+    if (shouldShowSettings) {
+      back()
+      Alert.alert(
+        'Please enable required permissions in your phone settings',
+        'Sharing with QR-Code needs access to Bluetooth and Location.',
+        [
+          {
+            text: 'Open Settings',
+            onPress: () => Linking.openSettings(),
+          },
+        ]
+      )
+      return
+    }
+
+    setArePermissionsGranted(granted)
+  }
 
   useEffect(() => {
     if (qrCodeData) {
@@ -67,12 +135,6 @@ export function FunkeOfflineQrScreen() {
   const onCancel = () => {
     back()
     shutdownDataTransfer()
-  }
-
-  if (Platform.OS === 'ios') {
-    toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
-    back()
-    return
   }
 
   return (

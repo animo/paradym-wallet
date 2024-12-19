@@ -1,4 +1,4 @@
-import { AnimatedStack, Heading, Stack, useScaleAnimation } from '@package/ui'
+import { AnimatedStack, Heading, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
 import type { ReactNode } from 'react'
 
 interface ActionCardProps {
@@ -21,18 +21,24 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
       onPressIn={qrHandlePressIn}
       onPressOut={qrHandlePressOut}
       onPress={onPress}
-      ai="center"
       jc="center"
       bg={variant === 'primary' ? '$grey-900' : '$white'}
-      py="$4"
-      px="$6"
-      gap="$4"
+      p="$3"
+      fg={1}
+      gap="$3"
       br="$6"
     >
-      <Stack>{icon}</Stack>
-      <Heading color={variant === 'primary' ? 'white' : '$grey-900'} variant="h2">
-        {title}
-      </Heading>
+      <XStack jc="space-between" ai="center">
+        <Stack />
+        {icon}
+      </XStack>
+      <YStack>
+        {title.split(' ').map((word) => (
+          <Heading key={word} color={variant === 'primary' ? 'white' : '$grey-900'} variant="h2">
+            {word}
+          </Heading>
+        ))}
+      </YStack>
     </AnimatedStack>
   )
 }
