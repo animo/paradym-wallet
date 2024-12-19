@@ -109,6 +109,12 @@ export default function AppLayout() {
             name="(home)/scan"
           />
           <Stack.Screen
+            options={{
+              presentation: 'modal',
+            }}
+            name="(home)/offline"
+          />
+          <Stack.Screen
             name="notifications/openIdPresentation"
             options={{
               gestureEnabled: false,
