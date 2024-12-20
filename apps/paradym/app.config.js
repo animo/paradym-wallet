@@ -1,98 +1,100 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require('./package.json')
+const { version } = require("./package.json");
 
 /* eslint-disable */
-const APP_VARIANT = process.env.APP_VARIANT || 'production'
+const APP_VARIANT = process.env.APP_VARIANT || "production";
 
 const variants = {
   development: {
-    bundle: '.dev',
-    name: ' (Dev)',
-    mediatorDid: 'did:web:mediator.dev.paradym.id',
+    bundle: ".dev",
+    name: " (Dev)",
+    mediatorDid: "did:web:mediator.dev.paradym.id",
   },
   preview: {
-    bundle: '.preview',
-    name: ' (Preview)',
-    mediatorDid: 'did:web:mediator.paradym.id',
+    bundle: ".preview",
+    name: " (Preview)",
+    mediatorDid: "did:web:mediator.paradym.id",
   },
   production: {
-    bundle: '',
-    name: '',
-    mediatorDid: 'did:web:mediator.paradym.id',
+    bundle: "",
+    name: "",
+    mediatorDid: "did:web:mediator.paradym.id",
   },
-}
+};
 
-const variant = variants[APP_VARIANT]
+const variant = variants[APP_VARIANT];
 
 if (!variant) {
-  throw new Error(`Invalid variant provided: ${process.env.APP_VARIANT}`)
+  throw new Error(`Invalid variant provided: ${process.env.APP_VARIANT}`);
 }
 
 // NOTE: Keep this in sync with the `QrTypes` enum
 const invitationSchemes = [
-  'openid',
-  'openid-initiate-issuance',
-  'openid-credential-offer',
-  'openid-vc',
-  'openid4vp',
-  'didcomm',
-]
+  "openid",
+  "openid-initiate-issuance",
+  "openid-credential-offer",
+  "openid-vc",
+  "openid4vp",
+  "didcomm",
+];
 
-const associatedDomains = ['paradym.id', 'dev.paradym.id', 'aurora.paradym.id']
+const associatedDomains = ["paradym.id", "dev.paradym.id", "aurora.paradym.id"];
 
 /**
  * @type {import('@expo/config-types').ExpoConfig}
  */
 const config = {
   name: `Paradym Wallet${variant.name}`,
-  scheme: 'paradym',
-  slug: 'paradym-wallet',
-  owner: 'animo-id',
+  scheme: "paradym",
+  slug: "paradym-wallet",
+  owner: "animo-id",
   version,
-  orientation: 'portrait',
-  icon: './assets/icon.png',
-  userInterfaceStyle: 'light',
+  orientation: "portrait",
+  icon: "./assets/icon.png",
+  userInterfaceStyle: "light",
   androidStatusBar: {
-    backgroundColor: '#F2F4F6',
+    backgroundColor: "#F2F4F6",
   },
   androidNavigationBar: {
-    backgroundColor: '#F2F4F6',
+    backgroundColor: "#F2F4F6",
   },
   splash: {
-    image: './assets/splash.png',
-    resizeMode: 'contain',
-    backgroundColor: '#F2F4F6',
+    image: "./assets/splash.png",
+    resizeMode: "contain",
+    backgroundColor: "#F2F4F6",
   },
   updates: {
     fallbackToCacheTimeout: 0,
   },
   plugins: [
+    "expo-router",
     [
-      'expo-router',
-      'expo-font',
-      [
-        'expo-camera',
-        {
-          cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
-        },
-      ],
+      "expo-camera",
+      {
+        cameraPermission: "Allow $(PRODUCT_NAME) to access your camera.",
+      },
+    ],
+    [
+      "expo-font",
       {
         fonts: [
-          '../../node_modules/@tamagui/font-inter/otf/Inter-Regular.otf',
-          '../../node_modules/@tamagui/font-inter/otf/Inter-Medium.otf',
-          '../../node_modules/@tamagui/font-inter/otf/Inter-SemiBold.otf',
-          '../../node_modules/@tamagui/font-inter/otf/Inter-Bold.otf',
+          "../../node_modules/@tamagui/font-inter/otf/Inter-Regular.otf",
+          "../../node_modules/@tamagui/font-inter/otf/Inter-Medium.otf",
+          "../../node_modules/@tamagui/font-inter/otf/Inter-SemiBold.otf",
+          "../../node_modules/@tamagui/font-inter/otf/Inter-Bold.otf",
         ],
       },
     ],
   ],
-  assetBundlePatterns: ['**/*'],
+  assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: false,
     bundleIdentifier: `id.paradym.wallet${variant.bundle}`,
     infoPlist: {
-      NSCameraUsageDescription: 'Paradym Wallet uses the camera to initiate receiving and sharing of credentials.',
-      NSFaceIDUsageDescription: 'Paradym Wallet uses FaceID to securely unlock the wallet and share credentials.',
+      NSCameraUsageDescription:
+        "Paradym Wallet uses the camera to initiate receiving and sharing of credentials.",
+      NSFaceIDUsageDescription:
+        "Paradym Wallet uses FaceID to securely unlock the wallet and share credentials.",
       ITSAppUsesNonExemptEncryption: false,
       // Add schemes for deep linking
       CFBundleURLTypes: [
@@ -105,36 +107,36 @@ const config = {
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#FFFFFF',
+      foregroundImage: "./assets/adaptive-icon.png",
+      backgroundColor: "#FFFFFF",
     },
     package: `id.paradym.wallet${variant.bundle}`,
     intentFilters: [
       ...invitationSchemes.map((scheme) => ({
-        action: 'VIEW',
-        category: ['DEFAULT', 'BROWSABLE'],
+        action: "VIEW",
+        category: ["DEFAULT", "BROWSABLE"],
         data: {
           scheme,
         },
       })),
       ...associatedDomains.map((host) => ({
-        action: 'VIEW',
-        category: ['DEFAULT', 'BROWSABLE'],
+        action: "VIEW",
+        category: ["DEFAULT", "BROWSABLE"],
         autoVerify: true,
         data: {
-          scheme: 'https',
+          scheme: "https",
           host,
-          pathPrefix: '/invitation',
+          pathPrefix: "/invitation",
         },
       })),
     ],
   },
   extra: {
     eas: {
-      projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
+      projectId: "b5f457fa-bcab-4c6e-8092-8cdf1239027a",
     },
     mediatorDid: variant.mediatorDid,
   },
-}
+};
 
-export default config
+export default config;
