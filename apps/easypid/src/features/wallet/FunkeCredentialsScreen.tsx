@@ -41,7 +41,7 @@ export function FunkeCredentialsScreen() {
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack gap="$2" p="$4">
+        <YStack gap="$4" p="$4">
           <Stack h="$1" />
           <Heading variant="h1">Cards</Heading>
         </YStack>
@@ -161,7 +161,7 @@ function FunkeCredentialRowCard({ name, backgroundColor, textColor, logo, onPres
           Issued on {formatDate(new Date(), { includeTime: false })}
         </Paragraph>
       </YStack>
-      <IconContainer icon={<HeroIcons.ArrowRight color={textColor} size={20} />} />
+      <IconContainer bg="transparent" icon={<HeroIcons.ArrowRight color={textColor} size={20} />} />
     </AnimatedStack>
   )
 }

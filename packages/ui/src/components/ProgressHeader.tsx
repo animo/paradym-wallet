@@ -55,9 +55,9 @@ export function ProgressHeader({
           mx={variant === 'small' ? '$-4' : '$0'}
         >
           {variant === 'small' ? (
-            <Stack pos="absolute" h={1} w="100%" bg="$grey-200" />
+            <Stack pos="absolute" h={1} w="100%" bg="$grey-50" />
           ) : (
-            <Stack pos="absolute" h={12} w="100%" br={24} bg="$grey-200" />
+            <Stack pos="absolute" h={12} w="100%" br={24} bg="$grey-50" />
           )}
           <AnimatedStack
             accessibilityRole="progressbar"

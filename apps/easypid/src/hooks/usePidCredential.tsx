@@ -1,6 +1,6 @@
 import { ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { type CredentialForDisplay, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
-import { sanitizeString } from '@package/utils'
+import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
 
 type Attributes = {
   given_name: string
@@ -383,4 +383,20 @@ export function usePidCredential() {
         c.record instanceof SdJwtVcRecord
     ),
   } as const
+}
+
+export function useFirstNameFromPidCredential() {
+  const { credential, isLoading } = usePidCredential()
+
+  if (!credential?.attributes || typeof credential.attributes.given_name !== 'string') {
+    return {
+      userName: '',
+      isLoading,
+    }
+  }
+
+  return {
+    userName: capitalizeFirstLetter(credential.attributes.given_name.toLowerCase()),
+    isLoading,
+  }
 }
