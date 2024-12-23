@@ -67,15 +67,15 @@ const config = {
     fallbackToCacheTimeout: 0,
   },
   plugins: [
+    'expo-router',
     [
-      'expo-router',
+      'expo-camera',
+      {
+        cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
+      },
+    ],
+    [
       'expo-font',
-      [
-        'expo-camera',
-        {
-          cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
-        },
-      ],
       {
         fonts: [
           '../../node_modules/@tamagui/font-inter/otf/Inter-Regular.otf',
