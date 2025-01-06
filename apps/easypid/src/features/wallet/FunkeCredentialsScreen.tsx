@@ -41,8 +41,8 @@ export function FunkeCredentialsScreen() {
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack p="$4">
-          <Stack h="$1" />
+        <YStack p="$4" gap="$2">
+          <Stack h="$2" />
           <Heading variant="h1">Cards</Heading>
         </YStack>
       </YStack>
