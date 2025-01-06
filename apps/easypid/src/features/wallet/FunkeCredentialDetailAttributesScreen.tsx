@@ -81,7 +81,7 @@ export function FunkeCredentialDetailAttributesScreen({
           borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
         />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack gap="$4" p="$4" marginBottom={bottom}>
+          <YStack p="$4" marginBottom={bottom}>
             <Heading variant="h1">Card attributes</Heading>
             <CredentialAttributes
               headerStyle="small"

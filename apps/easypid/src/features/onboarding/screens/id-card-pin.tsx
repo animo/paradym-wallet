@@ -66,7 +66,8 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
 
   return (
     <YStack fg={1} jc="space-between" mb={shouldStickToBottom ? -16 : undefined}>
-      <ScrollView flex={1}>
+      {/* Overflow issue only present on smaller devices, so set to max height */}
+      <ScrollView flex={1} maxHeight={shouldStickToBottom ? 150 : undefined}>
         <Stack jc="center">
           <IdCard
             backgroundImage={pidBackgroundImage}

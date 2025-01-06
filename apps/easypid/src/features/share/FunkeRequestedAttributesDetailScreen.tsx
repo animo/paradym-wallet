@@ -19,7 +19,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
-import { useHaptics, useHasInternetConnection, useScrollViewPosition } from '@package/app/src/hooks'
+import {
+  useHaptics,
+  useHasInternetConnection,
+  useHeaderRightAction,
+  useScrollViewPosition,
+} from '@package/app/src/hooks'
 
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { useNavigation } from 'expo-router'
@@ -45,16 +50,14 @@ export function FunkeRequestedAttributesDetailScreen({
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { withHaptics } = useHaptics()
-  const navigation = useNavigation()
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => <IconContainer icon={<HeroIcons.EllipsisHorizontal />} onPress={() => setIsSheetOpen(true)} />,
-    })
-  }, [navigation])
+  useHeaderRightAction({
+    icon: <HeroIcons.EllipsisHorizontal />,
+    onPress: withHaptics(() => setIsSheetOpen(true)),
+  })
 
   const {
     isVisible: isMetadataVisible,

@@ -29,7 +29,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack gap="$4" p="$4">
+        <YStack p="$4">
           <Stack h="$1" />
           <Heading variant="h1">Activity</Heading>
         </YStack>

@@ -157,7 +157,7 @@ export const SlideWizard = forwardRef(
     return (
       <WizardProvider value={contextValue}>
         <FlexPage safeArea="t" p="$0" jc="space-between" gap="$0" background="$background">
-          <Stack px="$4" py="$2" bbw={1} borderColor={isScrolledByOffset ? '$grey-100' : '$background'}>
+          <Stack px="$4" pb="$2" bbw={1} borderColor={isScrolledByOffset ? '$grey-100' : '$background'}>
             <ProgressHeader
               progress={isCompleted || isError ? 100 : steps[currentStepIndex].progress}
               onBack={onBack}
@@ -174,7 +174,7 @@ export const SlideWizard = forwardRef(
                 scrollEventThrottle,
                 onContentSizeChange,
                 onLayout,
-                contentContainerStyle: { flexGrow: 1, paddingBottom: bottom },
+                contentContainerStyle: { flexGrow: 1, paddingBottom: Math.max(bottom, 16) },
               }}
               fg={1}
               px="$4"

@@ -32,7 +32,12 @@ export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' 
     // Some devices have no bottom safe area, so we add a default of 16px so the content is not against the edge
     const bottom =
       safeArea === true || safeArea === 'y' || safeArea === 'b' ? Math.max(safeAreaInsets.bottom, 16) : undefined
-    const top = safeArea === true || safeArea === 'y' || safeArea === 't' ? safeAreaInsets.top : undefined
+
+    // We add an extra 16px to the top margin to give the header some more space on smaller devices
+    const additionalTop = safeAreaInsets.top <= 24 ? 16 : 0
+
+    const top =
+      safeArea === true || safeArea === 'y' || safeArea === 't' ? safeAreaInsets.top + additionalTop : undefined
     const left = safeArea === true || safeArea === 'x' || safeArea === 'l' ? safeAreaInsets.left : undefined
     const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
 

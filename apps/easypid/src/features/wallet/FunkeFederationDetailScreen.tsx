@@ -44,7 +44,7 @@ export function FunkeFederationDetailScreen({
         borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
       />
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack gap="$4" p="$4" marginBottom={bottom}>
+        <YStack p="$4" marginBottom={bottom}>
           <Heading variant="h1">About this party</Heading>
           <MessageBox
             variant="light"

@@ -30,6 +30,7 @@ export function IconContainer({
       bg={bg === 'white' ? '$white' : bg === 'grey' ? '$grey-50' : 'transparent'}
       br="$12"
       p="$2"
+      mx="$-1"
       {...props}
     >
       {cloneElement(icon, {
