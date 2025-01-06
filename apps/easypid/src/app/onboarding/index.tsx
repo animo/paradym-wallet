@@ -1,5 +1,5 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
-import { FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
+import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { AccessibilityInfo, Alert } from 'react-native'
@@ -43,10 +43,10 @@ export default function OnboardingScreens() {
     page = onboardingContext.screen
   } else {
     page = (
-      <FlexPage gap="$2" jc="space-between">
-        <Animated.View entering={FadeIn.delay(300)}>
+      <FlexPage gap="$2" jc="space-between" bg="$background">
+        <AnimatedStack entering={FadeIn.delay(300)}>
           <ProgressHeader enterAnimation progress={onboardingContext.progress} onBack={onReset} />
-        </Animated.View>
+        </AnimatedStack>
 
         <Animated.View
           key={onboardingContext.page.animationKey ?? onboardingContext.currentStep}
