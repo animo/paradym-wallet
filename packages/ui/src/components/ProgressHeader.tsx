@@ -8,6 +8,7 @@ import {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
+import { useMedia } from 'tamagui'
 import { AnimatedStack, Stack, XStack, YStack } from '../base'
 import { HeroIcons, IconContainer } from '../content'
 
@@ -30,6 +31,7 @@ export function ProgressHeader({
   ...props
 }: ProgressHeaderProps) {
   const isError = color === 'danger'
+  const media = useMedia()
 
   const colorValue = useSharedValue(color === 'primary' ? 0 : 1)
   const animatedStyle = useAnimatedStyle(() => {
@@ -43,7 +45,7 @@ export function ProgressHeader({
   }, [color])
 
   return (
-    <YStack gap="$4" {...props}>
+    <YStack gap={media.short ? '$3' : '$4'} {...props}>
       <XStack mx="$-1" jc="space-between">
         {onBack ? <IconContainer aria-label="Back" icon={<HeroIcons.ArrowLeft />} onPress={onBack} /> : <Stack />}
         {onCancel ? <IconContainer aria-label="Cancel" icon={<HeroIcons.X />} onPress={onCancel} /> : <Stack />}
@@ -51,7 +53,7 @@ export function ProgressHeader({
       {progress > 1 && (
         <AnimatedStack
           entering={enterAnimation ? FadeIn.delay(200) : undefined}
-          mb="$4"
+          mb={media.short ? '$2' : '$4'}
           mx={variant === 'small' ? '$-4' : '$0'}
         >
           {variant === 'small' ? (

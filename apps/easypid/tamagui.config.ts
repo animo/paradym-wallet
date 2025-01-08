@@ -1,7 +1,7 @@
 import { radius, size, space, zIndex } from '@tamagui/themes'
 
 import { configInput, fontOpenSans, fontRaleway, hexColors } from '@package/ui/src/config/tamagui.config'
-import { createTamagui, createTokens } from 'tamagui'
+import { createMedia, createTamagui, createTokens } from 'tamagui'
 
 export const tokensInput = {
   color: hexColors,
@@ -68,6 +68,11 @@ const config = createTamagui({
       idCardBackground: '#F1F2F0',
     },
   },
+  media: createMedia({
+    short: {
+      maxHeight: 1400,
+    },
+  }),
 })
 
 type ConfIg = typeof config

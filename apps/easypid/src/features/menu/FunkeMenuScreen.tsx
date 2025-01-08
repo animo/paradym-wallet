@@ -1,7 +1,18 @@
 import React from 'react'
 
 import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
-import { Button, FlexPage, Heading, HeroIcons, ScrollView, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
+import {
+  Button,
+  FlexPage,
+  HeaderContainer,
+  Heading,
+  HeroIcons,
+  ScrollView,
+  Stack,
+  XStack,
+  YStack,
+  useScaleAnimation,
+} from '@package/ui'
 
 import { usePidCredential } from '@easypid/hooks'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
@@ -67,17 +78,8 @@ export function FunkeMenuScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack p="$4" gap="$2">
-          <Stack h="$2" />
-          <Heading variant="h1">Menu</Heading>
-        </YStack>
-      </YStack>
-      <ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={scrollEventThrottle}
-        contentContainerStyle={{ minHeight: '85%' }}
-      >
+      <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Menu" />
+      <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack fg={1} jc="space-between">
           <YStack>
             {idItem}

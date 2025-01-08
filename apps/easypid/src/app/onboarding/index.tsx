@@ -1,6 +1,6 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
 import { useHaptics } from '@package/app'
-import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
+import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { AccessibilityInfo, Alert } from 'react-native'
@@ -9,6 +9,7 @@ import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
 
 export default function OnboardingScreens() {
   const { withHaptics } = useHaptics()
+  const media = useMedia()
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const onboardingContext = useOnboardingContext()
   const headerRef = useRef(null)
@@ -56,8 +57,8 @@ export default function OnboardingScreens() {
           exiting={pageContentTransition.exiting.default}
           style={{ flexGrow: 1 }}
         >
-          <YStack fg={1} gap="$6">
-            <YStack gap="$3">
+          <YStack fg={1} gap={media.short ? '$4' : '$6'}>
+            <YStack gap={media.short ? '$2' : '$3'}>
               {onboardingContext.page.title && (
                 <Heading ref={headerRef} variant="h1">
                   {onboardingContext.page.title}

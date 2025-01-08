@@ -57,14 +57,16 @@ export function FunkeWalletScreen() {
         </XStack>
 
         <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>
-          <ScrollView contentContainerStyle={{ fg: 1 }}>
+          <ScrollView scrollEnabled={false} contentContainerStyle={{ fg: 1 }}>
             <YStack fg={1} f={1} gap="$4">
               <YStack ai="center" jc="center" gap="$2">
                 <Heading
                   variant="h1"
-                  fontSize={userName.length < 14 ? 38 : 24}
+                  fontSize={userName.length < 14 ? 38 : 26}
                   lineHeight={userName.length < 14 ? 40 : 32}
                   opacity={isLoading ? 0 : 1}
+                  ta="center"
+                  numberOfLines={2}
                 >
                   {userName ? `Hello, ${userName}!` : 'Hello!'}
                 </Heading>

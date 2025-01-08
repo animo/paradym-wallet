@@ -175,7 +175,7 @@ export function ProtectData() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#3347F6" />
+          <Stop offset="1" stopColor="#5A33F6" />
         </LinearGradient>
         <LinearGradient
           id="paint3_linear_2304_17437"
@@ -186,7 +186,7 @@ export function ProtectData() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#3347F6" />
+          <Stop offset="1" stopColor="#5A33F6" />
         </LinearGradient>
         <LinearGradient
           id="paint4_linear_3268_4328"
@@ -197,7 +197,7 @@ export function ProtectData() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#3347F6" />
+          <Stop offset="1" stopColor="#5A33F6" />
         </LinearGradient>
         <LinearGradient
           id="paint5_linear_3268_4328"
@@ -208,7 +208,7 @@ export function ProtectData() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#3347F6" />
+          <Stop offset="1" stopColor="#5A33F6" />
         </LinearGradient>
         <LinearGradient
           id="paint6_linear_3268_4328"
@@ -219,7 +219,7 @@ export function ProtectData() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#3347F6" />
+          <Stop offset="1" stopColor="#5A33F6" />
         </LinearGradient>
       </Defs>
     </Svg>

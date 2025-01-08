@@ -10,5 +10,12 @@ export function AllCardsCard() {
   const { credentials } = useCredentialsForDisplay()
   const pushToCards = withHaptics(() => push('/credentials'))
 
-  return <InfoButton noIcon title="All cards" description={`${credentials.length} cards total`} onPress={pushToCards} />
+  return (
+    <InfoButton
+      noIcon
+      title="All cards"
+      description={credentials.length ? `${credentials.length} cards total` : 'No cards yet'}
+      onPress={pushToCards}
+    />
+  )
 }
