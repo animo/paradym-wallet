@@ -57,7 +57,7 @@ export default function OnboardingScreens() {
           exiting={pageContentTransition.exiting.default}
           style={{ flexGrow: 1 }}
         >
-          <YStack fg={1} gap={media.short ? '$4' : '$6'}>
+          <YStack fg={1} gap={media.short ? '$5' : '$6'}>
             <YStack gap={media.short ? '$2' : '$3'}>
               {onboardingContext.page.title && (
                 <Heading ref={headerRef} variant="h1">

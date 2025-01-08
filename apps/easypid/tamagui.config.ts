@@ -70,7 +70,7 @@ const config = createTamagui({
   },
   media: createMedia({
     short: {
-      maxHeight: 1400,
+      maxHeight: 756,
     },
   }),
 })

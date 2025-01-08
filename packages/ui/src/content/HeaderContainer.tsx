@@ -10,7 +10,7 @@ export function HeaderContainer({ isScrolledByOffset, title }: HeaderContainerPr
 
   const titleContainer = title ? (
     <YStack py={media.short ? '$2' : '$4'} px="$4" gap="$2">
-      <Stack h={media.short ? '$1' : '$2'} />
+      <Stack h={media.short ? '$1' : '$3'} />
       <Heading variant="h1">{title}</Heading>
     </YStack>
   ) : null
