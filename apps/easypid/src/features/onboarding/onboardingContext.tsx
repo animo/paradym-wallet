@@ -23,6 +23,7 @@ import {
   getCredentialForDisplay,
   getCredentialForDisplayId,
 } from '@package/agent'
+import { useHaptics } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
@@ -142,6 +143,7 @@ export function OnboardingContextProvider({
 }: PropsWithChildren<{
   initialStep?: OnboardingStep['step']
 }>) {
+  const { successHaptic, lightHaptic } = useHaptics()
   const toast = useToastController()
   const secureUnlock = useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
@@ -167,6 +169,12 @@ export function OnboardingContextProvider({
 
   const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
+
+  useEffect(() => {
+    if (currentStepName && currentStepName !== 'welcome' && currentStepName !== 'pin-reenter') {
+      lightHaptic()
+    }
+  }, [lightHaptic, currentStepName])
 
   const goToNextStep = useCallback(() => {
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
@@ -198,8 +206,9 @@ export function OnboardingContextProvider({
     // Wait 500ms before navigating to home
     setTimeout(() => {
       router.replace('/')
+      successHaptic()
     }, 500)
-  }, [router, setHasFinishedOnboarding, receivePidUseCase])
+  }, [router, setHasFinishedOnboarding, receivePidUseCase, successHaptic])
 
   const onPinEnter = async (pin: string) => {
     setWalletPin(pin)

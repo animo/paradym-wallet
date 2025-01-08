@@ -16,7 +16,11 @@ export function LatestActivityCard() {
   const pushToActivity = withHaptics(() => push('/activity'))
 
   const content = useMemo(() => {
-    if (!latestActivity) return null
+    if (!latestActivity)
+      return {
+        title: 'Recent activity',
+        description: 'No activity yet',
+      }
     if (latestActivity.type === 'shared') {
       const isPlural = latestActivity.request.credentials.length > 1
       return {
@@ -28,7 +32,7 @@ export function LatestActivityCard() {
       const credential = credentials.find((c) => c.id === latestActivity.credentialIds[0])
       return {
         title: formatRelativeDate(new Date(latestActivity.date)),
-        description: `Added ${credential?.display.name ?? '1 card'}`,
+        description: `Added ${credential?.display.name}`,
       }
     }
     return null

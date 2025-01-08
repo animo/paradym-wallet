@@ -61,6 +61,7 @@ export function FunkeActivityDetailScreen() {
                   'No information was provided on the purpose of the data request. Be cautious'
                 }
                 logo={activity.entity.logo}
+                overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
               />
               <Stack gap="$3">
                 <Stack gap="$2">

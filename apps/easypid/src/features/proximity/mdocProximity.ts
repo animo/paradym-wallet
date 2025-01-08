@@ -25,13 +25,19 @@ type ShareDeviceResponseOptions = {
   submission: FormattedSubmission
 }
 
-const PERMISSIONS = [
-  'android.permission.ACCESS_FINE_LOCATION',
-  'android.permission.BLUETOOTH_CONNECT',
-  'android.permission.BLUETOOTH_SCAN',
-  'android.permission.BLUETOOTH_ADVERTISE',
-  'android.permission.ACCESS_COARSE_LOCATION',
-] as const as Permission[]
+// Determine if device is running Android 12 or higher
+const isAndroid12OrHigher = Platform.OS === 'android' && Platform.Version >= 31
+
+// Older devices require different permissions for BLE transfers
+const PERMISSIONS = (
+  isAndroid12OrHigher
+    ? [
+        'android.permission.BLUETOOTH_CONNECT',
+        'android.permission.BLUETOOTH_SCAN',
+        'android.permission.BLUETOOTH_ADVERTISE',
+      ]
+    : ['android.permission.ACCESS_FINE_LOCATION', 'android.permission.ACCESS_COARSE_LOCATION']
+) as Permission[]
 
 export const requestMdocPermissions = async () => {
   if (Platform.OS !== 'android') return

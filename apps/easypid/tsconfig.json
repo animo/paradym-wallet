@@ -1,11 +1,5 @@
 {
 	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"rootDir": "./",
-		"paths": {
-			"@easypid/*": ["./apps/easypid/src/*"]
-		}
-	},
 	"include": [
 		"./src/**/*.ts",
 		"./src/**/*.tsx",

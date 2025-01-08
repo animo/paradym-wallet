@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useScrollViewPosition } from '@package/app/src/hooks'
+import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
 import { Button, FlexPage, Heading, HeroIcons, ScrollView, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
 
 import { usePidCredential } from '@easypid/hooks'
@@ -61,7 +61,6 @@ export function FunkeMenuScreen() {
         icon: HeroIcons.IdentificationFilled,
         title: 'Setup digital ID',
       }}
-      onPress={onResetWallet}
       idx={0}
     />
   )
@@ -69,11 +68,9 @@ export function FunkeMenuScreen() {
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack gap="$4" p="$4">
-          <Stack h="$1" />
-          <Heading variant="h1" fontWeight="$bold">
-            Menu
-          </Heading>
+        <YStack p="$4" gap="$2">
+          <Stack h="$2" />
+          <Heading variant="h1">Menu</Heading>
         </YStack>
       </YStack>
       <ScrollView
@@ -112,6 +109,7 @@ export function FunkeMenuScreen() {
 
 const MenuItem = ({ item, idx, onPress }: { item: (typeof menuItems)[number]; idx: number; onPress?: () => void }) => {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
+  const { withHaptics } = useHaptics()
 
   const content = (
     <XStack
@@ -148,7 +146,7 @@ const MenuItem = ({ item, idx, onPress }: { item: (typeof menuItems)[number]; id
       <Stack
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        onPress={() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Funke EUDI Wallet')}
+        onPress={withHaptics(() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Funke EUDI Wallet'))}
         asChild
       >
         {content}
@@ -158,14 +156,20 @@ const MenuItem = ({ item, idx, onPress }: { item: (typeof menuItems)[number]; id
 
   if (item.href === '/') {
     return (
-      <Stack onPressIn={handlePressIn} onPressOut={handlePressOut} onPress={onPress}>
+      <Stack onPressIn={handlePressIn} onPressOut={handlePressOut} onPress={withHaptics(() => onPress)}>
         {content}
       </Stack>
     )
   }
 
   return (
-    <Link onPressIn={handlePressIn} onPressOut={handlePressOut} href={item.href} asChild>
+    <Link
+      onPress={withHaptics(() => undefined)}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      href={item.href}
+      asChild
+    >
       {content}
     </Link>
   )

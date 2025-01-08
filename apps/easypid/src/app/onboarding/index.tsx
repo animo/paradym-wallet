@@ -1,5 +1,6 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
-import { FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
+import { useHaptics } from '@package/app'
+import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack } from '@package/ui'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { AccessibilityInfo, Alert } from 'react-native'
@@ -7,6 +8,7 @@ import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
 
 export default function OnboardingScreens() {
+  const { withHaptics } = useHaptics()
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const onboardingContext = useOnboardingContext()
   const headerRef = useRef(null)
@@ -21,7 +23,7 @@ export default function OnboardingScreens() {
     }
   }, [onboardingContext.currentStep])
 
-  const onReset = () => {
+  const onReset = withHaptics(() => {
     Alert.alert('Reset Onboarding', 'Are you sure you want to reset the onboarding process?', [
       {
         text: 'Cancel',
@@ -29,12 +31,12 @@ export default function OnboardingScreens() {
       },
       {
         text: 'Yes',
-        onPress: () => {
+        onPress: withHaptics(() => {
           onboardingContext.reset()
-        },
+        }),
       },
     ])
-  }
+  })
 
   if (hasFinishedOnboarding) return null
 
@@ -43,10 +45,10 @@ export default function OnboardingScreens() {
     page = onboardingContext.screen
   } else {
     page = (
-      <FlexPage gap="$2" jc="space-between">
-        <Animated.View entering={FadeIn.delay(300)}>
+      <FlexPage gap="$2" jc="space-between" bg="$background">
+        <AnimatedStack entering={FadeIn.delay(300)}>
           <ProgressHeader enterAnimation progress={onboardingContext.progress} onBack={onReset} />
-        </Animated.View>
+        </AnimatedStack>
 
         <Animated.View
           key={onboardingContext.page.animationKey ?? onboardingContext.currentStep}
@@ -62,11 +64,6 @@ export default function OnboardingScreens() {
                 </Heading>
               )}
               {onboardingContext.page.subtitle && <Paragraph>{onboardingContext.page.subtitle}</Paragraph>}
-              {onboardingContext.page.caption && (
-                <Paragraph>
-                  <Paragraph emphasis>Remember:</Paragraph> {onboardingContext.page.caption}
-                </Paragraph>
-              )}
             </YStack>
             {onboardingContext.screen}
           </YStack>
