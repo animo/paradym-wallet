@@ -61,7 +61,6 @@ export function FunkeMenuScreen() {
         icon: HeroIcons.IdentificationFilled,
         title: 'Setup digital ID',
       }}
-      onPress={onResetWallet}
       idx={0}
     />
   )

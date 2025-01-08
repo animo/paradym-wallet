@@ -4,7 +4,6 @@ import { OnboardingIdCardFetch } from '@easypid/features/onboarding/screens/id-c
 import { OnboardingIdCardPinEnter } from '@easypid/features/onboarding/screens/id-card-pin'
 import { OnboardingIdCardRequestedAttributes } from '@easypid/features/onboarding/screens/id-card-requested-attributes'
 import { OnboardingIdCardScan } from '@easypid/features/onboarding/screens/id-card-scan'
-import { OnboardingIdCardStart } from '@easypid/features/onboarding/screens/id-card-start'
 import { OnboardingIdCardVerify } from '@easypid/features/onboarding/screens/id-card-verify'
 
 export const SIMULATOR_PIN = '276536'
@@ -140,7 +139,6 @@ export type OnboardingPage =
       title: string
       animation?: 'default' | 'delayed'
       subtitle?: string
-      caption?: string
       animationKey?: string
     }
 

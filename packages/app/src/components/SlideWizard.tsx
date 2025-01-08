@@ -1,11 +1,11 @@
 import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack } from '@package/ui'
-import * as Haptics from 'expo-haptics'
 import type React from 'react'
 import { type ForwardedRef, forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
 import { Keyboard, type ScrollView } from 'react-native'
 import { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ConfirmationSheet } from '../components/ConfirmationSheet'
+import { useHaptics } from '../hooks/useHaptics'
 import { useScrollViewPosition } from '../hooks/useScrollViewPosition'
 import { WizardProvider } from './WizardContext'
 
@@ -41,6 +41,7 @@ export const SlideWizard = forwardRef(
     const opacity = useSharedValue(1)
     const translateX = useSharedValue(0)
     const scrollViewRef = useRef<ScrollView>(null)
+    const { withHaptics } = useHaptics()
 
     const [currentStepIndex, setCurrentStepIndex] = useState(0)
     const [isCompleted, setIsCompleted] = useState(false)
@@ -102,39 +103,43 @@ export const SlideWizard = forwardRef(
       [opacity, translateX, updateStep, scrollToTop]
     )
 
-    const handleCancel = useCallback(() => {
-      Keyboard.dismiss()
-      setIsSheetOpen(true)
-    }, [])
+    const handleCancel = withHaptics(
+      useCallback(() => {
+        Keyboard.dismiss()
+        setIsSheetOpen(true)
+      }, [])
+    )
 
-    const onConfirmCancel = () => {
+    const onConfirmCancel = withHaptics(() => {
       setIsSheetOpen(false)
       onCancel()
-    }
+    })
 
-    const onBack = useCallback(() => {
-      if (isNavigating) return
-      if (isCompleted || isError || currentStepIndex === 0 || steps[currentStepIndex].backIsCancel) {
-        handleCancel()
-      } else {
-        setIsNavigating(true)
-        direction.value = 'backward'
-        animateTransition(false)
-        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-      }
-    }, [currentStepIndex, animateTransition, direction, handleCancel, steps, isCompleted, isNavigating, isError])
-
-    const onNext = useCallback(
-      (slide?: string) => {
+    const onBack = withHaptics(
+      useCallback(() => {
         if (isNavigating) return
-        if (currentStepIndex < steps.length - 1) {
+        if (isCompleted || isError || currentStepIndex === 0 || steps[currentStepIndex].backIsCancel) {
+          handleCancel()
+        } else {
           setIsNavigating(true)
-          direction.value = 'forward'
-          animateTransition(true, slide)
-          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+          direction.value = 'backward'
+          animateTransition(false)
         }
-      },
-      [currentStepIndex, steps.length, animateTransition, direction, isNavigating]
+      }, [currentStepIndex, animateTransition, direction, handleCancel, steps, isCompleted, isNavigating, isError])
+    )
+
+    const onNext = withHaptics(
+      useCallback(
+        (slide?: string) => {
+          if (isNavigating) return
+          if (currentStepIndex < steps.length - 1) {
+            setIsNavigating(true)
+            direction.value = 'forward'
+            animateTransition(true, slide)
+          }
+        },
+        [currentStepIndex, steps.length, animateTransition, direction, isNavigating]
+      )
     )
 
     useImperativeHandle(
@@ -146,10 +151,11 @@ export const SlideWizard = forwardRef(
       [onNext]
     )
 
-    const completeProgressBar = useCallback(() => {
-      setIsCompleted(true)
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-    }, [])
+    const completeProgressBar = withHaptics(
+      useCallback(() => {
+        setIsCompleted(true)
+      }, [])
+    )
 
     const contextValue = { onNext, onBack, onCancel: handleCancel, completeProgressBar }
     const Screen = isError && errorScreen ? errorScreen : steps[currentStepIndex].screen
