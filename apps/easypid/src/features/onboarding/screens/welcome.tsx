@@ -27,7 +27,6 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             <IconContainer
               aria-label="Info"
               icon={<HeroIcons.QuestionMarkCircle />}
-              p="$2"
               onPress={() => {
                 Alert.alert(
                   'This is the EasyPID wallet',
@@ -38,7 +37,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </YStack>
           <Stack h="$11" />
           <YStack gap="$4" jc="center" ai="center">
-            <Heading fontSize={32}>Animo EasyPID</Heading>
+            <Heading fontSize={32}>Paradym Wallet</Heading>
             <Paragraph px="$2" ta="center">
               This is your digital wallet. With it, you can store and share information about yourself.
             </Paragraph>
