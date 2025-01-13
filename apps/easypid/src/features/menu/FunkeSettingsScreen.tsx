@@ -1,4 +1,4 @@
-import { FlexPage, HeroIcons, ScrollView, Switch, YStack } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, ScrollView, Stack, Switch, YStack } from '@package/ui'
 import React from 'react'
 
 import { TextBackButton } from 'packages/app/src'
