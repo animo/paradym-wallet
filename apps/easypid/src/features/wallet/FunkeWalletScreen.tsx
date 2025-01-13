@@ -52,7 +52,7 @@ export function FunkeWalletScreen() {
       </YStack>
 
       <FlexPage safeArea="y" fg={1} flex-1={false} bg="transparent">
-        <XStack>
+        <XStack pt="$2">
           <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
         </XStack>
 
