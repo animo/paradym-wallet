@@ -148,7 +148,7 @@ const MenuItem = ({ item, idx, onPress }: { item: (typeof menuItems)[number]; id
       <Stack
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        onPress={withHaptics(() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Funke EUDI Wallet'))}
+        onPress={withHaptics(() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Wallet'))}
         asChild
       >
         {content}

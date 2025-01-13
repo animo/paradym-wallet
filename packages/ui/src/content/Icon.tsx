@@ -74,6 +74,7 @@ import {
   HandRaisedIcon as HandRaisedFilledIcon,
   IdentificationIcon as IdentificationFilledIcon,
   InformationCircleIcon as InformationCircleFilledIcon,
+  LockClosedIcon as LockClosedFilledIcon,
   QueueListIcon as QueueListFilledIcon,
   ShieldCheckIcon as ShieldCheckFilledIcon,
   TrashIcon as TrashFilledIcon,
@@ -180,6 +181,7 @@ export const HeroIcons = {
   Cloud: wrapHeroIcon(CloudIcon),
   CpuChipFilled: wrapHeroIcon(CpuChipFilledIcon),
   CommandLineFilled: wrapHeroIcon(CommandLineIcon),
+  LockClosedFilled: wrapHeroIcon(LockClosedFilledIcon),
 } as const
 
 export const CustomIcons = {
