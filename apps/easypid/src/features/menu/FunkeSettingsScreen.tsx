@@ -4,14 +4,12 @@ import React from 'react'
 import { TextBackButton } from 'packages/app/src'
 import { LocalAiContainer } from './components/LocalAiContainer'
 
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 
 export function FunkeSettingsScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
-  const isOverAskingAiEnabled = useFeatureFlag('AI_ANALYSIS')
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -30,7 +28,7 @@ export function FunkeSettingsScreen() {
               value={isDevelopmentModeEnabled ?? false}
               onChange={setIsDevelopmentModeEnabled}
             />
-            {isOverAskingAiEnabled && <LocalAiContainer />}
+            <LocalAiContainer />
           </YStack>
           <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
             <TextBackButton />
