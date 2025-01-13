@@ -48,7 +48,9 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       resolved.resolvedCredentialOffer
     )
     // We handle the error differently
-    authFlow.startAuthFlow().catch(() => {})
+    authFlow.startAuthFlow().catch((e) => {
+      console.error('Error starting auth flow', e)
+    })
     const accessRights = await authFlow.accessRights
     authFlow.options.onStateChange?.('id-card-auth')
     return { authFlow, accessRights }

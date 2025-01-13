@@ -1,5 +1,5 @@
 <div align="center">
-   <img src="assets/icon-rounded.png" alt="EasyPID Logo" height="176px" />
+   <img src="assets/icon.png" alt="EasyPID Logo" height="176px" style="border-radius: 15%;" />
 </div>
 
 <h1 align="center"><b>Animo EasyPID</b></h1>

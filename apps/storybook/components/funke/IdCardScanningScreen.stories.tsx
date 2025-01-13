@@ -2,9 +2,6 @@ import { Button, Page, Stack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 
-// TODO: src import?
-import { IdCardImage } from '@package/ui/src/images/IdCardImage'
-
 import { ProgressHeader } from '@package/ui/src/components/ProgressHeader'
 import { YStack } from 'tamagui'
 
@@ -14,9 +11,7 @@ const IdCardScanningScreen = ({ isScanning }: { isScanning: boolean }) => {
   return (
     <Page flex-1 gap="$6">
       <ProgressHeader flex={1} progress={66} />
-      <Stack flex={2}>
-        <IdCardImage height="100%" />
-      </Stack>
+      <Stack flex={2} />
       <YStack flex={1} justifyContent="flex-end">
         {/* TODO: grey-700 vs secondary */}
         {!isScanning && <Button.Solid>Start scanning</Button.Solid>}

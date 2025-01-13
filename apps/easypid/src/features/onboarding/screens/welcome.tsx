@@ -1,9 +1,20 @@
-import { Button, FlexPage, Heading, HeroIcons, IconContainer, Paragraph, Stack, XStack, YStack } from '@package/ui'
-import { Image } from '@tamagui/image'
+import {
+  Blob,
+  Button,
+  FlexPage,
+  Heading,
+  HeroIcons,
+  IconContainer,
+  Image,
+  Paragraph,
+  Stack,
+  XStack,
+  YStack,
+} from '@package/ui'
 import type React from 'react'
-import { Alert, Dimensions } from 'react-native'
+import { Alert } from 'react-native'
 
-import welcomeBackground from '../../../../assets/home-bg.png'
+import appIcon from '../../../../assets/icon.png'
 
 export interface OnboardingWelcomeProps {
   goToNextStep: () => void
@@ -12,15 +23,21 @@ export interface OnboardingWelcomeProps {
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
   return (
     <YStack fg={1} pos="relative">
-      <Image
-        pos="absolute"
-        source={welcomeBackground}
-        resizeMode="cover"
-        h={Dimensions.get('window').height / 1.8}
-        mt="$-4"
-        w="100%"
-        top={0}
-      />
+      <YStack pos="absolute" h="50%" w="100%">
+        <Blob />
+        <YStack
+          transform={[{ translateX: -48 }]} // Half of the image width (96/2)
+          pos="absolute"
+          br="$6"
+          top="40%"
+          left="50%"
+          ov="hidden"
+          ai="center"
+          jc="center"
+        >
+          <Image height={96} width={96} src={appIcon} />
+        </YStack>
+      </YStack>
       <FlexPage safeArea="y" p={0} fg={1} jc="space-between" backgroundColor="$transparent">
         <YStack px="$4" gap="$4" flex-1 justifyContent="space-between">
           <YStack ai="flex-end">

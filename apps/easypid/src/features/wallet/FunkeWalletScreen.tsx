@@ -1,5 +1,6 @@
 import {
   AnimatedStack,
+  Blob,
   Button,
   CustomIcons,
   FlexPage,
@@ -20,7 +21,6 @@ import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useHaptics } from '@package/app/src/hooks'
 import { Platform } from 'react-native'
 import { FadeIn } from 'react-native-reanimated'
-import { Blob } from '../../../assets/Blob'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
 import { LatestActivityCard } from './components/LatestActivityCard'
