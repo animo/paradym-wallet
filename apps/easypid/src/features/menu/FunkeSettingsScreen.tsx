@@ -15,11 +15,18 @@ export function FunkeSettingsScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <HeaderContainer title="Settings" isScrolledByOffset={isScrolledByOffset} />
+      <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
+        <YStack p="$4" gap="$2">
+          <Stack h="$2" />
+          <Heading variant="h1" fontWeight="$bold">
+            Settings
+          </Heading>
+        </YStack>
+      </YStack>
       <ScrollView
         onScroll={handleScroll}
         scrollEventThrottle={scrollEventThrottle}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ minHeight: '85%' }}
       >
         <YStack fg={1} px="$4" jc="space-between">
           <YStack gap="$4" py="$2">
