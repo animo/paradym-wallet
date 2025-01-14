@@ -1,5 +1,3 @@
-import type { AppType } from './appType'
-
 export const APP_CONFIGS = {
   FUNKE_WALLET: {
     EID_CARD: true,
@@ -9,11 +7,11 @@ export const APP_CONFIGS = {
     EID_CARD: false,
     AI_ANALYSIS: false,
   },
-} satisfies Record<AppType, Record<FeatureKey, boolean>>
+} satisfies Record<string, Features>
 
-export const FEATURES = {
-  EID_CARD: 'eid_card',
-  AI_ANALYSIS: 'ai_analysis',
+export interface Features {
+  EID_CARD: boolean
+  AI_ANALYSIS: boolean
 }
 
-export type FeatureKey = keyof typeof FEATURES
+export type FeatureKey = keyof Features

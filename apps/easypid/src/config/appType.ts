@@ -1,7 +1,7 @@
 import { APP_CONFIGS } from './features'
 
-export const appTypes = ['FUNKE_WALLET', 'PARADYM_WALLET'] as const
-export type AppType = (typeof appTypes)[number]
+export type AppType = keyof typeof APP_CONFIGS
+export const appTypes = Object.keys(APP_CONFIGS)
 
 const getAppType = (): AppType => {
   let appType = process.env.EXPO_PUBLIC_APP_TYPE as AppType
