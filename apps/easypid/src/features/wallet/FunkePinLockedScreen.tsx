@@ -1,6 +1,6 @@
 import { useSecureUnlock } from '@easypid/agent'
 import { resetWallet } from '@easypid/utils/resetWallet'
-import { Button, FlexPage, Heading, HeroIcons, IllustrationContainer, Paragraph, YStack } from '@package/ui'
+import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
 
@@ -32,9 +32,6 @@ export const FunkePinLockedScreen = () => {
             You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.
           </Paragraph>
         </YStack>
-        <IllustrationContainer pulse={true} variant="danger">
-          <HeroIcons.X color="$grey-100" size={72} />
-        </IllustrationContainer>
       </YStack>
       <Button.Solid onPress={onResetWallet}>Reset Wallet</Button.Solid>
     </FlexPage>

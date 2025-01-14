@@ -1,4 +1,4 @@
-import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack, useMedia } from '@package/ui'
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 
@@ -16,6 +16,7 @@ const pinLength = 6
 export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: OnboardingIdCardPinEnterProps, ref) => {
   const [pin, setPin] = useState('')
   const inputRef = useRef<TextInput>(null)
+  const media = useMedia()
   const { withHaptics } = useHaptics()
 
   // Make the pin pad fixed to the bottom of the screen on smaller devices
@@ -67,7 +68,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
   return (
     <YStack fg={1} jc="space-between" mb={shouldStickToBottom ? -16 : undefined}>
       {/* Overflow issue only present on smaller devices, so set to max height */}
-      <ScrollView flex={1} maxHeight={shouldStickToBottom ? 150 : undefined}>
+      <ScrollView flex={1} maxHeight={media.short ? 150 : undefined}>
         <Stack jc="center">
           <IdCard
             backgroundImage={pidBackgroundImage}

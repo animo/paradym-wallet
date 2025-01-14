@@ -11,6 +11,7 @@ import {
   Stack,
   XStack,
   YStack,
+  useMedia,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
@@ -40,6 +41,7 @@ export const VerifyPartySlide = ({
   trustedEntities,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
+  const media = useMedia()
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
@@ -69,7 +71,7 @@ export const VerifyPartySlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <ScrollView contentContainerStyle={{ gap: '$6' }}>
+      <ScrollView contentContainerStyle={{ gap: media.short ? '$4' : '$6' }}>
         <YStack gap="$4">
           <XStack ai="center" pt="$4" jc="center">
             <Circle size={88} bw="$0.5" borderColor="$grey-100" bg={backgroundColor ?? '$white'}>

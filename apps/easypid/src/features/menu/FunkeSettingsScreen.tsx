@@ -1,4 +1,4 @@
-import { FlexPage, Heading, HeroIcons, ScrollView, Stack, Switch, YStack } from '@package/ui'
+import { FlexPage, HeaderContainer, HeroIcons, ScrollView, Switch, YStack } from '@package/ui'
 import React from 'react'
 
 import { TextBackButton } from 'packages/app/src'
@@ -15,18 +15,11 @@ export function FunkeSettingsScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack p="$4" gap="$2">
-          <Stack h="$2" />
-          <Heading variant="h1" fontWeight="$bold">
-            Settings
-          </Heading>
-        </YStack>
-      </YStack>
+      <HeaderContainer title="Settings" isScrolledByOffset={isScrolledByOffset} />
       <ScrollView
         onScroll={handleScroll}
         scrollEventThrottle={scrollEventThrottle}
-        contentContainerStyle={{ minHeight: '85%' }}
+        contentContainerStyle={{ flexGrow: 1 }}
       >
         <YStack fg={1} px="$4" jc="space-between">
           <YStack gap="$4" py="$2">

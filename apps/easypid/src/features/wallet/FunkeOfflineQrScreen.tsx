@@ -18,7 +18,8 @@ import { useEffect, useState } from 'react'
 import { Alert, Linking, useWindowDimensions } from 'react-native'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
-import easypidLogo from '../../../assets/icon-rounded.png'
+import easypidLogo from '../../../assets/icon.png'
+
 import {
   checkMdocPermissions,
   getMdocQrCode,

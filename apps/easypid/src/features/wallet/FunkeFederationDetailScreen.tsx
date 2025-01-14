@@ -2,6 +2,7 @@ import type { TrustedEntity } from '@package/agent'
 import {
   Circle,
   FlexPage,
+  HeaderContainer,
   Heading,
   HeroIcons,
   IconContainer,
@@ -36,16 +37,9 @@ export function FunkeFederationDetailScreen({
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack
-        w="100%"
-        top={0}
-        p="$4"
-        borderBottomWidth="$0.5"
-        borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
-      />
+      <HeaderContainer title="About this party" isScrolledByOffset={isScrolledByOffset} />
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack p="$4" gap="$2" marginBottom={bottom}>
-          <Heading variant="h1">About this party</Heading>
+        <YStack px="$4" gap="$2" marginBottom={bottom}>
           <MessageBox
             variant="light"
             message="Always consider whether sharing with a party is wise."

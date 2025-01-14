@@ -2,6 +2,7 @@ import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
 import {
   AnimatedStack,
   FlexPage,
+  HeaderContainer,
   Heading,
   HeroIcons,
   IconContainer,
@@ -40,12 +41,7 @@ export function FunkeCredentialsScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack p="$4" gap="$2">
-          <Stack h="$2" />
-          <Heading variant="h1">Cards</Heading>
-        </YStack>
-      </YStack>
+      <HeaderContainer title="Cards" isScrolledByOffset={isScrolledByOffset} />
       {credentials.length === 0 ? (
         <AnimatedStack
           flexDirection="column"
@@ -58,7 +54,9 @@ export function FunkeCredentialsScreen() {
           <Heading ta="center" variant="h3" fontWeight="$semiBold">
             There's nothing here, yet
           </Heading>
-          <Paragraph ta="center">Credentials will appear here once you receive them.</Paragraph>
+          <Paragraph ta="center" px="$2">
+            Credentials will appear here once you receive them.
+          </Paragraph>
         </AnimatedStack>
       ) : isLoadingCredentials ? (
         <YStack fg={1} ai="center" jc="center">
