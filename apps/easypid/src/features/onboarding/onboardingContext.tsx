@@ -2,6 +2,7 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -14,7 +15,6 @@ import {
   type OnboardingPage,
   type OnboardingStep,
   SIMULATOR_PIN,
-  pidSetupSteps,
 } from '@easypid/utils/sharedPidSetup'
 import {
   BiometricAuthenticationCancelledError,
@@ -34,98 +34,8 @@ import { Linking, Platform } from 'react-native'
 import type { PidSdJwtVcAttributes } from '../../hooks'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
-import { OnboardingBiometrics } from './screens/biometrics'
-import { OnboardingIntroductionSteps } from './screens/introduction-steps'
-import OnboardingPinEnter from './screens/pin'
-import { OnboardingWalletExplanation } from './screens/wallet-explanation'
-import OnboardingWelcome from './screens/welcome'
+import { onboardingSteps } from './steps'
 import { useShouldUseCloudHsm } from './useShouldUseCloudHsm'
-
-export const onboardingSteps = [
-  {
-    step: 'welcome',
-    alternativeFlow: false,
-    progress: 0,
-    page: {
-      type: 'fullscreen',
-    },
-    Screen: OnboardingWelcome,
-  },
-  {
-    step: 'wallet-explanation',
-    alternativeFlow: false,
-    progress: 0.1,
-    page: {
-      animation: 'delayed',
-      type: 'content',
-      title: '',
-    },
-    Screen: OnboardingWalletExplanation,
-  },
-
-  {
-    step: 'introduction-steps',
-    alternativeFlow: false,
-    progress: 20,
-    page: {
-      animation: 'delayed',
-      type: 'content',
-      title: 'Set up your wallet',
-      subtitle: 'Before you can use the app, we will guide you through these steps.',
-    },
-    Screen: OnboardingIntroductionSteps,
-  },
-
-  {
-    step: 'pin',
-    alternativeFlow: false,
-    progress: 30,
-    page: {
-      type: 'content',
-      title: 'Choose a 6-digit PIN',
-      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
-      animationKey: 'pin',
-    },
-    Screen: OnboardingPinEnter,
-  },
-  {
-    step: 'pin-reenter',
-    alternativeFlow: false,
-    progress: 30,
-    page: {
-      type: 'content',
-      title: 'Repeat your PIN',
-      subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
-      animationKey: 'pin',
-    },
-    Screen: OnboardingPinEnter,
-  },
-  {
-    step: 'biometrics',
-    alternativeFlow: false,
-    progress: 40,
-    page: {
-      type: 'content',
-      title: 'Set up biometrics',
-      subtitle:
-        'Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.',
-    },
-    Screen: OnboardingBiometrics,
-  },
-  {
-    step: 'biometrics-disabled',
-    progress: 40,
-    alternativeFlow: true,
-    page: {
-      type: 'content',
-      title: 'You need to enable biometrics',
-      subtitle:
-        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
-    },
-    Screen: OnboardingBiometrics,
-  },
-  ...pidSetupSteps,
-] as const satisfies Array<OnboardingStep>
 
 export type OnboardingContext = {
   currentStep: OnboardingStep['step']
@@ -166,6 +76,7 @@ export function OnboardingContextProvider({
     showScanModal: true,
   })
   const [eidCardRequestedAccessRights, setEidCardRequestedAccessRights] = useState<string[]>()
+  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
@@ -236,7 +147,7 @@ export function OnboardingContextProvider({
     // Allows bypassing the eID card and use a simulator card
     const isSimulatorPinCode = pin === SIMULATOR_PIN
 
-    if (isSimulatorPinCode) {
+    if (isSimulatorPinCode && hasEidCardFeatureFlag) {
       toast.show('Simulator eID card activated', {
         customData: {
           preset: 'success',
@@ -677,7 +588,7 @@ export function OnboardingContextProvider({
   } else if (currentStep.step === 'biometrics') {
     screen = <currentStep.Screen goToNextStep={onEnableBiometrics} actionText="Activate Biometrics" />
   } else if (currentStep.step === 'biometrics-disabled') {
-    screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Go to settings" />
+    screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Open settings" />
   } else if (currentStep.step === 'data-protection') {
     screen = <currentStep.Screen goToNextStep={onIdCardStart} />
   } else if (currentStep.step === 'id-card-requested-attributes') {

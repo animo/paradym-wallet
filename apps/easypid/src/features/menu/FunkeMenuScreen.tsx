@@ -15,6 +15,7 @@ import {
 } from '@package/ui'
 
 import { usePidCredential } from '@easypid/hooks'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { TextBackButton } from '@package/app'
 import { Link } from 'expo-router'
@@ -53,28 +54,31 @@ export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
   const { credential } = usePidCredential()
+  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
-  const idItem = credential ? (
-    <MenuItem
-      key="id"
-      item={{
-        href: `credentials/${credential.id}`,
-        icon: HeroIcons.IdentificationFilled,
-        title: 'Your digital ID',
-      }}
-      idx={0}
-    />
-  ) : (
-    <MenuItem
-      key="id"
-      item={{
-        href: '/pidSetup',
-        icon: HeroIcons.IdentificationFilled,
-        title: 'Setup digital ID',
-      }}
-      idx={0}
-    />
-  )
+  const idItem = hasEidCardFeatureFlag ? (
+    credential ? (
+      <MenuItem
+        key="id"
+        item={{
+          href: `credentials/${credential.id}`,
+          icon: HeroIcons.IdentificationFilled,
+          title: 'Your digital ID',
+        }}
+        idx={0}
+      />
+    ) : (
+      <MenuItem
+        key="id"
+        item={{
+          href: '/pidSetup',
+          icon: HeroIcons.IdentificationFilled,
+          title: 'Setup digital ID',
+        }}
+        idx={0}
+      />
+    )
+  ) : null
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">

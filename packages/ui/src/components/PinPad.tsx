@@ -108,6 +108,7 @@ export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled, biometric
       // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
       key={rowIndex}
       borderTopWidth="$0.5"
+      borderBottomWidth={rowIndex === pinValues.length - 1 ? '$0.5' : 0}
       bc="$grey-200"
       borderColor="$grey-200"
       w="100%"
