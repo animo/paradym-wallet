@@ -4,22 +4,14 @@ import React from 'react'
 import { TextBackButton } from 'packages/app'
 import { Linking } from 'react-native'
 
-import { useIsFunkeWallet } from '@easypid/hooks/useFeatureFlag'
+import { useAppCopy } from '@easypid/config/copy'
 import pj from '../../../package.json'
 
-const TEXT_FUNKE = `This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It
-            serves as a prototype for future wallet providers. All code is available under Apache 2.0.`
-
-const TEXT_PARADYM =
-  'This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.'
-
 export function FunkeAboutScreen() {
-  const isFunkeWallet = useIsFunkeWallet()
+  const { about } = useAppCopy()
 
   const openContact = () => {
-    Linking.openURL(
-      `mailto:ana@animo.id?subject=Reach out from ${isFunkeWallet ? 'Funke EUDI Wallet' : 'Paradym Wallet'}`
-    )
+    Linking.openURL(`mailto:ana@animo.id?subject=${about.emailHeader}`)
   }
 
   const openPrivacyPolicy = () => {
@@ -31,7 +23,7 @@ export function FunkeAboutScreen() {
       <HeaderContainer title="About the wallet" />
       <YStack fg={1} px="$4" gap="$4">
         <YStack gap="$2">
-          <Paragraph color="$grey-700">{isFunkeWallet ? TEXT_FUNKE : TEXT_PARADYM}</Paragraph>
+          <Paragraph color="$grey-700">{about.description}</Paragraph>
           <Paragraph>
             For more information, reach out to{' '}
             <Paragraph fontWeight="$semiBold" color="$primary-500" onPress={openContact}>
