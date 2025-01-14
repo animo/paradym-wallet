@@ -1,9 +1,8 @@
 import {
   AnimatedStack,
   FlexPage,
-  Heading,
+  HeaderContainer,
   HeroIcons,
-  MessageBox,
   OptionSheet,
   ScrollView,
   type ScrollViewRefType,
@@ -73,16 +72,9 @@ export function FunkeCredentialDetailAttributesScreen({
   return (
     <>
       <FlexPage gap="$0" paddingHorizontal="$0">
-        <YStack
-          w="100%"
-          top={0}
-          p="$4"
-          borderBottomWidth="$0.5"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
-        />
+        <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Card attributes" />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack p="$4" gap="$2" marginBottom={bottom}>
-            <Heading variant="h1">Card attributes</Heading>
+          <YStack px="$4" gap="$2" marginBottom={bottom}>
             <CredentialAttributes
               headerStyle="small"
               borderStyle="large"

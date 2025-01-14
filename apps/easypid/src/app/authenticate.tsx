@@ -4,12 +4,11 @@ import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import { FlexPage, Heading, HeroIcons, YStack, useToastController } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useToastController } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { PinDotsInput, type PinDotsInputRef } from 'packages/app/src'
 import { useEffect, useRef, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Circle } from 'tamagui'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
 
 /**
@@ -108,9 +107,7 @@ export default function Authenticate() {
     <FlexPage flex-1 safeArea="y" alignItems="center">
       <YStack fg={1} gap="$6" mb={shouldStickToBottom ? -16 : undefined}>
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
-          <Circle size="$4" backgroundColor="$grey-100">
-            <HeroIcons.LockClosed strokeWidth={2} color="$grey-700" />
-          </Circle>
+          <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
           <Heading variant="h2" fontWeight="$semiBold">
             Enter your app PIN code
           </Heading>

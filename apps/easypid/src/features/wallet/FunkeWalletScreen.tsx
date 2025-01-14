@@ -1,5 +1,6 @@
 import {
   AnimatedStack,
+  Blob,
   Button,
   CustomIcons,
   FlexPage,
@@ -20,7 +21,6 @@ import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useHaptics } from '@package/app/src/hooks'
 import { Platform } from 'react-native'
 import { FadeIn } from 'react-native-reanimated'
-import { Blob } from '../../../assets/Blob'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
 import { LatestActivityCard } from './components/LatestActivityCard'
@@ -52,19 +52,21 @@ export function FunkeWalletScreen() {
       </YStack>
 
       <FlexPage safeArea="y" fg={1} flex-1={false} bg="transparent">
-        <XStack>
+        <XStack pt="$2">
           <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
         </XStack>
 
         <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>
-          <ScrollView contentContainerStyle={{ fg: 1 }}>
+          <ScrollView scrollEnabled={false} contentContainerStyle={{ fg: 1 }}>
             <YStack fg={1} f={1} gap="$4">
               <YStack ai="center" jc="center" gap="$2">
                 <Heading
                   variant="h1"
-                  fontSize={userName.length < 14 ? 38 : 24}
+                  fontSize={userName.length < 14 ? 38 : 26}
                   lineHeight={userName.length < 14 ? 40 : 32}
                   opacity={isLoading ? 0 : 1}
+                  ta="center"
+                  numberOfLines={2}
                 >
                   {userName ? `Hello, ${userName}!` : 'Hello!'}
                 </Heading>

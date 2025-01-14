@@ -36,7 +36,7 @@ export function FunkeActivityDetailScreen() {
 
   return (
     <FlexPage p={0} gap={0}>
-      <YStack bbw="$0.5" p="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
+      <YStack bbw="$0.5" h="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack gap="$4" marginBottom={bottom}>
           <Stack h="$8" jc="center" ai="center" pos="relative">

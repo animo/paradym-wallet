@@ -1,6 +1,17 @@
 import { ActivityRowItem } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
-import { AnimatedStack, FlexPage, Heading, Loader, Paragraph, ScrollView, Spacer, Stack, YStack } from '@package/ui'
+import {
+  AnimatedStack,
+  FlexPage,
+  HeaderContainer,
+  Heading,
+  Loader,
+  Paragraph,
+  ScrollView,
+  Spacer,
+  Stack,
+  YStack,
+} from '@package/ui'
 import { TextBackButton } from 'packages/app/src'
 import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
@@ -28,12 +39,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack w="100%" top={0} borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'}>
-        <YStack p="$4" gap="$2">
-          <Stack h="$2" />
-          <Heading variant="h1">Activity</Heading>
-        </YStack>
-      </YStack>
+      <HeaderContainer title="Activity" isScrolledByOffset={isScrolledByOffset} />
       {activities.length === 0 ? (
         <AnimatedStack
           flexDirection="column"
@@ -54,11 +60,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
           <Spacer size="$12" />
         </YStack>
       ) : (
-        <ScrollView
-          onScroll={handleScroll}
-          scrollEventThrottle={scrollEventThrottle}
-          contentContainerStyle={{ minHeight: '85%' }}
-        >
+        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack fg={1} px="$4" gap="$4">
             {Object.entries(groupedActivities).map(([key, groupActivities]) => {
               const [year, month] = key.split('-')

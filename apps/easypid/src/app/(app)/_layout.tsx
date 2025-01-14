@@ -137,7 +137,6 @@ export default function AppLayout() {
           <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
           <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
           <Stack.Screen name="menu/index" options={headerNormalOptions} />
-          <Stack.Screen name="menu/feedback" options={headerNormalOptions} />
           <Stack.Screen name="menu/settings" options={headerNormalOptions} />
           <Stack.Screen name="menu/about" options={headerNormalOptions} />
           <Stack.Screen name="activity/index" options={headerNormalOptions} />

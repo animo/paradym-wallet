@@ -1,4 +1,4 @@
-import { FlexPage, Heading, InfoButton, Paragraph, Stack, YStack } from '@package/ui'
+import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
 import React from 'react'
 
 import { TextBackButton } from 'packages/app'
@@ -17,15 +17,7 @@ export function FunkeAboutScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <YStack w="100%" top={0}>
-        <YStack p="$4" gap="$2">
-          <Stack h="$2" />
-          <Heading variant="h1" fontWeight="$bold">
-            About the wallet
-          </Heading>
-        </YStack>
-      </YStack>
-
+      <HeaderContainer title="About the wallet" />
       <YStack fg={1} px="$4" gap="$4">
         <YStack gap="$2">
           <Paragraph color="$grey-700">

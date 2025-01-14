@@ -74,18 +74,18 @@ import {
   HandRaisedIcon as HandRaisedFilledIcon,
   IdentificationIcon as IdentificationFilledIcon,
   InformationCircleIcon as InformationCircleFilledIcon,
+  LockClosedIcon as LockClosedFilledIcon,
   QueueListIcon as QueueListFilledIcon,
   ShieldCheckIcon as ShieldCheckFilledIcon,
   TrashIcon as TrashFilledIcon,
 } from 'react-native-heroicons/solid'
 
-import { ExclamationIcon } from '../../assets/Exclamation'
-import { FaceIdIcon } from '../../assets/FaceId'
-import { PeopleIcon } from '../../assets/People'
-import { QrIcon } from '../../assets/Qr'
-
 import { styled } from 'tamagui'
-import { ConnectIcon } from '../../assets/Connect'
+import { ConnectIcon } from '../assets/Connect'
+import { ExclamationIcon } from '../assets/Exclamation'
+import { FaceIdIcon } from '../assets/FaceId'
+import { PeopleIcon } from '../assets/People'
+import { QrIcon } from '../assets/Qr'
 
 export const LucideIcons = {
   Trash2,
@@ -181,6 +181,7 @@ export const HeroIcons = {
   Cloud: wrapHeroIcon(CloudIcon),
   CpuChipFilled: wrapHeroIcon(CpuChipFilledIcon),
   CommandLineFilled: wrapHeroIcon(CommandLineIcon),
+  LockClosedFilled: wrapHeroIcon(LockClosedFilledIcon),
 } as const
 
 export const CustomIcons = {
