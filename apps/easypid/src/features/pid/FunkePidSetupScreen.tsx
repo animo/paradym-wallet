@@ -3,6 +3,7 @@ import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import type { PidSdJwtVcAttributes } from '@easypid/hooks'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -37,6 +38,7 @@ export function FunkePidSetupScreen() {
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const secureUnlock = useSecureUnlock()
+  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const [idCardPin, setIdCardPin] = useState<string>()
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
@@ -122,6 +124,17 @@ export function FunkePidSetupScreen() {
   useEffect(() => {
     onEnterPinRef.current.onEnterPin = onEnterPin
   }, [onEnterPin])
+
+  useEffect(() => {
+    if (!hasEidCardFeatureFlag) {
+      toast.show('This feature is not supported in this version of the app.', { customData: { preset: 'warning' } })
+      pushToWallet()
+    }
+  }, [hasEidCardFeatureFlag, toast, pushToWallet])
+
+  if (!hasEidCardFeatureFlag) {
+    return null
+  }
 
   const onIdCardStart = async ({
     walletPin,

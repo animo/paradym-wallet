@@ -10,6 +10,7 @@ import {
   Paragraph,
   ScrollView,
   Spacer,
+  Stack,
   XStack,
   YStack,
   useSpringify,
@@ -18,6 +19,7 @@ import {
 import { useRouter } from 'expo-router'
 
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useHaptics } from '@package/app/src/hooks'
 import { Platform } from 'react-native'
 import { FadeIn } from 'react-native-reanimated'
@@ -31,6 +33,7 @@ export function FunkeWalletScreen() {
   const toast = useToastController()
 
   const { userName, isLoading } = useFirstNameFromPidCredential()
+  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
@@ -86,17 +89,22 @@ export function FunkeWalletScreen() {
                   onPress={pushToOffline}
                 />
               </XStack>
-              <XStack ai="center" opacity={isLoading ? 0 : 1}>
-                {userName ? (
-                  <Button.Text scaleOnPress bg="transparent" onPress={pushToAbout}>
-                    How does it work?
-                  </Button.Text>
-                ) : (
-                  <Button.Text scaleOnPress bg="transparent" onPress={pushToPidSetup}>
-                    Setup your ID <HeroIcons.ArrowRight ml="$-2.5" color="$primary-500" size={16} />
-                  </Button.Text>
-                )}
-              </XStack>
+
+              {hasEidCardFeatureFlag ? (
+                <XStack ai="center" opacity={isLoading ? 0 : 1}>
+                  {userName ? (
+                    <Button.Text scaleOnPress bg="transparent" onPress={pushToAbout}>
+                      How does it work?
+                    </Button.Text>
+                  ) : (
+                    <Button.Text scaleOnPress bg="transparent" onPress={pushToPidSetup}>
+                      Setup your ID <HeroIcons.ArrowRight ml="$-2.5" color="$primary-500" size={16} />
+                    </Button.Text>
+                  )}
+                </XStack>
+              ) : (
+                <Stack h="$4" />
+              )}
             </YStack>
             <YStack gap="$4" jc="space-around" fg={1} f={1}>
               <YStack gap="$4">
