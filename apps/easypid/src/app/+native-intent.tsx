@@ -42,7 +42,7 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
       redirectPath = `/(app)/notifications/openIdPresentation?${invitationData.format === 'url' ? 'uri' : 'data'}=${encodeURIComponent(invitationData.format === 'parsed' ? JSON.stringify(invitationData.data) : (invitationData.data as string))}`
     }
     if (invitationData.type === 'didcomm') {
-      redirectPath = `/notifications/didcomm?${invitationData.format === 'url' ? 'invitationUrl' : 'invitation'}=${encodeURIComponent(invitationData.format === 'parsed' ? JSON.stringify(invitationData.data) : (invitationData.data as string))}`
+      redirectPath = `/(app)/notifications/didComm?${invitationData.format === 'url' ? 'invitationUrl' : 'invitation'}=${encodeURIComponent(invitationData.format === 'parsed' ? JSON.stringify(invitationData.data) : (invitationData.data as string))}`
     }
 
     if (redirectPath) {

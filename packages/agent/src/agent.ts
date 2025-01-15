@@ -115,6 +115,68 @@ export const initializeEasyPIDAgent = async ({
         trustedCertificates:
           trustedX509Certificates.length > 0 ? (trustedX509Certificates as [string, ...string[]]) : undefined,
       }),
+      dids: new DidsModule({
+        registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
+        resolvers: [
+          new WebDidResolver(),
+          new KeyDidResolver(),
+          new JwkDidResolver(),
+          // new CheqdDidResolver(),
+          new IndyVdrSovDidResolver(),
+          new IndyVdrIndyDidResolver(),
+        ],
+      }),
+      anoncreds: new AnonCredsModule({
+        registries: [new IndyVdrAnonCredsRegistry() /* new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry() */],
+        anoncreds,
+      }),
+
+      mediationRecipient: new MediationRecipientModule({
+        // We want to manually connect to the mediator, so it doesn't impact wallet startup
+        mediatorPickupStrategy: MediatorPickupStrategy.None,
+      }),
+
+      indyVdr: new IndyVdrModule({
+        indyVdr,
+        networks: indyNetworks,
+      }),
+      connections: new ConnectionsModule({
+        autoAcceptConnections: true,
+      }),
+      // cheqd: new CheqdModule(
+      //   new CheqdModuleConfig({
+      //     networks: [
+      //       {
+      //         network: 'testnet',
+      //       },
+      //       {
+      //         network: 'mainnet',
+      //       },
+      //     ],
+      //   })
+      // ),
+      credentials: new CredentialsModule({
+        autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
+        credentialProtocols: [
+          new V1CredentialProtocol({
+            indyCredentialFormat: new LegacyIndyCredentialFormatService(),
+          }),
+          new V2CredentialProtocol({
+            credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
+          }),
+        ],
+      }),
+      proofs: new ProofsModule({
+        autoAcceptProofs: AutoAcceptProof.ContentApproved,
+        proofProtocols: [
+          new V1ProofProtocol({
+            indyProofFormat: new LegacyIndyProofFormatService(),
+          }),
+          new V2ProofProtocol({
+            proofFormats: [new LegacyIndyProofFormatService(), new AnonCredsProofFormatService()],
+          }),
+        ],
+      }),
     },
   })
 

@@ -38,6 +38,7 @@ interface CredentialRetrievalSlideProps {
   display: CredentialDisplay
   isCompleted: boolean
   onAccept: () => Promise<void>
+  onDecline?: () => void
   onGoToWallet: () => void
 }
 
@@ -46,6 +47,7 @@ export const CredentialRetrievalSlide = ({
   display,
   isCompleted,
   onAccept,
+  onDecline,
   onGoToWallet,
 }: CredentialRetrievalSlideProps) => {
   const { completeProgressBar, onCancel } = useWizard()
@@ -66,6 +68,7 @@ export const CredentialRetrievalSlide = ({
   }
 
   const handleDecline = () => {
+    onDecline?.()
     onCancel()
   }
 
