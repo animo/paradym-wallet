@@ -1,6 +1,7 @@
 import { styled } from 'tamagui'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useDeviceMedia } from '../hooks/useDeviceMedia'
 import { Stack } from './Stacks'
 
 export const Page = styled(Stack, {
@@ -25,19 +26,22 @@ const FlexPageBase = styled(Stack, {
 export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' | 'l' | 'b' | 't' | 'r' }>(
   (props, ref) => {
     const safeAreaInsets = useSafeAreaInsets()
+    const { additionalPadding } = useDeviceMedia()
 
     // Not defined means true, not sure why defaultVariant doesn't work
     const safeArea = props.safeArea ?? true
 
-    // Some devices have no bottom safe area, so we add a default of 16px so the content is not against the edge
+    // Some devices have no bottom safe area, so we add a default padding so the content is not against the edge
     const bottom =
-      safeArea === true || safeArea === 'y' || safeArea === 'b' ? Math.max(safeAreaInsets.bottom, 16) : undefined
+      safeArea === true || safeArea === 'y' || safeArea === 'b'
+        ? Math.max(safeAreaInsets.bottom, additionalPadding)
+        : undefined
 
-    // We add an extra 16px to the top margin to give the header some more space on smaller devices
-    const additionalTop = safeAreaInsets.top <= 24 ? 16 : 0
-
+    // Some devices have little to no top safe area, so we add a default padding so the content is not against the edge
     const top =
-      safeArea === true || safeArea === 'y' || safeArea === 't' ? safeAreaInsets.top + additionalTop : undefined
+      safeArea === true || safeArea === 'y' || safeArea === 't'
+        ? Math.max(safeAreaInsets.top, additionalPadding)
+        : undefined
     const left = safeArea === true || safeArea === 'x' || safeArea === 'l' ? safeAreaInsets.left : undefined
     const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
 
