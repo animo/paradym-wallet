@@ -59,16 +59,10 @@ export const CredentialRetrievalSlide = ({
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
-  const [isStoring, setIsStoring] = useState(false)
+  const [isStoring, setIsStoring] = useState(isAccepting ?? false)
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
   const isStoringOrCompleted = isStoring || isCompleted
   const isAllowedToAccept = attributes && Object.keys(attributes).length > 0
-
-  useEffect(() => {
-    if (isAccepting) {
-      setIsStoring(true)
-    }
-  }, [isAccepting])
 
   const handleAccept = async () => {
     setIsStoring(true)

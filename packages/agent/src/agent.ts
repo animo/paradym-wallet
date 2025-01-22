@@ -122,21 +122,19 @@ export const initializeEasyPIDAgent = async ({
           new WebDidResolver(),
           new KeyDidResolver(),
           new JwkDidResolver(),
-          // new CheqdDidResolver(),
+          new CheqdDidResolver(),
           new IndyVdrSovDidResolver(),
           new IndyVdrIndyDidResolver(),
         ],
       }),
       anoncreds: new AnonCredsModule({
-        registries: [new IndyVdrAnonCredsRegistry(), new DidWebAnonCredsRegistry() /* new CheqdAnonCredsRegistry() */],
+        registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
         anoncreds,
       }),
-
       mediationRecipient: new MediationRecipientModule({
         // We want to manually connect to the mediator, so it doesn't impact wallet startup
         mediatorPickupStrategy: MediatorPickupStrategy.None,
       }),
-
       indyVdr: new IndyVdrModule({
         indyVdr,
         networks: indyNetworks,
@@ -144,18 +142,18 @@ export const initializeEasyPIDAgent = async ({
       connections: new ConnectionsModule({
         autoAcceptConnections: true,
       }),
-      // cheqd: new CheqdModule(
-      //   new CheqdModuleConfig({
-      //     networks: [
-      //       {
-      //         network: 'testnet',
-      //       },
-      //       {
-      //         network: 'mainnet',
-      //       },
-      //     ],
-      //   })
-      // ),
+      cheqd: new CheqdModule(
+        new CheqdModuleConfig({
+          networks: [
+            {
+              network: 'testnet',
+            },
+            {
+              network: 'mainnet',
+            },
+          ],
+        })
+      ),
       credentials: new CredentialsModule({
         autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
         credentialProtocols: [
@@ -293,7 +291,7 @@ export const initializeFullAgent = async ({
   return agent
 }
 
-export type FullAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
+export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
 export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
 export type EitherAgent = FullAppAgent | EasyPIDAppAgent
 

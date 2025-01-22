@@ -53,11 +53,7 @@ async function initiateMessagePickup(agent: FullAppAgent) {
   agent.config.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
-  try {
-    await agent.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.Implicit)
-  } catch (error) {
-    console.log('error', error)
-  }
+  await agent.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.Implicit)
 }
 
 /**

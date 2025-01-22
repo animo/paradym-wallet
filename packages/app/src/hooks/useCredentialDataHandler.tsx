@@ -72,7 +72,6 @@ export const useCredentialDataHandler = () => {
       return { success: true } as const
     }
     if (invitationData.type === 'didcomm') {
-      console.log('didcomm', invitationData)
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       routeMethod(
         {
