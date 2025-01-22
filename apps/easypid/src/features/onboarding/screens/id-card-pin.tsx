@@ -1,9 +1,8 @@
-import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack, useMedia } from '@package/ui'
+import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack, useDeviceMedia } from '@package/ui'
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 
 import { useHaptics } from 'packages/app/src/hooks/useHaptics'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
 import pidBackgroundImage from '../../../../assets/pid-background.png'
 
@@ -16,12 +15,8 @@ const pinLength = 6
 export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: OnboardingIdCardPinEnterProps, ref) => {
   const [pin, setPin] = useState('')
   const inputRef = useRef<TextInput>(null)
-  const media = useMedia()
+  const { media, additionalPadding, noBottomSafeArea } = useDeviceMedia()
   const { withHaptics } = useHaptics()
-
-  // Make the pin pad fixed to the bottom of the screen on smaller devices
-  const { bottom } = useSafeAreaInsets()
-  const shouldStickToBottom = bottom < 16
 
   useImperativeHandle(ref, () => ({
     focus: () => inputRef.current?.focus(),
@@ -66,7 +61,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
   })
 
   return (
-    <YStack fg={1} jc="space-between" mb={shouldStickToBottom ? -16 : undefined}>
+    <YStack fg={1} jc="space-between" mb={noBottomSafeArea ? -additionalPadding : undefined}>
       {/* Overflow issue only present on smaller devices, so set to max height */}
       <ScrollView flex={1} maxHeight={media.short ? 150 : undefined}>
         <Stack jc="center">

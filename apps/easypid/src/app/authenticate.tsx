@@ -4,7 +4,7 @@ import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useToastController } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { PinDotsInput, type PinDotsInputRef } from 'packages/app/src'
 import { useEffect, useRef, useState } from 'react'
@@ -22,6 +22,7 @@ export default function Authenticate() {
   const secureUnlock = useSecureUnlock()
   const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
+  const { additionalPadding, noBottomSafeArea } = useDeviceMedia()
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
   const isLoading =
@@ -34,10 +35,6 @@ export default function Authenticate() {
 
     return () => clearTimeout(timer)
   }, [])
-
-  // Make the pin pad fixed to the bottom of the screen on smaller devices
-  const { bottom } = useSafeAreaInsets()
-  const shouldStickToBottom = bottom < 16
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: canTryUnlockingUsingBiometrics not needed
   useEffect(() => {
@@ -105,7 +102,7 @@ export default function Authenticate() {
 
   return (
     <FlexPage flex-1 safeArea="y" alignItems="center">
-      <YStack fg={1} gap="$6" mb={shouldStickToBottom ? -16 : undefined}>
+      <YStack fg={1} gap="$6" mb={noBottomSafeArea ? -additionalPadding : undefined}>
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
           <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
           <Heading variant="h2" fontWeight="$semiBold">
