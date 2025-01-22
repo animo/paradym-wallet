@@ -1,11 +1,10 @@
 import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { usePushToWallet } from '@package/app/src'
-import { useActivities } from '../activity/activityRecord'
-import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { PresentationRequestResult } from './components/utils'
+import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface DidCommPresentationNotificationScreenProps {
   proofExchangeId: string
@@ -19,12 +18,9 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
 
-  const [selectedCredentials, setSelectedCredentials] = useState<{
-    [inputDescriptorId: string]: string
-  }>({})
-
+  // TODO: Add activity events
   const onProofAccept = async (): Promise<PresentationRequestResult> => {
-    await acceptPresentation(selectedCredentials)
+    await acceptPresentation({})
       .then(() => {
         toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
         return { status: 'success', result: { title: 'Presentation shared.' }, redirectToWallet: false }
@@ -50,16 +46,14 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   }
 
   return (
-    <FunkePresentationNotificationScreen
-      usePin={false}
-      entityId={'NO MATCH'}
-      onAccept={onProofAccept}
-      onDecline={onProofDecline}
-      submission={submission}
-      isAccepting={acceptStatus !== 'idle'}
-      verifierName={verifierName}
-      trustedEntities={[]}
-      onComplete={() => pushToWallet('replace')}
-    />
+    submission && (
+      <ShareCredentialsSlide
+        key="share-credentials"
+        onAccept={onProofAccept}
+        onDecline={onProofDecline}
+        submission={submission}
+        isAccepting={acceptStatus !== 'idle'}
+      />
+    )
   )
 }

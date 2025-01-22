@@ -291,7 +291,7 @@ export const initializeFullAgent = async ({
   return agent
 }
 
-export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
+export type FullAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
 export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
 export type EitherAgent = FullAppAgent | EasyPIDAppAgent
 

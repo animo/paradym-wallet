@@ -1,24 +1,19 @@
 import { parseDidCommInvitation, receiveOutOfBandInvitation, useAgent } from '@package/agent'
-import { usePushToWallet } from '@package/app/src'
+import { SlideWizard, usePushToWallet } from '@package/app/src'
 
-import { Spinner, YStack, useToastController } from '@package/ui'
+import { useToastController } from '@package/ui'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 
 import { DidCommCredentialNotificationScreen } from '../receive/DidcommCredentialNotificationScreen'
+import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
+import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { DidCommPresentationNotificationScreen } from '../share/DidCommPresentationNotificationScreen'
+import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 
-// We can route to this page from an existing record
-// but also from a new invitation. So we support quite some
-// params and we differ flow based on the params provided
-// but this means we can have a single entrypoint and don't have to
-// first route to a generic invitation page sometimes and then route
-// to a credential or presentation screen when we have more information
 type Query = {
   invitation?: string
   invitationUrl?: string
-  proofExchangeId?: string
-  credentialExchangeId?: string
 }
 
 const { useParams } = createParam<Query>()
@@ -28,18 +23,16 @@ export function DidCommNotificationScreen() {
   const { params } = useParams()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
+  const onCancel = () => pushToWallet('back')
+  const onComplete = () => pushToWallet('replace')
 
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
-  const [notification, setNotification] = useState(
-    params.credentialExchangeId
-      ? ({
-          type: 'credentialExchange',
-          id: params.credentialExchangeId,
-        } as const)
-      : params.proofExchangeId
-        ? ({ type: 'proofExchange', id: params.proofExchangeId } as const)
-        : undefined
-  )
+  const [notification, setNotification] = useState<{
+    id: string
+    type: 'credentialExchange' | 'proofExchange'
+  }>()
+
+  const [errorReason, setErrorReason] = useState<string>()
 
   useEffect(() => {
     async function handleInvitation() {
@@ -78,7 +71,7 @@ export function DidCommNotificationScreen() {
           error,
         })
         toast.show('Error parsing invitation')
-        pushToWallet()
+        setErrorReason('Error parsing invitation')
       }
     }
 
@@ -86,33 +79,53 @@ export function DidCommNotificationScreen() {
   }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, toast, pushToWallet])
 
   // We were routed here without any notification
-  if (!params.credentialExchangeId && !params.proofExchangeId && !params.invitation && !params.invitationUrl) {
+  if (!params.invitation && !params.invitationUrl) {
     // eslint-disable-next-line no-console
-    console.error(
-      'One of credentialExchangeId, proofExchangeId, invitation or invitationUrl is required when navigating to DidCommNotificationScreen.'
-    )
+    console.error('One of invitation or invitationUrl is required when navigating to DidCommNotificationScreen.')
     pushToWallet()
     return null
   }
 
-  if (!notification) {
-    return (
-      <YStack justifyContent="center" alignItems="center">
-        <Spinner />
-      </YStack>
-    )
-  }
-
-  if (notification.type === 'credentialExchange') {
-    return <DidCommCredentialNotificationScreen credentialExchangeId={notification.id} />
-  }
-
-  if (notification.type === 'proofExchange') {
-    return <DidCommPresentationNotificationScreen proofExchangeId={notification.id} />
-  }
-
-  // eslint-disable-next-line no-console
-  console.error('Unknown notification type on DidCommNotificationScreen', notification)
-  pushToWallet()
-  return null
+  // TODO: Ideally we can combine the slides with this that are returned in the credential/proof flows
+  // This way, we can use multiple slides in the flows.
+  // Because this doesn't really scale well
+  return (
+    <SlideWizard
+      steps={[
+        {
+          step: 'loading-request',
+          progress: 33,
+          screen: <LoadingRequestSlide key="loading-request" isLoading={!notification} isError={!!errorReason} />,
+        },
+        ...(notification?.type === 'credentialExchange'
+          ? [
+              {
+                step: 'retrieve-credential',
+                progress: 66,
+                backIsCancel: true,
+                screen: <DidCommCredentialNotificationScreen credentialExchangeId={notification.id} />,
+              },
+            ]
+          : notification?.type === 'proofExchange'
+            ? [
+                {
+                  step: 'retrieve-presentation',
+                  progress: 66,
+                  backIsCancel: true,
+                  screen: <DidCommPresentationNotificationScreen proofExchangeId={notification.id} />,
+                },
+                {
+                  step: 'success',
+                  progress: 100,
+                  backIsCancel: true,
+                  screen: <PresentationSuccessSlide onComplete={onComplete} />,
+                },
+              ]
+            : []),
+      ]}
+      errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
+      isError={!!errorReason}
+      onCancel={onCancel}
+    />
+  )
 }
