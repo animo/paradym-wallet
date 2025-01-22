@@ -2,7 +2,6 @@
 	"name": "wallets",
 	"private": true,
 	"scripts": {
-		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
 		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
@@ -17,7 +16,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.1",
-		"check-dependency-version-consistency": "^3.0.3",
+		"check-dependency-version-consistency": "^3.3.0",
 		"typescript": "catalog:"
 	},
 	"pnpm": {
@@ -37,7 +36,6 @@
 			"@credo-ts/node": "catalog:",
 			"@credo-ts/cheqd": "catalog:",
 			"@credo-ts/core": "catalog:",
-			"@credo-ts/indy-vdr": "catalog:",
 			"@credo-ts/openid4vc": "catalog:",
 			"@credo-ts/question-answer": "catalog:",
 			"@credo-ts/react-native": "catalog:",
@@ -45,9 +43,10 @@
 			"@openid-federation/core": "catalog:"
 		},
 		"patchedDependencies": {
-			"@hyperledger/indy-vdr-react-native@0.2.2": "patches/@hyperledger__indy-vdr-react-native@0.2.2.patch",
 			"@credo-ts/askar@0.5.13": "patches/@credo-ts__askar@0.5.13.patch",
-			"@sphereon/kmp-mdl-mdoc": "patches/@sphereon__kmp-mdl-mdoc.patch"
+			"@sphereon/kmp-mdl-mdoc": "patches/@sphereon__kmp-mdl-mdoc.patch",
+			"@hyperledger/aries-askar-react-native@0.2.3": "patches/@hyperledger__aries-askar-react-native@0.2.3.patch",
+			"@hyperledger/anoncreds-react-native@0.2.4": "patches/@hyperledger__anoncreds-react-native@0.2.4.patch"
 		}
 	},
 	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"

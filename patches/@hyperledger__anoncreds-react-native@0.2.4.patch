@@ -1,0 +1,13 @@
+diff --git a/ios/Anoncreds.mm b/ios/Anoncreds.mm
+index 6007a03d12a88cad8d64eedd10c9075ccaf4b84f..1a0a66c6e0e701c169aaa8476bf29fdae7a62495 100644
+--- a/ios/Anoncreds.mm
++++ b/ios/Anoncreds.mm
+@@ -3,7 +3,7 @@
+ #import <React/RCTUtils.h>
+ #import <ReactCommon/RCTTurboModule.h>
+ 
+-#import "turboModuleUtility.h"
++#import <anoncreds/turboModuleUtility.h>
+ #import "Anoncreds.h"
+ 
+ using namespace facebook;

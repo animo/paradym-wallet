@@ -69,7 +69,7 @@ const config = {
       '@animo-id/expo-mdoc-data-transfer',
       {
         ios: {
-          buildStatic: [],
+          buildStatic: ['RNReanimated', 'RNScreens', 'aries-askar', 'anoncreds', 'indy_vdr', 'react-native-executorch'],
         },
       },
     ],
@@ -86,6 +86,10 @@ const config = {
           minSdkVersion: 26,
           useLegacyPackaging: true,
           extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
+        },
+        ios: {
+          deploymentTarget: '15.1',
+          useFrameworks: 'dynamic',
         },
       },
     ],

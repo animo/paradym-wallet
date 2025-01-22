@@ -13,7 +13,7 @@ import {
   useToastController,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
-import { useHaptics } from 'packages/app/src'
+import { isIos, useHaptics } from 'packages/app/src'
 import { useEffect, useState } from 'react'
 import { Alert, Linking, useWindowDimensions } from 'react-native'
 import { useMMKVBoolean } from 'react-native-mmkv'
@@ -56,6 +56,7 @@ export function FunkeOfflineQrScreen() {
   }, [arePermissionsGranted])
 
   const handlePermissions = async () => {
+    if (isIos()) return { granted: true, shouldShowSettings: false }
     const permissions = await requestMdocPermissions()
 
     if (!permissions) {
@@ -126,12 +127,12 @@ export function FunkeOfflineQrScreen() {
     })
   )
 
-  useEffect(() => {
-    // Cleanup function that runs when component unmounts
-    return () => {
-      shutdownDataTransfer()
-    }
-  }, [])
+  // useEffect(() => {
+  //   // Cleanup function that runs when component unmounts
+  //   return () => {
+  //     shutdownDataTransfer()
+  //   }
+  // }, [])
 
   const onCancel = () => {
     back()

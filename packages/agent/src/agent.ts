@@ -34,18 +34,11 @@ import {
   WsOutboundTransport,
   X509Module,
 } from '@credo-ts/core'
-import {
-  IndyVdrAnonCredsRegistry,
-  IndyVdrIndyDidResolver,
-  IndyVdrModule,
-  IndyVdrSovDidResolver,
-} from '@credo-ts/indy-vdr'
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { useAgent as useAgentLib } from '@credo-ts/react-hooks'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
-import { indyVdr } from '@hyperledger/indy-vdr-react-native'
 
 import { bdrPidIssuerCertificate, pidSchemes } from '../../../apps/easypid/src/constants'
 import { indyNetworks } from './indyNetworks'
@@ -175,10 +168,6 @@ export const initializeFullAgent = async ({
         mediatorPickupStrategy: MediatorPickupStrategy.None,
       }),
 
-      indyVdr: new IndyVdrModule({
-        indyVdr,
-        networks: indyNetworks,
-      }),
       connections: new ConnectionsModule({
         autoAcceptConnections: true,
       }),
