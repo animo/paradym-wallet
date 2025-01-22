@@ -8,7 +8,7 @@ import {
   V1ProofProtocol,
 } from '@credo-ts/anoncreds'
 import { AskarModule } from '@credo-ts/askar'
-
+import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import {
   Agent,
   AutoAcceptCredential,
@@ -46,6 +46,7 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { indyVdr } from '@hyperledger/indy-vdr-react-native'
+import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
 import { bdrPidIssuerCertificate, pidSchemes } from '../../../apps/easypid/src/constants'
 import { indyNetworks } from './indyNetworks'
@@ -127,7 +128,7 @@ export const initializeEasyPIDAgent = async ({
         ],
       }),
       anoncreds: new AnonCredsModule({
-        registries: [new IndyVdrAnonCredsRegistry() /* new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry() */],
+        registries: [new IndyVdrAnonCredsRegistry(), new DidWebAnonCredsRegistry() /* new CheqdAnonCredsRegistry() */],
         anoncreds,
       }),
 
@@ -179,6 +180,9 @@ export const initializeEasyPIDAgent = async ({
       }),
     },
   })
+
+  agent.registerOutboundTransport(new HttpOutboundTransport())
+  agent.registerOutboundTransport(new WsOutboundTransport())
 
   await agent.initialize()
 
@@ -289,7 +293,7 @@ export const initializeFullAgent = async ({
   return agent
 }
 
-export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
+export type FullAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
 export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
 export type EitherAgent = FullAppAgent | EasyPIDAppAgent
 

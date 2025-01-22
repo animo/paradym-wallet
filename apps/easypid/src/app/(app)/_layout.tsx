@@ -2,11 +2,18 @@ import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from '
 
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
+import { mediatorDid } from '@easypid/constants'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
-import { type CredentialDataHandlerOptions, DeeplinkHandler, useHaptics } from '@package/app'
+import {
+  AgentProvider,
+  WalletJsonStoreProvider,
+  hasMediationConfigured,
+  setupMediationWithDid,
+  useMessagePickup,
+} from '@package/agent'
+import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'tamagui'
@@ -27,6 +34,7 @@ export default function AppLayout() {
   const [redirectAfterUnlocked, setRedirectAfterUnlocked] = useState<string>()
   const pathname = usePathname()
   const params = useGlobalSearchParams()
+  const hasInternetConnection = useHasInternetConnection()
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -47,6 +55,42 @@ export default function AppLayout() {
     setHasResetWallet(true)
     resetWallet(secureUnlock)
   }, [secureUnlock, hasResetWallet, shouldResetWallet])
+
+  const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
+  const [isMediationConfigured, setIsMediationConfigured] = useState(false)
+
+  // Enable message pickup when mediation is configured and internet connection is available
+  useMessagePickup({
+    isEnabled: hasInternetConnection && isMediationConfigured && secureUnlock.state === 'unlocked',
+    agent: secureUnlock.state === 'unlocked' ? secureUnlock.context.agent : undefined,
+  })
+
+  // Setup mediation
+  // biome-ignore lint/correctness/useExhaustiveDependencies: secure.unlock.agent can not be typed
+  useEffect(() => {
+    if (secureUnlock.state !== 'unlocked') return
+    if (!secureUnlock.context.agent) return
+    if (!hasInternetConnection || isMediationConfigured) return
+    if (isSettingUpMediation) return
+
+    setIsSettingUpMediation(true)
+
+    secureUnlock.context.agent.config.logger.debug('Checking if mediation is configured.')
+
+    void hasMediationConfigured(secureUnlock.context.agent)
+      .then(async (mediationConfigured) => {
+        if (!mediationConfigured) {
+          secureUnlock.context.agent.config.logger.debug('Mediation not configured yet.')
+          await setupMediationWithDid(secureUnlock.context.agent, mediatorDid)
+        }
+
+        secureUnlock.context.agent.config.logger.info("Mediation configured. You're ready to go!")
+        setIsMediationConfigured(true)
+      })
+      .finally(() => {
+        setIsSettingUpMediation(false)
+      })
+  }, [secureUnlock.state, isMediationConfigured, isSettingUpMediation, hasInternetConnection])
 
   // If we are intializing and the wallet was opened using a deeplinkg we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
@@ -134,7 +178,7 @@ export default function AppLayout() {
           />
 
           <Stack.Screen
-            name="notifications/didComm"
+            name="notifications/didcomm"
             options={{
               gestureEnabled: false,
             }}

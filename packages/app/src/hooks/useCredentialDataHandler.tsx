@@ -76,7 +76,7 @@ export const useCredentialDataHandler = () => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       routeMethod(
         {
-          pathname: '/notifications/didComm',
+          pathname: '/notifications/didcomm',
           query: {
             invitation:
               invitationData.format === 'parsed' ? encodeURIComponent(JSON.stringify(invitationData.data)) : undefined,

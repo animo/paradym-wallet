@@ -1,7 +1,7 @@
 import { useAgent, useDidCommCredentialActions } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app/src'
 import { useToastController } from '@package/ui'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
@@ -17,23 +17,26 @@ export function DidCommCredentialNotificationScreen({
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const onCancel = () => pushToWallet('back')
-  const onGoToWallet = () => pushToWallet()
+  const onGoToWallet = () => pushToWallet('replace')
+  const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
+    useDidCommCredentialActions(credentialExchangeId)
 
   const [errorReason, setErrorReason] = useState<string>()
 
-  const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
-    useDidCommCredentialActions(credentialExchangeId)
+  useEffect(() => {
+    if (acceptStatus === 'error') {
+      setErrorReason('Something went wrong while fetching the card information.')
+    }
+  }, [acceptStatus])
 
   const onCredentialAccept = async () => {
     await acceptCredential()
       .then(() => {
-        toast.show('Credential has been added to your wallet.', { customData: { preset: 'success' } })
+        // TODO: Create activity event
       })
       .catch(() => {
         toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
-      })
-      .finally(() => {
-        pushToWallet()
+        onCancel()
       })
   }
 
@@ -47,7 +50,7 @@ export function DidCommCredentialNotificationScreen({
     })
 
     toast.show('Credential has been declined.')
-    pushToWallet()
+    onCancel()
   }
 
   return (
@@ -55,7 +58,7 @@ export function DidCommCredentialNotificationScreen({
       steps={[
         {
           step: 'loading-request',
-          progress: 16.5,
+          progress: 33,
           screen: (
             <LoadingRequestSlide
               key="loading-request"
@@ -66,7 +69,7 @@ export function DidCommCredentialNotificationScreen({
         },
         {
           step: 'retrieve-credential',
-          progress: 82.5,
+          progress: 66,
           backIsCancel: true,
           screen: (
             <CredentialRetrievalSlide
@@ -74,9 +77,11 @@ export function DidCommCredentialNotificationScreen({
               onGoToWallet={onGoToWallet}
               display={display}
               attributes={attributes ?? {}}
-              isCompleted={acceptStatus === 'idle'}
+              isCompleted={acceptStatus === 'success'}
               onAccept={onCredentialAccept}
               onDecline={onCredentialDecline}
+              // If state is not idle, it means we have pressed accept
+              isAccepting={acceptStatus !== 'idle'}
             />
           ),
         },

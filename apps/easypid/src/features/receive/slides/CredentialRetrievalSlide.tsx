@@ -40,6 +40,7 @@ interface CredentialRetrievalSlideProps {
   onAccept: () => Promise<void>
   onDecline?: () => void
   onGoToWallet: () => void
+  isAccepting?: boolean
 }
 
 export const CredentialRetrievalSlide = ({
@@ -49,6 +50,7 @@ export const CredentialRetrievalSlide = ({
   onAccept,
   onDecline,
   onGoToWallet,
+  isAccepting,
 }: CredentialRetrievalSlideProps) => {
   const { completeProgressBar, onCancel } = useWizard()
   const isInitialRender = useInitialRender()
@@ -61,6 +63,12 @@ export const CredentialRetrievalSlide = ({
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
   const isStoringOrCompleted = isStoring || isCompleted
   const isAllowedToAccept = attributes && Object.keys(attributes).length > 0
+
+  useEffect(() => {
+    if (isAccepting) {
+      setIsStoring(true)
+    }
+  }, [isAccepting])
 
   const handleAccept = async () => {
     setIsStoring(true)

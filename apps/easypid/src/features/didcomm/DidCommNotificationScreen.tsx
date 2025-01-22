@@ -1,12 +1,12 @@
 import { parseDidCommInvitation, receiveOutOfBandInvitation, useAgent } from '@package/agent'
-import {
-  DidCommCredentialNotificationScreen,
-  DidCommPresentationNotificationScreen,
-  usePushToWallet,
-} from '@package/app/src'
+import { usePushToWallet } from '@package/app/src'
+
 import { Spinner, YStack, useToastController } from '@package/ui'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
+
+import { DidCommCredentialNotificationScreen } from '../receive/DidcommCredentialNotificationScreen'
+import { DidCommPresentationNotificationScreen } from '../share/DidCommPresentationNotificationScreen'
 
 // We can route to this page from an existing record
 // but also from a new invitation. So we support quite some
@@ -20,13 +20,6 @@ type Query = {
   proofExchangeId?: string
   credentialExchangeId?: string
 }
-
-// For DIDComm we have first the invitation step
-// And then the credential or presentation step
-
-// TODO:
-// Keep the invitation step here as an entrypoint for the didcomm flow
-// Then try to reuse the credential or presentation screens already implemented for OpenID
 
 const { useParams } = createParam<Query>()
 
@@ -50,33 +43,25 @@ export function DidCommNotificationScreen() {
 
   useEffect(() => {
     async function handleInvitation() {
-      console.log('1')
       if (hasHandledNotificationLoading) return
       setHasHandledNotificationLoading(true)
-      console.log('2')
       try {
-        console.log('3')
         const invitation = params.invitation
           ? (JSON.parse(decodeURIComponent(params.invitation)) as Record<string, unknown>)
           : params.invitationUrl
             ? decodeURIComponent(params.invitationUrl)
             : undefined
-        console.log('4')
         // Might be no invitation if a presentationExchangeId or credentialExchangeId is passed directly
         if (!invitation) return
 
-        console.log('5')
         const parseResult = await parseDidCommInvitation(agent, invitation)
-        console.log('6')
         if (!parseResult.success) {
           toast.show(parseResult.error)
           pushToWallet()
           return
         }
 
-        console.log('7')
         const receiveResult = await receiveOutOfBandInvitation(agent, parseResult.result)
-        console.log('8')
         if (!receiveResult.success) {
           toast.show(receiveResult.error)
           pushToWallet()
@@ -84,13 +69,11 @@ export function DidCommNotificationScreen() {
         }
 
         // We now know the type of the invitation
-        console.log('9')
         setNotification({
           id: receiveResult.id,
           type: receiveResult.type,
         })
       } catch (error: unknown) {
-        console.log('10')
         agent.config.logger.error('Error parsing invitation', {
           error,
         })
