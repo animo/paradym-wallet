@@ -30,7 +30,7 @@ catalog:
   "@animo-id/oauth2": 0.1.4
   "@animo-id/oauth2-utils": 0.1.4
   "@animo-id/expo-secure-environment": 0.1.0-alpha.12
-  "@animo-id/expo-mdoc-data-transfer": ../../../expo-mdoc-data-transfer/animo-id-expo-mdoc-data-transfer-0.0.4.tgz
+  "@animo-id/expo-mdoc-data-transfer": 0.1.0
   "@animo-id/mdoc": 0.2.39
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"

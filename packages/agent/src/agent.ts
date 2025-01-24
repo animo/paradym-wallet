@@ -153,12 +153,11 @@ export const initializeFullAgent = async ({
           new KeyDidResolver(),
           new JwkDidResolver(),
           // new CheqdDidResolver(),
-          new IndyVdrSovDidResolver(),
-          new IndyVdrIndyDidResolver(),
         ],
       }),
       anoncreds: new AnonCredsModule({
-        registries: [new IndyVdrAnonCredsRegistry() /* new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry() */],
+        // @ts-expect-error: will be fixed when cheqd is introduced
+        registries: [],
         anoncreds,
       }),
 
