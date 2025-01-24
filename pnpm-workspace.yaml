@@ -3,7 +3,8 @@ packages:
   - 'apps/*'
 
 catalog:
-  react-native: ~0.74.5
+  expo: ~51.0.39
+  react-native: ~0.75.0
   react: 18.3.1
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
@@ -12,7 +13,6 @@ catalog:
   "@credo-ts/node": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/node?funke
   "@credo-ts/cheqd": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/cheqd?funke
   "@credo-ts/core": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/core?funke
-  "@credo-ts/indy-vdr": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/indy-vdr?funke
   "@credo-ts/openid4vc": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/openid4vc?funke
   "@credo-ts/question-answer": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/question-answer?funke
   "@credo-ts/react-native": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/react-native?funke
@@ -20,7 +20,6 @@ catalog:
   "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": ^0.2.4
   "@hyperledger/aries-askar-react-native": ^0.2.3
-  "@hyperledger/indy-vdr-react-native": ^0.2.0
   typescript: ~5.3.3
   "@sphereon/did-auth-siop": https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke
   "@sphereon/jarm": https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke
@@ -31,9 +30,8 @@ catalog:
   "@animo-id/oauth2": 0.1.4
   "@animo-id/oauth2-utils": 0.1.4
   "@animo-id/expo-secure-environment": 0.1.0-alpha.12
-  "@animo-id/expo-mdoc-data-transfer": 0.0.3-alpha.8
+  "@animo-id/expo-mdoc-data-transfer": 0.1.0
   "@animo-id/mdoc": 0.2.39
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"
-  expo: ~51.0.39
   "@sphereon/pex-models": 2.3.2

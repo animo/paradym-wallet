@@ -1,3 +1,4 @@
+import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import {
   COSEKey,
   DataItem,
@@ -14,9 +15,6 @@ import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
 import type { EasyPIDAppAgent, FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/src/batch'
 import { type Permission, PermissionsAndroid, Platform } from 'react-native'
-
-const requireMdocDataTransfer = () =>
-  require('@animo-id/expo-mdoc-data-transfer') as typeof import('@animo-id/expo-mdoc-data-transfer')
 
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
@@ -53,8 +51,7 @@ export const checkMdocPermissions = async () => {
 }
 
 export const getMdocQrCode = async () => {
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
-  mdt.enableNfc()
+  const mdt = mdocDataTransfer.instance()
   const qrData = await mdt.startQrEngagement()
   return qrData
 }
@@ -67,10 +64,12 @@ export const getMdocQrCode = async () => {
  *
  */
 export const waitForDeviceRequest = async () => {
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance()
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
 
-  const encodedSessionTranscript = cborEncode(DataItem.fromData(cborDecode(sessionTranscript)))
+  // current bug on android required re-encapsulation
+  const encodedSessionTranscript =
+    Platform.OS === 'android' ? cborEncode(DataItem.fromData(cborDecode(sessionTranscript))) : sessionTranscript
 
   return { deviceRequest, sessionTranscript: encodedSessionTranscript }
 }
@@ -114,7 +113,7 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     crypto: MdocContext['crypto']
   }
 
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance()
 
   if (mdoc.documents.length > 1) {
     throw new Error('Only one mdoc supported at the moment due to only being able to sign with one device key')
@@ -138,6 +137,6 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
 }
 
 export const shutdownDataTransfer = () => {
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance()
   mdt.shutdown()
 }

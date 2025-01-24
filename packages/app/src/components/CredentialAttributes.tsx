@@ -38,7 +38,8 @@ export function CredentialAttributes({
               {(!disableHeader || table.title) && (
                 <Heading
                   variant={headerStyle === 'small' ? 'sub2' : 'h3'}
-                  pl={headerStyle === 'regular' && '$2'}
+                  /* TODO(jan): what should be the value here? */
+                  pl={headerStyle === 'regular' ? '$2' : '$1'}
                   // fontWeight={headerStyle === 'small' ? '$semiBold' : '$medium'}
                   secondary
                 >

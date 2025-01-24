@@ -12,3 +12,16 @@ index 655864cae6906bc283e09abde94b1496b0311adf..babed5816ed65975e9a568d6444afb82
    }
  
    s.ios.vendored_frameworks = "native/mobile/ios/aries_askar.xcframework"
+diff --git a/ios/AriesAskar.mm b/ios/AriesAskar.mm
+index edff6f4a385282a1abfaf230d370aa033896638f..970c2e58ea323782060c8f096786c8a775349c86 100644
+--- a/ios/AriesAskar.mm
++++ b/ios/AriesAskar.mm
+@@ -3,7 +3,7 @@
+ #import <React/RCTUtils.h>
+ #import <ReactCommon/RCTTurboModule.h>
+ 
+-#import "turboModuleUtility.h"
++#import <aries-askar/turboModuleUtility.h>
+ #import "AriesAskar.h"
+ 
+ using namespace facebook;

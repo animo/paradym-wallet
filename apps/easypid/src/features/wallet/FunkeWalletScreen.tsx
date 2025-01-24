@@ -37,11 +37,6 @@ export function FunkeWalletScreen() {
   const pushToPidSetup = withHaptics(() => push('/pidSetup'))
   const pushToAbout = withHaptics(() => push('/menu/about'))
   const pushToOffline = () => {
-    if (Platform.OS === 'ios') {
-      toast.show('This feature is not supported on your OS yet.', { customData: { preset: 'warning' } })
-      return
-    }
-
     withHaptics(() => push('/offline'))()
   }
 

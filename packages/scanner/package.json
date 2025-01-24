@@ -17,5 +17,15 @@
 		"expo": "catalog:",
 		"expo-camera": "~15.0.16",
 		"react-native": "catalog:"
+	},
+	"expo": {
+		"install": {
+			"exclude": [
+				"react-native@~0.74.0",
+				"react-native-reanimated@~3.10.0",
+				"react-native-gesture-handler@~2.16.1",
+				"react-native-screens@~3.31.1"
+			]
+		}
 	}
 }
