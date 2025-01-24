@@ -1,7 +1,9 @@
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
+  type FormattedSubmissionEntrySatisfied,
   getCredentialsForProofRequest,
+  getDisclosedAttributeNamesForDisplay,
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -10,6 +12,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
+import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -58,6 +61,38 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
   }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast, isDevelopmentModeEnabled])
 
+  const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
+
+  useEffect(() => {
+    if (!credentialsForRequest?.formattedSubmission || !credentialsForRequest?.formattedSubmission.areAllSatisfied) {
+      return
+    }
+
+    if (isProcessingOverAsking || overAskingResponse) {
+      // Already generating or already has result
+      return
+    }
+
+    const submission = credentialsForRequest.formattedSubmission
+    const requestedCards = submission.entries
+      .filter((entry): entry is FormattedSubmissionEntrySatisfied => entry.isSatisfied)
+      .flatMap((entry) => entry.credentials)
+
+    void checkForOverAsking({
+      verifier: {
+        name: credentialsForRequest.verifier.name ?? 'No name provided',
+        domain: credentialsForRequest.verifier.hostName ?? 'No domain provided',
+      },
+      name: submission.name ?? 'No name provided',
+      purpose: submission.purpose ?? 'No purpose provided',
+      cards: requestedCards.map((credential) => ({
+        name: credential.credential.display.name ?? 'Card name',
+        subtitle: credential.credential.display.description ?? 'Card description',
+        requestedAttributes: getDisclosedAttributeNamesForDisplay(credential),
+      })),
+    })
+  }, [credentialsForRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
+
   const onProofAccept = useCallback(
     async (pin?: string): Promise<PresentationRequestResult> => {
       if (!credentialsForRequest)
@@ -68,6 +103,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           },
         }
 
+      stopOverAsking()
       setIsSharing(true)
 
       if (shouldUsePin) {
@@ -152,10 +188,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
       }
     },
-    [credentialsForRequest, agent, shouldUsePin, isDevelopmentModeEnabled]
+    [credentialsForRequest, agent, shouldUsePin, stopOverAsking, isDevelopmentModeEnabled]
   )
 
   const onProofDecline = async () => {
+    stopOverAsking()
     if (credentialsForRequest) {
       await addSharedActivityForCredentialsForRequest(
         agent,
@@ -181,6 +218,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       trustedEntities={credentialsForRequest?.verifier.trustedEntities}
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
+      overAskingResponse={overAskingResponse}
     />
   )
 }

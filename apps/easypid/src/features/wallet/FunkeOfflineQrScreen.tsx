@@ -127,13 +127,6 @@ export function FunkeOfflineQrScreen() {
     })
   )
 
-  // useEffect(() => {
-  //   // Cleanup function that runs when component unmounts
-  //   return () => {
-  //     shutdownDataTransfer()
-  //   }
-  // }, [])
-
   const onCancel = () => {
     back()
     shutdownDataTransfer()

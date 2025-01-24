@@ -3,6 +3,7 @@ packages:
   - 'apps/*'
 
 catalog:
+  expo: ~51.0.39
   react-native: ~0.75.0
   react: 18.3.1
   "@types/react": ~18.2.79
@@ -33,5 +34,4 @@ catalog:
   "@animo-id/mdoc": 0.2.39
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"
-  expo: ~51.0.39
   "@sphereon/pex-models": 2.3.2

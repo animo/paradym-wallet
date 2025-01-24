@@ -133,12 +133,10 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     .authenticateWithSignature(publicDeviceJwk, 'ES256')
     .sign(mdocContext)
 
-  console.log(Platform.OS, ':', Buffer.from(deviceResponse.encode()).toString('hex'))
-
   await mdt.sendDeviceResponse(deviceResponse.encode())
 }
 
 export const shutdownDataTransfer = () => {
-  // const mdt = mdocDataTransfer.instance()
-  // mdt.shutdown()
+  const mdt = mdocDataTransfer.instance()
+  mdt.shutdown()
 }

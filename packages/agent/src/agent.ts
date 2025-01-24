@@ -41,7 +41,6 @@ import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 
 import { bdrPidIssuerCertificate, pidSchemes } from '../../../apps/easypid/src/constants'
-import { indyNetworks } from './indyNetworks'
 import { appLogger } from './logger'
 
 const askarModule = new AskarModule({

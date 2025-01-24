@@ -69,7 +69,7 @@ const config = {
       '@animo-id/expo-mdoc-data-transfer',
       {
         ios: {
-          buildStatic: ['RNReanimated', 'RNScreens', 'aries-askar', 'anoncreds', 'indy_vdr', 'react-native-executorch'],
+          buildStatic: ['RNReanimated', 'RNScreens', 'aries-askar', 'anoncreds', 'react-native-executorch'],
         },
       },
     ],
