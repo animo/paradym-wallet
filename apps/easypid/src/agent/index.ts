@@ -1,11 +1,11 @@
 import { useAgent } from '@package/agent'
-import type { EitherAgent } from '@package/agent/src/agent'
 import { useSecureUnlock as _useSecureUnlock } from '@package/secure-store/secureUnlock'
+import type { initializeAppAgent } from './initialize'
 
 export { initializeAppAgent } from './initialize'
 
-export const useAppAgent = useAgent<EitherAgent>
-export type AppAgent = EitherAgent
+export type AppAgent = Awaited<ReturnType<typeof initializeAppAgent>>
+export const useAppAgent = useAgent<AppAgent>
 export type SecureUnlockContext = { agent: AppAgent }
 
 export const useSecureUnlock = () => _useSecureUnlock<SecureUnlockContext>()

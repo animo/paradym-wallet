@@ -129,13 +129,13 @@ export const initializeParadymAgent = async ({
   walletId,
   walletKey,
   keyDerivation,
-  trustedX509Certificates,
+  trustedX509Certificates = [],
 }: {
   walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
-  trustedX509Certificates: string[]
+  trustedX509Certificates?: string[]
 }) => {
   const agent = new Agent({
     dependencies: agentDependencies,
@@ -253,7 +253,7 @@ export const isEasyPIDAgent = (agent: EitherAgent): agent is EasyPIDAppAgent => 
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
-export const useAgent = <A extends Agent<any> = EitherAgent>(): {
+export const useAgent = <A extends Agent<any> = ParadymAppAgent>(): {
   agent: A
   loading: boolean
 } => {

@@ -3,14 +3,14 @@ import {
   type CredentialForDisplayId,
   type CredentialsForProofRequest,
   type DisplayImage,
-  type EasyPIDAppAgent,
+  type EitherAgent,
   type FormattedSubmission,
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
   getWalletJsonStore,
   useWalletJsonRecord,
 } from '@package/agent'
-import type { EitherAgent } from '@package/agent/src/agent'
+
 import { useMemo } from 'react'
 import type { AppAgent } from '../../agent'
 
@@ -103,7 +103,7 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
 }
 
 export const addReceivedActivity = async (
-  agent: EasyPIDAppAgent,
+  agent: EitherAgent,
   input: {
     entityId: string
     name: string

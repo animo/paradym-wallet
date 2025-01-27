@@ -284,7 +284,7 @@ export function FunkeCredentialNotificationScreen() {
     [acquireCredentialsPreAuth]
   )
 
-  const onPresentationAccept: (pin?: string) => Promise<undefined | PresentationRequestResult> = useCallback(
+  const onPresentationAccept: (pin?: string) => Promise<void> = useCallback(
     async (pin?: string) => {
       if (
         !credentialsForRequest ||
@@ -310,7 +310,6 @@ export function FunkeCredentialNotificationScreen() {
           if (error instanceof InvalidPinError) {
             toast.show('Invalid PIN entered', { customData: { preset: 'danger' } })
             setIsSharingPresentation(false)
-            return { status: 'error', result: { title: error.message }, redirectToWallet: false }
           }
 
           setErrorReasonWithError('Presentation information could not be extracted', error)

@@ -10,7 +10,7 @@ import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 interface FunkeOfflineSharingScreenProps {
   submission?: FormattedSubmission
   isAccepting: boolean
-  onAccept: () => Promise<PresentationRequestResult>
+  onAccept: () => Promise<void>
   onDecline: () => void
   onComplete: () => void
 }

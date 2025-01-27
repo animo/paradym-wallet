@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
-import type { PresentationRequestResult } from './components/utils'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -51,15 +50,9 @@ export function FunkeMdocOfflineSharingScreen({
       })
   }, [agent, deviceRequest, toast.show, pushToWallet])
 
-  const onProofAccept = async (): Promise<PresentationRequestResult> => {
-    if (!submission) {
-      return {
-        status: 'error',
-        result: {
-          title: 'No submission found.',
-        },
-      }
-    }
+  const onProofAccept = async (): Promise<void> => {
+    // Already checked for submission in the useEffect
+    if (!submission) return
 
     setIsProcessing(true)
 
@@ -74,24 +67,12 @@ export function FunkeMdocOfflineSharingScreen({
     } catch (error) {
       agent.config.logger.error('Could not share device response', { error })
       await addActivity('failed')
-      return {
-        status: 'error',
-        result: {
-          title: 'Failed to share proof.',
-        },
-      }
+      pushToWallet()
     }
 
     await addActivity('success')
 
     setIsProcessing(false)
-
-    return {
-      status: 'success',
-      result: {
-        title: 'Proof accepted',
-      },
-    }
   }
 
   const onProofDecline = async () => {

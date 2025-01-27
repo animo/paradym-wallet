@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import type { FullAppAgent } from '../agent'
+import type { EitherAgent } from '../agent'
 
 import { MdocRecord } from '@credo-ts/core'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '@credo-ts/react-hooks/build/recordUtils'
@@ -59,7 +59,7 @@ export const useMdocRecordById = (id: string): MdocRecord | undefined => {
 }
 
 interface Props {
-  agent: FullAppAgent
+  agent: EitherAgent
 }
 
 export const MdocRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {

@@ -1,6 +1,6 @@
-import type { FullAppAgent } from '@package/agent'
+import type { EitherAgent } from '@package/agent'
 
-import { AgentProvider, hasMediationConfigured, setupMediationWithDid, useMessagePickup } from '@package/agent'
+import { AgentProvider, initializeParadymAgent, useMediatorSetup } from '@package/agent'
 import {
   DeeplinkHandler,
   NoInternetToastProvider,
@@ -16,8 +16,8 @@ import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { initializeAppAgent } from '.'
 
+import { isParadymAgent } from '@package/agent/src/agent'
 import tamaguiConfig from '../tamagui.config'
 import { mediatorDid } from './constants'
 
@@ -29,20 +29,19 @@ export const unstable_settings = {
 }
 
 export default function HomeLayout() {
-  const [agent, setAgent] = useState<FullAppAgent>()
-  const [isMediationConfigured, setIsMediationConfigured] = useState(false)
+  const [agent, setAgent] = useState<EitherAgent>()
   const hasInternetConnection = useHasInternetConnection()
 
   const [agentInitializationFailed, setAgentInitializationFailed] = useState(false)
   const toast = useToastController()
   const { top } = useSafeAreaInsets()
-  const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
   useTransparentNavigationBar()
 
-  // Enable message pickup when mediation is configured and internet connection is available
-  useMessagePickup({
-    isEnabled: hasInternetConnection && isMediationConfigured,
-    agent,
+  // Only setup mediation if the agent is a paradym agent
+  useMediatorSetup({
+    agent: agent && isParadymAgent(agent) ? agent : undefined,
+    hasInternetConnection,
+    mediatorDid,
   })
 
   // Initialize agent
@@ -56,7 +55,8 @@ export default function HomeLayout() {
       })
       if (!walletKey) return
 
-      const agent = await initializeAppAgent({
+      // This will be removed in the future
+      const agent = await initializeParadymAgent({
         ...walletKey,
         walletLabel: 'paradym-wallet',
         walletId: 'paradym-wallet-secure',
@@ -71,29 +71,6 @@ export default function HomeLayout() {
 
     void startAgent()
   }, [toast, agent])
-
-  // Setup mediation
-  useEffect(() => {
-    if (!agent) return
-    if (!hasInternetConnection || isMediationConfigured) return
-    if (isSettingUpMediation) return
-
-    setIsSettingUpMediation(true)
-
-    void hasMediationConfigured(agent)
-      .then(async (mediationConfigured) => {
-        if (!mediationConfigured) {
-          agent.config.logger.debug('Mediation not configured yet.')
-          await setupMediationWithDid(agent, mediatorDid)
-        }
-
-        agent.config.logger.info("Mediation configured. You're ready to go!")
-        setIsMediationConfigured(true)
-      })
-      .finally(() => {
-        setIsSettingUpMediation(false)
-      })
-  }, [hasInternetConnection, agent, isMediationConfigured, isSettingUpMediation])
 
   // Hide splash screen when agent and fonts are loaded or agent could not be initialized
   useEffect(() => {

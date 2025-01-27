@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 
 import { useAppAgent } from '@easypid/agent'
+import { isParadymAgent } from '@package/agent/src/agent'
 import { DidCommCredentialNotificationScreen } from '../receive/DidcommCredentialNotificationScreen'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
@@ -38,6 +39,7 @@ export function DidCommNotificationScreen() {
   useEffect(() => {
     async function handleInvitation() {
       if (hasHandledNotificationLoading) return
+      if (!isParadymAgent(agent)) return
       setHasHandledNotificationLoading(true)
       try {
         const invitation = params.invitation
