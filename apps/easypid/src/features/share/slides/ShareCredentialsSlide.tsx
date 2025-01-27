@@ -100,7 +100,7 @@ export const ShareCredentialsSlide = ({
           />
         ) : (
           <YStack gap="$3">
-            <Paragraph variant="sub" ta="center" color="$danger-500">
+            <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
               You don't have the required cards
             </Paragraph>
             <Button.Solid onPress={onDecline}>Close</Button.Solid>

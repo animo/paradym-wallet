@@ -72,16 +72,16 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
     pushToWallet()
   }
 
+  if (!submission) return null
+
   return (
-    submission && (
-      <ShareCredentialsSlide
-        key="share-credentials"
-        onAccept={onProofAccept}
-        onDecline={onProofDecline}
-        submission={submission}
-        isAccepting={acceptStatus !== 'idle'}
-        overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
-      />
-    )
+    <ShareCredentialsSlide
+      key="share-credentials"
+      onAccept={onProofAccept}
+      onDecline={onProofDecline}
+      submission={submission}
+      isAccepting={acceptStatus !== 'idle'}
+      overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
+    />
   )
 }
