@@ -116,6 +116,59 @@ export const initializeEasyPIDAgent = async ({
         trustedCertificates:
           trustedX509Certificates.length > 0 ? (trustedX509Certificates as [string, ...string[]]) : undefined,
       }),
+    },
+  })
+
+  await agent.initialize()
+
+  return agent
+}
+
+export const initializeParadymAgent = async ({
+  walletLabel,
+  walletId,
+  walletKey,
+  keyDerivation,
+  trustedX509Certificates,
+}: {
+  walletLabel: string
+  walletId: string
+  walletKey: string
+  keyDerivation: 'raw' | 'derive'
+  trustedX509Certificates: string[]
+}) => {
+  const agent = new Agent({
+    dependencies: agentDependencies,
+    config: {
+      label: walletLabel,
+      walletConfig: {
+        id: walletId,
+        key: walletKey,
+        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
+      },
+      autoUpdateStorageOnStartup: true,
+      logger: appLogger(LogLevel.debug),
+    },
+    modules: {
+      ariesAskar: askarModule,
+      openId4VcHolder: new OpenId4VcHolderModule(),
+      x509: new X509Module({
+        getTrustedCertificatesForVerification: (_, { certificateChain, verification }) => {
+          if (verification.type === 'credential') {
+            // If not PID, we allow any certificate for now
+            return [certificateChain[0].toString('pem')]
+          }
+
+          // Allow any actor for auth requests for now
+          if (verification.type === 'oauth2SecuredAuthorizationRequest') {
+            return [certificateChain[0].toString('pem')]
+          }
+
+          return undefined
+        },
+        trustedCertificates:
+          trustedX509Certificates.length > 0 ? (trustedX509Certificates as [string, ...string[]]) : undefined,
+      }),
       dids: new DidsModule({
         registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
         resolvers: [
@@ -187,116 +240,20 @@ export const initializeEasyPIDAgent = async ({
   return agent
 }
 
-export const initializeFullAgent = async ({
-  walletLabel,
-  walletId,
-  walletKey,
-  keyDerivation,
-}: {
-  walletLabel: string
-  walletId: string
-  walletKey: string
-  keyDerivation: 'raw' | 'derive'
-}) => {
-  // // FIXME: in the easypid app importing the cheqd module gives errors. As we're not using cheqd in the EasyPid wallet
-  // // we protect it like this, but I think the Paradym Wallet must be broken as well then?!?
-  // const { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } =
-  //   require('@credo-ts/cheqd') as typeof import('@credo-ts/cheqd')
+export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
+export type ParadymAppAgent = Awaited<ReturnType<typeof initializeParadymAgent>>
+export type EitherAgent = EasyPIDAppAgent | ParadymAppAgent
 
-  const agent = new Agent({
-    dependencies: agentDependencies,
-    config: {
-      label: walletLabel,
-      walletConfig: {
-        id: walletId,
-        key: walletKey,
-        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
-      },
-      autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.debug),
-    },
-    modules: {
-      ariesAskar: askarModule,
-      openId4VcHolder: new OpenId4VcHolderModule(),
-      dids: new DidsModule({
-        registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
-        resolvers: [
-          new WebDidResolver(),
-          new KeyDidResolver(),
-          new JwkDidResolver(),
-          // new CheqdDidResolver(),
-          new IndyVdrSovDidResolver(),
-          new IndyVdrIndyDidResolver(),
-        ],
-      }),
-      anoncreds: new AnonCredsModule({
-        registries: [new IndyVdrAnonCredsRegistry() /* new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry() */],
-        anoncreds,
-      }),
-
-      mediationRecipient: new MediationRecipientModule({
-        // We want to manually connect to the mediator, so it doesn't impact wallet startup
-        mediatorPickupStrategy: MediatorPickupStrategy.None,
-      }),
-
-      indyVdr: new IndyVdrModule({
-        indyVdr,
-        networks: indyNetworks,
-      }),
-      connections: new ConnectionsModule({
-        autoAcceptConnections: true,
-      }),
-      // cheqd: new CheqdModule(
-      //   new CheqdModuleConfig({
-      //     networks: [
-      //       {
-      //         network: 'testnet',
-      //       },
-      //       {
-      //         network: 'mainnet',
-      //       },
-      //     ],
-      //   })
-      // ),
-      credentials: new CredentialsModule({
-        autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
-        credentialProtocols: [
-          new V1CredentialProtocol({
-            indyCredentialFormat: new LegacyIndyCredentialFormatService(),
-          }),
-          new V2CredentialProtocol({
-            credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
-          }),
-        ],
-      }),
-      proofs: new ProofsModule({
-        autoAcceptProofs: AutoAcceptProof.ContentApproved,
-        proofProtocols: [
-          new V1ProofProtocol({
-            indyProofFormat: new LegacyIndyProofFormatService(),
-          }),
-          new V2ProofProtocol({
-            proofFormats: [new LegacyIndyProofFormatService(), new AnonCredsProofFormatService()],
-          }),
-        ],
-      }),
-    },
-  })
-
-  agent.registerOutboundTransport(new HttpOutboundTransport())
-  agent.registerOutboundTransport(new WsOutboundTransport())
-
-  await agent.initialize()
-
-  return agent
+export const isParadymAgent = (agent: EitherAgent): agent is ParadymAppAgent => {
+  return 'anoncreds' in agent.modules
 }
 
-export type FullAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
-export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
-export type EitherAgent = FullAppAgent | EasyPIDAppAgent
+export const isEasyPIDAgent = (agent: EitherAgent): agent is EasyPIDAppAgent => {
+  return !('anoncreds' in agent.modules)
+}
 
 // biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
-export const useAgent = <A extends Agent<any> = FullAppAgent>(): {
+export const useAgent = <A extends Agent<any> = EitherAgent>(): {
   agent: A
   loading: boolean
 } => {

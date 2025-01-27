@@ -6,13 +6,8 @@ import { mediatorDid } from '@easypid/constants'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import {
-  AgentProvider,
-  WalletJsonStoreProvider,
-  hasMediationConfigured,
-  setupMediationWithDid,
-  useMessagePickup,
-} from '@package/agent'
+import { AgentProvider, WalletJsonStoreProvider, useMediatorSetup } from '@package/agent'
+import { isParadymAgent } from '@package/agent/src/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
@@ -44,6 +39,16 @@ export default function AppLayout() {
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
   const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
 
+  // Only setup mediation if the agent is a paradym agent
+  useMediatorSetup({
+    agent:
+      secureUnlock.state === 'unlocked' && isParadymAgent(secureUnlock.context.agent)
+        ? secureUnlock.context.agent
+        : undefined,
+    hasInternetConnection,
+    mediatorDid,
+  })
+
   useEffect(() => {
     // Reset state
     if (hasResetWallet && !shouldResetWallet) {
@@ -56,43 +61,7 @@ export default function AppLayout() {
     resetWallet(secureUnlock)
   }, [secureUnlock, hasResetWallet, shouldResetWallet])
 
-  const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
-  const [isMediationConfigured, setIsMediationConfigured] = useState(false)
-
-  // Enable message pickup when mediation is configured and internet connection is available
-  useMessagePickup({
-    isEnabled: hasInternetConnection && isMediationConfigured && secureUnlock.state === 'unlocked',
-    agent: secureUnlock.state === 'unlocked' ? secureUnlock.context.agent : undefined,
-  })
-
-  // Setup mediation
-  // biome-ignore lint/correctness/useExhaustiveDependencies: secure.unlock.agent can not be typed
-  useEffect(() => {
-    if (secureUnlock.state !== 'unlocked') return
-    if (!secureUnlock.context.agent) return
-    if (!hasInternetConnection || isMediationConfigured) return
-    if (isSettingUpMediation) return
-
-    setIsSettingUpMediation(true)
-
-    secureUnlock.context.agent.config.logger.debug('Checking if mediation is configured.')
-
-    void hasMediationConfigured(secureUnlock.context.agent)
-      .then(async (mediationConfigured) => {
-        if (!mediationConfigured) {
-          secureUnlock.context.agent.config.logger.debug('Mediation not configured yet.')
-          await setupMediationWithDid(secureUnlock.context.agent, mediatorDid)
-        }
-
-        secureUnlock.context.agent.config.logger.info("Mediation configured. You're ready to go!")
-        setIsMediationConfigured(true)
-      })
-      .finally(() => {
-        setIsSettingUpMediation(false)
-      })
-  }, [secureUnlock.state, isMediationConfigured, isSettingUpMediation, hasInternetConnection])
-
-  // If we are intializing and the wallet was opened using a deeplinkg we will be redirected
+  // If we are initializing and the wallet was opened using a deeplink we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
   // to the auth screen
   if (
