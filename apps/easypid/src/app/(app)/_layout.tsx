@@ -5,8 +5,9 @@ import { useSecureUnlock } from '@easypid/agent'
 import { mediatorDid } from '@easypid/constants'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { AgentProvider, WalletJsonStoreProvider, useMediatorSetup } from '@package/agent'
+import { AgentProvider, type InvitationType, WalletJsonStoreProvider, useMediatorSetup } from '@package/agent'
 import { isParadymAgent } from '@package/agent/src/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
@@ -15,9 +16,16 @@ import { useTheme } from 'tamagui'
 
 const jsonRecordIds = [activityStorage.recordId]
 
+const isDIDCommEnabled = useFeatureFlag('DIDCOMM')
+
 // When deeplink routing we want to push
 export const credentialDataHandlerOptions = {
   routeMethod: 'push',
+  allowedInvitationTypes: [
+    'openid-credential-offer',
+    'openid-authorization-request',
+    ...(isDIDCommEnabled ? (['didcomm'] as InvitationType[]) : []),
+  ],
 } satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {

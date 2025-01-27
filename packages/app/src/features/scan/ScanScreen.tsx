@@ -4,7 +4,6 @@ import { useIsFocused } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useRouter } from 'solito/router'
 
-import { useAgent } from '@package/agent/src'
 import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '../../hooks'
 
 const unsupportedUrlPrefixes = ['_oob=']
@@ -15,7 +14,6 @@ interface QrScannerScreenProps {
 
 export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScreenProps) {
   const { back } = useRouter()
-  const { agent } = useAgent()
   const { handleCredentialData } = useCredentialDataHandler()
 
   const [helpText, setHelpText] = useState('')

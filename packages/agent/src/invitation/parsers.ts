@@ -1,4 +1,4 @@
-import type { FullAppAgent } from '../agent'
+import type { ParadymAppAgent } from '../agent'
 
 import { parseInvitationJson } from '@credo-ts/core/build/utils/parseInvitation'
 import queryString from 'query-string'
@@ -82,7 +82,7 @@ export const isDidCommInvitation = (url: string) => {
   return false
 }
 
-export async function parseDidCommInvitation(agent: FullAppAgent, invitation: string | Record<string, unknown>) {
+export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation: string | Record<string, unknown>) {
   try {
     if (typeof invitation === 'string') {
       const parsedUrl = queryString.parseUrl(invitation)

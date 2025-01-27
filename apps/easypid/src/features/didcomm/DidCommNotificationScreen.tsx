@@ -1,10 +1,11 @@
-import { parseDidCommInvitation, receiveOutOfBandInvitation, useAgent } from '@package/agent'
+import { parseDidCommInvitation, receiveOutOfBandInvitation } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app/src'
 
 import { useToastController } from '@package/ui'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 
+import { useAppAgent } from '@easypid/agent'
 import { DidCommCredentialNotificationScreen } from '../receive/DidcommCredentialNotificationScreen'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
@@ -19,7 +20,7 @@ type Query = {
 const { useParams } = createParam<Query>()
 
 export function DidCommNotificationScreen() {
-  const { agent } = useAgent()
+  const { agent } = useAppAgent()
   const { params } = useParams()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
@@ -88,7 +89,7 @@ export function DidCommNotificationScreen() {
 
   // TODO: Ideally we can combine the slides with this that are returned in the credential/proof flows
   // This way, we can use multiple slides in the flows.
-  // Because this doesn't really scale well
+  // Because this doesn't really scale well (e.g. what if we want trust screens in the flows?)
   return (
     <SlideWizard
       steps={[
