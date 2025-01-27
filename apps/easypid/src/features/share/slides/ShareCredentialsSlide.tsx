@@ -1,21 +1,19 @@
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
-import { DualResponseButtons, usePushToWallet, useScrollViewPosition } from '@package/app'
+import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack, useToastController } from '@package/ui'
+import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import { RequestPurposeSection } from '../components/RequestPurposeSection'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
-import type { PresentationRequestResult } from '../components/utils'
 
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
-  onAccept?: () => Promise<PresentationRequestResult | undefined>
+  onAccept?: () => Promise<void>
   onDecline?: () => void
   submission: FormattedSubmission
   isAccepting: boolean
-
   isOffline?: boolean
   overAskingResponse?: OverAskingResponse
 }
@@ -32,19 +30,9 @@ export const ShareCredentialsSlide = ({
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
-  const pushToWallet = usePushToWallet()
-  const toast = useToastController()
 
   const handleAccept = async () => {
-    if (onAccept) {
-      // TODO: move to level higher
-      const result = await onAccept()
-      if (result?.status === 'error') {
-        toast.show(result.result.title, { message: result.result.message, customData: { preset: 'danger' } })
-        pushToWallet()
-        return
-      }
-    }
+    await onAccept?.()
     onNext()
   }
 

@@ -19,7 +19,6 @@ import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderC
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
-import type { PresentationRequestResult } from './components/utils'
 
 type Query = { uri?: string; data?: string }
 
@@ -93,29 +92,27 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     })
   }, [credentialsForRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
 
-  const onProofAccept = useCallback(
-    async (pin?: string): Promise<PresentationRequestResult> => {
-      if (!credentialsForRequest)
-        return {
-          status: 'error',
-          result: {
-            title: 'No credentials selected',
-          },
-        }
+  const handleError = useCallback(
+    ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
+      setIsSharing(false)
+      toast.show(reason, { message: description, customData: { preset: 'danger' } })
+      if (redirect) pushToWallet()
+      return
+    },
+    [toast, pushToWallet]
+  )
 
+  const onProofAccept = useCallback(
+    async (pin?: string, onComplete?: () => void, onPinError?: () => void) => {
       stopOverAsking()
+      if (!credentialsForRequest) return handleError({ reason: 'No credentials selected' })
+
       setIsSharing(true)
 
       if (shouldUsePin) {
         if (!pin) {
           setIsSharing(false)
-          return {
-            status: 'error',
-            result: {
-              title: 'Authentication failed',
-            },
-            redirectToWallet: true,
-          }
+          return handleError({ reason: 'PIN authentication failed' })
         }
         // TODO: maybe provide to shareProof method?
         try {
@@ -123,23 +120,16 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         } catch (e) {
           setIsSharing(false)
           if (e instanceof InvalidPinError) {
-            return {
-              status: 'error',
-              result: {
-                title: 'Invalid PIN entered',
-              },
-            }
+            onPinError?.()
+            return handleError({ reason: 'Invalid PIN entered', redirect: false })
           }
 
-          return {
-            status: 'error',
-            result: {
-              title: 'Authentication failed',
-              message:
-                e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
-            },
-            redirectToWallet: true,
-          }
+          return handleError({
+            reason: 'Authentication failed',
+            description:
+              e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+            redirect: true,
+          })
         }
       }
 
@@ -150,22 +140,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           selectedCredentials: {},
         })
 
+        onComplete?.()
         await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'success')
-        return {
-          status: 'success',
-          result: {
-            title: 'Presentation shared',
-          },
-        }
       } catch (error) {
         setIsSharing(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
-          return {
-            status: 'error',
-            result: {
-              title: 'Biometric authentication cancelled',
-            },
-          }
+          return handleError({ reason: 'Biometric authentication cancelled' })
         }
 
         if (credentialsForRequest) {
@@ -175,20 +155,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         agent.config.logger.error('Error accepting presentation', {
           error,
         })
-        return {
-          status: 'error',
-          redirectToWallet: true,
-          result: {
-            title: 'Presentation could not be shared.',
-            message:
-              error instanceof Error && isDevelopmentModeEnabled
-                ? `Development mode error: ${error.message}`
-                : undefined,
-          },
-        }
+
+        return handleError({
+          reason: 'Presentation could not be shared.',
+          description:
+            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
+        })
       }
     },
-    [credentialsForRequest, agent, shouldUsePin, stopOverAsking, isDevelopmentModeEnabled]
+    [credentialsForRequest, agent, shouldUsePin, stopOverAsking, isDevelopmentModeEnabled, handleError]
   )
 
   const onProofDecline = async () => {

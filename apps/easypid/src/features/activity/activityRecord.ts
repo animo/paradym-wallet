@@ -10,6 +10,7 @@ import {
   getWalletJsonStore,
   useWalletJsonRecord,
 } from '@package/agent'
+import type { EitherAgent } from '@package/agent/src/agent'
 import { useMemo } from 'react'
 import type { AppAgent } from '../../agent'
 
@@ -70,7 +71,7 @@ interface ActivityRecord {
 const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: _activityStorage.recordId,
-  addActivity: async (agent: EasyPIDAppAgent, activity: Activity) => {
+  addActivity: async (agent: EitherAgent, activity: Activity) => {
     // get activity. then add this activity
     const record = await _activityStorage.get(agent)
     if (!record) {
@@ -129,7 +130,7 @@ export const addReceivedActivity = async (
 }
 
 export const addSharedActivity = async (
-  agent: EasyPIDAppAgent,
+  agent: EitherAgent,
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'>
 ) => {
   await activityStorage.addActivity(agent, {
@@ -163,6 +164,31 @@ export function addSharedActivityForCredentialsForRequest(
             ? 'missing_credentials'
             : 'unknown'
           : undefined,
+    },
+  })
+}
+
+export function addSharedActivityForSubmission(
+  agent: AppAgent,
+  submission: FormattedSubmission,
+  verifier: {
+    id: string
+    name?: string
+  },
+  status: ActivityStatus
+) {
+  return addSharedActivity(agent, {
+    status,
+    entity: {
+      id: verifier.id,
+      name: verifier.name ?? 'Unknown verifier',
+    },
+    request: {
+      name: submission.name,
+      purpose: submission.purpose,
+      credentials: getDisclosedCredentialForSubmission(submission),
+      failureReason:
+        status === 'failed' ? (!submission.areAllSatisfied ? 'missing_credentials' : 'unknown') : undefined,
     },
   })
 }

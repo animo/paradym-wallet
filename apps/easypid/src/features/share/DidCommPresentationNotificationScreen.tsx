@@ -3,6 +3,7 @@ import { useToastController } from '@package/ui'
 import React from 'react'
 
 import { usePushToWallet } from '@package/app/src'
+import { addSharedActivityForSubmission } from '../activity/activityRecord'
 import type { PresentationRequestResult } from './components/utils'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
@@ -18,23 +19,49 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
 
-  // TODO: Add activity events
-  const onProofAccept = async (): Promise<PresentationRequestResult> => {
+  const onProofAccept = async () => {
+    if (!submission) return
+
     await acceptPresentation({})
-      .then(() => {
-        toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
-        return { status: 'success', result: { title: 'Presentation shared.' }, redirectToWallet: false }
+      .then(async () => {
+        await addSharedActivityForSubmission(
+          agent,
+          submission,
+          {
+            id: proofExchangeId,
+            name: verifierName,
+          },
+          'success'
+        )
       })
-      .catch(() => {
+      .catch(async () => {
         toast.show('Presentation could not be shared.', { customData: { preset: 'danger' } })
-        return { status: 'error', result: { title: 'Presentation could not be shared.' }, redirectToWallet: false }
+        await addSharedActivityForSubmission(
+          agent,
+          submission,
+          {
+            id: proofExchangeId,
+            name: verifierName,
+          },
+          'failed'
+        )
+        pushToWallet()
       })
-    return { status: 'success', result: { title: 'Presentation shared.' }, redirectToWallet: false }
   }
 
-  const onProofDecline = () => {
-    if (!proofExchange) {
-      return
+  const onProofDecline = async () => {
+    if (!proofExchange) return
+
+    if (submission) {
+      await addSharedActivityForSubmission(
+        agent,
+        submission,
+        {
+          id: proofExchangeId,
+          name: verifierName,
+        },
+        'stopped'
+      )
     }
 
     declinePresentation().finally(() => {
@@ -53,6 +80,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
         onDecline={onProofDecline}
         submission={submission}
         isAccepting={acceptStatus !== 'idle'}
+        overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
       />
     )
   )

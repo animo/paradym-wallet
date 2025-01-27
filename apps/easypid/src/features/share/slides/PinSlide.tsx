@@ -1,38 +1,28 @@
-import { PinDotsInput, type PinDotsInputRef, usePushToWallet, useWizard } from '@package/app'
-import { Heading, Paragraph, YStack, useToastController } from '@package/ui'
+import { PinDotsInput, type PinDotsInputRef, useWizard } from '@package/app'
+import { Heading, Paragraph, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
-import type { PresentationRequestResult } from '../components/utils'
 
 interface PinSlideProps {
-  onPinComplete: (pin: string) => Promise<PresentationRequestResult | undefined>
+  onPinComplete: (pin: string, onComplete?: () => void, onError?: () => void) => Promise<void>
   isLoading: boolean
 }
 
 export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
   const { onNext } = useWizard()
-  const toast = useToastController()
-  const pushToWallet = usePushToWallet()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const pinRef = useRef<PinDotsInputRef>(null)
 
   const onPinEnterComplete = (pin: string) => {
     setIsSubmitting(true)
 
-    onPinComplete(pin)
-      .then((r) => {
-        if (!r || r.status === 'success') return onNext()
-
-        toast.show(r.result.title, {
-          message: r.result.message,
-          customData: { preset: 'danger' },
-        })
-
+    onPinComplete(
+      pin,
+      () => onNext(),
+      () => {
         pinRef.current?.shake()
         pinRef.current?.clear()
-
-        if (r.redirectToWallet) return pushToWallet()
-      })
-      .finally(() => setIsSubmitting(false))
+      }
+    ).finally(() => setIsSubmitting(false))
   }
 
   return (

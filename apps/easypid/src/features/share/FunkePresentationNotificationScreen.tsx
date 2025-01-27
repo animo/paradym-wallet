@@ -19,7 +19,7 @@ interface FunkePresentationNotificationScreenProps {
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
-  onAccept: (pin?: string) => Promise<PresentationRequestResult>
+  onAccept: (pin?: string) => Promise<void>
   onDecline: () => void
   onComplete: () => void
 }
