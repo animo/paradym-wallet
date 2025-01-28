@@ -11,6 +11,7 @@ import { useSecureUnlock as _useSecureUnlock } from '@package/secure-store/secur
 export { initializeAppAgent } from './initialize'
 
 export const useAppAgent = useAgent<EitherAgent>
+export type AppAgent = EitherAgent
 export type SecureUnlockContext = { agent: EitherAgent }
 
 export const useEasyPIDAgent = () => {

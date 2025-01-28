@@ -2,14 +2,15 @@ import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, MdocService, TypedArrayEncoder } from '@credo-ts/core'
-import type { EasyPIDAppAgent, FormattedSubmission, MdocRecord } from '@package/agent'
+import type { AppAgent } from '@easypid/agent'
+import type { FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/src/batch'
 import { type Permission, PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  agent: EasyPIDAppAgent
+  agent: AppAgent
   submission: FormattedSubmission
 }
 
