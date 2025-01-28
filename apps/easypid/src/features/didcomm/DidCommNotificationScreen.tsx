@@ -1,17 +1,15 @@
 import { parseDidCommInvitation, receiveOutOfBandInvitation } from '@package/agent'
-import { SlideWizard, usePushToWallet } from '@package/app/src'
+import { type SlideStep, SlideWizard, usePushToWallet } from '@package/app/src'
 
-import { useToastController } from '@package/ui'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 
-import { useAppAgent } from '@easypid/agent'
-import { isParadymAgent } from '@package/agent/src/agent'
-import { DidCommCredentialNotificationScreen } from '../receive/DidcommCredentialNotificationScreen'
+import { useParadymAgent } from '@easypid/agent'
+import { useDevelopmentMode } from '@easypid/hooks'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import { DidCommPresentationNotificationScreen } from '../share/DidCommPresentationNotificationScreen'
-import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
+import { DidCommCredentialNotificationSlides } from './DidCommCredentialNotificationSlides'
+import { DidCommPresentationNotificationSlides } from './DidCommPresentationNotificationSlides'
 
 type Query = {
   invitation?: string
@@ -21,25 +19,24 @@ type Query = {
 const { useParams } = createParam<Query>()
 
 export function DidCommNotificationScreen() {
-  const { agent } = useAppAgent()
+  const { agent } = useParadymAgent()
   const { params } = useParams()
-  const toast = useToastController()
   const pushToWallet = usePushToWallet()
-  const onCancel = () => pushToWallet('back')
-  const onComplete = () => pushToWallet('replace')
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
+  const [errorReason, setErrorReason] = useState<string>()
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
   const [notification, setNotification] = useState<{
     id: string
     type: 'credentialExchange' | 'proofExchange'
   }>()
 
-  const [errorReason, setErrorReason] = useState<string>()
+  const onCancel = () => pushToWallet('back')
+  const onComplete = () => pushToWallet('replace')
 
   useEffect(() => {
     async function handleInvitation() {
       if (hasHandledNotificationLoading) return
-      if (!isParadymAgent(agent)) return
       setHasHandledNotificationLoading(true)
       try {
         const invitation = params.invitation
@@ -47,24 +44,23 @@ export function DidCommNotificationScreen() {
           : params.invitationUrl
             ? decodeURIComponent(params.invitationUrl)
             : undefined
-        // Might be no invitation if a presentationExchangeId or credentialExchangeId is passed directly
-        if (!invitation) return
+        if (!invitation) {
+          setErrorReason('No invitation was found. Please try again.')
+          return
+        }
 
         const parseResult = await parseDidCommInvitation(agent, invitation)
         if (!parseResult.success) {
-          toast.show(parseResult.error)
-          pushToWallet()
+          setErrorReason(parseResult.error)
           return
         }
 
         const receiveResult = await receiveOutOfBandInvitation(agent, parseResult.result)
         if (!receiveResult.success) {
-          toast.show(receiveResult.error)
-          pushToWallet()
+          setErrorReason(receiveResult.error)
           return
         }
 
-        // We now know the type of the invitation
         setNotification({
           id: receiveResult.id,
           type: receiveResult.type,
@@ -73,15 +69,18 @@ export function DidCommNotificationScreen() {
         agent.config.logger.error('Error parsing invitation', {
           error,
         })
-        toast.show('Error parsing invitation')
-        setErrorReason('Error parsing invitation')
+        if (isDevelopmentModeEnabled && error instanceof Error) {
+          setErrorReason(`Error parsing invitation\n\nDevelopment mode error:\n${error.message}`)
+        } else {
+          setErrorReason('Error parsing invitation')
+        }
       }
     }
 
     void handleInvitation()
-  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, toast, pushToWallet])
+  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled])
 
-  // We were routed here without any notification
+  // We were routed here without an invitation
   if (!params.invitation && !params.invitationUrl) {
     // eslint-disable-next-line no-console
     console.error('One of invitation or invitationUrl is required when navigating to DidCommNotificationScreen.')
@@ -89,43 +88,26 @@ export function DidCommNotificationScreen() {
     return null
   }
 
-  // TODO: Ideally we can combine the slides with this that are returned in the credential/proof flows
-  // This way, we can use multiple slides in the flows.
-  // Because this doesn't really scale well (e.g. what if we want trust screens in the flows?)
+  // Both flows have the same entry point, so we re-use the same loading request slide
+  // This way we avoid a double loading screen when the respective flow is entered
+  const initialSlides: SlideStep[] = [
+    {
+      step: 'loading-request',
+      progress: 33,
+      screen: <LoadingRequestSlide key="loading-request" isLoading={!notification} isError={!!errorReason} />,
+    },
+  ]
+
+  const notificationSlides: SlideStep[] =
+    notification?.type === 'credentialExchange'
+      ? DidCommCredentialNotificationSlides({ credentialExchangeId: notification.id, onCancel, onComplete })
+      : notification?.type === 'proofExchange'
+        ? DidCommPresentationNotificationSlides({ proofExchangeId: notification.id, onCancel, onComplete })
+        : []
+
   return (
     <SlideWizard
-      steps={[
-        {
-          step: 'loading-request',
-          progress: 33,
-          screen: <LoadingRequestSlide key="loading-request" isLoading={!notification} isError={!!errorReason} />,
-        },
-        ...(notification?.type === 'credentialExchange'
-          ? [
-              {
-                step: 'retrieve-credential',
-                progress: 66,
-                backIsCancel: true,
-                screen: <DidCommCredentialNotificationScreen credentialExchangeId={notification.id} />,
-              },
-            ]
-          : notification?.type === 'proofExchange'
-            ? [
-                {
-                  step: 'retrieve-presentation',
-                  progress: 66,
-                  backIsCancel: true,
-                  screen: <DidCommPresentationNotificationScreen proofExchangeId={notification.id} />,
-                },
-                {
-                  step: 'success',
-                  progress: 100,
-                  backIsCancel: true,
-                  screen: <PresentationSuccessSlide onComplete={onComplete} />,
-                },
-              ]
-            : []),
-      ]}
+      steps={[...initialSlides, ...notificationSlides]}
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={!!errorReason}
       onCancel={onCancel}

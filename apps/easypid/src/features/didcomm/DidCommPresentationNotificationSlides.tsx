@@ -2,20 +2,24 @@ import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
 import React from 'react'
 
-import { usePushToWallet } from '@package/app/src'
+import type { SlideStep } from '@package/app/src'
 import { addSharedActivityForSubmission } from '../activity/activityRecord'
-import type { PresentationRequestResult } from './components/utils'
-import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
+import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
+import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 
-interface DidCommPresentationNotificationScreenProps {
+interface DidCommPresentationNotificationSlidesProps {
   proofExchangeId: string
+  onCancel: () => void
+  onComplete: () => void
 }
 
-export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCommPresentationNotificationScreenProps) {
+export function DidCommPresentationNotificationSlides({
+  proofExchangeId,
+  onCancel,
+  onComplete,
+}: DidCommPresentationNotificationSlidesProps) {
   const { agent } = useAgent()
-
   const toast = useToastController()
-  const pushToWallet = usePushToWallet()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
 
@@ -45,7 +49,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
           },
           'failed'
         )
-        pushToWallet()
+        onCancel()
       })
   }
 
@@ -69,19 +73,32 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
     })
 
     toast.show('Information request has been declined.')
-    pushToWallet()
+    onCancel()
   }
 
-  if (!submission) return null
+  if (!submission) return []
 
-  return (
-    <ShareCredentialsSlide
-      key="share-credentials"
-      onAccept={onProofAccept}
-      onDecline={onProofDecline}
-      submission={submission}
-      isAccepting={acceptStatus !== 'idle'}
-      overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
-    />
-  )
+  return [
+    {
+      step: 'retrieve-presentation',
+      progress: 66,
+      backIsCancel: true,
+      screen: (
+        <ShareCredentialsSlide
+          key="share-credentials"
+          onAccept={onProofAccept}
+          onDecline={onProofDecline}
+          submission={submission}
+          isAccepting={acceptStatus !== 'idle'}
+          overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
+        />
+      ),
+    },
+    {
+      step: 'success',
+      progress: 100,
+      backIsCancel: true,
+      screen: <PresentationSuccessSlide onComplete={onComplete} />,
+    },
+  ] as SlideStep[]
 }
