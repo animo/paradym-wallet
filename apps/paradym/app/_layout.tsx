@@ -1,5 +1,3 @@
-import type { EitherAgent } from '@package/agent'
-
 import { AgentProvider, initializeParadymAgent, useMediatorSetup } from '@package/agent'
 import {
   DeeplinkHandler,
@@ -17,7 +15,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { isParadymAgent } from '@package/agent/src/agent'
+import { type ParadymAppAgent, isParadymAgent } from '@package/agent/src/agent'
 import tamaguiConfig from '../tamagui.config'
 import { mediatorDid } from './constants'
 
@@ -29,7 +27,7 @@ export const unstable_settings = {
 }
 
 export default function HomeLayout() {
-  const [agent, setAgent] = useState<EitherAgent>()
+  const [agent, setAgent] = useState<ParadymAppAgent>()
   const hasInternetConnection = useHasInternetConnection()
 
   const [agentInitializationFailed, setAgentInitializationFailed] = useState(false)

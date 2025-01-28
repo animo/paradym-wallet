@@ -1,9 +1,9 @@
 import { utils } from '@credo-ts/core'
+import type { AppAgent } from '@easypid/agent'
 import {
   type CredentialForDisplayId,
   type CredentialsForProofRequest,
   type DisplayImage,
-  type EitherAgent,
   type FormattedSubmission,
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
@@ -12,7 +12,6 @@ import {
 } from '@package/agent'
 
 import { useMemo } from 'react'
-import type { AppAgent } from '../../agent'
 
 export type ActivityType = 'shared' | 'received'
 export type ActivityStatus = 'success' | 'failed' | 'stopped'
@@ -71,7 +70,7 @@ interface ActivityRecord {
 const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: _activityStorage.recordId,
-  addActivity: async (agent: EitherAgent, activity: Activity) => {
+  addActivity: async (agent: AppAgent, activity: Activity) => {
     // get activity. then add this activity
     const record = await _activityStorage.get(agent)
     if (!record) {
@@ -103,7 +102,7 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
 }
 
 export const addReceivedActivity = async (
-  agent: EitherAgent,
+  agent: AppAgent,
   input: {
     entityId: string
     name: string
@@ -129,10 +128,7 @@ export const addReceivedActivity = async (
   })
 }
 
-export const addSharedActivity = async (
-  agent: EitherAgent,
-  input: Omit<PresentationActivity, 'type' | 'date' | 'id'>
-) => {
+export const addSharedActivity = async (agent: AppAgent, input: Omit<PresentationActivity, 'type' | 'date' | 'id'>) => {
   await activityStorage.addActivity(agent, {
     ...input,
     id: utils.uuid(),

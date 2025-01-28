@@ -11,7 +11,8 @@ import {
 } from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
-import type { EitherAgent, FormattedSubmission, MdocRecord } from '@package/agent'
+import type { AppAgent } from '@easypid/agent'
+import type { FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/src/batch'
 import { type Permission, PermissionsAndroid, Platform } from 'react-native'
 
@@ -21,7 +22,7 @@ const requireMdocDataTransfer = () =>
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  agent: EitherAgent
+  agent: AppAgent
   submission: FormattedSubmission
 }
 
