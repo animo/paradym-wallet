@@ -32,6 +32,7 @@
 		"@react-native-masked-view/masked-view": "0.3.1",
 		"@react-navigation/native": "^6.1.6",
 		"babel-plugin-module-resolver": "^4.1.0",
+		"buffer": "6.0.3",
 		"burnt": "^0.12.2",
 		"expo": "~51.0.39",
 		"expo-blur": "^13.0.2",
@@ -48,6 +49,7 @@
 		"expo-router": "~3.5.24",
 		"expo-secure-store": "~13.0.1",
 		"expo-splash-screen": "~0.27.7",
+		"expo-standard-web-crypto": "catalog:",
 		"expo-status-bar": "~1.12.1",
 		"expo-system-ui": "~3.0.6",
 		"expo-updates": "~0.25.16",
@@ -71,7 +73,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
-		"@tamagui/babel-plugin": "1.109.5",
+		"@tamagui/babel-plugin": "1.122.7",
 		"babel-plugin-syntax-hermes-parser": "^0.25.1",
 		"expo-build-properties": "^0.12.5",
 		"typescript": "catalog:"

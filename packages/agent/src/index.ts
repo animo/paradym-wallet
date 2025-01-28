@@ -12,10 +12,10 @@ global.Buffer = Buffer
 
 export type { OpenId4VciTxCode, OpenId4VciDpopRequestOptions } from '@credo-ts/openid4vc'
 export {
-  initializeFullAgent,
+  initializeParadymAgent,
   initializeEasyPIDAgent,
   useAgent,
-  FullAppAgent,
+  ParadymAppAgent,
   EasyPIDAppAgent,
 } from './agent'
 export * from './providers'

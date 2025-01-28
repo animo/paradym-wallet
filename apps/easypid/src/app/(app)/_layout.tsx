@@ -2,20 +2,30 @@ import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from '
 
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
+import { mediatorDid } from '@easypid/constants'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { AgentProvider, WalletJsonStoreProvider } from '@package/agent'
-import { type CredentialDataHandlerOptions, DeeplinkHandler, useHaptics } from '@package/app'
+import { AgentProvider, type InvitationType, WalletJsonStoreProvider, useMediatorSetup } from '@package/agent'
+import { isParadymAgent } from '@package/agent/src/agent'
+import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'tamagui'
 
 const jsonRecordIds = [activityStorage.recordId]
 
+const isDIDCommEnabled = useFeatureFlag('DIDCOMM')
+
 // When deeplink routing we want to push
 export const credentialDataHandlerOptions = {
   routeMethod: 'push',
+  allowedInvitationTypes: [
+    'openid-credential-offer',
+    'openid-authorization-request',
+    ...(isDIDCommEnabled ? (['didcomm'] as InvitationType[]) : []),
+  ],
 } satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {
@@ -27,6 +37,7 @@ export default function AppLayout() {
   const [redirectAfterUnlocked, setRedirectAfterUnlocked] = useState<string>()
   const pathname = usePathname()
   const params = useGlobalSearchParams()
+  const hasInternetConnection = useHasInternetConnection()
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -35,6 +46,16 @@ export default function AppLayout() {
   const shouldResetWallet =
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
   const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
+
+  // Only setup mediation if the agent is a paradym agent
+  useMediatorSetup({
+    agent:
+      secureUnlock.state === 'unlocked' && isParadymAgent(secureUnlock.context.agent) && isDIDCommEnabled
+        ? secureUnlock.context.agent
+        : undefined,
+    hasInternetConnection,
+    mediatorDid,
+  })
 
   useEffect(() => {
     // Reset state
@@ -48,7 +69,7 @@ export default function AppLayout() {
     resetWallet(secureUnlock)
   }, [secureUnlock, hasResetWallet, shouldResetWallet])
 
-  // If we are intializing and the wallet was opened using a deeplinkg we will be redirected
+  // If we are initializing and the wallet was opened using a deeplink we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
   // to the auth screen
   if (
@@ -132,6 +153,14 @@ export default function AppLayout() {
               gestureEnabled: false,
             }}
           />
+
+          <Stack.Screen
+            name="notifications/didcomm"
+            options={{
+              gestureEnabled: false,
+            }}
+          />
+
           <Stack.Screen name="credentials/index" options={headerNormalOptions} />
           <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
           <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />

@@ -1,16 +1,14 @@
 import type { FormattedSubmission } from 'packages/agent/src'
 import { SlideWizard } from 'packages/app/src/components'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import type { PresentationRequestResult } from './components/utils'
 import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
-// UI Slides for offline sharing (ideally should be used for both Mdoc and SdJwt)
 interface FunkeOfflineSharingScreenProps {
   submission?: FormattedSubmission
   isAccepting: boolean
-  onAccept: () => Promise<PresentationRequestResult>
+  onAccept: () => Promise<void>
   onDecline: () => void
   onComplete: () => void
 }
@@ -48,7 +46,7 @@ export function FunkeOfflineSharingScreen({
         {
           step: 'pin-enter',
           progress: 75,
-          screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAccept} />,
+          screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinSubmit={onAccept} />,
         },
         {
           step: 'success',

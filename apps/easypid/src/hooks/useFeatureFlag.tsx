@@ -6,10 +6,10 @@ export const useFeatureFlag = (featureKey: FeatureKey) => {
   return APP_CONFIGS[CURRENT_APP_TYPE]?.[featureKey] ?? false
 }
 
-export const useIsFunkeWallet = () => {
+export const isFunkeWallet = () => {
   return CURRENT_APP_TYPE === 'FUNKE_WALLET'
 }
 
-export const useIsParadymWallet = () => {
+export const isParadymWallet = () => {
   return CURRENT_APP_TYPE === 'PARADYM_WALLET'
 }

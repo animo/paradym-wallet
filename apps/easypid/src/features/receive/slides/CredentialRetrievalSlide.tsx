@@ -38,7 +38,9 @@ interface CredentialRetrievalSlideProps {
   display: CredentialDisplay
   isCompleted: boolean
   onAccept: () => Promise<void>
+  onDecline?: () => void
   onGoToWallet: () => void
+  isAccepting?: boolean
 }
 
 export const CredentialRetrievalSlide = ({
@@ -46,7 +48,9 @@ export const CredentialRetrievalSlide = ({
   display,
   isCompleted,
   onAccept,
+  onDecline,
   onGoToWallet,
+  isAccepting,
 }: CredentialRetrievalSlideProps) => {
   const { completeProgressBar, onCancel } = useWizard()
   const isInitialRender = useInitialRender()
@@ -55,7 +59,7 @@ export const CredentialRetrievalSlide = ({
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
-  const [isStoring, setIsStoring] = useState(false)
+  const [isStoring, setIsStoring] = useState(isAccepting ?? false)
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
   const isStoringOrCompleted = isStoring || isCompleted
   const isAllowedToAccept = attributes && Object.keys(attributes).length > 0
@@ -66,6 +70,7 @@ export const CredentialRetrievalSlide = ({
   }
 
   const handleDecline = () => {
+    onDecline?.()
     onCancel()
   }
 

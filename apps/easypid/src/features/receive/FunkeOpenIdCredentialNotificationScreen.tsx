@@ -30,12 +30,12 @@ import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
+import React from 'react'
 import { createParam } from 'solito'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addReceivedActivity, useActivities } from '../activity/activityRecord'
-import type { PresentationRequestResult } from '../share/components/utils'
-import { PinSlide } from '../share/slides/PinSlide'
+import { PinSlide, type onPinSubmitProps } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
@@ -114,13 +114,6 @@ export function FunkeCredentialNotificationScreen() {
     resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
   const txCode = preAuthGrant?.tx_code
   const { activities } = useActivities({ filters: { entityId: issuerMetadata?.credential_issuer } })
-
-  // TODO: fed metadata should be returned by get crednetial offer method from agent package
-  // TODO: add issuer metadata
-  // const issuerMetadata = useMemo(
-  //   () => getOpenIdFedIssuerMetadata(authCodeFlowDetails?.domain as string),
-  //   [authCodeFlowDetails?.domain]
-  // )
 
   useEffect(() => {
     resolveOpenId4VciOffer({
@@ -284,8 +277,8 @@ export function FunkeCredentialNotificationScreen() {
     [acquireCredentialsPreAuth]
   )
 
-  const onPresentationAccept: (pin?: string) => Promise<undefined | PresentationRequestResult> = useCallback(
-    async (pin?: string) => {
+  const onPresentationAccept = useCallback(
+    async ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => {
       if (
         !credentialsForRequest ||
         !resolvedCredentialOffer ||
@@ -300,7 +293,7 @@ export function FunkeCredentialNotificationScreen() {
 
       if (shouldUsePinForPresentation) {
         if (!pin) {
-          setErrorReason('Presentation information could not be extracted.')
+          setErrorReason('PIN is required to accept the presentation.')
           return
         }
         // TODO: maybe provide to shareProof method?
@@ -308,9 +301,10 @@ export function FunkeCredentialNotificationScreen() {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (error) {
           if (error instanceof InvalidPinError) {
-            toast.show('Invalid PIN entered', { customData: { preset: 'danger' } })
+            onPinError?.()
             setIsSharingPresentation(false)
-            return { status: 'error', result: { title: error.message }, redirectToWallet: false }
+            toast.show('Invalid PIN entered', { customData: { preset: 'warning' } })
+            return
           }
 
           setErrorReasonWithError('Presentation information could not be extracted', error)
@@ -333,12 +327,17 @@ export function FunkeCredentialNotificationScreen() {
         })
 
         await acquireCredentialsAuth(authorizationCode)
-
+        onPinComplete?.()
         setIsSharingPresentation(false)
       } catch (error) {
         setIsSharingPresentation(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
           setErrorReason('Biometric authentication cancelled')
+          return
+        }
+        if (error instanceof InvalidPinError) {
+          onPinError?.()
+          toast.show('Invalid PIN entered', { customData: { preset: 'warning' } })
           return
         }
 
@@ -443,7 +442,7 @@ export function FunkeCredentialNotificationScreen() {
               screen: (
                 <ShareCredentialsSlide
                   key="share-credentials"
-                  onAccept={shouldUsePinForPresentation ? undefined : onPresentationAccept}
+                  onAccept={shouldUsePinForPresentation ? undefined : () => onPresentationAccept({})}
                   onDecline={onProofDecline}
                   logo={credentialsForRequest.verifier.logo}
                   submission={credentialsForRequest.formattedSubmission}
@@ -458,9 +457,7 @@ export function FunkeCredentialNotificationScreen() {
           ? {
               step: 'pin-enter',
               progress: 82.5,
-              screen: (
-                <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinComplete={onPresentationAccept} />
-              ),
+              screen: <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinSubmit={onPresentationAccept} />,
             }
           : undefined,
         isPreAuthWithTxFlow

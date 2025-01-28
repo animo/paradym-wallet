@@ -81,7 +81,7 @@ export function CardWithAttributes({
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="$4" py="$3" pos="relative" backgroundColor={'green'} bg={backgroundColor ?? '$grey-900'}>
+      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
         {hasInternet && backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
@@ -95,7 +95,7 @@ export function CardWithAttributes({
         )}
         <XStack ai="center" jc="space-between">
           <YStack f={1}>
-            <Heading variant="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor}>
+            <Heading variant="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-100'}>
               {name.toLocaleUpperCase()}
             </Heading>
           </YStack>
@@ -109,7 +109,7 @@ export function CardWithAttributes({
       <YStack px="$4" pt="$3" pb="$4" gap="$4" bg="$white">
         <YStack gap="$2" fg={1} pr="$4">
           {groupedAttributes.map(([first, second]) => (
-            <XStack key={first + second} gap="$4">
+            <XStack key={first + second} gap="$4" minHeight="$3.5">
               <Stack flexGrow={1} flexBasis={0}>
                 <Paragraph fontSize={15}>{sanitizeString(first)}</Paragraph>
               </Stack>

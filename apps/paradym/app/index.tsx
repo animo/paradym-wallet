@@ -1,13 +1,11 @@
-import type { FullAppAgent } from '@package/agent'
-
-import { initializeFullAgent, useAgent } from '@package/agent'
+import { type ParadymAppAgent, initializeParadymAgent, useAgent } from '@package/agent'
 import { WalletScreen } from '@package/app'
 import { XStack } from '@package/ui'
 import { Stack } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-export const initializeAppAgent = initializeFullAgent
-export const useAppAgent = useAgent<FullAppAgent>
+export const initializeAppAgent = initializeParadymAgent
+export const useAppAgent = useAgent<ParadymAppAgent>
 
 export default function Screen() {
   const { top } = useSafeAreaInsets()
