@@ -8,14 +8,13 @@ catalog:
   react: 18.3.1
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
-  "@credo-ts/anoncreds": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/anoncreds?funke
-  "@credo-ts/askar": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/askar?funke
-  "@credo-ts/node": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/node?funke
-  "@credo-ts/cheqd": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/cheqd?funke
-  "@credo-ts/core": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/core?funke
-  "@credo-ts/openid4vc": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/openid4vc?funke
-  "@credo-ts/question-answer": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/question-answer?funke
-  "@credo-ts/react-native": https://gitpkg.vercel.app/animo/aries-framework-javascript/packages/react-native?funke
+  "@credo-ts/anoncreds": "npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250128050818"
+  "@credo-ts/askar": "npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250128050818"
+  "@credo-ts/cheqd": "npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250128050818"
+  "@credo-ts/core": "npm:@animo-id/credo-ts-core@0.5.14-alpha-20250128050818"
+  "@credo-ts/openid4vc": "npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250128050818"
+  "@credo-ts/question-answer": "npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250128050818"
+  "@credo-ts/react-native": "npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250128050818"
   "@credo-ts/react-hooks": 0.6.1
   "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": ^0.2.4
