@@ -152,10 +152,14 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               const credential = await getCredential(agent, `w3c-credential-${match.credentialId}`)
               const credentialForDisplay = getCredentialForDisplay(credential)
 
+              const disclosedAttributesWithValues = Object.entries(credentialForDisplay.attributes)
+                .filter(([key]) => entry.requestedAttributes.has(key))
+                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+
               return {
                 credential: credentialForDisplay,
                 disclosed: {
-                  attributes: credentialForDisplay.attributes,
+                  attributes: disclosedAttributesWithValues,
                   metadata: credentialForDisplay.metadata,
                   paths: Array.from(entry.requestedAttributes).map((a) => [a]),
                 },

@@ -1,5 +1,4 @@
 import { setFallbackSecureEnvironment, shouldUseFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
-import { CURRENT_APP_TYPE } from '@easypid/config/appType'
 import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'
@@ -24,7 +23,7 @@ export async function initializeAppAgent({
         keyDerivation: 'raw',
         walletId: 'paradym-wallet-secure',
         walletKey,
-        walletLabel: 'paradym-wallet',
+        walletLabel: 'Paradym Wallet',
         trustedX509Certificates,
       })
 

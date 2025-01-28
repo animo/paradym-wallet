@@ -19,6 +19,7 @@ import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderC
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
+import type { onPinSubmitProps } from './slides/PinSlide'
 
 type Query = { uri?: string; data?: string }
 
@@ -103,7 +104,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   )
 
   const onProofAccept = useCallback(
-    async (pin?: string, onComplete?: () => void, onPinError?: () => void) => {
+    async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
       stopOverAsking()
       if (!credentialsForRequest) return handleError({ reason: 'No credentials selected' })
 
@@ -140,8 +141,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           selectedCredentials: {},
         })
 
-        onComplete?.()
-        await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'success')
+        onPinComplete?.()
+        await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'success').catch(console.error)
       } catch (error) {
         setIsSharing(false)
         if (error instanceof BiometricAuthenticationCancelledError) {

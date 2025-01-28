@@ -50,7 +50,7 @@ export default function AppLayout() {
   // Only setup mediation if the agent is a paradym agent
   useMediatorSetup({
     agent:
-      secureUnlock.state === 'unlocked' && isParadymAgent(secureUnlock.context.agent)
+      secureUnlock.state === 'unlocked' && isParadymAgent(secureUnlock.context.agent) && isDIDCommEnabled
         ? secureUnlock.context.agent
         : undefined,
     hasInternetConnection,

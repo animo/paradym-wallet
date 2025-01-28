@@ -1,13 +1,17 @@
 import { useAgent } from '@package/agent'
-import { type EasyPIDAppAgent, type ParadymAppAgent, isEasyPIDAgent, isParadymAgent } from '@package/agent/src/agent'
+import {
+  type EasyPIDAppAgent,
+  type EitherAgent,
+  type ParadymAppAgent,
+  isEasyPIDAgent,
+  isParadymAgent,
+} from '@package/agent/src/agent'
 import { useSecureUnlock as _useSecureUnlock } from '@package/secure-store/secureUnlock'
-import type { initializeAppAgent } from './initialize'
 
 export { initializeAppAgent } from './initialize'
 
-export type AppAgent = Awaited<ReturnType<typeof initializeAppAgent>>
-export const useAppAgent = useAgent<AppAgent>
-export type SecureUnlockContext = { agent: AppAgent }
+export const useAppAgent = useAgent<EitherAgent>
+export type SecureUnlockContext = { agent: EitherAgent }
 
 export const useEasyPIDAgent = () => {
   const agent = useAppAgent()

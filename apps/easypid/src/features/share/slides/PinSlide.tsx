@@ -2,12 +2,18 @@ import { PinDotsInput, type PinDotsInputRef, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
 
-interface PinSlideProps {
-  onPinComplete: (pin: string, onComplete?: () => void, onError?: () => void) => Promise<void>
+export interface onPinSubmitProps {
+  pin?: string
+  onPinComplete?: () => void
+  onPinError?: () => void
+}
+
+export interface PinSlideProps {
+  onPinSubmit: ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => Promise<void>
   isLoading: boolean
 }
 
-export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
+export const PinSlide = ({ onPinSubmit, isLoading }: PinSlideProps) => {
   const { onNext } = useWizard()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const pinRef = useRef<PinDotsInputRef>(null)
@@ -15,14 +21,14 @@ export const PinSlide = ({ onPinComplete, isLoading }: PinSlideProps) => {
   const onPinEnterComplete = (pin: string) => {
     setIsSubmitting(true)
 
-    onPinComplete(
+    onPinSubmit({
       pin,
-      () => onNext(),
-      () => {
+      onPinComplete: () => onNext(),
+      onPinError: () => {
         pinRef.current?.shake()
         pinRef.current?.clear()
-      }
-    ).finally(() => setIsSubmitting(false))
+      },
+    }).finally(() => setIsSubmitting(false))
   }
 
   return (
