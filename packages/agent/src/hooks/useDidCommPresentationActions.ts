@@ -155,8 +155,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               return {
                 credential: credentialForDisplay,
                 disclosed: {
-                  // TODO: we don't show this yet on anoncreds screen, but we should add it
-                  attributes: {},
+                  attributes: credentialForDisplay.attributes,
                   metadata: credentialForDisplay.metadata,
                   paths: Array.from(entry.requestedAttributes).map((a) => [a]),
                 },

@@ -10,7 +10,7 @@ interface DidCommCredentialNotificationSlidesProps {
   onComplete: () => void
 }
 
-export function DidCommCredentialNotificationSlides({
+export function useDidCommCredentialNotificationSlides({
   credentialExchangeId,
   onCancel,
   onComplete,

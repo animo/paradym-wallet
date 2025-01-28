@@ -13,7 +13,7 @@ interface DidCommPresentationNotificationSlidesProps {
   onComplete: () => void
 }
 
-export function DidCommPresentationNotificationSlides({
+export function useDidCommPresentationNotificationSlides({
   proofExchangeId,
   onCancel,
   onComplete,
@@ -98,7 +98,7 @@ export function DidCommPresentationNotificationSlides({
       step: 'success',
       progress: 100,
       backIsCancel: true,
-      screen: <PresentationSuccessSlide onComplete={onComplete} />,
+      screen: <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
     },
   ] as SlideStep[]
 }

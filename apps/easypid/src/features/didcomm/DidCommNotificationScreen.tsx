@@ -8,8 +8,8 @@ import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import { DidCommCredentialNotificationSlides } from './DidCommCredentialNotificationSlides'
-import { DidCommPresentationNotificationSlides } from './DidCommPresentationNotificationSlides'
+import { useDidCommCredentialNotificationSlides } from './useDidCommCredentialNotificationSlides'
+import { useDidCommPresentationNotificationSlides } from './useDidCommPresentationNotificationSlides'
 
 type Query = {
   invitation?: string
@@ -90,7 +90,7 @@ export function DidCommNotificationScreen() {
 
   // Both flows have the same entry point, so we re-use the same loading request slide
   // This way we avoid a double loading screen when the respective flow is entered
-  const initialSlides: SlideStep[] = [
+  const steps: SlideStep[] = [
     {
       step: 'loading-request',
       progress: 33,
@@ -98,16 +98,29 @@ export function DidCommNotificationScreen() {
     },
   ]
 
-  const notificationSlides: SlideStep[] =
-    notification?.type === 'credentialExchange'
-      ? DidCommCredentialNotificationSlides({ credentialExchangeId: notification.id, onCancel, onComplete })
-      : notification?.type === 'proofExchange'
-        ? DidCommPresentationNotificationSlides({ proofExchangeId: notification.id, onCancel, onComplete })
-        : []
+  const credentialSlides = useDidCommCredentialNotificationSlides({
+    credentialExchangeId: notification?.id as string,
+    onCancel,
+    onComplete,
+  })
+  const presentationSlides = useDidCommPresentationNotificationSlides({
+    proofExchangeId: notification?.id as string,
+    onCancel,
+    onComplete,
+  })
+
+  // Add the appropriate slides based on notification type
+  if (notification) {
+    if (notification.type === 'credentialExchange') {
+      steps.push(...credentialSlides)
+    } else if (notification.type === 'proofExchange') {
+      steps.push(...presentationSlides)
+    }
+  }
 
   return (
     <SlideWizard
-      steps={[...initialSlides, ...notificationSlides]}
+      steps={steps}
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={!!errorReason}
       onCancel={onCancel}

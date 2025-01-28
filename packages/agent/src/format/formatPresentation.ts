@@ -121,6 +121,8 @@ export function formatDifPexCredentialsForRequest(
                   paths: getDisclosedAttributePathArrays(verifiableCredential.disclosedPayload, 2),
                 }
               } else {
+                console.log('hiero kom ik hier')
+                console.log('credentialForDisplay', JSON.stringify(credentialForDisplay, null, 2))
                 disclosed = {
                   attributes: credentialForDisplay.attributes,
                   metadata: credentialForDisplay.metadata,
