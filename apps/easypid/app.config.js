@@ -114,9 +114,10 @@ const config = {
     supportsTablet: false,
     bundleIdentifier: `id.animo.ausweis${variant.bundle}`,
     infoPlist: {
-      NSPhotoLibraryUsageDescription: 'EasyPID uses the camera to initiate receiving and sharing of credentials.',
-      NSCameraUsageDescription: 'EasyPID uses the camera to initiate receiving and sharing of credentials.',
-      NSFaceIDUsageDescription: 'EasyPID uses FaceID to securely unlock the wallet and share credentials.',
+      NSPhotoLibraryUsageDescription:
+        'Paradym Wallet uses the camera to initiate receiving and sharing of credentials.',
+      NSCameraUsageDescription: 'Paradym Wallet uses the camera to initiate receiving and sharing of credentials.',
+      NSFaceIDUsageDescription: 'Paradym Wallet uses FaceID to securely unlock the wallet and share credentials.',
       ITSAppUsesNonExemptEncryption: false,
       // Add schemes for deep linking
       CFBundleURLTypes: [
