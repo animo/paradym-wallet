@@ -11,7 +11,6 @@
 		"@credo-ts/askar": "catalog:",
 		"@credo-ts/cheqd": "catalog:",
 		"@credo-ts/core": "catalog:",
-		"@credo-ts/indy-vdr": "catalog:",
 		"@credo-ts/openid4vc": "catalog:",
 		"@credo-ts/question-answer": "catalog:",
 		"@credo-ts/react-hooks": "catalog:",
@@ -26,10 +25,19 @@
 	"peerDependencies": {
 		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@hyperledger/aries-askar-react-native": "catalog:",
-		"@hyperledger/indy-vdr-react-native": "catalog:",
 		"expo": "catalog:"
 	},
 	"devDependencies": {
 		"@types/fast-text-encoding": "^1.0.3"
+	},
+	"expo": {
+		"install": {
+			"exclude": [
+				"react-native@~0.74.0",
+				"react-native-reanimated@~3.10.0",
+				"react-native-gesture-handler@~2.16.1",
+				"react-native-screens@~3.31.1"
+			]
+		}
 	}
 }

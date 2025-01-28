@@ -1,4 +1,4 @@
-import { YStack } from '@package/ui'
+import { YStack, useDeviceMedia } from '@package/ui'
 import { PinDotsInput } from 'packages/app/src'
 import type { PinDotsInputRef } from 'packages/app/src'
 import React, { useRef, useState } from 'react'
@@ -11,10 +11,7 @@ export interface OnboardingPinEnterProps {
 export default function OnboardingPinEnter({ goToNextStep }: OnboardingPinEnterProps) {
   const [isLoading, setIsLoading] = useState(false)
   const pinRef = useRef<PinDotsInputRef>(null)
-
-  // Make the pin pad fixed to the bottom of the screen on smaller devices
-  const { bottom } = useSafeAreaInsets()
-  const shouldStickToBottom = bottom < 16
+  const { additionalPadding, noBottomSafeArea } = useDeviceMedia()
 
   const onPinComplete = (pin: string) => {
     setIsLoading(true)
@@ -28,7 +25,7 @@ export default function OnboardingPinEnter({ goToNextStep }: OnboardingPinEnterP
   }
 
   return (
-    <YStack mt="$10" fg={1} mb={shouldStickToBottom ? -16 : undefined}>
+    <YStack mt="$10" fg={1} mb={noBottomSafeArea ? -additionalPadding : undefined}>
       <PinDotsInput
         onPinComplete={onPinComplete}
         isLoading={isLoading}

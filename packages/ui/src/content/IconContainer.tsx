@@ -1,5 +1,5 @@
 import { cloneElement } from 'react'
-import { Circle, type StackProps } from 'tamagui'
+import type { StackProps } from 'tamagui'
 import { AnimatedStack } from '../base'
 import { useScaleAnimation } from '../hooks'
 

@@ -95,6 +95,8 @@ export function FunkeCredentialsScreen() {
                   backgroundColor={credential.display.backgroundColor ?? '$grey-900'}
                   issuer={credential.display.issuer.name}
                   logo={credential.display.issuer.logo}
+                  // TODO: we should have RAW metadata (date instance) and human metadata (string)
+                  issuedAt={credential.metadata.issuedAt ? new Date(credential.metadata.issuedAt) : undefined}
                   onPress={() => {
                     pushToCredential(credential.id)
                   }}
@@ -121,10 +123,18 @@ interface FunkeCredentialRowCardProps {
   textColor: string
   issuer: string
   logo: DisplayImage | undefined
+  issuedAt?: Date
   onPress: () => void
 }
 
-function FunkeCredentialRowCard({ name, backgroundColor, textColor, logo, onPress }: FunkeCredentialRowCardProps) {
+function FunkeCredentialRowCard({
+  name,
+  backgroundColor,
+  textColor,
+  logo,
+  issuedAt,
+  onPress,
+}: FunkeCredentialRowCardProps) {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
 
   const icon = logo?.url ? (
@@ -155,9 +165,11 @@ function FunkeCredentialRowCard({ name, backgroundColor, textColor, logo, onPres
         <Paragraph mt="$-1.5" fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
           {name.toLocaleUpperCase()}
         </Paragraph>
-        <Paragraph variant="sub" opacity={0.9} color={textColor}>
-          Issued on {formatDate(new Date(), { includeTime: false })}
-        </Paragraph>
+        {issuedAt && (
+          <Paragraph variant="sub" opacity={0.9} color={textColor}>
+            Issued on {formatDate(issuedAt, { includeTime: false })}
+          </Paragraph>
+        )}
       </YStack>
       <IconContainer bg="transparent" icon={<HeroIcons.ArrowRight color={textColor} size={20} />} />
     </AnimatedStack>

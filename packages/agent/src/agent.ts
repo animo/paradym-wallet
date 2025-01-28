@@ -34,22 +34,14 @@ import {
   WsOutboundTransport,
   X509Module,
 } from '@credo-ts/core'
-import {
-  IndyVdrAnonCredsRegistry,
-  IndyVdrIndyDidResolver,
-  IndyVdrModule,
-  IndyVdrSovDidResolver,
-} from '@credo-ts/indy-vdr'
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { useAgent as useAgentLib } from '@credo-ts/react-hooks'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
-import { indyVdr } from '@hyperledger/indy-vdr-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
-import { bdrPidIssuerCertificate, pidSchemes } from '../../../apps/easypid/src/constants'
-import { indyNetworks } from './indyNetworks'
+import { bdrPidIssuerCertificate, pidSchemes } from '@easypid/constants'
 import { appLogger } from './logger'
 
 const askarModule = new AskarModule({
@@ -171,26 +163,15 @@ export const initializeParadymAgent = async ({
       }),
       dids: new DidsModule({
         registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
-        resolvers: [
-          new WebDidResolver(),
-          new KeyDidResolver(),
-          new JwkDidResolver(),
-          new CheqdDidResolver(),
-          new IndyVdrSovDidResolver(),
-          new IndyVdrIndyDidResolver(),
-        ],
+        resolvers: [new WebDidResolver(), new KeyDidResolver(), new JwkDidResolver(), new CheqdDidResolver()],
       }),
       anoncreds: new AnonCredsModule({
-        registries: [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
+        registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
         anoncreds,
       }),
       mediationRecipient: new MediationRecipientModule({
         // We want to manually connect to the mediator, so it doesn't impact wallet startup
         mediatorPickupStrategy: MediatorPickupStrategy.None,
-      }),
-      indyVdr: new IndyVdrModule({
-        indyVdr,
-        networks: indyNetworks,
       }),
       connections: new ConnectionsModule({
         autoAcceptConnections: true,

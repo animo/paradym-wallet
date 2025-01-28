@@ -1,28 +1,15 @@
-import {
-  COSEKey,
-  DataItem,
-  DeviceRequest,
-  DeviceResponse,
-  MDoc,
-  type MdocContext,
-  cborDecode,
-  cborEncode,
-  parseIssuerSigned,
-} from '@animo-id/mdoc'
-import { TypedArrayEncoder } from '@credo-ts/core'
-import { getMdocContext } from '@credo-ts/core/build/modules/mdoc/MdocContext'
-import type { AppAgent } from '@easypid/agent'
-import type { FormattedSubmission, MdocRecord } from '@package/agent'
+import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
+
+import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
+import { Mdoc, MdocService, TypedArrayEncoder } from '@credo-ts/core'
+import type { EasyPIDAppAgent, FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/src/batch'
 import { type Permission, PermissionsAndroid, Platform } from 'react-native'
-
-const requireMdocDataTransfer = () =>
-  require('@animo-id/expo-mdoc-data-transfer') as typeof import('@animo-id/expo-mdoc-data-transfer')
 
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  agent: AppAgent
+  agent: EasyPIDAppAgent
   submission: FormattedSubmission
 }
 
@@ -54,8 +41,7 @@ export const checkMdocPermissions = async () => {
 }
 
 export const getMdocQrCode = async () => {
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
-  mdt.enableNfc()
+  const mdt = mdocDataTransfer.instance()
   const qrData = await mdt.startQrEngagement()
   return qrData
 }
@@ -65,37 +51,29 @@ export const getMdocQrCode = async () => {
  * Wait for the device request
  *
  * Returns the device request and session transcript
- *
  */
 export const waitForDeviceRequest = async () => {
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance()
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
 
-  const encodedSessionTranscript = cborEncode(DataItem.fromData(cborDecode(sessionTranscript)))
+  // current bug on android required re-encapsulation
+  const encodedSessionTranscript =
+    Platform.OS === 'android' ? cborEncode(DataItem.fromData(cborDecode(sessionTranscript))) : sessionTranscript
 
   return { deviceRequest, sessionTranscript: encodedSessionTranscript }
 }
 
 /**
- *
- * Naive way to share the device response based on the device request
- *
+ * Send a device response based on the device request
  * Optimalisations:
- *
- * 1. pre-filter the `agent.mdoc.getAll()` based on the `deviceRequest`
- * 2. Allow the user to pick which specific mdoc is being used
- *
+ * 1. Allow the user to pick which specific mdoc is being used
  */
 export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) => {
   if (!options.submission.areAllSatisfied) {
     throw new Error('Not all requirements are satisfied')
   }
 
-  if (options.submission.entries.length > 1) {
-    throw new Error('Only one mdoc supported at the moment due to only being able to sign with one device key')
-  }
-
-  const issuerSignedDocuments = await Promise.all(
+  const mdocs = await Promise.all(
     options.submission.entries.map(async (e) => {
       if (!e.isSatisfied) throw new Error(`Requirement for doctype ${e.inputDescriptorId} not satisfied`)
 
@@ -104,41 +82,24 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
       // Optionally handle batch issuance
       const credentialRecord = await handleBatchCredential(options.agent, credential)
 
-      return parseIssuerSigned(TypedArrayEncoder.fromBase64(credentialRecord.base64Url), credential.getTags().docType)
+      return Mdoc.fromBase64Url(credentialRecord.base64Url, credential.getTags().docType)
     })
   )
 
-  const mdoc = new MDoc(issuerSignedDocuments)
+  const mdocService = options.agent.dependencyManager.resolve(MdocService)
 
-  const mdocContext = getMdocContext(options.agent.context) as unknown as {
-    cose: MdocContext['cose']
-    crypto: MdocContext['crypto']
-  }
+  // TODO: return type in credo should be Uint8Array
+  const { deviceResponseBase64Url } = await mdocService.createDeviceResponse(options.agent.context, {
+    deviceRequest: DeviceRequest.parse(options.deviceRequest),
+    mdocs: mdocs as [Mdoc, ...Mdoc[]],
+    sessionTranscriptBytes: options.sessionTranscript,
+  })
 
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
-
-  if (mdoc.documents.length > 1) {
-    throw new Error('Only one mdoc supported at the moment due to only being able to sign with one device key')
-  }
-  const mso = mdoc.documents[0].issuerSigned.issuerAuth.decodedPayload
-  const deviceKeyInfo = mso.deviceKeyInfo
-  if (!deviceKeyInfo?.deviceKey) {
-    throw new Error('Device key info is missing')
-  }
-
-  const publicDeviceJwk = COSEKey.import(deviceKeyInfo.deviceKey).toJWK()
-  const deviceRequest = DeviceRequest.parse(options.deviceRequest)
-
-  const deviceResponse = await DeviceResponse.from(mdoc)
-    .usingSessionTranscriptBytes(options.sessionTranscript)
-    .usingDeviceRequest(deviceRequest)
-    .authenticateWithSignature(publicDeviceJwk, 'ES256')
-    .sign(mdocContext)
-
-  await mdt.sendDeviceResponse(deviceResponse.encode())
+  const mdt = mdocDataTransfer.instance()
+  await mdt.sendDeviceResponse(TypedArrayEncoder.fromBase64(deviceResponseBase64Url))
 }
 
 export const shutdownDataTransfer = () => {
-  const mdt = requireMdocDataTransfer().mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance()
   mdt.shutdown()
 }
