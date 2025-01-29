@@ -57,6 +57,7 @@ import {
 } from 'react-native-heroicons/outline'
 import {
   ArchiveBoxXMarkIcon as ArchiveBoxXMarkFilledIcon,
+  ArrowUpRightIcon as ArrowUpRightFilledIcon,
   BoltIcon as BoltFilledIcon,
   CameraIcon as CameraFilledIcon,
   ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
@@ -182,6 +183,7 @@ export const HeroIcons = {
   CpuChipFilled: wrapHeroIcon(CpuChipFilledIcon),
   CommandLineFilled: wrapHeroIcon(CommandLineIcon),
   LockClosedFilled: wrapHeroIcon(LockClosedFilledIcon),
+  ArrowUpRightFilled: wrapHeroIcon(ArrowUpRightFilledIcon),
 } as const
 
 export const CustomIcons = {
