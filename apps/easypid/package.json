@@ -33,7 +33,7 @@
 		"babel-plugin-module-resolver": "^4.1.0",
 		"burnt": "^0.12.2",
 		"expo": "~51.0.39",
-		"expo-blur": "^13.0.2",
+		"expo-blur": "~13.0.3",
 		"expo-camera": "~15.0.16",
 		"expo-constants": "~16.0.2",
 		"expo-dev-client": "~4.0.16",
