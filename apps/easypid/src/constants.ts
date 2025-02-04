@@ -33,7 +33,6 @@ export const trustedX509Certificates = [
 const sdJwtVcVcts = [
   'https://demo.pid-issuer.bundesdruckerei.de/credentials/pid/1.0',
   'https://example.bmi.bund.de/credential/pid/1.0',
-  'urn:eu.europa.ec.eudi:pid:1',
 ]
 
 // https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
