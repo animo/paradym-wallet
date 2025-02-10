@@ -3,7 +3,7 @@ import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, MdocService, TypedArrayEncoder } from '@credo-ts/core'
 import type { EasyPIDAppAgent, FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/src/batch'
-import { type Permission, PermissionsAndroid, Platform } from 'react-native'
+import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
@@ -12,31 +12,29 @@ type ShareDeviceResponseOptions = {
   submission: FormattedSubmission
 }
 
-// Determine if device is running Android 12 or higher
-const isAndroid12OrHigher = Platform.OS === 'android' && Platform.Version >= 31
-
-// Older devices require different permissions for BLE transfers
-const PERMISSIONS = (
-  isAndroid12OrHigher
-    ? [
-        'android.permission.BLUETOOTH_CONNECT',
-        'android.permission.BLUETOOTH_SCAN',
-        'android.permission.BLUETOOTH_ADVERTISE',
-      ]
-    : ['android.permission.ACCESS_FINE_LOCATION', 'android.permission.ACCESS_COARSE_LOCATION']
-) as Permission[]
-
 export const requestMdocPermissions = async () => {
   if (Platform.OS !== 'android') return
-  return await PermissionsAndroid.requestMultiple(PERMISSIONS)
+
+  if (Platform.Version >= 31) {
+    return await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE,
+    ])
+  }
+  return await PermissionsAndroid.requestMultiple([
+    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+  ])
 }
 
 export const checkMdocPermissions = async () => {
-  if (Platform.OS !== 'android') return
+  if (Platform.OS !== 'android') return true
 
-  // We assume if you don't have the first permission, you don't have the others either
-  // As we can not check multiple at once
-  return await PermissionsAndroid.check(PERMISSIONS[1])
+  if (Platform.Version >= 31) {
+    return await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN)
+  }
+  return await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
 }
 
 export const getMdocQrCode = async () => {
