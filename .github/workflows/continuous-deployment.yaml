@@ -25,13 +25,15 @@ on:
         description: 'App to deploy'
         required: true
         options:
-          - 'easypid'
+          - 'funke'
           - 'paradym'
         default: 'paradym'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      APP_PROFILE: ${{ github.event.inputs.app }}
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
@@ -52,13 +54,13 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install
 
-      - name: 🚀 Build 
+      - name: 🚀 Build
         run: pnpm build
 
       - name: 🚀 Build internal preview
         if: ${{ github.event.inputs.channel == 'preview' }}
-        run: (cd apps/${{ github.event.inputs.app }} && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait)
+        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-preview --no-wait
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
         if: ${{ github.event.inputs.channel == 'production' }}
-        run: (cd apps/${{ github.event.inputs.app }} && eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit)
+        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-production --no-wait --auto-submit --submit-profile ${{ env.APP_PROFILE }}

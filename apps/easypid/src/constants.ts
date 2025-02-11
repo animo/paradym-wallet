@@ -1,12 +1,6 @@
 import ExpoConstants from 'expo-constants'
 
-const MEDIATOR_DID = ExpoConstants.expoConfig?.extra?.mediatorDid as string | undefined
-
-if (!MEDIATOR_DID || typeof MEDIATOR_DID !== 'string') {
-  throw new Error('Mediator DID not found in expo config')
-}
-
-export const mediatorDid = MEDIATOR_DID
+export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid as string | undefined
 
 export const EASYPID_WALLET_PID_PIN_KEY_ID = 'EASYPID_WALLET_PID_PIN_KEY_ID_NO_BIOMETRICS'
 export const EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID'
