@@ -18,20 +18,43 @@
 				"APP_VARIANT": "development"
 			}
 		},
-		"preview": {
+		"funke-preview": {
 			"extends": "base",
 			"distribution": "internal",
 			"env": {
-				"APP_VARIANT": "preview"
+				"APP_VARIANT": "preview",
+				"EXPO_PUBLIC_APP_TYPE": "FUNKE_WALLET"
 			}
 		},
-		"production": {
+		"funke-production": {
 			"extends": "base",
 			"autoIncrement": true,
 			"distribution": "store",
 			"android": {
 				"buildType": "app-bundle",
 				"resourceClass": "large"
+			},
+			"env": {
+				"EXPO_PUBLIC_APP_TYPE": "FUNKE_WALLET"
+			}
+		},
+		"paradym-preview": {
+			"extends": "base",
+			"distribution": "internal",
+			"env": {
+				"APP_VARIANT": "preview",
+				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET"
+			}
+		},
+		"paradym-production": {
+			"extends": "base",
+			"autoIncrement": true,
+			"distribution": "store",
+			"android": {
+				"buildType": "app-bundle"
+			},
+			"env": {
+				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET"
 			}
 		}
 	},
@@ -39,7 +62,7 @@
 		"appVersionSource": "remote"
 	},
 	"submit": {
-		"production": {
+		"funke-production": {
 			"ios": {
 				"companyName": "Animo Solutions",
 				"ascAppId": "6636489314"
@@ -48,10 +71,28 @@
 				"track": "internal"
 			}
 		},
-		"preview": {
+		"funke-preview": {
 			"ios": {
 				"companyName": "Animo Solutions",
 				"ascAppId": "6636489314"
+			},
+			"android": {
+				"track": "internal"
+			}
+		},
+		"paradym-production": {
+			"ios": {
+				"companyName": "Animo Solutions",
+				"ascAppId": "6449846111"
+			},
+			"android": {
+				"track": "alpha"
+			}
+		},
+		"paradym-preview": {
+			"ios": {
+				"companyName": "Animo Solutions",
+				"ascAppId": "6449938864"
 			},
 			"android": {
 				"track": "internal"

@@ -18,8 +18,8 @@ import { useEffect, useState } from 'react'
 import { Alert, Linking, useWindowDimensions } from 'react-native'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
-import easypidLogo from '../../../assets/icon.png'
 
+import { useAppIcon } from '@easypid/config/copy'
 import {
   checkMdocPermissions,
   getMdocQrCode,
@@ -29,6 +29,7 @@ import {
 } from '../proximity'
 
 export function FunkeOfflineQrScreen() {
+  const appIcon = useAppIcon()
   const { withHaptics } = useHaptics()
   const { replace, back } = useRouter()
   const { width } = useWindowDimensions()
@@ -146,7 +147,7 @@ export function FunkeOfflineQrScreen() {
             <QRCode
               logoBorderRadius={12}
               logoMargin={4}
-              logo={easypidLogo}
+              logo={appIcon}
               size={Math.min(width * 0.75, 272)}
               value={qrCodeData}
             />
