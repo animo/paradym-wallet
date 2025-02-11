@@ -42,7 +42,7 @@ const APP_CONFIGS = {
   }),
 }
 
-// Add EasyPID specific configurations
+// Add Funke specific configurations
 APP_CONFIGS.FUNKE_WALLET.ios.entitlements = {
   'com.apple.developer.kernel.increased-memory-limit': true,
 }
@@ -50,7 +50,6 @@ APP_CONFIGS.FUNKE_WALLET.android.config = {
   largeHeap: true,
 }
 
-// FIXME: make safer and re-use type from config
 module.exports = () => {
   const appType = process.env.EXPO_PUBLIC_APP_TYPE
   if (!appType || !APP_CONFIGS[appType]) {

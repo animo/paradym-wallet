@@ -63,4 +63,4 @@ jobs:
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
         if: ${{ github.event.inputs.channel == 'production' }}
-        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-production --no-wait --auto-submit --submit-profile ${{ env.APP_PROFILE }}
+        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-production --no-wait --auto-submit
