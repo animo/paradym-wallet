@@ -59,8 +59,10 @@ jobs:
 
       - name: 🚀 Build internal preview
         if: ${{ github.event.inputs.channel == 'preview' }}
+        working-directory: apps/easypid
         run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-preview --no-wait
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
         if: ${{ github.event.inputs.channel == 'production' }}
+        working-directory: apps/easypid
         run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-production --no-wait --auto-submit

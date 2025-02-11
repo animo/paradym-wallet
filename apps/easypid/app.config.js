@@ -1,5 +1,4 @@
-const { version: easypidVersion } = require('./package.json')
-const { version: paradymVersion } = require('../paradym/package.json')
+const { version } = require('./package.json')
 const { createBaseConfig } = require('./base.app.config')
 
 const mediatorDids = {
@@ -16,7 +15,7 @@ const APP_CONFIGS = {
     adaptiveIcon: './assets/funke/adaptive-icon.png',
     splash: './assets/funke/splash.png',
     slug: 'ausweis-wallet',
-    version: easypidVersion,
+    version,
     bundleId: 'id.animo.ausweis',
     additionalInvitationSchemes: ['id.animo.ausweis', 'haip'],
     associatedDomains: ['funke.animo.id'],
@@ -30,8 +29,8 @@ const APP_CONFIGS = {
     adaptiveIcon: './assets/paradym/adaptive-icon.png',
     splash: './assets/paradym/splash.png',
     slug: 'paradym-wallet',
-    version: paradymVersion,
-    bundleId: 'id.paradym.wallet',
+    version,
+    bundleId: 'id.animo.paradym',
     additionalInvitationSchemes: ['didcomm'],
     associatedDomains: ['paradym.id', 'dev.paradym.id'],
     backgroundColor: '#F2F4F6',

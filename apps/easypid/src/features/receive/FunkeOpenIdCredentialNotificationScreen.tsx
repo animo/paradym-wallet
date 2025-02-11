@@ -25,6 +25,7 @@ import {
 
 import { useAppAgent } from '@easypid/agent'
 
+import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
@@ -50,7 +51,7 @@ type Query = { uri?: string; data?: string }
 // TODO: clientId
 const authorization = {
   clientId: 'wallet',
-  redirectUri: 'id.animo.ausweis:///wallet/redirect',
+  redirectUri: `${appScheme}://wallet/redirect`,
 }
 
 const { useParams } = createParam<Query>()
