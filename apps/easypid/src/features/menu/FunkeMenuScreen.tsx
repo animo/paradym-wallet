@@ -7,6 +7,7 @@ import {
   HeaderContainer,
   Heading,
   HeroIcons,
+  IconContainer,
   MessageBox,
   ScrollView,
   Stack,
@@ -19,18 +20,17 @@ import { usePidCredential } from '@easypid/hooks'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { TextBackButton } from '@package/app'
 import { router } from 'expo-router'
-import { cloneElement } from 'react'
 import { Linking } from 'react-native'
 
 type MenuListItemProps = {
-  variant?: 'default' | 'danger'
+  variant?: 'regular' | 'danger'
   onPress: () => void
   icon: React.ReactElement
   label: string
   action?: 'outside' | 'info' | 'route' | 'none'
 }
 
-export const MenuListItem = ({ variant = 'default', onPress, icon, label, action = 'route' }: MenuListItemProps) => {
+export const MenuListItem = ({ variant = 'regular', onPress, icon, label, action = 'route' }: MenuListItemProps) => {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
   const { withHaptics } = useHaptics()
 
@@ -48,10 +48,8 @@ export const MenuListItem = ({ variant = 'default', onPress, icon, label, action
       py="$2"
     >
       <XStack ai="center" gap="$4">
-        <Stack p="$2.5" bg={variant === 'default' ? '$grey-50' : '$danger-300'} br="$4">
-          {cloneElement(icon, { color: variant === 'default' ? '$grey-900' : '$danger-600' })}
-        </Stack>
-        <Heading variant="h3" fontWeight="$semiBold" color={variant === 'default' ? '$grey-900' : '$danger-600'}>
+        <IconContainer icon={icon} radius="normal" variant={variant} />
+        <Heading variant="h3" fontWeight="$semiBold" color={variant === 'regular' ? '$grey-900' : '$danger-600'}>
           {label}
         </Heading>
       </XStack>
