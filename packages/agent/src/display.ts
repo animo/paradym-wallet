@@ -19,6 +19,7 @@ import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
+import { getSdJwtPidAttributesForDisplay } from '@easypid/hooks/usePidCredential'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
@@ -550,6 +551,24 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
+    const customAttributes =
+      credentialCategoryMetadata?.credentialCategory === 'DE-PID'
+        ? getSdJwtPidAttributesForDisplay(attributes)
+        : attributes
+
+    // sdJwtTypeMetadata is passed to the display method, but not used?
+    // oh, it is overwritten by the openId4VcMetadata (because that looks better)
+
+    // 1. kijk of wij custom metadata hebben (heeft prioriteit op basis van categorie/format/vct/doctype)
+    // 2. kijk of er SD JWT type metadata op de record zit
+    // 3. Kijk of er OId4VC metadata op de record zit
+
+    // Eigenlijk kunnen we die bdrPIdMetadata gebruiken al nu voor de claim names in de wallet (+ duitse vertaling)
+
+    //// PLAN: Kijken we of we de bdrPidMetadata kunnen gebruiken voor alleen de attributes in de wallet
+    // Plan geschrapt. We gaan zelf custom attributes weer werkend maken.
+    // Dat kunnen we het beste hier doen. Dus kijken of er een custom mapping is van ons zelf.
+
     // TODO: handle claim / display mapping here
     return {
       id: credentialForDisplayId,
@@ -558,7 +577,7 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes,
+      attributes: customAttributes,
       metadata,
       claimFormat: ClaimFormat.SdJwtVc,
       record: credentialRecord,

@@ -2,15 +2,11 @@ import { Heading, LucideIcons, Paragraph, TableContainer, TableRow, XStack, YSta
 
 import { formatCredentialSubject } from '../utils'
 
-type CredentialAttributesProps = {
+export type CredentialAttributesProps = {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   subject: Record<string, any>
   disableHeader?: boolean
   headerTitle?: string
-  headerStyle?: 'regular' | 'small'
-  borderStyle?: 'large' | 'small'
-  attributeWeight?: 'regular' | 'medium'
-  noBorder?: boolean
   showDevProps?: boolean
 }
 
@@ -18,9 +14,6 @@ export function CredentialAttributes({
   subject,
   disableHeader = false,
   headerTitle,
-  headerStyle = 'regular',
-  borderStyle = 'small',
-  attributeWeight = 'regular',
   showDevProps = false,
 }: CredentialAttributesProps) {
   const tables = formatCredentialSubject({
@@ -36,12 +29,7 @@ export function CredentialAttributes({
             <XStack gap="$2">
               {table.depth > 1 && <LucideIcons.CornerDownRight size="$1" />}
               {(!disableHeader || table.title) && (
-                <Heading
-                  variant={headerStyle === 'small' ? 'sub2' : 'h3'}
-                  pl={headerStyle === 'regular' ? '$2' : undefined}
-                  // fontWeight={headerStyle === 'small' ? '$semiBold' : '$medium'}
-                  secondary
-                >
+                <Heading variant="sub2" secondary>
                   {table.title ?? headerTitle ?? 'Credential information'}
                 </Heading>
               )}
@@ -57,12 +45,10 @@ export function CredentialAttributes({
             {table.rows.map((row, idx) => (
               <TableRow
                 key={row.key ?? (row.type === 'imageAndString' || row.type === 'string' ? row.value : row.image)}
-                attribute={row.key}
-                value={row.type === 'string' || row.type === 'imageAndString' ? row.value : undefined}
+                attributes={row.key}
+                values={row.type === 'string' || row.type === 'imageAndString' ? row.value : undefined}
                 isLastRow={idx === table.rows.length - 1}
                 image={row.type === 'image' || row.type === 'imageAndString' ? row.image : undefined}
-                borderStyle={borderStyle}
-                attributeWeight={attributeWeight}
               />
             ))}
           </TableContainer>
