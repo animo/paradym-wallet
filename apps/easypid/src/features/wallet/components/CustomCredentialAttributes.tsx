@@ -1,39 +1,38 @@
-import { usePidCredential } from '@easypid/hooks/usePidCredential'
+import { pidSchemes } from '@easypid/constants'
+import { type PidSdJwtVcAttributes, mapPidAttributeName, usePidCredential } from '@easypid/hooks/usePidCredential'
 import { CredentialAttributes, type CredentialAttributesProps } from '@package/app/src'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, YStack } from 'packages/ui/src'
-const PID_TYPE = 'https://demo.pid-issuer.bundesdruckerei.de/credentials/pid/1.0'
 
 type CustomCredentialAttributesProps = CredentialAttributesProps & {
   type: string
 }
 
 export function CustomCredentialAttributes({ type, ...props }: CustomCredentialAttributesProps) {
-  if (type === PID_TYPE) {
-    return <FunkePidCredentialAttributes subject={props.subject} />
+  if (pidSchemes.sdJwtVcVcts.includes(type)) {
+    return <FunkePidCredentialAttributes />
   }
   return <CredentialAttributes {...props} />
 }
 
-// TODO: Get fix typing of custom attributes
-// TODO: Add option to show all attributes (including hidden ones)
 // TODO: Add custom view for MDL
 // TODO: Improve background/card design for MDL
 
-export function FunkePidCredentialAttributes({ subject }: CredentialAttributesProps) {
+export function FunkePidCredentialAttributes() {
   const { credential } = usePidCredential()
-  const typedAttrs = subject
 
-  const profileAttrs = {
-    name: `${typedAttrs['Given name']} ${typedAttrs['Family name']}`,
-    dateOfBirth: `born ${typedAttrs['Birthdate']} (${typedAttrs['Age']})`,
-    placeOfBirth: typedAttrs['Place of geboorte']?.locality ?? '',
-    nationalities: typedAttrs['Nationalities']?.join(', ') ?? '',
+  const typedRawAttrs = credential?.rawAttributes as PidSdJwtVcAttributes
+
+  const mainCardStrings = {
+    name: `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`,
+    born: `born ${typedRawAttrs.birthdate} (${typedRawAttrs.age_in_years})`,
+    placeOfBirth: typedRawAttrs.place_of_birth?.locality ?? '',
+    nationalities: typedRawAttrs.nationalities?.join(', ') ?? '',
   }
 
-  const addressAttrs = {
-    street: typedAttrs.Address?.Street ?? '',
-    locality: `${typedAttrs.Address?.Locality} (${typedAttrs.Address?.Country})`,
-    postalCode: typedAttrs.Address?.['Postal code'] ?? '',
+  const addressStrings = {
+    street: typedRawAttrs.address?.street_address,
+    locality: `${typedRawAttrs.address?.locality} (${typedRawAttrs.address?.country})`,
+    postalCode: typedRawAttrs.address?.postal_code,
   }
 
   return (
@@ -65,14 +64,14 @@ export function FunkePidCredentialAttributes({ subject }: CredentialAttributesPr
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading variant="h3">{profileAttrs.name}</Heading>
-                <Paragraph>{profileAttrs.dateOfBirth}</Paragraph>
+                <Heading variant="h3">{mainCardStrings.name}</Heading>
+                <Paragraph>{mainCardStrings.born}</Paragraph>
               </YStack>
             </YStack>
             <TableRow
               centred
-              attributes={['Place of Geboorte', 'Nationalities']}
-              values={[profileAttrs.placeOfBirth, profileAttrs.nationalities]}
+              attributes={[mapPidAttributeName('place_of_birth'), mapPidAttributeName('nationalities')]}
+              values={[mainCardStrings.placeOfBirth, mainCardStrings.nationalities]}
             />
           </TableContainer>
         </Stack>
@@ -82,10 +81,10 @@ export function FunkePidCredentialAttributes({ subject }: CredentialAttributesPr
           Address
         </Heading>
         <TableContainer>
-          <TableRow attributes={['Street']} values={[addressAttrs.street]} />
+          <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressStrings.street]} />
           <TableRow
-            attributes={['Postal code', 'Locality']}
-            values={[addressAttrs.postalCode, addressAttrs.locality]}
+            attributes={[mapPidAttributeName('postal_code'), mapPidAttributeName('locality')]}
+            values={[addressStrings.postalCode, addressStrings.locality]}
           />
         </TableContainer>
       </YStack>

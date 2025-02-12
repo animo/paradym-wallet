@@ -19,7 +19,7 @@ import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
-import { getSdJwtPidAttributesForDisplay } from '@easypid/hooks/usePidCredential'
+import { getMdocPidAttributesForDisplay, getSdJwtPidAttributesForDisplay } from '@easypid/hooks/usePidCredential'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
@@ -156,6 +156,7 @@ export interface CredentialForDisplay {
   createdAt: Date
   display: CredentialDisplay
   attributes: Record<string, unknown>
+  rawAttributes: Record<string, unknown>
   metadata: CredentialMetadata
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc | ClaimFormat.JwtVc | ClaimFormat.LdpVc
   record: W3cCredentialRecord | MdocRecord | SdJwtVcRecord
@@ -551,25 +552,18 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
-    const customAttributes =
+    // TODO: handle claim / display mapping here
+    // For now, we map attributes to our custom attributes for PID and MDL
+    // We should also include attributes from Type Metadata and OID4VC Metadata
+    // But order should be:
+    // 1. Custom attributes for PID and MDL
+    // 2. Attributes from SD JWT Type Metadata
+    // 3. Attributes from OID4VC Metadata
+    const customAttributesForDisplay =
       credentialCategoryMetadata?.credentialCategory === 'DE-PID'
         ? getSdJwtPidAttributesForDisplay(attributes)
         : attributes
 
-    // sdJwtTypeMetadata is passed to the display method, but not used?
-    // oh, it is overwritten by the openId4VcMetadata (because that looks better)
-
-    // 1. kijk of wij custom metadata hebben (heeft prioriteit op basis van categorie/format/vct/doctype)
-    // 2. kijk of er SD JWT type metadata op de record zit
-    // 3. Kijk of er OId4VC metadata op de record zit
-
-    // Eigenlijk kunnen we die bdrPIdMetadata gebruiken al nu voor de claim names in de wallet (+ duitse vertaling)
-
-    //// PLAN: Kijken we of we de bdrPidMetadata kunnen gebruiken voor alleen de attributes in de wallet
-    // Plan geschrapt. We gaan zelf custom attributes weer werkend maken.
-    // Dat kunnen we het beste hier doen. Dus kijken of er een custom mapping is van ons zelf.
-
-    // TODO: handle claim / display mapping here
     return {
       id: credentialForDisplayId,
       createdAt: credentialRecord.createdAt,
@@ -577,7 +571,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes: customAttributes,
+      attributes: customAttributesForDisplay,
+      rawAttributes: attributes,
       metadata,
       claimFormat: ClaimFormat.SdJwtVc,
       record: credentialRecord,
@@ -595,6 +590,10 @@ export function getCredentialForDisplay(
       mdocInstance.issuerSignedNamespaces,
       mdocInstance
     )
+    const customAttributesForDisplay =
+      credentialCategoryMetadata?.credentialCategory === 'DE-PID'
+        ? getMdocPidAttributesForDisplay(attributes)
+        : attributes
 
     return {
       id: credentialForDisplayId,
@@ -603,7 +602,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes,
+      attributes: customAttributesForDisplay,
+      rawAttributes: attributes,
       metadata,
       claimFormat: ClaimFormat.MsoMdoc,
       record: credentialRecord,
@@ -635,6 +635,7 @@ export function getCredentialForDisplay(
         issuer: issuerDisplay,
       },
       attributes: credentialAttributes,
+      rawAttributes: credentialAttributes,
       metadata: {
         holder: credentialRecord.credential.credentialSubjectIds[0],
         issuer: credentialRecord.credential.issuerId,

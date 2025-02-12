@@ -21,7 +21,6 @@ import { useRouter } from 'expo-router'
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useHaptics } from '@package/app/src/hooks'
-import { Platform } from 'react-native'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
@@ -30,7 +29,6 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
-  const toast = useToastController()
 
   const { userName, isLoading } = useFirstNameFromPidCredential()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')

@@ -67,6 +67,7 @@ export type PidSdJwtVcAttributes = {
 }
 
 const attributeNameMapping = {
+  family_name: 'Familie naampie',
   age_equal_or_over: 'Age over',
   age_birth_year: 'Birth year',
   age_in_years: 'Age',
@@ -84,6 +85,10 @@ export function getPidAttributesForDisplay(
   return getMdocPidAttributesForDisplay(attributes)
 }
 
+export const mapPidAttributeName = (key: string) => {
+  return attributeNameMapping[key] ?? sanitizeString(key)
+}
+
 export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
@@ -93,32 +98,27 @@ export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAt
   if (address) {
     attributeGroups.push([
       'Address',
-      Object.fromEntries(
-        Object.entries(address).map(([key, value]) => [attributeNameMapping[key] ?? sanitizeString(key), value])
-      ),
+      Object.fromEntries(Object.entries(address).map(([key, value]) => [mapPidAttributeName(key), value])),
     ])
   }
 
   // Place of Birth
   if (place_of_birth) {
-    attributeGroups.push(['Place of birth', place_of_birth])
+    attributeGroups.push([mapPidAttributeName('place_of_birth'), place_of_birth])
   }
 
   // Nationalities
   if (nationalities) {
-    attributeGroups.push(['Nationalities', nationalities])
+    attributeGroups.push([mapPidAttributeName('nationalities'), nationalities])
   }
 
   // Age over
   if (age_equal_or_over) {
-    attributeGroups.push(['Age over', age_equal_or_over])
+    attributeGroups.push([mapPidAttributeName('age_equal_or_over'), age_equal_or_over])
   }
 
   return Object.fromEntries([
-    ...Object.entries(remainingAttributes).map(([key, value]) => [
-      attributeNameMapping[key] ?? sanitizeString(key),
-      value,
-    ]),
+    ...Object.entries(remainingAttributes).map(([key, value]) => [mapPidAttributeName(key), value]),
     ...attributeGroups,
   ])
 }
@@ -388,7 +388,7 @@ export function usePidCredential() {
 export function useFirstNameFromPidCredential() {
   const { credential, isLoading } = usePidCredential()
 
-  if (!credential?.attributes || typeof credential.attributes.given_name !== 'string') {
+  if (!credential?.attributes || typeof credential.attributes['Given name'] !== 'string') {
     return {
       userName: '',
       isLoading,
@@ -396,7 +396,7 @@ export function useFirstNameFromPidCredential() {
   }
 
   return {
-    userName: capitalizeFirstLetter(credential.attributes.given_name.toLowerCase()),
+    userName: capitalizeFirstLetter(credential.attributes['Given name'].toLowerCase()),
     isLoading,
   }
 }

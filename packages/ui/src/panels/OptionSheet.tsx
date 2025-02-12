@@ -21,7 +21,7 @@ export function OptionSheet({ isOpen, setIsOpen, items }: OptionSheetProps) {
           </Stack>
         </XStack>
         <Stack borderBottomWidth="$0.5" borderColor="$grey-100" />
-        <Stack>
+        <Stack gap="$2">
           {items.map((item) => (
             <OptionSheetItem
               key={item.title}

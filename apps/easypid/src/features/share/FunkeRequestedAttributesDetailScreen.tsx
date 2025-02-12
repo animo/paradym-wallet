@@ -116,12 +116,7 @@ export function FunkeRequestedAttributesDetailScreen({
                 {activeCredential.display.issuer && (
                   <Paragraph>Issued by {activeCredential.display.issuer.name}.</Paragraph>
                 )}
-                <CredentialAttributes
-                  subject={disclosedPayload}
-                  headerStyle="small"
-                  borderStyle="large"
-                  attributeWeight="medium"
-                />
+                <CredentialAttributes subject={disclosedPayload} />
                 <AnimatedStack
                   key={isMetadataVisible ? 'visible' : 'hidden'}
                   onLayout={(event) => setElementPosition(event.nativeEvent.layout.y)}
@@ -131,11 +126,7 @@ export function FunkeRequestedAttributesDetailScreen({
                   {isMetadataVisible && (
                     <CredentialAttributes
                       key="metadata"
-                      headerTitle="Metadata"
-                      borderStyle="large"
-                      attributeWeight="medium"
                       subject={metadataForDisplay(activeCredential.metadata)}
-                      headerStyle="small"
                       showDevProps
                     />
                   )}
