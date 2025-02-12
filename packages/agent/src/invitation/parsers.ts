@@ -32,6 +32,8 @@ export enum InvitationQrTypes {
   // but I think we're going to move to just openid4p in the future
   OPENID = 'openid://',
   OPENID4VP = 'openid4vp://',
+  EUDI_OPENID4VP = 'eudi-openid4vp://',
+  MDOC_OPENID4VP = 'mdoc-openid4vp://',
   OPENID_VC = 'openid-vc://',
   DIDCOMM = 'didcomm://',
   HTTPS = 'https://',
@@ -58,7 +60,9 @@ export const isOpenIdPresentationRequest = (url: string) => {
   if (
     url.startsWith(InvitationQrTypes.OPENID) ||
     url.startsWith(InvitationQrTypes.OPENID_VC) ||
-    url.startsWith(InvitationQrTypes.OPENID4VP)
+    url.startsWith(InvitationQrTypes.OPENID4VP) ||
+    url.startsWith(InvitationQrTypes.EUDI_OPENID4VP) ||
+    url.startsWith(InvitationQrTypes.MDOC_OPENID4VP)
   ) {
     return true
   }
