@@ -94,13 +94,14 @@ The identity wallet contains the following features, you can see the full flow w
 
 **Present attestations in-person**
 - Android
-  - 🟢 Android-Android QR for device engagement
+  - 🟢 QR for device engagement
   - 🟢 Android-Android NFC for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
   - 🟢 mDOC over BLE
 - iOS
+  - 🟢 QR for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
-  - 🔴 mDOC over BLE
+  - 🟢 mDOC over BLE
 
 **HSM**
   - 🟢 On device HSM
