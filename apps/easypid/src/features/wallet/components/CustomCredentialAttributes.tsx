@@ -6,8 +6,6 @@ import { CredentialAttributes, type CredentialAttributesProps } from '@package/a
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from 'packages/ui/src'
 import { formatDate } from 'packages/utils/src'
 
-import mdlCodeD from '../../../../assets/mdl/code-d.png'
-
 type CustomCredentialAttributesProps = CredentialAttributesProps & {
   type: string
 }
@@ -97,11 +95,15 @@ export function FunkePidCredentialAttributes() {
   )
 }
 
-// TODO: Improve background/card design for MDL
 export function FunkeMdlCredentialAttributes() {
   const { credential } = useCredentialByCategory('DE-MDL')
 
   const typedRawAttrs = credential?.rawAttributes as MdlSdJwtVcAttributes
+
+  // How to handle when people only have mDoc version with diff attributes
+
+  console.log('credential?.rawAttributes', credential?.rawAttributes)
+  console.log('credential?.attributes', credential?.attributes)
 
   const mainCardStrings = {
     name: `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`,

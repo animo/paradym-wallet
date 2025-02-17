@@ -13,8 +13,7 @@ export async function storeCredentialWithCategoryMetadata(...args: StoreCredenti
   if (isMdl) {
     setCredentialCategoryMetadata(receivedRecord, {
       credentialCategory: 'DE-MDL',
-      displayPriority: true,
-      canDeleteCredential: false,
+      displayPriority: receivedRecord.type === 'SdJwtVcRecord',
     })
   }
 

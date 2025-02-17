@@ -28,6 +28,7 @@ import { useAppAgent } from '@easypid/agent'
 
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { storeCredentialWithCategoryMetadata } from '@easypid/utils/storeCredential'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
@@ -174,14 +175,7 @@ export function FunkeCredentialNotificationScreen() {
   const onCompleteCredentialRetrieval = async () => {
     if (!receivedRecord) return
 
-    setCredentialCategoryMetadata(receivedRecord, {
-      credentialCategory: 'DE-MDL',
-      // prioritize sd-jwt for MDL
-      displayPriority: receivedRecord.type === 'SdJwtVcRecord',
-      canDeleteCredential: false,
-    })
-
-    await storeCredential(agent, receivedRecord)
+    await storeCredentialWithCategoryMetadata(agent, receivedRecord)
     await addReceivedActivity(agent, {
       // TODO: should host be entityId or the iss?
       entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer as string,
