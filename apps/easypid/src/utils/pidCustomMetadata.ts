@@ -2,21 +2,7 @@ import { ClaimFormat } from '@credo-ts/core'
 import type { CredentialMetadata } from '@package/agent'
 import { sanitizeString } from '@package/utils'
 
-type Attributes = {
-  given_name: string
-  family_name: string
-  birth_family_name: string
-  place_of_birth: {
-    locality: string
-  }
-  address: {
-    locality: string
-    street_address: string
-    country: string
-  }
-
-  [key: string]: unknown
-}
+export type PidAttributes = PidMdocAttributes | PidSdJwtVcAttributes
 
 export type PidMdocAttributes = {
   age_birth_year: number
@@ -72,6 +58,10 @@ const attributeNameMapping = {
   age_birth_year: 'Birth year',
   age_in_years: 'Age',
   street_address: 'Street',
+  resident_street: 'Street',
+  resident_city: 'City',
+  resident_country: 'Country',
+  resident_postal_code: 'Postal code',
 } as Record<string, string>
 
 export function getPidAttributesForDisplay(
@@ -89,7 +79,7 @@ export const mapPidAttributeName = (key: string) => {
   return attributeNameMapping[key] ?? sanitizeString(key)
 }
 
-export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
+export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const { age_equal_or_over, nationalities, address, place_of_birth, ...remainingAttributes } = attributes
@@ -313,7 +303,7 @@ export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAtt
   return disclosedAttributeNames
 }
 
-export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
+export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttributes>) {
   const disclosedAttributeNames: string[] = []
   const { place_of_birth, age_equal_or_over, address, nationalities, ...remainingAttributes } = attributes
 

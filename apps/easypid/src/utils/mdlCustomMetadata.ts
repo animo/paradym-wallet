@@ -7,17 +7,38 @@ import mdlCodeC1 from '../../assets/mdl/code-c1.png'
 import mdlCodeD from '../../assets/mdl/code-d.png'
 import mdlCodeD1 from '../../assets/mdl/code-d1.png'
 
+export type MdlAttributes = MdlSdJwtVcAttributes | MdlMdocAttributes
+
 export type MdlSdJwtVcAttributes = {
   age_over_21: boolean
   age_over_60: boolean
   birth_date: string
   document_number: string
-  driving_privileges: Array<{
-    codes: string[]
-    expiry_date: string
-    issue_date: string
-    vehicle_category_code: string
-  }>
+  driving_privileges: Array<DrivingPrivilege>
+  expiry_date: string
+  family_name: string
+  given_name: string
+  issue_date: string
+  issuing_authority: string
+  issuing_country: string
+  portrait: string
+  un_distinguishing_sign: string
+}
+
+type DrivingPrivilege = {
+  codes: string[]
+  expiry_date: string
+  issue_date: string
+  vehicle_category_code: string
+}
+
+export type MdlMdocAttributes = {
+  age_over_18: boolean
+  age_over_21: boolean
+  age_over_60: boolean
+  birth_date: string
+  document_number: string
+  driving_privileges: Array<DrivingPrivilege>
   expiry_date: string
   family_name: string
   given_name: string

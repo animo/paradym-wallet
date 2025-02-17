@@ -1,7 +1,12 @@
+import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
 import { useCredentialByCategory } from '@easypid/hooks/useCredentialByCategory'
-import { type MdlSdJwtVcAttributes, getImageForMdlCode, mapMdlAttributeName } from '@easypid/utils/mdl_metadata'
-import { type PidSdJwtVcAttributes, mapPidAttributeName } from '@easypid/utils/pid_metadata'
+import { type MdlAttributes, getImageForMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
+import {
+  type PidMdocAttributes,
+  type PidSdJwtVcAttributes,
+  mapPidAttributeName,
+} from '@easypid/utils/pidCustomMetadata'
 import { CredentialAttributes, type CredentialAttributesProps } from '@package/app/src'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from 'packages/ui/src'
 import { formatDate } from 'packages/utils/src'
@@ -11,10 +16,10 @@ type CustomCredentialAttributesProps = CredentialAttributesProps & {
 }
 
 export function CustomCredentialAttributes({ type, ...props }: CustomCredentialAttributesProps) {
-  if (pidSchemes.sdJwtVcVcts.includes(type)) {
+  if ([...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(type)) {
     return <FunkePidCredentialAttributes />
   }
-  if (mdlSchemes.mdlJwtVcVcts.includes(type)) {
+  if ([...mdlSchemes.mdlJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(type)) {
     return <FunkeMdlCredentialAttributes />
   }
   return <CredentialAttributes {...props} />
@@ -23,19 +28,44 @@ export function CustomCredentialAttributes({ type, ...props }: CustomCredentialA
 export function FunkePidCredentialAttributes() {
   const { credential } = useCredentialByCategory('DE-PID')
 
-  const typedRawAttrs = credential?.rawAttributes as PidSdJwtVcAttributes
+  const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtVc
+  const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
 
-  const mainCardStrings = {
-    name: `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`,
-    born: `born ${typedRawAttrs.birthdate} (${typedRawAttrs.age_in_years})`,
-    placeOfBirth: typedRawAttrs.place_of_birth?.locality ?? '',
-    nationalities: typedRawAttrs.nationalities?.join(', ') ?? '',
+  const personalInfoCard = {
+    name: '',
+    born: '',
+    placeOfBirth: '',
+    nationalities: '',
   }
 
-  const addressStrings = {
-    street: typedRawAttrs.address?.street_address,
-    locality: `${typedRawAttrs.address?.locality} (${typedRawAttrs.address?.country})`,
-    postalCode: typedRawAttrs.address?.postal_code,
+  const addressTable = {
+    street: '',
+    locality: '',
+    postalCode: '',
+  }
+
+  if (isPidSdJwtVc) {
+    const typedRawAttrs = credential?.rawAttributes as PidSdJwtVcAttributes
+    personalInfoCard.name = `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`
+    personalInfoCard.born = `born ${typedRawAttrs.birthdate} (${typedRawAttrs.age_in_years})`
+    personalInfoCard.placeOfBirth = typedRawAttrs.place_of_birth?.locality ?? ''
+    personalInfoCard.nationalities = typedRawAttrs.nationalities?.join(', ') ?? ''
+
+    addressTable.street = typedRawAttrs.address?.street_address ?? ''
+    addressTable.locality = `${typedRawAttrs.address?.locality} (${typedRawAttrs.address?.country})`
+    addressTable.postalCode = typedRawAttrs.address?.postal_code ?? ''
+  }
+
+  if (isPidMdoc) {
+    const typedRawAttrs = credential?.rawAttributes as PidMdocAttributes
+    personalInfoCard.name = `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`
+    personalInfoCard.born = `born ${typedRawAttrs.birth_date}`
+    personalInfoCard.placeOfBirth = typedRawAttrs.birth_place ?? ''
+    personalInfoCard.nationalities = typedRawAttrs.nationality ?? ''
+
+    addressTable.street = typedRawAttrs.resident_street ?? ''
+    addressTable.locality = `${typedRawAttrs.resident_city} (${typedRawAttrs.resident_country})`
+    addressTable.postalCode = typedRawAttrs.resident_postal_code ?? ''
   }
 
   return (
@@ -67,14 +97,14 @@ export function FunkePidCredentialAttributes() {
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading variant="h3">{mainCardStrings.name}</Heading>
-                <Paragraph>{mainCardStrings.born}</Paragraph>
+                <Heading variant="h3">{personalInfoCard.name}</Heading>
+                <Paragraph>{personalInfoCard.born}</Paragraph>
               </YStack>
             </YStack>
             <TableRow
               centred
               attributes={[mapPidAttributeName('place_of_birth'), mapPidAttributeName('nationalities')]}
-              values={[mainCardStrings.placeOfBirth, mainCardStrings.nationalities]}
+              values={[personalInfoCard.placeOfBirth, personalInfoCard.nationalities]}
             />
           </TableContainer>
         </Stack>
@@ -84,10 +114,10 @@ export function FunkePidCredentialAttributes() {
           Address
         </Heading>
         <TableContainer>
-          <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressStrings.street]} />
+          <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressTable.street]} />
           <TableRow
             attributes={[mapPidAttributeName('postal_code'), mapPidAttributeName('locality')]}
-            values={[addressStrings.postalCode, addressStrings.locality]}
+            values={[addressTable.postalCode, addressTable.locality]}
           />
         </TableContainer>
       </YStack>
@@ -98,20 +128,15 @@ export function FunkePidCredentialAttributes() {
 export function FunkeMdlCredentialAttributes() {
   const { credential } = useCredentialByCategory('DE-MDL')
 
-  const typedRawAttrs = credential?.rawAttributes as MdlSdJwtVcAttributes
+  const typedRawAttrs = credential?.rawAttributes as MdlAttributes
 
-  // How to handle when people only have mDoc version with diff attributes
-
-  console.log('credential?.rawAttributes', credential?.rawAttributes)
-  console.log('credential?.attributes', credential?.attributes)
-
-  const mainCardStrings = {
+  const mainCard = {
     name: `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`,
     privileges: typedRawAttrs.driving_privileges.map((privilege) => privilege.vehicle_category_code).join(', '),
     documentNumber: typedRawAttrs.document_number,
   }
 
-  const issueStrings = {
+  const issuanceInfo = {
     issuingAuthority: typedRawAttrs.issuing_authority,
     issuingCountry: typedRawAttrs.issuing_country,
     expiryDate: formatDate(typedRawAttrs.expiry_date, { includeTime: false }),
@@ -147,7 +172,7 @@ export function FunkeMdlCredentialAttributes() {
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading variant="h3">{mainCardStrings.name}</Heading>
+                <Heading variant="h3">{mainCard.name}</Heading>
                 <Paragraph>Führerschein</Paragraph>
               </YStack>
             </YStack>
@@ -165,7 +190,7 @@ export function FunkeMdlCredentialAttributes() {
                     />
                   ))}
                 </XStack>,
-                mainCardStrings.documentNumber,
+                mainCard.documentNumber,
               ]}
             />
           </TableContainer>
@@ -203,11 +228,11 @@ export function FunkeMdlCredentialAttributes() {
           About the card
         </Heading>
         <TableContainer>
-          <TableRow attributes={[mapMdlAttributeName('issuing_authority')]} values={[issueStrings.issuingAuthority]} />
-          <TableRow attributes={[mapMdlAttributeName('expiry_date')]} values={[issueStrings.expiryDate]} />
+          <TableRow attributes={[mapMdlAttributeName('issuing_authority')]} values={[issuanceInfo.issuingAuthority]} />
+          <TableRow attributes={[mapMdlAttributeName('expiry_date')]} values={[issuanceInfo.expiryDate]} />
           <TableRow
             attributes={[mapMdlAttributeName('issuing_country'), mapMdlAttributeName('un_distinguishing_sign')]}
-            values={[issueStrings.issuingCountry, issueStrings.unDistinguishingSign]}
+            values={[issuanceInfo.issuingCountry, issuanceInfo.unDistinguishingSign]}
           />
         </TableContainer>
       </YStack>
