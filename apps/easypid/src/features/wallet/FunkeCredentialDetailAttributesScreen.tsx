@@ -128,18 +128,22 @@ export function FunkeCredentialDetailAttributesScreen() {
         setIsOpen={setIsSheetOpen}
         items={[
           {
-            icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
-            title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
-            onPress: handleToggleMetadata,
-          },
-          {
             icon: isSharableAttributesVisible ? (
               <HeroIcons.EyeSlash color="$grey-500" />
             ) : (
               <HeroIcons.Eye color="$grey-500" />
             ),
-            title: isSharableAttributesVisible ? 'Hide sharable attributes' : 'Show sharable attributes',
+            title: isSharableAttributesVisible ? 'Hide shareable attributes' : 'Show shareable attributes',
             onPress: handleToggleSharableAttributes,
+          },
+          {
+            icon: isMetadataVisible ? (
+              <HeroIcons.CodeBracketFilled color="$grey-500" />
+            ) : (
+              <HeroIcons.CodeBracketFilled color="$grey-500" />
+            ),
+            title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
+            onPress: handleToggleMetadata,
           },
         ]}
       />

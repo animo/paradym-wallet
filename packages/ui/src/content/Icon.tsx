@@ -63,6 +63,7 @@ import {
   CheckCircleIcon as CheckCircleFilledIcon,
   CircleStackIcon as CircleStackFilledIcon,
   ClockIcon as ClockFilledIcon,
+  CodeBracketIcon as CodeBracketFilledIcon,
   Cog8ToothIcon as Cog8ToothFilledIcon,
   CommandLineIcon,
   CpuChipIcon as CpuChipFilledIcon,
@@ -182,6 +183,7 @@ export const HeroIcons = {
   CpuChipFilled: wrapHeroIcon(CpuChipFilledIcon),
   CommandLineFilled: wrapHeroIcon(CommandLineIcon),
   LockClosedFilled: wrapHeroIcon(LockClosedFilledIcon),
+  CodeBracketFilled: wrapHeroIcon(CodeBracketFilledIcon),
 } as const
 
 export const CustomIcons = {

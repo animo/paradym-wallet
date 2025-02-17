@@ -14,7 +14,7 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 
-import { usePidCredential } from '@easypid/hooks'
+import { useCredentialByCategory } from '@easypid/hooks/useCredentialByCategory'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { TextBackButton } from '@package/app'
@@ -53,7 +53,7 @@ const menuItems = [
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
-  const { credential } = usePidCredential()
+  const { credential } = useCredentialByCategory('DE_PID')
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const idItem = hasEidCardFeatureFlag ? (

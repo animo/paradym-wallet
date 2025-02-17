@@ -19,6 +19,7 @@ import {
   getOpenId4VcCredentialDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  setCredentialCategoryMetadata,
   shareProof,
   storeCredential,
 } from '@package/agent'
@@ -172,6 +173,13 @@ export function FunkeCredentialNotificationScreen() {
 
   const onCompleteCredentialRetrieval = async () => {
     if (!receivedRecord) return
+
+    setCredentialCategoryMetadata(receivedRecord, {
+      credentialCategory: 'DE-MDL',
+      // prioritize sd-jwt for MDL
+      displayPriority: receivedRecord.type === 'SdJwtVcRecord',
+      canDeleteCredential: false,
+    })
 
     await storeCredential(agent, receivedRecord)
     await addReceivedActivity(agent, {

@@ -1,6 +1,6 @@
-import { ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import { type CredentialForDisplay, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
-import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
+import { ClaimFormat } from '@credo-ts/core'
+import type { CredentialMetadata } from '@package/agent'
+import { sanitizeString } from '@package/utils'
 
 type Attributes = {
   given_name: string
@@ -353,50 +353,4 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
   }
 
   return disclosedAttributeNames
-}
-
-export function usePidCredential() {
-  const { isLoading, credentials } = useCredentialsForDisplay({
-    removeCanonicalRecords: false,
-    credentialCategory: 'DE-PID',
-  })
-
-  if (isLoading) {
-    return {
-      credentials: undefined,
-      isLoading: true,
-    } as const
-  }
-
-  const credential =
-    credentials.find((c) => c.category?.displayPriority) ?? (credentials[0] as CredentialForDisplay | undefined)
-
-  return {
-    isLoading: false,
-    credential,
-    credentials,
-    mdoc: credentials.find(
-      (c): c is typeof c & { record: MdocRecord; claimFormat: ClaimFormat.MsoMdoc } => c.record instanceof MdocRecord
-    ),
-    sdJwt: credentials.find(
-      (c): c is typeof c & { record: SdJwtVcRecord; claimFormat: ClaimFormat.SdJwtVc } =>
-        c.record instanceof SdJwtVcRecord
-    ),
-  } as const
-}
-
-export function useFirstNameFromPidCredential() {
-  const { credential, isLoading } = usePidCredential()
-
-  if (!credential?.attributes || typeof credential.rawAttributes.given_name !== 'string') {
-    return {
-      userName: '',
-      isLoading,
-    }
-  }
-
-  return {
-    userName: capitalizeFirstLetter(credential.rawAttributes.given_name.toLowerCase()),
-    isLoading,
-  }
 }

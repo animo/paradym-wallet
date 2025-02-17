@@ -3,7 +3,7 @@ import { Image } from '../content'
 
 interface TableRowProps {
   attributes?: string | string[]
-  values?: string | string[]
+  values?: string | string[] | React.ReactNode
   image?: string
   isLastRow?: boolean
   centred?: boolean

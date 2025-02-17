@@ -19,7 +19,7 @@ import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
-import { getMdocPidAttributesForDisplay, getSdJwtPidAttributesForDisplay } from '@easypid/hooks/usePidCredential'
+import { getMdocPidAttributesForDisplay, getSdJwtPidAttributesForDisplay } from '@easypid/utils/pid_metadata'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
