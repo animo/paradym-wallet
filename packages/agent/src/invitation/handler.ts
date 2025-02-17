@@ -14,8 +14,9 @@ import type {
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
-import { getOid4vciCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import type { EitherAgent, ParadymAppAgent } from '../agent'
+import type { ParadymAppAgent } from '../agent'
+import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
+import type { EitherAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
@@ -38,7 +39,7 @@ import {
 import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
-import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@animo-id/oauth2'
+import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import q from 'query-string'
 import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
 import {
@@ -51,7 +52,6 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
-import { TRUSTED_ENTITIES } from './trustedEntities'
 import type { TrustedEntity } from './trustedEntities'
 
 export async function resolveOpenId4VciOffer({
@@ -175,7 +175,7 @@ export async function acquireRefreshTokenAccessToken({
   refreshToken: string
   dpop?: OpenId4VciDpopRequestOptions
 }): Promise<OpenId4VciRequestTokenResponse> {
-  const oauth2Client = new Oauth2Client({ callbacks: getOid4vciCallbacks(agent.context) })
+  const oauth2Client = new Oauth2Client({ callbacks: getOid4vcCallbacks(agent.context) })
 
   // TODO: dpop retry also for this method
   const accessTokenResponse = await oauth2Client.retrieveRefreshTokenAccessToken({
@@ -385,6 +385,7 @@ export type GetCredentialsForProofRequestOptions = {
   data?: string
   uri?: string
   allowUntrustedFederation?: boolean
+  origin?: string
 }
 
 export const getCredentialsForProofRequest = async ({
@@ -392,6 +393,7 @@ export const getCredentialsForProofRequest = async ({
   data,
   uri,
   allowUntrustedFederation = true,
+  origin,
 }: GetCredentialsForProofRequestOptions) => {
   let requestUri: string
   let requestData = data
@@ -417,32 +419,36 @@ export const getCredentialsForProofRequest = async ({
     requestUri,
   })
 
-  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(requestUri, {
+  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(
+    requestUri,
+    origin
+    /* {
     ...(entityId ? { federation: { trustedEntityIds: [entityId] } } : {}),
-  })
+  } */
+  )
 
-  let trustedEntities: Array<TrustedEntity> = []
-  if (entityId) {
-    // TODO: Remove me when the new credo-ts version is used
-    if (resolved.authorizationRequest.payload) {
-      resolved.authorizationRequest.payload.client_metadata =
-        resolved.authorizationRequest.authorizationRequestPayload.client_metadata
-    }
+  const trustedEntities: Array<TrustedEntity> = []
+  // if (entityId) {
+  //   // TODO: Remove me when the new credo-ts version is used
+  //   if (resolved.authorizationRequest.payload) {
+  //     resolved.authorizationRequest.payload.client_metadata =
+  //       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
+  //   }
 
-    const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
-      entityId: entityId,
-      trustAnchorEntityIds: TRUSTED_ENTITIES,
-    })
+  //   const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+  //     entityId: entityId,
+  //     trustAnchorEntityIds: TRUSTED_ENTITIES,
+  //   })
 
-    trustedEntities = resolvedChains
-      .map((chain) => ({
-        entity_id: chain.trustAnchorEntityConfiguration.sub,
-        organization_name:
-          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
-        logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
-      }))
-      .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
-  }
+  //   trustedEntities = resolvedChains
+  //     .map((chain) => ({
+  //       entity_id: chain.trustAnchorEntityConfiguration.sub,
+  //       organization_name:
+  //         chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
+  //       logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+  //     }))
+  //     .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
+  // }
 
   let formattedSubmission: FormattedSubmission
   if (resolved.presentationExchange) {
@@ -456,22 +462,19 @@ export const getCredentialsForProofRequest = async ({
     throw new Error('No presentation exchange or dcql found in authorization request.')
   }
 
-  const clientMetadata = resolved.authorizationRequest.payload?.client_metadata as
-    | {
-        client_name?: string
-        logo_uri?: string
-      }
-    | undefined
+  const clientMetadata = resolved.authorizationRequest.payload?.client_metadata
 
   return {
     ...resolved.presentationExchange,
     ...resolved.dcql,
     authorizationRequest: resolved.authorizationRequest,
     verifier: {
-      hostName: resolved.authorizationRequest.responseURI
-        ? getHostNameFromUrl(resolved.authorizationRequest.responseURI)
-        : undefined,
-      entityId: entityId ?? (resolved.authorizationRequest.payload?.iss as string),
+      // TODO: easier way to get response_uri
+      hostName:
+        'response_uri' in resolved.authorizationRequest.payload && resolved.authorizationRequest.payload.response_uri
+          ? getHostNameFromUrl(resolved.authorizationRequest.payload.response_uri)
+          : undefined,
+      entityId: entityId ?? (resolved.authorizationRequest.jar?.authRequestParams.iss as string),
 
       logo: clientMetadata?.logo_uri
         ? {
