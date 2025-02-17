@@ -1,5 +1,5 @@
 import { useInboxNotifications } from '@package/agent'
-import { HEADER_TITLE_TEXT_HEIGHT, Heading, ScrollView, Stack, YStack } from '@package/ui'
+import { Heading, ScrollView, Stack, YStack } from '@package/ui'
 import { useRouter } from 'solito/router'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

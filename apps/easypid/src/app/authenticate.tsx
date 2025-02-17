@@ -8,7 +8,6 @@ import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, us
 import * as SplashScreen from 'expo-splash-screen'
 import { PinDotsInput, type PinDotsInputRef } from 'packages/app/src'
 import { useEffect, useRef, useState } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
 
 /**

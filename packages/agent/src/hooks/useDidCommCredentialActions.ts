@@ -1,10 +1,11 @@
-import type { CredentialStateChangedEvent } from '@credo-ts/core'
+import type { CredentialStateChangedEvent } from '@credo-ts/didcomm'
 
-import { CredentialEventTypes, CredentialState, W3cCredentialRepository } from '@credo-ts/core'
-import { useCredentialById } from '@credo-ts/react-hooks'
+import { W3cCredentialRepository } from '@credo-ts/core'
+import { CredentialEventTypes, CredentialState } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
+import { useCredentialById } from '../providers'
 
 import { useAgent } from '../agent'
 import {
@@ -19,7 +20,7 @@ function useOfferAttributes(credentialExchangeId: string) {
   const { data, status } = useQuery({
     queryKey: ['didCommCredentialOfferAttributes', credentialExchangeId],
     queryFn: async () => {
-      const formatData = await agent.credentials.getFormatData(credentialExchangeId)
+      const formatData = await agent.modules.credentials.getFormatData(credentialExchangeId)
       const offer = formatData.offer?.anoncreds ?? formatData.offer?.indy
       const offerAttributes = formatData.offerAttributes
 
@@ -65,7 +66,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.credentials.acceptOffer({ credentialRecordId: credentialExchangeId })
+      await agent.modules.credentials.acceptOffer({ credentialRecordId: credentialExchangeId })
       const doneEvent = await credentialDonePromise
 
       const w3cCredentialRecordId = doneEvent.payload.credentialRecord.credentials.find(
@@ -111,7 +112,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.credentials.declineOffer(credentialExchangeId, {
+      await agent.modules.credentials.declineOffer(credentialExchangeId, {
         sendProblemReport: true,
       })
       await credentialDonePromise

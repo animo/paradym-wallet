@@ -1,10 +1,4 @@
-import {
-  type CredentialDisplay,
-  type MdocRecord,
-  type SdJwtVcRecord,
-  type W3cCredentialRecord,
-  getCredentialForDisplay,
-} from '@package/agent'
+import type { CredentialDisplay } from '@package/agent'
 import {
   AnimatedStack,
   Button,

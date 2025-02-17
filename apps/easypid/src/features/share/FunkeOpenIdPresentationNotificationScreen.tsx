@@ -8,7 +8,7 @@ import {
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
-import React, { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'

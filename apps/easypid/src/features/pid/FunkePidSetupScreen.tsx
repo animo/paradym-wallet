@@ -19,7 +19,6 @@ import {
 } from 'packages/agent/src'
 import { useToastController } from 'packages/ui/src'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from 'packages/utils/src'
-import type React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'

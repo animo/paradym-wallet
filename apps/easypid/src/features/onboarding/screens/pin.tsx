@@ -1,8 +1,7 @@
 import { YStack, useDeviceMedia } from '@package/ui'
 import { PinDotsInput } from 'packages/app/src'
 import type { PinDotsInputRef } from 'packages/app/src'
-import React, { useRef, useState } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useRef, useState } from 'react'
 
 export interface OnboardingPinEnterProps {
   goToNextStep: (pin: string) => Promise<void>

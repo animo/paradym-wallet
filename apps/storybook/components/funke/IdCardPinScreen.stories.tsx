@@ -1,6 +1,6 @@
 import { Button, HeroIcons, Page, Paragraph, Stack, XStack, YStack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated'
 import { Input } from 'tamagui'

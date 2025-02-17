@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 
 // TODO: split app functionality from app components
 import { CredentialRowCard } from '@package/app/src/components/CredentialRowCard'

@@ -2,7 +2,7 @@ import { Button, HeroIcons, InfoButton, InfoSheet, Stack } from '@package/ui'
 import type { StatusVariant } from '@package/ui/src/utils/variants'
 import { formatDate, formatDaysString, getDaysUntil } from '@package/utils/src'
 import { useRouter } from 'expo-router'
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useState } from 'react'
 import { useHaptics } from '../hooks/useHaptics'
 

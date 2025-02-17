@@ -1,7 +1,6 @@
 import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React, { useState } from 'react'
-import { useRouter } from 'solito/router'
+import { useState } from 'react'
 
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -43,7 +42,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
 
   const onProofDecline = () => {
     declinePresentation().finally(() => {
-      void agent.proofs.deleteById(proofExchange.id)
+      void agent.modules.proofs.deleteById(proofExchange.id)
     })
 
     toast.show('Information request has been declined.')

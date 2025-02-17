@@ -1,7 +1,7 @@
 import { QrScanner } from '@package/scanner'
 import { Page, Paragraph, Spinner } from '@package/ui'
 import { useIsFocused } from '@react-navigation/native'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '../../hooks'

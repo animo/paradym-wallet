@@ -11,7 +11,6 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import type React from 'react'
 import { Alert } from 'react-native'
 
 import appIcon from '../../../../assets/icon.png'

@@ -29,6 +29,9 @@
 			"recommended": true,
 			"performance": {
 				"noAccumulatingSpread": "off"
+			},
+			"correctness": {
+				"noUnusedImports": "error"
 			}
 		}
 	},

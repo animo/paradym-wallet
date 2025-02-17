@@ -11,7 +11,7 @@ import {
   getJwkFromKey,
 } from '@credo-ts/core'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
-import { Key as AskarKey, KeyAlgs } from '@hyperledger/aries-askar-react-native'
+import { Key as AskarKey, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
 import type { EasyPIDAppAgent } from '@package/agent'
 import { kdf } from '@package/secure-store/kdf'
 import { easyPidAes256Gcm } from './aes'
@@ -37,7 +37,7 @@ export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Arra
   )
 
   const askarKey = AskarKey.fromSecretBytes({
-    algorithm: KeyAlgs.EcSecp256r1,
+    algorithm: KeyAlgorithm.EcSecp256r1,
     secretKey: new Uint8Array(TypedArrayEncoder.fromHex(pinSeed)),
   })
 
