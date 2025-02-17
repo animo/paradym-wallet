@@ -12,7 +12,7 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { useRouter } from 'solito/router'
 

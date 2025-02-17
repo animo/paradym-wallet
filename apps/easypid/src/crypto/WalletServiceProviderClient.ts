@@ -12,7 +12,7 @@ import {
   getJwkFromKey,
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
-import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import { askar } from '@openwallet-foundation/askar-react-native'
 import type { EasyPIDAppAgent } from '@package/agent'
 import { secureWalletKey } from 'packages/secure-store/secureUnlock'
 import { InvalidPinError } from './error'
@@ -32,7 +32,7 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
         walletConfig: { id: walletId, key: walletKey, keyDerivationMethod: KeyDerivationMethod.Raw },
       },
       modules: {
-        askar: new AskarModule({ ariesAskar }),
+        askar: new AskarModule({ askar }),
       },
       dependencies: agentDependencies,
     })

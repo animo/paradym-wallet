@@ -1,6 +1,6 @@
-import { CredentialState, ProofState } from '@credo-ts/core'
-import { useConnections, useCredentialByState, useProofByState } from '@credo-ts/react-hooks'
+import { CredentialState, ProofState } from '@credo-ts/didcomm'
 import { useEffect, useMemo } from 'react'
+import { useConnections, useCredentialByState, useProofByState } from '../providers'
 
 import { useAgent } from '../agent'
 import {
@@ -46,10 +46,10 @@ export const usePreFetchInboxDisplayMetadata = () => {
       // Extract label from out-of-band invitation if no connection associated
       const outOfBandRecord =
         !connection && record.parentThreadId
-          ? await agent.oob.findByReceivedInvitationId(record.parentThreadId)
+          ? await agent.modules.outOfBand.findByReceivedInvitationId(record.parentThreadId)
           : undefined
 
-      const formatData = await agent.credentials.getFormatData(record.id)
+      const formatData = await agent.modules.credentials.getFormatData(record.id)
       const offer = formatData.offer?.anoncreds ?? formatData.offer?.indy
       // We just return here, so the rest can still continue
       if (!offer) return
@@ -66,7 +66,7 @@ export const usePreFetchInboxDisplayMetadata = () => {
           issuerName,
           credentialName: schemaName,
         })
-        await agent.credentials.update(record)
+        await agent.modules.credentials.update(record)
       }
     })
   }, [credentialExchangeRecords, agent, connections])
@@ -84,10 +84,10 @@ export const usePreFetchInboxDisplayMetadata = () => {
       // Extract label from out-of-band invitation if no connection associated
       const outOfBandRecord =
         !connection && record.parentThreadId
-          ? await agent.oob.findByReceivedInvitationId(record.parentThreadId)
+          ? await agent.modules.outOfBand.findByReceivedInvitationId(record.parentThreadId)
           : undefined
 
-      const formatData = await agent.proofs.getFormatData(record.id)
+      const formatData = await agent.modules.proofs.getFormatData(record.id)
       const request = formatData.request?.anoncreds ?? formatData.request?.indy
 
       // We just return here, so the rest can still continue
@@ -102,7 +102,7 @@ export const usePreFetchInboxDisplayMetadata = () => {
           proofName,
           verifierName,
         })
-        await agent.proofs.update(record)
+        await agent.modules.proofs.update(record)
       }
     })
   }, [proofExchangeRecords, agent, connections])

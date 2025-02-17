@@ -1,6 +1,6 @@
 import type { FullAppAgent } from '../agent'
 
-import { parseInvitationJson } from '@credo-ts/core/build/utils/parseInvitation'
+import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
 import queryString from 'query-string'
 
 import { fetchInvitationDataUrl } from './fetchInvitation'
@@ -97,7 +97,7 @@ export async function parseDidCommInvitation(agent: FullAppAgent, invitation: st
       // So we use the parseMessage from AFJ and see if this returns a valid message.
       // Parse invitation supports legacy connection invitations, oob invitations, and
       // legacy connectionless invitations, and will all transform them into an OOB invitation.
-      const parsedInvitation = await agent.oob.parseInvitation(updatedInvitationUrl)
+      const parsedInvitation = await agent.modules.outOfBand.parseInvitation(updatedInvitationUrl)
 
       agent.config.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
       return {

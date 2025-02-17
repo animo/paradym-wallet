@@ -16,7 +16,6 @@ import {
 import type { DisplayImage } from 'packages/agent/src'
 import { isAndroid } from 'packages/app/src'
 import { useState } from 'react'
-import React from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 
 interface RequestPurposeSectionProps {

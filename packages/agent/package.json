@@ -13,7 +13,6 @@
 		"@credo-ts/core": "catalog:",
 		"@credo-ts/openid4vc": "catalog:",
 		"@credo-ts/question-answer": "catalog:",
-		"@credo-ts/react-hooks": "catalog:",
 		"@credo-ts/react-native": "catalog:",
 		"@package/utils": "workspace:*",
 		"@tanstack/react-query": "^5",
@@ -24,7 +23,7 @@
 	},
 	"peerDependencies": {
 		"@hyperledger/anoncreds-react-native": "catalog:",
-		"@hyperledger/aries-askar-react-native": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:",
 		"expo": "catalog:"
 	},
 	"devDependencies": {

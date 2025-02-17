@@ -1,6 +1,5 @@
 import { TamaguiProvider } from '@package/ui'
 import type { Decorator } from '@storybook/react'
-import React from 'react'
 
 import easyPidConfig from '../../easypid/tamagui.config'
 import paradymConfig from '../../paradym/tamagui.config'

@@ -1,5 +1,4 @@
 import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, Stack, YStack, useSpringify } from '@package/ui'
-import React from 'react'
 import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
 
 interface PresentationSuccessSlideProps {

@@ -2,7 +2,6 @@ import {
   AnimatedStack,
   Heading,
   HeroIcons,
-  IconContainer,
   MiniCard,
   OptionSheet,
   Paragraph,
@@ -15,7 +14,7 @@ import {
   useSpringify,
   useToastController,
 } from '@package/ui'
-import React, { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'solito/router'
 
 import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
@@ -27,7 +26,6 @@ import {
 } from '@package/app/src/hooks'
 
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
-import { useNavigation } from 'expo-router'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

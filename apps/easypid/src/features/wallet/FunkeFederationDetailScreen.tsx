@@ -15,7 +15,7 @@ import {
   YStack,
 } from '@package/ui'
 import { TextBackButton, useScrollViewPosition } from 'packages/app/src'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface FunkeFederationDetailScreenProps {

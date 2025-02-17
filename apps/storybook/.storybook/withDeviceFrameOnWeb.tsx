@@ -1,5 +1,4 @@
 import type { Decorator } from '@storybook/react'
-import React from 'react'
 import { DeviceFrameset } from 'react-device-frameset'
 import { Platform } from 'react-native'
 

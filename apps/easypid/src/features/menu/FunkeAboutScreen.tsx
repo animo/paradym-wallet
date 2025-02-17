@@ -1,5 +1,4 @@
 import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
-import React from 'react'
 
 import { TextBackButton } from 'packages/app'
 import { Linking } from 'react-native'

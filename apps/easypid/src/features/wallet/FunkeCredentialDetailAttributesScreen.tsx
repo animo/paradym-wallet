@@ -11,7 +11,7 @@ import {
   useSpringify,
   useToastController,
 } from '@package/ui'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { CredentialAttributes } from '@package/app/src/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
