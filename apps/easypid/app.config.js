@@ -30,6 +30,8 @@ const invitationSchemes = [
   'openid-credential-offer',
   'openid-vc',
   'openid4vp',
+  'eudi-openid4vp',
+  'mdoc-openid4vp',
   'id.animo.ausweis',
   'haip',
 ]
