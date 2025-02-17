@@ -383,7 +383,6 @@ export function OnboardingContextProvider({
 
   const onStartScanning = async () => {
     if (receivePidUseCase?.state !== 'id-card-auth') {
-      console.log('receivePidUseCase?.state', receivePidUseCase?.state)
       await reset({
         resetToStep: 'id-card-pin',
         error: 'onStartScanning: receivePidUseCaseState is not id-card-auth',

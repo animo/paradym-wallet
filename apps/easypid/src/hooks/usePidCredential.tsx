@@ -67,7 +67,7 @@ export type PidSdJwtVcAttributes = {
 }
 
 const attributeNameMapping = {
-  family_name: 'Familie naampie',
+  family_name: 'Family name',
   age_equal_or_over: 'Age over',
   age_birth_year: 'Birth year',
   age_in_years: 'Age',
@@ -388,7 +388,7 @@ export function usePidCredential() {
 export function useFirstNameFromPidCredential() {
   const { credential, isLoading } = usePidCredential()
 
-  if (!credential?.attributes || typeof credential.attributes['Given name'] !== 'string') {
+  if (!credential?.attributes || typeof credential.rawAttributes.given_name !== 'string') {
     return {
       userName: '',
       isLoading,
@@ -396,7 +396,7 @@ export function useFirstNameFromPidCredential() {
   }
 
   return {
-    userName: capitalizeFirstLetter(credential.attributes['Given name'].toLowerCase()),
+    userName: capitalizeFirstLetter(credential.rawAttributes.given_name.toLowerCase()),
     isLoading,
   }
 }
