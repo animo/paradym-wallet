@@ -8,13 +8,13 @@ catalog:
   react: 18.3.1
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
-  "@credo-ts/anoncreds": "npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231"
-  "@credo-ts/askar": "npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250213120231"
-  "@credo-ts/cheqd": "npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250213120231"
-  "@credo-ts/core": "npm:@animo-id/credo-ts-core@0.5.14-alpha-20250213120231"
-  "@credo-ts/openid4vc": "npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250213120231"
-  "@credo-ts/question-answer": "npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250213120231"
-  "@credo-ts/react-native": "npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250213120231"
+  "@credo-ts/anoncreds": "npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411"
+  "@credo-ts/askar": "npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250218155411"
+  "@credo-ts/cheqd": "npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250218155411"
+  "@credo-ts/core": "npm:@animo-id/credo-ts-core@0.5.14-alpha-20250218155411"
+  "@credo-ts/openid4vc": "npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250218155411"
+  "@credo-ts/question-answer": "npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250218155411"
+  "@credo-ts/react-native": "npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250218155411"
   "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": ^0.2.4
   "@openwallet-foundation/askar-react-native": ^0.3.1

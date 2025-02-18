@@ -1,6 +1,6 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
-import { Mdoc, MdocService, TypedArrayEncoder } from '@credo-ts/core'
+import { Mdoc, MdocService } from '@credo-ts/core'
 import type { EasyPIDAppAgent, FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/src/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
@@ -85,15 +85,14 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
 
   const mdocService = options.agent.dependencyManager.resolve(MdocService)
 
-  // TODO: return type in credo should be Uint8Array
-  const { deviceResponseBase64Url } = await mdocService.createDeviceResponse(options.agent.context, {
+  const deviceResponse = await mdocService.createDeviceResponse(options.agent.context, {
     deviceRequest: DeviceRequest.parse(options.deviceRequest),
     mdocs: mdocs as [Mdoc, ...Mdoc[]],
     sessionTranscriptBytes: options.sessionTranscript,
   })
 
   const mdt = mdocDataTransfer.instance()
-  await mdt.sendDeviceResponse(TypedArrayEncoder.fromBase64(deviceResponseBase64Url))
+  await mdt.sendDeviceResponse(deviceResponse)
 }
 
 export const shutdownDataTransfer = () => {
