@@ -26,6 +26,9 @@ export type MdlAttributes = {
   issuing_country: string
   portrait: string
   un_distinguishing_sign: string
+
+  // There can be multiple and random age_over_XX attributes
+  [key: string]: unknown
 }
 
 const attributeNameMapping = {
@@ -54,8 +57,11 @@ export function getMdlAttributesForDisplay(attributes: Partial<MdlAttributes>) {
 
   const { driving_privileges, ...remainingAttributes } = attributes
 
-  // Filter out any age_over_XX attributes from remainingAttributes
-  const filteredAttributes = Object.entries(remainingAttributes).filter(([key]) => !key.startsWith('age_over_'))
+  const ageOverEntries = Object.entries(remainingAttributes).filter(([key]) => key.startsWith('age_over_'))
+
+  const remainingWithoutAgeEntries = Object.fromEntries(
+    Object.entries(remainingAttributes).filter(([key]) => !key.startsWith('age_over_'))
+  )
 
   if (driving_privileges) {
     attributeGroups.push([
@@ -64,8 +70,12 @@ export function getMdlAttributesForDisplay(attributes: Partial<MdlAttributes>) {
     ])
   }
 
+  if (ageOverEntries.length > 0) {
+    attributeGroups.push(['Age over', Object.fromEntries(ageOverEntries)])
+  }
+
   return Object.fromEntries([
-    ...Object.entries(filteredAttributes).map(([key, value]) => [mapMdlAttributeName(key), value]),
+    ...Object.entries(remainingWithoutAgeEntries).map(([key, value]) => [mapMdlAttributeName(key), value]),
     ...attributeGroups,
   ])
 }

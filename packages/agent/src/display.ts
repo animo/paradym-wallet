@@ -437,22 +437,35 @@ function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
   }
 }
 export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpaces, mdocInstance: Mdoc) {
+  const topLevelMetadataFields = ['issue_date', 'expiry_date']
+
   const attributes: CredentialForDisplay['attributes'] = Object.fromEntries(
-    Object.values(namespaces).flatMap((v) =>
-      Object.entries(v).map(([key, value]) => [key, recursivelyMapAttribues(value)])
-    )
+    Object.values(namespaces).flatMap((v) => {
+      return Object.entries(v)
+        .filter(([key]) => !topLevelMetadataFields.includes(key))
+        .map(([key, value]) => [key, recursivelyMapAttributes(value)])
+    })
   )
 
+  // FIXME: Date should be fixed in Mdoc library
+  // The problem is that mdocInstance.validityInfo.validFrom and validUntil are already Date objects that contain NaN, not just NaN values.
+  // When you call toISOString() on a Date containing NaN, it will throw an error.
   const mdocMetadata: CredentialMetadata = {
     type: mdocInstance.docType,
     holder: mdocInstance.deviceKey
       ? safeCalculateJwkThumbprint(getJwkFromKey(mdocInstance.deviceKey).toJson())
       : undefined,
     issuedAt: mdocInstance.validityInfo.signed.toISOString(),
-    validFrom: mdocInstance.validityInfo.validFrom.toISOString(),
-    validUntil: mdocInstance.validityInfo.validUntil.toISOString(),
-    // TODO: extract issuer from certificate?
-    // issuer: undefined
+    validFrom:
+      mdocInstance.validityInfo.validFrom instanceof Date &&
+      !Number.isNaN(mdocInstance.validityInfo.validFrom.getTime())
+        ? mdocInstance.validityInfo.validFrom.toISOString()
+        : undefined,
+    validUntil:
+      mdocInstance.validityInfo.validUntil instanceof Date &&
+      !Number.isNaN(mdocInstance.validityInfo.validUntil.getTime())
+        ? mdocInstance.validityInfo.validUntil.toISOString()
+        : undefined,
   }
 
   return {
@@ -487,7 +500,7 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
 
   return {
     attributes: Object.fromEntries(
-      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttributes(value)])
     ),
     metadata: credentialMetadata,
   }
@@ -680,7 +693,7 @@ type MappedAttributesReturnType =
   | null
   | undefined
   | Array<MappedAttributesReturnType>
-export function recursivelyMapAttribues(value: unknown): MappedAttributesReturnType {
+export function recursivelyMapAttributes(value: unknown): MappedAttributesReturnType {
   if (value instanceof Uint8Array) {
     const imageMimeType = detectImageMimeType(value)
     if (imageMimeType) {
@@ -697,9 +710,9 @@ export function recursivelyMapAttribues(value: unknown): MappedAttributesReturnT
   }
   if (typeof value === 'string') return value
   if (value instanceof Map) {
-    return Object.fromEntries(Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
+    return Object.fromEntries(Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapAttributes(value)]))
   }
-  if (Array.isArray(value)) return value.map(recursivelyMapAttribues)
+  if (Array.isArray(value)) return value.map(recursivelyMapAttributes)
 
-  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
+  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapAttributes(value)]))
 }

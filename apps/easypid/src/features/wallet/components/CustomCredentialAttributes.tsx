@@ -9,7 +9,6 @@ import {
 import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
 import { CredentialAttributes } from '@package/app/src'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from 'packages/ui/src'
-import { formatDate } from 'packages/utils/src'
 
 type CustomCredentialAttributesProps = {
   type: string
@@ -142,7 +141,7 @@ export function FunkeMdlCredentialAttributes({
   const issuanceInfo = {
     issuingAuthority: raw.issuing_authority,
     issuingCountry: raw.issuing_country,
-    expiryDate: formatDate(raw.expiry_date, { includeTime: false }),
+    expiryDate: raw.expiry_date,
     unDistinguishingSign: raw.un_distinguishing_sign,
   }
 
