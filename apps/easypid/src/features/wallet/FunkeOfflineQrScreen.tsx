@@ -106,17 +106,14 @@ export function FunkeOfflineQrScreen() {
   }
 
   useEffect(() => {
-    if (qrCodeData) {
-      void waitForDeviceRequest().then((data) => {
-        if (data) {
-          pushToOfflinePresentation({
-            sessionTranscript: Buffer.from(data.sessionTranscript).toString('base64'),
-            deviceRequest: Buffer.from(data.deviceRequest).toString('base64'),
-          })
-          return
-        }
+    if (!qrCodeData) return
+
+    void waitForDeviceRequest().then((data) => {
+      pushToOfflinePresentation({
+        sessionTranscript: Buffer.from(data.sessionTranscript).toString('base64'),
+        deviceRequest: Buffer.from(data.deviceRequest).toString('base64'),
       })
-    }
+    })
   }, [qrCodeData])
 
   // Navigate to offline presentation route
