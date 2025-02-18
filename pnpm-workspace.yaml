@@ -5,7 +5,7 @@ packages:
 catalog:
   expo: ~51.0.39
   react-native: ~0.75.0
-  react: 18.3.1
+  react: ^18.2.0
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
   "@credo-ts/anoncreds": "npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231"
@@ -28,8 +28,8 @@ catalog:
   "@animo-id/oauth2": 0.1.4
   "@animo-id/oauth2-utils": 0.1.4
   "@animo-id/expo-secure-environment": 0.1.0-alpha.12
-  "@animo-id/expo-mdoc-data-transfer": 0.1.1
-  "@animo-id/mdoc": 0.3.0
+  "@animo-id/expo-mdoc-data-transfer": 0.1.2
+  "@animo-id/mdoc": 0.4.0
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"
   "@sphereon/pex-models": 2.3.2
