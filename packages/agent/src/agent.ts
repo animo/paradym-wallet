@@ -227,6 +227,14 @@ export const initializeParadymAgent = async ({
   return agent
 }
 
-export type FullAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
+export type ParadymAppAgent = Awaited<ReturnType<typeof initializeParadymAgent>>
 export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
-export type EitherAgent = FullAppAgent | EasyPIDAppAgent
+export type EitherAgent = ParadymAppAgent | EasyPIDAppAgent
+
+export const isParadymAgent = (agent: EitherAgent): agent is ParadymAppAgent => {
+  return 'anoncreds' in agent.modules
+}
+
+export const isEasyPIDAgent = (agent: EitherAgent): agent is EasyPIDAppAgent => {
+  return !('anoncreds' in agent.modules)
+}

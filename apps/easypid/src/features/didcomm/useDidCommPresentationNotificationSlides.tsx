@@ -1,6 +1,5 @@
 import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React from 'react'
 
 import type { SlideStep } from '@package/app/src'
 import { addSharedActivityForSubmission } from '../activity/activityRecord'
@@ -69,7 +68,7 @@ export function useDidCommPresentationNotificationSlides({
     }
 
     declinePresentation().finally(() => {
-      void agent.proofs.deleteById(proofExchange.id)
+      void agent.modules.proofs.deleteById(proofExchange.id)
     })
 
     toast.show('Information request has been declined.')

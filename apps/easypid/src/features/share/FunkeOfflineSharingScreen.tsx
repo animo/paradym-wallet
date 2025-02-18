@@ -1,14 +1,14 @@
 import type { FormattedSubmission } from 'packages/agent/src'
 import { SlideWizard } from 'packages/app/src/components'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import { PinSlide } from './slides/PinSlide'
+import { PinSlide, type onPinSubmitProps } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 
 interface FunkeOfflineSharingScreenProps {
   submission?: FormattedSubmission
   isAccepting: boolean
-  onAccept: (pin: string) => Promise<void>
+  onAccept: ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => Promise<void>
   onDecline: () => void
   onComplete: () => void
 }

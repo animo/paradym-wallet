@@ -5,7 +5,7 @@ import type { RecordsState } from './recordUtils'
 import { CredentialExchangeRecord } from '@credo-ts/didcomm'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-import type { FullAppAgent } from '../agent'
+import type { ParadymAppAgent } from '../agent'
 import {
   addRecord,
   recordsAddedByType,
@@ -64,7 +64,7 @@ export const useCredentialNotInState = (state: CredentialState | CredentialState
 }
 
 interface Props {
-  agent: FullAppAgent
+  agent: ParadymAppAgent
 }
 
 export const CredentialExchangeProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {

@@ -30,7 +30,7 @@ export function useDidCommCredentialNotificationSlides({
   const onCredentialDecline = () => {
     if (credentialExchange) {
       declineCredential().finally(() => {
-        void agent.credentials.deleteById(credentialExchange.id)
+        void agent.modules.credentials.deleteById(credentialExchange.id)
       })
     }
 

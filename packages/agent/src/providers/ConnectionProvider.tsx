@@ -5,7 +5,7 @@ import type { RecordsState } from './recordUtils'
 import { ConnectionRecord } from '@credo-ts/didcomm'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-import type { FullAppAgent } from '../agent'
+import type { ParadymAppAgent } from '../agent'
 import {
   addRecord,
   recordsAddedByType,
@@ -62,7 +62,7 @@ export const useConnectionById = (id: string): ConnectionRecord | undefined => {
 }
 
 interface Props {
-  agent: FullAppAgent
+  agent: ParadymAppAgent
 }
 
 export const ConnectionProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {

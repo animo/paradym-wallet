@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
+import type { onPinSubmitProps } from './slides/PinSlide'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -41,9 +42,13 @@ export function FunkeMdocOfflineSharingScreen({
       })
   }, [agent, deviceRequest, toast.show, pushToWallet])
 
-  const onProofAccept = async (pin: string): Promise<void> => {
+  const onProofAccept = async ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => {
     // Already checked for submission in the useEffect
     if (!submission) return
+    if (!pin) {
+      onPinError?.()
+      return
+    }
 
     setIsProcessing(true)
 
@@ -52,7 +57,7 @@ export function FunkeMdocOfflineSharingScreen({
     } catch (e) {
       setIsProcessing(false)
       if (e instanceof InvalidPinError) {
-        toast.show('Invalid PIN entered', { customData: { preset: 'danger' } })
+        onPinError?.()
       }
     }
 
@@ -72,6 +77,7 @@ export function FunkeMdocOfflineSharingScreen({
 
     await addActivity('success')
 
+    onPinComplete?.()
     setIsProcessing(false)
   }
 
