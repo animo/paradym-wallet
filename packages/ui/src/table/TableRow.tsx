@@ -2,34 +2,25 @@ import { Paragraph, XStack, YStack } from '../base'
 import { Image } from '../content'
 
 interface TableRowProps {
-  // attribute can be undefined for array values
-  attribute?: string
-  // Value can be undefined if image prop is used
-  value?: string
+  attributes?: string | string[]
+  values?: string | string[] | React.ReactNode
   image?: string
-  isLastRow: boolean
+  isLastRow?: boolean
+  centred?: boolean
   onPress?(): void
-  borderStyle?: 'large' | 'small'
-  attributeWeight?: 'regular' | 'medium'
 }
 
-export const TableRow = ({
-  attribute,
-  value,
-  isLastRow,
-  onPress,
-  image,
-  borderStyle,
-  attributeWeight,
-}: TableRowProps) => {
+// FIXME: Use combined values so you have one array with objects where the keys are key and value for example.
+export const TableRow = ({ attributes, values, isLastRow = false, onPress, image, centred = false }: TableRowProps) => {
   const renderedImage = image ? <Image src={image} width={50} height={50} /> : undefined
+  const attributesArray = Array.isArray(attributes) ? attributes : [attributes]
+  const valuesArray = Array.isArray(values) ? values : [values]
 
   return (
     <YStack
       px="$2.5"
       py="$2"
-      key={attribute}
-      borderBottomWidth={isLastRow ? 0 : borderStyle === 'large' ? 2 : 1}
+      borderBottomWidth={isLastRow ? 0 : 2}
       borderBottomColor="$tableBorderColor"
       backgroundColor="$tableBackgroundColor"
       onPress={onPress}
@@ -37,23 +28,31 @@ export const TableRow = ({
         opacity: onPress ? 0.8 : 1,
       }}
     >
-      <XStack f={1} alignItems="center">
-        <YStack gap="$1.5" f={1} justifyContent="flex-start">
-          {attribute && (
-            <Paragraph
-              variant="annotation"
-              color="$grey-600"
-              fontWeight={attributeWeight === 'medium' ? '$medium' : '$regular'}
-            >
-              {attribute}
-            </Paragraph>
-          )}
-          {value && <Paragraph color="$grey-900">{value}</Paragraph>}
-          {/* Render image on the left if no value */}
-          {!value && renderedImage}
-        </YStack>
+      <XStack f={1} alignItems="center" gap="$4">
+        {attributesArray.map((attr, index) => (
+          <YStack
+            key={attr}
+            borderRightWidth={2}
+            borderRightColor={index === attributesArray.length - 1 ? 'transparent' : '$white'}
+            my="$-2"
+            py="$2"
+            f={1}
+            gap="$1.5"
+            ai={centred ? 'center' : 'flex-start'}
+            justifyContent="flex-start"
+          >
+            {attr && (
+              <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
+                {attr}
+              </Paragraph>
+            )}
+            {valuesArray[index] && <Paragraph color="$grey-900">{valuesArray[index]}</Paragraph>}
+            {/* Render image on the left if no value */}
+            {!valuesArray[index] && renderedImage}
+          </YStack>
+        ))}
         {/* Otherwise render image on the right */}
-        {value && renderedImage}
+        {valuesArray[0] && renderedImage}
       </XStack>
     </YStack>
   )

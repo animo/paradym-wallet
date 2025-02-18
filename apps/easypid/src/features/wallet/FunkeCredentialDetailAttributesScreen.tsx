@@ -17,22 +17,20 @@ import { CredentialAttributes } from '@package/app/src/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { TextBackButton } from 'packages/app'
 
-import { type CredentialMetadata, metadataForDisplay } from '@package/agent'
+import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { useRouter } from 'expo-router'
 import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { createParam } from 'solito'
+import { CustomCredentialAttributes } from './components/CustomCredentialAttributes'
 
-// TODO: we should pass the credential for display here
-interface FunkeCredentialDetailAttributesScreenProps {
-  attributes: Record<string, unknown>
-  metadata: CredentialMetadata
-}
+const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
-export function FunkeCredentialDetailAttributesScreen({
-  attributes,
-  metadata,
-}: FunkeCredentialDetailAttributesScreenProps) {
+export function FunkeCredentialDetailAttributesScreen() {
+  const { params } = useParams()
+  const { credential } = useCredentialForDisplayById(params.id)
+
   const toast = useToastController()
   const router = useRouter()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
@@ -43,8 +41,16 @@ export function FunkeCredentialDetailAttributesScreen({
 
   const {
     isVisible: isMetadataVisible,
-    setElementPosition,
-    toggle,
+    setElementPosition: setMetadataElementPosition,
+    toggle: toggleMetadata,
+  } = useScrollToggle({
+    scrollRef: scrollViewRef,
+  })
+
+  const {
+    isVisible: isSharableAttributesVisible,
+    setElementPosition: setSharableAttributesElementPosition,
+    toggle: toggleSharableAttributes,
   } = useScrollToggle({
     scrollRef: scrollViewRef,
   })
@@ -56,10 +62,15 @@ export function FunkeCredentialDetailAttributesScreen({
 
   const handleToggleMetadata = withHaptics(() => {
     setIsSheetOpen(false)
-    toggle()
+    toggleMetadata()
   })
 
-  if (!attributes) {
+  const handleToggleSharableAttributes = withHaptics(() => {
+    setIsSheetOpen(false)
+    toggleSharableAttributes()
+  })
+
+  if (!credential) {
     toast.show('No attributes found', {
       customData: {
         preset: 'danger',
@@ -75,15 +86,14 @@ export function FunkeCredentialDetailAttributesScreen({
         <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Card attributes" />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack px="$4" gap="$2" marginBottom={bottom}>
-            <CredentialAttributes
-              headerStyle="small"
-              borderStyle="large"
-              attributeWeight="medium"
-              subject={attributes}
+            <CustomCredentialAttributes
+              type={credential.metadata.type}
+              attributes={credential.attributes}
+              rawAttributes={credential.rawAttributes}
             />
             <AnimatedStack
-              key={isMetadataVisible ? 'visible' : 'hidden'}
-              onLayout={(event) => setElementPosition(event.nativeEvent.layout.y)}
+              key={isMetadataVisible ? 'visible-metadata' : 'hidden-metadata'}
+              onLayout={(event) => setMetadataElementPosition(event.nativeEvent.layout.y)}
               exiting={useSpringify(FadeOutUp)}
               entering={useSpringify(FadeInUp)}
             >
@@ -91,10 +101,22 @@ export function FunkeCredentialDetailAttributesScreen({
                 <CredentialAttributes
                   key="metadata"
                   headerTitle="Metadata"
-                  borderStyle="large"
-                  attributeWeight="medium"
-                  subject={metadataForDisplay(metadata)}
-                  headerStyle="small"
+                  subject={metadataForDisplay(credential.metadata)}
+                  showDevProps
+                />
+              )}
+            </AnimatedStack>
+            <AnimatedStack
+              key={isSharableAttributesVisible ? 'visible-sharable-attributes' : 'hidden-sharable-attributes'}
+              onLayout={(event) => setSharableAttributesElementPosition(event.nativeEvent.layout.y)}
+              exiting={useSpringify(FadeOutUp)}
+              entering={useSpringify(FadeInUp)}
+            >
+              {isSharableAttributesVisible && (
+                <CredentialAttributes
+                  key="sharable-attributes"
+                  headerTitle="Sharable attributes"
+                  subject={credential.attributes}
                   showDevProps
                 />
               )}
@@ -110,7 +132,20 @@ export function FunkeCredentialDetailAttributesScreen({
         setIsOpen={setIsSheetOpen}
         items={[
           {
-            icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
+            icon: isSharableAttributesVisible ? (
+              <HeroIcons.EyeSlash color="$grey-500" />
+            ) : (
+              <HeroIcons.Eye color="$grey-500" />
+            ),
+            title: isSharableAttributesVisible ? 'Hide shareable attributes' : 'Show shareable attributes',
+            onPress: handleToggleSharableAttributes,
+          },
+          {
+            icon: isMetadataVisible ? (
+              <HeroIcons.CodeBracketFilled color="$grey-500" />
+            ) : (
+              <HeroIcons.CodeBracketFilled color="$grey-500" />
+            ),
             title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
             onPress: handleToggleMetadata,
           },

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useCredentialsForDisplay } from './useCredentialsForDisplay'
+
 export type CredentialForDisplayId = `w3c-credential-${string}` | `sd-jwt-vc-${string}` | `mdoc-${string}`
 
 export const useCredentialForDisplayById = (credentialId: CredentialForDisplayId) => {

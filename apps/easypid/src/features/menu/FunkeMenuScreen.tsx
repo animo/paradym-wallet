@@ -16,9 +16,9 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 
-import { usePidCredential } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
+import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
 import { TextBackButton } from '@package/app'
 import { router } from 'expo-router'
 import { Linking } from 'react-native'
@@ -63,7 +63,7 @@ export const MenuListItem = ({ variant = 'regular', onPress, icon, label, action
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
-  const { credential } = usePidCredential()
+  const { credential } = useCredentialByCategory('DE_PID')
   const { withHaptics } = useHaptics()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 

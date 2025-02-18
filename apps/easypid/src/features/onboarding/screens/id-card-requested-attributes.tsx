@@ -35,6 +35,7 @@ export function OnboardingIdCardRequestedAttributes({
             issuerImage={{ url: bdrPidIssuerDisplay.logo }}
             backgroundImage={{ url: bdrPidCredentialDisplay.backgroundImage }}
             backgroundColor={bdrPidCredentialDisplay.backgroundColor}
+            textColor={bdrPidCredentialDisplay.textColor}
             formattedDisclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}
           />
         </YStack>

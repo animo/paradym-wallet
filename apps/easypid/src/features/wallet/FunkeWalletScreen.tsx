@@ -14,7 +14,6 @@ import {
   XStack,
   YStack,
   useSpringify,
-  useToastController,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
 
@@ -29,7 +28,6 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
-  const toast = useToastController()
 
   const { userName, isLoading } = useFirstNameFromPidCredential()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')

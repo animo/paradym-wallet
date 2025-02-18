@@ -1,22 +1,8 @@
-import { ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import { type CredentialForDisplay, type CredentialMetadata, useCredentialsForDisplay } from '@package/agent'
-import { capitalizeFirstLetter, sanitizeString } from '@package/utils'
+import { ClaimFormat } from '@credo-ts/core'
+import type { CredentialMetadata } from '@package/agent'
+import { sanitizeString } from '@package/utils'
 
-type Attributes = {
-  given_name: string
-  family_name: string
-  birth_family_name: string
-  place_of_birth: {
-    locality: string
-  }
-  address: {
-    locality: string
-    street_address: string
-    country: string
-  }
-
-  [key: string]: unknown
-}
+export type PidAttributes = PidMdocAttributes | PidSdJwtVcAttributes
 
 export type PidMdocAttributes = {
   age_birth_year: number
@@ -67,10 +53,15 @@ export type PidSdJwtVcAttributes = {
 }
 
 const attributeNameMapping = {
+  family_name: 'Family name',
   age_equal_or_over: 'Age over',
   age_birth_year: 'Birth year',
   age_in_years: 'Age',
   street_address: 'Street',
+  resident_street: 'Street',
+  resident_city: 'City',
+  resident_country: 'Country',
+  resident_postal_code: 'Postal code',
 } as Record<string, string>
 
 export function getPidAttributesForDisplay(
@@ -84,7 +75,11 @@ export function getPidAttributesForDisplay(
   return getMdocPidAttributesForDisplay(attributes)
 }
 
-export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
+export const mapPidAttributeName = (key: string) => {
+  return attributeNameMapping[key] ?? sanitizeString(key)
+}
+
+export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
   const { age_equal_or_over, nationalities, address, place_of_birth, ...remainingAttributes } = attributes
@@ -93,32 +88,27 @@ export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAt
   if (address) {
     attributeGroups.push([
       'Address',
-      Object.fromEntries(
-        Object.entries(address).map(([key, value]) => [attributeNameMapping[key] ?? sanitizeString(key), value])
-      ),
+      Object.fromEntries(Object.entries(address).map(([key, value]) => [mapPidAttributeName(key), value])),
     ])
   }
 
   // Place of Birth
   if (place_of_birth) {
-    attributeGroups.push(['Place of birth', place_of_birth])
+    attributeGroups.push([mapPidAttributeName('place_of_birth'), place_of_birth])
   }
 
   // Nationalities
   if (nationalities) {
-    attributeGroups.push(['Nationalities', nationalities])
+    attributeGroups.push([mapPidAttributeName('nationalities'), nationalities])
   }
 
   // Age over
   if (age_equal_or_over) {
-    attributeGroups.push(['Age over', age_equal_or_over])
+    attributeGroups.push([mapPidAttributeName('age_equal_or_over'), age_equal_or_over])
   }
 
   return Object.fromEntries([
-    ...Object.entries(remainingAttributes).map(([key, value]) => [
-      attributeNameMapping[key] ?? sanitizeString(key),
-      value,
-    ]),
+    ...Object.entries(remainingAttributes).map(([key, value]) => [mapPidAttributeName(key), value]),
     ...attributeGroups,
   ])
 }
@@ -313,7 +303,7 @@ export function getMdocPidDisclosedAttributeNames(attributes: Partial<PidMdocAtt
   return disclosedAttributeNames
 }
 
-export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttributes | Attributes>) {
+export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtVcAttributes>) {
   const disclosedAttributeNames: string[] = []
   const { place_of_birth, age_equal_or_over, address, nationalities, ...remainingAttributes } = attributes
 
@@ -353,50 +343,4 @@ export function getSdJwtPidDisclosedAttributeNames(attributes: Partial<PidSdJwtV
   }
 
   return disclosedAttributeNames
-}
-
-export function usePidCredential() {
-  const { isLoading, credentials } = useCredentialsForDisplay({
-    removeCanonicalRecords: false,
-    credentialCategory: 'DE-PID',
-  })
-
-  if (isLoading) {
-    return {
-      credentials: undefined,
-      isLoading: true,
-    } as const
-  }
-
-  const credential =
-    credentials.find((c) => c.category?.displayPriority) ?? (credentials[0] as CredentialForDisplay | undefined)
-
-  return {
-    isLoading: false,
-    credential,
-    credentials,
-    mdoc: credentials.find(
-      (c): c is typeof c & { record: MdocRecord; claimFormat: ClaimFormat.MsoMdoc } => c.record instanceof MdocRecord
-    ),
-    sdJwt: credentials.find(
-      (c): c is typeof c & { record: SdJwtVcRecord; claimFormat: ClaimFormat.SdJwtVc } =>
-        c.record instanceof SdJwtVcRecord
-    ),
-  } as const
-}
-
-export function useFirstNameFromPidCredential() {
-  const { credential, isLoading } = usePidCredential()
-
-  if (!credential?.attributes || typeof credential.attributes.given_name !== 'string') {
-    return {
-      userName: '',
-      isLoading,
-    }
-  }
-
-  return {
-    userName: capitalizeFirstLetter(credential.attributes.given_name.toLowerCase()),
-    isLoading,
-  }
 }
