@@ -3,7 +3,6 @@ import type { PropsWithChildren } from 'react'
 import { useSecureUnlock } from '@package/secure-store/secure-wallet-key/SecureUnlockProvider'
 import { useRouter } from 'expo-router'
 import { useEffect, useRef } from 'react'
-import React from 'react'
 import { AppState, type AppStateStatus } from 'react-native'
 
 const BACKGROUND_TIME_THRESHOLD = 60000 // 60 seconds

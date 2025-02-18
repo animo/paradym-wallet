@@ -1,5 +1,5 @@
 import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, XStack, YStack, useSpringify } from '@package/ui'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Dimensions } from 'react-native'
 import { LinearTransition } from 'react-native-reanimated'

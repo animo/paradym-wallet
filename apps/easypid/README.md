@@ -94,13 +94,14 @@ The identity wallet contains the following features, you can see the full flow w
 
 **Present attestations in-person**
 - Android
-  - 🟢 Android-Android QR for device engagement
+  - 🟢 QR for device engagement
   - 🟢 Android-Android NFC for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
   - 🟢 mDOC over BLE
 - iOS
+  - 🟢 QR for device engagement
   - 🔴 SD-JWT VC using OpenID4VP over BLE
-  - 🔴 mDOC over BLE
+  - 🟢 mDOC over BLE
 
 **HSM**
   - 🟢 On device HSM
@@ -304,7 +305,7 @@ Initially when the app is opened, the [`src/app/(app)/_layout.tsx`](src/app/(app
 
 The agent contains the digital identity related wallet functionality. It uses a [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance to manage the wallet.
 
-[Aries Askar](https://github.com/hyperledger/aries-askar) is used for cryptographic operations and encrypted storage of the wallet data. 
+[Askar](https://github.com/openwallet-foundation/askar-wrapper-javascript) is used for cryptographic operations and encrypted storage of the wallet data. 
 
 [Expo Secure Environment](https://github.com/animo/expo-secure-environment) is used to provide support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication.
 

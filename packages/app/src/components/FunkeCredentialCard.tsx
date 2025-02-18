@@ -16,7 +16,7 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { BlurView } from 'expo-blur'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 
 import { useAnimatedStyle, withTiming } from 'react-native-reanimated'

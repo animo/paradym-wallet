@@ -61,6 +61,11 @@ export const shareProof = async ({
     : undefined
 
   try {
+    // TODO: check if this also works if no state property is provided
+    // Hack for french playground requiring state outside of the JARM response
+    // @ts-ignore
+    global.FUNKE_PATCH_STATE = await authorizationRequest.authorizationRequest.getMergedProperty('state')
+
     const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
       authorizationRequest,
       presentationExchange: presentationExchangeCredentials

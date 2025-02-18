@@ -1,5 +1,4 @@
 import { Blob, Button, FlexPage, Heading, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
-import type React from 'react'
 
 import appIcon from '../../../../assets/icon.png'
 

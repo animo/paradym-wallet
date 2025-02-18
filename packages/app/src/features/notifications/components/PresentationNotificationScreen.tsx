@@ -2,7 +2,7 @@ import type { FormattedSubmission } from '@package/agent'
 
 import { Button, Heading, Paragraph, ScrollView, Sheet, Stack, TableContainer, XStack, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useNavigation } from 'expo-router'

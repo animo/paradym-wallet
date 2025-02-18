@@ -1,5 +1,4 @@
 import { FlexPage, HeaderContainer, HeroIcons, ScrollView, Switch, YStack } from '@package/ui'
-import React from 'react'
 
 import { TextBackButton } from 'packages/app/src'
 import { LocalAiContainer } from './components/LocalAiContainer'

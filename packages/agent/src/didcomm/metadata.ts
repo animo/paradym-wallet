@@ -1,4 +1,4 @@
-import type { CredentialExchangeRecord, ProofExchangeRecord } from '@credo-ts/core'
+import type { CredentialExchangeRecord, ProofExchangeRecord } from '@credo-ts/didcomm'
 import type { OpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 
 // TODO: store this on the credential record

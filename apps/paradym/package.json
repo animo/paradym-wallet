@@ -14,7 +14,7 @@
 		"@animo-id/expo-secure-environment": "catalog:",
 		"@credo-ts/core": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
-		"@hyperledger/aries-askar-react-native": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
 		"@package/ui": "workspace:*",

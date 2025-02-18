@@ -3,17 +3,33 @@ import type { StackProps } from 'tamagui'
 import { AnimatedStack } from '../base'
 import { useScaleAnimation } from '../hooks'
 
-interface IconContainerProps extends Omit<StackProps, 'bg'> {
+interface IconContainerProps extends StackProps {
   icon: React.ReactElement
   scaleOnPress?: boolean
-  bg?: 'white' | 'grey' | 'transparent'
+  radius?: 'full' | 'normal'
+  variant?: 'default' | 'regular' | 'danger'
   'aria-label'?: string
 }
 
+const variantStyles = {
+  default: {
+    bg: '$grey-50',
+    color: '$grey-500',
+  },
+  danger: {
+    bg: '$danger-300',
+    color: '$danger-600',
+  },
+  regular: {
+    bg: '$grey-50',
+    color: '$grey-900',
+  },
+}
 export function IconContainer({
   icon,
   scaleOnPress = true,
-  bg = 'grey',
+  radius = 'full',
+  variant = 'default',
   'aria-label': ariaLabel,
   ...props
 }: IconContainerProps) {
@@ -27,8 +43,8 @@ export function IconContainer({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       aria-label={ariaLabel}
-      bg={bg === 'white' ? '$white' : bg === 'grey' ? '$grey-50' : 'transparent'}
-      br="$12"
+      bg={variantStyles[variant].bg}
+      br={radius === 'full' ? '$12' : '$4'}
       p="$2"
       mx="$-1"
       {...props}
@@ -36,7 +52,7 @@ export function IconContainer({
       {cloneElement(icon, {
         strokeWidth: icon.props.strokeWidth ?? 2,
         size: icon.props.size ?? 24,
-        color: icon.props.color ?? '$grey-500',
+        color: variantStyles[variant].color,
       })}
     </AnimatedStack>
   )

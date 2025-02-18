@@ -1,7 +1,6 @@
 import type { CredentialDisplay } from '@package/agent'
 
 import { Heading, ScrollView, YStack } from '@package/ui'
-import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { CredentialAttributes } from '../../../components'

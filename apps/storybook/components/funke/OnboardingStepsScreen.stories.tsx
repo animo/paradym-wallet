@@ -1,7 +1,6 @@
 import { Button, Heading, HeroIcons, Page, Paragraph, Stack, XStack, YStack } from '@package/ui'
 import { ProgressHeader } from '@package/ui/src/components/ProgressHeader'
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 
 interface OnboardingStepItemProps {
   stepName: string

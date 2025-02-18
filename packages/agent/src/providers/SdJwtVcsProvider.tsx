@@ -2,9 +2,9 @@ import type { PropsWithChildren } from 'react'
 import type { EitherAgent } from '../agent'
 
 import { SdJwtVcRecord } from '@credo-ts/core'
-import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '@credo-ts/react-hooks/build/recordUtils'
 import { createContext, useContext, useEffect, useState } from 'react'
 import type * as React from 'react'
+import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from './recordUtils'
 
 export { SdJwtVc, SdJwtVcRecord } from '@credo-ts/core'
 

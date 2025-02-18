@@ -1,7 +1,6 @@
 import { type CredentialForDisplayId, deleteCredential, useAgent } from '@package/agent/src'
 import { useToastController } from '@package/ui'
 import { useNavigation } from 'expo-router'
-import { router } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
 

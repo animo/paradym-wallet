@@ -1,5 +1,4 @@
 import { Button, IdCard, YStack } from '@package/ui'
-import React from 'react'
 
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
 import pidBackgroundImage from '../../../../assets/pid-background.png'

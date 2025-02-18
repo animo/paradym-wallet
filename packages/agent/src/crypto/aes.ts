@@ -1,5 +1,5 @@
 import { type AgentContext, Hasher } from '@credo-ts/core'
-import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
+import { Key, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
 
 const AES_256_STATIC_SEED = new Uint8Array(12).fill(10)
 
@@ -17,7 +17,7 @@ const aes256GcmHasKey =
   }
 
 const aes256GcmGetKey = (_: string) => async (_: { agentContext: AgentContext }) => {
-  return Key.fromSeed({ algorithm: KeyAlgs.AesA256Gcm, seed: AES_256_STATIC_SEED })
+  return Key.fromSeed({ algorithm: KeyAlgorithm.AesA256Gcm, seed: AES_256_STATIC_SEED })
 }
 
 const aes256GcmEncrypt =

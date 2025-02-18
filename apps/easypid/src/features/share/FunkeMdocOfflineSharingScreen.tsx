@@ -1,4 +1,6 @@
 import { useAppAgent } from '@easypid/agent'
+import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import { InvalidPinError } from '@easypid/crypto/error'
 import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
@@ -6,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
+import type { onPinSubmitProps } from './slides/PinSlide'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -26,18 +29,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   useEffect(() => {
     getSubmissionForMdocDocumentRequest(agent, deviceRequest)
-      .then((submission) => {
-        // We can't hare multiple documents at the moment
-        if (submission.entries.length > 1) {
-          toast.show('Presentation could not be shared.', {
-            message: 'Multiple cards requested, but only one card can be shared in-person',
-            customData: { preset: 'danger' },
-          })
-          pushToWallet()
-        } else {
-          setSubmission(submission)
-        }
-      })
+      .then(setSubmission)
       .catch((error) => {
         toast.show('Presentation information could not be extracted.', {
           customData: { preset: 'danger' },
@@ -50,11 +42,24 @@ export function FunkeMdocOfflineSharingScreen({
       })
   }, [agent, deviceRequest, toast.show, pushToWallet])
 
-  const onProofAccept = async (): Promise<void> => {
+  const onProofAccept = async ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => {
     // Already checked for submission in the useEffect
     if (!submission) return
+    if (!pin) {
+      onPinError?.()
+      return
+    }
 
     setIsProcessing(true)
+
+    try {
+      await setWalletServiceProviderPin(pin.split('').map(Number))
+    } catch (e) {
+      setIsProcessing(false)
+      if (e instanceof InvalidPinError) {
+        onPinError?.()
+      }
+    }
 
     // Once this returns we just assume it's successful
     try {
@@ -72,6 +77,7 @@ export function FunkeMdocOfflineSharingScreen({
 
     await addActivity('success')
 
+    onPinComplete?.()
     setIsProcessing(false)
   }
 

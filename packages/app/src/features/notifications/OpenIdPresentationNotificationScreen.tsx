@@ -6,7 +6,7 @@ import {
   useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 
 import { usePushToWallet } from '../../hooks'

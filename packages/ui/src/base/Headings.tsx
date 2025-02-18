@@ -33,6 +33,7 @@ export const Heading = styled(THeading, {
         textAlign: 'center',
       },
     },
+    // Margin left is used to remove the whitespace that is added by the font-family
     variant: {
       h1: {
         name: 'H1',
@@ -41,6 +42,7 @@ export const Heading = styled(THeading, {
         fontWeight: '$semiBold',
         lineHeight: '$6',
         letterSpacing: '$4',
+        ml: -2,
       },
       h2: {
         name: 'H2',
@@ -49,6 +51,7 @@ export const Heading = styled(THeading, {
         fontWeight: '$semiBold',
         letterSpacing: '$6',
         lineHeight: '$5',
+        ml: -2,
       },
       h3: {
         name: 'H3',
@@ -57,6 +60,7 @@ export const Heading = styled(THeading, {
         fontWeight: '$semiBold',
         letterSpacing: '$6',
         lineHeight: '$4',
+        ml: -2,
       },
       h4: {
         name: 'H4',
@@ -65,6 +69,7 @@ export const Heading = styled(THeading, {
         fontWeight: '$semiBold',
         letterSpacing: '$6',
         lineHeight: '$4',
+        ml: -2,
       },
       sub1: {
         size: '$4',

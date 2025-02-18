@@ -1,5 +1,6 @@
 import { type ReactElement, cloneElement } from 'react'
-import { Heading, Paragraph, Stack, XStack, YStack } from '../base'
+import { AnimatedStack, Heading, Paragraph, Stack, XStack, YStack } from '../base'
+import { useScaleAnimation } from '../hooks/useScaleAnimation'
 
 const messageBoxVariants = {
   light: {
@@ -34,10 +35,20 @@ interface MessageBoxProps {
   variant?: keyof typeof messageBoxVariants
   textVariant?: 'normal' | 'sub'
   icon?: ReactElement
+  onPress?: () => void
 }
 
-export function MessageBox({ message, textVariant = 'normal', variant = 'default', icon, title }: MessageBoxProps) {
-  return (
+export function MessageBox({
+  message,
+  textVariant = 'normal',
+  variant = 'default',
+  icon,
+  title,
+  onPress,
+}: MessageBoxProps) {
+  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
+
+  const container = (
     <XStack gap="$2" p="$3.5" bg={messageBoxVariants[variant].bg} borderRadius="$8">
       <YStack gap="$2" f={1}>
         {title && (
@@ -56,4 +67,14 @@ export function MessageBox({ message, textVariant = 'normal', variant = 'default
       )}
     </XStack>
   )
+
+  if (onPress) {
+    return (
+      <AnimatedStack onPress={onPress} style={pressStyle} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+        {container}
+      </AnimatedStack>
+    )
+  }
+
+  return container
 }

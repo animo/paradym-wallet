@@ -1,5 +1,4 @@
 import { Button, HeroIcons, OnboardingStepItem, Paragraph, ScrollableStack, YStack } from '@package/ui'
-import React from 'react'
 
 interface OnboardingIntroductionStepsProps {
   goToNextStep: () => void

@@ -1,6 +1,6 @@
 import type { ParadymAppAgent } from '../agent'
 
-import { parseInvitationJson } from '@credo-ts/core/build/utils/parseInvitation'
+import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
 import queryString from 'query-string'
 
 import { fetchInvitationDataUrl } from './fetchInvitation'
@@ -32,6 +32,8 @@ export enum InvitationQrTypes {
   // but I think we're going to move to just openid4p in the future
   OPENID = 'openid://',
   OPENID4VP = 'openid4vp://',
+  EUDI_OPENID4VP = 'eudi-openid4vp://',
+  MDOC_OPENID4VP = 'mdoc-openid4vp://',
   OPENID_VC = 'openid-vc://',
   DIDCOMM = 'didcomm://',
   HTTPS = 'https://',
@@ -58,7 +60,9 @@ export const isOpenIdPresentationRequest = (url: string) => {
   if (
     url.startsWith(InvitationQrTypes.OPENID) ||
     url.startsWith(InvitationQrTypes.OPENID_VC) ||
-    url.startsWith(InvitationQrTypes.OPENID4VP)
+    url.startsWith(InvitationQrTypes.OPENID4VP) ||
+    url.startsWith(InvitationQrTypes.EUDI_OPENID4VP) ||
+    url.startsWith(InvitationQrTypes.MDOC_OPENID4VP)
   ) {
     return true
   }
@@ -93,7 +97,7 @@ export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation:
       // So we use the parseMessage from AFJ and see if this returns a valid message.
       // Parse invitation supports legacy connection invitations, oob invitations, and
       // legacy connectionless invitations, and will all transform them into an OOB invitation.
-      const parsedInvitation = await agent.oob.parseInvitation(updatedInvitationUrl)
+      const parsedInvitation = await agent.modules.outOfBand.parseInvitation(updatedInvitationUrl)
 
       agent.config.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
       return {

@@ -10,7 +10,7 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
