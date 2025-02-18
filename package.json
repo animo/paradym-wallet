@@ -22,6 +22,7 @@
 	},
 	"pnpm": {
 		"overrides": {
+			"@animo-id/mdoc": "catalog:",
 			"@unimodules/react-native-adapter": "catalog:",
 			"@unimodules/core": "catalog:",
 			"react-docgen-typescript": "catalog:",
