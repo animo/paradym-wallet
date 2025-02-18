@@ -6,7 +6,7 @@ import { useIsDeviceCapable, useLLM } from '@easypid/llm'
 import { ConfirmationSheet } from '@package/app/src/components/ConfirmationSheet'
 import { useHasInternetConnection, useIsConnectedToWifi } from 'packages/app/src/hooks'
 import { useToastController } from 'packages/ui/src'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 export function LocalAiContainer() {
   const toast = useToastController()

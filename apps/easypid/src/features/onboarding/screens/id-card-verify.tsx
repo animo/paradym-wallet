@@ -1,5 +1,5 @@
 import { Button, IdCard, Spinner, YStack } from '@package/ui'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'
 import pidBackgroundImage from '../../../../assets/pid-background.png'

@@ -5,18 +5,19 @@ import type {
   AnonCredsRequestedPredicateMatch,
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
-import type { ProofStateChangedEvent } from '@credo-ts/core'
+import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
   FormattedSubmissionEntrySatisfiedCredential,
 } from '../format/formatPresentation'
 
-import { CredentialRepository, CredoError, ProofEventTypes, ProofState } from '@credo-ts/core'
-import { useConnectionById, useProofById } from '@credo-ts/react-hooks'
+import { CredoError } from '@credo-ts/core'
+import { CredentialRepository, ProofEventTypes, ProofState } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
+import { useConnectionById, useProofById } from '../providers'
 
 import type { NonEmptyArray } from '@package/utils'
 import { useAgent } from '../agent'
@@ -33,11 +34,11 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
     queryFn: async () => {
       const repository = agent.dependencyManager.resolve(CredentialRepository)
-      const formatData = await agent.proofs.getFormatData(proofExchangeId)
+      const formatData = await agent.modules.proofs.getFormatData(proofExchangeId)
 
       const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
 
-      const credentialsForRequest = await agent.proofs.getCredentialsForRequest({
+      const credentialsForRequest = await agent.modules.proofs.getCredentialsForRequest({
         proofRecordId: proofExchangeId,
       })
 
@@ -236,7 +237,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       )
 
       const presentationDonePromise = firstValueFrom(presentationDone$)
-      await agent.proofs.acceptRequest({
+      await agent.modules.proofs.acceptRequest({
         proofRecordId: proofExchangeId,
         proofFormats: formatInput,
       })
@@ -262,7 +263,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         )
 
       const presentationDeclinePromise = firstValueFrom(presentationDeclined$)
-      await agent.proofs.declineRequest({ proofRecordId: proofExchangeId, sendProblemReport: true })
+      await agent.modules.proofs.declineRequest({ proofRecordId: proofExchangeId, sendProblemReport: true })
       await presentationDeclinePromise
     },
   })

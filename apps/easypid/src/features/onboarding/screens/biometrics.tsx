@@ -1,6 +1,5 @@
 import { Button, Spinner, YStack } from '@package/ui'
 import { useImageScaler } from 'packages/app/src/hooks'
-import type React from 'react'
 import { useState } from 'react'
 import { SetUpBiometrics } from './assets/SetUpBiometrics'
 

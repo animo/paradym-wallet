@@ -1,13 +1,12 @@
+import type { DifPresentationExchangeDefinitionV2, P256Jwk } from '@credo-ts/core'
+import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
-  DifPresentationExchangeDefinitionV2,
   OutOfBandInvitation,
   OutOfBandRecord,
-  P256Jwk,
   ProofStateChangedEvent,
-} from '@credo-ts/core'
-import type { PlaintextMessage } from '@credo-ts/core/build/types'
+} from '@credo-ts/didcomm'
 import type {
   OpenId4VciCredentialConfigurationSupportedWithFormats,
   OpenId4VciDpopRequestOptions,
@@ -19,20 +18,18 @@ import { getOid4vciCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import type { EitherAgent, ParadymAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
+import { JwaSignatureAlgorithm, Jwt, X509ModuleConfig } from '@credo-ts/core'
 import {
   CredentialEventTypes,
   CredentialState,
-  JwaSignatureAlgorithm,
-  Jwt,
   OutOfBandRepository,
   ProofEventTypes,
   ProofState,
   V2OfferCredentialMessage,
   V2RequestPresentationMessage,
-  X509ModuleConfig,
   parseMessageType,
-} from '@credo-ts/core'
-import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
+} from '@credo-ts/didcomm'
+import { supportsIncomingMessageType } from '@credo-ts/didcomm/build/util/messageType'
 import {
   getOfferedCredentials,
   getScopesFromCredentialConfigurationsSupported,
@@ -636,7 +633,7 @@ export async function receiveOutOfBandInvitation(
 
   try {
     // Check if invitation already exists
-    const receivedInvite = await agent.oob.findByReceivedInvitationId(invitation.id)
+    const receivedInvite = await agent.modules.outOfBand.findByReceivedInvitationId(invitation.id)
     if (receivedInvite) {
       return {
         success: false,
@@ -644,7 +641,7 @@ export async function receiveOutOfBandInvitation(
       }
     }
 
-    const receiveInvitationResult = await agent.oob.receiveInvitation(invitation, {
+    const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
       reuseConnection: true,
     })
     connectionRecord = receiveInvitationResult.connectionRecord
@@ -690,7 +687,7 @@ export async function receiveOutOfBandInvitation(
     // Delete connection record
     // TODO: delete did and mediation stuff
     if (connectionRecord) {
-      await agent.connections.deleteById(connectionRecord.id)
+      await agent.modules.connections.deleteById(connectionRecord.id)
     }
 
     return {

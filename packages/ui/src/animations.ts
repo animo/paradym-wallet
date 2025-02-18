@@ -1,5 +1,5 @@
 import { createAnimations } from '@tamagui/animations-react-native'
-import type { BaseAnimationBuilder, ComplexAnimationBuilder } from 'react-native-reanimated'
+import type { ComplexAnimationBuilder } from 'react-native-reanimated'
 
 export const animations = createAnimations({
   bouncy: {

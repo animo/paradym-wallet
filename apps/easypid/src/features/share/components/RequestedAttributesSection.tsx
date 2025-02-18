@@ -5,8 +5,8 @@ import {
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
 } from '@package/agent'
+import { CardWithAttributes } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
-import { CardWithAttributes } from 'packages/app/src'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission

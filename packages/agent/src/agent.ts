@@ -11,13 +11,8 @@ import { AskarModule } from '@credo-ts/askar'
 import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import {
   Agent,
-  AutoAcceptCredential,
-  AutoAcceptProof,
   ClaimFormat,
-  ConnectionsModule,
-  CredentialsModule,
   DidsModule,
-  HttpOutboundTransport,
   JwkDidRegistrar,
   JwkDidResolver,
   KeyDerivationMethod,
@@ -25,27 +20,36 @@ import {
   KeyDidResolver,
   LogLevel,
   Mdoc,
+  WebDidResolver,
+  X509Module,
+} from '@credo-ts/core'
+import {
+  AutoAcceptCredential,
+  AutoAcceptProof,
+  ConnectionsModule,
+  CredentialsModule,
+  DidCommModule,
+  HttpOutboundTransport,
   MediationRecipientModule,
   MediatorPickupStrategy,
+  OutOfBandModule,
   ProofsModule,
   V2CredentialProtocol,
   V2ProofProtocol,
-  WebDidResolver,
   WsOutboundTransport,
-  X509Module,
-} from '@credo-ts/core'
+} from '@credo-ts/didcomm'
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
-import { useAgent as useAgentLib } from '@credo-ts/react-hooks'
+export { useAgent } from './providers'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
-import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
 import { bdrPidIssuerCertificate, pidSchemes } from '@easypid/constants'
 import { appLogger } from './logger'
 
 const askarModule = new AskarModule({
-  ariesAskar: ariesAskar,
+  askar,
 })
 
 export const initializeEasyPIDAgent = async ({
@@ -74,7 +78,7 @@ export const initializeEasyPIDAgent = async ({
       logger: appLogger(LogLevel.debug),
     },
     modules: {
-      ariesAskar: askarModule,
+      askar: askarModule,
       openId4VcHolder: new OpenId4VcHolderModule(),
       x509: new X509Module({
         getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
@@ -165,6 +169,8 @@ export const initializeParadymAgent = async ({
         registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
         resolvers: [new WebDidResolver(), new KeyDidResolver(), new JwkDidResolver(), new CheqdDidResolver()],
       }),
+      outOfBand: new OutOfBandModule(),
+      didcomm: new DidCommModule(),
       anoncreds: new AnonCredsModule({
         registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
         anoncreds,
@@ -213,36 +219,14 @@ export const initializeParadymAgent = async ({
     },
   })
 
-  agent.registerOutboundTransport(new HttpOutboundTransport())
-  agent.registerOutboundTransport(new WsOutboundTransport())
+  agent.modules.didcomm.registerOutboundTransport(new HttpOutboundTransport())
+  agent.modules.didcomm.registerOutboundTransport(new WsOutboundTransport())
 
   await agent.initialize()
 
   return agent
 }
 
+export type FullAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
 export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
-export type ParadymAppAgent = Awaited<ReturnType<typeof initializeParadymAgent>>
-export type EitherAgent = EasyPIDAppAgent | ParadymAppAgent
-
-export const isParadymAgent = (agent: EitherAgent): agent is ParadymAppAgent => {
-  return 'anoncreds' in agent.modules
-}
-
-export const isEasyPIDAgent = (agent: EitherAgent): agent is EasyPIDAppAgent => {
-  return !('anoncreds' in agent.modules)
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: it just needs to extend any, it won't actually be used
-export const useAgent = <A extends Agent<any> = ParadymAppAgent>(): {
-  agent: A
-  loading: boolean
-} => {
-  const { agent, loading } = useAgentLib<A>()
-
-  if (!agent) {
-    throw new Error('useAgent should only be used inside AgentProvider with a valid agent.')
-  }
-
-  return { agent, loading }
-}
+export type EitherAgent = FullAppAgent | EasyPIDAppAgent

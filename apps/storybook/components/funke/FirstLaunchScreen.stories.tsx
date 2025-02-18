@@ -1,6 +1,5 @@
 import { Button, Heading, HeroIcons, Page, Separator, XStack, YStack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 const FirstLaunchScreen = () => {

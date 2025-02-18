@@ -1,5 +1,4 @@
 import { Button, HeroIcons, IdCard, Stack, YStack } from '@package/ui'
-import React from 'react'
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated'
 
 import germanIssuerImage from '../../../../assets/german-issuer-image.png'

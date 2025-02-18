@@ -1,7 +1,7 @@
 import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
 import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useImageScaler } from 'packages/app/src/hooks'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import { ProtectData } from './assets/ProtectData'
 

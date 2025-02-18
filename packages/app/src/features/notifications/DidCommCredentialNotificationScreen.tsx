@@ -1,6 +1,5 @@
 import { useAgent, useDidCommCredentialActions } from '@package/agent'
 import { useToastController } from '@package/ui'
-import React from 'react'
 
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
@@ -40,7 +39,7 @@ export function DidCommCredentialNotificationScreen({
 
   const onCredentialDecline = () => {
     declineCredential().finally(() => {
-      void agent.credentials.deleteById(credentialExchange.id)
+      void agent.modules.credentials.deleteById(credentialExchange.id)
     })
 
     toast.show('Credential has been declined.')

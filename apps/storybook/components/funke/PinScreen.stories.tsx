@@ -1,7 +1,7 @@
 import { Page, XStack, YStack } from '@package/ui'
 import { ProgressHeader } from '@package/ui/src/components/ProgressHeader'
 import type { Meta, StoryObj } from '@storybook/react'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 import { Circle, Input } from 'tamagui'
 

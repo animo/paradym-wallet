@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"peerDependencies": {
-		"@hyperledger/aries-askar-react-native": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:",
 		"expo-secure-store": "~13.0.1",
 		"react-native": "catalog:",
 		"react-native-argon2": "^2.0.1",

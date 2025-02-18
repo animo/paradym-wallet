@@ -1,5 +1,4 @@
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
-import React from 'react'
 import { createParam } from 'solito'
 
 import { useCredentialsForDisplay } from '@package/agent'

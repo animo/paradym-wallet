@@ -1,4 +1,6 @@
 import { useAppAgent } from '@easypid/agent'
+import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import { InvalidPinError } from '@easypid/crypto/error'
 import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
@@ -26,18 +28,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   useEffect(() => {
     getSubmissionForMdocDocumentRequest(agent, deviceRequest)
-      .then((submission) => {
-        // We can't hare multiple documents at the moment
-        if (submission.entries.length > 1) {
-          toast.show('Presentation could not be shared.', {
-            message: 'Multiple cards requested, but only one card can be shared in-person',
-            customData: { preset: 'danger' },
-          })
-          pushToWallet()
-        } else {
-          setSubmission(submission)
-        }
-      })
+      .then(setSubmission)
       .catch((error) => {
         toast.show('Presentation information could not be extracted.', {
           customData: { preset: 'danger' },
@@ -50,11 +41,20 @@ export function FunkeMdocOfflineSharingScreen({
       })
   }, [agent, deviceRequest, toast.show, pushToWallet])
 
-  const onProofAccept = async (): Promise<void> => {
+  const onProofAccept = async (pin: string): Promise<void> => {
     // Already checked for submission in the useEffect
     if (!submission) return
 
     setIsProcessing(true)
+
+    try {
+      await setWalletServiceProviderPin(pin.split('').map(Number))
+    } catch (e) {
+      setIsProcessing(false)
+      if (e instanceof InvalidPinError) {
+        toast.show('Invalid PIN entered', { customData: { preset: 'danger' } })
+      }
+    }
 
     // Once this returns we just assume it's successful
     try {

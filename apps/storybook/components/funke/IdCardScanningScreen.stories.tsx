@@ -1,6 +1,5 @@
 import { Button, Page, Stack } from '@package/ui'
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 
 import { ProgressHeader } from '@package/ui/src/components/ProgressHeader'
 import { YStack } from 'tamagui'
