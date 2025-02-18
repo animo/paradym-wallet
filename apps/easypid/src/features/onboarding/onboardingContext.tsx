@@ -9,6 +9,7 @@ import type {
   ReceivePidUseCaseFlowOptions,
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
+import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { resetWallet } from '@easypid/utils/resetWallet'
 import {
   type CardScanningState,
@@ -31,7 +32,6 @@ import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import type { PidSdJwtVcAttributes } from '../../hooks'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'

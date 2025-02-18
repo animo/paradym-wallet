@@ -2,7 +2,6 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
-import type { PidSdJwtVcAttributes } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
@@ -10,6 +9,7 @@ import type {
   ReceivePidUseCaseFlowOptions,
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
+import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import {
