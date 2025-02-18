@@ -99,5 +99,5 @@ export const ProofExchangeProvider: React.FC<PropsWithChildren<Props>> = ({ agen
     }
   }, [state, agent])
 
-  return <ProofContext.Provider value={state}> {children} </ProofContext.Provider>
+  return <ProofContext.Provider value={state}>{children}</ProofContext.Provider>
 }

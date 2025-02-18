@@ -99,5 +99,5 @@ export const CredentialExchangeProvider: React.FC<PropsWithChildren<Props>> = ({
     }
   }, [state, agent])
 
-  return <CredentialContext.Provider value={state}> {children} </CredentialContext.Provider>
+  return <CredentialContext.Provider value={state}>{children}</CredentialContext.Provider>
 }
