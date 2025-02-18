@@ -14,9 +14,9 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 
-import { useCredentialByCategory } from '@easypid/hooks/useCredentialByCategory'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
+import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
 import { TextBackButton } from '@package/app'
 import { Link } from 'expo-router'
 import { Linking } from 'react-native'

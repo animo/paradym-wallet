@@ -7,24 +7,6 @@ import mdlCodeC1 from '../../assets/mdl/code-c1.png'
 import mdlCodeD from '../../assets/mdl/code-d.png'
 import mdlCodeD1 from '../../assets/mdl/code-d1.png'
 
-export type MdlAttributes = MdlSdJwtVcAttributes | MdlMdocAttributes
-
-export type MdlSdJwtVcAttributes = {
-  age_over_21: boolean
-  age_over_60: boolean
-  birth_date: string
-  document_number: string
-  driving_privileges: Array<DrivingPrivilege>
-  expiry_date: string
-  family_name: string
-  given_name: string
-  issue_date: string
-  issuing_authority: string
-  issuing_country: string
-  portrait: string
-  un_distinguishing_sign: string
-}
-
 type DrivingPrivilege = {
   codes: string[]
   expiry_date: string
@@ -32,10 +14,7 @@ type DrivingPrivilege = {
   vehicle_category_code: string
 }
 
-export type MdlMdocAttributes = {
-  age_over_18: boolean
-  age_over_21: boolean
-  age_over_60: boolean
+export type MdlAttributes = {
   birth_date: string
   document_number: string
   driving_privileges: Array<DrivingPrivilege>
@@ -61,8 +40,6 @@ const attributeNameMapping = {
   expiry_date: 'Expiry date',
   issue_date: 'Issue date',
   driving_privileges: 'Driving privileges',
-  age_over_21: 'Age over 21',
-  age_over_60: 'Age over 60',
   codes: 'Codes',
   code: 'Code',
   vehicle_category_code: 'Vehicle category code',
@@ -72,23 +49,13 @@ export const mapMdlAttributeName = (key: string) => {
   return attributeNameMapping[key] ?? sanitizeString(key)
 }
 
-export function getMdlAttributesForDisplay(attributes: Partial<MdlSdJwtVcAttributes>) {
+export function getMdlAttributesForDisplay(attributes: Partial<MdlAttributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
-  const {
-    age_over_21,
-    age_over_60,
-    birth_date,
-    document_number,
-    portrait,
-    un_distinguishing_sign,
-    issuing_authority,
-    issuing_country,
-    expiry_date,
-    issue_date,
-    driving_privileges,
-    ...remainingAttributes
-  } = attributes
+  const { driving_privileges, ...remainingAttributes } = attributes
+
+  // Filter out any age_over_XX attributes from remainingAttributes
+  const filteredAttributes = Object.entries(remainingAttributes).filter(([key]) => !key.startsWith('age_over_'))
 
   if (driving_privileges) {
     attributeGroups.push([
@@ -98,7 +65,7 @@ export function getMdlAttributesForDisplay(attributes: Partial<MdlSdJwtVcAttribu
   }
 
   return Object.fromEntries([
-    ...Object.entries(remainingAttributes).map(([key, value]) => [mapMdlAttributeName(key), value]),
+    ...Object.entries(filteredAttributes).map(([key, value]) => [mapMdlAttributeName(key), value]),
     ...attributeGroups,
   ])
 }

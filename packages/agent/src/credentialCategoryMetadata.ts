@@ -4,7 +4,7 @@ export interface CredentialCategoryMetadata {
   /**
    *
    */
-  credentialCategory: 'DE-PID' | 'DE-MDL' | (string & {})
+  credentialCategory: 'DE-PID' | (string & {})
 
   /**
    * Whether this instance of the canonical records should be displayed by default

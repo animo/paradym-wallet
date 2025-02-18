@@ -19,7 +19,6 @@ import {
   getOpenId4VcCredentialDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-  setCredentialCategoryMetadata,
   shareProof,
   storeCredential,
 } from '@package/agent'
@@ -28,7 +27,6 @@ import { useAppAgent } from '@easypid/agent'
 
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
-import { storeCredentialWithCategoryMetadata } from '@easypid/utils/storeCredential'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
@@ -175,7 +173,7 @@ export function FunkeCredentialNotificationScreen() {
   const onCompleteCredentialRetrieval = async () => {
     if (!receivedRecord) return
 
-    await storeCredentialWithCategoryMetadata(agent, receivedRecord)
+    await storeCredential(agent, receivedRecord)
     await addReceivedActivity(agent, {
       // TODO: should host be entityId or the iss?
       entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer as string,

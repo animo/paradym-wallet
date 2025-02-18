@@ -19,8 +19,9 @@ import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
-import { getMdocPidAttributesForDisplay, getSdJwtPidAttributesForDisplay } from '@easypid/utils/pidCustomMetadata'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
+import { getAttributesForCategory } from './display/category'
+import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
@@ -552,17 +553,25 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
-    // TODO: handle claim / display mapping here
-    // For now, we map attributes to our custom attributes for PID and MDL
-    // We should also include attributes from Type Metadata and OID4VC Metadata
-    // But order should be:
-    // 1. Custom attributes for PID and MDL
+    // FIXME: For now, we map attributes to our custom attributes for PID and MDL
+    // We should add support for attributes from Type Metadata and OID4VC Metadata
+
+    // Order of precedence should be:
+    // 1. Custom attributes for PID and MDL using category
     // 2. Attributes from SD JWT Type Metadata
     // 3. Attributes from OID4VC Metadata
+
     const customAttributesForDisplay =
-      credentialCategoryMetadata?.credentialCategory === 'DE-PID'
-        ? getSdJwtPidAttributesForDisplay(attributes)
-        : attributes
+      getAttributesForCategory({
+        format: ClaimFormat.SdJwtVc,
+        credentialCategory: credentialCategoryMetadata?.credentialCategory,
+        attributes,
+      }) ??
+      getAttributesForDocTypeOrVct({
+        type: sdJwtVc.payload.vct as string,
+        attributes,
+      }) ??
+      attributes
 
     return {
       id: credentialForDisplayId,
@@ -591,9 +600,16 @@ export function getCredentialForDisplay(
       mdocInstance
     )
     const customAttributesForDisplay =
-      credentialCategoryMetadata?.credentialCategory === 'DE-PID'
-        ? getMdocPidAttributesForDisplay(attributes)
-        : attributes
+      getAttributesForCategory({
+        format: ClaimFormat.MsoMdoc,
+        credentialCategory: credentialCategoryMetadata?.credentialCategory,
+        attributes,
+      }) ??
+      getAttributesForDocTypeOrVct({
+        type: mdocInstance.docType,
+        attributes,
+      }) ??
+      attributes
 
     return {
       id: credentialForDisplayId,

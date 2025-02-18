@@ -5,13 +5,13 @@ import {
   getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  storeCredential,
   useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import React, { useEffect, useState } from 'react'
 import { createParam } from 'solito'
 
-import { storeCredentialWithCategoryMetadata } from '@easypid/utils/storeCredential'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -61,7 +61,7 @@ export function OpenIdCredentialNotificationScreen() {
   const onCredentialAccept = async () => {
     setIsStoring(true)
 
-    await storeCredentialWithCategoryMetadata(agent, credentialRecord)
+    await storeCredential(agent, credentialRecord)
       .then(() => {
         toast.show('Credential has been added to your wallet.', { customData: { preset: 'success' } })
       })

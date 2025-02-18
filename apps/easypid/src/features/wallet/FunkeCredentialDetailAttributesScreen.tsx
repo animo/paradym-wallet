@@ -86,7 +86,11 @@ export function FunkeCredentialDetailAttributesScreen() {
         <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Card attributes" />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack px="$4" gap="$2" marginBottom={bottom}>
-            <CustomCredentialAttributes type={credential.metadata.type} subject={credential.attributes} />
+            <CustomCredentialAttributes
+              type={credential.metadata.type}
+              attributes={credential.attributes}
+              rawAttributes={credential.rawAttributes}
+            />
             <AnimatedStack
               key={isMetadataVisible ? 'visible-metadata' : 'hidden-metadata'}
               onLayout={(event) => setMetadataElementPosition(event.nativeEvent.layout.y)}

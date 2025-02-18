@@ -1,31 +1,34 @@
 import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
-import { useCredentialByCategory } from '@easypid/hooks/useCredentialByCategory'
 import { type MdlAttributes, getImageForMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
 import {
   type PidMdocAttributes,
   type PidSdJwtVcAttributes,
   mapPidAttributeName,
 } from '@easypid/utils/pidCustomMetadata'
-import { CredentialAttributes, type CredentialAttributesProps } from '@package/app/src'
+import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
+import { CredentialAttributes } from '@package/app/src'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from 'packages/ui/src'
 import { formatDate } from 'packages/utils/src'
 
-type CustomCredentialAttributesProps = CredentialAttributesProps & {
+type CustomCredentialAttributesProps = {
   type: string
+  attributes: Record<string, unknown>
+  rawAttributes: Record<string, unknown>
 }
 
 export function CustomCredentialAttributes({ type, ...props }: CustomCredentialAttributesProps) {
   if ([...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(type)) {
     return <FunkePidCredentialAttributes />
   }
-  if ([...mdlSchemes.mdlJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(type)) {
-    return <FunkeMdlCredentialAttributes />
+  if ([...mdlSchemes.mdlSdJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(type)) {
+    return <FunkeMdlCredentialAttributes rawAttributes={props.rawAttributes} />
   }
-  return <CredentialAttributes {...props} />
+  return <CredentialAttributes subject={props.attributes} />
 }
 
 export function FunkePidCredentialAttributes() {
+  // We don't pass attributes here as props because we need to use the specified displayPriority
   const { credential } = useCredentialByCategory('DE-PID')
 
   const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtVc
@@ -45,27 +48,27 @@ export function FunkePidCredentialAttributes() {
   }
 
   if (isPidSdJwtVc) {
-    const typedRawAttrs = credential?.rawAttributes as PidSdJwtVcAttributes
-    personalInfoCard.name = `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`
-    personalInfoCard.born = `born ${typedRawAttrs.birthdate} (${typedRawAttrs.age_in_years})`
-    personalInfoCard.placeOfBirth = typedRawAttrs.place_of_birth?.locality ?? ''
-    personalInfoCard.nationalities = typedRawAttrs.nationalities?.join(', ') ?? ''
+    const raw = credential?.rawAttributes as PidSdJwtVcAttributes
+    personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
+    personalInfoCard.born = `born ${raw.birthdate} (${raw.age_in_years})`
+    personalInfoCard.placeOfBirth = raw.place_of_birth?.locality ?? ''
+    personalInfoCard.nationalities = raw.nationalities?.join(', ') ?? ''
 
-    addressTable.street = typedRawAttrs.address?.street_address ?? ''
-    addressTable.locality = `${typedRawAttrs.address?.locality} (${typedRawAttrs.address?.country})`
-    addressTable.postalCode = typedRawAttrs.address?.postal_code ?? ''
+    addressTable.street = raw.address?.street_address ?? ''
+    addressTable.locality = `${raw.address?.locality} (${raw.address?.country})`
+    addressTable.postalCode = raw.address?.postal_code ?? ''
   }
 
   if (isPidMdoc) {
-    const typedRawAttrs = credential?.rawAttributes as PidMdocAttributes
-    personalInfoCard.name = `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`
-    personalInfoCard.born = `born ${typedRawAttrs.birth_date}`
-    personalInfoCard.placeOfBirth = typedRawAttrs.birth_place ?? ''
-    personalInfoCard.nationalities = typedRawAttrs.nationality ?? ''
+    const raw = credential?.rawAttributes as PidMdocAttributes
+    personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
+    personalInfoCard.born = `born ${raw.birth_date}`
+    personalInfoCard.placeOfBirth = raw.birth_place ?? ''
+    personalInfoCard.nationalities = raw.nationality ?? ''
 
-    addressTable.street = typedRawAttrs.resident_street ?? ''
-    addressTable.locality = `${typedRawAttrs.resident_city} (${typedRawAttrs.resident_country})`
-    addressTable.postalCode = typedRawAttrs.resident_postal_code ?? ''
+    addressTable.street = raw.resident_street ?? ''
+    addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
+    addressTable.postalCode = raw.resident_postal_code ?? ''
   }
 
   return (
@@ -125,22 +128,22 @@ export function FunkePidCredentialAttributes() {
   )
 }
 
-export function FunkeMdlCredentialAttributes() {
-  const { credential } = useCredentialByCategory('DE-MDL')
-
-  const typedRawAttrs = credential?.rawAttributes as MdlAttributes
+export function FunkeMdlCredentialAttributes({
+  rawAttributes,
+}: Pick<CustomCredentialAttributesProps, 'rawAttributes'>) {
+  const raw = rawAttributes as MdlAttributes
 
   const mainCard = {
-    name: `${typedRawAttrs.given_name} ${typedRawAttrs.family_name}`,
-    privileges: typedRawAttrs.driving_privileges.map((privilege) => privilege.vehicle_category_code).join(', '),
-    documentNumber: typedRawAttrs.document_number,
+    name: `${raw.given_name} ${raw.family_name}`,
+    privileges: raw.driving_privileges.map((privilege) => privilege.vehicle_category_code).join(', '),
+    documentNumber: raw.document_number,
   }
 
   const issuanceInfo = {
-    issuingAuthority: typedRawAttrs.issuing_authority,
-    issuingCountry: typedRawAttrs.issuing_country,
-    expiryDate: formatDate(typedRawAttrs.expiry_date, { includeTime: false }),
-    unDistinguishingSign: typedRawAttrs.un_distinguishing_sign,
+    issuingAuthority: raw.issuing_authority,
+    issuingCountry: raw.issuing_country,
+    expiryDate: formatDate(raw.expiry_date, { includeTime: false }),
+    unDistinguishingSign: raw.un_distinguishing_sign,
   }
 
   return (
@@ -158,7 +161,7 @@ export function FunkeMdlCredentialAttributes() {
             overflow="hidden"
             size="$8"
           >
-            <Image width={96} height={96} src={typedRawAttrs.portrait} />
+            <Image width={96} height={96} src={raw.portrait} />
           </Circle>
           <TableContainer>
             <YStack
@@ -181,7 +184,7 @@ export function FunkeMdlCredentialAttributes() {
               attributes={[mapMdlAttributeName('privileges'), mapMdlAttributeName('document_number')]}
               values={[
                 <XStack key="driving-privileges-icons" gap="$3">
-                  {typedRawAttrs.driving_privileges.map((privilege) => (
+                  {raw.driving_privileges.map((privilege) => (
                     <Image
                       key={privilege.vehicle_category_code}
                       src={getImageForMdlCode(privilege.vehicle_category_code)}
@@ -201,7 +204,7 @@ export function FunkeMdlCredentialAttributes() {
           Driving privileges
         </Heading>
         <TableContainer>
-          {typedRawAttrs.driving_privileges.map((privilege) => (
+          {raw.driving_privileges.map((privilege) => (
             <TableRow
               key={`${privilege.vehicle_category_code}-${privilege.expiry_date}`}
               attributes={[mapMdlAttributeName('code'), mapMdlAttributeName('expiry_date')]}

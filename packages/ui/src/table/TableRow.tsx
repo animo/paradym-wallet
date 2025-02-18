@@ -10,6 +10,7 @@ interface TableRowProps {
   onPress?(): void
 }
 
+// FIXME: Use combined values so you have one array with objects where the keys are key and value for example.
 export const TableRow = ({ attributes, values, isLastRow = false, onPress, image, centred = false }: TableRowProps) => {
   const renderedImage = image ? <Image src={image} width={50} height={50} /> : undefined
   const attributesArray = Array.isArray(attributes) ? attributes : [attributes]
