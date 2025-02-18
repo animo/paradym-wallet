@@ -49,13 +49,13 @@ overrides:
   '@animo-id/oauth2': 0.1.4
   '@animo-id/oauth2-utils': 0.1.4
   dcql: 0.2.17
-  '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231
-  '@credo-ts/askar': npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250213120231
-  '@credo-ts/cheqd': npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250213120231
-  '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250213120231
-  '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250213120231
-  '@credo-ts/question-answer': npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250213120231
-  '@credo-ts/react-native': npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250213120231
+  '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411
+  '@credo-ts/askar': npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250218155411
+  '@credo-ts/cheqd': npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250218155411
+  '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250218155411
+  '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250218155411
+  '@credo-ts/question-answer': npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250218155411
+  '@credo-ts/react-native': npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250218155411
   '@sphereon/pex-models': 2.3.2
   '@openid-federation/core': 0.1.1-alpha.17
   isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
@@ -105,8 +105,8 @@ importers:
         specifier: 0.4.0
         version: 0.4.0
       '@credo-ts/core':
-        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
       '@expo-google-fonts/open-sans':
         specifier: ^0.2.3
         version: 0.2.3
@@ -157,7 +157,7 @@ importers:
         version: 6.0.3
       burnt:
         specifier: ^0.12.2
-        version: 0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       expo:
         specifier: ~51.0.39
         version: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
@@ -272,7 +272,7 @@ importers:
         version: 7.26.9
       '@tamagui/babel-plugin':
         specifier: 1.122.7
-        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       babel-plugin-syntax-hermes-parser:
         specifier: ^0.25.1
         version: 0.25.1
@@ -292,8 +292,8 @@ importers:
         specifier: 'catalog:'
         version: 0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@credo-ts/core':
-        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
         version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
@@ -326,7 +326,7 @@ importers:
         version: 4.1.0
       burnt:
         specifier: ^0.12.2
-        version: 0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       expo:
         specifier: ~51.0.39
         version: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
@@ -411,7 +411,7 @@ importers:
         version: 7.26.9
       '@tamagui/babel-plugin':
         specifier: 1.122.7
-        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       typescript:
         specifier: 'catalog:'
         version: 5.3.3
@@ -441,10 +441,10 @@ importers:
         version: 6.1.18(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@storybook/addons':
         specifier: ^7.6.17
-        version: 7.6.17(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+        version: 7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       burnt:
         specifier: ^0.12.2
-        version: 0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       expo:
         specifier: ~51.0.39
         version: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
@@ -529,46 +529,46 @@ importers:
         version: 7.6.20
       '@storybook/addon-controls':
         specifier: ^7.6.18
-        version: 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+        version: 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/addon-essentials':
         specifier: ^7.6.18
-        version: 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+        version: 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/addon-links':
         specifier: ^7.6.18
         version: 7.6.20(react@18.3.1)
       '@storybook/addon-ondevice-actions':
         specifier: ^7.6.18
-        version: 7.6.20(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 7.6.20(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@storybook/addon-ondevice-backgrounds':
         specifier: ^7.6.18
-        version: 7.6.20(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 7.6.20(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@storybook/addon-ondevice-controls':
         specifier: ^7.6.18
-        version: 7.6.20(@react-native-community/datetimepicker@8.3.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(@react-native-community/slider@4.5.5)(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 7.6.20(@react-native-community/datetimepicker@8.3.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(@react-native-community/slider@4.5.5)(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@storybook/addon-ondevice-notes':
         specifier: ^7.6.18
-        version: 7.6.20(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 7.6.20(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@storybook/addon-react-native-web':
         specifier: ^0.0.23
-        version: 0.0.23(@babel/preset-react@7.26.3(@babel/core@7.26.9))(@react-native/babel-preset@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(babel-plugin-react-native-web@0.19.13)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+        version: 0.0.23(@babel/preset-react@7.26.3(@babel/core@7.26.9))(@react-native/babel-preset@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(babel-plugin-react-native-web@0.19.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/react':
         specifier: ^7.6.18
-        version: 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
+        version: 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
       '@storybook/react-native':
         specifier: ^7.6.18
-        version: 7.6.20(react-dom@19.0.0(react@18.3.1))(react-native-safe-area-context@4.10.5(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(typescript@5.3.3)
+        version: 7.6.20(react-dom@18.3.1(react@18.3.1))(react-native-safe-area-context@4.10.5(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(typescript@5.3.3)
       '@storybook/react-webpack5':
         specifier: ^7.6.18
-        version: 7.6.20(@babel/core@7.26.9)(@swc/core@1.10.17(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(esbuild@0.18.20)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)
+        version: 7.6.20(@babel/core@7.26.9)(@swc/core@1.10.18(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(esbuild@0.18.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)
       '@tamagui/babel-plugin':
         specifier: 1.122.7
-        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@types/react':
         specifier: ~18.2.79
         version: 18.2.79
       babel-loader:
         specifier: ^8.2.3
-        version: 8.4.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+        version: 8.4.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       babel-plugin-react-docgen-typescript:
         specifier: ^1.5.1
         version: 1.5.1(@babel/core@7.26.9)(typescript@5.3.3)
@@ -583,7 +583,7 @@ importers:
         version: 7.6.20
       tamagui-loader:
         specifier: 1.122.7
-        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+        version: 1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       typescript:
         specifier: 'catalog:'
         version: 5.3.3
@@ -600,26 +600,26 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       '@credo-ts/anoncreds':
-        specifier: npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/askar':
-        specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250213120231(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250218155411(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/cheqd':
-        specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/core':
-        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/openid4vc':
-        specifier: npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250213120231(patch_hash=uejfpkyjx7xd6ccrkw3off23fy)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250218155411(patch_hash=uejfpkyjx7xd6ccrkw3off23fy)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/question-answer':
-        specifier: npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250213120231(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250218155411(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/react-native':
-        specifier: npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250213120231
-        version: '@animo-id/credo-ts-react-native@0.5.14-alpha-20250213120231(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native-get-random-values@1.11.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250218155411
+        version: '@animo-id/credo-ts-react-native@0.5.14-alpha-20250218155411(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native-get-random-values@1.11.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
         version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
@@ -631,10 +631,10 @@ importers:
         version: link:../utils
       '@tanstack/react-query':
         specifier: ^5
-        version: 5.66.6(react@18.3.1)
+        version: 5.66.7(react@18.3.1)
       credo-ts-didweb-anoncreds:
         specifier: 0.0.1-alpha.13
-        version: 0.0.1-alpha.13(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4)
+        version: 0.0.1-alpha.13(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4)
       expo:
         specifier: 'catalog:'
         version: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
@@ -692,7 +692,7 @@ importers:
         version: 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5
-        version: 5.66.6(react@18.3.1)
+        version: 5.66.7(react@18.3.1)
       expo:
         specifier: 'catalog:'
         version: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
@@ -763,7 +763,7 @@ importers:
         version: 0.3.1(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5
-        version: 5.66.6(react@18.3.1)
+        version: 5.66.7(react@18.3.1)
       expo-secure-store:
         specifier: ~13.0.1
         version: 13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))
@@ -818,13 +818,13 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-8ieseH1miDogLDKhzO+GExzTmYaYwAJWhsAGJNjkDImFoKq8wTrOriSzHsu8QrMJFj19iJR54g7AQP2X3+SYQA==}
+  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-GRubD5GA8fvNaeHDVjOpFMvi8GVXsJmAi+3+BPQTypnSw9kPUTFT+JlAIiNJlIJCS2ZvldA628uUB7ObaYOVdw==}
     peerDependencies:
       '@hyperledger/anoncreds-shared': ^0.2.2
 
-  '@animo-id/credo-ts-askar@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-Ko1cAY9CYHmN4kRGMCfTBgDOuJnjUtve7KC7D5naJIEgq65WsANi6bQPJPzo4rhpDDQoykWymfMPoKy8L0+FlA==}
+  '@animo-id/credo-ts-askar@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-DOfLaS90wXhVb1JXC4ZCIdzfbzjXY73ZXNSCtq6j1mxxChDUKfXYs4fUxzomMDVsVnswmi9YB6o4g/ysDeP6Jg==}
     peerDependencies:
       '@animo-id/expo-secure-environment': ^0.1.0-alpha.11
       '@openwallet-foundation/askar-shared': ^0.3.1
@@ -832,23 +832,23 @@ packages:
       '@animo-id/expo-secure-environment':
         optional: true
 
-  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-zo8ewej5cPDXoLN7pwMwQlBA+kSCAD1VeKo0mK8Gi35vJvNb012SfjlF2w7W/Mrz8IcnTsZEDGf285yuZVNnAQ==}
+  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-nQqvimARxGa6NJO3GrFDxUtZ+zeaAxx03mU4zAm/TH5SXDPP5UtqFfeuiWu2p7hH8gUPOzMUpayBlMB24kjJ0w==}
 
-  '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-LAH+RhZ86caMFgDtrfaC6R0S3FrWFENCaTiTyHITn9BlcIyXJQiPse1mJ6JggD8IdnVpDo6I1iyMhy/DfMA8xQ==}
+  '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-SUbanmsgaasv6VtxGMC+S7+8sMSPQlauKv4z9abuuM2qDVyIaKkHoXKRC+V7AhrzhfjiftZjRShdQh1vlvgCPg==}
 
-  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-k0bSurNZBb9XwC3jIgOvNqSAP9r66IlCKUaHkwC1t5u810L9kFUCg1WrwzCMJ2Z21/hNik4TtTdSoGLXWUpR4w==}
+  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-RzvfQvODvBo5KQb6tz5aVc1VUZCTtyoufwnkpVW1ARjt/YjGaswIMVoSOvt7eGKEl19hWT5nbgTiKCB2b+NcPg==}
 
-  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-67hSD+kHf0nBJlBlfa/EzlUwTX3g4HikKypKaK3FM2amFuCaJDfG/Oyg1udCSsvJG4hg4NVHb2Iixbn/ehDTDw==}
+  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-dNhhk4B9WuWDpH5uJhEQ0W54tQQHsOwQ5nN6DI4+Ak3zFlfNUfXttK7WzGtSac7Xg5sGxpWrpDd3heaID8CwDA==}
 
-  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-McHcGiXq8i/KzOwPASFK6Ja7JKi+tqqyjQJzwZzSqyB+oBkYY321hDECzUxLlnJda4KxuB8x7LOax2UL7ysQfg==}
+  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-P9lh9QTfgkInK4oImGs8kpHUpdutKZBFjNCSIUGhQsHXubcBEk2bWQqipaEzUDYL5CUJWSAiHzoeH8lIvyt1dA==}
 
-  '@animo-id/credo-ts-react-native@0.5.14-alpha-20250213120231':
-    resolution: {integrity: sha512-216vmfDE/dAp7RUFKvVPUjlvRZ7G7jKGm/1KWQ6SGmIVAg0hrMTq8yF+A4K3Aj4eHRk985y7XSKKRe85lThtmg==}
+  '@animo-id/credo-ts-react-native@0.5.14-alpha-20250218155411':
+    resolution: {integrity: sha512-GMzsX8r6p5mVy0uKb66YdT47t6SVr4CkU071oEpsUnq38cCg9sc7Pzrw3oNC7QsoCCUDmS2L5byt5+R2R1F3dg==}
     peerDependencies:
       react-native: '>=0.71.4'
       react-native-fs: ^2.20.0
@@ -3757,68 +3757,68 @@ packages:
   '@storybook/types@7.6.20':
     resolution: {integrity: sha512-GncdY3x0LpbhmUAAJwXYtJDUQEwfF175gsjH0/fxPkxPoV7Sef9TM41jQLJW/5+6TnZoCZP/+aJZTJtq3ni23Q==}
 
-  '@swc/core-darwin-arm64@1.10.17':
-    resolution: {integrity: sha512-LSQhSjESleTc0c45BnVKRacp9Nl4zhJMlV/nmhpFCOv/CqHI5YBDX5c9bPk9jTRNHIf0QH92uTtswt8yN++TCQ==}
+  '@swc/core-darwin-arm64@1.10.18':
+    resolution: {integrity: sha512-FdGqzAIKVQJu8ROlnHElP59XAUsUzCFSNsou+tY/9ba+lhu8R9v0OI5wXiPErrKGZpQFMmx/BPqqhx3X4SuGNg==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@swc/core-darwin-x64@1.10.17':
-    resolution: {integrity: sha512-TTaZFS4jLuA3y6+D2HYv4yVGhmjkOGG6KyAwBiJEeoUaazX5MYOyQwaZBPhRGtzHZFrzi4t4jNix4kAkMajPkQ==}
+  '@swc/core-darwin-x64@1.10.18':
+    resolution: {integrity: sha512-RZ73gZRituL/ZVLgrW6BYnQ5g8tuStG4cLUiPGJsUZpUm0ullSH6lHFvZTCBNFTfpQChG6eEhi2IdG6DwFp1lw==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
 
-  '@swc/core-linux-arm-gnueabihf@1.10.17':
-    resolution: {integrity: sha512-8P+ESJyGnVdJi0nUcQfxkbTiB/7hnu6N3U72KbvHFBcuroherwzW4DId1XD4RTU2Cjsh1dztZoCcOLY8W9RW1Q==}
+  '@swc/core-linux-arm-gnueabihf@1.10.18':
+    resolution: {integrity: sha512-8iJqI3EkxJuuq21UHoen1VS+QlS23RvynRuk95K+Q2HBjygetztCGGEc+Xelx9a0uPkDaaAtFvds4JMDqb9SAA==}
     engines: {node: '>=10'}
     cpu: [arm]
     os: [linux]
 
-  '@swc/core-linux-arm64-gnu@1.10.17':
-    resolution: {integrity: sha512-zT21jDQCe+IslzOtw+BD/9ElO/H4qU4fkkOeVQ68PcxuqYS2gwyDxWqa9IGwpzWexYM+Lzi1rAbl/1BM6nGW8Q==}
+  '@swc/core-linux-arm64-gnu@1.10.18':
+    resolution: {integrity: sha512-8f1kSktWzMB6PG+r8lOlCfXz5E8Qhsmfwonn77T/OfjvGwQaWrcoASh2cdjpk3dydbf8jsKGPQE1lSc7GyjXRQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-arm64-musl@1.10.17':
-    resolution: {integrity: sha512-C2jaW1X+93HscVcesKYgSuZ9GaKqKcQvwvD+q+4JZkaKF4Zopt/aguc6Tmn/nuavRk0WV8yVCpHXoP7lz/2akA==}
+  '@swc/core-linux-arm64-musl@1.10.18':
+    resolution: {integrity: sha512-4rv+E4VLdgQw6zjbTAauCAEExxChvxMpBUMCiZweTNPKbJJ2dY6BX2WGJ1ea8+RcgqR/Xysj3AFbOz1LBz6dGA==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-x64-gnu@1.10.17':
-    resolution: {integrity: sha512-vfyxqV5gddurG2NVJLemR/68s7GTe0QruozrZiDpNqr9V4VX9t3PadDKMDAvQz6jKrtiqMtshNXQTNRKAKlzFw==}
+  '@swc/core-linux-x64-gnu@1.10.18':
+    resolution: {integrity: sha512-vTNmyRBVP+sZca+vtwygYPGTNudTU6Gl6XhaZZ7cEUTBr8xvSTgEmYXoK/2uzyXpaTUI4Bmtp1x81cGN0mMoLQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-linux-x64-musl@1.10.17':
-    resolution: {integrity: sha512-8M+nI5MHZGQUnXyfTLsGw85a3oQRXMsFjgMZuOEJO9ZGBIEnYVuWOxENfcP6MmlJmTOW+cJxHnMGhKY+fjcntw==}
+  '@swc/core-linux-x64-musl@1.10.18':
+    resolution: {integrity: sha512-1TZPReKhFCeX776XaT6wegknfg+g3zODve+r4oslFHI+g7cInfWlxoGNDS3niPKyuafgCdOjme2g3OF+zzxfsQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-win32-arm64-msvc@1.10.17':
-    resolution: {integrity: sha512-iUeIBFM6c/NwsreLFSAH395Dahc+54mSi0Kq//IrZ2Y16VlqCV7VHdOIMrdAyDoBFUvh0jKuLJPWt+jlKGtSLg==}
+  '@swc/core-win32-arm64-msvc@1.10.18':
+    resolution: {integrity: sha512-o/2CsaWSN3bkzVQ6DA+BiFKSVEYvhWGA1h+wnL2zWmIDs2Knag54sOEXZkCaf8YQyZesGeXJtPEy9hh/vjJgkA==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
 
-  '@swc/core-win32-ia32-msvc@1.10.17':
-    resolution: {integrity: sha512-lPXYFvkfYIN8HdNmG6dCnQqgA+rOSTgeAjIhGsYCEyLsYkkhF2FQw34OF6PnWawQ6hOdOE9v6Bw3T4enj3Lb6w==}
+  '@swc/core-win32-ia32-msvc@1.10.18':
+    resolution: {integrity: sha512-eTPASeJtk4mJDfWiYEiOC6OYUi/N7meHbNHcU8e+aKABonhXrIo/FmnTE8vsUtC6+jakT1TQBdiQ8fzJ1kJVwA==}
     engines: {node: '>=10'}
     cpu: [ia32]
     os: [win32]
 
-  '@swc/core-win32-x64-msvc@1.10.17':
-    resolution: {integrity: sha512-KrnkFEWpBmxSe8LixhAZXeeUwTNDVukrPeXJ1PiG+pmb5nI989I9J9IQVIgBv+JXXaK+rmiWjlcIkphaDJJEAA==}
+  '@swc/core-win32-x64-msvc@1.10.18':
+    resolution: {integrity: sha512-1Dud8CDBnc34wkBOboFBQud9YlV1bcIQtKSg7zC8LtwR3h+XAaCayZPkpGmmAlCv1DLQPvkF+s0JcaVC9mfffQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
 
-  '@swc/core@1.10.17':
-    resolution: {integrity: sha512-FXZx7jHpiwz4fTuuueWwsvN7VFLSoeS3mcxCTPUNOHs/K2ecaBO+slh5T5Xvt/KGuD2I/2T8G6Zts0maPkt2lQ==}
+  '@swc/core@1.10.18':
+    resolution: {integrity: sha512-IUWKD6uQYGRy8w2X9EZrtYg1O3SCijlHbCXzMaHQYc1X7yjijQh4H3IVL9ssZZyVp2ZDfQZu4bD5DWxxvpyjvg==}
     engines: {node: '>=10'}
     peerDependencies:
       '@swc/helpers': '*'
@@ -4305,8 +4305,8 @@ packages:
   '@tanstack/query-core@5.66.4':
     resolution: {integrity: sha512-skM/gzNX4shPkqmdTCSoHtJAPMTtmIJNS0hE+xwTTUVYwezArCT34NMermABmBVUg5Ls5aiUXEDXfqwR1oVkcA==}
 
-  '@tanstack/react-query@5.66.6':
-    resolution: {integrity: sha512-Xepc53h+D5sqoO/MZiSH2ROVLTDfRwR+3E4C2oS71/lo9u2mwbneZIEyIGXEHvmfyQpqtbf9voghD+QwLDLzcA==}
+  '@tanstack/react-query@5.66.7':
+    resolution: {integrity: sha512-qd3q/tUpF2K1xItfPZddk1k/8pSXnovg41XyCqJgPoyYEirMBtB0sVEVVQ/CsAOngzgWtBPXimVf4q4kM9uO6A==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -5393,8 +5393,8 @@ packages:
   credo-ts-didweb-anoncreds@0.0.1-alpha.13:
     resolution: {integrity: sha512-0x8lipY82+ALdTu+gVRe6RKvoJRvn2/Bhj/klk8PhmvWAAQXVMvzVOmUrw0BLTQ+19+koY1yufltglWXxRMxqA==}
     peerDependencies:
-      '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231
-      '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250213120231
+      '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411
+      '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250218155411
       '@hyperledger/anoncreds-shared': ^0.2.1
 
   cross-env@7.0.3:
@@ -5712,8 +5712,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  ec-compression@0.0.1-alpha.9:
-    resolution: {integrity: sha512-x0U9mYW69oBMM/XpteYAm9BL7/hbJhIzCmj9LTdQyBbfi5SbOFeZqGCGf8bNLmM22cwWmbXvQ5QoOqTKeFOBng==}
+  ec-compression@0.0.1-alpha.10:
+    resolution: {integrity: sha512-40i890RKwkaxUqAI8XZkELoKWhQS4VDfHU0D0lYwrFjfA7vtUZWaCNCbpoGwCMZqrPrWGfXqej76/N44kVKxMg==}
 
   ed25519-signature-2018-context@1.1.0:
     resolution: {integrity: sha512-ppDWYMNwwp9bploq0fS4l048vHIq41nWsAbPq6H4mNVx9G/GxW3fwg4Ln0mqctP13MoEpREK7Biz8TbVVdYXqA==}
@@ -6294,8 +6294,8 @@ packages:
   flow-enums-runtime@0.0.6:
     resolution: {integrity: sha512-3PYnM29RFXwvAN6Pc/scUfkI7RwhQ/xqyLUyPNlXUp9S40zI8nup9tUSrTLSVnWGBN38FNiGWbwZOB6uR4OGdw==}
 
-  flow-parser@0.261.1:
-    resolution: {integrity: sha512-2l5bBKeVtT+d+1CYSsTLJ+iP2FuoR7zjbDQI/v6dDRiBpx3Lb20Z/tLS37ReX/lcodyGSHC2eA/Nk63hB+mkYg==}
+  flow-parser@0.261.2:
+    resolution: {integrity: sha512-RtunoakA3YjtpAxPSOBVW6lmP5NYmETwkpAfNkdr8Ovf86ENkbD3mtPWnswFTIUtRvjwv0i8ZSkHK+AzsUg1JA==}
     engines: {node: '>=0.4.0'}
 
   follow-redirects@1.15.9:
@@ -8281,6 +8281,11 @@ packages:
     resolution: {integrity: sha512-hlSJDQ2synMPKFZOsKo9Hi8WWZTC7POR8EmWvTSjow+VDgKzkmjQvFm2fk0tmRw+f0vTOIYKlarR0iL4996pdg==}
     engines: {node: '>=16.14.0'}
 
+  react-dom@18.3.1:
+    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
+    peerDependencies:
+      react: ^18.3.1
+
   react-dom@19.0.0:
     resolution: {integrity: sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==}
     peerDependencies:
@@ -8693,6 +8698,9 @@ packages:
 
   sax@1.4.1:
     resolution: {integrity: sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==}
+
+  scheduler@0.23.2:
+    resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
 
   scheduler@0.24.0-canary-efb381bbf-20230505:
     resolution: {integrity: sha512-ABvovCDe/k9IluqSh4/ISoq8tIJnW8euVAWYt5j/bg6dRnqwQwiGO1F/V4AyK96NGF/FB04FhOUDuWj8IKfABA==}
@@ -9864,11 +9872,11 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250213120231(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250218155411(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@hyperledger/anoncreds-shared': 0.2.4
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
@@ -9886,9 +9894,9 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-askar@0.5.14-alpha-20250213120231(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-askar@0.5.14-alpha-20250218155411(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@openwallet-foundation/askar-shared': 0.3.1
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -9908,15 +9916,15 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@cheqd/sdk': 2.5.1
       '@cheqd/ts-proto': 2.3.2
       '@cosmjs/crypto': 0.30.1
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
-      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@stablelib/ed25519': 1.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -9938,7 +9946,7 @@ snapshots:
       - utf-8-validate
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@animo-id/mdoc': 0.4.0
       '@animo-id/pex': 4.1.1-alpha.0
@@ -9970,7 +9978,7 @@ snapshots:
       class-validator: 0.14.1
       dcql: 0.2.17(typescript@5.3.3)
       did-resolver: 4.1.0
-      ec-compression: 0.0.1-alpha.9
+      ec-compression: 0.0.1-alpha.10
       lru_map: 0.4.1
       make-error: 1.3.6
       object-inspect: 1.13.4
@@ -9993,7 +10001,7 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@animo-id/mdoc': 0.4.0
       '@animo-id/pex': 4.1.1-alpha.0
@@ -10025,7 +10033,7 @@ snapshots:
       class-validator: 0.14.1
       dcql: 0.2.17(typescript@5.7.3)
       did-resolver: 4.1.0
-      ec-compression: 0.0.1-alpha.9
+      ec-compression: 0.0.1-alpha.10
       lru_map: 0.4.1
       make-error: 1.3.6
       object-inspect: 1.13.4
@@ -10048,9 +10056,9 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250213120231(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250218155411(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       class-transformer: 0.5.1
       class-validator: 0.14.1
       luxon: 3.5.0
@@ -10068,11 +10076,11 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250213120231(patch_hash=uejfpkyjx7xd6ccrkw3off23fy)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250218155411(patch_hash=uejfpkyjx7xd6ccrkw3off23fy)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@animo-id/oauth2': 0.1.4(typescript@5.7.3)
       '@animo-id/oid4vci': 0.1.4(typescript@5.7.3)
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@openid-federation/core': 0.1.1-alpha.17
       '@sphereon/did-auth-siop': https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke(typescript@5.7.3)
       '@sphereon/oid4vc-common': https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke
@@ -10091,10 +10099,10 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250213120231(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250218155411(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250213120231(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250218155411(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.1
@@ -10110,10 +10118,10 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-react-native@0.5.14-alpha-20250213120231(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native-get-random-values@1.11.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-react-native@0.5.14-alpha-20250218155411(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native-get-random-values@1.11.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@azure/core-asynciterator-polyfill': 1.0.2
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       events: 3.3.0
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
       react-native-fs: 2.20.0(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))
@@ -12045,6 +12053,12 @@ snapshots:
       '@floating-ui/core': 1.6.9
       '@floating-ui/utils': 0.2.9
 
+  '@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@floating-ui/dom': 1.6.13
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   '@floating-ui/react-dom@2.1.2(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@floating-ui/dom': 1.6.13
@@ -12428,7 +12442,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@pmmmwh/react-refresh-webpack-plugin@0.5.15(react-refresh@0.14.2)(type-fest@4.35.0)(webpack-hot-middleware@2.26.1)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))':
+  '@pmmmwh/react-refresh-webpack-plugin@0.5.15(react-refresh@0.14.2)(type-fest@4.35.0)(webpack-hot-middleware@2.26.1)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))':
     dependencies:
       ansi-html: 0.0.9
       core-js-pure: 3.40.0
@@ -12438,7 +12452,7 @@ snapshots:
       react-refresh: 0.14.2
       schema-utils: 4.3.0
       source-map: 0.7.4
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
     optionalDependencies:
       type-fest: 4.35.0
       webpack-hot-middleware: 2.26.1
@@ -12476,35 +12490,35 @@ snapshots:
 
   '@radix-ui/primitive@1.1.1': {}
 
-  '@radix-ui/react-arrow@1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-arrow@1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-collection@1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-collection@1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-context': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slot': 1.0.2(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-collection@1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-collection@1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/react-compose-refs': 1.1.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-context': 1.1.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slot': 1.1.2(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -12552,16 +12566,16 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-dismissable-layer@1.0.4(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-dismissable-layer@1.0.4(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-escape-keydown': 1.0.3(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -12572,14 +12586,14 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-focus-scope@1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-focus-scope@1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -12598,100 +12612,100 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-popper@1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-popper@1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
-      '@floating-ui/react-dom': 2.1.2(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-arrow': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@floating-ui/react-dom': 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-arrow': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-context': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-rect': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-size': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/rect': 1.0.1
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-portal@1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-portal@1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-primitive@1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-primitive@1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
       '@radix-ui/react-slot': 1.0.2(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-primitive@2.0.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-primitive@2.0.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/react-slot': 1.1.2(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-roving-focus@1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-roving-focus@1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/primitive': 1.1.1
-      '@radix-ui/react-collection': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-collection': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-compose-refs': 1.1.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-context': 1.1.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-direction': 1.1.0(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-id': 1.1.0(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-select@1.2.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-select@1.2.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
       '@radix-ui/number': 1.0.1
       '@radix-ui/primitive': 1.0.1
-      '@radix-ui/react-collection': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-collection': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-context': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-direction': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-dismissable-layer': 1.0.4(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-dismissable-layer': 1.0.4(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-focus-guards': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-focus-scope': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-focus-scope': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-id': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-popper': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-portal': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-popper': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-portal': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slot': 1.0.2(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-use-previous': 1.0.1(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-visually-hidden': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-visually-hidden': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       aria-hidden: 1.2.4
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
       react-remove-scroll: 2.5.5(@types/react@18.2.79)(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-separator@1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-separator@1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -12716,41 +12730,41 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-toggle-group@1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-toggle-group@1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/primitive': 1.1.1
       '@radix-ui/react-context': 1.1.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-direction': 1.1.0(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-roving-focus': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-toggle': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-roving-focus': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-toggle': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-toggle@1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-toggle@1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/primitive': 1.1.1
-      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.2.79)(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-toolbar@1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-toolbar@1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/primitive': 1.1.1
       '@radix-ui/react-context': 1.1.1(@types/react@18.2.79)(react@18.3.1)
       '@radix-ui/react-direction': 1.1.0(@types/react@18.2.79)(react@18.3.1)
-      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-roving-focus': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-separator': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-toggle-group': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 2.0.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-roving-focus': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-separator': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-toggle-group': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -12826,12 +12840,12 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.79
 
-  '@radix-ui/react-visually-hidden@1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@radix-ui/react-visually-hidden@1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.26.9
-      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -13607,9 +13621,9 @@ snapshots:
       memoizerific: 1.11.3
       ts-dedent: 2.2.0
 
-  '@storybook/addon-controls@7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/addon-controls@7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@storybook/blocks': 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/blocks': 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       lodash: 4.17.21
       ts-dedent: 2.2.0
     transitivePeerDependencies:
@@ -13620,13 +13634,13 @@ snapshots:
       - react-dom
       - supports-color
 
-  '@storybook/addon-docs@7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/addon-docs@7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@jest/transform': 29.7.0
       '@mdx-js/react': 2.3.0(react@18.3.1)
-      '@storybook/blocks': 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/blocks': 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/client-logger': 7.6.20
-      '@storybook/components': 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/components': 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/csf-plugin': 7.6.20
       '@storybook/csf-tools': 7.6.20
       '@storybook/global': 5.0.0
@@ -13634,12 +13648,12 @@ snapshots:
       '@storybook/node-logger': 7.6.20
       '@storybook/postinstall': 7.6.20
       '@storybook/preview-api': 7.6.20
-      '@storybook/react-dom-shim': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@storybook/theming': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/react-dom-shim': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@storybook/theming': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/types': 7.6.20
       fs-extra: 11.3.0
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
       remark-external-links: 8.0.0
       remark-slug: 6.1.0
       ts-dedent: 2.2.0
@@ -13649,23 +13663,23 @@ snapshots:
       - encoding
       - supports-color
 
-  '@storybook/addon-essentials@7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/addon-essentials@7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@storybook/addon-actions': 7.6.20
       '@storybook/addon-backgrounds': 7.6.20
-      '@storybook/addon-controls': 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@storybook/addon-docs': 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/addon-controls': 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@storybook/addon-docs': 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/addon-highlight': 7.6.20
       '@storybook/addon-measure': 7.6.20
       '@storybook/addon-outline': 7.6.20
       '@storybook/addon-toolbars': 7.6.20
       '@storybook/addon-viewport': 7.6.20
       '@storybook/core-common': 7.6.20
-      '@storybook/manager-api': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/node-logger': 7.6.20
       '@storybook/preview-api': 7.6.20
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - '@types/react'
@@ -13690,21 +13704,21 @@ snapshots:
       '@storybook/global': 5.0.0
       tiny-invariant: 1.3.3
 
-  '@storybook/addon-ondevice-actions@7.6.20(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@storybook/addon-ondevice-actions@7.6.20(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@storybook/addon-actions': 7.6.20
       '@storybook/core-events': 7.6.20
       '@storybook/global': 5.0.0
-      '@storybook/manager-api': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       fast-deep-equal: 2.0.1
       react: 18.3.1
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
     transitivePeerDependencies:
       - react-dom
 
-  '@storybook/addon-ondevice-backgrounds@7.6.20(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@storybook/addon-ondevice-backgrounds@7.6.20(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
-      '@storybook/manager-api': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/preview-api': 7.6.20
       '@storybook/react-native-theming': 7.6.20(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       react: 18.3.1
@@ -13712,15 +13726,15 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
-  '@storybook/addon-ondevice-controls@7.6.20(@react-native-community/datetimepicker@8.3.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(@react-native-community/slider@4.5.5)(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@storybook/addon-ondevice-controls@7.6.20(@react-native-community/datetimepicker@8.3.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(@react-native-community/slider@4.5.5)(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@react-native-community/datetimepicker': 8.3.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@react-native-community/slider': 4.5.5
-      '@storybook/addon-controls': 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/addon-controls': 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/channels': 7.6.20
       '@storybook/client-logger': 7.6.20
       '@storybook/core-events': 7.6.20
-      '@storybook/manager-api': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/react-native-theming': 7.6.20(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       deep-equal: 1.1.2
       prop-types: 15.8.1
@@ -13736,11 +13750,11 @@ snapshots:
       - react-dom
       - supports-color
 
-  '@storybook/addon-ondevice-notes@7.6.20(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@storybook/addon-ondevice-notes@7.6.20(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@storybook/client-logger': 7.6.20
       '@storybook/core-events': 7.6.20
-      '@storybook/manager-api': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/react-native-theming': 7.6.20(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       react: 18.3.1
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
@@ -13753,14 +13767,14 @@ snapshots:
       '@storybook/global': 5.0.0
       ts-dedent: 2.2.0
 
-  '@storybook/addon-react-native-web@0.0.23(@babel/preset-react@7.26.3(@babel/core@7.26.9))(@react-native/babel-preset@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(babel-plugin-react-native-web@0.19.13)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/addon-react-native-web@0.0.23(@babel/preset-react@7.26.3(@babel/core@7.26.9))(@react-native/babel-preset@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(babel-plugin-react-native-web@0.19.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/preset-react': 7.26.3(@babel/core@7.26.9)
       babel-plugin-react-native-web: 0.19.13
     optionalDependencies:
       '@react-native/babel-preset': 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
   '@storybook/addon-toolbars@7.6.20': {}
 
@@ -13768,27 +13782,27 @@ snapshots:
     dependencies:
       memoizerific: 1.11.3
 
-  '@storybook/addons@7.6.17(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/addons@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@storybook/manager-api': 7.6.17(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/preview-api': 7.6.17
       '@storybook/types': 7.6.17
     transitivePeerDependencies:
       - react
       - react-dom
 
-  '@storybook/blocks@7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/blocks@7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@storybook/channels': 7.6.20
       '@storybook/client-logger': 7.6.20
-      '@storybook/components': 7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/components': 7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/core-events': 7.6.20
       '@storybook/csf': 0.1.13
       '@storybook/docs-tools': 7.6.20
       '@storybook/global': 5.0.0
-      '@storybook/manager-api': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/preview-api': 7.6.20
-      '@storybook/theming': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/theming': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/types': 7.6.20
       '@types/lodash': 4.17.15
       color-convert: 2.0.1
@@ -13798,8 +13812,8 @@ snapshots:
       memoizerific: 1.11.3
       polished: 4.3.1
       react: 18.3.1
-      react-colorful: 5.6.1(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      react-dom: 19.0.0(react@18.3.1)
+      react-colorful: 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
       telejson: 7.2.0
       tocbot: 4.35.0
       ts-dedent: 2.2.0
@@ -13843,33 +13857,33 @@ snapshots:
       '@storybook/node-logger': 7.6.20
       '@storybook/preview': 7.6.20
       '@storybook/preview-api': 7.6.20
-      '@swc/core': 1.10.17(@swc/helpers@0.5.15)
+      '@swc/core': 1.10.18(@swc/helpers@0.5.15)
       '@types/node': 18.19.76
       '@types/semver': 7.5.8
-      babel-loader: 9.2.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      babel-loader: 9.2.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       browser-assert: 1.2.1
       case-sensitive-paths-webpack-plugin: 2.4.0
       cjs-module-lexer: 1.4.3
       constants-browserify: 1.0.0
-      css-loader: 6.11.0(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      css-loader: 6.11.0(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       es-module-lexer: 1.6.0
       express: 4.21.2
-      fork-ts-checker-webpack-plugin: 8.0.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      fork-ts-checker-webpack-plugin: 8.0.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       fs-extra: 11.3.0
-      html-webpack-plugin: 5.6.3(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      html-webpack-plugin: 5.6.3(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       magic-string: 0.30.17
       path-browserify: 1.0.1
       process: 0.11.10
       semver: 7.7.1
-      style-loader: 3.3.4(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
-      swc-loader: 0.2.6(@swc/core@1.10.17(@swc/helpers@0.5.15))(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
-      terser-webpack-plugin: 5.3.11(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      style-loader: 3.3.4(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      swc-loader: 0.2.6(@swc/core@1.10.18(@swc/helpers@0.5.15))(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      terser-webpack-plugin: 5.3.11(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       ts-dedent: 2.2.0
       url: 0.11.4
       util: 0.12.5
       util-deprecate: 1.0.2
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
-      webpack-dev-middleware: 6.1.3(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack-dev-middleware: 6.1.3(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       webpack-hot-middleware: 2.26.1
       webpack-virtual-modules: 0.5.0
     optionalDependencies:
@@ -13976,19 +13990,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/components@7.6.20(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/components@7.6.20(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@radix-ui/react-select': 1.2.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-toolbar': 1.1.2(@types/react@18.2.79)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-select': 1.2.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-toolbar': 1.1.2(@types/react@18.2.79)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/client-logger': 7.6.20
       '@storybook/csf': 0.1.13
       '@storybook/global': 5.0.0
-      '@storybook/theming': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/theming': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/types': 7.6.20
       memoizerific: 1.11.3
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
-      use-resize-observer: 9.1.0(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
+      use-resize-observer: 9.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       util-deprecate: 1.0.2
     transitivePeerDependencies:
       - '@types/react'
@@ -14137,7 +14151,7 @@ snapshots:
 
   '@storybook/global@5.0.0': {}
 
-  '@storybook/manager-api@7.6.17(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/manager-api@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@storybook/channels': 7.6.17
       '@storybook/client-logger': 7.6.17
@@ -14145,7 +14159,7 @@ snapshots:
       '@storybook/csf': 0.1.13
       '@storybook/global': 5.0.0
       '@storybook/router': 7.6.17
-      '@storybook/theming': 7.6.17(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/theming': 7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/types': 7.6.17
       dequal: 2.0.3
       lodash: 4.17.21
@@ -14157,7 +14171,7 @@ snapshots:
       - react
       - react-dom
 
-  '@storybook/manager-api@7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/manager-api@7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@storybook/channels': 7.6.20
       '@storybook/client-logger': 7.6.20
@@ -14165,7 +14179,7 @@ snapshots:
       '@storybook/csf': 0.1.13
       '@storybook/global': 5.0.0
       '@storybook/router': 7.6.20
-      '@storybook/theming': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/theming': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/types': 7.6.20
       dequal: 2.0.3
       lodash: 4.17.21
@@ -14185,16 +14199,16 @@ snapshots:
 
   '@storybook/postinstall@7.6.20': {}
 
-  '@storybook/preset-react-webpack@7.6.20(@babel/core@7.26.9)(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)':
+  '@storybook/preset-react-webpack@7.6.20(@babel/core@7.26.9)(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)':
     dependencies:
       '@babel/preset-flow': 7.25.9(@babel/core@7.26.9)
       '@babel/preset-react': 7.26.3(@babel/core@7.26.9)
-      '@pmmmwh/react-refresh-webpack-plugin': 0.5.15(react-refresh@0.14.2)(type-fest@4.35.0)(webpack-hot-middleware@2.26.1)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.15(react-refresh@0.14.2)(type-fest@4.35.0)(webpack-hot-middleware@2.26.1)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       '@storybook/core-webpack': 7.6.20
       '@storybook/docs-tools': 7.6.20
       '@storybook/node-logger': 7.6.20
-      '@storybook/react': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      '@storybook/react': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
+      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       '@types/node': 18.19.76
       '@types/semver': 7.5.8
       babel-plugin-add-react-displayname: 0.0.5
@@ -14202,10 +14216,10 @@ snapshots:
       magic-string: 0.30.17
       react: 18.3.1
       react-docgen: 7.1.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
       react-refresh: 0.14.2
       semver: 7.7.1
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
     optionalDependencies:
       '@babel/core': 7.26.9
       typescript: 5.3.3
@@ -14264,7 +14278,7 @@ snapshots:
 
   '@storybook/preview@7.6.20': {}
 
-  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))':
+  '@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))':
     dependencies:
       debug: 4.4.0
       endent: 2.1.0
@@ -14274,21 +14288,21 @@ snapshots:
       react-docgen-typescript: 2.2.2(typescript@5.3.3)
       tslib: 2.8.1
       typescript: 5.3.3
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/react-dom-shim@7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/react-dom-shim@7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
   '@storybook/react-native-theming@7.6.20(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       react: 18.3.1
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
 
-  '@storybook/react-native@7.6.20(react-dom@19.0.0(react@18.3.1))(react-native-safe-area-context@4.10.5(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(typescript@5.3.3)':
+  '@storybook/react-native@7.6.20(react-dom@18.3.1(react@18.3.1))(react-native-safe-area-context@4.10.5(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(typescript@5.3.3)':
     dependencies:
       '@storybook/channels': 7.6.20
       '@storybook/client-logger': 7.6.20
@@ -14298,10 +14312,10 @@ snapshots:
       '@storybook/csf': 0.1.13
       '@storybook/docs-tools': 7.6.20
       '@storybook/global': 5.0.0
-      '@storybook/manager-api': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/preview-api': 7.6.20
       '@storybook/preview-web': 7.6.20
-      '@storybook/react': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
+      '@storybook/react': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
       '@storybook/react-native-theming': 7.6.20(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       chokidar: 3.6.0
       commander: 8.3.0
@@ -14322,14 +14336,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@storybook/react-webpack5@7.6.20(@babel/core@7.26.9)(@swc/core@1.10.17(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(esbuild@0.18.20)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)':
+  '@storybook/react-webpack5@7.6.20(@babel/core@7.26.9)(@swc/core@1.10.18(@swc/helpers@0.5.15))(@swc/helpers@0.5.15)(esbuild@0.18.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)':
     dependencies:
       '@storybook/builder-webpack5': 7.6.20(@swc/helpers@0.5.15)(esbuild@0.18.20)(typescript@5.3.3)
-      '@storybook/preset-react-webpack': 7.6.20(@babel/core@7.26.9)(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)
-      '@storybook/react': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
+      '@storybook/preset-react-webpack': 7.6.20(@babel/core@7.26.9)(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(type-fest@4.35.0)(typescript@5.3.3)(webpack-hot-middleware@2.26.1)
+      '@storybook/react': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.3.3)
       '@types/node': 18.19.76
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@babel/core': 7.26.9
       typescript: 5.3.3
@@ -14349,14 +14363,14 @@ snapshots:
       - webpack-hot-middleware
       - webpack-plugin-serve
 
-  '@storybook/react@7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)(typescript@5.3.3)':
+  '@storybook/react@7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.3.3)':
     dependencies:
       '@storybook/client-logger': 7.6.20
       '@storybook/core-client': 7.6.20
       '@storybook/docs-tools': 7.6.20
       '@storybook/global': 5.0.0
       '@storybook/preview-api': 7.6.20
-      '@storybook/react-dom-shim': 7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@storybook/react-dom-shim': 7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/types': 7.6.20
       '@types/escodegen': 0.0.6
       '@types/estree': 0.0.51
@@ -14369,8 +14383,8 @@ snapshots:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
-      react-element-to-jsx-string: 15.0.0(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
+      react-element-to-jsx-string: 15.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       util-deprecate: 1.0.2
@@ -14406,23 +14420,23 @@ snapshots:
       - encoding
       - supports-color
 
-  '@storybook/theming@7.6.17(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/theming@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@18.3.1)
       '@storybook/client-logger': 7.6.17
       '@storybook/global': 5.0.0
       memoizerific: 1.11.3
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
-  '@storybook/theming@7.6.20(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@storybook/theming@7.6.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@18.3.1)
       '@storybook/client-logger': 7.6.20
       '@storybook/global': 5.0.0
       memoizerific: 1.11.3
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
   '@storybook/types@7.6.17':
     dependencies:
@@ -14438,51 +14452,51 @@ snapshots:
       '@types/express': 4.17.21
       file-system-cache: 2.3.0
 
-  '@swc/core-darwin-arm64@1.10.17':
+  '@swc/core-darwin-arm64@1.10.18':
     optional: true
 
-  '@swc/core-darwin-x64@1.10.17':
+  '@swc/core-darwin-x64@1.10.18':
     optional: true
 
-  '@swc/core-linux-arm-gnueabihf@1.10.17':
+  '@swc/core-linux-arm-gnueabihf@1.10.18':
     optional: true
 
-  '@swc/core-linux-arm64-gnu@1.10.17':
+  '@swc/core-linux-arm64-gnu@1.10.18':
     optional: true
 
-  '@swc/core-linux-arm64-musl@1.10.17':
+  '@swc/core-linux-arm64-musl@1.10.18':
     optional: true
 
-  '@swc/core-linux-x64-gnu@1.10.17':
+  '@swc/core-linux-x64-gnu@1.10.18':
     optional: true
 
-  '@swc/core-linux-x64-musl@1.10.17':
+  '@swc/core-linux-x64-musl@1.10.18':
     optional: true
 
-  '@swc/core-win32-arm64-msvc@1.10.17':
+  '@swc/core-win32-arm64-msvc@1.10.18':
     optional: true
 
-  '@swc/core-win32-ia32-msvc@1.10.17':
+  '@swc/core-win32-ia32-msvc@1.10.18':
     optional: true
 
-  '@swc/core-win32-x64-msvc@1.10.17':
+  '@swc/core-win32-x64-msvc@1.10.18':
     optional: true
 
-  '@swc/core@1.10.17(@swc/helpers@0.5.15)':
+  '@swc/core@1.10.18(@swc/helpers@0.5.15)':
     dependencies:
       '@swc/counter': 0.1.3
       '@swc/types': 0.1.17
     optionalDependencies:
-      '@swc/core-darwin-arm64': 1.10.17
-      '@swc/core-darwin-x64': 1.10.17
-      '@swc/core-linux-arm-gnueabihf': 1.10.17
-      '@swc/core-linux-arm64-gnu': 1.10.17
-      '@swc/core-linux-arm64-musl': 1.10.17
-      '@swc/core-linux-x64-gnu': 1.10.17
-      '@swc/core-linux-x64-musl': 1.10.17
-      '@swc/core-win32-arm64-msvc': 1.10.17
-      '@swc/core-win32-ia32-msvc': 1.10.17
-      '@swc/core-win32-x64-msvc': 1.10.17
+      '@swc/core-darwin-arm64': 1.10.18
+      '@swc/core-darwin-x64': 1.10.18
+      '@swc/core-linux-arm-gnueabihf': 1.10.18
+      '@swc/core-linux-arm64-gnu': 1.10.18
+      '@swc/core-linux-arm64-musl': 1.10.18
+      '@swc/core-linux-x64-gnu': 1.10.18
+      '@swc/core-linux-x64-musl': 1.10.18
+      '@swc/core-win32-arm64-msvc': 1.10.18
+      '@swc/core-win32-ia32-msvc': 1.10.18
+      '@swc/core-win32-x64-msvc': 1.10.18
       '@swc/helpers': 0.5.15
 
   '@swc/counter@0.1.3': {}
@@ -14565,14 +14579,14 @@ snapshots:
       - react
       - react-dom
 
-  '@tamagui/animations-css@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@tamagui/animations-css@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tamagui/constants': 1.122.7(react@18.3.1)
       '@tamagui/cubic-bezier-animator': 1.122.7
-      '@tamagui/use-presence': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@tamagui/web': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@tamagui/use-presence': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
   '@tamagui/animations-react-native@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -14606,13 +14620,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tamagui/babel-plugin@1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@tamagui/babel-plugin@1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@babel/generator': 7.26.9
       '@babel/helper-plugin-utils': 7.26.5
       '@babel/template': 7.26.9
       '@babel/traverse': 7.26.9
-      '@tamagui/static': 1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+      '@tamagui/static': 1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
     transitivePeerDependencies:
       - '@swc/helpers'
       - encoding
@@ -14624,7 +14638,7 @@ snapshots:
   '@tamagui/build@1.122.7(@swc/helpers@0.5.15)':
     dependencies:
       '@babel/core': 7.26.9
-      '@swc/core': 1.10.17(@swc/helpers@0.5.15)
+      '@swc/core': 1.10.18(@swc/helpers@0.5.15)
       '@tamagui/babel-plugin-fully-specified': 1.122.7
       '@types/fs-extra': 9.0.13
       chokidar: 3.6.0
@@ -14739,11 +14753,11 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@tamagui/config-default@1.122.7(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@tamagui/config-default@1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
-      '@tamagui/animations-css': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@tamagui/core': 1.122.7(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
-      '@tamagui/shorthands': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@tamagui/animations-css': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tamagui/core': 1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+      '@tamagui/shorthands': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - react
       - react-dom
@@ -14752,6 +14766,18 @@ snapshots:
   '@tamagui/constants@1.122.7(react@18.3.1)':
     dependencies:
       react: 18.3.1
+
+  '@tamagui/core@1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+    dependencies:
+      '@tamagui/react-native-media-driver': 1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+      '@tamagui/react-native-use-pressable': 1.122.7(react@18.3.1)
+      '@tamagui/react-native-use-responder-events': 1.122.7(react@18.3.1)
+      '@tamagui/use-event': 1.122.7(react@18.3.1)
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - react
+      - react-dom
+      - react-native
 
   '@tamagui/core@1.122.7(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
@@ -14768,6 +14794,13 @@ snapshots:
   '@tamagui/create-context@1.122.7(react@18.3.1)':
     dependencies:
       react: 18.3.1
+
+  '@tamagui/create-theme@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - react
+      - react-dom
 
   '@tamagui/create-theme@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -14881,10 +14914,10 @@ snapshots:
       - react-dom
       - react-native
 
-  '@tamagui/generate-themes@1.122.7(esbuild@0.24.2)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@tamagui/generate-themes@1.122.7(esbuild@0.24.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@tamagui/create-theme': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@tamagui/theme-builder': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@tamagui/create-theme': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tamagui/theme-builder': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tamagui/types': 1.122.7
       esbuild-register: 3.6.0(esbuild@0.24.2)
       fs-extra: 11.3.0
@@ -15128,6 +15161,14 @@ snapshots:
       - react-dom
       - react-native
 
+  '@tamagui/react-native-media-driver@1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+    dependencies:
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   '@tamagui/react-native-media-driver@1.122.7(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@tamagui/web': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
@@ -15144,23 +15185,23 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@tamagui/react-native-web-internals@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@tamagui/react-native-web-internals@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tamagui/normalize-css-color': 1.122.7
       '@tamagui/react-native-use-pressable': 1.122.7(react@18.3.1)
       '@tamagui/react-native-use-responder-events': 1.122.7(react@18.3.1)
       '@tamagui/simple-hash': 1.122.7
-      '@tamagui/web': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - react
       - react-dom
 
-  '@tamagui/react-native-web-lite@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
+  '@tamagui/react-native-web-lite@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tamagui/normalize-css-color': 1.122.7
       '@tamagui/react-native-use-pressable': 1.122.7(react@18.3.1)
       '@tamagui/react-native-use-responder-events': 1.122.7(react@18.3.1)
-      '@tamagui/react-native-web-internals': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@tamagui/react-native-web-internals': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       invariant: 2.2.4
       react: 18.3.1
     transitivePeerDependencies:
@@ -15272,6 +15313,13 @@ snapshots:
       - react-dom
       - react-native
 
+  '@tamagui/shorthands@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   '@tamagui/shorthands@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tamagui/web': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
@@ -15308,7 +15356,7 @@ snapshots:
 
   '@tamagui/start-transition@1.122.7': {}
 
-  '@tamagui/static@1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@tamagui/static@1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@babel/core': 7.26.9
       '@babel/generator': 7.26.9
@@ -15320,16 +15368,16 @@ snapshots:
       '@babel/types': 7.26.9
       '@tamagui/build': 1.122.7(@swc/helpers@0.5.15)
       '@tamagui/cli-color': 1.122.7
-      '@tamagui/config-default': 1.122.7(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
-      '@tamagui/core': 1.122.7(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+      '@tamagui/config-default': 1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+      '@tamagui/core': 1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@tamagui/fake-react-native': 1.122.7
-      '@tamagui/generate-themes': 1.122.7(esbuild@0.24.2)(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@tamagui/generate-themes': 1.122.7(esbuild@0.24.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tamagui/helpers': 1.122.7(react@18.3.1)
       '@tamagui/helpers-node': 1.122.7
       '@tamagui/proxy-worm': 1.122.7
-      '@tamagui/react-native-web-internals': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@tamagui/react-native-web-lite': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      '@tamagui/shorthands': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      '@tamagui/react-native-web-internals': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tamagui/react-native-web-lite': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tamagui/shorthands': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tamagui/types': 1.122.7
       babel-literal-to-ast: 2.1.0(@babel/core@7.26.9)
       browserslist: 4.24.4
@@ -15344,7 +15392,7 @@ snapshots:
       js-yaml: 4.1.0
       lodash: 4.17.21
       react: 18.3.1
-      react-native-web: 0.19.13(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      react-native-web: 0.19.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - '@swc/helpers'
       - encoding
@@ -15409,6 +15457,14 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
       - react-native
+
+  '@tamagui/theme-builder@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tamagui/create-theme': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      color2k: 2.0.3
+    transitivePeerDependencies:
+      - react
+      - react-dom
 
   '@tamagui/theme-builder@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -15544,6 +15600,13 @@ snapshots:
     dependencies:
       react: 18.3.1
 
+  '@tamagui/use-presence@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+    transitivePeerDependencies:
+      - react-dom
+
   '@tamagui/use-presence@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tamagui/web': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
@@ -15565,6 +15628,20 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
+  '@tamagui/web@1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tamagui/compose-refs': 1.122.7(react@18.3.1)
+      '@tamagui/constants': 1.122.7(react@18.3.1)
+      '@tamagui/helpers': 1.122.7(react@18.3.1)
+      '@tamagui/normalize-css-color': 1.122.7
+      '@tamagui/timer': 1.122.7
+      '@tamagui/types': 1.122.7
+      '@tamagui/use-did-finish-ssr': 1.122.7(react@18.3.1)
+      '@tamagui/use-event': 1.122.7(react@18.3.1)
+      '@tamagui/use-force-update': 1.122.7(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   '@tamagui/web@1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tamagui/compose-refs': 1.122.7(react@18.3.1)
@@ -15581,7 +15658,7 @@ snapshots:
 
   '@tanstack/query-core@5.66.4': {}
 
-  '@tanstack/react-query@5.66.6(react@18.3.1)':
+  '@tanstack/react-query@5.66.7(react@18.3.1)':
     dependencies:
       '@tanstack/query-core': 5.66.4
       react: 18.3.1
@@ -15616,7 +15693,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.13.4
+      '@types/node': 18.19.76
 
   '@types/cookie@0.6.0': {}
 
@@ -15756,7 +15833,7 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.13.4
+      '@types/node': 18.19.76
 
   '@types/serve-static@1.15.7':
     dependencies:
@@ -16134,21 +16211,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-loader@8.4.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  babel-loader@8.4.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       '@babel/core': 7.26.9
       find-cache-dir: 3.3.2
       loader-utils: 2.0.4
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
-  babel-loader@9.2.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  babel-loader@9.2.1(@babel/core@7.26.9)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       '@babel/core': 7.26.9
       find-cache-dir: 4.0.0
       schema-utils: 4.3.0
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
   babel-plugin-add-react-displayname@0.0.5: {}
 
@@ -16394,13 +16471,13 @@ snapshots:
 
   builtins@1.0.3: {}
 
-  burnt@0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1):
+  burnt@0.12.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1):
     dependencies:
       expo: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
       react: 18.3.1
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
       sf-symbols-typescript: 1.0.0
-      sonner: 0.3.5(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
+      sonner: 0.3.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - react-dom
 
@@ -16785,10 +16862,10 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4):
+  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4):
     dependencies:
-      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250213120231(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250213120231(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250218155411(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250218155411(patch_hash=pu7qcji26t7dmp7dtupadsx7pi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@hyperledger/anoncreds-shared': 0.2.4
       canonicalize: 1.0.8
       query-string: 7.1.3
@@ -16837,7 +16914,7 @@ snapshots:
     dependencies:
       hyphenate-style-name: 1.1.0
 
-  css-loader@6.11.0(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  css-loader@6.11.0(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.2)
       postcss: 8.5.2
@@ -16848,7 +16925,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.1
     optionalDependencies:
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
   css-select@4.3.0:
     dependencies:
@@ -17120,7 +17197,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  ec-compression@0.0.1-alpha.9: {}
+  ec-compression@0.0.1-alpha.10: {}
 
   ed25519-signature-2018-context@1.1.0: {}
 
@@ -17281,19 +17358,19 @@ snapshots:
       is-date-object: 1.1.0
       is-symbol: 1.1.1
 
-  esbuild-loader@4.3.0(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  esbuild-loader@4.3.0(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       esbuild: 0.25.0
       get-tsconfig: 4.10.0
       loader-utils: 2.0.4
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
       webpack-sources: 1.4.3
 
   esbuild-plugin-alias@0.2.1: {}
 
   esbuild-plugin-es5@2.1.1(esbuild@0.24.2):
     dependencies:
-      '@swc/core': 1.10.17(@swc/helpers@0.5.15)
+      '@swc/core': 1.10.18(@swc/helpers@0.5.15)
       '@swc/helpers': 0.5.15
       deepmerge: 4.3.1
       esbuild: 0.24.2
@@ -17957,7 +18034,7 @@ snapshots:
 
   flow-enums-runtime@0.0.6: {}
 
-  flow-parser@0.261.1: {}
+  flow-parser@0.261.2: {}
 
   follow-redirects@1.15.9: {}
 
@@ -17972,7 +18049,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@8.0.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  fork-ts-checker-webpack-plugin@8.0.0(typescript@5.3.3)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       '@babel/code-frame': 7.26.2
       chalk: 4.1.2
@@ -17987,7 +18064,7 @@ snapshots:
       semver: 7.7.1
       tapable: 2.2.1
       typescript: 5.3.3
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
   form-data@3.0.3:
     dependencies:
@@ -18341,7 +18418,7 @@ snapshots:
 
   html-tags@3.3.1: {}
 
-  html-webpack-plugin@5.6.3(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  html-webpack-plugin@5.6.3(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
@@ -18349,7 +18426,7 @@ snapshots:
       pretty-error: 4.0.0
       tapable: 2.2.1
     optionalDependencies:
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
   htmlparser2@6.1.0:
     dependencies:
@@ -18736,7 +18813,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.13.4
+      '@types/node': 18.19.76
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -18790,7 +18867,7 @@ snapshots:
       '@babel/register': 7.25.9(@babel/core@7.26.9)
       babel-core: 7.0.0-bridge.0(@babel/core@7.26.9)
       chalk: 4.1.2
-      flow-parser: 0.261.1
+      flow-parser: 0.261.2
       graceful-fs: 4.2.11
       micromatch: 4.0.8
       neo-async: 2.6.2
@@ -18815,7 +18892,7 @@ snapshots:
       '@babel/register': 7.25.9(@babel/core@7.26.9)
       babel-core: 7.0.0-bridge.0(@babel/core@7.26.9)
       chalk: 4.1.2
-      flow-parser: 0.261.1
+      flow-parser: 0.261.2
       graceful-fs: 4.2.11
       micromatch: 4.0.8
       neo-async: 2.6.2
@@ -20119,10 +20196,10 @@ snapshots:
     dependencies:
       setimmediate: 1.0.5
 
-  react-colorful@5.6.1(react-dom@19.0.0(react@18.3.1))(react@18.3.1):
+  react-colorful@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
   react-device-frameset@1.3.4(react@18.3.1):
     dependencies:
@@ -20155,17 +20232,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  react-dom@18.3.1(react@18.3.1):
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.3.1
+      scheduler: 0.23.2
+
   react-dom@19.0.0(react@18.3.1):
     dependencies:
       react: 18.3.1
       scheduler: 0.25.0
 
-  react-element-to-jsx-string@15.0.0(react-dom@19.0.0(react@18.3.1))(react@18.3.1):
+  react-element-to-jsx-string@15.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@base2/pretty-print-object': 1.0.1
       is-plain-object: 5.0.0
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
       react-is: 18.1.0
 
   react-fast-compare@3.2.2: {}
@@ -20319,7 +20402,7 @@ snapshots:
 
   react-native-swipe-gestures@1.0.5: {}
 
-  react-native-web@0.19.13(react-dom@19.0.0(react@18.3.1))(react@18.3.1):
+  react-native-web@0.19.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.26.9
       '@react-native/normalize-colors': 0.74.89
@@ -20329,7 +20412,7 @@ snapshots:
       nullthrows: 1.1.1
       postcss-value-parser: 4.2.0
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
       styleq: 0.1.3
     transitivePeerDependencies:
       - encoding
@@ -20727,6 +20810,10 @@ snapshots:
 
   sax@1.4.1: {}
 
+  scheduler@0.23.2:
+    dependencies:
+      loose-envify: 1.4.0
+
   scheduler@0.24.0-canary-efb381bbf-20230505:
     dependencies:
       loose-envify: 1.4.0
@@ -20950,10 +21037,10 @@ snapshots:
 
   solito@3.2.9: {}
 
-  sonner@0.3.5(react-dom@19.0.0(react@18.3.1))(react@18.3.1):
+  sonner@0.3.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
   source-list-map@2.0.1: {}
 
@@ -21115,9 +21202,9 @@ snapshots:
 
   structured-headers@0.4.1: {}
 
-  style-loader@3.3.4(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  style-loader@3.3.4(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
   styleq@0.1.3: {}
 
@@ -21156,11 +21243,11 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swc-loader@0.2.6(@swc/core@1.10.17(@swc/helpers@0.5.15))(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  swc-loader@0.2.6(@swc/core@1.10.18(@swc/helpers@0.5.15))(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
-      '@swc/core': 1.10.17(@swc/helpers@0.5.15)
+      '@swc/core': 1.10.18(@swc/helpers@0.5.15)
       '@swc/counter': 0.1.3
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
   symbol-observable@2.0.3: {}
 
@@ -21176,13 +21263,13 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  tamagui-loader@1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  tamagui-loader@1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       '@tamagui/cli-color': 1.122.7
-      '@tamagui/core': 1.122.7(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
-      '@tamagui/static': 1.122.7(@swc/helpers@0.5.15)(react-dom@19.0.0(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
-      '@tamagui/web': 1.122.7(react-dom@19.0.0(react@18.3.1))(react@18.3.1)
-      esbuild-loader: 4.3.0(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      '@tamagui/core': 1.122.7(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+      '@tamagui/static': 1.122.7(@swc/helpers@0.5.15)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+      '@tamagui/web': 1.122.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      esbuild-loader: 4.3.0(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       esm-resolve: 1.0.11
       fs-extra: 11.3.0
       loader-utils: 3.3.1
@@ -21321,16 +21408,16 @@ snapshots:
       ansi-escapes: 4.3.2
       supports-hyperlinks: 2.3.0
 
-  terser-webpack-plugin@5.3.11(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  terser-webpack-plugin@5.3.11(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
       terser: 5.39.0
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
     optionalDependencies:
-      '@swc/core': 1.10.17(@swc/helpers@0.5.15)
+      '@swc/core': 1.10.18(@swc/helpers@0.5.15)
       esbuild: 0.18.20
 
   terser@5.39.0:
@@ -21610,11 +21697,11 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  use-resize-observer@9.1.0(react-dom@19.0.0(react@18.3.1))(react@18.3.1):
+  use-resize-observer@9.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       react: 18.3.1
-      react-dom: 19.0.0(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
 
   use-sidecar@1.1.3(@types/react@18.2.79)(react@18.3.1):
     dependencies:
@@ -21729,7 +21816,7 @@ snapshots:
 
   webidl-conversions@5.0.0: {}
 
-  webpack-dev-middleware@6.1.3(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)):
+  webpack-dev-middleware@6.1.3(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)):
     dependencies:
       colorette: 2.0.20
       memfs: 3.5.3
@@ -21737,7 +21824,7 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.0
     optionalDependencies:
-      webpack: 5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)
+      webpack: 5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)
 
   webpack-hot-middleware@2.26.1:
     dependencies:
@@ -21756,7 +21843,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20):
+  webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.6
@@ -21778,7 +21865,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.11(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20)(webpack@5.98.0(@swc/core@1.10.17(@swc/helpers@0.5.15))(esbuild@0.18.20))
+      terser-webpack-plugin: 5.3.11(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20)(webpack@5.98.0(@swc/core@1.10.18(@swc/helpers@0.5.15))(esbuild@0.18.20))
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:
