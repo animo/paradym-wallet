@@ -16,11 +16,7 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     // back to the easypid wallet.
     const parsedPath = new URL(path)
     const credentialAuthorizationCode = parsedPath.searchParams.get('code')
-    if (
-      parsedPath.protocol === `${appScheme}:` &&
-      parsedPath.pathname === '/wallet/redirect' &&
-      credentialAuthorizationCode
-    ) {
+    if (parsedPath.protocol === `${appScheme}:` && parsedPath.pathname === '/redirect' && credentialAuthorizationCode) {
       // We just set the credentialAuthorizationCode, which should be handled by the browser
       // auth session code in the credential screen that is open.
       router.setParams({ credentialAuthorizationCode })

@@ -219,7 +219,7 @@ export function FunkeMdlCredentialAttributes({
                     height={16}
                   />
                 </XStack>,
-                privilege.expiry_date,
+                privilege.expiry_date ?? 'No expiry date',
               ]}
             />
           ))}
