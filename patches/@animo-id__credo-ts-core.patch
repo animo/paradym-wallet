@@ -1,5 +1,35 @@
+diff --git a/build/crypto/JwsService.js b/build/crypto/JwsService.js
+index 3e22a79bd52c03520af3331a19b7c640e9adff65..d61c965893e5456bd5b54da9156355a3dc154f50 100644
+--- a/build/crypto/JwsService.js
++++ b/build/crypto/JwsService.js
+@@ -159,9 +159,9 @@ let JwsService = class JwsService {
+         return { isValid: true, signerKeys, jws: jwsFlattened };
+     }
+     buildProtected(options) {
+-        if ([options.jwk, options.kid, options.x5c].filter(Boolean).length != 1) {
+-            throw new error_1.CredoError('Only one of JWK, kid or x5c can and must be provided.');
+-        }
++        // if ([options.jwk, options.kid, options.x5c].filter(Boolean).length != 1) {
++        //     throw new error_1.CredoError('Only one of JWK, kid or x5c can and must be provided.');
++        // }
+         return {
+             ...options,
+             alg: options.alg,
+@@ -171,9 +171,9 @@ let JwsService = class JwsService {
+     }
+     async jwkFromJws(agentContext, options) {
+         const { protectedHeader, jwkResolver, jws, payload, trustedCertificates: trustedCertificatesFromOptions = [], } = options;
+-        if ([protectedHeader.jwk, protectedHeader.kid, protectedHeader.x5c].filter(Boolean).length > 1) {
+-            throw new error_1.CredoError('Only one of jwk, kid and x5c headers can and must be provided.');
+-        }
++        // if ([protectedHeader.jwk, protectedHeader.kid, protectedHeader.x5c].filter(Boolean).length > 1) {
++        //     throw new error_1.CredoError('Only one of jwk, kid and x5c headers can and must be provided.');
++        // }
+         if (protectedHeader.x5c) {
+             if (!Array.isArray(protectedHeader.x5c) ||
+                 protectedHeader.x5c.some((certificate) => typeof certificate !== 'string')) {
 diff --git a/build/modules/dif-presentation-exchange/DifPresentationExchangeService.js b/build/modules/dif-presentation-exchange/DifPresentationExchangeService.js
-index 3a986450bb1f29a9acf1faa674dfdf7751640432..e33192f3c1fc33e1fcea5a0d0215d81ccd2ec85b 100644
+index 3a1d05c2b03c38456d388d80537114478e0c067b..dff24a434191606ce05a3fb36ddbec032d9f8b96 100644
 --- a/build/modules/dif-presentation-exchange/DifPresentationExchangeService.js
 +++ b/build/modules/dif-presentation-exchange/DifPresentationExchangeService.js
 @@ -33,8 +33,15 @@ let DifPresentationExchangeService = class DifPresentationExchangeService {
@@ -20,10 +50,10 @@ index 3a986450bb1f29a9acf1faa674dfdf7751640432..e33192f3c1fc33e1fcea5a0d0215d81c
      }
      /**
       * Selects the credentials to use based on the output from `getCredentialsForRequest`
-@@ -91,7 +98,14 @@ let DifPresentationExchangeService = class DifPresentationExchangeService {
+@@ -90,7 +97,14 @@ let DifPresentationExchangeService = class DifPresentationExchangeService {
+             .filter((r) => Boolean(r));
      }
      async createPresentation(agentContext, options) {
-         var _a;
 -        const { presentationDefinition, domain, challenge, openid4vp } = options;
 +        const { domain, challenge, openid4vp } = options;
 +        const presentationDefinition = {
@@ -33,6 +63,6 @@ index 3a986450bb1f29a9acf1faa674dfdf7751640432..e33192f3c1fc33e1fcea5a0d0215d81c
 +                constraints: id.constraints ? { ...id.constraints, limit_disclosure: id.constraints.limit_disclosure ?? 'preferred' } : { limit_disclosure: 'preferred' }
 +            }))
 +        }
-         const presentationSubmissionLocation = (_a = options.presentationSubmissionLocation) !== null && _a !== void 0 ? _a : models_1.DifPresentationExchangeSubmissionLocation.PRESENTATION;
+         const presentationSubmissionLocation = options.presentationSubmissionLocation ?? models_1.DifPresentationExchangeSubmissionLocation.PRESENTATION;
          const verifiablePresentationResultsWithFormat = [];
          const presentationsToCreate = (0, utils_2.getPresentationsToCreate)(options.credentialsForInputDescriptor);
