@@ -134,6 +134,7 @@ const createBaseConfig = (appSpecific) => {
       infoPlist: {
         NSCameraUsageDescription: `${name} uses the camera to initiate receiving and sharing of credentials.`,
         NSFaceIDUsageDescription: `${name} uses FaceID to securely unlock the wallet and share credentials.`,
+        NSPhotoLibraryUsageDescription: `${name} requires photo library access for credential sharing functionality.`,
         ITSAppUsesNonExemptEncryption: false,
         CFBundleURLTypes: [
           {
