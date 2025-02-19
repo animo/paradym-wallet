@@ -396,12 +396,12 @@ export const getCredentialsForProofRequest = async ({
   origin,
 }: GetCredentialsForProofRequestOptions) => {
   let requestUri: string
-  let requestData = data
+  const requestData = data
 
-  const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
-    ? await extractEntityIdFromAuthorizationRequest({ data: requestData, uri })
-    : {}
-  requestData = fromFederationData ?? requestData
+  // const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
+  //   ? await extractEntityIdFromAuthorizationRequest({ data: requestData, uri })
+  //   : {}
+  // requestData = fromFederationData ?? requestData
 
   if (requestData) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
@@ -421,7 +421,7 @@ export const getCredentialsForProofRequest = async ({
 
   const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(
     requestUri,
-    origin
+    { origin }
     /* {
     ...(entityId ? { federation: { trustedEntityIds: [entityId] } } : {}),
   } */
@@ -467,6 +467,10 @@ export const getCredentialsForProofRequest = async ({
   return {
     ...resolved.presentationExchange,
     ...resolved.dcql,
+    // FIXME: origin should be part of resolved from Credo, as it's also needed
+    // in the accept method now, which wouldn't be the case if we just add it to
+    // the resolved version
+    origin,
     authorizationRequest: resolved.authorizationRequest,
     verifier: {
       // TODO: easier way to get response_uri
@@ -474,7 +478,7 @@ export const getCredentialsForProofRequest = async ({
         'response_uri' in resolved.authorizationRequest.payload && resolved.authorizationRequest.payload.response_uri
           ? getHostNameFromUrl(resolved.authorizationRequest.payload.response_uri)
           : undefined,
-      entityId: entityId ?? (resolved.authorizationRequest.jar?.authRequestParams.iss as string),
+      entityId: /* entityId ?? */ resolved.authorizationRequest.jar?.authRequestParams.iss as string,
 
       logo: clientMetadata?.logo_uri
         ? {

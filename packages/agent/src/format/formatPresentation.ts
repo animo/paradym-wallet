@@ -213,12 +213,6 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
           throw new Error(`Expected queryr credential format ${queryCredential.format} to be vc+sd-jwt or dc+sd-jwt`)
         }
 
-        // TODO: remove once selective disclosure in credo tested
-        // const disclosedDecoded = applyLimitdisclosureForSdJwtRequestedPayload(
-        //   match.record.compactSdJwtVc,
-        //   match.output.claims
-        // )
-
         // Creod already applied selective disclosure on payload
         const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(match.output.claims)
         disclosed = {

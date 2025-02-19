@@ -4,6 +4,7 @@
 	"private": true,
 	"main": "src/index.ts",
 	"dependencies": {
+		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@astronautlabs/jsonpath": "^1.1.2",
 		"@openid4vc/oauth2": "*",
 		"@credo-ts/anoncreds": "catalog:",

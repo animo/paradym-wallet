@@ -37,3 +37,10 @@ export * from './storage'
 export * from './openid4vc/displayMetadata'
 export * from './credentialCategoryMetadata'
 export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
+
+export {
+  registerCredentialsForDcApi,
+  resolveRequestForDcApi,
+  sendResponseForDcApi,
+  sendErrorResponseForDcApi,
+} from './openid4vc/dcApi'
