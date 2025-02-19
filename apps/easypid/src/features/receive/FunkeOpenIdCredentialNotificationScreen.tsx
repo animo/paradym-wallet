@@ -50,7 +50,7 @@ type Query = { uri?: string; data?: string }
 // TODO: clientId
 const authorization = {
   clientId: 'wallet',
-  redirectUri: `${appScheme}://wallet/redirect`,
+  redirectUri: `${appScheme}:///wallet/redirect`,
 }
 
 const { useParams } = createParam<Query>()
