@@ -85,27 +85,12 @@ export function FunkeCredentialDetailAttributesScreen() {
       <FlexPage gap="$0" paddingHorizontal="$0">
         <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Card attributes" />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack px="$4" gap="$2" marginBottom={bottom}>
+          <YStack px="$4" gap="$4" marginBottom={bottom}>
             <CustomCredentialAttributes
               type={credential.metadata.type}
               attributes={credential.attributes}
               rawAttributes={credential.rawAttributes}
             />
-            <AnimatedStack
-              key={isMetadataVisible ? 'visible-metadata' : 'hidden-metadata'}
-              onLayout={(event) => setMetadataElementPosition(event.nativeEvent.layout.y)}
-              exiting={useSpringify(FadeOutUp)}
-              entering={useSpringify(FadeInUp)}
-            >
-              {isMetadataVisible && (
-                <CredentialAttributes
-                  key="metadata"
-                  headerTitle="Metadata"
-                  subject={metadataForDisplay(credential.metadata)}
-                  showDevProps
-                />
-              )}
-            </AnimatedStack>
             <AnimatedStack
               key={isSharableAttributesVisible ? 'visible-sharable-attributes' : 'hidden-sharable-attributes'}
               onLayout={(event) => setSharableAttributesElementPosition(event.nativeEvent.layout.y)}
@@ -117,6 +102,21 @@ export function FunkeCredentialDetailAttributesScreen() {
                   key="sharable-attributes"
                   headerTitle="Sharable attributes"
                   subject={credential.attributes}
+                  showDevProps
+                />
+              )}
+            </AnimatedStack>
+            <AnimatedStack
+              key={isMetadataVisible ? 'visible-metadata' : 'hidden-metadata'}
+              onLayout={(event) => setMetadataElementPosition(event.nativeEvent.layout.y)}
+              exiting={useSpringify(FadeOutUp)}
+              entering={useSpringify(FadeInUp)}
+            >
+              {isMetadataVisible && (
+                <CredentialAttributes
+                  key="metadata"
+                  headerTitle="Metadata"
+                  subject={metadataForDisplay(credential.metadata)}
                   showDevProps
                 />
               )}

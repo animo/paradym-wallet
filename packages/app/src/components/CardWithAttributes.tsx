@@ -50,7 +50,7 @@ export function CardWithAttributes({
 
   const groupedAttributes = useMemo(() => {
     const result: Array<[string, string | undefined]> = []
-    for (let i = 0; i < formattedDisclosedAttributes.length; i += 2) {
+    for (let i = 0; i < formattedDisclosedAttributes.length - 1; i += 2) {
       result.push([formattedDisclosedAttributes[i], formattedDisclosedAttributes[i + 1]])
     }
     return result
@@ -108,13 +108,20 @@ export function CardWithAttributes({
       </Stack>
       <YStack px="$4" pt="$3" pb="$4" gap="$4" bg="$white">
         <YStack gap="$2" fg={1} pr="$4">
-          {groupedAttributes.map(([first, second]) => (
+          {groupedAttributes.map(([first, second], index) => (
             <XStack key={first + second} gap="$4" minHeight="$3.5">
               <Stack flexGrow={1} flexBasis={0}>
                 <Paragraph fontSize={15}>{sanitizeString(first)}</Paragraph>
               </Stack>
               <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph fontSize={15}>{second ? sanitizeString(second) : ''}</Paragraph>
+                <Paragraph
+                  fontSize={15}
+                  numberOfLines={index === groupedAttributes.length - 1 ? 1 : undefined}
+                  ellipsizeMode={index === groupedAttributes.length - 1 ? 'tail' : undefined}
+                  pr={index === groupedAttributes.length - 1 ? '$5' : undefined}
+                >
+                  {second ? sanitizeString(second) : ''}
+                </Paragraph>
               </Stack>
             </XStack>
           ))}

@@ -33,6 +33,9 @@ export function FunkeActivityDetailScreen() {
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
+  const amountShared = activity.request.credentials?.length ?? 0
+  const sharedCredentialAmount = amountShared > 1 ? 's' : ''
+
   return (
     <FlexPage p={0} gap={0}>
       <YStack bbw="$0.5" h="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
@@ -68,7 +71,9 @@ export function FunkeActivityDetailScreen() {
                     {activity.status === 'success' ? 'Shared attributes' : 'Requested information'}
                   </Heading>
                   <Paragraph>
-                    {activity.status === 'success' ? 'Credentials were shared' : 'No credentials were shared.'}
+                    {activity.status === 'success'
+                      ? `${amountShared} credential${sharedCredentialAmount} were shared.`
+                      : 'No credentials were shared.'}
                   </Paragraph>
                 </Stack>
                 {activity.request.credentials && activity.request.credentials.length > 0 ? (

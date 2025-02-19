@@ -71,7 +71,7 @@ export function FunkePidCredentialAttributes() {
   }
 
   return (
-    <Stack gap="$6">
+    <Stack gap="$4">
       <YStack gap="$3" position="relative">
         <Stack h="$1" />
         <Stack pos="relative" ai="center">
@@ -160,7 +160,7 @@ export function FunkeMdlCredentialAttributes({
             overflow="hidden"
             size="$8"
           >
-            <Image width={96} height={96} src={raw.portrait} />
+            <Image width={80} height={80} src={raw.portrait} />
           </Circle>
           <TableContainer>
             <YStack
