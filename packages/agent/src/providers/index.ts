@@ -1,4 +1,4 @@
-export { AgentProvider } from './AgentProvider'
+export { AgentProvider, useAgent } from './AgentProvider'
 export {
   useW3cCredentialRecordById,
   useW3cCredentialRecords,
@@ -22,4 +22,3 @@ export {
   useProofs,
   useProofsByConnectionId,
 } from './ProofExchangeProvider'
-export { useAgent } from './AgentProvider'

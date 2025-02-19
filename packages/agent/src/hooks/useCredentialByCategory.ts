@@ -1,5 +1,6 @@
-import type { ClaimFormat } from '@credo-ts/core'
-import { type CredentialForDisplay, MdocRecord, SdJwtVcRecord, useCredentialsForDisplay } from '@package/agent'
+import { type ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
+import type { CredentialForDisplay } from '../display'
+import { useCredentialsForDisplay } from './useCredentialsForDisplay'
 
 export function useCredentialByCategory(credentialCategory: string) {
   const { isLoading, credentials } = useCredentialsForDisplay({

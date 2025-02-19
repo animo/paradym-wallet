@@ -1,14 +1,16 @@
 import { CredentialState, ProofState } from '@credo-ts/didcomm'
 import { useEffect, useMemo } from 'react'
-import { useConnections, useCredentialByState, useProofByState } from '../providers'
 
-import { useAgent } from '../agent'
+import type { ParadymAppAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   getDidCommProofExchangeDisplayMetadata,
   setDidCommCredentialExchangeMetadata,
   setDidCommProofExchangeMetadata,
 } from '../didcomm/metadata'
+import { useConnections } from '../providers/ConnectionProvider'
+import { useCredentialByState } from '../providers/CredentialExchangeProvider'
+import { useProofByState } from '../providers/ProofExchangeProvider'
 
 export const useHasInboxNotifications = () => {
   const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
@@ -27,8 +29,7 @@ export const useHasInboxNotifications = () => {
  * This can be used on the main app, so it's is automatically triggered whenever an item
  * is added to the inbox.
  */
-export const usePreFetchInboxDisplayMetadata = () => {
-  const { agent } = useAgent()
+export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAgent }) => {
   const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
   const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
   const { records: connections } = useConnections()
