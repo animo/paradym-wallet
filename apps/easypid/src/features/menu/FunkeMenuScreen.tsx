@@ -1,5 +1,9 @@
 import type React from 'react'
 
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { useWalletReset } from '@easypid/hooks/useWalletReset'
+import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
+import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
 import {
   AnimatedStack,
@@ -15,11 +19,6 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
-
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useWalletReset } from '@easypid/hooks/useWalletReset'
-import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
-import { TextBackButton } from '@package/app'
 import { router } from 'expo-router'
 import { Linking } from 'react-native'
 
@@ -33,14 +32,13 @@ type MenuListItemProps = {
 
 export const MenuListItem = ({ variant = 'regular', onPress, icon, label, action = 'route' }: MenuListItemProps) => {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
-  const { withHaptics } = useHaptics()
 
   return (
     <AnimatedStack
       style={pressStyle}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      onPress={withHaptics(onPress)}
+      onPress={onPress}
       flexDirection="row"
       ai="center"
       jc="space-between"
@@ -63,11 +61,12 @@ export const MenuListItem = ({ variant = 'regular', onPress, icon, label, action
 export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
-  const { credential } = useCredentialByCategory('DE_PID')
   const { withHaptics } = useHaptics()
+
+  const { credential, isLoading } = useCredentialByCategory('DE-PID')
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
-  const handleFeedback = () => withHaptics(() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Wallet'))
+  const handleFeedback = withHaptics(() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Wallet'))
   const handlePush = (path: string) => withHaptics(() => router.push(path))
 
   return (
@@ -75,7 +74,7 @@ export function FunkeMenuScreen() {
       <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Menu" />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack fg={1} gap="$6" jc="space-between">
-          {!credential && hasEidCardFeatureFlag ? (
+          {!credential && !isLoading && hasEidCardFeatureFlag ? (
             <Stack px="$4">
               <MessageBox
                 variant="info"
