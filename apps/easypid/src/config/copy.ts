@@ -20,3 +20,10 @@ export const copy = {
 export function useAppCopy() {
   return copy[CURRENT_APP_TYPE]
 }
+
+export function useAppIcon() {
+  if (CURRENT_APP_TYPE === 'FUNKE_WALLET') {
+    return require('../../assets/funke/icon.png')
+  }
+  return require('../../assets/paradym/icon.png')
+}

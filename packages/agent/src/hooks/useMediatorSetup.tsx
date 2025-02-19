@@ -9,7 +9,7 @@ export function useMediatorSetup({
 }: {
   agent?: ParadymAppAgent
   hasInternetConnection: boolean
-  mediatorDid: string
+  mediatorDid?: string
 }) {
   const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
@@ -33,6 +33,8 @@ export function useMediatorSetup({
       .then(async (mediationConfigured) => {
         if (!mediationConfigured) {
           agent.config.logger.debug('Mediation not configured yet.')
+          if (!mediatorDid) throw new Error('No mediator did provided.')
+
           await setupMediationWithDid(agent, mediatorDid)
         }
 
