@@ -80,7 +80,6 @@ const createBaseConfig = (appSpecific) => {
       fallbackToCacheTimeout: 0,
     },
     plugins: [
-      '@animo-id/expo-digital-credentials-api',
       'expo-router',
       [
         'expo-camera',

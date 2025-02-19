@@ -105,36 +105,4 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       </Stack>
     </YStack>
   )
-  // return (
-  //   <YStack p="$4" paddingBottom="$8" gap="$3" borderTopLeftRadius={2} borderTopRightRadius={2} backgroundColor="white">
-  //     <CardWithAttributes
-  //       key={entry.inputDescriptorId}
-  //       id={credential.credential.id}
-  //       name={credential.credential.display.name}
-  //       backgroundImage={credential.credential.display.backgroundImage}
-  //       backgroundColor={credential.credential.display.backgroundColor}
-  //       issuerImage={credential.credential.display.issuer.logo}
-  //       textColor={credential.credential.display.textColor}
-  //       formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(credential)}
-  //       disclosedPayload={credential.disclosed.attributes}
-  //       disableNav={true}
-  //       isExpired={
-  //         credential.credential.metadata?.validUntil
-  //           ? new Date(credential.credential.metadata.validUntil) < new Date()
-  //           : false
-  //       }
-  //       isNotYetActive={
-  //         credential.credential.metadata?.validFrom
-  //           ? new Date(credential.credential.metadata.validFrom) > new Date()
-  //           : false
-  //       }
-  //     />
-  //     <DualResponseButtons
-  //       // variant="confirmation"
-  //       align="horizontal"
-  //       onAccept={onProofAccept}
-  //       onDecline={onProofDecline}
-  //     />
-  //   </YStack>
-  // )
 }

@@ -8,7 +8,7 @@ import {
 } from '@credo-ts/core'
 import type { EitherAgent } from '../agent'
 import type { CredentialForDisplayId } from '../hooks'
-import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
+import { registerCredentialsForDcApi } from '../openid4vc/registerDcApi'
 
 type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
 

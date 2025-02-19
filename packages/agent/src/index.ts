@@ -38,8 +38,8 @@ export * from './openid4vc/displayMetadata'
 export * from './credentialCategoryMetadata'
 
 export {
-  registerCredentialsForDcApi,
   resolveRequestForDcApi,
   sendResponseForDcApi,
   sendErrorResponseForDcApi,
 } from './openid4vc/dcApi'
+export { registerCredentialsForDcApi } from './openid4vc/registerDcApi'

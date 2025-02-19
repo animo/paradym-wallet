@@ -1,78 +1,7 @@
-import {
-  registerCredentials,
-  type DigitalCredentialsRequest,
-  sendResponse,
-  sendErrorResponse,
-} from '@animo-id/expo-digital-credentials-api'
+import { type DigitalCredentialsRequest, sendResponse, sendErrorResponse } from '@animo-id/expo-digital-credentials-api'
 import type { EitherAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
 import { type CredentialsForProofRequest, getCredentialsForProofRequest, shareProof } from '../invitation'
 import { getHostNameFromUrl } from '@package/utils'
-import type { MdocNameSpaces } from '@credo-ts/core'
-
-function mapAttributes(namespaces: MdocNameSpaces) {
-  return Object.fromEntries(
-    Object.entries(namespaces).map(([namespace, values]) => [
-      namespace,
-      Object.fromEntries(
-        Object.entries(values).map(([key, value]) => {
-          if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'string') {
-            return [key, `${value}`]
-          }
-
-          if (value === null || value === undefined) {
-            return [key, `${value}`]
-          }
-
-          if (value instanceof Uint8Array) {
-            return [key, 'buffer']
-          }
-          if (value instanceof Date) {
-            // TODO: handle DateOnly and Date
-            return [key, value.toISOString()]
-          }
-          if (value instanceof Map) {
-            return [key, 'map']
-          }
-          if (Array.isArray(value)) return [key, 'array']
-
-          return [key, 'object']
-        })
-      ),
-    ])
-  )
-}
-
-export async function registerCredentialsForDcApi(agent: EitherAgent) {
-  const mdocRecords = await agent.mdoc.getAll()
-
-  const credentials = mdocRecords.map((record) => {
-    const mdoc = record.credential
-    const { display } = getCredentialForDisplay(record)
-
-    // TODO: library should support claim display mapping
-    // TODO: library should supported nested values
-    return {
-      id: record.id,
-      credential: {
-        doctype: mdoc.docType,
-        format: 'mso_mdoc',
-        namespaces: mapAttributes(mdoc.issuerSignedNamespaces),
-      },
-      display: {
-        title: display.name,
-        subtitle: display.description,
-      },
-    } as const
-  })
-
-  agent.config.logger.debug('Registering credentials for Digital Credentials API', {
-    credentials,
-  })
-  await registerCredentials({
-    credentials,
-  })
-}
 
 export async function resolveRequestForDcApi({
   agent,
@@ -95,6 +24,9 @@ export async function resolveRequestForDcApi({
     throw new Error('Only requests for a single credential supported for digital credentials api')
   }
 
+  agent.config.logger.debug('Resolved request', {
+    result,
+  })
   if (result.formattedSubmission.entries[0].isSatisfied) {
     const credential = result.formattedSubmission.entries[0].credentials.find(
       (c) => c.credential.record.id === request.selectedEntry.credentialId
@@ -124,6 +56,10 @@ export async function sendResponseForDcApi({
 }: { agent: EitherAgent; resolvedRequest: CredentialsForProofRequest; dcRequest: DigitalCredentialsRequest }) {
   const firstEntry = resolvedRequest.formattedSubmission.entries[0]
   if (!firstEntry.isSatisfied) {
+    agent.config.logger.debug('Expected one entry for DC API response', {
+      resolvedRequest,
+      dcRequest,
+    })
     throw new Error('Expected one entry for DC API response')
   }
 
