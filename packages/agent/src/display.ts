@@ -437,13 +437,9 @@ function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
   }
 }
 export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpaces, mdocInstance: Mdoc) {
-  const topLevelMetadataFields = ['issue_date', 'expiry_date']
-
   const attributes: CredentialForDisplay['attributes'] = Object.fromEntries(
     Object.values(namespaces).flatMap((v) => {
-      return Object.entries(v)
-        .filter(([key]) => !topLevelMetadataFields.includes(key))
-        .map(([key, value]) => [key, recursivelyMapAttributes(value)])
+      return Object.entries(v).map(([key, value]) => [key, recursivelyMapAttributes(value)])
     })
   )
 
