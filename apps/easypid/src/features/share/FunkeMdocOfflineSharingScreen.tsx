@@ -1,6 +1,7 @@
 import { useAppAgent } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { InvalidPinError } from '@easypid/crypto/error'
+import { useDevelopmentMode } from '@easypid/hooks'
 import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
@@ -9,7 +10,6 @@ import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
-import { useDevelopmentMode } from '@easypid/hooks'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -44,7 +44,7 @@ export function FunkeMdocOfflineSharingScreen({
 
         pushToWallet()
       })
-  }, [agent, deviceRequest, toast.show, pushToWallet])
+  }, [agent, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled])
 
   const handleError = useCallback(
     ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
@@ -73,7 +73,12 @@ export function FunkeMdocOfflineSharingScreen({
         onPinError?.()
       }
 
-      handleError({reason: 'Authentication Error',redirect: true, description: e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined })
+      handleError({
+        reason: 'Authentication Error',
+        redirect: true,
+        description:
+          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+      })
     }
 
     // Once this returns we just assume it's successful
@@ -86,7 +91,12 @@ export function FunkeMdocOfflineSharingScreen({
       })
     } catch (e) {
       await addActivity('failed')
-      handleError({reason: 'Could not share device response',redirect: true, description: e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined })
+      handleError({
+        reason: 'Could not share device response',
+        redirect: true,
+        description:
+          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+      })
     }
 
     await addActivity('success')
@@ -103,7 +113,7 @@ export function FunkeMdocOfflineSharingScreen({
     setIsProcessing(false)
 
     shutdownDataTransfer()
-    handleError({reason: 'Proof has been declined', redirect :true})
+    handleError({ reason: 'Proof has been declined', redirect: true })
   }
 
   const onProofComplete = () => {
