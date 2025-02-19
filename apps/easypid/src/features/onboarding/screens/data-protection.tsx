@@ -26,16 +26,6 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
   const onToggleCloudHsm = () => {
     const newShouldUseCloudHsm = !shouldUseCloudHsm
 
-    if (newShouldUseCloudHsm === false && !isLocalSecureEnvironmentSupported()) {
-      toast.show(`You device does not support on-device ${Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'}.`, {
-        message: 'Only Cloud HSM supported for PID cryptogrpahic keys.',
-        customData: {
-          preset: 'danger',
-        },
-      })
-      return
-    }
-
     toast.show(
       newShouldUseCloudHsm
         ? 'Now using Cloud HSM for PID cryptographic keys.'
@@ -66,7 +56,13 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
           Read the Privacy Policy
         </Button.Text>
         <XStack gap="$2" width="100%">
-          <Button.Outline bg="$grey-100" scaleOnPress width="$buttonHeight" onPress={onToggleCloudHsm}>
+          <Button.Outline
+            bg="$grey-100"
+            scaleOnPress
+            width="$buttonHeight"
+            onPress={onToggleCloudHsm}
+            disabled={!isLocalSecureEnvironmentSupported()}
+          >
             {shouldUseCloudHsm ? <HeroIcons.Cloud /> : <HeroIcons.DevicePhoneMobile />}
           </Button.Outline>
           <Button.Solid scaleOnPress flexGrow={1} disabled={isLoading} onPress={onContinue}>
