@@ -4,13 +4,15 @@
 	"main": "index.ts",
 	"private": true,
 	"scripts": {
-		"start": "APP_VARIANT=development pnpm expo start -c --dev-client",
-		"android": "APP_VARIANT=development pnpm expo run:android",
-		"ios": "APP_VARIANT=development pnpm expo run:ios",
-		"prebuild": "APP_VARIANT=development pnpm expo prebuild --no-install"
+		"start": "APP_VARIANT=development expo start -c --dev-client",
+		"android": "APP_VARIANT=development expo run:android",
+		"ios": "APP_VARIANT=development expo run:ios",
+		"prebuild": "APP_VARIANT=development expo prebuild --no-install"
 	},
 	"dependencies": {
+		"@animo-id/expo-ausweis-sdk": "catalog:",
 		"@animo-id/expo-secure-environment": "catalog:",
+		"@credo-ts/core": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@package/agent": "workspace:*",
@@ -40,6 +42,7 @@
 		"expo-updates": "~0.25.16",
 		"react": "catalog:",
 		"react-native": "catalog:",
+		"react-native-argon2": "^2.0.1",
 		"react-native-fs": "^2.20.0",
 		"react-native-gesture-handler": "~2.18.1",
 		"react-native-get-random-values": "~1.11.0",
@@ -50,7 +53,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
-		"@tamagui/babel-plugin": "1.122.6",
+		"@tamagui/babel-plugin": "1.122.7",
 		"typescript": "catalog:"
 	},
 	"expo": {

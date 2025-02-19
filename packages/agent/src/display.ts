@@ -20,6 +20,8 @@ import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
+import { getAttributesForCategory } from './display/category'
+import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
@@ -155,6 +157,7 @@ export interface CredentialForDisplay {
   createdAt: Date
   display: CredentialDisplay
   attributes: Record<string, unknown>
+  rawAttributes: Record<string, unknown>
   metadata: CredentialMetadata
   claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc | ClaimFormat.JwtVc | ClaimFormat.LdpVc
   record: W3cCredentialRecord | MdocRecord | SdJwtVcRecord
@@ -434,22 +437,35 @@ function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
   }
 }
 export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpaces, mdocInstance: Mdoc) {
+  const topLevelMetadataFields = ['issue_date', 'expiry_date']
+
   const attributes: CredentialForDisplay['attributes'] = Object.fromEntries(
-    Object.values(namespaces).flatMap((v) =>
-      Object.entries(v).map(([key, value]) => [key, recursivelyMapAttribues(value)])
-    )
+    Object.values(namespaces).flatMap((v) => {
+      return Object.entries(v)
+        .filter(([key]) => !topLevelMetadataFields.includes(key))
+        .map(([key, value]) => [key, recursivelyMapAttributes(value)])
+    })
   )
 
+  // FIXME: Date should be fixed in Mdoc library
+  // The problem is that mdocInstance.validityInfo.validFrom and validUntil are already Date objects that contain NaN, not just NaN values.
+  // When you call toISOString() on a Date containing NaN, it will throw an error.
   const mdocMetadata: CredentialMetadata = {
     type: mdocInstance.docType,
     holder: mdocInstance.deviceKey
       ? safeCalculateJwkThumbprint(getJwkFromKey(mdocInstance.deviceKey).toJson())
       : undefined,
     issuedAt: mdocInstance.validityInfo.signed.toISOString(),
-    validFrom: mdocInstance.validityInfo.validFrom.toISOString(),
-    validUntil: mdocInstance.validityInfo.validUntil.toISOString(),
-    // TODO: extract issuer from certificate?
-    // issuer: undefined
+    validFrom:
+      mdocInstance.validityInfo.validFrom instanceof Date &&
+      !Number.isNaN(mdocInstance.validityInfo.validFrom.getTime())
+        ? mdocInstance.validityInfo.validFrom.toISOString()
+        : undefined,
+    validUntil:
+      mdocInstance.validityInfo.validUntil instanceof Date &&
+      !Number.isNaN(mdocInstance.validityInfo.validUntil.getTime())
+        ? mdocInstance.validityInfo.validUntil.toISOString()
+        : undefined,
   }
 
   return {
@@ -484,7 +500,7 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
 
   return {
     attributes: Object.fromEntries(
-      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttribues(value)])
+      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttributes(value)])
     ),
     metadata: credentialMetadata,
   }
@@ -550,7 +566,26 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
-    // TODO: handle claim / display mapping here
+    // FIXME: For now, we map attributes to our custom attributes for PID and MDL
+    // We should add support for attributes from Type Metadata and OID4VC Metadata
+
+    // Order of precedence should be:
+    // 1. Custom attributes for PID and MDL using category
+    // 2. Attributes from SD JWT Type Metadata
+    // 3. Attributes from OID4VC Metadata
+
+    const customAttributesForDisplay =
+      getAttributesForCategory({
+        format: ClaimFormat.SdJwtVc,
+        credentialCategory: credentialCategoryMetadata?.credentialCategory,
+        attributes,
+      }) ??
+      getAttributesForDocTypeOrVct({
+        type: sdJwtVc.payload.vct as string,
+        attributes,
+      }) ??
+      attributes
+
     return {
       id: credentialForDisplayId,
       createdAt: credentialRecord.createdAt,
@@ -558,7 +593,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes,
+      attributes: customAttributesForDisplay,
+      rawAttributes: attributes,
       metadata,
       claimFormat: ClaimFormat.SdJwtVc,
       record: credentialRecord,
@@ -576,6 +612,17 @@ export function getCredentialForDisplay(
       mdocInstance.issuerSignedNamespaces,
       mdocInstance
     )
+    const customAttributesForDisplay =
+      getAttributesForCategory({
+        format: ClaimFormat.MsoMdoc,
+        credentialCategory: credentialCategoryMetadata?.credentialCategory,
+        attributes,
+      }) ??
+      getAttributesForDocTypeOrVct({
+        type: mdocInstance.docType,
+        attributes,
+      }) ??
+      attributes
 
     return {
       id: credentialForDisplayId,
@@ -584,7 +631,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes,
+      attributes: customAttributesForDisplay,
+      rawAttributes: attributes,
       metadata,
       claimFormat: ClaimFormat.MsoMdoc,
       record: credentialRecord,
@@ -616,6 +664,7 @@ export function getCredentialForDisplay(
         issuer: issuerDisplay,
       },
       attributes: credentialAttributes,
+      rawAttributes: credentialAttributes,
       metadata: {
         holder: credentialRecord.credential.credentialSubjectIds[0],
         issuer: credentialRecord.credential.issuerId,
@@ -644,7 +693,7 @@ type MappedAttributesReturnType =
   | null
   | undefined
   | Array<MappedAttributesReturnType>
-export function recursivelyMapAttribues(value: unknown): MappedAttributesReturnType {
+export function recursivelyMapAttributes(value: unknown): MappedAttributesReturnType {
   if (value instanceof Uint8Array) {
     const imageMimeType = detectImageMimeType(value)
     if (imageMimeType) {
@@ -661,9 +710,9 @@ export function recursivelyMapAttribues(value: unknown): MappedAttributesReturnT
   }
   if (typeof value === 'string') return value
   if (value instanceof Map) {
-    return Object.fromEntries(Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
+    return Object.fromEntries(Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapAttributes(value)]))
   }
-  if (Array.isArray(value)) return value.map(recursivelyMapAttribues)
+  if (Array.isArray(value)) return value.map(recursivelyMapAttributes)
 
-  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapAttribues(value)]))
+  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapAttributes(value)]))
 }

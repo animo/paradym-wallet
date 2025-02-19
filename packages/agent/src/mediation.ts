@@ -1,4 +1,4 @@
-import type { FullAppAgent } from './agent'
+import type { ParadymAppAgent } from './agent'
 
 import { CredoError } from '@credo-ts/core'
 import { MediatorPickupStrategy } from '@credo-ts/didcomm'
@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 /**
  * Check whether a default mediator is configued
  */
-export async function hasMediationConfigured(agent: FullAppAgent) {
+export async function hasMediationConfigured(agent: ParadymAppAgent) {
   const mediationRecord = await agent.modules.mediationRecipient.findDefaultMediator()
 
   return mediationRecord !== null
@@ -18,7 +18,7 @@ export async function hasMediationConfigured(agent: FullAppAgent) {
  *
  * This connects based on a did
  */
-export async function setupMediationWithDid(agent: FullAppAgent, mediatorDid: string) {
+export async function setupMediationWithDid(agent: ParadymAppAgent, mediatorDid: string) {
   // If the invitation is a did, the invitation id is the did
   const outOfBandRecord = await agent.modules.outOfBand.findByReceivedInvitationId(mediatorDid)
   let [connection] = outOfBandRecord ? await agent.modules.connections.findAllByOutOfBandId(outOfBandRecord.id) : []
@@ -52,7 +52,7 @@ export async function setupMediationWithDid(agent: FullAppAgent, mediatorDid: st
 /**
  * Initiate message pickup from the mediator.
  */
-async function initiateMessagePickup(agent: FullAppAgent) {
+async function initiateMessagePickup(agent: ParadymAppAgent) {
   agent.config.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
@@ -62,7 +62,7 @@ async function initiateMessagePickup(agent: FullAppAgent) {
 /**
  * Stop message pickup from the mediator.
  */
-async function stopMessagePickup(agent: FullAppAgent) {
+async function stopMessagePickup(agent: ParadymAppAgent) {
   agent.config.logger.info('Stopping message pickup from mediator')
 
   // Stop message pickup. Will stopp all message pickup, not just from the mediator
@@ -80,7 +80,7 @@ export function useMessagePickup({
   agent,
 }: {
   isEnabled?: boolean
-  agent?: FullAppAgent
+  agent?: ParadymAppAgent
 }) {
   useEffect(() => {
     // If no agent, do nothing

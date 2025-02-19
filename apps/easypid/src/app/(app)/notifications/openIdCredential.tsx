@@ -1,4 +1,4 @@
-import { FunkeCredentialNotificationScreen } from '@easypid/features/receive/FunkeCredentialNotificationScreen'
+import { FunkeCredentialNotificationScreen } from '@easypid/features/receive/FunkeOpenIdCredentialNotificationScreen'
 
 export default function Screen() {
   return <FunkeCredentialNotificationScreen />

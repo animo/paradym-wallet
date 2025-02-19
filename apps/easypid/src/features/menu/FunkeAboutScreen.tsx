@@ -3,11 +3,14 @@ import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@packa
 import { TextBackButton } from 'packages/app'
 import { Linking } from 'react-native'
 
+import { useAppCopy } from '@easypid/config/copy'
 import pj from '../../../package.json'
 
 export function FunkeAboutScreen() {
+  const { about } = useAppCopy()
+
   const openContact = () => {
-    Linking.openURL('mailto:ana@animo.id?subject=Reach out from Funke EUDI Wallet')
+    Linking.openURL(`mailto:ana@animo.id?subject=${about.emailHeader}`)
   }
 
   const openPrivacyPolicy = () => {
@@ -19,15 +22,13 @@ export function FunkeAboutScreen() {
       <HeaderContainer title="About the wallet" />
       <YStack fg={1} px="$4" gap="$4">
         <YStack gap="$2">
-          <Paragraph color="$grey-700">
-            This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It
-            serves as a prototype for future wallet providers. All code is available under Apache 2.0.
-          </Paragraph>
+          <Paragraph color="$grey-700">{about.description}</Paragraph>
           <Paragraph>
-            For more information on the project visit sprind.org or reach out to{' '}
+            For more information, reach out to{' '}
             <Paragraph fontWeight="$semiBold" color="$primary-500" onPress={openContact}>
               ana@animo.id
             </Paragraph>
+            .
           </Paragraph>
         </YStack>
         <YStack gap="$2" fg={1} jc="space-between">
@@ -39,7 +40,7 @@ export function FunkeAboutScreen() {
             onPress={openPrivacyPolicy}
           />
           <Paragraph py="$4" mx="auto" variant="sub" fontSize={13} fontWeight="$medium">
-            EasyPID version: {pj.version}
+            Paradym Wallet version: {pj.version}
           </Paragraph>
         </YStack>
       </YStack>

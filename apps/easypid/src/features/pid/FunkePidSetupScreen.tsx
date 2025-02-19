@@ -2,13 +2,14 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
-import type { PidSdJwtVcAttributes } from '@easypid/hooks'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
   ReceivePidUseCaseFlowOptions,
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
+import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import {
@@ -19,7 +20,7 @@ import {
 } from 'packages/agent/src'
 import { useToastController } from 'packages/ui/src'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from 'packages/utils/src'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { addReceivedActivity } from '../activity/activityRecord'
@@ -36,6 +37,7 @@ export function FunkePidSetupScreen() {
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const secureUnlock = useSecureUnlock()
+  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const [idCardPin, setIdCardPin] = useState<string>()
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
@@ -54,73 +56,69 @@ export function FunkePidSetupScreen() {
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
   const slideWizardRef = useRef<SlideWizardRef>(null)
 
+  if (!hasEidCardFeatureFlag) {
+    toast.show('This feature is not supported in this version of the app.', { customData: { preset: 'warning' } })
+    pushToWallet()
+    return
+  }
+
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    (options) => {
-      if (!idCardPin) {
-        // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
-        if (Platform.OS === 'ios') sendCommand({ cmd: 'INTERRUPT' })
-
-        setIdCardScanningState((state) => ({
-          ...state,
-          progress: 0,
-          state: 'error',
-          showScanModal: true,
-          isCardAttached: undefined,
-        }))
-
-        // Ask user for PIN:
-        return new Promise<string>((resolve) => {
-          setOnIdCardPinReEnter(() => {
-            return async (idCardPin: string) => {
-              setIdCardScanningState((state) => ({
-                ...state,
-                showScanModal: true,
-              }))
-              setIsScanning(true)
-              // UI blocks if we immediately resolve the PIN, we first want to make sure we navigate to the id-card-scan page again
-              setTimeout(() => resolve(idCardPin), 100)
-              setOnIdCardPinReEnter(undefined)
-            }
-          })
-
-          let promise: Promise<void>
-          // On android we have a custom modal, so we can keep the timeout shorten, but we do want to show the error modal for a bit.
-          if (Platform.OS === 'android') {
-            promise = sleep(1000).then(async () => {
-              setIdCardScanningState((state) => ({
-                ...state,
-                state: 'readyToScan',
-                showScanModal: false,
-              }))
-
-              await sleep(500)
-            })
-          }
-          // on iOS we need to wait 3 seconds for the NFC modal to close, as otherwise it will render the keyboard and the nfc modal at the same time...
-          else {
-            promise = sleep(3000)
-          }
-
-          // Navigate to the id-card-pin and show a toast
-          promise.then(() => {
-            pushToWallet()
-            toast.show('Invalid eID card PIN entered', {
-              customData: { preset: 'danger' },
-            })
-          })
-        })
+    async (options) => {
+      // If we have a PIN, use it once and clear it
+      if (idCardPin) {
+        const pin = idCardPin
+        setIdCardPin(undefined)
+        return pin
       }
 
-      setIdCardPin(undefined)
-      return idCardPin
+      // Hide NFC modal on iOS
+      if (Platform.OS === 'ios') {
+        sendCommand({ cmd: 'INTERRUPT' })
+      }
+
+      // Show error state
+      setIdCardScanningState((state) => ({
+        ...state,
+        progress: 0,
+        state: 'error',
+        showScanModal: true,
+        isCardAttached: undefined,
+      }))
+
+      // Wait for modal animations
+      await sleep(Platform.OS === 'ios' ? 3000 : 1000)
+
+      // Reset scanning state
+      if (Platform.OS === 'android') {
+        setIdCardScanningState((state) => ({
+          ...state,
+          state: 'readyToScan',
+          showScanModal: false,
+        }))
+        await sleep(500)
+      }
+
+      // Show error message
+      pushToWallet()
+      toast.show('Invalid eID card PIN entered', {
+        customData: { preset: 'danger' },
+      })
+
+      // Return new promise for PIN re-entry
+      return new Promise<string>((resolve) => {
+        setOnIdCardPinReEnter(() => async (newPin: string) => {
+          setIdCardScanningState((state) => ({ ...state, showScanModal: true }))
+          setIsScanning(true)
+          setOnIdCardPinReEnter(undefined)
+
+          // Small delay to allow UI updates
+          await sleep(100)
+          resolve(newPin)
+        })
+      })
     },
     [idCardPin, toast.show, pushToWallet]
   )
-
-  const onEnterPinRef = useRef({ onEnterPin })
-  useEffect(() => {
-    onEnterPinRef.current.onEnterPin = onEnterPin
-  }, [onEnterPin])
 
   const onIdCardStart = async ({
     walletPin,
@@ -148,7 +146,7 @@ export function FunkePidSetupScreen() {
           state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
         })),
       onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
-      onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
+      onEnterPin: (options) => onEnterPin(options),
       allowSimulatorCard,
     } as const satisfies ReceivePidUseCaseFlowOptions
 

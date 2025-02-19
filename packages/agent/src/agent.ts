@@ -8,7 +8,7 @@ import {
   V1ProofProtocol,
 } from '@credo-ts/anoncreds'
 import { AskarModule } from '@credo-ts/askar'
-
+import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import {
   Agent,
   ClaimFormat,
@@ -43,8 +43,9 @@ export { useAgent } from './providers'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
+import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 
-import { bdrPidIssuerCertificate, pidSchemes } from '../../../apps/easypid/src/constants'
+import { bdrPidIssuerCertificate, pidSchemes } from '@easypid/constants'
 import { appLogger } from './logger'
 
 const askarModule = new AskarModule({
@@ -119,22 +120,19 @@ export const initializeEasyPIDAgent = async ({
   return agent
 }
 
-export const initializeFullAgent = async ({
+export const initializeParadymAgent = async ({
   walletLabel,
   walletId,
   walletKey,
   keyDerivation,
+  trustedX509Certificates = [],
 }: {
   walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
+  trustedX509Certificates?: string[]
 }) => {
-  // // FIXME: in the easypid app importing the cheqd module gives errors. As we're not using cheqd in the EasyPid wallet
-  // // we protect it like this, but I think the Paradym Wallet must be broken as well then?!?
-  // const { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } =
-  //   require('@credo-ts/cheqd') as typeof import('@credo-ts/cheqd')
-
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
@@ -150,43 +148,52 @@ export const initializeFullAgent = async ({
     modules: {
       ariesAskar: askarModule,
       openId4VcHolder: new OpenId4VcHolderModule(),
+      x509: new X509Module({
+        getTrustedCertificatesForVerification: (_, { certificateChain, verification }) => {
+          if (verification.type === 'credential') {
+            // If not PID, we allow any certificate for now
+            return [certificateChain[0].toString('pem')]
+          }
+
+          // Allow any actor for auth requests for now
+          if (verification.type === 'oauth2SecuredAuthorizationRequest') {
+            return [certificateChain[0].toString('pem')]
+          }
+
+          return undefined
+        },
+        trustedCertificates:
+          trustedX509Certificates.length > 0 ? (trustedX509Certificates as [string, ...string[]]) : undefined,
+      }),
       dids: new DidsModule({
         registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
-        resolvers: [
-          new WebDidResolver(),
-          new KeyDidResolver(),
-          new JwkDidResolver(),
-          // new CheqdDidResolver(),
-        ],
+        resolvers: [new WebDidResolver(), new KeyDidResolver(), new JwkDidResolver(), new CheqdDidResolver()],
       }),
       outOfBand: new OutOfBandModule(),
       didcomm: new DidCommModule(),
       anoncreds: new AnonCredsModule({
-        // @ts-expect-error: will be fixed when cheqd is introduced
-        registries: [],
+        registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
         anoncreds,
       }),
-
       mediationRecipient: new MediationRecipientModule({
         // We want to manually connect to the mediator, so it doesn't impact wallet startup
         mediatorPickupStrategy: MediatorPickupStrategy.None,
       }),
-
       connections: new ConnectionsModule({
         autoAcceptConnections: true,
       }),
-      // cheqd: new CheqdModule(
-      //   new CheqdModuleConfig({
-      //     networks: [
-      //       {
-      //         network: 'testnet',
-      //       },
-      //       {
-      //         network: 'mainnet',
-      //       },
-      //     ],
-      //   })
-      // ),
+      cheqd: new CheqdModule(
+        new CheqdModuleConfig({
+          networks: [
+            {
+              network: 'testnet',
+            },
+            {
+              network: 'mainnet',
+            },
+          ],
+        })
+      ),
       credentials: new CredentialsModule({
         autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
         credentialProtocols: [
@@ -220,6 +227,14 @@ export const initializeFullAgent = async ({
   return agent
 }
 
-export type FullAppAgent = Awaited<ReturnType<typeof initializeFullAgent>>
+export type ParadymAppAgent = Awaited<ReturnType<typeof initializeParadymAgent>>
 export type EasyPIDAppAgent = Awaited<ReturnType<typeof initializeEasyPIDAgent>>
-export type EitherAgent = FullAppAgent | EasyPIDAppAgent
+export type EitherAgent = ParadymAppAgent | EasyPIDAppAgent
+
+export const isParadymAgent = (agent: EitherAgent): agent is ParadymAppAgent => {
+  return 'anoncreds' in agent.modules
+}
+
+export const isEasyPIDAgent = (agent: EitherAgent): agent is EasyPIDAppAgent => {
+  return !('anoncreds' in agent.modules)
+}

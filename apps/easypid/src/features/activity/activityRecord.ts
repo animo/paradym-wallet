@@ -1,17 +1,17 @@
 import { utils } from '@credo-ts/core'
+import type { AppAgent } from '@easypid/agent'
 import {
   type CredentialForDisplayId,
   type CredentialsForProofRequest,
   type DisplayImage,
-  type EasyPIDAppAgent,
   type FormattedSubmission,
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
   getWalletJsonStore,
   useWalletJsonRecord,
 } from '@package/agent'
+
 import { useMemo } from 'react'
-import type { AppAgent } from '../../agent'
 
 export type ActivityType = 'shared' | 'received'
 export type ActivityStatus = 'success' | 'failed' | 'stopped'
@@ -70,7 +70,7 @@ interface ActivityRecord {
 const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: _activityStorage.recordId,
-  addActivity: async (agent: EasyPIDAppAgent, activity: Activity) => {
+  addActivity: async (agent: AppAgent, activity: Activity) => {
     // get activity. then add this activity
     const record = await _activityStorage.get(agent)
     if (!record) {
@@ -102,7 +102,7 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
 }
 
 export const addReceivedActivity = async (
-  agent: EasyPIDAppAgent,
+  agent: AppAgent,
   input: {
     entityId: string
     name: string
@@ -128,10 +128,7 @@ export const addReceivedActivity = async (
   })
 }
 
-export const addSharedActivity = async (
-  agent: EasyPIDAppAgent,
-  input: Omit<PresentationActivity, 'type' | 'date' | 'id'>
-) => {
+export const addSharedActivity = async (agent: AppAgent, input: Omit<PresentationActivity, 'type' | 'date' | 'id'>) => {
   await activityStorage.addActivity(agent, {
     ...input,
     id: utils.uuid(),
@@ -163,6 +160,31 @@ export function addSharedActivityForCredentialsForRequest(
             ? 'missing_credentials'
             : 'unknown'
           : undefined,
+    },
+  })
+}
+
+export function addSharedActivityForSubmission(
+  agent: AppAgent,
+  submission: FormattedSubmission,
+  verifier: {
+    id: string
+    name?: string
+  },
+  status: ActivityStatus
+) {
+  return addSharedActivity(agent, {
+    status,
+    entity: {
+      id: verifier.id,
+      name: verifier.name ?? 'Unknown verifier',
+    },
+    request: {
+      name: submission.name,
+      purpose: submission.purpose,
+      credentials: getDisclosedCredentialForSubmission(submission),
+      failureReason:
+        status === 'failed' ? (!submission.areAllSatisfied ? 'missing_credentials' : 'unknown') : undefined,
     },
   })
 }

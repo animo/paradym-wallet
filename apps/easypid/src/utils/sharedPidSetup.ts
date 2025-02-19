@@ -104,7 +104,7 @@ export const pidSetupSteps = [
       type: 'content',
       title: 'You need to enable biometrics',
       subtitle:
-        'To continue, make sure your device has biometric protection enabled, and that EasyPID is allowed to use biometrics.',
+        'To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.',
     },
     Screen: OnboardingIdCardBiometricsDisabled,
   },

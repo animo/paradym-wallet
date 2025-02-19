@@ -7,7 +7,7 @@ export interface CredentialCategoryMetadata {
   credentialCategory: 'DE-PID' | (string & {})
 
   /**
-   * Whether this instance of the canoncical records should be displayed by default
+   * Whether this instance of the canonical records should be displayed by default
    */
   displayPriority?: boolean
 

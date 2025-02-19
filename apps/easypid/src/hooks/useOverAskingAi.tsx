@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useLLM } from '@easypid/llm'
 import type { OverAskingInput, OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { EXCLUDED_ATTRIBUTES_FOR_ANALYSIS, checkForOverAskingApi } from '@easypid/use-cases/OverAskingApi'
+import { useFeatureFlag } from './useFeatureFlag'
 
 const fallbackResponse: OverAskingResponse = {
   validRequest: 'could_not_determine',
@@ -14,6 +15,7 @@ export function useOverAskingAi() {
   const [overAskingResponse, setOverAskingResponse] = useState<OverAskingResponse>()
 
   const { generate, response, error, isModelReady, isModelGenerating, interrupt } = useLLM()
+  const isOverAskingAiEnabled = useFeatureFlag('AI_ANALYSIS')
 
   useEffect(() => {
     if (error) {
@@ -35,6 +37,11 @@ export function useOverAskingAi() {
   }, [response, isModelGenerating, error])
 
   const checkForOverAsking = async (input: OverAskingInput) => {
+    if (!isOverAskingAiEnabled) {
+      console.debug('Over-asking AI feature flag is not enabled, skipping')
+      return
+    }
+
     setIsProcessingOverAsking(true)
     if (isModelReady) {
       console.debug('Local LLM ready, using local LLM')

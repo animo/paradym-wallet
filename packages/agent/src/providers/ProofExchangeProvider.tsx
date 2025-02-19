@@ -5,7 +5,7 @@ import type { RecordsState } from './recordUtils'
 import { ProofExchangeRecord } from '@credo-ts/didcomm'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-import type { FullAppAgent } from '../agent'
+import type { ParadymAppAgent } from '../agent'
 import {
   addRecord,
   recordsAddedByType,
@@ -64,7 +64,7 @@ export const useProofNotInState = (state: ProofState | ProofState[]) => {
 }
 
 interface Props {
-  agent: FullAppAgent
+  agent: ParadymAppAgent
 }
 
 export const ProofExchangeProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {

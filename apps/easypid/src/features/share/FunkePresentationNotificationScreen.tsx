@@ -4,7 +4,6 @@ import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
-import type { PresentationRequestResult } from './components/utils'
 import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
@@ -19,7 +18,7 @@ interface FunkePresentationNotificationScreenProps {
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
-  onAccept: (pin?: string) => Promise<PresentationRequestResult>
+  onAccept: () => Promise<void>
   onDecline: () => void
   onComplete: () => void
 }
@@ -81,7 +80,7 @@ export function FunkePresentationNotificationScreen({
           usePin && {
             step: 'pin-enter',
             progress: 82.5,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinComplete={onAccept} />,
+            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinSubmit={onAccept} />,
           },
           {
             step: 'success',

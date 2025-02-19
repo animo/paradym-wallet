@@ -1,7 +1,7 @@
 import type { Agent } from '@credo-ts/core'
 import { type PropsWithChildren, createContext, useContext } from 'react'
 
-import type { EitherAgent, FullAppAgent } from '../agent'
+import type { EitherAgent, ParadymAppAgent } from '../agent'
 import { ConnectionProvider } from './ConnectionProvider'
 import { CredentialExchangeProvider } from './CredentialExchangeProvider'
 import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
@@ -17,7 +17,7 @@ export interface AgentProviderProps {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export const useAgent = <AppAgent extends Agent<any> = FullAppAgent>() => {
+export const useAgent = <AppAgent extends Agent<any> = ParadymAppAgent>() => {
   const agentContext = useContext(AgentContext)
   if (!agentContext) {
     throw new Error('useAgent must be used within a AgentContextProvider')

@@ -6,14 +6,17 @@ const variants = {
   development: {
     bundle: '.dev',
     name: ' (Dev)',
+    mediatorDid: 'did:web:mediator.dev.paradym.id',
   },
   preview: {
     bundle: '.preview',
     name: ' (Preview)',
+    mediatorDid: 'did:web:mediator.paradym.id',
   },
   production: {
     bundle: '',
     name: '',
+    mediatorDid: 'did:web:mediator.paradym.id',
   },
 }
 
@@ -117,9 +120,10 @@ const config = {
     supportsTablet: false,
     bundleIdentifier: `id.animo.ausweis${variant.bundle}`,
     infoPlist: {
-      NSPhotoLibraryUsageDescription: 'EasyPID uses the camera to initiate receiving and sharing of credentials.',
-      NSCameraUsageDescription: 'EasyPID uses the camera to initiate receiving and sharing of credentials.',
-      NSFaceIDUsageDescription: 'EasyPID uses FaceID to securely unlock the wallet and share credentials.',
+      NSPhotoLibraryUsageDescription:
+        'Paradym Wallet uses the camera to initiate receiving and sharing of credentials.',
+      NSCameraUsageDescription: 'Paradym Wallet uses the camera to initiate receiving and sharing of credentials.',
+      NSFaceIDUsageDescription: 'Paradym Wallet uses FaceID to securely unlock the wallet and share credentials.',
       ITSAppUsesNonExemptEncryption: false,
       // Add schemes for deep linking
       CFBundleURLTypes: [
@@ -171,6 +175,7 @@ const config = {
     eas: {
       projectId: '28b058bb-3c4b-4347-8e72-41dfc1dd99eb',
     },
+    mediatorDid: variant.mediatorDid,
   },
 }
 

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import type { FullAppAgent } from '../agent'
+import type { EitherAgent } from '../agent'
 
 import { SdJwtVcRecord } from '@credo-ts/core'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -59,7 +59,7 @@ export const useSdJwtVcRecordById = (id: string): SdJwtVcRecord | undefined => {
 }
 
 interface Props {
-  agent: FullAppAgent
+  agent: EitherAgent
 }
 
 export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {

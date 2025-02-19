@@ -15,7 +15,7 @@ import type {
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
 import { getOid4vciCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import type { EitherAgent, FullAppAgent } from '../agent'
+import type { EitherAgent, ParadymAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import { JwaSignatureAlgorithm, Jwt, X509ModuleConfig } from '@credo-ts/core'
@@ -556,7 +556,7 @@ export const getCredentialsForProofRequest = async ({
  * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
  */
 export async function receiveOutOfBandInvitation(
-  agent: FullAppAgent,
+  agent: ParadymAppAgent,
   invitation: OutOfBandInvitation
 ): Promise<
   | { success: true; id: string; type: 'credentialExchange' }

@@ -1,7 +1,6 @@
 import { Mdoc, MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
-import type { AppAgent } from '../../../apps/easypid/src/agent'
 import { RefreshPidUseCase } from '../../../apps/easypid/src/use-cases/RefreshPidUseCase'
-import type { EasyPIDAppAgent, EitherAgent } from './agent'
+import type { EitherAgent } from './agent'
 import { getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import { decodeW3cCredential } from './format/credentialEncoding'
 import { getBatchCredentialMetadata } from './openid4vc/batchMetadata'
@@ -13,7 +12,7 @@ export async function refreshPid({
   sdJwt,
   mdoc,
   batchSize,
-}: { agent: AppAgent; sdJwt?: SdJwtVcRecord; mdoc?: MdocRecord; batchSize?: number }) {
+}: { agent: EitherAgent; sdJwt?: SdJwtVcRecord; mdoc?: MdocRecord; batchSize?: number }) {
   console.log('refreshing PID')
   const useCase = await RefreshPidUseCase.initialize({
     agent,
@@ -56,7 +55,7 @@ export async function handleBatchCredential<CredentialRecord extends W3cCredenti
     batchMetadata.additionalCredentials.length === 0
   ) {
     refreshPid({
-      agent: agent as EasyPIDAppAgent,
+      agent,
       sdJwt: credentialRecord.type === 'SdJwtVcRecord' ? credentialRecord : undefined,
       mdoc: credentialRecord.type === 'MdocRecord' ? credentialRecord : undefined,
       // Get a batch of 5 for a single record type

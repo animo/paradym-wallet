@@ -91,8 +91,8 @@ export function FunkeCredentialsScreen() {
                 <FunkeCredentialRowCard
                   key={credential.id}
                   name={credential.display.name}
-                  textColor={credential.display.textColor ?? '$grey-900'}
-                  backgroundColor={credential.display.backgroundColor ?? '$grey-100'}
+                  textColor={credential.display.textColor ?? '$grey-100'}
+                  backgroundColor={credential.display.backgroundColor ?? '$grey-900'}
                   issuer={credential.display.issuer.name}
                   logo={credential.display.issuer.logo}
                   // TODO: we should have RAW metadata (date instance) and human metadata (string)

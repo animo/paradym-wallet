@@ -33,3 +33,8 @@ catalog:
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"
   "@sphereon/pex-models": 2.3.2
+
+  expo-standard-web-crypto: "1.8.1"
+  isomorphic-webcrypto: "npm:@sphereon/isomorphic-webcrypto"
+  "@cheqd/sdk": "2.5.1"
+  "@cheqd/ts-proto": "2.3.2"

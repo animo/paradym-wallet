@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import type { FullAppAgent } from '../agent'
+import type { EitherAgent } from '../agent'
 
 import { W3cCredentialRecord } from '@credo-ts/core'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -59,7 +59,7 @@ export const useW3cCredentialRecordById = (id: string): W3cCredentialRecord | un
 }
 
 interface Props {
-  agent: FullAppAgent
+  agent: EitherAgent
 }
 
 export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {

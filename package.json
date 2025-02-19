@@ -41,7 +41,10 @@
 			"@credo-ts/question-answer": "catalog:",
 			"@credo-ts/react-native": "catalog:",
 			"@sphereon/pex-models": "catalog:",
-			"@openid-federation/core": "catalog:"
+			"@openid-federation/core": "catalog:",
+			"isomorphic-webcrypto": "catalog:",
+			"@cheqd/sdk": "catalog:",
+			"@cheqd/ts-proto": "catalog:"
 		},
 		"patchedDependencies": {
 			"@sphereon/kmp-mdl-mdoc": "patches/@sphereon__kmp-mdl-mdoc.patch",

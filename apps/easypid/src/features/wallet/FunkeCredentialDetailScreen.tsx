@@ -52,13 +52,7 @@ export function FunkeCredentialDetailScreen() {
   }
 
   const onCardAttributesPress = withHaptics(() => {
-    router.push({
-      pathname: '/credentials/[id]/attributes',
-      params: {
-        attributes: JSON.stringify(credential.attributes),
-        metadata: JSON.stringify(credential.metadata),
-      },
-    })
+    router.push(`/credentials/${params.id}/attributes`)
   })
 
   return (
