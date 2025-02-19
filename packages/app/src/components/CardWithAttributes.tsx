@@ -83,8 +83,8 @@ export function CardWithAttributes({
         {backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
-              src={backgroundImage?.url ?? ''}
-              alt={backgroundImage?.altText ?? ''}
+              src={backgroundImage.url}
+              alt={backgroundImage.altText}
               contentFit="cover"
               height="100%"
               width="100%"
