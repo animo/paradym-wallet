@@ -34,7 +34,9 @@ export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProvid
   const DynamicProviders = [
     agent.modules.proofs || agent.modules.credentials
       ? ({ children }: PropsWithChildren<{ agent: EitherAgent }>) => (
-          <ExchangeRecordDisplayMetadataProvider>{children}</ExchangeRecordDisplayMetadataProvider>
+          <ExchangeRecordDisplayMetadataProvider agent={agent as ParadymAppAgent}>
+            {children}
+          </ExchangeRecordDisplayMetadataProvider>
         )
       : undefined,
     agent.modules.credentials ? CredentialExchangeProvider : undefined,
