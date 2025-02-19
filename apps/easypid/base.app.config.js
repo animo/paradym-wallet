@@ -89,6 +89,7 @@ const createBaseConfig = (appSpecific) => {
           cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
         },
       ],
+      // FIXME: Should be removed for the Paradym Wallet but it causes build errors if it's not installed
       '@animo-id/expo-ausweis-sdk',
       [
         '@animo-id/expo-mdoc-data-transfer',
