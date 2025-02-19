@@ -89,7 +89,7 @@ const createBaseConfig = (appSpecific) => {
         '@animo-id/expo-mdoc-data-transfer',
         {
           ios: {
-            buildStatic: ['RNReanimated', 'RNScreens', 'aries-askar', 'anoncreds', 'react-native-executorch'],
+            buildStatic: ['RNReanimated', 'RNScreens', 'askar', 'anoncreds', 'react-native-executorch'],
           },
         },
       ],
