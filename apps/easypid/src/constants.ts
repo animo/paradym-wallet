@@ -1,6 +1,6 @@
 import ExpoConstants from 'expo-constants'
 
-export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid as string | undefined
+export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid
 export const appScheme = ExpoConstants.expoConfig?.scheme as string
 
 export const EASYPID_WALLET_PID_PIN_KEY_ID = 'EASYPID_WALLET_PID_PIN_KEY_ID_NO_BIOMETRICS'
