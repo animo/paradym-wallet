@@ -21,13 +21,18 @@ if (!variant) {
   throw new Error(`Invalid variant provided: ${process.env.APP_VARIANT}`)
 }
 
-// Common invitation schemes
+// NOTE: Keep this in sync with the `QrTypes` enum
 const baseInvitationSchemes = [
   'openid',
   'openid-initiate-issuance',
   'openid-credential-offer',
   'openid-vc',
   'openid4vp',
+  'eudi-openid4vp',
+  'mdoc-openid4vp',
+  'id.animo.ausweis',
+  'id.animo.paradym',
+  'haip',
 ]
 
 /**

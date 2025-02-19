@@ -1,5 +1,6 @@
 import 'fast-text-encoding'
 
+import { appScheme } from '@easypid/constants'
 import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
 import * as Haptics from 'expo-haptics'
@@ -16,7 +17,7 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     const parsedPath = new URL(path)
     const credentialAuthorizationCode = parsedPath.searchParams.get('code')
     if (
-      parsedPath.protocol === 'id.animo.ausweis:' &&
+      parsedPath.protocol === `${appScheme}:` &&
       parsedPath.pathname === '/wallet/redirect' &&
       credentialAuthorizationCode
     ) {
