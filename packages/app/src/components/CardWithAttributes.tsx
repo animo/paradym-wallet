@@ -50,7 +50,7 @@ export function CardWithAttributes({
 
   const groupedAttributes = useMemo(() => {
     const result: Array<[string, string | undefined]> = []
-    for (let i = 0; i < formattedDisclosedAttributes.length - 1; i += 2) {
+    for (let i = 0; i < formattedDisclosedAttributes.length; i += 2) {
       result.push([formattedDisclosedAttributes[i], formattedDisclosedAttributes[i + 1]])
     }
     return result

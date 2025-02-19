@@ -1,0 +1,27 @@
+diff --git a/build/openid4vc-holder/OpenId4vcSiopHolderService.js b/build/openid4vc-holder/OpenId4vcSiopHolderService.js
+index d92e50175e9abf1fe4fd0feab718d52e5cd9963a..8ba98386ac57185c993069dde5563c9c01876595 100644
+--- a/build/openid4vc-holder/OpenId4vcSiopHolderService.js
++++ b/build/openid4vc-holder/OpenId4vcSiopHolderService.js
+@@ -157,7 +157,7 @@ let OpenId4VcSiopHolderService = class OpenId4VcSiopHolderService {
+             authorizationRequest.payload.response_mode === 'dc_api.jwt';
+         const nonce = authorizationRequest.payload.nonce;
+         // FIXME: we should always set this in oid4vc-ts, based on the origin if using DC API
+-        let clientId = authorizationRequest.client.identifier;
++        let clientId = authorizationRequest.client.originalValue;
+         if (isDcApiRequest) {
+             if (!origin)
+                 throw new core_1.CredoError('Missing required origin');
+@@ -287,7 +287,12 @@ let OpenId4VcSiopHolderService = class OpenId4VcSiopHolderService {
+                 : undefined,
+         });
+         if ((0, oid4vp_1.isOpenid4vpAuthorizationRequestDcApi)(authorizationRequest.payload)) {
+-            throw new core_1.CredoError('Submission of DC API responses is not yet supported.');
++            return {
++                  request: authorizationRequest.payload,
++            response: response.responseParams,
++            jarm: response.jarm ? { responseJwt: response.jarm.responseJwt } : undefined,
++            }
++            // throw new core_1.CredoError('Submission of DC API responses is not yet supported.');
+         }
+         const result = await openid4vpClient.submitOpenid4vpAuthorizationResponse({
+             request: authorizationRequest.payload,

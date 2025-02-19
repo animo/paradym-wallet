@@ -8,6 +8,7 @@ import {
 } from '@credo-ts/core'
 import type { EitherAgent } from '../agent'
 import type { CredentialForDisplayId } from '../hooks'
+import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
 
 type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
 
@@ -41,6 +42,9 @@ export async function updateCredential(agent: EitherAgent, credentialRecord: Cre
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).update(agent.context, credentialRecord)
   }
+
+  // NOTE: temporary hack, until we can integrate with listeners
+  await registerCredentialsForDcApi(agent)
 }
 export async function storeCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
@@ -50,6 +54,9 @@ export async function storeCredential(agent: EitherAgent, credentialRecord: Cred
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
   }
+
+  // NOTE: temporary hack, until we can integrate with listeners
+  await registerCredentialsForDcApi(agent)
 }
 
 export async function deleteCredential(agent: EitherAgent, credentialId: CredentialForDisplayId) {
@@ -63,4 +70,7 @@ export async function deleteCredential(agent: EitherAgent, credentialId: Credent
     const mdocId = credentialId.replace('mdoc-', '')
     await agent.mdoc.deleteById(mdocId)
   }
+
+  // NOTE: temporary hack, until we can integrate with listeners
+  await registerCredentialsForDcApi(agent)
 }
