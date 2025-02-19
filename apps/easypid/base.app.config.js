@@ -30,8 +30,6 @@ const baseInvitationSchemes = [
   'openid4vp',
   'eudi-openid4vp',
   'mdoc-openid4vp',
-  'id.animo.ausweis',
-  'id.animo.paradym',
   'haip',
 ]
 
@@ -55,7 +53,7 @@ const createBaseConfig = (appSpecific) => {
     extraConfig = {},
   } = appSpecific
 
-  const invitationSchemes = [...baseInvitationSchemes, ...additionalInvitationSchemes]
+  const invitationSchemes = [...baseInvitationSchemes, ...additionalInvitationSchemes, scheme]
 
   return {
     name: `${name}${variant.name}`,
