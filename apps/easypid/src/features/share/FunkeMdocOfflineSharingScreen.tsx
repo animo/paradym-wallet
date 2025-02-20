@@ -4,11 +4,12 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
+import { useDevelopmentMode } from '@easypid/hooks'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -23,6 +24,7 @@ export function FunkeMdocOfflineSharingScreen({
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [submission, setSubmission] = useState<FormattedSubmission>()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -32,6 +34,8 @@ export function FunkeMdocOfflineSharingScreen({
       .then(setSubmission)
       .catch((error) => {
         toast.show('Presentation information could not be extracted.', {
+          message:
+            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
           customData: { preset: 'danger' },
         })
         agent.config.logger.error('Error getting credentials for mdoc device request', {
@@ -41,6 +45,15 @@ export function FunkeMdocOfflineSharingScreen({
         pushToWallet()
       })
   }, [agent, deviceRequest, toast.show, pushToWallet])
+
+  const handleError = useCallback(
+    ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
+      toast.show(reason, { message: description, customData: { preset: 'danger' } })
+      if (redirect) pushToWallet()
+      return
+    },
+    [toast, pushToWallet]
+  )
 
   const onProofAccept = async ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => {
     // Already checked for submission in the useEffect
@@ -59,6 +72,8 @@ export function FunkeMdocOfflineSharingScreen({
       if (e instanceof InvalidPinError) {
         onPinError?.()
       }
+
+      handleError({reason: 'Authentication Error',redirect: true, description: e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined })
     }
 
     // Once this returns we just assume it's successful
@@ -69,10 +84,9 @@ export function FunkeMdocOfflineSharingScreen({
         sessionTranscript,
         submission,
       })
-    } catch (error) {
-      agent.config.logger.error('Could not share device response', { error })
+    } catch (e) {
       await addActivity('failed')
-      pushToWallet()
+      handleError({reason: 'Could not share device response',redirect: true, description: e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined })
     }
 
     await addActivity('success')
@@ -89,8 +103,7 @@ export function FunkeMdocOfflineSharingScreen({
     setIsProcessing(false)
 
     shutdownDataTransfer()
-    pushToWallet()
-    toast.show('Proof has been declined.', { customData: { preset: 'danger' } })
+    handleError({reason: 'Proof has been declined', redirect :true})
   }
 
   const onProofComplete = () => {
