@@ -3,7 +3,11 @@ import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProvid
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
-import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
+import {
+  BiometricAuthenticationCancelledError,
+  type FormattedSubmission,
+  getSubmissionForMdocDocumentRequest,
+} from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
@@ -96,6 +100,12 @@ export function FunkeMdocOfflineSharingScreen({
         submission,
       })
     } catch (e) {
+      if (e instanceof BiometricAuthenticationCancelledError) {
+        // Triggers the pin animation
+        onPinError?.()
+        return handleError({ reason: 'Biometric authentication cancelled', redirect: false })
+      }
+
       await addActivity('failed')
       handleError({
         reason: 'Could not share device response',
