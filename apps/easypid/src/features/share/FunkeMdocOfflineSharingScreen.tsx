@@ -2,7 +2,12 @@ import { useAppAgent } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
-import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
+import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
+import {
+  BiometricAuthenticationCancelledError,
+  type FormattedSubmission,
+  getSubmissionForMdocDocumentRequest,
+} from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
@@ -28,6 +33,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   const [submission, setSubmission] = useState<FormattedSubmission>()
   const [isProcessing, setIsProcessing] = useState(false)
+  const shouldUsePin = useShouldUsePinForSubmission(submission)
 
   useEffect(() => {
     getSubmissionForMdocDocumentRequest(agent, deviceRequest)
@@ -55,30 +61,34 @@ export function FunkeMdocOfflineSharingScreen({
     [toast, pushToWallet]
   )
 
-  const onProofAccept = async ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => {
+  const onProofAccept = async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
     // Already checked for submission in the useEffect
     if (!submission) return
-    if (!pin) {
-      onPinError?.()
-      return
-    }
 
-    setIsProcessing(true)
-
-    try {
-      await setWalletServiceProviderPin(pin.split('').map(Number))
-    } catch (e) {
-      setIsProcessing(false)
-      if (e instanceof InvalidPinError) {
+    if (shouldUsePin) {
+      if (!pin) {
         onPinError?.()
+        return
       }
 
-      handleError({
-        reason: 'Authentication Error',
-        redirect: true,
-        description:
-          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
-      })
+      setIsProcessing(true)
+
+      try {
+        await setWalletServiceProviderPin(pin.split('').map(Number))
+      } catch (e) {
+        setIsProcessing(false)
+        if (e instanceof InvalidPinError) {
+          onPinError?.()
+          return handleError({ reason: 'Invalid PIN entered', redirect: false })
+        }
+
+        return handleError({
+          reason: 'Authentication Error',
+          redirect: true,
+          description:
+            e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+        })
+      }
     }
 
     // Once this returns we just assume it's successful
@@ -90,6 +100,12 @@ export function FunkeMdocOfflineSharingScreen({
         submission,
       })
     } catch (e) {
+      if (e instanceof BiometricAuthenticationCancelledError) {
+        // Triggers the pin animation
+        onPinError?.()
+        return handleError({ reason: 'Biometric authentication cancelled', redirect: false })
+      }
+
       await addActivity('failed')
       handleError({
         reason: 'Could not share device response',
@@ -147,6 +163,7 @@ export function FunkeMdocOfflineSharingScreen({
       onAccept={onProofAccept}
       onDecline={onProofDecline}
       onComplete={onProofComplete}
+      usePin={shouldUsePin ?? false}
     />
   )
 }

@@ -24,6 +24,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
   }
 
   const onToggleCloudHsm = () => {
+    if (isLoading) return
     const newShouldUseCloudHsm = !shouldUseCloudHsm
 
     toast.show(

@@ -36,7 +36,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
   })
   const lastInteractionDate = activities?.[0]?.date
-  const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest)
+  const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
 
   useEffect(() => {
     if (credentialsForRequest) return

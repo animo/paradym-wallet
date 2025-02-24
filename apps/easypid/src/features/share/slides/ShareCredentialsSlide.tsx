@@ -30,8 +30,12 @@ export const ShareCredentialsSlide = ({
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
+  const [isProcessing, setIsProcessing] = useState(isAccepting)
 
   const handleAccept = async () => {
+    // Manually set to instantly show the loading state
+    setIsProcessing(true)
+
     await onAccept?.()
     onNext()
   }
@@ -96,7 +100,7 @@ export const ShareCredentialsSlide = ({
             declineText="Stop"
             onAccept={handleAccept}
             onDecline={handleDecline}
-            isLoading={isAccepting}
+            isLoading={isProcessing}
           />
         ) : (
           <YStack gap="$3">

@@ -19,12 +19,16 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           left="50%"
           ai="center"
           jc="center"
-          shadowOffset={{ width: 5, height: 5 }}
-          shadowColor="$grey-400"
-          shadowOpacity={0.5}
-          shadowRadius={24}
         >
-          <Stack br="$7" ov="hidden">
+          <Stack
+            br="$7"
+            ov="hidden"
+            bg="$primary-500"
+            shadowOffset={{ width: 5, height: 5 }}
+            shadowColor="$grey-400"
+            shadowOpacity={0.5}
+            shadowRadius={24}
+          >
             <Image height={96} width={96} src={appIcon} />
           </Stack>
         </YStack>
