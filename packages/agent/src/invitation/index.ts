@@ -35,7 +35,6 @@ export {
   acquirePreAuthorizedAccessToken,
   resolveOpenId4VciOffer,
   getCredentialsForProofRequest,
-  withTrustedCertificate,
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'
 export { shareProof } from './shareProof'

@@ -18,7 +18,7 @@ import { getOid4vciCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import type { EitherAgent, ParadymAppAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import { JwaSignatureAlgorithm, Jwt, X509ModuleConfig } from '@credo-ts/core'
+import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
 import {
   CredentialEventTypes,
   CredentialState,
@@ -376,73 +376,6 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   }
 
   return { data: null, entityId: null }
-}
-
-const extractCertificateFromJwt = (jwt: string) => {
-  const jwtHeader = Jwt.fromSerializedJwt(jwt).header
-  return Array.isArray(jwtHeader.x5c) && typeof jwtHeader.x5c[0] === 'string' ? jwtHeader.x5c[0] : null
-}
-
-/**
- * This is a temp method to allow for untrusted certificates to still work with the wallet.
- */
-export const extractCertificateFromAuthorizationRequest = async ({
-  data,
-  uri,
-}: { data?: string; uri?: string }): Promise<{ data: string | null; certificate: string | null }> => {
-  try {
-    if (data) {
-      return {
-        data,
-        certificate: extractCertificateFromJwt(data),
-      }
-    }
-
-    if (uri) {
-      const query = q.parseUrl(uri).query
-      if (query.request_uri && typeof query.request_uri === 'string') {
-        const result = await fetchInvitationDataUrl(query.request_uri)
-
-        if (
-          result.success &&
-          result.result.type === 'openid-authorization-request' &&
-          typeof result.result.data === 'string'
-        ) {
-          return {
-            data: result.result.data,
-            certificate: extractCertificateFromJwt(result.result.data),
-          }
-        }
-      } else if (query.request && typeof query.request === 'string') {
-        return {
-          data: query.request,
-          certificate: extractCertificateFromJwt(query.request),
-        }
-      }
-    }
-
-    return { data: null, certificate: null }
-  } catch (error) {
-    return { data: null, certificate: null }
-  }
-}
-
-export async function withTrustedCertificate<T>(
-  agent: EitherAgent,
-  certificate: string | null,
-  method: () => Promise<T> | T
-): Promise<T> {
-  const x509ModuleConfig = agent.dependencyManager.resolve(X509ModuleConfig)
-  const currentTrustedCertificates = x509ModuleConfig.trustedCertificates
-    ? [...x509ModuleConfig.trustedCertificates]
-    : []
-
-  try {
-    if (certificate) agent.x509.addTrustedCertificate(certificate)
-    return await method()
-  } finally {
-    if (certificate) x509ModuleConfig.setTrustedCertificates(currentTrustedCertificates as [string])
-  }
 }
 
 export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
