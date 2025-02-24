@@ -38,7 +38,7 @@ catalogs:
       version: 5.3.3
 
 overrides:
-  '@animo-id/mdoc': 0.4.0
+  '@animo-id/mdoc': 0.4.1
   '@unimodules/react-native-adapter': ./noop
   '@unimodules/core': ./noop
   react-docgen-typescript: 2.2.2
@@ -66,9 +66,6 @@ patchedDependencies:
   '@animo-id/credo-ts-core':
     hash: pq7qg2hcwnj2u4ezzzskdto3mm
     path: patches/@animo-id__credo-ts-core.patch
-  '@animo-id/credo-ts-openid4vc':
-    hash: uejfpkyjx7xd6ccrkw3off23fy
-    path: patches/@animo-id__credo-ts-openid4vc.patch
   '@hyperledger/anoncreds-react-native@0.2.4':
     hash: l7lys2x3cbmg25264calankphu
     path: patches/@hyperledger__anoncreds-react-native@0.2.4.patch
@@ -102,8 +99,8 @@ importers:
         specifier: 'catalog:'
         version: 0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@animo-id/mdoc':
-        specifier: 0.4.0
-        version: 0.4.0
+        specifier: 0.4.1
+        version: 0.4.1
       '@credo-ts/core':
         specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250224091806
         version: '@animo-id/credo-ts-core@0.5.14-alpha-20250224091806(patch_hash=pq7qg2hcwnj2u4ezzzskdto3mm)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
@@ -613,7 +610,7 @@ importers:
         version: '@animo-id/credo-ts-core@0.5.14-alpha-20250224091806(patch_hash=pq7qg2hcwnj2u4ezzzskdto3mm)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/openid4vc':
         specifier: npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250224091806
-        version: '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250224091806(patch_hash=uejfpkyjx7xd6ccrkw3off23fy)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        version: '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250224091806(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/question-answer':
         specifier: npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250224091806
         version: '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250224091806(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
@@ -875,8 +872,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@animo-id/mdoc@0.4.0':
-    resolution: {integrity: sha512-ziuaAn4MnocSwoGZzKbgDB3g5ohfl79USR8Ly/uGImPRdZ6qxaB/cqO3dP0162PhKFbWsywgsgpghCiOeYoVBA==}
+  '@animo-id/mdoc@0.4.1':
+    resolution: {integrity: sha512-f85TcbExGenfBQ/gkHJoG1wsCPT4Z0gzy2u/3Uwum0+iVSOcfh/42s7SHdAtk6m/FN6wwTiIxlC/dYTcTtoCDg==}
 
   '@animo-id/oauth2-utils@0.1.4':
     resolution: {integrity: sha512-JUIshkNCiX7myPwdiE+Da/g77OjsxZreezmfXWBSWOgCOZrnQX+t5vkhpe6Jc6DRh40Y8r9Fa1AesV0vtVpUMg==}
@@ -9944,7 +9941,7 @@ snapshots:
 
   '@animo-id/credo-ts-core@0.5.14-alpha-20250224091806(patch_hash=pq7qg2hcwnj2u4ezzzskdto3mm)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@animo-id/mdoc': 0.4.0
+      '@animo-id/mdoc': 0.4.1
       '@animo-id/pex': 4.1.1-alpha.1
       '@astronautlabs/jsonpath': 1.1.2
       '@digitalcredentials/jsonld': 6.0.0(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(web-streams-polyfill@3.3.3)
@@ -9999,7 +9996,7 @@ snapshots:
 
   '@animo-id/credo-ts-core@0.5.14-alpha-20250224091806(patch_hash=pq7qg2hcwnj2u4ezzzskdto3mm)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@animo-id/mdoc': 0.4.0
+      '@animo-id/mdoc': 0.4.1
       '@animo-id/pex': 4.1.1-alpha.1
       '@astronautlabs/jsonpath': 1.1.2
       '@digitalcredentials/jsonld': 6.0.0(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(web-streams-polyfill@3.3.3)
@@ -10072,7 +10069,7 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250224091806(patch_hash=uejfpkyjx7xd6ccrkw3off23fy)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250224091806(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@animo-id/oauth2': 0.1.4(typescript@5.7.3)
       '@animo-id/oid4vci': 0.1.4(typescript@5.7.3)
@@ -10171,7 +10168,7 @@ snapshots:
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
     optional: true
 
-  '@animo-id/mdoc@0.4.0':
+  '@animo-id/mdoc@0.4.1':
     dependencies:
       compare-versions: 6.1.1
 
