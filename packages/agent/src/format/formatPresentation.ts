@@ -206,18 +206,12 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
       const credentialForDisplay = getCredentialForDisplay(match.record)
 
       let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
-      if (match.output.credential_format === 'vc+sd-jwt') {
+      if (match.output.credential_format === 'vc+sd-jwt' || match.output.credential_format === 'dc+sd-jwt') {
         if (match.record.type !== 'SdJwtVcRecord') throw new Error('Expected SdJwtRecord')
 
-        if (queryCredential.format !== 'vc+sd-jwt') {
-          throw new Error(`Expected queryr credential format ${queryCredential.format} to be vc+sd-jwt`)
+        if (queryCredential.format !== 'vc+sd-jwt' && queryCredential.format !== 'dc+sd-jwt') {
+          throw new Error(`Expected queryr credential format ${queryCredential.format} to be vc+sd-jwt or dc+sd-jwt`)
         }
-
-        // TODO: remove once selective disclosure in credo tested
-        // const disclosedDecoded = applyLimitdisclosureForSdJwtRequestedPayload(
-        //   match.record.compactSdJwtVc,
-        //   match.output.claims
-        // )
 
         // Creod already applied selective disclosure on payload
         const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(match.output.claims)
@@ -273,11 +267,11 @@ function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryRe
     return {
       claimFormat: ClaimFormat.MsoMdoc,
       credentialName: credential.meta?.doctype_value ?? 'Unknown',
-      requestedAttributePaths: credential.claims?.map((c) => [c.claim_name]),
+      requestedAttributePaths: credential.claims?.map((c) => ('path' in c ? [c.path[1]] : [c.claim_name])),
     }
   }
 
-  if (credential.format === 'vc+sd-jwt') {
+  if (credential.format === 'vc+sd-jwt' || credential.format === 'dc+sd-jwt') {
     return {
       claimFormat: ClaimFormat.SdJwtVc,
       credentialName: credential.meta?.vct_values?.[0].replace('https://', ''),

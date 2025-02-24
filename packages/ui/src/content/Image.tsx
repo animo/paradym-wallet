@@ -27,7 +27,7 @@ export const Image = ({ src, alt, width, height, isImageLoaded, resizeMode = 'co
 
   return (
     <TImage
-      source={{ uri: src as string }}
+      source={src && src !== '' ? { uri: src as string } : undefined}
       onLoad={isImageLoaded ? () => isImageLoaded() : undefined}
       width={width}
       height={height}

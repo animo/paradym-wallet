@@ -50,7 +50,7 @@ export function CardWithAttributes({
 
   const groupedAttributes = useMemo(() => {
     const result: Array<[string, string | undefined]> = []
-    for (let i = 0; i < formattedDisclosedAttributes.length - 1; i += 2) {
+    for (let i = 0; i < formattedDisclosedAttributes.length; i += 2) {
       result.push([formattedDisclosedAttributes[i], formattedDisclosedAttributes[i + 1]])
     }
     return result
@@ -85,8 +85,8 @@ export function CardWithAttributes({
         {hasInternet && backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
-              src={backgroundImage?.url ?? ''}
-              alt={backgroundImage?.altText ?? ''}
+              src={backgroundImage.url}
+              alt={backgroundImage.altText}
               resizeMode="cover"
               height="100%"
               width="100%"
