@@ -109,7 +109,7 @@ export function FunkeCredentialNotificationScreen() {
     [isDevelopmentModeEnabled]
   )
 
-  const shouldUsePinForPresentation = useShouldUsePinForSubmission(credentialsForRequest)
+  const shouldUsePinForPresentation = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
   const preAuthGrant =
     resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
   const txCode = preAuthGrant?.tx_code

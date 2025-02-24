@@ -2,6 +2,7 @@ import { useAppAgent } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
 import { type FormattedSubmission, getSubmissionForMdocDocumentRequest } from '@package/agent'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
@@ -28,6 +29,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   const [submission, setSubmission] = useState<FormattedSubmission>()
   const [isProcessing, setIsProcessing] = useState(false)
+  const shouldUsePin = useShouldUsePinForSubmission(submission)
 
   useEffect(() => {
     getSubmissionForMdocDocumentRequest(agent, deviceRequest)
@@ -55,30 +57,34 @@ export function FunkeMdocOfflineSharingScreen({
     [toast, pushToWallet]
   )
 
-  const onProofAccept = async ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => {
+  const onProofAccept = async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
     // Already checked for submission in the useEffect
     if (!submission) return
-    if (!pin) {
-      onPinError?.()
-      return
-    }
 
-    setIsProcessing(true)
-
-    try {
-      await setWalletServiceProviderPin(pin.split('').map(Number))
-    } catch (e) {
-      setIsProcessing(false)
-      if (e instanceof InvalidPinError) {
+    if (shouldUsePin) {
+      if (!pin) {
         onPinError?.()
+        return
       }
 
-      handleError({
-        reason: 'Authentication Error',
-        redirect: true,
-        description:
-          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
-      })
+      setIsProcessing(true)
+
+      try {
+        await setWalletServiceProviderPin(pin.split('').map(Number))
+      } catch (e) {
+        setIsProcessing(false)
+        if (e instanceof InvalidPinError) {
+          onPinError?.()
+          return handleError({ reason: 'Invalid PIN entered', redirect: false })
+        }
+
+        return handleError({
+          reason: 'Authentication Error',
+          redirect: true,
+          description:
+            e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+        })
+      }
     }
 
     // Once this returns we just assume it's successful
@@ -147,6 +153,7 @@ export function FunkeMdocOfflineSharingScreen({
       onAccept={onProofAccept}
       onDecline={onProofDecline}
       onComplete={onProofComplete}
+      usePin={shouldUsePin ?? false}
     />
   )
 }
