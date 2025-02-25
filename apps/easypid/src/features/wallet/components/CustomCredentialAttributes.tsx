@@ -2,10 +2,10 @@ import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
 import { type MdlAttributes, getImageForMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
 import {
+  type Arf15PidSdJwtVcAttributes,
   type PidMdocAttributes,
   type PidSdJwtVcAttributes,
   mapPidAttributeName,
-  type Arf15PidSdJwtVcAttributes,
 } from '@easypid/utils/pidCustomMetadata'
 import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes } from '@package/app/src'
