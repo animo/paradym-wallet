@@ -1,6 +1,6 @@
 import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
-import { type MdlAttributes, getImageForMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
+import { type MdlAttributes, getMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
 import {
   type Arf15PidSdJwtVcAttributes,
   type PidMdocAttributes,
@@ -222,9 +222,16 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
 export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
   const raw = credential.rawAttributes as MdlAttributes
 
+  const sortedPrivileges = raw.driving_privileges
+    .map((privilege) => ({ privilege, code: getMdlCode(privilege.vehicle_category_code) }))
+    .sort((a, b) => (a.code.index === undefined ? 1 : b.code.index === undefined ? -1 : a.code.index - b.code.index))
+
   const mainCard = {
     name: `${raw.given_name} ${raw.family_name}`,
-    privileges: raw.driving_privileges.map((privilege) => privilege.vehicle_category_code).join(', '),
+    // Only show first three
+    privileges: sortedPrivileges
+      .slice(0, 3)
+      .filter((e): e is typeof e & { code: { icon: string } } => e.code.icon !== undefined),
     documentNumber: raw.document_number,
   }
 
@@ -234,7 +241,7 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
     expiryDate: raw.expiry_date,
     unDistinguishingSign: raw.un_distinguishing_sign,
   }
-  console.log(credential.record.encoded)
+
   return (
     <Stack gap="$6">
       <YStack gap="$3" position="relative">
@@ -273,13 +280,8 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
               attributes={[mapMdlAttributeName('privileges'), mapMdlAttributeName('document_number')]}
               values={[
                 <XStack key="driving-privileges-icons" gap="$3">
-                  {raw.driving_privileges.map((privilege) => (
-                    <Image
-                      key={privilege.vehicle_category_code}
-                      src={getImageForMdlCode(privilege.vehicle_category_code)}
-                      width={36}
-                      height={28}
-                    />
+                  {mainCard.privileges.map((privilege) => (
+                    <Image key={privilege.code.code} src={privilege.code.icon} width={36} height={28} />
                   ))}
                 </XStack>,
                 mainCard.documentNumber,
@@ -293,26 +295,28 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
           Driving privileges
         </Heading>
         <TableContainer>
-          {raw.driving_privileges.map((privilege) => (
-            <TableRow
-              key={`${privilege.vehicle_category_code}-${privilege.expiry_date}`}
-              attributes={[mapMdlAttributeName('code'), mapMdlAttributeName('expiry_date')]}
-              values={[
-                <XStack key={privilege.vehicle_category_code} ai="center" gap="$3">
-                  <Paragraph color="$grey-900" fontWeight="$semiBold" fontSize={18}>
-                    {privilege.vehicle_category_code}
-                  </Paragraph>
-                  <Image
-                    key={privilege.vehicle_category_code}
-                    src={getImageForMdlCode(privilege.vehicle_category_code)}
-                    width={32}
-                    height={16}
-                  />
-                </XStack>,
-                privilege.expiry_date ?? 'No expiry date',
-              ]}
-            />
-          ))}
+          {sortedPrivileges.map(({ privilege, code }) => {
+            return (
+              <TableRow
+                key={`${privilege.vehicle_category_code}-${privilege.expiry_date}`}
+                attributes={[
+                  mapMdlAttributeName('code'),
+                  ...(privilege.expiry_date ? [mapMdlAttributeName('expiry_date')] : []),
+                ]}
+                values={[
+                  <XStack key={privilege.vehicle_category_code} ai="center" gap="$3">
+                    <Paragraph color="$grey-900" fontWeight="$semiBold" fontSize={18}>
+                      {privilege.vehicle_category_code}
+                    </Paragraph>
+                    {code.icon && (
+                      <Image key={privilege.vehicle_category_code} src={code.icon} width={36} height={28} />
+                    )}
+                  </XStack>,
+                  ...(privilege.expiry_date ? [privilege.expiry_date] : []),
+                ]}
+              />
+            )
+          })}
         </TableContainer>
       </YStack>
       <YStack gap="$2">
