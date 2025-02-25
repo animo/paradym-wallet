@@ -5,30 +5,33 @@ import {
   type PidMdocAttributes,
   type PidSdJwtVcAttributes,
   mapPidAttributeName,
+  type Arf15PidSdJwtVcAttributes,
 } from '@easypid/utils/pidCustomMetadata'
-import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
+import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes } from '@package/app/src'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from 'packages/ui/src'
 
 type CustomCredentialAttributesProps = {
-  type: string
-  attributes: Record<string, unknown>
-  rawAttributes: Record<string, unknown>
+  credential: CredentialForDisplay
 }
 
-export function CustomCredentialAttributes({ type, ...props }: CustomCredentialAttributesProps) {
-  if ([...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(type)) {
-    return <FunkePidCredentialAttributes />
+export function CustomCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  if ([...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
+    return <FunkeArfPidCredentialAttributes credential={credential} />
   }
-  if ([...mdlSchemes.mdlSdJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(type)) {
-    return <FunkeMdlCredentialAttributes rawAttributes={props.rawAttributes} />
+  if (pidSchemes.sdJwtVcVcts.includes(credential.metadata.type)) {
+    return <FunkeBdrPidCredentialAttributes credential={credential} />
   }
-  return <CredentialAttributes subject={props.attributes} />
+  if ([...mdlSchemes.mdlSdJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(credential.metadata.type)) {
+    return <FunkeMdlCredentialAttributes credential={credential} />
+  }
+
+  return <CredentialAttributes subject={credential.attributes} />
 }
 
-export function FunkePidCredentialAttributes() {
+export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
   // We don't pass attributes here as props because we need to use the specified displayPriority
-  const { credential } = useCredentialByCategory('DE-PID')
+  // const { credential } = useCredentialByCategory('DE-PID')
 
   const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtVc
   const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
@@ -47,15 +50,15 @@ export function FunkePidCredentialAttributes() {
   }
 
   if (isPidSdJwtVc) {
-    const raw = credential?.rawAttributes as PidSdJwtVcAttributes
+    const raw = credential?.rawAttributes as Arf15PidSdJwtVcAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
-    personalInfoCard.born = `born ${raw.birthdate} (${raw.age_in_years})`
-    personalInfoCard.placeOfBirth = raw.place_of_birth?.locality ?? ''
-    personalInfoCard.nationalities = raw.nationalities?.join(', ') ?? ''
+    personalInfoCard.born = `born ${raw.birth_date} (${raw.age_in_years})`
+    personalInfoCard.placeOfBirth = raw.birth_place ?? ''
+    personalInfoCard.nationalities = raw.nationality?.join(', ') ?? ''
 
-    addressTable.street = raw.address?.street_address ?? ''
-    addressTable.locality = `${raw.address?.locality} (${raw.address?.country})`
-    addressTable.postalCode = raw.address?.postal_code ?? ''
+    addressTable.street = raw.resident_street ?? ''
+    addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
+    addressTable.postalCode = raw.resident_postal_code ?? ''
   }
 
   if (isPidMdoc) {
@@ -63,7 +66,7 @@ export function FunkePidCredentialAttributes() {
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `born ${raw.birth_date}`
     personalInfoCard.placeOfBirth = raw.birth_place ?? ''
-    personalInfoCard.nationalities = raw.nationality ?? ''
+    personalInfoCard.nationalities = Array.isArray(raw.nationality) ? raw.nationality.join(',') : raw.nationality ?? ''
 
     addressTable.street = raw.resident_street ?? ''
     addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
@@ -127,10 +130,92 @@ export function FunkePidCredentialAttributes() {
   )
 }
 
-export function FunkeMdlCredentialAttributes({
-  rawAttributes,
-}: Pick<CustomCredentialAttributesProps, 'rawAttributes'>) {
-  const raw = rawAttributes as MdlAttributes
+/**
+ * Bdr
+ */
+export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  const personalInfoCard = {
+    name: '',
+    born: '',
+    placeOfBirth: '',
+    nationalities: '',
+  }
+
+  const addressTable = {
+    street: '',
+    locality: '',
+    postalCode: '',
+  }
+
+  const raw = credential?.rawAttributes as PidSdJwtVcAttributes
+  personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
+  personalInfoCard.born = `born ${raw.birthdate} (${raw.age_in_years})`
+  personalInfoCard.placeOfBirth = raw.place_of_birth?.locality ?? ''
+  personalInfoCard.nationalities = raw.nationalities?.join(', ') ?? ''
+
+  addressTable.street = raw.address?.street_address ?? ''
+  addressTable.locality = `${raw.address?.locality} (${raw.address?.country})`
+  addressTable.postalCode = raw.address?.postal_code ?? ''
+
+  return (
+    <Stack gap="$4">
+      <YStack gap="$3" position="relative">
+        <Stack h="$1" />
+        <Stack pos="relative" ai="center">
+          <Circle
+            zi={5}
+            borderWidth={2}
+            borderColor="white"
+            pos="absolute"
+            top="$-5"
+            bg="$idCardBackground"
+            overflow="hidden"
+            size="$8"
+          >
+            <Image width={56} height={56} src={credential?.display.issuer.logo?.url ?? ''} />
+          </Circle>
+          <TableContainer>
+            <YStack
+              bg="$tableBackgroundColor"
+              ai="center"
+              gap="$4"
+              px="$2.5"
+              py="$3"
+              borderBottomWidth={2}
+              borderBottomColor="$tableBorderColor"
+            >
+              <Stack h="$3" />
+              <YStack gap="$2" ai="center">
+                <Heading variant="h3">{personalInfoCard.name}</Heading>
+                <Paragraph>{personalInfoCard.born}</Paragraph>
+              </YStack>
+            </YStack>
+            <TableRow
+              centred
+              attributes={[mapPidAttributeName('place_of_birth'), mapPidAttributeName('nationalities')]}
+              values={[personalInfoCard.placeOfBirth, personalInfoCard.nationalities]}
+            />
+          </TableContainer>
+        </Stack>
+      </YStack>
+      <YStack gap="$2">
+        <Heading variant="sub2" secondary>
+          Address
+        </Heading>
+        <TableContainer>
+          <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressTable.street]} />
+          <TableRow
+            attributes={[mapPidAttributeName('postal_code'), mapPidAttributeName('locality')]}
+            values={[addressTable.postalCode, addressTable.locality]}
+          />
+        </TableContainer>
+      </YStack>
+    </Stack>
+  )
+}
+
+export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  const raw = credential.attributes as MdlAttributes
 
   const mainCard = {
     name: `${raw.given_name} ${raw.family_name}`,

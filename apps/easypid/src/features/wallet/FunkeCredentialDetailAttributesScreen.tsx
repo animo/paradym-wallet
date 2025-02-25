@@ -86,11 +86,7 @@ export function FunkeCredentialDetailAttributesScreen() {
         <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Card attributes" />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack px="$4" gap="$4" marginBottom={bottom}>
-            <CustomCredentialAttributes
-              type={credential.metadata.type}
-              attributes={credential.attributes}
-              rawAttributes={credential.rawAttributes}
-            />
+            <CustomCredentialAttributes credential={credential} />
             <AnimatedStack
               key={isSharableAttributesVisible ? 'visible-sharable-attributes' : 'hidden-sharable-attributes'}
               onLayout={(event) => setSharableAttributesElementPosition(event.nativeEvent.layout.y)}
