@@ -45,7 +45,7 @@ const sdJwtVcVcts = [
   'https://example.bmi.bund.de/credential/pid/1.0',
 ]
 
-const arfSdJwtVcVcts = ['eu.europa.ec.eudi.pid.1']
+const arfSdJwtVcVcts = ['eu.europa.ec.eudi.pid.1', 'urn:eu.europa.ec.eudi:pid:1']
 
 // https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
 const msoMdocDoctypes = ['eu.europa.ec.eudi.pid.1']

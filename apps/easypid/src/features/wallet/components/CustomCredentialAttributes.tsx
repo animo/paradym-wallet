@@ -49,16 +49,21 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     postalCode: '',
   }
 
+  let headerImage = credential?.display.issuer.logo?.url ?? ''
+
   if (isPidSdJwtVc) {
     const raw = credential?.rawAttributes as Arf15PidSdJwtVcAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `born ${raw.birth_date} (${raw.age_in_years})`
     personalInfoCard.placeOfBirth = raw.birth_place ?? ''
-    personalInfoCard.nationalities = raw.nationality?.join(', ') ?? ''
+    personalInfoCard.nationalities = Array.isArray(raw.nationality)
+      ? raw.nationality?.join(', ')
+      : raw.nationality ?? ''
 
     addressTable.street = raw.resident_street ?? ''
     addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
     addressTable.postalCode = raw.resident_postal_code ?? ''
+    headerImage = raw.portrait ?? headerImage
   }
 
   if (isPidMdoc) {
@@ -71,8 +76,8 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     addressTable.street = raw.resident_street ?? ''
     addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
     addressTable.postalCode = raw.resident_postal_code ?? ''
+    headerImage = raw.portrait ?? headerImage
   }
-
   return (
     <Stack gap="$4">
       <YStack gap="$3" position="relative">
@@ -88,7 +93,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
             overflow="hidden"
             size="$8"
           >
-            <Image width={56} height={56} src={credential?.display.issuer.logo?.url ?? ''} />
+            <Image width={80} height={80} src={headerImage} />
           </Circle>
           <TableContainer>
             <YStack
@@ -215,7 +220,7 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
 }
 
 export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
-  const raw = credential.attributes as MdlAttributes
+  const raw = credential.rawAttributes as MdlAttributes
 
   const mainCard = {
     name: `${raw.given_name} ${raw.family_name}`,
@@ -229,7 +234,7 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
     expiryDate: raw.expiry_date,
     unDistinguishingSign: raw.un_distinguishing_sign,
   }
-
+  console.log(credential.record.encoded)
   return (
     <Stack gap="$6">
       <YStack gap="$3" position="relative">

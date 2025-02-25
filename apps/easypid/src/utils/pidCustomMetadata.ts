@@ -27,6 +27,7 @@ export type PidMdocAttributes = {
   resident_country: string
   resident_postal_code: string
   resident_street: string
+  portrait?: string
 }
 
 // NOTE: this is a subset
@@ -44,6 +45,7 @@ export type Arf15PidSdJwtVcAttributes = {
   resident_street: string
   nationality: string[]
   age_in_years: string
+  portrait?: string
 }
 
 export type PidSdJwtVcAttributes = {
