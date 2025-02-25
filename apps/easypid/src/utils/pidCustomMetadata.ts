@@ -22,11 +22,30 @@ export type PidMdocAttributes = {
   issuance_date: string
   issuing_authority: string
   issuing_country: string
-  nationality?: string
+  nationality?: string | string[]
   resident_city: string
   resident_country: string
   resident_postal_code: string
   resident_street: string
+  portrait?: string
+}
+
+// NOTE: this is a subset
+export type Arf15PidSdJwtVcAttributes = {
+  given_name: string
+  family_name: string
+
+  birth_date: string
+  birth_place: string
+  resident_address: string
+  resident_country: string
+  resident_state: string
+  resident_city: string
+  resident_postal_code: string
+  resident_street: string
+  nationality: string[]
+  age_in_years: string
+  portrait?: string
 }
 
 export type PidSdJwtVcAttributes = {
