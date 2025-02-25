@@ -41,6 +41,7 @@ export const checkMdocPermissions = async () => {
 export const getMdocQrCode = async () => {
   const mdt = mdocDataTransfer.instance()
   const qrData = await mdt.startQrEngagement()
+  mdt.enableNfc()
   return qrData
 }
 
@@ -67,9 +68,9 @@ export const waitForDeviceRequest = async () => {
  * 1. Allow the user to pick which specific mdoc is being used
  */
 export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) => {
-  if (!options.submission.areAllSatisfied) {
-    throw new Error('Not all requirements are satisfied')
-  }
+  // if (!options.submission.areAllSatisfied) {
+  //   throw new Error('Not all requirements are satisfied')
+  // }
 
   const mdocs = await Promise.all(
     options.submission.entries.map(async (e) => {

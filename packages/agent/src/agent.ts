@@ -75,7 +75,7 @@ export const initializeEasyPIDAgent = async ({
         keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.debug),
+      logger: appLogger(LogLevel.trace),
     },
     modules: {
       askar: askarModule,
