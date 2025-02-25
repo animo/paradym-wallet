@@ -11,7 +11,6 @@ import { AskarModule } from '@credo-ts/askar'
 import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import {
   Agent,
-  ClaimFormat,
   DidsModule,
   JwkDidRegistrar,
   JwkDidResolver,
@@ -19,7 +18,6 @@ import {
   KeyDidRegistrar,
   KeyDidResolver,
   LogLevel,
-  Mdoc,
   WebDidResolver,
   X509Module,
 } from '@credo-ts/core'
@@ -44,8 +42,6 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
-
-import { bdrPidIssuerCertificate, pidSchemes } from '@easypid/constants'
 import { appLogger } from './logger'
 
 const askarModule = new AskarModule({
@@ -75,7 +71,7 @@ export const initializeEasyPIDAgent = async ({
         keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.debug),
+      logger: appLogger(LogLevel.trace),
     },
     modules: {
       askar: askarModule,
@@ -83,20 +79,21 @@ export const initializeEasyPIDAgent = async ({
       x509: new X509Module({
         getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
           if (verification.type === 'credential') {
+            // Temprorary allow any certificates, also for PID
             // Only allow BDR certificate for PID credentials for now
-            if (
-              verification.credential instanceof Mdoc &&
-              pidSchemes.msoMdocDoctypes.includes(verification.credential.docType)
-            ) {
-              return [bdrPidIssuerCertificate]
-            }
+            // if (
+            //   verification.credential instanceof Mdoc &&
+            //   pidSchemes.msoMdocDoctypes.includes(verification.credential.docType)
+            // ) {
+            //   return [bdrPidIssuerCertificate]
+            // }
 
-            if (
-              verification.credential.claimFormat === ClaimFormat.SdJwtVc &&
-              pidSchemes.sdJwtVcVcts.includes(verification.credential.payload.vct as string)
-            ) {
-              return [bdrPidIssuerCertificate]
-            }
+            // if (
+            //   verification.credential.claimFormat === ClaimFormat.SdJwtVc &&
+            //   pidSchemes.sdJwtVcVcts.includes(verification.credential.payload.vct as string)
+            // ) {
+            //   return [bdrPidIssuerCertificate]
+            // }
 
             // If not PID, we allow any certificate for now
             return [certificateChain[0].toString('pem')]
