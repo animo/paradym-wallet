@@ -170,7 +170,7 @@ const ImageRow = ({ name, value }: { name: string; value: string }) => {
           </Paragraph>
           <Paragraph color="$grey-900">Tap to view</Paragraph>
         </YStack>
-        <IconContainer onPress={handleOpen} variant="primary" icon={<HeroIcons.Eye size={20} />} />
+        <IconContainer onPress={handleOpen} variant="regular" icon={<HeroIcons.Eye size={20} />} />
       </XStack>
       <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
         <Stack p="$4" gap="$4">
