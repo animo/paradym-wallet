@@ -18,7 +18,7 @@ export function FunkeNestedAttributeScreen({ name, values }: FunkeNestedAttribut
       <HeaderContainer isScrolledByOffset={isScrolledByOffset} title={name} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack px="$4" gap="$4" marginBottom={bottom}>
-          <CredentialAttributes subject={values} />
+          <CredentialAttributes subject={values} isFormatted />
         </YStack>
       </ScrollView>
       <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">

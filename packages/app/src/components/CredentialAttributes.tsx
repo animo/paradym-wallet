@@ -26,7 +26,7 @@ export type CredentialAttributesProps = {
   isFormatted?: boolean
 }
 
-export function CredentialAttributes({ subject, headerTitle, isFormatted = true }: CredentialAttributesProps) {
+export function CredentialAttributes({ subject, headerTitle, isFormatted = false }: CredentialAttributesProps) {
   // If the data is already formatted, use it directly; otherwise format it
   const formattedData: FormattedCredentialItem[] = isFormatted
     ? Object.entries(subject).map(([key, value]) => ({ key, value: value as FormattedCredentialValue }))
@@ -38,14 +38,16 @@ export function CredentialAttributes({ subject, headerTitle, isFormatted = true 
 
   return (
     <YStack gap="$6">
-      {headerTitle && <Heading variant="sub2">{headerTitle}</Heading>}
-      {primitiveItems.length > 0 && (
-        <TableContainer>
-          {primitiveItems.map((item) => (
-            <AnyRow key={`row-${item.key}`} item={item} />
-          ))}
-        </TableContainer>
-      )}
+      <YStack gap="$4">
+        {headerTitle && <Heading variant="sub2">{headerTitle}</Heading>}
+        {primitiveItems.length > 0 && (
+          <TableContainer>
+            {primitiveItems.map((item) => (
+              <AnyRow key={`row-${item.key}`} item={item} />
+            ))}
+          </TableContainer>
+        )}
+      </YStack>
 
       {objectItems.map((item) => (
         <YStack key={`object-${item.key}`} gap="$4">
