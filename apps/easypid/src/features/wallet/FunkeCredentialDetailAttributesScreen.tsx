@@ -98,7 +98,6 @@ export function FunkeCredentialDetailAttributesScreen() {
                   key="sharable-attributes"
                   headerTitle="Sharable attributes"
                   subject={credential.attributes}
-                  showDevProps
                 />
               )}
             </AnimatedStack>
@@ -113,7 +112,6 @@ export function FunkeCredentialDetailAttributesScreen() {
                   key="metadata"
                   headerTitle="Metadata"
                   subject={metadataForDisplay(credential.metadata)}
-                  showDevProps
                 />
               )}
             </AnimatedStack>

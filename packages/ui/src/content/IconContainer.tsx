@@ -3,14 +3,6 @@ import type { StackProps } from 'tamagui'
 import { AnimatedStack } from '../base'
 import { useScaleAnimation } from '../hooks'
 
-interface IconContainerProps extends StackProps {
-  icon: React.ReactElement
-  scaleOnPress?: boolean
-  radius?: 'full' | 'normal'
-  variant?: 'default' | 'regular' | 'danger'
-  'aria-label'?: string
-}
-
 const variantStyles = {
   default: {
     bg: '$grey-50',
@@ -24,7 +16,20 @@ const variantStyles = {
     bg: '$grey-50',
     color: '$grey-900',
   },
+  primary: {
+    bg: '$grey-50',
+    color: '$primary-500',
+  },
 }
+
+interface IconContainerProps extends StackProps {
+  icon: React.ReactElement
+  scaleOnPress?: boolean
+  radius?: 'full' | 'normal'
+  variant?: keyof typeof variantStyles
+  'aria-label'?: string
+}
+
 export function IconContainer({
   icon,
   scaleOnPress = true,

@@ -164,6 +164,7 @@ export default function AppLayout() {
           <Stack.Screen name="credentials/index" options={headerNormalOptions} />
           <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
           <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
+          <Stack.Screen name="credentials/[id]/nested" options={headerNormalOptions} />
           <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
           <Stack.Screen name="menu/index" options={headerNormalOptions} />
           <Stack.Screen name="menu/settings" options={headerNormalOptions} />

@@ -2,7 +2,6 @@ import {
   AnimatedStack,
   Heading,
   HeroIcons,
-  MiniCard,
   OptionSheet,
   Paragraph,
   ScrollView,
@@ -17,13 +16,8 @@ import {
 import { useRef, useState } from 'react'
 import { useRouter } from 'solito/router'
 
-import { CredentialAttributes, TextBackButton } from '@package/app/src/components'
-import {
-  useHaptics,
-  useHasInternetConnection,
-  useHeaderRightAction,
-  useScrollViewPosition,
-} from '@package/app/src/hooks'
+import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/src/components'
+import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
 
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
@@ -40,7 +34,6 @@ export function FunkeRequestedAttributesDetailScreen({
   disclosedPayload,
   disclosedAttributeLength,
 }: FunkeRequestedAttributesDetailScreenProps) {
-  const hasInternet = useHasInternetConnection()
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
@@ -102,20 +95,31 @@ export function FunkeRequestedAttributesDetailScreen({
             scrollEventThrottle={scrollEventThrottle}
             height={scrollViewHeight}
           >
-            <YStack g="xl" pad="lg" py="$4">
-              <MiniCard
-                backgroundImage={activeCredential?.display.backgroundImage?.url}
-                backgroundColor={activeCredential?.display.backgroundColor ?? '$grey-900'}
-                hasInternet={hasInternet}
-              />
-              <Stack g="md">
-                <Heading variant="h1">
-                  {disclosedAttributeLength} attribute{disclosedAttributeLength > 1 ? 's' : ''} from{' '}
-                  {activeCredential.display.name}
-                </Heading>
-                {activeCredential.display.issuer && (
-                  <Paragraph>Issued by {activeCredential.display.issuer.name}.</Paragraph>
-                )}
+            <YStack gap="$6" pad="lg" py="$4">
+              <Stack width="100%" mt="$-3" mb="$-5" scale={0.75}>
+                <FunkeCredentialCard
+                  issuerImage={{
+                    url: activeCredential.display.issuer.logo?.url,
+                    altText: activeCredential.display.issuer.logo?.altText,
+                  }}
+                  textColor={activeCredential.display.textColor}
+                  name={activeCredential.display.name}
+                  backgroundImage={{
+                    url: activeCredential.display.backgroundImage?.url,
+                    altText: activeCredential.display.backgroundImage?.altText,
+                  }}
+                  bgColor={activeCredential.display.backgroundColor ?? '$grey-900'}
+                />
+              </Stack>
+              <Stack gap="$4">
+                <Stack gap="$2">
+                  <Heading ta="center" variant="h1">
+                    Requested attributes
+                  </Heading>
+                  <Paragraph ta="center">
+                    {disclosedAttributeLength} from {activeCredential.display.name}
+                  </Paragraph>
+                </Stack>
                 <CredentialAttributes subject={disclosedPayload} />
                 <AnimatedStack
                   key={isMetadataVisible ? 'visible' : 'hidden'}
@@ -124,11 +128,7 @@ export function FunkeRequestedAttributesDetailScreen({
                   entering={useSpringify(FadeInUp)}
                 >
                   {isMetadataVisible && (
-                    <CredentialAttributes
-                      key="metadata"
-                      subject={metadataForDisplay(activeCredential.metadata)}
-                      showDevProps
-                    />
+                    <CredentialAttributes key="metadata" subject={metadataForDisplay(activeCredential.metadata)} />
                   )}
                 </AnimatedStack>
               </Stack>
