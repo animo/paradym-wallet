@@ -128,11 +128,7 @@ export function FunkeRequestedAttributesDetailScreen({
                   entering={useSpringify(FadeInUp)}
                 >
                   {isMetadataVisible && (
-                    <CredentialAttributes
-                      key="metadata"
-                      subject={metadataForDisplay(activeCredential.metadata)}
-                      showDevProps
-                    />
+                    <CredentialAttributes key="metadata" subject={metadataForDisplay(activeCredential.metadata)} />
                   )}
                 </AnimatedStack>
               </Stack>

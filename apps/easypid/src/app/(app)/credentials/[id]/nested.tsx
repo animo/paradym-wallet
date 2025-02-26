@@ -1,5 +1,5 @@
 import { FunkeNestedAttributeScreen } from '@easypid/features/wallet/FunkeNestedAttributeScreen'
-import type { FormattedCredentialValue } from '@easypid/features/wallet/components/formatSubject'
+import type { FormattedCredentialValue } from '@package/app/src/utils/formatSubject'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {

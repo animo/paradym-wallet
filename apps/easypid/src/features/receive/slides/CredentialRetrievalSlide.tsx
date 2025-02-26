@@ -206,7 +206,7 @@ export const CredentialRetrievalSlide = ({
               >
                 {scrollViewHeight && isAllowedToAccept ? (
                   <AnimatedStack key="credential-attributes" entering={FadeIn.duration(200)}>
-                    <CredentialAttributes subject={attributes} disableHeader />
+                    <CredentialAttributes subject={attributes} />
                   </AnimatedStack>
                 ) : (
                   <YStack fg={1} jc="center" ai="center">

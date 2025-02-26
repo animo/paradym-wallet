@@ -1,9 +1,5 @@
 import { sanitizeString } from 'packages/utils/src'
 
-// TODO: Improvements
-// - If we have an array, but it's just 1 item, we should just show it directly as an object or value.
-// - Sanitize the values does not always go correctly, so i turned it off for now.
-
 /**
  * Formats credential subject data for rendering based on value types
  *
@@ -66,6 +62,11 @@ function determineValueType(value: unknown, parentKey?: string): FormattedCreden
 
   // Handle arrays
   if (Array.isArray(value)) {
+    // If array has only one item, process it directly
+    if (value.length === 1) {
+      return determineValueType(value[0], parentKey)
+    }
+
     // Check if array contains only primitive values
     if (value.every((item) => typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean')) {
       return {
@@ -76,20 +77,22 @@ function determineValueType(value: unknown, parentKey?: string): FormattedCreden
 
     // Handle arrays of objects or mixed types
     const formattedArray = value.map((item, index) => {
-      // Try to find a meaningful property to use as key (Option 1)
+      // Try to find a meaningful property to use as key
       let itemKey = `${index}`
 
       if (typeof item === 'object' && item !== null) {
-        // Look for a name property first
-        if ('name' in item && typeof item.name === 'string') {
-          itemKey = item.name
+        // Look for common identifier properties to set as key
+        const identifierProps = ['name', 'id', 'code', 'key', 'label', 'title', 'identifier', 'slug', 'uuid', 'ref']
+
+        for (const prop of identifierProps) {
+          if (prop in item && (typeof item[prop] === 'string' || typeof item[prop] === 'number')) {
+            itemKey = String(item[prop])
+            break
+          }
         }
-        // Then try id
-        else if ('id' in item && (typeof item.id === 'string' || typeof item.id === 'number')) {
-          itemKey = String(item.id)
-        }
-        // If no meaningful property found, use parent name + index
-        else if (parentKey) {
+
+        // If no meaningful property found, use parent name + index (e.g. "Item 1")
+        if (itemKey === `${index}` && parentKey) {
           itemKey = `${sanitizeString(parentKey)} ${index + 1}`
         }
       }
@@ -108,6 +111,12 @@ function determineValueType(value: unknown, parentKey?: string): FormattedCreden
     // Special case for image objects
     if ('type' in value && value.type === 'Image' && 'id' in value && typeof value.id === 'string') {
       return { type: 'image', value: value.id as string }
+    }
+
+    // Special case for objects with just one property
+    if (Object.entries(value).length === 1) {
+      const [objKey, objValue] = Object.entries(value)[0]
+      return determineValueType(objValue, objKey)
     }
 
     const formattedObject: Record<string, FormattedCredentialValue> = {}

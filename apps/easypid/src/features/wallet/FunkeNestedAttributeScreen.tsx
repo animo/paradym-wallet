@@ -1,9 +1,8 @@
+import type { FormattedCredentialValue } from '@package/app/src/utils/formatSubject'
 import { FlexPage, ScrollView, YStack } from '@package/ui'
-import { TextBackButton, useScrollViewPosition } from 'packages/app/src'
+import { CredentialAttributes, TextBackButton, useScrollViewPosition } from 'packages/app/src'
 import { HeaderContainer } from 'packages/ui/src/content/HeaderContainer'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { NewCredentialAttributes } from './components/NewCredentialAttributes'
-import type { FormattedCredentialValue } from './components/formatSubject'
 
 interface FunkeNestedAttributeScreenProps {
   name: string
@@ -19,7 +18,7 @@ export function FunkeNestedAttributeScreen({ name, values }: FunkeNestedAttribut
       <HeaderContainer isScrolledByOffset={isScrolledByOffset} title={name} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack px="$4" gap="$4" marginBottom={bottom}>
-          <NewCredentialAttributes subject={values} />
+          <CredentialAttributes subject={values} />
         </YStack>
       </ScrollView>
       <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
