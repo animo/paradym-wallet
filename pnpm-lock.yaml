@@ -21,6 +21,9 @@ catalogs:
     '@hyperledger/anoncreds-react-native':
       specifier: ^0.2.4
       version: 0.2.4
+    '@openid4vc/oauth2':
+      specifier: 0.3.0-alpha-20250225204254
+      version: 0.3.0-alpha-20250225204254
     '@openwallet-foundation/askar-react-native':
       specifier: ^0.3.1
       version: 0.3.1
@@ -47,13 +50,13 @@ overrides:
   '@unimodules/core': ./noop
   react-docgen-typescript: 2.2.2
   dcql: 0.2.20
-  '@credo-ts/anoncreds': 0.6.0-pr-2195-20250225234342
-  '@credo-ts/askar': 0.6.0-pr-2195-20250225234342
-  '@credo-ts/cheqd': 0.6.0-pr-2195-20250225234342
-  '@credo-ts/core': 0.6.0-pr-2195-20250225234342
-  '@credo-ts/openid4vc': 0.6.0-pr-2195-20250225234342
-  '@credo-ts/question-answer': 0.6.0-pr-2195-20250225234342
-  '@credo-ts/react-native': 0.6.0-pr-2195-20250225234342
+  '@credo-ts/anoncreds': 0.6.0-pr-2195-20250226005108
+  '@credo-ts/askar': 0.6.0-pr-2195-20250226005108
+  '@credo-ts/cheqd': 0.6.0-pr-2195-20250226005108
+  '@credo-ts/core': 0.6.0-pr-2195-20250226005108
+  '@credo-ts/openid4vc': 0.6.0-pr-2195-20250226005108
+  '@credo-ts/question-answer': 0.6.0-pr-2195-20250226005108
+  '@credo-ts/react-native': 0.6.0-pr-2195-20250226005108
   '@sphereon/pex-models': 2.3.2
   '@openid-federation/core': 0.1.1-alpha.17
   isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
@@ -61,12 +64,12 @@ overrides:
   '@cheqd/ts-proto': 2.3.2
 
 patchedDependencies:
-  '@credo-ts/openid4vc':
-    hash: j4zqhe75r2rteuv7wbrla7cbhi
-    path: patches/@credo-ts__openid4vc.patch
   '@hyperledger/anoncreds-react-native@0.2.4':
     hash: l7lys2x3cbmg25264calankphu
     path: patches/@hyperledger__anoncreds-react-native@0.2.4.patch
+  '@openid4vc/openid4vp':
+    hash: 3yhiqdntnhkpbesvufkmk2acwu
+    path: patches/@openid4vc__openid4vp.patch
   '@sphereon/kmp-mdl-mdoc':
     hash: 7x5lo6qr5h5rmsca3oezb2kbdy
     path: patches/@sphereon__kmp-mdl-mdoc.patch
@@ -109,8 +112,8 @@ importers:
         specifier: 0.4.1-alpha-20250222151459
         version: 0.4.1-alpha-20250222151459
       '@credo-ts/core':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@expo-google-fonts/open-sans':
         specifier: ^0.2.3
         version: 0.2.3
@@ -296,8 +299,8 @@ importers:
         specifier: 'catalog:'
         version: 0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@credo-ts/core':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
         version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
@@ -596,40 +599,40 @@ importers:
     dependencies:
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
-        version: 0.0.1-alpha.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
+        version: 0.0.1-alpha.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@astronautlabs/jsonpath':
         specifier: ^1.1.2
         version: 1.1.2
       '@credo-ts/anoncreds':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/askar':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/cheqd':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/core':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/openid4vc':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(patch_hash=j4zqhe75r2rteuv7wbrla7cbhi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/question-answer':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@credo-ts/react-native':
-        specifier: 0.6.0-pr-2195-20250225234342
-        version: 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native-get-random-values@1.11.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+        specifier: 0.6.0-pr-2195-20250226005108
+        version: 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)))(react-native-get-random-values@1.11.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
-        version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
+        version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@openid4vc/oauth2':
-        specifier: '*'
-        version: 0.2.0(typescript@5.7.3)
+        specifier: 'catalog:'
+        version: 0.3.0-alpha-20250225204254
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.3.1(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
+        version: 0.3.1(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
@@ -638,7 +641,7 @@ importers:
         version: 5.64.2(react@18.3.1)
       credo-ts-didweb-anoncreds:
         specifier: 0.0.1-alpha.13
-        version: 0.0.1-alpha.13(@credo-ts/anoncreds@0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@credo-ts/core@0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4)
+        version: 0.0.1-alpha.13(@credo-ts/anoncreds@0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@credo-ts/core@0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4)
       expo:
         specifier: 'catalog:'
         version: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
@@ -1700,13 +1703,13 @@ packages:
   '@cosmjs/utils@0.30.1':
     resolution: {integrity: sha512-KvvX58MGMWh7xA+N+deCfunkA/ZNDvFLw4YbOmX3f/XBIkqrVY7qlotfy2aNb1kgp6h4B6Yc8YawJPDTfvWX7g==}
 
-  '@credo-ts/anoncreds@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-w1hrmMDkFhTQnp+qWVgrgyt1zPp9Dz/I3rBuVRHw4GD6r6ZMMUTo9UO0S9vsk5pNxlfJJ+nX230BKUbgU4NM5A==}
+  '@credo-ts/anoncreds@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-FF0Op9R89vtZiJgjbOE8TQSnWIGS6hjah04tkUmaiwi1o8zvaVfGxOg4ceTmUPTM/Y5IEZr58OO72E6rspgpgQ==}
     peerDependencies:
       '@hyperledger/anoncreds-shared': ^0.2.2
 
-  '@credo-ts/askar@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-06CJsFps+Nv8yOu1dDaVka98VyVL/eJQ58w8ZUqUMxI7ikhy/+CIlLu/1qAdquQSEUPyexGVQmQ6R8aDDFacaA==}
+  '@credo-ts/askar@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-unO58z99KqQ8yQoxuIngijE4dLrisZTadm1GWm5j9Lvq2zHzhFhOM0CE6Q/+JRWIzXJgP0z7/SZOLlYf36PXkQ==}
     peerDependencies:
       '@animo-id/expo-secure-environment': ^0.1.0-alpha.11
       '@openwallet-foundation/askar-shared': ^0.3.1
@@ -1714,23 +1717,23 @@ packages:
       '@animo-id/expo-secure-environment':
         optional: true
 
-  '@credo-ts/cheqd@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-KUrJlw3LC8TUVh/hvW2BM5PtSUl4soyGDjHqeFa/R7Ak/dao42BFWKYfFgVrZO0wNU61m1mtBc1PcSq00MDQ2A==}
+  '@credo-ts/cheqd@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-HfOik+mkIHUDD59yqVTd5Kj1E+gSbM9oNH3k4SrLbK1M5eH0qHHjYT3pz4QI0BdB3npYru+WshtSisAdnWapNQ==}
 
-  '@credo-ts/core@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-A51KwVf0N7S8u18QX5mn9xjFC6Iwtfbji9/0xm5eJ8b/XeZ9+MjdBPpTdmLdtPqGMyY6BpduOvNAs63A4du+ig==}
+  '@credo-ts/core@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-2NjiCoHVGvVthQkdY0pnhq67ZbYKLxKyuKMbWz59TNby2h0goLG0VOxk63DrxncRbHuVxMihSv3TdwVVaRO/NA==}
 
-  '@credo-ts/didcomm@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-GTJUJHt1pMSP4XXQjrVGBKxHTFpyY3HpgATaC/OdlyvZe+OI+mpKSpxq4FTCxfI8Iupjx5vt+Xstye6hWS9aow==}
+  '@credo-ts/didcomm@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-enzac9NWr3CeL7JeDwIghfZGATnzEhLw2p17TSzuKwavNl1ADqcX9HfN7oyYP/bLOUZEzmHzWXBNreVtjsdUoQ==}
 
-  '@credo-ts/openid4vc@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-/MhMxmup4ueTxgM7eIwz96MEPtzC5PcvZNWuTw3ys5dEdpKHehgKN5AKSFMNHLMZzsDGPkeYLnudECP4tKhDrw==}
+  '@credo-ts/openid4vc@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-XpiHyCuCPo0E7cdk9A9kt9U9n5yZ52o1rJ+MDOyvOP3DNF3qthD/SVw1GL/shIYlR0fCglYpAJw5x/kL9Eyn0Q==}
 
-  '@credo-ts/question-answer@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-qVmGy4zoh5+ug1BpKpgD6Tm/0CTUvwapIP+dZrNoEtjgT4jr/0wbi9HNrrgOmrjGf6wVniDsrgVxfQYC/3drJg==}
+  '@credo-ts/question-answer@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-rOs2sPZbsoCxZgst4g/0Bxy8WAEZBsgDz7y5HvY6YvXmrXTeWPrip7Ig1x3qqSz3s0EotnYhxcobDtD4cpYa0A==}
 
-  '@credo-ts/react-native@0.6.0-pr-2195-20250225234342':
-    resolution: {integrity: sha512-jZwFCnUjXFNBUUnK4I6Xjuko7r+sefw0TQGknQjO4QtZtiUZgYE/+/EUvXY0sDWe5x8n62bJquxwLuHxGr0ktQ==}
+  '@credo-ts/react-native@0.6.0-pr-2195-20250226005108':
+    resolution: {integrity: sha512-oeZ5mOR5GS9inwMbaoOIcTNb+Bwa9bCWisaWJUJdf/uMAKa8R0cVCf0tY8p/AeYwVd83GENTVL4ba9FtJvkp3Q==}
     peerDependencies:
       react-native: '>=0.71.4'
       react-native-fs: ^2.20.0
@@ -2512,9 +2515,6 @@ packages:
     resolution: {integrity: sha512-q9CRWjpHCMIh5sVyefoD1cA7PkvILqCZsnSOEUUivORLjxCO/Irmue2DprETiNgEqktDBZaM1Bi+jrarx1XdCg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  '@openid4vc/oauth2@0.2.0':
-    resolution: {integrity: sha512-++omnAoP/niDVhQp2nScNVjXzANX4d86IihmEJHfTHD8JFK+CZA/K0Ctk8yAXxfqY87bUy78Ve01Qqrn+Nw8eA==}
-
   '@openid4vc/oauth2@0.3.0-alpha-20250225204254':
     resolution: {integrity: sha512-WMdgSnImHMZzaHMb0ugTJmj7oxJMmgMYGpnueCuG2GqljGG2N2+R6h0wXFRTqo4M1oPsMxgh853FtkxmPQegfQ==}
 
@@ -2523,9 +2523,6 @@ packages:
 
   '@openid4vc/openid4vp@0.3.0-alpha-20250225204254':
     resolution: {integrity: sha512-tDrjDFaRIiMdpQeQqbONxhgZvudqXOWY7xNRcIaFUEhyciLUZQkYcWOxyvD0LdIz3jrMUjbVde9tDdt9OfhU/w==}
-
-  '@openid4vc/utils@0.2.0':
-    resolution: {integrity: sha512-CvZxy9eH8582Yb/gzc+XPiaQIbC7Y0IT3F14szGS++o6373dUN12KZQzey4hoRrVO92D04vCXyJY9xctw4zgMw==}
 
   '@openid4vc/utils@0.3.0-alpha-20250225204254':
     resolution: {integrity: sha512-a98BMWNpnfJK6HYJCkKbH9+O4xvOsMedfAD5faOhQwDLEBpxuHmQJNn9gyEozo0ByuJlSIG4JvAcbh+jbBuMeA==}
@@ -5371,8 +5368,8 @@ packages:
   credo-ts-didweb-anoncreds@0.0.1-alpha.13:
     resolution: {integrity: sha512-0x8lipY82+ALdTu+gVRe6RKvoJRvn2/Bhj/klk8PhmvWAAQXVMvzVOmUrw0BLTQ+19+koY1yufltglWXxRMxqA==}
     peerDependencies:
-      '@credo-ts/anoncreds': 0.6.0-pr-2195-20250225234342
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342
+      '@credo-ts/anoncreds': 0.6.0-pr-2195-20250226005108
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108
       '@hyperledger/anoncreds-shared': ^0.2.1
 
   cross-env@7.0.3:
@@ -9538,14 +9535,6 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  valibot@0.42.1:
-    resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
-    peerDependencies:
-      typescript: '>=5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   valibot@1.0.0-beta.8:
     resolution: {integrity: sha512-OPAwJZtowb0j91b+bd77+ny7D1VVzsCzD7Jl9waLUlMprTsfI9Y3HHbW3hAQD7wKDKHsmGEesuiYWaYvcZL2wg==}
     peerDependencies:
@@ -9870,12 +9859,6 @@ snapshots:
       react: 18.3.1
       react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
 
-  '@animo-id/expo-digital-credentials-api@0.0.1-alpha.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)':
-    dependencies:
-      expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
-      react: 18.3.1
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
-
   '@animo-id/expo-mdoc-data-transfer@0.1.3(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@expo/config-plugins': 8.0.11
@@ -9893,16 +9876,6 @@ snapshots:
       expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
       react: 18.3.1
       react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
-
-  '@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)':
-    dependencies:
-      '@peculiar/asn1-ecc': 2.3.15
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
-      expo: 51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
-      react: 18.3.1
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
-    optional: true
 
   '@animo-id/mdoc@0.4.1-alpha-20250222151459':
     dependencies:
@@ -11023,11 +10996,11 @@ snapshots:
 
   '@cosmjs/utils@0.30.1': {}
 
-  '@credo-ts/anoncreds@0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/anoncreds@0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/didcomm': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/didcomm': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-shared': 0.2.4
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
@@ -11045,16 +11018,16 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/askar@0.6.0-pr-2195-20250225234342(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/askar@0.6.0-pr-2195-20250226005108(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@openwallet-foundation/askar-shared': 0.3.1
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.1
       tsyringe: 4.8.0
     optionalDependencies:
-      '@animo-id/expo-secure-environment': 0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
+      '@animo-id/expo-secure-environment': 0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
     transitivePeerDependencies:
       - domexception
       - encoding
@@ -11067,15 +11040,15 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/cheqd@0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/cheqd@0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@cheqd/sdk': 2.5.1
       '@cheqd/ts-proto': 2.3.2
       '@cosmjs/crypto': 0.30.1
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
-      '@credo-ts/anoncreds': 0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@stablelib/ed25519': 1.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -11097,7 +11070,7 @@ snapshots:
       - utf-8-validate
       - web-streams-polyfill
 
-  '@credo-ts/core@0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/core@0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@animo-id/mdoc': 0.4.1-alpha-20250222151459
       '@animo-id/pex': 4.1.1-alpha.1
@@ -11152,64 +11125,9 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/core@0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/didcomm@0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@animo-id/mdoc': 0.4.1-alpha-20250222151459
-      '@animo-id/pex': 4.1.1-alpha.1
-      '@astronautlabs/jsonpath': 1.1.2
-      '@digitalcredentials/jsonld': 6.0.0(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/jsonld-signatures': 9.4.0(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(web-streams-polyfill@3.3.3)
-      '@digitalcredentials/vc': 6.0.1(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(web-streams-polyfill@3.3.3)
-      '@multiformats/base-x': 4.0.1
-      '@noble/curves': 1.8.1
-      '@noble/hashes': 1.7.1
-      '@peculiar/asn1-ecc': 2.3.15
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
-      '@peculiar/x509': 1.12.3
-      '@sd-jwt/core': 0.7.2
-      '@sd-jwt/decode': 0.7.2
-      '@sd-jwt/jwt-status-list': 0.7.2
-      '@sd-jwt/present': 0.7.2
-      '@sd-jwt/sd-jwt-vc': 0.7.2
-      '@sd-jwt/types': 0.7.2
-      '@sd-jwt/utils': 0.7.2
-      '@sphereon/pex-models': 2.3.2
-      '@sphereon/ssi-types': 0.30.2-next.135
-      '@stablelib/ed25519': 1.0.3
-      '@types/ws': 8.5.13
-      borc: 3.0.0
-      buffer: 6.0.3
-      class-transformer: 0.5.1
-      class-validator: 0.14.1
-      dcql: 0.2.20(typescript@5.7.3)
-      did-resolver: 4.1.0
-      ec-compression: 0.0.1-alpha.10
-      lru_map: 0.4.1
-      make-error: 1.3.6
-      object-inspect: 1.13.3
-      reflect-metadata: 0.1.14
-      rxjs: 7.8.1
-      tsyringe: 4.8.0
-      uuid: 9.0.1
-      varint: 6.0.0
-      web-did-resolver: 2.0.27
-      webcrypto-core: 1.8.1
-    transitivePeerDependencies:
-      - domexception
-      - encoding
-      - expo
-      - expo-crypto
-      - msrcrypt
-      - msrcrypto
-      - react-native-securerandom
-      - supports-color
-      - typescript
-      - web-streams-polyfill
-
-  '@credo-ts/didcomm@0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
-    dependencies:
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       class-transformer: 0.5.1
       class-validator: 0.14.1
       luxon: 3.5.0
@@ -11227,12 +11145,12 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/openid4vc@0.6.0-pr-2195-20250225234342(patch_hash=j4zqhe75r2rteuv7wbrla7cbhi)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/openid4vc@0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@openid4vc/oauth2': 0.3.0-alpha-20250225204254
       '@openid4vc/openid4vci': 0.3.0-alpha-20250225204254
-      '@openid4vc/openid4vp': 0.3.0-alpha-20250225204254
+      '@openid4vc/openid4vp': 0.3.0-alpha-20250225204254(patch_hash=3yhiqdntnhkpbesvufkmk2acwu)
       class-transformer: 0.5.1
       rxjs: 7.8.1
       zod: 3.24.1
@@ -11248,10 +11166,10 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/question-answer@0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/question-answer@0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/didcomm': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/didcomm': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.1
@@ -11267,14 +11185,14 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@credo-ts/react-native@0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native-get-random-values@1.11.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@credo-ts/react-native@0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)))(react-native-get-random-values@1.11.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)))(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(typescript@5.3.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@azure/core-asynciterator-polyfill': 1.0.2
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       events: 3.3.0
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
-      react-native-fs: 2.20.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))
-      react-native-get-random-values: 1.11.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))
+      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
+      react-native-fs: 2.20.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))
+      react-native-get-random-values: 1.11.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))
     transitivePeerDependencies:
       - domexception
       - encoding
@@ -12060,16 +11978,6 @@ snapshots:
       - encoding
       - supports-color
 
-  '@hyperledger/anoncreds-react-native@0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)':
-    dependencies:
-      '@hyperledger/anoncreds-shared': 0.2.4
-      '@mapbox/node-pre-gyp': 1.0.11
-      react: 18.3.1
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
   '@hyperledger/anoncreds-shared@0.2.4': {}
 
   '@isaacs/cliui@8.0.2':
@@ -12243,13 +12151,6 @@ snapshots:
     dependencies:
       semver: 7.6.3
 
-  '@openid4vc/oauth2@0.2.0(typescript@5.7.3)':
-    dependencies:
-      '@openid4vc/utils': 0.2.0(typescript@5.7.3)
-      valibot: 0.42.1(typescript@5.7.3)
-    transitivePeerDependencies:
-      - typescript
-
   '@openid4vc/oauth2@0.3.0-alpha-20250225204254':
     dependencies:
       '@openid4vc/utils': 0.3.0-alpha-20250225204254
@@ -12261,18 +12162,11 @@ snapshots:
       '@openid4vc/utils': 0.3.0-alpha-20250225204254
       zod: 3.24.1
 
-  '@openid4vc/openid4vp@0.3.0-alpha-20250225204254':
+  '@openid4vc/openid4vp@0.3.0-alpha-20250225204254(patch_hash=3yhiqdntnhkpbesvufkmk2acwu)':
     dependencies:
       '@openid4vc/oauth2': 0.3.0-alpha-20250225204254
       '@openid4vc/utils': 0.3.0-alpha-20250225204254
       zod: 3.24.1
-
-  '@openid4vc/utils@0.2.0(typescript@5.7.3)':
-    dependencies:
-      buffer: 6.0.3
-      valibot: 0.42.1(typescript@5.7.3)
-    transitivePeerDependencies:
-      - typescript
 
   '@openid4vc/utils@0.3.0-alpha-20250225204254':
     dependencies:
@@ -12285,16 +12179,6 @@ snapshots:
       '@openwallet-foundation/askar-shared': 0.3.1
       react: 18.3.1
       react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
-  '@openwallet-foundation/askar-react-native@0.3.1(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)':
-    dependencies:
-      '@mapbox/node-pre-gyp': 1.0.11
-      '@openwallet-foundation/askar-shared': 0.3.1
-      react: 18.3.1
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -12871,17 +12755,6 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@react-native-community/cli-config@14.1.0(typescript@5.7.3)':
-    dependencies:
-      '@react-native-community/cli-tools': 14.1.0
-      chalk: 4.1.2
-      cosmiconfig: 9.0.0(typescript@5.7.3)
-      deepmerge: 4.3.1
-      fast-glob: 3.3.3
-      joi: 17.13.3
-    transitivePeerDependencies:
-      - typescript
-
   '@react-native-community/cli-debugger-ui@14.1.0':
     dependencies:
       serve-static: 1.16.2
@@ -12891,27 +12764,6 @@ snapshots:
   '@react-native-community/cli-doctor@14.1.0(typescript@5.3.3)':
     dependencies:
       '@react-native-community/cli-config': 14.1.0(typescript@5.3.3)
-      '@react-native-community/cli-platform-android': 14.1.0
-      '@react-native-community/cli-platform-apple': 14.1.0
-      '@react-native-community/cli-platform-ios': 14.1.0
-      '@react-native-community/cli-tools': 14.1.0
-      chalk: 4.1.2
-      command-exists: 1.2.9
-      deepmerge: 4.3.1
-      envinfo: 7.14.0
-      execa: 5.1.1
-      node-stream-zip: 1.15.0
-      ora: 5.4.1
-      semver: 7.6.3
-      strip-ansi: 5.2.0
-      wcwidth: 1.0.1
-      yaml: 2.7.0
-    transitivePeerDependencies:
-      - typescript
-
-  '@react-native-community/cli-doctor@14.1.0(typescript@5.7.3)':
-    dependencies:
-      '@react-native-community/cli-config': 14.1.0(typescript@5.7.3)
       '@react-native-community/cli-platform-android': 14.1.0
       '@react-native-community/cli-platform-apple': 14.1.0
       '@react-native-community/cli-platform-ios': 14.1.0
@@ -12991,30 +12843,6 @@ snapshots:
       '@react-native-community/cli-config': 14.1.0(typescript@5.3.3)
       '@react-native-community/cli-debugger-ui': 14.1.0
       '@react-native-community/cli-doctor': 14.1.0(typescript@5.3.3)
-      '@react-native-community/cli-server-api': 14.1.0
-      '@react-native-community/cli-tools': 14.1.0
-      '@react-native-community/cli-types': 14.1.0
-      chalk: 4.1.2
-      commander: 9.5.0
-      deepmerge: 4.3.1
-      execa: 5.1.1
-      find-up: 5.0.0
-      fs-extra: 8.1.0
-      graceful-fs: 4.2.11
-      prompts: 2.4.2
-      semver: 7.6.3
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - typescript
-      - utf-8-validate
-
-  '@react-native-community/cli@14.1.0(typescript@5.7.3)':
-    dependencies:
-      '@react-native-community/cli-clean': 14.1.0
-      '@react-native-community/cli-config': 14.1.0(typescript@5.7.3)
-      '@react-native-community/cli-debugger-ui': 14.1.0
-      '@react-native-community/cli-doctor': 14.1.0(typescript@5.7.3)
       '@react-native-community/cli-server-api': 14.1.0
       '@react-native-community/cli-tools': 14.1.0
       '@react-native-community/cli-types': 14.1.0
@@ -13289,15 +13117,6 @@ snapshots:
       nullthrows: 1.1.1
       react: 18.3.1
       react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
-    optionalDependencies:
-      '@types/react': 18.2.79
-
-  '@react-native/virtualized-lists@0.75.4(@types/react@18.2.79)(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)':
-    dependencies:
-      invariant: 2.2.4
-      nullthrows: 1.1.1
-      react: 18.3.1
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -16705,15 +16524,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.3.3
 
-  cosmiconfig@9.0.0(typescript@5.7.3):
-    dependencies:
-      env-paths: 2.2.1
-      import-fresh: 3.3.0
-      js-yaml: 4.1.0
-      parse-json: 5.2.0
-    optionalDependencies:
-      typescript: 5.7.3
-
   cosmjs-types@0.7.2:
     dependencies:
       long: 4.0.0
@@ -16729,10 +16539,10 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@credo-ts/anoncreds@0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@credo-ts/core@0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4):
+  credo-ts-didweb-anoncreds@0.0.1-alpha.13(@credo-ts/anoncreds@0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@credo-ts/core@0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3))(@hyperledger/anoncreds-shared@0.2.4):
     dependencies:
-      '@credo-ts/anoncreds': 0.6.0-pr-2195-20250225234342(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
-      '@credo-ts/core': 0.6.0-pr-2195-20250225234342(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/anoncreds': 0.6.0-pr-2195-20250226005108(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
+      '@credo-ts/core': 0.6.0-pr-2195-20250226005108(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))))(expo@51.0.39(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0)))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)
       '@hyperledger/anoncreds-shared': 0.2.4
       canonicalize: 1.0.8
       query-string: 7.1.3
@@ -16856,12 +16666,6 @@ snapshots:
   dcql@0.2.20(typescript@5.3.3):
     dependencies:
       valibot: 1.0.0-beta.8(typescript@5.3.3)
-    transitivePeerDependencies:
-      - typescript
-
-  dcql@0.2.20(typescript@5.7.3):
-    dependencies:
-      valibot: 1.0.0-beta.8(typescript@5.7.3)
     transitivePeerDependencies:
       - typescript
 
@@ -20160,12 +19964,6 @@ snapshots:
       react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
       utf8: 3.0.0
 
-  react-native-fs@2.20.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)):
-    dependencies:
-      base-64: 0.1.0
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
-      utf8: 3.0.0
-
   react-native-gesture-handler@2.18.1(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1):
     dependencies:
       '@egjs/hammerjs': 2.0.17
@@ -20179,11 +19977,6 @@ snapshots:
     dependencies:
       fast-base64-decode: 1.0.0
       react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
-
-  react-native-get-random-values@1.11.0(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)):
-    dependencies:
-      fast-base64-decode: 1.0.0
-      react-native: 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
 
   react-native-helmet-async@2.0.4(react@18.3.1):
     dependencies:
@@ -20308,59 +20101,6 @@ snapshots:
       '@react-native/js-polyfills': 0.75.4
       '@react-native/normalize-colors': 0.75.4
       '@react-native/virtualized-lists': 0.75.4(@types/react@18.2.79)(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
-      abort-controller: 3.0.0
-      anser: 1.4.10
-      ansi-regex: 5.0.1
-      base64-js: 1.5.1
-      chalk: 4.1.2
-      commander: 9.5.0
-      event-target-shim: 5.0.1
-      flow-enums-runtime: 0.0.6
-      glob: 7.2.3
-      invariant: 2.2.4
-      jest-environment-node: 29.7.0
-      jsc-android: 250231.0.0
-      memoize-one: 5.2.1
-      metro-runtime: 0.80.12
-      metro-source-map: 0.80.12
-      mkdirp: 0.5.6
-      nullthrows: 1.1.1
-      pretty-format: 26.6.2
-      promise: 8.3.0
-      react: 18.3.1
-      react-devtools-core: 5.3.2
-      react-refresh: 0.14.2
-      regenerator-runtime: 0.13.11
-      scheduler: 0.24.0-canary-efb381bbf-20230505
-      semver: 7.6.3
-      stacktrace-parser: 0.1.10
-      whatwg-fetch: 3.6.20
-      ws: 6.2.3
-      yargs: 17.7.2
-    optionalDependencies:
-      '@types/react': 18.2.79
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@babel/preset-env'
-      - bufferutil
-      - encoding
-      - supports-color
-      - typescript
-      - utf-8-validate
-
-  react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3):
-    dependencies:
-      '@jest/create-cache-key-function': 29.7.0
-      '@react-native-community/cli': 14.1.0(typescript@5.7.3)
-      '@react-native-community/cli-platform-android': 14.1.0
-      '@react-native-community/cli-platform-ios': 14.1.0
-      '@react-native/assets-registry': 0.75.4
-      '@react-native/codegen': 0.75.4(@babel/preset-env@7.26.0(@babel/core@7.26.0))
-      '@react-native/community-cli-plugin': 0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))
-      '@react-native/gradle-plugin': 0.75.4
-      '@react-native/js-polyfills': 0.75.4
-      '@react-native/normalize-colors': 0.75.4
-      '@react-native/virtualized-lists': 0.75.4(@types/react@18.2.79)(react-native@0.75.4(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
       abort-controller: 3.0.0
       anser: 1.4.10
       ansi-regex: 5.0.1
@@ -21601,17 +21341,9 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  valibot@0.42.1(typescript@5.7.3):
-    optionalDependencies:
-      typescript: 5.7.3
-
   valibot@1.0.0-beta.8(typescript@5.3.3):
     optionalDependencies:
       typescript: 5.3.3
-
-  valibot@1.0.0-beta.8(typescript@5.7.3):
-    optionalDependencies:
-      typescript: 5.7.3
 
   valid-url@1.0.9: {}
 
