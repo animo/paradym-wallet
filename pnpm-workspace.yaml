@@ -8,17 +8,18 @@ catalog:
   react: 18.3.1
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
-  "@credo-ts/anoncreds": "0.6.0-pr-2195-20250225234342"
-  "@credo-ts/askar": "0.6.0-pr-2195-20250225234342"
-  "@credo-ts/cheqd": "0.6.0-pr-2195-20250225234342"
-  "@credo-ts/core": "0.6.0-pr-2195-20250225234342"
-  "@credo-ts/openid4vc": "0.6.0-pr-2195-20250225234342"
-  "@credo-ts/question-answer": "0.6.0-pr-2195-20250225234342"
-  "@credo-ts/react-native": "0.6.0-pr-2195-20250225234342"
+  "@credo-ts/anoncreds": "0.6.0-pr-2195-20250226005108"
+  "@credo-ts/askar": "0.6.0-pr-2195-20250226005108"
+  "@credo-ts/cheqd": "0.6.0-pr-2195-20250226005108"
+  "@credo-ts/core": "0.6.0-pr-2195-20250226005108"
+  "@credo-ts/openid4vc": "0.6.0-pr-2195-20250226005108"
+  "@credo-ts/question-answer": "0.6.0-pr-2195-20250226005108"
+  "@credo-ts/react-native": "0.6.0-pr-2195-20250226005108"
   "@openid-federation/core": 0.1.1-alpha.17
-  "@hyperledger/anoncreds-react-native": ^0.2.4
-  "@openwallet-foundation/askar-react-native": 0.3.2-alpha-20250318162328
-  "@openwallet-foundation/askar-shared": 0.3.2-alpha-20250318162328
+  "@hyperledger/anoncreds-react-native": 0.3.1
+  "@hyperledger/anoncreds-shared": 0.3.1
+  "@openwallet-foundation/askar-react-native": 0.3.2
+  "@openwallet-foundation/askar-shared": 0.3.2
   typescript: ~5.3.3
   "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
   "@animo-id/expo-secure-environment": 0.1.0
@@ -27,5 +28,6 @@ catalog:
   "@animo-id/mdoc": 0.5.1
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"
+  "@openid4vc/oauth2": "*"
   expo-standard-web-crypto: "1.8.1"
   isomorphic-webcrypto: "npm:@sphereon/isomorphic-webcrypto"

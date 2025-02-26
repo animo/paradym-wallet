@@ -93,18 +93,13 @@ export const shareProof = async ({
       origin: resolvedRequest.origin,
     })
 
-    // Hack for DC API
-    if (authorizationRequest.payload.response_mode === 'dc_api') {
-      return result
-    }
-
     // if redirect_uri is provided, open it in the browser
     // Even if the response returned an error, we must open this uri
     if (result.redirectUri) {
       await Linking.openURL(result.redirectUri)
     }
 
-    if (result.serverResponse.status < 200 || result.serverResponse.status > 299) {
+    if (result.serverResponse && (result.serverResponse.status < 200 || result.serverResponse.status > 299)) {
       throw new Error(
         `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
       )

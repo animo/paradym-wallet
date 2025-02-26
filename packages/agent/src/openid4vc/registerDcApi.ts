@@ -108,7 +108,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
   })
 
   const credentials = [...sdJwtCredentials, ...mdocCredentials]
-  agent.config.logger.debug('Registering credentials for Digital Credentials API', {
+  agent.config.logger.trace('Registering credentials for Digital Credentials API', {
     credentials,
   })
   await registerCredentials({

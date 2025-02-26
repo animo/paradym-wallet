@@ -34,7 +34,11 @@
 			"@credo-ts/question-answer": "catalog:",
 			"@credo-ts/react-native": "catalog:",
 			"@openid-federation/core": "catalog:",
-			"isomorphic-webcrypto": "catalog:"
+			"isomorphic-webcrypto": "catalog:",
+			"@hyperledger/anoncreds-react-native": "catalog:",
+			"@hyperledger/anoncreds-shared": "catalog:",
+			"@openwallet-foundation/askar-react-native": "catalog:",
+			"@openwallet-foundation/askar-shared": "catalog:"
 		},
 		"patchedDependencies": {
 			"expo-modules-core": "patches/expo-modules-core.patch"

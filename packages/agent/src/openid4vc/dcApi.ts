@@ -63,7 +63,6 @@ export async function sendResponseForDcApi({
     throw new Error('Expected one entry for DC API response')
   }
 
-  // TODO: this should be create response method
   const result = await shareProof({
     agent,
     resolvedRequest,
@@ -72,15 +71,12 @@ export async function sendResponseForDcApi({
     },
   })
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const response = (result as any).response
-
   agent.config.logger.debug('Sending response for Digital Credentials API', {
     result,
   })
 
   sendResponse({
-    response: JSON.stringify(response),
+    response: JSON.stringify(result.authorizationResponse),
   })
 }
 

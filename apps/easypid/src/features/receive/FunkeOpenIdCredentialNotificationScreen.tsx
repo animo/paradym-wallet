@@ -265,7 +265,7 @@ export function FunkeCredentialNotificationScreen() {
       await acquireCredentialsPreAuth()
     }
     if (resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance) {
-      await parsePresentationRequestUrl(resolvedAuthorizationRequest.oid4vpRequestUrl)
+      await parsePresentationRequestUrl(resolvedAuthorizationRequest.openid4vpRequestUrl)
     }
   }, [acquireCredentialsPreAuth, parsePresentationRequestUrl, preAuthGrant, resolvedAuthorizationRequest])
 
