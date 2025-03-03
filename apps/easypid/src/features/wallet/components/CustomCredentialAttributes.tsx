@@ -107,7 +107,9 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading variant="h3">{personalInfoCard.name}</Heading>
+                <Heading ta="center" variant="h3">
+                  {personalInfoCard.name}
+                </Heading>
                 <Paragraph>{personalInfoCard.born}</Paragraph>
               </YStack>
             </YStack>
@@ -191,7 +193,9 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading variant="h3">{personalInfoCard.name}</Heading>
+                <Heading ta="center" variant="h3">
+                  {personalInfoCard.name}
+                </Heading>
                 <Paragraph>{personalInfoCard.born}</Paragraph>
               </YStack>
             </YStack>
@@ -235,6 +239,8 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
     documentNumber: raw.document_number,
   }
 
+  const privilegesCountString = sortedPrivileges.length > 3 ? `(+${sortedPrivileges.length - 3})` : ''
+
   const issuanceInfo = {
     issuingAuthority: raw.issuing_authority,
     issuingCountry: raw.issuing_country,
@@ -277,7 +283,10 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
             </YStack>
             <TableRow
               centred
-              attributes={[mapMdlAttributeName('privileges'), mapMdlAttributeName('document_number')]}
+              attributes={[
+                `${mapMdlAttributeName('privileges')} ${privilegesCountString}`,
+                mapMdlAttributeName('document_number'),
+              ]}
               values={[
                 <XStack key="driving-privileges-icons" gap="$3">
                   {mainCard.privileges.map((privilege) => (
