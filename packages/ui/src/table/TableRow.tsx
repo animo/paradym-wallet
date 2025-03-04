@@ -18,7 +18,6 @@ export const TableRow = ({ attributes, values, isLastRow = false, onPress, image
 
   return (
     <YStack
-      px="$2.5"
       py="$2"
       borderBottomWidth={isLastRow ? 0 : 2}
       borderBottomColor="$tableBorderColor"
@@ -28,7 +27,7 @@ export const TableRow = ({ attributes, values, isLastRow = false, onPress, image
         opacity: onPress ? 0.8 : 1,
       }}
     >
-      <XStack f={1} alignItems="center" gap="$4">
+      <XStack f={1} alignItems="center">
         {attributesArray.map((attr, index) => (
           <YStack
             key={attr}
@@ -36,6 +35,7 @@ export const TableRow = ({ attributes, values, isLastRow = false, onPress, image
             borderRightColor={index === attributesArray.length - 1 ? 'transparent' : '$white'}
             my="$-2"
             py="$2"
+            px="$2.5"
             f={1}
             gap="$1.5"
             ai={centred ? 'center' : 'flex-start'}

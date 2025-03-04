@@ -27,9 +27,11 @@ import {
   ConnectionsModule,
   CredentialsModule,
   DidCommModule,
+  DiscoverFeaturesModule,
   HttpOutboundTransport,
   MediationRecipientModule,
   MediatorPickupStrategy,
+  MessagePickupModule,
   OutOfBandModule,
   ProofsModule,
   V2CredentialProtocol,
@@ -143,6 +145,8 @@ export const initializeParadymAgent = async ({
       logger: appLogger(LogLevel.debug),
     },
     modules: {
+      messagePickup: new MessagePickupModule(),
+      discovery: new DiscoverFeaturesModule(),
       ariesAskar: askarModule,
       openId4VcHolder: new OpenId4VcHolderModule(),
       x509: new X509Module({

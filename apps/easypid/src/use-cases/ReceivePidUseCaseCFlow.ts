@@ -94,7 +94,6 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
           credentialCategory: 'DE-PID',
           // prioritize sd-jwt for PID
           displayPriority: credentialRecord.type === 'SdJwtVcRecord',
-          canDeleteCredential: false,
         })
 
         // Override openid4vc metadata

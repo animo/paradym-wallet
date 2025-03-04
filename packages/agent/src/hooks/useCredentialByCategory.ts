@@ -2,7 +2,14 @@ import { type ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import type { CredentialForDisplay } from '../display'
 import { useCredentialsForDisplay } from './useCredentialsForDisplay'
 
-export function useCredentialByCategory(credentialCategory: string) {
+export function useCredentialByCategory(credentialCategory?: string) {
+  if (!credentialCategory) {
+    return {
+      credentials: [],
+      isLoading: false,
+    } as const
+  }
+
   const { isLoading, credentials } = useCredentialsForDisplay({
     removeCanonicalRecords: false,
     credentialCategory,

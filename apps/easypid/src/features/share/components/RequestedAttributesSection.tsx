@@ -23,7 +23,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
           <Heading variant="sub2">{satisfiedEntries.length > 0 ? 'REQUESTED CARDS' : 'UNAVAILABLE CARDS'}</Heading>
           <Paragraph>
             {unsatisfiedEntries.length === 0
-              ? 'Only the following attributes from your cards will be shared. Nothing more.'
+              ? 'The following cards will be shared.'
               : satisfiedEntries.length === 0
                 ? `You don't have the requested card(s).`
                 : `You don't have all of the requested cards.`}

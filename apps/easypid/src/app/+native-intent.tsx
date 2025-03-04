@@ -5,6 +5,7 @@ import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
+import { credentialDataHandlerOptions } from './(app)/_layout'
 
 export async function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
   const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))
@@ -35,6 +36,15 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     const invitationData = parseResult.result
 
     let redirectPath: string | undefined = undefined
+
+    if (!credentialDataHandlerOptions.allowedInvitationTypes.includes(invitationData.type)) {
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+      return {
+        success: false,
+        error: 'invitation_not_supported',
+        message: 'Invitation not supported.',
+      } as const
+    }
 
     if (invitationData.type === 'openid-credential-offer') {
       redirectPath = `/(app)/notifications/openIdCredential?${invitationData.format === 'url' ? 'uri' : 'data'}=${encodeURIComponent(invitationData.format === 'parsed' ? JSON.stringify(invitationData.data) : (invitationData.data as string))}`

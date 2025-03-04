@@ -1,5 +1,5 @@
 import type { Agent } from '@credo-ts/core'
-import { type PropsWithChildren, createContext, useContext } from 'react'
+import { type PropsWithChildren, createContext, useContext, useMemo } from 'react'
 
 import type { EitherAgent, ParadymAppAgent } from '../agent'
 import { ConnectionProvider } from './ConnectionProvider'
@@ -31,33 +31,38 @@ export const useAgent = <AppAgent extends Agent<any> = ParadymAppAgent>() => {
 }
 
 export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProviderProps>) => {
-  const DynamicProviders = [
-    agent.modules.proofs || agent.modules.credentials
-      ? ({ children }: PropsWithChildren<{ agent: EitherAgent }>) => (
-          <ExchangeRecordDisplayMetadataProvider agent={agent as ParadymAppAgent}>
-            {children}
-          </ExchangeRecordDisplayMetadataProvider>
-        )
-      : undefined,
-    agent.modules.credentials ? CredentialExchangeProvider : undefined,
-    agent.modules.proofs ? ProofExchangeProvider : undefined,
-    agent.modules.connections ? ConnectionProvider : undefined,
-  ].filter((p): p is Exclude<typeof p, undefined> => p !== undefined)
+  // Use useMemo to prevent recreation of the providers array on each render
+  const DynamicProviders = useMemo(() => {
+    return [
+      agent.modules.proofs || agent.modules.credentials
+        ? ({ children }: PropsWithChildren<{ agent: EitherAgent }>) => (
+            <ExchangeRecordDisplayMetadataProvider agent={agent as ParadymAppAgent}>
+              {children}
+            </ExchangeRecordDisplayMetadataProvider>
+          )
+        : undefined,
+      agent.modules.credentials ? CredentialExchangeProvider : undefined,
+      agent.modules.proofs ? ProofExchangeProvider : undefined,
+      agent.modules.connections ? ConnectionProvider : undefined,
+    ].filter((p): p is Exclude<typeof p, undefined> => p !== undefined)
+  }, [agent])
 
-  const providers = DynamicProviders.reduce(
-    (children, Provider, index) => (
-      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-      <Provider key={index} agent={agent}>
-        {children}
-      </Provider>
-    ),
-
-    <W3cCredentialRecordProvider agent={agent}>
-      <SdJwtVcRecordProvider agent={agent}>
-        <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
-      </SdJwtVcRecordProvider>
-    </W3cCredentialRecordProvider>
-  )
+  // Memoize the nested providers structure to prevent recreation on each render
+  const providers = useMemo(() => {
+    return DynamicProviders.reduce(
+      (accChildren, Provider, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+        <Provider key={index} agent={agent}>
+          {accChildren}
+        </Provider>
+      ),
+      <W3cCredentialRecordProvider agent={agent}>
+        <SdJwtVcRecordProvider agent={agent}>
+          <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
+        </SdJwtVcRecordProvider>
+      </W3cCredentialRecordProvider>
+    )
+  }, [DynamicProviders, agent, children])
 
   return <AgentContext.Provider value={agent}>{providers}</AgentContext.Provider>
 }
