@@ -36,7 +36,6 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
 
       if (credentials?.length) {
         await Promise.all(credentials.map((credential) => deleteCredential(agent, credential.id)))
-        console.log('deleted length', credentials.length)
       } else {
         await deleteCredential(agent, id)
       }
