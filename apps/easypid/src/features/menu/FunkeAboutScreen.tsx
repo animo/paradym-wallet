@@ -4,7 +4,7 @@ import { TextBackButton } from 'packages/app'
 import { Linking } from 'react-native'
 
 import { useAppCopy } from '@easypid/config/copy'
-import pj from '../../../package.json'
+import * as Application from 'expo-application'
 
 export function FunkeAboutScreen() {
   const { about } = useAppCopy()
@@ -40,7 +40,7 @@ export function FunkeAboutScreen() {
             onPress={openPrivacyPolicy}
           />
           <Paragraph py="$4" mx="auto" variant="sub" fontSize={13} fontWeight="$medium">
-            Paradym Wallet version: {pj.version}
+            {Application.applicationName} {Application.nativeApplicationVersion} ({Application.nativeBuildVersion})
           </Paragraph>
         </YStack>
       </YStack>
