@@ -74,7 +74,7 @@ export function FunkeCredentialCard({
     <AnimatedStack
       shadow={shadow}
       br="$8"
-      bg={bgColorValue}
+      bg={backgroundImage?.url && hasInternet ? 'transparent' : bgColorValue} // Only set bg color if no background image
       borderWidth="$0.5"
       borderColor="$borderTranslucent"
       position="relative"

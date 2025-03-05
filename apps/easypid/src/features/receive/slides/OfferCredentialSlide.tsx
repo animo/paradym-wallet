@@ -208,7 +208,7 @@ export const OfferCredentialSlide = ({
                 maxHeight={scrollViewHeight}
                 bg="$white"
               >
-                <CredentialAttributes subject={attributes} disableHeader />
+                <CredentialAttributes subject={attributes} />
                 <Spacer size="$6" />
               </ScrollView>
             ) : (
