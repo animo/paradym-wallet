@@ -1,4 +1,5 @@
 import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useImageScaler } from 'packages/app/src/hooks'
 import { useState } from 'react'
@@ -12,6 +13,7 @@ interface OnboardingDataProtectionProps {
 export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtectionProps) {
   const toast = useToastController()
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useState(true)
+  const isCloudHsmFeatureEnabled = useFeatureFlag('CLOUD_HSM')
 
   const { height, onLayout } = useImageScaler()
   const [isLoading, setIsLoading] = useState(false)
@@ -57,17 +59,19 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
           Read the Privacy Policy
         </Button.Text>
         <XStack gap="$2" width="100%">
-          <Button.Outline
-            bg="$grey-100"
-            scaleOnPress
-            width="$buttonHeight"
-            onPress={onToggleCloudHsm}
-            disabled={!isLocalSecureEnvironmentSupported()}
-          >
-            {shouldUseCloudHsm ? <HeroIcons.Cloud /> : <HeroIcons.DevicePhoneMobile />}
-          </Button.Outline>
+          {isCloudHsmFeatureEnabled && (
+            <Button.Outline
+              bg="$grey-100"
+              scaleOnPress
+              width="$buttonHeight"
+              onPress={onToggleCloudHsm}
+              disabled={!isLocalSecureEnvironmentSupported()}
+            >
+              {shouldUseCloudHsm ? <HeroIcons.Cloud /> : <HeroIcons.DevicePhoneMobile />}
+            </Button.Outline>
+          )}
           <Button.Solid scaleOnPress flexGrow={1} disabled={isLoading} onPress={onContinue}>
-            {isLoading ? <Spinner variant="dark" /> : 'Continue'}
+            {isLoading ? <Spinner variant="dark" /> : isCloudHsmFeatureEnabled ? 'Continue' : 'Go to wallet'}
           </Button.Solid>
         </XStack>
       </YStack>
