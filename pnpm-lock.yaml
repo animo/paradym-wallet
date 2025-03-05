@@ -63,6 +63,9 @@ overrides:
   '@cheqd/ts-proto': 2.3.2
 
 patchedDependencies:
+  '@animo-id/credo-ts-cheqd':
+    hash: lxpzu4t7pq345zsakhcpkq67nm
+    path: patches/@animo-id__credo-ts-cheqd.patch
   '@animo-id/credo-ts-core':
     hash: pq7qg2hcwnj2u4ezzzskdto3mm
     path: patches/@animo-id__credo-ts-core.patch
@@ -610,7 +613,7 @@ importers:
         version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806(@animo-id/expo-secure-environment@0.1.0-alpha.12(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/cheqd':
         specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806
-        version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806(patch_hash=lxpzu4t7pq345zsakhcpkq67nm)(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/core':
         specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250224091806
         version: '@animo-id/credo-ts-core@0.5.14-alpha-20250224091806(patch_hash=pq7qg2hcwnj2u4ezzzskdto3mm)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
@@ -9920,7 +9923,7 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806(patch_hash=lxpzu4t7pq345zsakhcpkq67nm)(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@cheqd/sdk': 2.5.1
       '@cheqd/ts-proto': 2.3.2
