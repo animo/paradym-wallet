@@ -4,10 +4,11 @@ import { useRouter } from 'solito/router'
 
 export interface CredentialDataHandlerOptions {
   allowedInvitationTypes?: Array<InvitationType>
+  routeMethod?: 'push' | 'replace'
 }
 
 export const useCredentialDataHandler = () => {
-  const { replace } = useRouter()
+  const { push, replace } = useRouter()
 
   const handleCredentialData = async (
     dataUrl: string,
@@ -17,9 +18,13 @@ export const useCredentialDataHandler = () => {
     | { success: false; error: ParseInvitationResultError | 'invitation_type_not_allowed'; message: string }
   > => {
     const parseResult = await parseInvitationUrl(dataUrl)
-
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const transitionOptions = { experimental: { nativeBehavior: 'stack-replace', isNestedNavigator: true } } as any
+    const routeMethodName = options?.routeMethod ?? 'push'
+    const routeMethod = routeMethodName === 'push' ? push : replace
+    const transitionOptions =
+      routeMethodName === 'push'
+        ? {}
+        : // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          ({ experimental: { nativeBehavior: 'stack-replace', isNestedNavigator: true } } as any)
 
     if (!parseResult.success) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
@@ -37,7 +42,7 @@ export const useCredentialDataHandler = () => {
 
     if (invitationData.type === 'openid-credential-offer') {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      replace(
+      routeMethod(
         {
           pathname: '/notifications/openIdCredential',
           query: {
@@ -53,7 +58,7 @@ export const useCredentialDataHandler = () => {
     }
     if (invitationData.type === 'openid-authorization-request') {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      replace(
+      routeMethod(
         {
           pathname: '/notifications/openIdPresentation',
           query: {
@@ -68,7 +73,7 @@ export const useCredentialDataHandler = () => {
     }
     if (invitationData.type === 'didcomm') {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      replace(
+      routeMethod(
         {
           pathname: '/notifications/didcomm',
           query: {
