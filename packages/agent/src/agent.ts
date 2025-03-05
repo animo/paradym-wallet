@@ -18,6 +18,7 @@ import {
   KeyDidRegistrar,
   KeyDidResolver,
   LogLevel,
+  PeerDidNumAlgo,
   WebDidResolver,
   X509Module,
 } from '@credo-ts/core'
@@ -182,6 +183,7 @@ export const initializeParadymAgent = async ({
       }),
       connections: new ConnectionsModule({
         autoAcceptConnections: true,
+        peerNumAlgoForDidExchangeRequests: PeerDidNumAlgo.GenesisDoc,
       }),
       cheqd: new CheqdModule(
         new CheqdModuleConfig({
