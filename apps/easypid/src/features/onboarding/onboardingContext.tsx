@@ -60,6 +60,11 @@ export function OnboardingContextProvider({
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
+  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
+  const hasCloudHsmFeatureFlag = useFeatureFlag('CLOUD_HSM')
+
+  const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
+  if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
 
   const [receivePidUseCase, setReceivePidUseCase] = useState<ReceivePidUseCaseCFlow>()
   const [receivePidUseCaseState, setReceivePidUseCaseState] = useState<ReceivePidUseCaseState | 'initializing'>()
@@ -76,10 +81,7 @@ export function OnboardingContextProvider({
     showScanModal: true,
   })
   const [eidCardRequestedAccessRights, setEidCardRequestedAccessRights] = useState<string[]>()
-  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
-
-  const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
-  if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
+  const [progressBar, setProgressBar] = useState(currentStep.progress)
 
   useEffect(() => {
     if (currentStepName && currentStepName !== 'welcome' && currentStepName !== 'pin-reenter') {
@@ -87,7 +89,7 @@ export function OnboardingContextProvider({
     }
   }, [lightHaptic, currentStepName])
 
-  const goToNextStep = useCallback(() => {
+  const goToNextStep = useCallback(async () => {
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
     // goToNextStep excludes alternative flows
     const nextStep = onboardingSteps.slice(currentStepIndex + 1).find((step) => !step.alternativeFlow)
@@ -95,9 +97,14 @@ export function OnboardingContextProvider({
     if (nextStep) {
       setCurrentStepName(nextStep.step)
     } else {
+      // Animate the progress bar to 100% to gracefully finish onboarding and enter home screen
+      if (progressBar !== 100) {
+        setProgressBar(100)
+        await sleep(600)
+      }
       finishOnboarding()
     }
-  }, [currentStepName])
+  }, [currentStepName, progressBar])
 
   const goToPreviousStep = useCallback(() => {
     const currentStepIndex = onboardingSteps.findIndex((step) => step.step === currentStepName)
@@ -529,7 +536,15 @@ export function OnboardingContextProvider({
   }
 
   const onIdCardStart = async (shouldUseCloudHsm: boolean) => {
-    setShouldUseCloudHsm(shouldUseCloudHsm)
+    if (hasCloudHsmFeatureFlag) {
+      setShouldUseCloudHsm(shouldUseCloudHsm)
+    }
+
+    if (!hasEidCardFeatureFlag) {
+      // Id card setup not needed, just go to next step
+      goToNextStep()
+      return
+    }
 
     if (secureUnlock.state !== 'unlocked') {
       await reset({
@@ -637,7 +652,7 @@ export function OnboardingContextProvider({
     <OnboardingContext.Provider
       value={{
         currentStep: currentStep.step,
-        progress: currentStep.progress,
+        progress: Math.max(currentStep.progress, progressBar),
         page: currentStep.page,
         reset: onUserReset,
         screen,

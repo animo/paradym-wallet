@@ -1,6 +1,7 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { type OnboardingStep, pidSetupSteps } from '@easypid/utils/sharedPidSetup'
 import { OnboardingBiometrics } from './screens/biometrics'
+import { OnboardingDataProtection } from './screens/data-protection'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import { OnboardingWalletExplanation } from './screens/wallet-explanation'
@@ -105,7 +106,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
       {
         step: 'pin',
         alternativeFlow: false,
-        progress: 33,
+        progress: 25,
         page: {
           type: 'content',
           title: 'Choose a 6-digit PIN',
@@ -118,7 +119,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
       {
         step: 'pin-reenter',
         alternativeFlow: false,
-        progress: 33,
+        progress: 25,
         page: {
           type: 'content',
           title: 'Repeat your PIN',
@@ -130,7 +131,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
       {
         step: 'biometrics',
         alternativeFlow: false,
-        progress: 66,
+        progress: 50,
         page: {
           type: 'content',
           title: 'Set up biometrics',
@@ -141,7 +142,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
       },
       {
         step: 'biometrics-disabled',
-        progress: 66,
+        progress: 50,
         alternativeFlow: true,
         page: {
           type: 'content',
@@ -151,5 +152,17 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
             'To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.',
         },
         Screen: OnboardingBiometrics,
+      },
+      {
+        step: 'data-protection',
+        alternativeFlow: false,
+        progress: 75,
+        page: {
+          type: 'content',
+          title: 'Protect your data',
+          subtitle:
+            'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
+        },
+        Screen: OnboardingDataProtection,
       },
     ] as const satisfies Array<OnboardingStep>)
