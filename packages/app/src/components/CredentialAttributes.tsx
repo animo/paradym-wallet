@@ -10,8 +10,6 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-
-import { formatDate } from '@package/utils/src'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app/src'
 import { useState } from 'react'
@@ -69,7 +67,7 @@ const AnyRow = ({ item }: { item: FormattedCredentialItem }) => {
   const { key, value } = item
 
   if (value.type === 'string' || value.type === 'date') {
-    return <ValueRow key={key} name={key} value={value.type === 'date' ? formatDate(value.value) : value.value} />
+    return <ValueRow key={key} name={key} value={value.value} />
   }
 
   if (value.type === 'boolean') {
