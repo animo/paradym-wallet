@@ -13,13 +13,13 @@ import type {
 } from '../format/formatPresentation'
 
 import { CredoError } from '@credo-ts/core'
-import { CredentialRepository, ProofEventTypes, ProofState } from '@credo-ts/didcomm'
+import { ProofEventTypes, ProofState, V2RequestPresentationMessage } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 import { useConnectionById, useProofById } from '../providers'
 
-import type { NonEmptyArray } from '@package/utils'
+import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
 import { useAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
 import { getCredential } from '../storage'
@@ -33,7 +33,6 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
     queryFn: async () => {
-      const repository = agent.dependencyManager.resolve(CredentialRepository)
       const formatData = await agent.modules.proofs.getFormatData(proofExchangeId)
 
       const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
@@ -117,9 +116,6 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           matches.map((match) => match.credentialId)
         ),
       ]
-      const credentialExchanges = await repository.findByQuery(agent.context, {
-        $or: allCredentialIds.map((credentialId) => ({ credentialIds: [credentialId] })),
-      })
 
       for (const [groupName, attributeArray] of Object.entries(anonCredsCredentials.attributes)) {
         const requestedAttribute = proofRequest.requested_attributes[groupName]
@@ -157,10 +153,24 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
                 .filter(([key]) => entry.requestedAttributes.has(key))
                 .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
 
+              const disclosedPredicatesWithValues = Object.entries(anonCredsCredentials.predicates).reduce(
+                (acc, [groupName]) => {
+                  const requestedPredicate = proofRequest.requested_predicates[groupName]
+                  return {
+                    ...acc,
+                    [requestedPredicate.name]: `${capitalizeFirstLetter(predicateTypeMap[requestedPredicate.p_type])} ${requestedPredicate.p_value}`,
+                  }
+                },
+                {}
+              )
+
               return {
                 credential: credentialForDisplay,
                 disclosed: {
-                  attributes: disclosedAttributesWithValues,
+                  attributes: {
+                    ...disclosedAttributesWithValues,
+                    ...disclosedPredicatesWithValues,
+                  },
                   metadata: credentialForDisplay.metadata,
                   paths: Array.from(entry.requestedAttributes).map((a) => [a]),
                 },
@@ -176,11 +186,16 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           }
         })
       )
+      const requestMessage = await agent.modules.proofs.findRequestMessage(proofExchangeId)
+      const purpose =
+        requestMessage?.comment ??
+        (requestMessage instanceof V2RequestPresentationMessage ? requestMessage.goal : undefined)
 
       const submission: FormattedSubmission = {
         areAllSatisfied: entriesArray.every((entry) => entry.isSatisfied),
         entries: entriesArray,
         name: proofRequest?.name ?? 'Unknown',
+        purpose,
       }
 
       return { submission, formatKey, entries }
@@ -276,6 +291,9 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     proofExchange,
     submission: data?.submission,
     verifierName: connection?.theirLabel,
+    logo: {
+      url: connection?.imageUrl,
+    },
   }
 }
 

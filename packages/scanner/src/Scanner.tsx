@@ -82,12 +82,12 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 bg="$warning-500"
                 br="$12"
                 px="$3"
-                h="$3"
+                py="$1.5"
                 gap="$2"
                 ai="center"
               >
-                <HeroIcons.ExclamationTriangleFilled size={14} mt="$0.5" color="$grey-800" />
-                <Paragraph variant="sub" fontWeight="$semiBold" color="$grey-800">
+                <HeroIcons.ExclamationTriangleFilled size={16} color="$grey-900" />
+                <Paragraph color="$grey-900" numberOfLines={1} variant="caption">
                   {helpText}
                 </Paragraph>
               </XStack>

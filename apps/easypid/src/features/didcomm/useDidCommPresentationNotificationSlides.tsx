@@ -2,7 +2,8 @@ import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
 
 import type { SlideStep } from '@package/app/src'
-import { addSharedActivityForSubmission } from '../activity/activityRecord'
+import { addSharedActivityForSubmission, useActivities } from '../activity/activityRecord'
+import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 
@@ -19,8 +20,9 @@ export function useDidCommPresentationNotificationSlides({
 }: DidCommPresentationNotificationSlidesProps) {
   const { agent } = useAgent()
   const toast = useToastController()
-  const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
+  const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
     useDidCommPresentationActions(proofExchangeId)
+  const { activities } = useActivities({ filters: { entityId: proofExchange?.connectionId } })
 
   const onProofAccept = async () => {
     if (!submission) return
@@ -33,6 +35,7 @@ export function useDidCommPresentationNotificationSlides({
           {
             id: proofExchangeId,
             name: verifierName,
+            logo,
           },
           'success'
         )
@@ -45,6 +48,7 @@ export function useDidCommPresentationNotificationSlides({
           {
             id: proofExchangeId,
             name: verifierName,
+            logo,
           },
           'failed'
         )
@@ -62,6 +66,7 @@ export function useDidCommPresentationNotificationSlides({
         {
           id: proofExchangeId,
           name: verifierName,
+          logo,
         },
         'stopped'
       )
@@ -78,6 +83,21 @@ export function useDidCommPresentationNotificationSlides({
   if (!submission) return []
 
   return [
+    {
+      step: 'verify-issuer',
+      progress: 33,
+      backIsCancel: true,
+      screen: (
+        <VerifyPartySlide
+          key="verify-issuer"
+          type="request"
+          name={verifierName}
+          logo={logo}
+          entityId={proofExchange?.connectionId as string}
+          lastInteractionDate={activities?.[0]?.date}
+        />
+      ),
+    },
     {
       step: 'retrieve-presentation',
       progress: 66,

@@ -170,6 +170,7 @@ export function addSharedActivityForSubmission(
   verifier: {
     id: string
     name?: string
+    logo?: DisplayImage
   },
   status: ActivityStatus
 ) {
@@ -178,6 +179,7 @@ export function addSharedActivityForSubmission(
     entity: {
       id: verifier.id,
       name: verifier.name ?? 'Unknown verifier',
+      logo: verifier.logo,
     },
     request: {
       name: submission.name,

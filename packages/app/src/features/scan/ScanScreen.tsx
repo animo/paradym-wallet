@@ -33,10 +33,10 @@ export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScree
         unsupportedUrlPrefixes.find((x) => scannedData.includes(x)) || result.error === 'invitation_type_not_allowed'
       setHelpText(
         isUnsupportedUrl
-          ? 'This QR-code is not supported yet. Try scanning a different one.'
+          ? 'Unsupported QR code. Try another.'
           : result.message
             ? result.message
-            : 'Invalid QR code. Try scanning a different one.'
+            : 'Invalid QR code. Try another.'
       )
       setIsLoading(false)
     }
