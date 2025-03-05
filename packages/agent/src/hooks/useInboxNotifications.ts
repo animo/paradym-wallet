@@ -65,6 +65,7 @@ export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAg
       if (issuerName || schemaName) {
         setDidCommCredentialExchangeMetadata(record, {
           issuerName,
+          issuerLogoUri: connection?.imageUrl ?? outOfBandRecord?.outOfBandInvitation.imageUrl,
           credentialName: schemaName,
         })
         await agent.modules.credentials.update(record)
@@ -101,6 +102,7 @@ export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAg
       if (verifierName || proofName) {
         setDidCommProofExchangeMetadata(record, {
           proofName,
+          verifierLogoUri: connection?.imageUrl ?? outOfBandRecord?.outOfBandInvitation.imageUrl,
           verifierName,
         })
         await agent.modules.proofs.update(record)

@@ -84,7 +84,10 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
         // first in Paradym Wallet, but would alos be nice to do this within Credo
         setOpenId4VcCredentialMetadata(
           w3cRecord,
-          openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(didCommDisplayMetadata)
+          openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(
+            doneEvent.payload.credentialRecord,
+            didCommDisplayMetadata
+          )
         )
 
         const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)

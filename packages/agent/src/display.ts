@@ -2,6 +2,7 @@ import {
   type JwkJson,
   type MdocNameSpaces,
   type SdJwtVcTypeMetadata,
+  type SingleOrArray,
   W3cCredentialRecord,
   getJwkFromKey,
 } from '@credo-ts/core'
@@ -643,6 +644,21 @@ export function getCredentialForDisplay(
         : credentialRecord.credential.toJson()
     ) as W3cCredentialJson
 
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const proof = (credential as any).proof as SingleOrArray<{
+      type: string
+      cryptosuite?: string
+      verificationMethod?: string
+    }>
+    const firstProof = Array.isArray(proof) ? proof[0] : proof
+    const isAnonCreds = firstProof.cryptosuite === 'anoncreds-2023'
+
+    let type = credentialRecord.credential.type[credentialRecord.credential.type.length - 1]
+    if (isAnonCreds) {
+      type = firstProof.verificationMethod ?? type
+    }
+
+    console.log(JSON.stringify(credentialRecord.metadata, null, 2))
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
     const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
@@ -664,7 +680,7 @@ export function getCredentialForDisplay(
       metadata: {
         holder: credentialRecord.credential.credentialSubjectIds[0],
         issuer: credentialRecord.credential.issuerId,
-        type: credentialRecord.credential.type[credentialRecord.credential.type.length - 1],
+        type,
         issuedAt: new Date(credentialRecord.credential.issuanceDate).toISOString(),
         validUntil: credentialRecord.credential.expirationDate
           ? new Date(credentialRecord.credential.expirationDate).toISOString()

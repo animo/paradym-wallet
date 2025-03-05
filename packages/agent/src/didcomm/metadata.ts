@@ -4,11 +4,13 @@ import type { OpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 // TODO: store this on the credential record
 export interface DidCommCredentialExchangeDisplayMetadata {
   issuerName?: string
+  issuerLogoUri?: string
   credentialName?: string
 }
 
 export interface DidCommProofExchangeDisplayMetadata {
   verifierName?: string
+  verifierLogoUri?: string
   proofName?: string
 }
 
@@ -58,6 +60,7 @@ export function setDidCommProofExchangeMetadata(
 }
 
 export function openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(
+  credentialExchangeRecord: CredentialExchangeRecord,
   didcommMetadata: DidCommCredentialExchangeDisplayMetadata
 ): OpenId4VcCredentialMetadata {
   return {
@@ -71,12 +74,16 @@ export function openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(
         : undefined,
     },
     issuer: {
-      // FIXME: what is issuer url?
-      id: didcommMetadata?.issuerName ?? 'Unkown',
+      id: credentialExchangeRecord.connectionId ?? credentialExchangeRecord.id,
       display: didcommMetadata.issuerName
         ? [
             {
               name: didcommMetadata?.issuerName,
+              logo: didcommMetadata.issuerLogoUri
+                ? {
+                    uri: didcommMetadata.issuerLogoUri,
+                  }
+                : undefined,
             },
           ]
         : undefined,
