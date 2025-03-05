@@ -11,6 +11,7 @@ import {
   YStack,
 } from '@package/ui'
 
+import { formatDate } from '@package/utils/src'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app/src'
 import { useState } from 'react'
@@ -38,16 +39,17 @@ export function CredentialAttributes({ subject, headerTitle, isFormatted = false
 
   return (
     <YStack gap="$6">
-      <YStack gap="$4">
-        {headerTitle && <Heading variant="sub2">{headerTitle}</Heading>}
-        {primitiveItems.length > 0 && (
+      {primitiveItems.length > 0 && (
+        <YStack gap="$4">
+          {headerTitle && <Heading variant="sub2">{headerTitle}</Heading>}
+
           <TableContainer>
             {primitiveItems.map((item) => (
               <AnyRow key={`row-${item.key}`} item={item} />
             ))}
           </TableContainer>
-        )}
-      </YStack>
+        </YStack>
+      )}
 
       {objectItems.map((item) => (
         <YStack key={`object-${item.key}`} gap="$4">
@@ -67,7 +69,7 @@ const AnyRow = ({ item }: { item: FormattedCredentialItem }) => {
   const { key, value } = item
 
   if (value.type === 'string' || value.type === 'date') {
-    return <ValueRow key={key} name={key} value={value.value} />
+    return <ValueRow key={key} name={key} value={value.type === 'date' ? formatDate(value.value) : value.value} />
   }
 
   if (value.type === 'boolean') {
@@ -172,7 +174,9 @@ const ImageRow = ({ name, value }: { name: string; value: string }) => {
           </Paragraph>
           <Paragraph color="$grey-900">Tap to view</Paragraph>
         </YStack>
-        <IconContainer onPress={handleOpen} variant="regular" icon={<HeroIcons.Eye size={20} />} />
+        <YStack br="$2" overflow="hidden">
+          <Image height={36} width={36} src={value} alt={name} />
+        </YStack>
       </XStack>
       <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
         <Stack p="$4" gap="$4">
