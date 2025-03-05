@@ -60,7 +60,6 @@ export const Heading = styled(THeading, {
         fontWeight: '$semiBold',
         letterSpacing: '$6',
         lineHeight: '$4',
-        ml: -2,
       },
       h4: {
         name: 'H4',
@@ -69,7 +68,6 @@ export const Heading = styled(THeading, {
         fontWeight: '$semiBold',
         letterSpacing: '$6',
         lineHeight: '$4',
-        ml: -2,
       },
       sub1: {
         size: '$4',

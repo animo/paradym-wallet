@@ -161,6 +161,9 @@ importers:
       expo:
         specifier: ~51.0.39
         version: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
+      expo-application:
+        specifier: ~6.0.2
+        version: 6.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))
       expo-blur:
         specifier: ~13.0.3
         version: 13.0.3(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))
@@ -5946,6 +5949,11 @@ packages:
   execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
+
+  expo-application@6.0.2:
+    resolution: {integrity: sha512-qcj6kGq3mc7x5yIb5KxESurFTJCoEKwNEL34RdPEvTB/xhl7SeVZlu05sZBqxB1V4Ryzq/LsCb7NHNfBbb3L7A==}
+    peerDependencies:
+      expo: '*'
 
   expo-asset@10.0.10:
     resolution: {integrity: sha512-0qoTIihB79k+wGus9wy0JMKq7DdenziVx3iUkGvMAy2azscSgWH6bd2gJ9CGnhC6JRd3qTMFBL0ou/fx7WZl7A==}
@@ -17488,6 +17496,10 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
       strip-final-newline: 2.0.0
+
+  expo-application@6.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))):
+    dependencies:
+      expo: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
 
   expo-asset@10.0.10(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))):
     dependencies:
