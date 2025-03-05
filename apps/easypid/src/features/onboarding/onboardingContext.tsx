@@ -536,7 +536,15 @@ export function OnboardingContextProvider({
   }
 
   const onIdCardStart = async (shouldUseCloudHsm: boolean) => {
-    setShouldUseCloudHsm(shouldUseCloudHsm)
+    if (hasCloudHsmFeatureFlag) {
+      setShouldUseCloudHsm(shouldUseCloudHsm)
+    }
+
+    if (!hasEidCardFeatureFlag) {
+      // Id card setup not needed, just go to next step
+      goToNextStep()
+      return
+    }
 
     if (secureUnlock.state !== 'unlocked') {
       await reset({
@@ -597,7 +605,7 @@ export function OnboardingContextProvider({
   } else if (currentStep.step === 'biometrics-disabled') {
     screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Open settings" />
   } else if (currentStep.step === 'data-protection') {
-    screen = <currentStep.Screen goToNextStep={hasCloudHsmFeatureFlag ? onIdCardStart : goToNextStep} />
+    screen = <currentStep.Screen goToNextStep={onIdCardStart} />
   } else if (currentStep.step === 'id-card-requested-attributes') {
     screen = (
       <currentStep.Screen
