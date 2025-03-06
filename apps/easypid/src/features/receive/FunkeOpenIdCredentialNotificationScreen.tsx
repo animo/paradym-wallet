@@ -175,7 +175,6 @@ export function FunkeCredentialNotificationScreen() {
 
     await storeCredential(agent, receivedRecord)
     await addReceivedActivity(agent, {
-      // TODO: should host be entityId or the iss?
       entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer as string,
       host: credentialDisplay.issuer.domain,
       name: credentialDisplay.issuer.name,

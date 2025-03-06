@@ -65,12 +65,6 @@ export const OfferCredentialSlide = ({
   const isStoringOrCompleted = isStoring || isCompleted
   const waitForAcceptState = !isCompleted && !isStoring
 
-  // if (!credentialRecord) {
-  //   return null
-  // }
-
-  // const { display, attributes } = getCredentialForDisplay(credentialRecord)
-
   const handleAccept = async () => {
     await onAccept()
   }

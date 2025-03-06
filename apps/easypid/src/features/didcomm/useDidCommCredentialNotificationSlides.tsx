@@ -2,7 +2,9 @@ import { useParadymAgent } from '@easypid/agent'
 import { useDidCommCredentialActions } from '@package/agent'
 import type { SlideStep } from '@package/app/src'
 import { useToastController } from '@package/ui'
+import { addReceivedActivity, useActivities } from '../activity/activityRecord'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
+import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 
 interface DidCommCredentialNotificationSlidesProps {
   credentialExchangeId: string
@@ -19,11 +21,19 @@ export function useDidCommCredentialNotificationSlides({
   const toast = useToastController()
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
+  const { activities } = useActivities({ filters: { entityId: credentialExchange?.connectionId } })
 
   const onCredentialAccept = async () => {
     await acceptCredential().catch(() => {
       toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
       onCancel()
+    })
+    await addReceivedActivity(agent, {
+      entityId: credentialExchange?.connectionId as string,
+      name: display.issuer.name,
+      logo: display.issuer.logo,
+      backgroundColor: '#ffffff', // Default to a white background for now
+      credentialIds: [`w3c-credential-${credentialExchange?.id}`],
     })
   }
 
@@ -39,6 +49,21 @@ export function useDidCommCredentialNotificationSlides({
   }
 
   return [
+    {
+      step: 'verify-issuer',
+      progress: 33,
+      backIsCancel: true,
+      screen: (
+        <VerifyPartySlide
+          key="verify-issuer"
+          type="offer"
+          name={display.issuer.name}
+          logo={display.issuer.logo}
+          entityId={credentialExchange?.connectionId as string}
+          lastInteractionDate={activities?.[0]?.date}
+        />
+      ),
+    },
     {
       step: 'retrieve-credential',
       progress: 66,

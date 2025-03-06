@@ -81,7 +81,7 @@ export function CardWithAttributes({
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
+      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-100'}>
         {hasInternet && backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
@@ -95,7 +95,7 @@ export function CardWithAttributes({
         )}
         <XStack ai="center" jc="space-between">
           <YStack f={1}>
-            <Heading variant="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-100'}>
+            <Heading variant="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-700'}>
               {name.toLocaleUpperCase()}
             </Heading>
           </YStack>

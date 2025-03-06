@@ -52,7 +52,7 @@ export function FunkeCredentialCard({
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
   const hasInternet = useHasInternetConnection()
 
-  textColor = textColor ? textColor : getTextColorBasedOnBg(bgColor ?? '#000')
+  textColor = textColor ?? bgColor ? getTextColorBasedOnBg(bgColor ?? '#000') : '$grey-100'
 
   const icon = issuerImage?.url ? (
     <Image src={issuerImage.url} width={36} height={36} />

@@ -25,7 +25,8 @@ export function formatCredentialData(subject: Record<string, unknown>): Formatte
   const result: FormattedCredentialItem[] = []
 
   for (const [key, value] of Object.entries(subject)) {
-    if (value === undefined || value === null || Object.keys(value).length === 0) continue
+    if (value === undefined || value === null) continue
+    if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) continue
 
     result.push({
       key: sanitizeString(key),
