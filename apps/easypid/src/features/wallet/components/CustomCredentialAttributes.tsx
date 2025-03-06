@@ -15,6 +15,14 @@ type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
 }
 
+export const hasCustomCredentialDisplay = (credentialType: string) => {
+  return (
+    [...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credentialType) ||
+    [...pidSchemes.sdJwtVcVcts].includes(credentialType) ||
+    [...mdlSchemes.mdlSdJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(credentialType)
+  )
+}
+
 export function CustomCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
   if ([...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
     return <FunkeArfPidCredentialAttributes credential={credential} />

@@ -23,7 +23,7 @@ import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createParam } from 'solito'
-import { CustomCredentialAttributes } from './components/CustomCredentialAttributes'
+import { CustomCredentialAttributes, hasCustomCredentialDisplay } from './components/CustomCredentialAttributes'
 
 const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
@@ -38,6 +38,9 @@ export function FunkeCredentialDetailAttributesScreen() {
   const { withHaptics } = useHaptics()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
+  const isCustomDisplayAvailable = credential?.metadata.type
+    ? hasCustomCredentialDisplay(credential?.metadata.type)
+    : false
 
   const {
     isVisible: isMetadataVisible,
@@ -125,15 +128,19 @@ export function FunkeCredentialDetailAttributesScreen() {
         isOpen={isSheetOpen}
         setIsOpen={setIsSheetOpen}
         items={[
-          {
-            icon: isSharableAttributesVisible ? (
-              <HeroIcons.EyeSlash color="$grey-500" />
-            ) : (
-              <HeroIcons.Eye color="$grey-500" />
-            ),
-            title: isSharableAttributesVisible ? 'Hide shareable attributes' : 'Show shareable attributes',
-            onPress: handleToggleSharableAttributes,
-          },
+          ...(isCustomDisplayAvailable
+            ? [
+                {
+                  icon: isSharableAttributesVisible ? (
+                    <HeroIcons.EyeSlash color="$grey-500" />
+                  ) : (
+                    <HeroIcons.Eye color="$grey-500" />
+                  ),
+                  title: isSharableAttributesVisible ? 'Hide shareable attributes' : 'Show shareable attributes',
+                  onPress: handleToggleSharableAttributes,
+                },
+              ]
+            : []),
           {
             icon: isMetadataVisible ? (
               <HeroIcons.CodeBracketFilled color="$grey-500" />
