@@ -29,7 +29,7 @@ const APP_CONFIGS = {
     splash: './assets/paradym/splash.png',
     slug: 'paradym-wallet',
     version,
-    bundleId: 'id.animo.paradym',
+    bundleId: 'id.paradym.wallet',
     additionalInvitationSchemes: ['didcomm'],
     associatedDomains: ['paradym.id', 'dev.paradym.id'],
     backgroundColor: '#F2F4F6',
