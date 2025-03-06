@@ -33,7 +33,7 @@ export function useDidCommCredentialNotificationSlides({
       name: display.issuer.name,
       logo: display.issuer.logo,
       backgroundColor: '#ffffff', // Default to a white background for now
-      credentialIds: [`w3c-credential-${credentialExchange?.id}`],
+      credentialIds: [`w3c-credential-${credentialExchange?.credentials[0].credentialRecordId}`],
     })
   }
 
