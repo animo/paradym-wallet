@@ -195,6 +195,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
       overAskingResponse={overAskingResponse}
+      // TODO: Change to actual transaction data
       transaction={{
         type: 'qes',
         documentName: 'Employee Contract',

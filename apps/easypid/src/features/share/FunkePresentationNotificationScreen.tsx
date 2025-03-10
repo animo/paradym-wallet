@@ -31,20 +31,6 @@ interface FunkePresentationNotificationScreenProps {
   onComplete: () => void
 }
 
-// QES Implementation
-
-// Het wordt een reguliere request waarin we dan een transactions array krijgen
-// Elke transaction heeft een type, daarmee kunnen we de juiste screen renderen
-// En dit is de share flow
-// Dus we moeten daar specifieke slides renderen op basis van deze transactions
-// Nu dus QES, later ook voor payments.
-
-// Je gebruikt je PID om te signen, en daar kunnen alle attributen inzitten
-// In de toekomst kan je ook meerdere credentials vragen, waarbij dan de PID wordt gebruikt om te signen en de andere niet
-
-// TODO:
-// - Activity events for QES sharing
-
 export function FunkePresentationNotificationScreen({
   entityId,
   verifierName,
