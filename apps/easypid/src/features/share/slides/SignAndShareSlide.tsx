@@ -1,7 +1,7 @@
+import { type FormattedSubmission, getDisclosedAttributeNamesForDisplay } from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
 import { Button, Heading, Image, Paragraph, ScrollView, Spacer, Stack, XStack, YStack } from '@package/ui'
-import { type FormattedSubmission, getDisclosedAttributeNamesForDisplay } from 'packages/agent/src'
 import { useState } from 'react'
 
 interface SignAndShareSlideProps {
@@ -11,7 +11,7 @@ interface SignAndShareSlideProps {
   qtspName: string
   qtspLogo?: string
   documentName: string
-  submission: FormattedSubmission
+  submission?: FormattedSubmission
 }
 
 export const SignAndShareSlide = ({
@@ -43,7 +43,7 @@ export const SignAndShareSlide = ({
 
   // FIXME: We should extract the card used for signing
   // In future, we can use <RequestedAttributesSection /> below to render the rest of the requested cards
-  const cardForSigning = submission.entries.find((entry) => entry.isSatisfied)?.credentials[0]
+  const cardForSigning = submission?.entries.find((entry) => entry.isSatisfied)?.credentials[0]
 
   return (
     <YStack fg={1} jc="space-between">
@@ -138,7 +138,7 @@ export const SignAndShareSlide = ({
       </YStack>
 
       <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
-        {submission.areAllSatisfied ? (
+        {submission?.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
             acceptText="Share"
