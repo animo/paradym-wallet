@@ -24,17 +24,20 @@ export function useDidCommCredentialNotificationSlides({
   const { activities } = useActivities({ filters: { entityId: credentialExchange?.connectionId } })
 
   const onCredentialAccept = async () => {
-    await acceptCredential().catch(() => {
+    const w3cRecord = await acceptCredential().catch(() => {
       toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
       onCancel()
     })
-    await addReceivedActivity(agent, {
-      entityId: credentialExchange?.connectionId as string,
-      name: display.issuer.name,
-      logo: display.issuer.logo,
-      backgroundColor: '#ffffff', // Default to a white background for now
-      credentialIds: [`w3c-credential-${credentialExchange?.credentials[0].credentialRecordId}`],
-    })
+
+    if (w3cRecord) {
+      await addReceivedActivity(agent, {
+        entityId: credentialExchange?.connectionId as string,
+        name: display.issuer.name,
+        logo: display.issuer.logo,
+        backgroundColor: '#ffffff', // Default to a white background for now
+        credentialIds: [`w3c-credential-${w3cRecord?.id}`],
+      })
+    }
   }
 
   const onCredentialDecline = () => {
