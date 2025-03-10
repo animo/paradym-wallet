@@ -41,6 +41,7 @@ export const ShareCredentialsSlide = ({
   }
 
   const handleDecline = () => {
+    onDecline?.()
     onCancel()
   }
 
