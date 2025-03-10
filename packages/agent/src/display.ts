@@ -658,7 +658,6 @@ export function getCredentialForDisplay(
       type = firstProof.verificationMethod ?? type
     }
 
-    console.log(JSON.stringify(credentialRecord.metadata, null, 2))
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
     const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)

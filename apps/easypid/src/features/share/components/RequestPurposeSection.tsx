@@ -1,3 +1,4 @@
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import {
   AnimatedStack,
@@ -28,6 +29,7 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false)
 
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
+  const hasAiAnalysisFeatureFlag = useFeatureFlag('AI_ANALYSIS')
 
   const toggleAnalysisModal = () => setIsAnalysisModalOpen(!isAnalysisModalOpen)
 
@@ -53,17 +55,19 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
         )}
         <XStack gap="$2" jc="space-between" ai="center">
           <Heading variant="sub2">PURPOSE</Heading>
-          <Stack h="$2" w="$2" ai="center" jc="center">
-            <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>
-              {!overAskingResponse ? (
-                <Spinner scale={0.8} />
-              ) : overAskingResponse.validRequest === 'yes' ? (
-                <HeroIcons.CheckCircleFilled size={26} color="$positive-500" />
-              ) : overAskingResponse.validRequest === 'no' ? (
-                <HeroIcons.ExclamationTriangleFilled size={26} color="$danger-500" />
-              ) : null}
-            </AnimatedStack>
-          </Stack>
+          {hasAiAnalysisFeatureFlag && (
+            <Stack h="$2" w="$2" ai="center" jc="center">
+              <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>
+                {!overAskingResponse ? (
+                  <Spinner scale={0.8} />
+                ) : overAskingResponse.validRequest === 'yes' ? (
+                  <HeroIcons.CheckCircleFilled size={26} color="$positive-500" />
+                ) : overAskingResponse.validRequest === 'no' ? (
+                  <HeroIcons.ExclamationTriangleFilled size={26} color="$danger-500" />
+                ) : null}
+              </AnimatedStack>
+            </Stack>
+          )}
         </XStack>
         <MessageBox
           variant="light"
