@@ -27,7 +27,7 @@ catalog:
   "@animo-id/oid4vci": 0.1.4
   "@animo-id/oauth2": 0.1.4
   "@animo-id/oauth2-utils": 0.1.4
-  "@animo-id/expo-secure-environment": 0.1.0-alpha.12
+  "@animo-id/expo-secure-environment": 0.1.0
   "@animo-id/expo-mdoc-data-transfer": 0.1.3
   "@animo-id/mdoc": 0.4.2-alpha-20250225155732
   "@unimodules/react-native-adapter": "./noop"
