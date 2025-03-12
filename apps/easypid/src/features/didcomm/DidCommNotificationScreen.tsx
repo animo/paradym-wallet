@@ -33,9 +33,17 @@ export function DidCommNotificationScreen() {
     type: 'credentialExchange' | 'proofExchange'
   }>()
 
-  // TODO: OnCancel should throw away the request
-  // But decline functions are only exposed in the slides itself...
-  const onCancel = () => pushToWallet('back')
+  const onCancel = () => {
+    if (notification) {
+      if (notification.type === 'credentialExchange' || params.credentialExchangeId) {
+        void agent.modules.credentials.deleteById(notification.id ?? params.credentialExchangeId)
+      } else if (notification.type === 'proofExchange' || params.proofExchangeId) {
+        void agent.modules.proofs.deleteById(notification.id ?? params.proofExchangeId)
+      }
+    }
+
+    pushToWallet('back')
+  }
   const onComplete = () => pushToWallet('replace')
 
   useEffect(() => {
