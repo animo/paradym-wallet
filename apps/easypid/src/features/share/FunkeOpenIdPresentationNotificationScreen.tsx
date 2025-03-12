@@ -195,6 +195,13 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
       overAskingResponse={overAskingResponse}
+      // TODO: Change to actual transaction data
+      transaction={{
+        type: 'qes',
+        documentName: 'Employee Contract',
+        qtspName: 'DocuSign',
+        qtspLogo: 'https://logos-world.net/wp-content/uploads/2024/05/DocuSign-Symbol.png',
+      }}
     />
   )
 }
