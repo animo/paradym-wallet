@@ -21,6 +21,7 @@ import {
   ArrowsRightLeftIcon,
   BackspaceIcon,
   Bars3Icon,
+  BellIcon,
   BuildingOfficeIcon,
   ChatBubbleBottomCenterTextIcon,
   CheckCircleIcon,
@@ -58,6 +59,7 @@ import {
 import {
   ArchiveBoxXMarkIcon as ArchiveBoxXMarkFilledIcon,
   ArrowUpRightIcon as ArrowUpRightFilledIcon,
+  BellIcon as BellFilledIcon,
   BoltIcon as BoltFilledIcon,
   CameraIcon as CameraFilledIcon,
   ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
@@ -121,6 +123,8 @@ function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
 
 export type HeroIcon = ReturnType<typeof wrapHeroIcon>
 export const HeroIcons = {
+  Bell: wrapHeroIcon(BellIcon),
+  BellFilled: wrapHeroIcon(BellFilledIcon),
   Plus: wrapHeroIcon(PlusIcon),
   Trash: wrapHeroIcon(TrashIcon),
   TrashFilled: wrapHeroIcon(TrashFilledIcon),
