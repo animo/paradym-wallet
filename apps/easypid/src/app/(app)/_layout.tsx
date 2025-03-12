@@ -175,6 +175,7 @@ export default function AppLayout() {
           <Stack.Screen name="pinLocked" options={headerNormalOptions} />
           <Stack.Screen name="federation" options={headerNormalOptions} />
           <Stack.Screen name="pidSetup" />
+          <Stack.Screen name="inbox" options={headerNormalOptions} />
         </Stack>
       </WalletJsonStoreProvider>
     </AgentProvider>

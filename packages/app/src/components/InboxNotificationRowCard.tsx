@@ -1,4 +1,4 @@
-import { Heading, Paragraph, XStack, YStack } from '@package/ui'
+import { AnimatedStack, Heading, Paragraph, XStack, YStack, useScaleAnimation } from '@package/ui'
 
 interface InboxNotificationRowCardProps {
   title: string
@@ -8,25 +8,27 @@ interface InboxNotificationRowCardProps {
 }
 
 export function InboxNotificationRowCard({ title, description, onPress, bgColor }: InboxNotificationRowCardProps) {
+  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
+
   return (
-    <YStack bg="$white" br="$4">
-      <XStack
-        onPress={onPress}
-        pad="lg"
-        g="md"
-        pressStyle={{ backgroundColor: onPress && '$grey-100' }}
-        overflow="hidden"
-      >
-        <XStack border bg={bgColor ?? '$grey-700'} h="$4.5" w="24%" br="$2" />
-        <YStack flex={1} jc="space-between">
-          <Paragraph color="$grey-600" variant="sub" numberOfLines={1}>
-            {description}
-          </Paragraph>
-          <Heading variant="h3" numberOfLines={1} size="$4">
-            {title}
-          </Heading>
-        </YStack>
-      </XStack>
-    </YStack>
+    <AnimatedStack
+      flexDirection="row"
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      gap="$3"
+      ai="center"
+      style={pressStyle}
+      onPress={onPress}
+    >
+      <XStack border bg={bgColor ?? '$grey-900'} h="$4.5" w="24%" br="$2" />
+      <YStack gap="$0.5" jc="space-between" fg={1} w="75%">
+        <XStack jc="space-between">
+          <Paragraph numberOfLines={1}>{description}</Paragraph>
+        </XStack>
+        <Heading variant="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
+          {title}
+        </Heading>
+      </YStack>
+    </AnimatedStack>
   )
 }

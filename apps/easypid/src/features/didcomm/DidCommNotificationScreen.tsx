@@ -14,6 +14,8 @@ import { useDidCommPresentationNotificationSlides } from './useDidCommPresentati
 type Query = {
   invitation?: string
   invitationUrl?: string
+  credentialExchangeId?: string
+  proofExchangeId?: string
 }
 
 const { useParams } = createParam<Query>()
@@ -31,8 +33,33 @@ export function DidCommNotificationScreen() {
     type: 'credentialExchange' | 'proofExchange'
   }>()
 
-  const onCancel = () => pushToWallet('back')
+  const onCancel = () => {
+    if (notification) {
+      if (notification.type === 'credentialExchange' || params.credentialExchangeId) {
+        void agent.modules.credentials.deleteById(notification.id ?? params.credentialExchangeId)
+      } else if (notification.type === 'proofExchange' || params.proofExchangeId) {
+        void agent.modules.proofs.deleteById(notification.id ?? params.proofExchangeId)
+      }
+    }
+
+    pushToWallet('back')
+  }
   const onComplete = () => pushToWallet('replace')
+
+  useEffect(() => {
+    if (params.credentialExchangeId) {
+      setNotification({
+        id: params.credentialExchangeId,
+        type: 'credentialExchange',
+      })
+    }
+    if (params.proofExchangeId) {
+      setNotification({
+        id: params.proofExchangeId,
+        type: 'proofExchange',
+      })
+    }
+  }, [params.credentialExchangeId, params.proofExchangeId])
 
   useEffect(() => {
     async function handleInvitation() {
@@ -77,16 +104,10 @@ export function DidCommNotificationScreen() {
       }
     }
 
-    void handleInvitation()
+    if (params.invitation || params.invitationUrl) {
+      void handleInvitation()
+    }
   }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled])
-
-  // We were routed here without an invitation
-  if (!params.invitation && !params.invitationUrl) {
-    // eslint-disable-next-line no-console
-    console.error('One of invitation or invitationUrl is required when navigating to DidCommNotificationScreen.')
-    pushToWallet()
-    return null
-  }
 
   // Both flows have the same entry point, so we re-use the same loading request slide
   // This way we avoid a double loading screen when the respective flow is entered
