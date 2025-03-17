@@ -6,6 +6,7 @@ import { createParam } from 'solito'
 
 import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { router } from 'expo-router'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { useDidCommCredentialNotificationSlides } from './useDidCommCredentialNotificationSlides'
@@ -16,6 +17,7 @@ type Query = {
   invitationUrl?: string
   credentialExchangeId?: string
   proofExchangeId?: string
+  navigationType?: 'inbox'
 }
 
 const { useParams } = createParam<Query>()
@@ -33,6 +35,15 @@ export function DidCommNotificationScreen() {
     type: 'credentialExchange' | 'proofExchange'
   }>()
 
+  const handleNavigation = (type: 'replace' | 'back') => {
+    // When starting from the inbox, we want to go back to the inbox on finish
+    if (params.navigationType === 'inbox') {
+      router.back()
+    } else {
+      pushToWallet(type)
+    }
+  }
+
   const onCancel = () => {
     if (notification) {
       if (notification.type === 'credentialExchange' || params.credentialExchangeId) {
@@ -42,9 +53,10 @@ export function DidCommNotificationScreen() {
       }
     }
 
-    pushToWallet('back')
+    handleNavigation('back')
   }
-  const onComplete = () => pushToWallet('replace')
+
+  const onComplete = () => handleNavigation('replace')
 
   useEffect(() => {
     if (params.credentialExchangeId) {
@@ -145,6 +157,14 @@ export function DidCommNotificationScreen() {
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={!!errorReason}
       onCancel={onCancel}
+      confirmation={{
+        title: notification?.type === 'credentialExchange' ? 'Decline card?' : 'Stop sharing?',
+        description:
+          notification?.type === 'credentialExchange'
+            ? 'If you decline, you will not receive the card.'
+            : 'If you stop, no data will be shared.',
+        confirmText: notification?.type === 'credentialExchange' ? 'Yes, decline' : 'Yes, stop',
+      }}
     />
   )
 }

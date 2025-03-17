@@ -13,7 +13,11 @@ export function InboxScreen() {
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <HeaderContainer title="Inbox" isScrolledByOffset={isScrolledByOffset} />
-      <YStack fg={1} px="$4" gap="$4">
+      <ScrollView
+        onScroll={handleScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         {inboxNotifications.length === 0 ? (
           <AnimatedStack
             flexDirection="column"
@@ -29,43 +33,43 @@ export function InboxScreen() {
             <Paragraph ta="center">You don't have any notifications at the moment.</Paragraph>
           </AnimatedStack>
         ) : (
-          <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-            <YStack width="100%" overflow="hidden" py="$3" gap="$4">
-              {inboxNotifications.map((notification) => {
-                let description = `${notification.type === 'CredentialRecord' ? 'Card' : 'Request'}`
-                if (notification.contactLabel) {
-                  description += ` from ${notification.contactLabel}`
-                }
+          <YStack overflow="hidden" px="$4" gap="$4">
+            {inboxNotifications.map((notification) => {
+              let description = `${notification.type === 'CredentialRecord' ? 'Card' : 'Request'}`
+              if (notification.contactLabel) {
+                description += ` from ${notification.contactLabel}`
+              }
 
-                return (
-                  <InboxNotificationRowCard
-                    key={notification.id}
-                    title={notification.notificationTitle}
-                    description={description}
-                    onPress={() => {
-                      if (notification.type === 'CredentialRecord') {
-                        push({
-                          pathname: '/notifications/didcomm',
-                          params: {
-                            credentialExchangeId: notification.id,
-                          },
-                        })
-                      } else {
-                        push({
-                          pathname: '/notifications/didcomm',
-                          params: {
-                            proofExchangeId: notification.id,
-                          },
-                        })
-                      }
-                    }}
-                  />
-                )
-              })}
-            </YStack>
-          </ScrollView>
+              return (
+                <InboxNotificationRowCard
+                  key={notification.id}
+                  title={notification.notificationTitle}
+                  description={description}
+                  onPress={() => {
+                    if (notification.type === 'CredentialRecord') {
+                      push({
+                        pathname: '/notifications/didcomm',
+                        params: {
+                          credentialExchangeId: notification.id,
+                          navigationType: 'inbox',
+                        },
+                      })
+                    } else {
+                      push({
+                        pathname: '/notifications/didcomm',
+                        params: {
+                          proofExchangeId: notification.id,
+                          navigationType: 'inbox',
+                        },
+                      })
+                    }
+                  }}
+                />
+              )
+            })}
+          </YStack>
         )}
-      </YStack>
+      </ScrollView>
       <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
         <TextBackButton />
       </YStack>
