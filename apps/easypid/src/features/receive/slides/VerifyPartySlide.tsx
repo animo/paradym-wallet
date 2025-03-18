@@ -13,8 +13,8 @@ import {
   YStack,
   useMedia,
 } from '@package/ui'
+import { DualResponseButtons, useHaptics, useWizard } from '@packages/app'
 import { useRouter } from 'expo-router'
-import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useState } from 'react'
 

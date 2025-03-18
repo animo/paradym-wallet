@@ -14,7 +14,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { TextBackButton, useScrollViewPosition } from 'packages/app/src'
+import { TextBackButton, useScrollViewPosition } from '@packages/app'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

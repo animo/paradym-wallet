@@ -18,9 +18,9 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
+import { TextBackButton } from '@packages/app'
 import { useRouter } from 'expo-router'
 import { type DisplayImage, useCredentialsForDisplay } from 'packages/agent/src'
-import { TextBackButton } from 'packages/app/src'
 import { formatDate } from 'packages/utils/src'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'

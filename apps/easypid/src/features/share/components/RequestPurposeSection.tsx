@@ -14,8 +14,8 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
+import { isAndroid } from '@packages/app'
 import type { DisplayImage } from 'packages/agent/src'
-import { isAndroid } from 'packages/app/src'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 

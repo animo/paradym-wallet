@@ -1,5 +1,5 @@
 import { Heading, Paragraph, YStack, useDeviceMedia } from '@package/ui'
-import { PinDotsInput, type PinDotsInputRef, useWizard } from 'packages/app/src'
+import { PinDotsInput, type PinDotsInputRef, useWizard } from '@packages/app'
 import { useRef, useState } from 'react'
 
 interface PidWalletPinSlideProps {

@@ -10,8 +10,8 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import { useHaptics } from '@packages/app'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useHaptics } from 'packages/app/src'
 import { useState } from 'react'
 import {
   type FormattedCredentialItem,

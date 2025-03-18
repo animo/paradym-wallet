@@ -1,5 +1,5 @@
 import { Heading, Paragraph, YStack } from '@package/ui'
-import { useWizard } from 'packages/app/src'
+import { useWizard } from '@packages/app'
 import { useEffect } from 'react'
 import { OnboardingIdCardFetch } from '../onboarding/screens/id-card-fetch'
 

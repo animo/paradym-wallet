@@ -12,8 +12,8 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
+import { isIos, useHaptics } from '@packages/app'
 import { useRouter } from 'expo-router'
-import { isIos, useHaptics } from 'packages/app/src'
 import { useEffect, useState } from 'react'
 import { Alert, Linking, useWindowDimensions } from 'react-native'
 import { useMMKVBoolean } from 'react-native-mmkv'

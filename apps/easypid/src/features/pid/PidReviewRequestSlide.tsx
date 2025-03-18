@@ -1,5 +1,5 @@
 import { Heading, YStack } from '@package/ui'
-import { useWizard } from 'packages/app/src'
+import { useWizard } from '@packages/app'
 import { OnboardingIdCardRequestedAttributes } from '../onboarding/screens/id-card-requested-attributes'
 
 interface PidReviewRequestSlideProps {

@@ -12,14 +12,14 @@ import {
   useInitialRender,
   useSpringify,
 } from '@package/ui'
-import * as Haptics from 'expo-haptics'
 import {
   CredentialAttributes,
   DualResponseButtons,
   FunkeCredentialCard,
   useScrollViewPosition,
   useWizard,
-} from 'packages/app/src'
+} from '@packages/app'
+import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
 import {
   FadeIn,

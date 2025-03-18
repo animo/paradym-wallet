@@ -1,6 +1,6 @@
 import type { FormattedCredentialValue } from '@package/app/src/utils/formatSubject'
 import { FlexPage, ScrollView, YStack } from '@package/ui'
-import { CredentialAttributes, TextBackButton, useScrollViewPosition } from 'packages/app/src'
+import { CredentialAttributes, TextBackButton, useScrollViewPosition } from '@packages/app'
 import { HeaderContainer } from 'packages/ui/src/content/HeaderContainer'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

@@ -1,6 +1,6 @@
 import { FlexPage, Heading, HeroIcons, YStack } from '@package/ui'
-import { PinDotsInput } from 'packages/app/src'
-import type { PinDotsInputRef } from 'packages/app/src'
+import { PinDotsInput } from '@packages/app'
+import type { PinDotsInputRef } from '@packages/app'
 import { forwardRef } from 'react'
 import { Circle } from 'tamagui'
 

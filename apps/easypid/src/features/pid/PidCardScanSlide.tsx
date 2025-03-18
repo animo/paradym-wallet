@@ -1,5 +1,5 @@
 import { Heading, Paragraph, YStack } from '@package/ui'
-import { useWizard } from 'packages/app/src'
+import { useWizard } from '@packages/app'
 import { useState } from 'react'
 import { OnboardingIdCardScan, type OnboardingIdCardScanProps } from '../onboarding/screens/id-card-scan'
 
