@@ -9,7 +9,6 @@ import type {
   ReceivePidUseCaseFlowOptions,
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
-import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { resetWallet } from '@easypid/utils/resetWallet'
 import {
@@ -27,6 +26,7 @@ import {
   migrateLegacyParadymWallet,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
+import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'

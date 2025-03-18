@@ -1,3 +1,4 @@
+import { useSecureUnlock } from '@easypid/agent'
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
 import { useHaptics } from '@package/app'
 import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
@@ -7,7 +8,6 @@ import { useEffect, useRef, useState } from 'react'
 import { AccessibilityInfo, Alert } from 'react-native'
 import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
-import { useSecureUnlock } from '@easypid/agent'
 import { resetWallet } from '../../utils/resetWallet'
 
 export default function OnboardingScreens() {

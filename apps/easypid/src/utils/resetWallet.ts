@@ -9,8 +9,8 @@ import {
   removeHasFinishedOnboarding,
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
-import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { getWalletId } from '../agent/initialize'
+import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {
   console.log('Resetting wallet', secureUnlock.state)

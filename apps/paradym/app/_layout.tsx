@@ -7,7 +7,7 @@ import {
   useHasInternetConnection,
   useTransparentNavigationBar,
 } from '@package/app'
-import { getLegacySecureWalletKey, createLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
+import { createLegacySecureWalletKey, getLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Stack } from 'expo-router'
