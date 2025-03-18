@@ -1,6 +1,6 @@
+import { PinDotsInput } from '@package/app'
+import type { PinDotsInputRef } from '@package/app'
 import { YStack, useDeviceMedia } from '@package/ui'
-import { PinDotsInput } from '@packages/app'
-import type { PinDotsInputRef } from '@packages/app'
 import { useRef, useState } from 'react'
 
 export interface OnboardingPinEnterProps {

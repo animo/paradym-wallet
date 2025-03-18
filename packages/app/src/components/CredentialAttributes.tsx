@@ -1,3 +1,4 @@
+import { useHaptics } from '@package/app'
 import {
   FloatingSheet,
   Heading,
@@ -10,7 +11,6 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { useHaptics } from '@packages/app'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import {

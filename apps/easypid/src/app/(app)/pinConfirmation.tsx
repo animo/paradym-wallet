@@ -1,6 +1,6 @@
 import { FunkePidConfirmationScreen } from '@easypid/features/wallet/FunkePidConfirmationScreen'
+import type { PinDotsInputRef } from '@package/app'
 import { HeroIcons, XStack } from '@package/ui'
-import type { PinDotsInputRef } from '@packages/app'
 import { useGlobalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
 

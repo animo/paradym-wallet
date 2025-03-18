@@ -1,5 +1,12 @@
 import type { CredentialDisplay } from '@package/agent'
 import {
+  CredentialAttributes,
+  DualResponseButtons,
+  FunkeCredentialCard,
+  useScrollViewPosition,
+  useWizard,
+} from '@package/app'
+import {
   AnimatedStack,
   Button,
   Heading,
@@ -13,13 +20,6 @@ import {
   useInitialRender,
   useSpringify,
 } from '@package/ui'
-import {
-  CredentialAttributes,
-  DualResponseButtons,
-  FunkeCredentialCard,
-  useScrollViewPosition,
-  useWizard,
-} from '@packages/app'
 import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
 import {

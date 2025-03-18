@@ -1,5 +1,5 @@
+import { useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
-import { useWizard } from '@packages/app'
 import { useState } from 'react'
 import { OnboardingIdCardPinEnter } from '../onboarding/screens/id-card-pin'
 

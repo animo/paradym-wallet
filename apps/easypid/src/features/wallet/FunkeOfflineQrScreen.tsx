@@ -1,4 +1,5 @@
 import { mmkv } from '@easypid/storage/mmkv'
+import { isIos, useHaptics } from '@package/app'
 import {
   AnimatedStack,
   Button,
@@ -12,7 +13,6 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
-import { isIos, useHaptics } from '@packages/app'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Alert, Linking, useWindowDimensions } from 'react-native'

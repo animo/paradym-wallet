@@ -1,5 +1,6 @@
 import type { DisplayImage, TrustedEntity } from '@package/agent'
 
+import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import {
   Circle,
   Heading,
@@ -13,7 +14,6 @@ import {
   YStack,
   useMedia,
 } from '@package/ui'
-import { DualResponseButtons, useHaptics, useWizard } from '@packages/app'
 import { useRouter } from 'expo-router'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useState } from 'react'

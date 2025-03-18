@@ -1,5 +1,6 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import { isAndroid } from '@package/app'
 import {
   AnimatedStack,
   Circle,
@@ -14,7 +15,6 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
-import { isAndroid } from '@packages/app'
 import type { DisplayImage } from 'packages/agent/src'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'

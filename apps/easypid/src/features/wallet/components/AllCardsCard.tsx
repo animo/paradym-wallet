@@ -1,4 +1,4 @@
-import { useHaptics } from '@packages/app'
+import { useHaptics } from '@package/app'
 import { useRouter } from 'expo-router'
 import { useCredentialsForDisplay } from 'packages/agent/src'
 import { InfoButton } from 'packages/ui/src'

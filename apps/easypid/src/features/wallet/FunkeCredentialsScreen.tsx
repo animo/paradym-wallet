@@ -1,3 +1,4 @@
+import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
 import {
   AnimatedStack,
@@ -18,7 +19,6 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
-import { TextBackButton } from '@packages/app'
 import { useRouter } from 'expo-router'
 import { type DisplayImage, useCredentialsForDisplay } from 'packages/agent/src'
 import { formatDate } from 'packages/utils/src'

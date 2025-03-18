@@ -1,6 +1,6 @@
 import type { CredentialDisplay } from '@package/agent'
+import { DualResponseButtons, useWizard } from '@package/app'
 import { Heading, MiniCardRowItem, Paragraph, Stack, YStack } from '@package/ui'
-import { DualResponseButtons, useWizard } from '@packages/app'
 
 interface CredentialCardSlideProps {
   type: 'presentation' | 'pin' | 'noAuth'

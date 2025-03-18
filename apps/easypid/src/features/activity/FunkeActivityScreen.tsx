@@ -1,4 +1,5 @@
 import { ActivityRowItem } from '@package/app'
+import { TextBackButton } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import {
   AnimatedStack,
@@ -12,7 +13,6 @@ import {
   Stack,
   YStack,
 } from '@package/ui'
-import { TextBackButton } from '@packages/app'
 import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 import { useActivities } from './activityRecord'
