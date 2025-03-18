@@ -8,6 +8,32 @@ function generateNewWalletKey(): string {
   return askar.storeGenerateRawKey({})
 }
 
+export async function createLegacySecureWalletKey(): Promise<{
+  walletKey: string
+  keyDerivation: 'raw'
+}> {
+  const secureStoreAvailable = await SecureStore.isAvailableAsync()
+  if (!secureStoreAvailable) throw new Error('SecureStore is not available on this device.')
+
+  const newWalletKey = generateNewWalletKey()
+  await SecureStore.setItemAsync(STORE_KEY_RAW, newWalletKey)
+
+  return { walletKey: newWalletKey, keyDerivation: 'raw' }
+}
+
+export async function removeLegacySecureWalletKey() {
+  const secureStoreAvailable = await SecureStore.isAvailableAsync()
+  if (!secureStoreAvailable) throw new Error('SecureStore is not available on this device.')
+
+  if (await SecureStore.getItemAsync(STORE_KEY_LEGACY)) {
+    await SecureStore.deleteItemAsync(STORE_KEY_LEGACY)
+  }
+
+  if (await SecureStore.getItemAsync(STORE_KEY_RAW)) {
+    await SecureStore.deleteItemAsync(STORE_KEY_RAW)
+  }
+}
+
 /**
  * Retrieve the wallet key from expo secure store. This is the legacy method as we now have a more secure way to unlock the wallet
  * using React Native Keychain, protected by biometrics and a deriving the wallet key from a PIN.
@@ -20,7 +46,7 @@ function generateNewWalletKey(): string {
 export async function getLegacySecureWalletKey(): Promise<{
   walletKey: string
   keyDerivation: 'raw' | 'derive'
-}> {
+} | null> {
   const secureStoreAvailable = await SecureStore.isAvailableAsync()
   if (!secureStoreAvailable) throw new Error('SecureStore is not available on this device.')
 
@@ -33,9 +59,5 @@ export async function getLegacySecureWalletKey(): Promise<{
   walletKey = await SecureStore.getItemAsync(STORE_KEY_LEGACY)
   if (walletKey) return { walletKey, keyDerivation: 'derive' }
 
-  // No wallet key found, generate new method: raw wallet key
-  const newWalletKey = generateNewWalletKey()
-  await SecureStore.setItemAsync(STORE_KEY_RAW, newWalletKey)
-
-  return { walletKey: newWalletKey, keyDerivation: 'raw' }
+  return null
 }

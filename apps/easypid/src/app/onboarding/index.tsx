@@ -1,18 +1,24 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
 import { useHaptics } from '@package/app'
 import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
+import { router, useLocalSearchParams } from 'expo-router'
 import type React from 'react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AccessibilityInfo, Alert } from 'react-native'
 import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
+import { useSecureUnlock } from '@easypid/agent'
+import { resetWallet } from '../../utils/resetWallet'
 
 export default function OnboardingScreens() {
   const { withHaptics } = useHaptics()
   const media = useMedia()
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const onboardingContext = useOnboardingContext()
+  const secureUnlock = useSecureUnlock()
   const headerRef = useRef(null)
+  const reset = useLocalSearchParams<{ reset?: 'true' }>().reset === 'true'
+  const [hasResetWallet, setHasResetWallet] = useState(false)
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: When the step changes, move accessibility focus to the header
   useEffect(() => {
@@ -23,6 +29,18 @@ export default function OnboardingScreens() {
       }
     }
   }, [onboardingContext.currentStep])
+
+  if (!reset && hasResetWallet) {
+    setHasResetWallet(false)
+  }
+
+  useEffect(() => {
+    if (!reset || hasResetWallet) return
+
+    setHasResetWallet(true)
+    router.setParams({ reset: 'false' })
+    resetWallet(secureUnlock)
+  }, [reset, secureUnlock, hasResetWallet])
 
   const onReset = withHaptics(() => {
     Alert.alert('Reset Onboarding', 'Are you sure you want to reset the onboarding process?', [

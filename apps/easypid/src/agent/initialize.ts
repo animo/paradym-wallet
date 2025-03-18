@@ -6,6 +6,10 @@ import { initializeEasyPIDAgent } from '@package/agent'
 import { initializeParadymAgent, isEasyPIDAgent } from '@package/agent/src/agent'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
+export function getWalletId(walletKeyVersion: number) {
+  return isFunkeWallet() ? `easypid-wallet-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
+}
+
 export async function initializeAppAgent({
   walletKey,
   walletKeyVersion,
@@ -14,14 +18,14 @@ export async function initializeAppAgent({
   const agent = isFunkeWallet()
     ? await initializeEasyPIDAgent({
         keyDerivation: 'raw',
-        walletId: `easypid-wallet-${walletKeyVersion}`,
+        walletId: getWalletId(walletKeyVersion),
         walletKey,
         walletLabel: 'EasyPID Wallet',
         trustedX509Certificates,
       })
     : await initializeParadymAgent({
         keyDerivation: 'raw',
-        walletId: 'paradym-wallet-secure',
+        walletId: getWalletId(walletKeyVersion),
         walletKey,
         walletLabel: 'Paradym Wallet',
         trustedX509Certificates,

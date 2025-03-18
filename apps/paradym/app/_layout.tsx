@@ -7,7 +7,7 @@ import {
   useHasInternetConnection,
   useTransparentNavigationBar,
 } from '@package/app'
-import { getLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
+import { getLegacySecureWalletKey, createLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { Heading, Page, Paragraph, XStack, YStack, config, useToastController } from '@package/ui'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Stack } from 'expo-router'
@@ -47,10 +47,12 @@ export default function HomeLayout() {
     if (agent) return
 
     const startAgent = async () => {
-      const walletKey = await getLegacySecureWalletKey().catch(() => {
-        toast.show('Could not load wallet key from secure storage.')
-        setAgentInitializationFailed(true)
-      })
+      const walletKey = await getLegacySecureWalletKey()
+        .then(async (walletKey) => walletKey ?? (await createLegacySecureWalletKey()))
+        .catch(() => {
+          toast.show('Could not load wallet key from secure storage.')
+          setAgentInitializationFailed(true)
+        })
       if (!walletKey) return
 
       // This will be removed in the future

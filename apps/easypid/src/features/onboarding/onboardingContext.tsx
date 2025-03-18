@@ -2,13 +2,14 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
   ReceivePidUseCaseFlowOptions,
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
+import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { resetWallet } from '@easypid/utils/resetWallet'
 import {
@@ -23,6 +24,7 @@ import {
   SdJwtVcRecord,
   getCredentialForDisplay,
   getCredentialForDisplayId,
+  migrateLegacyParadymWallet,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
@@ -179,7 +181,27 @@ export function OnboardingContextProvider({
       .setup(walletPin as string)
       .then(async ({ walletKey }) => {
         await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
-        return initializeAgent(walletKey)
+
+        if (isParadymWallet()) {
+          const legacyWalletKey = await getLegacySecureWalletKey().catch(() => null)
+
+          if (legacyWalletKey) {
+            await migrateLegacyParadymWallet({
+              legacyWalletKey,
+              newWalletKey: walletKey,
+              walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
+            })
+              .catch((e) => {
+                // We ignore this, it's unfortunate but the wallet migration failed
+                console.error('error migrating wallet', e)
+              })
+              .finally(async () => {
+                await removeLegacySecureWalletKey()
+              })
+          }
+        }
+
+        await initializeAgent(walletKey)
       })
       .then(goToNextStep)
       .catch((e) => {
