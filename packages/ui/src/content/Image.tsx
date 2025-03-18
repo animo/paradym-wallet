@@ -1,39 +1,38 @@
-import { SvgUri } from 'react-native-svg'
-import { Image as TImage } from 'tamagui'
+import { Image as ExpoImage, type ImageProps as ExpoImageProps, type ImageStyle } from 'expo-image'
 
-export interface ImageProps {
+export interface ImageProps extends ExpoImageProps {
   src: string | number
   alt?: string
-  width?: number | string
-  height?: number | string
-  resizeMode?: 'cover' | 'contain'
-  isImageLoaded?(): void
+  width?: ImageStyle['width']
+  height?: ImageStyle['height']
   circle?: boolean
+  backgroundColor?: string
 }
 
-// FIXME: tamagui image is not working for svg's
-export const Image = ({ src, alt, width, height, isImageLoaded, resizeMode = 'contain', circle }: ImageProps) => {
-  if (typeof src === 'string' && src.endsWith('.svg'))
-    return (
-      <SvgUri
-        role="img"
-        width={width}
-        height={height}
-        uri={src}
-        aria-label={alt}
-        style={{ borderRadius: circle ? 999 : undefined }}
-      />
-    )
-
+export const Image = ({
+  src,
+  alt,
+  width,
+  height,
+  contentFit = 'contain',
+  circle,
+  backgroundColor,
+  ...props
+}: ImageProps) => {
   return (
-    <TImage
-      source={{ uri: src as string }}
-      onLoad={isImageLoaded ? () => isImageLoaded() : undefined}
-      width={width}
-      height={height}
+    <ExpoImage
+      source={src}
       alt={alt}
-      resizeMode={resizeMode}
-      br={circle ? '$12' : undefined}
+      contentFit={contentFit}
+      transition={150}
+      cachePolicy="memory-disk"
+      style={{
+        width: width ?? '100%',
+        height: height ?? '100%',
+        backgroundColor: backgroundColor ?? '$grey-50',
+        borderRadius: circle ? 999 : undefined,
+      }}
+      {...props}
     />
   )
 }

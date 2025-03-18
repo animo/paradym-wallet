@@ -1,6 +1,6 @@
 import type { CredentialDisplay } from '@package/agent'
 import { Heading, MiniCardRowItem, Paragraph, Stack, YStack } from '@package/ui'
-import { DualResponseButtons, useHasInternetConnection, useWizard } from 'packages/app/src'
+import { DualResponseButtons, useWizard } from 'packages/app/src'
 
 interface CredentialCardSlideProps {
   type: 'presentation' | 'pin' | 'noAuth'
@@ -29,7 +29,6 @@ const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
 
 export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCardSlideProps) => {
   const { onNext, onCancel } = useWizard()
-  const hasInternet = useHasInternetConnection()
 
   const content = getContentType(type, display.issuer.name)
 
@@ -50,7 +49,6 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
           issuerImageUri={display.issuer.logo?.url}
           backgroundImageUri={display.backgroundImage?.url}
           backgroundColor={display.backgroundColor ?? '$grey-900'}
-          hasInternet={hasInternet}
         />
       </YStack>
       <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">

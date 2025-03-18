@@ -159,9 +159,10 @@ function FunkeCredentialRowCard({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={onPress}
+      fg={1}
     >
       {icon}
-      <YStack gap="$1" jc="center" fg={1}>
+      <YStack gap="$1" jc="center" fg={1} f={1}>
         <Paragraph mt="$-1.5" fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
           {name.toLocaleUpperCase()}
         </Paragraph>

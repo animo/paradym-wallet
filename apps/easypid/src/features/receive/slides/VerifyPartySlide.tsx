@@ -76,7 +76,7 @@ export const VerifyPartySlide = ({
           <XStack ai="center" pt="$4" jc="center">
             <Circle size={88} bw="$0.5" borderColor="$grey-100" bg={backgroundColor ?? '$white'}>
               {logo?.url ? (
-                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="contain" />
+                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
               ) : (
                 <HeroIcons.BuildingOffice color="$grey-800" size={36} />
               )}

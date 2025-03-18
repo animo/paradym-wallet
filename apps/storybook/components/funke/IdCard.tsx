@@ -39,7 +39,7 @@ export function IdCard({ icon, issuerImage, userName }: IdCardProps) {
           </Paragraph>
         </YStack>
         <Stack>
-          <Image src={issuerImage} width={75} height={75} resizeMode="contain" />
+          <Image src={issuerImage} width={75} height={75} contentFit="contain" />
         </Stack>
       </XStack>
       <XStack justifyContent="flex-end">

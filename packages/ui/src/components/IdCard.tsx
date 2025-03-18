@@ -86,7 +86,7 @@ export function IdCard({ icon, issuerImage, backgroundImage, userName, onPress, 
             </Paragraph>
           </YStack>
           <Stack>
-            <Image src={issuerImage} width={36} height={42} resizeMode="contain" />
+            <Image src={issuerImage} width={36} height={42} contentFit="contain" />
           </Stack>
         </XStack>
         <XStack justifyContent="space-between" flex-1>
@@ -104,7 +104,7 @@ export function IdCard({ icon, issuerImage, backgroundImage, userName, onPress, 
           </XStack>
         </XStack>
         <Stack zIndex="$-1" position="absolute" bg="$idCardBackground" top={0} left={0} right={0} bottom={0}>
-          <Image src={backgroundImage} width="100%" resizeMode="cover" height="100%" />
+          <Image src={backgroundImage} width="100%" contentFit="cover" height="100%" />
         </Stack>
       </YStack>
     </Animated.View>

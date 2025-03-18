@@ -11,6 +11,7 @@
 		"@tamagui/shorthands": "1.122.7",
 		"@tamagui/themes": "1.122.7",
 		"@tamagui/toast": "1.122.7",
+		"expo-image": "~1.13.0",
 		"react-native-heroicons": "^4.0.0",
 		"react-native-reanimated": "~3.15.5",
 		"tamagui": "1.122.7"
