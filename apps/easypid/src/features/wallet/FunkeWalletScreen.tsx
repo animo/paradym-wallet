@@ -18,7 +18,7 @@ import {
 import { useRouter } from 'expo-router'
 
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
-import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useHaptics } from '@package/app/src/hooks'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
@@ -31,6 +31,7 @@ export function FunkeWalletScreen() {
 
   const { userName, isLoading } = useFirstNameFromPidCredential()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
+  const hasInboxFeatureFlag = useFeatureFlag('INBOX')
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
@@ -49,7 +50,7 @@ export function FunkeWalletScreen() {
       <FlexPage safeArea="y" fg={1} flex-1={false} bg="transparent">
         <XStack pt="$2" jc="space-between">
           <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
-          {isParadymWallet() && <InboxIcon />}
+          {hasInboxFeatureFlag && <InboxIcon />}
         </XStack>
 
         <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>

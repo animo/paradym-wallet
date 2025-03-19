@@ -30,10 +30,19 @@ export function DidCommNotificationScreen() {
 
   const [errorReason, setErrorReason] = useState<string>()
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
-  const [notification, setNotification] = useState<{
-    id: string
-    type: 'credentialExchange' | 'proofExchange'
-  }>()
+  const [notification, setNotification] = useState<
+    | {
+        id: string
+        type: 'credentialExchange' | 'proofExchange'
+      }
+    | undefined
+  >(
+    params.credentialExchangeId
+      ? { id: params.credentialExchangeId, type: 'credentialExchange' }
+      : params.proofExchangeId
+        ? { id: params.proofExchangeId, type: 'proofExchange' }
+        : undefined
+  )
 
   const handleNavigation = (type: 'replace' | 'back') => {
     // When starting from the inbox, we want to go back to the inbox on finish
@@ -45,33 +54,16 @@ export function DidCommNotificationScreen() {
   }
 
   const onCancel = () => {
-    if (notification) {
-      if (notification.type === 'credentialExchange' || params.credentialExchangeId) {
-        void agent.modules.credentials.deleteById(notification.id ?? params.credentialExchangeId)
-      } else if (notification.type === 'proofExchange' || params.proofExchangeId) {
-        void agent.modules.proofs.deleteById(notification.id ?? params.proofExchangeId)
-      }
+    if (notification?.type === 'credentialExchange') {
+      void agent.modules.credentials.deleteById(notification.id)
+    } else if (notification?.type === 'proofExchange') {
+      void agent.modules.proofs.deleteById(notification.id)
     }
 
     handleNavigation('back')
   }
 
   const onComplete = () => handleNavigation('replace')
-
-  useEffect(() => {
-    if (params.credentialExchangeId) {
-      setNotification({
-        id: params.credentialExchangeId,
-        type: 'credentialExchange',
-      })
-    }
-    if (params.proofExchangeId) {
-      setNotification({
-        id: params.proofExchangeId,
-        type: 'proofExchange',
-      })
-    }
-  }, [params.credentialExchangeId, params.proofExchangeId])
 
   useEffect(() => {
     async function handleInvitation() {
