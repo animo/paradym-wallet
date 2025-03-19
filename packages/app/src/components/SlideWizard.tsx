@@ -24,6 +24,7 @@ type SlideWizardProps = {
   confirmation?: {
     title: string
     description: string
+    confirmText?: string
   }
 }
 
@@ -193,6 +194,7 @@ export const SlideWizard = forwardRef(
           type="floating"
           title={confirmation?.title ?? 'Stop sharing?'}
           description={confirmation?.description ?? 'If you stop, no data will be shared.'}
+          confirmText={confirmation?.confirmText}
           isOpen={isSheetOpen}
           setIsOpen={setIsSheetOpen}
           onConfirm={onConfirmCancel}
