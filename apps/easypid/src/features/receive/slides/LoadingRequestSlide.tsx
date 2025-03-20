@@ -1,3 +1,4 @@
+import { useWizard } from '@package/app'
 import {
   AnimatedStack,
   Button,
@@ -9,7 +10,6 @@ import {
   useMinimumLoadingTime,
   useSpringify,
 } from '@package/ui'
-import { useWizard } from 'packages/app/src'
 import { useEffect } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 

@@ -14,7 +14,6 @@ import {
 import { sanitizeString } from '@package/utils/src'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
-import { useHasInternetConnection } from '../hooks'
 import { BlurBadge } from './BlurBadge'
 
 interface CardWithAttributesProps {
@@ -46,7 +45,6 @@ export function CardWithAttributes({
 }: CardWithAttributesProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const router = useRouter()
-  const hasInternet = useHasInternetConnection()
 
   const groupedAttributes = useMemo(() => {
     const result: Array<[string, string | undefined]> = []
@@ -82,12 +80,12 @@ export function CardWithAttributes({
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
       <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
-        {hasInternet && backgroundImage?.url && (
+        {backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
               src={backgroundImage?.url ?? ''}
               alt={backgroundImage?.altText ?? ''}
-              resizeMode="cover"
+              contentFit="cover"
               height="100%"
               width="100%"
             />

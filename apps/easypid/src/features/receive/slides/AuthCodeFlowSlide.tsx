@@ -1,4 +1,4 @@
-import { useHasInternetConnection, useWizard } from '@package/app'
+import { useWizard } from '@package/app'
 import { DualResponseButtons } from '@package/app/src/components/DualResponseButtons'
 import { Heading, MiniCardRowItem, Paragraph, YStack, useToastController } from '@package/ui'
 import { useGlobalSearchParams } from 'expo-router'
@@ -30,7 +30,6 @@ export const AuthCodeFlowSlide = ({
 }: AuthCodeFlowSlideProps) => {
   const toast = useToastController()
   const { onNext, onCancel: wizardOnCancel } = useWizard()
-  const hasInternet = useHasInternetConnection()
   const { credentialAuthorizationCode } = useGlobalSearchParams<{ credentialAuthorizationCode?: string }>()
   const [browserResult, setBrowserResult] = useState<WebBrowser.WebBrowserAuthSessionResult>()
   const [hasHandledResult, setHasHandledResult] = useState(false)
@@ -103,7 +102,6 @@ export const AuthCodeFlowSlide = ({
           issuerImageUri={display.issuer.logo?.url}
           backgroundImageUri={display.backgroundImage?.url}
           backgroundColor={display.backgroundColor ?? '$grey-900'}
-          hasInternet={hasInternet}
         />
       </YStack>
       <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">

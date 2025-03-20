@@ -1,5 +1,6 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import { isAndroid } from '@package/app'
 import {
   AnimatedStack,
   Circle,
@@ -15,7 +16,6 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import type { DisplayImage } from 'packages/agent/src'
-import { isAndroid } from 'packages/app/src'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 
@@ -75,7 +75,7 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
           icon={
             <Circle size="$4" overflow="hidden">
               {logo?.url ? (
-                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="contain" />
+                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
               ) : (
                 <Stack bg="$grey-200" width="100%" height="100%" ai="center" jc="center">
                   <HeroIcons.BuildingOffice color="$grey-800" size={24} />

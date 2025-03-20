@@ -1,6 +1,6 @@
 import { FlexPage, HeaderContainer, HeroIcons, ScrollView, Switch, YStack } from '@package/ui'
 
-import { TextBackButton } from 'packages/app/src'
+import { TextBackButton } from '@package/app'
 import { LocalAiContainer } from './components/LocalAiContainer'
 
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'

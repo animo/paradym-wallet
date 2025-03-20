@@ -29,7 +29,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             shadowOpacity={0.5}
             shadowRadius={24}
           >
-            <Image height={96} width={96} src={appIcon} />
+            <Image backgroundColor="$primary-500" height={96} width={96} src={appIcon} />
           </Stack>
         </YStack>
       </YStack>
