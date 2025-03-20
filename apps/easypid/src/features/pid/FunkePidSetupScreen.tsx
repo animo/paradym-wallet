@@ -443,7 +443,7 @@ export function FunkePidSetupScreen() {
       ].filter((s): s is NonNullable<typeof s> => s !== undefined)}
       confirmation={{
         title: 'Stop ID Setup?',
-        description: 'If you stop, you can do the setup later.',
+        description: 'If you stop, you can still do the setup later.',
       }}
       onCancel={onCancel}
     />

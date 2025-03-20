@@ -111,7 +111,7 @@ export function ActivityRowItem({
             overflow="hidden"
           >
             {logo?.url ? (
-              <Image src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="contain" />
+              <Image src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
             ) : (
               <HeroIcons.BuildingOffice strokeWidth={2} color="$grey-500" />
             )}

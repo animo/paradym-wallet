@@ -487,6 +487,10 @@ export function FunkeCredentialNotificationScreen() {
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={errorReason !== undefined}
       onCancel={onCancel}
+      confirmation={{
+        title: 'Stop card offer?',
+        description: 'If you stop, the card offer will be cancelled.',
+      }}
     />
   )
 }

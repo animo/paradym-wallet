@@ -16,11 +16,7 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { BlurView } from 'expo-blur'
-import { useState } from 'react'
 import { StyleSheet } from 'react-native'
-
-import { useAnimatedStyle, withTiming } from 'react-native-reanimated'
-import { useHasInternetConnection } from '../hooks'
 import { BlurBadge } from './BlurBadge'
 
 type FunkeCredentialCardProps = {
@@ -48,9 +44,7 @@ export function FunkeCredentialCard({
   isExpired,
   isRevoked,
 }: FunkeCredentialCardProps) {
-  const [isLoaded, setIsLoaded] = useState(false)
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
-  const hasInternet = useHasInternetConnection()
 
   textColor = textColor ? textColor : bgColor ? getTextColorBasedOnBg(bgColor) : '$grey-100'
 
@@ -64,17 +58,11 @@ export function FunkeCredentialCard({
 
   const bgColorValue = bgColor ?? '$grey-900'
 
-  const fadeInStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(isLoaded ? 1 : 0, { duration: 200 }),
-    }
-  })
-
   return (
     <AnimatedStack
       shadow={shadow}
       br="$8"
-      bg={backgroundImage?.url && hasInternet ? 'transparent' : bgColorValue} // Only set bg color if no background image
+      bg={backgroundImage?.url ? 'transparent' : bgColorValue} // Only set bg color if no background image
       borderWidth="$0.5"
       borderColor="$borderTranslucent"
       position="relative"
@@ -110,22 +98,14 @@ export function FunkeCredentialCard({
         </Card.Footer>
         {backgroundImage?.url && (
           <Card.Background accessible={false}>
-            {hasInternet ? (
-              <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
-                <AnimatedStack width="100%" height="100%" style={fadeInStyle}>
-                  <Image
-                    isImageLoaded={() => setIsLoaded(true)}
-                    src={backgroundImage.url}
-                    alt={backgroundImage.altText}
-                    width="100%"
-                    height="100%"
-                    resizeMode="cover"
-                  />
-                </AnimatedStack>
-              </YStack>
-            ) : (
-              <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'} />
-            )}
+            <Image
+              backgroundColor={bgColor ?? '$grey-900'}
+              src={backgroundImage.url}
+              alt={backgroundImage.altText}
+              width="100%"
+              height="100%"
+              contentFit="cover"
+            />
           </Card.Background>
         )}
         {isLoading && (

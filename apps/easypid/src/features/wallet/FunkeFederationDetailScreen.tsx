@@ -1,4 +1,5 @@
 import type { TrustedEntity } from '@package/agent'
+import { TextBackButton, useScrollViewPosition } from '@package/app'
 import {
   Circle,
   FlexPage,
@@ -14,7 +15,6 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { TextBackButton, useScrollViewPosition } from 'packages/app/src'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

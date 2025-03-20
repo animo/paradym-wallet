@@ -7,7 +7,6 @@ interface MiniCardRowItemProps {
   issuerImageUri?: string | number | undefined
   backgroundImageUri?: string | number | undefined
   backgroundColor: string
-  hasInternet?: boolean
 }
 
 export function MiniCardRowItem({
@@ -16,7 +15,6 @@ export function MiniCardRowItem({
   issuerImageUri,
   backgroundImageUri,
   backgroundColor,
-  hasInternet,
 }: MiniCardRowItemProps) {
   return (
     <XStack
@@ -27,9 +25,9 @@ export function MiniCardRowItem({
       aria-label={`${name}. Issued by ${subtitle}.`}
     >
       <Stack p="$2" h="$6" w="$10" br="$4" overflow="hidden" pos="relative" bg={backgroundColor ?? '$grey-900'}>
-        {hasInternet && backgroundImageUri && (
+        {backgroundImageUri && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
-            <Image src={backgroundImageUri} alt="Card" resizeMode="cover" height="100%" width="100%" />
+            <Image src={backgroundImageUri} alt="Card" contentFit="cover" height="100%" width="100%" />
           </Stack>
         )}
         {issuerImageUri && <Image src={issuerImageUri} alt="Issuer" width={16} height={16} />}

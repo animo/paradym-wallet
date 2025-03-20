@@ -24,7 +24,7 @@ const iconMapping = {
   danger: <HeroIcons.ExclamationCircleFilled size={20} color="$color.danger-500" />,
   success: <HeroIcons.CheckCircleFilled size={20} color="$color.positive-500" />,
   warning: <HeroIcons.ExclamationCircleFilled size={20} color="$color.warning-500" />,
-  none: <HeroIcons.InformationCircleFilled size={20} color="$color.primary-500" />,
+  none: <HeroIcons.InformationCircleFilled size={20} color="$color.grey-50" />,
 }
 
 const enteringAnimation: EntryExitAnimationFunction = () => {
