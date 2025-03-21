@@ -43,7 +43,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
     getCredentialsForProofRequest({
       agent,
-      data: params.data,
+      encodedRequestData: params.data,
       uri: params.uri,
     })
       .then(setCredentialsForRequest)

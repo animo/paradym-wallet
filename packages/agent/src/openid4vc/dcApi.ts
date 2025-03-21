@@ -10,13 +10,12 @@ export async function resolveRequestForDcApi({
   const provider = request.request.providers[request.selectedEntry.providerIndex]
 
   // verifiable-credentials.dev contains a client_id
-  const { client_id, ...filteredRequest } = JSON.parse(provider.request)
+  const authorizationRequestPayload = JSON.parse(provider.request)
 
-  // TODO: should allow limiting it to a specific credential
+  // TODO: should allow limiting it to a specific credential (as we already know the credential id)
   const result = await getCredentialsForProofRequest({
     agent,
-    // FIXME: we already have the parsed request, which is supported by Credo, but not the API definition of Credo
-    uri: filteredRequest,
+    requestPayload: authorizationRequestPayload,
     origin: request.origin,
   })
 

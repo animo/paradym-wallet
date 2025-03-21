@@ -117,7 +117,6 @@ function getSelectedCredentialsForRequest(
     throw new Error('Cannot select the credentials for the dcql query presentation if the request cannot be satisfied')
   }
 
-  console.log(JSON.stringify(dcqlQueryResult, null, 2))
   const credentials: DcqlCredentialsForRequest = {}
 
   for (const [credentialQueryId, credentialRecordId] of Object.entries(selectedCredentials)) {

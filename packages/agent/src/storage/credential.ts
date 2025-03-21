@@ -43,9 +43,10 @@ export async function updateCredential(agent: EitherAgent, credentialRecord: Cre
     await agent.dependencyManager.resolve(SdJwtVcRepository).update(agent.context, credentialRecord)
   }
 
-  // NOTE: temporary hack, until we can integrate with listeners
+  // Update database when we update a credential
   await registerCredentialsForDcApi(agent)
 }
+
 export async function storeCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
@@ -55,7 +56,7 @@ export async function storeCredential(agent: EitherAgent, credentialRecord: Cred
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
   }
 
-  // NOTE: temporary hack, until we can integrate with listeners
+  // Update database when we store a credential
   await registerCredentialsForDcApi(agent)
 }
 
@@ -71,6 +72,6 @@ export async function deleteCredential(agent: EitherAgent, credentialId: Credent
     await agent.mdoc.deleteById(mdocId)
   }
 
-  // NOTE: temporary hack, until we can integrate with listeners
+  // Update database when we delete a credential
   await registerCredentialsForDcApi(agent)
 }

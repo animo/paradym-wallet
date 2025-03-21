@@ -1,5 +1,5 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
-import type { MdocNameSpaces } from '@credo-ts/core'
+import { DateOnly, type MdocNameSpaces } from '@credo-ts/core'
 import { sanitizeString } from '@package/utils'
 import type { EitherAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
@@ -17,8 +17,7 @@ function mapMdocAttributes(namespaces: MdocNameSpaces) {
             return [key, value]
           }
 
-          if (value instanceof Date) {
-            // TODO: handle DateOnly and Date
+          if (value instanceof Date || value instanceof DateOnly) {
             return [key, value.toISOString()]
           }
 

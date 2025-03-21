@@ -382,7 +382,8 @@ export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredential
 
 export type GetCredentialsForProofRequestOptions = {
   agent: EitherAgent
-  data?: string
+  encodedRequestData?: string
+  requestPayload?: Record<string, unknown>
   uri?: string
   allowUntrustedFederation?: boolean
   origin?: string
@@ -390,37 +391,38 @@ export type GetCredentialsForProofRequestOptions = {
 
 export const getCredentialsForProofRequest = async ({
   agent,
-  data,
+  encodedRequestData,
   uri,
+  requestPayload,
   allowUntrustedFederation = true,
   origin,
 }: GetCredentialsForProofRequestOptions) => {
-  let requestUri: string
-  const requestData = data
-
+  const requestData = encodedRequestData
   // const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
   //   ? await extractEntityIdFromAuthorizationRequest({ data: requestData, uri })
   //   : {}
   // requestData = fromFederationData ?? requestData
 
+  let request: string | Record<string, unknown>
+
   if (requestData) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
     // but in the future we need to support the parsed request in Credo directly
-    requestUri = `openid://?request=${encodeURIComponent(requestData)}`
+    request = `openid://?request=${encodeURIComponent(requestData)}`
   } else if (uri) {
-    requestUri = uri
+    request = uri
+  } else if (requestPayload) {
+    request = requestPayload
   } else {
     throw new Error('Either data or uri must be provided')
   }
 
-  agent.config.logger.info(`Receiving openid uri ${requestUri}`, {
-    data,
-    uri,
-    requestUri,
+  agent.config.logger.info('Receiving openid request', {
+    request,
   })
 
   const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(
-    requestUri,
+    request,
     { origin }
     /* {
     ...(entityId ? { federation: { trustedEntityIds: [entityId] } } : {}),
