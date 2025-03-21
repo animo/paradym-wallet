@@ -432,7 +432,6 @@ export function FunkeCredentialNotificationScreen() {
                 />
               ),
             },
-        // TODO: verify entity slide??
         isAuthFlow
           ? {
               step: 'presentation-during-issuance',
