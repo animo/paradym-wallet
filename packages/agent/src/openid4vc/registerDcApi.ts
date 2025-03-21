@@ -1,6 +1,7 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
 import { DateOnly, type MdocNameSpaces } from '@credo-ts/core'
 import { sanitizeString } from '@package/utils'
+import { Platform } from 'react-native'
 import type { EitherAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
 
@@ -64,6 +65,8 @@ function mapSdJwtAttributesToClaimDisplay(claims: object, path: string[] = []): 
 }
 
 export async function registerCredentialsForDcApi(agent: EitherAgent) {
+  if (Platform.OS === 'ios') return
+
   const mdocRecords = await agent.mdoc.getAll()
   const sdJwtVcRecords = await agent.sdJwtVc.getAll()
 

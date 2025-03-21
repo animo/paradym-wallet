@@ -19,7 +19,7 @@ import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
+import { JwaSignatureAlgorithm, Jwt, X509ModuleConfig } from '@credo-ts/core'
 import {
   CredentialEventTypes,
   CredentialState,
@@ -465,6 +465,28 @@ export const getCredentialsForProofRequest = async ({
   }
 
   const clientMetadata = resolved.authorizationRequestPayload?.client_metadata
+
+  const signer = resolved.signedAuthorizationRequest?.signer
+  if (signer?.method === 'x5c' && resolved.authorizationRequestPayload.client_id) {
+    const x509Config = agent.dependencyManager.resolve(X509ModuleConfig)
+
+    try {
+      // FIXME: we should return the x509 cert that was matched, then we can just see if it's in
+      // the list of hardcoded trusted certificates
+      const [leafCertificate] = await agent.x509.validateCertificateChain({
+        certificateChain: signer.x5c,
+        trustedCertificates: x509Config.trustedCertificates,
+      })
+
+      // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
+      trustedEntities.push({
+        entity_id: resolved.authorizationRequestPayload.client_id,
+        organization_name: clientMetadata?.client_name ?? leafCertificate.data.subjectName,
+      })
+    } catch (error) {
+      // no-op
+    }
+  }
 
   return {
     ...resolved.presentationExchange,
