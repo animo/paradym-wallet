@@ -18,9 +18,6 @@ catalogs:
     '@hyperledger/anoncreds-react-native':
       specifier: ^0.2.4
       version: 0.2.4
-    '@openwallet-foundation/askar-react-native':
-      specifier: ^0.3.1
-      version: 0.3.1
     expo:
       specifier: ~51.0.39
       version: 51.0.39
@@ -48,6 +45,8 @@ overrides:
   '@animo-id/oid4vci': 0.1.4
   '@animo-id/oauth2': 0.1.4
   '@animo-id/oauth2-utils': 0.1.4
+  '@openwallet-foundation/askar-shared': 0.3.2-alpha-20250318162328
+  '@openwallet-foundation/askar-react-native': 0.3.2-alpha-20250318162328
   dcql: 0.2.17
   '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250224091806
   '@credo-ts/askar': npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806
@@ -120,8 +119,8 @@ importers:
         specifier: 'catalog:'
         version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@openwallet-foundation/askar-react-native':
-        specifier: 'catalog:'
-        version: 0.3.1(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        specifier: 0.3.2-alpha-20250318162328
+        version: 0.3.2-alpha-20250318162328(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@package/agent':
         specifier: workspace:*
         version: link:../../packages/agent
@@ -304,8 +303,8 @@ importers:
         specifier: 'catalog:'
         version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@openwallet-foundation/askar-react-native':
-        specifier: 'catalog:'
-        version: 0.3.1(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        specifier: 0.3.2-alpha-20250318162328
+        version: 0.3.2-alpha-20250318162328(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@package/agent':
         specifier: workspace:*
         version: link:../../packages/agent
@@ -610,7 +609,7 @@ importers:
         version: '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250224091806(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/askar':
         specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806
-        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806(@animo-id/expo-secure-environment@0.1.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
+        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806(@animo-id/expo-secure-environment@0.1.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.2-alpha-20250318162328)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/cheqd':
         specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806
         version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806(patch_hash=lxpzu4t7pq345zsakhcpkq67nm)(@hyperledger/anoncreds-shared@0.2.4)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
@@ -630,8 +629,8 @@ importers:
         specifier: 'catalog:'
         version: 0.2.4(patch_hash=l7lys2x3cbmg25264calankphu)(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
       '@openwallet-foundation/askar-react-native':
-        specifier: 'catalog:'
-        version: 0.3.1(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
+        specifier: 0.3.2-alpha-20250318162328
+        version: 0.3.2-alpha-20250318162328(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
@@ -765,8 +764,8 @@ importers:
   packages/secure-store:
     dependencies:
       '@openwallet-foundation/askar-react-native':
-        specifier: 'catalog:'
-        version: 0.3.1(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)
+        specifier: 0.3.2-alpha-20250318162328
+        version: 0.3.2-alpha-20250318162328(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5
         version: 5.66.7(react@18.3.1)
@@ -836,7 +835,7 @@ packages:
     resolution: {integrity: sha512-sqbPNRs9JH6HMsjp9hf6z+zt7Tkl4M0iK+dYwSI81f4eIGWPC0z2nDtUi+2RRK6TSuq/ftBFOhXOjzw9Hin1HA==}
     peerDependencies:
       '@animo-id/expo-secure-environment': ^0.1.0-alpha.11
-      '@openwallet-foundation/askar-shared': ^0.3.1
+      '@openwallet-foundation/askar-shared': 0.3.2-alpha-20250318162328
     peerDependenciesMeta:
       '@animo-id/expo-secure-environment':
         optional: true
@@ -2538,14 +2537,14 @@ packages:
   '@openid-federation/core@0.1.1-alpha.17':
     resolution: {integrity: sha512-Bn5JaQzQnrQ2koPisiITHN69eOEewvs26EPyD4tp5XoR6Kdh9sy2f3w4hYV4MSaDwRorpRF7ttN6PGK1piMTng==}
 
-  '@openwallet-foundation/askar-react-native@0.3.1':
-    resolution: {integrity: sha512-GXpYfEPGJkAJy+njNyD+66eVAPna5v+vrI5Eei5FW7iGpZ40Dp/LN47SByiS40K/Vlvnz8orEUwGAVAoFmDDEg==}
+  '@openwallet-foundation/askar-react-native@0.3.2-alpha-20250318162328':
+    resolution: {integrity: sha512-3E36fbWmnkdE4cpw8rgov8s7ADCQ66OTGFo/lbBgwl8o09eZCtp2SXLi60wdSUE8qsQwTh3Nihd/2C5G0sIQcQ==}
     peerDependencies:
       react: '>= 16'
       react-native: '>= 0.71'
 
-  '@openwallet-foundation/askar-shared@0.3.1':
-    resolution: {integrity: sha512-KpkVuLHnKkJ7nPYZ/6PJ8b9gq+elC6Mhg8UiG+wLOKchVi6Vbv/nOsAdKK9j1/CCZ3DzvfTbhV+KRk6YNXmIsA==}
+  '@openwallet-foundation/askar-shared@0.3.2-alpha-20250318162328':
+    resolution: {integrity: sha512-jbMZLJFlUjjDairthoAFIWxm89U5gRy6iSfCj6F8qoznuqNcJm7FJrtpEwIZCxnZxrdWFAsTeQMQE9ZkTagsyw==}
 
   '@oxc-transform/binding-darwin-arm64@0.47.1':
     resolution: {integrity: sha512-GT56Wkk/M1Eo1HCFfj8PxNn/ssBfxFVIrS3A5lJ6GE2k3gbVRORNzVA1znHtB3Tj4hIvWPNzqh+EQ2bhaFypNQ==}
@@ -9904,10 +9903,10 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806(@animo-id/expo-secure-environment@0.1.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.1)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806(@animo-id/expo-secure-environment@0.1.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1))(@openwallet-foundation/askar-shared@0.3.2-alpha-20250318162328)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250224091806(patch_hash=pq7qg2hcwnj2u4ezzzskdto3mm)(expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))))(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(msrcrypto@1.5.8)(typescript@5.7.3)(web-streams-polyfill@3.3.3)'
-      '@openwallet-foundation/askar-shared': 0.3.1
+      '@openwallet-foundation/askar-shared': 0.3.2-alpha-20250318162328
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.1
@@ -12323,27 +12322,27 @@ snapshots:
       buffer: 6.0.3
       zod: 3.24.2
 
-  '@openwallet-foundation/askar-react-native@0.3.1(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@openwallet-foundation/askar-react-native@0.3.2-alpha-20250318162328(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11
-      '@openwallet-foundation/askar-shared': 0.3.1
+      '@openwallet-foundation/askar-shared': 0.3.2-alpha-20250318162328
       react: 18.3.1
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3)
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@openwallet-foundation/askar-react-native@0.3.1(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)':
+  '@openwallet-foundation/askar-react-native@0.3.2-alpha-20250318162328(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3))(react@18.3.1)':
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11
-      '@openwallet-foundation/askar-shared': 0.3.1
+      '@openwallet-foundation/askar-shared': 0.3.2-alpha-20250318162328
       react: 18.3.1
       react-native: 0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.7.3)
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@openwallet-foundation/askar-shared@0.3.1':
+  '@openwallet-foundation/askar-shared@0.3.2-alpha-20250318162328':
     dependencies:
       buffer: 6.0.3
 
