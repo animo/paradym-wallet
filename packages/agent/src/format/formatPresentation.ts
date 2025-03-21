@@ -103,7 +103,7 @@ export function formatDifPexCredentialsForRequest(
 
               // By default the whole credential is disclosed
               let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
-              if (verifiableCredential.type === ClaimFormat.SdJwtVc) {
+              if (verifiableCredential.claimFormat === ClaimFormat.SdJwtVc) {
                 const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
                   verifiableCredential.disclosedPayload
                 )
@@ -112,7 +112,7 @@ export function formatDifPexCredentialsForRequest(
                   metadata,
                   paths: getDisclosedAttributePathArrays(attributes, 2),
                 }
-              } else if (verifiableCredential.type === ClaimFormat.MsoMdoc) {
+              } else if (verifiableCredential.claimFormat === ClaimFormat.MsoMdoc) {
                 disclosed = {
                   ...getAttributesAndMetadataForMdocPayload(
                     verifiableCredential.disclosedPayload,

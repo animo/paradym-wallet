@@ -14,8 +14,8 @@ import type {
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
-import type { ParadymAppAgent } from '../agent'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
+import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
@@ -97,7 +97,7 @@ export async function resolveOpenId4VciOffer({
 
     // TODO: authorization should only be initiated after we know which credentials we're going to request
     if (authorization) {
-      resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveIssuanceAuthorizationRequest(
+      resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
         resolvedCredentialOffer,
         {
           redirectUri: authorization.redirectUri,
@@ -419,7 +419,7 @@ export const getCredentialsForProofRequest = async ({
     requestUri,
   })
 
-  const resolved = await agent.modules.openId4VcHolder.resolveSiopAuthorizationRequest(
+  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(
     requestUri,
     { origin }
     /* {
@@ -462,7 +462,7 @@ export const getCredentialsForProofRequest = async ({
     throw new Error('No presentation exchange or dcql found in authorization request.')
   }
 
-  const clientMetadata = resolved.authorizationRequest.payload?.client_metadata
+  const clientMetadata = resolved.authorizationRequestPayload?.client_metadata
 
   return {
     ...resolved.presentationExchange,
@@ -471,14 +471,13 @@ export const getCredentialsForProofRequest = async ({
     // in the accept method now, which wouldn't be the case if we just add it to
     // the resolved version
     origin,
-    authorizationRequest: resolved.authorizationRequest,
+    authorizationRequest: resolved.authorizationRequestPayload,
     verifier: {
       // TODO: easier way to get response_uri
-      hostName:
-        'response_uri' in resolved.authorizationRequest.payload && resolved.authorizationRequest.payload.response_uri
-          ? getHostNameFromUrl(resolved.authorizationRequest.payload.response_uri)
-          : undefined,
-      entityId: /* entityId ?? */ resolved.authorizationRequest.jar?.authRequestParams.iss as string,
+      hostName: resolved.authorizationRequestPayload.response_uri
+        ? getHostNameFromUrl(resolved.authorizationRequestPayload.response_uri as string)
+        : undefined,
+      entityId: /* entityId ?? */ resolved.authorizationRequestPayload.client_id ?? `web-origin:${resolved.origin}`,
 
       logo: clientMetadata?.logo_uri
         ? {

@@ -1,8 +1,8 @@
-import { registerCredentials, type RegisterCredentialsOptions } from '@animo-id/expo-digital-credentials-api'
+import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
+import type { MdocNameSpaces } from '@credo-ts/core'
+import { sanitizeString } from '@package/utils'
 import type { EitherAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
-import { sanitizeString } from '@package/utils'
-import type { MdocNameSpaces } from '@credo-ts/core'
 
 type CredentialItem = RegisterCredentialsOptions['credentials'][number]
 type CredentialDisplayClaim = NonNullable<CredentialItem['display']['claims']>[number]

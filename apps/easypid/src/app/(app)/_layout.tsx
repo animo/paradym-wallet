@@ -9,10 +9,10 @@ import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import {
   AgentProvider,
+  type InvitationType,
   WalletJsonStoreProvider,
   registerCredentialsForDcApi,
   useMediatorSetup,
-  type InvitationType,
 } from '@package/agent'
 import { isParadymAgent } from '@package/agent/src/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'

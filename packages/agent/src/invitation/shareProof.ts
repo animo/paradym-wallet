@@ -1,8 +1,3 @@
-import { Linking } from 'react-native'
-import type { EitherAgent } from '../agent'
-import { handleBatchCredential } from '../batch'
-import { BiometricAuthenticationError } from './error'
-import type { CredentialsForProofRequest } from './handler'
 import {
   type BaseRecord,
   ClaimFormat,
@@ -12,6 +7,11 @@ import {
   type SdJwtVcRecord,
   type W3cCredentialRecord,
 } from '@credo-ts/core'
+import { Linking } from 'react-native'
+import type { EitherAgent } from '../agent'
+import { handleBatchCredential } from '../batch'
+import { BiometricAuthenticationError } from './error'
+import type { CredentialsForProofRequest } from './handler'
 
 export const shareProof = async ({
   agent,
@@ -46,7 +46,7 @@ export const shareProof = async ({
               // Optionally use a batch credential
               const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
 
-              return [entry.inputDescriptorId, [credentialRecord]] as [string, (typeof credentialRecord)[]]
+              return [entry.inputDescriptorId, [{ ...credential, credentialRecord }]]
             })
           )
         )
@@ -71,15 +71,8 @@ export const shareProof = async ({
     : undefined
 
   try {
-    // TODO: check if this also works if no state property is provided
-    // Hack for french playground requiring state outside of the JARM response
-    if ('state' in authorizationRequest.payload) {
-      // @ts-ignore
-      global.FUNKE_PATCH_STATE = authorizationRequest.payload.state
-    }
-
-    const result = await agent.modules.openId4VcHolder.acceptSiopAuthorizationRequest({
-      authorizationRequest,
+    const result = await agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
+      authorizationRequestPayload: authorizationRequest,
       presentationExchange: presentationExchangeCredentials
         ? {
             credentials: presentationExchangeCredentials,

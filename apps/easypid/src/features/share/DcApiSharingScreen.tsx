@@ -1,13 +1,13 @@
-import { initializeAppAgent } from '@easypid/agent'
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
+import { initializeAppAgent } from '@easypid/agent'
 import { resolveRequestForDcApi, sendErrorResponseForDcApi, sendResponseForDcApi } from '@package/agent'
-import { useRef, useState } from 'react'
-import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
-import { InvalidPinError } from '../../crypto/error'
+import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
+import { useRef, useState } from 'react'
 import tamaguiConfig from '../../../tamagui.config'
-import { PinDotsInput, type PinDotsInputRef } from '@package/app'
+import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { InvalidPinError } from '../../crypto/error'
 
 type DcApiSharingScreenProps = {
   request: DigitalCredentialsRequest
