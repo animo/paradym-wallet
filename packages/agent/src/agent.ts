@@ -18,6 +18,7 @@ import {
   KeyDidRegistrar,
   KeyDidResolver,
   LogLevel,
+  type Logger,
   PeerDidNumAlgo,
   WebDidResolver,
   X509Module,
@@ -51,6 +52,31 @@ const askarModule = new AskarModule({
   askar,
 })
 
+class MyLogger implements Logger {
+  public logLevel = LogLevel.trace
+  test(message: string, data?: Record<string, unknown>): void {
+    console.log(message, data)
+  }
+  trace(message: string, data?: Record<string, unknown>): void {
+    console.trace(message, data)
+  }
+  info(message: string, data?: Record<string, unknown>): void {
+    console.info(message, data)
+  }
+  warn(message: string, data?: Record<string, unknown>): void {
+    console.warn(message, data)
+  }
+  error(message: string, data?: Record<string, unknown>): void {
+    console.error(message, data)
+  }
+  fatal(message: string, data?: Record<string, unknown>): void {
+    console.error(message, data)
+  }
+  debug(message: string, data?: Record<string, unknown>): void {
+    console.debug(message, data)
+  }
+}
+
 export const initializeEasyPIDAgent = async ({
   walletLabel,
   walletId,
@@ -74,7 +100,7 @@ export const initializeEasyPIDAgent = async ({
         keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.trace),
+      logger: new MyLogger(),
     },
     modules: {
       askar: askarModule,

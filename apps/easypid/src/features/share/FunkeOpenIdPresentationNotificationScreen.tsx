@@ -15,12 +15,12 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
+import { trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
-import { trustedX509Entities } from '../../constants'
 
 type Query = { uri?: string; data?: string }
 
