@@ -5,6 +5,7 @@ import {
   type SingleOrArray,
   W3cCredentialRecord,
   getJwkFromKey,
+  DateOnly,
 } from '@credo-ts/core'
 import {
   ClaimFormat,
@@ -716,8 +717,8 @@ export function recursivelyMapAttributes(value: unknown): MappedAttributesReturn
   }
   if (value === null || value === undefined || typeof value === 'number' || typeof value === 'boolean') return value
 
-  if (value instanceof Date || (typeof value === 'string' && isDateString(value))) {
-    return formatDate(value)
+  if (value instanceof Date || value instanceof DateOnly || (typeof value === 'string' && isDateString(value))) {
+    return formatDate(value instanceof DateOnly ? value.toISOString() : value)
   }
   if (typeof value === 'string') return value
   if (value instanceof Map) {
