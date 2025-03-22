@@ -83,6 +83,8 @@ export const shareProof = async ({
             credentials: dcqlCredentials,
           }
         : undefined,
+      // FIXME: need to integrate with the QES PR, we should not just accept transaction data
+      // transactionData: resolvedRequest.transactionData?.map((e) => ({ credentialId: e.matchedCredentialIds[0] })),
       origin: resolvedRequest.origin,
     })
 
@@ -93,6 +95,11 @@ export const shareProof = async ({
     }
 
     if (result.serverResponse && (result.serverResponse.status < 200 || result.serverResponse.status > 299)) {
+      agent.config.logger.error('Error while accepting authorization request', {
+        authorizationRequest,
+        response: result.authorizationResponse,
+        responsePayload: result.authorizationResponsePayload,
+      })
       throw new Error(
         `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
       )

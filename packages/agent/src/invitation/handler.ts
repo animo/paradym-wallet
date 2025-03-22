@@ -470,6 +470,7 @@ export const getCredentialsForProofRequest = async ({
       trustedEntities,
     },
     formattedSubmission,
+    transactionData: resolved.transactionData,
   } as const
 }
 
