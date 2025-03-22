@@ -15,6 +15,7 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
+import { trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
@@ -43,8 +44,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
     getCredentialsForProofRequest({
       agent,
-      data: params.data,
+      encodedRequestData: params.data,
       uri: params.uri,
+      trustedX509Entities,
     })
       .then(setCredentialsForRequest)
       .catch((error) => {

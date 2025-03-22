@@ -1,4 +1,3 @@
-import { useHaptics } from '@package/app'
 import {
   FloatingSheet,
   Heading,
@@ -13,6 +12,7 @@ import {
 } from '@package/ui'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
+import { useHaptics } from '../hooks/useHaptics'
 import {
   type FormattedCredentialItem,
   type FormattedCredentialValue,

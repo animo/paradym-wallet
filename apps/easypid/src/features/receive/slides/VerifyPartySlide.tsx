@@ -105,9 +105,13 @@ export const VerifyPartySlide = ({
             <InfoButton
               variant={entityIsTrustAnchor ? 'positive' : 'info'}
               title="Recognized organisation"
-              description={`Approved by ${trustedEntitiesWithoutSelf.length} organisation${
-                trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
-              }`}
+              description={
+                trustedEntitiesWithoutSelf.length > 0
+                  ? `Approved by ${trustedEntitiesWithoutSelf.length} organisation${
+                      trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
+                    }`
+                  : undefined
+              }
               onPress={onPressVerifiedIssuer}
             />
           ) : (

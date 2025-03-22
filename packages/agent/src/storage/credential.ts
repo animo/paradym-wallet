@@ -8,6 +8,7 @@ import {
 } from '@credo-ts/core'
 import type { EitherAgent } from '../agent'
 import type { CredentialForDisplayId } from '../hooks'
+import { registerCredentialsForDcApi } from '../openid4vc/registerDcApi'
 
 type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
 
@@ -41,7 +42,11 @@ export async function updateCredential(agent: EitherAgent, credentialRecord: Cre
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).update(agent.context, credentialRecord)
   }
+
+  // Update database when we update a credential
+  await registerCredentialsForDcApi(agent)
 }
+
 export async function storeCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
@@ -50,6 +55,9 @@ export async function storeCredential(agent: EitherAgent, credentialRecord: Cred
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
   }
+
+  // Update database when we store a credential
+  await registerCredentialsForDcApi(agent)
 }
 
 export async function deleteCredential(agent: EitherAgent, credentialId: CredentialForDisplayId) {
@@ -63,4 +71,7 @@ export async function deleteCredential(agent: EitherAgent, credentialId: Credent
     const mdocId = credentialId.replace('mdoc-', '')
     await agent.mdoc.deleteById(mdocId)
   }
+
+  // Update database when we delete a credential
+  await registerCredentialsForDcApi(agent)
 }

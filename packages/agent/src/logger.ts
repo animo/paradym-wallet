@@ -8,7 +8,7 @@ export const appLogger = (logLevel: LogLevel) => {
 
   consoleLogger.warn = (message: string, data?: Record<string, unknown>) => {
     if (message.includes('module is experimental')) return
-    new ConsoleLogger(logLevel).warn(message, data)
+    consoleLogger.warn(message, data)
   }
 
   return consoleLogger
