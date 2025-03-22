@@ -1,11 +1,11 @@
 import {
+  DateOnly,
   type JwkJson,
   type MdocNameSpaces,
   type SdJwtVcTypeMetadata,
   type SingleOrArray,
   W3cCredentialRecord,
   getJwkFromKey,
-  DateOnly,
 } from '@credo-ts/core'
 import {
   ClaimFormat,
