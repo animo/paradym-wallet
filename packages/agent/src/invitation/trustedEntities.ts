@@ -12,4 +12,5 @@ export type TrustedEntity = {
   entity_id: string
   organization_name: string
   logo_uri?: string
+  uri?: string
 }

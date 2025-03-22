@@ -20,6 +20,7 @@ import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPres
 import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
+import { trustedX509Entities } from '../../constants'
 
 type Query = { uri?: string; data?: string }
 
@@ -45,6 +46,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       agent,
       encodedRequestData: params.data,
       uri: params.uri,
+      trustedX509Entities,
     })
       .then(setCredentialsForRequest)
       .catch((error) => {

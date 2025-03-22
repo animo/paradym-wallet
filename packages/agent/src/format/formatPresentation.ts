@@ -327,7 +327,7 @@ function simplifyJsonPath(path: string, format?: ClaimFormat, filterKeys: string
           simplified.push(null)
         }
 
-        if (entry.expression.type === 'identifier') {
+        if (entry.expression.type === 'identifier' || entry.expression.type === 'string_literal') {
           // Return the identifier value for normal entries
           simplified.push(value)
         }

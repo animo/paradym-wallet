@@ -13,13 +13,14 @@ import type {
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
+  OpenId4VpResolvedAuthorizationRequest,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import { JwaSignatureAlgorithm, Jwt, X509ModuleConfig } from '@credo-ts/core'
+import { JwaSignatureAlgorithm, Jwt, X509Certificate, X509ModuleConfig } from '@credo-ts/core'
 import {
   CredentialEventTypes,
   CredentialState,
@@ -36,7 +37,6 @@ import {
   getScopesFromCredentialConfigurationsSupported,
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
-import { getHostNameFromUrl } from '@package/utils'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 
 import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
@@ -387,6 +387,7 @@ export type GetCredentialsForProofRequestOptions = {
   uri?: string
   allowUntrustedFederation?: boolean
   origin?: string
+  trustedX509Entities?: TrustedX509Entity[]
 }
 
 export const getCredentialsForProofRequest = async ({
@@ -396,6 +397,7 @@ export const getCredentialsForProofRequest = async ({
   requestPayload,
   allowUntrustedFederation = true,
   origin,
+  trustedX509Entities,
 }: GetCredentialsForProofRequestOptions) => {
   const requestData = encodedRequestData
   // const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
@@ -429,28 +431,11 @@ export const getCredentialsForProofRequest = async ({
   } */
   )
 
-  const trustedEntities: Array<TrustedEntity> = []
-  // if (entityId) {
-  //   // TODO: Remove me when the new credo-ts version is used
-  //   if (resolved.authorizationRequest.payload) {
-  //     resolved.authorizationRequest.payload.client_metadata =
-  //       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
-  //   }
-
-  //   const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
-  //     entityId: entityId,
-  //     trustAnchorEntityIds: TRUSTED_ENTITIES,
-  //   })
-
-  //   trustedEntities = resolvedChains
-  //     .map((chain) => ({
-  //       entity_id: chain.trustAnchorEntityConfiguration.sub,
-  //       organization_name:
-  //         chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
-  //       logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
-  //     }))
-  //     .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
-  // }
+  const { trustedEntities, verifier } = await getTrustedEntitiesForRequest({
+    agent,
+    resolvedAuthorizationRequest: resolved,
+    trustedX509Entities,
+  })
 
   let formattedSubmission: FormattedSubmission
   if (resolved.presentationExchange) {
@@ -464,30 +449,6 @@ export const getCredentialsForProofRequest = async ({
     throw new Error('No presentation exchange or dcql found in authorization request.')
   }
 
-  const clientMetadata = resolved.authorizationRequestPayload?.client_metadata
-
-  const signer = resolved.signedAuthorizationRequest?.signer
-  if (signer?.method === 'x5c' && resolved.authorizationRequestPayload.client_id) {
-    const x509Config = agent.dependencyManager.resolve(X509ModuleConfig)
-
-    try {
-      // FIXME: we should return the x509 cert that was matched, then we can just see if it's in
-      // the list of hardcoded trusted certificates
-      const [leafCertificate] = await agent.x509.validateCertificateChain({
-        certificateChain: signer.x5c,
-        trustedCertificates: x509Config.trustedCertificates,
-      })
-
-      // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
-      trustedEntities.push({
-        entity_id: resolved.authorizationRequestPayload.client_id,
-        organization_name: clientMetadata?.client_name ?? leafCertificate.data.subjectName,
-      })
-    } catch (error) {
-      // no-op
-    }
-  }
-
   return {
     ...resolved.presentationExchange,
     ...resolved.dcql,
@@ -497,18 +458,15 @@ export const getCredentialsForProofRequest = async ({
     origin,
     authorizationRequest: resolved.authorizationRequestPayload,
     verifier: {
-      // TODO: easier way to get response_uri
-      hostName: resolved.authorizationRequestPayload.response_uri
-        ? getHostNameFromUrl(resolved.authorizationRequestPayload.response_uri as string)
-        : undefined,
-      entityId: /* entityId ?? */ resolved.authorizationRequestPayload.client_id ?? `web-origin:${resolved.origin}`,
+      hostName: verifier.uri,
+      entityId: verifier.entity_id /* entityId ?? */,
 
-      logo: clientMetadata?.logo_uri
+      logo: verifier.logo_uri
         ? {
-            url: clientMetadata?.logo_uri,
+            url: verifier.logo_uri,
           }
         : undefined,
-      name: clientMetadata?.client_name,
+      name: verifier.organization_name,
       trustedEntities,
     },
     formattedSubmission,
@@ -662,5 +620,106 @@ export async function receiveOutOfBandInvitation(
   return {
     success: false,
     error: 'Invalid invitation.',
+  }
+}
+
+export type TrustedX509Entity = { certificate: string; name: string; logoUri: string; url: string }
+async function getTrustedEntitiesForRequest({
+  agent,
+  resolvedAuthorizationRequest,
+  trustedX509Entities,
+}: {
+  resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
+  trustedX509Entities?: TrustedX509Entity[]
+  agent: EitherAgent
+}) {
+  const { authorizationRequestPayload, signedAuthorizationRequest, origin } = resolvedAuthorizationRequest
+
+  const trustedEntities: TrustedEntity[] = []
+  const clientMetadata = authorizationRequestPayload.client_metadata
+  const verifier = {
+    entity_id: authorizationRequestPayload.client_id ?? `web-origin:${origin}`,
+    uri:
+      typeof authorizationRequestPayload.response_uri === 'string'
+        ? new URL(authorizationRequestPayload.response_uri).origin
+        : undefined,
+    logo_uri: clientMetadata?.logo_uri,
+    organization_name: clientMetadata?.client_name,
+  }
+
+  // if (entityId) {
+  //   // TODO: Remove me when the new credo-ts version is used
+  //   if (resolved.authorizationRequest.payload) {
+  //     resolved.authorizationRequest.payload.client_metadata =
+  //       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
+  //   }
+
+  //   const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+  //     entityId: entityId,
+  //     trustAnchorEntityIds: TRUSTED_ENTITIES,
+  //   })
+
+  //   trustedEntities = resolvedChains
+  //     .map((chain) => ({
+  //       entity_id: chain.trustAnchorEntityConfiguration.sub,
+  //       organization_name:
+  //         chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
+  //       logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+  //     }))
+  //     .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
+  // }
+
+  const signer = signedAuthorizationRequest?.signer
+  if (signer?.method === 'x5c') {
+    const x509Config = agent.dependencyManager.resolve(X509ModuleConfig)
+
+    try {
+      // FIXME: we should return the x509 cert that was matched, then we can just see if it's in
+      // the list of hardcoded trusted certificates
+      const chain = await agent.x509.validateCertificateChain({
+        certificateChain: signer.x5c,
+        certificate: signer.x5c[0],
+        trustedCertificates: x509Config.trustedCertificates,
+      })
+
+      const trustedEntity = trustedX509Entities?.find((e) =>
+        X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0])
+      )
+      if (trustedEntity) {
+        if (!verifier.organization_name) {
+          verifier.organization_name = trustedEntity.name
+          verifier.logo_uri = trustedEntity.logoUri
+        } else {
+          // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
+          trustedEntities.push({
+            entity_id: trustedEntity.certificate,
+            organization_name: trustedEntity.name,
+            logo_uri: trustedEntity.logoUri,
+            uri: trustedEntity.url,
+          })
+        }
+
+        // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
+        trustedEntities.push({
+          ...verifier,
+          organization_name: verifier.organization_name ?? trustedEntity.name,
+        })
+
+        // TODO: dynamic paradym or funke wallet
+        trustedEntities.push({
+          organization_name: 'Paradym Wallet',
+          entity_id: 'https://paradym.id',
+          logo_uri: require('../../../../apps/easypid/assets/paradym/icon.png'),
+          uri: 'https://paradym.id',
+        })
+      }
+    } catch (error) {
+      // no-op
+    }
+  }
+
+  return {
+    verifier,
+    trustedEntities,
   }
 }
