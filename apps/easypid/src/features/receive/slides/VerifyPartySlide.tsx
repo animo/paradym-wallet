@@ -93,7 +93,7 @@ export const VerifyPartySlide = ({
             ) : type === 'signing' ? (
               <Paragraph center px="$4">
                 {name
-                  ? `${name} wants interact to create a digital signature for a document.`
+                  ? `${name} wants to interact to create a digital signature for a document.`
                   : 'An unknown organization wants to interact to create a digital signature for a document.'}
               </Paragraph>
             ) : (

@@ -39,6 +39,23 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const lastInteractionDate = activities?.[0]?.date
   const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
 
+  // TODO:
+  // - zod validation of type
+  // - only allow one transaction data entry
+  // - only allow qes transaction data, fail all others
+  const transactionDataEntry = credentialsForRequest?.transactionData?.[0]
+  const transactionData = transactionDataEntry?.entry.transactionData
+  const transaction =
+    transactionDataEntry && transactionData?.type === 'qes_authorization'
+      ? ({
+          type: 'qes',
+          documentName: (transactionData.documentDigests as Array<{ label: string }>)[0].label,
+          qtspName: 'DocuSign',
+          qtspLogo: 'https://logos-world.net/wp-content/uploads/2024/05/DocuSign-Symbol.png',
+          cardForSigningId: transactionDataEntry?.matchedCredentialIds[0],
+        } as const)
+      : undefined
+
   useEffect(() => {
     if (credentialsForRequest) return
 
@@ -141,6 +158,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
+          acceptTransactionData: transaction?.type === 'qes',
         })
 
         onPinComplete?.()
@@ -166,7 +184,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
       }
     },
-    [credentialsForRequest, agent, shouldUsePin, stopOverAsking, isDevelopmentModeEnabled, handleError]
+    [credentialsForRequest, agent, shouldUsePin, stopOverAsking, isDevelopmentModeEnabled, handleError, transaction]
   )
 
   const onProofDecline = async () => {
@@ -197,13 +215,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
       overAskingResponse={overAskingResponse}
-      // TODO: Change to actual transaction data
-      transaction={{
-        type: 'qes',
-        documentName: 'Employee Contract',
-        qtspName: 'DocuSign',
-        qtspLogo: 'https://logos-world.net/wp-content/uploads/2024/05/DocuSign-Symbol.png',
-      }}
+      transaction={transaction}
     />
   )
 }

@@ -25,6 +25,7 @@ interface FunkePresentationNotificationScreenProps {
     documentName: string
     qtspName: string
     qtspLogo?: string
+    cardForSigningId: string
   }
   onAccept: () => Promise<void>
   onDecline: () => void
@@ -91,6 +92,7 @@ export function FunkePresentationNotificationScreen({
                         qtspName={transaction.qtspName}
                         qtspLogo={transaction.qtspLogo}
                         documentName={transaction.documentName}
+                        cardForSigningId={transaction.cardForSigningId}
                         submission={submission}
                       />
                     ),

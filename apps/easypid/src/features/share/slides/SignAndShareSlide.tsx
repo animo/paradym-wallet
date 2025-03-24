@@ -11,6 +11,7 @@ interface SignAndShareSlideProps {
   qtspName: string
   qtspLogo?: string
   documentName: string
+  cardForSigningId: string
   submission?: FormattedSubmission
 }
 
@@ -21,6 +22,7 @@ export const SignAndShareSlide = ({
   qtspName,
   qtspLogo,
   documentName,
+  cardForSigningId,
   submission,
 }: SignAndShareSlideProps) => {
   const { onNext, onCancel } = useWizard()
@@ -41,9 +43,11 @@ export const SignAndShareSlide = ({
     onCancel()
   }
 
-  // FIXME: We should extract the card used for signing
-  // In future, we can use <RequestedAttributesSection /> below to render the rest of the requested cards
-  const cardForSigning = submission?.entries.find((entry) => entry.isSatisfied)?.credentials[0]
+  // TODO: In future, we can use <RequestedAttributesSection /> below to render the rest of the requested cards
+  const cardForSigning = submission?.entries.find(
+    (entry): entry is typeof entry & { isSatisfied: true } =>
+      entry.inputDescriptorId === cardForSigningId && entry.isSatisfied
+  )?.credentials[0]
 
   return (
     <YStack fg={1} jc="space-between">
@@ -86,11 +90,7 @@ export const SignAndShareSlide = ({
                     ) : (
                       <Stack ai="center" h="$1" br="$2" bg="$primary-200">
                         <Stack pos="absolute">
-                          <Image
-                            src="https://logos-world.net/wp-content/uploads/2024/05/DocuSign-Symbol.png"
-                            height={20}
-                            width={20}
-                          />
+                          <Image src={qtspLogo} height={20} width={20} />
                         </Stack>
                       </Stack>
                     )}
@@ -141,7 +141,7 @@ export const SignAndShareSlide = ({
         {submission?.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
-            acceptText="Share"
+            acceptText="Sign"
             declineText="Stop"
             onAccept={handleAccept}
             onDecline={handleDecline}
