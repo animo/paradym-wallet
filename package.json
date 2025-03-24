@@ -37,6 +37,7 @@
 			"@credo-ts/openid4vc": "catalog:",
 			"@credo-ts/question-answer": "catalog:",
 			"@credo-ts/react-native": "catalog:",
+			"@credo-ts/didcomm": "catalog:",
 			"@openid-federation/core": "catalog:",
 			"isomorphic-webcrypto": "catalog:",
 			"@hyperledger/anoncreds-react-native": "catalog:",

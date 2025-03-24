@@ -14,6 +14,7 @@
 		"@credo-ts/openid4vc": "catalog:",
 		"@credo-ts/question-answer": "catalog:",
 		"@credo-ts/react-native": "catalog:",
+		"@credo-ts/didcomm": "catalog:",
 		"@package/utils": "workspace:*",
 		"@tanstack/react-query": "^5",
 		"credo-ts-didweb-anoncreds": "0.0.1-alpha.13",

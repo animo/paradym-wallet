@@ -16,7 +16,7 @@ import type {
   OpenId4VpResolvedAuthorizationRequest,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import type { ParadymAppAgent } from '../agent'
+import { type ParadymAppAgent, isParadymAgent } from '../agent'
 import type { EitherAgent } from '../agent'
 
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
@@ -52,7 +52,7 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
-import type { TrustedEntity } from './trustedEntities'
+import { TRUSTED_ENTITIES, type TrustedEntity } from './trustedEntities'
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -323,15 +323,22 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 }
 
-const extractEntityIdFromJwt = (jwt: string): string | null => {
+const extractEntityIdFromJwt = (jwt: string, origin?: string): string | null => {
   const jwtPayload = Jwt.fromSerializedJwt(jwt).payload
 
-  if (jwtPayload?.additionalClaims?.client_id_scheme !== 'entity_id') return null
+  return extractEntityIdFromPayload(jwtPayload.additionalClaims, origin)
+}
 
-  const clientId = jwtPayload?.additionalClaims?.client_id
-  if (!clientId || typeof clientId !== 'string') return null
+const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: string): string | null => {
+  const { clientId, clientIdScheme } = getOpenid4vpClientId({
+    clientId: payload.client_id as string,
+    legacyClientIdScheme: payload.client_id_scheme,
+    responseMode: payload.response_mode,
+    origin,
+  })
 
-  return clientId
+  if (clientIdScheme === 'https') return clientId
+  return null
 }
 
 /**
@@ -340,8 +347,19 @@ const extractEntityIdFromJwt = (jwt: string): string | null => {
 export const extractEntityIdFromAuthorizationRequest = async ({
   data,
   uri,
-}: { data?: string; uri?: string }): Promise<{ data: string | null; entityId: string | null }> => {
+  requestPayload,
+}: { data?: string; uri?: string; requestPayload?: Record<string, unknown> }): Promise<{
+  data: string | null
+  entityId: string | null
+}> => {
   try {
+    if (requestPayload) {
+      return {
+        data: null,
+        entityId: extractEntityIdFromPayload(requestPayload),
+      }
+    }
+
     if (data) {
       return {
         data,
@@ -390,6 +408,7 @@ export type GetCredentialsForProofRequestOptions = {
   trustedX509Entities?: TrustedX509Entity[]
 }
 
+import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 export const getCredentialsForProofRequest = async ({
   agent,
   encodedRequestData,
@@ -399,14 +418,13 @@ export const getCredentialsForProofRequest = async ({
   origin,
   trustedX509Entities,
 }: GetCredentialsForProofRequestOptions) => {
-  const requestData = encodedRequestData
-  // const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
-  //   ? await extractEntityIdFromAuthorizationRequest({ data: requestData, uri })
-  //   : {}
-  // requestData = fromFederationData ?? requestData
+  let requestData = encodedRequestData
+  const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
+    ? await extractEntityIdFromAuthorizationRequest({ data: encodedRequestData, uri, requestPayload })
+    : {}
+  requestData = fromFederationData ?? requestData
 
   let request: string | Record<string, unknown>
-
   if (requestData) {
     // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
     // but in the future we need to support the parsed request in Credo directly
@@ -423,13 +441,10 @@ export const getCredentialsForProofRequest = async ({
     request,
   })
 
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(
-    request,
-    { origin }
-    /* {
-    ...(entityId ? { federation: { trustedEntityIds: [entityId] } } : {}),
-  } */
-  )
+  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(request, {
+    origin,
+    trustedFederationEntityIds: entityId ? [entityId] : undefined,
+  })
 
   const { trustedEntities, verifier } = await getTrustedEntitiesForRequest({
     agent,
@@ -634,9 +649,14 @@ async function getTrustedEntitiesForRequest({
   trustedX509Entities?: TrustedX509Entity[]
   agent: EitherAgent
 }) {
-  const { authorizationRequestPayload, signedAuthorizationRequest, origin } = resolvedAuthorizationRequest
+  const {
+    authorizationRequestPayload,
+    signedAuthorizationRequest,
+    origin,
+    verifier: resolvedVerifier,
+  } = resolvedAuthorizationRequest
 
-  const trustedEntities: TrustedEntity[] = []
+  let trustedEntities: TrustedEntity[] = []
   const clientMetadata = authorizationRequestPayload.client_metadata
   const verifier = {
     entity_id: authorizationRequestPayload.client_id ?? `web-origin:${origin}`,
@@ -648,27 +668,22 @@ async function getTrustedEntitiesForRequest({
     organization_name: clientMetadata?.client_name,
   }
 
-  // if (entityId) {
-  //   // TODO: Remove me when the new credo-ts version is used
-  //   if (resolved.authorizationRequest.payload) {
-  //     resolved.authorizationRequest.payload.client_metadata =
-  //       resolved.authorizationRequest.authorizationRequestPayload.client_metadata
-  //   }
+  // Federation
+  if (resolvedVerifier.clientIdScheme === 'https') {
+    const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+      entityId: verifier.entity_id,
+      trustAnchorEntityIds: TRUSTED_ENTITIES,
+    })
 
-  //   const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
-  //     entityId: entityId,
-  //     trustAnchorEntityIds: TRUSTED_ENTITIES,
-  //   })
-
-  //   trustedEntities = resolvedChains
-  //     .map((chain) => ({
-  //       entity_id: chain.trustAnchorEntityConfiguration.sub,
-  //       organization_name:
-  //         chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
-  //       logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
-  //     }))
-  //     .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
-  // }
+    trustedEntities = resolvedChains
+      .map((chain) => ({
+        entity_id: chain.trustAnchorEntityConfiguration.sub,
+        organization_name:
+          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
+        logo_uri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+      }))
+      .filter((entity, index, self) => self.findIndex((e) => e.entity_id === entity.entity_id) === index)
+  }
 
   const signer = signedAuthorizationRequest?.signer
   if (signer?.method === 'x5c') {
@@ -706,12 +721,13 @@ async function getTrustedEntitiesForRequest({
           organization_name: verifier.organization_name ?? trustedEntity.name,
         })
 
-        // TODO: dynamic paradym or funke wallet
+        const isParadym = isParadymAgent(agent)
+        // TODO: better dynamic handling
         trustedEntities.push({
-          organization_name: 'Paradym Wallet',
-          entity_id: 'https://paradym.id',
+          organization_name: isParadym ? 'Paradym Wallet' : 'Funke Wallet',
+          entity_id: '__',
           logo_uri: require('../../../../apps/easypid/assets/paradym/icon.png'),
-          uri: 'https://paradym.id',
+          uri: isParadym ? 'https://paradym.id' : 'https://funke.animo.id',
         })
       }
     } catch (error) {
