@@ -1,0 +1,17 @@
+diff --git a/build/modules/sd-jwt-vc/SdJwtVcService.js b/build/modules/sd-jwt-vc/SdJwtVcService.js
+index 20073a33e58e90dad0997e03f7c8020cdb34f08f..cb5985cba8bdb4ad5a62fa5ef7c7a0f8be7f1035 100644
+--- a/build/modules/sd-jwt-vc/SdJwtVcService.js
++++ b/build/modules/sd-jwt-vc/SdJwtVcService.js
+@@ -513,7 +513,11 @@ let SdJwtVcService = class SdJwtVcService {
+     }
+     getStatusListFetcher(agentContext) {
+         return async (uri) => {
+-            const response = await (0, fetch_1.fetchWithTimeout)(agentContext.config.agentDependencies.fetch, uri);
++            const response = await (0, fetch_1.fetchWithTimeout)(agentContext.config.agentDependencies.fetch, uri, {
++                headers: {
++                    Accept: 'application/statuslist+jwt',
++                },
++            });
+             if (!response.ok) {
+                 throw new error_1.CredoError(`Received invalid response with status ${response.status} when fetching status list from ${uri}. ${await response.text()}`);
+             }
