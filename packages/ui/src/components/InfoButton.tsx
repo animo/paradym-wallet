@@ -56,7 +56,7 @@ interface InfoButtonProps {
     alt: string
   }
   title: string
-  description: string
+  description?: string
   onPress?: () => void
   routingType?: 'push' | 'modal' | 'external'
   noIcon?: boolean
@@ -103,9 +103,11 @@ export function InfoButton({
           <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} variant="sub1">
             {title}
           </Heading>
-          <Paragraph numberOfLines={2} fontSize={15}>
-            {description}
-          </Paragraph>
+          {description && (
+            <Paragraph numberOfLines={2} fontSize={15}>
+              {description}
+            </Paragraph>
+          )}
         </YStack>
         {isPressable && (
           <Stack>

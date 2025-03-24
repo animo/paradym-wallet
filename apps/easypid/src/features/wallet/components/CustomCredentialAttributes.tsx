@@ -187,7 +187,9 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
             overflow="hidden"
             size="$8"
           >
-            <Image width={56} height={56} src={credential?.display.issuer.logo?.url ?? ''} />
+            {credential?.display.issuer.logo?.url && (
+              <Image width={56} height={56} src={credential.display.issuer.logo.url} />
+            )}
           </Circle>
           <TableContainer>
             <YStack

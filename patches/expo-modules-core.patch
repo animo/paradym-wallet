@@ -1,0 +1,15 @@
+diff --git a/android/src/main/java/expo/modules/adapters/react/permissions/PermissionsService.kt b/android/src/main/java/expo/modules/adapters/react/permissions/PermissionsService.kt
+index ae0a81157c193e45c7f22e27ecd66e598535bdc1..9dcf1ef1acf137cf0d6d9008887beda8ad44d5a8 100644
+--- a/android/src/main/java/expo/modules/adapters/react/permissions/PermissionsService.kt
++++ b/android/src/main/java/expo/modules/adapters/react/permissions/PermissionsService.kt
+@@ -163,7 +163,9 @@ open class PermissionsService(val context: Context) : InternalModule, Permission
+   override fun isPermissionPresentInManifest(permission: String): Boolean {
+     try {
+       context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)?.run {
+-        return requestedPermissions.contains(permission)
++        // This is already fixed in latest expo, but we now use Kotlin 2 with an older
++        // version of Expo so we temporarily need this patch
++        return requestedPermissions!!.contains(permission)
+       }
+       return false
+     } catch (e: PackageManager.NameNotFoundException) {

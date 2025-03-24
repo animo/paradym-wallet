@@ -88,9 +88,20 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
   const mdocService = options.agent.dependencyManager.resolve(MdocService)
 
   const deviceResponse = await mdocService.createDeviceResponse(options.agent.context, {
-    deviceRequest: DeviceRequest.parse(options.deviceRequest),
+    documentRequests: DeviceRequest.parse(options.deviceRequest).docRequests.map((d) => ({
+      docType: d.itemsRequest.data.docType,
+      nameSpaces: Object.fromEntries(
+        Array.from(d.itemsRequest.data.nameSpaces.entries()).map(([namespace, entry]) => [
+          namespace,
+          Object.fromEntries(Array.from(entry.entries())),
+        ])
+      ),
+    })),
     mdocs: mdocs as [Mdoc, ...Mdoc[]],
-    sessionTranscriptBytes: options.sessionTranscript,
+    sessionTranscriptOptions: {
+      type: 'sesionTranscriptBytes',
+      sessionTranscriptBytes: options.sessionTranscript,
+    },
   })
 
   const mdt = mdocDataTransfer.instance()

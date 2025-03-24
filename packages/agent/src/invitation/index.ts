@@ -28,6 +28,7 @@ export {
 } from './parsers'
 export {
   type CredentialsForProofRequest,
+  type TrustedX509Entity,
   receiveOutOfBandInvitation,
   receiveCredentialFromOpenId4VciOffer,
   acquireAuthorizationCodeAccessToken,

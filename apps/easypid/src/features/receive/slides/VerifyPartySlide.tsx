@@ -19,7 +19,7 @@ import { formatRelativeDate } from 'packages/utils/src'
 import { useState } from 'react'
 
 interface VerifyPartySlideProps {
-  type: 'offer' | 'request'
+  type: 'offer' | 'request' | 'signing'
   host?: string
   name?: string
   entityId: string
@@ -90,6 +90,12 @@ export const VerifyPartySlide = ({
               <Paragraph center px="$4">
                 {name ? `${name} wants to offer you a card.` : 'An unknown organization wants to offer you a card.'}
               </Paragraph>
+            ) : type === 'signing' ? (
+              <Paragraph center px="$4">
+                {name
+                  ? `${name} wants to interact to create a digital signature for a document.`
+                  : 'An unknown organization wants to interact to create a digital signature for a document.'}
+              </Paragraph>
             ) : (
               <Paragraph center px="$4">
                 {name
@@ -105,9 +111,13 @@ export const VerifyPartySlide = ({
             <InfoButton
               variant={entityIsTrustAnchor ? 'positive' : 'info'}
               title="Recognized organisation"
-              description={`Approved by ${trustedEntitiesWithoutSelf.length} organisation${
-                trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
-              }`}
+              description={
+                trustedEntitiesWithoutSelf.length > 0
+                  ? `Approved by ${trustedEntitiesWithoutSelf.length} organisation${
+                      trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
+                    }`
+                  : undefined
+              }
               onPress={onPressVerifiedIssuer}
             />
           ) : (
