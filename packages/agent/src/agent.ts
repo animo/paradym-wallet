@@ -99,12 +99,12 @@ export const initializeEasyPIDAgent = async ({
             // }
 
             // If not PID, we allow any certificate for now
-            return [certificateChain[0].toString('pem')]
+            return [certificateChain[certificateChain.length - 1].toString('pem')]
           }
 
           // Allow any actor for auth requests for now
           if (verification.type === 'oauth2SecuredAuthorizationRequest') {
-            return [certificateChain[0].toString('pem')]
+            return [certificateChain[certificateChain.length - 1].toString('pem')]
           }
 
           return undefined
@@ -154,12 +154,12 @@ export const initializeParadymAgent = async ({
         getTrustedCertificatesForVerification: (_, { certificateChain, verification }) => {
           if (verification.type === 'credential') {
             // If not PID, we allow any certificate for now
-            return [certificateChain[0].toString('pem')]
+            return [certificateChain[certificateChain.length - 1].toString('pem')]
           }
 
           // Allow any actor for auth requests for now
           if (verification.type === 'oauth2SecuredAuthorizationRequest') {
-            return [certificateChain[0].toString('pem')]
+            return [certificateChain[certificateChain.length - 1].toString('pem')]
           }
 
           return undefined

@@ -7,11 +7,17 @@ import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { AgentProvider, type InvitationType, WalletJsonStoreProvider, useMediatorSetup } from '@package/agent'
+import {
+  AgentProvider,
+  type InvitationType,
+  WalletJsonStoreProvider,
+  registerCredentialsForDcApi,
+  useMediatorSetup,
+} from '@package/agent'
 import { isParadymAgent } from '@package/agent/src/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTheme } from 'tamagui'
 
 const jsonRecordIds = [activityStorage.recordId]
@@ -38,6 +44,13 @@ export default function AppLayout() {
   const pathname = usePathname()
   const params = useGlobalSearchParams()
   const hasInternetConnection = useHasInternetConnection()
+
+  useEffect(() => {
+    if (secureUnlock.state !== 'unlocked') return
+
+    registerCredentialsForDcApi(secureUnlock.context.agent)
+  }, [secureUnlock])
+
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()

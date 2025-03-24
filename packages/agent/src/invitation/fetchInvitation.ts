@@ -19,7 +19,7 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<ParseInvi
       headers: {
         // for DIDComm out of band invitations we should include application/json
         // but we are flexible and also want to support other types of invitations
-        // as e.g. the OpenID SIOP request is a signed encoded JWT string
+        // as e.g. the OpenID4VP request is a signed encoded JWT string
         Accept: 'application/json, text/plain, */*',
       },
     })

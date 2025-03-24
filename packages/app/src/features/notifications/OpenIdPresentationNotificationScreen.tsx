@@ -35,7 +35,7 @@ export function OpenIdPresentationNotificationScreen() {
       try {
         const cfr = await getCredentialsForProofRequest({
           agent,
-          data: params.data,
+          encodedRequestData: params.data,
           uri: params.uri,
         })
         setCredentialsForRequest(cfr)
