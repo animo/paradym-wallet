@@ -1,5 +1,3 @@
-import { useSecureUnlock } from '@easypid/agent'
-import { resetWallet } from '@easypid/utils/resetWallet'
 import { useHaptics } from '@package/app/src/hooks'
 
 import { useRouter } from 'expo-router'
@@ -7,7 +5,6 @@ import { useCallback } from 'react'
 import { Alert } from 'react-native'
 
 export const useWalletReset = () => {
-  const secureUnlock = useSecureUnlock()
   const router = useRouter()
   const { withHaptics } = useHaptics()
 
@@ -21,11 +18,11 @@ export const useWalletReset = () => {
         {
           text: 'Yes',
           onPress: withHaptics(() => {
-            resetWallet(secureUnlock).then(() => router.replace('onboarding'))
+            router.replace('/onboarding?reset=true')
           }),
         },
       ])
-    }, [secureUnlock, router, withHaptics])
+    }, [router, withHaptics])
   )
 
   return onResetWallet

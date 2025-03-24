@@ -1,3 +1,4 @@
+import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
 import {
   AnimatedStack,
@@ -20,7 +21,6 @@ import {
 } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { type DisplayImage, useCredentialsForDisplay } from 'packages/agent/src'
-import { TextBackButton } from 'packages/app/src'
 import { formatDate } from 'packages/utils/src'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
@@ -159,9 +159,10 @@ function FunkeCredentialRowCard({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={onPress}
+      fg={1}
     >
       {icon}
-      <YStack gap="$1" jc="center" fg={1}>
+      <YStack gap="$1" jc="center" fg={1} f={1}>
         <Paragraph mt="$-1.5" fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
           {name.toLocaleUpperCase()}
         </Paragraph>

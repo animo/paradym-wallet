@@ -9,10 +9,12 @@ import {
   removeHasFinishedOnboarding,
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
+import { getWalletId } from '../agent/initialize'
 import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {
-  console.log('Resetting wallet')
+  console.log('Resetting wallet', secureUnlock.state)
+
   if (secureUnlock.state === 'unlocked') {
     const agent = secureUnlock.context.agent
     secureUnlock.lock()
@@ -21,17 +23,26 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
   }
 
   const fs = new agentDependencies.FileSystem()
+
+  // Clear cach and temp path
   if (await fs.exists(fs.cachePath)) await fs.delete(fs.cachePath)
-  if (await fs.exists(fs.dataPath)) await fs.delete(fs.dataPath)
   if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
 
-  // I think removing triggers the biometrics somehow, but we increase the version
-  // await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
-  // await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
+  const walletId = getWalletId(secureWalletKey.getWalletKeyVersion())
+  const walletDirectory = `${fs.dataPath}/wallet/${walletId}`
 
-  // Update wallet key version
-  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-  secureWalletKey.setWalletKeyVersion(walletKeyVersion + 1)
+  const walletDirectoryExists = await fs.exists(walletDirectory)
+  if (walletDirectoryExists) {
+    console.log('wallet directory exists, deleting')
+    await fs.delete(walletDirectory)
+  } else {
+    console.log('wallet directory does not exist')
+  }
+
+  // I think removing triggers the biometrics somehow. We look at the salt
+  // to see if the secure unlock has been setup.
+  // await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
+  await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
 
   removeHasFinishedOnboarding()
   removeHasSeenIntroTooltip()

@@ -1,4 +1,6 @@
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import { isAndroid } from '@package/app'
 import {
   AnimatedStack,
   Circle,
@@ -14,7 +16,6 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import type { DisplayImage } from 'packages/agent/src'
-import { isAndroid } from 'packages/app/src'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 
@@ -28,6 +29,7 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false)
 
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
+  const hasAiAnalysisFeatureFlag = useFeatureFlag('AI_ANALYSIS')
 
   const toggleAnalysisModal = () => setIsAnalysisModalOpen(!isAnalysisModalOpen)
 
@@ -53,17 +55,19 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
         )}
         <XStack gap="$2" jc="space-between" ai="center">
           <Heading variant="sub2">PURPOSE</Heading>
-          <Stack h="$2" w="$2" ai="center" jc="center">
-            <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>
-              {!overAskingResponse ? (
-                <Spinner scale={0.8} />
-              ) : overAskingResponse.validRequest === 'yes' ? (
-                <HeroIcons.CheckCircleFilled size={26} color="$positive-500" />
-              ) : overAskingResponse.validRequest === 'no' ? (
-                <HeroIcons.ExclamationTriangleFilled size={26} color="$danger-500" />
-              ) : null}
-            </AnimatedStack>
-          </Stack>
+          {hasAiAnalysisFeatureFlag && (
+            <Stack h="$2" w="$2" ai="center" jc="center">
+              <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>
+                {!overAskingResponse ? (
+                  <Spinner scale={0.8} />
+                ) : overAskingResponse.validRequest === 'yes' ? (
+                  <HeroIcons.CheckCircleFilled size={26} color="$positive-500" />
+                ) : overAskingResponse.validRequest === 'no' ? (
+                  <HeroIcons.ExclamationTriangleFilled size={26} color="$danger-500" />
+                ) : null}
+              </AnimatedStack>
+            </Stack>
+          )}
         </XStack>
         <MessageBox
           variant="light"
@@ -71,7 +75,7 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
           icon={
             <Circle size="$4" overflow="hidden">
               {logo?.url ? (
-                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="contain" />
+                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
               ) : (
                 <Stack bg="$grey-200" width="100%" height="100%" ai="center" jc="center">
                   <HeroIcons.BuildingOffice color="$grey-800" size={24} />

@@ -1,5 +1,6 @@
 import type { DisplayImage, TrustedEntity } from '@package/agent'
 
+import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import {
   Circle,
   Heading,
@@ -14,7 +15,6 @@ import {
   useMedia,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
-import { DualResponseButtons, useHaptics, useWizard } from 'packages/app/src'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useState } from 'react'
 
@@ -76,7 +76,7 @@ export const VerifyPartySlide = ({
           <XStack ai="center" pt="$4" jc="center">
             <Circle size={88} bw="$0.5" borderColor="$grey-100" bg={backgroundColor ?? '$white'}>
               {logo?.url ? (
-                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" resizeMode="contain" />
+                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
               ) : (
                 <HeroIcons.BuildingOffice color="$grey-800" size={36} />
               )}
@@ -111,9 +111,13 @@ export const VerifyPartySlide = ({
             <InfoButton
               variant={entityIsTrustAnchor ? 'positive' : 'info'}
               title="Recognized organisation"
-              description={`Approved by ${trustedEntitiesWithoutSelf.length} organisation${
-                trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
-              }`}
+              description={
+                trustedEntitiesWithoutSelf.length > 0
+                  ? `Approved by ${trustedEntitiesWithoutSelf.length} organisation${
+                      trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
+                    }`
+                  : undefined
+              }
               onPress={onPressVerifiedIssuer}
             />
           ) : (

@@ -265,7 +265,7 @@ export function FunkeCredentialNotificationScreen() {
       await acquireCredentialsPreAuth()
     }
     if (resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance) {
-      await parsePresentationRequestUrl(resolvedAuthorizationRequest.oid4vpRequestUrl)
+      await parsePresentationRequestUrl(resolvedAuthorizationRequest.openid4vpRequestUrl)
     }
   }, [acquireCredentialsPreAuth, parsePresentationRequestUrl, preAuthGrant, resolvedAuthorizationRequest])
 
@@ -486,6 +486,10 @@ export function FunkeCredentialNotificationScreen() {
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={errorReason !== undefined}
       onCancel={onCancel}
+      confirmation={{
+        title: 'Stop card offer?',
+        description: 'If you stop, the card offer will be cancelled.',
+      }}
     />
   )
 }

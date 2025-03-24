@@ -92,6 +92,8 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
         const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
         await w3cCredentialRepository.update(agent.context, w3cRecord)
+
+        return w3cRecord
       }
     },
   })

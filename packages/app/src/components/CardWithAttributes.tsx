@@ -14,7 +14,6 @@ import {
 import { sanitizeString } from '@package/utils/src'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
-import { useHasInternetConnection } from '../hooks'
 import { BlurBadge } from './BlurBadge'
 
 interface CardWithAttributesProps {
@@ -46,7 +45,6 @@ export function CardWithAttributes({
 }: CardWithAttributesProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const router = useRouter()
-  const hasInternet = useHasInternetConnection()
 
   const groupedAttributes = useMemo(() => {
     const result: Array<[string, string | undefined]> = []
@@ -81,13 +79,13 @@ export function CardWithAttributes({
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-100'}>
-        {hasInternet && backgroundImage?.url && (
+      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
+        {backgroundImage?.url && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image
-              src={backgroundImage?.url ?? ''}
-              alt={backgroundImage?.altText ?? ''}
-              resizeMode="cover"
+              src={backgroundImage.url}
+              alt={backgroundImage.altText}
+              contentFit="cover"
               height="100%"
               width="100%"
             />
@@ -95,13 +93,13 @@ export function CardWithAttributes({
         )}
         <XStack ai="center" jc="space-between">
           <YStack f={1}>
-            <Heading variant="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-700'}>
+            <Heading variant="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-200'}>
               {name.toLocaleUpperCase()}
             </Heading>
           </YStack>
           <XStack h="$3">
             {issuerImage?.url && !isRevokedOrExpired && (
-              <Image src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />
+              <Image circle src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />
             )}
           </XStack>
         </XStack>

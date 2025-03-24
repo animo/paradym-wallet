@@ -1,4 +1,5 @@
 import {
+  DateOnly,
   type JwkJson,
   type MdocNameSpaces,
   type SdJwtVcTypeMetadata,
@@ -658,7 +659,6 @@ export function getCredentialForDisplay(
       type = firstProof.verificationMethod ?? type
     }
 
-    console.log(JSON.stringify(credentialRecord.metadata, null, 2))
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
     const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
@@ -717,8 +717,8 @@ export function recursivelyMapAttributes(value: unknown): MappedAttributesReturn
   }
   if (value === null || value === undefined || typeof value === 'number' || typeof value === 'boolean') return value
 
-  if (value instanceof Date || (typeof value === 'string' && isDateString(value))) {
-    return formatDate(value)
+  if (value instanceof Date || value instanceof DateOnly || (typeof value === 'string' && isDateString(value))) {
+    return formatDate(value instanceof DateOnly ? value.toISOString() : value)
   }
   if (typeof value === 'string') return value
   if (value instanceof Map) {

@@ -20,4 +20,8 @@ config.resolver.extraNodeModules = {
   crypto: require.resolve('./src/polyfills/crypto.ts'),
 }
 
+// Needed to import cheqd
+config.resolver.unstable_enablePackageExports = true
+config.resolver.unstable_conditionNames = ['require', 'react-native', 'browser', 'default']
+
 module.exports = config

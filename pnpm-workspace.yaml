@@ -8,33 +8,29 @@ catalog:
   react: 18.3.1
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
-  "@credo-ts/anoncreds": "npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250224091806"
-  "@credo-ts/askar": "npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250224091806"
-  "@credo-ts/cheqd": "npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250224091806"
-  "@credo-ts/core": "npm:@animo-id/credo-ts-core@0.5.14-alpha-20250224091806"
-  "@credo-ts/openid4vc": "npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250224091806"
-  "@credo-ts/question-answer": "npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250224091806"
-  "@credo-ts/react-native": "npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250224091806"
+  "@credo-ts/anoncreds": "0.6.0-pr-2195-20250322125728"
+  "@credo-ts/askar": "0.6.0-pr-2195-20250322125728"
+  "@credo-ts/cheqd": "0.6.0-pr-2195-20250322125728"
+  "@credo-ts/core": "0.6.0-pr-2195-20250322125728"
+  "@credo-ts/openid4vc": "0.6.0-pr-2195-20250322125728"
+  "@credo-ts/question-answer": "0.6.0-pr-2195-20250322125728"
+  "@credo-ts/react-native": "0.6.0-pr-2195-20250322125728"
   "@openid-federation/core": 0.1.1-alpha.17
-  "@hyperledger/anoncreds-react-native": ^0.2.4
-  "@openwallet-foundation/askar-react-native": ^0.3.1
+  "@hyperledger/anoncreds-react-native": 0.3.1
+  "@hyperledger/anoncreds-shared": 0.3.1
+  "@openwallet-foundation/askar-react-native": 0.3.2
+  "@openwallet-foundation/askar-shared": 0.3.2
   typescript: ~5.3.3
-  "@sphereon/did-auth-siop": https://gitpkg.vercel.app/animo/OID4VC/packages/siop-oid4vp?funke
-  "@sphereon/jarm": https://gitpkg.vercel.app/animo/OID4VC/packages/jarm?funke
-  "@sphereon/oid4vc-common": https://gitpkg.vercel.app/animo/OID4VC/packages/common?funke
-  dcql: 0.2.17
   "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
-  "@animo-id/oid4vci": 0.1.4
-  "@animo-id/oauth2": 0.1.4
-  "@animo-id/oauth2-utils": 0.1.4
-  "@animo-id/expo-secure-environment": 0.1.0-alpha.12
+  "@animo-id/expo-secure-environment": 0.1.0
+  "@animo-id/expo-digital-credentials-api": 0.1.0
   "@animo-id/expo-mdoc-data-transfer": 0.1.3
-  "@animo-id/mdoc": 0.4.2-alpha-20250225155732
+  "@animo-id/mdoc": 0.5.2
   "@unimodules/react-native-adapter": "./noop"
   "@unimodules/core": "./noop"
-  "@sphereon/pex-models": 2.3.2
-
+  "@openid4vc/oauth2": "0.3.0-alpha-20250322133827"
+  "@openid4vc/openid4vp": "0.3.0-alpha-20250322133827"
+  "@openid4vc/openid4vci": "0.3.0-alpha-20250322133827"
+  "@openid4vc/utils": "0.3.0-alpha-20250322133827"
   expo-standard-web-crypto: "1.8.1"
   isomorphic-webcrypto: "npm:@sphereon/isomorphic-webcrypto"
-  "@cheqd/sdk": "2.5.1"
-  "@cheqd/ts-proto": "2.3.2"

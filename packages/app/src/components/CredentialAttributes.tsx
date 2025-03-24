@@ -11,8 +11,8 @@ import {
   YStack,
 } from '@package/ui'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useHaptics } from 'packages/app/src'
 import { useState } from 'react'
+import { useHaptics } from '../hooks/useHaptics'
 import {
   type FormattedCredentialItem,
   type FormattedCredentialValue,

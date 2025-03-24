@@ -6,6 +6,7 @@ import { createParam } from 'solito'
 
 import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { router } from 'expo-router'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { useDidCommCredentialNotificationSlides } from './useDidCommCredentialNotificationSlides'
@@ -14,6 +15,9 @@ import { useDidCommPresentationNotificationSlides } from './useDidCommPresentati
 type Query = {
   invitation?: string
   invitationUrl?: string
+  credentialExchangeId?: string
+  proofExchangeId?: string
+  navigationType?: 'inbox'
 }
 
 const { useParams } = createParam<Query>()
@@ -26,13 +30,40 @@ export function DidCommNotificationScreen() {
 
   const [errorReason, setErrorReason] = useState<string>()
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
-  const [notification, setNotification] = useState<{
-    id: string
-    type: 'credentialExchange' | 'proofExchange'
-  }>()
+  const [notification, setNotification] = useState<
+    | {
+        id: string
+        type: 'credentialExchange' | 'proofExchange'
+      }
+    | undefined
+  >(
+    params.credentialExchangeId
+      ? { id: params.credentialExchangeId, type: 'credentialExchange' }
+      : params.proofExchangeId
+        ? { id: params.proofExchangeId, type: 'proofExchange' }
+        : undefined
+  )
 
-  const onCancel = () => pushToWallet('back')
-  const onComplete = () => pushToWallet('replace')
+  const handleNavigation = (type: 'replace' | 'back') => {
+    // When starting from the inbox, we want to go back to the inbox on finish
+    if (params.navigationType === 'inbox') {
+      router.back()
+    } else {
+      pushToWallet(type)
+    }
+  }
+
+  const onCancel = () => {
+    if (notification?.type === 'credentialExchange') {
+      void agent.modules.credentials.deleteById(notification.id)
+    } else if (notification?.type === 'proofExchange') {
+      void agent.modules.proofs.deleteById(notification.id)
+    }
+
+    handleNavigation('back')
+  }
+
+  const onComplete = () => handleNavigation('replace')
 
   useEffect(() => {
     async function handleInvitation() {
@@ -77,16 +108,10 @@ export function DidCommNotificationScreen() {
       }
     }
 
-    void handleInvitation()
+    if (params.invitation || params.invitationUrl) {
+      void handleInvitation()
+    }
   }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled])
-
-  // We were routed here without an invitation
-  if (!params.invitation && !params.invitationUrl) {
-    // eslint-disable-next-line no-console
-    console.error('One of invitation or invitationUrl is required when navigating to DidCommNotificationScreen.')
-    pushToWallet()
-    return null
-  }
 
   // Both flows have the same entry point, so we re-use the same loading request slide
   // This way we avoid a double loading screen when the respective flow is entered
@@ -124,6 +149,14 @@ export function DidCommNotificationScreen() {
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={!!errorReason}
       onCancel={onCancel}
+      confirmation={{
+        title: notification?.type === 'credentialExchange' ? 'Decline card?' : 'Stop sharing?',
+        description:
+          notification?.type === 'credentialExchange'
+            ? 'If you decline, you will not receive the card.'
+            : 'If you stop, no data will be shared.',
+        confirmText: notification?.type === 'credentialExchange' ? 'Yes, decline' : 'Yes, stop',
+      }}
     />
   )
 }

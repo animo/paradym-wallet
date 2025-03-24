@@ -6,8 +6,14 @@ import { mediatorDid } from '@easypid/constants'
 import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { resetWallet, useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { AgentProvider, type InvitationType, WalletJsonStoreProvider, useMediatorSetup } from '@package/agent'
+import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
+import {
+  AgentProvider,
+  type InvitationType,
+  WalletJsonStoreProvider,
+  registerCredentialsForDcApi,
+  useMediatorSetup,
+} from '@package/agent'
 import { isParadymAgent } from '@package/agent/src/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
@@ -39,10 +45,15 @@ export default function AppLayout() {
   const params = useGlobalSearchParams()
   const hasInternetConnection = useHasInternetConnection()
 
+  useEffect(() => {
+    if (secureUnlock.state !== 'unlocked') return
+
+    registerCredentialsForDcApi(secureUnlock.context.agent)
+  }, [secureUnlock])
+
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
-  const [hasResetWallet, setHasResetWallet] = useState(false)
   const shouldResetWallet =
     secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
   const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
@@ -56,18 +67,6 @@ export default function AppLayout() {
     hasInternetConnection,
     mediatorDid,
   })
-
-  useEffect(() => {
-    // Reset state
-    if (hasResetWallet && !shouldResetWallet) {
-      setHasResetWallet(false)
-      return
-    }
-    if (!shouldResetWallet || hasResetWallet) return
-
-    setHasResetWallet(true)
-    resetWallet(secureUnlock)
-  }, [secureUnlock, hasResetWallet, shouldResetWallet])
 
   // If we are initializing and the wallet was opened using a deeplink we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
@@ -90,13 +89,13 @@ export default function AppLayout() {
     setRedirectAfterUnlocked(undefined)
   }
 
-  // This should show the splash screen
-  if (secureUnlock.state === 'initializing' || shouldResetWallet) {
-    return null
+  if (secureUnlock.state === 'not-configured' || shouldResetWallet) {
+    return <Redirect href={`/onboarding?reset=${shouldResetWallet}`} />
   }
 
-  if (secureUnlock.state === 'not-configured') {
-    return <Redirect href="/onboarding" />
+  // This should show the splash screen
+  if (secureUnlock.state === 'initializing') {
+    return null
   }
 
   // Wallet is locked. Redirect to authentication screen
@@ -175,6 +174,7 @@ export default function AppLayout() {
           <Stack.Screen name="pinLocked" options={headerNormalOptions} />
           <Stack.Screen name="federation" options={headerNormalOptions} />
           <Stack.Screen name="pidSetup" />
+          <Stack.Screen name="inbox" options={headerNormalOptions} />
         </Stack>
       </WalletJsonStoreProvider>
     </AgentProvider>

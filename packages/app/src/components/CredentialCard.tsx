@@ -12,8 +12,6 @@ import {
   getTextColorBasedOnBg,
 } from '@package/ui'
 
-import { useHasInternetConnection } from '../hooks'
-
 type CredentialCardProps = {
   onPress?(): void
   name: string
@@ -37,8 +35,6 @@ export function CredentialCard({
   backgroundImage,
   shadow = true,
 }: CredentialCardProps) {
-  const hasInternet = useHasInternetConnection()
-
   textColor = textColor ? textColor : getTextColorBasedOnBg(bgColor ?? '#000')
 
   const icon = issuerImage?.url ? (
@@ -103,19 +99,15 @@ export function CredentialCard({
         </Card.Footer>
         {backgroundImage?.url && (
           <Card.Background>
-            {hasInternet ? (
-              <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
-                <Image
-                  src={backgroundImage.url}
-                  alt={backgroundImage.altText}
-                  width="100%"
-                  height="100%"
-                  resizeMode="cover"
-                />
-              </YStack>
-            ) : (
-              <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'} />
-            )}
+            <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
+              <Image
+                src={backgroundImage.url}
+                alt={backgroundImage.altText}
+                width="100%"
+                height="100%"
+                contentFit="cover"
+              />
+            </YStack>
           </Card.Background>
         )}
       </Card>

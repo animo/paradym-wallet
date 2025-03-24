@@ -23,14 +23,15 @@ import { useHaptics } from '@package/app/src/hooks'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
+import { InboxIcon } from './components/InboxIcon'
 import { LatestActivityCard } from './components/LatestActivityCard'
-
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
 
   const { userName, isLoading } = useFirstNameFromPidCredential()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
+  const hasInboxFeatureFlag = useFeatureFlag('INBOX')
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
@@ -47,8 +48,9 @@ export function FunkeWalletScreen() {
       </YStack>
 
       <FlexPage safeArea="y" fg={1} flex-1={false} bg="transparent">
-        <XStack pt="$2">
+        <XStack pt="$2" jc="space-between">
           <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
+          {hasInboxFeatureFlag && <InboxIcon />}
         </XStack>
 
         <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>
