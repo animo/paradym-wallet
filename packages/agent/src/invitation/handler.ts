@@ -354,6 +354,13 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   entityId: string | null
 }> => {
   try {
+    if (typeof requestPayload?.request === 'string') {
+      return {
+        data: null,
+        entityId: extractEntityIdFromJwt(requestPayload.request, origin),
+      }
+    }
+
     if (requestPayload) {
       return {
         data: null,
