@@ -10,8 +10,8 @@ catalogs:
       specifier: 0.0.1-alpha.14
       version: 0.0.1-alpha.14
     '@animo-id/expo-digital-credentials-api':
-      specifier: 0.1.0
-      version: 0.1.0
+      specifier: 0.1.2
+      version: 0.1.2
     '@animo-id/expo-mdoc-data-transfer':
       specifier: 0.1.3
       version: 0.1.3
@@ -84,7 +84,7 @@ importers:
         version: 0.0.1-alpha.14(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
-        version: 0.1.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 0.1.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
         version: 0.1.3(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
@@ -585,7 +585,7 @@ importers:
     dependencies:
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
-        version: 0.1.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
+        version: 0.1.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)
       '@astronautlabs/jsonpath':
         specifier: ^1.1.2
         version: 1.1.2
@@ -860,8 +860,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@animo-id/expo-digital-credentials-api@0.1.0':
-    resolution: {integrity: sha512-PHdGvNYkK+z4tAiaUBia/nwVgnOHQT3Bx8RlKvWyP0WezrpNes0in+lixMBfZ0yCTEbFfM24Xasp12xMCtb34w==}
+  '@animo-id/expo-digital-credentials-api@0.1.2':
+    resolution: {integrity: sha512-maiBG43Tq2FbfQKChrPSBbQ7MKdtUfe4jksDvjpch9y1XeEkIDFA2Zg4ZKNRyPY4FCQg4OdszLdCowh+N3ozrw==}
     peerDependencies:
       expo: '*'
       react: '*'
@@ -10151,7 +10151,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@animo-id/expo-digital-credentials-api@0.1.0(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
+  '@animo-id/expo-digital-credentials-api@0.1.2(expo@51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9)))(react-native@0.75.5(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@types/react@18.2.79)(react@18.3.1)(typescript@5.3.3))(react@18.3.1)':
     dependencies:
       expo: 51.0.39(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))
       react: 18.3.1
