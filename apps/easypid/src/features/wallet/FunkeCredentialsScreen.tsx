@@ -127,7 +127,7 @@ interface FunkeCredentialRowCardProps {
   onPress: () => void
 }
 
-function FunkeCredentialRowCard({
+export function FunkeCredentialRowCard({
   name,
   backgroundColor,
   textColor,

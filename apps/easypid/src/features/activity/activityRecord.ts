@@ -47,7 +47,7 @@ export interface PresentationActivityCredential {
   metadata: Record<string, unknown>
 }
 
-interface PresentationActivity extends BaseActivity {
+export interface PresentationActivity extends BaseActivity {
   type: 'shared'
   request: {
     credentials: Array<PresentationActivityCredential | PresentationActivityCredentialNotFound>
@@ -57,12 +57,12 @@ interface PresentationActivity extends BaseActivity {
   }
 }
 
-interface IssuanceActivity extends BaseActivity {
+export interface IssuanceActivity extends BaseActivity {
   type: 'received'
   credentialIds: CredentialForDisplayId[]
 }
 
-interface SignedActivity extends Omit<PresentationActivity, 'type'> {
+export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
   type: 'signed'
   transaction: FormattedTransactionData
 }

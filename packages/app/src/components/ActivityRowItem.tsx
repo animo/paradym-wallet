@@ -1,5 +1,5 @@
 import type { ActivityType } from '@easypid/features/activity/activityRecord'
-import type { CredentialForDisplayId, DisplayImage } from '@package/agent/src'
+import type { DisplayImage } from '@package/agent/src'
 import {
   CustomIcons,
   Heading,
@@ -10,7 +10,6 @@ import {
   XStack,
   YStack,
   useScaleAnimation,
-  useToastController,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import Animated from 'react-native-reanimated'
@@ -23,6 +22,16 @@ export const activityInteractions = {
       icon: HeroIcons.Plus,
       color: '$feature-500',
       text: 'Card added',
+    },
+    stopped: {
+      icon: HeroIcons.HandRaisedFilled,
+      color: '$grey-500',
+      text: 'Card rejected',
+    },
+    failed: {
+      icon: CustomIcons.Exclamation,
+      color: '$danger-500',
+      text: 'Card not added',
     },
   },
   signed: {
@@ -69,7 +78,6 @@ interface ActivityRowItemProps {
   subtitle: string
   date: Date
   type: ActivityType
-  credentialId?: CredentialForDisplayId
 }
 
 export function ActivityRowItem({
@@ -80,10 +88,8 @@ export function ActivityRowItem({
   date,
   type = 'shared',
   status = 'success',
-  credentialId,
 }: ActivityRowItemProps) {
   const router = useRouter()
-  const toast = useToastController()
 
   const Icon = type === 'received' ? activityInteractions.received.success : activityInteractions[type][status]
   const Title =
@@ -93,13 +99,7 @@ export function ActivityRowItem({
   const { withHaptics } = useHaptics()
 
   const onLinkPress = withHaptics(() => {
-    if (type === 'shared' || type === 'signed') return router.push(`/activity/${id}`)
-    if (type === 'received' && credentialId) return router.push(`/credentials/${credentialId}`)
-    return toast.show('Currently unavailable.', {
-      customData: {
-        preset: 'warning',
-      },
-    })
+    return router.push(`/activity/${id}`)
   })
 
   return (
