@@ -1,15 +1,20 @@
-import { type FormattedSubmission, getDisclosedAttributeNamesForDisplay } from '@package/agent'
+import {
+  type FormattedSubmission,
+  type FormattedSubmissionEntrySatisfiedCredential,
+  type QtspInfo,
+  getDisclosedAttributeNamesForDisplay,
+} from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
 import { Button, Heading, Image, Paragraph, ScrollView, Spacer, Stack, XStack, YStack } from '@package/ui'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface SignAndShareSlideProps {
   onAccept?: () => Promise<void>
   onDecline?: () => void
   isAccepting: boolean
-  qtspName: string
-  qtspLogo?: string
+  qtsp: QtspInfo
   documentName: string
   cardForSigningId: string
   submission?: FormattedSubmission
@@ -19,8 +24,7 @@ export const SignAndShareSlide = ({
   onAccept,
   onDecline,
   isAccepting,
-  qtspName,
-  qtspLogo,
+  qtsp,
   documentName,
   cardForSigningId,
   submission,
@@ -29,6 +33,21 @@ export const SignAndShareSlide = ({
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
+
+  const [cardForSigning, setCardForSigning] = useState<FormattedSubmissionEntrySatisfiedCredential | undefined>()
+  const [remainingEntries, setRemainingEntries] = useState(submission?.entries ?? [])
+
+  useEffect(() => {
+    if (submission) {
+      setCardForSigning(
+        submission.entries.find(
+          (entry): entry is typeof entry & { isSatisfied: true } =>
+            entry.inputDescriptorId === cardForSigningId && entry.isSatisfied
+        )?.credentials[0]
+      )
+      setRemainingEntries(submission.entries.filter((entry) => entry.inputDescriptorId !== cardForSigningId))
+    }
+  }, [submission, cardForSigningId])
 
   const handleAccept = async () => {
     // Manually set to instantly show the loading state
@@ -42,12 +61,6 @@ export const SignAndShareSlide = ({
     onDecline?.()
     onCancel()
   }
-
-  // TODO: In future, we can use <RequestedAttributesSection /> below to render the rest of the requested cards
-  const cardForSigning = submission?.entries.find(
-    (entry): entry is typeof entry & { isSatisfied: true } =>
-      entry.inputDescriptorId === cardForSigningId && entry.isSatisfied
-  )?.credentials[0]
 
   return (
     <YStack fg={1} jc="space-between">
@@ -78,19 +91,21 @@ export const SignAndShareSlide = ({
                 <Heading variant="sub2">Document</Heading>
                 <Paragraph>The following document will be signed.</Paragraph>
               </YStack>
-              <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" p="$4">
+              <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
                 <YStack f={1} gap="$2">
-                  <Heading variant="sub1">{documentName}</Heading>
-                  <Paragraph>Signing with {qtspName}</Paragraph>
+                  <Heading variant="sub2" textTransform="none" color="$grey-800">
+                    {documentName}
+                  </Heading>
+                  <Paragraph>Signing with {qtsp.name}</Paragraph>
                 </YStack>
                 <YStack w="$5" rotate="3deg" shadow>
                   <YStack bg="$white" p="$2" gap="$2" br="$3" bw={1} borderColor="$grey-200">
-                    {!qtspLogo ? (
+                    {!qtsp.logo ? (
                       <Stack ai="center" h="$1" br="$2" bg="$grey-200" />
                     ) : (
                       <Stack ai="center" h="$1" br="$2" bg="$primary-200">
-                        <Stack pos="absolute">
-                          <Image src={qtspLogo} height={20} width={20} />
+                        <Stack pos="absolute" p="$1">
+                          <Image src={qtsp.logo.url} height={16} width={16} />
                         </Stack>
                       </Stack>
                     )}
@@ -131,7 +146,9 @@ export const SignAndShareSlide = ({
                 />
               )}
             </YStack>
-            {/* <RequestedAttributesSection submission={submission} /> */}
+            {remainingEntries.length > 0 && submission && (
+              <RequestedAttributesSection submission={{ ...submission, entries: remainingEntries }} />
+            )}
             <Spacer />
           </ScrollView>
         </YStack>
@@ -141,7 +158,7 @@ export const SignAndShareSlide = ({
         {submission?.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
-            acceptText="Sign"
+            acceptText="Sign & share"
             declineText="Stop"
             onAccept={handleAccept}
             onDecline={handleDecline}

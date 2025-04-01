@@ -1,4 +1,4 @@
-import type { DisplayImage, FormattedSubmission, TrustedEntity } from '@package/agent'
+import type { DisplayImage, FormattedSubmission, FormattedTransactionData, TrustedEntity } from '@package/agent'
 
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
@@ -20,13 +20,7 @@ interface FunkePresentationNotificationScreenProps {
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
-  transaction?: {
-    type: 'qes'
-    documentName: string
-    qtspName: string
-    qtspLogo?: string
-    cardForSigningId: string
-  }
+  transaction?: FormattedTransactionData
   onAccept: () => Promise<void>
   onDecline: () => void
   onComplete: () => void
@@ -63,7 +57,7 @@ export function FunkePresentationNotificationScreen({
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"
-                type={transaction?.type === 'qes' ? 'signing' : 'request'}
+                type={transaction?.type === 'qes_authorization' ? 'signing' : 'request'}
                 entityId={entityId}
                 name={verifierName}
                 logo={logo}
@@ -73,12 +67,12 @@ export function FunkePresentationNotificationScreen({
             ),
           },
           ...(submission
-            ? transaction?.type === 'qes'
+            ? transaction?.type === 'qes_authorization'
               ? [
                   {
                     step: 'signing',
                     progress: 50,
-                    screen: <SigningSlide qtspName={transaction.qtspName} documentName={transaction.documentName} />,
+                    screen: <SigningSlide qtsp={transaction.qtsp} documentName={transaction.documentName} />,
                   },
                   {
                     step: 'share-credentials',
@@ -89,8 +83,7 @@ export function FunkePresentationNotificationScreen({
                         onAccept={usePin ? undefined : onAccept}
                         onDecline={onDecline}
                         isAccepting={isAccepting}
-                        qtspName={transaction.qtspName}
-                        qtspLogo={transaction.qtspLogo}
+                        qtsp={transaction.qtsp}
                         documentName={transaction.documentName}
                         cardForSigningId={transaction.cardForSigningId}
                         submission={submission}

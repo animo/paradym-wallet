@@ -1,26 +1,27 @@
-import { Button, Heading, Paragraph, YStack } from '@package/ui'
-import { useImageScaler, useWizard } from 'packages/app/src'
+import type { QtspInfo } from '@package/agent'
+import { DualResponseButtons, useImageScaler, useWizard } from '@package/app'
+import { Heading, Paragraph, YStack } from '@package/ui'
 import { Defs, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
 interface SigningSlideProps {
   documentName: string
-  qtspName: string
+  qtsp: QtspInfo
 }
 
-export function SigningSlide({ documentName, qtspName }: SigningSlideProps) {
+export function SigningSlide({ documentName, qtsp }: SigningSlideProps) {
   const { height, onLayout } = useImageScaler({ scaleFactor: 0.65 })
 
-  const { onNext } = useWizard()
+  const { onNext, onCancel } = useWizard()
 
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4">
-        <Heading>Review the request</Heading>
+        <Heading>Sign a document</Heading>
         <Paragraph>
           Do you want to sign <Paragraph emphasis>{documentName}</Paragraph>?
         </Paragraph>
         <Paragraph>
-          Note: The document will be signed using <Paragraph emphasis>{qtspName}</Paragraph>.
+          Note: The document will be signed using <Paragraph emphasis>{qtsp.name}</Paragraph>.
         </Paragraph>
       </YStack>
       <YStack fg={1} ai="center" onLayout={onLayout}>
@@ -29,7 +30,14 @@ export function SigningSlide({ documentName, qtspName }: SigningSlideProps) {
         </YStack>
       </YStack>
       <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
-        <Button.Solid onPress={() => onNext()}>Continue</Button.Solid>
+        <DualResponseButtons
+          align="horizontal"
+          acceptText="Continue"
+          declineText="Stop"
+          onAccept={() => onNext()}
+          onDecline={() => onCancel()}
+          isLoading={false}
+        />
       </YStack>
     </YStack>
   )

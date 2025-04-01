@@ -88,7 +88,12 @@ export const shareProof = async ({
         : undefined,
       transactionData:
         resolvedRequest.transactionData && acceptTransactionData
-          ? [{ credentialId: resolvedRequest.transactionData[0].matchedCredentialIds[0] }]
+          ? (() => {
+              const matchedCredentialId = resolvedRequest.transactionData[0].matchedCredentialIds.find((id) =>
+                Object.values(selectedCredentials).includes(id)
+              )
+              return matchedCredentialId ? [{ credentialId: matchedCredentialId }] : undefined
+            })()
           : undefined,
       origin: resolvedRequest.origin,
     })

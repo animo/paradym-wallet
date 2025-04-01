@@ -2,8 +2,10 @@ import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
   type FormattedSubmissionEntrySatisfied,
+  type FormattedTransactionData,
   getCredentialsForProofRequest,
   getDisclosedAttributeNamesForDisplay,
+  getFormattedTransactionData,
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -21,7 +23,6 @@ import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPres
 import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
-
 type Query = { uri?: string; data?: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
@@ -32,6 +33,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
+  const [formattedTransactionData, setFormattedTransactionData] = useState<FormattedTransactionData>()
   const [isSharing, setIsSharing] = useState(false)
   const { activities } = useActivities({
     filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
@@ -39,22 +41,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const lastInteractionDate = activities?.[0]?.date
   const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
 
-  // TODO:
-  // - zod validation of type
-  // - only allow one transaction data entry
-  // - only allow qes transaction data, fail all others
-  const transactionDataEntry = credentialsForRequest?.transactionData?.[0]
-  const transactionData = transactionDataEntry?.entry.transactionData
-  const transaction =
-    transactionDataEntry && transactionData?.type === 'qes_authorization'
-      ? ({
-          type: 'qes',
-          documentName: (transactionData.documentDigests as Array<{ label: string }>)[0].label,
-          qtspName: 'DocuSign',
-          qtspLogo: 'https://logos-world.net/wp-content/uploads/2024/05/DocuSign-Symbol.png',
-          cardForSigningId: transactionDataEntry?.matchedCredentialIds[0],
-        } as const)
-      : undefined
+  const handleError = useCallback(
+    ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
+      setIsSharing(false)
+      toast.show(reason, { message: description, customData: { preset: 'danger' } })
+      if (redirect) pushToWallet()
+      return
+    },
+    [toast, pushToWallet]
+  )
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -65,20 +60,28 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       uri: params.uri,
       trustedX509Entities,
     })
-      .then(setCredentialsForRequest)
+      .then((r) => {
+        setCredentialsForRequest(r)
+        return r
+      })
       .catch((error) => {
-        toast.show('Presentation information could not be extracted.', {
-          message:
-            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
-          customData: { preset: 'danger' },
-        })
+        const errorMessage =
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
+
+        handleError({ reason: 'Presentation information could not be extracted.', description: errorMessage })
+
         agent.config.logger.error('Error getting credentials for request', {
           error,
         })
-
-        pushToWallet()
+        return
       })
-  }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast, isDevelopmentModeEnabled])
+      .then((r) => {
+        if (r) setFormattedTransactionData(getFormattedTransactionData(r))
+      })
+      .catch((error) => {
+        handleError({ reason: error.message })
+      })
+  }, [credentialsForRequest, params.data, params.uri, agent, isDevelopmentModeEnabled, handleError])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
@@ -111,16 +114,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })),
     })
   }, [credentialsForRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
-
-  const handleError = useCallback(
-    ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
-      setIsSharing(false)
-      toast.show(reason, { message: description, customData: { preset: 'danger' } })
-      if (redirect) pushToWallet()
-      return
-    },
-    [toast, pushToWallet]
-  )
 
   const onProofAccept = useCallback(
     async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
@@ -158,7 +151,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
-          acceptTransactionData: transaction?.type === 'qes',
+          acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
         })
 
         onPinComplete?.()
@@ -184,7 +177,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
       }
     },
-    [credentialsForRequest, agent, shouldUsePin, stopOverAsking, isDevelopmentModeEnabled, handleError, transaction]
+    [
+      credentialsForRequest,
+      agent,
+      shouldUsePin,
+      stopOverAsking,
+      isDevelopmentModeEnabled,
+      handleError,
+      formattedTransactionData,
+    ]
   )
 
   const onProofDecline = async () => {
@@ -215,7 +216,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
       overAskingResponse={overAskingResponse}
-      transaction={transaction}
+      transaction={formattedTransactionData}
     />
   )
 }
