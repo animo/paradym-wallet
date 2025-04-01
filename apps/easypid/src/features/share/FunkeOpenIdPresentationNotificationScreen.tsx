@@ -23,6 +23,7 @@ import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPres
 import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
+
 type Query = { uri?: string; data?: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
@@ -155,7 +156,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
 
         onPinComplete?.()
-        await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'success').catch(console.error)
+        await addSharedActivityForCredentialsForRequest(
+          agent,
+          credentialsForRequest,
+          'success',
+          formattedTransactionData
+        ).catch(console.error)
       } catch (error) {
         setIsSharing(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
@@ -163,8 +169,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
 
         if (credentialsForRequest) {
-          await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'failed')
+          await addSharedActivityForCredentialsForRequest(
+            agent,
+            credentialsForRequest,
+            'failed',
+            formattedTransactionData
+          ).catch(console.error)
         }
+
+        console.log('error', error)
 
         agent.config.logger.error('Error accepting presentation', {
           error,
@@ -194,8 +207,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       await addSharedActivityForCredentialsForRequest(
         agent,
         credentialsForRequest,
-        credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed'
-      )
+        credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed',
+        formattedTransactionData
+      ).catch(console.error)
     }
 
     pushToWallet()

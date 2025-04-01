@@ -28,6 +28,12 @@ export function LatestActivityCard() {
         description: `Shared ${isPlural ? 'cards' : 'card'}`,
       }
     }
+    if (latestActivity.type === 'signed') {
+      return {
+        title: formatRelativeDate(new Date(latestActivity.date)),
+        description: 'Signed document',
+      }
+    }
     if (latestActivity.type === 'received') {
       const credential = credentials.find((c) => c.id === latestActivity.credentialIds[0])
       return {

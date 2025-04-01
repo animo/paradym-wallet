@@ -25,6 +25,23 @@ export const activityInteractions = {
       text: 'Card added',
     },
   },
+  signed: {
+    success: {
+      icon: HeroIcons.PenFilled,
+      color: '$positive-500',
+      text: 'Document signed',
+    },
+    stopped: {
+      icon: HeroIcons.HandRaisedFilled,
+      color: '$grey-500',
+      text: 'Signing stopped',
+    },
+    failed: {
+      icon: CustomIcons.Exclamation,
+      color: '$danger-500',
+      text: 'Signing failed',
+    },
+  },
   shared: {
     success: {
       icon: HeroIcons.Interaction,
@@ -76,7 +93,7 @@ export function ActivityRowItem({
   const { withHaptics } = useHaptics()
 
   const onLinkPress = withHaptics(() => {
-    if (type === 'shared') return router.push(`/activity/${id}`)
+    if (type === 'shared' || type === 'signed') return router.push(`/activity/${id}`)
     if (type === 'received' && credentialId) return router.push(`/credentials/${credentialId}`)
     return toast.show('Currently unavailable.', {
       customData: {

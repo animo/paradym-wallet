@@ -1,8 +1,8 @@
-import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
+import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { createParam } from 'solito'
 
 import { useCredentialsForDisplay } from '@package/agent'
-import { CardWithAttributes, TextBackButton, activityInteractions } from '@package/app'
+import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
 import { useScrollViewPosition } from '@package/app/src/hooks'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -65,6 +65,25 @@ export function FunkeActivityDetailScreen() {
                 logo={activity.entity.logo}
                 overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
               />
+              {activity && activity.type === 'signed' && (
+                <YStack gap="$4">
+                  <YStack gap="$2">
+                    <Heading variant="sub2">Document</Heading>
+                    <Paragraph>
+                      {activity.status === 'success' ? 'The document was signed.' : 'The document was not signed.'}
+                    </Paragraph>
+                  </YStack>
+                  <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
+                    <YStack f={1} gap="$2">
+                      <Heading variant="sub2" textTransform="none" color="$grey-800">
+                        {activity.transaction?.documentName}
+                      </Heading>
+                      <Paragraph>Signing with {activity.transaction?.qtsp.name}</Paragraph>
+                    </YStack>
+                    <MiniDocument logoUrl={activity.transaction?.qtsp.logo?.url} />
+                  </XStack>
+                </YStack>
+              )}
               <Stack gap="$3">
                 <Stack gap="$2">
                   <Heading variant="sub2">
@@ -76,6 +95,7 @@ export function FunkeActivityDetailScreen() {
                       : 'No credentials were shared.'}
                   </Paragraph>
                 </Stack>
+
                 {activity.request.credentials && activity.request.credentials.length > 0 ? (
                   activity.request.credentials.map((activityCredential) => {
                     if ('id' in activityCredential) {

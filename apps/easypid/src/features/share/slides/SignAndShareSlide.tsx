@@ -4,9 +4,9 @@ import {
   type QtspInfo,
   getDisclosedAttributeNamesForDisplay,
 } from '@package/agent'
-import { CardWithAttributes, DualResponseButtons, useScrollViewPosition } from '@package/app'
+import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, Image, Paragraph, ScrollView, Spacer, Stack, XStack, YStack } from '@package/ui'
+import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
@@ -98,24 +98,7 @@ export const SignAndShareSlide = ({
                   </Heading>
                   <Paragraph>Signing with {qtsp.name}</Paragraph>
                 </YStack>
-                <YStack w="$5" rotate="3deg" shadow>
-                  <YStack bg="$white" p="$2" gap="$2" br="$3" bw={1} borderColor="$grey-200">
-                    {!qtsp.logo ? (
-                      <Stack ai="center" h="$1" br="$2" bg="$grey-200" />
-                    ) : (
-                      <Stack ai="center" h="$1" br="$2" bg="$primary-200">
-                        <Stack pos="absolute" p="$1">
-                          <Image src={qtsp.logo.url} height={16} width={16} />
-                        </Stack>
-                      </Stack>
-                    )}
-                    <YStack gap="$1.5">
-                      <Stack h="$0.5" br="$2" bg="$grey-100" />
-                      <Stack h="$0.5" br="$2" bg="$grey-100" />
-                      <Stack h="$0.5" br="$2" bg="$grey-100" />
-                    </YStack>
-                  </YStack>
-                </YStack>
+                <MiniDocument logoUrl={qtsp.logo?.url} />
               </XStack>
             </YStack>
             <YStack gap="$4">
