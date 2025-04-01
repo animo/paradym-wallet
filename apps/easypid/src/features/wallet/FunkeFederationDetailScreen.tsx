@@ -64,7 +64,7 @@ export function FunkeFederationDetailScreen({
               <Heading variant="sub2">Trusted by</Heading>
               <Paragraph>
                 {trustedEntities.length > 0 ? (
-                  <>A list of organizations and whether they have approved {name || 'unknown organization'}.</>
+                  <>A list of organizations that have approved {name || 'unknown organization'}.</>
                 ) : (
                   <>There are no organizations that have approved {name || 'unknown organization'}.</>
                 )}

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://funke.animo.id/siop'
+const BASE_URL = 'https://funke.animo.id/oid4vp'
 
 export const TRUSTED_ENTITIES = [
   `${BASE_URL}/0193687b-0c27-7b82-a686-ff857dc6bbb3`,
