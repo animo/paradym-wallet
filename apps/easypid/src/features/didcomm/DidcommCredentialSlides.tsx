@@ -1,53 +1,27 @@
-import {
-  type ResolveOutOfBandInvitationResultSuccess,
-  parseDidCommInvitation,
-  resolveOutOfBandInvitation,
-} from '@package/agent'
-import { type SlideStep, SlideWizard, usePushToWallet } from '@package/app/src'
+import { useDidCommCredentialActions, type ResolveOutOfBandInvitationResultSuccess } from '@package/agent'
+import { SlideWizard, usePushToWallet } from '@package/app/src'
 
-import { useEffect, useState } from 'react'
-import { createParam } from 'solito'
+import { useState } from 'react'
 
 import { useParadymAgent } from '@easypid/agent'
-import { useDevelopmentMode } from '@easypid/hooks'
 import { router } from 'expo-router'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import { useDidCommCredentialNotificationSlides } from './useDidCommCredentialNotificationSlides'
+import { addReceivedActivity, useActivities } from '../activity/activityRecord'
+import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
+import { useToastController } from '@package/ui'
+import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 
-type Query = {
-  invitation?: string
-  invitationUrl?: string
+interface DidcommCredentialsSlidesProps {
+  resolved: ResolveOutOfBandInvitationResultSuccess & { flowType: 'issue' }
   credentialExchangeId?: string
-  proofExchangeId?: string
-  navigationType?: 'inbox'
 }
 
-const { useParams } = createParam<Query>()
-
-export function DidcommCredentialsSlides() {
-  const { agent } = useParadymAgent()
-  const { params } = useParams()
+export function DidcommCredentialsSlides({ resolved, credentialExchangeId }: DidcommCredentialsSlidesProps) {
   const pushToWallet = usePushToWallet()
-  const [isDevelopmentModeEnabled] = useDevelopmentMode()
+  const [resolvedCredentialExchangeId, setCredentialExchangeId] = useState(credentialExchangeId)
 
-  const [resolved, setResolved] = useState<ResolveOutOfBandInvitationResultSuccess>()
   const [errorReason, setErrorReason] = useState<string>()
-  const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
-
-  const [notification, setNotification] = useState<
-    | {
-        id: string
-        type: 'credentialExchange' | 'proofExchange'
-      }
-    | undefined
-  >(
-    params.credentialExchangeId
-      ? { id: params.credentialExchangeId, type: 'credentialExchange' }
-      : params.proofExchangeId
-        ? { id: params.proofExchangeId, type: 'proofExchange' }
-        : undefined
-  )
 
   const handleNavigation = (type: 'replace' | 'back') => {
     // When starting from the inbox, we want to go back to the inbox on finish
@@ -70,70 +44,83 @@ export function DidcommCredentialsSlides() {
 
   const onComplete = () => handleNavigation('replace')
 
-  useEffect(() => {
-    async function handleInvitation() {
-      if (hasHandledNotificationLoading) return
-      setHasHandledNotificationLoading(true)
-      try {
-        const invitation = params.invitation
-          ? (JSON.parse(decodeURIComponent(params.invitation)) as Record<string, unknown>)
-          : params.invitationUrl
-            ? decodeURIComponent(params.invitationUrl)
-            : undefined
-        if (!invitation) {
-          setErrorReason('No invitation was found. Please try again.')
-          return
-        }
+  const { agent } = useParadymAgent()
+  const toast = useToastController()
+  const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
+    useDidCommCredentialActions()
+  const { activities } = useActivities({ filters: { entityId: credentialExchange?.connectionId } })
 
-        const parseResult = await parseDidCommInvitation(agent, invitation)
-        if (!parseResult.success) {
-          setErrorReason(parseResult.error)
-          return
-        }
+  const onCredentialAccept = async () => {
+    const w3cRecord = await acceptCredential().catch(() => {
+      toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
+      onCancel()
+    })
 
-        const resolveResult = await resolveOutOfBandInvitation(agent, parseResult.result)
-        if (!resolveResult.success) {
-          setErrorReason(resolveResult.error)
-          return
-        }
+    if (w3cRecord) {
+      await addReceivedActivity(agent, {
+        entityId: credentialExchange?.connectionId as string,
+        name: display.issuer.name,
+        logo: display.issuer.logo,
+        backgroundColor: '#ffffff', // Default to a white background for now
+        credentialIds: [`w3c-credential-${w3cRecord?.id}`],
+      })
+    }
+  }
 
-        setResolved(resolveResult)
-      } catch (error: unknown) {
-        agent.config.logger.error('Error parsing invitation', {
-          error,
-        })
-        if (isDevelopmentModeEnabled && error instanceof Error) {
-          setErrorReason(`Error parsing invitation\n\nDevelopment mode error:\n${error.message}`)
-        } else {
-          setErrorReason('Error parsing invitation')
-        }
-      }
+  const onCredentialDecline = () => {
+    if (credentialExchange) {
+      declineCredential().finally(() => {
+        void agent.modules.credentials.deleteById(credentialExchange.id)
+      })
     }
 
-    if (params.invitation || params.invitationUrl) {
-      void handleInvitation()
-    }
-  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled])
-
-  // Both flows have the same entry point, so we re-use the same loading request slide
-  // This way we avoid a double loading screen when the respective flow is entered
-  const steps: SlideStep[] = [
-    {
-      step: 'loading-request',
-      progress: 33,
-      screen: <LoadingRequestSlide key="loading-request" isLoading={!notification} isError={!!errorReason} />,
-    },
-  ]
-
-  const credentialSlides = useDidCommCredentialNotificationSlides({
-    credentialExchangeId: notification?.id as string,
-    onCancel,
-    onComplete,
-  })
+    toast.show('Credential has been declined.')
+    onCancel()
+  }
 
   return (
     <SlideWizard
-      steps={steps}
+      key="didcomm-slides"
+      steps={[
+        {
+          step: 'loading-request',
+          progress: 33,
+          screen: <LoadingRequestSlide key="loading-request" isLoading={false} isError={!!errorReason} />,
+        },
+        {
+          step: 'verify-issuer',
+          progress: 33,
+          backIsCancel: true,
+          screen: (
+            <VerifyPartySlide
+              key="verify-issuer"
+              type="offer"
+              name={display.issuer.name}
+              logo={display.issuer.logo}
+              entityId={credentialExchange?.connectionId as string}
+              lastInteractionDate={activities?.[0]?.date}
+            />
+          ),
+        },
+        {
+          step: 'retrieve-credential',
+          progress: 66,
+          backIsCancel: true,
+          screen: (
+            <CredentialRetrievalSlide
+              key="retrieve-credential"
+              onGoToWallet={onComplete}
+              display={display}
+              attributes={attributes ?? {}}
+              isCompleted={acceptStatus === 'success'}
+              onAccept={onCredentialAccept}
+              onDecline={onCredentialDecline}
+              // If state is not idle, it means we have pressed accept
+              isAccepting={acceptStatus !== 'idle'}
+            />
+          ),
+        },
+      ]}
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={!!errorReason}
       onCancel={onCancel}
