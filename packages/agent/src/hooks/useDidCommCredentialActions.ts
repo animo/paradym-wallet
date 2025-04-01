@@ -41,7 +41,7 @@ function useOfferAttributes(credentialExchangeId: string) {
   }
 }
 
-export function useDidCommCredentialActions(credentialExchangeId: string) {
+export function useDidCommCredentialActions(credentialExchangeId = 'not-loaded-yet') {
   const { agent } = useAgent()
 
   const credentialExchange = useCredentialById(credentialExchangeId)
