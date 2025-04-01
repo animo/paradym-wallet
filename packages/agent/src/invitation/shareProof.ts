@@ -90,8 +90,9 @@ export const shareProof = async ({
         resolvedRequest.transactionData && acceptTransactionData
           ? (() => {
               const matchedCredentialId = resolvedRequest.transactionData[0].matchedCredentialIds.find((id) =>
-                Object.values(selectedCredentials).includes(id)
+                Object.keys(dcqlCredentials).includes(id)
               )
+
               return matchedCredentialId ? [{ credentialId: matchedCredentialId }] : undefined
             })()
           : undefined,

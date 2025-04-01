@@ -148,6 +148,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       }
 
       try {
+        console.log(JSON.stringify(credentialsForRequest, null, 2))
+
         await shareProof({
           agent,
           resolvedRequest: credentialsForRequest,
@@ -176,8 +178,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
             formattedTransactionData
           ).catch(console.error)
         }
-
-        console.log('error', error)
 
         agent.config.logger.error('Error accepting presentation', {
           error,
