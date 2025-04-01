@@ -91,7 +91,7 @@ export function FunkeActivityDetailScreen() {
                   </Heading>
                   <Paragraph>
                     {activity.status === 'success'
-                      ? `${amountShared} credential${sharedCredentialAmount} were shared.`
+                      ? `${amountShared} credential${sharedCredentialAmount} ${amountShared === 1 ? 'was' : 'were'} shared.`
                       : 'No credentials were shared.'}
                   </Paragraph>
                 </Stack>

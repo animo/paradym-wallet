@@ -28,7 +28,7 @@ export const activityInteractions = {
   signed: {
     success: {
       icon: HeroIcons.PenFilled,
-      color: '$positive-500',
+      color: '#008FFF',
       text: 'Document signed',
     },
     stopped: {
