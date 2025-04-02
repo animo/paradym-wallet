@@ -79,9 +79,10 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
         <YStack gap="$2">
           <Heading variant="sub2">Cards</Heading>
           <Paragraph>
-            The following{activity.credentialIds.length < 1 ? ` ${activity.credentialIds.length}` : ''} card
-            {activity.credentialIds.length > 1 ? 's' : ''} {activity.credentialIds.length > 1 ? 'were' : 'was'}{' '}
-            received.
+            You have received the following
+            {activity.credentialIds.length < 1 ? ` ${activity.credentialIds.length}` : ''} card{' '}
+            {activity.credentialIds.length > 1 ? 's' : ''}
+            from {activity.entity.name}.
           </Paragraph>
         </YStack>
         {activity.credentialIds.map((credentialId) => {
@@ -89,12 +90,14 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
 
           if (!credential) {
             return (
-              <CardWithAttributes
-                id={credentialId}
+              <FunkeCredentialRowCard
+                key={credentialId}
                 name="Deleted credential"
                 textColor="$grey-100"
-                backgroundColor="$primary-500"
-                formattedDisclosedAttributes={[]}
+                backgroundColor="$grey-900"
+                issuer={activity.entity.name ?? 'Unknown'}
+                logo={activity.entity.logo}
+                issuedAt={activity.date ? new Date(activity.date) : undefined}
               />
             )
           }

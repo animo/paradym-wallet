@@ -16,18 +16,16 @@ export function SigningSlide({ documentName, qtsp }: SigningSlideProps) {
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4">
-        <Heading>Sign a document</Heading>
+        <Heading>Signing a document</Heading>
         <Paragraph>
-          Do you want to sign <Paragraph emphasis>{documentName}</Paragraph>?
-        </Paragraph>
-        <Paragraph>
-          Note: The document will be signed using <Paragraph emphasis>{qtsp.name}</Paragraph>.
+          You are about to sign <Paragraph emphasis>{documentName}</Paragraph>.
         </Paragraph>
       </YStack>
-      <YStack fg={1} ai="center" onLayout={onLayout}>
-        <YStack mt="$4" height={height}>
+      <YStack fg={1} jc="center" ai="center" onLayout={onLayout}>
+        <YStack height={height}>
           <SigningSvg />
         </YStack>
+        <YStack h="$4" />
       </YStack>
       <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
         <DualResponseButtons

@@ -11,13 +11,13 @@ export const getFormattedTransactionData = (credentialsForRequest?: CredentialsF
   if (!transactionData || transactionData.length === 0) return undefined
 
   // Only allow one transaction data entry
-  if (transactionData.length < 1) throw new Error('Multiple transactions are not supported.')
+  if (transactionData.length < 1) throw new Error('Multiple transactions are not supported yet.')
 
   const transactionDataEntry = transactionData[0]
 
   // Only allow qes_authorization is supported at this time
   if (transactionDataEntry.entry.transactionData.type !== 'qes_authorization')
-    throw new Error('Only qes_authorization is supported.')
+    throw new Error('Only document signing is supported at this time.')
 
   return {
     type: transactionDataEntry.entry.transactionData.type as 'qes_authorization',
