@@ -3,7 +3,6 @@ import { useToastController } from '@package/ui'
 
 import type { SlideStep } from '@package/app/src'
 import { addSharedActivityForSubmission, useActivities } from '../activity/activityRecord'
-import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 
@@ -83,21 +82,6 @@ export function useDidCommPresentationNotificationSlides({
   if (!submission) return []
 
   return [
-    {
-      step: 'verify-issuer',
-      progress: 33,
-      backIsCancel: true,
-      screen: (
-        <VerifyPartySlide
-          key="verify-issuer"
-          type="request"
-          name={verifierName}
-          logo={logo}
-          entityId={proofExchange?.connectionId as string}
-          lastInteractionDate={activities?.[0]?.date}
-        />
-      ),
-    },
     {
       step: 'retrieve-presentation',
       progress: 66,

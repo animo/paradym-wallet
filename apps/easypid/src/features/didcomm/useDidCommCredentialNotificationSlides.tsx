@@ -2,9 +2,8 @@ import { useParadymAgent } from '@easypid/agent'
 import { useDidCommCredentialActions } from '@package/agent'
 import type { SlideStep } from '@package/app/src'
 import { useToastController } from '@package/ui'
-import { addReceivedActivity, useActivities } from '../activity/activityRecord'
+import { addReceivedActivity } from '../activity/activityRecord'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
-import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 
 interface DidCommCredentialNotificationSlidesProps {
   credentialExchangeId: string
@@ -21,7 +20,6 @@ export function useDidCommCredentialNotificationSlides({
   const toast = useToastController()
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
-  const { activities } = useActivities({ filters: { entityId: credentialExchange?.connectionId } })
 
   const onCredentialAccept = async () => {
     const w3cRecord = await acceptCredential().catch(() => {
@@ -52,21 +50,6 @@ export function useDidCommCredentialNotificationSlides({
   }
 
   return [
-    {
-      step: 'verify-issuer',
-      progress: 33,
-      backIsCancel: true,
-      screen: (
-        <VerifyPartySlide
-          key="verify-issuer"
-          type="offer"
-          name={display.issuer.name}
-          logo={display.issuer.logo}
-          entityId={credentialExchange?.connectionId as string}
-          lastInteractionDate={activities?.[0]?.date}
-        />
-      ),
-    },
     {
       step: 'retrieve-credential',
       progress: 66,

@@ -29,7 +29,9 @@ export {
 export {
   type CredentialsForProofRequest,
   type TrustedX509Entity,
-  receiveOutOfBandInvitation,
+  type ResolveOutOfBandInvitationResultSuccess,
+  acceptOutOfBandInvitation,
+  resolveOutOfBandInvitation,
   receiveCredentialFromOpenId4VciOffer,
   acquireAuthorizationCodeAccessToken,
   acquireRefreshTokenAccessToken,
