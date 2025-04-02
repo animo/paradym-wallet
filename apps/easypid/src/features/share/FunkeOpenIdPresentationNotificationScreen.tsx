@@ -148,8 +148,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       }
 
       try {
-        console.log(JSON.stringify(credentialsForRequest, null, 2))
-
         await shareProof({
           agent,
           resolvedRequest: credentialsForRequest,

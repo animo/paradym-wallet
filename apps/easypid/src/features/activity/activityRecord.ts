@@ -134,11 +134,11 @@ export const addReceivedActivity = async (
   })
 }
 
-export const addSharedActivity = async (
+export const addSharedOrSignedActivity = async (
   agent: AppAgent,
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
-  if ('transaction' in input) {
+  if ('transaction' in input && input.transaction) {
     await activityStorage.addActivity(agent, {
       ...input,
       id: utils.uuid(),
@@ -161,7 +161,7 @@ export function addSharedActivityForCredentialsForRequest(
   status: ActivityStatus,
   transaction?: FormattedTransactionData
 ) {
-  return addSharedActivity(agent, {
+  return addSharedOrSignedActivity(agent, {
     status,
     entity: {
       id: credentialsForRequest.verifier.entityId,
@@ -194,7 +194,7 @@ export function addSharedActivityForSubmission(
   },
   status: ActivityStatus
 ) {
-  return addSharedActivity(agent, {
+  return addSharedOrSignedActivity(agent, {
     status,
     entity: {
       id: verifier.id,
