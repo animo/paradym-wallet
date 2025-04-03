@@ -25,7 +25,17 @@ export function LatestActivityCard() {
       const isPlural = latestActivity.request.credentials.length > 1
       return {
         title: formatRelativeDate(new Date(latestActivity.date)),
-        description: `Shared ${isPlural ? 'cards' : 'card'}`,
+        description: ['failed', 'stopped'].includes(latestActivity.status)
+          ? `Sharing ${latestActivity.status}`
+          : `Shared ${isPlural ? 'cards' : 'card'}`,
+      }
+    }
+    if (latestActivity.type === 'signed') {
+      return {
+        title: formatRelativeDate(new Date(latestActivity.date)),
+        description: ['failed', 'stopped'].includes(latestActivity.status)
+          ? `Signing ${latestActivity.status}`
+          : 'Signed document',
       }
     }
     if (latestActivity.type === 'received') {

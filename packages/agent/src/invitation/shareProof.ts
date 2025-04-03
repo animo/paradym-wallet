@@ -12,15 +12,19 @@ import type { EitherAgent } from '../agent'
 import { handleBatchCredential } from '../batch'
 import { BiometricAuthenticationError } from './error'
 import type { CredentialsForProofRequest } from './handler'
+import { getFormattedTransactionData } from './transactions'
 
 export const shareProof = async ({
   agent,
   resolvedRequest,
   selectedCredentials,
+  acceptTransactionData,
 }: {
   agent: EitherAgent
   resolvedRequest: CredentialsForProofRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
+  // FIXME: Should be a more complex structure allowing which credential to use for which entry
+  acceptTransactionData?: boolean
 }) => {
   const { authorizationRequest } = resolvedRequest
   if (
@@ -70,6 +74,8 @@ export const shareProof = async ({
       )
     : undefined
 
+  const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
+
   try {
     const result = await agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
@@ -83,8 +89,10 @@ export const shareProof = async ({
             credentials: dcqlCredentials,
           }
         : undefined,
-      // FIXME: need to integrate with the QES PR, we should not just accept transaction data
-      // transactionData: resolvedRequest.transactionData?.map((e) => ({ credentialId: e.matchedCredentialIds[0] })),
+      transactionData:
+        resolvedRequest.transactionData && acceptTransactionData && cardForSigningId
+          ? [{ credentialId: cardForSigningId }]
+          : undefined,
       origin: resolvedRequest.origin,
     })
 

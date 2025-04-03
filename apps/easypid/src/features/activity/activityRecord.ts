@@ -5,6 +5,7 @@ import {
   type CredentialsForProofRequest,
   type DisplayImage,
   type FormattedSubmission,
+  type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
   getWalletJsonStore,
@@ -13,7 +14,7 @@ import {
 
 import { useMemo } from 'react'
 
-export type ActivityType = 'shared' | 'received'
+export type ActivityType = 'shared' | 'received' | 'signed'
 export type ActivityStatus = 'success' | 'failed' | 'stopped'
 export type SharingFailureReason = 'missing_credentials' | 'unknown'
 
@@ -46,7 +47,7 @@ export interface PresentationActivityCredential {
   metadata: Record<string, unknown>
 }
 
-interface PresentationActivity extends BaseActivity {
+export interface PresentationActivity extends BaseActivity {
   type: 'shared'
   request: {
     credentials: Array<PresentationActivityCredential | PresentationActivityCredentialNotFound>
@@ -56,12 +57,17 @@ interface PresentationActivity extends BaseActivity {
   }
 }
 
-interface IssuanceActivity extends BaseActivity {
+export interface IssuanceActivity extends BaseActivity {
   type: 'received'
   credentialIds: CredentialForDisplayId[]
 }
 
-export type Activity = PresentationActivity | IssuanceActivity
+export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
+  type: 'signed'
+  transaction: FormattedTransactionData
+}
+
+export type Activity = PresentationActivity | IssuanceActivity | SignedActivity
 
 interface ActivityRecord {
   activities: Activity[]
@@ -128,21 +134,34 @@ export const addReceivedActivity = async (
   })
 }
 
-export const addSharedActivity = async (agent: AppAgent, input: Omit<PresentationActivity, 'type' | 'date' | 'id'>) => {
-  await activityStorage.addActivity(agent, {
-    ...input,
-    id: utils.uuid(),
-    date: new Date().toISOString(),
-    type: 'shared',
-  })
+export const addSharedOrSignedActivity = async (
+  agent: AppAgent,
+  input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
+) => {
+  if ('transaction' in input && input.transaction) {
+    await activityStorage.addActivity(agent, {
+      ...input,
+      id: utils.uuid(),
+      date: new Date().toISOString(),
+      type: 'signed',
+    })
+  } else {
+    await activityStorage.addActivity(agent, {
+      ...input,
+      id: utils.uuid(),
+      date: new Date().toISOString(),
+      type: 'shared',
+    })
+  }
 }
 
 export function addSharedActivityForCredentialsForRequest(
   agent: AppAgent,
   credentialsForRequest: Pick<CredentialsForProofRequest, 'verifier' | 'formattedSubmission'>,
-  status: ActivityStatus
+  status: ActivityStatus,
+  transaction?: FormattedTransactionData
 ) {
-  return addSharedActivity(agent, {
+  return addSharedOrSignedActivity(agent, {
     status,
     entity: {
       id: credentialsForRequest.verifier.entityId,
@@ -161,6 +180,7 @@ export function addSharedActivityForCredentialsForRequest(
             : 'unknown'
           : undefined,
     },
+    transaction,
   })
 }
 
@@ -174,7 +194,7 @@ export function addSharedActivityForSubmission(
   },
   status: ActivityStatus
 ) {
-  return addSharedActivity(agent, {
+  return addSharedOrSignedActivity(agent, {
     status,
     entity: {
       id: verifier.id,

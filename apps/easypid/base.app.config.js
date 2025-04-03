@@ -147,6 +147,7 @@ const createBaseConfig = (appSpecific) => {
       associatedDomains: associatedDomains.map((host) => `applinks:${host}`),
     },
     android: {
+      allowBackup: false,
       adaptiveIcon: {
         foregroundImage: adaptiveIcon,
         backgroundColor,

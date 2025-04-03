@@ -45,6 +45,7 @@ import {
   LockClosedIcon,
   MagnifyingGlassIcon,
   NoSymbolIcon,
+  PencilIcon,
   PlusIcon,
   QrCodeIcon,
   QuestionMarkCircleIcon,
@@ -79,6 +80,7 @@ import {
   IdentificationIcon as IdentificationFilledIcon,
   InformationCircleIcon as InformationCircleFilledIcon,
   LockClosedIcon as LockClosedFilledIcon,
+  PencilIcon as PencilFilledIcon,
   QueueListIcon as QueueListFilledIcon,
   ShieldCheckIcon as ShieldCheckFilledIcon,
   TrashIcon as TrashFilledIcon,
@@ -190,6 +192,8 @@ export const HeroIcons = {
   LockClosedFilled: wrapHeroIcon(LockClosedFilledIcon),
   CodeBracketFilled: wrapHeroIcon(CodeBracketFilledIcon),
   ArrowUpRightFilled: wrapHeroIcon(ArrowUpRightFilledIcon),
+  PenFilled: wrapHeroIcon(PencilFilledIcon),
+  Pen: wrapHeroIcon(PencilIcon),
 } as const
 
 export const CustomIcons = {
