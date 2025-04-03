@@ -1,13 +1,10 @@
 import { Blob, Button, FlexPage, Heading, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
 
-import { useAppIcon } from '@easypid/config/copy'
-
 export interface OnboardingWelcomeProps {
   goToNextStep: () => void
 }
 
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
-  const appIcon = useAppIcon()
   return (
     <YStack fg={1} pos="relative">
       <YStack pos="absolute" h="50%" w="100%">
@@ -29,7 +26,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
             shadowOpacity={0.5}
             shadowRadius={24}
           >
-            <Image backgroundColor="$primary-500" height={96} width={96} src={appIcon} />
+            <Image height={96} width={96} src="icon" />
           </Stack>
         </YStack>
       </YStack>

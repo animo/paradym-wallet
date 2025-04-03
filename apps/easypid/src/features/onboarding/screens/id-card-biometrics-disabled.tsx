@@ -1,8 +1,5 @@
 import { Button, IdCard, YStack } from '@package/ui'
 
-import germanIssuerImage from '../../../../assets/german-issuer-image.png'
-import pidBackgroundImage from '../../../../assets/pid-background.png'
-
 export interface OnboardingIdCardBiometricsDisabledProps {
   goToNextStep: () => void
 }
@@ -10,7 +7,7 @@ export interface OnboardingIdCardBiometricsDisabledProps {
 export function OnboardingIdCardBiometricsDisabled({ goToNextStep }: OnboardingIdCardBiometricsDisabledProps) {
   return (
     <YStack jc="space-between" fg={1}>
-      <IdCard hideUserName icon="biometric" backgroundImage={pidBackgroundImage} issuerImage={germanIssuerImage} />
+      <IdCard hideUserName icon="biometric" />
       <Button.Solid scaleOnPress onPress={goToNextStep}>
         Go to settings
       </Button.Solid>

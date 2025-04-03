@@ -36,6 +36,7 @@
 		"burnt": "^0.12.2",
 		"expo": "~51.0.39",
 		"expo-application": "~6.0.2",
+		"expo-asset": "^11.0.5",
 		"expo-blur": "~13.0.3",
 		"expo-camera": "~15.0.16",
 		"expo-constants": "~16.0.2",

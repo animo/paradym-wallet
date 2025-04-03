@@ -15,8 +15,6 @@ import { useScaleAnimation } from '../hooks'
 
 export interface IdCardProps {
   icon?: keyof typeof iconMapping
-  issuerImage: number
-  backgroundImage: number
   userName?: string
   hideUserName?: boolean
   onPress?: () => void
@@ -29,7 +27,7 @@ const iconMapping = {
   biometric: HeroIcons.FingerPrint,
 } as const
 
-export function IdCard({ icon, issuerImage, backgroundImage, userName, onPress, hideUserName }: IdCardProps) {
+export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
   const rotation = useSharedValue(0)
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
@@ -86,7 +84,7 @@ export function IdCard({ icon, issuerImage, backgroundImage, userName, onPress, 
             </Paragraph>
           </YStack>
           <Stack>
-            <Image src={issuerImage} width={36} height={42} contentFit="contain" />
+            <Image src="german-issuer-image" width={36} height={42} contentFit="contain" />
           </Stack>
         </XStack>
         <XStack justifyContent="space-between" flex-1>
@@ -104,7 +102,7 @@ export function IdCard({ icon, issuerImage, backgroundImage, userName, onPress, 
           </XStack>
         </XStack>
         <Stack zIndex="$-1" position="absolute" bg="$idCardBackground" top={0} left={0} right={0} bottom={0}>
-          <Image src={backgroundImage} width="100%" contentFit="cover" height="100%" />
+          <Image src="pid-background" width="100%" contentFit="cover" height="100%" />
         </Stack>
       </YStack>
     </Animated.View>

@@ -1,3 +1,4 @@
+import { useAssets } from 'expo-asset'
 import { type AppType, CURRENT_APP_TYPE } from './appType'
 
 export const copy = {
@@ -22,8 +23,10 @@ export function useAppCopy() {
 }
 
 export function useAppIcon() {
+  const [assets] = useAssets([require('../../assets/funke/icon.png'), require('../../assets/paradym/icon.png')])
+
   if (CURRENT_APP_TYPE === 'FUNKE_WALLET') {
-    return require('../../assets/funke/icon.png')
+    return assets?.[0]
   }
-  return require('../../assets/paradym/icon.png')
+  return assets?.[1]
 }
