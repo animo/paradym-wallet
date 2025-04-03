@@ -1,13 +1,8 @@
-import {
-  type FormattedSubmission,
-  type FormattedSubmissionEntrySatisfiedCredential,
-  type QtspInfo,
-  getDisclosedAttributeNamesForDisplay,
-} from '@package/agent'
+import { type FormattedSubmission, type QtspInfo, getDisclosedAttributeNamesForDisplay } from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface SignAndShareSlideProps {
@@ -34,20 +29,13 @@ export const SignAndShareSlide = ({
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
 
-  const [cardForSigning, setCardForSigning] = useState<FormattedSubmissionEntrySatisfiedCredential | undefined>()
-  const [remainingEntries, setRemainingEntries] = useState(submission?.entries ?? [])
+  // const [remainingEntries, setRemainingEntries] = useState(submission?.entries ?? [])
 
-  useEffect(() => {
-    if (submission) {
-      setCardForSigning(
-        submission.entries.find(
-          (entry): entry is typeof entry & { isSatisfied: true } =>
-            entry.inputDescriptorId === cardForSigningId && entry.isSatisfied
-        )?.credentials[0]
-      )
-      setRemainingEntries(submission.entries.filter((entry) => entry.inputDescriptorId !== cardForSigningId))
-    }
-  }, [submission, cardForSigningId])
+  const cardForSigning = submission?.entries.find(
+    (entry): entry is typeof entry & { isSatisfied: true } =>
+      entry.inputDescriptorId === cardForSigningId && entry.isSatisfied
+  )?.credentials[0]
+  const remainingEntries = submission?.entries.filter((entry) => entry.inputDescriptorId !== cardForSigningId) ?? []
 
   const handleAccept = async () => {
     // Manually set to instantly show the loading state

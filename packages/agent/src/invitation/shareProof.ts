@@ -12,6 +12,7 @@ import type { EitherAgent } from '../agent'
 import { handleBatchCredential } from '../batch'
 import { BiometricAuthenticationError } from './error'
 import type { CredentialsForProofRequest } from './handler'
+import { getFormattedTransactionData } from './transactions'
 
 export const shareProof = async ({
   agent,
@@ -73,6 +74,8 @@ export const shareProof = async ({
       )
     : undefined
 
+  const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
+
   try {
     const result = await agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
@@ -87,14 +90,8 @@ export const shareProof = async ({
           }
         : undefined,
       transactionData:
-        resolvedRequest.transactionData && acceptTransactionData
-          ? (() => {
-              const matchedCredentialId = resolvedRequest.transactionData[0].matchedCredentialIds.find((id) =>
-                Object.keys(dcqlCredentials).includes(id)
-              )
-
-              return matchedCredentialId ? [{ credentialId: matchedCredentialId }] : undefined
-            })()
+        resolvedRequest.transactionData && acceptTransactionData && cardForSigningId
+          ? [{ credentialId: cardForSigningId }]
           : undefined,
       origin: resolvedRequest.origin,
     })
