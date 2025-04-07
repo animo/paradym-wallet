@@ -175,7 +175,13 @@ export function DidCommNotificationScreen() {
           screen: (
             <VerifyPartySlide
               key="verify-issuer"
-              type="connect"
+              type={
+                resolvedInvitation?.flowType === 'issue'
+                  ? 'offer'
+                  : resolvedInvitation?.flowType === 'verify'
+                    ? 'request'
+                    : 'connect'
+              }
               name={display.connection.name}
               logo={display.connection.logo}
               entityId={resolvedInvitation?.existingConnection?.id ?? ''}

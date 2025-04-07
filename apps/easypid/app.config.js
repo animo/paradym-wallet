@@ -55,5 +55,7 @@ module.exports = () => {
   if (!appType || !APP_CONFIGS[appType]) {
     throw new Error(`Invalid App Type: ${appType}. Must be one of: ${Object.keys(APP_CONFIGS).join(', ')}`)
   }
+
+  console.log(`Using app config for app ${appType}`)
   return APP_CONFIGS[appType]
 }

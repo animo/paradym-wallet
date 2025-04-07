@@ -1,32 +1,17 @@
-import type { OutOfBandInvitation } from '@credo-ts/didcomm'
 import { useMutation } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useAgent } from '../agent'
 import { type ResolveOutOfBandInvitationResultSuccess, acceptOutOfBandInvitation } from '../invitation'
 
-const placeholder = {
-  outOfBandInvitation: {
-    id: 'placeholder',
-    label: 'placeholder',
-    imageUrl: 'https://example.com/logo.png',
-  } as OutOfBandInvitation,
-  existingConnection: {
-    id: 'placeholder',
-    alias: 'placeholder',
-    theirLabel: 'placeholder',
-    imageUrl: 'https://example.com/logo.png',
-  },
-  flowType: 'connect' as const,
-}
-
 export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitationResultSuccess) {
   const { agent } = useAgent()
-  const { outOfBandInvitation, existingConnection, flowType } = resolved ?? placeholder
 
   const { mutateAsync: acceptConnectionMutation, status: acceptStatus } = useMutation({
-    mutationKey: ['acceptDidCommConnection', outOfBandInvitation.id],
+    mutationKey: ['acceptDidCommConnection', resolved?.outOfBandInvitation.id],
     mutationFn: async () => {
-      const result = await acceptOutOfBandInvitation(agent, outOfBandInvitation, flowType)
+      if (!resolved) throw new Error("Missing 'resolved' parameter")
+
+      const result = await acceptOutOfBandInvitation(agent, resolved.outOfBandInvitation, resolved.flowType)
       if (!result.success) {
         throw new Error('Error creating connection')
       }
@@ -45,11 +30,13 @@ export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitatio
     acceptStatus,
     display: {
       connection: {
-        name: existingConnection
-          ? existingConnection?.alias ?? existingConnection?.theirLabel ?? 'Unknown'
-          : outOfBandInvitation.label ?? 'Unknown',
+        name: resolved?.existingConnection
+          ? resolved.existingConnection?.alias ?? resolved.existingConnection?.theirLabel ?? 'Unknown'
+          : resolved?.outOfBandInvitation.label ?? 'Unknown',
         logo: {
-          url: existingConnection ? existingConnection.imageUrl : outOfBandInvitation.imageUrl,
+          url: resolved?.existingConnection
+            ? resolved?.existingConnection.imageUrl
+            : resolved?.outOfBandInvitation.imageUrl,
         },
       },
     },
