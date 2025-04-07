@@ -124,10 +124,10 @@ interface FunkeCredentialRowCardProps {
   issuer: string
   logo: DisplayImage | undefined
   issuedAt?: Date
-  onPress: () => void
+  onPress?: () => void
 }
 
-function FunkeCredentialRowCard({
+export function FunkeCredentialRowCard({
   name,
   backgroundColor,
   textColor,
@@ -172,7 +172,7 @@ function FunkeCredentialRowCard({
           </Paragraph>
         )}
       </YStack>
-      <IconContainer bg="transparent" icon={<HeroIcons.ArrowRight color={textColor} size={20} />} />
+      {onPress && <IconContainer bg="transparent" icon={<HeroIcons.ArrowRight color={textColor} size={20} />} />}
     </AnimatedStack>
   )
 }

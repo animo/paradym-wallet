@@ -144,7 +144,7 @@ export function FunkeOfflineQrScreen() {
             <QRCode
               logoBorderRadius={12}
               logoMargin={4}
-              logo={appIcon}
+              logo={appIcon?.uri}
               size={Math.min(width * 0.75, 272)}
               value={qrCodeData}
             />

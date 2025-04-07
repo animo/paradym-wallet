@@ -82,8 +82,6 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
                       date={new Date(activity.date)}
                       type={activity.type}
                       status={activity.status}
-                      // FIXME: Handle multiple credentials received in one request
-                      credentialId={activity.type === 'received' ? activity.credentialIds?.[0] : undefined}
                     />
                   ))}
                 </React.Fragment>

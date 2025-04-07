@@ -2,8 +2,10 @@ import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
   type FormattedSubmissionEntrySatisfied,
+  type FormattedTransactionData,
   getCredentialsForProofRequest,
   getDisclosedAttributeNamesForDisplay,
+  getFormattedTransactionData,
   shareProof,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
@@ -32,12 +34,23 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
+  const [formattedTransactionData, setFormattedTransactionData] = useState<FormattedTransactionData>()
   const [isSharing, setIsSharing] = useState(false)
   const { activities } = useActivities({
     filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
   })
   const lastInteractionDate = activities?.[0]?.date
   const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
+
+  const handleError = useCallback(
+    ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
+      setIsSharing(false)
+      toast.show(reason, { message: description, customData: { preset: 'danger' } })
+      if (redirect) pushToWallet()
+      return
+    },
+    [toast, pushToWallet]
+  )
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -48,20 +61,28 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       uri: params.uri,
       trustedX509Entities,
     })
-      .then(setCredentialsForRequest)
+      .then((r) => {
+        setCredentialsForRequest(r)
+        return r
+      })
       .catch((error) => {
-        toast.show('Presentation information could not be extracted.', {
-          message:
-            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
-          customData: { preset: 'danger' },
-        })
+        const errorMessage =
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
+
+        handleError({ reason: 'Presentation information could not be extracted.', description: errorMessage })
+
         agent.config.logger.error('Error getting credentials for request', {
           error,
         })
-
-        pushToWallet()
+        return
       })
-  }, [credentialsForRequest, params.data, params.uri, toast.show, agent, pushToWallet, toast, isDevelopmentModeEnabled])
+      .then((r) => {
+        if (r) setFormattedTransactionData(getFormattedTransactionData(r))
+      })
+      .catch((error) => {
+        handleError({ reason: error.message })
+      })
+  }, [credentialsForRequest, params.data, params.uri, agent, isDevelopmentModeEnabled, handleError])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
@@ -94,16 +115,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })),
     })
   }, [credentialsForRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
-
-  const handleError = useCallback(
-    ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
-      setIsSharing(false)
-      toast.show(reason, { message: description, customData: { preset: 'danger' } })
-      if (redirect) pushToWallet()
-      return
-    },
-    [toast, pushToWallet]
-  )
 
   const onProofAccept = useCallback(
     async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
@@ -141,10 +152,16 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
+          acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
         })
 
         onPinComplete?.()
-        await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'success').catch(console.error)
+        await addSharedActivityForCredentialsForRequest(
+          agent,
+          credentialsForRequest,
+          'success',
+          formattedTransactionData
+        ).catch(console.error)
       } catch (error) {
         setIsSharing(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
@@ -152,7 +169,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
 
         if (credentialsForRequest) {
-          await addSharedActivityForCredentialsForRequest(agent, credentialsForRequest, 'failed')
+          await addSharedActivityForCredentialsForRequest(
+            agent,
+            credentialsForRequest,
+            'failed',
+            formattedTransactionData
+          ).catch(console.error)
         }
 
         agent.config.logger.error('Error accepting presentation', {
@@ -166,7 +188,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
       }
     },
-    [credentialsForRequest, agent, shouldUsePin, stopOverAsking, isDevelopmentModeEnabled, handleError]
+    [
+      credentialsForRequest,
+      agent,
+      shouldUsePin,
+      stopOverAsking,
+      isDevelopmentModeEnabled,
+      handleError,
+      formattedTransactionData,
+    ]
   )
 
   const onProofDecline = async () => {
@@ -175,8 +205,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       await addSharedActivityForCredentialsForRequest(
         agent,
         credentialsForRequest,
-        credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed'
-      )
+        credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed',
+        formattedTransactionData
+      ).catch(console.error)
     }
 
     pushToWallet()
@@ -197,6 +228,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
       overAskingResponse={overAskingResponse}
+      transaction={formattedTransactionData}
     />
   )
 }

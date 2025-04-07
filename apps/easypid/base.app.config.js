@@ -33,6 +33,26 @@ const baseInvitationSchemes = [
   'haip',
 ]
 
+const baseAssets = [
+  './assets/german-issuer-image.png',
+  './assets/pid-background.jpg',
+  './assets/mdl/code-l.png',
+  './assets/mdl/code-t.png',
+  './assets/mdl/code-d1e.png',
+  './assets/mdl/code-de.png',
+  './assets/mdl/code-be.png',
+  './assets/mdl/code-c1e.png',
+  './assets/mdl/code-ce.png',
+  './assets/mdl/code-a2.png',
+  './assets/mdl/code-am.png',
+  './assets/mdl/code-a1.png',
+  './assets/mdl/code-d.png',
+  './assets/mdl/code-d1.png',
+  './assets/mdl/code-b.png',
+  './assets/mdl/code-c.png',
+  './assets/mdl/code-c1.png',
+  './assets/mdl/code-a.png',
+]
 /**
  * Creates a base configuration that can be extended by specific apps
  * @param {Object} appSpecific - App specific configuration
@@ -87,7 +107,12 @@ const createBaseConfig = (appSpecific) => {
           cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
         },
       ],
-      // FIXME: Should be removed for the Paradym Wallet but it causes build errors if it's not installed
+      [
+        'expo-asset',
+        {
+          assets: [...baseAssets, ...appSpecific.assets],
+        },
+      ],
       '@animo-id/expo-ausweis-sdk',
       [
         '@animo-id/expo-mdoc-data-transfer',
@@ -147,6 +172,7 @@ const createBaseConfig = (appSpecific) => {
       associatedDomains: associatedDomains.map((host) => `applinks:${host}`),
     },
     android: {
+      allowBackup: false,
       adaptiveIcon: {
         foregroundImage: adaptiveIcon,
         backgroundColor,

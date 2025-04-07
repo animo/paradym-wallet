@@ -3,8 +3,6 @@ import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 
 import { useHaptics } from 'packages/app/src/hooks/useHaptics'
-import germanIssuerImage from '../../../../assets/german-issuer-image.png'
-import pidBackgroundImage from '../../../../assets/pid-background.png'
 
 export interface OnboardingIdCardPinEnterProps {
   goToNextStep: (idCardPin: string) => Promise<void>
@@ -65,12 +63,7 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
       {/* Overflow issue only present on smaller devices, so set to max height */}
       <ScrollView flex={1} maxHeight={media.short ? 150 : undefined}>
         <Stack jc="center">
-          <IdCard
-            backgroundImage={pidBackgroundImage}
-            icon={isLoading ? 'loading' : 'locked'}
-            issuerImage={germanIssuerImage}
-            hideUserName
-          />
+          <IdCard icon={isLoading ? 'loading' : 'locked'} hideUserName />
           <XStack pos="absolute" gap="$3" justifyContent="center" w="100%">
             {pinValues.map((digit, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here

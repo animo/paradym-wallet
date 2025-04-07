@@ -348,22 +348,30 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   data,
   uri,
   requestPayload,
-}: { data?: string; uri?: string; requestPayload?: Record<string, unknown> }): Promise<{
+  origin,
+}: { data?: string; uri?: string; requestPayload?: Record<string, unknown>; origin?: string }): Promise<{
   data: string | null
   entityId: string | null
 }> => {
   try {
+    if (typeof requestPayload?.request === 'string') {
+      return {
+        data: null,
+        entityId: extractEntityIdFromJwt(requestPayload.request, origin),
+      }
+    }
+
     if (requestPayload) {
       return {
         data: null,
-        entityId: extractEntityIdFromPayload(requestPayload),
+        entityId: extractEntityIdFromPayload(requestPayload, origin),
       }
     }
 
     if (data) {
       return {
         data,
-        entityId: extractEntityIdFromJwt(data),
+        entityId: extractEntityIdFromJwt(data, origin),
       }
     }
 
@@ -379,13 +387,13 @@ export const extractEntityIdFromAuthorizationRequest = async ({
         ) {
           return {
             data: result.result.data,
-            entityId: extractEntityIdFromJwt(result.result.data),
+            entityId: extractEntityIdFromJwt(result.result.data, origin),
           }
         }
       } else if (query.request && typeof query.request === 'string') {
         return {
           data: query.request,
-          entityId: extractEntityIdFromJwt(query.request),
+          entityId: extractEntityIdFromJwt(query.request, origin),
         }
       }
     }
@@ -420,7 +428,7 @@ export const getCredentialsForProofRequest = async ({
 }: GetCredentialsForProofRequestOptions) => {
   let requestData = encodedRequestData
   const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
-    ? await extractEntityIdFromAuthorizationRequest({ data: encodedRequestData, uri, requestPayload })
+    ? await extractEntityIdFromAuthorizationRequest({ data: encodedRequestData, uri, requestPayload, origin })
     : {}
   requestData = fromFederationData ?? requestData
 

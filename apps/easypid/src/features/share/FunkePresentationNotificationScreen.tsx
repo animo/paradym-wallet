@@ -1,4 +1,4 @@
-import type { DisplayImage, FormattedSubmission, TrustedEntity } from '@package/agent'
+import type { DisplayImage, FormattedSubmission, FormattedTransactionData, TrustedEntity } from '@package/agent'
 
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
@@ -7,6 +7,8 @@ import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
+import { SignAndShareSlide } from './slides/SignAndShareSlide'
+import { SigningSlide } from './slides/SigningSlide'
 
 interface FunkePresentationNotificationScreenProps {
   entityId: string
@@ -18,6 +20,7 @@ interface FunkePresentationNotificationScreenProps {
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
+  transaction?: FormattedTransactionData
   onAccept: () => Promise<void>
   onDecline: () => void
   onComplete: () => void
@@ -36,6 +39,7 @@ export function FunkePresentationNotificationScreen({
   onComplete,
   overAskingResponse,
   trustedEntities,
+  transaction,
 }: FunkePresentationNotificationScreenProps) {
   return (
     <SlideWizard
@@ -53,7 +57,7 @@ export function FunkePresentationNotificationScreen({
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"
-                type="request"
+                type={transaction?.type === 'qes_authorization' ? 'signing' : 'request'}
                 entityId={entityId}
                 name={verifierName}
                 logo={logo}
@@ -62,21 +66,49 @@ export function FunkePresentationNotificationScreen({
               />
             ),
           },
-          submission && {
-            step: 'share-credentials',
-            progress: 66,
-            screen: (
-              <ShareCredentialsSlide
-                key="share-credentials"
-                onAccept={usePin ? undefined : onAccept}
-                onDecline={onDecline}
-                logo={logo}
-                submission={submission}
-                isAccepting={isAccepting}
-                overAskingResponse={overAskingResponse}
-              />
-            ),
-          },
+          ...(submission
+            ? transaction?.type === 'qes_authorization'
+              ? [
+                  {
+                    step: 'signing',
+                    progress: 50,
+                    screen: <SigningSlide qtsp={transaction.qtsp} documentName={transaction.documentName} />,
+                  },
+                  {
+                    step: 'share-credentials',
+                    progress: 66,
+                    screen: (
+                      <SignAndShareSlide
+                        key="sign-and-share-credentials"
+                        onAccept={usePin ? undefined : onAccept}
+                        onDecline={onDecline}
+                        isAccepting={isAccepting}
+                        qtsp={transaction.qtsp}
+                        documentName={transaction.documentName}
+                        cardForSigningId={transaction.cardForSigningId}
+                        submission={submission}
+                      />
+                    ),
+                  },
+                ]
+              : [
+                  {
+                    step: 'share-credentials',
+                    progress: 66,
+                    screen: (
+                      <ShareCredentialsSlide
+                        key="share-credentials"
+                        onAccept={usePin ? undefined : onAccept}
+                        onDecline={onDecline}
+                        logo={logo}
+                        submission={submission}
+                        isAccepting={isAccepting}
+                        overAskingResponse={overAskingResponse}
+                      />
+                    ),
+                  },
+                ]
+            : []),
           usePin && {
             step: 'pin-enter',
             progress: 82.5,
