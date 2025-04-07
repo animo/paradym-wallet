@@ -1,24 +1,23 @@
+import { useParadymAgent } from '@easypid/agent'
+import { useDevelopmentMode } from '@easypid/hooks'
 import {
   type ResolveOutOfBandInvitationResultSuccess,
   parseDidCommInvitation,
   resolveOutOfBandInvitation,
   useDidCommConnectionActions,
 } from '@package/agent'
-import { type SlideStep, SlideWizard, usePushToWallet } from '@package/app/src'
-
+import { SlideWizard, usePushToWallet } from '@package/app/src'
+import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-
-import { useParadymAgent } from '@easypid/agent'
-import { useDevelopmentMode } from '@easypid/hooks'
-import { router } from 'expo-router'
 import { useActivities } from '../activity/activityRecord'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
-import { useDidCommConnectionNotificationSlides } from './useDidCommConnectionNotificationSlides'
-import { useDidCommCredentialNotificationSlides } from './useDidCommCredentialNotificationSlides'
-import { useDidCommPresentationNotificationSlides } from './useDidCommPresentationNotificationSlides'
+import { ConnectionSlides } from './ConnectionSlides'
+import { CredentialSlides } from './CredentialSlides'
+import { PresentationSlides } from './PresentationSlides'
+import { getFlowConfirmationText } from './utils'
 
 type Query = {
   invitation?: string
@@ -38,22 +37,15 @@ export function DidCommNotificationScreen() {
 
   const [errorReason, setErrorReason] = useState<string>()
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
-  const [resolved, setResolved] = useState<ResolveOutOfBandInvitationResultSuccess | undefined>()
+  const [readyToNavigate, setReadyToNavigate] = useState(false)
+  const [resolvedInvitation, setResolvedInvitation] = useState<ResolveOutOfBandInvitationResultSuccess | undefined>()
+  const [flow, setFlow] = useState<{
+    type: 'issue' | 'verify' | 'connect'
+    id: string
+  }>()
 
-  // TODO: Fetch connection record from the related proof/credential exchange
-  const [notification, setNotification] = useState<
-    | {
-        id: string
-        type: 'issue' | 'verify' | 'connect'
-      }
-    | undefined
-  >(
-    params.credentialExchangeId
-      ? { id: params.credentialExchangeId, type: 'issue' }
-      : params.proofExchangeId
-        ? { id: params.proofExchangeId, type: 'verify' }
-        : undefined
-  )
+  const { activities } = useActivities({ filters: { entityId: resolvedInvitation?.existingConnection?.id } })
+  const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
 
   const handleNavigation = (type: 'replace' | 'back') => {
     // When starting from the inbox, we want to go back to the inbox on finish
@@ -64,17 +56,24 @@ export function DidCommNotificationScreen() {
     }
   }
 
-  const onCancel = () => {
-    if (notification?.type === 'issue') {
-      void agent.modules.credentials.deleteById(notification.id)
-    } else if (notification?.type === 'verify') {
-      void agent.modules.proofs.deleteById(notification.id)
-    }
-
-    handleNavigation('back')
-  }
-
+  const onCancel = () => handleNavigation('back')
   const onComplete = () => handleNavigation('replace')
+
+  const onConnectionAccept = async () => {
+    const result = await acceptConnection()
+
+    if (result.success) {
+      setFlow({
+        id:
+          result.flowType === 'issue'
+            ? result.credentialExchangeId
+            : result.flowType === 'verify'
+              ? result.proofExchangeId
+              : result.connectionId,
+        type: result.flowType,
+      })
+    }
+  }
 
   useEffect(() => {
     async function handleInvitation() {
@@ -103,11 +102,7 @@ export function DidCommNotificationScreen() {
           return
         }
 
-        setResolved(resolveResult)
-        setNotification({
-          id: resolveResult.outOfBandInvitation.id,
-          type: resolveResult.flowType,
-        })
+        setResolvedInvitation(resolveResult)
       } catch (error: unknown) {
         agent.config.logger.error('Error parsing invitation', {
           error,
@@ -125,120 +120,76 @@ export function DidCommNotificationScreen() {
     }
   }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled])
 
-  // All flows have the same entry point, so we re-use the same loading request slide
-  // This way we avoid a double loading screen when the respective flow is entered
-  // Call hooks unconditionally at the top level
-  const credentialSlides = useDidCommCredentialNotificationSlides({
-    credentialExchangeId: notification?.id ?? '',
-    onCancel,
-    onComplete,
-  })
-
-  const presentationSlides = useDidCommPresentationNotificationSlides({
-    proofExchangeId: notification?.id ?? '',
-    onCancel,
-    onComplete,
-  })
-
-  const connectionSlides = useDidCommConnectionNotificationSlides({
-    name: resolved?.existingConnection?.alias ?? resolved?.existingConnection?.theirLabel ?? 'Unknown',
-    onCancel,
-    onComplete,
-  })
-
-  const { activities } = useActivities({ filters: { entityId: resolved?.existingConnection?.id } })
-  const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(
-    resolved ??
-      // FIXME: Placeholder is needed because it's rendered before resolved object is available
-      ({
-        outOfBandInvitation: { id: 'placeholder', label: 'placeholder', imageUrl: 'https://example.com/logo.png' },
-      } as ResolveOutOfBandInvitationResultSuccess)
-  )
-
-  // handle accept
-  const onConnectionAccept = async () => {
-    const result = await acceptConnection()
-    if (result.success) {
-      setNotification({
-        id:
-          result.flowType === 'issue'
-            ? result.credentialExchangeId
-            : result.flowType === 'verify'
-              ? result.proofExchangeId
-              : result.connectionId,
-        type: result.flowType,
-      })
+  // Delay the navigation to hide the fact we're loading in the new slides based on the flow type
+  useEffect(() => {
+    if (flow) {
+      setTimeout(() => {
+        setReadyToNavigate(true)
+      }, 250)
     }
+  }, [flow])
+
+  if (flow?.type === 'connect' && readyToNavigate) {
+    return <ConnectionSlides name={display.connection.name} onCancel={onCancel} onComplete={onComplete} />
   }
 
-  const steps: SlideStep[] = [
-    {
-      step: 'loading-request',
-      progress: 33,
-      screen: (
-        <LoadingRequestSlide key="loading-request" isLoading={!notification && !resolved} isError={!!errorReason} />
-      ),
-    },
-    {
-      step: 'verify-issuer',
-      progress: 50,
-      screen: (
-        <VerifyPartySlide
-          key="verify-issuer"
-          type="connect"
-          name={display.connection.name}
-          logo={display.connection.logo}
-          entityId={resolved?.existingConnection?.id ?? ''}
-          lastInteractionDate={activities?.[0]?.date}
-          onContinue={async () => {
-            await onConnectionAccept()
-          }}
-          onDecline={declineConnection}
-        />
-      ),
-    },
-    ...(notification
-      ? notification.type === 'issue'
-        ? credentialSlides
-        : notification.type === 'verify'
-          ? presentationSlides
-          : notification.type === 'connect'
-            ? connectionSlides
-            : []
-      : []),
-  ].filter(Boolean) as SlideStep[]
+  if ((flow?.type === 'issue' && readyToNavigate) || params.credentialExchangeId) {
+    const isExistingExchange = !!params.credentialExchangeId
+    const id = isExistingExchange ? params.credentialExchangeId : flow?.id
+
+    return (
+      <CredentialSlides
+        isExisting={isExistingExchange}
+        credentialExchangeId={id as string}
+        onCancel={onCancel}
+        onComplete={onComplete}
+      />
+    )
+  }
+  if ((flow?.type === 'verify' && readyToNavigate) || params.proofExchangeId) {
+    const isExistingExchange = !!params.proofExchangeId
+    const id = isExistingExchange ? params.proofExchangeId : flow?.id
+
+    return (
+      <PresentationSlides
+        isExisting={isExistingExchange}
+        proofExchangeId={id as string}
+        onCancel={onCancel}
+        onComplete={onComplete}
+      />
+    )
+  }
 
   return (
     <SlideWizard
-      steps={steps}
+      willResume
+      steps={[
+        {
+          step: 'loading-request',
+          progress: 33,
+          screen: <LoadingRequestSlide key="loading-request" isLoading={!resolvedInvitation} isError={!!errorReason} />,
+        },
+        {
+          step: 'verify-issuer',
+          progress: resolvedInvitation?.flowType === 'connect' ? 66 : 50,
+          screen: (
+            <VerifyPartySlide
+              key="verify-issuer"
+              type="connect"
+              name={display.connection.name}
+              logo={display.connection.logo}
+              entityId={resolvedInvitation?.existingConnection?.id ?? ''}
+              lastInteractionDate={activities?.[0]?.date}
+              onContinue={onConnectionAccept}
+              onDecline={declineConnection}
+            />
+          ),
+        },
+      ]}
       errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
       isError={!!errorReason}
       onCancel={onCancel}
-      confirmation={getConfirmationText(notification?.type)}
+      confirmation={getFlowConfirmationText(flow?.type)}
     />
   )
-}
-
-const getConfirmationText = (type?: 'issue' | 'verify' | 'connect') => {
-  if (!type) return undefined
-
-  if (type === 'issue') {
-    return {
-      title: 'Decline card?',
-      description: 'If you decline, you will not receive the card.',
-      confirmText: 'Yes, decline',
-    }
-  }
-  if (type === 'verify') {
-    return {
-      title: 'Stop sharing?',
-      description: 'If you stop, no data will be shared.',
-      confirmText: 'Yes, stop',
-    }
-  }
-  return {
-    title: 'Stop interaction?',
-    description: 'If you stop, nothing will be saved.',
-    confirmText: 'Yes, stop',
-  }
 }

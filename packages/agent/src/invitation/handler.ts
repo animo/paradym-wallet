@@ -626,14 +626,7 @@ export async function resolveOutOfBandInvitation(
   }
 }
 
-/**
- * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
- */
-export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
-  agent: ParadymAppAgent,
-  invitation: OutOfBandInvitation,
-  flowType: FlowType
-): Promise<
+export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
   | { success: false; error: string }
   | (FlowType extends 'issue'
       ? { success: true; flowType: 'issue'; credentialExchangeId: string; connectionId?: string }
@@ -642,7 +635,16 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         : FlowType extends 'connect'
           ? { success: true; flowType: 'connect'; connectionId: string }
           : never)
-> {
+>
+
+/**
+ * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
+ */
+export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
+  agent: ParadymAppAgent,
+  invitation: OutOfBandInvitation,
+  flowType: FlowType
+): AcceptOutOfBandInvitationResult<FlowType> {
   // The value is reassigned, but eslint doesn't know this.
   let connectionId: string | undefined
 

@@ -10,14 +10,40 @@ import {
   YStack,
   useSpringify,
 } from '@package/ui'
+import { SlideWizard } from 'packages/app/src/components/SlideWizard'
 import { ZoomIn } from 'react-native-reanimated'
+import { getFlowConfirmationText } from './utils'
+
+type ConnectionSlidesProps = {
+  name: string
+  onCancel: () => void
+  onComplete: () => void
+}
+
+export function ConnectionSlides({ name, onCancel, onComplete }: ConnectionSlidesProps) {
+  return (
+    <SlideWizard
+      resumeFrom={66}
+      steps={[
+        {
+          step: 'success',
+          progress: 100,
+          backIsCancel: true,
+          screen: <ConnectionSuccessSlide key="verify-issuer" name={name} onComplete={onComplete} />,
+        },
+      ]}
+      onCancel={onCancel}
+      confirmation={getFlowConfirmationText('connect')}
+    />
+  )
+}
 
 type ConnectionSuccessSlideProps = {
   onComplete: () => void
   name: string
 }
 
-export const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProps) => {
+const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProps) => {
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$6" fg={1} ai="center" jc="center">

@@ -1,27 +1,23 @@
-import { useAgent, useDidCommPresentationActions } from '@package/agent'
+import { type FormattedSubmission, useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
-
-import type { SlideStep } from '@package/app/src'
-import { addSharedActivityForSubmission, useActivities } from '../activity/activityRecord'
+import { SlideWizard } from 'packages/app/src/components/SlideWizard'
+import { addSharedActivityForSubmission } from '../activity/activityRecord'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
+import { getFlowConfirmationText } from './utils'
 
-interface DidCommPresentationNotificationSlidesProps {
+type PresentationSlidesProps = {
+  isExisting: boolean
   proofExchangeId: string
   onCancel: () => void
   onComplete: () => void
 }
 
-export function useDidCommPresentationNotificationSlides({
-  proofExchangeId,
-  onCancel,
-  onComplete,
-}: DidCommPresentationNotificationSlidesProps) {
+export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
   const { agent } = useAgent()
   const toast = useToastController()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
     useDidCommPresentationActions(proofExchangeId)
-  const { activities } = useActivities({ filters: { entityId: proofExchange?.connectionId } })
 
   const onProofAccept = async () => {
     if (!submission) return
@@ -79,29 +75,34 @@ export function useDidCommPresentationNotificationSlides({
     onCancel()
   }
 
-  if (!submission) return []
-
-  return [
-    {
-      step: 'retrieve-presentation',
-      progress: 66,
-      backIsCancel: true,
-      screen: (
-        <ShareCredentialsSlide
-          key="share-credentials"
-          onAccept={onProofAccept}
-          onDecline={onProofDecline}
-          submission={submission}
-          isAccepting={acceptStatus !== 'idle'}
-          overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
-        />
-      ),
-    },
-    {
-      step: 'success',
-      progress: 100,
-      backIsCancel: true,
-      screen: <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
-    },
-  ] as SlideStep[]
+  return (
+    <SlideWizard
+      resumeFrom={isExisting ? undefined : 50}
+      steps={[
+        {
+          step: 'retrieve-presentation',
+          progress: 75,
+          backIsCancel: true,
+          screen: (
+            <ShareCredentialsSlide
+              key="share-credentials"
+              onAccept={onProofAccept}
+              onDecline={onProofDecline}
+              submission={submission as FormattedSubmission}
+              isAccepting={acceptStatus !== 'idle'}
+              overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
+            />
+          ),
+        },
+        {
+          step: 'success',
+          progress: 100,
+          backIsCancel: true,
+          screen: <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
+        },
+      ]}
+      onCancel={onCancel}
+      confirmation={getFlowConfirmationText('verify')}
+    />
+  )
 }
