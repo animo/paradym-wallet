@@ -3,8 +3,8 @@ import type { ParadymAppAgent } from '../agent'
 import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
 import queryString from 'query-string'
 
-import { fetchInvitationDataUrl } from './fetchInvitation'
 import { JsonEncoder } from '@credo-ts/core'
+import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
 export type ParseInvitationResultError = 'invitation_not_recognized' | 'parse_error' | 'retrieve_invitation_error'
