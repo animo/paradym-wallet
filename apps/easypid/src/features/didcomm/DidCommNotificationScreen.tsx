@@ -56,11 +56,8 @@ export function DidCommNotificationScreen() {
   const onCancel = () => handleNavigation('back')
   const onComplete = () => handleNavigation('replace')
 
-  console.log('flow', flow)
-  console.log('readyToNavigate', readyToNavigate)
   const onConnectionAccept = async () => {
     const result = await acceptConnection()
-    console.log('result', result)
     if (result.success) {
       setFlow({
         id:
