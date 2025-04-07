@@ -29,7 +29,6 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
-
   const { userName, isLoading } = useFirstNameFromPidCredential()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
   const hasInboxFeatureFlag = useFeatureFlag('INBOX')

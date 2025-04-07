@@ -1,17 +1,15 @@
 import type { SdJwtVcTypeMetadata } from '@credo-ts/core'
 import type { OpenId4VcCredentialMetadata } from '@package/agent'
-import germanIssuerImage from '../../assets/german-issuer-image.png'
-import pidBackgroundImage from '../../assets/pid-background.png'
 
 export const bdrPidCredentialDisplay = {
   name: 'Personalausweis',
-  backgroundImage: pidBackgroundImage,
+  backgroundImage: 'pid-background',
   backgroundColor: '#F1F2F0',
   textColor: '#2F3544',
 }
 
 export const bdrPidIssuerDisplay = {
-  logo: germanIssuerImage,
+  logo: 'german-issuer-image',
   name: 'Bundesdruckerei',
 }
 

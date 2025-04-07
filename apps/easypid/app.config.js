@@ -19,6 +19,7 @@ const APP_CONFIGS = {
     bundleId: 'id.animo.ausweis',
     associatedDomains: ['funke.animo.id'],
     projectId: '28b058bb-3c4b-4347-8e72-41dfc1dd99eb',
+    assets: ['./assets/funke/icon.png'],
   }),
 
   PARADYM_WALLET: createBaseConfig({
@@ -34,6 +35,7 @@ const APP_CONFIGS = {
     associatedDomains: ['paradym.id', 'dev.paradym.id'],
     backgroundColor: '#F2F4F6',
     projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
+    assets: ['./assets/paradym/icon.png'],
     extraConfig: {
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
     },
