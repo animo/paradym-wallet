@@ -16,7 +16,7 @@ import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 
-type Query = { uri?: string; data?: string }
+type Query = { uri: string }
 
 const { useParams } = createParam<Query>()
 
@@ -33,7 +33,7 @@ export function OpenIdCredentialNotificationScreen() {
     const requestCredential = async (params: Query) => {
       try {
         // Only supports pre-auth flow
-        const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({ agent, offer: params })
+        const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({ agent, offer: { uri: params.uri } })
         const tokenResponse = await acquirePreAuthorizedAccessToken({ agent, resolvedCredentialOffer })
         const credenitalResponses = await receiveCredentialFromOpenId4VciOffer({
           agent,
