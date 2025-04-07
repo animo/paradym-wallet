@@ -19,7 +19,7 @@ import { formatRelativeDate } from 'packages/utils/src'
 import { useState } from 'react'
 
 interface VerifyPartySlideProps {
-  type: 'offer' | 'request' | 'signing'
+  type: 'offer' | 'request' | 'signing' | 'connect'
   host?: string
   name?: string
   entityId: string
@@ -27,6 +27,7 @@ interface VerifyPartySlideProps {
   backgroundColor?: string
   lastInteractionDate?: string
   onContinue?: () => Promise<void>
+  onDecline?: () => void
   trustedEntities?: Array<TrustedEntity>
 }
 
@@ -38,6 +39,7 @@ export const VerifyPartySlide = ({
   backgroundColor,
   lastInteractionDate,
   onContinue,
+  onDecline,
   trustedEntities,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
@@ -53,6 +55,11 @@ export const VerifyPartySlide = ({
     }
     onNext()
     setIsLoading(false)
+  }
+
+  const handleDecline = async () => {
+    onDecline?.()
+    onCancel()
   }
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entity_id === entityId)
@@ -96,13 +103,17 @@ export const VerifyPartySlide = ({
                   ? `${name} wants to interact to create a digital signature for a document.`
                   : 'An unknown organization wants to interact to create a digital signature for a document.'}
               </Paragraph>
-            ) : (
+            ) : type === 'request' ? (
               <Paragraph center px="$4">
                 {name
                   ? `${name} wants to request information from you.`
                   : 'An unknown organization wants to request information from you.'}
               </Paragraph>
-            )}
+            ) : type === 'connect' ? (
+              <Paragraph center px="$4">
+                {name ? `${name} wants to connect with you.` : 'An unknown organization wants to connect with you.'}
+              </Paragraph>
+            ) : null}
           </Stack>
         </YStack>
 
@@ -144,7 +155,7 @@ export const VerifyPartySlide = ({
         <DualResponseButtons
           align="horizontal"
           onAccept={handleContinue}
-          onDecline={() => onCancel()}
+          onDecline={handleDecline}
           acceptText="Yes, continue"
           declineText="Stop"
           isLoading={isLoading}

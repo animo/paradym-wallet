@@ -37,7 +37,7 @@ import {
   getScopesFromCredentialConfigurationsSupported,
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
-import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
+import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 
 import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import q from 'query-string'
@@ -497,18 +497,59 @@ export const getCredentialsForProofRequest = async ({
   } as const
 }
 
+async function findExistingDidcommConnectionForInvitation(
+  agent: ParadymAppAgent,
+  outOfBandInvitation: OutOfBandInvitation
+): Promise<ConnectionRecord | null> {
+  for (const invitationDid of outOfBandInvitation.invitationDids) {
+    const [connection] = await agent.modules.connections.findByInvitationDid(invitationDid)
+    if (connection) return connection
+  }
+
+  return null
+}
+
+export interface ResolveOutOfBandInvitationResultSuccess {
+  success: true
+
+  outOfBandInvitation: OutOfBandInvitation
+
+  /**
+   * Whether an existing connection already exists based on this invitation
+   */
+  existingConnection?: ConnectionRecord
+
+  /**
+   * Whether a connection will be created as part of the exchange.
+   *
+   * When `existingConnection` is defined this will always be `false` as
+   * the existing connection will be reused.
+   *
+   * If `createConnection` is `false` and `existingConnection` is undefined
+   * it means the exchange will be connectionless.
+   */
+  createConnection: boolean
+
+  /**
+   * The flow type as indicated by the invitation.
+   *
+   * - `issue` when the goal code indicates the goal of the invitation is to issue, or a credential offer is attached
+   * - `verify` when the goal code indicates the goal of the invittion is to verify, or a presentation request is attached
+   * - `connect` in all other cases
+   */
+  flowType: 'issue' | 'verify' | 'connect'
+}
+
 /**
  * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
  */
-export async function receiveOutOfBandInvitation(
+export async function resolveOutOfBandInvitation(
   agent: ParadymAppAgent,
   invitation: OutOfBandInvitation
-): Promise<
-  | { success: true; id: string; type: 'credentialExchange' }
-  | { success: true; id: string; type: 'proofExchange' }
-  | { success: false; error: string }
-> {
+): Promise<ResolveOutOfBandInvitationResultSuccess | { success: false; error: string }> {
   const requestMessages = invitation.getRequests() ?? []
+
+  let flowType: 'issue' | 'verify' | 'connect'
 
   if (requestMessages.length > 1) {
     const message = 'Message contains multiple requests. Invitation should only contain a single request.'
@@ -529,18 +570,32 @@ export async function receiveOutOfBandInvitation(
         error: 'Invalid invitation.',
       }
     }
+
+    if (invitation.goalCode === 'issue-vc' || invitation.goalCode === 'aries.vc.issue') {
+      flowType = 'issue'
+    } else if (invitation.goalCode === 'request-proof' || invitation.goalCode === 'aries.vc.verify') {
+      flowType = 'verify'
+    } else {
+      flowType = 'connect'
+    }
   }
   // Validate the type of the request message
   else {
     const requestMessage = requestMessages[0] as PlaintextMessage
     const parsedMessageType = parseMessageType(requestMessage['@type'])
-    const isValidRequestMessage =
+    const isValidOfferMessage =
       supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
-      supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type)
+
+    const isValidRequestMessage =
       supportsIncomingMessageType(parsedMessageType, V1RequestPresentationMessage.type) ||
       supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type)
 
-    if (!isValidRequestMessage) {
+    if (isValidRequestMessage) {
+      flowType = 'verify'
+    } else if (isValidOfferMessage) {
+      flowType = 'issue'
+    } else {
       agent.config.logger.error('Message request is not from supported protocol.')
       return {
         success: false,
@@ -548,33 +603,6 @@ export async function receiveOutOfBandInvitation(
       }
     }
   }
-
-  // The value is reassigned, but eslint doesn't know this.
-  // eslint-disable-next-line prefer-const
-  let connectionId: string | undefined
-
-  const credentialOffer = agent.events
-    .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
-    .pipe(
-      filter((event) => event.payload.credentialRecord.state === CredentialState.OfferReceived),
-      filter((event) => event.payload.credentialRecord.connectionId === connectionId)
-    )
-
-  const proofRequest = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
-    filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
-    filter((event) => event.payload.proofRecord.connectionId === connectionId)
-  )
-
-  const eventPromise = firstValueFrom(
-    merge(credentialOffer, proofRequest).pipe(
-      first(),
-      // We allow 15 seconds to receive a credential offer or proof request
-      timeout(15 * 1000)
-    )
-  )
-
-  let connectionRecord: ConnectionRecord | undefined
-  let outOfBandRecord: OutOfBandRecord
 
   try {
     // Check if invitation already exists
@@ -586,6 +614,76 @@ export async function receiveOutOfBandInvitation(
       }
     }
 
+    const existingConnection = (await findExistingDidcommConnectionForInvitation(agent, invitation)) ?? undefined
+
+    return {
+      success: true,
+      outOfBandInvitation: invitation,
+      // biome-ignore lint/complexity/noUselessTernary: <explanation>
+      createConnection: existingConnection ? false : invitation.handshakeProtocols?.length ? true : false,
+      existingConnection,
+      flowType,
+    }
+  } catch (error) {
+    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
+
+    return {
+      success: false,
+      error: 'Invalid invitation.',
+    }
+  }
+}
+
+export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
+  | { success: false; error: string }
+  | (FlowType extends 'issue'
+      ? { success: true; flowType: 'issue'; credentialExchangeId: string; connectionId?: string }
+      : FlowType extends 'verify'
+        ? { success: true; flowType: 'verify'; proofExchangeId: string; connectionId?: string }
+        : FlowType extends 'connect'
+          ? { success: true; flowType: 'connect'; connectionId: string }
+          : never)
+>
+
+/**
+ * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
+ */
+export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
+  agent: ParadymAppAgent,
+  invitation: OutOfBandInvitation,
+  flowType: FlowType
+): AcceptOutOfBandInvitationResult<FlowType> {
+  // The value is reassigned, but eslint doesn't know this.
+  let connectionId: string | undefined
+
+  let observable: Observable<CredentialStateChangedEvent | ProofStateChangedEvent> | undefined = undefined
+
+  if (flowType === 'issue') {
+    observable = agent.events.observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged).pipe(
+      filter((event) => event.payload.credentialRecord.state === CredentialState.OfferReceived),
+      filter((event) => event.payload.credentialRecord.connectionId === connectionId)
+    )
+  } else if (flowType === 'verify') {
+    observable = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
+      filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
+      filter((event) => event.payload.proofRecord.connectionId === connectionId)
+    )
+  }
+
+  const eventPromise = observable
+    ? firstValueFrom(
+        observable.pipe(
+          first(),
+          // We allow 15 seconds to receive a credential offer or proof request
+          timeout(15 * 1000)
+        )
+      )
+    : undefined
+
+  let connectionRecord: ConnectionRecord | undefined
+  let outOfBandRecord: OutOfBandRecord
+
+  try {
     const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
       reuseConnection: true,
     })
@@ -605,26 +703,38 @@ export async function receiveOutOfBandInvitation(
 
   try {
     const event = await eventPromise
-    agent.config.logger.debug(`Received event ${event.type}`)
+    agent.config.logger.debug(`Received event ${event?.type}`)
+
+    if (!event) {
+      return {
+        success: true,
+        connectionId: connectionId as string,
+        flowType: 'connect',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as unknown as any
+    }
 
     if (event.type === CredentialEventTypes.CredentialStateChanged) {
       return {
         success: true,
-        id: event.payload.credentialRecord.id,
-        type: 'credentialExchange',
-      }
+        credentialExchangeId: event.payload.credentialRecord.id,
+        connectionId,
+        flowType: 'issue',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as unknown as any
     }
     if (event.type === ProofEventTypes.ProofStateChanged) {
       return {
         success: true,
-        id: event.payload.proofRecord.id,
-        type: 'proofExchange',
-      }
+        proofExchangeId: event.payload.proofRecord.id,
+        connectionId,
+        flowType: 'verify',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as unknown as any
     }
   } catch (error) {
-    agent.config.logger.error(
-      'Error while waiting for credential offer or proof request. Deleting connection and records'
-    )
+    agent.config.logger.error('Error while accepting out of band invitation.')
+
     // Delete OOB record
     const outOfBandRepository = agent.dependencyManager.resolve(OutOfBandRepository)
     await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)

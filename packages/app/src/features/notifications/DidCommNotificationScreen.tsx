@@ -1,4 +1,4 @@
-import { parseDidCommInvitation, receiveOutOfBandInvitation, useAgent } from '@package/agent'
+import { parseDidCommInvitation, resolveOutOfBandInvitation, useAgent } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useEffect, useState } from 'react'
 import { createParam } from 'solito'
@@ -63,18 +63,12 @@ export function DidCommNotificationScreen() {
           return
         }
 
-        const receiveResult = await receiveOutOfBandInvitation(agent, parseResult.result)
+        const receiveResult = await resolveOutOfBandInvitation(agent, parseResult.result)
         if (!receiveResult.success) {
           toast.show(receiveResult.error)
           pushToWallet()
           return
         }
-
-        // We now know the type of the invitation
-        setNotification({
-          id: receiveResult.id,
-          type: receiveResult.type,
-        })
       } catch (error: unknown) {
         agent.config.logger.error('Error parsing invitation', {
           error,
