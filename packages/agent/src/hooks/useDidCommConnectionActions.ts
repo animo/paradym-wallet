@@ -12,10 +12,6 @@ export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitatio
       if (!resolved) throw new Error("Missing 'resolved' parameter")
 
       const result = await acceptOutOfBandInvitation(agent, resolved.outOfBandInvitation, resolved.flowType)
-      if (!result.success) {
-        throw new Error('Error creating connection')
-      }
-
       return result
     },
   })

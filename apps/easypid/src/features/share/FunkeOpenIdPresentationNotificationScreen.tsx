@@ -20,7 +20,7 @@ import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
 import { trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { addSharedActivityForCredentialsForRequest, useActivities } from '../activity/activityRecord'
+import { addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
 
@@ -32,25 +32,18 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const pushToWallet = usePushToWallet()
   const { agent } = useAppAgent()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
+  const [errorReason, setErrorReason] = useState<string>()
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [formattedTransactionData, setFormattedTransactionData] = useState<FormattedTransactionData>()
   const [isSharing, setIsSharing] = useState(false)
-  const { activities } = useActivities({
-    filters: { entityId: credentialsForRequest?.verifier.entityId ?? 'NO MATCH' },
-  })
-  const lastInteractionDate = activities?.[0]?.date
   const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
 
-  const handleError = useCallback(
-    ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
-      setIsSharing(false)
-      toast.show(reason, { message: description, customData: { preset: 'danger' } })
-      if (redirect) pushToWallet()
-      return
-    },
-    [toast, pushToWallet]
-  )
+  const handleError = useCallback(({ reason, description }: { reason: string; description?: string }) => {
+    setIsSharing(false)
+    setErrorReason(description ? `${reason}\n${description}` : reason)
+    return
+  }, [])
 
   useEffect(() => {
     if (credentialsForRequest) return
@@ -135,14 +128,18 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           setIsSharing(false)
           if (e instanceof InvalidPinError) {
             onPinError?.()
-            return handleError({ reason: 'Invalid PIN entered', redirect: false })
+            toast.show('Invalid PIN entered', {
+              customData: {
+                preset: 'danger',
+              },
+            })
+            return
           }
 
           return handleError({
             reason: 'Authentication failed',
             description:
               e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
-            redirect: true,
           })
         }
       }
@@ -193,6 +190,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       agent,
       shouldUsePin,
       stopOverAsking,
+      toast.show,
       isDevelopmentModeEnabled,
       handleError,
       formattedTransactionData,
@@ -221,14 +219,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onDecline={onProofDecline}
       submission={credentialsForRequest?.formattedSubmission}
       isAccepting={isSharing}
-      entityId={credentialsForRequest?.verifier.entityId as string}
+      entityId={credentialsForRequest?.verifier.entityId}
       verifierName={credentialsForRequest?.verifier.name}
       logo={credentialsForRequest?.verifier.logo}
       trustedEntities={credentialsForRequest?.verifier.trustedEntities}
-      lastInteractionDate={lastInteractionDate}
       onComplete={() => pushToWallet('replace')}
+      onCancel={() => pushToWallet('replace')}
       overAskingResponse={overAskingResponse}
       transaction={formattedTransactionData}
+      errorReason={errorReason}
     />
   )
 }

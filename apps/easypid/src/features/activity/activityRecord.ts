@@ -24,9 +24,12 @@ interface BaseActivity {
   status: ActivityStatus
   date: string
   entity: {
-    // entity id can either be: did or https url
-    id: string
-    did?: string
+    // FIXME: we need to avoid id collisions. So we should
+    // add a prefix probably. So
+    // didcomm-connection:
+    //
+    // entity id can either be: did or https url or connection id
+    id?: string
     host?: string
     name?: string
     logo?: DisplayImage
@@ -110,7 +113,7 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
 export const addReceivedActivity = async (
   agent: AppAgent,
   input: {
-    entityId: string
+    entityId?: string
     name: string
     host?: string
     logo?: DisplayImage
@@ -157,7 +160,9 @@ export const addSharedOrSignedActivity = async (
 
 export function addSharedActivityForCredentialsForRequest(
   agent: AppAgent,
-  credentialsForRequest: Pick<CredentialsForProofRequest, 'verifier' | 'formattedSubmission'>,
+  credentialsForRequest: Pick<CredentialsForProofRequest, 'formattedSubmission'> & {
+    verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
+  },
   status: ActivityStatus,
   transaction?: FormattedTransactionData
 ) {

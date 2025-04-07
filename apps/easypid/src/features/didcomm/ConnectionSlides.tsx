@@ -57,7 +57,8 @@ const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProp
         <YStack gap="$4" ai="center">
           <Heading>Connection established</Heading>
           <Paragraph ta="center">
-            You can now receive notifications from <Paragraph fontWeight="$semiBold">{name}</Paragraph>
+            You can now receive notifications from {'\n'}
+            <Paragraph fontWeight="$semiBold">{name}</Paragraph>
           </Paragraph>
         </YStack>
         <Spacer />

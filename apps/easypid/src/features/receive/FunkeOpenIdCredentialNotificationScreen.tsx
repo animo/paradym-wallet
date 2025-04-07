@@ -34,13 +34,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { createParam } from 'solito'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { addReceivedActivity, useActivities } from '../activity/activityRecord'
+import { addReceivedActivity } from '../activity/activityRecord'
 import { PinSlide, type onPinSubmitProps } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
-import { CredentialErrorSlide } from './slides/CredentialErrorSlide'
 import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
+import { InteractionErrorSlide } from './slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
@@ -113,7 +113,6 @@ export function FunkeCredentialNotificationScreen() {
   const preAuthGrant =
     resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
   const txCode = preAuthGrant?.tx_code
-  const { activities } = useActivities({ filters: { entityId: issuerMetadata?.credential_issuer } })
 
   useEffect(() => {
     resolveOpenId4VciOffer({
@@ -175,7 +174,9 @@ export function FunkeCredentialNotificationScreen() {
 
     await storeCredential(agent, receivedRecord)
     await addReceivedActivity(agent, {
-      entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer as string,
+      // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
+      // the credential. Signed issuer metadata is the solution.
+      entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
       host: credentialDisplay.issuer.domain,
       name: credentialDisplay.issuer.name,
       logo: credentialDisplay.issuer.logo,
@@ -395,8 +396,7 @@ export function FunkeCredentialNotificationScreen() {
               type="offer"
               name={credentialDisplay.issuer.name}
               logo={credentialDisplay.issuer.logo}
-              entityId={issuerMetadata?.credential_issuer as string}
-              lastInteractionDate={activities[0]?.date}
+              entityId={issuerMetadata?.credential_issuer}
               onContinue={onCheckCardContinue}
             />
           ),
@@ -483,7 +483,9 @@ export function FunkeCredentialNotificationScreen() {
           ),
         },
       ].filter((v): v is Exclude<typeof v, undefined> => v !== undefined)}
-      errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
+      errorScreen={() => (
+        <InteractionErrorSlide key="credential-error" flowType="issue" reason={errorReason} onCancel={onCancel} />
+      )}
       isError={errorReason !== undefined}
       onCancel={onCancel}
       confirmation={{
