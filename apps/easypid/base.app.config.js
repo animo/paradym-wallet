@@ -35,7 +35,7 @@ const baseInvitationSchemes = [
 
 const baseAssets = [
   './assets/german-issuer-image.png',
-  './assets/pid-background.png',
+  './assets/pid-background.jpg',
   './assets/mdl/code-l.png',
   './assets/mdl/code-t.png',
   './assets/mdl/code-d1e.png',
