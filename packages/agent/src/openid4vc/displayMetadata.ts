@@ -5,9 +5,13 @@ import type {
   OpenId4VciCredentialIssuerMetadataDisplay,
 } from '@credo-ts/openid4vc'
 
-export type CredentialDisplayClaims = (OpenId4VciCredentialConfigurationSupportedWithFormats & {
-  format: 'vc+sd-jwt'
-})['claims']
+export type CredentialDisplayClaims =
+  | (OpenId4VciCredentialConfigurationSupportedWithFormats & {
+      format: 'vc+sd-jwt'
+    })['claims']
+  | (OpenId4VciCredentialConfigurationSupportedWithFormats & {
+      format: 'dc+sd-jwt'
+    })['claims']
 
 export interface OpenId4VcCredentialMetadata {
   credential: {
@@ -31,11 +35,7 @@ export function extractOpenId4VcCredentialMetadata(
     credential: {
       display: credentialMetadata.display,
       order: credentialMetadata.order,
-      // NOTE: w3c vcs do not use claims, we can add rendering for that later
-      claims:
-        credentialMetadata.format === 'vc+sd-jwt' || credentialMetadata.format === 'mso_mdoc'
-          ? credentialMetadata.claims
-          : undefined,
+      claims: credentialMetadata.claims ? (credentialMetadata.claims as CredentialDisplayClaims) : undefined,
     },
     issuer: {
       display: serverMetadata.display,

@@ -4,13 +4,14 @@ import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitatio
 import queryString from 'query-string'
 
 import { fetchInvitationDataUrl } from './fetchInvitation'
+import { JsonEncoder } from '@credo-ts/core'
 
 export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
 export type ParseInvitationResultError = 'invitation_not_recognized' | 'parse_error' | 'retrieve_invitation_error'
 export type ParseInvitationResult =
   | {
       success: true
-      result: ParsedInvitation
+      result: ParsedInvitationTypeUrl
     }
   | {
       success: false
@@ -18,10 +19,16 @@ export type ParseInvitationResult =
       message: string
     }
 
-export type ParsedInvitation = {
+export type ParsedInvitationTypeData = {
   type: InvitationType
-  format: 'url' | 'parsed'
-  data: string | Record<string, unknown>
+  format: 'parsed'
+  data: Record<string, unknown> | string
+}
+
+export type ParsedInvitationTypeUrl = {
+  type: InvitationType
+  format: 'url'
+  data: string
 }
 
 export enum InvitationQrTypes {
@@ -156,7 +163,29 @@ export async function parseInvitationUrl(invitationUrl: string): Promise<ParseIn
   // If we can't detect the type of invitation from the URL, we will try to fetch the data from the URL
   // and see if we can detect if based on the response
   if (invitationUrl.startsWith('https://')) {
-    return fetchInvitationDataUrl(invitationUrl)
+    const invitation = await fetchInvitationDataUrl(invitationUrl)
+    if (!invitation.success) return invitation
+
+    // We can't just fetch a QR url directly except for DIDComm
+    if (invitation.result.type !== 'didcomm') {
+      return {
+        success: false,
+        error: 'invitation_not_recognized',
+        message: 'Invitation not recognized.',
+      }
+    }
+
+    // Transform to url to make it easier to pass around in naviagation
+    if (invitation.result.format === 'parsed') {
+      return {
+        success: true,
+        result: {
+          data: `didcomm://oob=${JsonEncoder.toBase64URL(invitation.result.data)}`,
+          format: 'url',
+          type: 'didcomm',
+        },
+      }
+    }
   }
 
   return {

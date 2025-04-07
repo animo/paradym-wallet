@@ -62,28 +62,16 @@ export async function resolveOpenId4VciOffer({
   fetchAuthorization = true,
 }: {
   agent: EitherAgent
-  offer: { data?: string; uri?: string }
+  offer: { uri: string }
   authorization?: { clientId: string; redirectUri: string }
   customHeaders?: Record<string, unknown>
   fetchAuthorization?: boolean
 }) {
-  let offerUri = offer.uri
-
-  if (!offerUri && offer.data) {
-    // FIXME: Credo only support credential offer string, but we already parsed it before. So we construct an offer here
-    // but in the future we need to support the parsed offer in Credo directly
-    offerUri = `openid-credential-offer://credential_offer=${encodeURIComponent(JSON.stringify(offer.data))}`
-  } else if (!offerUri) {
-    throw new Error('either data or uri must be provided')
-  }
-
-  agent.config.logger.info(`Receiving openid uri ${offerUri}`, {
-    offerUri,
-    data: offer.data,
+  agent.config.logger.info(`Receiving openid uri ${offer.uri}`, {
     uri: offer.uri,
   })
 
-  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offerUri)
+  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
   let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
   // NOTE: we always assume scopes are used at the moment
@@ -271,17 +259,10 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       clientId,
       credentialConfigurationIds: Object.keys(offeredCredentialsToRequest),
       verifyCredentialStatus: false,
-      requestBatch,
-      allowedProofOfPossessionSignatureAlgorithms: [
-        // NOTE: MATTR launchpad for JFF MUST use EdDSA. So it is important that the default (first allowed one)
-        // is EdDSA. The list is ordered by preference, so if no suites are defined by the issuer, the first one
-        // will be used
-        JwaSignatureAlgorithm.EdDSA,
-        JwaSignatureAlgorithm.ES256,
-      ],
+      allowedProofOfPossessionSignatureAlgorithms: [JwaSignatureAlgorithm.ES256, JwaSignatureAlgorithm.EdDSA],
       credentialBindingResolver: getCredentialBindingResolver({
         pidSchemes,
-        resolvedCredentialOffer,
+        requestBatch,
       }),
     })
 
@@ -345,11 +326,10 @@ const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: s
  * This is a temp method to allow for untrusted certificates to still work with the wallet.
  */
 export const extractEntityIdFromAuthorizationRequest = async ({
-  data,
   uri,
   requestPayload,
   origin,
-}: { data?: string; uri?: string; requestPayload?: Record<string, unknown>; origin?: string }): Promise<{
+}: { uri?: string; requestPayload?: Record<string, unknown>; origin?: string }): Promise<{
   data: string | null
   entityId: string | null
 }> => {
@@ -368,13 +348,6 @@ export const extractEntityIdFromAuthorizationRequest = async ({
       }
     }
 
-    if (data) {
-      return {
-        data,
-        entityId: extractEntityIdFromJwt(data, origin),
-      }
-    }
-
     if (uri) {
       const query = q.parseUrl(uri).query
       if (query.request_uri && typeof query.request_uri === 'string') {
@@ -383,6 +356,7 @@ export const extractEntityIdFromAuthorizationRequest = async ({
         if (
           result.success &&
           result.result.type === 'openid-authorization-request' &&
+          result.result.format === 'parsed' &&
           typeof result.result.data === 'string'
         ) {
           return {
@@ -392,7 +366,7 @@ export const extractEntityIdFromAuthorizationRequest = async ({
         }
       } else if (query.request && typeof query.request === 'string') {
         return {
-          data: query.request,
+          data: null,
           entityId: extractEntityIdFromJwt(query.request, origin),
         }
       }
@@ -408,7 +382,6 @@ export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredential
 
 export type GetCredentialsForProofRequestOptions = {
   agent: EitherAgent
-  encodedRequestData?: string
   requestPayload?: Record<string, unknown>
   uri?: string
   allowUntrustedFederation?: boolean
@@ -419,30 +392,33 @@ export type GetCredentialsForProofRequestOptions = {
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 export const getCredentialsForProofRequest = async ({
   agent,
-  encodedRequestData,
   uri,
   requestPayload,
   allowUntrustedFederation = true,
   origin,
   trustedX509Entities,
 }: GetCredentialsForProofRequestOptions) => {
-  let requestData = encodedRequestData
   const { entityId = undefined, data: fromFederationData = null } = allowUntrustedFederation
-    ? await extractEntityIdFromAuthorizationRequest({ data: encodedRequestData, uri, requestPayload, origin })
+    ? await extractEntityIdFromAuthorizationRequest({ uri, requestPayload, origin })
     : {}
-  requestData = fromFederationData ?? requestData
 
   let request: string | Record<string, unknown>
-  if (requestData) {
-    // FIXME: Credo only support request string, but we already parsed it before. So we construct an request here
-    // but in the future we need to support the parsed request in Credo directly
-    request = `openid://?request=${encodeURIComponent(requestData)}`
+  if (fromFederationData) {
+    if (!uri) {
+      throw new Error('Missing required uri')
+    }
+
+    const updatedUrl = new URL(uri)
+    updatedUrl.searchParams.delete('request_uri')
+    updatedUrl.searchParams.set('request', fromFederationData)
+
+    request = updatedUrl.toJSON()
   } else if (uri) {
     request = uri
   } else if (requestPayload) {
     request = requestPayload
   } else {
-    throw new Error('Either data or uri must be provided')
+    throw new Error('Either requestPayload or uri must be provided')
   }
 
   agent.config.logger.info('Receiving openid request', {

@@ -45,7 +45,7 @@ import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
-type Query = { uri?: string; data?: string }
+type Query = { uri: string }
 
 // TODO: clientId
 const authorization = {
@@ -119,10 +119,6 @@ export function FunkeCredentialNotificationScreen() {
     resolveOpenId4VciOffer({
       agent,
       offer: {
-        // NOTE: the params can contain more than data and uri
-        // so it's important we only use these params, so the use
-        // effect doesn't run again the data nd uri
-        data: params.data,
         uri: params.uri,
       },
       authorization,
@@ -137,7 +133,7 @@ export function FunkeCredentialNotificationScreen() {
         })
         setErrorReasonWithError('Credential information could not be extracted', error)
       })
-  }, [params.data, params.uri, agent, setErrorReasonWithError])
+  }, [params.uri, agent, setErrorReasonWithError])
 
   const retrieveCredentials = useCallback(
     async (
