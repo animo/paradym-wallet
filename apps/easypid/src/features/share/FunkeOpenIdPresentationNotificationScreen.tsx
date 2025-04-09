@@ -24,7 +24,7 @@ import { addSharedActivityForCredentialsForRequest, useActivities } from '../act
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
 
-type Query = { uri?: string; data?: string }
+type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
   const toast = useToastController()
@@ -57,7 +57,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
     getCredentialsForProofRequest({
       agent,
-      encodedRequestData: params.data,
       uri: params.uri,
       trustedX509Entities,
     })
@@ -82,7 +81,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       .catch((error) => {
         handleError({ reason: error.message })
       })
-  }, [credentialsForRequest, params.data, params.uri, agent, isDevelopmentModeEnabled, handleError])
+  }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 

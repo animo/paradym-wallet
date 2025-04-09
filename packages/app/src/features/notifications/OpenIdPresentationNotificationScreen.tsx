@@ -13,7 +13,7 @@ import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
-type Query = { uri?: string; data?: string }
+type Query = { uri: string }
 
 const { useParams } = createParam<Query>()
 
@@ -35,7 +35,6 @@ export function OpenIdPresentationNotificationScreen() {
       try {
         const cfr = await getCredentialsForProofRequest({
           agent,
-          encodedRequestData: params.data,
           uri: params.uri,
         })
         setCredentialsForRequest(cfr)

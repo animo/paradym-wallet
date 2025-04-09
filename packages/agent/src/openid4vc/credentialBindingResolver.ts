@@ -7,27 +7,23 @@ import {
   type KeyDidCreateOptions,
   getJwkFromKey,
 } from '@credo-ts/core'
-import {
-  type OpenId4VciCredentialBindingResolver,
-  type OpenId4VciCredentialConfigurationSupportedWithFormats,
-  OpenId4VciCredentialFormatProfile,
-  type OpenId4VciResolvedCredentialOffer,
-} from '@credo-ts/openid4vc'
+import { type OpenId4VciCredentialBindingResolver, OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 
 export function getCredentialBindingResolver({
   pidSchemes,
-  resolvedCredentialOffer,
+  requestBatch,
 }: {
   pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
-  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  requestBatch?: boolean | number
 }): OpenId4VciCredentialBindingResolver {
   return async ({
     supportedDidMethods,
-    keyTypes,
+    credentialConfiguration,
+    issuerMaxBatchSize,
+    proofTypes,
     supportsAllDidMethods,
     supportsJwk,
     credentialFormat,
-    credentialConfigurationId,
     agentContext,
   }) => {
     // First, we try to pick a did method
@@ -46,53 +42,71 @@ export function getCredentialBindingResolver({
       didMethod = 'key'
     }
 
-    const offeredCredentialConfiguration = credentialConfigurationId
-      ? (resolvedCredentialOffer.offeredCredentialConfigurations[
-          credentialConfigurationId
-        ] as OpenId4VciCredentialConfigurationSupportedWithFormats)
-      : undefined
-
     const shouldKeyBeHardwareBackedForMsoMdoc =
-      offeredCredentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
-      pidSchemes?.msoMdocDoctypes.includes(offeredCredentialConfiguration.doctype)
+      credentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
+      pidSchemes?.msoMdocDoctypes.includes(credentialConfiguration.doctype)
 
     const shouldKeyBeHardwareBackedForSdJwtVc =
-      offeredCredentialConfiguration?.format === 'vc+sd-jwt' &&
-      pidSchemes?.sdJwtVcVcts.includes(offeredCredentialConfiguration.vct)
+      (credentialConfiguration?.format === 'vc+sd-jwt' || credentialConfiguration.format === 'dc+sd-jwt') &&
+      pidSchemes?.sdJwtVcVcts.includes(credentialConfiguration.vct)
 
     const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
 
-    const key = await agentContext.wallet.createKey({
-      keyType: keyTypes[0],
-      keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
-    })
+    // We don't want to request more than 10 credentials
+    const batchSize =
+      requestBatch === true
+        ? Math.min(issuerMaxBatchSize, 10)
+        : typeof requestBatch === 'number'
+          ? Math.min(issuerMaxBatchSize, requestBatch)
+          : 1
+
+    // TODO: support key attestations
+    if (!proofTypes.jwt || proofTypes.jwt.keyAttestationsRequired) {
+      throw new Error('Unable to request credentials. Only jwt proof type without key attestations supported')
+    }
+
+    const keyType = proofTypes.jwt.supportedKeyTypes[0]
+    const keys = await Promise.all(
+      new Array(batchSize).fill(0).map(() =>
+        agentContext.wallet.createKey({
+          keyType,
+          keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
+        })
+      )
+    )
 
     if (didMethod) {
+      const dm = didMethod
       const didsApi = agentContext.dependencyManager.resolve(DidsApi)
-      const didResult = await didsApi.create<JwkDidCreateOptions | KeyDidCreateOptions>({
-        method: didMethod,
-        options: {
-          key,
-        },
-      })
+      const didResults = await Promise.all(
+        keys.map(async (key) => {
+          const didResult = await didsApi.create<JwkDidCreateOptions | KeyDidCreateOptions>({
+            method: dm,
+            options: {
+              key,
+            },
+          })
 
-      if (didResult.didState.state !== 'finished') {
-        throw new Error('DID creation failed.')
-      }
+          if (didResult.didState.state !== 'finished') {
+            throw new Error('DID creation failed.')
+          }
 
-      let verificationMethodId: string
-      if (didMethod === 'jwk') {
-        const didJwk = DidJwk.fromDid(didResult.didState.did)
-        verificationMethodId = didJwk.verificationMethodId
-      } else {
-        const didKey = DidKey.fromDid(didResult.didState.did)
-        verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
-      }
+          let verificationMethodId: string
+          if (didMethod === 'jwk') {
+            const didJwk = DidJwk.fromDid(didResult.didState.did)
+            verificationMethodId = didJwk.verificationMethodId
+          } else {
+            const didKey = DidKey.fromDid(didResult.didState.did)
+            verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
+          }
 
-      return {
-        didUrl: verificationMethodId,
-        method: 'did',
-      }
+          return {
+            didUrl: verificationMethodId,
+            method: 'did',
+            key,
+          } as const
+        })
+      )
     }
 
     // Otherwise we also support plain jwk for sd-jwt only
@@ -103,7 +117,7 @@ export function getCredentialBindingResolver({
     ) {
       return {
         method: 'jwk',
-        jwk: getJwkFromKey(key),
+        keys: keys.map((key) => getJwkFromKey(key)),
       }
     }
 

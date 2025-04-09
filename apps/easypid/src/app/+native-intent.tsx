@@ -47,13 +47,13 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     }
 
     if (invitationData.type === 'openid-credential-offer') {
-      redirectPath = `/(app)/notifications/openIdCredential?${invitationData.format === 'url' ? 'uri' : 'data'}=${encodeURIComponent(invitationData.format === 'parsed' ? JSON.stringify(invitationData.data) : (invitationData.data as string))}`
+      redirectPath = `/(app)/notifications/openIdCredential?uri=${encodeURIComponent(invitationData.data)}`
     }
     if (invitationData.type === 'openid-authorization-request') {
-      redirectPath = `/(app)/notifications/openIdPresentation?${invitationData.format === 'url' ? 'uri' : 'data'}=${encodeURIComponent(invitationData.format === 'parsed' ? JSON.stringify(invitationData.data) : (invitationData.data as string))}`
+      redirectPath = `/(app)/notifications/openIdPresentation?uri=${encodeURIComponent(invitationData.data)}`
     }
     if (invitationData.type === 'didcomm') {
-      redirectPath = `/(app)/notifications/didcomm?${invitationData.format === 'url' ? 'invitationUrl' : 'invitation'}=${encodeURIComponent(invitationData.format === 'parsed' ? JSON.stringify(invitationData.data) : (invitationData.data as string))}`
+      redirectPath = `/(app)/notifications/didcomm?uri=${encodeURIComponent(invitationData.data)}`
     }
 
     if (redirectPath) {
