@@ -1,31 +1,31 @@
 {
-  "name": "@package/scanner",
-  "version": "0.0.0",
-  "private": true,
-  "main": "src/index.ts",
-  "dependencies": {
-    "@package/ui": "workspace:*"
-  },
-  "devDependencies": {
-    "@react-native-masked-view/masked-view": "0.3.2",
-    "@types/react": "~18.2.79",
-    "expo-camera": "~16.0.18",
-    "react-native": "catalog:"
-  },
-  "peerDependencies": {
-    "@react-native-masked-view/masked-view": "0.3.2",
-    "expo": "catalog:",
-    "expo-camera": "~16.0.18",
-    "react-native": "catalog:"
-  },
-  "expo": {
-    "install": {
-      "exclude": [
-        "react-native@~0.74.0",
-        "react-native-reanimated@~3.10.0",
-        "react-native-gesture-handler@~2.16.1",
-        "react-native-screens@~3.31.1"
-      ]
-    }
-  }
+	"name": "@package/scanner",
+	"version": "0.0.0",
+	"private": true,
+	"main": "src/index.ts",
+	"dependencies": {
+		"@package/ui": "workspace:*"
+	},
+	"devDependencies": {
+		"@react-native-masked-view/masked-view": "0.3.2",
+		"@types/react": "~18.2.79",
+		"expo-camera": "~16.0.18",
+		"react-native": "catalog:"
+	},
+	"peerDependencies": {
+		"@react-native-masked-view/masked-view": "0.3.2",
+		"expo": "catalog:",
+		"expo-camera": "~16.0.18",
+		"react-native": "catalog:"
+	},
+	"expo": {
+		"install": {
+			"exclude": [
+				"react-native@~0.74.0",
+				"react-native-reanimated@~3.10.0",
+				"react-native-gesture-handler@~2.16.1",
+				"react-native-screens@~3.31.1"
+			]
+		}
+	}
 }

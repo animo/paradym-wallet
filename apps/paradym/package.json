@@ -1,69 +1,69 @@
 {
-  "name": "paradym-wallet",
-  "version": "1.7.1",
-  "main": "index.ts",
-  "private": true,
-  "scripts": {
-    "start": "APP_VARIANT=development expo start -c --dev-client",
-    "android": "APP_VARIANT=development expo run:android",
-    "ios": "APP_VARIANT=development expo run:ios",
-    "prebuild": "APP_VARIANT=development expo prebuild --no-install"
-  },
-  "dependencies": {
-    "@animo-id/expo-ausweis-sdk": "catalog:",
-    "@animo-id/expo-secure-environment": "catalog:",
-    "@credo-ts/core": "catalog:",
-    "@hyperledger/anoncreds-react-native": "catalog:",
-    "@openwallet-foundation/askar-react-native": "catalog:",
-    "@package/agent": "workspace:*",
-    "@package/app": "workspace:*",
-    "@package/ui": "workspace:*",
-    "@react-native-community/blur": "^4.3.2",
-    "@react-native-community/netinfo": "11.4.1",
-    "@react-native-masked-view/masked-view": "0.3.2",
-    "@react-navigation/native": "^6.1.6",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "burnt": "^0.12.2",
-    "expo": "catalog:",
-    "expo-camera": "~16.0.18",
-    "expo-constants": "~17.0.8",
-    "expo-dev-client": "~5.0.19",
-    "expo-font": "~13.0.4",
-    "expo-haptics": "~14.0.1",
-    "expo-image": "~2.0.7",
-    "expo-linear-gradient": "~14.0.2",
-    "expo-linking": "~7.0.5",
-    "expo-navigation-bar": "~4.0.9",
-    "expo-router": "~4.0.20",
-    "expo-secure-store": "~14.0.1",
-    "expo-splash-screen": "~0.29.22",
-    "expo-status-bar": "~2.0.1",
-    "expo-system-ui": "~4.0.9",
-    "expo-updates": "~0.27.4",
-    "react": "catalog:",
-    "react-native": "catalog:",
-    "react-native-argon2": "^2.0.1",
-    "react-native-fs": "^2.20.0",
-    "react-native-gesture-handler": "~2.20.2",
-    "react-native-get-random-values": "~1.11.0",
-    "react-native-reanimated": "~3.16.7",
-    "react-native-safe-area-context": "4.12.0",
-    "react-native-screens": "~4.4.0",
-    "react-native-svg": "15.9.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.24.4",
-    "@tamagui/babel-plugin": "1.122.7",
-    "typescript": "catalog:"
-  },
-  "expo": {
-    "install": {
-      "exclude": [
-        "react-native@~0.74.0",
-        "react-native-reanimated@~3.10.0",
-        "react-native-gesture-handler@~2.16.1",
-        "react-native-screens@~3.31.1"
-      ]
-    }
-  }
+	"name": "paradym-wallet",
+	"version": "1.7.1",
+	"main": "index.ts",
+	"private": true,
+	"scripts": {
+		"start": "APP_VARIANT=development expo start -c --dev-client",
+		"android": "APP_VARIANT=development expo run:android",
+		"ios": "APP_VARIANT=development expo run:ios",
+		"prebuild": "APP_VARIANT=development expo prebuild --no-install"
+	},
+	"dependencies": {
+		"@animo-id/expo-ausweis-sdk": "catalog:",
+		"@animo-id/expo-secure-environment": "catalog:",
+		"@credo-ts/core": "catalog:",
+		"@hyperledger/anoncreds-react-native": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:",
+		"@package/agent": "workspace:*",
+		"@package/app": "workspace:*",
+		"@package/ui": "workspace:*",
+		"@react-native-community/blur": "^4.3.2",
+		"@react-native-community/netinfo": "11.4.1",
+		"@react-native-masked-view/masked-view": "0.3.2",
+		"@react-navigation/native": "^6.1.6",
+		"babel-plugin-module-resolver": "^4.1.0",
+		"burnt": "^0.12.2",
+		"expo": "catalog:",
+		"expo-camera": "~16.0.18",
+		"expo-constants": "~17.0.8",
+		"expo-dev-client": "~5.0.19",
+		"expo-font": "~13.0.4",
+		"expo-haptics": "~14.0.1",
+		"expo-image": "~2.0.7",
+		"expo-linear-gradient": "~14.0.2",
+		"expo-linking": "~7.0.5",
+		"expo-navigation-bar": "~4.0.9",
+		"expo-router": "~4.0.20",
+		"expo-secure-store": "~14.0.1",
+		"expo-splash-screen": "~0.29.22",
+		"expo-status-bar": "~2.0.1",
+		"expo-system-ui": "~4.0.9",
+		"expo-updates": "~0.27.4",
+		"react": "catalog:",
+		"react-native": "catalog:",
+		"react-native-argon2": "^2.0.1",
+		"react-native-fs": "^2.20.0",
+		"react-native-gesture-handler": "~2.20.2",
+		"react-native-get-random-values": "~1.11.0",
+		"react-native-reanimated": "~3.16.7",
+		"react-native-safe-area-context": "4.12.0",
+		"react-native-screens": "~4.4.0",
+		"react-native-svg": "15.9.0"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.24.4",
+		"@tamagui/babel-plugin": "1.122.7",
+		"typescript": "catalog:"
+	},
+	"expo": {
+		"install": {
+			"exclude": [
+				"react-native@~0.74.0",
+				"react-native-reanimated@~3.10.0",
+				"react-native-gesture-handler@~2.16.1",
+				"react-native-screens@~3.31.1"
+			]
+		}
+	}
 }
