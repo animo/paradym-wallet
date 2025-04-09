@@ -138,7 +138,7 @@ Email [ana@animo.id](mailto:ana@animo.id) to get your solution added to our trus
 The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenID4VCI](https://github.com/animo/oid4vc-ts), [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC), [OpenID Federation](https://github.com/animo/openid-federation-ts), [Mdoc](https://github.com/animo/mdoc) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.
 
 - [Credo](https://github.com/openwallet-foundation/credo-ts)
-  - [OpenID4VCI](https://github.com/animo/oid4vc-ts)
+  - [OpenID4VCI](https://github.com/openwallet-foundation-labs/oid4vc-ts)
   - [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC)
   - [Mdoc](https://github.com/animo/mdoc)
   - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
