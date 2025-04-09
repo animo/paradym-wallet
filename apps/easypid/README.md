@@ -154,7 +154,7 @@ The following section lists the software components used to create the EasyPID w
 The following standards and specifications were implemented.
 
 - 🟢 [OpenID for Verifiable Credential Issuance - Draft 11, Draft 13, Draft 14, Draft 15](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html)
-- 🟢[OpenID for Verifiable Presentations - Draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0-20.html)
+- 🟢[OpenID for Verifiable Presentations - Draft 18, Draft 21, Draft 24](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)
    - Supports DCQL from draft 22
 - 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
 - 🟢 [Self-Issued OpenID Provider V2 - Draft 13](https://openid.net/specs/openid-connect-self-issued-v2-1_0-13.html)
