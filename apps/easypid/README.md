@@ -139,7 +139,7 @@ The following section lists the software components used to create the EasyPID w
 
 - [Credo](https://github.com/openwallet-foundation/credo-ts)
   - [OpenID4VCI](https://github.com/openwallet-foundation-labs/oid4vc-ts)
-  - [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC)
+  - [OpenID4VP](https://github.com/openwallet-foundation-labs/oid4vc-ts)
   - [Mdoc](https://github.com/animo/mdoc)
   - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
   - [DCQL](https://github.com/auer-martin/dcql)
