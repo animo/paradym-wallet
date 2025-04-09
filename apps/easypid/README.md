@@ -78,7 +78,8 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟠 Batch issuance and single-use credentials
    - Implemented fully for PID. For non-PID: when the batch is gone the same credential is continually used
 - 🟢 Authorization code flow
-- 🔴 Client attestations
+- 🚧  Wallet attestations
+- 🚧  Key attestations
 
 **Present attestations remotely** 
 - 🟢 PID SD-JWT VC using OpenID4VP (Draft 18, 21, 24, DIF Presentation Exchange, DCQL)
