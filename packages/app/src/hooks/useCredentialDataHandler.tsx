@@ -46,9 +46,7 @@ export const useCredentialDataHandler = () => {
         {
           pathname: '/notifications/openIdCredential',
           query: {
-            uri: invitationData.format === 'url' ? encodeURIComponent(invitationData.data as string) : undefined,
-            data:
-              invitationData.format === 'parsed' ? encodeURIComponent(JSON.stringify(invitationData.data)) : undefined,
+            uri: encodeURIComponent(invitationData.data),
           },
         },
         undefined,
@@ -62,8 +60,7 @@ export const useCredentialDataHandler = () => {
         {
           pathname: '/notifications/openIdPresentation',
           query: {
-            uri: invitationData.format === 'url' ? encodeURIComponent(invitationData.data as string) : undefined,
-            data: invitationData.format === 'parsed' ? encodeURIComponent(invitationData.data as string) : undefined,
+            uri: encodeURIComponent(invitationData.data),
           },
         },
         undefined,
@@ -77,10 +74,7 @@ export const useCredentialDataHandler = () => {
         {
           pathname: '/notifications/didcomm',
           query: {
-            invitation:
-              invitationData.format === 'parsed' ? encodeURIComponent(JSON.stringify(invitationData.data)) : undefined,
-            invitationUrl:
-              invitationData.format === 'url' ? encodeURIComponent(invitationData.data as string) : undefined,
+            invitationUrl: encodeURIComponent(invitationData.data),
           },
         },
         undefined,

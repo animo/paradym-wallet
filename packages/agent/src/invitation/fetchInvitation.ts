@@ -1,4 +1,4 @@
-import type { ParseInvitationResult, ParseInvitationResultError } from './parsers'
+import type { ParseInvitationResult, ParseInvitationResultError, ParsedInvitationTypeData } from './parsers'
 
 const errorResponse = (error: ParseInvitationResultError, message: string) => {
   return {
@@ -8,7 +8,9 @@ const errorResponse = (error: ParseInvitationResultError, message: string) => {
   } as const
 }
 
-export async function fetchInvitationDataUrl(dataUrl: string): Promise<ParseInvitationResult> {
+export type FetchInvitationResult = ParseInvitationResult | { success: true; result: ParsedInvitationTypeData }
+
+export async function fetchInvitationDataUrl(dataUrl: string): Promise<FetchInvitationResult> {
   // If we haven't had a response after 10 seconds, we will handle as if the invitation is not valid.
   const abortController = new AbortController()
   const timeout = setTimeout(() => abortController.abort(), 10000)
@@ -41,7 +43,7 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<ParseInvi
   }
 }
 
-function handleJsonResponse(json: unknown): ParseInvitationResult {
+function handleJsonResponse(json: unknown): FetchInvitationResult {
   // We expect a JSON object
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
     return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
@@ -72,7 +74,7 @@ function handleJsonResponse(json: unknown): ParseInvitationResult {
   return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
 }
 
-function handleTextResponse(text: string): ParseInvitationResult {
+function handleTextResponse(text: string): FetchInvitationResult {
   // If the text starts with 'ey' we assume it's a JWT and thus an OpenID authorization request
   if (text.startsWith('ey')) {
     return {
