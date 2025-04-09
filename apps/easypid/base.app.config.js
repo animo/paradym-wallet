@@ -100,6 +100,7 @@ const createBaseConfig = (appSpecific) => {
       fallbackToCacheTimeout: 0,
     },
     plugins: [
+      'expo-secure-store',
       'expo-router',
       [
         'expo-camera',
@@ -136,6 +137,12 @@ const createBaseConfig = (appSpecific) => {
             deploymentTarget: '15.1',
             useFrameworks: 'dynamic',
           },
+        },
+      ],
+      [
+        'expo-dev-client',
+        {
+          launchMode: 'most-recent',
         },
       ],
       [

@@ -1,25 +1,25 @@
 {
-	"name": "@package/secure-store",
-	"version": "0.0.0",
-	"private": true,
-	"peerDependencies": {
-		"@openwallet-foundation/askar-react-native": "catalog:",
-		"expo-secure-store": "~13.0.1",
-		"react-native": "catalog:",
-		"react-native-argon2": "^2.0.1",
-		"react-native-get-random-values": "~1.11.0",
-		"react-native-keychain": "^8.2.0",
-		"@tanstack/react-query": "^5"
-	},
-	"peerDependenciesMeta": {
-		"expo-secure-store": {
-			"optional": true
-		},
-		"react-native-keychain": {
-			"optional": true
-		},
-		"react-native-argon2": {
-			"optional": true
-		}
-	}
+  "name": "@package/secure-store",
+  "version": "0.0.0",
+  "private": true,
+  "peerDependencies": {
+    "@openwallet-foundation/askar-react-native": "catalog:",
+    "expo-secure-store": "~14.0.1",
+    "react-native": "catalog:",
+    "react-native-argon2": "^2.0.1",
+    "react-native-get-random-values": "~1.11.0",
+    "react-native-keychain": "^8.2.0",
+    "@tanstack/react-query": "^5"
+  },
+  "peerDependenciesMeta": {
+    "expo-secure-store": {
+      "optional": true
+    },
+    "react-native-keychain": {
+      "optional": true
+    },
+    "react-native-argon2": {
+      "optional": true
+    }
+  }
 }
