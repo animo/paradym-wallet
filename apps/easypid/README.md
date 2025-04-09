@@ -72,7 +72,7 @@ The identity wallet contains the following features, you can see the full flow w
 
 
 **Obtain (Q)EAAs from issuer**
-- 🟢 SD-JWT VC using OpenID4VCI (Draft 11, 13, 14, pre-auth, auth)
+- 🟢 SD-JWT VC using OpenID4VCI (Draft 11, 13, 14, 15, pre-auth, auth)
 - 🟢 mDOC using OpenID4VCI
 - 🟢 PID presentation during (Q)EAA issuance
 - 🟠 Batch issuance and single-use credentials
