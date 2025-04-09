@@ -72,17 +72,18 @@ The identity wallet contains the following features, you can see the full flow w
 
 
 **Obtain (Q)EAAs from issuer**
-- 🟢 SD-JWT VC using OpenID4VCI
+- 🟢 SD-JWT VC using OpenID4VCI (Draft 11, 13, 14, 15, pre-auth, auth)
 - 🟢 mDOC using OpenID4VCI
 - 🟢 PID presentation during (Q)EAA issuance
 - 🟠 Batch issuance and single-use credentials
    - Implemented fully for PID. For non-PID: when the batch is gone the same credential is continually used
 - 🟢 Authorization code flow
-- 🔴 Client attestations
+- 🚧  Wallet attestations
+- 🚧  Key attestations
 
 **Present attestations remotely** 
-- 🟢 PID SD-JWT VC using OpenID4VP
-- 🟢 PID mDOC using OpenID4VP
+- 🟢 PID SD-JWT VC using OpenID4VP (Draft 18, 21, 24, DIF Presentation Exchange, DCQL)
+- 🟢 PID mDOC using OpenID4VP (Draft 18, 21, 24, DCQL, ISO 18013-7)
 - 🟢 QEAA SD JWT VC using OpenID4VP
 - 🟢 QEAA Mdoc using OpenID4VP
 - 🟢 Combined presentations
@@ -107,6 +108,11 @@ The identity wallet contains the following features, you can see the full flow w
   - 🟢 On device HSM
   - 🟢 Cloud-backed HSM
 
+**Trust Establishment using X.509 Certificates**
+- 🟢 Verifier e2e flow 
+- 🟢 Issuer e2e flow 
+Email [ana@animo.id](mailto:ana@animo.id) to get your solution added to our trusted list.
+
 **Trust Establishment using OpenID Federation Draft 40**
 - 🟢 Issuer and verifier entity configuration
 - 🟢 Verifier e2e flow 
@@ -126,6 +132,36 @@ The identity wallet contains the following features, you can see the full flow w
 - 🟢 Issue QEAAs
 - 🟢 Verify PID
 - 🟢 Verify mixed PID-QEAA requests
+
+## Tech stack
+
+The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenID4VCI](https://github.com/animo/oid4vc-ts), [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC), [OpenID Federation](https://github.com/animo/openid-federation-ts), [Mdoc](https://github.com/animo/mdoc) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.
+
+- [Credo](https://github.com/openwallet-foundation/credo-ts)
+  - [OpenID4VCI](https://github.com/openwallet-foundation-labs/oid4vc-ts)
+  - [OpenID4VP](https://github.com/openwallet-foundation-labs/oid4vc-ts)
+  - [Mdoc](https://github.com/animo/mdoc)
+  - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
+  - [DCQL](https://github.com/openwallet-foundation-labs/dcql-ts)
+  - [OpenID Federation](https://github.com/openwallet-foundation-labs/openid-federation-ts)
+- [Expo Secure Environment](https://github.com/animo/expo-secure-environment)
+- [Expo Mdoc Data Transfer](https://github.com/animo/expo-mdoc-data-transfer)
+  - Based on EUDI Reference Implementation
+- [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk)
+- [Wallet Service Provider Implementation](https://github.com/animo/funke-wallet-provider)
+- [Expo Digital Credentials API](https://github.com/animo/expo-digital-credentials-api)
+
+The following standards and specifications were implemented.
+
+- 🟢 [OpenID for Verifiable Credential Issuance - Draft 11, Draft 13, Draft 14, Draft 15](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html)
+- 🟢[OpenID for Verifiable Presentations - Draft 18, Draft 21, Draft 24](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)
+   - Supports DCQL from draft 22
+- 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
+- 🟢 [ISO 18013-5](https://www.iso.org/standard/69084.html)
+- 🟢 [ISO/IEC TS 18013-7](https://www.iso.org/standard/82772.html)
+- 🟡 [High Assurance Interop Profile - Draft 2](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-02.html)
+  - Missing `verifier_attestation` and wallet attestation
+- 🟠 [OpenID Federation - Draft 40](https://openid.net/specs/openid-federation-1_0-40.html)
 
 ## Test
 
@@ -343,35 +379,7 @@ The [documentation](./documentation/) folder currently contains only the overvie
 
 The C/C' flow supported in the Paradym Wallet is mostly implemented in [Credo](https://github.com/openwallet-foundation/credo-ts).
 
-## Tech stack
 
-The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenID4VCI](https://github.com/animo/oid4vc-ts), [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC), [OpenID Federation](https://github.com/animo/openid-federation-ts), [Mdoc](https://github.com/animo/mdoc) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.
-
-- [Credo](https://github.com/openwallet-foundation/credo-ts)
-  - [OpenID4VCI](https://github.com/animo/oid4vc-ts)
-  - [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC)
-  - [Mdoc](https://github.com/animo/mdoc)
-  - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
-  - [DCQL](https://github.com/auer-martin/dcql)
-  - [OpenID Federation](https://github.com/animo/openid-federation-ts)
-- [Expo Secure Environment](https://github.com/animo/expo-secure-environment)
-- [Expo Mdoc Data Transfer](https://github.com/animo/expo-mdoc-data-transfer)
-  - Based on EUDI Reference Implementation
-- [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk)
-- [Wallet Service Provider Implementation](https://github.com/animo/funke-wallet-provider)
-
-The following standards and specifications were implemented.
-
-- 🟢 [OpenID for Verifiable Credential Issuance - ID 1 / Draft 14](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-14.html)
-- 🟢[OpenID for Verifiable Presentations - Draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0-20.html)
-   - Supports DCQL from draft 22
-- 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
-- 🟢 [Self-Issued OpenID Provider V2 - Draft 13](https://openid.net/specs/openid-connect-self-issued-v2-1_0-13.html)
-- 🟢 [ISO 18013-5](https://www.iso.org/standard/69084.html)
-- 🟢 [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
-- 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
-  - Missing `verifier_attestation` and wallet attestation
-- 🟠 [OpenID Federation - Draft 40](https://openid.net/specs/openid-federation-1_0-40.html)
 
 ## Known Bugs
 
