@@ -158,7 +158,7 @@ The following standards and specifications were implemented.
    - Supports DCQL from draft 22
 - 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
 - 🟢 [ISO 18013-5](https://www.iso.org/standard/69084.html)
-- 🟢 [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
+- 🟢 [ISO/IEC TS 18013-7](https://www.iso.org/standard/82772.html)
 - 🟡 [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
   - Missing `verifier_attestation` and wallet attestation
 - 🟠 [OpenID Federation - Draft 40](https://openid.net/specs/openid-federation-1_0-40.html)
