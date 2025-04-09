@@ -42,7 +42,7 @@ export function FunkeWalletScreen() {
   }
 
   return (
-    <YStack pos="relative" fg={1}>
+    <YStack pos="relative" fg={1} bg="$background">
       <YStack pos="absolute" h="50%" w="100%">
         <Blob />
       </YStack>

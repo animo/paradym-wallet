@@ -6,21 +6,21 @@ import {
   useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { createParam } from 'solito'
 
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
 
-type Query = { uri: string }
-
-const { useParams } = createParam<Query>()
+type Query = {
+  uri: string
+}
 
 export function OpenIdPresentationNotificationScreen() {
   const { agent } = useAgent()
   const toast = useToastController()
-  const { params } = useParams()
+  const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()

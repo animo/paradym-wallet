@@ -18,18 +18,15 @@ import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@packag
 import { TextBackButton } from 'packages/app'
 
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { createParam } from 'solito'
 import { CustomCredentialAttributes, hasCustomCredentialDisplay } from './components/CustomCredentialAttributes'
 
-const { useParams } = createParam<{ id: CredentialForDisplayId }>()
-
 export function FunkeCredentialDetailAttributesScreen() {
-  const { params } = useParams()
-  const { credential } = useCredentialForDisplayById(params.id)
+  const { id } = useLocalSearchParams<{ id: CredentialForDisplayId }>()
+  const { credential } = useCredentialForDisplayById(id)
 
   const toast = useToastController()
   const router = useRouter()

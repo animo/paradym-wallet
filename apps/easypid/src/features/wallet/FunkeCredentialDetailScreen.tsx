@@ -16,23 +16,20 @@ import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/ho
 import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
 
 import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useHaptics } from 'packages/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { createParam } from 'solito'
-
-const { useParams } = createParam<{ id: CredentialForDisplayId }>()
 
 export function FunkeCredentialDetailScreen() {
   const toast = useToastController()
-  const { params } = useParams()
+  const { id } = useLocalSearchParams<{ id: CredentialForDisplayId }>()
   const router = useRouter()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
 
-  const { credential } = useCredentialForDisplayById(params.id)
+  const { credential } = useCredentialForDisplayById(id)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   useHeaderRightAction({
@@ -52,7 +49,7 @@ export function FunkeCredentialDetailScreen() {
   }
 
   const onCardAttributesPress = withHaptics(() => {
-    router.push(`/credentials/${params.id}/attributes`)
+    router.push(`/credentials/${id}/attributes`)
   })
 
   return (

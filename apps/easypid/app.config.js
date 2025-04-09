@@ -33,7 +33,6 @@ const APP_CONFIGS = {
     bundleId: 'id.paradym.wallet',
     additionalInvitationSchemes: ['didcomm'],
     associatedDomains: ['paradym.id', 'dev.paradym.id'],
-    backgroundColor: '#F2F4F6',
     projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
     assets: ['./assets/paradym/icon.png'],
     extraConfig: {

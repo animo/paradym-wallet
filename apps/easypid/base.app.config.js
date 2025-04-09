@@ -68,7 +68,6 @@ const createBaseConfig = (appSpecific) => {
     splash,
     additionalInvitationSchemes = [],
     associatedDomains = [],
-    backgroundColor = '#FFFFFF',
     projectId,
     extraConfig = {},
   } = appSpecific
@@ -85,21 +84,22 @@ const createBaseConfig = (appSpecific) => {
     icon,
     userInterfaceStyle: 'light',
     androidStatusBar: {
-      backgroundColor,
+      backgroundColor: '#FFFFFF',
       barStyle: 'light-content',
     },
     androidNavigationBar: {
-      backgroundColor,
+      backgroundColor: '#FFFFFF',
     },
     splash: {
       image: splash,
       resizeMode: 'contain',
-      backgroundColor,
+      backgroundColor: '#FFFFFF',
     },
     updates: {
       fallbackToCacheTimeout: 0,
     },
     plugins: [
+      'expo-secure-store',
       'expo-router',
       [
         'expo-camera',
@@ -139,6 +139,12 @@ const createBaseConfig = (appSpecific) => {
         },
       ],
       [
+        'expo-dev-client',
+        {
+          launchMode: 'most-recent',
+        },
+      ],
+      [
         'expo-font',
         {
           fonts: [
@@ -175,7 +181,6 @@ const createBaseConfig = (appSpecific) => {
       allowBackup: false,
       adaptiveIcon: {
         foregroundImage: adaptiveIcon,
-        backgroundColor,
       },
       package: `${appSpecific.bundleId}${variant.bundle}`,
       intentFilters: [

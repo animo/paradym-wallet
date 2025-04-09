@@ -1,5 +1,5 @@
 import { Button, Heading, LucideIcons, Paragraph, Spacer, YStack } from '@package/ui'
-import { useRouter } from 'solito/router'
+import { useRouter } from 'expo-router'
 
 export function NoContentInbox() {
   const { back } = useRouter()

@@ -1,6 +1,6 @@
 import { useInboxNotifications } from '@package/agent'
 import { Heading, ScrollView, Stack, YStack } from '@package/ui'
-import { useRouter } from 'solito/router'
+import { useRouter } from 'expo-router'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { InboxNotificationRowCard, NoContentInbox } from '../../components'
@@ -39,14 +39,14 @@ export function NotificationInboxScreen() {
                     if (notification.type === 'CredentialRecord') {
                       push({
                         pathname: '/notifications/didcomm',
-                        query: {
+                        params: {
                           credentialExchangeId: notification.id,
                         },
                       })
                     } else {
                       push({
                         pathname: '/notifications/didcomm',
-                        query: {
+                        params: {
                           proofExchangeId: notification.id,
                         },
                       })

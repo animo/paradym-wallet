@@ -7,9 +7,8 @@ import {
   useDidCommConnectionActions,
 } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app/src'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { createParam } from 'solito'
 import { useActivities } from '../activity/activityRecord'
 import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
@@ -27,11 +26,9 @@ type Query = {
   navigationType?: 'inbox'
 }
 
-const { useParams } = createParam<Query>()
-
 export function DidCommNotificationScreen() {
   const { agent } = useParadymAgent()
-  const { params } = useParams()
+  const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 

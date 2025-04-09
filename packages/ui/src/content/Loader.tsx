@@ -35,7 +35,7 @@ export function Loader({ size = 'small', variant = 'light', ...props }: LoaderPr
   }))
 
   return (
-    <Circle size={circleSize} borderWidth={borderWidth} borderColor={trackColor} {...props}>
+    <Circle size={circleSize} borderWidth={borderWidth} borderColor={trackColor}>
       <AnimatedCircle
         size={circleSize}
         borderWidth={borderWidth}

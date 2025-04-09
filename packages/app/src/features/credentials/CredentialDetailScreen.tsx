@@ -12,9 +12,8 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { createParam } from 'solito'
-import { useRouter } from 'solito/router'
 
 import { useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -22,11 +21,9 @@ import { CredentialAttributes, DualResponseButtons } from '../../components'
 import { CredentialCard } from '../../components'
 import { useScrollViewPosition } from '../../hooks'
 
-const { useParams } = createParam<{ id: CredentialForDisplayId }>()
-
 export function CredentialDetailScreen() {
   const navigation = useNavigation()
-  const { params } = useParams()
+  const params = useLocalSearchParams<{ id: CredentialForDisplayId }>()
   const router = useRouter()
   const toast = useToastController()
   const { bottom } = useSafeAreaInsets()

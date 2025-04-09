@@ -1,7 +1,7 @@
 import { useHasInboxNotifications } from '@package/agent'
 import { LucideIcons, XStack } from '@package/ui'
+import { useRouter } from 'expo-router'
 import { TouchableOpacity } from 'react-native'
-import { useRouter } from 'solito/router'
 import { Circle } from 'tamagui'
 
 export function InboxIcon() {

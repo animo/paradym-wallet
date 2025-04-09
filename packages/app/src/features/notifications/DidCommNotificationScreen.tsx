@@ -1,8 +1,8 @@
 import { parseDidCommInvitation, resolveOutOfBandInvitation, useAgent } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useEffect, useState } from 'react'
-import { createParam } from 'solito'
 
+import { useLocalSearchParams } from 'expo-router'
 import { usePushToWallet } from '../../hooks'
 import { DidCommCredentialNotificationScreen } from './DidCommCredentialNotificationScreen'
 import { DidCommPresentationNotificationScreen } from './DidCommPresentationNotificationScreen'
@@ -21,11 +21,9 @@ type Query = {
   credentialExchangeId?: string
 }
 
-const { useParams } = createParam<Query>()
-
 export function DidCommNotificationScreen() {
   const { agent } = useAgent()
-  const { params } = useParams()
+  const params = useLocalSearchParams<Query>()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
 
