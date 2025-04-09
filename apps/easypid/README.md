@@ -143,7 +143,7 @@ The following section lists the software components used to create the EasyPID w
   - [Mdoc](https://github.com/animo/mdoc)
   - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
   - [DCQL](https://github.com/openwallet-foundation-labs/dcql-ts)
-  - [OpenID Federation](https://github.com/animo/openid-federation-ts)
+  - [OpenID Federation](https://github.com/openwallet-foundation-labs/openid-federation-ts)
 - [Expo Secure Environment](https://github.com/animo/expo-secure-environment)
 - [Expo Mdoc Data Transfer](https://github.com/animo/expo-mdoc-data-transfer)
   - Based on EUDI Reference Implementation
