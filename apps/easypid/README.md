@@ -81,8 +81,8 @@ The identity wallet contains the following features, you can see the full flow w
 - 🔴 Client attestations
 
 **Present attestations remotely** 
-- 🟢 PID SD-JWT VC using OpenID4VP (Draft 18, 21, DCQL)
-- 🟢 PID mDOC using OpenID4VP (DCQL, ISO 18013-7)
+- 🟢 PID SD-JWT VC using OpenID4VP (Draft 18, 21, 24, DIF Presentation Exchange, DCQL)
+- 🟢 PID mDOC using OpenID4VP (Draft 18, 21, 24, DCQL, ISO 18013-7)
 - 🟢 QEAA SD JWT VC using OpenID4VP
 - 🟢 QEAA Mdoc using OpenID4VP
 - 🟢 Combined presentations
