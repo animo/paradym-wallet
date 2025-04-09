@@ -251,8 +251,8 @@ importers:
         specifier: ~3.16.7
         version: 3.16.7(@babel/core@7.26.9)(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       react-native-reanimated-carousel:
-        specifier: ^3.5.1
-        version: 3.5.1(react-native-gesture-handler@2.20.2(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native-reanimated@3.16.7(@babel/core@7.26.9)(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
+        specifier: ^4.0.2
+        version: 4.0.2(react-native-gesture-handler@2.20.2(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native-reanimated@3.16.7(@babel/core@7.26.9)(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       react-native-safe-area-context:
         specifier: 4.12.0
         version: 4.12.0(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -725,9 +725,6 @@ importers:
       react-native-safe-area-context:
         specifier: 4.12.0
         version: 4.12.0(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
-      solito:
-        specifier: ^3.0.0
-        version: 3.2.9
     devDependencies:
       '@types/fast-text-encoding':
         specifier: ^1.0.3
@@ -8287,12 +8284,12 @@ packages:
       react-native: '>=0.63.4'
       react-native-svg: '>=14.0.0'
 
-  react-native-reanimated-carousel@3.5.1:
-    resolution: {integrity: sha512-9BBQV6JAYSQm2lV7MFtT4mzapXmW4IZO6s38gfiJL84Jg23ivGB1UykcNQauKgtHyhtW2NuZJzItb1s42lM+hA==}
+  react-native-reanimated-carousel@4.0.2:
+    resolution: {integrity: sha512-vNpCfPlFoOVKHd+oB7B0luoJswp+nyz0NdJD8+LCrf25JiNQXfM22RSJhLaksBHqk3fm8R4fKWPNcfy5w7wL1Q==}
     peerDependencies:
-      react: '>=16.8.0'
-      react-native: '>=0.6.0'
-      react-native-gesture-handler: '>=2.0.0'
+      react: '>=18.0.0'
+      react-native: '>=0.70.3'
+      react-native-gesture-handler: '>=2.9.0'
       react-native-reanimated: '>=3.0.0'
 
   react-native-reanimated@3.16.7:
@@ -8759,9 +8756,6 @@ packages:
   slugify@1.6.6:
     resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
     engines: {node: '>=8.0.0'}
-
-  solito@3.2.9:
-    resolution: {integrity: sha512-4WniKBJSohznz5ow8JDOYB0I59VSOeJET0cART5CnJ7NTkb8YIz5PSTApQFfFVmkBtLwXPaOEDoj2CiIepGy5A==}
 
   sonner@0.3.5:
     resolution: {integrity: sha512-yIwaQ4dftMvFApuruto2t7wGyyaPRpj5qYBWYJIz4Z7uGcVn0IfqI/hWN0JyJN4izNbZFuCYZISf3fOGnvSlNQ==}
@@ -19937,7 +19931,7 @@ snapshots:
       react-native-svg: 15.9.0(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       text-encoding: 0.7.0
 
-  react-native-reanimated-carousel@3.5.1(react-native-gesture-handler@2.20.2(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native-reanimated@3.16.7(@babel/core@7.26.9)(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1):
+  react-native-reanimated-carousel@4.0.2(react-native-gesture-handler@2.20.2(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native-reanimated@3.16.7(@babel/core@7.26.9)(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-native: 0.76.9(@babel/core@7.26.9)(@babel/preset-env@7.26.9(@babel/core@7.26.9))(@react-native-community/cli@14.1.0(typescript@5.3.3))(@types/react@18.2.79)(react@18.3.1)
@@ -20518,8 +20512,6 @@ snapshots:
       is-fullwidth-code-point: 3.0.0
 
   slugify@1.6.6: {}
-
-  solito@3.2.9: {}
 
   sonner@0.3.5(react-dom@19.0.0(react@18.3.1))(react@18.3.1):
     dependencies:

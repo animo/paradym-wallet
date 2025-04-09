@@ -1,6 +1,6 @@
 import { agentDependencies } from '@credo-ts/react-native'
 import { type SecureUnlockReturn, secureWalletKey } from '@package/secure-store/secureUnlock'
-import { DevMenu, isDevelopmentBuild } from 'expo-dev-client'
+import { isDevelopmentBuild, registerDevMenuItems } from 'expo-dev-client'
 import { useEffect } from 'react'
 import { DevSettings } from 'react-native'
 import { type SecureUnlockContext, useSecureUnlock } from '../agent'
@@ -58,7 +58,7 @@ export function useResetWalletDevMenu() {
 
   useEffect(() => {
     if (!isDevelopmentBuild()) return
-    DevMenu.registerDevMenuItems([
+    registerDevMenuItems([
       {
         name: 'Reset Wallet',
         callback: () =>

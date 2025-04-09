@@ -30,8 +30,8 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
+import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { createParam } from 'solito'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { addReceivedActivity, useActivities } from '../activity/activityRecord'
@@ -53,11 +53,9 @@ const authorization = {
   redirectUri: `${appScheme}:///wallet/redirect`,
 }
 
-const { useParams } = createParam<Query>()
-
 export function FunkeCredentialNotificationScreen() {
   const { agent } = useAppAgent()
-  const { params } = useParams()
+  const params = useLocalSearchParams<Query>()
   const toast = useToastController()
 
   const pushToWallet = usePushToWallet()
