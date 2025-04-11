@@ -12,7 +12,9 @@ const APP_CONFIGS = {
     name: 'Funke Wallet',
     scheme: 'id.animo.ausweis',
     icon: './assets/funke/icon.png',
-    adaptiveIcon: './assets/funke/adaptive-icon.png',
+    // NOTE: android requires paths referenced directly in code
+    // to only contain _ a-Z 0-9, so we use _ for all files
+    adaptiveIcon: './assets/funke/adaptive_icon.png',
     splash: './assets/funke/splash.png',
     slug: 'ausweis-wallet',
     version,
@@ -26,7 +28,7 @@ const APP_CONFIGS = {
     name: 'Paradym Wallet',
     scheme: 'id.animo.paradym',
     icon: './assets/paradym/icon.png',
-    adaptiveIcon: './assets/paradym/adaptive-icon.png',
+    adaptiveIcon: './assets/paradym/adaptive_icon.png',
     splash: './assets/paradym/splash.png',
     slug: 'paradym-wallet',
     version,
