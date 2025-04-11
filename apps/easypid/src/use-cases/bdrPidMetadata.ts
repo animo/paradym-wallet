@@ -3,13 +3,13 @@ import type { OpenId4VcCredentialMetadata } from '@package/agent'
 
 export const bdrPidCredentialDisplay = {
   name: 'Personalausweis',
-  backgroundImage: 'pid-background',
+  backgroundImage: 'pid_background',
   backgroundColor: '#F1F2F0',
   textColor: '#2F3544',
 }
 
 export const bdrPidIssuerDisplay = {
-  logo: 'german-issuer-image',
+  logo: 'german_issuer_image',
   name: 'Bundesdruckerei',
 }
 

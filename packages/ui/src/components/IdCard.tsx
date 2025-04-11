@@ -102,7 +102,7 @@ export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
           </XStack>
         </XStack>
         <Stack zIndex="$-1" position="absolute" bg="$idCardBackground" top={0} left={0} right={0} bottom={0}>
-          <Image src="pid-background" width="100%" contentFit="cover" height="100%" />
+          <Image src="pid_background" width="100%" contentFit="cover" height="100%" />
         </Stack>
       </YStack>
     </Animated.View>
