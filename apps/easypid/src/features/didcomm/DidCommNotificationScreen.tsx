@@ -10,8 +10,7 @@ import { SlideWizard, usePushToWallet } from '@package/app/src'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { createParam } from 'solito'
-import { useActivities } from '../activity/activityRecord'
-import { CredentialErrorSlide } from '../receive/slides/CredentialErrorSlide'
+import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { ConnectionSlides } from './ConnectionSlides'
@@ -43,8 +42,6 @@ export function DidCommNotificationScreen() {
     type: 'issue' | 'verify' | 'connect'
     id: string
   }>()
-
-  const { activities } = useActivities({ filters: { entityId: resolvedInvitation?.existingConnection?.id } })
   const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
 
   const handleNavigation = (type: 'replace' | 'back') => {
@@ -61,7 +58,6 @@ export function DidCommNotificationScreen() {
 
   const onConnectionAccept = async () => {
     const result = await acceptConnection()
-
     if (result.success) {
       setFlow({
         id:
@@ -72,6 +68,9 @@ export function DidCommNotificationScreen() {
               : result.connectionId,
         type: result.flowType,
       })
+    } else {
+      setErrorReason(result.error)
+      throw new Error('Error accepting connection')
     }
   }
 
@@ -184,15 +183,27 @@ export function DidCommNotificationScreen() {
               }
               name={display.connection.name}
               logo={display.connection.logo}
-              entityId={resolvedInvitation?.existingConnection?.id ?? ''}
-              lastInteractionDate={activities?.[0]?.date}
+              entityId={resolvedInvitation?.existingConnection?.id}
               onContinue={onConnectionAccept}
               onDecline={declineConnection}
             />
           ),
         },
       ]}
-      errorScreen={() => <CredentialErrorSlide key="credential-error" reason={errorReason} onCancel={onCancel} />}
+      errorScreen={() => (
+        <InteractionErrorSlide
+          key="credential-error"
+          flowType={
+            resolvedInvitation?.flowType === 'issue'
+              ? 'issue'
+              : resolvedInvitation?.flowType === 'verify'
+                ? 'verify'
+                : 'connect'
+          }
+          reason={errorReason}
+          onCancel={onCancel}
+        />
+      )}
       isError={!!errorReason}
       onCancel={onCancel}
       confirmation={getFlowConfirmationText(flow?.type)}

@@ -27,7 +27,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
 
     if (w3cRecord) {
       await addReceivedActivity(agent, {
-        entityId: credentialExchange?.connectionId as string,
+        entityId: credentialExchange?.connectionId,
         name: display.issuer.name,
         logo: display.issuer.logo,
         backgroundColor: '#ffffff', // Default to a white background for now
