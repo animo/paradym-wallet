@@ -84,7 +84,7 @@ export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
             </Paragraph>
           </YStack>
           <Stack>
-            <Image src="german-issuer-image" width={36} height={42} contentFit="contain" />
+            <Image src="german_issuer_image" width={36} height={42} contentFit="contain" />
           </Stack>
         </XStack>
         <XStack justifyContent="space-between" flex-1>

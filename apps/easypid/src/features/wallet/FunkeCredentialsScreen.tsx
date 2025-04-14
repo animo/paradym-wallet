@@ -122,7 +122,7 @@ interface FunkeCredentialRowCardProps {
   backgroundColor: string
   textColor: string
   issuer: string
-  logo: DisplayImage | undefined
+  logo?: DisplayImage
   issuedAt?: Date
   onPress?: () => void
 }

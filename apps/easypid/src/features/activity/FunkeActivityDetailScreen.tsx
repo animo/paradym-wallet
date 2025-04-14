@@ -94,7 +94,6 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
                 textColor="$grey-100"
                 backgroundColor="$grey-900"
                 issuer={activity.entity.name ?? 'Unknown'}
-                logo={activity.entity.logo}
                 issuedAt={activity.date ? new Date(activity.date) : undefined}
               />
             )
