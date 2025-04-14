@@ -68,6 +68,7 @@ const createBaseConfig = (appSpecific) => {
     splash,
     additionalInvitationSchemes = [],
     associatedDomains = [],
+    backgroundColor = '#F2F4F6',
     projectId,
     extraConfig = {},
   } = appSpecific
@@ -84,16 +85,16 @@ const createBaseConfig = (appSpecific) => {
     icon,
     userInterfaceStyle: 'light',
     androidStatusBar: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor,
       barStyle: 'light-content',
     },
     androidNavigationBar: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor,
     },
     splash: {
       image: splash,
       resizeMode: 'contain',
-      backgroundColor: '#FFFFFF',
+      backgroundColor,
     },
     updates: {
       fallbackToCacheTimeout: 0,
