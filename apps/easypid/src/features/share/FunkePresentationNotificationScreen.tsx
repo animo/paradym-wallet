@@ -2,6 +2,7 @@ import type { DisplayImage, FormattedSubmission, FormattedTransactionData, Trust
 
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
+import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { PinSlide } from './slides/PinSlide'
@@ -11,10 +12,9 @@ import { SignAndShareSlide } from './slides/SignAndShareSlide'
 import { SigningSlide } from './slides/SigningSlide'
 
 interface FunkePresentationNotificationScreenProps {
-  entityId: string
+  entityId?: string
   verifierName?: string
   logo?: DisplayImage
-  lastInteractionDate?: string
   overAskingResponse?: OverAskingResponse
   trustedEntities?: Array<TrustedEntity>
   submission?: FormattedSubmission
@@ -23,16 +23,18 @@ interface FunkePresentationNotificationScreenProps {
   transaction?: FormattedTransactionData
   onAccept: () => Promise<void>
   onDecline: () => void
+  onCancel: () => void
   onComplete: () => void
+  errorReason?: string
 }
 
 export function FunkePresentationNotificationScreen({
   entityId,
   verifierName,
   logo,
-  lastInteractionDate,
   usePin,
   onAccept,
+  onCancel,
   onDecline,
   isAccepting,
   submission,
@@ -40,6 +42,7 @@ export function FunkePresentationNotificationScreen({
   overAskingResponse,
   trustedEntities,
   transaction,
+  errorReason,
 }: FunkePresentationNotificationScreenProps) {
   return (
     <SlideWizard
@@ -61,7 +64,6 @@ export function FunkePresentationNotificationScreen({
                 entityId={entityId}
                 name={verifierName}
                 logo={logo}
-                lastInteractionDate={lastInteractionDate}
                 trustedEntities={trustedEntities}
               />
             ),
@@ -122,7 +124,15 @@ export function FunkePresentationNotificationScreen({
           },
         ].filter(Boolean) as SlideStep[]
       }
-      isError={false}
+      errorScreen={() => (
+        <InteractionErrorSlide
+          key="presentation-error"
+          flowType={transaction?.type === 'qes_authorization' ? 'sign' : 'verify'}
+          reason={errorReason}
+          onCancel={onCancel}
+        />
+      )}
+      isError={!!errorReason}
       onCancel={onDecline}
     />
   )

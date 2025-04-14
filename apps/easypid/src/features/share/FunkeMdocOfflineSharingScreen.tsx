@@ -144,7 +144,6 @@ export function FunkeMdocOfflineSharingScreen({
       {
         formattedSubmission: submission,
         verifier: {
-          entityId: '6df3d57e-4c9c-41c3-bb9f-936d88c0968d',
           hostName: undefined,
           logo: undefined,
           name: 'Unknown party',

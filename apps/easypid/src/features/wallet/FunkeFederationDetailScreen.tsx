@@ -21,16 +21,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 interface FunkeFederationDetailScreenProps {
   name: string
   logo?: string
-  entityId?: string
   trustedEntities?: Array<TrustedEntity>
 }
 
-export function FunkeFederationDetailScreen({
-  name,
-  logo,
-  entityId,
-  trustedEntities = [],
-}: FunkeFederationDetailScreenProps) {
+export function FunkeFederationDetailScreen({ name, logo, trustedEntities = [] }: FunkeFederationDetailScreenProps) {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const scrollViewRef = useRef<ScrollViewRefType>(null)

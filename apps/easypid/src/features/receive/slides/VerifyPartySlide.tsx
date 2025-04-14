@@ -17,15 +17,17 @@ import {
 import { useRouter } from 'expo-router'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useState } from 'react'
+import { useActivities } from '../../activity/activityRecord'
+
+const NO_ENTITY_ID = 'NO_ENTITY_ID'
 
 interface VerifyPartySlideProps {
   type: 'offer' | 'request' | 'signing' | 'connect'
   host?: string
   name?: string
-  entityId: string
+  entityId?: string
   logo?: DisplayImage
   backgroundColor?: string
-  lastInteractionDate?: string
   onContinue?: () => Promise<void>
   onDecline?: () => void
   trustedEntities?: Array<TrustedEntity>
@@ -37,7 +39,6 @@ export const VerifyPartySlide = ({
   name,
   logo,
   backgroundColor,
-  lastInteractionDate,
   onContinue,
   onDecline,
   trustedEntities,
@@ -47,6 +48,8 @@ export const VerifyPartySlide = ({
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
+  const { activities } = useActivities({ filters: { entityId: entityId ?? NO_ENTITY_ID } })
+  const lastInteractionDate = activities[0]?.date
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -68,7 +71,7 @@ export const VerifyPartySlide = ({
 
   const onPressVerifiedIssuer = withHaptics(() => {
     router.push(
-      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&entityId=${encodeURIComponent(entityId)}&trustedEntities=${encodeURIComponent(JSON.stringify(trustedEntitiesWithoutSelf ?? []))}`
+      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&trustedEntities=${encodeURIComponent(JSON.stringify(trustedEntitiesWithoutSelf ?? []))}`
     )
   })
 

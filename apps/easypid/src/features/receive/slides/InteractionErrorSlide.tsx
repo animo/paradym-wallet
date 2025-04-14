@@ -1,13 +1,23 @@
 import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { useState } from 'react'
 
-interface CredentialErrorSlideProps {
+interface InteractionErrorSlideProps {
   reason?: string
+  flowType: 'issue' | 'verify' | 'connect' | 'sign'
   onCancel: () => void
 }
 
-export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideProps) => {
+export const InteractionErrorSlide = ({ reason, onCancel, flowType }: InteractionErrorSlideProps) => {
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
+
+  const message =
+    flowType === 'connect'
+      ? 'An error occured while connecting. Generate a new QR-code or try again later.'
+      : flowType === 'issue'
+        ? 'An error occured while fetching the card information. Ask the issuer to generate a new QR-code or try again later.'
+        : flowType === 'verify'
+          ? 'An error occured while sharing the card information. Ask the verifier to generate a new QR-code or try again later.'
+          : 'An error occured while signing with your card information. Ask the verifier to generate a new QR-code or try again later'
 
   return (
     <YStack fg={1} jc="space-between">
@@ -20,10 +30,7 @@ export const CredentialErrorSlide = ({ reason, onCancel }: CredentialErrorSlideP
                 <HeroIcons.NoSymbol color="$grey-800" size={32} />
               </XStack>
             </Stack>
-            <Paragraph>
-              An error occured while fetching the card information. Ask the issuer to generate a new QR-code or try
-              again later.
-            </Paragraph>
+            <Paragraph>{message}</Paragraph>
           </YStack>
           {reason && scrollViewHeight !== 0 && (
             <YStack>

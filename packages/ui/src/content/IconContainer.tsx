@@ -57,7 +57,7 @@ export function IconContainer({
       {cloneElement(icon, {
         strokeWidth: icon.props.strokeWidth ?? 2,
         size: icon.props.size ?? 24,
-        color: variantStyles[variant].color,
+        color: icon.props.color ?? variantStyles[variant].color,
       })}
     </AnimatedStack>
   )
