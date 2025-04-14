@@ -130,7 +130,6 @@ const createBaseConfig = (appSpecific) => {
             compileSdkVersion: 35,
             useLegacyPackaging: true,
             extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
-            kotlinVersion: '2.0.21',
           },
           ios: {
             deploymentTarget: '15.1',
