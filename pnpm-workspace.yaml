@@ -8,14 +8,14 @@ catalog:
   react: 18.3.1
   "@types/react": ~18.2.79
   react-docgen-typescript: 2.2.2
-  "@credo-ts/anoncreds": "npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250404083526"
-  "@credo-ts/askar": "npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250404083526"
-  "@credo-ts/cheqd": "npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250404083526"
-  "@credo-ts/core": "npm:@animo-id/credo-ts-core@0.5.14-alpha-20250404083526"
-  "@credo-ts/openid4vc": "npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250404083526"
-  "@credo-ts/question-answer": "npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250404083526"
-  "@credo-ts/react-native": "npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250404083526"
-  "@credo-ts/didcomm": "npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20250404083526"
+  "@credo-ts/anoncreds": npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250404083526
+  "@credo-ts/askar": npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250404083526
+  "@credo-ts/cheqd": npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250404083526
+  "@credo-ts/core": npm:@animo-id/credo-ts-core@0.5.14-alpha-20250404083526
+  "@credo-ts/openid4vc": npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250404083526
+  "@credo-ts/question-answer": npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250404083526
+  "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250404083526
+  "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20250404083526
   "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": 0.3.1
   "@hyperledger/anoncreds-shared": 0.3.1
@@ -25,13 +25,13 @@ catalog:
   "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
   "@animo-id/expo-secure-environment": 0.1.0
   "@animo-id/expo-digital-credentials-api": 0.1.2
-  "@animo-id/expo-mdoc-data-transfer": 0.1.3
+  "@animo-id/expo-mdoc-data-transfer": 0.1.6
   "@animo-id/mdoc": 0.5.2
-  "@unimodules/react-native-adapter": "./noop"
-  "@unimodules/core": "./noop"
-  "@openid4vc/oauth2": "0.3.0-alpha-20250404080256"
-  "@openid4vc/openid4vp": "0.3.0-alpha-20250404080256"
-  "@openid4vc/openid4vci": "0.3.0-alpha-20250404080256"
-  "@openid4vc/utils": "0.3.0-alpha-20250404080256"
-  expo-standard-web-crypto: "1.8.1"
-  isomorphic-webcrypto: "npm:@sphereon/isomorphic-webcrypto"
+  "@unimodules/react-native-adapter": ./noop
+  "@unimodules/core": ./noop
+  "@openid4vc/oauth2": 0.3.0-alpha-20250404080256
+  "@openid4vc/openid4vp": 0.3.0-alpha-20250404080256
+  "@openid4vc/openid4vci": 0.3.0-alpha-20250404080256
+  "@openid4vc/utils": 0.3.0-alpha-20250404080256
+  expo-standard-web-crypto: 1.8.1
+  isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto

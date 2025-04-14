@@ -35,6 +35,7 @@ export function FunkeOfflineQrScreen() {
   const { width } = useWindowDimensions()
   const toast = useToastController()
 
+  const [didNavigate, setDidNavigate] = useState(false)
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
   const [arePermissionsRequested, setArePermissionsRequested] = useMMKVBoolean('arePermissionsRequested', mmkv)
@@ -115,15 +116,20 @@ export function FunkeOfflineQrScreen() {
         deviceRequest: Buffer.from(data.deviceRequest).toString('base64'),
       })
     })
-  }, [qrCodeData])
+
+    return () => {
+      if (!didNavigate) shutdownDataTransfer()
+    }
+  }, [qrCodeData, didNavigate])
 
   // Navigate to offline presentation route
-  const pushToOfflinePresentation = withHaptics((data: { sessionTranscript: string; deviceRequest: string }) =>
+  const pushToOfflinePresentation = withHaptics((data: { sessionTranscript: string; deviceRequest: string }) => {
+    setDidNavigate(true)
     replace({
       pathname: '/notifications/offlinePresentation',
       params: data,
     })
-  )
+  })
 
   const onCancel = () => {
     back()
