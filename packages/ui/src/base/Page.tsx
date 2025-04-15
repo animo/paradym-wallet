@@ -46,14 +46,7 @@ export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' 
     const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
 
     return (
-      <FlexPageBase
-        {...props}
-        ref={ref}
-        paddingTop={top}
-        paddingLeft={left}
-        paddingRight={right}
-        paddingBottom={bottom}
-      />
+      <FlexPageBase {...props} ref={ref} marginTop={top} marginLeft={left} marginRight={right} marginBottom={bottom} />
     )
   }
 )

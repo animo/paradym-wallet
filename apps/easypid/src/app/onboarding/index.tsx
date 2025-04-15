@@ -64,7 +64,7 @@ export default function OnboardingScreens() {
     page = onboardingContext.screen
   } else {
     page = (
-      <FlexPage gap="$2" jc="space-between" bg="$background" safeArea="y">
+      <FlexPage gap="$2" jc="space-between" bg="$background">
         <AnimatedStack entering={FadeIn.delay(300)}>
           <ProgressHeader enterAnimation progress={onboardingContext.progress} onBack={onReset} />
         </AnimatedStack>
