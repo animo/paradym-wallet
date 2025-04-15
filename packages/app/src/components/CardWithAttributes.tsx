@@ -24,7 +24,6 @@ export interface CardWithAttributesProps {
   issuerImage?: DisplayImage
   backgroundImage?: DisplayImage
   formattedDisclosedAttributes: string[]
-  missingAttributes?: string[]
   disclosedPayload?: Record<string, unknown>
   isExpired?: boolean
   isRevoked?: boolean
@@ -39,7 +38,6 @@ export function CardWithAttributes({
   textColor,
   backgroundImage,
   formattedDisclosedAttributes,
-  missingAttributes,
   disclosedPayload,
   isNotYetActive = false,
   isExpired = false,
@@ -111,9 +109,7 @@ export function CardWithAttributes({
           {groupedAttributes.map(([first, second], index) => (
             <XStack key={first + second} gap="$4" minHeight="$3.5">
               <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph color={missingAttributes?.includes(first) ? '$color.danger-500' : '$grey-700'} fontSize={15}>
-                  {sanitizeString(first)}
-                </Paragraph>
+                <Paragraph fontSize={15}>{sanitizeString(first)}</Paragraph>
               </Stack>
               <Stack flexGrow={1} flexBasis={0}>
                 <Paragraph
@@ -121,7 +117,6 @@ export function CardWithAttributes({
                   numberOfLines={index === groupedAttributes.length - 1 ? 1 : undefined}
                   ellipsizeMode={index === groupedAttributes.length - 1 ? 'tail' : undefined}
                   pr={index === groupedAttributes.length - 1 ? '$5' : undefined}
-                  color={missingAttributes?.includes(second ?? '') ? '$color.danger-500' : '$grey-700'}
                 >
                   {second ? sanitizeString(second) : ''}
                 </Paragraph>
