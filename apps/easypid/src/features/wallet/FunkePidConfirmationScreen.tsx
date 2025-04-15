@@ -12,7 +12,7 @@ export interface FunkePidConfirmationScreenProps {
 export const FunkePidConfirmationScreen = forwardRef<PinDotsInputRef, FunkePidConfirmationScreenProps>(
   ({ onSubmitPin, isLoading }: FunkePidConfirmationScreenProps, ref) => {
     return (
-      <FlexPage flex-1 safeArea="y" alignItems="center">
+      <FlexPage flex-1 alignItems="center">
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
           <Circle size="$4" backgroundColor="$grey-100">
             <HeroIcons.LockClosed strokeWidth={2} color="$grey-700" />

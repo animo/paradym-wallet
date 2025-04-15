@@ -136,9 +136,13 @@ const ObjectArrayRow = ({ name, value }: { name: string; value: FormattedCredent
             jc="space-between"
             ai="center"
             w="100%"
+            pressStyle={{
+              backgroundColor: '$grey-100',
+            }}
+            onPress={onPress}
           >
             <Paragraph color="$grey-900">{item.key}</Paragraph>
-            <IconContainer icon={<HeroIcons.ChevronRight size={20} />} />
+            <IconContainer bg="$transparent" icon={<HeroIcons.ChevronRight size={20} />} />
           </XStack>
         ))}
       </YStack>
@@ -165,6 +169,9 @@ const ImageRow = ({ name, value }: { name: string; value: string }) => {
         ai="center"
         jc="space-between"
         onPress={handleOpen}
+        pressStyle={{
+          backgroundColor: '$grey-100',
+        }}
       >
         <YStack>
           <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">

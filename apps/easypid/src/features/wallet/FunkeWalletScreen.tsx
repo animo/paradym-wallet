@@ -42,12 +42,12 @@ export function FunkeWalletScreen() {
   }
 
   return (
-    <YStack pos="relative" fg={1}>
+    <YStack pos="relative" fg={1} bg="$background">
       <YStack pos="absolute" h="50%" w="100%">
         <Blob />
       </YStack>
 
-      <FlexPage safeArea="y" fg={1} flex-1={false} bg="transparent">
+      <FlexPage fg={1} flex-1={false} bg="transparent">
         <XStack pt="$2" jc="space-between">
           <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
           {hasInboxFeatureFlag && <InboxIcon />}

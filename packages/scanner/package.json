@@ -7,15 +7,15 @@
 		"@package/ui": "workspace:*"
 	},
 	"devDependencies": {
-		"@react-native-masked-view/masked-view": "0.3.1",
+		"@react-native-masked-view/masked-view": "0.3.2",
 		"@types/react": "~18.2.79",
-		"expo-camera": "~15.0.16",
+		"expo-camera": "~16.0.18",
 		"react-native": "catalog:"
 	},
 	"peerDependencies": {
-		"@react-native-masked-view/masked-view": "0.3.1",
+		"@react-native-masked-view/masked-view": "0.3.2",
 		"expo": "catalog:",
-		"expo-camera": "~15.0.16",
+		"expo-camera": "~16.0.18",
 		"react-native": "catalog:"
 	},
 	"expo": {

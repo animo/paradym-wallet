@@ -61,7 +61,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
           data={SLIDES}
           pagingEnabled={true}
           snapEnabled={true}
-          style={{ width: '100%' }}
+          containerStyle={{ width: '100%', flex: 1 }}
           onProgressChange={(_, absoluteProgress) => {
             // Snap to item on 50% progress
             const nextIndex = Math.round(absoluteProgress)

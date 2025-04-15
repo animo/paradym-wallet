@@ -100,7 +100,7 @@ export default function Authenticate() {
   }
 
   return (
-    <FlexPage flex-1 safeArea="y" alignItems="center">
+    <FlexPage flex-1 alignItems="center">
       <YStack fg={1} gap="$6" mb={noBottomSafeArea ? -additionalPadding : undefined}>
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
           <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
