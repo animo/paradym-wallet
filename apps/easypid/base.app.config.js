@@ -96,7 +96,7 @@ const createBaseConfig = (appSpecific) => {
         'expo-splash-screen',
         {
           backgroundColor: '#F2F4F6',
-          image: splashIcon,
+          image: adaptiveIcon ?? splashIcon,
           imageWidth: 200,
           ios: {
             image: splash,
