@@ -85,9 +85,6 @@ const createBaseConfig = (appSpecific) => {
     icon,
     userInterfaceStyle: 'light',
     backgroundColor: '#FFFFFF',
-    androidStatusBar: {
-      translucent: true,
-    },
     updates: {
       fallbackToCacheTimeout: 0,
     },
