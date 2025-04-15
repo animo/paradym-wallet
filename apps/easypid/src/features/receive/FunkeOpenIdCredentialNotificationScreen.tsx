@@ -125,10 +125,10 @@ export function FunkeCredentialNotificationScreen() {
         setResolvedAuthorizationRequest(resolvedAuthorizationRequest)
       })
       .catch((error) => {
+        setErrorReasonWithError('Credential information could not be extracted', error)
         agent.config.logger.error(`Couldn't resolve OpenID4VCI offer`, {
           error,
         })
-        setErrorReasonWithError('Credential information could not be extracted', error)
       })
   }, [params.uri, agent, setErrorReasonWithError])
 

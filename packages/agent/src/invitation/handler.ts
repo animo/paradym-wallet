@@ -39,7 +39,7 @@ import {
 } from '@credo-ts/openid4vc'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 
-import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
+import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import q from 'query-string'
 import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
 import {
@@ -163,7 +163,13 @@ export async function acquireRefreshTokenAccessToken({
   refreshToken: string
   dpop?: OpenId4VciDpopRequestOptions
 }): Promise<OpenId4VciRequestTokenResponse> {
-  const oauth2Client = new Oauth2Client({ callbacks: getOid4vcCallbacks(agent.context) })
+  const oauth2Client = new Oauth2Client({
+    callbacks: {
+      ...getOid4vcCallbacks(agent.context),
+      // TODO: support client attestation for pid referesh
+      clientAuthentication: clientAuthenticationNone({ clientId }),
+    },
+  })
 
   // TODO: dpop retry also for this method
   const accessTokenResponse = await oauth2Client.retrieveRefreshTokenAccessToken({
