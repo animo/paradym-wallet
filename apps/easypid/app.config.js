@@ -16,6 +16,7 @@ const APP_CONFIGS = {
     // to only contain _ a-Z 0-9, so we use _ for all files
     adaptiveIcon: './assets/funke/adaptive_icon.png',
     splash: './assets/funke/splash.png',
+    splashIcon: './assets/funke/splash_icon.png',
     slug: 'ausweis-wallet',
     version,
     bundleId: 'id.animo.ausweis',
@@ -30,6 +31,7 @@ const APP_CONFIGS = {
     icon: './assets/paradym/icon.png',
     adaptiveIcon: './assets/paradym/adaptive_icon.png',
     splash: './assets/paradym/splash.png',
+    splashIcon: './assets/paradym/splash_icon.png',
     slug: 'paradym-wallet',
     version,
     bundleId: 'id.paradym.wallet',

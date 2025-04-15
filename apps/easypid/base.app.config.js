@@ -66,9 +66,9 @@ const createBaseConfig = (appSpecific) => {
     adaptiveIcon,
     icon,
     splash,
+    splashIcon,
     additionalInvitationSchemes = [],
     associatedDomains = [],
-    backgroundColor = '#F2F4F6',
     projectId,
     extraConfig = {},
   } = appSpecific
@@ -84,22 +84,28 @@ const createBaseConfig = (appSpecific) => {
     orientation: 'portrait',
     icon,
     userInterfaceStyle: 'light',
+    backgroundColor: '#FFFFFF',
     androidStatusBar: {
-      backgroundColor,
-      barStyle: 'light-content',
-    },
-    androidNavigationBar: {
-      backgroundColor,
-    },
-    splash: {
-      image: splash,
-      resizeMode: 'contain',
-      backgroundColor,
+      translucent: true,
     },
     updates: {
       fallbackToCacheTimeout: 0,
     },
     plugins: [
+      [
+        'expo-splash-screen',
+        {
+          backgroundColor: '#F2F4F6',
+          image: splashIcon,
+          imageWidth: 200,
+          ios: {
+            image: splash,
+            resizeMode: 'cover',
+            enableFullScreenImage_legacy: true,
+            backgroundColor: '#FFFFFF',
+          },
+        },
+      ],
       'expo-secure-store',
       'expo-router',
       [
