@@ -30,7 +30,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </Stack>
         </YStack>
       </YStack>
-      <FlexPage safeArea="y" fg={1} jc="space-between" backgroundColor="$transparent">
+      <FlexPage fg={1} jc="space-between" backgroundColor="$transparent">
         <Stack h="40%" />
         <YStack gap="$4" ai="center">
           <Heading fontSize={32}>Paradym Wallet</Heading>

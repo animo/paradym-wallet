@@ -38,15 +38,16 @@ export function IconContainer({
   'aria-label': ariaLabel,
   ...props
 }: IconContainerProps) {
+  const isPressable = !!props.onPress
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: scaleOnPress ? 0.9 : 1 })
 
   return (
     <AnimatedStack
       accessible={true}
       accessibilityRole="button"
-      style={pressStyle}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+      style={isPressable ? pressStyle : undefined}
+      onPressIn={isPressable ? handlePressIn : undefined}
+      onPressOut={isPressable ? handlePressOut : undefined}
       aria-label={ariaLabel}
       bg={variantStyles[variant].bg}
       br={radius === 'full' ? '$12' : '$4'}

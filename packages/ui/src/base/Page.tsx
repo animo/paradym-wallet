@@ -2,7 +2,7 @@ import { styled } from 'tamagui'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useDeviceMedia } from '../hooks/useDeviceMedia'
-import { Stack } from './Stacks'
+import { Stack, YStack } from './Stacks'
 
 export const Page = styled(Stack, {
   name: 'Page',
@@ -46,7 +46,16 @@ export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' 
     const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
 
     return (
-      <FlexPageBase {...props} ref={ref} marginTop={top} marginLeft={left} marginRight={right} marginBottom={bottom} />
+      <YStack bg={props.bg ?? props.backgroundColor ?? '$background'} h="100%" w="100%">
+        <FlexPageBase
+          {...props}
+          ref={ref}
+          marginTop={top}
+          marginLeft={left}
+          marginRight={right}
+          marginBottom={bottom}
+        />
+      </YStack>
     )
   }
 )

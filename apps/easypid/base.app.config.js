@@ -66,9 +66,9 @@ const createBaseConfig = (appSpecific) => {
     adaptiveIcon,
     icon,
     splash,
+    splashIcon,
     additionalInvitationSchemes = [],
     associatedDomains = [],
-    backgroundColor = '#FFFFFF',
     projectId,
     extraConfig = {},
   } = appSpecific
@@ -84,22 +84,26 @@ const createBaseConfig = (appSpecific) => {
     orientation: 'portrait',
     icon,
     userInterfaceStyle: 'light',
-    androidStatusBar: {
-      backgroundColor,
-      barStyle: 'light-content',
-    },
-    androidNavigationBar: {
-      backgroundColor,
-    },
-    splash: {
-      image: splash,
-      resizeMode: 'contain',
-      backgroundColor,
-    },
+    backgroundColor: '#FFFFFF',
     updates: {
       fallbackToCacheTimeout: 0,
     },
     plugins: [
+      [
+        'expo-splash-screen',
+        {
+          backgroundColor: '#F2F4F6',
+          image: adaptiveIcon ?? splashIcon,
+          imageWidth: 200,
+          ios: {
+            image: splash,
+            resizeMode: 'cover',
+            enableFullScreenImage_legacy: true,
+            backgroundColor: '#FFFFFF',
+          },
+        },
+      ],
+      'expo-secure-store',
       'expo-router',
       [
         'expo-camera',
@@ -130,12 +134,17 @@ const createBaseConfig = (appSpecific) => {
             compileSdkVersion: 35,
             useLegacyPackaging: true,
             extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
-            kotlinVersion: '2.0.21',
           },
           ios: {
             deploymentTarget: '15.1',
             useFrameworks: 'dynamic',
           },
+        },
+      ],
+      [
+        'expo-dev-client',
+        {
+          launchMode: 'most-recent',
         },
       ],
       [
@@ -175,7 +184,6 @@ const createBaseConfig = (appSpecific) => {
       allowBackup: false,
       adaptiveIcon: {
         foregroundImage: adaptiveIcon,
-        backgroundColor,
       },
       package: `${appSpecific.bundleId}${variant.bundle}`,
       intentFilters: [

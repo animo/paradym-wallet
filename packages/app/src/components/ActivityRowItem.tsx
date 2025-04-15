@@ -12,8 +12,8 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
-import { useRouter } from 'solito/router'
 import { useHaptics } from '../hooks'
 
 export const activityInteractions = {

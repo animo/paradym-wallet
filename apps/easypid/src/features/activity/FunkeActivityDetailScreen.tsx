@@ -1,26 +1,24 @@
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
-import { createParam } from 'solito'
+import { useLocalSearchParams } from 'expo-router'
 
 import { useCredentialsForDisplay } from '@package/agent'
 import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
+import { useRouter } from 'expo-router'
 import { formatRelativeDate } from 'packages/utils/src'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useRouter } from 'solito/router'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
 import { type IssuanceActivity, type PresentationActivity, type SignedActivity, useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
 
-const { useParams } = createParam<{ id: string }>()
-
 export function FunkeActivityDetailScreen() {
-  const { params } = useParams()
+  const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
   const { bottom } = useSafeAreaInsets()
 
   const { activities } = useActivities()
-  const activity = activities.find((activity) => activity.id === params.id)
+  const activity = activities.find((activity) => activity.id === id)
 
   if (!activity) {
     router.back()
@@ -96,7 +94,6 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
                 textColor="$grey-100"
                 backgroundColor="$grey-900"
                 issuer={activity.entity.name ?? 'Unknown'}
-                logo={activity.entity.logo}
                 issuedAt={activity.date ? new Date(activity.date) : undefined}
               />
             )

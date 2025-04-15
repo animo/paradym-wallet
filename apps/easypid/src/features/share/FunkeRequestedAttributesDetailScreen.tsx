@@ -13,8 +13,8 @@ import {
   useSpringify,
   useToastController,
 } from '@package/ui'
+import { useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
-import { useRouter } from 'solito/router'
 
 import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/src/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
