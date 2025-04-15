@@ -2,6 +2,7 @@ import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, MdocService } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
+import { CURRENT_APP_TYPE } from '@easypid/config/appType'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/src/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
@@ -39,7 +40,7 @@ export const checkMdocPermissions = async () => {
 }
 
 export const getMdocQrCode = async () => {
-  const mdt = mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
   const qrData = await mdt.startQrEngagement()
   mdt.enableNfc()
   return qrData
@@ -52,7 +53,7 @@ export const getMdocQrCode = async () => {
  * Returns the device request and session transcript
  */
 export const waitForDeviceRequest = async () => {
-  const mdt = mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
 
   // current bug on android required re-encapsulation
@@ -104,11 +105,11 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     },
   })
 
-  const mdt = mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
   await mdt.sendDeviceResponse(deviceResponse)
 }
 
 export const shutdownDataTransfer = () => {
-  const mdt = mdocDataTransfer.instance()
+  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
   mdt.shutdown()
 }
