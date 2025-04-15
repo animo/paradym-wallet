@@ -7,7 +7,7 @@ import {
   useCredentialsForDisplay,
 } from '@package/agent'
 import { CardWithAttributes } from '@package/app'
-import { Heading, Paragraph, YStack } from '@package/ui'
+import { Heading, HeroIcons, Paragraph, XStack, YStack } from '@package/ui'
 import { useEffect, useMemo, useState } from 'react'
 
 export type RequestedAttributesSectionProps = {
@@ -18,18 +18,17 @@ const copy = {
   satisfied: {
     title: 'REQUESTED CARDS',
     description: 'The following cards will be shared.',
+    variant: 'default',
   },
   unsatisfied: {
-    title: 'UNAVAILABLE CARDS',
+    title: 'CARDS UNAVAILABLE',
     description: "You don't have the requested card(s).",
-  },
-  unsatisfiedAll: {
-    title: 'UNAVAILABLE CARDS',
-    description: "You don't have all of the requested cards.",
+    variant: '$danger-500',
   },
   invalid: {
-    title: 'UNAVAILABLE ATTRIBUTES',
+    title: 'ATTRIBUTES UNAVAILABLE',
     description: 'The verifier requested attributes that are not present in your card(s).',
+    variant: '$danger-500',
   },
 }
 
@@ -40,9 +39,6 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
   const [state, setState] = useState<'satisfied' | 'unsatisfied' | 'invalid'>(
     satisfiedEntries.length === 0 ? 'satisfied' : 'unsatisfied'
   )
-
-  // We probably want to have invalid submissions be filled with the attributes that are available.
-  // Alongside the ones that are not available.
 
   useEffect(() => {
     const hasInvalidCredential = unsatisfiedEntries.some((entry) =>
@@ -65,7 +61,12 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
   return (
     <YStack gap="$4">
       <YStack gap="$2">
-        <Heading variant="sub2">{copy[state].title}</Heading>
+        <XStack gap="$2">
+          {state !== 'satisfied' && <HeroIcons.ExclamationCircleFilled size={20} color={copy[state].variant} />}
+          <Heading variant="sub2" color={copy[state].variant}>
+            {copy[state].title}
+          </Heading>
+        </XStack>
         <Paragraph>{copy[state].description}</Paragraph>
       </YStack>
       {/* We always take the first one for now (no selection) */}
@@ -100,6 +101,26 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
             const availableAttributes = Object.keys(credential?.attributes ?? {})
             const requestedAttributes = getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths)
             const missingAttributes = requestedAttributes.filter((attr) => !availableAttributes.includes(attr))
+            const attributeValuesThatCouldBeDisclosed = requestedAttributes.filter((attr) =>
+              availableAttributes.includes(attr)
+            )
+
+            // Attributes with their values that could be found in the credential
+            const attributesWithValuesThatCouldBeDisclosed = attributeValuesThatCouldBeDisclosed.reduce<
+              Record<string, unknown>
+            >(
+              (acc, attr) => ({
+                ...acc,
+                [attr]: credential?.attributes[attr],
+              }),
+              {}
+            )
+
+            // Add missing attributes to the disclosed payload without values
+            const disclosedPayloadWithMissingAttributes = {
+              ...attributesWithValuesThatCouldBeDisclosed,
+              ...Object.fromEntries(missingAttributes.map((attr) => [attr, 'value-not-found'])),
+            }
 
             return (
               <CardWithAttributes
@@ -107,9 +128,9 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
                 id={credential?.id}
                 name={credential?.display.name ?? entry.name ?? 'Credential'}
                 formattedDisclosedAttributes={getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths)}
-                missingAttributes={missingAttributes}
                 backgroundImage={credential?.display.backgroundImage}
                 backgroundColor={credential?.display.backgroundColor ?? '$grey-800'}
+                disclosedPayload={disclosedPayloadWithMissingAttributes}
                 textColor={credential?.display.textColor ?? '$white'}
                 issuerImage={credential?.display.issuer.logo}
               />

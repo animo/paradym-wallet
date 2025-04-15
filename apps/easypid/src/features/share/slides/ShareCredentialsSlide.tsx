@@ -2,7 +2,7 @@ import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
 import { DualResponseButtons, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
+import { Button, Heading, HeroIcons, MessageBox, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import { RequestPurposeSection } from '../components/RequestPurposeSection'
@@ -104,12 +104,7 @@ export const ShareCredentialsSlide = ({
             isLoading={isProcessing}
           />
         ) : (
-          <YStack gap="$3">
-            <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
-              You don't have the required cards
-            </Paragraph>
-            <Button.Solid onPress={onDecline}>Close</Button.Solid>
-          </YStack>
+          <Button.Solid onPress={onDecline}>Close</Button.Solid>
         )}
       </YStack>
     </YStack>
