@@ -6,5 +6,6 @@ export const useTransparentNavigationBar = () => {
   if (isAndroid()) {
     void NavigationBar.setPositionAsync('absolute')
     void NavigationBar.setBackgroundColorAsync('#ffffff01')
+    void NavigationBar.setButtonStyleAsync('dark')
   }
 }

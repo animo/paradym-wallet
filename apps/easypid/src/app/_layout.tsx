@@ -6,6 +6,7 @@ import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
+import { StatusBar } from 'expo-status-bar'
 import tamaguiConfig from '../../tamagui.config'
 
 void SplashScreen.preventAutoHideAsync()
@@ -33,6 +34,7 @@ export default function RootLayout() {
         >
           <BackgroundLockProvider>
             <NoInternetToastProvider>
+              <StatusBar translucent />
               <Slot />
             </NoInternetToastProvider>
           </BackgroundLockProvider>
