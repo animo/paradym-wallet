@@ -39,7 +39,7 @@ import {
 } from '@credo-ts/openid4vc'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 
-import { Oauth2Client, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
+import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import q from 'query-string'
 import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
 import {
@@ -67,43 +67,49 @@ export async function resolveOpenId4VciOffer({
   customHeaders?: Record<string, unknown>
   fetchAuthorization?: boolean
 }) {
-  agent.config.logger.info(`Receiving openid uri ${offer.uri}`, {
-    uri: offer.uri,
-  })
+  try {
+    agent.config.logger.info(`Receiving openid uri ${offer.uri}`, {
+      uri: offer.uri,
+    })
 
-  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
-  let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
+    const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
+    let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
-  // NOTE: we always assume scopes are used at the moment
-  if (fetchAuthorization && resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
-    // If only authorization_code grant is valid and user didn't provide authorization details we can't continue
-    if (!resolvedCredentialOffer.credentialOfferPayload.grants[preAuthorizedCodeGrantIdentifier] && !authorization) {
-      throw new Error(
-        "Missing 'authorization' parameter with 'clientId' and 'redirectUri' and authorization code flow is only allowed grant type on offer."
-      )
+    // NOTE: we always assume scopes are used at the moment
+    if (fetchAuthorization && resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
+      // If only authorization_code grant is valid and user didn't provide authorization details we can't continue
+      if (!resolvedCredentialOffer.credentialOfferPayload.grants[preAuthorizedCodeGrantIdentifier] && !authorization) {
+        throw new Error(
+          "Missing 'authorization' parameter with 'clientId' and 'redirectUri' and authorization code flow is only allowed grant type on offer."
+        )
+      }
+
+      // TODO: authorization should only be initiated after we know which credentials we're going to request
+      if (authorization) {
+        resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
+          resolvedCredentialOffer,
+          {
+            redirectUri: authorization.redirectUri,
+            clientId: authorization.clientId,
+            scope: getScopesFromCredentialConfigurationsSupported(
+              resolvedCredentialOffer.offeredCredentialConfigurations
+            ),
+            // Added in patch but not in types
+            // @ts-ignore
+            customHeaders,
+          }
+        )
+      }
     }
 
-    // TODO: authorization should only be initiated after we know which credentials we're going to request
-    if (authorization) {
-      resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
-        resolvedCredentialOffer,
-        {
-          redirectUri: authorization.redirectUri,
-          clientId: authorization.clientId,
-          scope: getScopesFromCredentialConfigurationsSupported(
-            resolvedCredentialOffer.offeredCredentialConfigurations
-          ),
-          // Added in patch but not in types
-          // @ts-ignore
-          customHeaders,
-        }
-      )
+    return {
+      resolvedCredentialOffer,
+      resolvedAuthorizationRequest,
     }
-  }
-
-  return {
-    resolvedCredentialOffer,
-    resolvedAuthorizationRequest,
+  } catch (error) {
+    // NOTE: Error thrown by resolveCredentialOffer are not caught correctly on the app level
+    // So we wrap it in a try/catch block.
+    throw new Error(`${error}`)
   }
 }
 
@@ -163,7 +169,13 @@ export async function acquireRefreshTokenAccessToken({
   refreshToken: string
   dpop?: OpenId4VciDpopRequestOptions
 }): Promise<OpenId4VciRequestTokenResponse> {
-  const oauth2Client = new Oauth2Client({ callbacks: getOid4vcCallbacks(agent.context) })
+  const oauth2Client = new Oauth2Client({
+    callbacks: {
+      ...getOid4vcCallbacks(agent.context),
+      // TODO: support client attestation for pid referesh
+      clientAuthentication: clientAuthenticationNone({ clientId }),
+    },
+  })
 
   // TODO: dpop retry also for this method
   const accessTokenResponse = await oauth2Client.retrieveRefreshTokenAccessToken({

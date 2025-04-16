@@ -36,10 +36,10 @@ catalogs:
 
 overrides:
   '@animo-id/mdoc': 0.5.2
-  '@openid4vc/oauth2': 0.3.0-alpha-20250404080256
-  '@openid4vc/openid4vp': 0.3.0-alpha-20250404080256
-  '@openid4vc/openid4vci': 0.3.0-alpha-20250404080256
-  '@openid4vc/utils': 0.3.0-alpha-20250404080256
+  '@openid4vc/oauth2': 0.3.0-alpha-20250416083614
+  '@openid4vc/openid4vp': 0.3.0-alpha-20250416083614
+  '@openid4vc/openid4vci': 0.3.0-alpha-20250416083614
+  '@openid4vc/utils': 0.3.0-alpha-20250416083614
   '@unimodules/react-native-adapter': ./noop
   '@unimodules/core': ./noop
   react-docgen-typescript: 2.2.2
@@ -615,8 +615,8 @@ importers:
         specifier: 0.3.1
         version: 0.3.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
       '@openid4vc/oauth2':
-        specifier: 0.3.0-alpha-20250404080256
-        version: 0.3.0-alpha-20250404080256
+        specifier: 0.3.0-alpha-20250416083614
+        version: 0.3.0-alpha-20250416083614
       '@openwallet-foundation/askar-react-native':
         specifier: 0.3.2
         version: 0.3.2(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -2568,17 +2568,17 @@ packages:
   '@openid-federation/core@0.1.1-alpha.17':
     resolution: {integrity: sha512-Bn5JaQzQnrQ2koPisiITHN69eOEewvs26EPyD4tp5XoR6Kdh9sy2f3w4hYV4MSaDwRorpRF7ttN6PGK1piMTng==}
 
-  '@openid4vc/oauth2@0.3.0-alpha-20250404080256':
-    resolution: {integrity: sha512-fAtMwk4dgXiLc1UnvLZMt6dN+hW9uOxLnS8tIJHXLQfdu4zemOIxv2/ivfieI6vgsBUqfUSsv2aawIiO2I4dnQ==}
+  '@openid4vc/oauth2@0.3.0-alpha-20250416083614':
+    resolution: {integrity: sha512-s91f8mZ2gRgHQE1w5BElaR2x2Njm7+AvIYjzvIn6Nac7giinu6RqDgelkgQbRDqGDb+DCOV7B9X60mJ/Spvq8A==}
 
-  '@openid4vc/openid4vci@0.3.0-alpha-20250404080256':
-    resolution: {integrity: sha512-DhCR7opM0iXy9DiJ0QcXbbV3B2vlFdguofqMPQWq7Rt8RWHsAbG6yVoFKJ3ty+pAM+N2AQx5xKWeMoZPgmw7dw==}
+  '@openid4vc/openid4vci@0.3.0-alpha-20250416083614':
+    resolution: {integrity: sha512-4RgMPqZShQGikaReuFnu/pxzZALNluTjYvAqVcpGrV6skxBCIT0uYQ0cO4nV2cJOw7qlQ6NIXPZdTsRiCccUWQ==}
 
-  '@openid4vc/openid4vp@0.3.0-alpha-20250404080256':
-    resolution: {integrity: sha512-cWijp9t/KZ6Q2sz9/KJXriO7AqRFTjbK59MtSbL82Mt3Nn20p6CdTbrhjger1RI1mgndwKTH3yVATdsdJC9APw==}
+  '@openid4vc/openid4vp@0.3.0-alpha-20250416083614':
+    resolution: {integrity: sha512-FEfEA+JFxWeU4yL66tqBphFCOcs6TzX1NBEWqLwDENJptshpzIFJpNqD0ZCdz1/PF8hz6yspLrMLaf7LqngJpw==}
 
-  '@openid4vc/utils@0.3.0-alpha-20250404080256':
-    resolution: {integrity: sha512-qYz/J6oEaH7UYXOFVo+65ZcbNGF7PN05BfFfEDOZ1f3KCB+ENA5Iy3dAoRBGGBGu3zMZ6J4/sNgE9N+Ng8CjUw==}
+  '@openid4vc/utils@0.3.0-alpha-20250416083614':
+    resolution: {integrity: sha512-gnFIvHBqkHK20NSeZ3D98vn49YNaySh3Pv0czSe0sJ+heqBydOgp7BO5fWofFLkcNgHQZvjxJOLmR/BOQyBFKA==}
 
   '@openwallet-foundation/askar-react-native@0.3.2':
     resolution: {integrity: sha512-Zo9pM9ZVjduM4uu73Wt+PYqb7sYrmguNhlViKzbQSsCLK6eOJn3O2t3bejIuKlbX/4zmoq1MJZIj2ja8GV1E+g==}
@@ -9651,10 +9651,10 @@ snapshots:
     dependencies:
       '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250404083526(expo-crypto@13.0.2(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)))(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
       '@openid-federation/core': 0.1.1-alpha.17
-      '@openid4vc/oauth2': 0.3.0-alpha-20250404080256
-      '@openid4vc/openid4vci': 0.3.0-alpha-20250404080256
-      '@openid4vc/openid4vp': 0.3.0-alpha-20250404080256
-      '@openid4vc/utils': 0.3.0-alpha-20250404080256
+      '@openid4vc/oauth2': 0.3.0-alpha-20250416083614
+      '@openid4vc/openid4vci': 0.3.0-alpha-20250416083614
+      '@openid4vc/openid4vp': 0.3.0-alpha-20250416083614
+      '@openid4vc/utils': 0.3.0-alpha-20250416083614
       class-transformer: 0.5.1
       rxjs: 7.8.2
       zod: 3.24.2
@@ -11918,24 +11918,24 @@ snapshots:
       buffer: 6.0.3
       zod: 3.24.2
 
-  '@openid4vc/oauth2@0.3.0-alpha-20250404080256':
+  '@openid4vc/oauth2@0.3.0-alpha-20250416083614':
     dependencies:
-      '@openid4vc/utils': 0.3.0-alpha-20250404080256
+      '@openid4vc/utils': 0.3.0-alpha-20250416083614
       zod: 3.24.2
 
-  '@openid4vc/openid4vci@0.3.0-alpha-20250404080256':
+  '@openid4vc/openid4vci@0.3.0-alpha-20250416083614':
     dependencies:
-      '@openid4vc/oauth2': 0.3.0-alpha-20250404080256
-      '@openid4vc/utils': 0.3.0-alpha-20250404080256
+      '@openid4vc/oauth2': 0.3.0-alpha-20250416083614
+      '@openid4vc/utils': 0.3.0-alpha-20250416083614
       zod: 3.24.2
 
-  '@openid4vc/openid4vp@0.3.0-alpha-20250404080256':
+  '@openid4vc/openid4vp@0.3.0-alpha-20250416083614':
     dependencies:
-      '@openid4vc/oauth2': 0.3.0-alpha-20250404080256
-      '@openid4vc/utils': 0.3.0-alpha-20250404080256
+      '@openid4vc/oauth2': 0.3.0-alpha-20250416083614
+      '@openid4vc/utils': 0.3.0-alpha-20250416083614
       zod: 3.24.2
 
-  '@openid4vc/utils@0.3.0-alpha-20250404080256':
+  '@openid4vc/utils@0.3.0-alpha-20250416083614':
     dependencies:
       buffer: 6.0.3
       zod: 3.24.2
