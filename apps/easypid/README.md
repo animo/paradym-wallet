@@ -1,9 +1,14 @@
 <div align="center">
+<<<<<<< HEAD
    <img src="assets/icon.png" alt="Paradym Logo" height="176px" style="border-radius: 15%;" />
+=======
+   <img src="assets/easypid.png" alt="EasyPID Logo" height="176px" />
+>>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 </div>
 
 <h1 align="center"><b>Animo EasyPID</b></h1>
 
+<<<<<<< HEAD
 <p align="center">
   <a href="#install">Install</a> 
   &nbsp;|&nbsp;
@@ -25,6 +30,30 @@
 This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers and can be tested/used with our [Funke playground environment](https://funke.animo.id/). For more information on the project reach out to <ana@animo.id>. 
 
 <div align="center">
+=======
+This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers. For more information on the project reach out to <ana@animo.id>.
+
+During the project an identity wallet and a test relying party was delivered.
+
+The identity wallet contains the following features, you can see the full flow without running the app in the [Figma design](https://www.figma.com/proto/gBBLERk7lkE27bw8Vm3es4/Funke?show-proto-sidebar=1):
+
+- Onboard user
+- Set up PIN
+- Set up biometrics
+- Authentication using biometrics or PIN
+- Obtain PID from PID provider ([C option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md))
+- Obtain PID from PID provider ([B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md))
+- Present attestations remotely using cross-device QR flow
+- Present attestations remotely using same-device flow
+- About the app
+
+The identity wallet contains the following temporary features for development and testing:
+
+- Switch between C and B' PID flow
+- Reset wallet
+
+ <div align="center">
+>>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
   <img src="assets/screen1.png" width="30%" />
   <img src="assets/screen2.png" width="30%" /> 
   <img src="assets/screen3.png" width="30%" />
@@ -34,6 +63,7 @@ This app was created by [Animo Solutions](https://animo.id/) in the context of t
 
 ## Install
 
+<<<<<<< HEAD
 The prototype app is currently published privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
 
 ## Features
@@ -305,6 +335,21 @@ How to:
   - It should now redirect to the proof sharing screen alowing you to share the requested attributes
 - Verifier
   - Once the wallet has shared the attributes it will show the attributes in the verifier app.
+=======
+The prototype app is currently pusblished privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app. If not, please reach out to us at ana@animo.id.
+
+## Try it out
+
+Here's some resources and tips that might be helpful while testing the app.
+
+### Before you start
+
+- Make sure you are have access to the BDR PID issuer which is behind a firewall
+- Have an eID card ready
+- Have the [test relying party](https://funke.animo.id/) ready
+    - The test relying party enables you to select a credential type and request type to verify the PID credential. 
+    - It will display a QR code as well as relevant information, 
+>>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 
 ### Device Compatibility
 
@@ -312,7 +357,10 @@ How to:
 
 This app requires devices with:
 
+<<<<<<< HEAD
 - Android 8+
+=======
+>>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 - Hardware Security Module (HSM)
 - Biometric support (e.g., fingerprint sensor, face recognition)
 
@@ -320,8 +368,17 @@ Android devices without these features will not be able to run the app.
 
 #### iOS
 
+<<<<<<< HEAD
 Compatible with iPhone 5s and later models. This app requires devices with:
 - iOS 14+
+=======
+Compatible with iPhone 5s and later models.
+
+### While testing
+
+- The very first screen has an option to switch between the C and B' flow for testing purposes. It is located on the left side besides the continue button.
+- There is an option to reset the wallet during testing. It is located in the menu, which you can find on the home page.
+>>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 
 ## Project Structure
 
@@ -339,9 +396,15 @@ Initially when the app is opened, the [`src/app/(app)/_layout.tsx`](src/app/(app
 
 ### Agent
 
+<<<<<<< HEAD
 The agent contains the digital identity related wallet functionality. It uses a [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance to manage the wallet.
 
 [Askar](https://github.com/openwallet-foundation/askar-wrapper-javascript) is used for cryptographic operations and encrypted storage of the wallet data. 
+=======
+The agent contains the digital identity related wallet functionality. It uses an [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance to manage the wallet.
+
+[Aries Askar](https://github.com/hyperledger/aries-askar) is used for cryptographic operations and encrypted storage of the wallet data. 
+>>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 
 [Expo Secure Environment](https://github.com/animo/expo-secure-environment) is used to provide support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication.
 
@@ -361,6 +424,7 @@ Relevant links:
 
 ### App / UI Package
 
+<<<<<<< HEAD
 The [app package](packages/app) and [ui package](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/paradym) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
 
 ### Wallet Service Provider
@@ -434,3 +498,38 @@ The C/C' flow supported in the Paradym Wallet is mostly implemented in [Credo](h
 #### 02-09-2024
 
 - Redeployed test relying party to add a "Open in Wallet" button for same device flow ([commit](https://github.com/animo/openid4vc-playground-funke/commit/9a839521e8d70aaf92b7fa03fa037fc866644ad0))
+=======
+The [app pacakge](packages/app) and [ui pacakge](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/paradym) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
+
+### PID Options
+
+The C flow supported in the Pardaym Wallet is mostly implemetned in Credo, the underlying identity framework we use. 
+
+For the B' flow, more custom work was needed and this is implemented in the following files:
+- [src/crypto/bPrime.ts](src/crypto/bPrime.ts)
+- [src/crypto/aes.ts](src/crypto/aes.ts)
+
+The crypto for the B' flow is implemented using Aries Askar.
+
+## Tech stack / base components
+
+The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenId4Vc](https://github.com/Sphereon-Opensource/OID4VC) [Mdoc](https://github.com/Sphereon-Opensource/mdoc-cbor-crypto-multiplatform) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.
+
+- [Credo](https://github.com/openwallet-foundation/credo-ts)
+  - [OpenId4Vc](https://github.com/Sphereon-Opensource/OID4VC)
+  - [Mdoc](https://github.com/Sphereon-Opensource/mdoc-cbor-crypto-multiplatform)
+  - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
+- [Expo Secure Environment](https://github.com/animo/expo-secure-environment)
+- [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk)
+
+The following standards and specifications were implemented.
+
+- [OpenID for Verifiable Credential Issuance - ID 1 / Draft 13](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html)
+- [OpenID for Verifiable Presentations - Draft 20](https://openid.net/specs/openid-4-verifiable-presentations-1_0-20.html)
+- [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
+- [Self-Issued OpenID Provider V2 - Draft 13](https://openid.net/specs/openid-connect-self-issued-v2-1_0-13.html)
+- [ISO 18013-5](https://www.iso.org/standard/69084.html)
+- [ISO/IEC TS 18013-7 DTS Ballot Text](https://www.iso.org/standard/82772.html)
+- [High Assurance Interop Profile - Draft 0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-00.html)
+- ❌ [OpenID Federation - Draft 34](https://openid.net/specs/openid-federation-1_0-34.html)
+>>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
