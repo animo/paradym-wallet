@@ -4,29 +4,34 @@
 
 <h1 align="center"><b>Paradym Wallet</b></h1>
 
-This repository contains an implementation of a mobile [Paradym](https://paradym.id) SSI wallet.
+🚀 Welcome to the Paradym Mobile Wallet repository!
 
-With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
+The Paradym Mobile Wallet is a digital identity wallet developed as a companion to the [Paradym platform](https://paradym.id/). It supports both EUDI and global standards. See the full overview of the current supported standards and protocols [here](https://paradym.id/products/paradym-mobile-wallet).
+
+> The Paradym wallet can be downloaded directly from the app store ([iOS](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en), [Android](https://play.google.com/store/apps/details?id=id.paradym.wallet)), or the code in this repository can be adapted. The wallet is also available as a [whitelabel solution](mailto:ana@paradym.id). 
 
 <div align="center">
-  <img src="assets/ios-1.jpg" width="30%" />
-  <img src="assets/ios-2.jpg" width="30%" />
-  <img src="assets/ios-3.jpg" width="30%" />
+  <img src="assets/ios-1.png" width="30%" />
+  <img src="assets/ios-2.png" width="30%" />
+  <img src="assets/ios-3.png" width="30%" />
 </div>
 
 <p align="center"><i>Impression of Paradym Wallet</i></p>
 
+With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
+
 > **Note:** 
-> To read more about the Animo EasyPID EUDI wallet prototype, look in the [EasyPID app directory](apps/easypid).
+> This repository contains both the main (stable) Paradym wallet, and a more experimental EUDI Prototype app. To read more about the Animo EUDI wallet prototype, look in the [EasyPID app directory](apps/easypid).
 
 ## Try it out
 
 You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
 
-The wallet can be used with existing demo's in these environments:
+You can test out the wallets in these environments (as well as any solution that issues and/or verifies credentials according to the supported standards):
 
-- Dutch Blockchain Coalition (DBC): Use your wallet to access the DBC zone where you can find extra resources related to DBC events. You can use [this link](https://ssi.dutchblockchaincoalition.org/demo/issuer) to receive your credential, and log in on the [DBC website](https://www.dutchblockchaincoalition.org/userlogin).
-- Future Mobility Alliance: Access the Future Mobility Data Marketplace by obtaining your credential [here](https://ssi.future-mobility-alliance.org/demo/issuer) and logging in via the [FMA website](https://marketplace.future-mobility-alliance.org/).
+- [Paradym Issuer/Verifier platform](https://paradym.id/sign-up). Test out how the Paradym wallet looks and feels using the Paradym free tier. 
+- [EUDI Playground](https://funke.animo.id/). Test out several pre-configured flows based on the main EUDI use cases.
+
 
 ## Project Structure
 
