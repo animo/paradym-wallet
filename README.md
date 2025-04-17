@@ -11,28 +11,17 @@ The Paradym Mobile Wallet is a digital identity wallet developed as a companion 
 > The Paradym wallet can be downloaded directly from the app store ([iOS](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en), [Android](https://play.google.com/store/apps/details?id=id.paradym.wallet)), or the code in this repository can be adapted. The wallet is also available as a [whitelabel solution](mailto:ana@paradym.id). 
 
 <div align="center">
-<<<<<<< HEAD
   <img src="assets/ios-1.png" width="30%" />
   <img src="assets/ios-2.png" width="30%" />
   <img src="assets/ios-3.png" width="30%" />
-=======
-  <img src="assets/ios-1.jpg" width="30%" />
-  <img src="assets/ios-2.jpg" width="30%" />
-  <img src="assets/ios-3.jpg" width="30%" />
->>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 </div>
 
 <p align="center"><i>Impression of Paradym Wallet</i></p>
 
-<<<<<<< HEAD
 With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
 
 > **Note:** 
 > This repository contains both the main (stable) Paradym wallet, and a more experimental EUDI Prototype app. To read more about the Animo EUDI wallet prototype, look in the [EasyPID app directory](apps/easypid).
-=======
-> **Note:** 
-> To read more about the Animo EasyPID EUDI wallet prototype, look in the [EasyPID app directory](apps/easypid).
->>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 
 ## Try it out
 
