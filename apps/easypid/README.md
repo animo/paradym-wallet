@@ -1,14 +1,9 @@
 <div align="center">
-<<<<<<< HEAD
    <img src="assets/icon.png" alt="Paradym Logo" height="176px" style="border-radius: 15%;" />
-=======
-   <img src="assets/easypid.png" alt="EasyPID Logo" height="176px" />
->>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
 </div>
 
 <h1 align="center"><b>Animo EasyPID</b></h1>
 
-<<<<<<< HEAD
 <p align="center">
   <a href="#install">Install</a> 
   &nbsp;|&nbsp;
@@ -30,30 +25,6 @@
 This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers and can be tested/used with our [Funke playground environment](https://funke.animo.id/). For more information on the project reach out to <ana@animo.id>. 
 
 <div align="center">
-=======
-This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers. For more information on the project reach out to <ana@animo.id>.
-
-During the project an identity wallet and a test relying party was delivered.
-
-The identity wallet contains the following features, you can see the full flow without running the app in the [Figma design](https://www.figma.com/proto/gBBLERk7lkE27bw8Vm3es4/Funke?show-proto-sidebar=1):
-
-- Onboard user
-- Set up PIN
-- Set up biometrics
-- Authentication using biometrics or PIN
-- Obtain PID from PID provider ([C option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md))
-- Obtain PID from PID provider ([B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md))
-- Present attestations remotely using cross-device QR flow
-- Present attestations remotely using same-device flow
-- About the app
-
-The identity wallet contains the following temporary features for development and testing:
-
-- Switch between C and B' PID flow
-- Reset wallet
-
- <div align="center">
->>>>>>> 0fc674ab96a4cc1f135e490830ff94a2bdafa4ca
   <img src="assets/screen1.png" width="30%" />
   <img src="assets/screen2.png" width="30%" /> 
   <img src="assets/screen3.png" width="30%" />
