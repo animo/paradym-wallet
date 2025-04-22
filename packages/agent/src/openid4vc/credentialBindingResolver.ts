@@ -100,13 +100,14 @@ export function getCredentialBindingResolver({
             verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
           }
 
-          return {
-            didUrl: verificationMethodId,
-            method: 'did',
-            key,
-          } as const
+          return verificationMethodId
         })
       )
+
+      return {
+        method: 'did',
+        didUrls: didResults,
+      }
     }
 
     // Otherwise we also support plain jwk for sd-jwt only
