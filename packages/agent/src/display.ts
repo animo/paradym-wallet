@@ -93,8 +93,7 @@ type JffW3cCredentialJson = W3cCredentialJson & {
 }
 
 export interface DisplayImage {
-  // Number is used for local images
-  url?: string | number
+  url?: string
   altText?: string
 }
 
