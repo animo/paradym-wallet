@@ -2,8 +2,8 @@ import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/
 import { DateOnly, type MdocNameSpaces } from '@credo-ts/core'
 import { sanitizeString } from '@package/utils'
 import * as ExpoAsset from 'expo-asset'
-import * as FileSystem from 'expo-file-system'
 import { Image } from 'expo-image'
+import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
 import type { EitherAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
@@ -67,22 +67,77 @@ function mapSdJwtAttributesToClaimDisplay(claims: object, path: string[] = []): 
   })
 }
 
+/**
+ * Returns base64 data url
+ */
+async function resizeImageWithAspectRatio(asset: ExpoAsset.Asset) {
+  try {
+    // Make sure the asset is loaded
+    if (!asset.localUri) {
+      await asset.downloadAsync()
+    }
+
+    if (!asset.localUri) {
+      return undefined
+    }
+
+    const image = await Image.loadAsync(asset.localUri)
+
+    // Calculate new dimensions maintaining aspect ratio
+    let width: number
+    let height: number
+    if (image.width >= image.height) {
+      // If width is the larger dimension
+      width = 20
+      height = Math.round((image.height / image.width) * 20)
+    } else {
+      // If height is the larger dimension
+      height = 20
+      width = Math.round((image.width / image.height) * 20)
+    }
+
+    // Use the new API to resize the image
+    const resizedImage = await ImageManipulator.manipulate(image).resize({ width, height }).renderAsync()
+    const savedImages = await resizedImage.saveAsync({
+      base64: true,
+      format: SaveFormat.PNG,
+      compress: 1,
+    })
+
+    if (!savedImages.base64) {
+      return undefined
+    }
+
+    return `data:image/png;base64,${savedImages.base64}` as const
+  } catch (error) {
+    console.error('Error resizing image:', error)
+    throw error
+  }
+}
+
 async function loadCachedImageAsBase64DataUrl(url: string) {
-  const path =
-    // in case of external iamge
-    url.startsWith('data://') || url.startsWith('https://')
-      ? await Image.getCachePathAsync(url)
-      : // In case of local image
-        (await ExpoAsset.Asset.fromModule(url).downloadAsync()).localUri
+  let asset: ExpoAsset.Asset
 
-  if (!path) return undefined
-  const content = await FileSystem.readAsStringAsync(path.startsWith('file://') ? path : `file://${path}`, {
-    encoding: 'base64',
-  }).catch(() => null)
+  try {
+    // in case of external image
+    if (url.startsWith('data://') || url.startsWith('https://')) {
+      const cachePath = await Image.getCachePathAsync(url)
+      if (!cachePath) return undefined
 
-  if (!content) return undefined
+      asset = await ExpoAsset.Asset.fromURI(`file://${cachePath}`).downloadAsync()
+    }
+    // In case of local image
+    else {
+      asset = ExpoAsset.Asset.fromModule(url)
+    }
 
-  return `data:image/png;base64,${content}` as const
+    return await resizeImageWithAspectRatio(asset)
+  } catch (error) {
+    // just ignore it, we don't want to cause issues with registering crednetials
+    console.error('Error resizing and retrieving cached image for DC API', {
+      error,
+    })
+  }
 }
 
 export async function registerCredentialsForDcApi(agent: EitherAgent) {
@@ -145,9 +200,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
   })
 
   const credentials = await Promise.all([...sdJwtCredentials, ...mdocCredentials])
-  agent.config.logger.trace('Registering credentials for Digital Credentials API', {
-    credentials,
-  })
+  agent.config.logger.trace('Registering credentials for Digital Credentials API')
 
   await registerCredentials({
     credentials,
