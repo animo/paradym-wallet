@@ -27,6 +27,14 @@ export default function Authenticate() {
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
+  // If there is a redirectAfterUnlock param, we require the user to authenticate again
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only check on component mount
+  useEffect(() => {
+    if (secureUnlock.state === 'unlocked' && redirectAfterUnlock) {
+      secureUnlock.lock()
+    }
+  }, [])
+
   // After resetting the wallet, we want to avoid prompting for face id immediately
   // So we add an artificial delay
   useEffect(() => {

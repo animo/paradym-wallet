@@ -1,5 +1,6 @@
 import type React from 'react'
 
+import { useSecureUnlock } from '@easypid/agent'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
@@ -62,12 +63,18 @@ export function FunkeMenuScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
   const { withHaptics } = useHaptics()
-
+  const secureUnlock = useSecureUnlock()
   const { credential, isLoading } = useCredentialByCategory('DE-PID')
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const handleFeedback = withHaptics(() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Wallet'))
   const handlePush = (path: string) => withHaptics(() => router.push(path))
+
+  const handleLock = () => {
+    if (secureUnlock.state === 'unlocked') {
+      secureUnlock.lock()
+    }
+  }
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -117,6 +124,7 @@ export function FunkeMenuScreen() {
                 icon={<HeroIcons.InformationCircleFilled />}
                 label="About this wallet"
               />
+              <MenuListItem onPress={handleLock} action="none" icon={<HeroIcons.LockClosedFilled />} label="Lock app" />
               <MenuListItem
                 variant="danger"
                 onPress={onResetWallet}
