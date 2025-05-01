@@ -1,5 +1,5 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
-import { DateOnly, type MdocNameSpaces } from '@credo-ts/core'
+import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
 import { sanitizeString } from '@package/utils'
 import * as ExpoAsset from 'expo-asset'
 import { Image } from 'expo-image'
@@ -70,7 +70,7 @@ function mapSdJwtAttributesToClaimDisplay(claims: object, path: string[] = []): 
 /**
  * Returns base64 data url
  */
-async function resizeImageWithAspectRatio(asset: ExpoAsset.Asset) {
+async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset) {
   try {
     // Make sure the asset is loaded
     if (!asset.localUri) {
@@ -110,12 +110,14 @@ async function resizeImageWithAspectRatio(asset: ExpoAsset.Asset) {
 
     return `data:image/png;base64,${savedImages.base64}` as const
   } catch (error) {
-    console.error('Error resizing image:', error)
+    logger.error('Error resizing image.', {
+      error,
+    })
     throw error
   }
 }
 
-async function loadCachedImageAsBase64DataUrl(url: string) {
+async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
   let asset: ExpoAsset.Asset
 
   try {
@@ -131,10 +133,10 @@ async function loadCachedImageAsBase64DataUrl(url: string) {
       asset = ExpoAsset.Asset.fromModule(url)
     }
 
-    return await resizeImageWithAspectRatio(asset)
+    return await resizeImageWithAspectRatio(logger, asset)
   } catch (error) {
     // just ignore it, we don't want to cause issues with registering crednetials
-    console.error('Error resizing and retrieving cached image for DC API', {
+    logger.error('Error resizing and retrieving cached image for DC API', {
       error,
     })
   }
@@ -151,9 +153,9 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
     const { display } = getCredentialForDisplay(record)
 
     const iconDataUrl = display.backgroundImage?.url
-      ? await loadCachedImageAsBase64DataUrl(display.backgroundImage?.url)
+      ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
       : display.issuer.logo?.url
-        ? await loadCachedImageAsBase64DataUrl(display.issuer.logo.url)
+        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
         : undefined
 
     return {
@@ -177,9 +179,9 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
     const { display } = getCredentialForDisplay(record)
 
     const iconDataUrl = display.backgroundImage?.url
-      ? await loadCachedImageAsBase64DataUrl(display.backgroundImage?.url)
+      ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
       : display.issuer.logo?.url
-        ? await loadCachedImageAsBase64DataUrl(display.issuer.logo.url)
+        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
         : undefined
 
     return {
