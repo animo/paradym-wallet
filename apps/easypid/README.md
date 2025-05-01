@@ -37,7 +37,7 @@ This app was created by [Animo Solutions](https://animo.id/) in the context of t
 The prototype app is currently published privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
 
 ## Features
-The identity wallet contains the following features, you can see the full flow without running the app in the video walkthrough (will be added next week):
+The identity wallet contains the following features, you can see the full flow without running the app in the [video walkthrough](https://www.youtube.com/watch?v=Hk1A95-4DYw).
 
 **General App**
 - 🟢 Onboard user
