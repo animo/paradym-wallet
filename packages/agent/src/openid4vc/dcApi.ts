@@ -7,10 +7,11 @@ export async function resolveRequestForDcApi({
   agent,
   request,
 }: { agent: EitherAgent; request: DigitalCredentialsRequest }) {
-  const provider = request.request.providers[request.selectedEntry.providerIndex]
+  const providerRequest = request.request.requests
+    ? request.request.requests[request.selectedEntry.providerIndex].data
+    : request.request.providers[request.selectedEntry.providerIndex].request
 
-  // verifiable-credentials.dev contains a client_id
-  const authorizationRequestPayload = JSON.parse(provider.request)
+  const authorizationRequestPayload = JSON.parse(providerRequest)
 
   // TODO: should allow limiting it to a specific credential (as we already know the credential id)
   const result = await getCredentialsForProofRequest({

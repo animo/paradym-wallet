@@ -5,6 +5,7 @@ import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { InvalidPinError } from '../../crypto/error'
@@ -16,7 +17,11 @@ type DcApiSharingScreenProps = {
 export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
   return (
     <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
-      <DcApiSharingScreenWithContext request={request} />
+      <SafeAreaProvider>
+        <Stack flex-1 justifyContent="flex-end">
+          <DcApiSharingScreenWithContext request={request} />
+        </Stack>
+      </SafeAreaProvider>
     </TamaguiProvider>
   )
 }
@@ -24,6 +29,7 @@ export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
 export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenProps) {
   const [isProcessing, setIsProcessing] = useState(false)
   const pinRef = useRef<PinDotsInputRef>(null)
+  const insets = useSafeAreaInsets()
 
   const onProofAccept = async (pin: string) => {
     setIsProcessing(true)
@@ -93,7 +99,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       backgroundColor="white"
       gap="$5"
       p="$4"
-      paddingBottom="$6"
+      paddingBottom={insets.bottom ?? '$6'}
     >
       <YStack>
         <Heading>Enter PIN to share data</Heading>
