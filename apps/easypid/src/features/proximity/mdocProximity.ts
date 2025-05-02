@@ -40,7 +40,7 @@ export const checkMdocPermissions = async () => {
 }
 
 export const getMdocQrCode = async () => {
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   const qrData = await mdt.startQrEngagement()
   mdt.enableNfc()
   return qrData
@@ -53,7 +53,7 @@ export const getMdocQrCode = async () => {
  * Returns the device request and session transcript
  */
 export const waitForDeviceRequest = async () => {
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
 
   // current bug on android required re-encapsulation
@@ -105,11 +105,11 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     },
   })
 
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   await mdt.sendDeviceResponse(deviceResponse)
 }
 
 export const shutdownDataTransfer = () => {
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   mdt.shutdown()
 }
