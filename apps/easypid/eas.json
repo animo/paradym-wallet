@@ -20,6 +20,15 @@
 				"APP_VARIANT": "development"
 			}
 		},
+		"funke-production-local": {
+			"extends": "base",
+			"android": {
+				"buildType": "apk"
+			},
+			"env": {
+				"EXPO_PUBLIC_APP_TYPE": "FUNKE_WALLET"
+			}
+		},
 		"funke-preview": {
 			"extends": "base",
 			"distribution": "internal",

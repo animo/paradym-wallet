@@ -1,4 +1,5 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
+import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent } from '@easypid/agent'
 import { resolveRequestForDcApi, sendErrorResponseForDcApi, sendResponseForDcApi } from '@package/agent'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
@@ -8,7 +9,6 @@ import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
-import { InvalidPinError } from '../../crypto/error'
 
 type DcApiSharingScreenProps = {
   request: DigitalCredentialsRequest
@@ -36,28 +36,25 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
 
     const agent = await secureWalletKey
       .getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
-      .then((walletKey) =>
-        initializeAppAgent({
+      .then(async (walletKey) => {
+        const agent = initializeAppAgent({
           walletKey,
           walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
         })
-      )
-      .catch((e) => {
-        sendErrorResponseForDcApi('Error initializing wallet')
-        throw e
+        await setWalletServiceProviderPin(pin.split('').map(Number), false)
+        return agent
       })
+      .catch((e) => {
+        setIsProcessing(false)
+        if (e instanceof WalletInvalidKeyError) {
+          pinRef.current?.clear()
+          pinRef.current?.shake()
+          return
+        }
 
-    try {
-      await setWalletServiceProviderPin(pin.split('').map(Number))
-    } catch (e) {
-      setIsProcessing(false)
-      if (e instanceof InvalidPinError) {
-        pinRef.current?.shake()
-        pinRef.current?.clear()
-        return
-      }
-      sendErrorResponseForDcApi('Unknown error processing PIN')
-    }
+        sendErrorResponseForDcApi('Error initializing wallet')
+      })
+    if (!agent) return
 
     const resolvedRequest = await resolveRequestForDcApi({ agent, request })
       .then((resolvedRequest) => {
@@ -74,8 +71,9 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         })
 
         sendErrorResponseForDcApi('Presentation information could not be extracted')
-        throw new Error('Presentation information could not be extracted.')
       })
+
+    if (!resolvedRequest) return
 
     // Once this returns we just assume it's successful
     try {
