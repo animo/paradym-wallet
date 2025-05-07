@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 
-import { useSecureUnlock } from '@package/secure-store/secure-wallet-key/SecureUnlockProvider'
+import { useSecureUnlock } from '@easypid/agent'
 import { useRouter } from 'expo-router'
 import { useEffect, useRef } from 'react'
 import { AppState, type AppStateStatus } from 'react-native'
