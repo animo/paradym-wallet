@@ -17,6 +17,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.1",
+		"@google-cloud/kms": "^5.0.1",
 		"check-dependency-version-consistency": "^3.3.0",
 		"typescript": "catalog:"
 	},
