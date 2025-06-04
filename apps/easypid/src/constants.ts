@@ -7,6 +7,10 @@ export const appScheme = ExpoConstants.expoConfig?.scheme as string
 export const EASYPID_WALLET_PID_PIN_KEY_ID = 'EASYPID_WALLET_PID_PIN_KEY_ID_NO_BIOMETRICS'
 export const EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID'
 
+// TODO: get a better logo for the European Union
+export const EUROPEAN_UNION_LOGO =
+  'https://cdn1.iconfinder.com/data/icons/world-flags-13/135/flag_flags_country-40-512.png'
+
 export const trustedX509Entities = [
   {
     name: 'Bundesdruckerei',

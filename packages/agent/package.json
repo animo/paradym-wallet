@@ -4,6 +4,7 @@
 	"private": true,
 	"main": "src/index.ts",
 	"dependencies": {
+		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@astronautlabs/jsonpath": "^1.1.2",
 		"@credo-ts/anoncreds": "catalog:",

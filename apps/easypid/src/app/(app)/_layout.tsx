@@ -172,7 +172,9 @@ export default function AppLayout() {
           <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
           <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
           <Stack.Screen name="pinLocked" options={headerNormalOptions} />
-          <Stack.Screen name="federation" options={headerNormalOptions} />
+          <Stack.Screen name="trust/federation" options={headerNormalOptions} />
+          <Stack.Screen name="trust/eudi" options={headerNormalOptions} />
+          <Stack.Screen name="trust/x509" options={headerNormalOptions} />
           <Stack.Screen name="pidSetup" />
           <Stack.Screen name="inbox" options={headerNormalOptions} />
         </Stack>
