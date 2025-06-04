@@ -12,6 +12,5 @@ export function useDevelopmentMode() {
     setIsDevEnabled(true)
   }
 
-  // Type-cast done here as taking the values out of the array and adding them again messes up the types for the caller
   return [isDevEnabled, setIsDevEnabled] as const
 }
