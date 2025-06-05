@@ -1,5 +1,6 @@
 import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
 import ExpoConstants from 'expo-constants'
+import type { TrustList } from './utils/trustMechanism'
 
 export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid
 export const appScheme = ExpoConstants.expoConfig?.scheme as string
@@ -94,7 +95,7 @@ export const europeanUnion: TrustedEntity = {
   demo: true,
 }
 
-export const eudiTrustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }> = [
+export const eudiTrustList: TrustList = [
   {
     entityId: 'germany',
     organizationName: 'German Government',

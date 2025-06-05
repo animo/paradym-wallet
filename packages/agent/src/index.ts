@@ -17,6 +17,7 @@ export {
   useAgent,
   ParadymAppAgent,
   EasyPIDAppAgent,
+  EitherAgent,
 } from './agent'
 export * from './providers'
 export * from './invitation'

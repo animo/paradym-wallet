@@ -1,7 +1,7 @@
-import type { DisplayImage, FormattedSubmission, FormattedTransactionData, TrustedEntity } from '@package/agent'
-
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
-import { type SlideStep, SlideWizard, type TrustMechanism } from '@package/app'
+import type { TrustMechanism } from '@easypid/utils/trustMechanism'
+import type { DisplayImage, FormattedSubmission, FormattedTransactionData, TrustedEntity } from '@package/agent'
+import { type SlideStep, SlideWizard } from '@package/app'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'

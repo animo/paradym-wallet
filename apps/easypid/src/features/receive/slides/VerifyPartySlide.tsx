@@ -1,5 +1,6 @@
+import type { TrustMechanism } from '@easypid/utils/trustMechanism'
 import type { DisplayImage, TrustedEntity } from '@package/agent'
-import { DualResponseButtons, type TrustMechanism, useHaptics, useWizard } from '@package/app'
+import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import {
   Circle,
   Heading,

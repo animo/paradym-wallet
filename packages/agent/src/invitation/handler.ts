@@ -1,7 +1,7 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import type { DifPresentationExchangeDefinitionV2, P256Jwk } from '@credo-ts/core'
-import { JwaSignatureAlgorithm, Jwt, X509Certificate, X509ModuleConfig } from '@credo-ts/core'
+import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
   ConnectionRecord,
@@ -27,7 +27,6 @@ import type {
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
-  OpenId4VpResolvedAuthorizationRequest,
 } from '@credo-ts/openid4vc'
 import {
   getOfferedCredentials,
@@ -35,13 +34,12 @@ import {
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import { eudiTrustList, europeanUnion } from '@easypid/constants'
+import { getTrustedEntities } from '@easypid/utils/trustMechanism'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
-import type { TrustMechanism } from '@package/app/src'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
-import { type ParadymAppAgent, isParadymAgent } from '../agent'
+import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
 import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
 import {
@@ -54,7 +52,8 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
-import { TRUSTED_ENTITIES, type TrustedEntity } from './trustedEntities'
+
+export type TrustedX509Entity = { certificate: string; name: string; logoUri: string; url: string; demo?: boolean }
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -403,16 +402,13 @@ export type GetCredentialsForProofRequestOptions = {
   trustedX509Entities?: TrustedX509Entity[]
 }
 
-// TODO:
-//   - detect whether openid federation is used or the eudi scheme
-//   - return eudi / openid federation as trust mechanism
 export const getCredentialsForProofRequest = async ({
   agent,
   uri,
   requestPayload,
   allowUntrusted = true,
   origin,
-  trustedX509Entities,
+  trustedX509Entities = [],
 }: GetCredentialsForProofRequestOptions) => {
   const { entityId = undefined, data: fromFederationData = null } = allowUntrusted
     ? await extractEntityIdFromAuthorizationRequest({ uri, requestPayload, origin })
@@ -451,11 +447,12 @@ export const getCredentialsForProofRequest = async ({
     allowUntrustedSigned: allowUntrusted,
   })
 
-  const { trustedEntities, verifier, trustMechanism } = await getTrustedEntitiesForRequest({
+  const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
     agent,
-    resolvedAuthorizationRequest: resolved,
-    authorizationRequestVerificationResult,
     trustedX509Entities,
+    resolvedAuthorizationRequest: resolved,
+    origin,
+    authorizationRequestVerificationResult,
   })
 
   let formattedSubmission: FormattedSubmission
@@ -479,15 +476,14 @@ export const getCredentialsForProofRequest = async ({
     origin,
     authorizationRequest: resolved.authorizationRequestPayload,
     verifier: {
-      hostName: verifier.uri,
-      entityId: verifier.entityId /* entityId ?? */,
-
-      logo: verifier.logoUri
+      hostName: relyingParty.uri,
+      entityId: relyingParty.entityId,
+      logo: relyingParty.logoUri
         ? {
-            url: verifier.logoUri,
+            url: relyingParty.logoUri,
           }
         : undefined,
-      name: verifier.organizationName,
+      name: relyingParty.organizationName,
       trustedEntities,
     },
     formattedSubmission,
@@ -753,151 +749,5 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   return {
     success: false,
     error: 'Invalid invitation.',
-  }
-}
-
-export type TrustedX509Entity = { certificate: string; name: string; logoUri: string; url: string; demo?: boolean }
-async function getTrustedEntitiesForRequest({
-  agent,
-  resolvedAuthorizationRequest,
-  trustedX509Entities,
-  authorizationRequestVerificationResult,
-}: {
-  resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
-  trustedX509Entities?: TrustedX509Entity[]
-  authorizationRequestVerificationResult?: {
-    isValidButUntrusted: boolean
-    isValidAndTrusted: boolean
-    x509RegistrationCertificate: X509Certificate
-  }[]
-  agent: EitherAgent
-}) {
-  const {
-    authorizationRequestPayload,
-    signedAuthorizationRequest,
-    origin,
-    verifier: resolvedVerifier,
-  } = resolvedAuthorizationRequest
-
-  let trustMechanism: TrustMechanism = authorizationRequestVerificationResult ? 'eudi_rp_authentication' : 'x509'
-  let trustedEntities: TrustedEntity[] = []
-  const clientMetadata = authorizationRequestPayload.client_metadata
-  const verifier = {
-    entityId: authorizationRequestPayload.client_id ?? `web-origin:${origin}`,
-    uri:
-      typeof authorizationRequestPayload.response_uri === 'string'
-        ? new URL(authorizationRequestPayload.response_uri).origin
-        : undefined,
-    logoUri: clientMetadata?.logo_uri,
-    organizationName: clientMetadata?.client_name,
-  }
-
-  // eudi RP Authentication
-  if (authorizationRequestVerificationResult && authorizationRequestVerificationResult.length > 0) {
-    // We can take the first entry as it only allows 1 entry for now
-    // This is the certificate of the relying party
-    const [entry] = authorizationRequestVerificationResult
-
-    const matchedCert = trustedX509Entities?.find(
-      (t) => X509Certificate.fromEncodedCertificate(t.certificate).subject === entry.x509RegistrationCertificate.issuer
-    )
-
-    if (matchedCert) {
-      const dnsName = entry.x509RegistrationCertificate.sanDnsNames[0]
-
-      verifier.organizationName = dnsName
-      verifier.logoUri = matchedCert.logoUri
-
-      const country = eudiTrustList.find(({ trustedRelyingPartyRegistrars }) =>
-        trustedRelyingPartyRegistrars.some((rpr) => rpr.entityId === dnsName)
-      )
-
-      if (country) {
-        const registrar = country.trustedRelyingPartyRegistrars.find((rpr) => rpr.entityId === dnsName) as TrustedEntity
-        trustedEntities.push(registrar)
-        trustedEntities.push(country)
-        trustedEntities.push(europeanUnion)
-      }
-    }
-  }
-
-  // Federation
-  if (resolvedVerifier.clientIdScheme === 'https') {
-    const resolvedChains = await agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
-      entityId: verifier.entityId,
-      trustAnchorEntityIds: TRUSTED_ENTITIES,
-    })
-
-    trustedEntities = resolvedChains
-      .map((chain) => ({
-        entityId: chain.trustAnchorEntityConfiguration.sub,
-        organizationName:
-          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
-        logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
-      }))
-      .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index)
-
-    trustMechanism = 'openid_federation'
-  }
-
-  const signer = signedAuthorizationRequest?.signer
-
-  if (signer?.method === 'x5c') {
-    const x509Config = agent.dependencyManager.resolve(X509ModuleConfig)
-
-    try {
-      // FIXME: we should return the x509 cert that was matched, then we can just see if it's in
-      // the list of hardcoded trusted certificates
-      const chain = await agent.x509.validateCertificateChain({
-        certificateChain: signer.x5c,
-        certificate: signer.x5c[0],
-        trustedCertificates: x509Config.trustedCertificates,
-      })
-
-      const trustedEntity = trustedX509Entities?.find((e) =>
-        X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0])
-      )
-      if (trustedEntity) {
-        if (!verifier.organizationName) {
-          verifier.organizationName = trustedEntity.name
-          verifier.logoUri = trustedEntity.logoUri
-        } else if (trustMechanism !== 'eudi_rp_authentication') {
-          // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
-          trustedEntities.push({
-            entityId: trustedEntity.certificate,
-            organizationName: trustedEntity.name,
-            logoUri: trustedEntity.logoUri,
-            uri: trustedEntity.url,
-            demo: trustedEntity.demo,
-          })
-        }
-
-        // TODO: when do we want to show the wallet as trust anchor?
-        if (trustMechanism !== 'eudi_rp_authentication') {
-          // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
-          trustedEntities.push({
-            ...verifier,
-            organizationName: verifier.organizationName ?? trustedEntity.name,
-          })
-
-          const isParadym = isParadymAgent(agent)
-          // TODO: better dynamic handling
-          trustedEntities.push({
-            organizationName: isParadym ? 'Paradym Wallet' : 'Funke Wallet',
-            entityId: '__',
-            logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
-            uri: isParadym ? 'https://paradym.id' : 'https://funke.animo.id',
-          })
-        }
-      }
-    } catch (error) {
-      // no-op
-    }
-  }
-
-  return {
-    verifier,
-    trustedEntities,
-    trustMechanism,
   }
 }
