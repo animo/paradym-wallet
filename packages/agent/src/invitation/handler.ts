@@ -805,7 +805,6 @@ async function getTrustedEntitiesForRequest({
     if (matchedCert) {
       const dnsName = entry.x509RegistrationCertificate.sanDnsNames[0]
 
-      // TODO: this needs to be less hard-coded
       verifier.organizationName = dnsName
       verifier.logoUri = matchedCert.logoUri
 
@@ -869,6 +868,7 @@ async function getTrustedEntitiesForRequest({
             organizationName: trustedEntity.name,
             logoUri: trustedEntity.logoUri,
             uri: trustedEntity.url,
+            demo: trustedEntity.demo,
           })
         }
 
