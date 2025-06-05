@@ -24,6 +24,7 @@ export type FunkeTrustDetailScreenProps = {
   name: string
   logo?: string
   trustedEntities?: Array<TrustedEntity>
+  isDemo?: boolean
 }
 
 export function FunkeTrustDetailScreen({
@@ -36,24 +37,23 @@ export function FunkeTrustDetailScreen({
   const { bottom } = useSafeAreaInsets()
   const scrollViewRef = useRef<ScrollViewRefType>(null)
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
+  const demoTrustedEntitiesCount = trustedEntities?.filter((t) => t.demo).length ?? 0
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <HeaderContainer title="About this party" isScrolledByOffset={isScrolledByOffset} />
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack px="$4" gap="$2" marginBottom={bottom}>
-          {isDevelopmentModeEnabled && (
-            <MessageBox
-              variant="light"
-              message={`Trust mechanism: ${trustMechanism}`}
-              icon={<HeroIcons.InformationCircle />}
-            />
-          )}
           <MessageBox
             variant="light"
             message="Always consider whether sharing with a party is wise."
             icon={<HeroIcons.ExclamationTriangleFilled />}
           />
+          {/*{demoTrustedEntitiesCount > 0 && <MessageBox
+            variant="light"
+            message={`There are ${demoTrustedEntitiesCount} trusted entities that are intended for demo purposes. They should not be trusted for real interactions.`}
+            icon={<HeroIcons.ExclamationTriangleFilled />}
+          />}*/}
           <XStack gap="$4" pt="$2" ai="center">
             {logo ? (
               <Circle overflow="hidden" ai="center" jc="center" size="$6" bw={1} borderColor="$grey-200" bg="$grey-100">
@@ -88,10 +88,17 @@ export function FunkeTrustDetailScreen({
                     </Circle>
                   )}
                   <XStack gap="$1" f={1} justifyContent="space-between" ai="center">
-                    <Heading f={1} numberOfLines={2} variant="h2">
-                      {entity.organizationName}
-                    </Heading>
-                    <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
+                    <YStack>
+                      <Heading f={1} numberOfLines={2} variant="h2">
+                        {entity.organizationName}
+                      </Heading>
+                      <Paragraph>Demo trust entity</Paragraph>
+                    </YStack>
+                    {entity.demo ? (
+                      <IconContainer icon={<HeroIcons.ExclamationTriangleFilled size={30} color="$warning-500" />} />
+                    ) : (
+                      <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
+                    )}
                   </XStack>
                 </XStack>
               ))}
@@ -99,6 +106,19 @@ export function FunkeTrustDetailScreen({
           </YStack>
         </YStack>
       </ScrollView>
+      {isDevelopmentModeEnabled && (
+        <YStack ai="center">
+          <Paragraph>
+            Trust Mechanism '
+            {trustMechanism === 'eudi_rp_authentication'
+              ? 'EU Trusted List'
+              : trustMechanism === 'openid_federation'
+                ? 'OpenID Federation'
+                : 'X.509 Certificate'}
+            '
+          </Paragraph>
+        </YStack>
+      )}
       <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
         <TextBackButton />
       </YStack>

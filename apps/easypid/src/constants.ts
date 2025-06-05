@@ -1,4 +1,4 @@
-import type { TrustedX509Entity } from '@package/agent'
+import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
 import ExpoConstants from 'expo-constants'
 
 export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid
@@ -6,10 +6,6 @@ export const appScheme = ExpoConstants.expoConfig?.scheme as string
 
 export const EASYPID_WALLET_PID_PIN_KEY_ID = 'EASYPID_WALLET_PID_PIN_KEY_ID_NO_BIOMETRICS'
 export const EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID'
-
-// TODO: get a better logo for the European Union
-export const EUROPEAN_UNION_LOGO =
-  'https://cdn1.iconfinder.com/data/icons/world-flags-13/135/flag_flags_country-40-512.png'
 
 export const trustedX509Entities = [
   {
@@ -19,6 +15,7 @@ MIICeTCCAiCgAwIBAgIUB5E9QVZtmUYcDtCjKB/H3VQv72gwCgYIKoZIzj0EAwIwgYgxCzAJBgNVBAYT
 -----END CERTIFICATE-----`,
     url: 'https://demo.pid-issuer.bundesdruckerei.de',
     logoUri: 'https://funke.animo.id/assets/issuers/bdr/issuer.png',
+    demo: true,
   },
   {
     name: 'German Registrar',
@@ -34,6 +31,7 @@ pUGCFdfNLQIgHGSa5u5ZqUtCrnMiaEageO71rjzBlov0YUH4+6ELioY=
 -----END CERTIFICATE-----`,
     url: 'https://funke-wallet.de',
     logoUri: 'https://funke.animo.id/assets/verifiers/bunde.png',
+    demo: true,
   },
   {
     certificate:
@@ -41,6 +39,7 @@ pUGCFdfNLQIgHGSa5u5ZqUtCrnMiaEageO71rjzBlov0YUH4+6ELioY=
     name: 'Animo Playground (Funke)',
     logoUri: 'https://funke.animo.id/assets/verifiers/animo/verifier.jpg',
     url: 'https://funke.animo.id',
+    demo: true,
   },
   {
     name: 'EUDI Reference Verifier',
@@ -48,6 +47,7 @@ pUGCFdfNLQIgHGSa5u5ZqUtCrnMiaEageO71rjzBlov0YUH4+6ELioY=
       'MIIDHTCCAqOgAwIBAgIUVqjgtJqf4hUYJkqdYzi+0xwhwFYwCgYIKoZIzj0EAwMwXDEeMBwGA1UEAwwVUElEIElzc3VlciBDQSAtIFVUIDAxMS0wKwYDVQQKDCRFVURJIFdhbGxldCBSZWZlcmVuY2UgSW1wbGVtZW50YXRpb24xCzAJBgNVBAYTAlVUMB4XDTIzMDkwMTE4MzQxN1oXDTMyMTEyNzE4MzQxNlowXDEeMBwGA1UEAwwVUElEIElzc3VlciBDQSAtIFVUIDAxMS0wKwYDVQQKDCRFVURJIFdhbGxldCBSZWZlcmVuY2UgSW1wbGVtZW50YXRpb24xCzAJBgNVBAYTAlVUMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEFg5Shfsxp5R/UFIEKS3L27dwnFhnjSgUh2btKOQEnfb3doyeqMAvBtUMlClhsF3uefKinCw08NB31rwC+dtj6X/LE3n2C9jROIUN8PrnlLS5Qs4Rs4ZU5OIgztoaO8G9o4IBJDCCASAwEgYDVR0TAQH/BAgwBgEB/wIBADAfBgNVHSMEGDAWgBSzbLiRFxzXpBpmMYdC4YvAQMyVGzAWBgNVHSUBAf8EDDAKBggrgQICAAABBzBDBgNVHR8EPDA6MDigNqA0hjJodHRwczovL3ByZXByb2QucGtpLmV1ZGl3LmRldi9jcmwvcGlkX0NBX1VUXzAxLmNybDAdBgNVHQ4EFgQUs2y4kRcc16QaZjGHQuGLwEDMlRswDgYDVR0PAQH/BAQDAgEGMF0GA1UdEgRWMFSGUmh0dHBzOi8vZ2l0aHViLmNvbS9ldS1kaWdpdGFsLWlkZW50aXR5LXdhbGxldC9hcmNoaXRlY3R1cmUtYW5kLXJlZmVyZW5jZS1mcmFtZXdvcmswCgYIKoZIzj0EAwMDaAAwZQIwaXUA3j++xl/tdD76tXEWCikfM1CaRz4vzBC7NS0wCdItKiz6HZeV8EPtNCnsfKpNAjEAqrdeKDnr5Kwf8BA7tATehxNlOV4Hnc10XO1XULtigCwb49RpkqlS2Hul+DpqObUs',
     logoUri: 'https://issuer.eudiw.dev/ic-logo.png',
     url: 'https://verifier.eudiw.dev',
+    demo: true,
   },
   {
     name: 'Docusign',
@@ -55,6 +55,7 @@ pUGCFdfNLQIgHGSa5u5ZqUtCrnMiaEageO71rjzBlov0YUH4+6ELioY=
       'MIIC9jCCApugAwIBAgIULJzqL8PyHb0JXERTUfpqfOcLsa4wCgYIKoZIzj0EAwIwgYAxLjAsBgNVBAMMJWRvY3VzaWduLXdhbGxldC12ZXJpZmllci5kb2N1c2lnbi5uZXQxCzAJBgNVBAYTAkZSMRcwFQYDVQQIDA7DjmxlLWRlLUZyYW5jZTEOMAwGA1UEBwwFUGFyaXMxGDAWBgNVBAoMD0RvY3VzaWduIEZyYW5jZTAeFw0yNTA0MDExMDAzMTlaFw0yODAzMzExMDAzMTlaMIGAMS4wLAYDVQQDDCVkb2N1c2lnbi13YWxsZXQtdmVyaWZpZXIuZG9jdXNpZ24ubmV0MQswCQYDVQQGEwJGUjEXMBUGA1UECAwOw45sZS1kZS1GcmFuY2UxDjAMBgNVBAcMBVBhcmlzMRgwFgYDVQQKDA9Eb2N1c2lnbiBGcmFuY2UwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATKs8uiLftrFSaQtB87XTYq0YiFZPFEmVKQ2CFeQ3j5zG0kJefW4ktgxn69g7eX9PTB1siakMSGwe48mE9BdfFLo4HwMIHtMB0GA1UdDgQWBBSaNNjHj2ZyRbU0QiqxufROmNzFPzAfBgNVHSMEGDAWgBSaNNjHj2ZyRbU0QiqxufROmNzFPzAOBgNVHQ8BAf8EBAMCBaAwIAYDVR0lAQH/BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMHkGA1UdEQRyMHCCQWV1ZGl3YWxsZXRwb2MtYTNhNWdnaDRhN2R3aDNnaC5mcmFuY2VjZW50cmFsLTAxLmF6dXJld2Vic2l0ZXMubmV0giVkb2N1c2lnbi13YWxsZXQtdmVyaWZpZXIuZG9jdXNpZ24ubmV0hwTAqAK+MAoGCCqGSM49BAMCA0kAMEYCIQDOSfhPlPBsEZcaBwy7+ZQ2Iqdfvwk5IrA3QAQErI/pwQIhAI8x3fFVGgbKW2qywGwbjd5WwsEUW8FOdeNvbp9RQn8s',
     url: 'https://docusign.com',
     logoUri: 'https://www.docusign.com/assets/images/android-chrome-192x192.png',
+    demo: true,
   },
 ] satisfies Array<TrustedX509Entity>
 
@@ -85,3 +86,27 @@ export const mdlSchemes = {
   mdlSdJwtVcVcts,
   mdlMdocDoctypes,
 }
+
+export const europeanUnion: TrustedEntity = {
+  entityId: 'EU',
+  organizationName: 'European Union',
+  logoUri: 'https://cdn1.iconfinder.com/data/icons/world-flags-13/135/flag_flags_country-40-512.png',
+  demo: true,
+}
+
+export const eudiTrustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }> = [
+  {
+    entityId: 'germany',
+    organizationName: 'German Government',
+    logoUri: 'https://icons.iconarchive.com/icons/wikipedia/flags/512/DE-Germany-Flag-icon.png',
+    demo: true,
+    trustedRelyingPartyRegistrars: [
+      {
+        entityId: 'funke-wallet.de',
+        logoUri: 'https://funke.animo.id/assets/verifiers/bunde.png',
+        organizationName: 'Funke Registrar',
+        demo: true,
+      },
+    ],
+  },
+]

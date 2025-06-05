@@ -35,7 +35,7 @@ import {
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import { EUROPEAN_UNION_LOGO } from '@easypid/constants'
+import { eudiTrustList, europeanUnion } from '@easypid/constants'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import type { TrustMechanism } from '@package/app/src'
@@ -756,7 +756,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   }
 }
 
-export type TrustedX509Entity = { certificate: string; name: string; logoUri: string; url: string }
+export type TrustedX509Entity = { certificate: string; name: string; logoUri: string; url: string; demo?: boolean }
 async function getTrustedEntitiesForRequest({
   agent,
   resolvedAuthorizationRequest,
@@ -803,20 +803,22 @@ async function getTrustedEntitiesForRequest({
     )
 
     if (matchedCert) {
-      // TODO: this needs to be less hard-coded
-      verifier.organizationName = entry.x509RegistrationCertificate.sanDnsNames[0]
-      verifier.logoUri = matchedCert.logoUri
-      trustedEntities.push({
-        entityId: matchedCert.name,
-        organizationName: matchedCert.name,
-        logoUri: matchedCert.logoUri,
-      })
+      const dnsName = entry.x509RegistrationCertificate.sanDnsNames[0]
 
-      trustedEntities.push({
-        entityId: 'EU',
-        organizationName: 'European Union',
-        logoUri: EUROPEAN_UNION_LOGO,
-      })
+      // TODO: this needs to be less hard-coded
+      verifier.organizationName = dnsName
+      verifier.logoUri = matchedCert.logoUri
+
+      const country = eudiTrustList.find(({ trustedRelyingPartyRegistrars }) =>
+        trustedRelyingPartyRegistrars.some((rpr) => rpr.entityId === dnsName)
+      )
+
+      if (country) {
+        const registrar = country.trustedRelyingPartyRegistrars.find((rpr) => rpr.entityId === dnsName) as TrustedEntity
+        trustedEntities.push(registrar)
+        trustedEntities.push(country)
+        trustedEntities.push(europeanUnion)
+      }
     }
   }
 
@@ -870,20 +872,23 @@ async function getTrustedEntitiesForRequest({
           })
         }
 
-        // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
-        trustedEntities.push({
-          ...verifier,
-          organizationName: verifier.organizationName ?? trustedEntity.name,
-        })
+        // TODO: when do we want to show the wallet as trust anchor?
+        if (trustMechanism !== 'eudi_rp_authentication') {
+          // If the certificate chain validates and doesn't throw we know it's a trusted certificate based on the hardcoded certificates
+          trustedEntities.push({
+            ...verifier,
+            organizationName: verifier.organizationName ?? trustedEntity.name,
+          })
 
-        const isParadym = isParadymAgent(agent)
-        // TODO: better dynamic handling
-        trustedEntities.push({
-          organizationName: isParadym ? 'Paradym Wallet' : 'Funke Wallet',
-          entityId: '__',
-          logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
-          uri: isParadym ? 'https://paradym.id' : 'https://funke.animo.id',
-        })
+          const isParadym = isParadymAgent(agent)
+          // TODO: better dynamic handling
+          trustedEntities.push({
+            organizationName: isParadym ? 'Paradym Wallet' : 'Funke Wallet',
+            entityId: '__',
+            logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
+            uri: isParadym ? 'https://paradym.id' : 'https://funke.animo.id',
+          })
+        }
       }
     } catch (error) {
       // no-op

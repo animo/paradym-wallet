@@ -13,4 +13,5 @@ export type TrustedEntity = {
   organizationName: string
   logoUri?: string
   uri?: string
+  demo?: boolean
 }
