@@ -91,7 +91,7 @@ export const mdlSchemes = {
 export const europeanUnion: TrustedEntity = {
   entityId: 'EU',
   organizationName: 'European Union',
-  logoUri: 'https://cdn1.iconfinder.com/data/icons/world-flags-13/135/flag_flags_country-40-512.png',
+  logoUri: require('../assets/eu.png'),
   demo: true,
 }
 
@@ -99,7 +99,7 @@ export const eudiTrustList: TrustList = [
   {
     entityId: 'germany',
     organizationName: 'German Government',
-    logoUri: 'https://icons.iconarchive.com/icons/wikipedia/flags/512/DE-Germany-Flag-icon.png',
+    logoUri: require('../assets/germany.png'),
     demo: true,
     trustedRelyingPartyRegistrars: [
       {

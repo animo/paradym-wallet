@@ -55,7 +55,13 @@ export const detectTrustMechanism = (options: {
   throw new Error('Could not infer trust mechanism for authorization request')
 }
 
-export const getTrustedEntities = async (options: GetTrustedEntitiesOptions) => {
+export const getTrustedEntities = async (
+  options: GetTrustedEntitiesOptions
+): Promise<{
+  trustMechanism: TrustMechanism
+  relyingParty: { logoUri?: string; uri?: string; organizationName: string; entityId: string }
+  trustedEntities: Array<TrustedEntity>
+}> => {
   const trustMechanism = detectTrustMechanism(options)
 
   switch (trustMechanism) {
@@ -107,14 +113,14 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
     }
   }
 
-  const { trustedEntities: x509TrustedEntities } = await getTrustedEntitiesForX509Certificate(options)
+  const { trustedEntities: x509TrustedEntities, relyingParty } = await getTrustedEntitiesForX509Certificate(options)
 
   return {
     relyingParty: {
       organizationName,
       logoUri,
       uri,
-      entityId,
+      entityId: entityId ?? relyingParty.entityId,
     },
     trustedEntities: [...x509TrustedEntities, ...trustedEntities],
   }
@@ -167,7 +173,7 @@ const getTrustedEntitiesForX509Certificate = async ({
     typeof resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
       ? new URL(resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
       : undefined
-  let entityId = resolvedAuthorizationRequest.authorizationRequestPayload.client_id
+  let entityId = resolvedAuthorizationRequest.authorizationRequestPayload.client_id ?? 'no_entity_id'
 
   const x509Config = agent.dependencyManager.resolve(X509ModuleConfig)
   const signer = resolvedAuthorizationRequest.signedAuthorizationRequest?.signer
