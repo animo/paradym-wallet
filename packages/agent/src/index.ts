@@ -17,6 +17,7 @@ export {
   useAgent,
   ParadymAppAgent,
   EasyPIDAppAgent,
+  EitherAgent,
 } from './agent'
 export * from './providers'
 export * from './invitation'
@@ -37,6 +38,8 @@ export * from './storage'
 export * from './openid4vc/displayMetadata'
 export * from './credentialCategoryMetadata'
 export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
+
+export * from './utils/trust'
 
 export {
   resolveRequestForDcApi,

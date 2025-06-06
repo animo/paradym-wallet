@@ -222,6 +222,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       verifierName={credentialsForRequest?.verifier.name}
       logo={credentialsForRequest?.verifier.logo}
       trustedEntities={credentialsForRequest?.verifier.trustedEntities}
+      trustMechanism={credentialsForRequest?.trustMechanism}
       onComplete={() => pushToWallet('replace')}
       onCancel={() => pushToWallet('replace')}
       overAskingResponse={overAskingResponse}

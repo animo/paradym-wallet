@@ -1,4 +1,5 @@
-import type { TrustedEntity } from '@package/agent'
+import { useDevelopmentMode } from '@easypid/hooks'
+import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
 import {
   Circle,
@@ -18,16 +19,30 @@ import {
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-interface FunkeFederationDetailScreenProps {
+export type FunkeTrustDetailScreenProps = {
+  trustMechanism: TrustMechanism
   name: string
   logo?: string
-  trustedEntities?: Array<TrustedEntity>
+  trustedEntities: Array<TrustedEntity>
 }
 
-export function FunkeFederationDetailScreen({ name, logo, trustedEntities = [] }: FunkeFederationDetailScreenProps) {
+export function FunkeTrustDetailScreen({
+  trustMechanism,
+  name,
+  logo,
+  trustedEntities = [],
+}: FunkeTrustDetailScreenProps) {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const scrollViewRef = useRef<ScrollViewRefType>(null)
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
+  const hasDemoTrustedEntities = trustedEntities.some((te) => te.demo)
+  const trustMechanismName =
+    trustMechanism === 'eudi_rp_authentication'
+      ? 'EU Trusted List'
+      : trustMechanism === 'openid_federation'
+        ? 'OpenID Federation'
+        : 'X.509 Certificate'
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -50,12 +65,14 @@ export function FunkeFederationDetailScreen({ name, logo, trustedEntities = [] }
               </Circle>
             )}
             <Heading flex={1} numberOfLines={3} variant="h2">
-              {name || 'Unknown organization'}
+              {name || 'Unknown organization'} {hasDemoTrustedEntities ? '(Demo)' : ''}
             </Heading>
           </XStack>
           <YStack gap="$4" py="$2">
             <YStack gap="$2">
-              <Heading variant="sub2">Trusted by</Heading>
+              <Heading variant="sub2">
+                Trusted by {isDevelopmentModeEnabled ? <Paragraph>({trustMechanismName})</Paragraph> : ''}
+              </Heading>
               <Paragraph>
                 {trustedEntities.length > 0 ? (
                   <>A list of organizations that have approved {name || 'unknown organization'}.</>
@@ -66,17 +83,32 @@ export function FunkeFederationDetailScreen({ name, logo, trustedEntities = [] }
             </YStack>
             <YStack gap="$2">
               {trustedEntities.map((entity) => (
-                <XStack ai="center" key={entity.entity_id} br="$8" p="$3.5" gap="$3" bg="$grey-100">
-                  {entity.logo_uri && (
+                <XStack ai="center" key={entity.entityId} br="$8" p="$3.5" gap="$3" bg="$grey-100">
+                  {entity.logoUri && (
                     <Circle overflow="hidden" size="$4" bg="$grey-50">
-                      <Image src={entity.logo_uri} height="100%" width="100%" />
+                      <Image src={entity.logoUri} height="100%" width="100%" />
                     </Circle>
                   )}
                   <XStack gap="$1" f={1} justifyContent="space-between" ai="center">
-                    <Heading f={1} numberOfLines={2} variant="h2">
-                      {entity.organization_name}
-                    </Heading>
-                    <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
+                    {entity.demo ? (
+                      <>
+                        <YStack>
+                          <Heading f={1} numberOfLines={2} variant="h3">
+                            {entity.organizationName}
+                          </Heading>
+                          {entity.demo && <Paragraph variant="sub">Demo trust entity</Paragraph>}
+                        </YStack>
+
+                        <IconContainer icon={<HeroIcons.ExclamationTriangleFilled size={30} color="$warning-500" />} />
+                      </>
+                    ) : (
+                      <>
+                        <Heading f={1} numberOfLines={2} variant="h3">
+                          {entity.organizationName}
+                        </Heading>
+                        <IconContainer icon={<HeroIcons.CheckCircleFilled size={30} color="$positive-500" />} />
+                      </>
+                    )}
                   </XStack>
                 </XStack>
               ))}

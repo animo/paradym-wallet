@@ -9,8 +9,9 @@ export const TRUSTED_ENTITIES = [
 ] satisfies [string, ...string[]]
 
 export type TrustedEntity = {
-  entity_id: string
-  organization_name: string
-  logo_uri?: string
+  entityId: string
+  organizationName: string
+  logoUri?: string
   uri?: string
+  demo?: boolean
 }

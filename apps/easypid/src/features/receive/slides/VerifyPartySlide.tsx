@@ -1,5 +1,4 @@
-import type { DisplayImage, TrustedEntity } from '@package/agent'
-
+import type { DisplayImage, TrustMechanism, TrustedEntity } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import {
   Circle,
@@ -14,8 +13,8 @@ import {
   YStack,
   useMedia,
 } from '@package/ui'
+import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'
-import { formatRelativeDate } from 'packages/utils/src'
 import { useState } from 'react'
 import { useActivities } from '../../activity/activityRecord'
 
@@ -31,25 +30,30 @@ interface VerifyPartySlideProps {
   onContinue?: () => Promise<void>
   onDecline?: () => void
   trustedEntities?: Array<TrustedEntity>
+  trustMechanism?: TrustMechanism
 }
 
 export const VerifyPartySlide = ({
   type,
-  entityId,
+  entityId = NO_ENTITY_ID,
   name,
   logo,
   backgroundColor,
   onContinue,
   onDecline,
   trustedEntities,
+  trustMechanism = 'x509',
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
-  const { activities } = useActivities({ filters: { entityId: entityId ?? NO_ENTITY_ID } })
+  const { activities } = useActivities({ filters: { entityId } })
   const lastInteractionDate = activities[0]?.date
+
+  const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
+  const trustedEntitiesWithoutSelf = trustedEntities?.filter((entity) => entity.entityId !== entityId)
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -65,14 +69,15 @@ export const VerifyPartySlide = ({
     onCancel()
   }
 
-  const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entity_id === entityId)
-
-  const trustedEntitiesWithoutSelf = trustedEntities?.filter((entity) => entity.entity_id !== entityId)
-
   const onPressVerifiedIssuer = withHaptics(() => {
-    router.push(
-      `/federation?name=${encodeURIComponent(name ?? '')}&logo=${encodeURIComponent(logo?.url ?? '')}&trustedEntities=${encodeURIComponent(JSON.stringify(trustedEntitiesWithoutSelf ?? []))}`
-    )
+    const searchParams = new URLSearchParams({
+      name: name ?? '',
+      logo: logo?.url ?? '',
+      trustedEntities: JSON.stringify(trustedEntitiesWithoutSelf ?? []),
+      trustMechanism,
+    })
+
+    router.push(`trust?${searchParams}`)
   })
 
   const onPressInteraction = withHaptics(() => {
