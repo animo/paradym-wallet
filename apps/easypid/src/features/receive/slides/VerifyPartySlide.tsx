@@ -1,5 +1,4 @@
-import type { TrustMechanism } from '@easypid/utils/trustMechanism'
-import type { DisplayImage, TrustedEntity } from '@package/agent'
+import type { DisplayImage, TrustMechanism, TrustedEntity } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import {
   Circle,
@@ -75,24 +74,10 @@ export const VerifyPartySlide = ({
       name: name ?? '',
       logo: logo?.url ?? '',
       trustedEntities: JSON.stringify(trustedEntitiesWithoutSelf ?? []),
+      trustMechanism,
     })
 
-    if (trustMechanism === 'openid_federation') {
-      router.push(`trust/federation?${searchParams}`)
-      return
-    }
-
-    if (trustMechanism === 'eudi_rp_authentication') {
-      router.push(`trust/eudi?${searchParams}`)
-      return
-    }
-
-    if (trustMechanism === 'x509') {
-      router.push(`trust/x509?${searchParams}`)
-      return
-    }
-
-    // TODO: invalid state
+    router.push(`trust?${searchParams}`)
   })
 
   const onPressInteraction = withHaptics(() => {

@@ -1,13 +1,13 @@
 import { X509Certificate, X509ModuleConfig } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import { eudiTrustList, europeanUnion } from '@easypid/constants'
-import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
 import type { EitherAgent } from '@package/agent'
-import { TRUSTED_ENTITIES } from '@package/agent/src/invitation/trustedEntities'
+import { TRUSTED_ENTITIES } from '../invitation/trustedEntities'
 
 export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509'
-export type TrustList = Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }>
+export type TrustList = TrustedEntity & {
+  trustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }>
+}
 
 export type AuthorizationRequestVerificationResult = {
   isValidButUntrusted: boolean
@@ -18,6 +18,7 @@ export type AuthorizationRequestVerificationResult = {
 type GetTrustedEntitiesForEudiRpAuthenticationOptions = {
   authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
   trustedX509Entities: TrustedX509Entity[]
+  trustList: TrustList
 } & GetTrustedEntitiesForX509CertificateOptions
 
 type GetTrustedEntitiesForOpenIdFederationOptions = {
@@ -30,7 +31,7 @@ type GetTrustedEntitiesForX509CertificateOptions = {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   trustedX509Entities: TrustedX509Entity[]
   agent: EitherAgent
-  includeWalletAsTrustedEntity?: boolean
+  walletTrustedEntity?: TrustedEntity
 }
 
 export type GetTrustedEntitiesOptions = GetTrustedEntitiesForEudiRpAuthenticationOptions &
@@ -66,12 +67,18 @@ export const getTrustedEntities = async (
 
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
-      return { ...(await getTrustedEntitiesForEudiRpAuthentication(options)), trustMechanism }
+      return {
+        ...(await getTrustedEntitiesForEudiRpAuthentication({ ...options, walletTrustedEntity: undefined })),
+        trustMechanism,
+      }
     case 'openid_federation':
-      return { ...(await getTrustedEntitiesForOpenIdFederation(options)), trustMechanism }
+      return {
+        ...(await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })),
+        trustMechanism,
+      }
     case 'x509':
       return {
-        ...(await getTrustedEntitiesForX509Certificate({ ...options, includeWalletAsTrustedEntity: true })),
+        ...(await getTrustedEntitiesForX509Certificate(options)),
         trustMechanism,
       }
   }
@@ -101,7 +108,7 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
     uri = uriName
     entityId = dnsName
 
-    const country = eudiTrustList.find(({ trustedRelyingPartyRegistrars }) =>
+    const country = options.trustList.trustList.find(({ trustedRelyingPartyRegistrars }) =>
       trustedRelyingPartyRegistrars.some((rpr) => rpr.entityId === dnsName)
     )
 
@@ -109,7 +116,7 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
       const registrar = country.trustedRelyingPartyRegistrars.find((rpr) => rpr.entityId === dnsName) as TrustedEntity
       trustedEntities.push(registrar)
       trustedEntities.push(country)
-      trustedEntities.push(europeanUnion)
+      trustedEntities.push(options.trustList)
     }
   }
 
@@ -164,7 +171,7 @@ const getTrustedEntitiesForX509Certificate = async ({
   resolvedAuthorizationRequest,
   agent,
   trustedX509Entities,
-  includeWalletAsTrustedEntity = false,
+  walletTrustedEntity,
 }: GetTrustedEntitiesForX509CertificateOptions) => {
   const trustedEntities: TrustedEntity[] = []
   let organizationName = 'Unknown Organization'
@@ -204,19 +211,7 @@ const getTrustedEntitiesForX509Certificate = async ({
           demo: trustedEntity.demo,
         })
 
-        // trustedEntities.push({
-        //   entityId: trustedEntity.certificate,
-        //   organizationName: organizationName ?? trustedEntity.name,
-        // })
-
-        if (includeWalletAsTrustedEntity) {
-          trustedEntities.push({
-            organizationName: isParadymWallet() ? 'Paradym Wallet' : 'Funke Wallet',
-            entityId: '__',
-            logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
-            uri: isParadymWallet() ? 'https://paradym.id' : 'https://funke.animo.id',
-          })
-        }
+        if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
       }
     }
   } catch (error) {

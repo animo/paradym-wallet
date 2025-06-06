@@ -1,6 +1,6 @@
-import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
+import type { TrustedX509Entity } from '@package/agent'
+import type { TrustList } from '@package/agent'
 import ExpoConstants from 'expo-constants'
-import type { TrustList } from './utils/trustMechanism'
 
 export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid
 export const appScheme = ExpoConstants.expoConfig?.scheme as string
@@ -88,26 +88,25 @@ export const mdlSchemes = {
   mdlMdocDoctypes,
 }
 
-export const europeanUnion: TrustedEntity = {
+export const eudiTrustList: TrustList = {
   entityId: 'EU',
   organizationName: 'European Union',
   logoUri: require('../assets/eu.png'),
   demo: true,
+  trustList: [
+    {
+      entityId: 'germany',
+      organizationName: 'German Government',
+      logoUri: require('../assets/germany.png'),
+      demo: true,
+      trustedRelyingPartyRegistrars: [
+        {
+          entityId: 'funke-wallet.de',
+          logoUri: 'https://funke.animo.id/assets/verifiers/bunde.png',
+          organizationName: 'Funke Registrar',
+          demo: true,
+        },
+      ],
+    },
+  ],
 }
-
-export const eudiTrustList: TrustList = [
-  {
-    entityId: 'germany',
-    organizationName: 'German Government',
-    logoUri: require('../assets/germany.png'),
-    demo: true,
-    trustedRelyingPartyRegistrars: [
-      {
-        entityId: 'funke-wallet.de',
-        logoUri: 'https://funke.animo.id/assets/verifiers/bunde.png',
-        organizationName: 'Funke Registrar',
-        demo: true,
-      },
-    ],
-  },
-]

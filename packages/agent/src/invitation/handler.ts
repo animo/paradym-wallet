@@ -34,7 +34,8 @@ import {
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import { getTrustedEntities } from '@easypid/utils/trustMechanism'
+import { eudiTrustList } from '@easypid/constants'
+import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import q from 'query-string'
@@ -50,6 +51,7 @@ import {
 import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
+import { getTrustedEntities } from '../utils/trust'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
@@ -453,6 +455,13 @@ export const getCredentialsForProofRequest = async ({
     resolvedAuthorizationRequest: resolved,
     origin,
     authorizationRequestVerificationResult,
+    walletTrustedEntity: {
+      organizationName: isParadymWallet() ? 'Paradym Wallet' : 'Funke Wallet',
+      entityId: '__',
+      logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
+      uri: isParadymWallet() ? 'https://paradym.id' : 'https://funke.animo.id',
+    },
+    trustList: eudiTrustList,
   })
 
   let formattedSubmission: FormattedSubmission

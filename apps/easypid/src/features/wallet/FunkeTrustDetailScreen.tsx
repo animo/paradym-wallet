@@ -1,6 +1,5 @@
 import { useDevelopmentMode } from '@easypid/hooks'
-import type { TrustMechanism } from '@easypid/utils/trustMechanism'
-import type { TrustedEntity } from '@package/agent'
+import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
 import {
   Circle,
