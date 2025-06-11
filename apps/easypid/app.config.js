@@ -54,7 +54,7 @@ APP_CONFIGS.FUNKE_WALLET.android.config = {
 }
 
 module.exports = () => {
-  const appType = process.env.EXPO_PUBLIC_APP_TYPE
+  const appType = process.env.EXPO_PUBLIC_APP_TYPE ?? 'PARADYM_WALLET'
   if (!appType || !APP_CONFIGS[appType]) {
     throw new Error(`Invalid App Type: ${appType}. Must be one of: ${Object.keys(APP_CONFIGS).join(', ')}`)
   }
