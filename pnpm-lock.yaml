@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@animo-id/eudi-wallet-functionality':
-      specifier: 0.0.0-alpha-20250603100722
-      version: 0.0.0-alpha-20250603100722
+      specifier: 0.0.0-alpha-20250604122408
+      version: 0.0.0-alpha-20250604122408
     '@animo-id/expo-ausweis-sdk':
       specifier: 0.0.1-alpha.14
       version: 0.0.1-alpha.14
@@ -84,7 +84,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250603100722(bhuutvdgw4tnsm2jdltc2fhu7m)
+        version: 0.0.0-alpha-20250604122408(bhuutvdgw4tnsm2jdltc2fhu7m)
       '@animo-id/expo-ausweis-sdk':
         specifier: 'catalog:'
         version: 0.0.1-alpha.14(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -597,7 +597,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250603100722(bhuutvdgw4tnsm2jdltc2fhu7m)
+        version: 0.0.0-alpha-20250604122408(bhuutvdgw4tnsm2jdltc2fhu7m)
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
         version: 0.3.2(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
@@ -873,8 +873,8 @@ packages:
       react-native-fs: ^2.20.0
       react-native-get-random-values: ^1.8.0
 
-  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250603100722':
-    resolution: {integrity: sha512-Cr5tn37XAPY5KB6SWIbz/iayDU1UMdbMtTF/8bgXiLqKK6ktvHovyl1p+Uujf0QJtD7updgHbfe/sV9AuiYRGw==}
+  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250604122408':
+    resolution: {integrity: sha512-o8m3cC+yUuMapx2YFav6OIx47sKZxmJXl5vICQ0Bb3QjTQUWln9phJnpoKxAZNOOfJONujeBF83iWU0X+6R4gg==}
     peerDependencies:
       '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250604111322
       '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250604111322
@@ -9747,7 +9747,7 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250603100722(bhuutvdgw4tnsm2jdltc2fhu7m)':
+  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250604122408(bhuutvdgw4tnsm2jdltc2fhu7m)':
     dependencies:
       '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250604111322(expo-crypto@13.0.2(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)))(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/openid4vc': '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250604111322(patch_hash=h2nlgabmrbdslunjegpf7uhiua)(expo-crypto@13.0.2(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)))(expo@52.0.44(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@expo/metro-runtime@4.0.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1)))(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1))(msrcrypto@1.5.8)(typescript@5.3.3)(web-streams-polyfill@3.3.3)'
