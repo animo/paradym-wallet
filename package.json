@@ -10,14 +10,18 @@
 		"deps:fix": "pnpm deps:check --fix",
 		"types:check": "tsc --noEmit",
 		"style:check": "biome check --unsafe",
-		"style:fix": "biome check --write --unsafe"
+		"style:fix": "biome check --write --unsafe",
+		"release:sdk": "pnpm build && pnpm changeset publish --no-git-tag",
+		"changeset-version:sdk": "pnpm changeset version && pnpm style:fix"
 	},
 	"engines": {
 		"node": ">=20.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.1",
+		"@changesets/cli": "^2.29.4",
 		"check-dependency-version-consistency": "^3.3.0",
+		"tsup": "^8.5.0",
 		"typescript": "catalog:"
 	},
 	"pnpm": {
