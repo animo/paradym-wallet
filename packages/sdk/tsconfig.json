@@ -10,7 +10,8 @@
 		"lib": ["ES2020"],
 		"types": [],
 		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"jsx": "react-native"
 	},
 	"exclude": ["dist"]
 }
