@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 	"$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
 	"changelog": "@changesets/cli/changelog",
 	"commit": false,
@@ -8,4 +9,15 @@
 	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
 	"ignore": []
+=======
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "restricted",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+>>>>>>> 5d6b6f0 (feat: initial setup of the wallet sdk package)
 }
