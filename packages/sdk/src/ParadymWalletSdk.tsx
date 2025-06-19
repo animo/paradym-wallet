@@ -3,6 +3,7 @@ import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import { ParadymWalletMustBeInitializedError } from './error'
 import { useCredentials } from './hooks/useCredentials'
 import { useCredentialsById } from './hooks/useCredentialsById'
+import { type HandleInvitationOptions, handleInvitation } from './invitation/handler'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 
 /**
@@ -78,5 +79,10 @@ export class ParadymWalletSdk {
   public Provider({ children }: PropsWithChildren) {
     this.assertAgentIsInitialized()
     return <AgentProvider agent={this.agent}>{children}</AgentProvider>
+  }
+
+  public handleInvitation(options: Omit<HandleInvitationOptions, 'agent'>) {
+    this.assertAgentIsInitialized()
+    return handleInvitation({ ...options, agent: this.agent })
   }
 }
