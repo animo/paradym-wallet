@@ -5,7 +5,7 @@
 	"license": "Apache-2.0",
 	"files": ["dist"],
 	"publishConfig": {
-    "access": "public",
+		"access": "public",
 		"main": "./dist/index.js",
 		"module": "./dist/index.mjs",
 		"types": "./dist/index.d.ts",
@@ -21,5 +21,15 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@credo-ts/askar": "catalog:",
+		"@credo-ts/core": "catalog:",
+		"@credo-ts/didcomm": "catalog:",
+		"@credo-ts/openid4vc": "catalog:",
+		"@credo-ts/react-native": "catalog:"
+	},
+	"peerDependencies": {
+		"react": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:"
+	}
 }
