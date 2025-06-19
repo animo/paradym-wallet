@@ -1,3 +1,2 @@
-export { initializeAgent, InitializeAgentOptions } from './agent'
+export { ParadymWalletSdk, type ParadymWalletSdkOptions } from './ParadymWalletSdk'
 export { logger, LogLevel } from './logger'
-export { AgentProvider, useAgent } from './providers/AgentProvider'

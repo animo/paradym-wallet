@@ -1,6 +1,6 @@
 import type { Agent } from '@credo-ts/core'
 import { type PropsWithChildren, createContext, useContext, useMemo } from 'react'
-import type { initializeAgent } from '../agent'
+import type { setupAgent } from '../agent'
 import { ConnectionProvider } from './ConnectionProvider'
 import { CredentialExchangeProvider } from './CredentialExchangeProvider'
 import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
@@ -30,7 +30,7 @@ export type AgentProviderProps = {
  * ```
  *
  */
-export const useAgent = <AppAgent extends Agent = Awaited<ReturnType<typeof initializeAgent>>>() => {
+export const useAgent = <AppAgent extends Agent = Awaited<ReturnType<typeof setupAgent>>>() => {
   const agentContext = useContext(AgentContext)
 
   if (!agentContext) {

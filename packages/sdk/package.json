@@ -22,16 +22,14 @@
 		"build": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap"
 	},
 	"dependencies": {
-		"@credo-ts/react-native": "*"
-	},
-	"devDependencies": {
-		"@openwallet-foundation/askar-react-native": "*"
+		"@credo-ts/askar": "catalog:",
+		"@credo-ts/core": "catalog:",
+		"@credo-ts/didcomm": "catalog:",
+		"@credo-ts/openid4vc": "catalog:",
+		"@credo-ts/react-native": "catalog:"
 	},
 	"peerDependencies": {
-		"@credo-ts/askar": "*",
-		"@credo-ts/core": "*",
-		"@credo-ts/didcomm": "*",
-		"@credo-ts/openid4vc": "*",
-		"react": "*"
+		"react": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:"
 	}
 }

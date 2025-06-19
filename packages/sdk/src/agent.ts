@@ -1,12 +1,5 @@
 import { AskarModule } from '@credo-ts/askar'
-import {
-  Agent,
-  DidsModule,
-  KeyDerivationMethod,
-  type ModulesMap,
-  X509Module,
-  type X509ModuleConfigOptions,
-} from '@credo-ts/core'
+import { Agent, DidsModule, KeyDerivationMethod, X509Module, type X509ModuleConfigOptions } from '@credo-ts/core'
 import {
   ConnectionsModule,
   CredentialsModule,
@@ -22,17 +15,10 @@ import {
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { agentDependencies } from '@credo-ts/react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
+import { ParadymWalletMustBeDidCommAgentError, ParadymWalletMustBeOpenId4VcAgentError } from './error'
 import { type LogLevel, logger } from './logger'
-import type { RequiredFields, StripOptionalAndUndefined } from './types'
 
-export type InitializeAgentOptions<AdditionalModules extends ModulesMap = ModulesMap> = {
-  /**
-   *
-   * Label used when using DIDComm to convey who you are
-   *
-   */
-  label: string
-
+export type SetupAgentOptions = {
   /**
    *
    * Unique identifier of your wallet storage
@@ -59,16 +45,6 @@ export type InitializeAgentOptions<AdditionalModules extends ModulesMap = Module
 
   /**
    *
-   * Custom agent modules that can be added
-   *
-   * @todo
-   * This is not yet supported
-   *
-   */
-  additionalAgentModules?: never
-
-  /**
-   *
    * Configuration for when OpenId4Vc is used
    *
    * @note by default, openid4vc is configured on the agent
@@ -87,7 +63,16 @@ export type InitializeAgentOptions<AdditionalModules extends ModulesMap = Module
    * @note to disable didcomm explicitly, pass in `false`
    *
    */
-  didcommConfiguration?: false
+  didcommConfiguration?:
+    | {
+        /**
+         *
+         * Label used for DIDComm connections to convey who you are to the other agent
+         *
+         */
+        label: string
+      }
+    | false
 }
 
 /**
@@ -95,12 +80,10 @@ export type InitializeAgentOptions<AdditionalModules extends ModulesMap = Module
  * Function that sets up everything needed for the functionality required in a wallet.
  *
  */
-export const initializeAgent = async <AdditionalModules extends ModulesMap = ModulesMap>(
-  options: InitializeAgentOptions<AdditionalModules>
-) => {
+export const setupAgent = (options: SetupAgentOptions) => {
   const openId4VcConfiguration = options.openId4VcConfiguration ?? {}
 
-  const didcommConfiguration = options.didcommConfiguration
+  const didcommConfiguration = options.didcommConfiguration ?? false
 
   const modules = {
     askar: new AskarModule({
@@ -113,7 +96,7 @@ export const initializeAgent = async <AdditionalModules extends ModulesMap = Mod
 
   const agent = new Agent({
     config: {
-      label: options.label,
+      label: didcommConfiguration ? didcommConfiguration.label : '',
       walletConfig: {
         id: options.id,
         key: options.key,
@@ -123,30 +106,18 @@ export const initializeAgent = async <AdditionalModules extends ModulesMap = Mod
     },
     dependencies: agentDependencies,
     modules,
-  }) as Agent<Modules & OpenId4VcModules & DidCommModules>
-
-  type OpenId4VcModules = StripOptionalAndUndefined<
-    RequiredFields<typeof modules, keyof ReturnType<typeof getOpenid4VcModules>>
-  >
-  type DidCommModules = StripOptionalAndUndefined<
-    RequiredFields<typeof modules, keyof ReturnType<typeof getDidCommModules>>
-  >
-  type Modules = StripOptionalAndUndefined<typeof modules>
+  })
 
   if (didcommConfiguration) {
-    agent.modules.didcomm.registerOutboundTransport(new HttpOutboundTransport())
-    agent.modules.didcomm.registerOutboundTransport(new WsOutboundTransport())
+    const didcommAgent = agent as DidCommAgent
+    didcommAgent.modules.didcomm.registerOutboundTransport(new HttpOutboundTransport())
+    didcommAgent.modules.didcomm.registerOutboundTransport(new WsOutboundTransport())
   }
 
-  await agent.initialize()
-
-  // TODO: OpenId4VcModules and DidCommModules types should be added dynamically based on whether the configuration is provided
   return agent
 }
 
-const getOpenid4VcModules = (
-  openId4VcConfiguration: Exclude<InitializeAgentOptions['openId4VcConfiguration'], false>
-) => ({
+const getOpenid4VcModules = (openId4VcConfiguration: Exclude<SetupAgentOptions['openId4VcConfiguration'], false>) => ({
   openId4VcHolder: new OpenId4VcHolderModule(),
   x509: new X509Module({
     trustedCertificates: openId4VcConfiguration?.trustedCertificates as undefined | [string, ...string[]],
@@ -155,7 +126,7 @@ const getOpenid4VcModules = (
 })
 
 // TODO: configure, or allow the user, to configure these modules
-const getDidCommModules = (_didcommConfiguration: Exclude<InitializeAgentOptions['didcommConfiguration'], false>) => ({
+const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['didcommConfiguration'], false>) => ({
   connections: new ConnectionsModule(),
   messagePickup: new MessagePickupModule(),
   discovery: new DiscoverFeaturesModule(),
@@ -169,3 +140,22 @@ const getDidCommModules = (_didcommConfiguration: Exclude<InitializeAgentOptions
 
 export type DidCommAgent = Agent<ReturnType<typeof getDidCommModules>>
 export type OpenId4VcAgent = Agent<ReturnType<typeof getOpenid4VcModules>>
+export type FullAgent = DidCommAgent & OpenId4VcAgent
+
+export const isDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): boolean => 'didcomm' in agent.modules
+export const assertDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): DidCommAgent => {
+  if (!isDidcommAgent(agent)) {
+    throw new ParadymWalletMustBeDidCommAgentError()
+  }
+
+  return agent as DidCommAgent
+}
+
+export const isOpenId4VcAgent = (agent: DidCommAgent | OpenId4VcAgent): boolean => 'openId4VcHolder' in agent.modules
+export const assertOpenId4VcAgent = (agent: DidCommAgent | OpenId4VcAgent): OpenId4VcAgent => {
+  if (!isOpenId4VcAgent(agent)) {
+    throw new ParadymWalletMustBeOpenId4VcAgentError()
+  }
+
+  return agent as OpenId4VcAgent
+}
