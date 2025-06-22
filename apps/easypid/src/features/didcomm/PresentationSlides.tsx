@@ -98,7 +98,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           step: 'success',
           progress: 100,
           backIsCancel: true,
-          screen: <PresentationSuccessSlide verifierName={verifierName} onComplete={onComplete} />,
+          screen: <PresentationSuccessSlide showReturnToApp verifierName={verifierName} onComplete={onComplete} />,
         },
       ]}
       onCancel={onCancel}
