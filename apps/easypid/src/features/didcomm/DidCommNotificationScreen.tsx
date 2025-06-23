@@ -6,7 +6,7 @@ import {
   resolveOutOfBandInvitation,
   useDidCommConnectionActions,
 } from '@package/agent'
-import { SlideWizard, usePushToWallet } from '@package/app/src'
+import { SlideWizard, usePushToWallet } from '@package/app'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'

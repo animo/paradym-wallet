@@ -1,5 +1,5 @@
-import type { FormattedSubmission } from 'packages/agent/src'
-import { type SlideStep, SlideWizard } from 'packages/app/src/components'
+import { type SlideStep, SlideWizard } from '@package/app'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'

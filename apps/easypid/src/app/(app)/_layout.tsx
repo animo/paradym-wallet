@@ -14,7 +14,7 @@ import {
   registerCredentialsForDcApi,
   useMediatorSetup,
 } from '@package/agent'
-import { isParadymAgent } from '@package/agent/src/agent'
+import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'

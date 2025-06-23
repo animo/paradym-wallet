@@ -1,4 +1,4 @@
-import { getMdlAttributesForDisplay } from '@easypid/utils/mdlCustomMetadata'
+import { getMdlAttributesForDisplay } from './mdl'
 
 const docTypeOrVctDisplay = {
   'https://example.eudi.ec.europa.eu/mdl/1': (attributes: Record<string, unknown>) => {

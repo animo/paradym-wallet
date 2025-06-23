@@ -1,8 +1,5 @@
-import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
-
 import {
   acquirePreAuthorizedAccessToken,
-  getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   storeCredential,
@@ -12,6 +9,10 @@ import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
+import type { MdocRecord } from '@paradym/wallet-sdk/src/providers/MdocProvider'
+import type { SdJwtVcRecord } from '@paradym/wallet-sdk/src/providers/SdJwtVcProvider'
+import type { W3cCredentialRecord } from '@paradym/wallet-sdk/src/providers/W3cCredentialsProvider'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'

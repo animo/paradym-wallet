@@ -6,22 +6,23 @@ import type {
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
-import type {
-  FormattedSubmission,
-  FormattedSubmissionEntry,
-  FormattedSubmissionEntrySatisfiedCredential,
-} from '../format/formatPresentation'
 
 import { CredoError } from '@credo-ts/core'
 import { ProofEventTypes, ProofState, V2RequestPresentationMessage } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
-import { useConnectionById, useProofById } from '../providers'
 
 import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
-import { useAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
+import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
+import type {
+  FormattedSubmission,
+  FormattedSubmissionEntry,
+  FormattedSubmissionEntrySatisfiedCredential,
+} from '@paradym/wallet-sdk/src/format/submission'
+import { useConnectionById } from '@paradym/wallet-sdk/src/providers/ConnectionProvider'
+import { useProofById } from '@paradym/wallet-sdk/src/providers/ProofExchangeProvider'
+import { useAgent } from '../providers/AgentProvider'
 import { getCredential } from '../storage'
 
 export function useDidCommPresentationActions(proofExchangeId: string) {

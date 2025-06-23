@@ -1,6 +1,5 @@
+import { useImageScaler } from '@package/app'
 import { Button, NfcScannerModalAndroid, YStack } from '@package/ui'
-
-import { useImageScaler } from 'packages/app/src/hooks'
 import { Platform } from 'react-native'
 import { ScanCard } from './assets/ScanCard'
 

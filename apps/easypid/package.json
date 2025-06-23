@@ -28,6 +28,7 @@
 		"@package/secure-store": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@package/utils": "workspace:*",
+		"@paradym/wallet-sdk": "workspace:*",
 		"@react-native-community/blur": "^4.3.2",
 		"@react-native-community/netinfo": "11.4.1",
 		"@react-native-masked-view/masked-view": "0.3.2",

@@ -3,15 +3,16 @@ import type { AppAgent } from '@easypid/agent'
 import {
   type CredentialForDisplayId,
   type CredentialsForProofRequest,
-  type DisplayImage,
-  type FormattedSubmission,
   type FormattedTransactionData,
-  getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
   getWalletJsonStore,
   useWalletJsonRecord,
 } from '@package/agent'
-
+import {
+  getDisclosedAttributeNamesForDisplay,
+  getUnsatisfiedAttributePathsForDisplay,
+} from '@paradym/wallet-sdk/src/display/common'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import { useMemo } from 'react'
 
 export type ActivityType = 'shared' | 'received' | 'signed'

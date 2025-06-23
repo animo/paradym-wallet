@@ -1,16 +1,16 @@
 import { CredentialState, ProofState } from '@credo-ts/didcomm'
 import { useEffect, useMemo } from 'react'
 
-import type { ParadymAppAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   getDidCommProofExchangeDisplayMetadata,
   setDidCommCredentialExchangeMetadata,
   setDidCommProofExchangeMetadata,
-} from '../didcomm/metadata'
-import { useConnections } from '../providers/ConnectionProvider'
-import { useCredentialByState } from '../providers/CredentialExchangeProvider'
-import { useProofByState } from '../providers/ProofExchangeProvider'
+} from '@paradym/wallet-sdk/src/metadata/credentials'
+import { useConnections } from '@paradym/wallet-sdk/src/providers/ConnectionProvider'
+import { useCredentialByState } from '@paradym/wallet-sdk/src/providers/CredentialExchangeProvider'
+import { useProofByState } from '@paradym/wallet-sdk/src/providers/ProofExchangeProvider'
+import type { ParadymAppAgent } from '../agent'
 
 export const useHasInboxNotifications = () => {
   const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])

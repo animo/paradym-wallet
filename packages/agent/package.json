@@ -17,6 +17,7 @@
 		"@credo-ts/react-native": "catalog:",
 		"@credo-ts/didcomm": "catalog:",
 		"@package/utils": "workspace:*",
+		"@paradym/wallet-sdk": "workspace:*",
 		"@tanstack/react-query": "^5",
 		"credo-ts-didweb-anoncreds": "0.0.1-alpha.13",
 		"fast-text-encoding": "^1.0.6",

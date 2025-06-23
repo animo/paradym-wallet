@@ -1,14 +1,15 @@
 import type { Agent } from '@credo-ts/core'
 import { type PropsWithChildren, createContext, useContext, useMemo } from 'react'
 
+import type { FullAgent } from '@paradym/wallet-sdk/src/agent'
+import { ConnectionProvider } from '@paradym/wallet-sdk/src/providers/ConnectionProvider'
+import { CredentialExchangeProvider } from '@paradym/wallet-sdk/src/providers/CredentialExchangeProvider'
+import { MdocRecordProvider } from '@paradym/wallet-sdk/src/providers/MdocProvider'
+import { ProofExchangeProvider } from '@paradym/wallet-sdk/src/providers/ProofExchangeProvider'
+import { SdJwtVcRecordProvider } from '@paradym/wallet-sdk/src/providers/SdJwtVcProvider'
+import { W3cCredentialRecordProvider } from '@paradym/wallet-sdk/src/providers/W3cCredentialsProvider'
 import type { EitherAgent, ParadymAppAgent } from '../agent'
-import { ConnectionProvider } from './ConnectionProvider'
-import { CredentialExchangeProvider } from './CredentialExchangeProvider'
 import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
-import { MdocRecordProvider } from './MdocProvider'
-import { ProofExchangeProvider } from './ProofExchangeProvider'
-import { SdJwtVcRecordProvider } from './SdJwtVcsProvider'
-import { W3cCredentialRecordProvider } from './W3cCredentialsProvider'
 
 const AgentContext = createContext<Agent | undefined>(undefined)
 
@@ -52,7 +53,7 @@ export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProvid
     return DynamicProviders.reduce(
       (accChildren, Provider, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-        <Provider key={index} agent={agent}>
+        <Provider key={index} agent={agent as FullAgent}>
           {accChildren}
         </Provider>
       ),
