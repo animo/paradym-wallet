@@ -1,9 +1,9 @@
 import { useWizard } from '@package/app'
-import { DualResponseButtons } from '@package/app/src/components/DualResponseButtons'
+import { DualResponseButtons } from '@package/app'
 import { Heading, MiniCardRowItem, Paragraph, YStack, useToastController } from '@package/ui'
+import type { CredentialDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
-import type { CredentialDisplay } from 'packages/agent/src'
 import { useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 

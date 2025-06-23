@@ -5,14 +5,14 @@ import { CredentialEventTypes, CredentialState } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
-import { useCredentialById } from '../providers'
 
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
   setOpenId4VcCredentialMetadata,
-} from '@package/sdk/src/metadata/credentials'
-import { useAgent } from '../agent'
+} from '@paradym/wallet-sdk/src/metadata/credentials'
+import { useCredentialById } from '@paradym/wallet-sdk/src/providers/CredentialExchangeProvider'
+import { useAgent } from '../providers/AgentProvider'
 
 function useOfferAttributes(credentialExchangeId: string) {
   const { agent } = useAgent()

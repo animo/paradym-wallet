@@ -72,7 +72,7 @@ export interface CredentialForDisplay {
   hasRefreshToken: boolean
 }
 
-function getCredentialForDisplayId(
+export function getCredentialForDisplayId(
   credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
 ): CredentialForDisplayId {
   if (credentialRecord instanceof SdJwtVcRecord) {

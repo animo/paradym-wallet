@@ -38,16 +38,16 @@ import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
-import { formatDcqlCredentialsForRequest } from '@package/sdk/src/format/dcqlRequest'
-import { formatDifPexCredentialsForRequest } from '@package/sdk/src/format/presentationExchangeRequest'
-import type { FormattedSubmission } from '@package/sdk/src/format/submission'
+import { formatDcqlCredentialsForRequest } from '@paradym/wallet-sdk/src/format/dcqlRequest'
+import { formatDifPexCredentialsForRequest } from '@paradym/wallet-sdk/src/format/presentationExchangeRequest'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
   setOpenId4VcCredentialMetadata,
-} from '@package/sdk/src/metadata/credentials'
-import { getCredentialBindingResolver } from '@package/sdk/src/openid4vc/credentialBindingResolver'
-import { credentialRecordFromCredential, encodeCredential } from '@package/sdk/src/utils/encoding'
+} from '@paradym/wallet-sdk/src/metadata/credentials'
+import { getCredentialBindingResolver } from '@paradym/wallet-sdk/src/openid4vc/credentialBindingResolver'
+import { credentialRecordFromCredential, encodeCredential } from '@paradym/wallet-sdk/src/utils/encoding'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 import type { ParadymAppAgent } from '../agent'

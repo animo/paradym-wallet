@@ -1,7 +1,7 @@
 import { CredentialAttributes, TextBackButton, useScrollViewPosition } from '@package/app'
-import type { FormattedCredentialValue } from '@package/app/src/utils/formatSubject'
+import type { FormattedCredentialValue } from '@package/app'
 import { FlexPage, ScrollView, YStack } from '@package/ui'
-import { HeaderContainer } from 'packages/ui/src/content/HeaderContainer'
+import { HeaderContainer } from '@package/ui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface FunkeNestedAttributeScreenProps {

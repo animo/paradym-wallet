@@ -1,8 +1,7 @@
+import { useHaptics } from '@package/app'
 import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack, useDeviceMedia } from '@package/ui'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
-
-import { useHaptics } from 'packages/app/src/hooks/useHaptics'
 
 export interface OnboardingIdCardPinEnterProps {
   goToNextStep: (idCardPin: string) => Promise<void>

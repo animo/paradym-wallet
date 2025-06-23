@@ -1,7 +1,7 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
 import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
-import { getCredentialForDisplay } from '@package/sdk/src/display/credential'
 import { sanitizeString } from '@package/utils'
+import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import * as ExpoAsset from 'expo-asset'
 import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'

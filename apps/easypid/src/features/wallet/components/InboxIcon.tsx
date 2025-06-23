@@ -1,9 +1,8 @@
+import { useHasInboxNotifications } from '@package/agent'
+import { useHaptics } from '@package/app'
+import { AnimatedStack, Circle, IconContainer, Stack } from '@package/ui'
+import { HeroIcons } from '@package/ui'
 import { useRouter } from 'expo-router'
-import { useHasInboxNotifications } from 'packages/agent/src/hooks'
-import { useHaptics } from 'packages/app/src'
-import { Circle, IconContainer } from 'packages/ui/src'
-import { AnimatedStack, Stack } from 'packages/ui/src/base/Stacks'
-import { HeroIcons } from 'packages/ui/src/content/Icon'
 import { ZoomIn, ZoomOut } from 'react-native-reanimated'
 
 export function InboxIcon() {

@@ -3,8 +3,8 @@ import {
   getBatchCredentialMetadata,
   getCredentialCategoryMetadata,
   getRefreshCredentialMetadata,
-} from '@package/sdk/src/metadata/credentials'
-import { decodeW3cCredential } from '@package/sdk/src/utils/encoding'
+} from '@paradym/wallet-sdk/src/metadata/credentials'
+import { decodeW3cCredential } from '@paradym/wallet-sdk/src/utils/encoding'
 import { RefreshPidUseCase } from '../../../apps/easypid/src/use-cases/RefreshPidUseCase'
 import type { EitherAgent } from './agent'
 import { updateCredential } from './storage'

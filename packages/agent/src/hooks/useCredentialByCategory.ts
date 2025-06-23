@@ -1,5 +1,5 @@
 import { type ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import type { CredentialForDisplay } from '@package/sdk/src/display/credential'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import { useCredentialsForDisplay } from './useCredentialsForDisplay'
 
 export function useCredentialByCategory(credentialCategory?: string) {

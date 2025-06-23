@@ -2,10 +2,16 @@ import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack
 import { useLocalSearchParams } from 'expo-router'
 
 import { useCredentialsForDisplay } from '@package/agent'
-import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
-import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
+import {
+  CardWithAttributes,
+  MiniDocument,
+  TextBackButton,
+  activityInteractions,
+  useHaptics,
+  useScrollViewPosition,
+} from '@package/app'
+import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'
-import { formatRelativeDate } from 'packages/utils/src'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'

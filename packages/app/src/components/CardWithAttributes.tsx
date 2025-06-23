@@ -1,4 +1,3 @@
-import type { DisplayImage } from '@package/sdk/src/display/credential'
 import {
   AnimatedStack,
   Heading,
@@ -10,8 +9,9 @@ import {
   XStack,
   YStack,
   useScaleAnimation,
-} from '@package/ui/src'
-import { sanitizeString } from '@package/utils/src'
+} from '@package/ui'
+import { sanitizeString } from '@package/utils'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'

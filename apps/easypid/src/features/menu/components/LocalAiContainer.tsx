@@ -1,11 +1,7 @@
-import { HeroIcons } from '@package/ui/src/content/Icon'
-
-import { Switch } from '@package/ui/src/base/Switch'
-
 import { useIsDeviceCapable, useLLM } from '@easypid/llm'
-import { ConfirmationSheet } from '@package/app/src/components/ConfirmationSheet'
-import { useHasInternetConnection, useIsConnectedToWifi } from 'packages/app/src/hooks'
-import { useToastController } from 'packages/ui/src'
+import { ConfirmationSheet, useHasInternetConnection, useIsConnectedToWifi } from '@package/app'
+import { HeroIcons, Switch } from '@package/ui'
+import { useToastController } from '@package/ui'
 import { useState } from 'react'
 
 export function LocalAiContainer() {

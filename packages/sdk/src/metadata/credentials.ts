@@ -245,3 +245,10 @@ export function openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(
     },
   }
 }
+
+export function setCredentialCategoryMetadata(
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
+  metadata: CredentialCategoryMetadata
+) {
+  credentialRecord.metadata.set(credentialCategoryMetadataKey, metadata)
+}

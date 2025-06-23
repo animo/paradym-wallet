@@ -12,16 +12,17 @@ import { ProofEventTypes, ProofState, V2RequestPresentationMessage } from '@cred
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
-import { useConnectionById, useProofById } from '../providers'
 
-import { getCredentialForDisplay } from '@package/sdk/src/display/credential'
+import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
+import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
   FormattedSubmissionEntrySatisfiedCredential,
-} from '@package/sdk/src/format/submission'
-import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
-import { useAgent } from '../agent'
+} from '@paradym/wallet-sdk/src/format/submission'
+import { useConnectionById } from '@paradym/wallet-sdk/src/providers/ConnectionProvider'
+import { useProofById } from '@paradym/wallet-sdk/src/providers/ProofExchangeProvider'
+import { useAgent } from '../providers/AgentProvider'
 import { getCredential } from '../storage'
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
