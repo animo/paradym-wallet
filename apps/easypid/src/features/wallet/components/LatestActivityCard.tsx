@@ -1,6 +1,6 @@
 import { useActivities } from '@easypid/features/activity/activityRecord'
 import { useCredentialsForDisplay } from '@package/agent'
-import { useHaptics } from '@package/app/hooks'
+import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'

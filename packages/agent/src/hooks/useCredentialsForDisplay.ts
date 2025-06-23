@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 
-import { type CredentialForDisplay, getCredentialForDisplay } from '@package/sdk/src/display/credential'
-import type { CredentialCategoryMetadata } from '@package/sdk/src/metadata/credentials'
-import { useMdocRecords, useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
+import { type CredentialForDisplay, getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
+import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
+import { useMdocRecords } from '@paradym/wallet-sdk/src/providers/MdocProvider'
+import { useSdJwtVcRecords } from '@paradym/wallet-sdk/src/providers/SdJwtVcProvider'
+import { useW3cCredentialRecords } from '@paradym/wallet-sdk/src/providers/W3cCredentialsProvider'
 
 export const useCredentialsForDisplay = ({
   removeCanonicalRecords = true,

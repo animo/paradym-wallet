@@ -1,4 +1,4 @@
-import { SlideWizard } from '@package/app/components/SlideWizard'
+import { SlideWizard } from '@package/app'
 import {
   AnimatedStack,
   Button,

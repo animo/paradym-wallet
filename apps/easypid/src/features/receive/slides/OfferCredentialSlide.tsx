@@ -1,4 +1,3 @@
-import type { CredentialDisplay } from '@package/agent'
 import {
   CredentialAttributes,
   DualResponseButtons,
@@ -19,6 +18,7 @@ import {
   useInitialRender,
   useSpringify,
 } from '@package/ui'
+import type { CredentialDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
 import {

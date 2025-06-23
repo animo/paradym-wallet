@@ -6,10 +6,14 @@ import {
   acquireRefreshTokenAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-} from '@package/agent/invitation/handler'
-import { getBatchCredentialMetadata, setBatchCredentialMetadata } from '@package/agent/openid4vc/batchMetadata'
-import { getRefreshCredentialMetadata, setRefreshCredentialMetadata } from '@package/agent/openid4vc/refreshMetadata'
-import { updateCredential } from '@package/agent/storage/credential'
+} from '@package/agent'
+import { updateCredential } from '@package/agent'
+import {
+  getBatchCredentialMetadata,
+  getRefreshCredentialMetadata,
+  setBatchCredentialMetadata,
+  setRefreshCredentialMetadata,
+} from '@paradym/wallet-sdk/src/metadata/credentials'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'

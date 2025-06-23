@@ -1,16 +1,17 @@
-import type { MdocRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
   OpenId4VciAuthorizationFlow,
-  type SdJwtVcRecord,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  storeCredential,
+} from '@package/agent'
+import {
   setCredentialCategoryMetadata,
   setOpenId4VcCredentialMetadata,
   setRefreshCredentialMetadata,
-  storeCredential,
-} from '@package/agent'
+} from '@paradym/wallet-sdk/src/metadata/credentials'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'

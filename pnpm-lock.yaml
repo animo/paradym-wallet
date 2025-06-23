@@ -355,6 +355,9 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@paradym/wallet-sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
       '@react-native-community/blur':
         specifier: 'catalog:'
         version: 4.4.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)

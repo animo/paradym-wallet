@@ -1,6 +1,6 @@
 import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useImageScaler } from '@package/app/hooks'
+import { useImageScaler } from '@package/app'
 import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useState } from 'react'
 import { Linking, Platform } from 'react-native'

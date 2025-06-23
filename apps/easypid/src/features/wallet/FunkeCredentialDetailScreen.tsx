@@ -1,3 +1,13 @@
+import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
+import {
+  CardInfoLifecycle,
+  DeleteCredentialSheet,
+  FunkeCredentialCard,
+  TextBackButton,
+  useHaptics,
+  useHeaderRightAction,
+  useScrollViewPosition,
+} from '@package/app'
 import {
   AnimatedStack,
   FlexPage,
@@ -10,15 +20,8 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
-import { useState } from 'react'
-
-import { DeleteCredentialSheet, TextBackButton } from '@package/app'
-import { useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
-
-import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
-import { useHaptics } from '@package/app'
-import { CardInfoLifecycle, FunkeCredentialCard } from '@package/app/components'
 import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export function FunkeCredentialDetailScreen() {

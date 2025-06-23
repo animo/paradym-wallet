@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { useCallback } from 'react'
-import { useAgent } from '../agent'
 import { type ResolveOutOfBandInvitationResultSuccess, acceptOutOfBandInvitation } from '../invitation'
+import { useAgent } from '../providers/AgentProvider'
 
 export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitationResultSuccess) {
   const { agent } = useAgent()

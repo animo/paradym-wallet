@@ -1,5 +1,3 @@
-import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
-
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { mediatorDid } from '@easypid/constants'
@@ -14,9 +12,10 @@ import {
   registerCredentialsForDcApi,
   useMediatorSetup,
 } from '@package/agent'
-import { isParadymAgent } from '@package/agent/agent'
+import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
+import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'

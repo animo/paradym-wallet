@@ -1,10 +1,8 @@
-import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
-
-import { TextBackButton } from '@package/app'
-import { Linking } from 'react-native'
-
 import { useAppCopy } from '@easypid/config/copy'
+import { TextBackButton } from '@package/app'
+import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
 import * as Application from 'expo-application'
+import { Linking } from 'react-native'
 
 export function FunkeAboutScreen() {
   const { about } = useAppCopy()

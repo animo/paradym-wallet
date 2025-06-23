@@ -1,6 +1,6 @@
 import { ClaimFormat } from '@credo-ts/core'
 import { getPidAttributesForDisplay } from '@easypid/utils/pidCustomMetadata'
-import type { CredentialCategoryMetadata } from '@package/sdk/src/metadata/credentials'
+import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
 
 const categoryDisplay = {
   [ClaimFormat.SdJwtVc]: {

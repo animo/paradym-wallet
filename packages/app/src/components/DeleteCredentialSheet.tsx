@@ -5,8 +5,8 @@ import {
   useCredentialByCategory,
   useCredentialForDisplayById,
 } from '@package/agent'
-import type { CredentialCategoryMetadata } from '@package/sdk/src/metadata/credentials'
 import { useToastController } from '@package/ui'
+import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'

@@ -1,4 +1,4 @@
-import { useCredentialByCategory } from '@package/agent/hooks'
+import { useCredentialByCategory } from '@package/agent'
 import { capitalizeFirstLetter } from '@package/utils'
 
 export function useFirstNameFromPidCredential() {

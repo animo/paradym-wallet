@@ -1,6 +1,6 @@
 import { ClaimFormat } from '@credo-ts/core'
-import type { CredentialMetadata } from '@package/agent'
 import { sanitizeString } from '@package/utils'
+import type { CredentialMetadata } from '@paradym/wallet-sdk/src/display/credential'
 
 export type PidAttributes = PidMdocAttributes | PidSdJwtVcAttributes
 
