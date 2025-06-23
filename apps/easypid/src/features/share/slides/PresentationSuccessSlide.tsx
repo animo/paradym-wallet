@@ -4,9 +4,14 @@ import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
 interface PresentationSuccessSlideProps {
   onComplete: () => void
   verifierName?: string
+  showReturnToApp?: boolean
 }
 
-export const PresentationSuccessSlide = ({ verifierName, onComplete }: PresentationSuccessSlideProps) => {
+export const PresentationSuccessSlide = ({
+  verifierName,
+  onComplete,
+  showReturnToApp,
+}: PresentationSuccessSlideProps) => {
   return (
     <YStack fg={1} jc="space-between">
       <YStack fg={1} mt="$10" gap="$4" key="12345">
@@ -74,7 +79,12 @@ export const PresentationSuccessSlide = ({ verifierName, onComplete }: Presentat
           </Paragraph>
         </YStack>
       </YStack>
-      <Stack gap="$2" borderTopWidth="$0.5" borderColor="$grey-200" p="$4" mx="$-4">
+      <Stack gap="$3" borderTopWidth="$0.5" borderColor="$grey-200" p="$4" py="$2" mx="$-4">
+        {showReturnToApp && (
+          <Paragraph variant="annotation" ta="center">
+            You can now return to the previous app.
+          </Paragraph>
+        )}
         <Button.Solid scaleOnPress onPress={onComplete}>
           Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
