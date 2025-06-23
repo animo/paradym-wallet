@@ -772,6 +772,12 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@animo-id/eudi-wallet-functionality':
+        specifier: 'catalog:'
+        version: 0.0.0-alpha-20250604122408(bhuutvdgw4tnsm2jdltc2fhu7m)
+      '@astronautlabs/jsonpath':
+        specifier: ^1.1.2
+        version: 1.1.2
       '@credo-ts/askar':
         specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250604111322
         version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250604111322(ftvxab23bot6zwbp55k4bbrks4)'
@@ -787,6 +793,9 @@ importers:
       '@credo-ts/react-native':
         specifier: npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250604111322
         version: '@animo-id/credo-ts-react-native@0.5.14-alpha-20250604111322(ioimztgdrbsvca3vvmovdqqla4)'
+      '@openid4vc/openid4vp':
+        specifier: 0.3.0-alpha-20250602121005
+        version: 0.3.0-alpha-20250602121005
       '@openwallet-foundation/askar-react-native':
         specifier: 0.3.2
         version: 0.3.2(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
