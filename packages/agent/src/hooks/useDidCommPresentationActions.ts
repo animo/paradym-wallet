@@ -6,11 +6,6 @@ import type {
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
-import type {
-  FormattedSubmission,
-  FormattedSubmissionEntry,
-  FormattedSubmissionEntrySatisfiedCredential,
-} from '../format/formatPresentation'
 
 import { CredoError } from '@credo-ts/core'
 import { ProofEventTypes, ProofState, V2RequestPresentationMessage } from '@credo-ts/didcomm'
@@ -19,9 +14,14 @@ import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 import { useConnectionById, useProofById } from '../providers'
 
+import { getCredentialForDisplay } from '@package/sdk/src/display/credential'
+import type {
+  FormattedSubmission,
+  FormattedSubmissionEntry,
+  FormattedSubmissionEntrySatisfiedCredential,
+} from '@package/sdk/src/format/submission'
 import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
 import { useAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
 import { getCredential } from '../storage'
 
 export function useDidCommPresentationActions(proofExchangeId: string) {

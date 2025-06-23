@@ -38,19 +38,20 @@ import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
+import { formatDcqlCredentialsForRequest } from '@package/sdk/src/format/dcqlRequest'
+import { formatDifPexCredentialsForRequest } from '@package/sdk/src/format/presentationExchangeRequest'
+import type { FormattedSubmission } from '@package/sdk/src/format/submission'
+import {
+  extractOpenId4VcCredentialMetadata,
+  setBatchCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '@package/sdk/src/metadata/credentials'
+import { getCredentialBindingResolver } from '@package/sdk/src/openid4vc/credentialBindingResolver'
+import { credentialRecordFromCredential, encodeCredential } from '@package/sdk/src/utils/encoding'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
-import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
-import {
-  type FormattedSubmission,
-  formatDcqlCredentialsForRequest,
-  formatDifPexCredentialsForRequest,
-} from '../format/formatPresentation'
-import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
-import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
-import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { getTrustedEntities } from '../utils/trust'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'

@@ -1,11 +1,11 @@
 import {
-  type CredentialCategoryMetadata,
   type CredentialForDisplayId,
   deleteCredential,
   useAgent,
   useCredentialByCategory,
   useCredentialForDisplayById,
 } from '@package/agent'
+import type { CredentialCategoryMetadata } from '@package/sdk/src/metadata/credentials'
 import { useToastController } from '@package/ui'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'

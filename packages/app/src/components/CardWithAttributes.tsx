@@ -1,4 +1,4 @@
-import type { DisplayImage } from '@package/agent'
+import type { DisplayImage } from '@package/sdk/src/display/credential'
 import {
   AnimatedStack,
   Heading,
@@ -75,7 +75,7 @@ export function CardWithAttributes({
       onPressOut={handlePressOut}
       style={disabledNav ? undefined : pressStyle}
       onPress={disabledNav ? undefined : onPress}
-      accessible={true}
+      tabIndex={0}
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >

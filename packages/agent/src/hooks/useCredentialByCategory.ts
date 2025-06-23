@@ -1,5 +1,5 @@
 import { type ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import type { CredentialForDisplay } from '../display'
+import type { CredentialForDisplay } from '@package/sdk/src/display/credential'
 import { useCredentialsForDisplay } from './useCredentialsForDisplay'
 
 export function useCredentialByCategory(credentialCategory?: string) {

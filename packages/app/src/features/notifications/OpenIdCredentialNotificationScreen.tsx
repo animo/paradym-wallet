@@ -2,7 +2,6 @@ import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/ag
 
 import {
   acquirePreAuthorizedAccessToken,
-  getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   storeCredential,
@@ -12,6 +11,7 @@ import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import { getCredentialForDisplay } from '@package/sdk/src/display/credential'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'

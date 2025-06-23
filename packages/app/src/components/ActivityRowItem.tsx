@@ -1,5 +1,5 @@
 import type { ActivityType } from '@easypid/features/activity/activityRecord'
-import type { DisplayImage } from '@package/agent'
+import type { DisplayImage } from '@package/sdk/src/display/credential'
 import {
   CustomIcons,
   Heading,

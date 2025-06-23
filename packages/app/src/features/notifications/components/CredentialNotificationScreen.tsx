@@ -1,8 +1,7 @@
-import type { CredentialDisplay } from '@package/agent'
-
 import { Heading, ScrollView, YStack } from '@package/ui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import type { CredentialDisplay } from '@package/sdk/src/display/credential'
 import { CredentialAttributes } from '../../../components'
 import { CredentialCard } from '../../../components'
 import { DualResponseButtons } from '../../../components'

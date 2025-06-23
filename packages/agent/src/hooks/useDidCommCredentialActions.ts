@@ -7,12 +7,12 @@ import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 import { useCredentialById } from '../providers'
 
-import { useAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
-} from '../didcomm/metadata'
-import { setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
+  setOpenId4VcCredentialMetadata,
+} from '@package/sdk/src/metadata/credentials'
+import { useAgent } from '../agent'
 
 function useOfferAttributes(credentialExchangeId: string) {
   const { agent } = useAgent()
