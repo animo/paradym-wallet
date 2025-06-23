@@ -1,4 +1,4 @@
-import type { DisplayImage } from '@package/agent/src'
+import type { DisplayImage } from '@package/sdk/src/display/credential'
 import {
   AnimatedStack,
   Heading,

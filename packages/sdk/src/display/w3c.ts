@@ -15,16 +15,16 @@ import type {
 import { getOpenId4VcCredentialDisplay } from './openid4vc'
 import { sanitizeString } from './strings'
 
-type W3cIssuerJson = {
+export type W3cIssuerJson = {
   id: string
 }
 
-type W3cCredentialSubjectJson = {
+export type W3cCredentialSubjectJson = {
   id?: string
   [key: string]: unknown
 }
 
-type W3cCredentialJson = {
+export type W3cCredentialJson = {
   type: Array<string>
   issuer: W3cIssuerJson
   issuanceDate: string
@@ -32,7 +32,7 @@ type W3cCredentialJson = {
   credentialSubject: W3cCredentialSubjectJson | W3cCredentialSubjectJson[]
 }
 
-type JffW3cCredentialJson = W3cCredentialJson & {
+export type JffW3cCredentialJson = W3cCredentialJson & {
   name?: string
   description?: string
   credentialBranding?: {

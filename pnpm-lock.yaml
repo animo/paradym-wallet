@@ -21,6 +21,12 @@ catalogs:
     '@animo-id/expo-secure-environment':
       specifier: 0.1.0
       version: 0.1.0
+    '@sd-jwt/decode':
+      specifier: ^0.9.2
+      version: 0.9.2
+    '@sd-jwt/present':
+      specifier: ^0.9.2
+      version: 0.9.2
     expo:
       specifier: ~52.0.43
       version: 52.0.44
@@ -646,6 +652,9 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
+      '@paradym/wallet-sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@tanstack/react-query':
         specifier: ^5
         version: 5.74.0(react@18.3.1)
@@ -683,6 +692,9 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
+      '@paradym/wallet-sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@react-native-community/netinfo':
         specifier: 11.4.1
         version: 11.4.1(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))
@@ -799,6 +811,12 @@ importers:
       '@openwallet-foundation/askar-react-native':
         specifier: 0.3.2
         version: 0.3.2(react-native@0.76.9(@babel/core@7.26.10)(@babel/preset-env@7.26.9(@babel/core@7.26.10))(@types/react@18.2.79)(react@18.3.1))(react@18.3.1)
+      '@sd-jwt/decode':
+        specifier: 'catalog:'
+        version: 0.9.2
+      '@sd-jwt/present':
+        specifier: 'catalog:'
+        version: 0.9.2
       react:
         specifier: 'catalog:'
         version: 18.3.1
@@ -3567,6 +3585,10 @@ packages:
 
   '@sd-jwt/present@0.7.2':
     resolution: {integrity: sha512-mQV85u2+mLLy2VZ9Wx2zpaB6yTDnbhCfWkP7eeCrzJQHBKAAHko8GrylEFmLKewFIcajS/r4lT/zHOsCkp5pZw==}
+    engines: {node: '>=18'}
+
+  '@sd-jwt/present@0.9.2':
+    resolution: {integrity: sha512-ozBDYfQxUCwu0N+gbyk6zJDraMslFFuNLW+GxITybdDfVJek65tBtbROB8ZBvkAlEl0PDRKebq+xKOCRmplmWA==}
     engines: {node: '>=18'}
 
   '@sd-jwt/sd-jwt-vc@0.7.2':
@@ -13447,6 +13469,12 @@ snapshots:
       '@sd-jwt/decode': 0.7.2
       '@sd-jwt/types': 0.7.2
       '@sd-jwt/utils': 0.7.2
+
+  '@sd-jwt/present@0.9.2':
+    dependencies:
+      '@sd-jwt/decode': 0.9.2
+      '@sd-jwt/types': 0.9.2
+      '@sd-jwt/utils': 0.9.2
 
   '@sd-jwt/sd-jwt-vc@0.7.2':
     dependencies:

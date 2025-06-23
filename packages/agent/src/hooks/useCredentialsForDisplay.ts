@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import type { CredentialCategoryMetadata } from '../credentialCategoryMetadata'
-import { type CredentialForDisplay, getCredentialForDisplay } from '../display'
+import { type CredentialForDisplay, getCredentialForDisplay } from '@package/sdk/src/display/credential'
+import type { CredentialCategoryMetadata } from '@package/sdk/src/metadata/credentials'
 import { useMdocRecords, useSdJwtVcRecords, useW3cCredentialRecords } from '../providers'
 
 export const useCredentialsForDisplay = ({

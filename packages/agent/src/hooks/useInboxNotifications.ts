@@ -1,13 +1,13 @@
 import { CredentialState, ProofState } from '@credo-ts/didcomm'
 import { useEffect, useMemo } from 'react'
 
-import type { ParadymAppAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   getDidCommProofExchangeDisplayMetadata,
   setDidCommCredentialExchangeMetadata,
   setDidCommProofExchangeMetadata,
-} from '../didcomm/metadata'
+} from '@package/sdk/src/metadata/credentials'
+import type { ParadymAppAgent } from '../agent'
 import { useConnections } from '../providers/ConnectionProvider'
 import { useCredentialByState } from '../providers/CredentialExchangeProvider'
 import { useProofByState } from '../providers/ProofExchangeProvider'
