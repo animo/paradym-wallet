@@ -16,7 +16,7 @@ import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'
 
-interface CardWithAttributesProps {
+export interface CardWithAttributesProps {
   id?: string
   name: string
   backgroundColor?: string
