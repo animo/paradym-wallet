@@ -13,8 +13,8 @@ catalogs:
       specifier: 0.0.1-alpha.14
       version: 0.0.1-alpha.14
     '@animo-id/expo-digital-credentials-api':
-      specifier: 0.3.2
-      version: 0.3.2
+      specifier: 0.4.0
+      version: 0.4.0
     '@animo-id/expo-mdoc-data-transfer':
       specifier: 0.1.6
       version: 0.1.6
@@ -291,7 +291,7 @@ importers:
         version: 0.0.1-alpha.14(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
-        version: 0.3.2(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+        version: 0.4.0(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
         version: 0.1.6(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -499,7 +499,7 @@ importers:
         version: 0.0.0-alpha-20250604122408(cualpe2wiyzsxgdbsyplalsyxa)
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
-        version: 0.3.2(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+        version: 0.4.0(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@astronautlabs/jsonpath':
         specifier: 'catalog:'
         version: 1.1.2
@@ -779,8 +779,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@animo-id/expo-digital-credentials-api@0.3.2':
-    resolution: {integrity: sha512-xXfcxRggEZxz9NuCoc9/YWNO3r+cIQlchXEWvpB3uXHIsm9PVz/spTrBW2zBl9vzitwutrzDrg7C5rA2tbLWyA==}
+  '@animo-id/expo-digital-credentials-api@0.4.0':
+    resolution: {integrity: sha512-VIHt0g8K9Dby79Z7AkExkXI8hGY0Nweil450Ky1/5MSPwaN23GhL0fi6mPBDOs2HkUVEUxYXZrSHoNuSw/4gNg==}
     peerDependencies:
       expo: '*'
       react: '*'
@@ -6717,7 +6717,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@animo-id/expo-digital-credentials-api@0.3.2(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
+  '@animo-id/expo-digital-credentials-api@0.4.0(expo@53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
     dependencies:
       expo: 53.0.15(@babel/core@7.27.7)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       react: 19.0.0

@@ -11,7 +11,8 @@ export async function resolveRequestForDcApi({
     ? request.request.requests[request.selectedEntry.providerIndex].data
     : request.request.providers[request.selectedEntry.providerIndex].request
 
-  const authorizationRequestPayload = JSON.parse(providerRequest)
+  const authorizationRequestPayload =
+    typeof providerRequest === 'string' ? JSON.parse(providerRequest) : providerRequest
 
   // TODO: should allow limiting it to a specific credential (as we already know the credential id)
   const result = await getCredentialsForProofRequest({
