@@ -1,10 +1,9 @@
 import { AnimatedStack, Heading, Stack, XStack } from '../base'
 import { HeroIcons } from '../content'
 import { useScaleAnimation } from '../hooks'
-import { FloatingSheet } from './FloatingSheet'
-import type { SheetProps } from './Sheet'
+import { FloatingSheet, type FloatingSheetProps } from './FloatingSheet'
 
-interface OptionSheetProps extends SheetProps {
+interface OptionSheetProps extends FloatingSheetProps {
   items: OptionSheetItemProps[]
 }
 

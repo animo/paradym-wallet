@@ -4,8 +4,7 @@ import { HeroIcons } from '../content/Icon'
 
 import { cloneElement } from 'react'
 import type { StatusVariant } from '../utils/variants'
-import { FloatingSheet } from './FloatingSheet'
-import type { SheetProps } from './Sheet'
+import { FloatingSheet, type FloatingSheetProps } from './FloatingSheet'
 
 const infoSheetVariants = {
   default: {
@@ -34,7 +33,7 @@ const infoSheetVariants = {
   },
 }
 
-export interface InfoSheetProps extends SheetProps {
+export interface InfoSheetProps extends FloatingSheetProps {
   variant?: StatusVariant
   title: string
   description: string

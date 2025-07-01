@@ -56,7 +56,6 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
 
   return (
     <ConfirmationSheet
-      type="floating"
       isOpen={isSheetOpen}
       setIsOpen={setIsSheetOpen}
       title="Archive card?"

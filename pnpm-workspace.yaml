@@ -71,6 +71,7 @@ catalog:
   react-native-reanimated-carousel: ^4.0.2
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.3.2
+  "@gorhom/bottom-sheet": ^5
 
   # Expo
   expo-standard-web-crypto: 2.1.4
@@ -108,6 +109,5 @@ catalog:
   "@tamagui/react-native-media-driver": 1.129.12
   "@tamagui/colors": 1.129.12
   "@tamagui/lucide-icons": 1.129.12
-  "@tamagui/portal": 1.129.12
   "@tamagui/babel-plugin": 1.129.12
   tamagui: 1.129.12

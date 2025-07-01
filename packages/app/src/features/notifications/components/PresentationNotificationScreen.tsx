@@ -1,6 +1,16 @@
 import type { FormattedSubmission } from '@package/agent'
 
-import { Button, Heading, Paragraph, ScrollView, Sheet, Stack, TableContainer, XStack, YStack } from '@package/ui'
+import {
+  Button,
+  FloatingSheet,
+  Heading,
+  Paragraph,
+  ScrollView,
+  Stack,
+  TableContainer,
+  XStack,
+  YStack,
+} from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -165,10 +175,10 @@ export function PresentationNotificationScreen({
           )}
         </YStack>
       </ScrollView>
-      <Sheet
+      <FloatingSheet
         isOpen={isSheetOpen}
         setIsOpen={setIsSheetOpen}
-        onOpenChange={() => {
+        onDismiss={() => {
           setChangeSubmissionCredentialIndex(-1)
         }}
       >
@@ -193,7 +203,7 @@ export function PresentationNotificationScreen({
               ))}
           </TableContainer>
         </Stack>
-      </Sheet>
+      </FloatingSheet>
     </>
   )
 }

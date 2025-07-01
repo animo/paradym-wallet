@@ -33,6 +33,9 @@ catalogs:
     '@expo-google-fonts/raleway':
       specifier: ^0.4.1
       version: 0.4.1
+    '@gorhom/bottom-sheet':
+      specifier: ^5
+      version: 5.1.6
     '@react-native-community/blur':
       specifier: ^4.3.2
       version: 4.4.1
@@ -310,6 +313,9 @@ importers:
       '@expo-google-fonts/raleway':
         specifier: 'catalog:'
         version: 0.4.1
+      '@gorhom/bottom-sheet':
+        specifier: 'catalog:'
+        version: 5.1.6(@types/react@19.1.8)(react-native-gesture-handler@2.24.0(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native-reanimated@3.17.5(@babel/core@7.27.7)(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@hyperledger/anoncreds-react-native':
         specifier: 0.3.1
         version: 0.3.1(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -1829,6 +1835,27 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+
+  '@gorhom/bottom-sheet@5.1.6':
+    resolution: {integrity: sha512-0b5tQj4fTaZAjST1PnkCp0p7d8iRqMezibTcqc8Kkn3N23Vn6upORNTD1fH0bLfwRt6e0WnZ7DjAmq315lrcKQ==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-native': '*'
+      react: '*'
+      react-native: '*'
+      react-native-gesture-handler: '>=2.16.1'
+      react-native-reanimated: '>=3.16.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-native':
+        optional: true
+
+  '@gorhom/portal@1.0.14':
+    resolution: {integrity: sha512-MXyL4xvCjmgaORr/rtryDNFy3kU4qUbKlwtQqqsygd0xX3mhKjOLn6mQK8wfu0RkoE0pBE0nAasRoHua+/QZ7A==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
 
   '@huggingface/jinja@0.5.0':
     resolution: {integrity: sha512-Ptc03/jGRiYRoi0bUYKZ14MkDslsBRT24oxmsvUlfYrvQMldrxCevhPnT+hfX8awKTT8/f/0ZBBWldoeAcMHdQ==}
@@ -8259,6 +8286,23 @@ snapshots:
       tabbable: 6.2.0
 
   '@floating-ui/utils@0.2.10': {}
+
+  '@gorhom/bottom-sheet@5.1.6(@types/react@19.1.8)(react-native-gesture-handler@2.24.0(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native-reanimated@3.17.5(@babel/core@7.27.7)(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@gorhom/portal': 1.0.14(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+      invariant: 2.2.4
+      react: 19.0.0
+      react-native: 0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)
+      react-native-gesture-handler: 2.24.0(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+      react-native-reanimated: 3.17.5(@babel/core@7.27.7)(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+    optionalDependencies:
+      '@types/react': 19.1.8
+
+  '@gorhom/portal@1.0.14(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      nanoid: 3.3.11
+      react: 19.0.0
+      react-native: 0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0)
 
   '@huggingface/jinja@0.5.0': {}
 

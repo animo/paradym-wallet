@@ -2,11 +2,11 @@ import type { CredentialForDisplayId } from '@package/agent'
 
 import { deleteCredential, useAgent, useCredentialForDisplayById } from '@package/agent'
 import {
+  FloatingSheet,
   Heading,
   LucideIcons,
   Paragraph,
   ScrollView,
-  Sheet,
   Spacer,
   Stack,
   YStack,
@@ -96,7 +96,7 @@ export function CredentialDetailScreen() {
           </YStack>
         </YStack>
       </ScrollView>
-      <Sheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
+      <FloatingSheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
         <Stack p="$4" gap="$6" pb={bottom}>
           <Stack gap="$3">
             <Heading variant="h2">Delete '{display.name}'?</Heading>
@@ -111,7 +111,7 @@ export function CredentialDetailScreen() {
             onDecline={() => setIsSheetOpen(false)}
           />
         </Stack>
-      </Sheet>
+      </FloatingSheet>
     </YStack>
   )
 }

@@ -1,5 +1,4 @@
 import type { TamaguiProviderProps } from '@package/ui'
-import { PortalProvider } from '@tamagui/portal'
 
 import { TamaguiProvider, ToastProvider } from '@package/ui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -9,23 +8,24 @@ import type { PropsWithChildren } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { CustomToast } from '../components'
 import { ToastViewport } from './ToastViewport'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 const queryClient = new QueryClient()
 
 export function Provider({ children, ...rest }: PropsWithChildren<TamaguiProviderProps>) {
   return (
     <TamaguiProvider disableInjectCSS defaultTheme="light" {...rest}>
-      <PortalProvider shouldAddRootHost>
-        <ToastProvider swipeDirection="up" duration={6000}>
-          <QueryClientProvider client={queryClient}>
-            <GestureHandlerRootView style={{ flex: 1 }}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <ToastProvider swipeDirection="up" duration={6000}>
+            <QueryClientProvider client={queryClient}>
               <SafeAreaProvider style={{ backgroundColor: 'white' }}>{children}</SafeAreaProvider>
-            </GestureHandlerRootView>
-          </QueryClientProvider>
-          <CustomToast />
-          <ToastViewport />
-        </ToastProvider>
-      </PortalProvider>
+            </QueryClientProvider>
+            <CustomToast />
+            <ToastViewport />
+          </ToastProvider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </TamaguiProvider>
   )
 }

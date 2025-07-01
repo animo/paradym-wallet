@@ -58,8 +58,6 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
     return 'active'
   }, [isRevoked])
 
-  const onPress = withHaptics(() => setIsOpen(!isOpen))
-
   // TODO: Check if refresh token is expired
   // Should also make sure that pid setup works when refresh token is expired
   const isRefreshTokenExpired = false
@@ -85,12 +83,12 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
         variant={cardInfoLifecycleVariant[state].variant}
         title={cardInfoLifecycleVariant[state].title}
         description={cardInfoLifecycleVariant[state].description}
-        onPress={onPress}
+        onPress={withHaptics(() => setIsOpen(true))}
       />
       <InfoSheet
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        onClose={onPress}
+        onClose={withHaptics(() => setIsOpen(false))}
         variant={cardInfoLifecycleVariant[state].variant}
         title={cardInfoLifecycleVariant[state].title}
         description={cardInfoLifecycleVariant[state].sheetDescription}
@@ -109,8 +107,6 @@ function CardInfoLimitedByDate({
   const [state, setState] = useState<CardInfoLimitedByDateState>('active')
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
-
-  const onPress = withHaptics(() => setIsOpen(!isOpen))
 
   useEffect(() => {
     // If both are passed, then the credential is expired
@@ -144,12 +140,12 @@ function CardInfoLimitedByDate({
         variant={content.variant}
         title={content.title}
         description={content.description}
-        onPress={onPress}
+        onPress={withHaptics(() => setIsOpen(true))}
       />
       <InfoSheet
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        onClose={onPress}
+        onClose={withHaptics(() => setIsOpen(false))}
         variant={content.variant}
         title={content.title}
         description={content.sheetDescription}

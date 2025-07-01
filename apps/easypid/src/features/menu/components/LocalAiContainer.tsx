@@ -82,7 +82,6 @@ export function LocalAiContainer() {
         beta
       />
       <ConfirmationSheet
-        type="floating"
         variant="regular"
         isOpen={isAiModelConfirmationOpen}
         setIsOpen={setIsAiModelConfirmationOpen}

@@ -13,7 +13,6 @@
 		"@tamagui/colors": "catalog:",
 		"@tamagui/font-inter": "catalog:",
 		"@tamagui/lucide-icons": "catalog:",
-		"@tamagui/portal": "catalog:",
 		"@tamagui/shorthands": "catalog:",
 		"@tamagui/themes": "catalog:",
 		"@tanstack/react-query": "catalog:",

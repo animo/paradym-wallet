@@ -37,6 +37,7 @@
 		"burnt": "catalog:",
 		"expo": "catalog:",
 		"expo-application": "catalog:",
+		"@gorhom/bottom-sheet": "catalog:",
 		"expo-asset": "catalog:",
 		"expo-blur": "catalog:",
 		"expo-camera": "catalog:",

@@ -1,4 +1,3 @@
-export * from './Sheet'
 export * from './ToastContainer'
 export * from './Card'
 export * from './OptionSheet'
