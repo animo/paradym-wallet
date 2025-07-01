@@ -3,7 +3,7 @@ import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, MdocService } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'
-import { handleBatchCredential } from '@package/agent/src/batch'
+import { handleBatchCredential } from '@package/agent/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {

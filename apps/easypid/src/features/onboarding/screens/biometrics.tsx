@@ -1,5 +1,5 @@
+import { useImageScaler } from '@package/app/hooks'
 import { Button, Spinner, YStack } from '@package/ui'
-import { useImageScaler } from 'packages/app/src/hooks'
 import { useState } from 'react'
 import { SetUpBiometrics } from './assets/SetUpBiometrics'
 

@@ -111,12 +111,12 @@ const createBaseConfig = (appSpecific) => {
           cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
         },
       ],
-      [
-        'expo-asset',
-        {
-          assets: [...baseAssets, ...appSpecific.assets],
-        },
-      ],
+      // [
+      //   'expo-asset',
+      //   {
+      //     assets: [...baseAssets, ...appSpecific.assets],
+      //   },
+      // ],
       '@animo-id/expo-ausweis-sdk',
       [
         '@animo-id/expo-mdoc-data-transfer',
@@ -151,14 +151,14 @@ const createBaseConfig = (appSpecific) => {
         'expo-font',
         {
           fonts: [
-            '../../node_modules/@expo-google-fonts/open-sans/OpenSans_400Regular.ttf',
-            '../../node_modules/@expo-google-fonts/open-sans/OpenSans_500Medium.ttf',
-            '../../node_modules/@expo-google-fonts/open-sans/OpenSans_600SemiBold.ttf',
-            '../../node_modules/@expo-google-fonts/open-sans/OpenSans_700Bold.ttf',
-            '../../node_modules/@expo-google-fonts/raleway/Raleway_400Regular.ttf',
-            '../../node_modules/@expo-google-fonts/raleway/Raleway_500Medium.ttf',
-            '../../node_modules/@expo-google-fonts/raleway/Raleway_600SemiBold.ttf',
-            '../../node_modules/@expo-google-fonts/raleway/Raleway_700Bold.ttf',
+            '../../node_modules/@expo-google-fonts/open-sans/400Regular/OpenSans_400Regular.ttf',
+            '../../node_modules/@expo-google-fonts/open-sans/500Medium/OpenSans_500Medium.ttf',
+            '../../node_modules/@expo-google-fonts/open-sans/600SemiBold/OpenSans_600SemiBold.ttf',
+            '../../node_modules/@expo-google-fonts/open-sans/700Bold/OpenSans_700Bold.ttf',
+            '../../node_modules/@expo-google-fonts/raleway/400Regular/Raleway_400Regular.ttf',
+            '../../node_modules/@expo-google-fonts/raleway/500Medium/Raleway_500Medium.ttf',
+            '../../node_modules/@expo-google-fonts/raleway/600SemiBold/Raleway_600SemiBold.ttf',
+            '../../node_modules/@expo-google-fonts/raleway/700Bold/Raleway_700Bold.ttf',
           ],
         },
       ],
@@ -207,9 +207,6 @@ const createBaseConfig = (appSpecific) => {
           }))
         ),
       ],
-    },
-    experiments: {
-      tsconfigPaths: true,
     },
     extra: {
       eas: {

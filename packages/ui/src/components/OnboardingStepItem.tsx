@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { Heading, Paragraph, Stack, XStack, YStack } from '../base'
 
 interface OnboardingStepItemProps {

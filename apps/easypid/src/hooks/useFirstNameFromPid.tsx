@@ -1,5 +1,5 @@
-import { useCredentialByCategory } from 'packages/agent/src/hooks'
-import { capitalizeFirstLetter } from 'packages/utils/src'
+import { useCredentialByCategory } from '@package/agent/hooks'
+import { capitalizeFirstLetter } from '@package/utils'
 
 export function useFirstNameFromPidCredential() {
   const { credential, isLoading } = useCredentialByCategory('DE-PID')

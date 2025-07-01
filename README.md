@@ -60,7 +60,7 @@ Once all dependencies are installed, you need to make sure you have a developmen
 You can install this using the following commands:
 
 ```sh
-cd apps/paradym # or apps/easypid
+cd apps/easypid
 pnpm prebuild
 pnpm ios # or android
 ```
@@ -91,7 +91,7 @@ pnpm
 If you're installing a library with any native code, you must install it in `expo`:
 
 ```sh
-cd apps/paradym
+cd apps/easypid
 pnpm add react-native-reanimated
 cd ..
 pnpm

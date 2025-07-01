@@ -1,4 +1,4 @@
-import { sanitizeString } from 'packages/utils/src'
+import { sanitizeString } from '@package/utils'
 
 /**
  * Formats credential subject data for rendering based on value types

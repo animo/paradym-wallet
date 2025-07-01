@@ -1,3 +1,5 @@
+const path = require('node:path')
+
 module.exports = (api) => {
   api.cache(true)
   return {
@@ -8,6 +10,14 @@ module.exports = (api) => {
         'module-resolver',
         {
           extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+          alias: {
+            '@package/app': path.resolve(__dirname, '../../packages/app/src'),
+            '@package/ui': path.resolve(__dirname, '../../packages/ui/src'),
+            '@package/scanner': path.resolve(__dirname, '../../packages/scanner/src'),
+            '@package/secure-store': path.resolve(__dirname, '../../packages/secure-store'),
+            '@package/utils': path.resolve(__dirname, '../../packages/utils/src'),
+            '@package/agent': path.resolve(__dirname, '../../packages/agent/src'),
+          },
         },
       ],
       [

@@ -8,7 +8,7 @@ import {
   type FormattedSubmission,
   getSubmissionForMdocDocumentRequest,
 } from '@package/agent'
-import { usePushToWallet } from '@package/app/src/hooks/usePushToWallet'
+import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'

@@ -1,7 +1,6 @@
 import 'fast-text-encoding'
 
 import { isGetCredentialActivity } from '@animo-id/expo-digital-credentials-api'
-import { useCheckIncompleteDownload } from '@easypid/llm'
 import { BackgroundLockProvider, NoInternetToastProvider, Provider, useTransparentNavigationBar } from '@package/app'
 import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
@@ -31,7 +30,6 @@ export default function RootLayoutWithoutDcApi() {
 
 function RootLayout() {
   useTransparentNavigationBar()
-  useCheckIncompleteDownload()
 
   return (
     <Provider config={tamaguiConfig}>
@@ -47,7 +45,7 @@ function RootLayout() {
         >
           <BackgroundLockProvider>
             <NoInternetToastProvider>
-              <StatusBar translucent />
+              <StatusBar />
               <Slot />
             </NoInternetToastProvider>
           </BackgroundLockProvider>

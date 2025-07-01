@@ -1,6 +1,6 @@
 import { Button, HeroIcons, InfoButton, InfoSheet, Stack } from '@package/ui'
-import type { StatusVariant } from '@package/ui/src/utils/variants'
-import { formatDate, formatDaysString, getDaysUntil } from '@package/utils/src'
+import type { StatusVariant } from '@package/ui/utils/variants'
+import { formatDate, formatDaysString, getDaysUntil } from '@package/utils'
 import { useRouter } from 'expo-router'
 import { useEffect, useMemo } from 'react'
 import { useState } from 'react'

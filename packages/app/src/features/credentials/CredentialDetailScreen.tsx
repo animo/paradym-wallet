@@ -15,6 +15,8 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import { Pressable } from 'react-native-gesture-handler'
+
 import { useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CredentialAttributes, DualResponseButtons } from '../../components'
@@ -37,9 +39,14 @@ export function CredentialDetailScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Stack px="$4" py="$2" onPress={() => setIsSheetOpen(true)} mr="$-4">
-          <LucideIcons.Trash2 color={isSheetOpen ? '$danger-600' : '$danger-500'} />
-        </Stack>
+        // FIXME: should remove pressable and pass it to Stack once
+        // the following issue is resolved:
+        // https://github.com/react-navigation/react-navigation/issues/12667
+        <Pressable onPress={() => setIsSheetOpen(true)}>
+          <Stack px="$4" py="$2" mr="$-4">
+            <LucideIcons.Trash2 color={isSheetOpen ? '$danger-600' : '$danger-500'} />
+          </Stack>
+        </Pressable>
       ),
     })
   }, [navigation, isSheetOpen])

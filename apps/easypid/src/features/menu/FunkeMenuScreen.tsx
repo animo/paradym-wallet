@@ -2,9 +2,9 @@ import type React from 'react'
 
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
-import { useCredentialByCategory } from '@package/agent/src/hooks/useCredentialByCategory'
+import { useCredentialByCategory } from '@package/agent/hooks/useCredentialByCategory'
 import { TextBackButton } from '@package/app'
-import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
+import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import {
   AnimatedStack,
   FlexPage,

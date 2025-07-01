@@ -11,15 +11,15 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
-import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
   getCredentialForDisplay,
   getCredentialForDisplayId,
-} from 'packages/agent/src'
-import { useToastController } from 'packages/ui/src'
-import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from 'packages/utils/src'
+} from '@package/agent'
+import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
+import { useToastController } from '@package/ui'
+import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { useCallback, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'

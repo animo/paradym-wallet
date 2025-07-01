@@ -1,5 +1,6 @@
+import { type DisplayImage, useCredentialsForDisplay } from '@package/agent'
 import { TextBackButton } from '@package/app'
-import { useHaptics, useScrollViewPosition } from '@package/app/src/hooks'
+import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import {
   AnimatedStack,
   FlexPage,
@@ -19,9 +20,8 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
+import { formatDate } from '@package/utils'
 import { useRouter } from 'expo-router'
-import { type DisplayImage, useCredentialsForDisplay } from 'packages/agent/src'
-import { formatDate } from 'packages/utils/src'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 

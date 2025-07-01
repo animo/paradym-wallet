@@ -1,4 +1,4 @@
-import { Image } from '@package/ui/src/content/Image'
+import { Image } from '@package/ui/content/Image'
 
 import { Stack, YStack } from '@package/ui'
 

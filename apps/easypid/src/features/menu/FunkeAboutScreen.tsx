@@ -1,6 +1,6 @@
 import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
 
-import { TextBackButton } from 'packages/app'
+import { TextBackButton } from '@package/app'
 import { Linking } from 'react-native'
 
 import { useAppCopy } from '@easypid/config/copy'

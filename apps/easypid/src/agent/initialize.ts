@@ -3,7 +3,7 @@ import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'
 import { initializeEasyPIDAgent } from '@package/agent'
-import { initializeParadymAgent, isEasyPIDAgent } from '@package/agent/src/agent'
+import { initializeParadymAgent, isEasyPIDAgent } from '@package/agent/agent'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export function getWalletId(walletKeyVersion: number) {

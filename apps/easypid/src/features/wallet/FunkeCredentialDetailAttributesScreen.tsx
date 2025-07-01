@@ -13,9 +13,8 @@ import {
 } from '@package/ui'
 import { useRef, useState } from 'react'
 
-import { CredentialAttributes } from '@package/app/src/components'
-import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
-import { TextBackButton } from 'packages/app'
+import { CredentialAttributes, TextBackButton } from '@package/app/components'
+import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { useLocalSearchParams, useRouter } from 'expo-router'

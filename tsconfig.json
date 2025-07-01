@@ -15,9 +15,13 @@
 		"jsx": "react-native",
 		"typeRoots": ["./types"],
 		"paths": {
-			"@package/*": ["./packages/*"],
-			"@easypid/*": ["./apps/easypid/src/*"],
-			"@paradym/*": ["./apps/paradym/*"]
+			"@package/*": ["./packages/*/src"],
+			"@package/agent/*": ["./packages/agent/src/*"],
+			"@package/ui/*": ["./packages/ui/src/*"],
+			"@package/app/*": ["./packages/app/src/*"],
+			"@package/scanner/*": ["./packages/scanner/src/*"],
+			"@package/utils/*": ["./packages/utils/src/*"],
+			"@easypid/*": ["./apps/easypid/src/*"]
 		}
 	},
 	"exclude": ["node_modules", "build"]

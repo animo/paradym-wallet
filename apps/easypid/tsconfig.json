@@ -1,10 +1,6 @@
 {
 	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"paths": {
-			"@easypid/*": ["./apps/easypid/src/*"]
-		}
-	},
+	"compilerOptions": {},
 	"include": [
 		"./src/**/*.ts",
 		"./src/**/*.tsx",

@@ -4,7 +4,7 @@ import { TextBackButton } from '@package/app'
 import { LocalAiContainer } from './components/LocalAiContainer'
 
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useScrollViewPosition } from '@package/app/src/hooks'
+import { useScrollViewPosition } from '@package/app/hooks'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 
 export function FunkeSettingsScreen() {

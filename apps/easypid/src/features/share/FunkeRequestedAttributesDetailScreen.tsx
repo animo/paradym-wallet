@@ -16,8 +16,8 @@ import {
 import { useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 
-import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/src/components'
-import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
+import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/components'
+import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'

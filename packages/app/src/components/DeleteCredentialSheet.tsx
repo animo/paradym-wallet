@@ -5,7 +5,7 @@ import {
   useAgent,
   useCredentialByCategory,
   useCredentialForDisplayById,
-} from '@package/agent/src'
+} from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'

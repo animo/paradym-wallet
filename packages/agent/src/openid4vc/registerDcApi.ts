@@ -1,9 +1,6 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
-import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
+import { DateOnly, type MdocNameSpaces } from '@credo-ts/core'
 import { sanitizeString } from '@package/utils'
-import * as ExpoAsset from 'expo-asset'
-import { Image } from 'expo-image'
-import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
 import type { EitherAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
@@ -67,80 +64,80 @@ function mapSdJwtAttributesToClaimDisplay(claims: object, path: string[] = []): 
   })
 }
 
-/**
- * Returns base64 data url
- */
-async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset) {
-  try {
-    // Make sure the asset is loaded
-    if (!asset.localUri) {
-      await asset.downloadAsync()
-    }
+// /**
+//  * Returns base64 data url
+//  */
+// async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset) {
+//   try {
+//     // Make sure the asset is loaded
+//     if (!asset.localUri) {
+//       await asset.downloadAsync()
+//     }
 
-    if (!asset.localUri) {
-      return undefined
-    }
+//     if (!asset.localUri) {
+//       return undefined
+//     }
 
-    const image = await Image.loadAsync(asset.localUri)
+//     const image = await Image.loadAsync(asset.localUri)
 
-    // Calculate new dimensions maintaining aspect ratio
-    let width: number
-    let height: number
-    if (image.width >= image.height) {
-      // If width is the larger dimension
-      width = 20
-      height = Math.round((image.height / image.width) * 20)
-    } else {
-      // If height is the larger dimension
-      height = 20
-      width = Math.round((image.width / image.height) * 20)
-    }
+//     // Calculate new dimensions maintaining aspect ratio
+//     let width: number
+//     let height: number
+//     if (image.width >= image.height) {
+//       // If width is the larger dimension
+//       width = 20
+//       height = Math.round((image.height / image.width) * 20)
+//     } else {
+//       // If height is the larger dimension
+//       height = 20
+//       width = Math.round((image.width / image.height) * 20)
+//     }
 
-    // Use the new API to resize the image
-    const resizedImage = await ImageManipulator.manipulate(image).resize({ width, height }).renderAsync()
-    const savedImages = await resizedImage.saveAsync({
-      base64: true,
-      format: SaveFormat.PNG,
-      compress: 1,
-    })
+//     // Use the new API to resize the image
+//     const resizedImage = await ImageManipulator.manipulate(image).resize({ width, height }).renderAsync()
+//     const savedImages = await resizedImage.saveAsync({
+//       base64: true,
+//       format: SaveFormat.PNG,
+//       compress: 1,
+//     })
 
-    if (!savedImages.base64) {
-      return undefined
-    }
+//     if (!savedImages.base64) {
+//       return undefined
+//     }
 
-    return `data:image/png;base64,${savedImages.base64}` as const
-  } catch (error) {
-    logger.error('Error resizing image.', {
-      error,
-    })
-    throw error
-  }
-}
+//     return `data:image/png;base64,${savedImages.base64}` as const
+//   } catch (error) {
+//     logger.error('Error resizing image.', {
+//       error,
+//     })
+//     throw error
+//   }
+// }
 
-async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
-  let asset: ExpoAsset.Asset
+// async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
+//   let asset: ExpoAsset.Asset
 
-  try {
-    // in case of external image
-    if (url.startsWith('data://') || url.startsWith('https://')) {
-      const cachePath = await Image.getCachePathAsync(url)
-      if (!cachePath) return undefined
+//   try {
+//     // in case of external image
+//     if (url.startsWith('data://') || url.startsWith('https://')) {
+//       const cachePath = await Image.getCachePathAsync(url)
+//       if (!cachePath) return undefined
 
-      asset = await ExpoAsset.Asset.fromURI(`file://${cachePath}`).downloadAsync()
-    }
-    // In case of local image
-    else {
-      asset = ExpoAsset.Asset.fromModule(url)
-    }
+//       asset = await ExpoAsset.Asset.fromURI(`file://${cachePath}`).downloadAsync()
+//     }
+//     // In case of local image
+//     else {
+//       asset = ExpoAsset.Asset.fromModule(url)
+//     }
 
-    return await resizeImageWithAspectRatio(logger, asset)
-  } catch (error) {
-    // just ignore it, we don't want to cause issues with registering crednetials
-    logger.error('Error resizing and retrieving cached image for DC API', {
-      error,
-    })
-  }
-}
+//     return await resizeImageWithAspectRatio(logger, asset)
+//   } catch (error) {
+//     // just ignore it, we don't want to cause issues with registering crednetials
+//     logger.error('Error resizing and retrieving cached image for DC API', {
+//       error,
+//     })
+//   }
+// }
 
 export async function registerCredentialsForDcApi(agent: EitherAgent) {
   if (Platform.OS === 'ios') return
@@ -152,11 +149,12 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
     const mdoc = record.credential
     const { display } = getCredentialForDisplay(record)
 
-    const iconDataUrl = display.backgroundImage?.url
-      ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
-      : display.issuer.logo?.url
-        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
-        : undefined
+    const iconDataUrl = undefined
+    // const iconDataUrl = display.backgroundImage?.url
+    //   ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
+    //   : display.issuer.logo?.url
+    //     ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
+    //     : undefined
 
     return {
       id: record.id,
@@ -178,11 +176,12 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
     const sdJwtVc = record.credential
     const { display } = getCredentialForDisplay(record)
 
-    const iconDataUrl = display.backgroundImage?.url
-      ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
-      : display.issuer.logo?.url
-        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
-        : undefined
+    const iconDataUrl = undefined
+    // const iconDataUrl = display.backgroundImage?.url
+    //   ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
+    //   : display.issuer.logo?.url
+    //     ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
+    //     : undefined
 
     return {
       id: record.id,

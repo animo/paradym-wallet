@@ -1,6 +1,6 @@
 import { type FormattedSubmission, useAgent, useDidCommPresentationActions } from '@package/agent'
+import { SlideWizard } from '@package/app/components/SlideWizard'
 import { useToastController } from '@package/ui'
-import { SlideWizard } from 'packages/app/src/components/SlideWizard'
 import { addSharedActivityForSubmission } from '../activity/activityRecord'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'

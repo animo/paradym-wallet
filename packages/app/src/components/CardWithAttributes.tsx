@@ -1,4 +1,4 @@
-import type { DisplayImage } from '@package/agent/src'
+import type { DisplayImage } from '@package/agent'
 import {
   AnimatedStack,
   Heading,
@@ -10,8 +10,8 @@ import {
   XStack,
   YStack,
   useScaleAnimation,
-} from '@package/ui/src'
-import { sanitizeString } from '@package/utils/src'
+} from '@package/ui'
+import { sanitizeString } from '@package/utils'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'

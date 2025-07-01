@@ -12,13 +12,13 @@ import {
 } from '@package/ui'
 import { useState } from 'react'
 
-import { useHeaderRightAction, useScrollViewPosition } from '@package/app/src/hooks'
-import { DeleteCredentialSheet, TextBackButton } from 'packages/app'
+import { DeleteCredentialSheet, TextBackButton } from '@package/app'
+import { useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 
 import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
+import { useHaptics } from '@package/app'
+import { CardInfoLifecycle, FunkeCredentialCard } from '@package/app/components'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useHaptics } from 'packages/app'
-import { CardInfoLifecycle, FunkeCredentialCard } from 'packages/app/src/components'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export function FunkeCredentialDetailScreen() {
@@ -62,7 +62,7 @@ export function FunkeCredentialDetailScreen() {
           borderBottomWidth="$0.5"
           borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
         />
-        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <ScrollView nScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack ai="center" gap="$6" p="$4" marginBottom={bottom}>
             <AnimatedStack width="100%" mt="$-3" mb="$-5" scale={0.75}>
               <FunkeCredentialCard
