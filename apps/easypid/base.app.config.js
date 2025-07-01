@@ -111,12 +111,12 @@ const createBaseConfig = (appSpecific) => {
           cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
         },
       ],
-      // [
-      //   'expo-asset',
-      //   {
-      //     assets: [...baseAssets, ...appSpecific.assets],
-      //   },
-      // ],
+      [
+        'expo-asset',
+        {
+          assets: [...baseAssets, ...appSpecific.assets],
+        },
+      ],
       '@animo-id/expo-ausweis-sdk',
       [
         '@animo-id/expo-mdoc-data-transfer',
@@ -181,6 +181,7 @@ const createBaseConfig = (appSpecific) => {
       associatedDomains: associatedDomains.map((host) => `applinks:${host}`),
     },
     android: {
+      edgeToEdgeEnabled: true,
       allowBackup: false,
       adaptiveIcon: {
         foregroundImage: adaptiveIcon,
