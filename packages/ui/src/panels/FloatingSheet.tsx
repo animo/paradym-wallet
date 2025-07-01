@@ -1,11 +1,11 @@
-import { type PropsWithChildren, useCallback, useEffect, useRef } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   BottomSheetBackdrop,
   type BottomSheetBackdropProps,
   BottomSheetModal,
   BottomSheetView,
 } from '@gorhom/bottom-sheet'
+import { type PropsWithChildren, useCallback, useEffect, useRef } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { Stack } from '../base'
 
