@@ -263,6 +263,9 @@ patchedDependencies:
   '@animo-id/credo-ts-openid4vc':
     hash: h2nlgabmrbdslunjegpf7uhiua
     path: patches/@animo-id__credo-ts-openid4vc.patch
+  '@tamagui/lucide-icons':
+    hash: 6tcfru5vipogbierrf422gjex4
+    path: patches/@tamagui__lucide-icons.patch
 
 importers:
 
@@ -584,7 +587,7 @@ importers:
         version: 1.129.12(react-dom@19.1.0(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@tamagui/lucide-icons':
         specifier: 'catalog:'
-        version: 1.129.12(react-dom@19.1.0(react@19.0.0))(react-native-svg@15.11.2(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+        version: 1.129.12(patch_hash=6tcfru5vipogbierrf422gjex4)(react-dom@19.1.0(react@19.0.0))(react-native-svg@15.11.2(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@tamagui/portal':
         specifier: 'catalog:'
         version: 1.129.12(react-dom@19.1.0(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -9576,7 +9579,7 @@ snapshots:
       - react-dom
       - react-native
 
-  '@tamagui/lucide-icons@1.129.12(react-dom@19.1.0(react@19.0.0))(react-native-svg@15.11.2(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
+  '@tamagui/lucide-icons@1.129.12(patch_hash=6tcfru5vipogbierrf422gjex4)(react-dom@19.1.0(react@19.0.0))(react-native-svg@15.11.2(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@tamagui/core': 1.129.12(react-dom@19.1.0(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@tamagui/helpers-icon': 1.129.12(react-dom@19.1.0(react@19.0.0))(react-native-svg@15.11.2(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.27.7)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
