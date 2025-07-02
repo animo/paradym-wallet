@@ -10,7 +10,7 @@ type SettingsSwitchProps = {
   label: string
   description?: string
   value: boolean
-  icon?: React.ReactElement
+  icon?: React.ReactElement<{ size?: number; color?: string }>
   disabled?: boolean
   onChange: (value: boolean) => void
   beta?: boolean

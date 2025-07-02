@@ -1,10 +1,10 @@
-import { IconContainer } from '@package/ui'
+import { IconContainer, type IconContainerProps } from '@package/ui'
 import { useNavigation } from 'expo-router'
-import { type ReactElement, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 
 interface UseHeaderRightActionProps {
-  icon: ReactElement
+  icon: IconContainerProps['icon']
   onPress: () => void
   renderCondition?: boolean
 }

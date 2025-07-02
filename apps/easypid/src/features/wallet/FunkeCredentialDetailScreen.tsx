@@ -62,7 +62,7 @@ export function FunkeCredentialDetailScreen() {
           borderBottomWidth="$0.5"
           borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
         />
-        <ScrollView nScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack ai="center" gap="$6" p="$4" marginBottom={bottom}>
             <AnimatedStack width="100%" mt="$-3" mb="$-5" scale={0.75}>
               <FunkeCredentialCard

@@ -1,5 +1,3 @@
-import type React from 'react'
-
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useCredentialByCategory } from '@package/agent/hooks/useCredentialByCategory'
@@ -12,6 +10,7 @@ import {
   Heading,
   HeroIcons,
   IconContainer,
+  type IconContainerProps,
   MessageBox,
   ScrollView,
   Stack,
@@ -25,7 +24,7 @@ import { Linking } from 'react-native'
 type MenuListItemProps = {
   variant?: 'regular' | 'danger'
   onPress: () => void
-  icon: React.ReactElement
+  icon: IconContainerProps['icon']
   label: string
   action?: 'outside' | 'info' | 'route' | 'none'
 }

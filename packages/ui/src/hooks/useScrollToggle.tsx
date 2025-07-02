@@ -2,7 +2,7 @@ import { type RefObject, useState } from 'react'
 import type { ScrollViewRefType } from '../base'
 
 interface UseScrollToggleOptions {
-  scrollRef: RefObject<ScrollViewRefType>
+  scrollRef: RefObject<ScrollViewRefType | null>
   onVisibilityChange?: (isVisible: boolean) => void
   scrollDelay?: number
   closeDelay?: number

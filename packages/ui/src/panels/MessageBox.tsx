@@ -34,7 +34,7 @@ interface MessageBoxProps {
   title?: string
   variant?: keyof typeof messageBoxVariants
   textVariant?: 'normal' | 'sub'
-  icon?: ReactElement
+  icon?: ReactElement<{ color?: string }>
   onPress?: () => void
 }
 

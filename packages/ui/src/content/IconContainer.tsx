@@ -22,8 +22,8 @@ const variantStyles = {
   },
 }
 
-interface IconContainerProps extends StackProps {
-  icon: React.ReactElement
+export interface IconContainerProps extends StackProps {
+  icon: React.ReactElement<{ strokeWidth?: number; size?: number; color?: string }>
   scaleOnPress?: boolean
   radius?: 'full' | 'normal'
   variant?: keyof typeof variantStyles
