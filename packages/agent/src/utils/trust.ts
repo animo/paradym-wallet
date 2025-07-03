@@ -108,6 +108,8 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
     uri = uriName
     entityId = dnsName
 
+    // FIXME: why do we match the SAN dnsName of the registration certificate
+    // to the entity-id of the trusted relying party? Shouldn't it be the IAN
     const country = options.trustList.trustList.find(({ trustedRelyingPartyRegistrars }) =>
       trustedRelyingPartyRegistrars.some((rpr) => rpr.entityId === dnsName)
     )
@@ -137,7 +139,7 @@ const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntities
   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
   const entityId =
     options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id ?? `web-origin:${options.origin}`
-  const organizationName = clientMetadata?.client_name
+  const organizationName = clientMetadata?.client_name ?? 'Unknown Organization'
   const logoUri = clientMetadata?.logo_uri
 
   const resolvedChains = await options.agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
@@ -145,25 +147,28 @@ const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntities
     trustAnchorEntityIds: TRUSTED_ENTITIES,
   })
 
+  const uri =
+    typeof options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
+      ? new URL(options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
+      : undefined
+
   const trustedEntities = resolvedChains
     .map((chain) => ({
       entityId: chain.trustAnchorEntityConfiguration.sub,
       organizationName:
-        chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
+        chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown Organization',
       logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
     }))
     .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index)
 
-  const { relyingParty: X509RelyingParty, trustedEntities: X509TrustedEntities } =
-    await getTrustedEntitiesForX509Certificate(options)
-
   return {
     relyingParty: {
-      organizationName: organizationName ?? X509RelyingParty.organizationName,
-      logoUri: logoUri ?? X509RelyingParty.logoUri,
+      organizationName,
+      logoUri,
       entityId,
+      uri,
     },
-    trustedEntities: [...trustedEntities, ...X509TrustedEntities],
+    trustedEntities,
   }
 }
 
@@ -189,15 +194,17 @@ const getTrustedEntitiesForX509Certificate = async ({
     if (signer && signer.method === 'x5c') {
       // FIXME: we should return the x509 cert that was matched, then we can just see if it's in
       // the list of hardcoded trusted certificates
-      const chain = await agent.x509.validateCertificateChain({
-        certificateChain: signer.x5c,
-        certificate: signer.x5c[0],
-        trustedCertificates: x509Config.trustedCertificates,
-      })
+      const chain = await agent.x509
+        .validateCertificateChain({
+          certificateChain: signer.x5c,
+          certificate: signer.x5c[0],
+          trustedCertificates: x509Config.trustedCertificates,
+        })
+        .catch(() => null)
 
-      const trustedEntity = trustedX509Entities?.find((e) =>
-        X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0])
-      )
+      const trustedEntity = chain
+        ? trustedX509Entities?.find((e) => X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0]))
+        : null
       if (trustedEntity) {
         organizationName = trustedEntity.name
         logoUri = trustedEntity.logoUri
@@ -212,6 +219,10 @@ const getTrustedEntitiesForX509Certificate = async ({
         })
 
         if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
+      } else {
+        organizationName =
+          resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name ?? organizationName
+        logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
       }
     }
   } catch (error) {
