@@ -72,6 +72,7 @@ catalog:
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.3.2
   "@gorhom/bottom-sheet": ^5
+  react-native-edge-to-edge: ^1.6.0
 
   # Expo
   expo-standard-web-crypto: 2.1.4
@@ -88,11 +89,9 @@ catalog:
   expo-image-manipulator: ~13.1.7
   expo-linear-gradient: ~14.1.5
   expo-linking: ~7.1.6
-  expo-navigation-bar: ~4.2.6
   expo-router: ~5.1.2
   expo-secure-store: ~14.2.3
   expo-splash-screen: ~0.30.9
-  expo-status-bar: ~2.2.3
   expo-system-ui: ~5.0.9
   expo-updates: ~0.28.15
   expo-web-browser: ~14.2.0

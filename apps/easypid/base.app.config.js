@@ -90,6 +90,14 @@ const createBaseConfig = (appSpecific) => {
     },
     plugins: [
       [
+        'react-native-edge-to-edge',
+        {
+          android: {
+            enforceNavigationBarContrast: false,
+          },
+        },
+      ],
+      [
         'expo-splash-screen',
         {
           backgroundColor: '#F2F4F6',

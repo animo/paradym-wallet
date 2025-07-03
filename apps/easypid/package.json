@@ -50,12 +50,10 @@
 		"expo-image-manipulator": "catalog:",
 		"expo-linear-gradient": "catalog:",
 		"expo-linking": "catalog:",
-		"expo-navigation-bar": "catalog:",
 		"expo-router": "catalog:",
 		"expo-secure-store": "catalog:",
 		"expo-splash-screen": "catalog:",
 		"expo-standard-web-crypto": "catalog:",
-		"expo-status-bar": "catalog:",
 		"expo-system-ui": "catalog:",
 		"expo-updates": "catalog:",
 		"expo-web-browser": "catalog:",
@@ -74,7 +72,8 @@
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
 		"react-native-screens": "catalog:",
-		"react-native-svg": "catalog:"
+		"react-native-svg": "catalog:",
+		"react-native-edge-to-edge": "catalog:"
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",

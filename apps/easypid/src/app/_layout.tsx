@@ -1,13 +1,13 @@
 import 'fast-text-encoding'
 
 import { isGetCredentialActivity } from '@animo-id/expo-digital-credentials-api'
-import { BackgroundLockProvider, NoInternetToastProvider, Provider, useTransparentNavigationBar } from '@package/app'
+import { BackgroundLockProvider, NoInternetToastProvider, Provider } from '@package/app'
 import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
-import { StatusBar } from 'expo-status-bar'
 import { Platform } from 'react-native'
+import { SystemBars } from 'react-native-edge-to-edge'
 import tamaguiConfig from '../../tamagui.config'
 
 void SplashScreen.preventAutoHideAsync()
@@ -29,10 +29,9 @@ export default function RootLayoutWithoutDcApi() {
 }
 
 function RootLayout() {
-  useTransparentNavigationBar()
-
   return (
     <Provider config={tamaguiConfig}>
+      <SystemBars style="dark" />
       <SecureUnlockProvider>
         <ThemeProvider
           value={{
@@ -45,7 +44,6 @@ function RootLayout() {
         >
           <BackgroundLockProvider>
             <NoInternetToastProvider>
-              <StatusBar />
               <Slot />
             </NoInternetToastProvider>
           </BackgroundLockProvider>

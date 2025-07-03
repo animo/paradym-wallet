@@ -20,6 +20,7 @@ import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
 
 import { useAppIcon } from '@easypid/config/copy'
+import { SystemBars } from 'react-native-edge-to-edge'
 import {
   checkMdocPermissions,
   getMdocQrCode,
@@ -132,6 +133,7 @@ export function FunkeOfflineQrScreen() {
 
   return (
     <Page bg="$black" ai="center">
+      <SystemBars style="light" />
       <AnimatedStack pt="$8" maxWidth="90%" gap="$2">
         <Heading variant="h1" lineHeight={36} ta="center" dark>
           Share with QR code

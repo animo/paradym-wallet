@@ -19,7 +19,6 @@
 		"expo-constants": "catalog:",
 		"expo-haptics": "catalog:",
 		"expo-linking": "catalog:",
-		"expo-navigation-bar": "catalog:",
 		"expo-router": "catalog:",
 		"fast-text-encoding": "catalog:",
 		"react": "catalog:",
