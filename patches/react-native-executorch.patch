@@ -1,0 +1,13 @@
+diff --git a/android/build.gradle b/android/build.gradle
+index 0469dc6a3a620ac5e524e9801347f7e234ccf1e7..ad1a3e7d118bbeb588a14d5375abc61c5cd7c93b 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -103,7 +103,7 @@ dependencies {
+   implementation "com.facebook.react:react-android:+"
+   implementation 'org.opencv:opencv:4.10.0'
+   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+-	implementation("com.github.software-mansion:react-native-executorch:v0.4.5")
++	implementation("com.github.software-mansion:react-native-executorch:v0.4.6")
+   implementation 'org.opencv:opencv:4.10.0'
+   implementation("com.squareup.okhttp3:okhttp:4.9.2")
+ }
