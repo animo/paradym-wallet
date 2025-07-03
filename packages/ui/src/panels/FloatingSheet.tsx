@@ -62,7 +62,7 @@ export function FloatingSheet({
       backgroundStyle={{ backgroundColor: 'transparent' }}
     >
       <BottomSheetView style={{ backgroundColor: 'transparent' }}>
-        <Stack bg="white" borderRadius="$10" overflow="hidden" mx="$4" mb={bottom || '$4'}>
+        <Stack bg="white" borderRadius="$button" overflow="hidden" mx="$4" mb={bottom || '$4'}>
           {children}
         </Stack>
       </BottomSheetView>

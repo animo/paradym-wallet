@@ -447,7 +447,7 @@ export function OnboardingContextProvider({
       const reason = (error as CardScanningErrorDetails).reason
       if (reason === 'user_cancelled' || reason === 'cancelled') {
         await reset({
-          resetToStep: 'id-card-pin',
+          resetToStep: 'data-protection',
           error,
           showToast: false,
         })
@@ -549,7 +549,7 @@ export function OnboardingContextProvider({
         return
       }
 
-      await reset({ resetToStep: 'id-card-pin', error })
+      await reset({ resetToStep: 'data-protection', error })
     }
   }
 

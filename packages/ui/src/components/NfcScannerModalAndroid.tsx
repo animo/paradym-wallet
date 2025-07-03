@@ -32,35 +32,39 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
   const { title, description } = text[scanningState]
 
   return (
-    <FloatingSheet isOpen={open} onDismiss={onCancel} setIsOpen={() => {}}>
-      <YStack height={400} borderRadius="$8" backgroundColor="$white" overflow="hidden">
-        <XStack backgroundColor="$primary-100" height={175} justifyContent="center" alignItems="center">
-          <AnimatedNfcScanIcon
-            icon={scanningState === 'readyToScan' || scanningState === 'scanning' ? 'scan' : scanningState}
-            scanAnimated={scanningState === 'readyToScan'}
-          />
-        </XStack>
+    <FloatingSheet
+      isOpen={open}
+      onDismiss={onCancel}
+      setIsOpen={() => {}}
+      enableDismissOnClose={false}
+      enablePanDownToClose={false}
+    >
+      <XStack backgroundColor="$primary-100" height={175} justifyContent="center" alignItems="center">
+        <AnimatedNfcScanIcon
+          icon={scanningState === 'readyToScan' || scanningState === 'scanning' ? 'scan' : scanningState}
+          scanAnimated={scanningState === 'readyToScan'}
+        />
+      </XStack>
 
-        <YStack flex-1 p="$4" justifyContent="space-between">
-          <YStack gap="$2" alignItems="center" px="$5">
-            <Heading variant="h2" textAlign="center">
-              {title}
-            </Heading>
-            <Paragraph variant="sub" textAlign="center">
-              {description}
-            </Paragraph>
-          </YStack>
-
-          {scanningState === 'scanning' && (
-            <YStack px="$2" alignItems="center">
-              <ProgressBar value={progress} />
-            </YStack>
-          )}
-
-          {(scanningState === 'scanning' || scanningState === 'readyToScan') && (
-            <Button.Outline onPress={onCancel}>Cancel</Button.Outline>
-          )}
+      <YStack gap="$4" flex-1 p="$4" justifyContent="space-between">
+        <YStack gap="$2" alignItems="center" px="$5">
+          <Heading variant="h2" textAlign="center">
+            {title}
+          </Heading>
+          <Paragraph variant="sub" textAlign="center">
+            {description}
+          </Paragraph>
         </YStack>
+
+        {scanningState === 'scanning' && (
+          <YStack px="$2" alignItems="center">
+            <ProgressBar value={progress} />
+          </YStack>
+        )}
+
+        {(scanningState === 'scanning' || scanningState === 'readyToScan') && (
+          <Button.Outline onPress={onCancel}>Cancel</Button.Outline>
+        )}
       </YStack>
     </FloatingSheet>
   )
