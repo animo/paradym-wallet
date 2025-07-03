@@ -55,7 +55,14 @@ import { getTrustedEntities } from '../utils/trust'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
-export type TrustedX509Entity = { certificate: string; name: string; logoUri: string; url: string; demo?: boolean }
+export type TrustedX509Entity = {
+  certificate: string
+  name: string
+  logoUri: string
+  url: string
+  demo?: boolean
+  entityId: string
+}
 
 export async function resolveOpenId4VciOffer({
   agent,

@@ -21,9 +21,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type FunkeTrustDetailScreenProps = {
   trustMechanism: TrustMechanism
-  name: string
+  name?: string
   logo?: string
   trustedEntities: Array<TrustedEntity>
+  isDemoTrustedEntity?: boolean
 }
 
 export function FunkeTrustDetailScreen({
@@ -31,12 +32,13 @@ export function FunkeTrustDetailScreen({
   name,
   logo,
   trustedEntities = [],
+  isDemoTrustedEntity = false,
 }: FunkeTrustDetailScreenProps) {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const scrollViewRef = useRef<ScrollViewRefType>(null)
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
-  const hasDemoTrustedEntities = trustedEntities.some((te) => te.demo)
+
   const trustMechanismName =
     trustMechanism === 'eudi_rp_authentication'
       ? 'EU Trusted List'
@@ -48,12 +50,13 @@ export function FunkeTrustDetailScreen({
     <FlexPage gap="$0" paddingHorizontal="$0">
       <HeaderContainer title="About this party" isScrolledByOffset={isScrolledByOffset} />
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack px="$4" gap="$2" marginBottom={bottom}>
+        <YStack px="$4" gap="$4" marginBottom={bottom}>
           <MessageBox
             variant="light"
             message="Always consider whether sharing with a party is wise."
             icon={<HeroIcons.ExclamationTriangleFilled />}
           />
+
           <XStack gap="$4" pt="$2" ai="center">
             {logo ? (
               <Circle overflow="hidden" ai="center" jc="center" size="$6" bw={1} borderColor="$grey-200" bg="$grey-100">
@@ -65,9 +68,10 @@ export function FunkeTrustDetailScreen({
               </Circle>
             )}
             <Heading flex={1} numberOfLines={3} variant="h2">
-              {name || 'Unknown organization'} {hasDemoTrustedEntities ? '(Demo)' : ''}
+              {name || 'Unknown organization'} {isDemoTrustedEntity ? '(Demo)' : ''}
             </Heading>
           </XStack>
+
           <YStack gap="$4" py="$2">
             <YStack gap="$2">
               <Heading variant="sub2">
@@ -75,9 +79,9 @@ export function FunkeTrustDetailScreen({
               </Heading>
               <Paragraph>
                 {trustedEntities.length > 0 ? (
-                  <>A list of organizations that have approved {name || 'unknown organization'}.</>
+                  <>A list of organizations that have approved {name || 'this unknown organization'}.</>
                 ) : (
-                  <>There are no organizations that have approved {name || 'unknown organization'}.</>
+                  <>There are no organizations that have approved {name || 'this unknown organization'}.</>
                 )}
               </Paragraph>
             </YStack>
@@ -96,7 +100,7 @@ export function FunkeTrustDetailScreen({
                           <Heading f={1} numberOfLines={2} variant="h3">
                             {entity.organizationName}
                           </Heading>
-                          {entity.demo && <Paragraph variant="sub">Demo trust entity</Paragraph>}
+                          {entity.demo && <Paragraph variant="sub">Demo organization</Paragraph>}
                         </YStack>
 
                         <IconContainer icon={<HeroIcons.ExclamationTriangleFilled size={30} color="$warning-500" />} />

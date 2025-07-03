@@ -3,11 +3,12 @@ import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
-  const { trustedEntities, name, logo, trustMechanism } = useLocalSearchParams<{
+  const { trustedEntities, name, logo, trustMechanism, isDemoTrustedEntity } = useLocalSearchParams<{
     trustedEntities: string
     trustMechanism: TrustMechanism
     name: string
     logo: string
+    isDemoTrustedEntity?: string
   }>()
 
   const trustedEntitiesArray = JSON.parse(decodeURIComponent(trustedEntities)) as Array<TrustedEntity>
@@ -18,6 +19,7 @@ export default function Screen() {
       logo={logo}
       trustedEntities={trustedEntitiesArray}
       trustMechanism={trustMechanism}
+      isDemoTrustedEntity={isDemoTrustedEntity === 'true'}
     />
   )
 }

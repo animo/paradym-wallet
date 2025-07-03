@@ -60,33 +60,54 @@ export const getTrustedEntities = async (
   options: GetTrustedEntitiesOptions
 ): Promise<{
   trustMechanism: TrustMechanism
-  relyingParty: { logoUri?: string; uri?: string; organizationName: string; entityId: string }
+  relyingParty: { logoUri?: string; uri?: string; organizationName?: string; entityId: string }
   trustedEntities: Array<TrustedEntity>
 }> => {
   const trustMechanism = detectTrustMechanism(options)
 
+  // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+  let trustedEntities
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
-      return {
+      trustedEntities = {
         ...(await getTrustedEntitiesForEudiRpAuthentication({ ...options, walletTrustedEntity: undefined })),
         trustMechanism,
       }
+      break
     case 'openid_federation':
-      return {
+      trustedEntities = {
         ...(await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })),
         trustMechanism,
       }
+      break
     case 'x509':
-      return {
+      trustedEntities = {
         ...(await getTrustedEntitiesForX509Certificate(options)),
         trustMechanism,
       }
+      break
+    default:
+      throw new Error('')
+  }
+
+  let entityId = trustedEntities.relyingParty.entityId
+  if (!entityId) {
+    if (options.origin) entityId = `web-origin:${options.origin}`
+    throw new Error('Missing required client_id in authorization request')
+  }
+
+  return {
+    ...trustedEntities,
+    relyingParty: {
+      ...trustedEntities.relyingParty,
+      entityId,
+    },
   }
 }
 
 const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEntitiesForEudiRpAuthenticationOptions) => {
   const trustedEntities: TrustedEntity[] = []
-  let organizationName = 'Unknown Organization'
+  let organizationName: string | undefined
   let logoUri: string | undefined
   let uri: string | undefined
   let entityId: string | undefined
@@ -137,29 +158,31 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
 
 const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntitiesForOpenIdFederationOptions) => {
   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
-  const entityId =
-    options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id ?? `web-origin:${options.origin}`
-  const organizationName = clientMetadata?.client_name ?? 'Unknown Organization'
+  const entityId = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id
+  const organizationName = clientMetadata?.client_name
   const logoUri = clientMetadata?.logo_uri
 
-  const resolvedChains = await options.agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
-    entityId,
-    trustAnchorEntityIds: TRUSTED_ENTITIES,
-  })
+  const resolvedChains = entityId
+    ? await options.agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+        entityId,
+        trustAnchorEntityIds: TRUSTED_ENTITIES,
+      })
+    : undefined
 
   const uri =
     typeof options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
       ? new URL(options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
       : undefined
 
-  const trustedEntities = resolvedChains
-    .map((chain) => ({
-      entityId: chain.trustAnchorEntityConfiguration.sub,
-      organizationName:
-        chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown Organization',
-      logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
-    }))
-    .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index)
+  const trustedEntities =
+    resolvedChains
+      ?.map((chain) => ({
+        entityId: chain.trustAnchorEntityConfiguration.sub,
+        organizationName:
+          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown organization',
+        logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+      }))
+      .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index) ?? []
 
   return {
     relyingParty: {
@@ -179,13 +202,13 @@ const getTrustedEntitiesForX509Certificate = async ({
   walletTrustedEntity,
 }: GetTrustedEntitiesForX509CertificateOptions) => {
   const trustedEntities: TrustedEntity[] = []
-  let organizationName = 'Unknown Organization'
+  let organizationName: string | undefined
   let logoUri: string | undefined
   const uri =
     typeof resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
       ? new URL(resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
       : undefined
-  let entityId = resolvedAuthorizationRequest.authorizationRequestPayload.client_id ?? 'no_entity_id'
+  let entityId = resolvedAuthorizationRequest.authorizationRequestPayload.client_id
 
   const x509Config = agent.dependencyManager.resolve(X509ModuleConfig)
   const signer = resolvedAuthorizationRequest.signedAuthorizationRequest?.signer
@@ -208,10 +231,10 @@ const getTrustedEntitiesForX509Certificate = async ({
       if (trustedEntity) {
         organizationName = trustedEntity.name
         logoUri = trustedEntity.logoUri
-        entityId = trustedEntity.name
+        entityId = trustedEntity.entityId
 
         trustedEntities.push({
-          entityId: trustedEntity.certificate,
+          entityId: trustedEntity.entityId,
           organizationName: trustedEntity.name,
           logoUri: trustedEntity.logoUri,
           uri: trustedEntity.url,
@@ -220,8 +243,7 @@ const getTrustedEntitiesForX509Certificate = async ({
 
         if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
       } else {
-        organizationName =
-          resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name ?? organizationName
+        organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
         logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
       }
     }
