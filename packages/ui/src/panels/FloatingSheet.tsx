@@ -13,9 +13,26 @@ export interface FloatingSheetProps {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
   onDismiss?: () => void
+
+  /**
+   * @default true
+   */
+  enableDismissOnClose?: boolean
+
+  /**
+   * @default true
+   */
+  enablePanDownToClose?: boolean
 }
 
-export function FloatingSheet({ children, isOpen, setIsOpen, onDismiss }: PropsWithChildren<FloatingSheetProps>) {
+export function FloatingSheet({
+  children,
+  isOpen,
+  setIsOpen,
+  onDismiss,
+  enableDismissOnClose = true,
+  enablePanDownToClose = true,
+}: PropsWithChildren<FloatingSheetProps>) {
   // refs
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const { bottom } = useSafeAreaInsets()
@@ -35,8 +52,8 @@ export function FloatingSheet({ children, isOpen, setIsOpen, onDismiss }: PropsW
   return (
     <BottomSheetModal
       ref={bottomSheetRef}
-      enablePanDownToClose
-      enableDismissOnClose
+      enablePanDownToClose={enablePanDownToClose}
+      enableDismissOnClose={enableDismissOnClose}
       enableDynamicSizing
       onDismiss={onDismiss}
       onChange={(index) => setIsOpen(index !== -1)}

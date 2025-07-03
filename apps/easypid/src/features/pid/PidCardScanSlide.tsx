@@ -1,4 +1,3 @@
-import { useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useState } from 'react'
 import { OnboardingIdCardScan, type OnboardingIdCardScanProps } from '../onboarding/screens/id-card-scan'
@@ -9,7 +8,6 @@ interface PidCardScanSlideProps extends OnboardingIdCardScanProps {
 }
 
 export function PidCardScanSlide({ title, subtitle, onStartScanning, ...props }: PidCardScanSlideProps) {
-  const { onNext } = useWizard()
   const [isLoading, setIsLoading] = useState(false)
 
   const onStartScan = async () => {
