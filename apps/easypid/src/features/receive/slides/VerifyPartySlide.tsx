@@ -53,7 +53,10 @@ export const VerifyPartySlide = ({
   const lastInteractionDate = activities[0]?.date
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
-  const trustedEntitiesWithoutSelf = trustedEntities?.filter((entity) => entity.entityId !== entityId)
+  const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
+  const trustedEntitiesWithoutSelf = trustedEntities
+    ?.filter((entity) => entity.entityId !== entityId)
+    .map((entity) => ({ ...entity, demo: isDemoTrustedEntity ? true : entity.demo }))
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -71,11 +74,13 @@ export const VerifyPartySlide = ({
 
   const onPressVerifiedIssuer = withHaptics(() => {
     const searchParams = new URLSearchParams({
-      name: name ?? '',
-      logo: logo?.url ?? '',
       trustedEntities: JSON.stringify(trustedEntitiesWithoutSelf ?? []),
       trustMechanism,
+      isDemoTrustedEntity: `${isDemoTrustedEntity}`,
     })
+
+    if (logo?.url) searchParams.set('logo', logo.url)
+    if (name) searchParams.set('name', name)
 
     router.push(`trust?${searchParams}`)
   })
@@ -129,10 +134,10 @@ export const VerifyPartySlide = ({
           {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
             <InfoButton
               variant={entityIsTrustAnchor ? 'positive' : 'info'}
-              title="Recognized organisation"
+              title="Recognized organization"
               description={
                 trustedEntitiesWithoutSelf.length > 0
-                  ? `Approved by ${trustedEntitiesWithoutSelf.length} organisation${
+                  ? `Approved by ${trustedEntitiesWithoutSelf.length} organization${
                       trustedEntitiesWithoutSelf.length === 1 ? '' : 's'
                     }`
                   : undefined
@@ -142,10 +147,13 @@ export const VerifyPartySlide = ({
           ) : (
             <InfoButton
               variant="warning"
-              title="Unrecognized organisation"
-              description="No trust approvals found"
+              title="Unknown organization"
+              description="Organization is not verified"
               onPress={onPressVerifiedIssuer}
             />
+          )}
+          {isDemoTrustedEntity && (
+            <InfoButton variant="warning" title="Demo organization" description="Do not share real data" />
           )}
           <InfoButton
             variant={lastInteractionDate ? 'interaction-success' : 'interaction-new'}
