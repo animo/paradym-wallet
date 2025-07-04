@@ -2,7 +2,7 @@ import { setFallbackSecureEnvironment, shouldUseFallbackSecureEnvironment } from
 import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'
-import { initializeParadymAgent, initializeEasyPIDAgent, isEasyPIDAgent } from '@package/agent'
+import { initializeEasyPIDAgent, initializeParadymAgent, isEasyPIDAgent } from '@package/agent'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export function getWalletId(walletKeyVersion: number) {

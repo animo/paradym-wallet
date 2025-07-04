@@ -1,10 +1,10 @@
 import { cloneElement } from 'react'
 import Animated from 'react-native-reanimated'
 import { Label, Switch as TamaguiSwitch } from 'tamagui'
+import type { IconContainerProps } from '../content'
 import { useScaleAnimation } from '../hooks'
 import { Paragraph } from './Paragraph'
 import { XStack, YStack } from './Stacks'
-import type { IconContainerProps } from '../content'
 
 type SettingsSwitchProps = {
   id: string

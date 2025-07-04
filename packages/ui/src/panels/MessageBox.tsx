@@ -1,7 +1,7 @@
 import { cloneElement } from 'react'
 import { AnimatedStack, Heading, Paragraph, Stack, XStack, YStack } from '../base'
-import { useScaleAnimation } from '../hooks/useScaleAnimation'
 import type { IconContainerProps } from '../content'
+import { useScaleAnimation } from '../hooks/useScaleAnimation'
 
 const messageBoxVariants = {
   light: {
