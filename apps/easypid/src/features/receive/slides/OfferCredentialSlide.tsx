@@ -96,7 +96,7 @@ export const OfferCredentialSlide = ({
 
   // Slow haptic when isStoring and a hard tick when isCompleted
   useEffect(() => {
-    let interval: number | undefined
+    let interval = undefined
 
     if (isCompleted) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)

@@ -2,7 +2,6 @@ import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, MdocService } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
-import { CURRENT_APP_TYPE } from '@easypid/config/appType'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'
 import { handleBatchCredential } from '@package/agent/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
@@ -40,7 +39,7 @@ export const checkMdocPermissions = async () => {
 }
 
 export const getMdocQrCode = async () => {
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   const qrData = await mdt.startQrEngagement()
   mdt.enableNfc()
   return qrData
@@ -53,14 +52,18 @@ export const getMdocQrCode = async () => {
  * Returns the device request and session transcript
  */
 export const waitForDeviceRequest = async () => {
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
+
+  console.log({ deviceRequest, sessionTranscript })
 
   // current bug on android required re-encapsulation
   const encodedSessionTranscript =
     Platform.OS === 'android' ? cborEncode(DataItem.fromData(cborDecode(sessionTranscript))) : sessionTranscript
 
-  return { deviceRequest, sessionTranscript: encodedSessionTranscript }
+  const y = { deviceRequest, sessionTranscript: encodedSessionTranscript }
+  console.log(y)
+  return y
 }
 
 /**
@@ -105,11 +108,11 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     },
   })
 
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   await mdt.sendDeviceResponse(deviceResponse)
 }
 
 export const shutdownDataTransfer = () => {
-  const mdt = mdocDataTransfer.instance(CURRENT_APP_TYPE)
+  const mdt = mdocDataTransfer.instance()
   mdt.shutdown()
 }
