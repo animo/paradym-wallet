@@ -12,17 +12,6 @@ import { useIsModelActivated } from './state'
 // FIXME: The model expects a system prompt on initializing, but this blocks it from being used for different tasks.
 export const useLLM = () => {
   const [isModelActivated, setIsModelActivated] = useIsModelActivated()
-  // const [error, setError] = useState<string | null>(null)
-
-  // useEffect(() => {
-  //   if (!response) return
-  //   console.debug('Local LLM response', response)
-  // }, [response])
-
-  // useEffect(() => {
-  //   if (!error) return
-  //   console.debug('Local LLM error', error)
-  // }, [error])
 
   const {
     downloadProgress,

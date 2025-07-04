@@ -33,7 +33,6 @@ export function FloatingSheet({
   enableDismissOnClose = true,
   enablePanDownToClose = true,
 }: PropsWithChildren<FloatingSheetProps>) {
-  // refs
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const { bottom } = useSafeAreaInsets()
 

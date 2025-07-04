@@ -1,11 +1,10 @@
-import type { JSX } from 'react'
 import { Heading, Paragraph, Stack, XStack, YStack } from '../base'
 
 interface OnboardingStepItemProps {
   stepName: string
   description: string
   title: string
-  icon: JSX.Element
+  icon: Element
 }
 
 export const OnboardingStepItem = ({ stepName, title, description, icon }: OnboardingStepItemProps) => {

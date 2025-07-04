@@ -4,13 +4,14 @@ import { Label, Switch as TamaguiSwitch } from 'tamagui'
 import { useScaleAnimation } from '../hooks'
 import { Paragraph } from './Paragraph'
 import { XStack, YStack } from './Stacks'
+import type { IconContainerProps } from '../content'
 
 type SettingsSwitchProps = {
   id: string
   label: string
   description?: string
   value: boolean
-  icon?: React.ReactElement<{ size?: number; color?: string }>
+  icon?: IconContainerProps['icon']
   disabled?: boolean
   onChange: (value: boolean) => void
   beta?: boolean

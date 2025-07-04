@@ -18,6 +18,8 @@ export {
   ParadymAppAgent,
   EasyPIDAppAgent,
   EitherAgent,
+  isEasyPIDAgent,
+  isParadymAgent,
 } from './agent'
 export * from './providers'
 export * from './invitation'

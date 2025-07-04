@@ -14,7 +14,7 @@ export function FunkeNestedAttributeScreen({ item, parentName }: FunkeNestedAttr
   const { bottom } = useSafeAreaInsets()
 
   return (
-    <FlexPage gap={0} paddingHorizontal="$0">
+    <FlexPage gap={0} paddingHorizontal={0}>
       <HeaderContainer isScrolledByOffset={isScrolledByOffset} title={item.name.toString()} subtitle={parentName} />
       <ScrollView pt="$4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack px="$4" gap="$4" marginBottom={bottom}>
