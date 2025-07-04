@@ -3,11 +3,38 @@ packages:
   - 'apps/*'
 
 catalog:
-  expo: ~52.0.43
-  react-native: ~0.76.9
-  react: 18.3.1
-  "@types/react": ~18.2.79
+  expo: ~53.0.15
+  react-native: 0.79.4
+  react: 19.0.0
+  "@types/react": ~19.1.8
   react-docgen-typescript: 2.2.2
+  typescript: ~5.8.3
+  "@tanstack/react-query": ^5.81.5
+
+  # Babel
+  "@babel/core": ^7.24.4
+  babel-plugin-syntax-hermes-parser: ^0.29.1
+  babel-plugin-module-resolver: ^5.0.2
+
+  # Credo / Agent / SSI
+  credo-ts-didweb-anoncreds: 0.0.1-alpha.14
+  rxjs: ^7.8.1
+  query-string: ^8.1.0
+  "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250604122408
+  "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
+  "@animo-id/expo-secure-environment": 0.1.0
+  "@animo-id/expo-digital-credentials-api": 0.4.0
+  "@animo-id/expo-mdoc-data-transfer": 0.1.4-alpha.2
+  "@animo-id/mdoc": 0.5.2
+  "@unimodules/react-native-adapter": ./noop
+  "@unimodules/core": ./noop
+  "@openid4vc/oauth2": 0.3.0-alpha-20250602121005
+  "@openid4vc/openid4vp": 0.3.0-alpha-20250602121005
+  "@openid4vc/openid4vci": 0.3.0-alpha-20250602121005
+  "@openid4vc/utils": 0.3.0-alpha-20250602121005
+  isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
+  fast-text-encoding: ^1.0.6
+  "@types/fast-text-encoding": ^1.0.3
   "@credo-ts/anoncreds": npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250604111322
   "@credo-ts/askar": npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250604111322
   "@credo-ts/cheqd": npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250604111322
@@ -21,18 +48,65 @@ catalog:
   "@hyperledger/anoncreds-shared": 0.3.1
   "@openwallet-foundation/askar-react-native": 0.3.2
   "@openwallet-foundation/askar-shared": 0.3.2
-  typescript: ~5.3.3
-  "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250604122408
-  "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
-  "@animo-id/expo-secure-environment": 0.1.0
-  "@animo-id/expo-digital-credentials-api": 0.3.2
-  "@animo-id/expo-mdoc-data-transfer": 0.1.3
-  "@animo-id/mdoc": 0.5.2
-  "@unimodules/react-native-adapter": ./noop
-  "@unimodules/core": ./noop
-  "@openid4vc/oauth2": 0.3.0-alpha-20250602121005
-  "@openid4vc/openid4vp": 0.3.0-alpha-20250602121005
-  "@openid4vc/openid4vci": 0.3.0-alpha-20250602121005
-  "@openid4vc/utils": 0.3.0-alpha-20250602121005
-  expo-standard-web-crypto: 1.8.1
-  isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
+  buffer: 6.0.3
+  "@astronautlabs/jsonpath": ^1.1.2
+  
+  # React Native
+  "@react-native-community/netinfo": ~11.4.1
+  react-native-heroicons: ^4.0.0
+  "@react-native-masked-view/masked-view": 0.3.2
+  react-native-argon2: ^2.0.1
+  react-native-keychain: ^8.2.0
+  react-native-get-random-values: ~1.11.0
+  react-native-gesture-handler: ~2.24.0
+  react-native-reanimated: ~3.17.4
+  react-native-safe-area-context: 5.4.0
+  react-native-screens: ~4.11.1
+  react-native-svg: 15.11.2
+  "@react-navigation/native": ^7.1.14
+  react-native-executorch: 0.4.6
+  react-native-fs: ^2.20.0
+  react-native-mmkv: ^3.3.0
+  react-native-qrcode-svg: ^6.3.12
+  react-native-reanimated-carousel: ^4.0.2
+  burnt: ^0.13.0
+  "@react-native-community/blur": ^4.3.2
+  "@gorhom/bottom-sheet": ^5
+  react-native-edge-to-edge: ^1.6.0
+
+  # Expo
+  expo-standard-web-crypto: 2.1.4
+  expo-application: ~6.1.5
+  expo-asset: ~11.1.6
+  expo-blur: ~14.1.5
+  expo-camera: ~16.1.10
+  expo-constants: ~17.1.6
+  expo-dev-client: ~5.2.2
+  expo-device: ~7.1.4
+  expo-font: ~13.3.2
+  expo-haptics: ~14.1.4
+  expo-image: ~2.3.1
+  expo-image-manipulator: ~13.1.7
+  expo-linear-gradient: ~14.1.5
+  expo-linking: ~7.1.6
+  expo-router: ~5.1.2
+  expo-secure-store: ~14.2.3
+  expo-splash-screen: ~0.30.9
+  expo-system-ui: ~5.0.9
+  expo-updates: ~0.28.15
+  expo-web-browser: ~14.2.0
+  expo-build-properties: ~0.14.8
+  "@expo-google-fonts/open-sans": ^0.4.1
+  "@expo-google-fonts/raleway": ^0.4.1
+
+  # Tamagui
+  "@tamagui/animations-react-native": 1.129.12
+  "@tamagui/font-inter": 1.129.12
+  "@tamagui/shorthands": 1.129.12
+  "@tamagui/themes": 1.129.12
+  "@tamagui/toast": 1.129.12
+  "@tamagui/react-native-media-driver": 1.129.12
+  "@tamagui/colors": 1.129.12
+  "@tamagui/lucide-icons": 1.129.12
+  "@tamagui/babel-plugin": 1.129.12
+  tamagui: 1.129.12

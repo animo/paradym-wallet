@@ -8,8 +8,8 @@ import {
   mapPidAttributeName,
 } from '@easypid/utils/pidCustomMetadata'
 import type { CredentialForDisplay } from '@package/agent'
-import { CredentialAttributes } from '@package/app/src'
-import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from 'packages/ui/src'
+import { CredentialAttributes } from '@package/app'
+import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
@@ -34,7 +34,7 @@ export function CustomCredentialAttributes({ credential }: CustomCredentialAttri
     return <FunkeMdlCredentialAttributes credential={credential} />
   }
 
-  return <CredentialAttributes subject={credential.attributes} />
+  return <CredentialAttributes attributes={credential.attributes} />
 }
 
 export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {

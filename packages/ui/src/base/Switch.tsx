@@ -1,6 +1,7 @@
 import { cloneElement } from 'react'
 import Animated from 'react-native-reanimated'
 import { Label, Switch as TamaguiSwitch } from 'tamagui'
+import type { IconContainerProps } from '../content'
 import { useScaleAnimation } from '../hooks'
 import { Paragraph } from './Paragraph'
 import { XStack, YStack } from './Stacks'
@@ -10,7 +11,7 @@ type SettingsSwitchProps = {
   label: string
   description?: string
   value: boolean
-  icon?: React.ReactElement
+  icon?: IconContainerProps['icon']
   disabled?: boolean
   onChange: (value: boolean) => void
   beta?: boolean

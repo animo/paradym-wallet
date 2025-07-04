@@ -1,9 +1,9 @@
+import type { CredentialDisplay } from '@package/agent'
 import { useWizard } from '@package/app'
-import { DualResponseButtons } from '@package/app/src/components/DualResponseButtons'
+import { DualResponseButtons } from '@package/app/components/DualResponseButtons'
 import { Heading, MiniCardRowItem, Paragraph, YStack, useToastController } from '@package/ui'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
-import type { CredentialDisplay } from 'packages/agent/src'
 import { useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 

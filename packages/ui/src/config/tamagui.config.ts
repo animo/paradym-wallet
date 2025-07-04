@@ -102,6 +102,11 @@ export const configInput = {
       tableBorderColor: tokens.color['grey-200'],
     },
   },
+  media: {
+    short: {
+      maxHeight: 756,
+    },
+  },
 } as const satisfies CreateTamaguiProps
 
 export const config = createTamagui(configInput)

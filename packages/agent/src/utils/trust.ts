@@ -60,33 +60,54 @@ export const getTrustedEntities = async (
   options: GetTrustedEntitiesOptions
 ): Promise<{
   trustMechanism: TrustMechanism
-  relyingParty: { logoUri?: string; uri?: string; organizationName: string; entityId: string }
+  relyingParty: { logoUri?: string; uri?: string; organizationName?: string; entityId: string }
   trustedEntities: Array<TrustedEntity>
 }> => {
   const trustMechanism = detectTrustMechanism(options)
 
+  // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+  let trustedEntities
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
-      return {
+      trustedEntities = {
         ...(await getTrustedEntitiesForEudiRpAuthentication({ ...options, walletTrustedEntity: undefined })),
         trustMechanism,
       }
+      break
     case 'openid_federation':
-      return {
+      trustedEntities = {
         ...(await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })),
         trustMechanism,
       }
+      break
     case 'x509':
-      return {
+      trustedEntities = {
         ...(await getTrustedEntitiesForX509Certificate(options)),
         trustMechanism,
       }
+      break
+    default:
+      throw new Error('')
+  }
+
+  let entityId = trustedEntities.relyingParty.entityId
+  if (!entityId) {
+    if (options.origin) entityId = `web-origin:${options.origin}`
+    throw new Error('Missing required client_id in authorization request')
+  }
+
+  return {
+    ...trustedEntities,
+    relyingParty: {
+      ...trustedEntities.relyingParty,
+      entityId,
+    },
   }
 }
 
 const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEntitiesForEudiRpAuthenticationOptions) => {
   const trustedEntities: TrustedEntity[] = []
-  let organizationName = 'Unknown Organization'
+  let organizationName: string | undefined
   let logoUri: string | undefined
   let uri: string | undefined
   let entityId: string | undefined
@@ -108,6 +129,8 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
     uri = uriName
     entityId = dnsName
 
+    // FIXME: why do we match the SAN dnsName of the registration certificate
+    // to the entity-id of the trusted relying party? Shouldn't it be the IAN
     const country = options.trustList.trustList.find(({ trustedRelyingPartyRegistrars }) =>
       trustedRelyingPartyRegistrars.some((rpr) => rpr.entityId === dnsName)
     )
@@ -135,35 +158,40 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
 
 const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntitiesForOpenIdFederationOptions) => {
   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
-  const entityId =
-    options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id ?? `web-origin:${options.origin}`
+  const entityId = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id
   const organizationName = clientMetadata?.client_name
   const logoUri = clientMetadata?.logo_uri
 
-  const resolvedChains = await options.agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
-    entityId,
-    trustAnchorEntityIds: TRUSTED_ENTITIES,
-  })
+  const resolvedChains = entityId
+    ? await options.agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+        entityId,
+        trustAnchorEntityIds: TRUSTED_ENTITIES,
+      })
+    : undefined
 
-  const trustedEntities = resolvedChains
-    .map((chain) => ({
-      entityId: chain.trustAnchorEntityConfiguration.sub,
-      organizationName:
-        chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown entity',
-      logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
-    }))
-    .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index)
+  const uri =
+    typeof options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
+      ? new URL(options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
+      : undefined
 
-  const { relyingParty: X509RelyingParty, trustedEntities: X509TrustedEntities } =
-    await getTrustedEntitiesForX509Certificate(options)
+  const trustedEntities =
+    resolvedChains
+      ?.map((chain) => ({
+        entityId: chain.trustAnchorEntityConfiguration.sub,
+        organizationName:
+          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown organization',
+        logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+      }))
+      .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index) ?? []
 
   return {
     relyingParty: {
-      organizationName: organizationName ?? X509RelyingParty.organizationName,
-      logoUri: logoUri ?? X509RelyingParty.logoUri,
+      organizationName,
+      logoUri,
       entityId,
+      uri,
     },
-    trustedEntities: [...trustedEntities, ...X509TrustedEntities],
+    trustedEntities,
   }
 }
 
@@ -174,13 +202,13 @@ const getTrustedEntitiesForX509Certificate = async ({
   walletTrustedEntity,
 }: GetTrustedEntitiesForX509CertificateOptions) => {
   const trustedEntities: TrustedEntity[] = []
-  let organizationName = 'Unknown Organization'
+  let organizationName: string | undefined
   let logoUri: string | undefined
   const uri =
     typeof resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
       ? new URL(resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
       : undefined
-  let entityId = resolvedAuthorizationRequest.authorizationRequestPayload.client_id ?? 'no_entity_id'
+  let entityId = resolvedAuthorizationRequest.authorizationRequestPayload.client_id
 
   const x509Config = agent.dependencyManager.resolve(X509ModuleConfig)
   const signer = resolvedAuthorizationRequest.signedAuthorizationRequest?.signer
@@ -189,22 +217,24 @@ const getTrustedEntitiesForX509Certificate = async ({
     if (signer && signer.method === 'x5c') {
       // FIXME: we should return the x509 cert that was matched, then we can just see if it's in
       // the list of hardcoded trusted certificates
-      const chain = await agent.x509.validateCertificateChain({
-        certificateChain: signer.x5c,
-        certificate: signer.x5c[0],
-        trustedCertificates: x509Config.trustedCertificates,
-      })
+      const chain = await agent.x509
+        .validateCertificateChain({
+          certificateChain: signer.x5c,
+          certificate: signer.x5c[0],
+          trustedCertificates: x509Config.trustedCertificates,
+        })
+        .catch(() => null)
 
-      const trustedEntity = trustedX509Entities?.find((e) =>
-        X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0])
-      )
+      const trustedEntity = chain
+        ? trustedX509Entities?.find((e) => X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0]))
+        : null
       if (trustedEntity) {
         organizationName = trustedEntity.name
         logoUri = trustedEntity.logoUri
-        entityId = trustedEntity.name
+        entityId = trustedEntity.entityId
 
         trustedEntities.push({
-          entityId: trustedEntity.certificate,
+          entityId: trustedEntity.entityId,
           organizationName: trustedEntity.name,
           logoUri: trustedEntity.logoUri,
           uri: trustedEntity.url,
@@ -212,6 +242,9 @@ const getTrustedEntitiesForX509Certificate = async ({
         })
 
         if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
+      } else {
+        organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
+        logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
       }
     }
   } catch (error) {

@@ -1,5 +1,5 @@
 import { Stack } from '@package/ui'
-import { Paragraph } from '@package/ui/src/base/Paragraph'
+import { Paragraph } from '@package/ui/base/Paragraph'
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 

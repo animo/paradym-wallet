@@ -1,7 +1,7 @@
+import { useCredentialsForDisplay } from '@package/agent'
 import { useHaptics } from '@package/app'
+import { InfoButton } from '@package/ui'
 import { useRouter } from 'expo-router'
-import { useCredentialsForDisplay } from 'packages/agent/src'
-import { InfoButton } from 'packages/ui/src'
 
 export function AllCardsCard() {
   const { push } = useRouter()

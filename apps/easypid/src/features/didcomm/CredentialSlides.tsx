@@ -1,7 +1,7 @@
 import { useParadymAgent } from '@easypid/agent'
 import { useDidCommCredentialActions } from '@package/agent'
+import { SlideWizard } from '@package/app/components/SlideWizard'
 import { useToastController } from '@package/ui'
-import { SlideWizard } from 'packages/app/src/components/SlideWizard'
 import { addReceivedActivity } from '../activity/activityRecord'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 import { getFlowConfirmationText } from './utils'

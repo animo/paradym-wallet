@@ -24,7 +24,6 @@ export function useAppCopy() {
 
 export function useAppIcon() {
   const [assets] = useAssets([require('../../assets/funke/icon.png'), require('../../assets/paradym/icon.png')])
-
   if (CURRENT_APP_TYPE === 'FUNKE_WALLET') {
     return assets?.[0]
   }

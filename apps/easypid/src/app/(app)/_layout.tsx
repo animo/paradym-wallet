@@ -14,10 +14,11 @@ import {
   registerCredentialsForDcApi,
   useMediatorSetup,
 } from '@package/agent'
-import { isParadymAgent } from '@package/agent/src/agent'
+import { isParadymAgent } from '@package/agent/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useEffect, useState } from 'react'
+import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
 const jsonRecordIds = [activityStorage.recordId]
@@ -111,10 +112,18 @@ export default function AppLayout() {
 
   const headerNormalOptions = {
     headerShown: true,
+    headerLeft: () => (
+      // FIXME: should remove pressable and pass it to IconContainer once
+      // the following issue is resolved:
+      // https://github.com/react-navigation/react-navigation/issues/12667
+      <Pressable onPress={withHaptics(() => router.back())} style={{ padding: 2 }}>
+        <IconContainer icon={<HeroIcons.ArrowLeft />} />
+      </Pressable>
+    ),
     headerTransparent: true,
+    headerBackVisible: false,
     headerTintColor: theme['primary-500'].val,
     headerTitle: '',
-    headerLeft: () => <IconContainer icon={<HeroIcons.ArrowLeft />} onPress={withHaptics(() => router.back())} />,
   }
 
   // Render the normal wallet, which is everything inside (app)

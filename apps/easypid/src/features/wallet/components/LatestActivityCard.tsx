@@ -1,9 +1,9 @@
 import { useActivities } from '@easypid/features/activity/activityRecord'
 import { useCredentialsForDisplay } from '@package/agent'
-import { InfoButton } from '@package/ui/src'
+import { useHaptics } from '@package/app/hooks'
+import { InfoButton } from '@package/ui'
+import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'
-import { useHaptics } from 'packages/app/src/hooks'
-import { formatRelativeDate } from 'packages/utils/src'
 import { useMemo } from 'react'
 
 export function LatestActivityCard() {

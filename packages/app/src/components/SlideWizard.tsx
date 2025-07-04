@@ -232,7 +232,6 @@ export const SlideWizard = forwardRef(
           </AnimatedStack>
         </FlexPage>
         <ConfirmationSheet
-          type="floating"
           title={confirmation?.title ?? 'Stop sharing?'}
           description={confirmation?.description ?? 'If you stop, no data will be shared.'}
           confirmText={confirmation?.confirmText}

@@ -1,8 +1,8 @@
+import { useInboxNotifications } from '@package/agent/hooks'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
-import { useInboxNotifications } from 'packages/agent/src/hooks'
 
-import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from 'packages/app'
+import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function InboxScreen() {

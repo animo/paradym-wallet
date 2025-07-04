@@ -1,11 +1,11 @@
-import { HeroIcons } from '@package/ui/src/content/Icon'
+import { HeroIcons } from '@package/ui/content/Icon'
 
-import { Switch } from '@package/ui/src/base/Switch'
+import { Switch } from '@package/ui/base/Switch'
 
 import { useIsDeviceCapable, useLLM } from '@easypid/llm'
-import { ConfirmationSheet } from '@package/app/src/components/ConfirmationSheet'
-import { useHasInternetConnection, useIsConnectedToWifi } from 'packages/app/src/hooks'
-import { useToastController } from 'packages/ui/src'
+import { ConfirmationSheet } from '@package/app/components/ConfirmationSheet'
+import { useHasInternetConnection, useIsConnectedToWifi } from '@package/app/hooks'
+import { useToastController } from '@package/ui'
 import { useState } from 'react'
 
 export function LocalAiContainer() {
@@ -15,7 +15,8 @@ export function LocalAiContainer() {
   const isDeviceCapable = useIsDeviceCapable()
 
   const [isAiModelConfirmationOpen, setIsAiModelConfirmationOpen] = useState(false)
-  const { loadModel, isModelReady, downloadProgress, removeModel, isModelActivated, isModelDownloading } = useLLM()
+  const { isModelReady, downloadProgress, isModelActivated, isModelDownloading, activateModel, deactivateModel } =
+    useLLM()
 
   const onActivateModel = () => {
     if (!isDeviceCapable) {
@@ -40,7 +41,7 @@ export function LocalAiContainer() {
     }
 
     setIsAiModelConfirmationOpen(false)
-    loadModel()
+    activateModel()
   }
 
   const handleAiModelChange = (value: boolean) => {
@@ -57,7 +58,7 @@ export function LocalAiContainer() {
     if (value) {
       setIsAiModelConfirmationOpen(true)
     } else {
-      removeModel()
+      deactivateModel()
     }
   }
 
@@ -81,7 +82,6 @@ export function LocalAiContainer() {
         beta
       />
       <ConfirmationSheet
-        type="floating"
         variant="regular"
         isOpen={isAiModelConfirmationOpen}
         setIsOpen={setIsAiModelConfirmationOpen}

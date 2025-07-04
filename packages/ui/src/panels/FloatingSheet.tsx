@@ -1,63 +1,70 @@
-import { useEffect, useRef } from 'react'
-import { AccessibilityInfo, findNodeHandle } from 'react-native'
+import {
+  BottomSheetBackdrop,
+  type BottomSheetBackdropProps,
+  BottomSheetModal,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet'
+import { type PropsWithChildren, useCallback, useEffect, useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Portal, Text, VisuallyHidden } from 'tamagui'
-import { Sheet as TamaguiSheet, type SheetProps as TamaguiSheetProps } from 'tamagui'
+
 import { Stack } from '../base'
-export interface FloatingSheetProps extends TamaguiSheetProps {
+
+export interface FloatingSheetProps {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
+  onDismiss?: () => void
+
+  /**
+   * @default true
+   */
+  enableDismissOnClose?: boolean
+
+  /**
+   * @default true
+   */
+  enablePanDownToClose?: boolean
 }
 
-export function FloatingSheet({ children, isOpen, setIsOpen, ...props }: FloatingSheetProps) {
+export function FloatingSheet({
+  children,
+  isOpen,
+  setIsOpen,
+  onDismiss,
+  enableDismissOnClose = true,
+  enablePanDownToClose = true,
+}: PropsWithChildren<FloatingSheetProps>) {
+  const bottomSheetRef = useRef<BottomSheetModal>(null)
   const { bottom } = useSafeAreaInsets()
 
-  const sheetRef = useRef(null)
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.2} />
+    ),
+    []
+  )
 
   useEffect(() => {
-    if (isOpen && sheetRef.current) {
-      const handle = findNodeHandle(sheetRef.current)
-      if (handle) {
-        AccessibilityInfo.setAccessibilityFocus(handle)
-      }
-    }
+    if (isOpen) bottomSheetRef.current?.present()
+    else bottomSheetRef.current?.dismiss()
   }, [isOpen])
 
   return (
-    <Portal key="root">
-      <TamaguiSheet
-        dismissOnOverlayPress
-        onOpenChange={setIsOpen}
-        open={isOpen}
-        snapPointsMode="fit"
-        dismissOnSnapToBottom
-        animationConfig={{
-          type: 'spring',
-          stiffness: 140,
-          damping: 9,
-          mass: 0.22,
-        }}
-        modal
-        aria-modal={true}
-        {...props}
-      >
-        <TamaguiSheet.Overlay
-          style={{
-            backgroundColor: '#00000033',
-          }}
-          animation="quick"
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
-        <TamaguiSheet.Frame bg="transparent" px="$4" mb={bottom || '$4'}>
-          <Stack bg="$white" br="$8" overflow="hidden">
-            <VisuallyHidden ref={sheetRef}>
-              <Text>Options opened</Text>
-            </VisuallyHidden>
-            {children}
-          </Stack>
-        </TamaguiSheet.Frame>
-      </TamaguiSheet>
-    </Portal>
+    <BottomSheetModal
+      ref={bottomSheetRef}
+      enablePanDownToClose={enablePanDownToClose}
+      enableDismissOnClose={enableDismissOnClose}
+      enableDynamicSizing
+      onDismiss={onDismiss}
+      onChange={(index) => setIsOpen(index !== -1)}
+      handleComponent={null}
+      backdropComponent={renderBackdrop}
+      backgroundStyle={{ backgroundColor: 'transparent' }}
+    >
+      <BottomSheetView style={{ backgroundColor: 'transparent' }}>
+        <Stack bg="white" borderRadius="$button" overflow="hidden" mx="$4" mb={bottom || '$4'}>
+          {children}
+        </Stack>
+      </BottomSheetView>
+    </BottomSheetModal>
   )
 }

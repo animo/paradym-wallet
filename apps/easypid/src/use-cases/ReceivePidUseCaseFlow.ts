@@ -13,7 +13,7 @@ import type {
   OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
   SdJwtVcRecord,
 } from '@package/agent'
-import { acquireAuthorizationCodeAccessToken } from '@package/agent/src/invitation/handler'
+import { acquireAuthorizationCodeAccessToken } from '@package/agent/invitation/handler'
 
 export interface ReceivePidUseCaseFlowOptions
   extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {

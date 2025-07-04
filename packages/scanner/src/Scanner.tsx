@@ -3,9 +3,9 @@ import type { StyleProp, ViewStyle } from 'react-native'
 import { AnimatePresence, Button, Heading, HeroIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { Camera, CameraView } from 'expo-camera'
-import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect, useState } from 'react'
 import { Dimensions, Linking, Platform, StyleSheet } from 'react-native'
+import { SystemBars } from 'react-native-edge-to-edge'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
@@ -54,7 +54,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
 
   return (
     <Page f={1} fd="column" jc="space-between" bg="$black">
-      <StatusBar style="light" />
+      <SystemBars style="light" />
       {hasPermission && (
         <CameraView
           style={[cameraStyle, StyleSheet.absoluteFill]}

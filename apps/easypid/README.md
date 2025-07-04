@@ -361,7 +361,7 @@ Relevant links:
 
 ### App / UI Package
 
-The [app package](packages/app) and [ui package](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/paradym) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
+The [app package](packages/app) and [ui package](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/easypid) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
 
 ### Wallet Service Provider
 

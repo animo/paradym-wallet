@@ -6,7 +6,7 @@
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
-		"@astronautlabs/jsonpath": "^1.1.2",
+		"@astronautlabs/jsonpath": "catalog:",
 		"@credo-ts/anoncreds": "catalog:",
 		"@openid4vc/oauth2": "catalog:",
 		"@credo-ts/askar": "catalog:",
@@ -17,11 +17,11 @@
 		"@credo-ts/react-native": "catalog:",
 		"@credo-ts/didcomm": "catalog:",
 		"@package/utils": "workspace:*",
-		"@tanstack/react-query": "^5",
-		"credo-ts-didweb-anoncreds": "0.0.1-alpha.13",
-		"fast-text-encoding": "^1.0.6",
-		"query-string": "^8.1.0",
-		"rxjs": "^7.8.1"
+		"@tanstack/react-query": "catalog:",
+		"credo-ts-didweb-anoncreds": "catalog:",
+		"fast-text-encoding": "catalog:",
+		"query-string": "catalog:",
+		"rxjs": "catalog:"
 	},
 	"peerDependencies": {
 		"@hyperledger/anoncreds-react-native": "catalog:",
@@ -29,16 +29,6 @@
 		"expo": "catalog:"
 	},
 	"devDependencies": {
-		"@types/fast-text-encoding": "^1.0.3"
-	},
-	"expo": {
-		"install": {
-			"exclude": [
-				"react-native@~0.74.0",
-				"react-native-reanimated@~3.10.0",
-				"react-native-gesture-handler@~2.16.1",
-				"react-native-screens@~3.31.1"
-			]
-		}
+		"@types/fast-text-encoding": "catalog:"
 	}
 }

@@ -1,4 +1,4 @@
-import { useHaptics } from '@package/app/src/hooks'
+import { useHaptics } from '@package/app/hooks'
 
 import { useRouter } from 'expo-router'
 import { useCallback } from 'react'

@@ -1,4 +1,20 @@
-import { sanitizeString } from 'packages/utils/src'
+import { sanitizeString } from '@package/utils'
+
+type BaseFormattedCredentialValue = { key: string; name: string | number }
+
+export type FormattedCredentialValueString = BaseFormattedCredentialValue & { type: 'string'; value: string }
+export type FormattedCredentialValueNumber = BaseFormattedCredentialValue & { type: 'number'; value: number }
+export type FormattedCredentialValueBoolean = BaseFormattedCredentialValue & { type: 'boolean'; value: boolean }
+export type FormattedCredentialValueDate = BaseFormattedCredentialValue & { type: 'date'; value: string }
+export type FormattedCredentialValueImage = BaseFormattedCredentialValue & { type: 'image'; value: string }
+export type FormattedCredentialValueArray = BaseFormattedCredentialValue & {
+  type: 'array'
+  value: FormattedCredentialValue[]
+}
+export type FormattedCredentialValueObject = BaseFormattedCredentialValue & {
+  type: 'object'
+  value: FormattedCredentialValue[]
+}
 
 /**
  * Formats credential subject data for rendering based on value types
@@ -7,132 +23,98 @@ import { sanitizeString } from 'packages/utils/src'
  * @returns A structured representation of the data with type information
  */
 export type FormattedCredentialValue =
-  | { type: 'string'; value: string }
-  | { type: 'number'; value: number }
-  | { type: 'boolean'; value: boolean }
-  | { type: 'date'; value: string }
-  | { type: 'image'; value: string }
-  | { type: 'primitiveArray'; value: (string | number | boolean)[] }
-  | { type: 'objectArray'; value: FormattedCredentialItem[] }
-  | { type: 'object'; value: Record<string, FormattedCredentialValue> }
+  | FormattedCredentialValueString
+  | FormattedCredentialValueNumber
+  | FormattedCredentialValueBoolean
+  | FormattedCredentialValueDate
+  | FormattedCredentialValueImage
+  | FormattedCredentialValueArray
+  | FormattedCredentialValueObject
 
-export type FormattedCredentialItem = {
-  key: string
-  value: FormattedCredentialValue
-}
-
-export function formatCredentialData(subject: Record<string, unknown>): FormattedCredentialItem[] {
-  const result: FormattedCredentialItem[] = []
+export function formatCredentialData(subject: Record<string, unknown>): FormattedCredentialValue[] {
+  const result: FormattedCredentialValue[] = []
 
   for (const [key, value] of Object.entries(subject)) {
     if (value === undefined || value === null) continue
     if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) continue
 
-    result.push({
-      key: sanitizeString(key),
-      value: determineValueType(value, key),
-    })
+    result.push(determineValueType(key, value))
   }
 
   return result
 }
 
-function determineValueType(value: unknown, parentKey?: string): FormattedCredentialValue {
+function determineValueType(key: string | number, value: unknown, parentKey?: string): FormattedCredentialValue {
+  const name = typeof key === 'number' ? key : sanitizeString(key)
+  const _key = parentKey ? `${parentKey}-${key}` : `${key}`
+
   // Handle image data URLs
   if (typeof value === 'string' && value.startsWith('data:image/')) {
-    return { type: 'image', value }
+    return { key: _key, name, type: 'image', value }
   }
 
   // Handle potential date strings
   if (typeof value === 'string' && isLikelyDate(value)) {
-    return { type: 'date', value }
+    return { key: _key, name, type: 'date', value }
   }
 
   // Handle primitive types
   if (typeof value === 'string') {
-    return { type: 'string', value }
+    return { key: _key, name, type: 'string', value }
   }
 
   if (typeof value === 'number') {
-    return { type: 'number', value }
+    return { key: _key, name, type: 'number', value }
   }
 
   if (typeof value === 'boolean') {
-    return { type: 'boolean', value }
+    return { key: _key, name, type: 'boolean', value }
   }
 
   // Handle arrays
   if (Array.isArray(value)) {
     // If array has only one item, process it directly
     if (value.length === 1) {
-      return determineValueType(value[0], parentKey)
-    }
-
-    // Check if array contains only primitive values
-    if (value.every((item) => typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean')) {
-      return {
-        type: 'primitiveArray',
-        value: value as (string | number | boolean)[],
-      }
+      return determineValueType(key, value[0], parentKey)
     }
 
     // Handle arrays of objects or mixed types
-    const formattedArray = value.map((item, index) => {
-      // Try to find a meaningful property to use as key
-      let itemKey = `${index}`
+    const formattedArray = value.map((item, index) => determineValueType(index, item, parentKey))
 
-      if (typeof item === 'object' && item !== null) {
-        // Look for common identifier properties to set as key
-        const identifierProps = ['name', 'id', 'code', 'key', 'label', 'title', 'identifier', 'slug', 'uuid', 'ref']
-
-        for (const prop of identifierProps) {
-          if (prop in item && (typeof item[prop] === 'string' || typeof item[prop] === 'number')) {
-            itemKey = String(item[prop])
-            break
-          }
-        }
-
-        // If no meaningful property found, use parent name + index (e.g. "Item 1")
-        if (itemKey === `${index}` && parentKey) {
-          itemKey = `${sanitizeString(parentKey)} ${index + 1}`
-        }
-      }
-
-      return {
-        key: itemKey,
-        value: determineValueType(item, parentKey),
-      }
-    })
-
-    return { type: 'objectArray', value: formattedArray }
+    return { key: _key, name, type: 'array', value: formattedArray }
   }
 
   // Handle objects
   if (typeof value === 'object' && value !== null) {
     // Special case for image objects
     if ('type' in value && value.type === 'Image' && 'id' in value && typeof value.id === 'string') {
-      return { type: 'image', value: value.id as string }
+      return { key: _key, name, type: 'image', value: value.id as string }
     }
 
-    // Special case for objects with just one property
-    if (Object.entries(value).length === 1) {
-      const [objKey, objValue] = Object.entries(value)[0]
-      return determineValueType(objValue, objKey)
-    }
+    const formattedEntries: FormattedCredentialValue[] = []
+    const objectEntries = Object.entries(value)
 
-    const formattedObject: Record<string, FormattedCredentialValue> = {}
+    if (objectEntries.length === 1) {
+      const [key, value] = objectEntries[0]
 
-    for (const [objKey, objValue] of Object.entries(value)) {
-      if (objValue !== undefined && objValue !== null) {
-        formattedObject[sanitizeString(objKey)] = determineValueType(objValue, objKey)
+      const valueType = determineValueType(key, value, parentKey)
+      return {
+        ...valueType,
+        name: typeof name === 'number' ? valueType.name : `${name} → ${valueType.name}`,
       }
     }
 
-    return { type: 'object', value: formattedObject }
+    for (const [objKey, objValue] of objectEntries) {
+      if (objValue !== undefined && objValue !== null) {
+        formattedEntries.push(determineValueType(objKey, objValue, parentKey))
+      }
+    }
+
+    return { key: _key, name, type: 'object', value: formattedEntries }
   }
 
   // Fallback for any other types
-  return { type: 'string', value: String(value) }
+  return { key: _key, name, type: 'string', value: String(value) }
 }
 
 /**

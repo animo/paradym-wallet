@@ -31,7 +31,7 @@ export const CustomToast = () => {
       p="$4"
       width="100%"
     >
-      <YStack ref={viewRef} accessible={true} accessibilityRole="alert" aria-label={currentToast.title}>
+      <YStack ref={viewRef} accessible={true} role="alert" aria-label={currentToast.title}>
         <ToastContainer
           title={currentToast.title}
           message={currentToast.message}

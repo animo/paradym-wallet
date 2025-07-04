@@ -5,7 +5,7 @@ import {
   useAgent,
   useCredentialByCategory,
   useCredentialForDisplayById,
-} from '@package/agent/src'
+} from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
@@ -56,7 +56,6 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
 
   return (
     <ConfirmationSheet
-      type="floating"
       isOpen={isSheetOpen}
       setIsOpen={setIsSheetOpen}
       title="Archive card?"

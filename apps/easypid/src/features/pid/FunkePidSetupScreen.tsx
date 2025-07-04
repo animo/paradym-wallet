@@ -11,16 +11,16 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
-import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
   getCredentialForDisplay,
   getCredentialForDisplayId,
-} from 'packages/agent/src'
-import { useToastController } from 'packages/ui/src'
-import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from 'packages/utils/src'
-import { useCallback, useRef, useState } from 'react'
+} from '@package/agent'
+import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
+import { useToastController } from '@package/ui'
+import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { addReceivedActivity } from '../activity/activityRecord'
@@ -120,6 +120,13 @@ export function FunkePidSetupScreen() {
     [idCardPin, toast.show, pushToWallet]
   )
 
+  // Bit unfortunate, but we need to keep it as ref, as otherwise the value passed to ReceivePidUseCase.initialize will not get updated and we
+  // don't have access to the pin. We should probably change this to something like useCase.setPin() and then .continue
+  const onEnterPinRef = useRef({ onEnterPin })
+  useEffect(() => {
+    onEnterPinRef.current.onEnterPin = onEnterPin
+  }, [onEnterPin])
+
   const onIdCardStart = async ({
     walletPin,
     allowSimulatorCard,
@@ -146,7 +153,7 @@ export function FunkePidSetupScreen() {
           state: state.state === 'readyToScan' && isCardAttached ? 'scanning' : state.state,
         })),
       onStatusProgress: ({ progress }) => setIdCardScanningState((state) => ({ ...state, progress })),
-      onEnterPin: (options) => onEnterPin(options),
+      onEnterPin: (options) => onEnterPinRef.current.onEnterPin(options),
       allowSimulatorCard,
     } as const satisfies ReceivePidUseCaseFlowOptions
 
@@ -170,7 +177,7 @@ export function FunkePidSetupScreen() {
     // If pin is simulator pin we require the user to retry so that second time
     // they can set the real pin
     const isSimulatorPinCode = pin === SIMULATOR_PIN
-    if (isSimulatorPinCode) {
+    if (isSimulatorPinCode && !allowSimulatorCard) {
       toast.show('Simulator eID card activated', {
         message: 'Enter your real PIN to continue',
         customData: {

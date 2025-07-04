@@ -14,26 +14,32 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useHaptics } from '../hooks/useHaptics'
 import {
-  type FormattedCredentialItem,
   type FormattedCredentialValue,
+  type FormattedCredentialValueArray,
+  type FormattedCredentialValueObject,
   formatCredentialData,
 } from '../utils/formatSubject'
 
 export type CredentialAttributesProps = {
-  subject: Record<string, unknown> | Record<string, FormattedCredentialValue>
+  attributes: Record<string, unknown>
   headerTitle?: string
-  isFormatted?: boolean
 }
 
-export function CredentialAttributes({ subject, headerTitle, isFormatted = false }: CredentialAttributesProps) {
-  // If the data is already formatted, use it directly; otherwise format it
-  const formattedData: FormattedCredentialItem[] = isFormatted
-    ? Object.entries(subject).map(([key, value]) => ({ key, value: value as FormattedCredentialValue }))
-    : formatCredentialData(subject as Record<string, unknown>)
+export function CredentialAttributes({ attributes, headerTitle }: CredentialAttributesProps) {
+  const formattedData = formatCredentialData(attributes)
 
+  return <FormattedCredentialAttributes attributes={formattedData} headerTitle={headerTitle} />
+}
+
+export type FormttedCredentialAttributesProps = {
+  attributes: FormattedCredentialValue[]
+  headerTitle?: string
+}
+
+export function FormattedCredentialAttributes({ attributes, headerTitle }: FormttedCredentialAttributesProps) {
   // Separate data into primitive values and objects at the parent level
-  const primitiveItems = formattedData.filter((item) => item.value.type !== 'object')
-  const objectItems = formattedData.filter((item) => item.value.type === 'object')
+  const primitiveItems = attributes.filter((item) => item.type !== 'object' && item.type !== 'array')
+  const objectItems = attributes.filter((item) => item.type === 'object' || item.type === 'array')
 
   return (
     <YStack gap="$6">
@@ -50,11 +56,11 @@ export function CredentialAttributes({ subject, headerTitle, isFormatted = false
       )}
 
       {objectItems.map((item) => (
-        <YStack key={`object-${item.key}`} gap="$4">
-          <Heading variant="sub2">{item.key}</Heading>
+        <YStack key={item.key} gap="$4">
+          {typeof item.name === 'string' && <Heading variant="sub2">{item.name}</Heading>}
           <TableContainer>
-            {Object.entries(item.value.value).map(([key, value]) => (
-              <AnyRow key={`${item.key}-${key}`} item={{ key, value }} />
+            {item.value.map((value) => (
+              <AnyRow key={value.key} item={value} parentName={item.name} />
             ))}
           </TableContainer>
         </YStack>
@@ -63,94 +69,71 @@ export function CredentialAttributes({ subject, headerTitle, isFormatted = false
   )
 }
 
-const AnyRow = ({ item }: { item: FormattedCredentialItem }) => {
-  const { key, value } = item
+const valueToPrimitive = (value: string | number | boolean) =>
+  typeof value === 'boolean' ? (value ? 'Yes' : 'No') : typeof value === 'number' ? value.toString() : value
 
-  if (value.type === 'string' || value.type === 'date') {
-    return <ValueRow key={key} name={key} value={value.value} />
+const AnyRow = ({ item, parentName }: { item: FormattedCredentialValue; parentName?: string | number }) => {
+  if (item.type === 'object' || item.type === 'array') {
+    return <NestedRow parentName={parentName} item={item} />
   }
 
-  if (value.type === 'boolean') {
-    return <ValueRow key={key} name={key} value={value.value ? 'Yes' : 'No'} />
+  if (item.type === 'image') {
+    return <ImageRow name={item.name} value={item.value} />
   }
 
-  if (value.type === 'number') {
-    return <ValueRow key={key} name={key} value={value.value.toString()} />
+  if (typeof item.name === 'number' || !Number.isNaN(Number(item.name))) {
+    return <NamelessValueRow value={valueToPrimitive(item.value)} />
   }
 
-  if (value.type === 'primitiveArray') {
-    return <PrimitiveArrayRow key={key} name={key} value={value.value} />
-  }
-
-  if (value.type === 'image') {
-    return <ImageRow key={key} name={key} value={value.value} />
-  }
-
-  if (value.type === 'objectArray') {
-    return <ObjectArrayRow key={key} name={key} value={value.value} />
-  }
-
-  return null
+  return <ValueRow name={item.name} value={valueToPrimitive(item.value)} />
 }
 
-const ObjectArrayRow = ({ name, value }: { name: string; value: FormattedCredentialItem[] }) => {
+const NestedRow = ({
+  item,
+  parentName,
+}: {
+  item: FormattedCredentialValueArray | FormattedCredentialValueObject
+  parentName?: string | number
+}) => {
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
   const { withHaptics } = useHaptics()
 
   const onPress = withHaptics(() => {
-    // Check if we're dealing with an array or an object
-    const formattedObject: Record<string, FormattedCredentialValue> = !Array.isArray(value) ? value : {}
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        formattedObject[item.key] = item.value
-      }
-    }
+    const params = new URLSearchParams({
+      item: JSON.stringify(item),
+    })
 
-    router.push(`/credentials/${id}/nested?name=${name}&values=${encodeURIComponent(JSON.stringify(formattedObject))}`)
+    if (parentName) params.set('parentName', `${parentName}`)
+
+    router.push(`/credentials/${id}/nested?${params.toString()}`)
   })
 
   return (
     <XStack
-      bg="$tableBackgroundColor"
-      borderBottomWidth={2}
-      borderBottomColor="$tableBorderColor"
+      key={`object-array-${item.key}`}
+      borderTopWidth={1}
+      borderTopColor="$tableBorderColor"
+      backgroundColor="$tableBackgroundColor"
+      gap="$1.5"
+      px="$2.5"
+      pl="$4"
+      py="$2"
       jc="space-between"
+      ai="center"
+      w="100%"
+      pressStyle={{
+        backgroundColor: '$grey-100',
+      }}
       onPress={onPress}
     >
-      <YStack>
-        <YStack p="$2.5">
-          <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
-            {name}
-          </Paragraph>
-        </YStack>
-        {value.map((item) => (
-          <XStack
-            key={`object-array-${item.key}`}
-            borderTopWidth={1}
-            borderTopColor="$tableBorderColor"
-            gap="$1.5"
-            px="$2.5"
-            pl="$4"
-            py="$2"
-            jc="space-between"
-            ai="center"
-            w="100%"
-            pressStyle={{
-              backgroundColor: '$grey-100',
-            }}
-            onPress={onPress}
-          >
-            <Paragraph color="$grey-900">{item.key}</Paragraph>
-            <IconContainer bg="$transparent" icon={<HeroIcons.ChevronRight size={20} />} />
-          </XStack>
-        ))}
-      </YStack>
+      <Paragraph color="$grey-900">{item.name}</Paragraph>
+      <IconContainer bg="$transparent" icon={<HeroIcons.ChevronRight size={20} />} />
     </XStack>
   )
 }
 
-const ImageRow = ({ name, value }: { name: string; value: string }) => {
+const ImageRow = ({ name, value }: { name: string | number; value: string }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
 
@@ -180,7 +163,7 @@ const ImageRow = ({ name, value }: { name: string; value: string }) => {
           <Paragraph color="$grey-900">Tap to view</Paragraph>
         </YStack>
         <YStack br="$2" overflow="hidden">
-          <Image height={36} width={36} src={value} alt={name} />
+          <Image height={36} width={36} src={value} alt={name.toString()} />
         </YStack>
       </XStack>
       <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -195,7 +178,7 @@ const ImageRow = ({ name, value }: { name: string; value: string }) => {
           </XStack>
           <Stack borderBottomWidth="$0.5" borderColor="$grey-100" />
           <Stack gap="$2" ai="center">
-            <Image height={150} width={150} src={value} alt={name} />
+            <Image height={150} width={150} src={value} alt={name.toString()} />
           </Stack>
         </Stack>
       </FloatingSheet>
@@ -203,27 +186,18 @@ const ImageRow = ({ name, value }: { name: string; value: string }) => {
   )
 }
 
-const PrimitiveArrayRow = ({ name, value }: { name: string; value: (string | number | boolean)[] }) => {
+const NamelessValueRow = ({ value }: { value: string }) => {
   return (
-    <YStack bg="$tableBackgroundColor" borderBottomWidth={2} borderBottomColor="$tableBorderColor">
-      <YStack p="$2.5">
-        <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
-          {name}
-        </Paragraph>
-      </YStack>
-      {value.map((item) => (
-        <YStack
-          key={`primitive-array-${name}`}
-          borderTopWidth={1}
-          borderTopColor="$tableBorderColor"
-          gap="$1.5"
-          px="$2.5"
-          pl="$4"
-          py="$2"
-        >
-          <Paragraph color="$grey-900">{item}</Paragraph>
-        </YStack>
-      ))}
+    <YStack
+      bg="$tableBackgroundColor"
+      borderBottomWidth={1}
+      borderBottomColor="$tableBorderColor"
+      gap="$1.5"
+      px="$2.5"
+      pl="$4"
+      py="$2"
+    >
+      <Paragraph color="$grey-900">{value}</Paragraph>
     </YStack>
   )
 }
@@ -235,7 +209,7 @@ const ValueRow = ({ name, value }: { name: string; value: string }) => {
       gap="$1.5"
       px="$2.5"
       py="$2"
-      borderBottomWidth={2}
+      borderBottomWidth={1}
       borderBottomColor="$tableBorderColor"
     >
       <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">

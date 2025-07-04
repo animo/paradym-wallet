@@ -2,11 +2,11 @@ import type { CredentialForDisplayId } from '@package/agent'
 
 import { deleteCredential, useAgent, useCredentialForDisplayById } from '@package/agent'
 import {
+  FloatingSheet,
   Heading,
   LucideIcons,
   Paragraph,
   ScrollView,
-  Sheet,
   Spacer,
   Stack,
   YStack,
@@ -14,6 +14,8 @@ import {
 } from '@package/ui'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
+
+import { Pressable } from 'react-native-gesture-handler'
 
 import { useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -37,9 +39,14 @@ export function CredentialDetailScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Stack px="$4" py="$2" onPress={() => setIsSheetOpen(true)} mr="$-4">
-          <LucideIcons.Trash2 color={isSheetOpen ? '$danger-600' : '$danger-500'} />
-        </Stack>
+        // FIXME: should remove pressable and pass it to Stack once
+        // the following issue is resolved:
+        // https://github.com/react-navigation/react-navigation/issues/12667
+        <Pressable onPress={() => setIsSheetOpen(true)}>
+          <Stack px="$4" py="$2" mr="$-4">
+            <LucideIcons.Trash2 color={isSheetOpen ? '$danger-600' : '$danger-500'} />
+          </Stack>
+        </Pressable>
       ),
     })
   }, [navigation, isSheetOpen])
@@ -85,11 +92,11 @@ export function CredentialDetailScreen() {
               subtitle={display.description}
               bgColor={display.backgroundColor}
             />
-            <CredentialAttributes subject={attributes} />
+            <CredentialAttributes attributes={attributes} />
           </YStack>
         </YStack>
       </ScrollView>
-      <Sheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
+      <FloatingSheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
         <Stack p="$4" gap="$6" pb={bottom}>
           <Stack gap="$3">
             <Heading variant="h2">Delete '{display.name}'?</Heading>
@@ -104,7 +111,7 @@ export function CredentialDetailScreen() {
             onDecline={() => setIsSheetOpen(false)}
           />
         </Stack>
-      </Sheet>
+      </FloatingSheet>
     </YStack>
   )
 }

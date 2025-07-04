@@ -1,3 +1,4 @@
+import { SlideWizard } from '@package/app/components/SlideWizard'
 import {
   AnimatedStack,
   Button,
@@ -10,7 +11,6 @@ import {
   YStack,
   useSpringify,
 } from '@package/ui'
-import { SlideWizard } from 'packages/app/src/components/SlideWizard'
 import { ZoomIn } from 'react-native-reanimated'
 import { getFlowConfirmationText } from './utils'
 

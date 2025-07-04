@@ -1,11 +1,11 @@
-import { useAgent } from '@package/agent'
 import {
   type EasyPIDAppAgent,
   type EitherAgent,
   type ParadymAppAgent,
   isEasyPIDAgent,
   isParadymAgent,
-} from '@package/agent/src/agent'
+  useAgent,
+} from '@package/agent'
 import { useSecureUnlock as _useSecureUnlock } from '@package/secure-store/secureUnlock'
 
 export { initializeAppAgent } from './initialize'

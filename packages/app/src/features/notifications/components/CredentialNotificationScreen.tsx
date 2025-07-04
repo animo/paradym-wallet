@@ -47,7 +47,7 @@ export function CredentialNotificationScreen({
             subtitle={display.description}
             bgColor={display.backgroundColor}
           />
-          <CredentialAttributes subject={attributes} />
+          <CredentialAttributes attributes={attributes} />
         </YStack>
         <DualResponseButtons onAccept={onAccept} onDecline={onDecline} isLoading={isAccepting} />
       </YStack>

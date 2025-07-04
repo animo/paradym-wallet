@@ -3,7 +3,7 @@ import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, MdocService } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'
-import { handleBatchCredential } from '@package/agent/src/batch'
+import { handleBatchCredential } from '@package/agent/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
@@ -55,11 +55,15 @@ export const waitForDeviceRequest = async () => {
   const mdt = mdocDataTransfer.instance()
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
 
+  console.log({ deviceRequest, sessionTranscript })
+
   // current bug on android required re-encapsulation
   const encodedSessionTranscript =
     Platform.OS === 'android' ? cborEncode(DataItem.fromData(cborDecode(sessionTranscript))) : sessionTranscript
 
-  return { deviceRequest, sessionTranscript: encodedSessionTranscript }
+  const y = { deviceRequest, sessionTranscript: encodedSessionTranscript }
+  console.log(y)
+  return y
 }
 
 /**

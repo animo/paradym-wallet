@@ -1,5 +1,6 @@
-import { type ReactElement, cloneElement } from 'react'
+import { cloneElement } from 'react'
 import { AnimatedStack, Heading, Paragraph, Stack, XStack, YStack } from '../base'
+import type { IconContainerProps } from '../content'
 import { useScaleAnimation } from '../hooks/useScaleAnimation'
 
 const messageBoxVariants = {
@@ -34,7 +35,7 @@ interface MessageBoxProps {
   title?: string
   variant?: keyof typeof messageBoxVariants
   textVariant?: 'normal' | 'sub'
-  icon?: ReactElement
+  icon?: IconContainerProps['icon']
   onPress?: () => void
 }
 

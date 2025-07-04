@@ -6,7 +6,7 @@ import { LinearTransition } from 'react-native-reanimated'
 import Carousel from 'react-native-reanimated-carousel'
 import type { ICarouselInstance } from 'react-native-reanimated-carousel'
 
-import { useImageScaler } from 'packages/app/src/hooks'
+import { useImageScaler } from '@package/app/hooks'
 import { WalletExplanation } from './assets/WalletExplanation'
 import { WalletHowItWorks } from './assets/WalletHowItWorks'
 import { WalletStoring } from './assets/WalletStoring'
