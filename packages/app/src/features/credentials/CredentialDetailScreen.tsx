@@ -92,7 +92,7 @@ export function CredentialDetailScreen() {
               subtitle={display.description}
               bgColor={display.backgroundColor}
             />
-            <CredentialAttributes subject={attributes} />
+            <CredentialAttributes attributes={attributes} />
           </YStack>
         </YStack>
       </ScrollView>

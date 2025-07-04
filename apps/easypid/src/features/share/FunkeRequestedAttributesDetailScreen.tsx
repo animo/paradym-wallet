@@ -120,7 +120,7 @@ export function FunkeRequestedAttributesDetailScreen({
                     {disclosedAttributeLength} from {activeCredential.display.name}
                   </Paragraph>
                 </Stack>
-                <CredentialAttributes subject={disclosedPayload} />
+                <CredentialAttributes attributes={disclosedPayload} />
                 <AnimatedStack
                   key={isMetadataVisible ? 'visible' : 'hidden'}
                   onLayout={(event) => setElementPosition(event.nativeEvent.layout.y)}
@@ -131,7 +131,7 @@ export function FunkeRequestedAttributesDetailScreen({
                     <CredentialAttributes
                       key="metadata"
                       headerTitle="Metadata"
-                      subject={metadataForDisplay(activeCredential.metadata)}
+                      attributes={metadataForDisplay(activeCredential.metadata)}
                     />
                   )}
                 </AnimatedStack>

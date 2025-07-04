@@ -96,7 +96,7 @@ export const OfferCredentialSlide = ({
 
   // Slow haptic when isStoring and a hard tick when isCompleted
   useEffect(() => {
-    let interval: NodeJS.Timeout | undefined
+    let interval: number | undefined
 
     if (isCompleted) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
@@ -202,7 +202,7 @@ export const OfferCredentialSlide = ({
                 maxHeight={scrollViewHeight}
                 bg="$white"
               >
-                <CredentialAttributes subject={attributes} />
+                <CredentialAttributes attributes={attributes} />
                 <Spacer size="$6" />
               </ScrollView>
             ) : (

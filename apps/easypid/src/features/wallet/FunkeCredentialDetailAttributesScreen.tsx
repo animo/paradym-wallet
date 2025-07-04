@@ -47,9 +47,9 @@ export function FunkeCredentialDetailAttributesScreen() {
   })
 
   const {
-    isVisible: isSharableAttributesVisible,
-    setElementPosition: setSharableAttributesElementPosition,
-    toggle: toggleSharableAttributes,
+    isVisible: isShareableAttributesVisible,
+    setElementPosition: setShareableAttributesElementPosition,
+    toggle: toggleShareableAttributes,
   } = useScrollToggle({
     scrollRef: scrollViewRef,
   })
@@ -64,9 +64,9 @@ export function FunkeCredentialDetailAttributesScreen() {
     toggleMetadata()
   })
 
-  const handleToggleSharableAttributes = withHaptics(() => {
+  const handleToggleShareableAttributes = withHaptics(() => {
     setIsSheetOpen(false)
-    toggleSharableAttributes()
+    toggleShareableAttributes()
   })
 
   if (!credential) {
@@ -87,16 +87,16 @@ export function FunkeCredentialDetailAttributesScreen() {
           <YStack px="$4" gap="$4" marginBottom={bottom}>
             <CustomCredentialAttributes credential={credential} />
             <AnimatedStack
-              key={isSharableAttributesVisible ? 'visible-sharable-attributes' : 'hidden-sharable-attributes'}
-              onLayout={(event) => setSharableAttributesElementPosition(event.nativeEvent.layout.y)}
+              key={isShareableAttributesVisible ? 'visible-shareable-attributes' : 'hidden-shareable-attributes'}
+              onLayout={(event) => setShareableAttributesElementPosition(event.nativeEvent.layout.y)}
               exiting={useSpringify(FadeOutUp)}
               entering={useSpringify(FadeInUp)}
             >
-              {isSharableAttributesVisible && (
+              {isShareableAttributesVisible && (
                 <CredentialAttributes
-                  key="sharable-attributes"
-                  headerTitle="Sharable attributes"
-                  subject={credential.attributes}
+                  key="shareable-attributes"
+                  headerTitle="Shareable attributes"
+                  attributes={credential.attributes}
                 />
               )}
             </AnimatedStack>
@@ -110,7 +110,7 @@ export function FunkeCredentialDetailAttributesScreen() {
                 <CredentialAttributes
                   key="metadata"
                   headerTitle="Metadata"
-                  subject={metadataForDisplay(credential.metadata)}
+                  attributes={metadataForDisplay(credential.metadata)}
                 />
               )}
             </AnimatedStack>
@@ -127,13 +127,13 @@ export function FunkeCredentialDetailAttributesScreen() {
           ...(isCustomDisplayAvailable
             ? [
                 {
-                  icon: isSharableAttributesVisible ? (
+                  icon: isShareableAttributesVisible ? (
                     <HeroIcons.EyeSlash color="$grey-500" />
                   ) : (
                     <HeroIcons.Eye color="$grey-500" />
                   ),
-                  title: isSharableAttributesVisible ? 'Hide shareable attributes' : 'Show shareable attributes',
-                  onPress: handleToggleSharableAttributes,
+                  title: isShareableAttributesVisible ? 'Hide shareable attributes' : 'Show shareable attributes',
+                  onPress: handleToggleShareableAttributes,
                 },
               ]
             : []),

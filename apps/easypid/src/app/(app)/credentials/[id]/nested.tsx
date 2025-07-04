@@ -1,14 +1,17 @@
 import { FunkeNestedAttributeScreen } from '@easypid/features/wallet/FunkeNestedAttributeScreen'
-import type { FormattedCredentialValue } from '@package/app/utils/formatSubject'
+import type { FormattedCredentialValueArray, FormattedCredentialValueObject } from '@package/app/utils/formatSubject'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
-  const { name, values } = useLocalSearchParams<{
-    name: string
-    values: string
+  const { item, parentName } = useLocalSearchParams<{
+    item: string
+    parentName?: string
   }>()
 
   return (
-    <FunkeNestedAttributeScreen name={name} values={JSON.parse(values) as Record<string, FormattedCredentialValue>} />
+    <FunkeNestedAttributeScreen
+      parentName={parentName}
+      item={JSON.parse(item) as FormattedCredentialValueArray | FormattedCredentialValueObject}
+    />
   )
 }

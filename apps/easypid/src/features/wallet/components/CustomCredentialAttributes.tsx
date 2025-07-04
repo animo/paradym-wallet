@@ -34,7 +34,7 @@ export function CustomCredentialAttributes({ credential }: CustomCredentialAttri
     return <FunkeMdlCredentialAttributes credential={credential} />
   }
 
-  return <CredentialAttributes subject={credential.attributes} />
+  return <CredentialAttributes attributes={credential.attributes} />
 }
 
 export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
