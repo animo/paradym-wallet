@@ -11,7 +11,7 @@ interface SignAndShareSlideProps {
   isAccepting: boolean
   qtsp: QtspInfo
   documentName: string
-  cardForSigningId: string
+  cardForSigningId?: string
   submission?: FormattedSubmission
 }
 
@@ -29,13 +29,14 @@ export const SignAndShareSlide = ({
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
 
-  // const [remainingEntries, setRemainingEntries] = useState(submission?.entries ?? [])
-
   const cardForSigning = submission?.entries.find(
     (entry): entry is typeof entry & { isSatisfied: true } =>
       entry.inputDescriptorId === cardForSigningId && entry.isSatisfied
   )?.credentials[0]
-  const remainingEntries = submission?.entries.filter((entry) => entry.inputDescriptorId !== cardForSigningId) ?? []
+  const remainingEntries =
+    (cardForSigning
+      ? submission?.entries.filter((entry) => entry.inputDescriptorId !== cardForSigningId)
+      : submission?.entries) ?? []
 
   const handleAccept = async () => {
     // Manually set to instantly show the loading state
@@ -89,12 +90,13 @@ export const SignAndShareSlide = ({
                 <MiniDocument logoUrl={qtsp.logo?.url} />
               </XStack>
             </YStack>
-            <YStack gap="$4">
-              <YStack gap="$2">
-                <Heading variant="sub2">Signing card</Heading>
-                <Paragraph>The following personal information will be used to sign the document.</Paragraph>
-              </YStack>
-              {cardForSigning && (
+            {cardForSigning && (
+              <YStack gap="$4">
+                <YStack gap="$2">
+                  <Heading variant="sub2">Signing card</Heading>
+                  <Paragraph>The following personal information will be used to sign the document.</Paragraph>
+                </YStack>
+
                 <CardWithAttributes
                   id={cardForSigning.credential.id}
                   name={cardForSigning.credential.display.name}
@@ -115,8 +117,8 @@ export const SignAndShareSlide = ({
                       : false
                   }
                 />
-              )}
-            </YStack>
+              </YStack>
+            )}
             {remainingEntries.length > 0 && submission && (
               <RequestedAttributesSection submission={{ ...submission, entries: remainingEntries }} />
             )}
