@@ -113,6 +113,12 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
 }
 
 export const shutdownDataTransfer = () => {
-  const mdt = mdocDataTransfer.instance()
-  mdt.shutdown()
+  if (isDataTransferInitialized()) {
+    const mdt = mdocDataTransfer.instance()
+    mdt.shutdown()
+  }
+}
+
+export const isDataTransferInitialized = () => {
+  return mdocDataTransfer.isInitialized()
 }
