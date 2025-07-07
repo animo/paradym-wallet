@@ -24,6 +24,7 @@ import { SystemBars } from 'react-native-edge-to-edge'
 import {
   checkMdocPermissions,
   getMdocQrCode,
+  isDataTransferInitialized,
   requestMdocPermissions,
   shutdownDataTransfer,
   waitForDeviceRequest,
@@ -47,6 +48,10 @@ export function FunkeOfflineQrScreen() {
         void requestPermissions()
       }
     })
+
+    if (isDataTransferInitialized()) {
+      shutdownDataTransfer()
+    }
   }, [])
 
   useEffect(() => {
@@ -126,11 +131,6 @@ export function FunkeOfflineQrScreen() {
     })
   })
 
-  const onCancel = () => {
-    back()
-    shutdownDataTransfer()
-  }
-
   return (
     <Page bg="$black" ai="center">
       <SystemBars style="light" />
@@ -156,23 +156,21 @@ export function FunkeOfflineQrScreen() {
         )}
       </AnimatedStack>
       <YStack jc="center" ai="center" gap="$4">
-        {onCancel && (
-          <XStack>
-            <Button.Solid
-              h="$3.5"
-              px="$5"
-              br="$12"
-              bg="$grey-100"
-              color="$grey-900"
-              flexDirection="row"
-              onPress={onCancel}
-              scaleOnPress
-              alignSelf="center"
-            >
-              Cancel
-            </Button.Solid>
-          </XStack>
-        )}
+        <XStack>
+          <Button.Solid
+            h="$3.5"
+            px="$5"
+            br="$12"
+            bg="$grey-100"
+            color="$grey-900"
+            flexDirection="row"
+            onPress={back}
+            scaleOnPress
+            alignSelf="center"
+          >
+            Cancel
+          </Button.Solid>
+        </XStack>
         <Spacer />
       </YStack>
     </Page>

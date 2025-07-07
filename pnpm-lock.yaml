@@ -16,8 +16,8 @@ catalogs:
       specifier: 0.4.0
       version: 0.4.0
     '@animo-id/expo-mdoc-data-transfer':
-      specifier: 0.1.4-alpha.2
-      version: 0.1.4-alpha.2
+      specifier: 0.1.4-alpha.3
+      version: 0.1.4-alpha.3
     '@animo-id/expo-secure-environment':
       specifier: 0.1.0
       version: 0.1.0
@@ -294,7 +294,7 @@ importers:
         version: 0.4.0(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
-        version: 0.1.4-alpha.2(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+        version: 0.1.4-alpha.3(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
         version: 0.1.0(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -780,8 +780,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.2':
-    resolution: {integrity: sha512-98tIzHrCQhWulBdcORgQvIAgEDEu3XOzAMbShq44fmeVLLFggDEWh0DwrzZOzoZ3g7eVbY4zshoHzkS3kAGWDg==}
+  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.3':
+    resolution: {integrity: sha512-0k7siBV5OPWtL7M3TJE12hyAlSSy8FXG6NHqZ2lWRawkbOxAs8p4TkDxMoLYXFwyqRYkQBlS/x7J39oWAOlJpw==}
     peerDependencies:
       expo: '>= 51'
       react: '*'
@@ -6778,7 +6778,7 @@ snapshots:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
 
-  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.2(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
+  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.3(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@expo/config-plugins': 8.0.11
       buffer: 6.0.3
