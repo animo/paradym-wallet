@@ -9,8 +9,6 @@ export type { OpenId4VciTxCode, OpenId4VciDpopRequestOptions } from '@credo-ts/o
 export {
   initializeParadymAgent,
   initializeEasyPIDAgent,
-  isEasyPIDAgent,
-  isParadymAgent,
   ParadymAppAgent,
   EasyPIDAppAgent,
   EitherAgent,
