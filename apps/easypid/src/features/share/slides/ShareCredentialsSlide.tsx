@@ -40,11 +40,6 @@ export const ShareCredentialsSlide = ({
     onNext()
   }
 
-  const handleDecline = () => {
-    onDecline?.()
-    onCancel()
-  }
-
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4" fg={1}>
@@ -100,7 +95,7 @@ export const ShareCredentialsSlide = ({
             acceptText="Share"
             declineText="Stop"
             onAccept={handleAccept}
-            onDecline={handleDecline}
+            onDecline={onCancel}
             isLoading={isProcessing}
           />
         ) : (
