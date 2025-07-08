@@ -1,6 +1,5 @@
 import type { CredentialForDisplayId } from '@package/agent'
-
-import { deleteCredential, useAgent, useCredentialForDisplayById } from '@package/agent'
+import { deleteCredential, useCredentialForDisplayById } from '@package/agent'
 import {
   FloatingSheet,
   Heading,
@@ -17,6 +16,7 @@ import { useEffect, useState } from 'react'
 
 import { Pressable } from 'react-native-gesture-handler'
 
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CredentialAttributes, DualResponseButtons } from '../../components'

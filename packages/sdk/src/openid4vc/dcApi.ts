@@ -1,12 +1,12 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
 import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
-import { sanitizeString } from '@package/utils'
-import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
-import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import * as ExpoAsset from 'expo-asset'
 import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
+import type { BaseAgent } from '../agent'
+import { getCredentialForDisplay } from '../display/credential'
+import { sanitizeString } from '../display/strings'
 
 type CredentialItem = RegisterCredentialsOptions['credentials'][number]
 type CredentialDisplayClaim = NonNullable<CredentialItem['display']['claims']>[number]

@@ -1,4 +1,22 @@
+import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
 import { JwaSignatureAlgorithm } from '@credo-ts/core'
+import {
+  type ConnectionRecord,
+  CredentialEventTypes,
+  CredentialState,
+  type CredentialStateChangedEvent,
+  type OutOfBandInvitation,
+  type OutOfBandRecord,
+  OutOfBandRepository,
+  type PlaintextMessage,
+  ProofEventTypes,
+  ProofState,
+  type ProofStateChangedEvent,
+  V2OfferCredentialMessage,
+  V2RequestPresentationMessage,
+  parseMessageType,
+} from '@credo-ts/didcomm'
+import { supportsIncomingMessageType } from '@credo-ts/didcomm/build/util/messageType'
 import {
   type OpenId4VciCredentialConfigurationSupportedWithFormats,
   type OpenId4VciRequestTokenResponse,
@@ -8,7 +26,8 @@ import {
   getScopesFromCredentialConfigurationsSupported,
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
-import type { OpenId4VcAgent } from '../agent'
+import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
+import type { DidCommAgent, OpenId4VcAgent } from '../agent'
 import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
@@ -16,6 +35,48 @@ import {
 } from '../metadata/credentials'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { credentialRecordFromCredential, encodeCredential } from '../utils/encoding'
+
+export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
+  | { success: false; error: string }
+  | (FlowType extends 'issue'
+      ? { success: true; flowType: 'issue'; credentialExchangeId: string; connectionId?: string }
+      : FlowType extends 'verify'
+        ? { success: true; flowType: 'verify'; proofExchangeId: string; connectionId?: string }
+        : FlowType extends 'connect'
+          ? { success: true; flowType: 'connect'; connectionId: string }
+          : never)
+>
+
+export interface ResolveOutOfBandInvitationResultSuccess {
+  success: true
+
+  outOfBandInvitation: OutOfBandInvitation
+
+  /**
+   * Whether an existing connection already exists based on this invitation
+   */
+  existingConnection?: ConnectionRecord
+
+  /**
+   * Whether a connection will be created as part of the exchange.
+   *
+   * When `existingConnection` is defined this will always be `false` as
+   * the existing connection will be reused.
+   *
+   * If `createConnection` is `false` and `existingConnection` is undefined
+   * it means the exchange will be connectionless.
+   */
+  createConnection: boolean
+
+  /**
+   * The flow type as indicated by the invitation.
+   *
+   * - `issue` when the goal code indicates the goal of the invitation is to issue, or a credential offer is attached
+   * - `verify` when the goal code indicates the goal of the invittion is to verify, or a presentation request is attached
+   * - `connect` in all other cases
+   */
+  flowType: 'issue' | 'verify' | 'connect'
+}
 
 export async function resolveOpenId4VciOffer({
   agent,
@@ -161,4 +222,218 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       credential: record,
     }
   })
+}
+
+export async function resolveOutOfBandInvitation(
+  agent: DidCommAgent,
+  invitation: OutOfBandInvitation
+): Promise<ResolveOutOfBandInvitationResultSuccess | { success: false; error: string }> {
+  const requestMessages = invitation.getRequests() ?? []
+
+  let flowType: 'issue' | 'verify' | 'connect'
+
+  if (requestMessages.length > 1) {
+    const message = 'Message contains multiple requests. Invitation should only contain a single request.'
+    agent.config.logger.error(message)
+    return {
+      success: false,
+      error: message,
+    }
+  }
+
+  // In this case we probably need to create a connection first. We will do this here, as we don't allow to just
+  // create a connection
+  if (requestMessages.length === 0) {
+    if (!invitation.handshakeProtocols || invitation.handshakeProtocols.length === 0) {
+      agent.config.logger.error('No requests and no handshake protocols found in invitation.')
+      return {
+        success: false,
+        error: 'Invalid invitation.',
+      }
+    }
+
+    if (invitation.goalCode === 'issue-vc' || invitation.goalCode === 'aries.vc.issue') {
+      flowType = 'issue'
+    } else if (invitation.goalCode === 'request-proof' || invitation.goalCode === 'aries.vc.verify') {
+      flowType = 'verify'
+    } else {
+      flowType = 'connect'
+    }
+  }
+  // Validate the type of the request message
+  else {
+    const requestMessage = requestMessages[0] as PlaintextMessage
+    const parsedMessageType = parseMessageType(requestMessage['@type'])
+    const isValidOfferMessage =
+      supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type)
+
+    const isValidRequestMessage =
+      supportsIncomingMessageType(parsedMessageType, V1RequestPresentationMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type)
+
+    if (isValidRequestMessage) {
+      flowType = 'verify'
+    } else if (isValidOfferMessage) {
+      flowType = 'issue'
+    } else {
+      agent.config.logger.error('Message request is not from supported protocol.')
+      return {
+        success: false,
+        error: 'Invalid invitation.',
+      }
+    }
+  }
+
+  try {
+    // Check if invitation already exists
+    const receivedInvite = await agent.modules.outOfBand.findByReceivedInvitationId(invitation.id)
+    if (receivedInvite) {
+      return {
+        success: false,
+        error: 'Invitation has already been scanned.',
+      }
+    }
+
+    const existingConnection = (await findExistingDidcommConnectionForInvitation(agent, invitation)) ?? undefined
+
+    return {
+      success: true,
+      outOfBandInvitation: invitation,
+      createConnection: existingConnection ? false : !!invitation.handshakeProtocols?.length,
+      existingConnection,
+      flowType,
+    }
+  } catch (error) {
+    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
+
+    return {
+      success: false,
+      error: 'Invalid invitation.',
+    }
+  }
+}
+
+async function findExistingDidcommConnectionForInvitation(
+  agent: DidCommAgent,
+  outOfBandInvitation: OutOfBandInvitation
+): Promise<ConnectionRecord | null> {
+  for (const invitationDid of outOfBandInvitation.invitationDids) {
+    const [connection] = await agent.modules.connections.findByInvitationDid(invitationDid)
+    if (connection) return connection
+  }
+
+  return null
+}
+
+/**
+ * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
+ */
+export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
+  agent: DidCommAgent,
+  invitation: OutOfBandInvitation,
+  flowType: FlowType
+): AcceptOutOfBandInvitationResult<FlowType> {
+  // The value is reassigned, but eslint doesn't know this.
+  let connectionId: string | undefined
+
+  let observable: Observable<CredentialStateChangedEvent | ProofStateChangedEvent> | undefined = undefined
+
+  if (flowType === 'issue') {
+    observable = agent.events.observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged).pipe(
+      filter((event) => event.payload.credentialRecord.state === CredentialState.OfferReceived),
+      filter((event) => event.payload.credentialRecord.connectionId === connectionId)
+    )
+  } else if (flowType === 'verify') {
+    observable = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
+      filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
+      filter((event) => event.payload.proofRecord.connectionId === connectionId)
+    )
+  }
+
+  const eventPromise = observable
+    ? firstValueFrom(
+        observable.pipe(
+          first(),
+          // We allow 15 seconds to receive a credential offer or proof request
+          timeout(15 * 1000)
+        )
+      )
+    : undefined
+
+  let connectionRecord: ConnectionRecord | undefined
+  let outOfBandRecord: OutOfBandRecord
+
+  try {
+    const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
+      reuseConnection: true,
+    })
+    connectionRecord = receiveInvitationResult.connectionRecord
+    outOfBandRecord = receiveInvitationResult.outOfBandRecord
+
+    // Assign connectionId so it can be used in the observables.
+    connectionId = connectionRecord?.id
+  } catch (error) {
+    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
+
+    return {
+      success: false,
+      error: 'Invalid invitation.',
+    }
+  }
+
+  try {
+    const event = await eventPromise
+    agent.config.logger.debug(`Received event ${event?.type}`)
+
+    if (!event) {
+      return {
+        success: true,
+        connectionId: connectionId as string,
+        flowType: 'connect',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as unknown as any
+    }
+
+    if (event.type === CredentialEventTypes.CredentialStateChanged) {
+      return {
+        success: true,
+        credentialExchangeId: event.payload.credentialRecord.id,
+        connectionId,
+        flowType: 'issue',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as unknown as any
+    }
+    if (event.type === ProofEventTypes.ProofStateChanged) {
+      return {
+        success: true,
+        proofExchangeId: event.payload.proofRecord.id,
+        connectionId,
+        flowType: 'verify',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as unknown as any
+    }
+  } catch (error) {
+    agent.config.logger.error('Error while accepting out of band invitation.')
+
+    // Delete OOB record
+    const outOfBandRepository = agent.dependencyManager.resolve(OutOfBandRepository)
+    await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
+
+    // Delete connection record
+    // TODO: delete did and mediation stuff
+    if (connectionRecord) {
+      await agent.modules.connections.deleteById(connectionRecord.id)
+    }
+
+    return {
+      success: false,
+      error: 'Invalid invitation.',
+    }
+  }
+
+  return {
+    success: false,
+    error: 'Invalid invitation.',
+  }
 }

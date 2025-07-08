@@ -16,7 +16,6 @@ export {
   isParadymAgent,
 } from './agent'
 export * from './batch'
-export * from './providers/AgentProvider'
 export * from './invitation'
 export * from './hooks'
 export * from './mediation'

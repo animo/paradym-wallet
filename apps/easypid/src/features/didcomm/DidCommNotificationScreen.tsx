@@ -1,12 +1,10 @@
-import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
-import {
-  type ResolveOutOfBandInvitationResultSuccess,
-  parseDidCommInvitation,
-  resolveOutOfBandInvitation,
-  useDidCommConnectionActions,
-} from '@package/agent'
+import { type ResolveOutOfBandInvitationResultSuccess, parseDidCommInvitation } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
+import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
+import { useDidCommConnectionActions } from '@paradym/wallet-sdk/src/hooks/useDidCommConnectionActions'
+import { resolveOutOfBandInvitation } from '@paradym/wallet-sdk/src/invitation/resolver'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
@@ -26,7 +24,7 @@ type Query = {
 }
 
 export function DidCommNotificationScreen() {
-  const { agent } = useParadymAgent()
+  const { agent } = useAgent<DidCommAgent>()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()

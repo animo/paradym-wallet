@@ -6,7 +6,6 @@ import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import {
-  AgentProvider,
   type InvitationType,
   WalletJsonStoreProvider,
   registerCredentialsForDcApi,
@@ -15,6 +14,7 @@ import {
 import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
+import { AgentProvider } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'

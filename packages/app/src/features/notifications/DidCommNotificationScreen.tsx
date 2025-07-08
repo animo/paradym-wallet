@@ -1,7 +1,9 @@
-import { parseDidCommInvitation, resolveOutOfBandInvitation, useAgent } from '@package/agent'
+import { parseDidCommInvitation, resolveOutOfBandInvitation } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useEffect, useState } from 'react'
 
+import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { useLocalSearchParams } from 'expo-router'
 import { usePushToWallet } from '../../hooks'
 import { DidCommCredentialNotificationScreen } from './DidCommCredentialNotificationScreen'
@@ -22,7 +24,7 @@ type Query = {
 }
 
 export function DidCommNotificationScreen() {
-  const { agent } = useAgent()
+  const { agent } = useAgent<DidCommAgent>()
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()

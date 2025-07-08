@@ -38,6 +38,7 @@ import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
+import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
 import { formatDcqlCredentialsForRequest } from '@paradym/wallet-sdk/src/format/dcqlRequest'
 import { formatDifPexCredentialsForRequest } from '@paradym/wallet-sdk/src/format/presentationExchangeRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
@@ -510,7 +511,7 @@ export const getCredentialsForProofRequest = async ({
 }
 
 async function findExistingDidcommConnectionForInvitation(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   outOfBandInvitation: OutOfBandInvitation
 ): Promise<ConnectionRecord | null> {
   for (const invitationDid of outOfBandInvitation.invitationDids) {
@@ -556,7 +557,7 @@ export interface ResolveOutOfBandInvitationResultSuccess {
  * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
  */
 export async function resolveOutOfBandInvitation(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   invitation: OutOfBandInvitation
 ): Promise<ResolveOutOfBandInvitationResultSuccess | { success: false; error: string }> {
   const requestMessages = invitation.getRequests() ?? []
