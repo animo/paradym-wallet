@@ -203,6 +203,8 @@ const NamelessValueRow = ({ value }: { value: string }) => {
 }
 
 const ValueRow = ({ name, value }: { name: string; value: string }) => {
+  const isInvalid = value === 'value-not-found'
+
   return (
     <YStack
       bg="$tableBackgroundColor"
@@ -215,7 +217,7 @@ const ValueRow = ({ name, value }: { name: string; value: string }) => {
       <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
         {name}
       </Paragraph>
-      <Paragraph color="$grey-900">{value}</Paragraph>
+      <Paragraph color={isInvalid ? '$danger-500' : '$grey-900'}>{isInvalid ? 'Not found' : value}</Paragraph>
     </YStack>
   )
 }
