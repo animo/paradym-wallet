@@ -1,4 +1,4 @@
-import { useInboxNotifications } from '@package/agent/hooks'
+import { useInboxNotifications } from '@package/agent'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 

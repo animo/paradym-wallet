@@ -1,17 +1,18 @@
 import { utils } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
 import {
   type CredentialForDisplayId,
   type CredentialsForProofRequest,
-  type DisplayImage,
-  type FormattedSubmission,
   type FormattedTransactionData,
-  getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
   getWalletJsonStore,
   useWalletJsonRecord,
 } from '@package/agent'
-
+import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
+import {
+  getDisclosedAttributeNamesForDisplay,
+  getUnsatisfiedAttributePathsForDisplay,
+} from '@paradym/wallet-sdk/src/display/common'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import { useMemo } from 'react'
 
 export type ActivityType = 'shared' | 'received' | 'signed'
@@ -79,7 +80,7 @@ interface ActivityRecord {
 const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: _activityStorage.recordId,
-  addActivity: async (agent: AppAgent, activity: Activity) => {
+  addActivity: async (agent: BaseAgent, activity: Activity) => {
     // get activity. then add this activity
     const record = await _activityStorage.get(agent)
     if (!record) {
@@ -111,7 +112,7 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
 }
 
 export const addReceivedActivity = async (
-  agent: AppAgent,
+  agent: BaseAgent,
   input: {
     entityId?: string
     name: string
@@ -138,7 +139,7 @@ export const addReceivedActivity = async (
 }
 
 export const addSharedOrSignedActivity = async (
-  agent: AppAgent,
+  agent: BaseAgent,
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
   if ('transaction' in input && input.transaction) {
@@ -159,7 +160,7 @@ export const addSharedOrSignedActivity = async (
 }
 
 export function addSharedActivityForCredentialsForRequest(
-  agent: AppAgent,
+  agent: BaseAgent,
   credentialsForRequest: Pick<CredentialsForProofRequest, 'formattedSubmission'> & {
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
@@ -190,7 +191,7 @@ export function addSharedActivityForCredentialsForRequest(
 }
 
 export function addSharedActivityForSubmission(
-  agent: AppAgent,
+  agent: BaseAgent,
   submission: FormattedSubmission,
   verifier: {
     id: string

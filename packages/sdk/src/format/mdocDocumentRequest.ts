@@ -1,15 +1,16 @@
 import { DeviceRequest, limitDisclosureToDeviceRequestNameSpaces, parseIssuerSigned } from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
-import type { EitherAgent } from '../agent'
-import { getAttributesAndMetadataForMdocPayload, getCredentialForDisplay } from '../display'
+import type { OpenId4VcAgent } from '../agent'
+import { getCredentialForDisplay } from '../display/credential'
+import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
   FormattedSubmissionEntrySatisfiedCredential,
-} from './formatPresentation'
+} from './submission'
 
 export async function getSubmissionForMdocDocumentRequest(
-  agent: EitherAgent,
+  agent: OpenId4VcAgent,
   encodedDeviceRequest: Uint8Array
 ): Promise<FormattedSubmission> {
   const deviceRequest = DeviceRequest.parse(encodedDeviceRequest)

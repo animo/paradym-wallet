@@ -1,21 +1,20 @@
-import type { CredentialStateChangedEvent } from '@credo-ts/didcomm'
-
 import { W3cCredentialRepository } from '@credo-ts/core'
+import type { CredentialStateChangedEvent } from '@credo-ts/didcomm'
 import { CredentialEventTypes, CredentialState } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
-import { useCredentialById } from '../providers'
-
-import { useAgent } from '../agent'
+import type { DidCommAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
-} from '../didcomm/metadata'
-import { setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
+  setOpenId4VcCredentialMetadata,
+} from '../metadata/credentials'
+import { useAgent } from '../providers/AgentProvider'
+import { useCredentialById } from '../providers/CredentialExchangeProvider'
 
 function useOfferAttributes(credentialExchangeId: string) {
-  const { agent } = useAgent()
+  const { agent } = useAgent<DidCommAgent>()
 
   const { data, status } = useQuery({
     queryKey: ['didCommCredentialOfferAttributes', credentialExchangeId],
@@ -42,7 +41,7 @@ function useOfferAttributes(credentialExchangeId: string) {
 }
 
 export function useDidCommCredentialActions(credentialExchangeId: string) {
-  const { agent } = useAgent()
+  const { agent } = useAgent<DidCommAgent>()
 
   const credentialExchange = useCredentialById(credentialExchangeId)
   const { data } = useOfferAttributes(credentialExchangeId)

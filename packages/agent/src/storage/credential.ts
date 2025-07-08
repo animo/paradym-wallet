@@ -6,16 +6,13 @@ import {
   W3cCredentialRecord,
   W3cCredentialRepository,
 } from '@credo-ts/core'
-import type { EitherAgent } from '../agent'
+import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
 import type { CredentialForDisplayId } from '../hooks'
 import { registerCredentialsForDcApi } from '../openid4vc/registerDcApi'
 
 type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
 
-export async function getCredential(
-  agent: EitherAgent,
-  credentialId: CredentialForDisplayId
-): Promise<CredentialRecord> {
+export async function getCredential(agent: BaseAgent, credentialId: CredentialForDisplayId): Promise<CredentialRecord> {
   if (credentialId.startsWith('w3c-credential-')) {
     const w3cCredentialId = credentialId.replace('w3c-credential-', '')
     return agent.w3cCredentials.getCredentialRecordById(w3cCredentialId)
@@ -34,7 +31,7 @@ export async function getCredential(
   throw new Error('Unsupported record type')
 }
 
-export async function updateCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
+export async function updateCredential(agent: BaseAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).update(agent.context, credentialRecord)
   } else if (credentialRecord instanceof MdocRecord) {
@@ -47,7 +44,7 @@ export async function updateCredential(agent: EitherAgent, credentialRecord: Cre
   await registerCredentialsForDcApi(agent)
 }
 
-export async function storeCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
+export async function storeCredential(agent: BaseAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
   } else if (credentialRecord instanceof MdocRecord) {
@@ -60,7 +57,7 @@ export async function storeCredential(agent: EitherAgent, credentialRecord: Cred
   await registerCredentialsForDcApi(agent)
 }
 
-export async function deleteCredential(agent: EitherAgent, credentialId: CredentialForDisplayId) {
+export async function deleteCredential(agent: BaseAgent, credentialId: CredentialForDisplayId) {
   if (credentialId.startsWith('w3c-credential-')) {
     const w3cCredentialId = credentialId.replace('w3c-credential-', '')
     await agent.w3cCredentials.removeCredentialRecord(w3cCredentialId)

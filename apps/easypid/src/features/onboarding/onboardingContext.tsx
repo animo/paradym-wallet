@@ -1,5 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import type { SdJwtVcHeader } from '@credo-ts/core'
+import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
@@ -20,9 +20,6 @@ import {
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
-  SdJwtVcRecord,
-  getCredentialForDisplay,
-  getCredentialForDisplayId,
   migrateLegacyParadymWallet,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
@@ -30,6 +27,7 @@ import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
@@ -271,7 +269,7 @@ export function OnboardingContextProvider({
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    (options) => {
+    (_options) => {
       if (!idCardPin) {
         // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
         if (Platform.OS === 'ios') sendCommand({ cmd: 'INTERRUPT' })

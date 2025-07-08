@@ -5,15 +5,14 @@ import {
   initializeSdk,
   sendCommand,
 } from '@animo-id/expo-ausweis-sdk'
-import type { MdocRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
-import type {
-  OpenId4VciRequestTokenResponse,
-  OpenId4VciResolvedCredentialOffer,
-  OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
-  SdJwtVcRecord,
+import {
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedCredentialOffer,
+  type OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
+  acquireAuthorizationCodeAccessToken,
 } from '@package/agent'
-import { acquireAuthorizationCodeAccessToken } from '@package/agent/invitation/handler'
 
 export interface ReceivePidUseCaseFlowOptions
   extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {

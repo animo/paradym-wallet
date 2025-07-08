@@ -1,6 +1,5 @@
-import { type DisplayImage, useCredentialsForDisplay } from '@package/agent'
-import { TextBackButton } from '@package/app'
-import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
+import { useCredentialsForDisplay } from '@package/agent'
+import { TextBackButton, useHaptics, useScrollViewPosition } from '@package/app'
 import {
   AnimatedStack,
   FlexPage,
@@ -21,6 +20,7 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { formatDate } from '@package/utils'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'

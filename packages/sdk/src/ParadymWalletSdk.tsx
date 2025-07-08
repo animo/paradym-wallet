@@ -79,4 +79,8 @@ export class ParadymWalletSdk {
     this.assertAgentIsInitialized()
     return <AgentProvider agent={this.agent}>{children}</AgentProvider>
   }
+
+  public receiveInvitation() {
+    this.assertAgentIsInitialized()
+  }
 }

@@ -1,22 +1,21 @@
-import {
-  BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
-  type FormattedSubmissionEntrySatisfied,
-  type FormattedTransactionData,
-  getCredentialsForProofRequest,
-  getDisclosedAttributeNamesForDisplay,
-  getFormattedTransactionData,
-  shareProof,
-} from '@package/agent'
-import { useToastController } from '@package/ui'
-import { useLocalSearchParams } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
-
 import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
-import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
+import {
+  BiometricAuthenticationCancelledError,
+  type CredentialsForProofRequest,
+  type FormattedTransactionData,
+  getCredentialsForProofRequest,
+  getFormattedTransactionData,
+  shareProof,
+} from '@package/agent'
+import { usePushToWallet } from '@package/app'
+import { useToastController } from '@package/ui'
+import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/src/display/common'
+import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/src/format/submission'
+import { useLocalSearchParams } from 'expo-router'
+import { useCallback, useEffect, useState } from 'react'
 import { trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'

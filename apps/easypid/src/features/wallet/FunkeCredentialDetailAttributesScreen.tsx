@@ -1,3 +1,6 @@
+import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
+import { CredentialAttributes, TextBackButton } from '@package/app'
+import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app'
 import {
   AnimatedStack,
   FlexPage,
@@ -11,13 +14,9 @@ import {
   useSpringify,
   useToastController,
 } from '@package/ui'
-import { useRef, useState } from 'react'
-
-import { CredentialAttributes, TextBackButton } from '@package/app/components'
-import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
-
-import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
+import { metadataForDisplay } from '@paradym/wallet-sdk/src/display/common'
 import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useRef, useState } from 'react'
 import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

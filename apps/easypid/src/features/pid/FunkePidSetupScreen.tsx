@@ -11,15 +11,11 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
-import {
-  BiometricAuthenticationCancelledError,
-  BiometricAuthenticationNotEnabledError,
-  getCredentialForDisplay,
-  getCredentialForDisplayId,
-} from '@package/agent'
+import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError } from '@package/agent'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -63,7 +59,7 @@ export function FunkePidSetupScreen() {
   }
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    async (options) => {
+    async (_options) => {
       // If we have a PIN, use it once and clear it
       if (idCardPin) {
         const pin = idCardPin

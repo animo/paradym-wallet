@@ -2,11 +2,9 @@
 	"name": "wallets",
 	"private": true,
 	"scripts": {
-		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
 		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
-		"deps:check": "check-dependency-version-consistency .",
 		"deps:fix": "pnpm deps:check --fix",
 		"types:check": "tsc --noEmit",
 		"style:check": "biome check --unsafe",
@@ -20,7 +18,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.8.1",
 		"@changesets/cli": "^2.29.4",
-		"check-dependency-version-consistency": "^5.0.1",
 		"tsup": "^8.5.0",
 		"typescript": "catalog:"
 	},

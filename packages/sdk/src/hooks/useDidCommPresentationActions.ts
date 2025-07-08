@@ -5,27 +5,28 @@ import type {
   AnonCredsRequestedPredicateMatch,
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
-import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
-import type {
-  FormattedSubmission,
-  FormattedSubmissionEntry,
-  FormattedSubmissionEntrySatisfiedCredential,
-} from '../format/formatPresentation'
-
 import { CredoError } from '@credo-ts/core'
+import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
 import { ProofEventTypes, ProofState, V2RequestPresentationMessage } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
-import { useConnectionById, useProofById } from '../providers'
-
-import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
-import { useAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
-import { getCredential } from '../storage'
+import type { DidCommAgent } from '../agent'
+import { getCredentialForDisplay } from '../display/credential'
+import type {
+  FormattedSubmission,
+  FormattedSubmissionEntry,
+  FormattedSubmissionEntrySatisfiedCredential,
+} from '../format/submission'
+import { useAgent } from '../providers/AgentProvider'
+import { useConnectionById } from '../providers/ConnectionProvider'
+import { useProofById } from '../providers/ProofExchangeProvider'
+import { getCredential } from '../storage/credentials'
+import type { NonEmptyArray } from '../types'
+import { capitalizeFirstLetter } from '../utils/capitalizeFirstLetter'
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
-  const { agent } = useAgent()
+  const { agent } = useAgent<DidCommAgent>()
 
   const proofExchange = useProofById(proofExchangeId)
   const connection = useConnectionById(proofExchange?.connectionId ?? '')
@@ -107,15 +108,6 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           matches.some((innerMatch) => match.credentialId === innerMatch.credentialId)
         )
       }
-
-      const allCredentialIds = [
-        ...Object.values(anonCredsCredentials.attributes).flatMap((matches) =>
-          matches.map((match) => match.credentialId)
-        ),
-        ...Object.values(anonCredsCredentials.predicates).flatMap((matches) =>
-          matches.map((match) => match.credentialId)
-        ),
-      ]
 
       for (const [groupName, attributeArray] of Object.entries(anonCredsCredentials.attributes)) {
         const requestedAttribute = proofRequest.requested_attributes[groupName]

@@ -1,4 +1,4 @@
-import type { DisplayImage, TrustMechanism, TrustedEntity } from '@package/agent'
+import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import {
   Circle,
@@ -14,6 +14,7 @@ import {
   useMedia,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useActivities } from '../../activity/activityRecord'

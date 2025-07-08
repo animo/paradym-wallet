@@ -1,11 +1,8 @@
-import { FlexPage, HeaderContainer, HeroIcons, ScrollView, Switch, YStack } from '@package/ui'
-
-import { TextBackButton } from '@package/app'
-import { LocalAiContainer } from './components/LocalAiContainer'
-
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useScrollViewPosition } from '@package/app/hooks'
+import { TextBackButton, useScrollViewPosition } from '@package/app'
+import { FlexPage, HeaderContainer, HeroIcons, ScrollView, Switch, YStack } from '@package/ui'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
+import { LocalAiContainer } from './components/LocalAiContainer'
 
 export function FunkeSettingsScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()

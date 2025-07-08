@@ -1,6 +1,9 @@
-import { type FormattedSubmission, useAgent, useDidCommPresentationActions } from '@package/agent'
-import { SlideWizard } from '@package/app/components/SlideWizard'
+import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
+import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import { useDidCommPresentationActions } from '@paradym/wallet-sdk/src/hooks/useDidCommPresentationActions'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { addSharedActivityForSubmission } from '../activity/activityRecord'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
@@ -14,7 +17,7 @@ type PresentationSlidesProps = {
 }
 
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
-  const { agent } = useAgent()
+  const { agent } = useAgent<DidCommAgent>()
   const toast = useToastController()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
     useDidCommPresentationActions(proofExchangeId)

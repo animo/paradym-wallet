@@ -7,9 +7,9 @@ import {
   type PidSdJwtVcAttributes,
   mapPidAttributeName,
 } from '@easypid/utils/pidCustomMetadata'
-import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes } from '@package/app'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
