@@ -44,7 +44,9 @@ export function FunkeTrustDetailScreen({
       ? 'EU Trusted List'
       : trustMechanism === 'openid_federation'
         ? 'OpenID Federation'
-        : 'X.509 Certificate'
+        : trustMechanism === 'did'
+          ? 'Decentralized Identifier'
+          : 'X.509 Certificate'
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">

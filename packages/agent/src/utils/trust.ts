@@ -4,7 +4,8 @@ import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
 import type { EitherAgent } from '@package/agent'
 import { TRUSTED_ENTITIES } from '../invitation/trustedEntities'
 
-export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509'
+export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did'
+
 export type TrustList = TrustedEntity & {
   trustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }>
 }
@@ -34,8 +35,13 @@ type GetTrustedEntitiesForX509CertificateOptions = {
   walletTrustedEntity?: TrustedEntity
 }
 
+type GetTrustedEntitiesForDidOptions = {
+  resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
+}
+
 export type GetTrustedEntitiesOptions = GetTrustedEntitiesForEudiRpAuthenticationOptions &
-  GetTrustedEntitiesForOpenIdFederationOptions
+  GetTrustedEntitiesForOpenIdFederationOptions &
+  GetTrustedEntitiesForDidOptions
 
 export const detectTrustMechanism = (options: {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
@@ -51,6 +57,10 @@ export const detectTrustMechanism = (options: {
 
   if (options.resolvedAuthorizationRequest.signedAuthorizationRequest?.signer.method === 'x5c') {
     return 'x509'
+  }
+
+  if (options.resolvedAuthorizationRequest.verifier.clientIdScheme === 'did') {
+    return 'did'
   }
 
   throw new Error('Could not infer trust mechanism for authorization request')
@@ -69,25 +79,19 @@ export const getTrustedEntities = async (
   let trustedEntities
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
-      trustedEntities = {
-        ...(await getTrustedEntitiesForEudiRpAuthentication({ ...options, walletTrustedEntity: undefined })),
-        trustMechanism,
-      }
+      trustedEntities = await getTrustedEntitiesForEudiRpAuthentication({ ...options, walletTrustedEntity: undefined })
       break
     case 'openid_federation':
-      trustedEntities = {
-        ...(await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })),
-        trustMechanism,
-      }
+      trustedEntities = await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })
       break
     case 'x509':
-      trustedEntities = {
-        ...(await getTrustedEntitiesForX509Certificate(options)),
-        trustMechanism,
-      }
+      trustedEntities = await getTrustedEntitiesForX509Certificate(options)
+      break
+    case 'did':
+      trustedEntities = await getTrustedEntitiesForDid(options)
       break
     default:
-      throw new Error('')
+      throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
   }
 
   let entityId = trustedEntities.relyingParty.entityId
@@ -98,6 +102,7 @@ export const getTrustedEntities = async (
 
   return {
     ...trustedEntities,
+    trustMechanism,
     relyingParty: {
       ...trustedEntities.relyingParty,
       entityId,
@@ -192,6 +197,22 @@ const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntities
       uri,
     },
     trustedEntities,
+  }
+}
+
+const getTrustedEntitiesForDid = async (options: GetTrustedEntitiesForDidOptions) => {
+  const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
+  const entityId = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id
+  const organizationName = clientMetadata?.client_name
+  const logoUri = clientMetadata?.logo_uri
+
+  return {
+    relyingParty: {
+      organizationName,
+      logoUri,
+      entityId,
+    },
+    trustedEntities: [],
   }
 }
 
