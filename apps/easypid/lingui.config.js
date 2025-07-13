@@ -7,7 +7,7 @@ export default defineConfig({
   format: formatter({ style: 'lingui' }),
   catalogs: [
     {
-      path: '<rootDir>/apps/easypid/src/locales/{locale}/messages',
+      path: '<rootDir>/src/locales/{locale}/messages',
       include: ['<rootDir>/src', '<rootDir>/../../packages'],
       exclude: ['**/node_modules/**', 'node_modules'],
     },

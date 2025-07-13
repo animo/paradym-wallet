@@ -96,6 +96,7 @@ catalog:
   expo-updates: ~0.28.15
   expo-web-browser: ~14.2.0
   expo-build-properties: ~0.14.8
+  expo-localization: ~16.1.6
   "@expo-google-fonts/open-sans": ^0.4.1
   "@expo-google-fonts/raleway": ^0.4.1
 

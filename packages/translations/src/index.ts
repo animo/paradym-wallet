@@ -4,9 +4,8 @@ import '@formatjs/intl-pluralrules/polyfill-force'
 
 export {
   i18n,
-  translationMessage,
-  useTranslation,
   activateLocale,
-  registerLocale,
+  registerLocales,
 } from './i18n'
 export { TranslationProvider } from './TranslationProvider'
+export { useDeviceLocale } from './useDeviceLocale'

@@ -1,9 +1,10 @@
-import { type Messages, i18n } from '@lingui/core'
+import { type AllMessages, i18n } from '@lingui/core'
 
-type SupportedLocale = 'en' | 'nl'
+export const supportedLocales = ['en', 'nl'] as const
+export type SupportedLocale = (typeof supportedLocales)[number]
 
-export function registerLocale(locale: SupportedLocale, messages: Messages) {
-  i18n.load(locale, messages)
+export function registerLocales(messages: AllMessages) {
+  i18n.load(messages)
 }
 
 export function activateLocale(locale: SupportedLocale) {

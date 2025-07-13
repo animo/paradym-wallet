@@ -54,6 +54,7 @@
 		"expo-image-manipulator": "catalog:",
 		"expo-linear-gradient": "catalog:",
 		"expo-linking": "catalog:",
+		"expo-localization": "catalog:",
 		"expo-router": "catalog:",
 		"expo-secure-store": "catalog:",
 		"expo-splash-screen": "catalog:",
