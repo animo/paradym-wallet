@@ -1,78 +1,215 @@
 {
-  "home.helloWithName": {
-    "translation": "",
-    "message": "Hello, {userName}!",
-    "placeholders": {
-      "userName": [
-        "userName"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        71
-      ]
-    ]
-  },
-  "home.helloWithouthName": {
-    "translation": "",
-    "message": "Hello!",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        73
-      ]
-    ]
-  },
-  "home.howDoesItWork": {
-    "translation": "",
-    "message": "How does it work?",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        97
-      ]
-    ]
-  },
-  "home.presentInPersonButton": {
-    "translation": "",
-    "message": "Present In-person",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        88
-      ]
-    ]
-  },
-  "home.scanQrButton": {
-    "translation": "",
-    "message": "Scan QR-code",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        82
-      ]
-    ]
-  },
-  "home.setupYourId": {
-    "translation": "",
-    "message": "Setup your ID",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        101
-      ]
-    ]
-  }
+	"cardLifecycle.limitedByDate.expired.title": {
+		"translation": "",
+		"message": "Card expired",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 218]]
+	},
+	"cardLifecycle.active.title": {
+		"translation": "",
+		"message": "Card is active",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 25]]
+	},
+	"cardLifecycle.limitedByDate.notYetActive.title": {
+		"translation": "",
+		"message": "Card not active",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 230]]
+	},
+	"cardLifecycle.revoked.description": {
+		"translation": "",
+		"message": "Card not usable anymore",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 35]]
+	},
+	"cardLifecycle.revoked.title": {
+		"translation": "",
+		"message": "Card revoked",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 34]]
+	},
+	"cardLifecycle.limitedByDate.willExpire.title": {
+		"translation": "",
+		"message": "Card will expire",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 241]]
+	},
+	"cardLifecycle.limitedByDate.willExpire.description": {
+		"translation": "",
+		"message": "Expires in {expiryDaysString}",
+		"placeholders": {
+			"expiryDaysString": ["expiryDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 244]]
+	},
+	"home.helloWithName": {
+		"message": "Hello, {userName}!",
+		"placeholders": {
+			"userName": ["userName"]
+		},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 71]],
+		"translation": ""
+	},
+	"home.helloWithouthName": {
+		"message": "Hello!",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 73]],
+		"translation": ""
+	},
+	"home.howDoesItWork": {
+		"message": "How does it work?",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 97]],
+		"translation": ""
+	},
+	"cardLifecycle.batch.title": {
+		"translation": "",
+		"message": "Limited card usage",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 45]]
+	},
+	"cardLifecycle.active.description": {
+		"translation": "",
+		"message": "No actions required",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 26]]
+	},
+	"cardLifecycle.limitedByDate.active.description": {
+		"translation": "",
+		"message": "No actions required",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 207]]
+	},
+	"home.presentInPersonButton": {
+		"message": "Present In-person",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 88]],
+		"translation": ""
+	},
+	"cardLifecycle.refreshCardButton": {
+		"translation": "",
+		"message": "Refresh card",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 86]]
+	},
+	"home.scanQrButton": {
+		"message": "Scan QR-code",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 82]],
+		"translation": ""
+	},
+	"home.setupYourId": {
+		"message": "Setup your ID",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 101]],
+		"translation": ""
+	},
+	"cardLifecycle.limitedByDate.active.sheetDescription": {
+		"translation": "",
+		"message": "Some credentials may expire or require an active internet connection to validate",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 211]]
+	},
+	"cardLifecycle.limitedByDate.expired.description": {
+		"translation": "",
+		"message": "The expiration date of this card has passed",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 219]]
+	},
+	"cardLifecycle.limitedByDate.expired.sheetDescription": {
+		"translation": "",
+		"message": "The expiration date of this card has passed on {0}.",
+		"placeholders": {
+			"0": ["validUntil?.toLocaleDateString()"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 223]]
+	},
+	"cardLifecycle.revoked.sheetDescription": {
+		"translation": "",
+		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 36]]
+	},
+	"cardLifecycle.limitedByDate.validityPeriod": {
+		"translation": "",
+		"message": "The validity period of this card is from {0} until {1}.",
+		"placeholders": {
+			"0": ["formatDate(validFrom)"],
+			"1": ["formatDate(validUntil)"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 180]]
+	},
+	"cardLifecycle.limitedByDate.expiresIn": {
+		"translation": "",
+		"message": "This card expires in {expiryDaysString}, on {0}.",
+		"placeholders": {
+			"0": ["formatDate(validUntil)"],
+			"expiryDaysString": ["expiryDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 194]]
+	},
+	"cardLifecycle.batch.sheetDescription": {
+		"translation": "",
+		"message": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 47]]
+	},
+	"cardLifecycle.limitedByDate.activeIn": {
+		"translation": "",
+		"message": "This card will be active in {activeDaysString}, on {0}.",
+		"placeholders": {
+			"0": ["formatDate(validFrom)"],
+			"activeDaysString": ["activeDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 188]]
+	},
+	"cardLifecycle.batch.description": {
+		"translation": "",
+		"message": "verifications left",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 46]]
+	},
+	"cardLifecycle.limitedByDate.notYetActive.description": {
+		"translation": "",
+		"message": "Will be active in {activeDaysString}",
+		"placeholders": {
+			"activeDaysString": ["activeDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 231]]
+	},
+	"cardLifecycle.active.sheetDescription": {
+		"translation": "",
+		"message": "Your credentials may expire or require an active internet connection to validate.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 27]]
+	}
 }

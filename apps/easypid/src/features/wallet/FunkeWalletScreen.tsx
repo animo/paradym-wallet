@@ -19,13 +19,13 @@ import { useRouter } from 'expo-router'
 
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app/hooks'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
 import { InboxIcon } from './components/InboxIcon'
 import { LatestActivityCard } from './components/LatestActivityCard'
-import { Trans, useLingui } from '@lingui/react/macro'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()

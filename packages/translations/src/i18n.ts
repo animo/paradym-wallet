@@ -1,4 +1,4 @@
-import { i18n, type Messages } from '@lingui/core'
+import { type Messages, i18n } from '@lingui/core'
 
 type SupportedLocale = 'en' | 'nl'
 
