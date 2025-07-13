@@ -1,0 +1,78 @@
+{
+  "home.helloWithName": {
+    "translation": "Hello, {userName}!",
+    "message": "Hello, {userName}!",
+    "placeholders": {
+      "userName": [
+        "userName"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/features/wallet/FunkeWalletScreen.tsx",
+        71
+      ]
+    ]
+  },
+  "home.helloWithouthName": {
+    "translation": "Hello!",
+    "message": "Hello!",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/features/wallet/FunkeWalletScreen.tsx",
+        73
+      ]
+    ]
+  },
+  "home.howDoesItWork": {
+    "translation": "How does it work?",
+    "message": "How does it work?",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/features/wallet/FunkeWalletScreen.tsx",
+        97
+      ]
+    ]
+  },
+  "home.presentInPersonButton": {
+    "translation": "Present In-person",
+    "message": "Present In-person",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/features/wallet/FunkeWalletScreen.tsx",
+        88
+      ]
+    ]
+  },
+  "home.scanQrButton": {
+    "translation": "Scan QR-code",
+    "message": "Scan QR-code",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/features/wallet/FunkeWalletScreen.tsx",
+        82
+      ]
+    ]
+  },
+  "home.setupYourId": {
+    "translation": "Setup your ID",
+    "message": "Setup your ID",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/features/wallet/FunkeWalletScreen.tsx",
+        101
+      ]
+    ]
+  }
+}

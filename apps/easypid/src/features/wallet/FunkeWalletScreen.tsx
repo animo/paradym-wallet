@@ -25,6 +25,7 @@ import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
 import { InboxIcon } from './components/InboxIcon'
 import { LatestActivityCard } from './components/LatestActivityCard'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
@@ -40,6 +41,7 @@ export function FunkeWalletScreen() {
   const pushToOffline = () => {
     withHaptics(() => push('/offline'))()
   }
+  const { t } = useLingui()
 
   return (
     <YStack pos="relative" fg={1} bg="$background">
@@ -65,7 +67,11 @@ export function FunkeWalletScreen() {
                   ta="center"
                   numberOfLines={2}
                 >
-                  {userName ? `Hello, ${userName}!` : 'Hello!'}
+                  {userName ? (
+                    <Trans id="home.helloWithName">Hello, {userName}!</Trans>
+                  ) : (
+                    <Trans id="home.helloWithouthName">Hello!</Trans>
+                  )}
                 </Heading>
                 <Paragraph>Receive or share from your wallet</Paragraph>
               </YStack>
@@ -73,13 +79,13 @@ export function FunkeWalletScreen() {
                 <ActionCard
                   variant="primary"
                   icon={<CustomIcons.Qr color="white" />}
-                  title="Scan QR-code"
+                  title={t({ id: 'home.scanQrButton', message: 'Scan QR-code' })}
                   onPress={pushToScanner}
                 />
                 <ActionCard
                   variant="secondary"
                   icon={<CustomIcons.People size={26} />}
-                  title="Present In-person"
+                  title={t({ id: 'home.presentInPersonButton', message: 'Present In-person' })}
                   onPress={pushToOffline}
                 />
               </XStack>
@@ -88,11 +94,12 @@ export function FunkeWalletScreen() {
                 <XStack ai="center" opacity={isLoading ? 0 : 1}>
                   {userName ? (
                     <Button.Text scaleOnPress bg="transparent" onPress={pushToAbout}>
-                      How does it work?
+                      <Trans id="home.howDoesItWork">How does it work?</Trans>
                     </Button.Text>
                   ) : (
                     <Button.Text scaleOnPress bg="transparent" onPress={pushToPidSetup}>
-                      Setup your ID <HeroIcons.ArrowRight ml="$-2.5" color="$primary-500" size={16} />
+                      <Trans id="home.setupYourId">Setup your ID</Trans>{' '}
+                      <HeroIcons.ArrowRight ml="$-2.5" color="$primary-500" size={16} />
                     </Button.Text>
                   )}
                 </XStack>

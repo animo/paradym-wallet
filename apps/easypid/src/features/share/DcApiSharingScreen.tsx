@@ -9,6 +9,7 @@ import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { TranslationProvider } from '@package/translations'
 
 type DcApiSharingScreenProps = {
   request: DigitalCredentialsRequest
@@ -16,13 +17,15 @@ type DcApiSharingScreenProps = {
 
 export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
   return (
-    <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
-      <SafeAreaProvider>
-        <Stack flex-1 justifyContent="flex-end">
-          <DcApiSharingScreenWithContext request={request} />
-        </Stack>
-      </SafeAreaProvider>
-    </TamaguiProvider>
+    <TranslationProvider>
+      <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
+        <SafeAreaProvider>
+          <Stack flex-1 justifyContent="flex-end">
+            <DcApiSharingScreenWithContext request={request} />
+          </Stack>
+        </SafeAreaProvider>
+      </TamaguiProvider>
+    </TranslationProvider>
   )
 }
 

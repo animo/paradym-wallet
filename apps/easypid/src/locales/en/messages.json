@@ -1,0 +1,78 @@
+{
+  "home.helloWithName": {
+    "message": "Hello, {userName}!",
+    "placeholders": {
+      "userName": [
+        "userName"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
+        71
+      ]
+    ],
+    "translation": "Hello, {userName}!"
+  },
+  "home.helloWithouthName": {
+    "message": "Hello!",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
+        73
+      ]
+    ],
+    "translation": "Hello!"
+  },
+  "home.howDoesItWork": {
+    "message": "How does it work?",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
+        97
+      ]
+    ],
+    "translation": "How does it work?"
+  },
+  "home.presentInPersonButton": {
+    "translation": "Present In-person",
+    "message": "Present In-person",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
+        88
+      ]
+    ]
+  },
+  "home.scanQrButton": {
+    "translation": "Scan QR-code",
+    "message": "Scan QR-code",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
+        82
+      ]
+    ]
+  },
+  "home.setupYourId": {
+    "message": "Setup your ID",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
+        101
+      ]
+    ],
+    "translation": "Setup your ID"
+  }
+}

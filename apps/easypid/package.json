@@ -8,7 +8,9 @@
 		"android": "APP_VARIANT=development expo run:android",
 		"ios": "APP_VARIANT=development expo run:ios",
 		"prebuild": "APP_VARIANT=development expo prebuild --no-install",
-		"eas-build-pre-install": "corepack enable"
+		"eas-build-pre-install": "corepack enable",
+		"translations:extract": "lingui extract",
+		"translations:compile": "lingui compile --typescript"
 	},
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
@@ -20,12 +22,15 @@
 		"@credo-ts/core": "catalog:",
 		"@expo-google-fonts/open-sans": "catalog:",
 		"@expo-google-fonts/raleway": "catalog:",
+		"@gorhom/bottom-sheet": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
+		"@lingui/babel-plugin-lingui-macro": "^5.3.3",
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
 		"@package/scanner": "workspace:*",
 		"@package/secure-store": "workspace:*",
+		"@package/translations": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@package/utils": "workspace:*",
 		"@react-native-community/blur": "catalog:",
@@ -37,7 +42,6 @@
 		"burnt": "catalog:",
 		"expo": "catalog:",
 		"expo-application": "catalog:",
-		"@gorhom/bottom-sheet": "catalog:",
 		"expo-asset": "catalog:",
 		"expo-blur": "catalog:",
 		"expo-camera": "catalog:",
@@ -61,6 +65,7 @@
 		"react": "catalog:",
 		"react-native": "catalog:",
 		"react-native-argon2": "catalog:",
+		"react-native-edge-to-edge": "catalog:",
 		"react-native-executorch": "catalog:",
 		"react-native-fs": "catalog:",
 		"react-native-gesture-handler": "catalog:",
@@ -72,11 +77,12 @@
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
 		"react-native-screens": "catalog:",
-		"react-native-svg": "catalog:",
-		"react-native-edge-to-edge": "catalog:"
+		"react-native-svg": "catalog:"
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",
+		"@lingui/cli": "^5.3.3",
+		"@lingui/format-json": "^5.3.3",
 		"@tamagui/babel-plugin": "catalog:",
 		"babel-plugin-syntax-hermes-parser": "catalog:",
 		"expo-build-properties": "catalog:",
