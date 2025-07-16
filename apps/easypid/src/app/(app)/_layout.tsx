@@ -5,15 +5,11 @@ import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import {
-  type InvitationType,
-  WalletJsonStoreProvider,
-  registerCredentialsForDcApi,
-  useMediatorSetup,
-} from '@package/agent'
+import { type InvitationType, WalletJsonStoreProvider, registerCredentialsForDcApi } from '@package/agent'
 import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
+import { useMediatorSetup } from '@paradym/wallet-sdk/src/hooks/useMediatorSetup'
 import { AgentProvider } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'

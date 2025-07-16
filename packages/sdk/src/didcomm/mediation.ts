@@ -1,13 +1,11 @@
-import type { ParadymAppAgent } from './agent'
-
 import { CredoError } from '@credo-ts/core'
 import { MediatorPickupStrategy } from '@credo-ts/didcomm'
-import { useEffect } from 'react'
+import type { DidCommAgent } from '../agent'
 
 /**
  * Check whether a default mediator is configued
  */
-export async function hasMediationConfigured(agent: ParadymAppAgent) {
+export async function hasMediationConfigured(agent: DidCommAgent) {
   const mediationRecord = await agent.modules.mediationRecipient.findDefaultMediator()
 
   return mediationRecord !== null
@@ -18,7 +16,7 @@ export async function hasMediationConfigured(agent: ParadymAppAgent) {
  *
  * This connects based on a did
  */
-export async function setupMediationWithDid(agent: ParadymAppAgent, mediatorDid: string) {
+export async function setupMediationWithDid(agent: DidCommAgent, mediatorDid: string) {
   // If the invitation is a did, the invitation id is the did
   const outOfBandRecord = await agent.modules.outOfBand.findByReceivedInvitationId(mediatorDid)
   let [connection] = outOfBandRecord ? await agent.modules.connections.findAllByOutOfBandId(outOfBandRecord.id) : []
@@ -52,7 +50,7 @@ export async function setupMediationWithDid(agent: ParadymAppAgent, mediatorDid:
 /**
  * Initiate message pickup from the mediator.
  */
-async function initiateMessagePickup(agent: ParadymAppAgent) {
+export async function initiateMessagePickup(agent: DidCommAgent) {
   agent.config.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
@@ -62,39 +60,9 @@ async function initiateMessagePickup(agent: ParadymAppAgent) {
 /**
  * Stop message pickup from the mediator.
  */
-async function stopMessagePickup(agent: ParadymAppAgent) {
+export async function stopMessagePickup(agent: DidCommAgent) {
   agent.config.logger.info('Stopping message pickup from mediator')
 
   // Stop message pickup. Will stopp all message pickup, not just from the mediator
   await agent.modules.mediationRecipient.stopMessagePickup()
-}
-
-/**
- * Hook to enable message pickup from the mediator.
- *
- * You can use the `isEnabled` config property to enable/disable message pickup.
- * This is useful if e.g. there's no internet connection, or mediation has not been setup yet
- */
-export function useMessagePickup({
-  isEnabled = true,
-  agent,
-}: {
-  isEnabled?: boolean
-  agent?: ParadymAppAgent
-}) {
-  useEffect(() => {
-    // If no agent, do nothing
-    if (!agent) return
-    // Do not pickup messages if not enabled
-    if (!isEnabled) return
-
-    agent.config.logger.debug('Initiating message pickup.')
-
-    void initiateMessagePickup(agent)
-
-    // Stop message pickup when component unmounts
-    return () => {
-      void stopMessagePickup(agent)
-    }
-  }, [isEnabled, agent])
 }

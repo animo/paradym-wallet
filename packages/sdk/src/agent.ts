@@ -149,7 +149,7 @@ const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['did
   dids: new DidsModule(),
   outOfBand: new OutOfBandModule(),
   didcomm: new DidCommModule(),
-  mediatorRecipient: new MediationRecipientModule(),
+  mediationRecipient: new MediationRecipientModule(),
   credentials: new CredentialsModule({
     autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
     credentialProtocols: [

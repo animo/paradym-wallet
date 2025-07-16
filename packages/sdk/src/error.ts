@@ -13,6 +13,8 @@ export class ParadymWalletAgentIsNotConfiguredForOpenId4VcError extends ParadymW
 
 export class ParadymWalletUnsupportedCredentialRecordTypeError extends ParadymWalletSdkError {}
 
+export class ParadymWalletNoMediatorDidProvidedError extends ParadymWalletSdkError {}
+
 export class ParadymWalletInvitationError extends ParadymWalletSdkError {}
 export class ParadymWalletInvitationReceiveError extends ParadymWalletSdkError {}
 export class ParadymWalletInvitationMultipleRequestsError extends ParadymWalletSdkError {}
