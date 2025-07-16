@@ -1,16 +1,17 @@
-import { type CredentialForDisplayId, useCredentialByCategory, useCredentialForDisplayById } from '@package/agent'
+import { useCredentialByCategory } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
 import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { deleteCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useNavigation } from 'expo-router'
-import { useAgent } from 'packages/sdk/src/providers/AgentProvider'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
 
 interface DeleteCredentialSheetProps {
   isSheetOpen: boolean
   setIsSheetOpen: (isOpen: boolean) => void
-  id: CredentialForDisplayId
+  id: CredentialId
   category?: CredentialCategoryMetadata['credentialCategory']
   name: string
 }
@@ -21,7 +22,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
   const navigation = useNavigation()
   const { withHaptics, successHaptic, errorHaptic } = useHaptics()
 
-  const { credential } = useCredentialForDisplayById(id)
+  const { credential } = useCredentialById(id)
   const { credentials } = useCredentialByCategory(credential?.category?.credentialCategory)
 
   const onDeleteCredential = async () => {

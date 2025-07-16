@@ -1,8 +1,7 @@
-import { useInboxNotifications } from '@package/agent'
-import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
-import { useRouter } from 'expo-router'
-
 import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
+import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
+import { useInboxNotifications } from '@paradym/wallet-sdk/src/hooks/useInboxNotifications'
+import { useRouter } from 'expo-router'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function InboxScreen() {

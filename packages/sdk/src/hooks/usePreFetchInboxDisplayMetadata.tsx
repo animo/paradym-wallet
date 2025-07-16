@@ -1,5 +1,5 @@
 import { CredentialState, ProofState } from '@credo-ts/didcomm'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import type { DidCommAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
@@ -10,16 +10,6 @@ import {
 import { useConnections } from '../providers/ConnectionProvider'
 import { useCredentialByState } from '../providers/CredentialExchangeProvider'
 import { useProofByState } from '../providers/ProofExchangeProvider'
-
-export const useHasInboxNotifications = () => {
-  const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-  const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
-
-  return {
-    hasInboxNotifications: credentialExchangeRecords.length > 0 || proofExchangeRecords.length > 0,
-    inboxNotificationsCount: credentialExchangeRecords.length + proofExchangeRecords.length,
-  }
-}
 
 /**
  * This hooks listens to all the credential and proof exchange records in the inbox and
@@ -108,41 +98,4 @@ export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: DidCommAgent
       }
     })
   }, [proofExchangeRecords, agent, connections])
-}
-
-export const useInboxNotifications = () => {
-  const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-  const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
-
-  const sortedNotifications = useMemo(() => {
-    // Sort by creation date
-    const sortedRecords = [...credentialExchangeRecords, ...proofExchangeRecords].sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-    )
-
-    return sortedRecords.map((record) => {
-      if (record.type === 'CredentialRecord') {
-        const metadata = getDidCommCredentialExchangeDisplayMetadata(record)
-
-        return {
-          id: record.id,
-          type: record.type,
-          createdAt: record.createdAt,
-          contactLabel: metadata?.issuerName,
-          notificationTitle: metadata?.credentialName ?? 'Credential',
-        } as const
-      }
-      const metadata = getDidCommProofExchangeDisplayMetadata(record)
-
-      return {
-        id: record.id,
-        type: record.type,
-        createdAt: record.createdAt,
-        contactLabel: metadata?.verifierName,
-        notificationTitle: metadata?.proofName ?? 'Data Request',
-      } as const
-    })
-  }, [proofExchangeRecords, credentialExchangeRecords])
-
-  return sortedNotifications
 }

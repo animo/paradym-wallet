@@ -1,6 +1,5 @@
 import { utils } from '@credo-ts/core'
 import {
-  type CredentialForDisplayId,
   type CredentialsForProofRequest,
   type FormattedTransactionData,
   getWalletJsonStore,
@@ -13,6 +12,7 @@ import {
 } from '@paradym/wallet-sdk/src/display/common'
 import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import type { CredentialId } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
 import { useMemo } from 'react'
 
 export type ActivityType = 'shared' | 'received' | 'signed'
@@ -44,7 +44,7 @@ export interface PresentationActivityCredentialNotFound {
 }
 
 export interface PresentationActivityCredential {
-  id: CredentialForDisplayId
+  id: CredentialId
   name?: string
   attributeNames: string[]
   attributes: Record<string, unknown>
@@ -63,7 +63,7 @@ export interface PresentationActivity extends BaseActivity {
 
 export interface IssuanceActivity extends BaseActivity {
   type: 'received'
-  credentialIds: CredentialForDisplayId[]
+  credentialIds: CredentialId[]
 }
 
 export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
@@ -119,7 +119,7 @@ export const addReceivedActivity = async (
     host?: string
     logo?: DisplayImage
     backgroundColor?: string
-    credentialIds: CredentialForDisplayId[]
+    credentialIds: CredentialId[]
   }
 ) => {
   await activityStorage.addActivity(agent, {

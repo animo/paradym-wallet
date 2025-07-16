@@ -1,8 +1,10 @@
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import { ParadymWalletMustBeInitializedError } from './error'
+import { useCredentialById } from './hooks/useCredentialById'
+import { useCredentialRecordById } from './hooks/useCredentialRecordById'
+import { useCredentialRecords } from './hooks/useCredentialRecords'
 import { useCredentials } from './hooks/useCredentials'
-import { useCredentialsById } from './hooks/useCredentialsById'
 import { useDidCommAgent } from './hooks/useDidcommAgent'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
@@ -51,7 +53,7 @@ export class ParadymWalletSdk {
 
     return {
       useCredentials,
-      useCredentialsById,
+      useCredentialById,
     }
   }
 
@@ -69,6 +71,8 @@ export class ParadymWalletSdk {
       useAgent,
       useDidCommAgent,
       useOpenId4VcAgent,
+      useCredentialRecords,
+      useCredentialRecordById,
     }
   }
 

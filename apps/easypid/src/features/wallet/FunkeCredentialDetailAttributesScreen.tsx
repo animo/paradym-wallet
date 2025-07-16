@@ -1,4 +1,3 @@
-import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
 import { CredentialAttributes, TextBackButton } from '@package/app'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app'
 import {
@@ -15,6 +14,7 @@ import {
   useToastController,
 } from '@package/ui'
 import { metadataForDisplay } from '@paradym/wallet-sdk/src/display/common'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import { FadeOutUp } from 'react-native-reanimated'
@@ -23,8 +23,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CustomCredentialAttributes, hasCustomCredentialDisplay } from './components/CustomCredentialAttributes'
 
 export function FunkeCredentialDetailAttributesScreen() {
-  const { id } = useLocalSearchParams<{ id: CredentialForDisplayId }>()
-  const { credential } = useCredentialForDisplayById(id)
+  const { id } = useLocalSearchParams<{ id: CredentialId }>()
+  const { credential } = useCredentialById(id)
 
   const toast = useToastController()
   const router = useRouter()

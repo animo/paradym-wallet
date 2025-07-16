@@ -1,4 +1,3 @@
-import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
 import {
   CardInfoLifecycle,
   DeleteCredentialSheet,
@@ -20,19 +19,20 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export function FunkeCredentialDetailScreen() {
   const toast = useToastController()
-  const { id } = useLocalSearchParams<{ id: CredentialForDisplayId }>()
+  const { id } = useLocalSearchParams<{ id: CredentialId }>()
   const router = useRouter()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
 
-  const { credential } = useCredentialForDisplayById(id)
+  const { credential } = useCredentialById(id)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   useHeaderRightAction({

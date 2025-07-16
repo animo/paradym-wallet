@@ -1,11 +1,8 @@
-import type { DidCommAgent } from '../agent'
-import { ParadymWalletAgentIsNotConfiguredForDidCommError } from '../error'
+import { type DidCommAgent, assertDidcommAgent } from '../agent'
 import { useAgent } from '../providers/AgentProvider'
 
 export const useDidCommAgent = () => {
   const { agent } = useAgent<DidCommAgent>()
-
-  if ('connections' in agent.modules) return { agent }
-
-  throw new ParadymWalletAgentIsNotConfiguredForDidCommError()
+  assertDidcommAgent(agent)
+  return { agent }
 }

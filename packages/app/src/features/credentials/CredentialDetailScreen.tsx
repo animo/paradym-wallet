@@ -1,4 +1,3 @@
-import { useCredentialForDisplayById } from '@package/agent'
 import {
   FloatingSheet,
   Heading,
@@ -15,6 +14,7 @@ import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { deleteCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useNavigation } from 'expo-router'
+import { useCredentialById } from 'packages/sdk/src/hooks/useCredentialById'
 import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -56,7 +56,7 @@ export function CredentialDetailScreen() {
     return null
   }
 
-  const { credential } = useCredentialForDisplayById(params.id)
+  const { credential } = useCredentialById(params.id)
   if (!credential) return null
   const { attributes, display } = credential
 

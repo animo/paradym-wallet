@@ -8,9 +8,6 @@ export class ParadymWalletMustBeDidCommAgentError extends ParadymWalletSdkError 
 export class ParadymWalletMustBeOpenId4VcAgentError extends ParadymWalletSdkError {}
 export class ParadymWalletMustBeInitializedError extends ParadymWalletSdkError {}
 
-export class ParadymWalletAgentIsNotConfiguredForDidCommError extends ParadymWalletSdkError {}
-export class ParadymWalletAgentIsNotConfiguredForOpenId4VcError extends ParadymWalletSdkError {}
-
 export class ParadymWalletUnsupportedCredentialRecordTypeError extends ParadymWalletSdkError {}
 
 export class ParadymWalletNoMediatorDidProvidedError extends ParadymWalletSdkError {}

@@ -1,7 +1,3 @@
-import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
-import { useLocalSearchParams } from 'expo-router'
-
-import { useCredentialsForDisplay } from '@package/agent'
 import {
   CardWithAttributes,
   MiniDocument,
@@ -10,7 +6,10 @@ import {
   useHaptics,
   useScrollViewPosition,
 } from '@package/app'
+import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
+import { useLocalSearchParams } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
@@ -72,7 +71,7 @@ export function FunkeActivityDetailScreen() {
 }
 
 export function ReceivedActivityDetailSection({ activity }: { activity: IssuanceActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
   const { withHaptics } = useHaptics()
   const { push } = useRouter()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
@@ -126,7 +125,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
 }
 
 export function SharedActivityDetailSection({ activity }: { activity: PresentationActivity | SignedActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
 
   const amountShared = activity.request.credentials?.length ?? 0
   const sharedCredentialAmount = amountShared > 1 ? 's' : ''

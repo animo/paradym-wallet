@@ -1,4 +1,3 @@
-import { useCredentialsForDisplay } from '@package/agent'
 import { TextBackButton, useHaptics, useScrollViewPosition } from '@package/app'
 import {
   AnimatedStack,
@@ -21,12 +20,13 @@ import {
 } from '@package/ui'
 import { formatDate } from '@package/utils'
 import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function FunkeCredentialsScreen() {
-  const { credentials, isLoading: isLoadingCredentials } = useCredentialsForDisplay()
+  const { credentials, isLoading: isLoadingCredentials } = useCredentials()
 
   const [searchQuery, setSearchQuery] = useState('')
   const filteredCredentials = useMemo(() => {
