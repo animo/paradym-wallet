@@ -1,11 +1,7 @@
-import {
-  type CredentialForDisplayId,
-  deleteCredential,
-  useCredentialByCategory,
-  useCredentialForDisplayById,
-} from '@package/agent'
+import { type CredentialForDisplayId, useCredentialByCategory, useCredentialForDisplayById } from '@package/agent'
 import { useToastController } from '@package/ui'
 import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
+import { deleteCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useNavigation } from 'expo-router'
 import { useAgent } from 'packages/sdk/src/providers/AgentProvider'
 import { useHaptics } from '../hooks'

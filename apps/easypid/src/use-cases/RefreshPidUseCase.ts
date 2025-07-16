@@ -7,13 +7,13 @@ import {
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
 } from '@package/agent'
-import { updateCredential } from '@package/agent'
 import {
   getBatchCredentialMetadata,
   getRefreshCredentialMetadata,
   setBatchCredentialMetadata,
   setRefreshCredentialMetadata,
 } from '@paradym/wallet-sdk/src/metadata/credentials'
+import { updateCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'

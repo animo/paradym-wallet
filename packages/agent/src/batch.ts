@@ -4,10 +4,10 @@ import {
   getCredentialCategoryMetadata,
   getRefreshCredentialMetadata,
 } from '@paradym/wallet-sdk/src/metadata/credentials'
+import { updateCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { decodeW3cCredential } from '@paradym/wallet-sdk/src/utils/encoding'
 import { RefreshPidUseCase } from '../../../apps/easypid/src/use-cases/RefreshPidUseCase'
 import type { EitherAgent } from './agent'
-import { updateCredential } from './storage'
 
 export async function refreshPid({
   agent,

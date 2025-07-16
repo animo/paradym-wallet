@@ -2,7 +2,6 @@ import {
   acquirePreAuthorizedAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-  storeCredential,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
@@ -14,6 +13,7 @@ import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import type { MdocRecord } from '@paradym/wallet-sdk/src/providers/MdocProvider'
 import type { SdJwtVcRecord } from '@paradym/wallet-sdk/src/providers/SdJwtVcProvider'
 import type { W3cCredentialRecord } from '@paradym/wallet-sdk/src/providers/W3cCredentialsProvider'
+import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'

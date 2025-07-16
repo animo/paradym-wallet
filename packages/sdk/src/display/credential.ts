@@ -1,4 +1,5 @@
 import { type ClaimFormat, MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import { ParadymWalletUnsupportedCredentialRecordTypeError } from '../error'
 import {
   type CredentialCategoryMetadata,
   getCredentialCategoryMetadata,
@@ -7,7 +8,6 @@ import {
 import { getDisplayInformationForMdocCredential } from './mdoc'
 import { getDisplayInformationForSdJwtCredential } from './sdJwt'
 import { getDisplayInformationForW3cCredential } from './w3c'
-import { ParadymWalletUnsupportedCredentialRecordTypeError } from '../error'
 
 export type CredentialForDisplayId = `w3c-credential-${string}` | `sd-jwt-vc-${string}` | `mdoc-${string}`
 

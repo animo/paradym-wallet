@@ -17,7 +17,6 @@ import {
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   shareProof,
-  storeCredential,
 } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
@@ -25,6 +24,7 @@ import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/src/displa
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
 import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/src/display/openid4vc'
 import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
+import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
