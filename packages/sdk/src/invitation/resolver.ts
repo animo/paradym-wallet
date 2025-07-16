@@ -29,6 +29,14 @@ import {
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 import type { DidCommAgent, OpenId4VcAgent } from '../agent'
 import {
+  ParadymWalletInvitationAlreadyUsedError,
+  ParadymWalletInvitationDidcommUnsupportedProtocolError,
+  ParadymWalletInvitationError,
+  ParadymWalletInvitationMultipleRequestsError,
+  ParadymWalletInvitationParseError,
+  ParadymWalletInvitationReceiveError,
+} from '../error'
+import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
   setOpenId4VcCredentialMetadata,
@@ -37,19 +45,16 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { credentialRecordFromCredential, encodeCredential } from '../utils/encoding'
 
 export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
-  | { success: false; error: string }
-  | (FlowType extends 'issue'
-      ? { success: true; flowType: 'issue'; credentialExchangeId: string; connectionId?: string }
-      : FlowType extends 'verify'
-        ? { success: true; flowType: 'verify'; proofExchangeId: string; connectionId?: string }
-        : FlowType extends 'connect'
-          ? { success: true; flowType: 'connect'; connectionId: string }
-          : never)
+  FlowType extends 'issue'
+    ? { flowType: 'issue'; credentialExchangeId: string; connectionId?: string }
+    : FlowType extends 'verify'
+      ? { flowType: 'verify'; proofExchangeId: string; connectionId?: string }
+      : FlowType extends 'connect'
+        ? { flowType: 'connect'; connectionId: string }
+        : never
 >
 
 export interface ResolveOutOfBandInvitationResultSuccess {
-  success: true
-
   outOfBandInvitation: OutOfBandInvitation
 
   /**
@@ -227,7 +232,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 export async function resolveOutOfBandInvitation(
   agent: DidCommAgent,
   invitation: OutOfBandInvitation
-): Promise<ResolveOutOfBandInvitationResultSuccess | { success: false; error: string }> {
+): Promise<ResolveOutOfBandInvitationResultSuccess> {
   const requestMessages = invitation.getRequests() ?? []
 
   let flowType: 'issue' | 'verify' | 'connect'
@@ -235,21 +240,16 @@ export async function resolveOutOfBandInvitation(
   if (requestMessages.length > 1) {
     const message = 'Message contains multiple requests. Invitation should only contain a single request.'
     agent.config.logger.error(message)
-    return {
-      success: false,
-      error: message,
-    }
+    throw new ParadymWalletInvitationMultipleRequestsError(message)
   }
 
   // In this case we probably need to create a connection first. We will do this here, as we don't allow to just
   // create a connection
   if (requestMessages.length === 0) {
     if (!invitation.handshakeProtocols || invitation.handshakeProtocols.length === 0) {
-      agent.config.logger.error('No requests and no handshake protocols found in invitation.')
-      return {
-        success: false,
-        error: 'Invalid invitation.',
-      }
+      const message = 'No requests and no handshake protocols found in invitation.'
+      agent.config.logger.error(message)
+      throw new ParadymWalletInvitationParseError(message)
     }
 
     if (invitation.goalCode === 'issue-vc' || invitation.goalCode === 'aries.vc.issue') {
@@ -277,11 +277,7 @@ export async function resolveOutOfBandInvitation(
     } else if (isValidOfferMessage) {
       flowType = 'issue'
     } else {
-      agent.config.logger.error('Message request is not from supported protocol.')
-      return {
-        success: false,
-        error: 'Invalid invitation.',
-      }
+      throw new ParadymWalletInvitationDidcommUnsupportedProtocolError()
     }
   }
 
@@ -289,16 +285,12 @@ export async function resolveOutOfBandInvitation(
     // Check if invitation already exists
     const receivedInvite = await agent.modules.outOfBand.findByReceivedInvitationId(invitation.id)
     if (receivedInvite) {
-      return {
-        success: false,
-        error: 'Invitation has already been scanned.',
-      }
+      throw new ParadymWalletInvitationAlreadyUsedError()
     }
 
     const existingConnection = (await findExistingDidcommConnectionForInvitation(agent, invitation)) ?? undefined
 
     return {
-      success: true,
       outOfBandInvitation: invitation,
       createConnection: existingConnection ? false : !!invitation.handshakeProtocols?.length,
       existingConnection,
@@ -306,11 +298,7 @@ export async function resolveOutOfBandInvitation(
     }
   } catch (error) {
     agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
-
-    return {
-      success: false,
-      error: 'Invalid invitation.',
-    }
+    throw new ParadymWalletInvitationError(error as string)
   }
 }
 
@@ -375,11 +363,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
     connectionId = connectionRecord?.id
   } catch (error) {
     agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
-
-    return {
-      success: false,
-      error: 'Invalid invitation.',
-    }
+    throw new ParadymWalletInvitationReceiveError((error as Error).message)
   }
 
   try {
@@ -388,30 +372,27 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
 
     if (!event) {
       return {
-        success: true,
         connectionId: connectionId as string,
         flowType: 'connect',
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      } as unknown as any
+      } as any
     }
 
     if (event.type === CredentialEventTypes.CredentialStateChanged) {
       return {
-        success: true,
         credentialExchangeId: event.payload.credentialRecord.id,
         connectionId,
         flowType: 'issue',
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      } as unknown as any
+      } as any
     }
     if (event.type === ProofEventTypes.ProofStateChanged) {
       return {
-        success: true,
         proofExchangeId: event.payload.proofRecord.id,
         connectionId,
         flowType: 'verify',
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      } as unknown as any
+      } as any
     }
   } catch (error) {
     agent.config.logger.error('Error while accepting out of band invitation.')
@@ -426,14 +407,8 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
       await agent.modules.connections.deleteById(connectionRecord.id)
     }
 
-    return {
-      success: false,
-      error: 'Invalid invitation.',
-    }
+    throw new ParadymWalletInvitationError((error as Error).message)
   }
 
-  return {
-    success: false,
-    error: 'Invalid invitation.',
-  }
+  throw new ParadymWalletInvitationError()
 }

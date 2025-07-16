@@ -1,9 +1,12 @@
 import { useDevelopmentMode } from '@easypid/hooks'
-import { type ResolveOutOfBandInvitationResultSuccess, parseDidCommInvitation } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
 import { useDidCommConnectionActions } from '@paradym/wallet-sdk/src/hooks/useDidCommConnectionActions'
-import { resolveOutOfBandInvitation } from '@paradym/wallet-sdk/src/invitation/resolver'
+import { parseDidCommInvitation } from '@paradym/wallet-sdk/src/invitation/parser'
+import {
+  type ResolveOutOfBandInvitationResultSuccess,
+  resolveOutOfBandInvitation,
+} from '@paradym/wallet-sdk/src/invitation/resolver'
 import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -52,8 +55,8 @@ export function DidCommNotificationScreen() {
   const onComplete = () => handleNavigation('replace')
 
   const onConnectionAccept = async () => {
-    const result = await acceptConnection()
-    if (result.success) {
+    try {
+      const result = await acceptConnection()
       setFlow({
         id:
           result.flowType === 'issue'
@@ -63,8 +66,8 @@ export function DidCommNotificationScreen() {
               : result.connectionId,
         type: result.flowType,
       })
-    } else {
-      setErrorReason(result.error)
+    } catch (e) {
+      setErrorReason((e as Error).message)
       throw new Error('Error accepting connection')
     }
   }
@@ -85,19 +88,9 @@ export function DidCommNotificationScreen() {
         }
 
         const parseResult = await parseDidCommInvitation(agent, invitation)
-        if (!parseResult.success) {
-          setErrorReason(parseResult.error)
-          return
-        }
-
-        const resolveResult = await resolveOutOfBandInvitation(agent, parseResult.result)
-        if (!resolveResult.success) {
-          setErrorReason(resolveResult.error)
-          return
-        }
-
+        const resolveResult = await resolveOutOfBandInvitation(agent, parseResult)
         setResolvedInvitation(resolveResult)
-      } catch (error: unknown) {
+      } catch (error) {
         agent.config.logger.error('Error parsing invitation', {
           error,
         })

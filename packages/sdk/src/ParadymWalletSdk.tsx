@@ -4,6 +4,8 @@ import { ParadymWalletMustBeInitializedError } from './error'
 import { useCredentials } from './hooks/useCredentials'
 import { useCredentialsById } from './hooks/useCredentialsById'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
+import { useDidCommAgent } from './hooks/useDidcommAgent'
+import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
 
 /**
  *
@@ -65,6 +67,8 @@ export class ParadymWalletSdk {
 
     return {
       useAgent,
+      useDidCommAgent,
+      useOpenId4VcAgent,
     }
   }
 

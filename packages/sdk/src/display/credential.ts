@@ -7,6 +7,7 @@ import {
 import { getDisplayInformationForMdocCredential } from './mdoc'
 import { getDisplayInformationForSdJwtCredential } from './sdJwt'
 import { getDisplayInformationForW3cCredential } from './w3c'
+import { ParadymWalletUnsupportedCredentialRecordTypeError } from '../error'
 
 export type CredentialForDisplayId = `w3c-credential-${string}` | `sd-jwt-vc-${string}` | `mdoc-${string}`
 
@@ -85,7 +86,7 @@ export function getCredentialForDisplayId(
     return `mdoc-${credentialRecord.id}`
   }
 
-  throw new Error('Unsupported credential record type')
+  throw new ParadymWalletUnsupportedCredentialRecordTypeError()
 }
 
 export function getCredentialForDisplay(
@@ -120,5 +121,5 @@ export function getCredentialForDisplay(
     )
   }
 
-  throw new Error('Unsupported format')
+  throw new ParadymWalletUnsupportedCredentialRecordTypeError()
 }

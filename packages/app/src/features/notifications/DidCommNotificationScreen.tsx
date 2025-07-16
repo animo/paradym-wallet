@@ -1,3 +1,6 @@
+// TODO: We have the `easypid/src/features/didcomm/DidCommNotificationScreen.tsx
+//       What is the difference? Can we just reuse the same screen?
+
 import { parseDidCommInvitation, resolveOutOfBandInvitation } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useEffect, useState } from 'react'

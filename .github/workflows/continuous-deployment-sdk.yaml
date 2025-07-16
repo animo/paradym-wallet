@@ -9,7 +9,6 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-<<<<<<< HEAD
   # release-stable:
   #   runs-on: ubuntu-latest
   #   name: Release Stable
@@ -40,38 +39,6 @@ jobs:
   #       env:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-=======
-  release-stable:
-    runs-on: ubuntu-latest
-    name: Release Stable
-    outputs:
-      published: ${{ steps.changesets.outputs.published }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Create Release Pull Request or Publish to npm
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          title: "chore(release): new version"
-          commit: "chore(release): new version"
-          publish: pnpm release:sdk
-          version: pnpm changeset-version:sdk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
->>>>>>> 5d6b6f0 (feat: initial setup of the wallet sdk package)
 
   release-unstable:
     runs-on: ubuntu-latest

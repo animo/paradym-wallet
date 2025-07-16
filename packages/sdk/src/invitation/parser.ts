@@ -1,4 +1,5 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
+import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
 import queryString from 'query-string'
 import type { DidCommAgent, FullAgent, OpenId4VcAgent } from '../agent'
 import { type CredentialForDisplay, getCredentialForDisplay } from '../display/credential'
@@ -95,18 +96,21 @@ export const isDidCommInvitation = (url: string) => {
   return false
 }
 
-export async function parseDidCommInvitation(agent: DidCommAgent, invitationUrl: string) {
-  const parsedUrl = queryString.parseUrl(invitationUrl)
-  const updatedInvitationUrl = (parsedUrl.query.oobUrl as string | undefined) ?? invitationUrl
+export async function parseDidCommInvitation(agent: DidCommAgent, invitation: string | Record<string, unknown>) {
+  if (typeof invitation === 'string') {
+    const parsedUrl = queryString.parseUrl(invitation)
+    const updatedInvitationUrl = (parsedUrl.query.oobUrl as string | undefined) ?? invitation
 
-  // Try to parse the invitation as an DIDComm invitation.
-  // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
-  // So we use the parseMessage from credo and see if this returns a valid message.
-  // Parse invitation supports legacy connection invitations, oob invitations, and
-  // legacy connectionless invitations, and will all transform them into an OOB invitation.
-  const parsedInvitation = await agent.modules.outOfBand.parseInvitation(updatedInvitationUrl)
-  agent.config.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
-  return parsedInvitation
+    // Try to parse the invitation as an DIDComm invitation.
+    // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
+    // So we use the parseMessage from credo and see if this returns a valid message.
+    // Parse invitation supports legacy connection invitations, oob invitations, and
+    // legacy connectionless invitations, and will all transform them into an OOB invitation.
+    const parsedInvitation = await agent.modules.outOfBand.parseInvitation(updatedInvitationUrl)
+    agent.config.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
+    return parsedInvitation
+  }
+  return parseInvitationJson(invitation)
 }
 
 export async function parseOpenIdCredentialOfferInvitation(agent: OpenId4VcAgent, invitationUrl: string) {
@@ -139,7 +143,7 @@ export async function parseOpenIdPresentationRequestInvitation(agent: OpenId4VcA
   // TODO: this object is too complex. Should be extremely simplified
   const formattedSubmission = getFormattedSubmission(resolved)
 
-  // The output of this should be inputted into the `shareProof` method
+  // The output of this should be the input into the `shareProof` method
 
   return {
     id: 'TODO',
