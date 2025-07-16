@@ -8,11 +8,15 @@ import { MdocRecordProvider } from './MdocProvider'
 import { ProofExchangeProvider } from './ProofExchangeProvider'
 import { SdJwtVcRecordProvider } from './SdJwtVcProvider'
 import { W3cCredentialRecordProvider } from './W3cCredentialsProvider'
+import { WalletJsonStoreProvider } from './WalletJsonStoreProvider'
 
 const AgentContext = createContext<Agent | undefined>(undefined)
 
 export type AgentProviderProps = {
   agent: Agent
+
+  // TODO: can we remove this? Why not just ignore specific record ids and use em all?
+  recordIds: Array<string>
 }
 
 /**
@@ -42,7 +46,7 @@ export const useAgent = <AppAgent extends Agent = Awaited<ReturnType<typeof setu
   }
 }
 
-export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProviderProps>) => {
+export const AgentProvider = ({ agent, recordIds, children }: PropsWithChildren<AgentProviderProps>) => {
   const DynamicProviders = useMemo(() => {
     return [
       agent.modules.proofs || agent.modules.credentials
@@ -67,11 +71,15 @@ export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProvid
       ),
       <W3cCredentialRecordProvider agent={agent}>
         <SdJwtVcRecordProvider agent={agent}>
-          <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
+          <MdocRecordProvider agent={agent}>
+            <WalletJsonStoreProvider recordIds={recordIds} agent={agent}>
+              {children}
+            </WalletJsonStoreProvider>
+          </MdocRecordProvider>
         </SdJwtVcRecordProvider>
       </W3cCredentialRecordProvider>
     )
-  }, [DynamicProviders, agent, children])
+  }, [DynamicProviders, agent, children, recordIds])
 
   return <AgentContext.Provider value={agent}>{providers}</AgentContext.Provider>
 }

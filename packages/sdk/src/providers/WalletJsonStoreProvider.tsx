@@ -46,7 +46,7 @@ export const WalletJsonStoreProvider: React.FC<Props> = ({ agent, children, reco
       const validRecords = records.filter((record): record is GenericRecord => record !== null)
       setState({ jsonRecords: validRecords, isLoading: false })
     }
-    fetchRecords()
+    void fetchRecords()
   }, [agent, recordIds])
 
   useEffect(() => {

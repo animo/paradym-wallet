@@ -1,14 +1,12 @@
 import type { Agent } from '@credo-ts/core'
 import { GenericRecord } from '@credo-ts/core/build/modules/generic-records/repository/GenericRecord'
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const store = async (agent: Agent, id: string, value: any) => {
+const store = async (agent: Agent, id: string, value: Record<string, unknown>) => {
   const record = new GenericRecord({ id, content: value })
   await agent.genericRecords.save(record)
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const update = async (agent: Agent, id: string, value: any) => {
+const update = async (agent: Agent, id: string, value: Record<string, unknown>) => {
   const record = new GenericRecord({ id, content: value })
   await agent.genericRecords.update(record)
 }
@@ -29,7 +27,7 @@ export const walletJsonStore = {
   update,
 }
 
-export function getWalletJsonStore<Content>(recordId: string) {
+export function getWalletJsonStore<Content extends Record<string, unknown>>(recordId: string) {
   return {
     recordId,
     store: async (agent: Agent, content: Content) => walletJsonStore.store(agent, recordId, content),

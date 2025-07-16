@@ -1,10 +1,5 @@
 import { utils } from '@credo-ts/core'
-import {
-  type CredentialsForProofRequest,
-  type FormattedTransactionData,
-  getWalletJsonStore,
-  useWalletJsonRecord,
-} from '@package/agent'
+import type { CredentialsForProofRequest, FormattedTransactionData } from '@package/agent'
 import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
 import {
   getDisclosedAttributeNamesForDisplay,
@@ -13,6 +8,8 @@ import {
 import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import type { CredentialId } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
+import { useWalletJsonRecord } from '@paradym/wallet-sdk/src/providers/WalletJsonStoreProvider'
+import { getWalletJsonStore } from '@paradym/wallet-sdk/src/storage/walletJsonStore'
 import { useMemo } from 'react'
 
 export type ActivityType = 'shared' | 'received' | 'signed'
@@ -73,7 +70,7 @@ export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
 
 export type Activity = PresentationActivity | IssuanceActivity | SignedActivity
 
-interface ActivityRecord {
+type ActivityRecord = {
   activities: Activity[]
 }
 

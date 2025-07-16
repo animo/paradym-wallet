@@ -19,7 +19,6 @@ export * from './batch'
 export * from './invitation'
 export * from './hooks'
 export * from './crypto'
-export * from './storage'
 export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
 
 export * from './utils/trust'
