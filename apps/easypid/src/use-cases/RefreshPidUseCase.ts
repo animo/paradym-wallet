@@ -9,14 +9,37 @@ import {
 } from '@package/agent'
 import {
   getBatchCredentialMetadata,
+  getCredentialCategoryMetadata,
   getRefreshCredentialMetadata,
   setBatchCredentialMetadata,
   setRefreshCredentialMetadata,
 } from '@paradym/wallet-sdk/src/metadata/credentials'
+import type { FetchBatchCredentialOptions } from '@paradym/wallet-sdk/src/openid4vc/batch'
 import { updateCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
+
+export async function refreshPid(options: FetchBatchCredentialOptions) {
+  const batchMetadata = getBatchCredentialMetadata(options.credentialRecord)
+  const categoryMetadata = getCredentialCategoryMetadata(options.credentialRecord)
+
+  if (categoryMetadata?.credentialCategory === 'DE-PID' && batchMetadata?.additionalCredentials.length === 0) {
+    const useCase = await RefreshPidUseCase.initialize({
+      agent: options.agent,
+    })
+
+    const credentials = await useCase.retrieveCredentialsUsingExistingRecords({
+      sdJwt: options.credentialRecord as SdJwtVcRecord,
+      mdoc: options.credentialRecord as MdocRecord,
+      batchSize: 2,
+    })
+
+    return credentials[0]
+  }
+
+  return options.credentialRecord
+}
 
 export interface RefreshPidUseCaseOptions {
   agent: AppAgent

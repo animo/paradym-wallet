@@ -2,7 +2,7 @@ import { useParadymAgent } from '@easypid/agent'
 import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useDidCommCredentialActions } from '@paradym/wallet-sdk/src/hooks/useDidCommCredentialActions'
-import { addReceivedActivity } from '../activity/activityRecord'
+import { addReceivedActivity } from '@paradym/wallet-sdk/src/storage/activities'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 import { getFlowConfirmationText } from './utils'
 

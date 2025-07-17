@@ -15,9 +15,9 @@ import {
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import { useActivities } from '@paradym/wallet-sdk/src/hooks/useActivities'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { useActivities } from '../../activity/activityRecord'
 
 const NO_ENTITY_ID = 'NO_ENTITY_ID'
 

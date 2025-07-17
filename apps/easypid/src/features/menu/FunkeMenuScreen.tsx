@@ -1,6 +1,5 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
-import { useCredentialByCategory } from '@package/agent/hooks/useCredentialByCategory'
 import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import {
@@ -18,6 +17,7 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
+import { useCredentialByCategory } from '@paradym/wallet-sdk/src/hooks/useCredentialByCategory'
 import { router } from 'expo-router'
 import { Linking } from 'react-native'
 

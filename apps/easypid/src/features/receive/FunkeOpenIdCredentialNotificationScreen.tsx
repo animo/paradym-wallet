@@ -3,33 +3,38 @@ import { useAppAgent } from '@easypid/agent'
 import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import {
   BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
-  acquirePreAuthorizedAccessToken,
-  getCredentialsForProofRequest,
-  receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
-  shareProof,
 } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/src/display/common'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
 import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/src/display/openid4vc'
+import {
+  acquirePreAuthorizedAccessToken,
+  receiveCredentialFromOpenId4VciOffer,
+  resolveOpenId4VciOffer,
+} from '@paradym/wallet-sdk/src/invitation/resolver'
+import { shareProof } from '@paradym/wallet-sdk/src/invitation/shareProof'
 import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
+import {
+  type CredentialsForProofRequest,
+  getCredentialsForProofRequest,
+} from '@paradym/wallet-sdk/src/openid4vc/getCredentialsForProofRequest'
+import { addReceivedActivity } from '@paradym/wallet-sdk/src/storage/activities'
 import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { PinSlide, type onPinSubmitProps } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
@@ -306,6 +311,7 @@ export function FunkeCredentialNotificationScreen() {
           agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
+          fetchBatchCredentialCallback: refreshPid,
         })
 
         const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({

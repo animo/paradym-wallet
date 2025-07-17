@@ -13,9 +13,9 @@ import {
   Stack,
   YStack,
 } from '@package/ui'
+import { useActivities } from '@paradym/wallet-sdk/src/hooks/useActivities'
 import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
-import { useActivities } from './activityRecord'
 
 export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
   const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { entityId } })

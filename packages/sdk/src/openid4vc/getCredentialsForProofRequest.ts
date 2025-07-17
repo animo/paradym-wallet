@@ -2,16 +2,20 @@ import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-funct
 import { type DifPresentationExchangeDefinitionV2, Jwt } from '@credo-ts/core'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import type { OpenId4VcAgent } from '../agent'
+import type { DisplayImage } from '../display/credential'
+import { ParadymWalletNoRequestToResolveError } from '../error'
 import { formatDcqlCredentialsForRequest } from '../format/dcqlRequest'
 import { formatDifPexCredentialsForRequest } from '../format/presentationExchangeRequest'
 import type { FormattedSubmission } from '../format/submission'
+import type { TrustedEntity } from '../trust/entity'
 
 export type GetCredentialsForProofRequestOptions = {
   agent: OpenId4VcAgent
-  requestPayload: Record<string, unknown>
-  allowUntrusted?: boolean
+  requestPayload?: Record<string, unknown>
   uri?: string
+  allowUntrusted?: boolean
   origin?: string
+  // trustedX509Entities?: TrustedX509Entity[]
 }
 
 const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: string): string | null => {
@@ -39,9 +43,15 @@ export const getCredentialsForProofRequest = async ({
   requestPayload,
   origin,
 }: GetCredentialsForProofRequestOptions) => {
-  let request: string | Record<string, unknown>
+  const requestToResolve = uri ?? requestPayload
 
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(requestPayload, {
+  if (!requestToResolve) {
+    throw new ParadymWalletNoRequestToResolveError(
+      'Either supply a uri or requestPayload to get the credentials for a proof request'
+    )
+  }
+
+  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
     origin,
   })
 
@@ -70,5 +80,16 @@ export const getCredentialsForProofRequest = async ({
     authorizationRequest: resolved.authorizationRequestPayload,
     formattedSubmission,
     transactionData: resolved.transactionData,
+    // TODO: add verifier with trust integration
+    trustMechanism: undefined,
+    verifier: { entityId: 'TODO', hostName: 'TODO', logo: { url: 'TODO' }, name: 'TODO' } as {
+      hostName?: string
+      logo?: DisplayImage
+      name: string
+      trustedEntities: TrustedEntity[]
+      entityId: string
+    },
   } as const
 }
+
+export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>

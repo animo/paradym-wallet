@@ -8,13 +8,14 @@ import {
 } from '@package/app'
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import { useActivities } from '@paradym/wallet-sdk/src/hooks/useActivities'
 import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
+import type { IssuanceActivity, PresentationActivity, SignedActivity } from '@paradym/wallet-sdk/src/storage/activities'
 import { useLocalSearchParams } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
-import { type IssuanceActivity, type PresentationActivity, type SignedActivity, useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
 
 export function FunkeActivityDetailScreen() {

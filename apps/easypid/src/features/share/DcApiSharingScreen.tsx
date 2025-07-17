@@ -1,10 +1,15 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent } from '@easypid/agent'
-import { resolveRequestForDcApi, sendErrorResponseForDcApi, sendResponseForDcApi } from '@package/agent'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
+import {
+  resolveRequestForDcApi,
+  sendErrorResponseForDcApi,
+  sendResponseForDcApi,
+} from '@paradym/wallet-sdk/src/openid4vc/dcApi'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
@@ -81,6 +86,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         agent,
         dcRequest: request,
         resolvedRequest,
+        fetchBatchCredentialCallback: refreshPid,
       })
     } catch (error) {
       agent.config.logger.error('Could not share response', { error })

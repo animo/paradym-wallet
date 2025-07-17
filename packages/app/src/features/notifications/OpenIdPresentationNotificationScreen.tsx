@@ -1,14 +1,14 @@
-import {
-  BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
-  getCredentialsForProofRequest,
-  shareProof,
-} from '@package/agent'
+import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 
 import type { OpenId4VcAgent } from '@paradym/wallet-sdk/src/agent'
+import { shareProof } from '@paradym/wallet-sdk/src/invitation/shareProof'
+import {
+  type CredentialsForProofRequest,
+  getCredentialsForProofRequest,
+} from '@paradym/wallet-sdk/src/openid4vc/getCredentialsForProofRequest'
 import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'

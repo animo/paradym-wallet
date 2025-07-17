@@ -1,4 +1,3 @@
-import type { ActivityType } from '@easypid/features/activity/activityRecord'
 import {
   CustomIcons,
   Heading,
@@ -12,6 +11,7 @@ import {
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import type { ActivityType } from '@paradym/wallet-sdk/src/storage/activities'
 import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'

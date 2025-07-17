@@ -1,5 +1,5 @@
-import { useCredentialByCategory } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { useCredentialByCategory } from '@paradym/wallet-sdk/src/hooks/useCredentialByCategory'
 import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
 import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
 import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'

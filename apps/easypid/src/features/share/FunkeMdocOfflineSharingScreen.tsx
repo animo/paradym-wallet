@@ -8,8 +8,11 @@ import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/src/format/mdocDocumentRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import {
+  type ActivityStatus,
+  addSharedActivityForCredentialsForRequest,
+} from '@paradym/wallet-sdk/src/storage/activities'
 import { useCallback, useEffect, useState } from 'react'
-import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'

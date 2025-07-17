@@ -1,4 +1,4 @@
-import type { CredentialsForProofRequest } from '@paradym/wallet-sdk/src/openid4vc/getCredentialsForProofRequest'
+import type { CredentialsForProofRequest } from './getCredentialsForProofRequest'
 
 export type FormattedTransactionData = ReturnType<typeof getFormattedTransactionData>
 export type QtspInfo = CredentialsForProofRequest['verifier']

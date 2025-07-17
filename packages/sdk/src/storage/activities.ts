@@ -1,16 +1,12 @@
 import { utils } from '@credo-ts/core'
-import type { CredentialsForProofRequest, FormattedTransactionData } from '@package/agent'
-import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
-import {
-  getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
-} from '@paradym/wallet-sdk/src/display/common'
-import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
-import type { CredentialId } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
-import { useWalletJsonRecord } from '@paradym/wallet-sdk/src/providers/WalletJsonStoreProvider'
-import { getWalletJsonStore } from '@paradym/wallet-sdk/src/storage/walletJsonStore'
-import { useMemo } from 'react'
+import type { BaseAgent } from '../agent'
+import { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay } from '../display/common'
+import type { DisplayImage } from '../display/credential'
+import type { FormattedSubmission } from '../format/submission'
+import type { CredentialId } from '../hooks/useCredentialById'
+import type { CredentialsForProofRequest } from '../openid4vc/getCredentialsForProofRequest'
+import type { FormattedTransactionData } from '../openid4vc/transaction'
+import { getWalletJsonStore } from './walletJsonStore'
 
 export type ActivityType = 'shared' | 'received' | 'signed'
 export type ActivityStatus = 'success' | 'failed' | 'stopped'
@@ -70,42 +66,26 @@ export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
 
 export type Activity = PresentationActivity | IssuanceActivity | SignedActivity
 
-type ActivityRecord = {
+export type ActivityRecord = {
   activities: Activity[]
 }
 
-const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
+const internalActivityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
+// const internalActivityStorage = getWalletJsonStore<ActivityRecord>('PARADYM_WALLET_SDK_ACTIVITY_RECORD')
 export const activityStorage = {
-  recordId: _activityStorage.recordId,
+  recordId: internalActivityStorage.recordId,
   addActivity: async (agent: BaseAgent, activity: Activity) => {
-    // get activity. then add this activity
-    const record = await _activityStorage.get(agent)
+    // get activity and then add this activity
+    const record = await internalActivityStorage.get(agent)
     if (!record) {
-      await _activityStorage.store(agent, {
+      await internalActivityStorage.store(agent, {
         activities: [activity],
       })
     } else {
       record.activities.push(activity)
-      await _activityStorage.update(agent, record)
+      await internalActivityStorage.update(agent, record)
     }
   },
-}
-
-export const useActivities = ({ filters }: { filters?: { entityId?: string } } = {}) => {
-  const { record, isLoading } = useWalletJsonRecord<ActivityRecord>(activityStorage.recordId)
-
-  const activities = useMemo(() => {
-    if (!record?.activities) return []
-
-    return [...record.activities]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .filter((activity) => !filters?.entityId || activity.entity.id === filters?.entityId)
-  }, [record?.activities, filters?.entityId])
-
-  return {
-    activities,
-    isLoading,
-  }
 }
 
 export const addReceivedActivity = async (

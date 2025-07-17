@@ -1,5 +1,5 @@
 import { HeroIcons, MessageBox } from '@package/ui'
-import type { SharingFailureReason } from '../activityRecord'
+import type { SharingFailureReason } from '@paradym/wallet-sdk/src/storage/activities'
 
 interface FailedReasonContainerProps {
   reason: SharingFailureReason

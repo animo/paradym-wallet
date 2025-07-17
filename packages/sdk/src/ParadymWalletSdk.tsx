@@ -1,13 +1,20 @@
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import { ParadymWalletMustBeInitializedError } from './error'
+import { useActivities } from './hooks/useActivities'
+import { useActivityById } from './hooks/useActivityById'
 import { useCredentialById } from './hooks/useCredentialById'
 import { useCredentialRecordById } from './hooks/useCredentialRecordById'
 import { useCredentialRecords } from './hooks/useCredentialRecords'
 import { useCredentials } from './hooks/useCredentials'
 import { useDidCommAgent } from './hooks/useDidcommAgent'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
+import { type InvitationResult, parseInvitationUrl } from './invitation/parser'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
+
+export type ParadymWalletSdkResult<T extends Record<string, unknown>> =
+  | ({ success: true } & T)
+  | { success: false; message: string }
 
 /**
  *
@@ -44,9 +51,6 @@ export class ParadymWalletSdk {
    *
    * All available hooks provided by the wallet SDK
    *
-   * @todo Ideally, we only want to return the hooks based on whether it is a didcomm/openid4vc agent
-   *       This can be done quite simple, but in order to provide correct types, it get very complex
-   *
    */
   public get hooks() {
     this.assertAgentIsInitialized()
@@ -54,6 +58,9 @@ export class ParadymWalletSdk {
     return {
       useCredentials,
       useCredentialById,
+
+      useActivities,
+      useActivityById,
     }
   }
 
@@ -92,7 +99,19 @@ export class ParadymWalletSdk {
     )
   }
 
-  public receiveInvitation() {
+  public async receiveInvitation(
+    invitationUrl: string
+  ): Promise<ParadymWalletSdkResult<Omit<InvitationResult, '__internal'>>> {
     this.assertAgentIsInitialized()
+
+    try {
+      const invitationResult = await parseInvitationUrl(this.agent, invitationUrl)
+      return { success: true, ...invitationResult }
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : (error as string),
+      }
+    }
   }
 }
