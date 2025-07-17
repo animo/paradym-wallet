@@ -1,7 +1,7 @@
-import { useParadymAgent } from '@easypid/agent'
 import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
 import { useDidCommCredentialActions } from '@paradym/wallet-sdk/src/hooks/useDidCommCredentialActions'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
 import { addReceivedActivity } from '@paradym/wallet-sdk/src/storage/activities'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 import { getFlowConfirmationText } from './utils'
@@ -14,7 +14,9 @@ type CredentialSlidesProps = {
 }
 
 export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, onComplete }: CredentialSlidesProps) {
-  const { agent } = useParadymAgent()
+  const pws = useParadymWalletSdk()
+  const { agent } = pws.internalHooks.useDidCommAgent()
+
   const toast = useToastController()
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)

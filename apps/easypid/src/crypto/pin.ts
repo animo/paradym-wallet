@@ -12,8 +12,8 @@ import {
 } from '@credo-ts/core'
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { Key as AskarKey, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
-import type { EasyPIDAppAgent } from '@package/agent'
 import { kdf } from '@package/secure-store/kdf'
+import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
 import { easyPidAes256Gcm } from './aes'
 
 /**
@@ -59,7 +59,7 @@ export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Arra
 }
 
 export const createPinDerivedEphKeyPop = async (
-  agent: EasyPIDAppAgent,
+  agent: BaseAgent,
   { aud, cNonce, deviceKey, pinDerivedEph }: { pinDerivedEph: Key; deviceKey: Key; cNonce: string; aud: string }
 ) => {
   const deviceKeyClaim = getJwkFromKey(deviceKey).toJson()
@@ -95,7 +95,7 @@ export const createPinDerivedEphKeyPop = async (
  *
  */
 export const signPinNonceAndDeviceKeyWithPinDerivedEphPriv = async (
-  agent: EasyPIDAppAgent,
+  agent: BaseAgent,
   {
     pinNonce,
     pinDerivedEphKey,

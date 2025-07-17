@@ -33,11 +33,13 @@ export type SecureUnlockMethod = 'pin' | 'biometrics'
 export type SecureUnlockReturnInitializing = {
   state: 'initializing'
 }
+
 export type SecureUnlockReturnNotConfigured = {
   state: 'not-configured'
   setup: (pin: string) => Promise<{ walletKey: string }>
   reinitialize: () => void
 }
+
 export type SecureUnlockReturnLocked = {
   state: 'locked'
   tryUnlockingUsingBiometrics: () => Promise<string | null>
@@ -46,6 +48,7 @@ export type SecureUnlockReturnLocked = {
   isUnlocking: boolean
   reinitialize: () => void
 }
+
 export type SecureUnlockReturnWalletKeyAcquired<Context extends Record<string, unknown>> = {
   state: 'acquired-wallet-key'
   walletKey: string
@@ -54,6 +57,7 @@ export type SecureUnlockReturnWalletKeyAcquired<Context extends Record<string, u
   setWalletKeyInvalid: () => void
   reinitialize: () => void
 }
+
 export type SecureUnlockReturnUnlocked<Context extends Record<string, unknown>> = {
   state: 'unlocked'
   unlockMethod: SecureUnlockMethod

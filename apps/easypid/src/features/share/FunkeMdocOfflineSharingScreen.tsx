@@ -1,4 +1,3 @@
-import { useAppAgent } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
@@ -8,6 +7,7 @@ import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/src/format/mdocDocumentRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
 import {
   type ActivityStatus,
   addSharedActivityForCredentialsForRequest,
@@ -27,9 +27,10 @@ export function FunkeMdocOfflineSharingScreen({
   sessionTranscript,
   deviceRequest,
 }: FunkeMdocOfflineSharingScreenProps) {
+  const pws = useParadymWalletSdk()
+  const { agent } = pws.internalHooks.useOpenId4VcAgent()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
-  const { agent } = useAppAgent()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [submission, setSubmission] = useState<FormattedSubmission>()

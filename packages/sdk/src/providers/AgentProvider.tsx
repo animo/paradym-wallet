@@ -24,15 +24,6 @@ export type AgentProviderProps = {
  *
  * Hook to retrieve the agent.
  *
- * It is recommended to Re-export this in your app with the correct agent type, like so
- *
- * ```typescript
- * import { initializeAgent, useAgent } from '@paradym/wallet-sdk'
- *
- * const agent = await initializeAgent(agentOptions)
- * export const useAppAgent = useAgent<typeof agent>
- * ```
- *
  */
 export const useAgent = <AppAgent extends Agent = Awaited<ReturnType<typeof setupAgent>>>() => {
   const agentContext = useContext(AgentContext)

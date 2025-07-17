@@ -1,8 +1,10 @@
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
+import type { CredentialForDisplayId } from './display/credential'
 import { ParadymWalletMustBeInitializedError } from './error'
 import { useActivities } from './hooks/useActivities'
 import { useActivityById } from './hooks/useActivityById'
+import { useCredentialByCategory } from './hooks/useCredentialByCategory'
 import { useCredentialById } from './hooks/useCredentialById'
 import { useCredentialRecordById } from './hooks/useCredentialRecordById'
 import { useCredentialRecords } from './hooks/useCredentialRecords'
@@ -11,6 +13,7 @@ import { useDidCommAgent } from './hooks/useDidcommAgent'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
 import { type InvitationResult, parseInvitationUrl } from './invitation/parser'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
+import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown>> =
   | ({ success: true } & T)
@@ -26,7 +29,7 @@ export type ParadymWalletSdkResult<T extends Record<string, unknown>> =
 export type ParadymWalletSdkOptions = SetupAgentOptions
 
 export class ParadymWalletSdk {
-  private agent: FullAgent
+  public readonly agent: FullAgent
 
   public constructor(options: ParadymWalletSdkOptions) {
     this.agent = setupAgent(options) as FullAgent
@@ -49,6 +52,15 @@ export class ParadymWalletSdk {
 
   /**
    *
+   * Shutsdown the agent and closes the wallet
+   *
+   */
+  public async shutdown() {
+    await this.agent.shutdown()
+  }
+
+  /**
+   *
    * All available hooks provided by the wallet SDK
    *
    */
@@ -58,6 +70,7 @@ export class ParadymWalletSdk {
     return {
       useCredentials,
       useCredentialById,
+      useCredentialByCategory,
 
       useActivities,
       useActivityById,
@@ -113,5 +126,26 @@ export class ParadymWalletSdk {
         message: error instanceof Error ? error.message : (error as string),
       }
     }
+  }
+
+  /**
+   *
+   * @todo how do we want to deal with didcomm proofs and credentials?
+   *
+   */
+  public get credentials() {
+    return {
+      delete: this.deleteCredentials,
+      store: this.storeCredential,
+    }
+  }
+
+  private async deleteCredentials(ids: CredentialForDisplayId | Array<CredentialForDisplayId>) {
+    const deleteCredentials = (Array.isArray(ids) ? ids : [ids]).map((id) => deleteCredential(this.agent, id))
+    await Promise.all(deleteCredentials)
+  }
+
+  private async storeCredential(record: CredentialRecord) {
+    return storeCredential(this.agent, record)
   }
 }

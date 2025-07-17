@@ -1,6 +1,6 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
 import { WalletInvalidKeyError } from '@credo-ts/core'
-import { initializeAppAgent } from '@easypid/agent'
+import { initializeParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
@@ -42,12 +42,12 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     const agent = await secureWalletKey
       .getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
       .then(async (walletKey) => {
-        const agent = initializeAppAgent({
+        const pws = await initializeParadymWalletSdk({
           walletKey,
           walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
         })
         await setWalletServiceProviderPin(pin.split('').map(Number), false)
-        return agent
+        return pws.agent
       })
       .catch((e) => {
         setIsProcessing(false)

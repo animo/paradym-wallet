@@ -1,15 +1,13 @@
 import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { useToastController } from '@package/ui'
-import { useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
-
-import type { OpenId4VcAgent } from '@paradym/wallet-sdk/src/agent'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk'
 import { shareProof } from '@paradym/wallet-sdk/src/invitation/shareProof'
 import {
   type CredentialsForProofRequest,
   getCredentialsForProofRequest,
 } from '@paradym/wallet-sdk/src/openid4vc/getCredentialsForProofRequest'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { useLocalSearchParams } from 'expo-router'
+import { useEffect, useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
@@ -19,7 +17,8 @@ type Query = {
 }
 
 export function OpenIdPresentationNotificationScreen() {
-  const { agent } = useAgent<OpenId4VcAgent>()
+  const pws = useParadymWalletSdk()
+  const { agent } = pws.internalHooks.useOpenId4VcAgent()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()

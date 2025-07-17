@@ -1,8 +1,9 @@
 import { Redirect, useLocalSearchParams } from 'expo-router'
 
 import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
-import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import { useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
+import { initializeParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
@@ -47,11 +48,13 @@ export default function Authenticate() {
     if (isInitializingAgent) return
 
     setIsInitializingAgent(true)
-    initializeAppAgent({
+    initializeParadymWalletSdk({
       walletKey: secureUnlock.walletKey,
       walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
     })
-      .then((agent) => secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true }))
+      .then((paradymWalletSdk) =>
+        secureUnlock.setWalletKeyValid({ agent: paradymWalletSdk.agent }, { enableBiometrics: true })
+      )
       .catch((error) => {
         if (error instanceof WalletInvalidKeyError) {
           secureUnlock.setWalletKeyInvalid()

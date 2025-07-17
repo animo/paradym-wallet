@@ -1,8 +1,14 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
-import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import { useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import {
+  initializeParadymWalletSdk,
+  isParadymWalletSdkInitialized,
+  paradymWalletSdk,
+  shutdownParadymWalletSdk,
+} from '@easypid/sdk/paradymWalletSdk'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -73,7 +79,6 @@ export function OnboardingContextProvider({
   const [walletPin, setWalletPin] = useState<string>()
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
-  const [agent, setAgent] = useState<AppAgent>()
   const [idCardScanningState, setIdCardScanningState] = useState<CardScanningState>({
     isCardAttached: undefined,
     progress: 0,
@@ -137,16 +142,15 @@ export function OnboardingContextProvider({
   // in the secure unlock yet, which means that it will throw an error, so we use an effect. Probably need
   // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
   useEffect(() => {
-    if (secureUnlock.state !== 'acquired-wallet-key' || !agent) return
-  }, [secureUnlock, agent])
+    if (secureUnlock.state !== 'acquired-wallet-key' || !isParadymWalletSdkInitialized()) return
+  }, [secureUnlock])
 
   const initializeAgent = useCallback(async (walletKey: string) => {
-    const agent = await initializeAppAgent({
+    await initializeParadymWalletSdk({
       walletKey,
       walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
       registerWallet: true,
     })
-    setAgent(agent)
   }, [])
 
   const onPinReEnter = async (pin: string) => {
@@ -213,7 +217,10 @@ export function OnboardingContextProvider({
   }
 
   const onEnableBiometrics = async () => {
-    if (!agent || (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')) {
+    if (
+      !isParadymWalletSdkInitialized ||
+      (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')
+    ) {
       await reset({
         resetToStep: 'pin',
       })
@@ -222,7 +229,7 @@ export function OnboardingContextProvider({
 
     try {
       if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true })
+        await secureUnlock.setWalletKeyValid({ agent: paradymWalletSdk().agent }, { enableBiometrics: true })
       }
 
       // Directly try getting the wallet key so the user can enable biometrics
@@ -364,7 +371,7 @@ export function OnboardingContextProvider({
       // Reset PIN state
       setWalletPin(undefined)
       setAllowSimulatorCard(false)
-      setAgent(undefined)
+      shutdownParadymWalletSdk()
     }
 
     if (stepsToCompleteAfterReset.includes('id-card-requested-attributes')) {

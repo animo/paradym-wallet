@@ -2,12 +2,10 @@
 //       What is the difference? Can we just reuse the same screen?
 
 import { parseDidCommInvitation, resolveOutOfBandInvitation } from '@package/agent'
+import { useParadymWalletSdk } from '@package/sdk'
 import { useToastController } from '@package/ui'
-import { useEffect, useState } from 'react'
-
-import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { useLocalSearchParams } from 'expo-router'
+import { useEffect, useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { DidCommCredentialNotificationScreen } from './DidCommCredentialNotificationScreen'
 import { DidCommPresentationNotificationScreen } from './DidCommPresentationNotificationScreen'
@@ -27,7 +25,8 @@ type Query = {
 }
 
 export function DidCommNotificationScreen() {
-  const { agent } = useAgent<DidCommAgent>()
+  const pws = useParadymWalletSdk()
+  const { agent } = pws.internalHooks.useDidCommAgent()
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()

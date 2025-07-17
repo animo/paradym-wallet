@@ -1,7 +1,7 @@
-import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { paradymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app'
@@ -28,10 +28,11 @@ import type { onPinSubmitProps } from './slides/PinSlide'
 type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
+  const pws = paradymWalletSdk()
+  const { agent } = pws.internalHooks.useOpenId4VcAgent()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
-  const { agent } = useAppAgent()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [errorReason, setErrorReason] = useState<string>()
 

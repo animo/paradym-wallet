@@ -1,5 +1,4 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
-import { useAppAgent } from '@easypid/agent'
 import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
@@ -29,6 +28,7 @@ import {
   type CredentialsForProofRequest,
   getCredentialsForProofRequest,
 } from '@paradym/wallet-sdk/src/openid4vc/getCredentialsForProofRequest'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
 import { addReceivedActivity } from '@paradym/wallet-sdk/src/storage/activities'
 import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useLocalSearchParams } from 'expo-router'
@@ -54,7 +54,8 @@ const authorization = {
 }
 
 export function FunkeCredentialNotificationScreen() {
-  const { agent } = useAppAgent()
+  const pws = useParadymWalletSdk()
+  const { agent } = pws.internalHooks.useOpenId4VcAgent()
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
 

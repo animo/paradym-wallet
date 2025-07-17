@@ -3,6 +3,7 @@ import { useSecureUnlock } from '@easypid/agent'
 import { mediatorDid } from '@easypid/constants'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { paradymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
@@ -10,7 +11,7 @@ import { HeroIcons, IconContainer } from '@package/ui'
 import { useDidCommMediatorSetup } from '@paradym/wallet-sdk/src/hooks/useDidCommMediatorSetup'
 import type { InvitationType } from '@paradym/wallet-sdk/src/invitation/parser'
 import { registerCredentialsForDcApi } from '@paradym/wallet-sdk/src/openid4vc/dcApi'
-import { AgentProvider } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { ParadymWalletSdkProvider } from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
 import { activityStorage } from '@paradym/wallet-sdk/src/storage/activities'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -124,7 +125,7 @@ export default function AppLayout() {
 
   // Render the normal wallet, which is everything inside (app)
   return (
-    <AgentProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
+    <ParadymWalletSdkProvider paradymWalletSdk={paradymWalletSdk()} recordIds={jsonRecordIds}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           options={{
@@ -180,6 +181,6 @@ export default function AppLayout() {
         <Stack.Screen name="pidSetup" />
         <Stack.Screen name="inbox" options={headerNormalOptions} />
       </Stack>
-    </AgentProvider>
+    </ParadymWalletSdkProvider>
   )
 }

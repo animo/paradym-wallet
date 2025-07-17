@@ -1,7 +1,6 @@
 import { useToastController } from '@package/ui'
-import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk'
 import { useDidCommPresentationActions } from '@paradym/wallet-sdk/src/hooks/useDidCommPresentationActions'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -12,7 +11,8 @@ interface DidCommPresentationNotificationScreenProps {
 }
 
 export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCommPresentationNotificationScreenProps) {
-  const { agent } = useAgent<DidCommAgent>()
+  const pws = useParadymWalletSdk()
+  const { agent } = pws.internalHooks.useDidCommAgent()
 
   const toast = useToastController()
   const pushToWallet = usePushToWallet()

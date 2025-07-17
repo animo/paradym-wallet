@@ -10,7 +10,7 @@ import type { BaseAgent } from '../agent'
 import type { CredentialForDisplayId } from '../display/credential'
 import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
 
-type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+export type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
 
 export async function getCredential(agent: BaseAgent, credentialId: CredentialForDisplayId): Promise<CredentialRecord> {
   if (credentialId.startsWith('w3c-credential-')) {

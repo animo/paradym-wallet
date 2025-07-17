@@ -9,12 +9,10 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk'
 import type { CredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
-import { deleteCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useNavigation } from 'expo-router'
-import { useCredentialById } from 'packages/sdk/src/hooks/useCredentialById'
 import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -23,6 +21,8 @@ import { CredentialCard } from '../../components'
 import { useScrollViewPosition } from '../../hooks'
 
 export function CredentialDetailScreen() {
+  const pws = useParadymWalletSdk()
+
   const navigation = useNavigation()
   const params = useLocalSearchParams<{ id: CredentialForDisplayId }>()
   const router = useRouter()
@@ -32,8 +32,6 @@ export function CredentialDetailScreen() {
 
   const [isLoading, setIsLoading] = useState(false)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-
-  const { agent } = useAgent()
 
   useEffect(() => {
     navigation.setOptions({
@@ -56,7 +54,7 @@ export function CredentialDetailScreen() {
     return null
   }
 
-  const { credential } = useCredentialById(params.id)
+  const { credential } = pws.hooks.useCredentialById(params.id)
   if (!credential) return null
   const { attributes, display } = credential
 
@@ -64,7 +62,7 @@ export function CredentialDetailScreen() {
     setIsLoading(true)
 
     try {
-      await deleteCredential(agent, params.id)
+      await pws.credentials.delete(params.id)
       toast.show('Credential deleted', { type: 'success' })
       router.back()
     } catch (error) {

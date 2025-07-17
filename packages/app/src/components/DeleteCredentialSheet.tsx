@@ -1,9 +1,7 @@
 import { useToastController } from '@package/ui'
-import { useCredentialByCategory } from '@paradym/wallet-sdk/src/hooks/useCredentialByCategory'
-import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk'
+import type { CredentialId } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
 import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
-import { deleteCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
@@ -17,13 +15,14 @@ interface DeleteCredentialSheetProps {
 }
 
 export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }: DeleteCredentialSheetProps) {
+  const pws = useParadymWalletSdk()
+
   const toast = useToastController()
-  const { agent } = useAgent()
   const navigation = useNavigation()
   const { withHaptics, successHaptic, errorHaptic } = useHaptics()
 
-  const { credential } = useCredentialById(id)
-  const { credentials } = useCredentialByCategory(credential?.category?.credentialCategory)
+  const { credential } = pws.hooks.useCredentialById(id)
+  const { credentials } = pws.hooks.useCredentialByCategory(credential?.category?.credentialCategory)
 
   const onDeleteCredential = async () => {
     try {
@@ -31,11 +30,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
       navigation.goBack()
       setIsSheetOpen(false)
 
-      if (credentials?.length) {
-        await Promise.all(credentials.map((credential) => deleteCredential(agent, credential.id)))
-      } else {
-        await deleteCredential(agent, id)
-      }
+      await pws.credentials.delete(credentials?.map((c) => c.id) ?? id)
 
       toast.show('Card successfully archived', {
         customData: { preset: 'success' },
