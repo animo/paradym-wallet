@@ -1,5 +1,5 @@
-import { useHasInboxNotifications } from '@package/agent'
 import { LucideIcons, XStack } from '@package/ui'
+import { useHasInboxNotifications } from '@paradym/wallet-sdk/src/hooks/useHasInboxNotifications'
 import { useRouter } from 'expo-router'
 import { TouchableOpacity } from 'react-native'
 import { Circle } from 'tamagui'

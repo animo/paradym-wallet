@@ -1,13 +1,15 @@
 import { useLingui } from '@lingui/react/macro'
-import {
-  type FormattedSubmission,
-  type FormattedSubmissionEntryNotSatisfied,
-  type FormattedSubmissionEntrySatisfied,
-  getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
-} from '@package/agent'
 import { CardWithAttributes } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
+import {
+  getDisclosedAttributeNamesForDisplay,
+  getUnsatisfiedAttributePathsForDisplay,
+} from '@paradym/wallet-sdk/src/display/common'
+import type {
+  FormattedSubmission,
+  FormattedSubmissionEntryNotSatisfied,
+  FormattedSubmissionEntrySatisfied,
+} from '@paradym/wallet-sdk/src/format/submission'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission

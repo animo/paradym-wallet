@@ -1,0 +1,414 @@
+import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
+import { JwaSignatureAlgorithm } from '@credo-ts/core'
+import {
+  type ConnectionRecord,
+  CredentialEventTypes,
+  CredentialState,
+  type CredentialStateChangedEvent,
+  type OutOfBandInvitation,
+  type OutOfBandRecord,
+  OutOfBandRepository,
+  type PlaintextMessage,
+  ProofEventTypes,
+  ProofState,
+  type ProofStateChangedEvent,
+  V2OfferCredentialMessage,
+  V2RequestPresentationMessage,
+  parseMessageType,
+} from '@credo-ts/didcomm'
+import { supportsIncomingMessageType } from '@credo-ts/didcomm/build/util/messageType'
+import {
+  type OpenId4VciCredentialConfigurationSupportedWithFormats,
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedAuthorizationRequest,
+  type OpenId4VciResolvedCredentialOffer,
+  getOfferedCredentials,
+  getScopesFromCredentialConfigurationsSupported,
+  preAuthorizedCodeGrantIdentifier,
+} from '@credo-ts/openid4vc'
+import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
+import type { DidCommAgent, OpenId4VcAgent } from '../agent'
+import {
+  ParadymWalletInvitationAlreadyUsedError,
+  ParadymWalletInvitationDidcommUnsupportedProtocolError,
+  ParadymWalletInvitationError,
+  ParadymWalletInvitationMultipleRequestsError,
+  ParadymWalletInvitationParseError,
+  ParadymWalletInvitationReceiveError,
+} from '../error'
+import {
+  extractOpenId4VcCredentialMetadata,
+  setBatchCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '../metadata/credentials'
+import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
+import { credentialRecordFromCredential, encodeCredential } from '../utils/encoding'
+
+export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
+  FlowType extends 'issue'
+    ? { flowType: 'issue'; credentialExchangeId: string; connectionId?: string }
+    : FlowType extends 'verify'
+      ? { flowType: 'verify'; proofExchangeId: string; connectionId?: string }
+      : FlowType extends 'connect'
+        ? { flowType: 'connect'; connectionId: string }
+        : never
+>
+
+export interface ResolveOutOfBandInvitationResultSuccess {
+  outOfBandInvitation: OutOfBandInvitation
+
+  /**
+   * Whether an existing connection already exists based on this invitation
+   */
+  existingConnection?: ConnectionRecord
+
+  /**
+   * Whether a connection will be created as part of the exchange.
+   *
+   * When `existingConnection` is defined this will always be `false` as
+   * the existing connection will be reused.
+   *
+   * If `createConnection` is `false` and `existingConnection` is undefined
+   * it means the exchange will be connectionless.
+   */
+  createConnection: boolean
+
+  /**
+   * The flow type as indicated by the invitation.
+   *
+   * - `issue` when the goal code indicates the goal of the invitation is to issue, or a credential offer is attached
+   * - `verify` when the goal code indicates the goal of the invittion is to verify, or a presentation request is attached
+   * - `connect` in all other cases
+   */
+  flowType: 'issue' | 'verify' | 'connect'
+}
+
+export async function resolveOpenId4VciOffer({
+  agent,
+  offer,
+  authorization,
+  fetchAuthorization = true,
+}: {
+  agent: OpenId4VcAgent
+  offer: { uri: string }
+  authorization?: { clientId: string; redirectUri: string }
+  fetchAuthorization?: boolean
+}) {
+  agent.config.logger.info(`Receiving openid uri ${offer.uri}`, {
+    uri: offer.uri,
+  })
+
+  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
+  let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
+
+  // NOTE: we always assume scopes are used at the moment
+  if (fetchAuthorization && resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
+    // If only authorization_code grant is valid and user didn't provide authorization details we can't continue
+    if (!resolvedCredentialOffer.credentialOfferPayload.grants[preAuthorizedCodeGrantIdentifier] && !authorization) {
+      throw new Error(
+        "Missing 'authorization' parameter with 'clientId' and 'redirectUri' and authorization code flow is only allowed grant type on offer."
+      )
+    }
+
+    // TODO: authorization should only be initiated after we know which credentials we're going to request
+    if (authorization) {
+      resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
+        resolvedCredentialOffer,
+        {
+          redirectUri: authorization.redirectUri,
+          clientId: authorization.clientId,
+          scope: getScopesFromCredentialConfigurationsSupported(
+            resolvedCredentialOffer.offeredCredentialConfigurations
+          ),
+        }
+      )
+    }
+  }
+
+  return {
+    resolvedCredentialOffer,
+    resolvedAuthorizationRequest,
+  }
+}
+
+export async function acquirePreAuthorizedAccessToken({
+  agent,
+  resolvedCredentialOffer,
+  txCode,
+}: {
+  agent: OpenId4VcAgent
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  txCode?: string
+}) {
+  return await agent.modules.openId4VcHolder.requestToken({
+    resolvedCredentialOffer,
+    txCode,
+  })
+}
+
+/**
+ *
+ * @todo how do we want to deal with the `pid` credential here?
+ *
+ */
+export const receiveCredentialFromOpenId4VciOffer = async ({
+  agent,
+  resolvedCredentialOffer,
+  credentialConfigurationIdsToRequest,
+  accessToken,
+  clientId,
+  pidSchemes,
+  requestBatch,
+}: {
+  agent: OpenId4VcAgent
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  credentialConfigurationIdsToRequest?: string[]
+  clientId?: string
+  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
+  requestBatch?: boolean | number
+
+  // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
+  accessToken: OpenId4VciRequestTokenResponse
+}) => {
+  const offeredCredentialsToRequest = getOfferedCredentials(
+    credentialConfigurationIdsToRequest ?? [
+      resolvedCredentialOffer.credentialOfferPayload.credential_configuration_ids[0],
+    ],
+    resolvedCredentialOffer.offeredCredentialConfigurations
+  ) as OpenId4VciCredentialConfigurationSupportedWithFormats
+
+  if (Object.keys(offeredCredentialsToRequest).length === 0) {
+    throw new Error(
+      `Parameter 'credentialConfigurationIdsToRequest' with values ${credentialConfigurationIdsToRequest} is not a credential_configuration_id in the credential offer.`
+    )
+  }
+
+  const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+    resolvedCredentialOffer,
+    ...accessToken,
+    clientId,
+    credentialConfigurationIds: Object.keys(offeredCredentialsToRequest),
+    verifyCredentialStatus: false,
+    allowedProofOfPossessionSignatureAlgorithms: [JwaSignatureAlgorithm.ES256, JwaSignatureAlgorithm.EdDSA],
+    credentialBindingResolver: getCredentialBindingResolver({
+      pidSchemes,
+      requestBatch,
+    }),
+  })
+
+  return credentials.credentials.map(({ credentials, ...credentialResponse }) => {
+    const configuration = resolvedCredentialOffer.offeredCredentialConfigurations[
+      credentialResponse.credentialConfigurationId
+    ] as OpenId4VciCredentialConfigurationSupportedWithFormats
+
+    const firstCredential = credentials[0]
+
+    const record = credentialRecordFromCredential(firstCredential)
+
+    // OpenID4VC metadata
+    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(configuration, {
+      id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+      display: resolvedCredentialOffer.metadata.credentialIssuer.display,
+    })
+    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+    // Batch metadata
+    if (credentials.length > 1) {
+      setBatchCredentialMetadata(record, {
+        additionalCredentials: credentials.slice(1).map(encodeCredential) as
+          | Array<string>
+          | Array<Record<string, unknown>>,
+      })
+    }
+
+    return {
+      ...credentialResponse,
+      configuration,
+      credential: record,
+    }
+  })
+}
+
+export async function resolveOutOfBandInvitation(
+  agent: DidCommAgent,
+  invitation: OutOfBandInvitation
+): Promise<ResolveOutOfBandInvitationResultSuccess> {
+  const requestMessages = invitation.getRequests() ?? []
+
+  let flowType: 'issue' | 'verify' | 'connect'
+
+  if (requestMessages.length > 1) {
+    const message = 'Message contains multiple requests. Invitation should only contain a single request.'
+    agent.config.logger.error(message)
+    throw new ParadymWalletInvitationMultipleRequestsError(message)
+  }
+
+  // In this case we probably need to create a connection first. We will do this here, as we don't allow to just
+  // create a connection
+  if (requestMessages.length === 0) {
+    if (!invitation.handshakeProtocols || invitation.handshakeProtocols.length === 0) {
+      const message = 'No requests and no handshake protocols found in invitation.'
+      agent.config.logger.error(message)
+      throw new ParadymWalletInvitationParseError(message)
+    }
+
+    if (invitation.goalCode === 'issue-vc' || invitation.goalCode === 'aries.vc.issue') {
+      flowType = 'issue'
+    } else if (invitation.goalCode === 'request-proof' || invitation.goalCode === 'aries.vc.verify') {
+      flowType = 'verify'
+    } else {
+      flowType = 'connect'
+    }
+  }
+  // Validate the type of the request message
+  else {
+    const requestMessage = requestMessages[0] as PlaintextMessage
+    const parsedMessageType = parseMessageType(requestMessage['@type'])
+    const isValidOfferMessage =
+      supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type)
+
+    const isValidRequestMessage =
+      supportsIncomingMessageType(parsedMessageType, V1RequestPresentationMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type)
+
+    if (isValidRequestMessage) {
+      flowType = 'verify'
+    } else if (isValidOfferMessage) {
+      flowType = 'issue'
+    } else {
+      throw new ParadymWalletInvitationDidcommUnsupportedProtocolError()
+    }
+  }
+
+  try {
+    // Check if invitation already exists
+    const receivedInvite = await agent.modules.outOfBand.findByReceivedInvitationId(invitation.id)
+    if (receivedInvite) {
+      throw new ParadymWalletInvitationAlreadyUsedError()
+    }
+
+    const existingConnection = (await findExistingDidcommConnectionForInvitation(agent, invitation)) ?? undefined
+
+    return {
+      outOfBandInvitation: invitation,
+      createConnection: existingConnection ? false : !!invitation.handshakeProtocols?.length,
+      existingConnection,
+      flowType,
+    }
+  } catch (error) {
+    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
+    throw new ParadymWalletInvitationError(error as string)
+  }
+}
+
+async function findExistingDidcommConnectionForInvitation(
+  agent: DidCommAgent,
+  outOfBandInvitation: OutOfBandInvitation
+): Promise<ConnectionRecord | null> {
+  for (const invitationDid of outOfBandInvitation.invitationDids) {
+    const [connection] = await agent.modules.connections.findByInvitationDid(invitationDid)
+    if (connection) return connection
+  }
+
+  return null
+}
+
+/**
+ * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
+ */
+export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
+  agent: DidCommAgent,
+  invitation: OutOfBandInvitation,
+  flowType: FlowType
+): AcceptOutOfBandInvitationResult<FlowType> {
+  // The value is reassigned, but eslint doesn't know this.
+  let connectionId: string | undefined
+
+  let observable: Observable<CredentialStateChangedEvent | ProofStateChangedEvent> | undefined = undefined
+
+  if (flowType === 'issue') {
+    observable = agent.events.observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged).pipe(
+      filter((event) => event.payload.credentialRecord.state === CredentialState.OfferReceived),
+      filter((event) => event.payload.credentialRecord.connectionId === connectionId)
+    )
+  } else if (flowType === 'verify') {
+    observable = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
+      filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
+      filter((event) => event.payload.proofRecord.connectionId === connectionId)
+    )
+  }
+
+  const eventPromise = observable
+    ? firstValueFrom(
+        observable.pipe(
+          first(),
+          // We allow 15 seconds to receive a credential offer or proof request
+          timeout(15 * 1000)
+        )
+      )
+    : undefined
+
+  let connectionRecord: ConnectionRecord | undefined
+  let outOfBandRecord: OutOfBandRecord
+
+  try {
+    const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
+      reuseConnection: true,
+    })
+    connectionRecord = receiveInvitationResult.connectionRecord
+    outOfBandRecord = receiveInvitationResult.outOfBandRecord
+
+    // Assign connectionId so it can be used in the observables.
+    connectionId = connectionRecord?.id
+  } catch (error) {
+    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
+    throw new ParadymWalletInvitationReceiveError((error as Error).message)
+  }
+
+  try {
+    const event = await eventPromise
+    agent.config.logger.debug(`Received event ${event?.type}`)
+
+    if (!event) {
+      return {
+        connectionId: connectionId as string,
+        flowType: 'connect',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as any
+    }
+
+    if (event.type === CredentialEventTypes.CredentialStateChanged) {
+      return {
+        credentialExchangeId: event.payload.credentialRecord.id,
+        connectionId,
+        flowType: 'issue',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as any
+    }
+    if (event.type === ProofEventTypes.ProofStateChanged) {
+      return {
+        proofExchangeId: event.payload.proofRecord.id,
+        connectionId,
+        flowType: 'verify',
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as any
+    }
+  } catch (error) {
+    agent.config.logger.error('Error while accepting out of band invitation.')
+
+    // Delete OOB record
+    const outOfBandRepository = agent.dependencyManager.resolve(OutOfBandRepository)
+    await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
+
+    // Delete connection record
+    // TODO: delete did and mediation stuff
+    if (connectionRecord) {
+      await agent.modules.connections.deleteById(connectionRecord.id)
+    }
+
+    throw new ParadymWalletInvitationError((error as Error).message)
+  }
+
+  throw new ParadymWalletInvitationError()
+}

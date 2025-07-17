@@ -2,7 +2,7 @@ import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { ActivityRowItem } from '@package/app'
 import { TextBackButton } from '@package/app'
-import { useScrollViewPosition } from '@package/app/hooks'
+import { useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,

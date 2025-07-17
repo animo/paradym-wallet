@@ -1,7 +1,6 @@
-import type { CredentialDisplay } from '@package/agent'
-
 import { Trans } from '@lingui/react/macro'
 import { Heading, ScrollView, YStack } from '@package/ui'
+import type { CredentialDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CredentialAttributes } from '../../../components'
 import { CredentialCard } from '../../../components'

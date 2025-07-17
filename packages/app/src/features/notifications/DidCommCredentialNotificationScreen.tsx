@@ -1,10 +1,12 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { useAgent, useDidCommCredentialActions } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { useDidCommCredentialActions } from '@paradym/wallet-sdk/src/hooks/useDidCommCredentialActions'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
+import { DidCommAgent } from 'packages/sdk/src/agent'
 
 interface DidCommCredentialNotificationScreenProps {
   credentialExchangeId: string
@@ -31,7 +33,7 @@ const credentialNotificationMessages = {
 export function DidCommCredentialNotificationScreen({
   credentialExchangeId,
 }: DidCommCredentialNotificationScreenProps) {
-  const { agent } = useAgent()
+  const { agent } = useAgent<DidCommAgent>()
   const { t } = useLingui()
 
   const toast = useToastController()

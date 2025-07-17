@@ -3,12 +3,12 @@ import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
 import { sanitizeString } from '@package/utils'
+import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
+import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
 import * as ExpoAsset from 'expo-asset'
 import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
-import type { EitherAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
 
 type CredentialItem = RegisterCredentialsOptions['credentials'][number]
 type CredentialDisplayClaim = NonNullable<CredentialItem['display']['claims']>[number]
@@ -144,7 +144,7 @@ async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
   }
 }
 
-export async function registerCredentialsForDcApi(agent: EitherAgent) {
+export async function registerCredentialsForDcApi(agent: BaseAgent) {
   if (Platform.OS === 'ios') return
   const mdocRecords = await agent.mdoc.getAll()
   const sdJwtVcRecords = await agent.sdJwtVc.getAll()

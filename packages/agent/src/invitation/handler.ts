@@ -40,19 +40,21 @@ import { t } from '@lingui/core/macro'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import { commonMessages } from '@package/translations'
+import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
+import { formatDcqlCredentialsForRequest } from '@paradym/wallet-sdk/src/format/dcqlRequest'
+import { formatDifPexCredentialsForRequest } from '@paradym/wallet-sdk/src/format/presentationExchangeRequest'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import {
+  extractOpenId4VcCredentialMetadata,
+  setBatchCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '@paradym/wallet-sdk/src/metadata/credentials'
+import { getCredentialBindingResolver } from '@paradym/wallet-sdk/src/openid4vc/credentialBindingResolver'
+import { credentialRecordFromCredential, encodeCredential } from '@paradym/wallet-sdk/src/utils/encoding'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
-import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
-import {
-  type FormattedSubmission,
-  formatDcqlCredentialsForRequest,
-  formatDifPexCredentialsForRequest,
-} from '../format/formatPresentation'
-import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
-import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
-import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { getTrustedEntities } from '../utils/trust'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
@@ -511,7 +513,7 @@ export const getCredentialsForProofRequest = async ({
 }
 
 async function findExistingDidcommConnectionForInvitation(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   outOfBandInvitation: OutOfBandInvitation
 ): Promise<ConnectionRecord | null> {
   for (const invitationDid of outOfBandInvitation.invitationDids) {
@@ -557,7 +559,7 @@ export interface ResolveOutOfBandInvitationResultSuccess {
  * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
  */
 export async function resolveOutOfBandInvitation(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   invitation: OutOfBandInvitation
 ): Promise<ResolveOutOfBandInvitationResultSuccess | { success: false; error: string }> {
   const requestMessages = invitation.getRequests() ?? []

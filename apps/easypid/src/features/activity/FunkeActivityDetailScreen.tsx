@@ -1,19 +1,19 @@
-import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
-import { useLocalSearchParams } from 'expo-router'
-
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { useCredentialsForDisplay } from '@package/agent'
 import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
+import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
+import { useLocalSearchParams } from 'expo-router'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
 import { type IssuanceActivity, type PresentationActivity, type SignedActivity, useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
+
 export function FunkeActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
@@ -103,7 +103,7 @@ const activityMessages = {
 }
 
 export function ReceivedActivityDetailSection({ activity }: { activity: IssuanceActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
   const { withHaptics } = useHaptics()
   const { push } = useRouter()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
@@ -174,7 +174,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
 }
 
 export function SharedActivityDetailSection({ activity }: { activity: PresentationActivity | SignedActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
 
   const amountShared = activity.request.credentials?.length ?? 0
   const { t } = useLingui()

@@ -1,10 +1,10 @@
 import { useActivities } from '@easypid/features/activity/activityRecord'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { useCredentialsForDisplay } from '@package/agent'
-import { useHaptics } from '@package/app/hooks'
+import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 
@@ -62,7 +62,7 @@ export function LatestActivityCard() {
   const { activities } = useActivities()
   const { t } = useLingui()
   const latestActivity = activities[0]
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
 
   const pushToActivity = withHaptics(() => push('/activity'))
 

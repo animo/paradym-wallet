@@ -1,8 +1,12 @@
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import { ParadymWalletMustBeInitializedError } from './error'
+import { useCredentialById } from './hooks/useCredentialById'
+import { useCredentialRecordById } from './hooks/useCredentialRecordById'
+import { useCredentialRecords } from './hooks/useCredentialRecords'
 import { useCredentials } from './hooks/useCredentials'
-import { useCredentialsById } from './hooks/useCredentialsById'
+import { useDidCommAgent } from './hooks/useDidcommAgent'
+import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 
 /**
@@ -49,7 +53,7 @@ export class ParadymWalletSdk {
 
     return {
       useCredentials,
-      useCredentialsById,
+      useCredentialById,
     }
   }
 
@@ -65,6 +69,10 @@ export class ParadymWalletSdk {
 
     return {
       useAgent,
+      useDidCommAgent,
+      useOpenId4VcAgent,
+      useCredentialRecords,
+      useCredentialRecordById,
     }
   }
 
@@ -75,8 +83,16 @@ export class ParadymWalletSdk {
    * Wrap your application in this, if you want to leverage the provided `this.hooks`
    *
    */
-  public Provider({ children }: PropsWithChildren) {
+  public Provider({ children, recordIds }: PropsWithChildren<{ recordIds: Array<string> }>) {
     this.assertAgentIsInitialized()
-    return <AgentProvider agent={this.agent}>{children}</AgentProvider>
+    return (
+      <AgentProvider agent={this.agent} recordIds={recordIds}>
+        {children}
+      </AgentProvider>
+    )
+  }
+
+  public receiveInvitation() {
+    this.assertAgentIsInitialized()
   }
 }

@@ -1,18 +1,16 @@
 import { utils } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
+import { t } from '@lingui/core/macro'
+import type { CredentialsForProofRequest, FormattedTransactionData } from '@package/agent'
+import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
 import {
-  type CredentialForDisplayId,
-  type CredentialsForProofRequest,
-  type DisplayImage,
-  type FormattedSubmission,
-  type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
-  getWalletJsonStore,
-  useWalletJsonRecord,
-} from '@package/agent'
-
-import { t } from '@lingui/core/macro'
+} from '@paradym/wallet-sdk/src/display/common'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import type { CredentialId } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
+import { useWalletJsonRecord } from '@paradym/wallet-sdk/src/providers/WalletJsonStoreProvider'
+import { getWalletJsonStore } from '@paradym/wallet-sdk/src/storage/walletJsonStore'
 import { useMemo } from 'react'
 export type ActivityType = 'shared' | 'received' | 'signed'
 export type ActivityStatus = 'success' | 'failed' | 'stopped'
@@ -43,7 +41,7 @@ export interface PresentationActivityCredentialNotFound {
 }
 
 export interface PresentationActivityCredential {
-  id: CredentialForDisplayId
+  id: CredentialId
   name?: string
   attributeNames: string[]
   attributes: Record<string, unknown>
@@ -62,7 +60,7 @@ export interface PresentationActivity extends BaseActivity {
 
 export interface IssuanceActivity extends BaseActivity {
   type: 'received'
-  credentialIds: CredentialForDisplayId[]
+  credentialIds: CredentialId[]
 }
 
 export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
@@ -72,14 +70,14 @@ export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
 
 export type Activity = PresentationActivity | IssuanceActivity | SignedActivity
 
-interface ActivityRecord {
+type ActivityRecord = {
   activities: Activity[]
 }
 
 const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: _activityStorage.recordId,
-  addActivity: async (agent: AppAgent, activity: Activity) => {
+  addActivity: async (agent: BaseAgent, activity: Activity) => {
     // get activity. then add this activity
     const record = await _activityStorage.get(agent)
     if (!record) {
@@ -111,14 +109,14 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
 }
 
 export const addReceivedActivity = async (
-  agent: AppAgent,
+  agent: BaseAgent,
   input: {
     entityId?: string
     name: string
     host?: string
     logo?: DisplayImage
     backgroundColor?: string
-    credentialIds: CredentialForDisplayId[]
+    credentialIds: CredentialId[]
   }
 ) => {
   await activityStorage.addActivity(agent, {
@@ -138,7 +136,7 @@ export const addReceivedActivity = async (
 }
 
 export const addSharedOrSignedActivity = async (
-  agent: AppAgent,
+  agent: BaseAgent,
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
   if ('transaction' in input && input.transaction) {
@@ -159,7 +157,7 @@ export const addSharedOrSignedActivity = async (
 }
 
 export function addSharedActivityForCredentialsForRequest(
-  agent: AppAgent,
+  agent: BaseAgent,
   credentialsForRequest: Pick<CredentialsForProofRequest, 'formattedSubmission'> & {
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
@@ -190,7 +188,7 @@ export function addSharedActivityForCredentialsForRequest(
 }
 
 export function addSharedActivityForSubmission(
-  agent: AppAgent,
+  agent: BaseAgent,
   submission: FormattedSubmission,
   verifier: {
     id: string

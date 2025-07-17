@@ -48,6 +48,12 @@ catalogs:
     '@react-navigation/native':
       specifier: ^7.1.14
       version: 7.1.14
+    '@sd-jwt/decode':
+      specifier: ^0.14.0
+      version: 0.14.0
+    '@sd-jwt/present':
+      specifier: ^0.14.0
+      version: 0.14.0
     '@tamagui/animations-react-native':
       specifier: 1.132.18
       version: 1.132.18
@@ -277,9 +283,6 @@ importers:
       '@changesets/cli':
         specifier: ^2.29.4
         version: 2.29.5
-      check-dependency-version-consistency:
-        specifier: ^5.0.1
-        version: 5.0.1
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(@swc/core@1.12.9(@swc/helpers@0.5.17))(jiti@1.21.7)(postcss@8.4.49)(typescript@5.8.3)
@@ -349,6 +352,9 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@paradym/wallet-sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
       '@react-native-community/blur':
         specifier: 'catalog:'
         version: 4.4.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -560,6 +566,9 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
+      '@paradym/wallet-sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.81.5(react@19.0.0)
@@ -600,6 +609,9 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
+      '@paradym/wallet-sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@react-native-community/netinfo':
         specifier: 'catalog:'
         version: 11.4.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))
@@ -680,9 +692,24 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@animo-id/eudi-wallet-functionality':
+        specifier: 'catalog:'
+        version: 0.0.0-alpha-20250604122408(tqfaqxbwkwgu56sd462zn4cr54)
+      '@animo-id/expo-digital-credentials-api':
+        specifier: 'catalog:'
+        version: 0.4.0(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+      '@astronautlabs/jsonpath':
+        specifier: 'catalog:'
+        version: 1.1.2
+      '@credo-ts/anoncreds':
+        specifier: npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250604111322
+        version: '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250604111322(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/askar':
         specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250604111322
         version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250604111322(@animo-id/expo-secure-environment@0.1.0(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(@openwallet-foundation/askar-shared@0.3.2)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/cheqd':
+        specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250604111322
+        version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250604111322(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/core':
         specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250604111322
         version: '@animo-id/credo-ts-core@0.5.14-alpha-20250604111322(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
@@ -695,12 +722,30 @@ importers:
       '@credo-ts/react-native':
         specifier: npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250604111322
         version: '@animo-id/credo-ts-react-native@0.5.14-alpha-20250604111322(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native-get-random-values@1.11.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@hyperledger/anoncreds-react-native':
+        specifier: 0.3.1
+        version: 0.3.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+      '@openid4vc/openid4vp':
+        specifier: 0.3.0-alpha-20250602121005
+        version: 0.3.0-alpha-20250602121005
       '@openwallet-foundation/askar-react-native':
         specifier: 0.3.2
         version: 0.3.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+      '@sd-jwt/decode':
+        specifier: 'catalog:'
+        version: 0.14.0
+      '@sd-jwt/present':
+        specifier: 'catalog:'
+        version: 0.14.0
+      credo-ts-didweb-anoncreds:
+        specifier: 'catalog:'
+        version: 0.0.1-alpha.14(3hkwiaygjmbsgc2chwdreilhba)
       react:
         specifier: 'catalog:'
         version: 19.0.0
+      react-native:
+        specifier: 'catalog:'
+        version: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
 
   packages/secure-store:
     dependencies:
@@ -2549,6 +2594,10 @@ packages:
     resolution: {integrity: sha512-vix1GplUFc1A9H42r/yXkg7cKYthggyqZEwlFdsBbn4xdZNE+AHVF4N7kPa1pPxipwN3UIHd4XnQ5MJV15mhsQ==}
     engines: {node: '>=18'}
 
+  '@sd-jwt/decode@0.14.0':
+    resolution: {integrity: sha512-4f2xZRhRZSwBI68LaseVyArXtjtghkcZtD212r5U1YrX0owc0sMK489At2cYMVgrQsVfU+tlqMhrgzKL8lCYww==}
+    engines: {node: '>=18'}
+
   '@sd-jwt/decode@0.7.2':
     resolution: {integrity: sha512-dan2LSvK63SKwb62031G4r7TE4TaiI0EK1KbPXqS+LCXNkNDUHqhtYp9uOpj+grXceCsMtMa2f8VnUfsjmwHHg==}
     engines: {node: '>=18'}
@@ -2561,6 +2610,10 @@ packages:
     resolution: {integrity: sha512-o/Mg/Zg21poFsPXuxtPD9sdXq2b/0L+rb9gxU2k1rp1aT+DWmqD0k8v0Ttr2tlMc8l1xXQNA8FLXbL1AdLRmbQ==}
     engines: {node: '>=18'}
 
+  '@sd-jwt/present@0.14.0':
+    resolution: {integrity: sha512-+VmF7GAMBbWlaOy83vjP7PyRBiuHtvoCbxs8iPEOPGlaNin16pyT2qhB8cDBWUSn2acqjiZumApslAY47sBlIw==}
+    engines: {node: '>=18'}
+
   '@sd-jwt/present@0.7.2':
     resolution: {integrity: sha512-mQV85u2+mLLy2VZ9Wx2zpaB6yTDnbhCfWkP7eeCrzJQHBKAAHko8GrylEFmLKewFIcajS/r4lT/zHOsCkp5pZw==}
     engines: {node: '>=18'}
@@ -2569,12 +2622,20 @@ packages:
     resolution: {integrity: sha512-rryYmnoJHRSNqHcrs0Atta+bfJzU2yT7mYumR2D4lTfxJKWZd0OHHFq57uZSEm/wXPI6uytUJXYbEboCqLUAtw==}
     engines: {node: '>=18'}
 
+  '@sd-jwt/types@0.14.0':
+    resolution: {integrity: sha512-HFy2e1bYb3Uz6MEnGJI4Iula0F2NH0dD0bP8Lm7r9V+VXhiIVlUDscYdiibWkefV2cB/5Phplg3UOKppxSHqvA==}
+    engines: {node: '>=18'}
+
   '@sd-jwt/types@0.7.2':
     resolution: {integrity: sha512-1NRKowiW0ZiB9SGLApLPBH4Xk8gDQJ+nA9NdZ+uy6MmJKLEwjuJxO7yTvRIv/jX/0/Ebh339S7Kq4RD2AiFuRg==}
     engines: {node: '>=18'}
 
   '@sd-jwt/types@0.9.2':
     resolution: {integrity: sha512-eV/MY80ekeTrqaohzPpkrgwPki6Igx69D6RniduV1Ehv6o/zaJQ2F0hY/RqBAkJhQtBQoOzouwKYHme40k1Dlw==}
+    engines: {node: '>=18'}
+
+  '@sd-jwt/utils@0.14.0':
+    resolution: {integrity: sha512-n37qI6IEKTczbjbzuDO1BcN4/1HhRz+iHg05DPGuXQItKRqMAm2SJdQaShAAU9pXJksRci//DfZhpTti2U6mYQ==}
     engines: {node: '>=18'}
 
   '@sd-jwt/utils@0.7.2':
@@ -2587,10 +2648,6 @@ packages:
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
-
-  '@sindresorhus/merge-streams@2.3.0':
-    resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
-    engines: {node: '>=18'}
 
   '@sinonjs/commons@3.0.1':
     resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
@@ -3773,11 +3830,6 @@ packages:
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  check-dependency-version-consistency@5.0.1:
-    resolution: {integrity: sha512-Hpf7lgElsLVCTJKjFHEVH76Jbf1DnnJ7IJK+zN2b+pRIF0Cs5Girjw1lzWgyV/3QGUR3D6goL0oN6mQ6DlrDCw==}
-    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
-    hasBin: true
-
   chokidar@3.5.1:
     resolution: {integrity: sha512-9+s+Od+W0VJJzawDma/gvBNQqkTiqYTWLuZoyAsivsI4AaWTCzHG06/TMjsf1cYe9Cb97UCEhjz7HvnPk2p/tw==}
     engines: {node: '>= 8.10.0'}
@@ -3886,10 +3938,6 @@ packages:
 
   commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
-
-  commander@13.1.0:
-    resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
 
   commander@2.20.3:
@@ -4764,10 +4812,6 @@ packages:
     resolution: {integrity: sha512-Y1zNGV+pzQdh7H39l9zgB4PJqjRNqydvdYCDG4HFXM4XuvSaQQlEc91IU1yALL8gUTDomgBAfz3XJdmUS+oo0w==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  globby@14.1.0:
-    resolution: {integrity: sha512-0Ia46fDOaT7k4og1PDW4YbodWWr3scS2vAr2lTbsplOt2WkKp0vQbkI9wKis/T5LV/dqPjO3bpS/z6GTJB82LA==}
-    engines: {node: '>=18'}
-
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -4857,10 +4901,6 @@ packages:
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
-    engines: {node: '>= 4'}
-
-  ignore@7.0.5:
-    resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
 
   image-size@1.2.1:
@@ -5759,10 +5799,6 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
 
-  path-type@6.0.0:
-    resolution: {integrity: sha512-Vj7sf++t5pBD637NSfkxpHSMfWaeig5+DKWLhcqIYx6mWQz5hdJTGDVMQiJcw1ZYkhs7AazKDGpRVji1LJCZUQ==}
-    engines: {node: '>=18'}
-
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
 
@@ -6382,10 +6418,6 @@ packages:
     resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
     engines: {node: '>=12'}
 
-  slash@5.1.0:
-    resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
-    engines: {node: '>=14.16'}
-
   slice-ansi@4.0.0:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}
     engines: {node: '>=10'}
@@ -6753,10 +6785,6 @@ packages:
   unicode-property-aliases-ecmascript@2.1.0:
     resolution: {integrity: sha512-6t3foTQI9qne+OZoVQB/8x8rk2k1eVy1gRXhV3oFQ5T6R1dqQ1xtin3XqSlx3+ATBkliTaR/hHyJBm+LVPNM8w==}
     engines: {node: '>=4'}
-
-  unicorn-magic@0.3.0:
-    resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
-    engines: {node: '>=18'}
 
   unique-string@2.0.0:
     resolution: {integrity: sha512-uNaeirEPvpZWSgzwsPGtU2zVSTrn/8L5q/IexZmH0eH6SA73CmAA5U4GwORTxQAZs95TAXLNqeLoPPNO5gZfWg==}
@@ -9775,6 +9803,11 @@ snapshots:
       '@sd-jwt/types': 0.7.2
       '@sd-jwt/utils': 0.7.2
 
+  '@sd-jwt/decode@0.14.0':
+    dependencies:
+      '@sd-jwt/types': 0.14.0
+      '@sd-jwt/utils': 0.14.0
+
   '@sd-jwt/decode@0.7.2':
     dependencies:
       '@sd-jwt/types': 0.7.2
@@ -9791,6 +9824,12 @@ snapshots:
       base64url: 3.0.1
       pako: 2.1.0
 
+  '@sd-jwt/present@0.14.0':
+    dependencies:
+      '@sd-jwt/decode': 0.14.0
+      '@sd-jwt/types': 0.14.0
+      '@sd-jwt/utils': 0.14.0
+
   '@sd-jwt/present@0.7.2':
     dependencies:
       '@sd-jwt/decode': 0.7.2
@@ -9803,9 +9842,16 @@ snapshots:
       '@sd-jwt/jwt-status-list': 0.7.2
       '@sd-jwt/utils': 0.7.2
 
+  '@sd-jwt/types@0.14.0': {}
+
   '@sd-jwt/types@0.7.2': {}
 
   '@sd-jwt/types@0.9.2': {}
+
+  '@sd-jwt/utils@0.14.0':
+    dependencies:
+      '@sd-jwt/types': 0.14.0
+      js-base64: 3.7.7
 
   '@sd-jwt/utils@0.7.2':
     dependencies:
@@ -9818,8 +9864,6 @@ snapshots:
       js-base64: 3.7.7
 
   '@sinclair/typebox@0.27.8': {}
-
-  '@sindresorhus/merge-streams@2.3.0': {}
 
   '@sinonjs/commons@3.0.1':
     dependencies:
@@ -11672,18 +11716,6 @@ snapshots:
       table: 6.9.0
       type-fest: 4.41.0
 
-  check-dependency-version-consistency@5.0.1:
-    dependencies:
-      '@types/js-yaml': 4.0.9
-      chalk: 5.4.1
-      commander: 13.1.0
-      edit-json-file: 1.8.1
-      globby: 14.1.0
-      js-yaml: 4.1.0
-      semver: 7.7.2
-      table: 6.9.0
-      type-fest: 4.41.0
-
   chokidar@3.5.1:
     dependencies:
       anymatch: 3.1.3
@@ -11804,8 +11836,6 @@ snapshots:
   commander@11.1.0: {}
 
   commander@12.1.0: {}
-
-  commander@13.1.0: {}
 
   commander@2.20.3: {}
 
@@ -12776,15 +12806,6 @@ snapshots:
       merge2: 1.4.1
       slash: 4.0.0
 
-  globby@14.1.0:
-    dependencies:
-      '@sindresorhus/merge-streams': 2.3.0
-      fast-glob: 3.3.3
-      ignore: 7.0.5
-      path-type: 6.0.0
-      slash: 5.1.0
-      unicorn-magic: 0.3.0
-
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -12876,8 +12897,6 @@ snapshots:
   ieee754@1.2.1: {}
 
   ignore@5.3.2: {}
-
-  ignore@7.0.5: {}
 
   image-size@1.2.1:
     dependencies:
@@ -13806,8 +13825,6 @@ snapshots:
 
   path-type@4.0.0: {}
 
-  path-type@6.0.0: {}
-
   pathe@2.0.3: {}
 
   peek-readable@4.1.0: {}
@@ -14518,8 +14535,6 @@ snapshots:
 
   slash@4.0.0: {}
 
-  slash@5.1.0: {}
-
   slice-ansi@4.0.0:
     dependencies:
       ansi-styles: 4.3.0
@@ -14912,8 +14927,6 @@ snapshots:
   unicode-match-property-value-ecmascript@2.2.0: {}
 
   unicode-property-aliases-ecmascript@2.1.0: {}
-
-  unicorn-magic@0.3.0: {}
 
   unique-string@2.0.0:
     dependencies:

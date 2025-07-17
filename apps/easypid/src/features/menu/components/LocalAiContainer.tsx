@@ -1,13 +1,9 @@
-import { HeroIcons } from '@package/ui/content/Icon'
-
-import { Switch } from '@package/ui/base/Switch'
-
 import { useIsDeviceCapable, useLLM } from '@easypid/llm'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { ConfirmationSheet } from '@package/app/components/ConfirmationSheet'
-import { useHasInternetConnection, useIsConnectedToWifi } from '@package/app/hooks'
+import { ConfirmationSheet, useHasInternetConnection, useIsConnectedToWifi } from '@package/app'
 import { commonMessages } from '@package/translations'
+import { HeroIcons, Switch } from '@package/ui'
 import { useToastController } from '@package/ui'
 import { useState } from 'react'
 

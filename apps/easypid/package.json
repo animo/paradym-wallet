@@ -33,6 +33,7 @@
 		"@package/translations": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@package/utils": "workspace:*",
+		"@paradym/wallet-sdk": "workspace:*",
 		"@react-native-community/blur": "catalog:",
 		"@react-native-community/netinfo": "catalog:",
 		"@react-native-masked-view/masked-view": "catalog:",

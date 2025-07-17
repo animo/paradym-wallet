@@ -1,7 +1,6 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { useLingui } from '@lingui/react/macro'
-import type { DisplayImage } from '@package/agent'
 import { isAndroid } from '@package/app'
 import {
   AnimatedStack,
@@ -17,6 +16,7 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 

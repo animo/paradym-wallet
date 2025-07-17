@@ -1,6 +1,18 @@
+import {
+  AnonCredsCredentialFormatService,
+  AnonCredsModule,
+  AnonCredsProofFormatService,
+  LegacyIndyCredentialFormatService,
+  LegacyIndyProofFormatService,
+  V1CredentialProtocol,
+  V1ProofProtocol,
+} from '@credo-ts/anoncreds'
 import { AskarModule } from '@credo-ts/askar'
+import { CheqdAnonCredsRegistry, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import { Agent, DidsModule, KeyDerivationMethod, X509Module, type X509ModuleConfigOptions } from '@credo-ts/core'
 import {
+  AutoAcceptCredential,
+  AutoAcceptProof,
   ConnectionsModule,
   CredentialsModule,
   DidCommModule,
@@ -10,11 +22,15 @@ import {
   MessagePickupModule,
   OutOfBandModule,
   ProofsModule,
+  V2CredentialProtocol,
+  V2ProofProtocol,
   WsOutboundTransport,
 } from '@credo-ts/didcomm'
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { agentDependencies } from '@credo-ts/react-native'
+import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
+import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { ParadymWalletMustBeDidCommAgentError, ParadymWalletMustBeOpenId4VcAgentError } from './error'
 import { type LogLevel, logger } from './logger'
 
@@ -133,14 +149,52 @@ const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['did
   dids: new DidsModule(),
   outOfBand: new OutOfBandModule(),
   didcomm: new DidCommModule(),
-  mediatorRecipient: new MediationRecipientModule(),
-  credentials: new CredentialsModule(),
-  proofs: new ProofsModule(),
+  mediationRecipient: new MediationRecipientModule(),
+  credentials: new CredentialsModule({
+    autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
+    credentialProtocols: [
+      new V1CredentialProtocol({
+        indyCredentialFormat: new LegacyIndyCredentialFormatService(),
+      }),
+      new V2CredentialProtocol({
+        credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
+      }),
+    ],
+  }),
+  proofs: new ProofsModule({
+    autoAcceptProofs: AutoAcceptProof.ContentApproved,
+    proofProtocols: [
+      new V1ProofProtocol({
+        indyProofFormat: new LegacyIndyProofFormatService(),
+      }),
+      new V2ProofProtocol({
+        proofFormats: [new LegacyIndyProofFormatService(), new AnonCredsProofFormatService()],
+      }),
+    ],
+  }),
+  anoncreds: new AnonCredsModule({
+    registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
+    anoncreds,
+  }),
+  cheqd: new CheqdModule(
+    new CheqdModuleConfig({
+      networks: [
+        {
+          network: 'testnet',
+        },
+        {
+          network: 'mainnet',
+        },
+      ],
+    })
+  ),
 })
 
+export type BaseAgent = Agent
 export type DidCommAgent = Agent<ReturnType<typeof getDidCommModules>>
 export type OpenId4VcAgent = Agent<ReturnType<typeof getOpenid4VcModules>>
 export type FullAgent = DidCommAgent & OpenId4VcAgent
+export type EitherAgent = DidCommAgent | OpenId4VcAgent
 
 export const isDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): boolean => 'didcomm' in agent.modules
 export const assertDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): DidCommAgent => {

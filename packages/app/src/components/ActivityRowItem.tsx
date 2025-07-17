@@ -1,6 +1,5 @@
 import type { ActivityType } from '@easypid/features/activity/activityRecord'
 import { useLingui } from '@lingui/react/macro'
-import type { DisplayImage } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   CustomIcons,
@@ -14,6 +13,7 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'

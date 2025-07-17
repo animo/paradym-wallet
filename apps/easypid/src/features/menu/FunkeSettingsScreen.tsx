@@ -1,29 +1,17 @@
-import { TextBackButton } from '@package/app'
-import {
-  BetaTag,
-  FlexPage,
-  HeaderContainer,
-  HeroIcons,
-  ScrollView,
-  SettingsButton,
-  Switch,
-  XStack,
-  YStack,
-} from '@package/ui'
-import { Label } from 'tamagui'
-import { LocalAiContainer } from './components/LocalAiContainer'
-
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useLingui } from '@lingui/react/macro'
 import { Trans } from '@lingui/react/macro'
 import { logger } from '@package/agent'
-import { useScrollViewPosition } from '@package/app/hooks'
+import { TextBackButton, useScrollViewPosition } from '@package/app'
 import { type SupportedLocale, supportedLanguageMessages, supportedLocales, useLocale } from '@package/translations'
+import { BetaTag, FlexPage, HeaderContainer, HeroIcons, SettingsButton, Switch, XStack, YStack } from '@package/ui'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
-import { Share } from 'react-native'
+import { ScrollView, Share } from 'react-native'
+import { Label } from 'tamagui'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
+import { LocalAiContainer } from './components/LocalAiContainer'
 
 export function LocaleSelect() {
   // We use a state value, to not make the ui flicker because it takes a bit to change the lang

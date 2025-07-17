@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro'
-import type { DisplayImage } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
@@ -17,6 +16,7 @@ import {
   getTextColorBasedOnBg,
   useScaleAnimation,
 } from '@package/ui'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 import { BlurBadge } from './BlurBadge'

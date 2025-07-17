@@ -1,3 +1,7 @@
+import { useFirstNameFromPidCredential } from '@easypid/hooks'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { useHaptics } from '@package/app'
 import {
   AnimatedStack,
   Blob,
@@ -16,11 +20,6 @@ import {
   useSpringify,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
-
-import { useFirstNameFromPidCredential } from '@easypid/hooks'
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { useHaptics } from '@package/app/hooks'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
