@@ -1,11 +1,13 @@
 import { Mdoc, MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import {
+  getBatchCredentialMetadata,
+  getCredentialCategoryMetadata,
+  getRefreshCredentialMetadata,
+} from '@paradym/wallet-sdk/src/metadata/credentials'
+import { updateCredential } from '@paradym/wallet-sdk/src/storage/credentials'
+import { decodeW3cCredential } from '@paradym/wallet-sdk/src/utils/encoding'
 import { RefreshPidUseCase } from '../../../apps/easypid/src/use-cases/RefreshPidUseCase'
 import type { EitherAgent } from './agent'
-import { getCredentialCategoryMetadata } from './credentialCategoryMetadata'
-import { decodeW3cCredential } from './format/credentialEncoding'
-import { getBatchCredentialMetadata } from './openid4vc/batchMetadata'
-import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
-import { updateCredential } from './storage'
 
 export async function refreshPid({
   agent,

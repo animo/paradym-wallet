@@ -1,4 +1,3 @@
-import { useCredentialsForDisplay } from '@package/agent'
 import {
   AnimatePresence,
   BASE_CREDENTIAL_CARD_HEIGHT,
@@ -17,9 +16,9 @@ import {
   YStack,
   ZStack,
 } from '@package/ui'
+import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
 import { CredentialCard, CredentialRowCard, InboxIcon, NoContentWallet } from '../../components'
 import { useNetworkCallback, useScrollViewPosition } from '../../hooks'
 
@@ -30,7 +29,7 @@ type WalletScreenProps = {
 
 export function WalletScreen({ logo, showInbox = true }: WalletScreenProps) {
   const { push } = useRouter()
-  const { isLoading, credentials } = useCredentialsForDisplay()
+  const { isLoading, credentials } = useCredentials()
   const firstThreeRecords = credentials.slice(0, 3)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(HEADER_TITLE_TEXT_HEIGHT)
   const { bottom } = useSafeAreaInsets()

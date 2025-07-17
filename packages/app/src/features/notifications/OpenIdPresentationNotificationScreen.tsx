@@ -3,12 +3,13 @@ import {
   type CredentialsForProofRequest,
   getCredentialsForProofRequest,
   shareProof,
-  useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import type { OpenId4VcAgent } from '@paradym/wallet-sdk/src/agent'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
@@ -18,7 +19,7 @@ type Query = {
 }
 
 export function OpenIdPresentationNotificationScreen() {
-  const { agent } = useAgent()
+  const { agent } = useAgent<OpenId4VcAgent>()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()

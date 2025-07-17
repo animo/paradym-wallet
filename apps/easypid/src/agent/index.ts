@@ -4,9 +4,9 @@ import {
   type ParadymAppAgent,
   isEasyPIDAgent,
   isParadymAgent,
-  useAgent,
 } from '@package/agent'
 import { useSecureUnlock as _useSecureUnlock } from '@package/secure-store/secureUnlock'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
 
 export { initializeAppAgent } from './initialize'
 

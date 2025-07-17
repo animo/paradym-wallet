@@ -1,8 +1,7 @@
-import { useHasInboxNotifications } from '@package/agent/hooks'
 import { useHaptics } from '@package/app'
-import { Circle, IconContainer } from '@package/ui'
-import { AnimatedStack, Stack } from '@package/ui/base/Stacks'
-import { HeroIcons } from '@package/ui/content/Icon'
+import { AnimatedStack, Circle, IconContainer, Stack } from '@package/ui'
+import { HeroIcons } from '@package/ui'
+import { useHasInboxNotifications } from '@paradym/wallet-sdk/src/hooks/useHasInboxNotifications'
 import { useRouter } from 'expo-router'
 import { ZoomIn, ZoomOut } from 'react-native-reanimated'
 

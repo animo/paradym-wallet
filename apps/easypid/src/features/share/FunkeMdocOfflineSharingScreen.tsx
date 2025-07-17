@@ -3,13 +3,11 @@ import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProvid
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
-import {
-  BiometricAuthenticationCancelledError,
-  type FormattedSubmission,
-  getSubmissionForMdocDocumentRequest,
-} from '@package/agent'
-import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
+import { BiometricAuthenticationCancelledError } from '@package/agent'
+import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
+import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/src/format/mdocDocumentRequest'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import { useCallback, useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'

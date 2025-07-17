@@ -1,12 +1,10 @@
+import { useImageScaler } from '@package/app'
 import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, XStack, YStack, useSpringify } from '@package/ui'
 import { useRef, useState } from 'react'
-
 import { Dimensions } from 'react-native'
 import { LinearTransition } from 'react-native-reanimated'
 import Carousel from 'react-native-reanimated-carousel'
 import type { ICarouselInstance } from 'react-native-reanimated-carousel'
-
-import { useImageScaler } from '@package/app/hooks'
 import { WalletExplanation } from './assets/WalletExplanation'
 import { WalletHowItWorks } from './assets/WalletHowItWorks'
 import { WalletStoring } from './assets/WalletStoring'

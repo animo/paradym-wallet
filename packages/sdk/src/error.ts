@@ -7,3 +7,19 @@ export class ParadymWalletSdkError extends Error {
 export class ParadymWalletMustBeDidCommAgentError extends ParadymWalletSdkError {}
 export class ParadymWalletMustBeOpenId4VcAgentError extends ParadymWalletSdkError {}
 export class ParadymWalletMustBeInitializedError extends ParadymWalletSdkError {}
+
+export class ParadymWalletUnsupportedCredentialRecordTypeError extends ParadymWalletSdkError {}
+
+export class ParadymWalletNoMediatorDidProvidedError extends ParadymWalletSdkError {}
+
+export class ParadymWalletInvitationError extends ParadymWalletSdkError {}
+export class ParadymWalletInvitationReceiveError extends ParadymWalletSdkError {}
+export class ParadymWalletInvitationMultipleRequestsError extends ParadymWalletSdkError {}
+export class ParadymWalletInvitationNotRecognizedError extends ParadymWalletInvitationError {}
+export class ParadymWalletInvitationParseError extends ParadymWalletInvitationError {}
+export class ParadymWalletInvitationRetrievalError extends ParadymWalletInvitationError {}
+export class ParadymWalletInvitationDidcommHandlerMustBeDefinedError extends ParadymWalletInvitationError {}
+export class ParadymWalletInvitationAlreadyUsedError extends ParadymWalletInvitationError {}
+export class ParadymWalletInvitationDidcommUnsupportedProtocolError extends ParadymWalletInvitationError {}
+export class ParadymWalletInvitationOpenIdCredentialHandlerMustBeDefinedError extends ParadymWalletInvitationError {}
+export class ParadymWalletInvitationOpenIdAuthorizationRequestHandlerMustBeDefinedError extends ParadymWalletInvitationError {}

@@ -1,35 +1,30 @@
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import { useAppAgent } from '@easypid/agent'
+import { appScheme } from '@easypid/constants'
+import { InvalidPinError } from '@easypid/crypto/error'
+import { useDevelopmentMode } from '@easypid/hooks'
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
-  type MdocRecord,
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
-  type SdJwtVcRecord,
-  type W3cCredentialRecord,
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
   acquirePreAuthorizedAccessToken,
-  extractOpenId4VcCredentialMetadata,
-  getCredentialDisplayWithDefaults,
-  getCredentialForDisplay,
-  getCredentialForDisplayId,
   getCredentialsForProofRequest,
-  getOpenId4VcCredentialDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   shareProof,
-  storeCredential,
 } from '@package/agent'
-
-import { useAppAgent } from '@easypid/agent'
-
-import { appScheme } from '@easypid/constants'
-import { InvalidPinError } from '@easypid/crypto/error'
-import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
+import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/src/display/common'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
+import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/src/display/openid4vc'
+import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
+import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'

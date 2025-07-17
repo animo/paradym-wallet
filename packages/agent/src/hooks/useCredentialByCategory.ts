@@ -1,6 +1,6 @@
 import { type ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import type { CredentialForDisplay } from '../display'
-import { useCredentialsForDisplay } from './useCredentialsForDisplay'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
+import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
 
 export function useCredentialByCategory(credentialCategory?: string) {
   if (!credentialCategory) {
@@ -10,7 +10,7 @@ export function useCredentialByCategory(credentialCategory?: string) {
     } as const
   }
 
-  const { isLoading, credentials } = useCredentialsForDisplay({
+  const { isLoading, credentials } = useCredentials({
     removeCanonicalRecords: false,
     credentialCategory,
   })

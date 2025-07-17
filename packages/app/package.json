@@ -8,6 +8,7 @@
 		"@package/scanner": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@package/utils": "workspace:*",
+		"@paradym/wallet-sdk": "workspace:*",
 		"@react-native-community/netinfo": "catalog:",
 		"@tamagui/animations-react-native": "catalog:",
 		"@tamagui/colors": "catalog:",

@@ -1,4 +1,3 @@
-import type { DisplayImage } from '@package/agent'
 import {
   AnimatedStack,
   Card,
@@ -15,6 +14,7 @@ import {
   getTextColorBasedOnBg,
   useScaleAnimation,
 } from '@package/ui'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 import { BlurBadge } from './BlurBadge'

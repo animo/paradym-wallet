@@ -1,17 +1,19 @@
-import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@package/agent'
-
 import {
   acquirePreAuthorizedAccessToken,
-  getCredentialForDisplay,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-  storeCredential,
-  useAgent,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import type { OpenId4VcAgent } from '@paradym/wallet-sdk/src/agent'
+import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import type { MdocRecord } from '@paradym/wallet-sdk/src/providers/MdocProvider'
+import type { SdJwtVcRecord } from '@paradym/wallet-sdk/src/providers/SdJwtVcProvider'
+import type { W3cCredentialRecord } from '@paradym/wallet-sdk/src/providers/W3cCredentialsProvider'
+import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -21,7 +23,7 @@ type Query = {
 }
 
 export function OpenIdCredentialNotificationScreen() {
-  const { agent } = useAgent()
+  const { agent } = useAgent<OpenId4VcAgent>()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()

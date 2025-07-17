@@ -1,6 +1,3 @@
-import type { CredentialForDisplayId } from '@package/agent'
-
-import { deleteCredential, useAgent, useCredentialForDisplayById } from '@package/agent'
 import {
   FloatingSheet,
   Heading,
@@ -12,12 +9,14 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
+import type { CredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
+import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { deleteCredential } from '@paradym/wallet-sdk/src/storage/credentials'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
-
-import { Pressable } from 'react-native-gesture-handler'
-
 import { useNavigation } from 'expo-router'
+import { useCredentialById } from 'packages/sdk/src/hooks/useCredentialById'
+import { useEffect, useState } from 'react'
+import { Pressable } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CredentialAttributes, DualResponseButtons } from '../../components'
 import { CredentialCard } from '../../components'
@@ -57,7 +56,7 @@ export function CredentialDetailScreen() {
     return null
   }
 
-  const { credential } = useCredentialForDisplayById(params.id)
+  const { credential } = useCredentialById(params.id)
   if (!credential) return null
   const { attributes, display } = credential
 

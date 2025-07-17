@@ -1,5 +1,3 @@
-import type { DisplayImage } from '@package/agent'
-
 import {
   Card,
   Heading,
@@ -11,6 +9,7 @@ import {
   darken,
   getTextColorBasedOnBg,
 } from '@package/ui'
+import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
 
 type CredentialCardProps = {
   onPress?(): void

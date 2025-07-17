@@ -1,5 +1,3 @@
-import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
-
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { mediatorDid } from '@easypid/constants'
@@ -7,16 +5,13 @@ import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import {
-  AgentProvider,
-  type InvitationType,
-  WalletJsonStoreProvider,
-  registerCredentialsForDcApi,
-  useMediatorSetup,
-} from '@package/agent'
-import { isParadymAgent } from '@package/agent/agent'
+import { type InvitationType, registerCredentialsForDcApi } from '@package/agent'
+import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
+import { useMediatorSetup } from '@paradym/wallet-sdk/src/hooks/useMediatorSetup'
+import { AgentProvider } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
@@ -128,64 +123,62 @@ export default function AppLayout() {
 
   // Render the normal wallet, which is everything inside (app)
   return (
-    <AgentProvider agent={secureUnlock.context.agent}>
-      <WalletJsonStoreProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            options={{
-              presentation: 'modal',
-            }}
-            name="(home)/scan"
-          />
-          <Stack.Screen
-            options={{
-              presentation: 'modal',
-            }}
-            name="(home)/offline"
-          />
-          <Stack.Screen
-            name="notifications/openIdPresentation"
-            options={{
-              gestureEnabled: false,
-            }}
-          />
-          <Stack.Screen
-            name="notifications/openIdCredential"
-            options={{
-              gestureEnabled: false,
-            }}
-          />
-          <Stack.Screen
-            name="notifications/offlinePresentation"
-            options={{
-              gestureEnabled: false,
-            }}
-          />
+    <AgentProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          options={{
+            presentation: 'modal',
+          }}
+          name="(home)/scan"
+        />
+        <Stack.Screen
+          options={{
+            presentation: 'modal',
+          }}
+          name="(home)/offline"
+        />
+        <Stack.Screen
+          name="notifications/openIdPresentation"
+          options={{
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="notifications/openIdCredential"
+          options={{
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="notifications/offlinePresentation"
+          options={{
+            gestureEnabled: false,
+          }}
+        />
 
-          <Stack.Screen
-            name="notifications/didcomm"
-            options={{
-              gestureEnabled: false,
-            }}
-          />
+        <Stack.Screen
+          name="notifications/didcomm"
+          options={{
+            gestureEnabled: false,
+          }}
+        />
 
-          <Stack.Screen name="credentials/index" options={headerNormalOptions} />
-          <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
-          <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
-          <Stack.Screen name="credentials/[id]/nested" options={headerNormalOptions} />
-          <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
-          <Stack.Screen name="menu/index" options={headerNormalOptions} />
-          <Stack.Screen name="menu/settings" options={headerNormalOptions} />
-          <Stack.Screen name="menu/about" options={headerNormalOptions} />
-          <Stack.Screen name="activity/index" options={headerNormalOptions} />
-          <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
-          <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
-          <Stack.Screen name="pinLocked" options={headerNormalOptions} />
-          <Stack.Screen name="trust" options={headerNormalOptions} />
-          <Stack.Screen name="pidSetup" />
-          <Stack.Screen name="inbox" options={headerNormalOptions} />
-        </Stack>
-      </WalletJsonStoreProvider>
+        <Stack.Screen name="credentials/index" options={headerNormalOptions} />
+        <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
+        <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
+        <Stack.Screen name="credentials/[id]/nested" options={headerNormalOptions} />
+        <Stack.Screen name="credentials/requestedAttributes" options={headerNormalOptions} />
+        <Stack.Screen name="menu/index" options={headerNormalOptions} />
+        <Stack.Screen name="menu/settings" options={headerNormalOptions} />
+        <Stack.Screen name="menu/about" options={headerNormalOptions} />
+        <Stack.Screen name="activity/index" options={headerNormalOptions} />
+        <Stack.Screen name="activity/[id]" options={headerNormalOptions} />
+        <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
+        <Stack.Screen name="pinLocked" options={headerNormalOptions} />
+        <Stack.Screen name="trust" options={headerNormalOptions} />
+        <Stack.Screen name="pidSetup" />
+        <Stack.Screen name="inbox" options={headerNormalOptions} />
+      </Stack>
     </AgentProvider>
   )
 }

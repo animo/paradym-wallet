@@ -1,13 +1,13 @@
-import { useCredentialsForDisplay } from '@package/agent'
 import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
+import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
 import { useRouter } from 'expo-router'
 
 export function AllCardsCard() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
 
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
   const pushToCards = withHaptics(() => push('/credentials'))
 
   const amountString = credentials.length > 1 ? 'cards' : 'card'

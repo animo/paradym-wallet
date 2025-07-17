@@ -1,6 +1,6 @@
 import { ActivityRowItem } from '@package/app'
 import { TextBackButton } from '@package/app'
-import { useScrollViewPosition } from '@package/app/hooks'
+import { useScrollViewPosition } from '@package/app'
 import {
   AnimatedStack,
   FlexPage,
