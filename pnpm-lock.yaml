@@ -69,9 +69,6 @@ catalogs:
     '@tamagui/lucide-icons':
       specifier: 1.129.12
       version: 1.129.12
-    '@tamagui/portal':
-      specifier: 1.129.12
-      version: 1.129.12
     '@tamagui/react-native-media-driver':
       specifier: 1.129.12
       version: 1.129.12
@@ -153,9 +150,6 @@ catalogs:
     expo-linking:
       specifier: ~7.1.6
       version: 7.1.6
-    expo-modules-autolinking:
-      specifier: ~2.1.13
-      version: 2.1.13
     expo-router:
       specifier: ~5.1.2
       version: 5.1.2
@@ -612,9 +606,6 @@ importers:
       '@tamagui/lucide-icons':
         specifier: 'catalog:'
         version: 1.129.12(patch_hash=6tcfru5vipogbierrf422gjex4)(react-dom@19.1.0(react@19.0.0))(react-native-svg@15.11.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
-      '@tamagui/portal':
-        specifier: 'catalog:'
-        version: 1.129.12(react-dom@19.1.0(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@tamagui/shorthands':
         specifier: 'catalog:'
         version: 1.129.12(react-dom@19.1.0(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -636,9 +627,6 @@ importers:
       expo-linking:
         specifier: 'catalog:'
         version: 7.1.6(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
-      expo-modules-autolinking:
-        specifier: 'catalog:'
-        version: 2.1.13
       expo-router:
         specifier: 'catalog:'
         version: 5.1.2(yg7bwh56a277ua44vbqhhnhqee)

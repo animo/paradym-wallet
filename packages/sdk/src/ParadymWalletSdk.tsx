@@ -83,9 +83,13 @@ export class ParadymWalletSdk {
    * Wrap your application in this, if you want to leverage the provided `this.hooks`
    *
    */
-  public Provider({ children,recordIds }: PropsWithChildren<{recordIds: Array<string>}>) {
+  public Provider({ children, recordIds }: PropsWithChildren<{ recordIds: Array<string> }>) {
     this.assertAgentIsInitialized()
-    return <AgentProvider agent={this.agent} recordIds={recordIds}>{children}</AgentProvider>
+    return (
+      <AgentProvider agent={this.agent} recordIds={recordIds}>
+        {children}
+      </AgentProvider>
+    )
   }
 
   public receiveInvitation() {

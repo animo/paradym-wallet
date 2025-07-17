@@ -10,7 +10,8 @@ type MappedAttributesReturnType =
   | null
   | undefined
   | Array<MappedAttributesReturnType>
-export function recursivelyMapAttributes(value: unknown): MappedAttributesReturnType {
+
+export function recursivelyMapMdocAttributes(value: unknown): MappedAttributesReturnType {
   if (value instanceof Uint8Array) {
     const imageMimeType = detectImageMimeType(value)
     if (imageMimeType) {
@@ -27,9 +28,11 @@ export function recursivelyMapAttributes(value: unknown): MappedAttributesReturn
   }
   if (typeof value === 'string') return value
   if (value instanceof Map) {
-    return Object.fromEntries(Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapAttributes(value)]))
+    return Object.fromEntries(
+      Array.from(value.entries()).map(([key, value]) => [key, recursivelyMapMdocAttributes(value)])
+    )
   }
-  if (Array.isArray(value)) return value.map(recursivelyMapAttributes)
+  if (Array.isArray(value)) return value.map(recursivelyMapMdocAttributes)
 
-  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapAttributes(value)]))
+  return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, recursivelyMapMdocAttributes(value)]))
 }

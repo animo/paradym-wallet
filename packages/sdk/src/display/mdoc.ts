@@ -7,7 +7,7 @@ import {
 import { safeCalculateJwkThumbprint } from '../utils/jwkThumbprint'
 import type { CredentialDisplay, CredentialForDisplay, CredentialForDisplayId, CredentialMetadata } from './credential'
 import { getAttributesForDocTypeOrVct } from './docTypeOfVct'
-import { recursivelyMapAttributes } from './mapAttributes'
+import { recursivelyMapMdocAttributes } from './mapAttributes'
 import { getOpenId4VcCredentialDisplay, getOpenId4VcIssuerDisplay } from './openid4vc'
 
 export function getDisplayInformationForMdocCredential(
@@ -65,7 +65,7 @@ function getMdocCredentialDisplay(mdoc: Mdoc, openId4VcMetadata: OpenId4VcCreden
 export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpaces, mdocInstance: Mdoc) {
   const attributes: CredentialForDisplay['attributes'] = Object.fromEntries(
     Object.values(namespaces).flatMap((v) => {
-      return Object.entries(v).map(([key, value]) => [key, recursivelyMapAttributes(value)])
+      return Object.entries(v).map(([key, value]) => [key, recursivelyMapMdocAttributes(value)])
     })
   )
 

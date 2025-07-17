@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import type { DidCommAgent } from '../agent'
 import { hasMediationConfigured, setupMediationWithDid } from '../didcomm/mediation'
 import { ParadymWalletNoMediatorDidProvidedError } from '../error'
-import { useMessagePickup } from './useMessagePickup'
+import { useDidCommMessagePickup } from './useDidCommMessagePickup'
 
-export function useMediatorSetup({
+export function useDidCommMediatorSetup({
   agent,
   hasInternetConnection,
   mediatorDid,
@@ -17,7 +17,7 @@ export function useMediatorSetup({
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
 
   // Enable message pickup when mediation is configured and internet connection is available
-  useMessagePickup({
+  useDidCommMessagePickup({
     isEnabled: hasInternetConnection && isMediationConfigured,
     agent,
   })

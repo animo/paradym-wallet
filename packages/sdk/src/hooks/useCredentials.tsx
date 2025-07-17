@@ -31,10 +31,7 @@ export const useCredentials = ({
     const finalRecords =
       removeCanonicalRecords || credentialCategory
         ? allRecords.filter((record, index) => {
-            if (credentialCategory) {
-              if (!record.category) return false
-              if (credentialCategory !== record.category.credentialCategory) return false
-            }
+            if (credentialCategory && record.category?.credentialCategory !== credentialCategory) return false
 
             if (removeCanonicalRecords) {
               if (!record.category) return true

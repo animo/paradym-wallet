@@ -8,7 +8,7 @@ import { initiateMessagePickup, stopMessagePickup } from '../didcomm/mediation'
  * You can use the `isEnabled` config property to enable/disable message pickup.
  * This is useful if e.g. there's no internet connection, or mediation has not been setup yet
  */
-export function useMessagePickup({
+export function useDidCommMessagePickup({
   isEnabled = true,
   agent,
 }: {

@@ -8,7 +8,7 @@ import { safeCalculateJwkThumbprint } from '../utils/jwkThumbprint'
 import { findDisplay } from './common'
 import type { CredentialDisplay, CredentialForDisplay, CredentialForDisplayId, CredentialMetadata } from './credential'
 import { getAttributesForDocTypeOrVct } from './docTypeOfVct'
-import { recursivelyMapAttributes } from './mapAttributes'
+import { recursivelyMapMdocAttributes } from './mapAttributes'
 import { getOpenId4VcCredentialDisplay, getOpenId4VcIssuerDisplay } from './openid4vc'
 import { sanitizeString } from './strings'
 
@@ -136,7 +136,7 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
 
   return {
     attributes: Object.fromEntries(
-      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapAttributes(value)])
+      Object.entries(visibleProperties).map(([key, value]) => [key, recursivelyMapMdocAttributes(value)])
     ),
     metadata: credentialMetadata,
   }
