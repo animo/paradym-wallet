@@ -1,7 +1,7 @@
 import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { useDidCommPresentationActions } from '@paradym/wallet-sdk/hooks'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { getFlowConfirmationText } from './utils'
@@ -14,10 +14,9 @@ type PresentationSlidesProps = {
 }
 
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
-  const pws = useParadymWalletSdk()
   const toast = useToastController()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
-    pws.hooks.useDidCommPresentationActions(proofExchangeId)
+    useDidCommPresentationActions(proofExchangeId)
 
   const onProofAccept = async () => {
     if (!submission) return

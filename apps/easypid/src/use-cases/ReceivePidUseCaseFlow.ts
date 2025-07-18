@@ -12,7 +12,7 @@ import {
   type OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
   acquireAuthorizationCodeAccessToken,
 } from '@package/agent'
-import type { OpenId4VcAgent } from '@paradym/wallet-sdk/src/agent'
+import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
 
 export interface ReceivePidUseCaseFlowOptions
   extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {

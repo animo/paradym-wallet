@@ -13,7 +13,7 @@ import {
 import { deviceKeyPair } from '@easypid/storage/pidPin'
 import { Key as AskarKey, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
 import { kdf } from '@package/secure-store/kdf'
-import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
+import type { BaseAgent } from '@paradym/wallet-sdk/agent'
 import { easyPidAes256Gcm } from './aes'
 
 /**

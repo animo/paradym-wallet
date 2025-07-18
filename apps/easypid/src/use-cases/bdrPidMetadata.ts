@@ -1,5 +1,5 @@
 import type { SdJwtVcTypeMetadata } from '@credo-ts/core'
-import type { OpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
+import type { OpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/metadata/credentials'
 
 export const bdrPidCredentialDisplay = {
   name: 'Personalausweis',

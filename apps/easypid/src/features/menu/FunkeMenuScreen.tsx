@@ -17,7 +17,7 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
-import { useCredentialByCategory } from '@paradym/wallet-sdk/src/hooks/useCredentialByCategory'
+import { useCredentialByCategory } from '@paradym/wallet-sdk/hooks'
 import { router } from 'expo-router'
 import { Linking } from 'react-native'
 

@@ -4,11 +4,11 @@ import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
 const ParadymWalletSdkContext = createContext<ParadymWalletSdk | undefined>(undefined)
 
-export const useParadymWalletSdk = () => {
+export const useParadym = () => {
   const paradymWalletSdk = useContext(ParadymWalletSdkContext)
 
   if (!paradymWalletSdk) {
-    throw new Error('useParadymWalletSdk must be used within a ParadymWalletSdkProvider')
+    throw new Error('useParadym must be used within a ParadymWalletSdkProvider')
   }
 
   return paradymWalletSdk

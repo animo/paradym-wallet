@@ -1,23 +1,20 @@
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
-import { paradymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
-import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/src/display/common'
-import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/src/format/submission'
-import { shareProof } from '@paradym/wallet-sdk/src/invitation/shareProof'
+import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/display/common'
+import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/format/submission'
+import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { shareProof } from '@paradym/wallet-sdk/invitation/shareProof'
 import {
   type CredentialsForProofRequest,
   getCredentialsForProofRequest,
-} from '@paradym/wallet-sdk/src/openid4vc/getCredentialsForProofRequest'
-import {
-  type FormattedTransactionData,
-  getFormattedTransactionData,
-} from '@paradym/wallet-sdk/src/openid4vc/transaction'
-import { addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/src/storage/activities'
+} from '@paradym/wallet-sdk/openid4vc/getCredentialsForProofRequest'
+import { type FormattedTransactionData, getFormattedTransactionData } from '@paradym/wallet-sdk/openid4vc/transaction'
+import { addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activities'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -28,8 +25,7 @@ import type { onPinSubmitProps } from './slides/PinSlide'
 type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
-  const pws = paradymWalletSdk()
-  const { agent } = pws.internalHooks.useOpenId4VcAgent()
+  const { agent } = useOpenId4VcAgent()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()

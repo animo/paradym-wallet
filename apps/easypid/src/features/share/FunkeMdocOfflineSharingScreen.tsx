@@ -5,13 +5,10 @@ import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForP
 import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
-import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/src/format/mdocDocumentRequest'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
-import {
-  type ActivityStatus,
-  addSharedActivityForCredentialsForRequest,
-} from '@paradym/wallet-sdk/src/storage/activities'
+import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activities'
 import { useCallback, useEffect, useState } from 'react'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
@@ -27,8 +24,7 @@ export function FunkeMdocOfflineSharingScreen({
   sessionTranscript,
   deviceRequest,
 }: FunkeMdocOfflineSharingScreenProps) {
-  const pws = useParadymWalletSdk()
-  const { agent } = pws.internalHooks.useOpenId4VcAgent()
+  const { agent } = useOpenId4VcAgent()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()

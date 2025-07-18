@@ -1,5 +1,5 @@
 import { FunkeRequestedAttributesDetailScreen } from '@easypid/features/share/FunkeRequestedAttributesDetailScreen'
-import type { CredentialId } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
+import type { CredentialId } from '@paradym/wallet-sdk/hooks'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {

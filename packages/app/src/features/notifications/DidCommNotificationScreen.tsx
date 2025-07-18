@@ -1,5 +1,5 @@
 import { useToastController } from '@package/ui'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { usePushToWallet } from '../../hooks'
@@ -21,8 +21,7 @@ type Query = {
 }
 
 export function DidCommNotificationScreen() {
-  const pws = useParadymWalletSdk()
-  const { logger } = pws.hooks.useLogger()
+  const paradym = useParadym()
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
@@ -54,14 +53,14 @@ export function DidCommNotificationScreen() {
         // Might be no invitation if a presentationExchangeId or credentialExchangeId is passed directly
         if (!invitation) return
 
-        const receiveResult = await pws.resolveDidCommInvitation(invitation)
+        const receiveResult = await paradym.resolveDidCommInvitation(invitation)
         if (!receiveResult.success) {
           toast.show(receiveResult.message)
           pushToWallet()
           return
         }
       } catch (error: unknown) {
-        logger.error('Error parsing invitation', {
+        paradym.logger.error('Error parsing invitation', {
           error,
         })
         toast.show('Error parsing invitation')
@@ -76,8 +75,8 @@ export function DidCommNotificationScreen() {
     hasHandledNotificationLoading,
     toast,
     pushToWallet,
-    logger.error,
-    pws.resolveDidCommInvitation,
+    paradym.logger.error,
+    paradym.resolveDidCommInvitation,
   ])
 
   // We were routed here without any notification
@@ -106,7 +105,7 @@ export function DidCommNotificationScreen() {
   }
 
   // eslint-disable-next-line no-console
-  logger.error('Unknown notification type on DidCommNotificationScreen', notification)
+  paradym.logger.error('Unknown notification type on DidCommNotificationScreen', notification)
   pushToWallet()
   return null
 }

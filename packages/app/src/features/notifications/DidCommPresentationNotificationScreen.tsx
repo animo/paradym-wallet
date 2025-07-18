@@ -1,5 +1,5 @@
 import { useToastController } from '@package/ui'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
+import { useDidCommPresentationActions } from '@paradym/wallet-sdk/hooks'
 import { useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -10,13 +10,11 @@ interface DidCommPresentationNotificationScreenProps {
 }
 
 export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCommPresentationNotificationScreenProps) {
-  const pws = useParadymWalletSdk()
-
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
 
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
-    pws.hooks.useDidCommPresentationActions(proofExchangeId)
+    useDidCommPresentationActions(proofExchangeId)
 
   const [selectedCredentials, setSelectedCredentials] = useState<{
     [inputDescriptorId: string]: string

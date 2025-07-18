@@ -1,8 +1,7 @@
 import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import { useActivities } from '@paradym/wallet-sdk/src/hooks/useActivities'
-import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
+import { useActivities, useCredentials } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 

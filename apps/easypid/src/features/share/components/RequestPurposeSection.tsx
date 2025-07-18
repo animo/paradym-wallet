@@ -15,7 +15,7 @@ import {
   YStack,
   useScaleAnimation,
 } from '@package/ui'
-import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
 

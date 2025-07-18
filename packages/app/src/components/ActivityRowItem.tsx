@@ -10,8 +10,8 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
-import type { ActivityType } from '@paradym/wallet-sdk/src/storage/activities'
+import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
+import type { ActivityType } from '@paradym/wallet-sdk/storage/activities'
 import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'

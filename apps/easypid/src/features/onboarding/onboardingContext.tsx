@@ -27,13 +27,13 @@ import {
   migrateLegacyParadymWallet,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
-import { useParadymWalletSdk } from '@package/sdk'
 import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
-import { addReceivedActivity } from '@paradym/wallet-sdk/src/storage/activities'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import { useParadym, useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
@@ -58,11 +58,11 @@ export function OnboardingContextProvider({
 }: PropsWithChildren<{
   initialStep?: OnboardingStep['step']
 }>) {
-  const pws = useParadymWalletSdk()
+  const paradym = useParadym()
 
   const { successHaptic, lightHaptic } = useHaptics()
   const toast = useToastController()
-  const secureUnlock = pws.hooks.useSecureUnlock()
+  const secureUnlock = useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
@@ -239,7 +239,7 @@ export function OnboardingContextProvider({
 
       if (!walletKey) {
         const walletKey =
-          secureUnlock.state === 'acquired-wallet-key' ? secureUnlock.walletKey : pws.agent.config.walletConfig?.key
+          secureUnlock.state === 'acquired-wallet-key' ? secureUnlock.walletKey : paradym.agent.config.walletConfig?.key
         if (!walletKey) {
           await reset({ resetToStep: 'pin' })
           return
@@ -397,7 +397,7 @@ export function OnboardingContextProvider({
     }
 
     if (stepsToCompleteAfterReset.includes('pin')) {
-      await resetWallet(secureUnlock, pws.agent)
+      await resetWallet(secureUnlock, paradym.agent)
     }
 
     // TODO: if we already have the agent, we should either remove the wallet and start again,
@@ -517,7 +517,9 @@ export function OnboardingContextProvider({
 
       for (const credential of credentials) {
         if (credential instanceof SdJwtVcRecord) {
-          const parsed = pws.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(credential.compactSdJwtVc)
+          const parsed = paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
+            credential.compactSdJwtVc
+          )
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()
@@ -525,7 +527,7 @@ export function OnboardingContextProvider({
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(pws.agent, {
+          await addReceivedActivity(paradym.agent, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
@@ -584,7 +586,7 @@ export function OnboardingContextProvider({
     }
 
     const baseOptions = {
-      agent: pws.agent,
+      agent: paradym.agent,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({

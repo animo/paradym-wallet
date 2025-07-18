@@ -1,16 +1,16 @@
 import { agentDependencies } from '@credo-ts/react-native'
-import { type SecureUnlockReturn, secureWalletKey } from '@package/secure-store/secureUnlock'
-import { isDevelopmentBuild, registerDevMenuItems } from 'expo-dev-client'
-import { useEffect } from 'react'
-import { DevSettings } from 'react-native'
-
 import {
   removeHasFinishedOnboarding,
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
 import { getWalletId } from '@easypid/sdk/paradymWalletSdk'
-import { useParadymWalletSdk } from '@package/sdk'
-import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
+import { type SecureUnlockReturn, secureWalletKey } from '@package/secure-store/secureUnlock'
+import type { BaseAgent } from '@paradym/wallet-sdk/agent'
+import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/providers/ParadymWalletSdkProvider'
+import { isDevelopmentBuild, registerDevMenuItems } from 'expo-dev-client'
+import { useEffect } from 'react'
+import { DevSettings } from 'react-native'
 import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn, agent: BaseAgent) {
@@ -54,8 +54,8 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn, agent: BaseA
 }
 
 export function useResetWalletDevMenu() {
-  const pws = useParadymWalletSdk()
-  const secureUnlock = pws.hooks.useSecureUnlock()
+  const paradym = useParadym()
+  const secureUnlock = useSecureUnlock()
 
   useEffect(() => {
     if (!isDevelopmentBuild()) return
@@ -63,10 +63,11 @@ export function useResetWalletDevMenu() {
       {
         name: 'Reset Wallet',
         callback: () =>
-          resetWallet(secureUnlock, pws.agent)
+          // TODO(sdk): move this to the sdk
+          resetWallet(secureUnlock, paradym.agent)
             .then(() => DevSettings.reload('Wallet Reset'))
             .catch((error) => console.error('error resetting wallet', error)),
       },
     ])
-  }, [secureUnlock, pws.agent])
+  }, [secureUnlock, paradym.agent])
 }

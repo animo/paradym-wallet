@@ -1,7 +1,7 @@
 import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
-import type { ResolveOutOfBandInvitationResult } from '@paradym/wallet-sdk/src/invitation/resolver'
+import { useDidCommConnectionActions, useParadym } from '@paradym/wallet-sdk/hooks'
+import type { ResolveOutOfBandInvitationResult } from '@paradym/wallet-sdk/invitation/resolver'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
@@ -21,7 +21,7 @@ type Query = {
 }
 
 export function DidCommNotificationScreen() {
-  const pws = useParadymWalletSdk()
+  const paradym = useParadym()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
@@ -34,7 +34,7 @@ export function DidCommNotificationScreen() {
     type: 'issue' | 'verify' | 'connect'
     id: string
   }>()
-  const { acceptConnection, declineConnection, display } = pws.hooks.useDidCommConnectionActions(resolvedInvitation)
+  const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
 
   const handleNavigation = (type: 'replace' | 'back') => {
     // When starting from the inbox, we want to go back to the inbox on finish
@@ -82,7 +82,7 @@ export function DidCommNotificationScreen() {
           return
         }
 
-        const resolvedInvite = await pws.resolveDidCommInvitation(invitation)
+        const resolvedInvite = await paradym.resolveDidCommInvitation(invitation)
         if (resolvedInvite.success) {
           setResolvedInvitation(resolvedInvite)
         } else {
@@ -105,7 +105,7 @@ export function DidCommNotificationScreen() {
     params.invitationUrl,
     hasHandledNotificationLoading,
     isDevelopmentModeEnabled,
-    pws.resolveDidCommInvitation,
+    paradym.resolveDidCommInvitation,
   ])
 
   // Delay the navigation to hide the fact we're loading in the new slides based on the flow type

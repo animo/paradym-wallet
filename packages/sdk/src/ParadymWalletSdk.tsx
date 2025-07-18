@@ -67,6 +67,17 @@ export class ParadymWalletSdk {
 
   /**
    *
+   * Paradym logger
+   *
+   * defaults to a console logger
+   *
+   */
+  public get logger() {
+    return this.agent.config.logger
+  }
+
+  /**
+   *
    * All available hooks provided by the wallet SDK
    *
    */

@@ -1,5 +1,5 @@
 import { useToastController } from '@package/ui'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
+import { useDidCommCredentialActions } from '@paradym/wallet-sdk/hooks'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -11,13 +11,11 @@ interface DidCommCredentialNotificationScreenProps {
 export function DidCommCredentialNotificationScreen({
   credentialExchangeId,
 }: DidCommCredentialNotificationScreenProps) {
-  const pws = useParadymWalletSdk()
-
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
 
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
-    pws.hooks.useDidCommCredentialActions(credentialExchangeId)
+    useDidCommCredentialActions(credentialExchangeId)
 
   if (!credentialExchange || !attributes || !display) {
     return <GettingInformationScreen type="credential" />

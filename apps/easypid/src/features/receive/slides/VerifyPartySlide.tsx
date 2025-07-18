@@ -14,8 +14,8 @@ import {
   useMedia,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
-import { useActivities } from '@paradym/wallet-sdk/src/hooks/useActivities'
+import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
+import { useActivities } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 

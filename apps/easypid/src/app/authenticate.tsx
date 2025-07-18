@@ -4,9 +4,9 @@ import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { initializeParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
-import { useParadymWalletSdk } from '@package/sdk'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
+import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
@@ -15,13 +15,11 @@ import { useResetWalletDevMenu } from '../utils/resetWallet'
  * Authenticate screen is redirect to from app layout when app is configured but locked
  */
 export default function Authenticate() {
-  const pws = useParadymWalletSdk()
-
   useResetWalletDevMenu()
 
   const { redirectAfterUnlock } = useLocalSearchParams<{ redirectAfterUnlock?: string }>()
   const toast = useToastController()
-  const secureUnlock = pws.hooks.useSecureUnlock()
+  const secureUnlock = useSecureUnlock()
   const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const { additionalPadding, noBottomSafeArea } = useDeviceMedia()

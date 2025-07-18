@@ -9,8 +9,9 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
-import type { CredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
+import type { CredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { useCredentialById } from '@paradym/wallet-sdk/hooks'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useNavigation } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -21,7 +22,7 @@ import { CredentialCard } from '../../components'
 import { useScrollViewPosition } from '../../hooks'
 
 export function CredentialDetailScreen() {
-  const pws = useParadymWalletSdk()
+  const paradym = useParadym()
 
   const navigation = useNavigation()
   const params = useLocalSearchParams<{ id: CredentialForDisplayId }>()
@@ -54,7 +55,7 @@ export function CredentialDetailScreen() {
     return null
   }
 
-  const { credential } = pws.hooks.useCredentialById(params.id)
+  const { credential } = useCredentialById(params.id)
   if (!credential) return null
   const { attributes, display } = credential
 
@@ -62,7 +63,7 @@ export function CredentialDetailScreen() {
     setIsLoading(true)
 
     try {
-      await pws.credentials.delete(params.id)
+      await paradym.credentials.delete(params.id)
       toast.show('Credential deleted', { type: 'success' })
       router.back()
     } catch (error) {

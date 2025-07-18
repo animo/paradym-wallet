@@ -9,7 +9,7 @@ import {
   resolveRequestForDcApi,
   sendErrorResponseForDcApi,
   sendResponseForDcApi,
-} from '@paradym/wallet-sdk/src/openid4vc/dcApi'
+} from '@paradym/wallet-sdk/openid4vc/dcApi'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
@@ -42,12 +42,12 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     const agent = await secureWalletKey
       .getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
       .then(async (walletKey) => {
-        const pws = await initializeParadymWalletSdk({
+        const paradym = await initializeParadymWalletSdk({
           walletKey,
           walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
         })
         await setWalletServiceProviderPin(pin.split('').map(Number), false)
-        return pws.agent
+        return paradym.agent
       })
       .catch((e) => {
         setIsProcessing(false)

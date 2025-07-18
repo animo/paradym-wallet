@@ -10,8 +10,8 @@ import {
   setCredentialCategoryMetadata,
   setOpenId4VcCredentialMetadata,
   setRefreshCredentialMetadata,
-} from '@paradym/wallet-sdk/src/metadata/credentials'
-import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
+} from '@paradym/wallet-sdk/metadata/credentials'
+import { storeCredential } from '@paradym/wallet-sdk/storage/credentials'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'

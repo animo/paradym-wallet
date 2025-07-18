@@ -1,6 +1,6 @@
 import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
+import { useDidCommCredentialActions } from '@paradym/wallet-sdk/hooks'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 import { getFlowConfirmationText } from './utils'
 
@@ -12,11 +12,9 @@ type CredentialSlidesProps = {
 }
 
 export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, onComplete }: CredentialSlidesProps) {
-  const pws = useParadymWalletSdk()
-
   const toast = useToastController()
   const { acceptCredential, acceptStatus, declineCredential, attributes, display } =
-    pws.hooks.useDidCommCredentialActions(credentialExchangeId)
+    useDidCommCredentialActions(credentialExchangeId)
 
   const onCredentialAccept = async () => {
     await acceptCredential().catch(() => {

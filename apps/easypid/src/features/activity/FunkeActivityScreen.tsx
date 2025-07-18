@@ -13,7 +13,7 @@ import {
   Stack,
   YStack,
 } from '@package/ui'
-import { useActivities } from '@paradym/wallet-sdk/src/hooks/useActivities'
+import { useActivities } from '@paradym/wallet-sdk/hooks/useActivities'
 import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 

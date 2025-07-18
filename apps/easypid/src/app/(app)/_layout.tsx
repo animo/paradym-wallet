@@ -6,14 +6,12 @@ import { paradymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
-import { useDidCommMediatorSetup } from '@paradym/wallet-sdk/src/hooks/useDidCommMediatorSetup'
-import type { InvitationType } from '@paradym/wallet-sdk/src/invitation/parser'
-import { registerCredentialsForDcApi } from '@paradym/wallet-sdk/src/openid4vc/dcApi'
-import {
-  ParadymWalletSdkProvider,
-  useParadymWalletSdk,
-} from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
-import { activityStorage } from '@paradym/wallet-sdk/src/storage/activities'
+import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { useDidCommMediatorSetup } from '@paradym/wallet-sdk/hooks'
+import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
+import { registerCredentialsForDcApi } from '@paradym/wallet-sdk/openid4vc/dcApi'
+import { ParadymWalletSdkProvider, useParadym } from '@paradym/wallet-sdk/providers/ParadymWalletSdkProvider'
+import { activityStorage } from '@paradym/wallet-sdk/storage/activities'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
@@ -34,10 +32,10 @@ export const credentialDataHandlerOptions = {
 } satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {
-  const pws = useParadymWalletSdk()
+  const paradym = useParadym()
 
   useResetWalletDevMenu()
-  const secureUnlock = pws.hooks.useSecureUnlock()
+  const secureUnlock = useSecureUnlock()
   const theme = useTheme()
   const router = useRouter()
   const { withHaptics } = useHaptics()
@@ -50,8 +48,8 @@ export default function AppLayout() {
     if (secureUnlock.state !== 'unlocked') return
 
     // TODO(sdk): handle in sdk
-    registerCredentialsForDcApi(pws.agent)
-  }, [secureUnlock, pws.agent])
+    registerCredentialsForDcApi(paradym.agent)
+  }, [secureUnlock, paradym.agent])
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding

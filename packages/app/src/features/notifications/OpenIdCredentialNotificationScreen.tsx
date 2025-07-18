@@ -4,11 +4,12 @@ import {
   resolveOpenId4VciOffer,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
-import { useParadymWalletSdk } from '@paradym/wallet-sdk'
-import { getCredentialForDisplay } from '@paradym/wallet-sdk/src/display/credential'
-import type { MdocRecord } from '@paradym/wallet-sdk/src/providers/MdocProvider'
-import type { SdJwtVcRecord } from '@paradym/wallet-sdk/src/providers/SdJwtVcProvider'
-import type { W3cCredentialRecord } from '@paradym/wallet-sdk/src/providers/W3cCredentialsProvider'
+import { getCredentialForDisplay } from '@paradym/wallet-sdk/display/credential'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import type { MdocRecord } from '@paradym/wallet-sdk/providers/MdocProvider'
+import type { SdJwtVcRecord } from '@paradym/wallet-sdk/providers/SdJwtVcProvider'
+import type { W3cCredentialRecord } from '@paradym/wallet-sdk/providers/W3cCredentialsProvider'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { usePushToWallet } from '../../hooks'
@@ -20,8 +21,8 @@ type Query = {
 }
 
 export function OpenIdCredentialNotificationScreen() {
-  const pws = useParadymWalletSdk()
-  const { agent } = pws.internalHooks.useOpenId4VcAgent()
+  const paradym = useParadym()
+  const { agent } = useOpenId4VcAgent()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
@@ -61,7 +62,7 @@ export function OpenIdCredentialNotificationScreen() {
   const onCredentialAccept = async () => {
     setIsStoring(true)
 
-    await pws.credentials
+    await paradym.credentials
       .store(credentialRecord)
       .then(() => {
         toast.show('Credential has been added to your wallet.', { customData: { preset: 'success' } })

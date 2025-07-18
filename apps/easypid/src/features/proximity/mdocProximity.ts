@@ -2,9 +2,9 @@ import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, type MdocRecord, MdocService } from '@credo-ts/core'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
-import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
-import { handleBatchCredential } from '@paradym/wallet-sdk/src/openid4vc/batch'
+import type { BaseAgent } from '@paradym/wallet-sdk/agent'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { handleBatchCredential } from '@paradym/wallet-sdk/openid4vc/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {

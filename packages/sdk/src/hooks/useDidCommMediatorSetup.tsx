@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { hasMediationConfigured, setupMediationWithDid } from '../didcomm/mediation'
 import { ParadymWalletNoMediatorDidProvidedError } from '../error'
-import { useParadymWalletSdk } from '../providers/ParadymWalletSdkProvider'
+import { useParadym } from '../providers/ParadymWalletSdkProvider'
 import { useDidCommMessagePickup } from './useDidCommMessagePickup'
 
 export function useDidCommMediatorSetup({
@@ -11,8 +11,7 @@ export function useDidCommMediatorSetup({
   hasInternetConnection: boolean
   mediatorDid?: string
 }) {
-  const pws = useParadymWalletSdk()
-  const { logger } = pws.hooks.useLogger()
+  const paradym = useParadym()
   const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
 
@@ -27,23 +26,23 @@ export function useDidCommMediatorSetup({
 
     setIsSettingUpMediation(true)
 
-    logger.debug('Checking if mediation is configured')
+    paradym.logger.debug('Checking if mediation is configured')
 
-    void hasMediationConfigured(pws.agent)
+    void hasMediationConfigured(paradym.agent)
       .then(async (mediationConfigured) => {
         if (!mediationConfigured) {
-          logger.debug('Mediation not configured yet')
+          paradym.logger.debug('Mediation not configured yet')
           if (!mediatorDid) throw new ParadymWalletNoMediatorDidProvidedError()
-          await setupMediationWithDid(pws.agent, mediatorDid)
+          await setupMediationWithDid(paradym.agent, mediatorDid)
         }
 
-        logger.info('Mediation configured')
+        paradym.logger.info('Mediation configured')
         setIsMediationConfigured(true)
       })
       .finally(() => {
         setIsSettingUpMediation(false)
       })
-  }, [isMediationConfigured, isSettingUpMediation, hasInternetConnection, mediatorDid, logger, pws.agent])
+  }, [isMediationConfigured, isSettingUpMediation, hasInternetConnection, mediatorDid, paradym.agent, paradym.logger])
 
   return { isMediationConfigured, isSettingUpMediation }
 }

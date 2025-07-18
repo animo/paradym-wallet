@@ -5,34 +5,34 @@ import { getShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseC
 import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'
 import { ParadymWalletSdk } from '@paradym/wallet-sdk'
 
-let pws: ParadymWalletSdk | undefined
+let paradym: ParadymWalletSdk | undefined
 
 export function getWalletId(walletKeyVersion: number) {
   return isFunkeWallet() ? `easypid-wallet-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
 }
 
 export const paradymWalletSdk = () => {
-  if (!pws) {
+  if (!paradym) {
     throw new Error('Paradym Wallet Sdk is not yet created. Call `initializeParadymWalletSdk()` first')
   }
 
-  if (!pws.agent.isInitialized) {
+  if (!paradym.agent.isInitialized) {
     throw new Error(
       'Paradym Wallet Sdk is not yet initialized. Something went wrong while calling `initializeParadymWalletSdk()`'
     )
   }
 
-  return pws
+  return paradym
 }
 
 export const isParadymWalletSdkInitialized = () => {
-  if (pws?.agent.isInitialized) return true
+  if (paradym?.agent.isInitialized) return true
   return false
 }
 
 export const shutdownParadymWalletSdk = async () => {
-  await pws?.shutdown()
-  pws = undefined
+  await paradym?.shutdown()
+  paradym = undefined
 }
 
 export const initializeParadymWalletSdk = async ({
@@ -44,11 +44,11 @@ export const initializeParadymWalletSdk = async ({
   walletKeyVersion: number
   registerWallet?: boolean
 }): Promise<ParadymWalletSdk> => {
-  if (pws?.agent.isInitialized) return pws
+  if (paradym?.agent.isInitialized) return paradym
 
   const walletId = getWalletId(walletKeyVersion)
 
-  pws = new ParadymWalletSdk({
+  paradym = new ParadymWalletSdk({
     id: walletId,
     key: walletKey,
     didcommConfiguration: { label: isFunkeWallet() ? 'EeasyPID Wallet' : 'Paradym Wallet' },
@@ -57,7 +57,7 @@ export const initializeParadymWalletSdk = async ({
     },
   })
 
-  await pws.initialize()
+  await paradym.initialize()
 
   /**
    *
@@ -67,7 +67,7 @@ export const initializeParadymWalletSdk = async ({
   if (isFunkeWallet()) {
     const wsp = new WalletServiceProviderClient(
       process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL ?? 'https://wsp.funke.animo.id',
-      pws.agent
+      paradym.agent
     )
     if (registerWallet) {
       await wsp.createSalt()
@@ -79,5 +79,5 @@ export const initializeParadymWalletSdk = async ({
     setFallbackSecureEnvironment(wsp)
   }
 
-  return pws
+  return paradym
 }

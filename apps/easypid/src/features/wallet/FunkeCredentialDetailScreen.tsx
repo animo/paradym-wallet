@@ -19,7 +19,7 @@ import {
   YStack,
   useToastController,
 } from '@package/ui'
-import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/hooks/useCredentialById'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
