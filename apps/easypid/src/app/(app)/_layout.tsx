@@ -1,17 +1,18 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { useSecureUnlock } from '@easypid/agent'
 import { mediatorDid } from '@easypid/constants'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { paradymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useDidCommMediatorSetup } from '@paradym/wallet-sdk/src/hooks/useDidCommMediatorSetup'
 import type { InvitationType } from '@paradym/wallet-sdk/src/invitation/parser'
 import { registerCredentialsForDcApi } from '@paradym/wallet-sdk/src/openid4vc/dcApi'
-import { ParadymWalletSdkProvider } from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
+import {
+  ParadymWalletSdkProvider,
+  useParadymWalletSdk,
+} from '@paradym/wallet-sdk/src/providers/ParadymWalletSdkProvider'
 import { activityStorage } from '@paradym/wallet-sdk/src/storage/activities'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -33,8 +34,10 @@ export const credentialDataHandlerOptions = {
 } satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {
+  const pws = useParadymWalletSdk()
+
   useResetWalletDevMenu()
-  const secureUnlock = useSecureUnlock()
+  const secureUnlock = pws.hooks.useSecureUnlock()
   const theme = useTheme()
   const router = useRouter()
   const { withHaptics } = useHaptics()
@@ -46,8 +49,9 @@ export default function AppLayout() {
   useEffect(() => {
     if (secureUnlock.state !== 'unlocked') return
 
-    registerCredentialsForDcApi(secureUnlock.context.agent)
-  }, [secureUnlock])
+    // TODO(sdk): handle in sdk
+    registerCredentialsForDcApi(pws.agent)
+  }, [secureUnlock, pws.agent])
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -58,10 +62,6 @@ export default function AppLayout() {
 
   // Only setup mediation if the agent is a paradym agent
   useDidCommMediatorSetup({
-    agent:
-      secureUnlock.state === 'unlocked' && isParadymAgent(secureUnlock.context.agent) && isDIDCommEnabled
-        ? secureUnlock.context.agent
-        : undefined,
     hasInternetConnection,
     mediatorDid,
   })

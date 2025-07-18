@@ -1,3 +1,4 @@
+import { useSecureUnlock } from '@package/secure-store/secureUnlock'
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import type { CredentialForDisplayId } from './display/credential'
@@ -9,9 +10,14 @@ import { useCredentialById } from './hooks/useCredentialById'
 import { useCredentialRecordById } from './hooks/useCredentialRecordById'
 import { useCredentialRecords } from './hooks/useCredentialRecords'
 import { useCredentials } from './hooks/useCredentials'
+import { useDidCommConnectionActions } from './hooks/useDidCommConnectionActions'
+import { useDidCommCredentialActions } from './hooks/useDidCommCredentialActions'
+import { useDidCommPresentationActions } from './hooks/useDidCommPresentationActions'
 import { useDidCommAgent } from './hooks/useDidcommAgent'
+import { useLogger } from './hooks/useLogger'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
-import { type InvitationResult, parseInvitationUrl } from './invitation/parser'
+import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
+import { type ResolveOutOfBandInvitationResult, resolveOutOfBandInvitation } from './invitation/resolver'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 
@@ -68,12 +74,22 @@ export class ParadymWalletSdk {
     this.assertAgentIsInitialized()
 
     return {
+      useSecureUnlock,
+
+      useLogger,
+
       useCredentials,
       useCredentialById,
       useCredentialByCategory,
 
       useActivities,
       useActivityById,
+
+      // TODO: these are quite different than the openid4vc way
+      //       do we want to keep it like this or make them more consistent?
+      useDidCommConnectionActions,
+      useDidCommCredentialActions,
+      useDidCommPresentationActions,
     }
   }
 
@@ -147,5 +163,16 @@ export class ParadymWalletSdk {
 
   private async storeCredential(record: CredentialRecord) {
     return storeCredential(this.agent, record)
+  }
+
+  public async resolveDidCommInvitation(
+    invitation: string | Record<string, unknown>
+  ): Promise<ParadymWalletSdkResult<ResolveOutOfBandInvitationResult>> {
+    try {
+      const parsedInvitation = await parseDidCommInvitation(this.agent, invitation)
+      return { success: true, ...(await resolveOutOfBandInvitation(this.agent, parsedInvitation)) }
+    } catch (e) {
+      return { success: false, message: e instanceof Error ? e.message : `${e}` }
+    }
   }
 }

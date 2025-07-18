@@ -1,8 +1,8 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, type MdocRecord, MdocService } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
+import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import { handleBatchCredential } from '@paradym/wallet-sdk/src/openid4vc/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
@@ -10,7 +10,7 @@ import { PermissionsAndroid, Platform } from 'react-native'
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  agent: AppAgent
+  agent: BaseAgent
   submission: FormattedSubmission
 }
 

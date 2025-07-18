@@ -8,7 +8,7 @@ export const useParadymWalletSdk = () => {
   const paradymWalletSdk = useContext(ParadymWalletSdkContext)
 
   if (!paradymWalletSdk) {
-    throw new Error('useCredentials must be used within a ParadymWalletSdkProvider')
+    throw new Error('useParadymWalletSdk must be used within a ParadymWalletSdkProvider')
   }
 
   return paradymWalletSdk

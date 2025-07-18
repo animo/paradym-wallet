@@ -1,12 +1,12 @@
 import { ClaimFormat, MdocRecord, getJwkFromJson } from '@credo-ts/core'
 import { SdJwtVcRecord } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
 import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@package/agent'
 import {
   acquireRefreshTokenAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
 } from '@package/agent'
+import type { OpenId4VcAgent } from '@paradym/wallet-sdk/src/agent'
 import {
   getBatchCredentialMetadata,
   getCredentialCategoryMetadata,
@@ -42,7 +42,7 @@ export async function refreshPid(options: FetchBatchCredentialOptions) {
 }
 
 export interface RefreshPidUseCaseOptions {
-  agent: AppAgent
+  agent: OpenId4VcAgent
 }
 
 export class RefreshPidUseCase {

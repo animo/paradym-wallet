@@ -32,6 +32,7 @@
 		"@credo-ts/openid4vc": "catalog:",
 		"@credo-ts/react-native": "catalog:",
 		"@openid4vc/openid4vp": "catalog:",
+		"@package/secure-store": "workspace:",
 		"@sd-jwt/decode": "catalog:",
 		"@sd-jwt/present": "catalog:",
 		"credo-ts-didweb-anoncreds": "catalog:"

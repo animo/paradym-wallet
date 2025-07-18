@@ -1,9 +1,5 @@
-// TODO: We have the `easypid/src/features/didcomm/DidCommNotificationScreen.tsx
-//       What is the difference? Can we just reuse the same screen?
-
-import { parseDidCommInvitation, resolveOutOfBandInvitation } from '@package/agent'
-import { useParadymWalletSdk } from '@package/sdk'
 import { useToastController } from '@package/ui'
+import { useParadymWalletSdk } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { usePushToWallet } from '../../hooks'
@@ -26,7 +22,7 @@ type Query = {
 
 export function DidCommNotificationScreen() {
   const pws = useParadymWalletSdk()
-  const { agent } = pws.internalHooks.useDidCommAgent()
+  const { logger } = pws.hooks.useLogger()
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
@@ -58,21 +54,14 @@ export function DidCommNotificationScreen() {
         // Might be no invitation if a presentationExchangeId or credentialExchangeId is passed directly
         if (!invitation) return
 
-        const parseResult = await parseDidCommInvitation(agent, invitation)
-        if (!parseResult.success) {
-          toast.show(parseResult.error)
-          pushToWallet()
-          return
-        }
-
-        const receiveResult = await resolveOutOfBandInvitation(agent, parseResult.result)
+        const receiveResult = await pws.resolveDidCommInvitation(invitation)
         if (!receiveResult.success) {
-          toast.show(receiveResult.error)
+          toast.show(receiveResult.message)
           pushToWallet()
           return
         }
       } catch (error: unknown) {
-        agent.config.logger.error('Error parsing invitation', {
+        logger.error('Error parsing invitation', {
           error,
         })
         toast.show('Error parsing invitation')
@@ -81,7 +70,15 @@ export function DidCommNotificationScreen() {
     }
 
     void handleInvitation()
-  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, toast, pushToWallet])
+  }, [
+    params.invitation,
+    params.invitationUrl,
+    hasHandledNotificationLoading,
+    toast,
+    pushToWallet,
+    logger.error,
+    pws.resolveDidCommInvitation,
+  ])
 
   // We were routed here without any notification
   if (!params.credentialExchangeId && !params.proofExchangeId && !params.invitation && !params.invitationUrl) {
@@ -109,7 +106,7 @@ export function DidCommNotificationScreen() {
   }
 
   // eslint-disable-next-line no-console
-  console.error('Unknown notification type on DidCommNotificationScreen', notification)
+  logger.error('Unknown notification type on DidCommNotificationScreen', notification)
   pushToWallet()
   return null
 }

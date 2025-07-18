@@ -56,6 +56,7 @@ const authorization = {
 export function FunkeCredentialNotificationScreen() {
   const pws = useParadymWalletSdk()
   const { agent } = pws.internalHooks.useOpenId4VcAgent()
+  const { logger } = pws.hooks.useLogger()
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
 
@@ -127,11 +128,11 @@ export function FunkeCredentialNotificationScreen() {
       })
       .catch((error) => {
         setErrorReasonWithError('Credential information could not be extracted', error)
-        agent.config.logger.error(`Couldn't resolve OpenID4VCI offer`, {
+        logger.error(`Couldn't resolve OpenID4VCI offer`, {
           error,
         })
       })
-  }, [params.uri, agent, setErrorReasonWithError])
+  }, [params.uri, agent, setErrorReasonWithError, logger.error])
 
   const retrieveCredentials = useCallback(
     async (
@@ -200,7 +201,7 @@ export function FunkeCredentialNotificationScreen() {
 
         await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId, resolvedAuthorizationRequest)
       } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+        logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
         setErrorReasonWithError('Error while retrieving credentials', error)
@@ -213,6 +214,7 @@ export function FunkeCredentialNotificationScreen() {
       agent,
       configurationId,
       setErrorReasonWithError,
+      logger.error,
     ]
   )
 
@@ -231,13 +233,13 @@ export function FunkeCredentialNotificationScreen() {
         })
         await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId)
       } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+        logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
         setErrorReasonWithError('Error while retrieving credentials', error)
       }
     },
-    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError]
+    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError, logger.error]
   )
 
   const parsePresentationRequestUrl = useCallback(
@@ -249,11 +251,11 @@ export function FunkeCredentialNotificationScreen() {
         .then(setCredentialsForRequest)
         .catch((error) => {
           setErrorReasonWithError('Presentation information could not be extracted.', error)
-          agent.config.logger.error('Error getting credentials for request', {
+          logger.error('Error getting credentials for request', {
             error,
           })
         }),
-    [agent, setErrorReasonWithError]
+    [agent, setErrorReasonWithError, logger.error]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -337,7 +339,7 @@ export function FunkeCredentialNotificationScreen() {
           return
         }
 
-        agent.config.logger.error('Error accepting presentation', {
+        logger.error('Error accepting presentation', {
           error,
         })
         setErrorReasonWithError('Presentation could not be shared.', error)
@@ -352,6 +354,7 @@ export function FunkeCredentialNotificationScreen() {
       shouldUsePinForPresentation,
       toast.show,
       setErrorReasonWithError,
+      logger.error,
     ]
   )
 

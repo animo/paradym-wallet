@@ -1,51 +1,49 @@
 import { useEffect, useState } from 'react'
-import type { DidCommAgent } from '../agent'
 import { hasMediationConfigured, setupMediationWithDid } from '../didcomm/mediation'
 import { ParadymWalletNoMediatorDidProvidedError } from '../error'
+import { useParadymWalletSdk } from '../providers/ParadymWalletSdkProvider'
 import { useDidCommMessagePickup } from './useDidCommMessagePickup'
 
 export function useDidCommMediatorSetup({
-  agent,
   hasInternetConnection,
   mediatorDid,
 }: {
-  agent?: DidCommAgent
   hasInternetConnection: boolean
   mediatorDid?: string
 }) {
+  const pws = useParadymWalletSdk()
+  const { logger } = pws.hooks.useLogger()
   const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
 
   // Enable message pickup when mediation is configured and internet connection is available
   useDidCommMessagePickup({
     isEnabled: hasInternetConnection && isMediationConfigured,
-    agent,
   })
 
   useEffect(() => {
-    if (!agent) return
     if (!hasInternetConnection || isMediationConfigured) return
     if (isSettingUpMediation) return
 
     setIsSettingUpMediation(true)
 
-    agent.config.logger.debug('Checking if mediation is configured')
+    logger.debug('Checking if mediation is configured')
 
-    void hasMediationConfigured(agent)
+    void hasMediationConfigured(pws.agent)
       .then(async (mediationConfigured) => {
         if (!mediationConfigured) {
-          agent.config.logger.debug('Mediation not configured yet')
+          logger.debug('Mediation not configured yet')
           if (!mediatorDid) throw new ParadymWalletNoMediatorDidProvidedError()
-          await setupMediationWithDid(agent, mediatorDid)
+          await setupMediationWithDid(pws.agent, mediatorDid)
         }
 
-        agent.config.logger.info('Mediation configured')
+        logger.info('Mediation configured')
         setIsMediationConfigured(true)
       })
       .finally(() => {
         setIsSettingUpMediation(false)
       })
-  }, [agent, isMediationConfigured, isSettingUpMediation, hasInternetConnection, mediatorDid])
+  }, [isMediationConfigured, isSettingUpMediation, hasInternetConnection, mediatorDid, logger, pws.agent])
 
   return { isMediationConfigured, isSettingUpMediation }
 }

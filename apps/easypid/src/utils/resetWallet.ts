@@ -3,20 +3,20 @@ import { type SecureUnlockReturn, secureWalletKey } from '@package/secure-store/
 import { isDevelopmentBuild, registerDevMenuItems } from 'expo-dev-client'
 import { useEffect } from 'react'
 import { DevSettings } from 'react-native'
-import { type SecureUnlockContext, useSecureUnlock } from '../agent'
 
 import {
   removeHasFinishedOnboarding,
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
-import { getWalletId } from '../agent/initialize'
+import { getWalletId } from '@easypid/sdk/paradymWalletSdk'
+import { useParadymWalletSdk } from '@package/sdk'
+import type { BaseAgent } from '@paradym/wallet-sdk/src/agent'
 import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
-export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {
-  console.log('Resetting wallet', secureUnlock.state)
+export async function resetWallet(secureUnlock: SecureUnlockReturn, agent: BaseAgent) {
+  agent.config.logger.info(`Resetting wallet with secure unlock state: ${secureUnlock.state}`)
 
   if (secureUnlock.state === 'unlocked') {
-    const agent = secureUnlock.context.agent
     secureUnlock.lock()
     await agent.wallet.delete()
     await agent.shutdown()
@@ -54,7 +54,8 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
 }
 
 export function useResetWalletDevMenu() {
-  const secureUnlock = useSecureUnlock()
+  const pws = useParadymWalletSdk()
+  const secureUnlock = pws.hooks.useSecureUnlock()
 
   useEffect(() => {
     if (!isDevelopmentBuild()) return
@@ -62,10 +63,10 @@ export function useResetWalletDevMenu() {
       {
         name: 'Reset Wallet',
         callback: () =>
-          resetWallet(secureUnlock)
+          resetWallet(secureUnlock, pws.agent)
             .then(() => DevSettings.reload('Wallet Reset'))
             .catch((error) => console.error('error resetting wallet', error)),
       },
     ])
-  }, [secureUnlock])
+  }, [secureUnlock, pws.agent])
 }

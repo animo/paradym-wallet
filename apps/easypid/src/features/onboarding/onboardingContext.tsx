@@ -1,12 +1,10 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
-import { useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import {
   initializeParadymWalletSdk,
   isParadymWalletSdkInitialized,
-  paradymWalletSdk,
   shutdownParadymWalletSdk,
 } from '@easypid/sdk/paradymWalletSdk'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
@@ -29,6 +27,7 @@ import {
   migrateLegacyParadymWallet,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
+import { useParadymWalletSdk } from '@package/sdk'
 import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
@@ -59,9 +58,11 @@ export function OnboardingContextProvider({
 }: PropsWithChildren<{
   initialStep?: OnboardingStep['step']
 }>) {
+  const pws = useParadymWalletSdk()
+
   const { successHaptic, lightHaptic } = useHaptics()
   const toast = useToastController()
-  const secureUnlock = useSecureUnlock()
+  const secureUnlock = pws.hooks.useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
@@ -229,7 +230,7 @@ export function OnboardingContextProvider({
 
     try {
       if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ agent: paradymWalletSdk().agent }, { enableBiometrics: true })
+        await secureUnlock.setWalletKeyValid({ enableBiometrics: true })
       }
 
       // Directly try getting the wallet key so the user can enable biometrics
@@ -238,9 +239,7 @@ export function OnboardingContextProvider({
 
       if (!walletKey) {
         const walletKey =
-          secureUnlock.state === 'acquired-wallet-key'
-            ? secureUnlock.walletKey
-            : secureUnlock.context.agent.config.walletConfig?.key
+          secureUnlock.state === 'acquired-wallet-key' ? secureUnlock.walletKey : pws.agent.config.walletConfig?.key
         if (!walletKey) {
           await reset({ resetToStep: 'pin' })
           return
@@ -398,7 +397,7 @@ export function OnboardingContextProvider({
     }
 
     if (stepsToCompleteAfterReset.includes('pin')) {
-      await resetWallet(secureUnlock)
+      await resetWallet(secureUnlock, pws.agent)
     }
 
     // TODO: if we already have the agent, we should either remove the wallet and start again,
@@ -518,9 +517,7 @@ export function OnboardingContextProvider({
 
       for (const credential of credentials) {
         if (credential instanceof SdJwtVcRecord) {
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
-            credential.compactSdJwtVc
-          )
+          const parsed = pws.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(credential.compactSdJwtVc)
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()
@@ -528,7 +525,7 @@ export function OnboardingContextProvider({
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(secureUnlock.context.agent, {
+          await addReceivedActivity(pws.agent, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
@@ -587,7 +584,7 @@ export function OnboardingContextProvider({
     }
 
     const baseOptions = {
-      agent: secureUnlock.context.agent,
+      agent: pws.agent,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({

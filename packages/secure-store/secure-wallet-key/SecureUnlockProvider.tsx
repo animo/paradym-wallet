@@ -1,27 +1,26 @@
 import { useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useState } from 'react'
-
 import { KeychainError } from '../error/KeychainError'
 import { secureWalletKey } from './secureWalletKey'
 
-const SecureUnlockContext = createContext<SecureUnlockReturn<Record<string, unknown>>>({
+const SecureUnlockContext = createContext<SecureUnlockReturn>({
   state: 'initializing',
 })
 
-export function useSecureUnlock<Context extends Record<string, unknown>>(): SecureUnlockReturn<Context> {
+export function useSecureUnlock(): SecureUnlockReturn {
   const value = useContext(SecureUnlockContext)
   if (!value) {
     throw new Error('useSecureUnlock must be wrapped in a <SecureUnlockProvider />')
   }
 
-  return value as SecureUnlockReturn<Context>
+  return value as SecureUnlockReturn
 }
 
 export function SecureUnlockProvider({ children }: PropsWithChildren) {
   const secureUnlockState = _useSecureUnlockState()
 
   return (
-    <SecureUnlockContext.Provider value={secureUnlockState as SecureUnlockReturn<Record<string, unknown>>}>
+    <SecureUnlockContext.Provider value={secureUnlockState as SecureUnlockReturn}>
       {children}
     </SecureUnlockContext.Provider>
   )
@@ -49,31 +48,30 @@ export type SecureUnlockReturnLocked = {
   reinitialize: () => void
 }
 
-export type SecureUnlockReturnWalletKeyAcquired<Context extends Record<string, unknown>> = {
+export type SecureUnlockReturnWalletKeyAcquired = {
   state: 'acquired-wallet-key'
   walletKey: string
   unlockMethod: SecureUnlockMethod
-  setWalletKeyValid: (context: Context, options: { enableBiometrics: boolean }) => Promise<void>
+  setWalletKeyValid: (options: { enableBiometrics: boolean }) => Promise<void>
   setWalletKeyInvalid: () => void
   reinitialize: () => void
 }
 
-export type SecureUnlockReturnUnlocked<Context extends Record<string, unknown>> = {
+export type SecureUnlockReturnUnlocked = {
   state: 'unlocked'
   unlockMethod: SecureUnlockMethod
-  context: Context
   lock: () => void
   reinitialize: () => void
 }
 
-export type SecureUnlockReturn<Context extends Record<string, unknown>> =
+export type SecureUnlockReturn =
   | SecureUnlockReturnInitializing
   | SecureUnlockReturnNotConfigured
   | SecureUnlockReturnLocked
-  | SecureUnlockReturnWalletKeyAcquired<Context>
-  | SecureUnlockReturnUnlocked<Context>
+  | SecureUnlockReturnWalletKeyAcquired
+  | SecureUnlockReturnUnlocked
 
-function _useSecureUnlockState<Context extends Record<string, unknown>>(): SecureUnlockReturn<Context> {
+function _useSecureUnlockState<Context extends Record<string, unknown>>(): SecureUnlockReturn {
   const [state, setState] = useState<SecureUnlockState>('initializing')
   const [walletKey, setWalletKey] = useState<string>()
   const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
@@ -132,7 +130,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         setWalletKey(undefined)
         setUnlockMethod(undefined)
       },
-      setWalletKeyValid: async (context, options) => {
+      setWalletKeyValid: async (options) => {
         setContext(context)
         setState('unlocked')
 
@@ -152,7 +150,6 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
 
     return {
       state,
-      context,
       unlockMethod,
       reinitialize,
       lock: () => {
