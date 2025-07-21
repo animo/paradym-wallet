@@ -2,6 +2,7 @@ import { useDevelopmentMode } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   Circle,
   FlexPage,
@@ -84,11 +85,7 @@ export function FunkeTrustDetailScreen({
               </Circle>
             )}
             <Heading flex={1} numberOfLines={3} variant="h2">
-              {name || (
-                <Trans id="trust.unknownOrgTitle" comment="Fallback name for a party when the name is not available">
-                  Unknown organization
-                </Trans>
-              )}{' '}
+              {name || t(commonMessages.unknownOrganization)}{' '}
               {isDemoTrustedEntity ? (
                 <Trans id="trust.demo" comment="Label shown after an organization name if it is a demo version">
                   (Demo)

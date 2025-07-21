@@ -1,3 +1,4 @@
+import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import type { CredentialDisplay } from '@package/agent'
 import { DualResponseButtons, useWizard } from '@package/app'
@@ -9,16 +10,18 @@ interface CredentialCardSlideProps {
   display: CredentialDisplay
 }
 
+const cardOfferedTitleMessage = defineMessage({
+  id: 'credentialCardSlide.cardOfferedTitle',
+  message: 'Card offered',
+  comment: 'Title shown when a credential card is offered to the user',
+})
+
 const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: string) => {
   const { t } = useLingui()
   switch (type) {
     case 'presentation':
       return {
-        title: t({
-          id: 'credentialCardSlide.title',
-          message: 'Card offered',
-          comment: 'Title shown when a credential card is offered to the user',
-        }),
+        title: t(cardOfferedTitleMessage),
         subtitle: t({
           id: 'credentialCardSlide.subtitle.presentation',
           message: `To receive this card from ${issuerName}, you need to share cards from your wallet.`,
@@ -27,11 +30,7 @@ const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
       }
     case 'pin':
       return {
-        title: t({
-          id: 'credentialCardSlide.title',
-          message: 'Card offered',
-          comment: 'Title shown when a credential card is offered to the user',
-        }),
+        title: t(cardOfferedTitleMessage),
         subtitle: t({
           id: 'credentialCardSlide.subtitle.pin',
           message: `To receive this card from ${issuerName}, you need to enter a PIN.`,
@@ -40,11 +39,7 @@ const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
       }
     default:
       return {
-        title: t({
-          id: 'credentialCardSlide.title',
-          message: 'Card offered',
-          comment: 'Title shown when a credential card is offered to the user',
-        }),
+        title: t(cardOfferedTitleMessage),
         subtitle: t({
           id: 'credentialCardSlide.subtitle.default',
           message: `${issuerName} wants to issue you the following card:`,

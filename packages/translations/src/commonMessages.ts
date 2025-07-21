@@ -80,6 +80,7 @@ export const commonMessages = {
     message: 'Enter PIN to share data',
     comment: 'Heading prompting the user to enter their PIN code before sharing data',
   }),
+
   confirmResetWallet: defineMessage({
     id: 'common.confirmResetWallet',
     message: 'Are you sure you want to reset the wallet?',
@@ -153,6 +154,10 @@ export const commonMessages = {
   unknown: defineMessage({
     id: 'common.unknown',
     message: 'Unknown',
+  }),
+  unknownOrganization: defineMessage({
+    id: 'common.unknownOrganization',
+    message: 'Unknown Organization',
   }),
   credential: defineMessage({ id: 'common.credential', message: 'Credential' }),
   dataRequest: defineMessage({
@@ -256,5 +261,9 @@ export const commonMessages = {
     id: 'common.revoked',
     message: 'Revoked',
     comment: 'Label shown on a credential card when it is revoked',
+  }),
+  authorizationFailed: defineMessage({
+    id: 'common.authorizationFailed',
+    message: 'Authorization failed',
   }),
 }

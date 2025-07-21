@@ -181,10 +181,7 @@ export const VerifyPartySlide = ({
           ) : (
             <InfoButton
               variant="warning"
-              title={t({
-                id: 'verifyPartySlide.unknownOrganizationTitle',
-                message: 'Unknown organization',
-              })}
+              title={t(commonMessages.unknownOrganization)}
               description={t({
                 id: 'verifyPartySlide.unknownOrganizationDescription',
                 message: 'Organization is not verified',

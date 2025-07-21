@@ -21,28 +21,10 @@ const pinSubtitle = defineMessage({
   comment: 'Explanation of the PIN purpose in onboarding',
 })
 
-const pinSubtitleSimple = defineMessage({
-  id: 'onboarding.pin.subtitle.simple',
-  message: 'This PIN secures your wallet. You enter it every time you share data.',
-  comment: 'PIN explanation in simpler flow without EID',
-})
-
 const pinReenterTitle = defineMessage({
   id: 'onboarding.pinReenter.title',
   message: 'Repeat your PIN',
   comment: 'Heading when user repeats their PIN',
-})
-
-const pinReenterSubtitle = defineMessage({
-  id: 'onboarding.pinReenter.subtitle',
-  message: 'This PIN secures your identity wallet. You enter it every time you share data.',
-  comment: 'Explanation shown when re-entering the PIN',
-})
-
-const pinReenterSubtitleSimple = defineMessage({
-  id: 'onboarding.pinReenter.subtitle.simple',
-  message: 'This PIN secures your wallet. You enter it every time you share data.',
-  comment: 'PIN explanation in simpler flow without EID',
 })
 
 const biometricsTitle = defineMessage({
@@ -122,7 +104,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         page: {
           type: 'content',
           title: pinReenterTitle,
-          subtitle: pinReenterSubtitle,
+          subtitle: pinSubtitle,
           animationKey: 'pin',
         },
         Screen: OnboardingPinEnter,
@@ -168,7 +150,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         page: {
           type: 'content',
           title: pinTitle,
-          subtitle: pinSubtitleSimple,
+          subtitle: pinSubtitle,
           animationKey: 'pin',
           animation: 'delayed',
         },
@@ -181,7 +163,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         page: {
           type: 'content',
           title: pinReenterTitle,
-          subtitle: pinReenterSubtitleSimple,
+          subtitle: pinSubtitle,
           animationKey: 'pin',
         },
         Screen: OnboardingPinEnter,

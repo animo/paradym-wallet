@@ -58,14 +58,7 @@ export const AuthCodeFlowSlide = ({
       onAuthFlowCallback(credentialAuthorizationCode)
     } else if (browserResult) {
       if (browserResult.type !== 'success') {
-        toast.show(
-          t({
-            id: 'authCodeFlowSlide.authorizationFailed',
-            message: 'Authorization failed',
-            comment: 'Toast message shown when the authorization fails',
-          }),
-          { customData: { preset: 'warning' } }
-        )
+        toast.show(t(commonMessages.authorizationFailed), { customData: { preset: 'warning' } })
 
         browserResult.type === 'cancel' || browserResult.type === 'dismiss' ? onCancel() : onError()
         return
@@ -73,14 +66,7 @@ export const AuthCodeFlowSlide = ({
 
       const authorizationCode = new URL(browserResult.url).searchParams.get('code')
       if (!authorizationCode) {
-        toast.show(
-          t({
-            id: 'authCodeFlowSlide.authorizationFailed',
-            message: 'Authorization failed',
-            comment: 'Toast message shown when the authorization fails',
-          }),
-          { customData: { preset: 'warning' } }
-        )
+        toast.show(t(commonMessages.authorizationFailed), { customData: { preset: 'warning' } })
         onError()
         return
       }

@@ -375,16 +375,7 @@ export function FunkeCredentialNotificationScreen() {
     () => setErrorReason(t({ id: 'browserAuthFlow.authorizationCancelled', message: 'Authorization cancelled' })),
     [t]
   )
-  const onErrorAuthorization = useCallback(
-    () =>
-      setErrorReason(
-        t({
-          id: 'browserAuthFlow.authorizationFailed',
-          message: 'Authorization failed',
-        })
-      ),
-    [t]
-  )
+  const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
 
   return (
     <SlideWizard
