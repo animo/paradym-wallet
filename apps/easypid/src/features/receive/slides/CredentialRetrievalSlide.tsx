@@ -1,4 +1,4 @@
-//translations: too long?
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialDisplay } from '@package/agent'
 import {
   CredentialAttributes,
@@ -7,6 +7,7 @@ import {
   useScrollViewPosition,
   useWizard,
 } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Button,
@@ -58,6 +59,7 @@ export const CredentialRetrievalSlide = ({
   const scale = useSharedValue(1)
   const [scrollViewHeight, setScrollViewHeight] = useState<number>()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+  const { t } = useLingui()
 
   const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
   const [isStoring, setIsStoring] = useState(isAccepting ?? false)
@@ -151,9 +153,13 @@ export const CredentialRetrievalSlide = ({
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
             {isCompleteAndAllowed ? (
-              <Heading ta="center">Success!</Heading>
+              <Heading ta="center">
+                <Trans id="receiveCredential.successHeader">Success!</Trans>
+              </Heading>
             ) : (
-              <Heading>Is the information correct?</Heading>
+              <Heading>
+                <Trans id="receiveCredential.checkInformationHeader">Is the information correct?</Trans>
+              </Heading>
             )}
           </AnimatedStack>
         </AnimatedStack>
@@ -166,7 +172,7 @@ export const CredentialRetrievalSlide = ({
           >
             {isStoringOrCompleted ? (
               <Paragraph ta="center" mt="$-2" mb="$6">
-                Card successfully added to your wallet!
+                <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
               </Paragraph>
             ) : null}
           </AnimatedStack>
@@ -235,7 +241,7 @@ export const CredentialRetrievalSlide = ({
       >
         {isStoringOrCompleted ? (
           <Button.Solid opacity={isCompleteAndAllowed ? 1 : 0} onPress={onGoToWallet}>
-            Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
+            {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
           </Button.Solid>
         ) : (
           <DualResponseButtons

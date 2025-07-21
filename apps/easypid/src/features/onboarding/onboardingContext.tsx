@@ -1,5 +1,3 @@
-// translations: too long/complex
-
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'

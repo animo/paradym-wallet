@@ -1,4 +1,3 @@
-//translations: no translations needed
 import { PinDotsInput } from '@package/app'
 import type { PinDotsInputRef } from '@package/app'
 import { YStack, useDeviceMedia } from '@package/ui'

@@ -1,4 +1,3 @@
-// translations: too complex
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
@@ -12,6 +11,7 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
+import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
@@ -35,6 +35,12 @@ import { PidIdCardVerifySlide } from './PidEidCardVerifySlide'
 import { PidReviewRequestSlide } from './PidReviewRequestSlide'
 import { PidSetupStartSlide } from './PidSetupStartSlide'
 import { PidWalletPinSlide } from './PidWalletPinSlide'
+
+const walletNotLockedMessage = defineMessage({ id: 'pidSetup.walletNotUnlocked', message: 'Wallet not unlocked' })
+const notReadyToReceivePidMessage = defineMessage({
+  id: 'pidSetup.notReadyToReceivePid',
+  message: 'Not ready to receive PID',
+})
 
 export function FunkePidSetupScreen() {
   const toast = useToastController()
@@ -61,7 +67,7 @@ export function FunkePidSetupScreen() {
   const slideWizardRef = useRef<SlideWizardRef>(null)
 
   if (!hasEidCardFeatureFlag) {
-    toast.show('This feature is not supported in this version of the app.', { customData: { preset: 'warning' } })
+    toast.show(t(commonMessages.featureNotSupported), { customData: { preset: 'warning' } })
     pushToWallet()
     return
   }
@@ -104,7 +110,7 @@ export function FunkePidSetupScreen() {
 
       // Show error message
       pushToWallet()
-      toast.show('Invalid eID card PIN entered', {
+      toast.show(t({ id: 'pidSetup.invalidEidPin', message: 'Invalid eID card PIN entered' }), {
         customData: { preset: 'danger' },
       })
 
@@ -121,7 +127,7 @@ export function FunkePidSetupScreen() {
         })
       })
     },
-    [idCardPin, toast.show, pushToWallet]
+    [idCardPin, toast.show, pushToWallet, t]
   )
 
   // Bit unfortunate, but we need to keep it as ref, as otherwise the value passed to ReceivePidUseCase.initialize will not get updated and we
@@ -136,13 +142,17 @@ export function FunkePidSetupScreen() {
     allowSimulatorCard,
   }: { walletPin: string; allowSimulatorCard: boolean }) => {
     if (secureUnlock.state !== 'unlocked') {
-      toast.show('Wallet not unlocked', { customData: { preset: 'danger' } })
+      toast.show(t(walletNotLockedMessage), {
+        customData: { preset: 'danger' },
+      })
       pushToWallet()
       return
     }
 
     if (!walletPin) {
-      toast.show('Wallet PIN is missing', { customData: { preset: 'danger' } })
+      toast.show(t({ id: 'pidSetup.walletPinMissing', message: 'Wallet PIN is missing' }), {
+        customData: { preset: 'danger' },
+      })
       pushToWallet()
       return
     }
@@ -221,13 +231,13 @@ export function FunkePidSetupScreen() {
 
   const onStartScanning = async () => {
     if (receivePidUseCase?.state !== 'id-card-auth') {
-      toast.show('Not ready to receive PID', { customData: { preset: 'danger' } })
+      toast.show(t(notReadyToReceivePidMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
 
     if (secureUnlock.state !== 'unlocked') {
-      toast.show('Wallet not unlocked', { customData: { preset: 'danger' } })
+      toast.show(t(walletNotLockedMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
@@ -251,7 +261,7 @@ export function FunkePidSetupScreen() {
 
       const reason = (error as CardScanningErrorDetails).reason
       if (reason === 'user_cancelled' || reason === 'cancelled') {
-        toast.show('Card scanning cancelled', {
+        toast.show(t({ id: 'pidSetup.eidScanningCancelled', message: 'eID card scanning cancelled' }), {
           customData: {
             preset: 'danger',
           },
@@ -305,13 +315,13 @@ export function FunkePidSetupScreen() {
 
   const retrieveCredential = async () => {
     if (receivePidUseCase?.state !== 'retrieve-credential') {
-      toast.show('Not ready to retrieve PID', { customData: { preset: 'danger' } })
+      toast.show(t(notReadyToReceivePidMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
 
     if (secureUnlock.state !== 'unlocked') {
-      toast.show('Wallet not unlocked', { customData: { preset: 'danger' } })
+      toast.show(t(walletNotLockedMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
     }
@@ -353,7 +363,7 @@ export function FunkePidSetupScreen() {
 
       // What if not supported?!?
       if (error instanceof BiometricAuthenticationNotEnabledError) {
-        toast.show('Biometric authentication not enabled', {
+        toast.show(t(commonMessages.biometricAuthenticationNotEnabled), {
           customData: { preset: 'danger' },
         })
         pushToWallet()
@@ -380,7 +390,10 @@ export function FunkePidSetupScreen() {
           screen: (
             <PidWalletPinSlide
               title={t(commonMessages.enterPin)}
-              subtitle="Enter the PIN code you use to unlock your wallet."
+              subtitle={t({
+                id: 'pidSetup.enterPinSubtitle',
+                message: 'Enter the PIN code you use to unlock your wallet.',
+              })}
               onEnterPin={onWalletPinEnter}
             />
           ),
@@ -453,8 +466,14 @@ export function FunkePidSetupScreen() {
         },
       ].filter((s): s is NonNullable<typeof s> => s !== undefined)}
       confirmation={{
-        title: 'Stop ID Setup?',
-        description: 'If you stop, you can still do the setup later.',
+        title: t({
+          id: 'pidSetup.stopTitle',
+          message: 'Stop ID Setup?',
+        }),
+        description: t({
+          id: 'pidSetup.stopDescription',
+          message: 'If you stop, you can still do the setup later.',
+        }),
       }}
       onCancel={onCancel}
     />

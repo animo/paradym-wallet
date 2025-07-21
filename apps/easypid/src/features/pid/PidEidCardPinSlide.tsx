@@ -1,4 +1,3 @@
-//translations: no changes needed
 import { useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useState } from 'react'

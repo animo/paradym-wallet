@@ -99,6 +99,10 @@ export const commonMessages = {
     message: 'Biometric authentication cancelled',
     comment: 'Shown when the user cancels biometric authentication',
   }),
+  biometricAuthenticationNotEnabled: defineMessage({
+    id: 'common.biometricNotEnabled',
+    message: 'Biometric authentication not enabled',
+  }),
   simulatorEidCardActivated: defineMessage({
     id: 'common.simulatorEidCardActivated',
     message: 'Simulator eID card activated',
@@ -116,5 +120,18 @@ export const commonMessages = {
   informationRequestDeclined: defineMessage({
     id: 'common.informationRequestDeclinded',
     message: 'Information request has been declined.',
+  }),
+  featureNotSupported: defineMessage({
+    id: 'common.featureNotSupported',
+    message: 'This feature is not supported in this version of the app.',
+    comment: 'Shown when a feature that is not supported is accessed',
+  }),
+  acceptButton: defineMessage({
+    id: 'common.acceptButton',
+    message: 'Accept',
+  }),
+  declineButton: defineMessage({
+    id: 'common.declineButton',
+    message: 'Decline',
   }),
 }

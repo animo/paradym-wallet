@@ -1,4 +1,3 @@
-//translations not needed
 import { AnimatedStack, Heading, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
 import type { ReactNode } from 'react'
 
