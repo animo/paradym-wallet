@@ -1,8 +1,8 @@
+import { Trans } from '@lingui/react/macro'
+import { cloneElement } from 'react'
 import { Circle } from 'tamagui'
 import { Button, Heading, Paragraph, Stack } from '../base'
 import { HeroIcons } from '../content/Icon'
-
-import { cloneElement } from 'react'
 import type { StatusVariant } from '../utils/variants'
 import { FloatingSheet, type FloatingSheetProps } from './FloatingSheet'
 
@@ -60,7 +60,9 @@ export function InfoSheet({ isOpen, setIsOpen, title, description, onClose, vari
         <Paragraph>{description}</Paragraph>
         <Stack />
         <Button.Solid scaleOnPress onPress={onClose}>
-          Got it
+          <Trans id="button.gotIt" comment="Label for confirmation button">
+            Got it
+          </Trans>
         </Button.Solid>
       </Stack>
     </FloatingSheet>
