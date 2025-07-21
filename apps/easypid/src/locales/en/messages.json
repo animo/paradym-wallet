@@ -1,3528 +1,1976 @@
 {
-  "trust.demo": {
-    "translation": "(Demo)",
-    "message": "(Demo)",
-    "placeholders": {},
-    "comments": [
-      "Label shown after an organization name if it is a demo version"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        93
-      ]
-    ]
-  },
-  "credentials.totalLabelPlural": {
-    "translation": "{0} cards total",
-    "message": "{0} cards total",
-    "placeholders": {
-      "0": [
-        "credentials.length"
-      ]
-    },
-    "comments": [
-      "Used after card count to indicate the total number"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/AllCardsCard.tsx",
-        23
-      ]
-    ]
-  },
-  "inbox.notificationType.fromLabel": {
-    "translation": "{baseLabel} from {0}",
-    "message": "{baseLabel} from {0}",
-    "placeholders": {
-      "0": [
-        "notification.contactLabel"
-      ],
-      "baseLabel": [
-        "baseLabel"
-      ]
-    },
-    "comments": [
-      "Label like \"Card from X\" or \"Request from Y\""
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/InboxScreen.tsx",
-        66
-      ]
-    ]
-  },
-  "requestedAttributes.subheading": {
-    "translation": "{disclosedAttributeLength} from {0}",
-    "message": "{disclosedAttributeLength} from {0}",
-    "placeholders": {
-      "0": [
-        "activeCredential.display.name"
-      ],
-      "disclosedAttributeLength": [
-        "disclosedAttributeLength"
-      ]
-    },
-    "comments": [
-      "Subheading under attribute list: X from Y"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeRequestedAttributesDetailScreen.tsx",
-        138
-      ]
-    ]
-  },
-  "credentialCardSlide.subtitle.default": {
-    "translation": "{issuerName} wants to issue you the following card:",
-    "message": "{issuerName} wants to issue you the following card:",
-    "placeholders": {
-      "issuerName": [
-        "issuerName"
-      ]
-    },
-    "comments": [
-      "Subtitle shown when the issuer wants to give the user a card with no auth required"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/CredentialCardSlide.tsx",
-        59
-      ]
-    ]
-  },
-  "credentials.totalLabel": {
-    "translation": "1 card total",
-    "message": "1 card total",
-    "placeholders": {},
-    "comments": [
-      "Used after card count to indicate the total number"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/AllCardsCard.tsx",
-        28
-      ]
-    ]
-  },
-  "trust.approvedList": {
-    "translation": "A list of organizations that have approved {name}.",
-    "message": "A list of organizations that have approved {name}.",
-    "placeholders": {
-      "name": [
-        "name"
-      ]
-    },
-    "comments": [
-      "A sentence that introduces a list of organizations that approved the current party"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        110
-      ]
-    ]
-  },
-  "trust.approvedListWithoutOrganizationName": {
-    "translation": "A list of organizations that have approved this unknown organization.",
-    "message": "A list of organizations that have approved this unknown organization.",
-    "placeholders": {},
-    "comments": [
-      "A sentence that introduces a list of organizations that approved the current party, but the organization name is not known"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        114
-      ]
-    ]
-  },
-  "offlineQr.instruction": {
-    "translation": "A verifier needs to scan your QR-Code.",
-    "message": "A verifier needs to scan your QR-Code.",
-    "placeholders": {},
-    "comments": [
-      "Instruction for the verifier to scan the QR code"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeOfflineQrScreen.tsx",
-        166
-      ]
-    ]
-  },
-  "funkeAboutScreen.header": {
-    "translation": "About the wallet",
-    "message": "About the wallet",
-    "placeholders": {},
-    "comments": [
-      "Screen header shown on the about page of the wallet"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeAboutScreen.tsx",
-        31
-      ]
-    ]
-  },
-  "trust.headerTitle": {
-    "translation": "About this party",
-    "message": "About this party",
-    "placeholders": {},
-    "comments": [
-      "Screen title that describes information about a trusted party or organization"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        56
-      ]
-    ]
-  },
-  "menu.item.about": {
-    "translation": "About this wallet",
-    "message": "About this wallet",
-    "placeholders": {},
-    "comments": [
-      "Label for about screen menu item"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        169
-      ]
-    ]
-  },
-  "onboarding.biometrics.subtitle": {
-    "translation": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
-    "message": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
-    "placeholders": {},
-    "comments": [
-      "Subtitle explaining purpose of biometrics"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        54
-      ]
-    ]
-  },
-  "menu.item.activity": {
-    "translation": "Activity",
-    "message": "Activity",
-    "placeholders": {},
-    "comments": [
-      "Label for activity log"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        129
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.slide1.subtitle": {
-    "translation": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
-    "message": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
-    "placeholders": {},
-    "comments": [
-      "Subtitle for first slide of wallet onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        35
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.slide3.subtitle": {
-    "translation": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
-    "message": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
-    "placeholders": {},
-    "comments": [
-      "Subtitle for third slide of wallet onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        63
-      ]
-    ]
-  },
-  "activity.latest.addedCard": {
-    "translation": "Added {name}",
-    "message": "Added {name}",
-    "placeholders": {
-      "name": [
-        "name"
-      ]
-    },
-    "comments": [
-      "Shown when a new card has been added"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        105
-      ]
-    ]
-  },
-  "credentials.allCardsTitle": {
-    "translation": "All cards",
-    "message": "All cards",
-    "placeholders": {},
-    "comments": [
-      "Title for the all cards summary box"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/AllCardsCard.tsx",
-        17
-      ]
-    ]
-  },
-  "trust.warning": {
-    "translation": "Always consider whether sharing with a party is wise.",
-    "message": "Always consider whether sharing with a party is wise.",
-    "placeholders": {},
-    "comments": [
-      "Shown as a warning box when viewing a trusted party’s detail"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        68
-      ]
-    ]
-  },
-  "interactionError.message.connect": {
-    "translation": "An error occurred while connecting. Generate a new QR-code or try again later.",
-    "message": "An error occurred while connecting. Generate a new QR-code or try again later.",
-    "placeholders": {},
-    "comments": [
-      "Error message when connection fails during connect interaction"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/InteractionErrorSlide.tsx",
-        31
-      ]
-    ]
-  },
-  "interactionError.message.issue": {
-    "translation": "An error occurred while fetching the card information. Ask the issuer to generate a new QR-code or try again later.",
-    "message": "An error occurred while fetching the card information. Ask the issuer to generate a new QR-code or try again later.",
-    "placeholders": {},
-    "comments": [
-      "Error message when credential issuance fails to fetch card info"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/InteractionErrorSlide.tsx",
-        39
-      ]
-    ]
-  },
-  "interactionError.message.verify": {
-    "translation": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
-    "message": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
-    "placeholders": {},
-    "comments": [
-      "Error message when sharing a credential for verification fails"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/InteractionErrorSlide.tsx",
-        47
-      ]
-    ]
-  },
-  "interactionError.message.sign": {
-    "translation": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
-    "message": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
-    "placeholders": {},
-    "comments": [
-      "Error message when signing fails with selected credentials"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/InteractionErrorSlide.tsx",
-        54
-      ]
-    ]
-  },
-  "menu.section.app": {
-    "translation": "APP",
-    "message": "APP",
-    "placeholders": {},
-    "comments": [
-      "Heading above the app section"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        140
-      ]
-    ]
-  },
-  "pinLocked.alertMessage": {
-    "translation": "Are you sure you want to reset the wallet?",
-    "message": "Are you sure you want to reset the wallet?",
-    "placeholders": {},
-    "comments": [
-      "Message body of the confirmation dialog (action button) for wallet reset"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkePinLockedScreen.tsx",
-        17
-      ]
-    ]
-  },
-  "common.confirmResetWallet": {
-    "translation": "Are you sure you want to reset the wallet?",
-    "message": "Are you sure you want to reset the wallet?",
-    "placeholders": {},
-    "comments": [
-      "Confirmation prompt before wallet reset"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        62
-      ]
-    ]
-  },
-  "authCodeFlowSlide.authenticate": {
-    "translation": "Authenticate",
-    "message": "Authenticate",
-    "placeholders": {},
-    "comments": [
-      "Button label to start authentication process"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/AuthCodeFlowSlide.tsx",
-        161
-      ]
-    ]
-  },
-  "funkeMdoc.error.auth": {
-    "translation": "Authentication Error",
-    "message": "Authentication Error",
-    "placeholders": {},
-    "comments": [
-      "Shown when there is a general auth error during offline flow"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeMdocOfflineSharingScreen.tsx",
-        104
-      ]
-    ]
-  },
-  "presentation.authFailed": {
-    "translation": "Authentication failed",
-    "message": "Authentication failed",
-    "placeholders": {},
-    "comments": [
-      "Shown when authentication with PIN fails for other reasons"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        78
-      ]
-    ]
-  },
-  "authCodeFlowSlide.authorizationFailed": {
-    "translation": "Authorization failed",
-    "message": "Authorization failed",
-    "placeholders": {},
-    "comments": [
-      "Toast message shown when the authorization fails",
-      "Toast message shown when the authorization fails"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/AuthCodeFlowSlide.tsx",
-        69
-      ],
-      [
-        "src/features/receive/slides/AuthCodeFlowSlide.tsx",
-        87
-      ]
-    ]
-  },
-  "onboarding.intro.subtitle": {
-    "translation": "Before you can use the app, we will guide you through these steps.",
-    "message": "Before you can use the app, we will guide you through these steps.",
-    "placeholders": {},
-    "comments": [
-      "Subtitle for the introduction steps slide in onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        67
-      ]
-    ]
-  },
-  "presentation.biometricCancelled": {
-    "translation": "Biometric authentication cancelled",
-    "message": "Biometric authentication cancelled",
-    "placeholders": {},
-    "comments": [
-      "Shown when the user cancels biometric authentication"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        84
-      ]
-    ]
-  },
-  "funkeMdoc.error.biometricCancelled": {
-    "translation": "Biometric authentication cancelled",
-    "message": "Biometric authentication cancelled",
-    "placeholders": {},
-    "comments": [
-      "Error shown when user cancels biometric prompt"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeMdocOfflineSharingScreen.tsx",
-        129
-      ]
-    ]
-  },
-  "common.cancel": {
-    "translation": "Cancel",
-    "message": "Cancel",
-    "placeholders": {},
-    "comments": [
-      "Generic cancel action label"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        41
-      ]
-    ]
-  },
-  "inbox.notificationType.card": {
-    "translation": "Card",
-    "message": "Card",
-    "placeholders": {},
-    "comments": [
-      "Label for a notification about a received credential"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/InboxScreen.tsx",
-        54
-      ]
-    ]
-  },
-  "credentials.cardAttributes": {
-    "translation": "Card attributes",
-    "message": "Card attributes",
-    "placeholders": {},
-    "comments": [
-      "Label for button that shows detailed card attributes",
-      "Title shown in header for the credential detail attributes screen"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailScreen.tsx",
-        110
-      ],
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        96
-      ]
-    ]
-  },
-  "credentials.detailsTitle": {
-    "translation": "Card details",
-    "message": "Card details",
-    "placeholders": {},
-    "comments": [
-      "Title of the credential details screen"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailScreen.tsx",
-        93
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.expired.title": {
-    "translation": "Card expired",
-    "message": "Card expired",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        218
-      ]
-    ]
-  },
-  "cardLifecycle.active.title": {
-    "translation": "Card is active",
-    "message": "Card is active",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        25
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.notYetActive.title": {
-    "translation": "Card not active",
-    "message": "Card not active",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        230
-      ]
-    ]
-  },
-  "cardLifecycle.revoked.description": {
-    "translation": "Card not usable anymore",
-    "message": "Card not usable anymore",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        35
-      ]
-    ]
-  },
-  "credentialCardSlide.title": {
-    "translation": "Card offered",
-    "message": "Card offered",
-    "placeholders": {},
-    "comments": [
-      "Title shown when a credential card is offered to the user",
-      "Title shown when a credential card is offered to the user",
-      "Title shown when a credential card is offered to the user"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/CredentialCardSlide.tsx",
-        26
-      ],
-      [
-        "src/features/receive/slides/CredentialCardSlide.tsx",
-        40
-      ],
-      [
-        "src/features/receive/slides/CredentialCardSlide.tsx",
-        54
-      ]
-    ]
-  },
-  "cardLifecycle.revoked.title": {
-    "translation": "Card revoked",
-    "message": "Card revoked",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        34
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.willExpire.title": {
-    "translation": "Card will expire",
-    "message": "Card will expire",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        241
-      ]
-    ]
-  },
-  "credentials.title": {
-    "translation": "Cards",
-    "message": "Cards",
-    "placeholders": {},
-    "comments": [
-      "Heading for the list of user credentials"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialsScreen.tsx",
-        47
-      ]
-    ]
-  },
-  "menu.item.cards": {
-    "translation": "Cards",
-    "message": "Cards",
-    "placeholders": {},
-    "comments": [
-      "Label for the credentials menu item"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        120
-      ]
-    ]
-  },
-  "onboarding.pin.title": {
-    "translation": "Choose a 6-digit PIN",
-    "message": "Choose a 6-digit PIN",
-    "placeholders": {},
-    "comments": [
-      "Heading when user chooses a PIN"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        12
-      ]
-    ]
-  },
-  "onboardingIntroduction.step1.description": {
-    "translation": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
-    "message": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
-    "placeholders": {},
-    "comments": [
-      "Description of the first onboarding step about securing the wallet"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/introduction-steps.tsx",
-        30
-      ]
-    ]
-  },
-  "common.close": {
-    "translation": "Close",
-    "message": "Close",
-    "placeholders": {},
-    "comments": [
-      "Label for closing a screen or modal"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        10
-      ]
-    ]
-  },
-  "pidSetup.idCardVerify.title": {
-    "translation": "Confirm it’s you",
-    "message": "Confirm it’s you",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        62
-      ]
-    ]
-  },
-  "connection.successTitle": {
-    "translation": "Connection established",
-    "message": "Connection established",
-    "placeholders": {},
-    "comments": [
-      "Heading shown when a secure connection to an issuer was successfully created"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/ConnectionSlides.tsx",
-        63
-      ]
-    ]
-  },
-  "common.continue": {
-    "translation": "Continue",
-    "message": "Continue",
-    "placeholders": {},
-    "comments": [
-      "Generic continue/next action label"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        15
-      ]
-    ]
-  },
-  "funkeMdoc.error.sharing": {
-    "translation": "Could not share device response",
-    "message": "Could not share device response",
-    "placeholders": {},
-    "comments": [
-      "Shown when shareDeviceResponse fails"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeMdocOfflineSharingScreen.tsx",
-        140
-      ]
-    ]
-  },
-  "requestedAttributes.fallbackCardLabel": {
-    "translation": "Credential",
-    "message": "Credential",
-    "placeholders": {},
-    "comments": [
-      "Fallback name shown when a credential does not have a display name"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestedAttributesSection.tsx",
-        52
-      ]
-    ]
-  },
-  "credential.declined": {
-    "translation": "Credential has been declined.",
-    "message": "Credential has been declined.",
-    "placeholders": {},
-    "comments": [
-      "Shown in a toast when user declines the credential"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/CredentialSlides.tsx",
-        57
-      ]
-    ]
-  },
-  "credentials.notFound": {
-    "translation": "Credential not found",
-    "message": "Credential not found",
-    "placeholders": {},
-    "comments": [
-      "Shown if a credential is missing or cannot be loaded"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailScreen.tsx",
-        45
-      ]
-    ]
-  },
-  "credentialDetail.errorMessage": {
-    "translation": "Credential not found",
-    "message": "Credential not found",
-    "placeholders": {},
-    "comments": [
-      "Error message when a credential is missing"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeRequestedAttributesDetailScreen.tsx",
-        79
-      ]
-    ]
-  },
-  "credentials.emptyDescription": {
-    "translation": "Credentials will appear here once you receive them.",
-    "message": "Credentials will appear here once you receive them.",
-    "placeholders": {},
-    "comments": [
-      "Subtext explaining that credentials will appear later"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialsScreen.tsx",
-        71
-      ]
-    ]
-  },
-  "trust.demoOrg": {
-    "translation": "Demo organization",
-    "message": "Demo organization",
-    "placeholders": {},
-    "comments": [
-      "Shown under the name of an organization to indicate that it is a demo"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        148
-      ]
-    ]
-  },
-  "settings.developmentMode": {
-    "translation": "Development Mode",
-    "message": "Development Mode",
-    "placeholders": {},
-    "comments": [
-      "Label for the toggle to enable developer mode"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeSettingsScreen.tsx",
-        43
-      ]
-    ]
-  },
-  "signShare.documentHeading": {
-    "translation": "Document",
-    "message": "Document",
-    "placeholders": {},
-    "comments": [
-      "Heading above the document name"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        118
-      ]
-    ]
-  },
-  "common.enterPinToShareData": {
-    "translation": "Enter PIN to share data",
-    "message": "Enter PIN to share data",
-    "placeholders": {},
-    "comments": [
-      "Heading prompting the user to enter their PIN code before sharing data"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        57
-      ]
-    ]
-  },
-  "txCodeSlide.title": {
-    "translation": "Enter transaction code",
-    "message": "Enter transaction code",
-    "placeholders": {},
-    "comments": [
-      "Title prompting the user to enter a transaction code"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/TxCodeSlide.tsx",
-        53
-      ]
-    ]
-  },
-  "common.enterPin": {
-    "translation": "Enter your app PIN code",
-    "message": "Enter your app PIN code",
-    "placeholders": {},
-    "comments": [
-      "Heading prompting the user to enter their PIN code"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        52
-      ]
-    ]
-  },
-  "pidSetup.idCardPin.title": {
-    "translation": "Enter your eID card PIN",
-    "message": "Enter your eID card PIN",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        38
-      ]
-    ]
-  },
-  "credentialDetail.errorTitle": {
-    "translation": "Error getting credential details",
-    "message": "Error getting credential details",
-    "placeholders": {},
-    "comments": [
-      "Title shown in toast when credential cannot be loaded"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeRequestedAttributesDetailScreen.tsx",
-        73
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.willExpire.description": {
-    "translation": "Expires in {expiryDaysString}",
-    "message": "Expires in {expiryDaysString}",
-    "placeholders": {
-      "expiryDaysString": [
-        "expiryDaysString"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        244
-      ]
-    ]
-  },
-  "offlineQr.permissionError": {
-    "translation": "Failed to request permissions.",
-    "message": "Failed to request permissions.",
-    "placeholders": {},
-    "comments": [
-      "Toast shown when system permission request fails"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeOfflineQrScreen.tsx",
-        74
-      ]
-    ]
-  },
-  "menu.item.feedback": {
-    "translation": "Feedback",
-    "message": "Feedback",
-    "placeholders": {},
-    "comments": [
-      "Label for feedback menu item"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        159
-      ]
-    ]
-  },
-  "loadingRequestSlide.description": {
-    "translation": "Fetching information",
-    "message": "Fetching information",
-    "placeholders": {},
-    "comments": [
-      "Shown while waiting for data to be received from backend"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/LoadingRequestSlide.tsx",
-        54
-      ]
-    ]
-  },
-  "funkeAboutScreen.contactIntro": {
-    "translation": "For more information, reach out to",
-    "message": "For more information, reach out to",
-    "placeholders": {},
-    "comments": [
-      "Intro sentence before showing support email address"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeAboutScreen.tsx",
-        41
-      ]
-    ]
-  },
-  "onboardingWelcome.getStarted": {
-    "translation": "Get Started",
-    "message": "Get Started",
-    "placeholders": {},
-    "comments": [
-      "Button label to begin onboarding from the welcome screen"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/welcome.tsx",
-        17
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.getStarted": {
-    "translation": "Get Started",
-    "message": "Get Started",
-    "placeholders": {},
-    "comments": [
-      "Button label to finish onboarding explanation"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        72
-      ]
-    ]
-  },
-  "pidSetup.idCardRequestedAttributes.title": {
-    "translation": "Get your national identity card",
-    "message": "Get your national identity card",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        32
-      ]
-    ]
-  },
-  "pidSetup.idCardFetch.title": {
-    "translation": "Getting eID information",
-    "message": "Getting eID information",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        59
-      ]
-    ]
-  },
-  "common.goToSettings": {
-    "translation": "Go to settings",
-    "message": "Go to settings",
-    "placeholders": {},
-    "comments": [
-      "Button label to open device settings"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        25
-      ]
-    ]
-  },
-  "common.goToWallet": {
-    "translation": "Go to wallet",
-    "message": "Go to wallet",
-    "placeholders": {},
-    "comments": [
-      "Button label to return to the wallet"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        20
-      ]
-    ]
-  },
-  "home.helloWithName": {
-    "message": "Hello, {userName}!",
-    "placeholders": {
-      "userName": [
-        "userName"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        71
-      ]
-    ],
-    "translation": "Hello, {userName}!"
-  },
-  "home.helloWithoutName": {
-    "translation": "Hello!",
-    "message": "Hello!",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        73
-      ]
-    ]
-  },
-  "home.helloWithouthName": {
-    "message": "Hello!",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
-        73
-      ]
-    ],
-    "translation": "Hello!",
-    "obsolete": true
-  },
-  "credentials.hideMetadata": {
-    "translation": "Hide metadata attributes",
-    "message": "Hide metadata attributes",
-    "placeholders": {},
-    "comments": [
-      "Button label: toggles visibility of metadata attributes"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        175
-      ]
-    ]
-  },
-  "optionSheet.hideMetadata": {
-    "translation": "Hide metadata attributes",
-    "message": "Hide metadata attributes",
-    "placeholders": {},
-    "comments": [
-      "Option to hide metadata in option sheet"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeRequestedAttributesDetailScreen.tsx",
-        179
-      ]
-    ]
-  },
-  "credentials.hideShareableAttributes": {
-    "translation": "Hide shareable attributes",
-    "message": "Hide shareable attributes",
-    "placeholders": {},
-    "comments": [
-      "Button label that toggles visibility of shareable attributes"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        159
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.slide3.title": {
-    "translation": "How does it work?",
-    "message": "How does it work?",
-    "placeholders": {},
-    "comments": [
-      "Title for third slide of wallet onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        58
-      ]
-    ]
-  },
-  "home.howDoesItWork": {
-    "message": "How does it work?",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        97
-      ]
-    ],
-    "translation": "How does it work?"
-  },
-  "inbox.header": {
-    "translation": "Inbox",
-    "message": "Inbox",
-    "placeholders": {},
-    "comments": [
-      "Header title for the inbox screen"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/InboxScreen.tsx",
-        17
-      ]
-    ]
-  },
-  "submission.offlineRequestDescription": {
-    "translation": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
-    "message": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
-    "placeholders": {},
-    "comments": [
-      "Message shown when the request is offline and verifier is unknown"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/ShareCredentialsSlide.tsx",
-        96
-      ]
-    ]
-  },
-  "presentation.requestDeclined": {
-    "translation": "Information request has been declined.",
-    "message": "Information request has been declined.",
-    "placeholders": {},
-    "comments": [
-      "Toast shown when the user declines the presentation request"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        96
-      ]
-    ]
-  },
-  "presentation.declined": {
-    "translation": "Information request has been declined.",
-    "message": "Information request has been declined.",
-    "placeholders": {},
-    "comments": [
-      "Shown in toast when user declines a presentation request"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/PresentationSlides.tsx",
-        86
-      ]
-    ]
-  },
-  "presentation.invalidPin": {
-    "translation": "Invalid PIN entered",
-    "message": "Invalid PIN entered",
-    "placeholders": {},
-    "comments": [
-      "Toast message shown when the user enters an incorrect PIN"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        72
-      ]
-    ]
-  },
-  "funkeMdoc.error.invalidPin": {
-    "translation": "Invalid PIN entered",
-    "message": "Invalid PIN entered",
-    "placeholders": {},
-    "comments": [
-      "Error shown when user enters an invalid PIN"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeMdocOfflineSharingScreen.tsx",
-        94
-      ]
-    ]
-  },
-  "common.issuedBy": {
-    "translation": "Issued by {0}.",
-    "message": "Issued by {0}.",
-    "placeholders": {
-      "0": [
-        "credential.display.issuer.name"
-      ]
-    },
-    "comments": [
-      "Prefix before issuer name"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailScreen.tsx",
-        98
-      ]
-    ]
-  },
-  "common.issuedOn": {
-    "translation": "Issued on {0}",
-    "message": "Issued on {0}",
-    "placeholders": {
-      "0": [
-        "formatDate(issuedAt, { includeTime: false })"
-      ]
-    },
-    "comments": [
-      "Label before the date a credential was issued"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialsScreen.tsx",
-        194
-      ]
-    ]
-  },
-  "cardLifecycle.batch.title": {
-    "translation": "Limited card usage",
-    "message": "Limited card usage",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        45
-      ]
-    ]
-  },
-  "inbox.menuLabel": {
-    "translation": "Menu",
-    "message": "Menu",
-    "placeholders": {},
-    "comments": [
-      "Aria label for the inbox/bell icon in the header"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/InboxIcon.tsx",
-        17
-      ]
-    ]
-  },
-  "menu.title": {
-    "translation": "Menu",
-    "message": "Menu",
-    "placeholders": {},
-    "comments": [
-      "Title of the menu screen"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        78
-      ]
-    ]
-  },
-  "credentials.metadataAttributes": {
-    "translation": "Metadata",
-    "message": "Metadata",
-    "placeholders": {},
-    "comments": [
-      "Header for metadata attributes of a credential"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        132
-      ]
-    ]
-  },
-  "requestedAttributes.metadataTitle": {
-    "translation": "Metadata",
-    "message": "Metadata",
-    "placeholders": {},
-    "comments": [
-      "Section header title for metadata attributes"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeRequestedAttributesDetailScreen.tsx",
-        155
-      ]
-    ]
-  },
-  "activity.latest.newCardFallback": {
-    "translation": "new card",
-    "message": "new card",
-    "placeholders": {},
-    "comments": [
-      "Fallback name if a received credential has no display name"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        53
-      ]
-    ]
-  },
-  "cardLifecycle.active.description": {
-    "translation": "No actions required",
-    "message": "No actions required",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        26
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.active.description": {
-    "translation": "No actions required",
-    "message": "No actions required",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        207
-      ]
-    ]
-  },
-  "activity.latest.noActivity": {
-    "translation": "No activity yet",
-    "message": "No activity yet",
-    "placeholders": {},
-    "comments": [
-      "Description shown if the user has no activity history"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        17
-      ]
-    ]
-  },
-  "credentials.noAttributes": {
-    "translation": "No attributes found",
-    "message": "No attributes found",
-    "placeholders": {},
-    "comments": [
-      "Error toast when a credential has no displayable attributes"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        76
-      ]
-    ]
-  },
-  "common.noResultsSearch": {
-    "translation": "No cards found for \"{searchQuery}\"",
-    "message": "No cards found for \"{searchQuery}\"",
-    "placeholders": {
-      "searchQuery": [
-        "searchQuery"
-      ]
-    },
-    "comments": [
-      "Shown when search yields no results; includes query string"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialsScreen.tsx",
-        126
-      ]
-    ]
-  },
-  "credentials.noCardsMessage": {
-    "translation": "No cards yet",
-    "message": "No cards yet",
-    "placeholders": {},
-    "comments": [
-      "Displayed when the user has not yet received any credentials"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/AllCardsCard.tsx",
-        33
-      ]
-    ]
-  },
-  "presentation.noCredentialsSelected": {
-    "translation": "No credentials selected",
-    "message": "No credentials selected",
-    "placeholders": {},
-    "comments": [
-      "Shown when the user tries to accept a proof but no credentials are loaded"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        60
-      ]
-    ]
-  },
-  "submission.fallbackPurpose": {
-    "translation": "No information was provided on the purpose of the data request. Be cautious",
-    "message": "No information was provided on the purpose of the data request. Be cautious",
-    "placeholders": {},
-    "comments": [
-      "Shown when a submission has no stated purpose"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/ShareCredentialsSlide.tsx",
-        46
-      ]
-    ]
-  },
-  "onboardingDataProtection.toast.secureDevice": {
-    "translation": "Now using {0} for PID cryptographic keys.",
-    "message": "Now using {0} for PID cryptographic keys.",
-    "placeholders": {
-      "0": [
-        "Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'"
-      ]
-    },
-    "comments": [
-      "Toast shown when switching to local secure storage (e.g. Secure Enclave or Strongbox)"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/data-protection.tsx",
-        30
-      ]
-    ]
-  },
-  "onboardingDataProtection.toast.cloudHsm": {
-    "translation": "Now using Cloud HSM for PID cryptographic keys.",
-    "message": "Now using Cloud HSM for PID cryptographic keys.",
-    "placeholders": {},
-    "comments": [
-      "Toast shown when Cloud HSM is selected for key storage"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/data-protection.tsx",
-        24
-      ]
-    ]
-  },
-  "common.openSettings": {
-    "translation": "Open Settings",
-    "message": "Open Settings",
-    "placeholders": {},
-    "comments": [
-      "Button to open system settings from alert"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeOfflineQrScreen.tsx",
-        122
-      ]
-    ]
-  },
-  "funkeAboutScreen.privacyPolicyDescription": {
-    "translation": "Open the privacy policy",
-    "message": "Open the privacy policy",
-    "placeholders": {},
-    "comments": [
-      "Description under the privacy policy button"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeAboutScreen.tsx",
-        60
-      ]
-    ]
-  },
-  "requestPurpose.infoSheet.title": {
-    "translation": "Overasking detected",
-    "message": "Overasking detected",
-    "placeholders": {},
-    "comments": [
-      "Title of the info sheet that appears when the user taps the warning about overasking"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestPurposeSection.tsx",
-        51
-      ]
-    ]
-  },
-  "presentation.pinAuthFailed": {
-    "translation": "PIN authentication failed",
-    "message": "PIN authentication failed",
-    "placeholders": {},
-    "comments": [
-      "Shown when PIN is required but not provided"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        66
-      ]
-    ]
-  },
-  "pidSetup.idCardScan.subtitle": {
-    "translation": "Place your device on top of your eID card to scan it.",
-    "message": "Place your device on top of your eID card to scan it.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        46
-      ],
-      [
-        "src/utils/sharedPidSetup.ts",
-        53
-      ]
-    ]
-  },
-  "offlineQr.permissionSettingsTitle": {
-    "translation": "Please enable required permissions in your phone settings",
-    "message": "Please enable required permissions in your phone settings",
-    "placeholders": {},
-    "comments": [
-      "This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeOfflineQrScreen.tsx",
-        110
-      ]
-    ]
-  },
-  "loadingRequestSlide.title": {
-    "translation": "Please wait",
-    "message": "Please wait",
-    "placeholders": {},
-    "comments": [
-      "Shown while loading request data from the issuer or verifier"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/LoadingRequestSlide.tsx",
-        47
-      ]
-    ]
-  },
-  "home.presentInPersonButton": {
-    "message": "Present In-person",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        88
-      ]
-    ],
-    "translation": "Present In-person"
-  },
-  "presentation.sharingFailed": {
-    "translation": "Presentation could not be shared.",
-    "message": "Presentation could not be shared.",
-    "placeholders": {},
-    "comments": [
-      "Shown when sharing the proof presentation fails"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        90
-      ]
-    ]
-  },
-  "presentation.accept.error": {
-    "translation": "Presentation could not be shared.",
-    "message": "Presentation could not be shared.",
-    "placeholders": {},
-    "comments": [
-      "Shown in toast when presentation sharing fails"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/PresentationSlides.tsx",
-        42
-      ]
-    ]
-  },
-  "presentation.extractionFailed": {
-    "translation": "Presentation information could not be extracted.",
-    "message": "Presentation information could not be extracted.",
-    "placeholders": {},
-    "comments": [
-      "Shown when extracting credentials for proof request fails"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx",
-        54
-      ]
-    ]
-  },
-  "funkeMdoc.error.extracting": {
-    "translation": "Presentation information could not be extracted.",
-    "message": "Presentation information could not be extracted.",
-    "placeholders": {},
-    "comments": [
-      "Shown when submission data fails to load"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeMdocOfflineSharingScreen.tsx",
-        45
-      ]
-    ]
-  },
-  "funkeAboutScreen.privacyPolicyTitle": {
-    "translation": "Privacy Policy",
-    "message": "Privacy Policy",
-    "placeholders": {},
-    "comments": [
-      "Label for button that opens the privacy policy"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeAboutScreen.tsx",
-        55
-      ]
-    ]
-  },
-  "funkeMdoc.proof.declined": {
-    "translation": "Proof has been declined",
-    "message": "Proof has been declined",
-    "placeholders": {},
-    "comments": [
-      "Shown when user declines sharing proof"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeMdocOfflineSharingScreen.tsx",
-        166
-      ]
-    ]
-  },
-  "pidSetup.dataProtection.title": {
-    "translation": "Protect your data",
-    "message": "Protect your data",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        25
-      ]
-    ]
-  },
-  "requestPurpose.purposeHeading": {
-    "translation": "PURPOSE",
-    "message": "PURPOSE",
-    "placeholders": {},
-    "comments": [
-      "Heading above the stated purpose of the data request"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestPurposeSection.tsx",
-        45
-      ]
-    ]
-  },
-  "funkeWallet.about.emailHeader": {
-    "translation": "Reach out from Funke EUDI Wallet",
-    "message": "Reach out from Funke EUDI Wallet",
-    "placeholders": {},
-    "comments": [
-      "Email subject when contacting support from Funke wallet"
-    ],
-    "origin": [
-      [
-        "src/config/copy.ts",
-        14
-      ]
-    ]
-  },
-  "paradymWallet.about.emailHeader": {
-    "translation": "Reach out from Paradym Wallet",
-    "message": "Reach out from Paradym Wallet",
-    "placeholders": {},
-    "comments": [
-      "Email subject when contacting support from Paradym wallet"
-    ],
-    "origin": [
-      [
-        "src/config/copy.ts",
-        29
-      ]
-    ]
-  },
-  "onboardingDataProtection.privacy": {
-    "translation": "Read the Privacy Policy",
-    "message": "Read the Privacy Policy",
-    "placeholders": {},
-    "comments": [
-      "Button label to open the privacy policy"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/data-protection.tsx",
-        36
-      ]
-    ]
-  },
-  "interactionError.reasonPrefix": {
-    "translation": "Reason:",
-    "message": "Reason:",
-    "placeholders": {},
-    "comments": [
-      "Label before displaying a backend or internal error message"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/InteractionErrorSlide.tsx",
-        96
-      ]
-    ]
-  },
-  "home.receiveOrShare": {
-    "translation": "Receive or share from your wallet",
-    "message": "Receive or share from your wallet",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        76
-      ]
-    ]
-  },
-  "activity.latest.title": {
-    "translation": "Recent activity",
-    "message": "Recent activity",
-    "placeholders": {},
-    "comments": [
-      "Section title for the latest activity card"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        11
-      ]
-    ]
-  },
-  "cardLifecycle.refreshCardButton": {
-    "translation": "Refresh card",
-    "message": "Refresh card",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        86
-      ]
-    ]
-  },
-  "onboarding.pinReenter.title": {
-    "translation": "Repeat your PIN",
-    "message": "Repeat your PIN",
-    "placeholders": {},
-    "comments": [
-      "Heading when user repeats their PIN"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        30
-      ]
-    ]
-  },
-  "inbox.notificationType.request": {
-    "translation": "Request",
-    "message": "Request",
-    "placeholders": {},
-    "comments": [
-      "Label for a notification about a proof request"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/InboxScreen.tsx",
-        59
-      ]
-    ]
-  },
-  "requestedAttributes.heading": {
-    "translation": "Requested attributes",
-    "message": "Requested attributes",
-    "placeholders": {},
-    "comments": [
-      "Heading above list of attributes shown to the user"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeRequestedAttributesDetailScreen.tsx",
-        131
-      ]
-    ]
-  },
-  "requestedAttributes.requestedCardsHeading": {
-    "translation": "REQUESTED CARDS",
-    "message": "REQUESTED CARDS",
-    "placeholders": {},
-    "comments": [
-      "Heading shown above a list of requested cards the user has"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestedAttributesSection.tsx",
-        22
-      ]
-    ]
-  },
-  "common.reset": {
-    "translation": "Reset Wallet",
-    "message": "Reset Wallet",
-    "placeholders": {},
-    "comments": [
-      "Button label or title to reset the wallet"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        36
-      ]
-    ]
-  },
-  "signShare.title": {
-    "translation": "Review the request",
-    "message": "Review the request",
-    "placeholders": {},
-    "comments": [
-      "Main heading in the sign & share screen"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        90
-      ]
-    ]
-  },
-  "submission.reviewTitle": {
-    "translation": "Review the request",
-    "message": "Review the request",
-    "placeholders": {},
-    "comments": [
-      "Heading shown at the top of the share credentials screen"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/ShareCredentialsSlide.tsx",
-        62
-      ]
-    ]
-  },
-  "home.scanQrButton": {
-    "message": "Scan QR-code",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        82
-      ]
-    ],
-    "translation": "Scan QR-code"
-  },
-  "pidSetup.idCardScan.title": {
-    "translation": "Scan your eID card",
-    "message": "Scan your eID card",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        45
-      ],
-      [
-        "src/utils/sharedPidSetup.ts",
-        52
-      ]
-    ]
-  },
-  "onboardingIntroduction.step2.title": {
-    "translation": "Scan your physical ID card",
-    "message": "Scan your physical ID card",
-    "placeholders": {},
-    "comments": [
-      "Title of the second onboarding step explaining card scanning"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/introduction-steps.tsx",
-        36
-      ]
-    ]
-  },
-  "common.search": {
-    "translation": "Search cards",
-    "message": "Search cards",
-    "placeholders": {},
-    "comments": [
-      "Placeholder for search input in credentials list"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialsScreen.tsx",
-        92
-      ]
-    ]
-  },
-  "onboardingIntroduction.step1.title": {
-    "translation": "Secure the wallet",
-    "message": "Secure the wallet",
-    "placeholders": {},
-    "comments": [
-      "Title of the first onboarding step explaining security setup"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/introduction-steps.tsx",
-        24
-      ]
-    ]
-  },
-  "pinSlide.title": {
-    "translation": "Send data with your PIN code",
-    "message": "Send data with your PIN code",
-    "placeholders": {},
-    "comments": [
-      "Heading shown when user is asked to enter their app PIN to confirm a request"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/PinSlide.tsx",
-        40
-      ]
-    ]
-  },
-  "onboarding.biometrics.title": {
-    "translation": "Set up biometrics",
-    "message": "Set up biometrics",
-    "placeholders": {},
-    "comments": [
-      "Heading when user sets up biometrics"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        48
-      ]
-    ]
-  },
-  "onboardingIdCardRequestedAttributes.setupLater": {
-    "translation": "Set up later",
-    "message": "Set up later",
-    "placeholders": {},
-    "comments": [
-      "Button label to allow skipping card setup during onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/id-card-requested-attributes.tsx",
-        37
-      ]
-    ]
-  },
-  "onboarding.intro.title": {
-    "translation": "Set up your wallet",
-    "message": "Set up your wallet",
-    "placeholders": {},
-    "comments": [
-      "Title for the introduction steps slide in onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        61
-      ]
-    ]
-  },
-  "settings.title": {
-    "translation": "Settings",
-    "message": "Settings",
-    "placeholders": {},
-    "comments": [
-      "Header title for the settings screen"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeSettingsScreen.tsx",
-        27
-      ]
-    ]
-  },
-  "menu.item.settings": {
-    "translation": "Settings",
-    "message": "Settings",
-    "placeholders": {},
-    "comments": [
-      "Label for settings menu item"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        150
-      ]
-    ]
-  },
-  "menu.setupEid.title": {
-    "translation": "Setup digital ID",
-    "message": "Setup digital ID",
-    "placeholders": {},
-    "comments": [
-      "Title for the eID setup prompt"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        91
-      ]
-    ]
-  },
-  "home.setupYourId": {
-    "message": "Setup your ID",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        101
-      ]
-    ],
-    "translation": "Setup your ID"
-  },
-  "submission.share": {
-    "translation": "Share",
-    "message": "Share",
-    "placeholders": {},
-    "comments": [
-      "Button label to accept and share credentials"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/ShareCredentialsSlide.tsx",
-        52
-      ]
-    ]
-  },
-  "offlineQr.heading": {
-    "translation": "Share with QR code",
-    "message": "Share with QR code",
-    "placeholders": {},
-    "comments": [
-      "Main heading for offline QR sharing screen"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeOfflineQrScreen.tsx",
-        161
-      ]
-    ]
-  },
-  "credentials.shareableAttributes": {
-    "translation": "Shareable attributes",
-    "message": "Shareable attributes",
-    "placeholders": {},
-    "comments": [
-      "Header for attributes that can be shared with a verifier"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        114
-      ]
-    ]
-  },
-  "activity.latest.sharedCard": {
-    "translation": "Shared card",
-    "message": "Shared card",
-    "placeholders": {},
-    "comments": [
-      "Shown if a single credential was shared successfully"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        29
-      ]
-    ]
-  },
-  "activity.latest.sharedCards": {
-    "translation": "Shared cards",
-    "message": "Shared cards",
-    "placeholders": {},
-    "comments": [
-      "Shown if multiple credentials were shared successfully"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        35
-      ]
-    ]
-  },
-  "activity.latest.sharingFailed": {
-    "translation": "Sharing failed",
-    "message": "Sharing failed",
-    "placeholders": {},
-    "comments": [
-      "Shown if the last sharing activity failed or was stopped"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        23
-      ]
-    ]
-  },
-  "offlineQr.permissionSettingsDescription": {
-    "translation": "Sharing with QR-Code needs access to Bluetooth and Location.",
-    "message": "Sharing with QR-Code needs access to Bluetooth and Location.",
-    "placeholders": {},
-    "comments": [
-      "This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeOfflineQrScreen.tsx",
-        115
-      ]
-    ]
-  },
-  "credentials.showMetadata": {
-    "translation": "Show metadata attributes",
-    "message": "Show metadata attributes",
-    "placeholders": {},
-    "comments": [
-      "Button label: toggles visibility of metadata attributes"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        179
-      ]
-    ]
-  },
-  "optionSheet.showMetadata": {
-    "translation": "Show metadata attributes",
-    "message": "Show metadata attributes",
-    "placeholders": {},
-    "comments": [
-      "Option to show metadata in option sheet"
-    ],
-    "origin": [
-      [
-        "src/features/share/FunkeRequestedAttributesDetailScreen.tsx",
-        184
-      ]
-    ]
-  },
-  "credentials.showShareableAttributes": {
-    "translation": "Show shareable attributes",
-    "message": "Show shareable attributes",
-    "placeholders": {},
-    "comments": [
-      "Button label that toggles visibility of shareable attributes"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx",
-        164
-      ]
-    ]
-  },
-  "signShare.accept": {
-    "translation": "Sign & share",
-    "message": "Sign & share",
-    "placeholders": {},
-    "comments": [
-      "Button label for accepting a sign-and-share request"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        80
-      ]
-    ]
-  },
-  "activity.latest.signedDocument": {
-    "translation": "Signed document",
-    "message": "Signed document",
-    "placeholders": {},
-    "comments": [
-      "Shown if a document was signed successfully"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        47
-      ]
-    ]
-  },
-  "signing.title": {
-    "translation": "Signing a document",
-    "message": "Signing a document",
-    "placeholders": {},
-    "comments": [
-      "Heading above the document signing screen"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SigningSlide.tsx",
-        23
-      ]
-    ]
-  },
-  "signShare.cardHeading": {
-    "translation": "Signing card",
-    "message": "Signing card",
-    "placeholders": {},
-    "comments": [
-      "Heading above the signing card"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        143
-      ]
-    ]
-  },
-  "activity.latest.signingFailed": {
-    "translation": "Signing failed",
-    "message": "Signing failed",
-    "placeholders": {},
-    "comments": [
-      "Shown if signing a document failed or was cancelled"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/components/LatestActivityCard.tsx",
-        41
-      ]
-    ]
-  },
-  "signShare.signingWith": {
-    "translation": "Signing with {0}",
-    "message": "Signing with {0}",
-    "placeholders": {
-      "0": [
-        "qtsp.name"
-      ]
-    },
-    "comments": [
-      "Shown under the document name to indicate which QTSP is used for signing"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        74
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.skip": {
-    "translation": "Skip explanation",
-    "message": "Skip explanation",
-    "placeholders": {},
-    "comments": [
-      "Button label to skip wallet explanation slides"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        78
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.active.sheetDescription": {
-    "translation": "Some credentials may expire or require an active internet connection to validate",
-    "message": "Some credentials may expire or require an active internet connection to validate",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        211
-      ]
-    ]
-  },
-  "interactionError.title": {
-    "translation": "Something went wrong",
-    "message": "Something went wrong",
-    "placeholders": {},
-    "comments": [
-      "Heading shown when an error occurs in a credential flow"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/InteractionErrorSlide.tsx",
-        78
-      ]
-    ]
-  },
-  "credential.accept.error": {
-    "translation": "Something went wrong while storing the credential.",
-    "message": "Something went wrong while storing the credential.",
-    "placeholders": {},
-    "comments": [
-      "Shown in a toast when credential storage fails"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/CredentialSlides.tsx",
-        28
-      ]
-    ]
-  },
-  "sharing.failed.unknown": {
-    "translation": "Something went wrong.",
-    "message": "Something went wrong.",
-    "placeholders": {},
-    "comments": [
-      "Displayed when sharing fails due to an unknown reason"
-    ],
-    "origin": [
-      [
-        "src/features/activity/components/FailedReasonContainer.tsx",
-        18
-      ]
-    ]
-  },
-  "onboardingIdCardScan.startScanning": {
-    "translation": "Start scanning",
-    "message": "Start scanning",
-    "placeholders": {},
-    "comments": [
-      "Button label to begin scanning the ID card using NFC"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/id-card-scan.tsx",
-        27
-      ]
-    ]
-  },
-  "onboardingIntroduction.step1": {
-    "translation": "Step 1",
-    "message": "Step 1",
-    "placeholders": {},
-    "comments": [
-      "Label for first onboarding step"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/introduction-steps.tsx",
-        12
-      ]
-    ]
-  },
-  "onboardingIntroduction.step2": {
-    "translation": "Step 2",
-    "message": "Step 2",
-    "placeholders": {},
-    "comments": [
-      "Label for second onboarding step"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/introduction-steps.tsx",
-        18
-      ]
-    ]
-  },
-  "common.stop": {
-    "translation": "Stop",
-    "message": "Stop",
-    "placeholders": {},
-    "comments": [
-      "Label for stop/decline action"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        5
-      ]
-    ]
-  },
-  "pidSetup.idCardComplete.title": {
-    "translation": "Success!",
-    "message": "Success!",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        77
-      ]
-    ]
-  },
-  "common.success": {
-    "translation": "Success!",
-    "message": "Success!",
-    "placeholders": {},
-    "comments": [
-      "Title shown when an action completes successfully"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        30
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.slide2.subtitle": {
-    "translation": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
-    "message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
-    "placeholders": {},
-    "comments": [
-      "Subtitle for second slide of wallet onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        49
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.expired.description": {
-    "translation": "The expiration date of this card has passed",
-    "message": "The expiration date of this card has passed",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        219
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.expired.sheetDescription": {
-    "translation": "The expiration date of this card has passed on {0}.",
-    "message": "The expiration date of this card has passed on {0}.",
-    "placeholders": {
-      "0": [
-        "validUntil?.toLocaleDateString()"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        223
-      ]
-    ]
-  },
-  "requestedAttributes.onlySatisfiedDescription": {
-    "translation": "The following cards will be shared.",
-    "message": "The following cards will be shared.",
-    "placeholders": {},
-    "comments": [
-      "Description when the user has all requested cards"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestedAttributesSection.tsx",
-        34
-      ]
-    ]
-  },
-  "signShare.documentIntro": {
-    "translation": "The following document will be signed.",
-    "message": "The following document will be signed.",
-    "placeholders": {},
-    "comments": [
-      "Text above the document to be signed"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        123
-      ]
-    ]
-  },
-  "signShare.cardIntro": {
-    "translation": "The following personal information will be used to sign the document.",
-    "message": "The following personal information will be used to sign the document.",
-    "placeholders": {},
-    "comments": [
-      "Explains which info will be used to sign"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        146
-      ]
-    ]
-  },
-  "cardLifecycle.revoked.sheetDescription": {
-    "translation": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
-    "message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        36
-      ]
-    ]
-  },
-  "txCodeSlide.descriptionIntro": {
-    "translation": "The issuer provided the following:",
-    "message": "The issuer provided the following:",
-    "placeholders": {},
-    "comments": [
-      "Label shown above optional extra description"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/TxCodeSlide.tsx",
-        71
-      ]
-    ]
-  },
-  "requestPurpose.overaskingWarning": {
-    "translation": "The purpose given does not match the data requested.",
-    "message": "The purpose given does not match the data requested.",
-    "placeholders": {},
-    "comments": [
-      "Warning shown when the declared purpose does not align with the data requested by the organization"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestPurposeSection.tsx",
-        39
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.validityPeriod": {
-    "translation": "The validity period of this card is from {0} until {1}.",
-    "message": "The validity period of this card is from {0} until {1}.",
-    "placeholders": {
-      "0": [
-        "formatDate(validFrom)"
-      ],
-      "1": [
-        "formatDate(validUntil)"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        180
-      ]
-    ]
-  },
-  "trust.noApprovals": {
-    "translation": "There are no organizations that have approved {name}.",
-    "message": "There are no organizations that have approved {name}.",
-    "placeholders": {
-      "name": [
-        "name"
-      ]
-    },
-    "comments": [
-      "A message shown when there are no organizations that approved the current party"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        119
-      ]
-    ]
-  },
-  "trust.noApprovalsWithoutOrganizationName": {
-    "translation": "There are no organizations that have approved this unknown organization.",
-    "message": "There are no organizations that have approved this unknown organization.",
-    "placeholders": {},
-    "comments": [
-      "A message shown when there are no organizations that approved the current party, but the organization name is not known"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        123
-      ]
-    ]
-  },
-  "credentials.emptyTitle": {
-    "translation": "There's nothing here, yet",
-    "message": "There's nothing here, yet",
-    "placeholders": {},
-    "comments": [
-      "Shown when the user has no credentials"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialsScreen.tsx",
-        66
-      ]
-    ]
-  },
-  "onboardingIdCardRequestedAttributes.description": {
-    "translation": "These {0} attributes will be read from your eID card.",
-    "message": "These {0} attributes will be read from your eID card.",
-    "placeholders": {
-      "0": [
-        "requestedAttributes.length"
-      ]
-    },
-    "comments": [
-      "Text explaining how many attributes will be read from the eID card"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/id-card-requested-attributes.tsx",
-        31
-      ]
-    ]
-  },
-  "paradymWallet.about.description": {
-    "translation": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
-    "message": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
-    "placeholders": {},
-    "comments": [
-      "About screen description text for the Paradym wallet"
-    ],
-    "origin": [
-      [
-        "src/config/copy.ts",
-        23
-      ]
-    ]
-  },
-  "funkeWallet.about.description": {
-    "translation": "This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
-    "message": "This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
-    "placeholders": {},
-    "comments": [
-      "About screen description text for the Funke wallet"
-    ],
-    "origin": [
-      [
-        "src/config/copy.ts",
-        8
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.expiresIn": {
-    "translation": "This card expires in {expiryDaysString}, on {0}.",
-    "message": "This card expires in {expiryDaysString}, on {0}.",
-    "placeholders": {
-      "0": [
-        "formatDate(validUntil)"
-      ],
-      "expiryDaysString": [
-        "expiryDaysString"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        194
-      ]
-    ]
-  },
-  "cardLifecycle.batch.sheetDescription": {
-    "translation": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
-    "message": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        47
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.activeIn": {
-    "translation": "This card will be active in {activeDaysString}, on {0}.",
-    "message": "This card will be active in {activeDaysString}, on {0}.",
-    "placeholders": {
-      "0": [
-        "formatDate(validFrom)"
-      ],
-      "activeDaysString": [
-        "activeDaysString"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        188
-      ]
-    ]
-  },
-  "submission.offlineRequestTitle": {
-    "translation": "This is an offline request",
-    "message": "This is an offline request",
-    "placeholders": {},
-    "comments": [
-      "Title shown for offline message"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/ShareCredentialsSlide.tsx",
-        90
-      ]
-    ]
-  },
-  "pidSetup.idCardPin.subtitle": {
-    "translation": "This is required to read data from your card.",
-    "message": "This is required to read data from your card.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        39
-      ]
-    ]
-  },
-  "onboardingWelcome.description": {
-    "translation": "This is your digital wallet. With it, you can store and share information about yourself.",
-    "message": "This is your digital wallet. With it, you can store and share information about yourself.",
-    "placeholders": {},
-    "comments": [
-      "Intro paragraph on the welcome screen"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/welcome.tsx",
-        11
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.slide1.title": {
-    "translation": "This is your wallet",
-    "message": "This is your wallet",
-    "placeholders": {},
-    "comments": [
-      "Title for first slide of wallet onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        30
-      ]
-    ]
-  },
-  "requestPurpose.infoSheet.description": {
-    "translation": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
-    "message": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
-    "placeholders": {},
-    "comments": [
-      "Description text in the overasking info sheet"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestPurposeSection.tsx",
-        57
-      ]
-    ]
-  },
-  "onboarding.pin.subtitle": {
-    "translation": "This PIN secures your identity wallet. You enter it every time you share data.",
-    "message": "This PIN secures your identity wallet. You enter it every time you share data.",
-    "placeholders": {},
-    "comments": [
-      "Explanation of the PIN purpose in onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        18
-      ]
-    ]
-  },
-  "onboarding.pinReenter.subtitle": {
-    "translation": "This PIN secures your identity wallet. You enter it every time you share data.",
-    "message": "This PIN secures your identity wallet. You enter it every time you share data.",
-    "placeholders": {},
-    "comments": [
-      "Explanation shown when re-entering the PIN"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        36
-      ]
-    ]
-  },
-  "onboarding.pin.subtitle.simple": {
-    "translation": "This PIN secures your wallet. You enter it every time you share data.",
-    "message": "This PIN secures your wallet. You enter it every time you share data.",
-    "placeholders": {},
-    "comments": [
-      "PIN explanation in simpler flow without EID"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        24
-      ]
-    ]
-  },
-  "onboarding.pinReenter.subtitle.simple": {
-    "translation": "This PIN secures your wallet. You enter it every time you share data.",
-    "message": "This PIN secures your wallet. You enter it every time you share data.",
-    "placeholders": {},
-    "comments": [
-      "PIN explanation in simpler flow without EID"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/steps.ts",
-        42
-      ]
-    ]
-  },
-  "pidSetup.enableBiometrics.subtitle": {
-    "translation": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
-    "message": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        70
-      ]
-    ]
-  },
-  "credentialCardSlide.subtitle.pin": {
-    "translation": "To receive this card from {issuerName}, you need to enter a PIN.",
-    "message": "To receive this card from {issuerName}, you need to enter a PIN.",
-    "placeholders": {
-      "issuerName": [
-        "issuerName"
-      ]
-    },
-    "comments": [
-      "Subtitle shown when entering a PIN is required to receive the credential"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/CredentialCardSlide.tsx",
-        45
-      ]
-    ]
-  },
-  "credentialCardSlide.subtitle.presentation": {
-    "translation": "To receive this card from {issuerName}, you need to share cards from your wallet.",
-    "message": "To receive this card from {issuerName}, you need to share cards from your wallet.",
-    "placeholders": {
-      "issuerName": [
-        "issuerName"
-      ]
-    },
-    "comments": [
-      "Subtitle shown when presentation of other credentials is required"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/CredentialCardSlide.tsx",
-        31
-      ]
-    ]
-  },
-  "txCodeSlide.instructions": {
-    "translation": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
-    "message": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
-    "placeholders": {},
-    "comments": [
-      "Instructions explaining why the user must enter a transaction code"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/TxCodeSlide.tsx",
-        60
-      ]
-    ]
-  },
-  "authCodeFlowSlide.description": {
-    "translation": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
-    "message": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
-    "placeholders": {},
-    "comments": [
-      "Explanation for why user is redirected to external site"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/AuthCodeFlowSlide.tsx",
-        134
-      ]
-    ]
-  },
-  "pinLocked.title": {
-    "translation": "Too many incorrect attempts",
-    "message": "Too many incorrect attempts",
-    "placeholders": {},
-    "comments": [
-      "Heading shown when the user has entered too many incorrect PINs"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkePinLockedScreen.tsx",
-        42
-      ]
-    ]
-  },
-  "txCodeSlide.inputLabel": {
-    "translation": "Transaction code",
-    "message": "Transaction code",
-    "placeholders": {},
-    "comments": [
-      "Label for the input field where the user types the transaction code"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/TxCodeSlide.tsx",
-        83
-      ]
-    ]
-  },
-  "trust.trustedBy": {
-    "translation": "Trusted by",
-    "message": "Trusted by",
-    "placeholders": {},
-    "comments": [
-      "Subheading for list of organizations that trust the current one"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        103
-      ]
-    ]
-  },
-  "requestedAttributes.unavailableCardsHeading": {
-    "translation": "UNAVAILABLE CARDS",
-    "message": "UNAVAILABLE CARDS",
-    "placeholders": {},
-    "comments": [
-      "Heading shown above a list of requested cards the user does not have"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestedAttributesSection.tsx",
-        28
-      ]
-    ]
-  },
-  "trust.unknownOrgTitle": {
-    "translation": "Unknown organization",
-    "message": "Unknown organization",
-    "placeholders": {},
-    "comments": [
-      "Fallback name for a party when the name is not available"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeTrustDetailScreen.tsx",
-        88
-      ]
-    ]
-  },
-  "onboardingIdCardVerify.unlock": {
-    "translation": "Unlock with biometrics",
-    "message": "Unlock with biometrics",
-    "placeholders": {},
-    "comments": [
-      "Button label for unlocking the ID card using biometrics"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/id-card-verify.tsx",
-        22
-      ]
-    ]
-  },
-  "pinSlide.description": {
-    "translation": "Use your app PIN code to confirm the request.",
-    "message": "Use your app PIN code to confirm the request.",
-    "placeholders": {},
-    "comments": [
-      "Supporting text explaining why PIN is needed"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/PinSlide.tsx",
-        45
-      ]
-    ]
-  },
-  "menu.setupEid.message": {
-    "translation": "Use your eID card to set up your digital identity.",
-    "message": "Use your eID card to set up your digital identity.",
-    "placeholders": {},
-    "comments": [
-      "Explanation for setting up eID card"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        96
-      ]
-    ]
-  },
-  "onboardingIntroduction.step2.description": {
-    "translation": "Use your ID card PIN to retrieve your identity information.",
-    "message": "Use your ID card PIN to retrieve your identity information.",
-    "placeholders": {},
-    "comments": [
-      "Description of the second onboarding step about reading identity info"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/introduction-steps.tsx",
-        42
-      ]
-    ]
-  },
-  "cardLifecycle.batch.description": {
-    "translation": "verifications left",
-    "message": "verifications left",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        46
-      ]
-    ]
-  },
-  "authCodeFlowSlide.heading": {
-    "translation": "Verify your account",
-    "message": "Verify your account",
-    "placeholders": {},
-    "comments": [
-      "Heading shown when user is about to authenticate"
-    ],
-    "origin": [
-      [
-        "src/features/receive/slides/AuthCodeFlowSlide.tsx",
-        126
-      ]
-    ]
-  },
-  "credentials.cardAttributesDescription": {
-    "translation": "View attributes of the card",
-    "message": "View attributes of the card",
-    "placeholders": {},
-    "comments": [
-      "Description text for the attributes button"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkeCredentialDetailScreen.tsx",
-        115
-      ]
-    ]
-  },
-  "menu.section.wallet": {
-    "translation": "WALLET",
-    "message": "WALLET",
-    "placeholders": {},
-    "comments": [
-      "Heading above the wallet section"
-    ],
-    "origin": [
-      [
-        "src/features/menu/FunkeMenuScreen.tsx",
-        110
-      ]
-    ]
-  },
-  "pidSetup.idCardVerify.Subtitle": {
-    "translation": "We need your biometrics to verify your identity.",
-    "message": "We need your biometrics to verify your identity.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        63
-      ]
-    ]
-  },
-  "onboardingWalletExplanation.slide2.title": {
-    "translation": "What is it for?",
-    "message": "What is it for?",
-    "placeholders": {},
-    "comments": [
-      "Title for second slide of wallet onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/wallet-explanation.tsx",
-        44
-      ]
-    ]
-  },
-  "cardLifecycle.limitedByDate.notYetActive.description": {
-    "translation": "Will be active in {activeDaysString}",
-    "message": "Will be active in {activeDaysString}",
-    "placeholders": {
-      "activeDaysString": [
-        "activeDaysString"
-      ]
-    },
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        231
-      ]
-    ]
-  },
-  "common.yes": {
-    "translation": "Yes",
-    "message": "Yes",
-    "placeholders": {},
-    "comments": [
-      "Generic yes/confirm action label"
-    ],
-    "origin": [
-      [
-        "../../packages/translations/src/commonMessages.ts",
-        46
-      ]
-    ]
-  },
-  "signing.description": {
-    "translation": "You are about to sign <0>{documentName}</0>.",
-    "message": "You are about to sign <0>{documentName}</0>.",
-    "placeholders": {
-      "documentName": [
-        "documentName"
-      ]
-    },
-    "comments": [
-      "Explanation that the user is about to sign a document"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SigningSlide.tsx",
-        28
-      ]
-    ]
-  },
-  "connection.successParagraph": {
-    "translation": "You can now receive notifications from \n<0>{name}</0>",
-    "message": "You can now receive notifications from \n<0>{name}</0>",
-    "placeholders": {
-      "name": [
-        "name"
-      ]
-    },
-    "comments": [
-      "Explains that the user can now receive notifications from the connected issuer"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/ConnectionSlides.tsx",
-        71
-      ]
-    ]
-  },
-  "presentationSuccess.returnHint": {
-    "translation": "You can now return to the previous app.",
-    "message": "You can now return to the previous app.",
-    "placeholders": {},
-    "comments": [
-      "Instruction shown after presentation is completed"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/PresentationSuccessSlide.tsx",
-        109
-      ]
-    ]
-  },
-  "sharing.failed.missingCredentials": {
-    "translation": "You did not have the required credentials to disclose.",
-    "message": "You did not have the required credentials to disclose.",
-    "placeholders": {},
-    "comments": [
-      "Displayed when the user tries to share but lacks the needed credentials"
-    ],
-    "origin": [
-      [
-        "src/features/activity/components/FailedReasonContainer.tsx",
-        13
-      ]
-    ]
-  },
-  "requestedAttributes.partialDescription": {
-    "translation": "You don't have all of the requested cards.",
-    "message": "You don't have all of the requested cards.",
-    "placeholders": {},
-    "comments": [
-      "Description when the user has some but not all requested cards"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestedAttributesSection.tsx",
-        46
-      ]
-    ]
-  },
-  "inbox.emptyMessage": {
-    "translation": "You don't have any notifications at the moment.",
-    "message": "You don't have any notifications at the moment.",
-    "placeholders": {},
-    "comments": [
-      "Paragraph shown when the inbox is empty"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/InboxScreen.tsx",
-        44
-      ]
-    ]
-  },
-  "requestedAttributes.onlyUnsatisfiedDescription": {
-    "translation": "You don't have the requested card(s).",
-    "message": "You don't have the requested card(s).",
-    "placeholders": {},
-    "comments": [
-      "Description when the user has none of the requested cards"
-    ],
-    "origin": [
-      [
-        "src/features/share/components/RequestedAttributesSection.tsx",
-        40
-      ]
-    ]
-  },
-  "signShare.missingCards": {
-    "translation": "You don't have the required cards",
-    "message": "You don't have the required cards",
-    "placeholders": {},
-    "comments": [
-      "Shown when the user lacks the required credentials"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/SignAndShareSlide.tsx",
-        196
-      ]
-    ]
-  },
-  "submission.missingCardsWarning": {
-    "translation": "You don't have the required cards",
-    "message": "You don't have the required cards",
-    "placeholders": {},
-    "comments": [
-      "Shown when user lacks required credentials"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/ShareCredentialsSlide.tsx",
-        132
-      ]
-    ]
-  },
-  "pinLocked.description": {
-    "translation": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
-    "message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
-    "placeholders": {},
-    "comments": [
-      "Descriptive text explaining that the wallet is locked and must be reset"
-    ],
-    "origin": [
-      [
-        "src/features/wallet/FunkePinLockedScreen.tsx",
-        50
-      ]
-    ]
-  },
-  "pidSetup.enableBiometrics.title": {
-    "translation": "You need to enable biometrics",
-    "message": "You need to enable biometrics",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        69
-      ]
-    ]
-  },
-  "onboardingIntroduction.reminder": {
-    "translation": "You'll need your eID card to setup the wallet",
-    "message": "You'll need your eID card to setup the wallet",
-    "placeholders": {},
-    "comments": [
-      "Reminder shown before user continues onboarding"
-    ],
-    "origin": [
-      [
-        "src/features/onboarding/screens/introduction-steps.tsx",
-        48
-      ]
-    ]
-  },
-  "inbox.emptyTitle": {
-    "translation": "You're all caught up",
-    "message": "You're all caught up",
-    "placeholders": {},
-    "comments": [
-      "Heading shown when the inbox is empty"
-    ],
-    "origin": [
-      [
-        "src/features/didcomm/InboxScreen.tsx",
-        39
-      ]
-    ]
-  },
-  "cardLifecycle.active.sheetDescription": {
-    "translation": "Your credentials may expire or require an active internet connection to validate.",
-    "message": "Your credentials may expire or require an active internet connection to validate.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "../../packages/app/src/components/CardInfoLifecycle.tsx",
-        27
-      ]
-    ]
-  },
-  "pidSetup.dataProtection.subtitle": {
-    "translation": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
-    "message": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        26
-      ]
-    ]
-  },
-  "pidSetup.idCardComplete.subtitle": {
-    "translation": "Your information has been retrieved from your eID card.",
-    "message": "Your information has been retrieved from your eID card.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/utils/sharedPidSetup.ts",
-        78
-      ]
-    ]
-  },
-  "presentationSuccess.messageWithVerifier": {
-    "translation": "Your information has been shared with <0>{verifierName}</0>.",
-    "message": "Your information has been shared with <0>{verifierName}</0>.",
-    "placeholders": {
-      "verifierName": [
-        "verifierName"
-      ]
-    },
-    "comments": [
-      "Shown after credentials are shared with a specific verifier"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/PresentationSuccessSlide.tsx",
-        88
-      ]
-    ]
-  },
-  "presentationSuccess.message": {
-    "translation": "Your information has been shared.",
-    "message": "Your information has been shared.",
-    "placeholders": {},
-    "comments": [
-      "Shown after credentials are shared (no verifier name)"
-    ],
-    "origin": [
-      [
-        "src/features/share/slides/PresentationSuccessSlide.tsx",
-        95
-      ]
-    ]
-  },
-  "authenticate.pinRequiredToast": {
-    "translation": "Your PIN is required to unlock the app",
-    "message": "Your PIN is required to unlock the app",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/authenticate.tsx",
-        93
-      ]
-    ]
-  }
+	"trust.demo": {
+		"translation": "(Demo)",
+		"message": "(Demo)",
+		"placeholders": {},
+		"comments": [
+			"Label shown after an organization name if it is a demo version"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 93]]
+	},
+	"credentials.totalLabelPlural": {
+		"translation": "{0} cards total",
+		"message": "{0} cards total",
+		"placeholders": {
+			"0": ["credentials.length"]
+		},
+		"comments": ["Used after card count to indicate the total number"],
+		"origin": [["src/features/wallet/components/AllCardsCard.tsx", 23]]
+	},
+	"inbox.notificationType.fromLabel": {
+		"translation": "{baseLabel} from {0}",
+		"message": "{baseLabel} from {0}",
+		"placeholders": {
+			"0": ["notification.contactLabel"],
+			"baseLabel": ["baseLabel"]
+		},
+		"comments": ["Label like \"Card from X\" or \"Request from Y\""],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 66]]
+	},
+	"requestedAttributes.subheading": {
+		"translation": "{disclosedAttributeLength} from {0}",
+		"message": "{disclosedAttributeLength} from {0}",
+		"placeholders": {
+			"0": ["activeCredential.display.name"],
+			"disclosedAttributeLength": ["disclosedAttributeLength"]
+		},
+		"comments": ["Subheading under attribute list: X from Y"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 138]
+		]
+	},
+	"credentialCardSlide.subtitle.default": {
+		"translation": "{issuerName} wants to issue you the following card:",
+		"message": "{issuerName} wants to issue you the following card:",
+		"placeholders": {
+			"issuerName": ["issuerName"]
+		},
+		"comments": [
+			"Subtitle shown when the issuer wants to give the user a card with no auth required"
+		],
+		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 59]]
+	},
+	"credentials.totalLabel": {
+		"translation": "1 card total",
+		"message": "1 card total",
+		"placeholders": {},
+		"comments": ["Used after card count to indicate the total number"],
+		"origin": [["src/features/wallet/components/AllCardsCard.tsx", 28]]
+	},
+	"trust.approvedList": {
+		"translation": "A list of organizations that have approved {name}.",
+		"message": "A list of organizations that have approved {name}.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"A sentence that introduces a list of organizations that approved the current party"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 110]]
+	},
+	"trust.approvedListWithoutOrganizationName": {
+		"translation": "A list of organizations that have approved this unknown organization.",
+		"message": "A list of organizations that have approved this unknown organization.",
+		"placeholders": {},
+		"comments": [
+			"A sentence that introduces a list of organizations that approved the current party, but the organization name is not known"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 114]]
+	},
+	"offlineQr.instruction": {
+		"translation": "A verifier needs to scan your QR-Code.",
+		"message": "A verifier needs to scan your QR-Code.",
+		"placeholders": {},
+		"comments": ["Instruction for the verifier to scan the QR code"],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 166]]
+	},
+	"funkeAboutScreen.header": {
+		"translation": "About the wallet",
+		"message": "About the wallet",
+		"placeholders": {},
+		"comments": ["Screen header shown on the about page of the wallet"],
+		"origin": [["src/features/menu/FunkeAboutScreen.tsx", 31]]
+	},
+	"trust.headerTitle": {
+		"translation": "About this party",
+		"message": "About this party",
+		"placeholders": {},
+		"comments": [
+			"Screen title that describes information about a trusted party or organization"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 56]]
+	},
+	"menu.item.about": {
+		"translation": "About this wallet",
+		"message": "About this wallet",
+		"placeholders": {},
+		"comments": ["Label for about screen menu item"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 169]]
+	},
+	"onboarding.biometrics.subtitle": {
+		"translation": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
+		"message": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
+		"placeholders": {},
+		"comments": ["Subtitle explaining purpose of biometrics"],
+		"origin": [["src/features/onboarding/steps.ts", 54]]
+	},
+	"menu.item.activity": {
+		"translation": "Activity",
+		"message": "Activity",
+		"placeholders": {},
+		"comments": ["Label for activity log"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 129]]
+	},
+	"onboardingWalletExplanation.slide1.subtitle": {
+		"translation": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
+		"message": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
+		"placeholders": {},
+		"comments": ["Subtitle for first slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 35]]
+	},
+	"onboardingWalletExplanation.slide3.subtitle": {
+		"translation": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
+		"message": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
+		"placeholders": {},
+		"comments": ["Subtitle for third slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 63]]
+	},
+	"activity.latest.addedCard": {
+		"translation": "Added {name}",
+		"message": "Added {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": ["Shown when a new card has been added"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 105]]
+	},
+	"credentials.allCardsTitle": {
+		"translation": "All cards",
+		"message": "All cards",
+		"placeholders": {},
+		"comments": ["Title for the all cards summary box"],
+		"origin": [["src/features/wallet/components/AllCardsCard.tsx", 17]]
+	},
+	"trust.warning": {
+		"translation": "Always consider whether sharing with a party is wise.",
+		"message": "Always consider whether sharing with a party is wise.",
+		"placeholders": {},
+		"comments": [
+			"Shown as a warning box when viewing a trusted party’s detail"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 68]]
+	},
+	"interactionError.message.connect": {
+		"translation": "An error occurred while connecting. Generate a new QR-code or try again later.",
+		"message": "An error occurred while connecting. Generate a new QR-code or try again later.",
+		"placeholders": {},
+		"comments": [
+			"Error message when connection fails during connect interaction"
+		],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 31]]
+	},
+	"interactionError.message.issue": {
+		"translation": "An error occurred while fetching the card information. Ask the issuer to generate a new QR-code or try again later.",
+		"message": "An error occurred while fetching the card information. Ask the issuer to generate a new QR-code or try again later.",
+		"placeholders": {},
+		"comments": [
+			"Error message when credential issuance fails to fetch card info"
+		],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 39]]
+	},
+	"interactionError.message.verify": {
+		"translation": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
+		"message": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
+		"placeholders": {},
+		"comments": [
+			"Error message when sharing a credential for verification fails"
+		],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 47]]
+	},
+	"interactionError.message.sign": {
+		"translation": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
+		"message": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
+		"placeholders": {},
+		"comments": ["Error message when signing fails with selected credentials"],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 54]]
+	},
+	"menu.section.app": {
+		"translation": "APP",
+		"message": "APP",
+		"placeholders": {},
+		"comments": ["Heading above the app section"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 140]]
+	},
+	"pinLocked.alertMessage": {
+		"translation": "Are you sure you want to reset the wallet?",
+		"message": "Are you sure you want to reset the wallet?",
+		"placeholders": {},
+		"comments": [
+			"Message body of the confirmation dialog (action button) for wallet reset"
+		],
+		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 17]]
+	},
+	"common.confirmResetWallet": {
+		"translation": "Are you sure you want to reset the wallet?",
+		"message": "Are you sure you want to reset the wallet?",
+		"placeholders": {},
+		"comments": ["Confirmation prompt before wallet reset"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 62]]
+	},
+	"authCodeFlowSlide.authenticate": {
+		"translation": "Authenticate",
+		"message": "Authenticate",
+		"placeholders": {},
+		"comments": ["Button label to start authentication process"],
+		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 161]]
+	},
+	"funkeMdoc.error.auth": {
+		"translation": "Authentication Error",
+		"message": "Authentication Error",
+		"placeholders": {},
+		"comments": [
+			"Shown when there is a general auth error during offline flow"
+		],
+		"origin": [["src/features/share/FunkeMdocOfflineSharingScreen.tsx", 104]]
+	},
+	"presentation.authFailed": {
+		"translation": "Authentication failed",
+		"message": "Authentication failed",
+		"placeholders": {},
+		"comments": ["Shown when authentication with PIN fails for other reasons"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 78]
+		]
+	},
+	"authCodeFlowSlide.authorizationFailed": {
+		"translation": "Authorization failed",
+		"message": "Authorization failed",
+		"placeholders": {},
+		"comments": [
+			"Toast message shown when the authorization fails",
+			"Toast message shown when the authorization fails"
+		],
+		"origin": [
+			["src/features/receive/slides/AuthCodeFlowSlide.tsx", 69],
+			["src/features/receive/slides/AuthCodeFlowSlide.tsx", 87]
+		]
+	},
+	"onboarding.intro.subtitle": {
+		"translation": "Before you can use the app, we will guide you through these steps.",
+		"message": "Before you can use the app, we will guide you through these steps.",
+		"placeholders": {},
+		"comments": ["Subtitle for the introduction steps slide in onboarding"],
+		"origin": [["src/features/onboarding/steps.ts", 67]]
+	},
+	"presentation.biometricCancelled": {
+		"translation": "Biometric authentication cancelled",
+		"message": "Biometric authentication cancelled",
+		"placeholders": {},
+		"comments": ["Shown when the user cancels biometric authentication"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 84]
+		]
+	},
+	"funkeMdoc.error.biometricCancelled": {
+		"translation": "Biometric authentication cancelled",
+		"message": "Biometric authentication cancelled",
+		"placeholders": {},
+		"comments": ["Error shown when user cancels biometric prompt"],
+		"origin": [["src/features/share/FunkeMdocOfflineSharingScreen.tsx", 129]]
+	},
+	"common.cancel": {
+		"translation": "Cancel",
+		"message": "Cancel",
+		"placeholders": {},
+		"comments": ["Generic cancel action label"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 41]]
+	},
+	"inbox.notificationType.card": {
+		"translation": "Card",
+		"message": "Card",
+		"placeholders": {},
+		"comments": ["Label for a notification about a received credential"],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 54]]
+	},
+	"credentials.cardAttributes": {
+		"translation": "Card attributes",
+		"message": "Card attributes",
+		"placeholders": {},
+		"comments": [
+			"Label for button that shows detailed card attributes",
+			"Title shown in header for the credential detail attributes screen"
+		],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailScreen.tsx", 110],
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 96]
+		]
+	},
+	"credentials.detailsTitle": {
+		"translation": "Card details",
+		"message": "Card details",
+		"placeholders": {},
+		"comments": ["Title of the credential details screen"],
+		"origin": [["src/features/wallet/FunkeCredentialDetailScreen.tsx", 93]]
+	},
+	"cardLifecycle.limitedByDate.expired.title": {
+		"translation": "Card expired",
+		"message": "Card expired",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 218]]
+	},
+	"cardLifecycle.active.title": {
+		"translation": "Card is active",
+		"message": "Card is active",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 25]]
+	},
+	"cardLifecycle.limitedByDate.notYetActive.title": {
+		"translation": "Card not active",
+		"message": "Card not active",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 230]]
+	},
+	"cardLifecycle.revoked.description": {
+		"translation": "Card not usable anymore",
+		"message": "Card not usable anymore",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 35]]
+	},
+	"credentialCardSlide.title": {
+		"translation": "Card offered",
+		"message": "Card offered",
+		"placeholders": {},
+		"comments": [
+			"Title shown when a credential card is offered to the user",
+			"Title shown when a credential card is offered to the user",
+			"Title shown when a credential card is offered to the user"
+		],
+		"origin": [
+			["src/features/receive/slides/CredentialCardSlide.tsx", 26],
+			["src/features/receive/slides/CredentialCardSlide.tsx", 40],
+			["src/features/receive/slides/CredentialCardSlide.tsx", 54]
+		]
+	},
+	"cardLifecycle.revoked.title": {
+		"translation": "Card revoked",
+		"message": "Card revoked",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 34]]
+	},
+	"cardLifecycle.limitedByDate.willExpire.title": {
+		"translation": "Card will expire",
+		"message": "Card will expire",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 241]]
+	},
+	"credentials.title": {
+		"translation": "Cards",
+		"message": "Cards",
+		"placeholders": {},
+		"comments": ["Heading for the list of user credentials"],
+		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 47]]
+	},
+	"menu.item.cards": {
+		"translation": "Cards",
+		"message": "Cards",
+		"placeholders": {},
+		"comments": ["Label for the credentials menu item"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 120]]
+	},
+	"onboarding.pin.title": {
+		"translation": "Choose a 6-digit PIN",
+		"message": "Choose a 6-digit PIN",
+		"placeholders": {},
+		"comments": ["Heading when user chooses a PIN"],
+		"origin": [["src/features/onboarding/steps.ts", 12]]
+	},
+	"onboardingIntroduction.step1.description": {
+		"translation": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
+		"message": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
+		"placeholders": {},
+		"comments": [
+			"Description of the first onboarding step about securing the wallet"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 30]]
+	},
+	"common.close": {
+		"translation": "Close",
+		"message": "Close",
+		"placeholders": {},
+		"comments": ["Label for closing a screen or modal"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 10]]
+	},
+	"pidSetup.idCardVerify.title": {
+		"translation": "Confirm it’s you",
+		"message": "Confirm it’s you",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 62]]
+	},
+	"connection.successTitle": {
+		"translation": "Connection established",
+		"message": "Connection established",
+		"placeholders": {},
+		"comments": [
+			"Heading shown when a secure connection to an issuer was successfully created"
+		],
+		"origin": [["src/features/didcomm/ConnectionSlides.tsx", 63]]
+	},
+	"common.continue": {
+		"translation": "Continue",
+		"message": "Continue",
+		"placeholders": {},
+		"comments": ["Generic continue/next action label"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 15]]
+	},
+	"funkeMdoc.error.sharing": {
+		"translation": "Could not share device response",
+		"message": "Could not share device response",
+		"placeholders": {},
+		"comments": ["Shown when shareDeviceResponse fails"],
+		"origin": [["src/features/share/FunkeMdocOfflineSharingScreen.tsx", 140]]
+	},
+	"requestedAttributes.fallbackCardLabel": {
+		"translation": "Credential",
+		"message": "Credential",
+		"placeholders": {},
+		"comments": [
+			"Fallback name shown when a credential does not have a display name"
+		],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 52]
+		]
+	},
+	"credential.declined": {
+		"translation": "Credential has been declined.",
+		"message": "Credential has been declined.",
+		"placeholders": {},
+		"comments": ["Shown in a toast when user declines the credential"],
+		"origin": [["src/features/didcomm/CredentialSlides.tsx", 57]]
+	},
+	"credentials.notFound": {
+		"translation": "Credential not found",
+		"message": "Credential not found",
+		"placeholders": {},
+		"comments": ["Shown if a credential is missing or cannot be loaded"],
+		"origin": [["src/features/wallet/FunkeCredentialDetailScreen.tsx", 45]]
+	},
+	"credentialDetail.errorMessage": {
+		"translation": "Credential not found",
+		"message": "Credential not found",
+		"placeholders": {},
+		"comments": ["Error message when a credential is missing"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 79]
+		]
+	},
+	"credentials.emptyDescription": {
+		"translation": "Credentials will appear here once you receive them.",
+		"message": "Credentials will appear here once you receive them.",
+		"placeholders": {},
+		"comments": ["Subtext explaining that credentials will appear later"],
+		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 71]]
+	},
+	"trust.demoOrg": {
+		"translation": "Demo organization",
+		"message": "Demo organization",
+		"placeholders": {},
+		"comments": [
+			"Shown under the name of an organization to indicate that it is a demo"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 148]]
+	},
+	"settings.developmentMode": {
+		"translation": "Development Mode",
+		"message": "Development Mode",
+		"placeholders": {},
+		"comments": ["Label for the toggle to enable developer mode"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 43]]
+	},
+	"signShare.documentHeading": {
+		"translation": "Document",
+		"message": "Document",
+		"placeholders": {},
+		"comments": ["Heading above the document name"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 118]]
+	},
+	"common.enterPinToShareData": {
+		"translation": "Enter PIN to share data",
+		"message": "Enter PIN to share data",
+		"placeholders": {},
+		"comments": [
+			"Heading prompting the user to enter their PIN code before sharing data"
+		],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 57]]
+	},
+	"txCodeSlide.title": {
+		"translation": "Enter transaction code",
+		"message": "Enter transaction code",
+		"placeholders": {},
+		"comments": ["Title prompting the user to enter a transaction code"],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 53]]
+	},
+	"common.enterPin": {
+		"translation": "Enter your app PIN code",
+		"message": "Enter your app PIN code",
+		"placeholders": {},
+		"comments": ["Heading prompting the user to enter their PIN code"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 52]]
+	},
+	"pidSetup.idCardPin.title": {
+		"translation": "Enter your eID card PIN",
+		"message": "Enter your eID card PIN",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 38]]
+	},
+	"credentialDetail.errorTitle": {
+		"translation": "Error getting credential details",
+		"message": "Error getting credential details",
+		"placeholders": {},
+		"comments": ["Title shown in toast when credential cannot be loaded"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 73]
+		]
+	},
+	"cardLifecycle.limitedByDate.willExpire.description": {
+		"translation": "Expires in {expiryDaysString}",
+		"message": "Expires in {expiryDaysString}",
+		"placeholders": {
+			"expiryDaysString": ["expiryDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 244]]
+	},
+	"offlineQr.permissionError": {
+		"translation": "Failed to request permissions.",
+		"message": "Failed to request permissions.",
+		"placeholders": {},
+		"comments": ["Toast shown when system permission request fails"],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 74]]
+	},
+	"menu.item.feedback": {
+		"translation": "Feedback",
+		"message": "Feedback",
+		"placeholders": {},
+		"comments": ["Label for feedback menu item"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 159]]
+	},
+	"loadingRequestSlide.description": {
+		"translation": "Fetching information",
+		"message": "Fetching information",
+		"placeholders": {},
+		"comments": ["Shown while waiting for data to be received from backend"],
+		"origin": [["src/features/receive/slides/LoadingRequestSlide.tsx", 54]]
+	},
+	"funkeAboutScreen.contactIntro": {
+		"translation": "For more information, reach out to",
+		"message": "For more information, reach out to",
+		"placeholders": {},
+		"comments": ["Intro sentence before showing support email address"],
+		"origin": [["src/features/menu/FunkeAboutScreen.tsx", 41]]
+	},
+	"onboardingWelcome.getStarted": {
+		"translation": "Get Started",
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to begin onboarding from the welcome screen"],
+		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]]
+	},
+	"onboardingWalletExplanation.getStarted": {
+		"translation": "Get Started",
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to finish onboarding explanation"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]]
+	},
+	"pidSetup.idCardRequestedAttributes.title": {
+		"translation": "Get your national identity card",
+		"message": "Get your national identity card",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 32]]
+	},
+	"pidSetup.idCardFetch.title": {
+		"translation": "Getting eID information",
+		"message": "Getting eID information",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 59]]
+	},
+	"common.goToSettings": {
+		"translation": "Go to settings",
+		"message": "Go to settings",
+		"placeholders": {},
+		"comments": ["Button label to open device settings"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 25]]
+	},
+	"common.goToWallet": {
+		"translation": "Go to wallet",
+		"message": "Go to wallet",
+		"placeholders": {},
+		"comments": ["Button label to return to the wallet"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 20]]
+	},
+	"home.helloWithName": {
+		"message": "Hello, {userName}!",
+		"placeholders": {
+			"userName": ["userName"]
+		},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 71]],
+		"translation": "Hello, {userName}!"
+	},
+	"home.helloWithoutName": {
+		"translation": "Hello!",
+		"message": "Hello!",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 73]]
+	},
+	"home.helloWithouthName": {
+		"message": "Hello!",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["apps/easypid/src/features/wallet/FunkeWalletScreen.tsx", 73]],
+		"translation": "Hello!",
+		"obsolete": true
+	},
+	"credentials.hideMetadata": {
+		"translation": "Hide metadata attributes",
+		"message": "Hide metadata attributes",
+		"placeholders": {},
+		"comments": ["Button label: toggles visibility of metadata attributes"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 175]
+		]
+	},
+	"optionSheet.hideMetadata": {
+		"translation": "Hide metadata attributes",
+		"message": "Hide metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to hide metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
+		]
+	},
+	"credentials.hideShareableAttributes": {
+		"translation": "Hide shareable attributes",
+		"message": "Hide shareable attributes",
+		"placeholders": {},
+		"comments": [
+			"Button label that toggles visibility of shareable attributes"
+		],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 159]
+		]
+	},
+	"onboardingWalletExplanation.slide3.title": {
+		"translation": "How does it work?",
+		"message": "How does it work?",
+		"placeholders": {},
+		"comments": ["Title for third slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 58]]
+	},
+	"home.howDoesItWork": {
+		"message": "How does it work?",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 97]],
+		"translation": "How does it work?"
+	},
+	"inbox.header": {
+		"translation": "Inbox",
+		"message": "Inbox",
+		"placeholders": {},
+		"comments": ["Header title for the inbox screen"],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 17]]
+	},
+	"submission.offlineRequestDescription": {
+		"translation": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
+		"message": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
+		"placeholders": {},
+		"comments": [
+			"Message shown when the request is offline and verifier is unknown"
+		],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 96]]
+	},
+	"presentation.requestDeclined": {
+		"translation": "Information request has been declined.",
+		"message": "Information request has been declined.",
+		"placeholders": {},
+		"comments": ["Toast shown when the user declines the presentation request"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 96]
+		]
+	},
+	"presentation.declined": {
+		"translation": "Information request has been declined.",
+		"message": "Information request has been declined.",
+		"placeholders": {},
+		"comments": ["Shown in toast when user declines a presentation request"],
+		"origin": [["src/features/didcomm/PresentationSlides.tsx", 86]]
+	},
+	"presentation.invalidPin": {
+		"translation": "Invalid PIN entered",
+		"message": "Invalid PIN entered",
+		"placeholders": {},
+		"comments": ["Toast message shown when the user enters an incorrect PIN"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 72]
+		]
+	},
+	"funkeMdoc.error.invalidPin": {
+		"translation": "Invalid PIN entered",
+		"message": "Invalid PIN entered",
+		"placeholders": {},
+		"comments": ["Error shown when user enters an invalid PIN"],
+		"origin": [["src/features/share/FunkeMdocOfflineSharingScreen.tsx", 94]]
+	},
+	"common.issuedBy": {
+		"translation": "Issued by {0}.",
+		"message": "Issued by {0}.",
+		"placeholders": {
+			"0": ["credential.display.issuer.name"]
+		},
+		"comments": ["Prefix before issuer name"],
+		"origin": [["src/features/wallet/FunkeCredentialDetailScreen.tsx", 98]]
+	},
+	"common.issuedOn": {
+		"translation": "Issued on {0}",
+		"message": "Issued on {0}",
+		"placeholders": {
+			"0": ["formatDate(issuedAt, { includeTime: false })"]
+		},
+		"comments": ["Label before the date a credential was issued"],
+		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 194]]
+	},
+	"cardLifecycle.batch.title": {
+		"translation": "Limited card usage",
+		"message": "Limited card usage",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 45]]
+	},
+	"inbox.menuLabel": {
+		"translation": "Menu",
+		"message": "Menu",
+		"placeholders": {},
+		"comments": ["Aria label for the inbox/bell icon in the header"],
+		"origin": [["src/features/wallet/components/InboxIcon.tsx", 17]]
+	},
+	"menu.title": {
+		"translation": "Menu",
+		"message": "Menu",
+		"placeholders": {},
+		"comments": ["Title of the menu screen"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 78]]
+	},
+	"credentials.metadataAttributes": {
+		"translation": "Metadata",
+		"message": "Metadata",
+		"placeholders": {},
+		"comments": ["Header for metadata attributes of a credential"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 132]
+		]
+	},
+	"requestedAttributes.metadataTitle": {
+		"translation": "Metadata",
+		"message": "Metadata",
+		"placeholders": {},
+		"comments": ["Section header title for metadata attributes"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
+		]
+	},
+	"activity.latest.newCardFallback": {
+		"translation": "new card",
+		"message": "new card",
+		"placeholders": {},
+		"comments": ["Fallback name if a received credential has no display name"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 53]]
+	},
+	"cardLifecycle.active.description": {
+		"translation": "No actions required",
+		"message": "No actions required",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 26]]
+	},
+	"cardLifecycle.limitedByDate.active.description": {
+		"translation": "No actions required",
+		"message": "No actions required",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 207]]
+	},
+	"activity.latest.noActivity": {
+		"translation": "No activity yet",
+		"message": "No activity yet",
+		"placeholders": {},
+		"comments": ["Description shown if the user has no activity history"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 17]]
+	},
+	"credentials.noAttributes": {
+		"translation": "No attributes found",
+		"message": "No attributes found",
+		"placeholders": {},
+		"comments": ["Error toast when a credential has no displayable attributes"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 76]
+		]
+	},
+	"common.noResultsSearch": {
+		"translation": "No cards found for \"{searchQuery}\"",
+		"message": "No cards found for \"{searchQuery}\"",
+		"placeholders": {
+			"searchQuery": ["searchQuery"]
+		},
+		"comments": ["Shown when search yields no results; includes query string"],
+		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 126]]
+	},
+	"credentials.noCardsMessage": {
+		"translation": "No cards yet",
+		"message": "No cards yet",
+		"placeholders": {},
+		"comments": [
+			"Displayed when the user has not yet received any credentials"
+		],
+		"origin": [["src/features/wallet/components/AllCardsCard.tsx", 33]]
+	},
+	"presentation.noCredentialsSelected": {
+		"translation": "No credentials selected",
+		"message": "No credentials selected",
+		"placeholders": {},
+		"comments": [
+			"Shown when the user tries to accept a proof but no credentials are loaded"
+		],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 60]
+		]
+	},
+	"submission.fallbackPurpose": {
+		"translation": "No information was provided on the purpose of the data request. Be cautious",
+		"message": "No information was provided on the purpose of the data request. Be cautious",
+		"placeholders": {},
+		"comments": ["Shown when a submission has no stated purpose"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 46]]
+	},
+	"onboardingDataProtection.toast.secureDevice": {
+		"translation": "Now using {0} for PID cryptographic keys.",
+		"message": "Now using {0} for PID cryptographic keys.",
+		"placeholders": {
+			"0": ["Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'"]
+		},
+		"comments": [
+			"Toast shown when switching to local secure storage (e.g. Secure Enclave or Strongbox)"
+		],
+		"origin": [["src/features/onboarding/screens/data-protection.tsx", 30]]
+	},
+	"onboardingDataProtection.toast.cloudHsm": {
+		"translation": "Now using Cloud HSM for PID cryptographic keys.",
+		"message": "Now using Cloud HSM for PID cryptographic keys.",
+		"placeholders": {},
+		"comments": ["Toast shown when Cloud HSM is selected for key storage"],
+		"origin": [["src/features/onboarding/screens/data-protection.tsx", 24]]
+	},
+	"common.openSettings": {
+		"translation": "Open Settings",
+		"message": "Open Settings",
+		"placeholders": {},
+		"comments": ["Button to open system settings from alert"],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 122]]
+	},
+	"funkeAboutScreen.privacyPolicyDescription": {
+		"translation": "Open the privacy policy",
+		"message": "Open the privacy policy",
+		"placeholders": {},
+		"comments": ["Description under the privacy policy button"],
+		"origin": [["src/features/menu/FunkeAboutScreen.tsx", 60]]
+	},
+	"requestPurpose.infoSheet.title": {
+		"translation": "Overasking detected",
+		"message": "Overasking detected",
+		"placeholders": {},
+		"comments": [
+			"Title of the info sheet that appears when the user taps the warning about overasking"
+		],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 51]]
+	},
+	"presentation.pinAuthFailed": {
+		"translation": "PIN authentication failed",
+		"message": "PIN authentication failed",
+		"placeholders": {},
+		"comments": ["Shown when PIN is required but not provided"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 66]
+		]
+	},
+	"pidSetup.idCardScan.subtitle": {
+		"translation": "Place your device on top of your eID card to scan it.",
+		"message": "Place your device on top of your eID card to scan it.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/utils/sharedPidSetup.ts", 46],
+			["src/utils/sharedPidSetup.ts", 53]
+		]
+	},
+	"offlineQr.permissionSettingsTitle": {
+		"translation": "Please enable required permissions in your phone settings",
+		"message": "Please enable required permissions in your phone settings",
+		"placeholders": {},
+		"comments": [
+			"This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
+		],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 110]]
+	},
+	"loadingRequestSlide.title": {
+		"translation": "Please wait",
+		"message": "Please wait",
+		"placeholders": {},
+		"comments": [
+			"Shown while loading request data from the issuer or verifier"
+		],
+		"origin": [["src/features/receive/slides/LoadingRequestSlide.tsx", 47]]
+	},
+	"home.presentInPersonButton": {
+		"message": "Present In-person",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 88]],
+		"translation": "Present In-person"
+	},
+	"presentation.sharingFailed": {
+		"translation": "Presentation could not be shared.",
+		"message": "Presentation could not be shared.",
+		"placeholders": {},
+		"comments": ["Shown when sharing the proof presentation fails"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 90]
+		]
+	},
+	"presentation.accept.error": {
+		"translation": "Presentation could not be shared.",
+		"message": "Presentation could not be shared.",
+		"placeholders": {},
+		"comments": ["Shown in toast when presentation sharing fails"],
+		"origin": [["src/features/didcomm/PresentationSlides.tsx", 42]]
+	},
+	"presentation.extractionFailed": {
+		"translation": "Presentation information could not be extracted.",
+		"message": "Presentation information could not be extracted.",
+		"placeholders": {},
+		"comments": ["Shown when extracting credentials for proof request fails"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 54]
+		]
+	},
+	"funkeMdoc.error.extracting": {
+		"translation": "Presentation information could not be extracted.",
+		"message": "Presentation information could not be extracted.",
+		"placeholders": {},
+		"comments": ["Shown when submission data fails to load"],
+		"origin": [["src/features/share/FunkeMdocOfflineSharingScreen.tsx", 45]]
+	},
+	"funkeAboutScreen.privacyPolicyTitle": {
+		"translation": "Privacy Policy",
+		"message": "Privacy Policy",
+		"placeholders": {},
+		"comments": ["Label for button that opens the privacy policy"],
+		"origin": [["src/features/menu/FunkeAboutScreen.tsx", 55]]
+	},
+	"funkeMdoc.proof.declined": {
+		"translation": "Proof has been declined",
+		"message": "Proof has been declined",
+		"placeholders": {},
+		"comments": ["Shown when user declines sharing proof"],
+		"origin": [["src/features/share/FunkeMdocOfflineSharingScreen.tsx", 166]]
+	},
+	"pidSetup.dataProtection.title": {
+		"translation": "Protect your data",
+		"message": "Protect your data",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 25]]
+	},
+	"requestPurpose.purposeHeading": {
+		"translation": "PURPOSE",
+		"message": "PURPOSE",
+		"placeholders": {},
+		"comments": ["Heading above the stated purpose of the data request"],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 45]]
+	},
+	"funkeWallet.about.emailHeader": {
+		"translation": "Reach out from Funke EUDI Wallet",
+		"message": "Reach out from Funke EUDI Wallet",
+		"placeholders": {},
+		"comments": ["Email subject when contacting support from Funke wallet"],
+		"origin": [["src/config/copy.ts", 14]]
+	},
+	"paradymWallet.about.emailHeader": {
+		"translation": "Reach out from Paradym Wallet",
+		"message": "Reach out from Paradym Wallet",
+		"placeholders": {},
+		"comments": ["Email subject when contacting support from Paradym wallet"],
+		"origin": [["src/config/copy.ts", 29]]
+	},
+	"onboardingDataProtection.privacy": {
+		"translation": "Read the Privacy Policy",
+		"message": "Read the Privacy Policy",
+		"placeholders": {},
+		"comments": ["Button label to open the privacy policy"],
+		"origin": [["src/features/onboarding/screens/data-protection.tsx", 36]]
+	},
+	"interactionError.reasonPrefix": {
+		"translation": "Reason:",
+		"message": "Reason:",
+		"placeholders": {},
+		"comments": ["Label before displaying a backend or internal error message"],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 96]]
+	},
+	"home.receiveOrShare": {
+		"translation": "Receive or share from your wallet",
+		"message": "Receive or share from your wallet",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 76]]
+	},
+	"activity.latest.title": {
+		"translation": "Recent activity",
+		"message": "Recent activity",
+		"placeholders": {},
+		"comments": ["Section title for the latest activity card"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 11]]
+	},
+	"cardLifecycle.refreshCardButton": {
+		"translation": "Refresh card",
+		"message": "Refresh card",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 86]]
+	},
+	"onboarding.pinReenter.title": {
+		"translation": "Repeat your PIN",
+		"message": "Repeat your PIN",
+		"placeholders": {},
+		"comments": ["Heading when user repeats their PIN"],
+		"origin": [["src/features/onboarding/steps.ts", 30]]
+	},
+	"inbox.notificationType.request": {
+		"translation": "Request",
+		"message": "Request",
+		"placeholders": {},
+		"comments": ["Label for a notification about a proof request"],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 59]]
+	},
+	"requestedAttributes.heading": {
+		"translation": "Requested attributes",
+		"message": "Requested attributes",
+		"placeholders": {},
+		"comments": ["Heading above list of attributes shown to the user"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 131]
+		]
+	},
+	"requestedAttributes.requestedCardsHeading": {
+		"translation": "REQUESTED CARDS",
+		"message": "REQUESTED CARDS",
+		"placeholders": {},
+		"comments": ["Heading shown above a list of requested cards the user has"],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 22]
+		]
+	},
+	"common.reset": {
+		"translation": "Reset Wallet",
+		"message": "Reset Wallet",
+		"placeholders": {},
+		"comments": ["Button label or title to reset the wallet"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 36]]
+	},
+	"signShare.title": {
+		"translation": "Review the request",
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 90]]
+	},
+	"submission.reviewTitle": {
+		"translation": "Review the request",
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]]
+	},
+	"home.scanQrButton": {
+		"message": "Scan QR-code",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 82]],
+		"translation": "Scan QR-code"
+	},
+	"pidSetup.idCardScan.title": {
+		"translation": "Scan your eID card",
+		"message": "Scan your eID card",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/utils/sharedPidSetup.ts", 45],
+			["src/utils/sharedPidSetup.ts", 52]
+		]
+	},
+	"onboardingIntroduction.step2.title": {
+		"translation": "Scan your physical ID card",
+		"message": "Scan your physical ID card",
+		"placeholders": {},
+		"comments": [
+			"Title of the second onboarding step explaining card scanning"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 36]]
+	},
+	"common.search": {
+		"translation": "Search cards",
+		"message": "Search cards",
+		"placeholders": {},
+		"comments": ["Placeholder for search input in credentials list"],
+		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 92]]
+	},
+	"onboardingIntroduction.step1.title": {
+		"translation": "Secure the wallet",
+		"message": "Secure the wallet",
+		"placeholders": {},
+		"comments": [
+			"Title of the first onboarding step explaining security setup"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 24]]
+	},
+	"pinSlide.title": {
+		"translation": "Send data with your PIN code",
+		"message": "Send data with your PIN code",
+		"placeholders": {},
+		"comments": [
+			"Heading shown when user is asked to enter their app PIN to confirm a request"
+		],
+		"origin": [["src/features/share/slides/PinSlide.tsx", 40]]
+	},
+	"onboarding.biometrics.title": {
+		"translation": "Set up biometrics",
+		"message": "Set up biometrics",
+		"placeholders": {},
+		"comments": ["Heading when user sets up biometrics"],
+		"origin": [["src/features/onboarding/steps.ts", 48]]
+	},
+	"onboardingIdCardRequestedAttributes.setupLater": {
+		"translation": "Set up later",
+		"message": "Set up later",
+		"placeholders": {},
+		"comments": ["Button label to allow skipping card setup during onboarding"],
+		"origin": [
+			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 37]
+		]
+	},
+	"onboarding.intro.title": {
+		"translation": "Set up your wallet",
+		"message": "Set up your wallet",
+		"placeholders": {},
+		"comments": ["Title for the introduction steps slide in onboarding"],
+		"origin": [["src/features/onboarding/steps.ts", 61]]
+	},
+	"settings.title": {
+		"translation": "Settings",
+		"message": "Settings",
+		"placeholders": {},
+		"comments": ["Header title for the settings screen"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 27]]
+	},
+	"menu.item.settings": {
+		"translation": "Settings",
+		"message": "Settings",
+		"placeholders": {},
+		"comments": ["Label for settings menu item"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 150]]
+	},
+	"menu.setupEid.title": {
+		"translation": "Setup digital ID",
+		"message": "Setup digital ID",
+		"placeholders": {},
+		"comments": ["Title for the eID setup prompt"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 91]]
+	},
+	"home.setupYourId": {
+		"message": "Setup your ID",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 101]],
+		"translation": "Setup your ID"
+	},
+	"submission.share": {
+		"translation": "Share",
+		"message": "Share",
+		"placeholders": {},
+		"comments": ["Button label to accept and share credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 52]]
+	},
+	"offlineQr.heading": {
+		"translation": "Share with QR code",
+		"message": "Share with QR code",
+		"placeholders": {},
+		"comments": ["Main heading for offline QR sharing screen"],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 161]]
+	},
+	"credentials.shareableAttributes": {
+		"translation": "Shareable attributes",
+		"message": "Shareable attributes",
+		"placeholders": {},
+		"comments": ["Header for attributes that can be shared with a verifier"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 114]
+		]
+	},
+	"activity.latest.sharedCard": {
+		"translation": "Shared card",
+		"message": "Shared card",
+		"placeholders": {},
+		"comments": ["Shown if a single credential was shared successfully"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 29]]
+	},
+	"activity.latest.sharedCards": {
+		"translation": "Shared cards",
+		"message": "Shared cards",
+		"placeholders": {},
+		"comments": ["Shown if multiple credentials were shared successfully"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 35]]
+	},
+	"activity.latest.sharingFailed": {
+		"translation": "Sharing failed",
+		"message": "Sharing failed",
+		"placeholders": {},
+		"comments": ["Shown if the last sharing activity failed or was stopped"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 23]]
+	},
+	"offlineQr.permissionSettingsDescription": {
+		"translation": "Sharing with QR-Code needs access to Bluetooth and Location.",
+		"message": "Sharing with QR-Code needs access to Bluetooth and Location.",
+		"placeholders": {},
+		"comments": [
+			"This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
+		],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 115]]
+	},
+	"credentials.showMetadata": {
+		"translation": "Show metadata attributes",
+		"message": "Show metadata attributes",
+		"placeholders": {},
+		"comments": ["Button label: toggles visibility of metadata attributes"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 179]
+		]
+	},
+	"optionSheet.showMetadata": {
+		"translation": "Show metadata attributes",
+		"message": "Show metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to show metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
+		]
+	},
+	"credentials.showShareableAttributes": {
+		"translation": "Show shareable attributes",
+		"message": "Show shareable attributes",
+		"placeholders": {},
+		"comments": [
+			"Button label that toggles visibility of shareable attributes"
+		],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 164]
+		]
+	},
+	"signShare.accept": {
+		"translation": "Sign & share",
+		"message": "Sign & share",
+		"placeholders": {},
+		"comments": ["Button label for accepting a sign-and-share request"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 80]]
+	},
+	"activity.latest.signedDocument": {
+		"translation": "Signed document",
+		"message": "Signed document",
+		"placeholders": {},
+		"comments": ["Shown if a document was signed successfully"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 47]]
+	},
+	"signing.title": {
+		"translation": "Signing a document",
+		"message": "Signing a document",
+		"placeholders": {},
+		"comments": ["Heading above the document signing screen"],
+		"origin": [["src/features/share/slides/SigningSlide.tsx", 23]]
+	},
+	"signShare.cardHeading": {
+		"translation": "Signing card",
+		"message": "Signing card",
+		"placeholders": {},
+		"comments": ["Heading above the signing card"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 143]]
+	},
+	"activity.latest.signingFailed": {
+		"translation": "Signing failed",
+		"message": "Signing failed",
+		"placeholders": {},
+		"comments": ["Shown if signing a document failed or was cancelled"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 41]]
+	},
+	"signShare.signingWith": {
+		"translation": "Signing with {0}",
+		"message": "Signing with {0}",
+		"placeholders": {
+			"0": ["qtsp.name"]
+		},
+		"comments": [
+			"Shown under the document name to indicate which QTSP is used for signing"
+		],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 74]]
+	},
+	"onboardingWalletExplanation.skip": {
+		"translation": "Skip explanation",
+		"message": "Skip explanation",
+		"placeholders": {},
+		"comments": ["Button label to skip wallet explanation slides"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 78]]
+	},
+	"cardLifecycle.limitedByDate.active.sheetDescription": {
+		"translation": "Some credentials may expire or require an active internet connection to validate",
+		"message": "Some credentials may expire or require an active internet connection to validate",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 211]]
+	},
+	"interactionError.title": {
+		"translation": "Something went wrong",
+		"message": "Something went wrong",
+		"placeholders": {},
+		"comments": ["Heading shown when an error occurs in a credential flow"],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 78]]
+	},
+	"credential.accept.error": {
+		"translation": "Something went wrong while storing the credential.",
+		"message": "Something went wrong while storing the credential.",
+		"placeholders": {},
+		"comments": ["Shown in a toast when credential storage fails"],
+		"origin": [["src/features/didcomm/CredentialSlides.tsx", 28]]
+	},
+	"sharing.failed.unknown": {
+		"translation": "Something went wrong.",
+		"message": "Something went wrong.",
+		"placeholders": {},
+		"comments": ["Displayed when sharing fails due to an unknown reason"],
+		"origin": [
+			["src/features/activity/components/FailedReasonContainer.tsx", 18]
+		]
+	},
+	"onboardingIdCardScan.startScanning": {
+		"translation": "Start scanning",
+		"message": "Start scanning",
+		"placeholders": {},
+		"comments": ["Button label to begin scanning the ID card using NFC"],
+		"origin": [["src/features/onboarding/screens/id-card-scan.tsx", 27]]
+	},
+	"onboardingIntroduction.step1": {
+		"translation": "Step 1",
+		"message": "Step 1",
+		"placeholders": {},
+		"comments": ["Label for first onboarding step"],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 12]]
+	},
+	"onboardingIntroduction.step2": {
+		"translation": "Step 2",
+		"message": "Step 2",
+		"placeholders": {},
+		"comments": ["Label for second onboarding step"],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 18]]
+	},
+	"common.stop": {
+		"translation": "Stop",
+		"message": "Stop",
+		"placeholders": {},
+		"comments": ["Label for stop/decline action"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 5]]
+	},
+	"pidSetup.idCardComplete.title": {
+		"translation": "Success!",
+		"message": "Success!",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 77]]
+	},
+	"common.success": {
+		"translation": "Success!",
+		"message": "Success!",
+		"placeholders": {},
+		"comments": ["Title shown when an action completes successfully"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 30]]
+	},
+	"onboardingWalletExplanation.slide2.subtitle": {
+		"translation": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
+		"message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
+		"placeholders": {},
+		"comments": ["Subtitle for second slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 49]]
+	},
+	"cardLifecycle.limitedByDate.expired.description": {
+		"translation": "The expiration date of this card has passed",
+		"message": "The expiration date of this card has passed",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 219]]
+	},
+	"cardLifecycle.limitedByDate.expired.sheetDescription": {
+		"translation": "The expiration date of this card has passed on {0}.",
+		"message": "The expiration date of this card has passed on {0}.",
+		"placeholders": {
+			"0": ["validUntil?.toLocaleDateString()"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 223]]
+	},
+	"requestedAttributes.onlySatisfiedDescription": {
+		"translation": "The following cards will be shared.",
+		"message": "The following cards will be shared.",
+		"placeholders": {},
+		"comments": ["Description when the user has all requested cards"],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 34]
+		]
+	},
+	"signShare.documentIntro": {
+		"translation": "The following document will be signed.",
+		"message": "The following document will be signed.",
+		"placeholders": {},
+		"comments": ["Text above the document to be signed"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 123]]
+	},
+	"signShare.cardIntro": {
+		"translation": "The following personal information will be used to sign the document.",
+		"message": "The following personal information will be used to sign the document.",
+		"placeholders": {},
+		"comments": ["Explains which info will be used to sign"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 146]]
+	},
+	"cardLifecycle.revoked.sheetDescription": {
+		"translation": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
+		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 36]]
+	},
+	"txCodeSlide.descriptionIntro": {
+		"translation": "The issuer provided the following:",
+		"message": "The issuer provided the following:",
+		"placeholders": {},
+		"comments": ["Label shown above optional extra description"],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 71]]
+	},
+	"requestPurpose.overaskingWarning": {
+		"translation": "The purpose given does not match the data requested.",
+		"message": "The purpose given does not match the data requested.",
+		"placeholders": {},
+		"comments": [
+			"Warning shown when the declared purpose does not align with the data requested by the organization"
+		],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 39]]
+	},
+	"cardLifecycle.limitedByDate.validityPeriod": {
+		"translation": "The validity period of this card is from {0} until {1}.",
+		"message": "The validity period of this card is from {0} until {1}.",
+		"placeholders": {
+			"0": ["formatDate(validFrom)"],
+			"1": ["formatDate(validUntil)"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 180]]
+	},
+	"trust.noApprovals": {
+		"translation": "There are no organizations that have approved {name}.",
+		"message": "There are no organizations that have approved {name}.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"A message shown when there are no organizations that approved the current party"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 119]]
+	},
+	"trust.noApprovalsWithoutOrganizationName": {
+		"translation": "There are no organizations that have approved this unknown organization.",
+		"message": "There are no organizations that have approved this unknown organization.",
+		"placeholders": {},
+		"comments": [
+			"A message shown when there are no organizations that approved the current party, but the organization name is not known"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 123]]
+	},
+	"credentials.emptyTitle": {
+		"translation": "There's nothing here, yet",
+		"message": "There's nothing here, yet",
+		"placeholders": {},
+		"comments": ["Shown when the user has no credentials"],
+		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 66]]
+	},
+	"onboardingIdCardRequestedAttributes.description": {
+		"translation": "These {0} attributes will be read from your eID card.",
+		"message": "These {0} attributes will be read from your eID card.",
+		"placeholders": {
+			"0": ["requestedAttributes.length"]
+		},
+		"comments": [
+			"Text explaining how many attributes will be read from the eID card"
+		],
+		"origin": [
+			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 31]
+		]
+	},
+	"paradymWallet.about.description": {
+		"translation": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
+		"message": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
+		"placeholders": {},
+		"comments": ["About screen description text for the Paradym wallet"],
+		"origin": [["src/config/copy.ts", 23]]
+	},
+	"funkeWallet.about.description": {
+		"translation": "This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
+		"message": "This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
+		"placeholders": {},
+		"comments": ["About screen description text for the Funke wallet"],
+		"origin": [["src/config/copy.ts", 8]]
+	},
+	"cardLifecycle.limitedByDate.expiresIn": {
+		"translation": "This card expires in {expiryDaysString}, on {0}.",
+		"message": "This card expires in {expiryDaysString}, on {0}.",
+		"placeholders": {
+			"0": ["formatDate(validUntil)"],
+			"expiryDaysString": ["expiryDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 194]]
+	},
+	"cardLifecycle.batch.sheetDescription": {
+		"translation": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
+		"message": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 47]]
+	},
+	"cardLifecycle.limitedByDate.activeIn": {
+		"translation": "This card will be active in {activeDaysString}, on {0}.",
+		"message": "This card will be active in {activeDaysString}, on {0}.",
+		"placeholders": {
+			"0": ["formatDate(validFrom)"],
+			"activeDaysString": ["activeDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 188]]
+	},
+	"submission.offlineRequestTitle": {
+		"translation": "This is an offline request",
+		"message": "This is an offline request",
+		"placeholders": {},
+		"comments": ["Title shown for offline message"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 90]]
+	},
+	"pidSetup.idCardPin.subtitle": {
+		"translation": "This is required to read data from your card.",
+		"message": "This is required to read data from your card.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 39]]
+	},
+	"onboardingWelcome.description": {
+		"translation": "This is your digital wallet. With it, you can store and share information about yourself.",
+		"message": "This is your digital wallet. With it, you can store and share information about yourself.",
+		"placeholders": {},
+		"comments": ["Intro paragraph on the welcome screen"],
+		"origin": [["src/features/onboarding/screens/welcome.tsx", 11]]
+	},
+	"onboardingWalletExplanation.slide1.title": {
+		"translation": "This is your wallet",
+		"message": "This is your wallet",
+		"placeholders": {},
+		"comments": ["Title for first slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 30]]
+	},
+	"requestPurpose.infoSheet.description": {
+		"translation": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
+		"message": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
+		"placeholders": {},
+		"comments": ["Description text in the overasking info sheet"],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 57]]
+	},
+	"onboarding.pin.subtitle": {
+		"translation": "This PIN secures your identity wallet. You enter it every time you share data.",
+		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
+		"placeholders": {},
+		"comments": ["Explanation of the PIN purpose in onboarding"],
+		"origin": [["src/features/onboarding/steps.ts", 18]]
+	},
+	"onboarding.pinReenter.subtitle": {
+		"translation": "This PIN secures your identity wallet. You enter it every time you share data.",
+		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
+		"placeholders": {},
+		"comments": ["Explanation shown when re-entering the PIN"],
+		"origin": [["src/features/onboarding/steps.ts", 36]]
+	},
+	"onboarding.pin.subtitle.simple": {
+		"translation": "This PIN secures your wallet. You enter it every time you share data.",
+		"message": "This PIN secures your wallet. You enter it every time you share data.",
+		"placeholders": {},
+		"comments": ["PIN explanation in simpler flow without EID"],
+		"origin": [["src/features/onboarding/steps.ts", 24]]
+	},
+	"onboarding.pinReenter.subtitle.simple": {
+		"translation": "This PIN secures your wallet. You enter it every time you share data.",
+		"message": "This PIN secures your wallet. You enter it every time you share data.",
+		"placeholders": {},
+		"comments": ["PIN explanation in simpler flow without EID"],
+		"origin": [["src/features/onboarding/steps.ts", 42]]
+	},
+	"pidSetup.enableBiometrics.subtitle": {
+		"translation": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
+		"message": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 70]]
+	},
+	"credentialCardSlide.subtitle.pin": {
+		"translation": "To receive this card from {issuerName}, you need to enter a PIN.",
+		"message": "To receive this card from {issuerName}, you need to enter a PIN.",
+		"placeholders": {
+			"issuerName": ["issuerName"]
+		},
+		"comments": [
+			"Subtitle shown when entering a PIN is required to receive the credential"
+		],
+		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 45]]
+	},
+	"credentialCardSlide.subtitle.presentation": {
+		"translation": "To receive this card from {issuerName}, you need to share cards from your wallet.",
+		"message": "To receive this card from {issuerName}, you need to share cards from your wallet.",
+		"placeholders": {
+			"issuerName": ["issuerName"]
+		},
+		"comments": [
+			"Subtitle shown when presentation of other credentials is required"
+		],
+		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 31]]
+	},
+	"txCodeSlide.instructions": {
+		"translation": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
+		"message": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
+		"placeholders": {},
+		"comments": [
+			"Instructions explaining why the user must enter a transaction code"
+		],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 60]]
+	},
+	"authCodeFlowSlide.description": {
+		"translation": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
+		"message": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
+		"placeholders": {},
+		"comments": ["Explanation for why user is redirected to external site"],
+		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 134]]
+	},
+	"pinLocked.title": {
+		"translation": "Too many incorrect attempts",
+		"message": "Too many incorrect attempts",
+		"placeholders": {},
+		"comments": [
+			"Heading shown when the user has entered too many incorrect PINs"
+		],
+		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 42]]
+	},
+	"txCodeSlide.inputLabel": {
+		"translation": "Transaction code",
+		"message": "Transaction code",
+		"placeholders": {},
+		"comments": [
+			"Label for the input field where the user types the transaction code"
+		],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 83]]
+	},
+	"trust.trustedBy": {
+		"translation": "Trusted by",
+		"message": "Trusted by",
+		"placeholders": {},
+		"comments": [
+			"Subheading for list of organizations that trust the current one"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 103]]
+	},
+	"requestedAttributes.unavailableCardsHeading": {
+		"translation": "UNAVAILABLE CARDS",
+		"message": "UNAVAILABLE CARDS",
+		"placeholders": {},
+		"comments": [
+			"Heading shown above a list of requested cards the user does not have"
+		],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 28]
+		]
+	},
+	"trust.unknownOrgTitle": {
+		"translation": "Unknown organization",
+		"message": "Unknown organization",
+		"placeholders": {},
+		"comments": ["Fallback name for a party when the name is not available"],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 88]]
+	},
+	"onboardingIdCardVerify.unlock": {
+		"translation": "Unlock with biometrics",
+		"message": "Unlock with biometrics",
+		"placeholders": {},
+		"comments": ["Button label for unlocking the ID card using biometrics"],
+		"origin": [["src/features/onboarding/screens/id-card-verify.tsx", 22]]
+	},
+	"pinSlide.description": {
+		"translation": "Use your app PIN code to confirm the request.",
+		"message": "Use your app PIN code to confirm the request.",
+		"placeholders": {},
+		"comments": ["Supporting text explaining why PIN is needed"],
+		"origin": [["src/features/share/slides/PinSlide.tsx", 45]]
+	},
+	"menu.setupEid.message": {
+		"translation": "Use your eID card to set up your digital identity.",
+		"message": "Use your eID card to set up your digital identity.",
+		"placeholders": {},
+		"comments": ["Explanation for setting up eID card"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 96]]
+	},
+	"onboardingIntroduction.step2.description": {
+		"translation": "Use your ID card PIN to retrieve your identity information.",
+		"message": "Use your ID card PIN to retrieve your identity information.",
+		"placeholders": {},
+		"comments": [
+			"Description of the second onboarding step about reading identity info"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 42]]
+	},
+	"cardLifecycle.batch.description": {
+		"translation": "verifications left",
+		"message": "verifications left",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 46]]
+	},
+	"authCodeFlowSlide.heading": {
+		"translation": "Verify your account",
+		"message": "Verify your account",
+		"placeholders": {},
+		"comments": ["Heading shown when user is about to authenticate"],
+		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 126]]
+	},
+	"credentials.cardAttributesDescription": {
+		"translation": "View attributes of the card",
+		"message": "View attributes of the card",
+		"placeholders": {},
+		"comments": ["Description text for the attributes button"],
+		"origin": [["src/features/wallet/FunkeCredentialDetailScreen.tsx", 115]]
+	},
+	"menu.section.wallet": {
+		"translation": "WALLET",
+		"message": "WALLET",
+		"placeholders": {},
+		"comments": ["Heading above the wallet section"],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 110]]
+	},
+	"pidSetup.idCardVerify.Subtitle": {
+		"translation": "We need your biometrics to verify your identity.",
+		"message": "We need your biometrics to verify your identity.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 63]]
+	},
+	"onboardingWalletExplanation.slide2.title": {
+		"translation": "What is it for?",
+		"message": "What is it for?",
+		"placeholders": {},
+		"comments": ["Title for second slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 44]]
+	},
+	"cardLifecycle.limitedByDate.notYetActive.description": {
+		"translation": "Will be active in {activeDaysString}",
+		"message": "Will be active in {activeDaysString}",
+		"placeholders": {
+			"activeDaysString": ["activeDaysString"]
+		},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 231]]
+	},
+	"common.yes": {
+		"translation": "Yes",
+		"message": "Yes",
+		"placeholders": {},
+		"comments": ["Generic yes/confirm action label"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 46]]
+	},
+	"signing.description": {
+		"translation": "You are about to sign <0>{documentName}</0>.",
+		"message": "You are about to sign <0>{documentName}</0>.",
+		"placeholders": {
+			"documentName": ["documentName"]
+		},
+		"comments": ["Explanation that the user is about to sign a document"],
+		"origin": [["src/features/share/slides/SigningSlide.tsx", 28]]
+	},
+	"connection.successParagraph": {
+		"translation": "You can now receive notifications from \n<0>{name}</0>",
+		"message": "You can now receive notifications from \n<0>{name}</0>",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"Explains that the user can now receive notifications from the connected issuer"
+		],
+		"origin": [["src/features/didcomm/ConnectionSlides.tsx", 71]]
+	},
+	"presentationSuccess.returnHint": {
+		"translation": "You can now return to the previous app.",
+		"message": "You can now return to the previous app.",
+		"placeholders": {},
+		"comments": ["Instruction shown after presentation is completed"],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 109]]
+	},
+	"sharing.failed.missingCredentials": {
+		"translation": "You did not have the required credentials to disclose.",
+		"message": "You did not have the required credentials to disclose.",
+		"placeholders": {},
+		"comments": [
+			"Displayed when the user tries to share but lacks the needed credentials"
+		],
+		"origin": [
+			["src/features/activity/components/FailedReasonContainer.tsx", 13]
+		]
+	},
+	"requestedAttributes.partialDescription": {
+		"translation": "You don't have all of the requested cards.",
+		"message": "You don't have all of the requested cards.",
+		"placeholders": {},
+		"comments": [
+			"Description when the user has some but not all requested cards"
+		],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 46]
+		]
+	},
+	"inbox.emptyMessage": {
+		"translation": "You don't have any notifications at the moment.",
+		"message": "You don't have any notifications at the moment.",
+		"placeholders": {},
+		"comments": ["Paragraph shown when the inbox is empty"],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 44]]
+	},
+	"requestedAttributes.onlyUnsatisfiedDescription": {
+		"translation": "You don't have the requested card(s).",
+		"message": "You don't have the requested card(s).",
+		"placeholders": {},
+		"comments": ["Description when the user has none of the requested cards"],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 40]
+		]
+	},
+	"signShare.missingCards": {
+		"translation": "You don't have the required cards",
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 196]]
+	},
+	"submission.missingCardsWarning": {
+		"translation": "You don't have the required cards",
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 132]]
+	},
+	"pinLocked.description": {
+		"translation": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
+		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
+		"placeholders": {},
+		"comments": [
+			"Descriptive text explaining that the wallet is locked and must be reset"
+		],
+		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 50]]
+	},
+	"pidSetup.enableBiometrics.title": {
+		"translation": "You need to enable biometrics",
+		"message": "You need to enable biometrics",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 69]]
+	},
+	"onboardingIntroduction.reminder": {
+		"translation": "You'll need your eID card to setup the wallet",
+		"message": "You'll need your eID card to setup the wallet",
+		"placeholders": {},
+		"comments": ["Reminder shown before user continues onboarding"],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 48]]
+	},
+	"inbox.emptyTitle": {
+		"translation": "You're all caught up",
+		"message": "You're all caught up",
+		"placeholders": {},
+		"comments": ["Heading shown when the inbox is empty"],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 39]]
+	},
+	"cardLifecycle.active.sheetDescription": {
+		"translation": "Your credentials may expire or require an active internet connection to validate.",
+		"message": "Your credentials may expire or require an active internet connection to validate.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 27]]
+	},
+	"pidSetup.dataProtection.subtitle": {
+		"translation": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
+		"message": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 26]]
+	},
+	"pidSetup.idCardComplete.subtitle": {
+		"translation": "Your information has been retrieved from your eID card.",
+		"message": "Your information has been retrieved from your eID card.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 78]]
+	},
+	"presentationSuccess.messageWithVerifier": {
+		"translation": "Your information has been shared with <0>{verifierName}</0>.",
+		"message": "Your information has been shared with <0>{verifierName}</0>.",
+		"placeholders": {
+			"verifierName": ["verifierName"]
+		},
+		"comments": ["Shown after credentials are shared with a specific verifier"],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 88]]
+	},
+	"presentationSuccess.message": {
+		"translation": "Your information has been shared.",
+		"message": "Your information has been shared.",
+		"placeholders": {},
+		"comments": ["Shown after credentials are shared (no verifier name)"],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 95]]
+	},
+	"authenticate.pinRequiredToast": {
+		"translation": "Your PIN is required to unlock the app",
+		"message": "Your PIN is required to unlock the app",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/app/authenticate.tsx", 93]]
+	}
 }

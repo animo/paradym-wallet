@@ -1,6 +1,6 @@
-import { Button, HeroIcons, OnboardingStepItem, Paragraph, ScrollableStack, YStack } from '@package/ui'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
+import { Button, HeroIcons, OnboardingStepItem, Paragraph, ScrollableStack, YStack } from '@package/ui'
 
 interface OnboardingIntroductionStepsProps {
   goToNextStep: () => void

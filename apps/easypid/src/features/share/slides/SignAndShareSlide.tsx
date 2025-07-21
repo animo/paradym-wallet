@@ -1,11 +1,11 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { type FormattedSubmission, type QtspInfo, getDisclosedAttributeNamesForDisplay } from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
-import { commonMessages } from '@package/translations'
-import { Trans, useLingui } from '@lingui/react/macro'
 
 interface SignAndShareSlideProps {
   onAccept?: () => Promise<void>

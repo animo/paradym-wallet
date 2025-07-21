@@ -178,9 +178,9 @@ function getCardInfoLimitedByDateVariant(
   const validityPeriod =
     validFrom && validUntil
       ? defineMessage({
-        id: 'cardLifecycle.limitedByDate.validityPeriod',
-        message: `The validity period of this card is from ${formatDate(validFrom)} until ${formatDate(validUntil)}.`,
-      })
+          id: 'cardLifecycle.limitedByDate.validityPeriod',
+          message: `The validity period of this card is from ${formatDate(validFrom)} until ${formatDate(validUntil)}.`,
+        })
       : undefined
 
   const activeString =
@@ -242,9 +242,9 @@ function getCardInfoLimitedByDateVariant(
       description: hasMoreThanTwoWeeksUntilExpiry
         ? cardInfoLifecycleVariant.active.description
         : defineMessage({
-          id: 'cardLifecycle.limitedByDate.willExpire.description',
-          message: `Expires in ${expiryDaysString}`,
-        }),
+            id: 'cardLifecycle.limitedByDate.willExpire.description',
+            message: `Expires in ${expiryDaysString}`,
+          }),
       sheetDescription: (validityPeriod ?? expiryString) as MessageDescriptor,
     },
   }

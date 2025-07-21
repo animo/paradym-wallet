@@ -12,6 +12,7 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
+import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
@@ -19,6 +20,7 @@ import {
   getCredentialForDisplayId,
 } from '@package/agent'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -33,8 +35,6 @@ import { PidIdCardVerifySlide } from './PidEidCardVerifySlide'
 import { PidReviewRequestSlide } from './PidReviewRequestSlide'
 import { PidSetupStartSlide } from './PidSetupStartSlide'
 import { PidWalletPinSlide } from './PidWalletPinSlide'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 export function FunkePidSetupScreen() {
   const toast = useToastController()

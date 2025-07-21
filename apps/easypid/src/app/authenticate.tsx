@@ -3,14 +3,14 @@ import { Redirect, useLocalSearchParams } from 'expo-router'
 import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
+import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { commonMessages } from '@package/translations'
 import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 /**
  * Authenticate screen is redirect to from app layout when app is configured but locked

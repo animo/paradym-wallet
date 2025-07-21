@@ -1,6 +1,6 @@
+import { useLingui } from '@lingui/react/macro'
 import { Button, IdCard, Spinner, YStack } from '@package/ui'
 import { useState } from 'react'
-import { useLingui } from '@lingui/react/macro'
 
 export interface OnboardingIdCardVerifyProps {
   goToNextStep: () => Promise<void>

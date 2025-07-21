@@ -1,3 +1,5 @@
+import { useAppAgent } from '@easypid/agent'
+import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
@@ -22,13 +24,12 @@ import {
   shareProof,
   storeCredential,
 } from '@package/agent'
-import { useLingui } from '@lingui/react/macro'
-import { useAppAgent } from '@easypid/agent'
 
 import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
@@ -44,7 +45,6 @@ import { InteractionErrorSlide } from './slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
-import { commonMessages } from '@package/translations'
 
 type Query = { uri: string }
 

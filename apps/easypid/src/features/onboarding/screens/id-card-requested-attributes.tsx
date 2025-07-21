@@ -1,10 +1,10 @@
 import { bdrPidCredentialDisplay, bdrPidIssuerDisplay } from '@easypid/use-cases/bdrPidMetadata'
+import { useLingui } from '@lingui/react/macro'
 import { CardWithAttributes } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { Button, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import { useState } from 'react'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 interface OnboardingIdCardRequestedAttributesProps {
   goToNextStep: () => void

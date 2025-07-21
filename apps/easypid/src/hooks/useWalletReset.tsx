@@ -1,9 +1,9 @@
+import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import { useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { Alert } from 'react-native'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 export const useWalletReset = () => {
   const router = useRouter()

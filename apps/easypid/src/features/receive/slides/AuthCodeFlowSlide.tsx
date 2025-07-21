@@ -1,19 +1,13 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialDisplay } from '@package/agent'
 import { useWizard } from '@package/app'
 import { DualResponseButtons } from '@package/app/components/DualResponseButtons'
-import {
-  Heading,
-  MiniCardRowItem,
-  Paragraph,
-  YStack,
-  useToastController,
-} from '@package/ui'
+import { commonMessages } from '@package/translations'
+import { Heading, MiniCardRowItem, Paragraph, YStack, useToastController } from '@package/ui'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useEffect, useState } from 'react'
 import { Platform } from 'react-native'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 export type AuthCodeFlowDetails = {
   domain: string
@@ -42,14 +36,13 @@ export const AuthCodeFlowSlide = ({
   const { credentialAuthorizationCode } = useGlobalSearchParams<{
     credentialAuthorizationCode?: string
   }>()
-  const [browserResult, setBrowserResult] =
-    useState<WebBrowser.WebBrowserAuthSessionResult>()
+  const [browserResult, setBrowserResult] = useState<WebBrowser.WebBrowserAuthSessionResult>()
   const [hasHandledResult, setHasHandledResult] = useState(false)
 
   useEffect(() => {
     if (hasHandledResult) return
 
-     // NOTE: credentialAuthorizationCode is set in +native-intent
+    // NOTE: credentialAuthorizationCode is set in +native-intent
     // after an external browser or app redirects back to us. In some
     // cases the in-app browser is exited (e.g. when authenticating from
     // a native app) and thus we need to manually dimiss the auth session
@@ -74,14 +67,11 @@ export const AuthCodeFlowSlide = ({
           { customData: { preset: 'warning' } }
         )
 
-        browserResult.type === 'cancel' || browserResult.type === 'dismiss'
-          ? onCancel()
-          : onError()
+        browserResult.type === 'cancel' || browserResult.type === 'dismiss' ? onCancel() : onError()
         return
       }
 
-      const authorizationCode = new URL(browserResult.url)
-        .searchParams.get('code')
+      const authorizationCode = new URL(browserResult.url).searchParams.get('code')
       if (!authorizationCode) {
         toast.show(
           t({
@@ -108,13 +98,11 @@ export const AuthCodeFlowSlide = ({
     onCancel,
     onError,
     onNext,
+    t,
   ])
 
   const onPressContinue = async () => {
-    const result = await WebBrowser.openAuthSessionAsync(
-      authCodeFlowDetails.openUrl,
-      authCodeFlowDetails.redirectUri
-    )
+    const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
     setBrowserResult(result)
   }
 
@@ -123,20 +111,14 @@ export const AuthCodeFlowSlide = ({
       <YStack fg={1} gap="$6">
         <YStack gap="$4">
           <Heading>
-            <Trans
-              id="authCodeFlowSlide.heading"
-              comment="Heading shown when user is about to authenticate"
-            >
+            <Trans id="authCodeFlowSlide.heading" comment="Heading shown when user is about to authenticate">
               Verify your account
             </Trans>
           </Heading>
           <Paragraph>
-            <Trans
-              id="authCodeFlowSlide.description"
-              comment="Explanation for why user is redirected to external site"
-            >
-              To receive this card, you need to authorize with your account. You
-              will now be redirected to the issuer's website.
+            <Trans id="authCodeFlowSlide.description" comment="Explanation for why user is redirected to external site">
+              To receive this card, you need to authorize with your account. You will now be redirected to the issuer's
+              website.
             </Trans>
           </Paragraph>
         </YStack>
@@ -148,14 +130,7 @@ export const AuthCodeFlowSlide = ({
           backgroundColor={display.backgroundColor ?? '$grey-900'}
         />
       </YStack>
-      <YStack
-        btw="$0.5"
-        borderColor="$grey-200"
-        py="$4"
-        mx="$-4"
-        px="$4"
-        bg="$background"
-      >
+      <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
         <DualResponseButtons
           align="horizontal"
           acceptText={t({

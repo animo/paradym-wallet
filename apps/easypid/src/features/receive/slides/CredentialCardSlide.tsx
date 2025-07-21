@@ -1,25 +1,16 @@
+import { useLingui } from '@lingui/react/macro'
 import type { CredentialDisplay } from '@package/agent'
 import { DualResponseButtons, useWizard } from '@package/app'
-import {
-  Heading,
-  MiniCardRowItem,
-  Paragraph,
-  Stack,
-  YStack,
-} from '@package/ui'
-import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
+import { Heading, MiniCardRowItem, Paragraph, Stack, YStack } from '@package/ui'
 
 interface CredentialCardSlideProps {
   type: 'presentation' | 'pin' | 'noAuth'
   display: CredentialDisplay
 }
 
-const getContentType = (
-  type: 'presentation' | 'pin' | 'noAuth',
-  issuerName: string
-) => {
-  const {t } = useLingui()
+const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: string) => {
+  const { t } = useLingui()
   switch (type) {
     case 'presentation':
       return {
@@ -31,8 +22,7 @@ const getContentType = (
         subtitle: t({
           id: 'credentialCardSlide.subtitle.presentation',
           message: `To receive this card from ${issuerName}, you need to share cards from your wallet.`,
-          comment:
-            'Subtitle shown when presentation of other credentials is required',
+          comment: 'Subtitle shown when presentation of other credentials is required',
         }),
       }
     case 'pin':
@@ -45,8 +35,7 @@ const getContentType = (
         subtitle: t({
           id: 'credentialCardSlide.subtitle.pin',
           message: `To receive this card from ${issuerName}, you need to enter a PIN.`,
-          comment:
-            'Subtitle shown when entering a PIN is required to receive the credential',
+          comment: 'Subtitle shown when entering a PIN is required to receive the credential',
         }),
       }
     default:
@@ -59,17 +48,13 @@ const getContentType = (
         subtitle: t({
           id: 'credentialCardSlide.subtitle.default',
           message: `${issuerName} wants to issue you the following card:`,
-          comment:
-            'Subtitle shown when the issuer wants to give the user a card with no auth required',
+          comment: 'Subtitle shown when the issuer wants to give the user a card with no auth required',
         }),
       }
   }
 }
 
-export const CredentialCardSlide = ({
-  type = 'noAuth',
-  display,
-}: CredentialCardSlideProps) => {
+export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCardSlideProps) => {
   const { t } = useLingui()
   const { onNext, onCancel } = useWizard()
 

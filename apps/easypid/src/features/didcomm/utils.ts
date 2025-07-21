@@ -1,6 +1,5 @@
 import { defineMessage } from '@lingui/core/macro'
-import { _t } from '@lingui/react/macro'
-
+import type { _t } from '@lingui/react/macro'
 
 const messages = {
   issueTitle: defineMessage({

@@ -1,4 +1,5 @@
 import { useDevelopmentMode } from '@easypid/hooks'
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
 import {
@@ -18,7 +19,6 @@ import {
 } from '@package/ui'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Trans, useLingui } from '@lingui/react/macro'
 
 export type FunkeTrustDetailScreenProps = {
   trustMechanism: TrustMechanism
@@ -106,27 +106,31 @@ export function FunkeTrustDetailScreen({
                 {isDevelopmentModeEnabled && <Paragraph>({trustMechanismName})</Paragraph>}
               </Heading>
               <Paragraph>
-                
-                {trustedEntities.length > 0 ?  name ? t({
-                  id: 'trust.approvedList',
-                  comment: 'A sentence that introduces a list of organizations that approved the current party',
-                  message: `A list of organizations that have approved ${name}.`,
-                }) : t({
-                  id: 'trust.approvedListWithoutOrganizationName',
-                  comment: 'A sentence that introduces a list of organizations that approved the current party, but the organization name is not known',
-                  message: `A list of organizations that have approved this unknown organization.`,
-                })
-              : name ?  t({
-                    id: 'trust.noApprovals',
-                    comment: 'A message shown when there are no organizations that approved the current party',
-                    message: `There are no organizations that have approved ${name}.`,
-                  })  : t({
-                    id: 'trust.noApprovalsWithoutOrganizationName',
-                    comment: 'A message shown when there are no organizations that approved the current party, but the organization name is not known',
-                    message: `There are no organizations that have approved this unknown organization.`,
-                  })
-              
-              }
+                {trustedEntities.length > 0
+                  ? name
+                    ? t({
+                        id: 'trust.approvedList',
+                        comment: 'A sentence that introduces a list of organizations that approved the current party',
+                        message: `A list of organizations that have approved ${name}.`,
+                      })
+                    : t({
+                        id: 'trust.approvedListWithoutOrganizationName',
+                        comment:
+                          'A sentence that introduces a list of organizations that approved the current party, but the organization name is not known',
+                        message: 'A list of organizations that have approved this unknown organization.',
+                      })
+                  : name
+                    ? t({
+                        id: 'trust.noApprovals',
+                        comment: 'A message shown when there are no organizations that approved the current party',
+                        message: `There are no organizations that have approved ${name}.`,
+                      })
+                    : t({
+                        id: 'trust.noApprovalsWithoutOrganizationName',
+                        comment:
+                          'A message shown when there are no organizations that approved the current party, but the organization name is not known',
+                        message: 'There are no organizations that have approved this unknown organization.',
+                      })}
               </Paragraph>
             </YStack>
 

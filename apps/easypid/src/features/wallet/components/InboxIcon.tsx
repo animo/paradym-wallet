@@ -1,3 +1,4 @@
+import { t } from '@lingui/macro'
 import { useHasInboxNotifications } from '@package/agent/hooks'
 import { useHaptics } from '@package/app'
 import { Circle, IconContainer } from '@package/ui'
@@ -5,7 +6,6 @@ import { AnimatedStack, Stack } from '@package/ui/base/Stacks'
 import { HeroIcons } from '@package/ui/content/Icon'
 import { useRouter } from 'expo-router'
 import { ZoomIn, ZoomOut } from 'react-native-reanimated'
-import { t } from '@lingui/macro'
 
 export function InboxIcon() {
   const { push } = useRouter()
@@ -27,12 +27,7 @@ export function InboxIcon() {
           <Circle size={12} backgroundColor="$primary-500" />
         </AnimatedStack>
       )}
-      <IconContainer
-        bg="white"
-        aria-label={ariaLabel}
-        icon={<HeroIcons.Bell />}
-        onPress={pushToInbox}
-      />
+      <IconContainer bg="white" aria-label={ariaLabel} icon={<HeroIcons.Bell />} onPress={pushToInbox} />
     </Stack>
   )
 }

@@ -1,7 +1,7 @@
-import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
-import { useState } from 'react'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
+import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { useState } from 'react'
 
 interface InteractionErrorSlideProps {
   reason?: string

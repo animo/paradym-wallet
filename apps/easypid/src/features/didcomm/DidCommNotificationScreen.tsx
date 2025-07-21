@@ -1,5 +1,7 @@
 import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { defineMessage } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import {
   type ResolveOutOfBandInvitationResultSuccess,
   parseDidCommInvitation,
@@ -16,8 +18,6 @@ import { ConnectionSlides } from './ConnectionSlides'
 import { CredentialSlides } from './CredentialSlides'
 import { PresentationSlides } from './PresentationSlides'
 import { getFlowConfirmationText } from './utils'
-import { useLingui } from '@lingui/react/macro'
-import { defineMessage } from '@lingui/core/macro'
 
 type Query = {
   invitation?: string
@@ -38,7 +38,6 @@ const messages = {
     comment: 'Generic error message shown when an invitation could not be parsed',
   }),
 }
-
 
 export function DidCommNotificationScreen() {
   const { agent } = useParadymAgent()
@@ -101,13 +100,11 @@ export function DidCommNotificationScreen() {
           return
         }
 
-
         const parseResult = await parseDidCommInvitation(agent, invitation)
         if (!parseResult.success) {
           setErrorReason(parseResult.error)
           return
         }
-
 
         const resolveResult = await resolveOutOfBandInvitation(agent, parseResult.result)
         if (!resolveResult.success) {
@@ -131,7 +128,7 @@ export function DidCommNotificationScreen() {
     if (params.invitation || params.invitationUrl) {
       void handleInvitation()
     }
-  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled])
+  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled, t])
 
   // Delay the navigation to hide the fact we're loading in the new slides based on the flow type
   useEffect(() => {

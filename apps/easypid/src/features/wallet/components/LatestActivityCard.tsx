@@ -1,60 +1,60 @@
 import { useActivities } from '@easypid/features/activity/activityRecord'
+import { defineMessage } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { useCredentialsForDisplay } from '@package/agent'
 import { useHaptics } from '@package/app/hooks'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
-import { defineMessage } from '@lingui/core/macro'
-import { useLingui } from '@lingui/react/macro'
 
 const recentActivityTitle = defineMessage({
-    id: 'activity.latest.title',
-    message: 'Recent activity',
-    comment: 'Section title for the latest activity card',
-  })
+  id: 'activity.latest.title',
+  message: 'Recent activity',
+  comment: 'Section title for the latest activity card',
+})
 
-  const noActivityDescription = defineMessage({
-    id: 'activity.latest.noActivity',
-    message: 'No activity yet',
-    comment: 'Description shown if the user has no activity history',
-  })
+const noActivityDescription = defineMessage({
+  id: 'activity.latest.noActivity',
+  message: 'No activity yet',
+  comment: 'Description shown if the user has no activity history',
+})
 
-  const sharingFailed = defineMessage({
-    id: 'activity.latest.sharingFailed',
-    message: 'Sharing failed',
-    comment: 'Shown if the last sharing activity failed or was stopped',
-  })
+const sharingFailed = defineMessage({
+  id: 'activity.latest.sharingFailed',
+  message: 'Sharing failed',
+  comment: 'Shown if the last sharing activity failed or was stopped',
+})
 
-  const sharedCard = defineMessage({
-    id: 'activity.latest.sharedCard',
-    message: 'Shared card',
-    comment: 'Shown if a single credential was shared successfully',
-  })
+const sharedCard = defineMessage({
+  id: 'activity.latest.sharedCard',
+  message: 'Shared card',
+  comment: 'Shown if a single credential was shared successfully',
+})
 
-  const sharedCards = defineMessage({
-    id: 'activity.latest.sharedCards',
-    message: 'Shared cards',
-    comment: 'Shown if multiple credentials were shared successfully',
-  })
+const sharedCards = defineMessage({
+  id: 'activity.latest.sharedCards',
+  message: 'Shared cards',
+  comment: 'Shown if multiple credentials were shared successfully',
+})
 
-  const signingFailed = defineMessage({
-    id: 'activity.latest.signingFailed',
-    message: 'Signing failed',
-    comment: 'Shown if signing a document failed or was cancelled',
-  })
+const signingFailed = defineMessage({
+  id: 'activity.latest.signingFailed',
+  message: 'Signing failed',
+  comment: 'Shown if signing a document failed or was cancelled',
+})
 
-  const signedDocument = defineMessage({
-    id: 'activity.latest.signedDocument',
-    message: 'Signed document',
-    comment: 'Shown if a document was signed successfully',
-  })
+const signedDocument = defineMessage({
+  id: 'activity.latest.signedDocument',
+  message: 'Signed document',
+  comment: 'Shown if a document was signed successfully',
+})
 
-  const fallbackCardName = defineMessage({
-    id: 'activity.latest.newCardFallback',
-    message: 'new card',
-    comment: 'Fallback name if a received credential has no display name',
-  })
+const fallbackCardName = defineMessage({
+  id: 'activity.latest.newCardFallback',
+  message: 'new card',
+  comment: 'Fallback name if a received credential has no display name',
+})
 
 export function LatestActivityCard() {
   const { push } = useRouter()
@@ -65,8 +65,6 @@ export function LatestActivityCard() {
   const { credentials } = useCredentialsForDisplay()
 
   const pushToActivity = withHaptics(() => push('/activity'))
-
-  
 
   const content = useMemo(() => {
     if (!latestActivity) {
@@ -90,9 +88,7 @@ export function LatestActivityCard() {
     }
 
     if (latestActivity.type === 'signed') {
-      const description = ['failed', 'stopped'].includes(latestActivity.status)
-        ? t(signingFailed)
-        : t(signedDocument)
+      const description = ['failed', 'stopped'].includes(latestActivity.status) ? t(signingFailed) : t(signedDocument)
 
       return { title: date, description }
     }
@@ -111,18 +107,7 @@ export function LatestActivityCard() {
     }
 
     return null
-  }, [
-    latestActivity,
-    credentials,
-    recentActivityTitle,
-    noActivityDescription,
-    sharedCard,
-    sharedCards,
-    sharingFailed,
-    signedDocument,
-    signingFailed,
-    fallbackCardName,
-  ])
+  }, [latestActivity, credentials, t])
 
   if (!content) return null
 

@@ -1,4 +1,6 @@
+import { useLingui } from '@lingui/react/macro'
 import { useWizard } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Button,
@@ -12,18 +14,13 @@ import {
 } from '@package/ui'
 import { useEffect } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 interface LoadingRequestSlideProps {
   isLoading: boolean
   isError: boolean
 }
 
-export const LoadingRequestSlide = ({
-  isLoading,
-  isError,
-}: LoadingRequestSlideProps) => {
+export const LoadingRequestSlide = ({ isLoading, isError }: LoadingRequestSlideProps) => {
   const { t } = useLingui()
   const { onNext, onCancel } = useWizard()
   const canProceed = useMinimumLoadingTime()

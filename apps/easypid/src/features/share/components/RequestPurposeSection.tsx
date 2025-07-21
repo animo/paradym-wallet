@@ -1,5 +1,6 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import { useLingui } from '@lingui/react/macro'
 import type { DisplayImage } from '@package/agent'
 import { isAndroid } from '@package/app'
 import {
@@ -18,7 +19,6 @@ import {
 } from '@package/ui'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
-import { useLingui } from '@lingui/react/macro'
 
 interface RequestPurposeSectionProps {
   purpose: string

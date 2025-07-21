@@ -20,6 +20,8 @@ import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
 
 import { useAppIcon } from '@easypid/config/copy'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { SystemBars } from 'react-native-edge-to-edge'
 import {
   checkMdocPermissions,
@@ -29,8 +31,6 @@ import {
   shutdownDataTransfer,
   waitForDeviceRequest,
 } from '../proximity'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 export function FunkeOfflineQrScreen() {
   const appIcon = useAppIcon()
@@ -110,12 +110,14 @@ export function FunkeOfflineQrScreen() {
         t({
           id: 'offlineQr.permissionSettingsTitle',
           message: 'Please enable required permissions in your phone settings',
-          comment: 'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
+          comment:
+            'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
         }),
         t({
           id: 'offlineQr.permissionSettingsDescription',
           message: 'Sharing with QR-Code needs access to Bluetooth and Location.',
-          comment: 'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
+          comment:
+            'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
         }),
         [
           {

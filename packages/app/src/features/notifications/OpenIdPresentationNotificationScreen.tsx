@@ -9,11 +9,11 @@ import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
-import { commonMessages } from '@package/translations'
-import { useLingui } from '@lingui/react/macro'
 
 type Query = {
   uri: string

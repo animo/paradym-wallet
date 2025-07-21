@@ -1,4 +1,6 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { SlideWizard } from '@package/app/components/SlideWizard'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Button,
@@ -13,8 +15,6 @@ import {
 } from '@package/ui'
 import { ZoomIn } from 'react-native-reanimated'
 import { getFlowConfirmationText } from './utils'
-import { useLingui, Trans } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 type ConnectionSlidesProps = {
   name: string

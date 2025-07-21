@@ -1,12 +1,12 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { type OnboardingStep, pidSetupSteps, pidSetupMessages } from '@easypid/utils/sharedPidSetup'
+import { type OnboardingStep, pidSetupMessages, pidSetupSteps } from '@easypid/utils/sharedPidSetup'
+import { defineMessage } from '@lingui/core/macro'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingDataProtection } from './screens/data-protection'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import { OnboardingWalletExplanation } from './screens/wallet-explanation'
 import OnboardingWelcome from './screens/welcome'
-import { defineMessage } from '@lingui/core/macro'
 
 // Shared messages
 const pinTitle = defineMessage({

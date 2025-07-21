@@ -1,6 +1,8 @@
 import { useSecureUnlock } from '@easypid/agent'
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
+import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
 import { router, useLocalSearchParams } from 'expo-router'
 import type React from 'react'
@@ -9,9 +11,6 @@ import { AccessibilityInfo, Alert } from 'react-native'
 import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
 import { resetWallet } from '../../utils/resetWallet'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
-
 
 export default function OnboardingScreens() {
   const { withHaptics } = useHaptics()

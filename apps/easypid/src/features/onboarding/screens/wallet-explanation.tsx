@@ -5,12 +5,12 @@ import { LinearTransition } from 'react-native-reanimated'
 import Carousel from 'react-native-reanimated-carousel'
 import type { ICarouselInstance } from 'react-native-reanimated-carousel'
 
+import { useLingui } from '@lingui/react/macro'
 import { useImageScaler } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import { WalletExplanation } from './assets/WalletExplanation'
 import { WalletHowItWorks } from './assets/WalletHowItWorks'
 import { WalletStoring } from './assets/WalletStoring'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 interface OnboardingWalletExplanationProps {
   onSkip: () => void

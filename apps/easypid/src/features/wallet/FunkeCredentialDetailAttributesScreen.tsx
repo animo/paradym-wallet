@@ -16,13 +16,13 @@ import { useRef, useState } from 'react'
 import { CredentialAttributes, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 
+import { useLingui } from '@lingui/react/macro'
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { FadeOutUp } from 'react-native-reanimated'
 import { FadeInUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CustomCredentialAttributes, hasCustomCredentialDisplay } from './components/CustomCredentialAttributes'
-import { useLingui } from '@lingui/react/macro'
 
 export function FunkeCredentialDetailAttributesScreen() {
   const { id } = useLocalSearchParams<{ id: CredentialForDisplayId }>()
@@ -150,37 +150,40 @@ export function FunkeCredentialDetailAttributesScreen() {
         items={[
           ...(isCustomDisplayAvailable
             ? [
-              {
-                icon: isShareableAttributesVisible ? (
-                  <HeroIcons.EyeSlash color="$grey-500" />
-                ) : (
-                  <HeroIcons.Eye color="$grey-500" />
-                ),
-               title:isShareableAttributesVisible ?  t({
-                  id:  'credentials.hideShareableAttributes',
-                  message: 'Hide shareable attributes',
-                  comment: 'Button label that toggles visibility of shareable attributes',
-                }) 
-		            : t({
-                  id: 'credentials.showShareableAttributes',
-                  message: 'Show shareable attributes',
-                  comment: 'Button label that toggles visibility of shareable attributes',
-                }),
-                onPress: handleToggleShareableAttributes,
-              },
-            ]
+                {
+                  icon: isShareableAttributesVisible ? (
+                    <HeroIcons.EyeSlash color="$grey-500" />
+                  ) : (
+                    <HeroIcons.Eye color="$grey-500" />
+                  ),
+                  title: isShareableAttributesVisible
+                    ? t({
+                        id: 'credentials.hideShareableAttributes',
+                        message: 'Hide shareable attributes',
+                        comment: 'Button label that toggles visibility of shareable attributes',
+                      })
+                    : t({
+                        id: 'credentials.showShareableAttributes',
+                        message: 'Show shareable attributes',
+                        comment: 'Button label that toggles visibility of shareable attributes',
+                      }),
+                  onPress: handleToggleShareableAttributes,
+                },
+              ]
             : []),
           {
             icon: <HeroIcons.CodeBracketFilled color="$grey-500" />,
-            title: isMetadataVisible ?  t({
-              id: 'credentials.hideMetadata',
-              message: 'Hide metadata attributes',
-              comment: 'Button label: toggles visibility of metadata attributes',
-            }) : t({
-              id: 'credentials.showMetadata',
-              message: 'Show metadata attributes',
-              comment: 'Button label: toggles visibility of metadata attributes',
-            }),
+            title: isMetadataVisible
+              ? t({
+                  id: 'credentials.hideMetadata',
+                  message: 'Hide metadata attributes',
+                  comment: 'Button label: toggles visibility of metadata attributes',
+                })
+              : t({
+                  id: 'credentials.showMetadata',
+                  message: 'Show metadata attributes',
+                  comment: 'Button label: toggles visibility of metadata attributes',
+                }),
             onPress: handleToggleMetadata,
           },
         ]}

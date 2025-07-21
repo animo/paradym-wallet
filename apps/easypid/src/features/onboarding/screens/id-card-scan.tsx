@@ -1,8 +1,8 @@
-import { Button, NfcScannerModalAndroid, YStack } from '@package/ui'
+import { useLingui } from '@lingui/react/macro'
 import { useImageScaler } from '@package/app/hooks'
+import { Button, NfcScannerModalAndroid, YStack } from '@package/ui'
 import { Platform } from 'react-native'
 import { ScanCard } from './assets/ScanCard'
-import { useLingui } from '@lingui/react/macro'
 
 export interface OnboardingIdCardScanProps {
   isCardAttached?: boolean

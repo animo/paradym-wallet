@@ -13,7 +13,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["apps/easypid/src/features/wallet/FunkeWalletScreen.tsx", 73]],
-		"translation" : "Hallo!"
+		"translation": "Hallo!"
 	},
 	"home.howDoesItWork": {
 		"message": "How does it work?",

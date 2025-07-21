@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro'
 import {
   type FormattedSubmission,
   type FormattedSubmissionEntryNotSatisfied,
@@ -7,7 +8,6 @@ import {
 } from '@package/agent'
 import { CardWithAttributes } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
-import { useLingui } from '@lingui/react/macro'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission

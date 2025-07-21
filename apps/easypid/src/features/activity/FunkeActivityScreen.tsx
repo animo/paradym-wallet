@@ -1,3 +1,5 @@
+import { defineMessage } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { ActivityRowItem } from '@package/app'
 import { TextBackButton } from '@package/app'
 import { useScrollViewPosition } from '@package/app/hooks'
@@ -16,8 +18,6 @@ import {
 import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 import { useActivities } from './activityRecord'
-import { useLingui } from '@lingui/react/macro'
-import { defineMessage } from '@lingui/core/macro'
 
 const activityMessages = {
   screenTitle: defineMessage({
@@ -46,8 +46,6 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
   const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { entityId } })
   const { t } = useLingui()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-
-
 
   const groupedActivities = useMemo(() => {
     return activities.reduce(
@@ -81,7 +79,6 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
             {t(activityMessages.noActivityTitle)}
           </Heading>
           <Paragraph ta="center">{t(activityMessages.noActivityDescription)}</Paragraph>
-
         </AnimatedStack>
       ) : isLoadingActivities ? (
         <YStack fg={1} ai="center" jc="center">

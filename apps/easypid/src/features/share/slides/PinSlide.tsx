@@ -37,7 +37,10 @@ export const PinSlide = ({ onPinSubmit, isLoading }: PinSlideProps) => {
     <YStack fg={1} jc="space-between">
       <YStack gap="$4">
         <Heading>
-          <Trans id="pinSlide.title" comment="Heading shown when user is asked to enter their app PIN to confirm a request">
+          <Trans
+            id="pinSlide.title"
+            comment="Heading shown when user is asked to enter their app PIN to confirm a request"
+          >
             Send data with your PIN code
           </Trans>
         </Heading>

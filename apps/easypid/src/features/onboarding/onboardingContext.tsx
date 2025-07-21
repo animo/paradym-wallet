@@ -13,13 +13,13 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { resetWallet } from '@easypid/utils/resetWallet'
-import { useLingui } from '@lingui/react/macro'
 import {
   type CardScanningState,
   type OnboardingPage,
   type OnboardingStep,
   SIMULATOR_PIN,
 } from '@easypid/utils/sharedPidSetup'
+import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
@@ -31,6 +31,7 @@ import {
 import { useHaptics } from '@package/app'
 import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
@@ -41,7 +42,6 @@ import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
 import { useShouldUseCloudHsm } from './useShouldUseCloudHsm'
-import { commonMessages } from '@package/translations'
 
 export type OnboardingContext = {
   currentStep: OnboardingStep['step']

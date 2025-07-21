@@ -177,15 +177,15 @@ export function FunkeRequestedAttributesDetailScreen({
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
             title: isMetadataVisible
               ? t({
-                id: 'optionSheet.hideMetadata',
-                message: 'Hide metadata attributes',
-                comment: 'Option to hide metadata in option sheet',
-              })
+                  id: 'optionSheet.hideMetadata',
+                  message: 'Hide metadata attributes',
+                  comment: 'Option to hide metadata in option sheet',
+                })
               : t({
-                id: 'optionSheet.showMetadata',
-                message: 'Show metadata attributes',
-                comment: 'Option to show metadata in option sheet',
-              }),
+                  id: 'optionSheet.showMetadata',
+                  message: 'Show metadata attributes',
+                  comment: 'Option to show metadata in option sheet',
+                }),
             onPress: handleToggleMetadata,
           },
         ]}

@@ -1,9 +1,9 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useInboxNotifications } from '@package/agent/hooks'
+import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
-import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
 import { FadeInDown } from 'react-native-reanimated'
-import { useLingui, Trans } from '@lingui/react/macro'
 
 export function InboxScreen() {
   const inboxNotifications = useInboxNotifications()

@@ -1,3 +1,4 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { type DisplayImage, useCredentialsForDisplay } from '@package/agent'
 import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
@@ -24,7 +25,6 @@ import { formatDate } from '@package/utils'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
-import { Trans, useLingui } from '@lingui/react/macro'
 
 export function FunkeCredentialsScreen() {
   const { credentials, isLoading: isLoadingCredentials } = useCredentialsForDisplay()
@@ -49,7 +49,6 @@ export function FunkeCredentialsScreen() {
           message: 'Cards',
           comment: 'Heading for the list of user credentials',
         })}
-
         isScrolledByOffset={isScrolledByOffset}
       />
 
@@ -127,7 +126,6 @@ export function FunkeCredentialsScreen() {
                   No cards found for "{searchQuery}"
                 </Trans>
               </Paragraph>
-
             )}
           </YStack>
         </ScrollView>

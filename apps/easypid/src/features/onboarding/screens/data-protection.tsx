@@ -1,12 +1,12 @@
 import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { useLingui } from '@lingui/react/macro'
 import { useImageScaler } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import { ProtectData } from './assets/ProtectData'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 interface OnboardingDataProtectionProps {
   goToNextStep: (shouldUseCloudHsm: boolean) => Promise<void>

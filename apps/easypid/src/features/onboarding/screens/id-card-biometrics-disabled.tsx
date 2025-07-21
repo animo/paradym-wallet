@@ -1,6 +1,6 @@
-import { Button, IdCard, YStack } from '@package/ui'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
+import { Button, IdCard, YStack } from '@package/ui'
 
 export interface OnboardingIdCardBiometricsDisabledProps {
   goToNextStep: () => void

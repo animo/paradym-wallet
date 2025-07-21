@@ -25,10 +25,7 @@ export function SigningSlide({ documentName, qtsp }: SigningSlideProps) {
           </Trans>
         </Heading>
         <Paragraph>
-          <Trans
-            id="signing.description"
-            comment="Explanation that the user is about to sign a document"
-          >
+          <Trans id="signing.description" comment="Explanation that the user is about to sign a document">
             You are about to sign <Paragraph emphasis>{documentName}</Paragraph>.
           </Trans>
         </Paragraph>

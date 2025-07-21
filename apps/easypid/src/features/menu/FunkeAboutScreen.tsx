@@ -1,17 +1,11 @@
-import {
-  FlexPage,
-  HeaderContainer,
-  InfoButton,
-  Paragraph,
-  YStack,
-} from '@package/ui'
+import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
 
 import { TextBackButton } from '@package/app'
 import { Linking } from 'react-native'
 
 import { useAppCopy } from '@easypid/config/copy'
-import * as Application from 'expo-application'
 import { useLingui } from '@lingui/react/macro'
+import * as Application from 'expo-application'
 
 export function FunkeAboutScreen() {
   const { t } = useLingui()

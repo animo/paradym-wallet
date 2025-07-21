@@ -1,6 +1,8 @@
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 
+import { defineMessage } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useCredentialsForDisplay } from '@package/agent'
 import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
@@ -11,8 +13,6 @@ import { RequestPurposeSection } from '../share/components/RequestPurposeSection
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
 import { type IssuanceActivity, type PresentationActivity, type SignedActivity, useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
-import { useLingui, Trans } from '@lingui/react/macro'
-import { defineMessage } from '@lingui/core/macro'
 
 export function FunkeActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -81,7 +81,8 @@ const activityMessages = {
   noPurposeGiven: defineMessage({
     id: 'activity.noPurposeGiven',
     message: 'No information was provided on the purpose of the data request. Be cautious',
-    comment: 'Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish.'
+    comment:
+      'Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish.',
   }),
   documentSigned: defineMessage({
     id: 'activity.documentSigned',
@@ -112,18 +113,18 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
   const { t } = useLingui()
 
-  const description = activity.credentialIds.length > 1
-    ? t({
-      id: 'activity.receivedMultiple',
-      message: `You have received the following cards from ${activity.entity.name}.`,
-      comment: 'Shown in activity detail when multiple credentials have been received',
-    })
-    :
-    t({
-      id: 'activity.receivedSingle',
-      message: `You have received the following card from ${activity.entity.name}.`,
-      comment: 'Shown in activity detail when one credential has been received',
-    })
+  const description =
+    activity.credentialIds.length > 1
+      ? t({
+          id: 'activity.receivedMultiple',
+          message: `You have received the following cards from ${activity.entity.name}.`,
+          comment: 'Shown in activity detail when multiple credentials have been received',
+        })
+      : t({
+          id: 'activity.receivedSingle',
+          message: `You have received the following card from ${activity.entity.name}.`,
+          comment: 'Shown in activity detail when one credential has been received',
+        })
 
   return (
     <Stack gap="$6">
@@ -138,9 +139,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
             </Trans>
           </Heading>
 
-          <Paragraph>
-            {description}
-          </Paragraph>
+          <Paragraph>{description}</Paragraph>
         </YStack>
         {activity.credentialIds.map((credentialId) => {
           const credential = credentials.find((credential) => credential.id === credentialId)
@@ -188,28 +187,25 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
     activity.status === 'success'
       ? amountShared > 1
         ? t({
-          id: 'activity.sharedSummaryPlural',
-          message: `${amountShared} credentials were shared.`,
-          comment: 'Shown when multiple credentials were successfully shared',
-        })
+            id: 'activity.sharedSummaryPlural',
+            message: `${amountShared} credentials were shared.`,
+            comment: 'Shown when multiple credentials were successfully shared',
+          })
         : t({
-          id: 'activity.sharedSummarySingle',
-          message: '1 credential was shared.',
-          comment: 'Shown when one credential was successfully shared',
-        })
+            id: 'activity.sharedSummarySingle',
+            message: '1 credential was shared.',
+            comment: 'Shown when one credential was successfully shared',
+          })
       : t({
-        id: 'activity.sharedSummaryNone',
-        message: 'No credentials were shared.',
-        comment: 'Shown when sharing failed and no credentials were shared',
-      })
-
+          id: 'activity.sharedSummaryNone',
+          message: 'No credentials were shared.',
+          comment: 'Shown when sharing failed and no credentials were shared',
+        })
 
   return (
     <Stack gap="$6">
       <RequestPurposeSection
-        purpose={
-          activity.request.purpose ?? t(activityMessages.noPurposeGiven)
-        }
+        purpose={activity.request.purpose ?? t(activityMessages.noPurposeGiven)}
         logo={activity.entity.logo}
         overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
       />
@@ -225,7 +221,9 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
               </Trans>
             </Heading>
             <Paragraph>
-              {activity.status === 'success' ? t(activityMessages.documentSigned) : t(activityMessages.documentNotSigned)}
+              {activity.status === 'success'
+                ? t(activityMessages.documentSigned)
+                : t(activityMessages.documentNotSigned)}
             </Paragraph>
           </YStack>
           <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
@@ -241,22 +239,19 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
                   Signing with {activity.transaction?.qtsp.name}
                 </Trans>
               </Paragraph>
-
-
             </YStack>
             <MiniDocument logoUrl={activity.transaction?.qtsp.logo?.url} />
           </XStack>
         </YStack>
-      )
-      }
+      )}
       <Stack gap="$3">
         <Stack gap="$2">
           <Heading variant="sub2">
-            {activity.status === 'success' ? t(activityMessages.sharedAttributes) : t(activityMessages.requestedInformation)}
+            {activity.status === 'success'
+              ? t(activityMessages.sharedAttributes)
+              : t(activityMessages.requestedInformation)}
           </Heading>
-          <Paragraph>
-            {description}
-          </Paragraph>
+          <Paragraph>{description}</Paragraph>
         </Stack>
 
         {activity.request.credentials && activity.request.credentials.length > 0 ? (

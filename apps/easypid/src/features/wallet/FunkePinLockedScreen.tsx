@@ -1,10 +1,10 @@
 import { useSecureUnlock } from '@easypid/agent'
 import { resetWallet } from '@easypid/utils/resetWallet'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 export const FunkePinLockedScreen = () => {
   const secureUnlock = useSecureUnlock()
@@ -39,10 +39,7 @@ export const FunkePinLockedScreen = () => {
       <YStack fg={1} gap="$6" mt="$6">
         <YStack gap="$6">
           <Heading variant="h1">
-            <Trans
-              id="pinLocked.title"
-              comment="Heading shown when the user has entered too many incorrect PINs"
-            >
+            <Trans id="pinLocked.title" comment="Heading shown when the user has entered too many incorrect PINs">
               Too many incorrect attempts
             </Trans>
           </Heading>
@@ -56,9 +53,7 @@ export const FunkePinLockedScreen = () => {
           </Paragraph>
         </YStack>
       </YStack>
-      <Button.Solid onPress={onResetWallet}>
-        {t(commonMessages.reset)}
-      </Button.Solid>
+      <Button.Solid onPress={onResetWallet}>{t(commonMessages.reset)}</Button.Solid>
     </FlexPage>
   )
 }

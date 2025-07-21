@@ -5,9 +5,9 @@ import { OnboardingIdCardPinEnter } from '@easypid/features/onboarding/screens/i
 import { OnboardingIdCardRequestedAttributes } from '@easypid/features/onboarding/screens/id-card-requested-attributes'
 import { OnboardingIdCardScan } from '@easypid/features/onboarding/screens/id-card-scan'
 import { OnboardingIdCardVerify } from '@easypid/features/onboarding/screens/id-card-verify'
-import type { _t } from '@lingui/react/macro'
 import type { MessageDescriptor } from '@lingui/core'
 import { defineMessage } from '@lingui/core/macro'
+import type { _t } from '@lingui/react/macro'
 
 export const SIMULATOR_PIN = '276536'
 

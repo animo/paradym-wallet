@@ -1,6 +1,6 @@
+import { defineMessage } from '@lingui/core/macro'
 import { useAssets } from 'expo-asset'
 import { type AppType, CURRENT_APP_TYPE } from './appType'
-import { defineMessage } from '@lingui/core/macro'
 
 export const copy = {
   FUNKE_WALLET: {

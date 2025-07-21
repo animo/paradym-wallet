@@ -15,12 +15,12 @@ import { useState } from 'react'
 import { DeleteCredentialSheet, TextBackButton } from '@package/app'
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
 import { useHaptics } from '@package/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from '@package/app/components'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Trans, useLingui } from '@lingui/react/macro'
 
 export function FunkeCredentialDetailScreen() {
   const toast = useToastController()
@@ -29,7 +29,7 @@ export function FunkeCredentialDetailScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
-  const { t} = useLingui()
+  const { t } = useLingui()
 
   const { credential } = useCredentialForDisplayById(id)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -96,7 +96,8 @@ export function FunkeCredentialDetailScreen() {
               </Heading>
               <Paragraph numberOfLines={2} ta="center">
                 <Trans id="common.issuedBy" comment="Prefix before issuer name">
-                  Issued by {credential.display.issuer.name}.</Trans>
+                  Issued by {credential.display.issuer.name}.
+                </Trans>
               </Paragraph>
             </Stack>
             <YStack w="100%" gap="$2">

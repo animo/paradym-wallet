@@ -7,10 +7,10 @@ import {
   type PidSdJwtVcAttributes,
   mapPidAttributeName,
 } from '@easypid/utils/pidCustomMetadata'
+import { Trans } from '@lingui/react/macro'
 import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes } from '@package/app'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
-import { Trans } from '@lingui/react/macro'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay

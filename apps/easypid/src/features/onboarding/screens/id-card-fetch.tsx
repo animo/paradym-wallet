@@ -1,7 +1,7 @@
-import { Button, HeroIcons, IdCard, Stack, YStack } from '@package/ui'
-import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
+import { Button, HeroIcons, IdCard, Stack, YStack } from '@package/ui'
+import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated'
 
 export interface OnboardingIdCardFetchProps {
   goToNextStep: () => void

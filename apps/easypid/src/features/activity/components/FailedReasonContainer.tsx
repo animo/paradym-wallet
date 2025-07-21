@@ -1,7 +1,7 @@
-import { HeroIcons, MessageBox } from '@package/ui'
-import type { SharingFailureReason } from '../activityRecord'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
+import { HeroIcons, MessageBox } from '@package/ui'
+import type { SharingFailureReason } from '../activityRecord'
 
 interface FailedReasonContainerProps {
   reason: SharingFailureReason

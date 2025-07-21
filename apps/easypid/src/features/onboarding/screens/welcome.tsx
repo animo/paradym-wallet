@@ -1,5 +1,5 @@
-import { Blob, Button, FlexPage, Heading, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
 import { useLingui } from '@lingui/react/macro'
+import { Blob, Button, FlexPage, Heading, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
 
 export interface OnboardingWelcomeProps {
   goToNextStep: () => void

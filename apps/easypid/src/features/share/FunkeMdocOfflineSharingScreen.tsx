@@ -3,20 +3,20 @@ import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProvid
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
+import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   type FormattedSubmission,
   getSubmissionForMdocDocumentRequest,
 } from '@package/agent'
 import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array

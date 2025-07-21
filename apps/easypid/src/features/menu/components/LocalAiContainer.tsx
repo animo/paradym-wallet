@@ -3,13 +3,13 @@ import { HeroIcons } from '@package/ui/content/Icon'
 import { Switch } from '@package/ui/base/Switch'
 
 import { useIsDeviceCapable, useLLM } from '@easypid/llm'
-import { ConfirmationSheet } from '@package/app/components/ConfirmationSheet'
-import { useHasInternetConnection, useIsConnectedToWifi } from '@package/app/hooks'
-import { useToastController } from '@package/ui'
-import { useState } from 'react'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { ConfirmationSheet } from '@package/app/components/ConfirmationSheet'
+import { useHasInternetConnection, useIsConnectedToWifi } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
+import { useToastController } from '@package/ui'
+import { useState } from 'react'
 
 const localAiMessages = {
   modelNotSupportedTitle: defineMessage({
@@ -148,10 +148,10 @@ export function LocalAiContainer() {
               ? t(localAiMessages.modelActive)
               : downloadProgress
                 ? t({
-                  id: 'localAi.status.downloading',
-                  message: `Downloading model ${(downloadProgress * 100).toFixed(2)}%`,
-                  comment: 'Status text while model is downloading, showing percentage',
-                })
+                    id: 'localAi.status.downloading',
+                    message: `Downloading model ${(downloadProgress * 100).toFixed(2)}%`,
+                    comment: 'Status text while model is downloading, showing percentage',
+                  })
                 : t(localAiMessages.modelPreparing)
             : ''
         }
@@ -166,13 +166,9 @@ export function LocalAiContainer() {
         title={t(localAiMessages.confirmTitle)}
         confirmText={t(localAiMessages.confirmButton)}
         cancelText={t(commonMessages.cancel)}
-        description={[
-          t(localAiMessages.confirmDescription1),
-          t(localAiMessages.confirmDescription2),
-        ]}
+        description={[t(localAiMessages.confirmDescription1), t(localAiMessages.confirmDescription2)]}
         onConfirm={onActivateModel}
       />
-
     </>
   )
 }
