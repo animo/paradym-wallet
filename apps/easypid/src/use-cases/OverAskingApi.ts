@@ -1,3 +1,4 @@
+// translations: too complex 
 const PLAYGROUND_URL = 'https://funke.animo.id'
 
 export const EXCLUDED_ATTRIBUTES_FOR_ANALYSIS = ['Issuing authority', 'Issuing country', 'Issued at', 'Expires at']
