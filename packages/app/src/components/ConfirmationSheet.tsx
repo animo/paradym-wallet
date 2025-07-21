@@ -1,3 +1,4 @@
+//translations: too complex
 import { FloatingSheet, Heading, HeroIcons, Paragraph, Stack, XStack } from '@package/ui'
 import { DualResponseButtons } from './DualResponseButtons'
 

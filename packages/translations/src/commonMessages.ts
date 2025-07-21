@@ -48,6 +48,11 @@ export const commonMessages = {
     message: 'Yes',
     comment: 'Generic yes/confirm action label',
   }),
+  no: defineMessage({
+    id: 'common.no',
+    message: 'No',
+    comment: 'Generic no/deny action label',
+  }),
 
   enterPin: defineMessage({
     id: 'common.enterPin',
@@ -160,4 +165,85 @@ export const commonMessages = {
       message: `Issued by ${name}`,
       comment: 'Label showing the name of the credential issuer, e.g. "Issued by Government of Austria"',
     }),
+  cardAdded: defineMessage({
+    id: 'common.cardAdded',
+    message: 'Card added',
+    comment: 'Shown when a card has been successfully received',
+  }),
+  cardRejected: defineMessage({
+    id: 'common.cardRejected',
+    message: 'Card rejected',
+    comment: 'Shown when a received card was rejected',
+  }),
+  cardNotAdded: defineMessage({
+    id: 'common.cardNotAdded',
+    message: 'Card not added',
+    comment: 'Shown when receiving a card failed',
+  }),
+  documentSigned: defineMessage({
+    id: 'common.documentSigned',
+    message: 'Document signed',
+    comment: 'Shown when signing a document succeeded',
+  }),
+  signingStopped: defineMessage({
+    id: 'common.signingStopped',
+    message: 'Signing stopped',
+    comment: 'Shown when the signing process was stopped',
+  }),
+  signingFailed: defineMessage({
+    id: 'common.signingFailed',
+    message: 'Signing failed',
+    comment: 'Shown when the signing process failed',
+  }),
+  informationShared: defineMessage({
+    id: 'common.informationShared',
+    message: 'Information shared',
+    comment: 'Shown when data was successfully shared',
+  }),
+  sharingStopped: defineMessage({
+    id: 'common.sharingStopped',
+    message: 'Sharing stopped',
+    comment: 'Shown when the user stopped the data sharing process',
+  }),
+  sharingFailed: defineMessage({
+    id: 'common.sharingFailed',
+    message: 'Sharing failed',
+    comment: 'Shown when data sharing failed',
+  }),
+  archiveCardTitle: defineMessage({
+    id: 'common.archiveCardTitle',
+    message: 'Archive card?',
+    comment: 'Title for confirmation dialog to archive a card',
+  }),
+  archiveCardDescription: (name: string) =>
+    defineMessage({
+      id: 'common.archiveCardDescription',
+      message: `This will make ${name} unusable and delete it from your wallet.`,
+      comment: 'Description in confirmation dialog explaining card archiving',
+    }),
+  archiveCardConfirm: defineMessage({
+    id: 'common.archiveCardConfirm',
+    message: 'Yes, archive',
+    comment: 'Confirm button text for archiving a card',
+  }),
+  toastCardArchived: defineMessage({
+    id: 'common.toastCardArchived',
+    message: 'Card successfully archived',
+    comment: 'Toast message shown after successfully archiving a card',
+  }),
+  toastCardDeleteError: defineMessage({
+    id: 'common.toastCardDeleteError',
+    message: 'Error deleting card',
+    comment: 'Toast message shown when card deletion failed',
+  }),
+  expired: defineMessage({
+    id: 'common.expired',
+    message: 'Expired',
+    comment: 'Label shown on a credential card when it is expired',
+  }),
+  revoked: defineMessage({
+    id: 'common.revoked',
+    message: 'Revoked',
+    comment: 'Label shown on a credential card when it is revoked',
+  }),
 }

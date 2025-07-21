@@ -1,3 +1,5 @@
+import { Trans, type _t, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import {
   FloatingSheet,
   Heading,
@@ -19,7 +21,6 @@ import {
   type FormattedCredentialValueObject,
   formatCredentialData,
 } from '../utils/formatSubject'
-
 export type CredentialAttributesProps = {
   attributes: Record<string, unknown>
   headerTitle?: string
@@ -69,10 +70,17 @@ export function FormattedCredentialAttributes({ attributes, headerTitle }: Formt
   )
 }
 
-const valueToPrimitive = (value: string | number | boolean) =>
-  typeof value === 'boolean' ? (value ? 'Yes' : 'No') : typeof value === 'number' ? value.toString() : value
+const valueToPrimitive = (t: typeof _t, value: string | number | boolean) =>
+  typeof value === 'boolean'
+    ? value
+      ? t(commonMessages.yes)
+      : t(commonMessages.no)
+    : typeof value === 'number'
+      ? value.toString()
+      : value
 
 const AnyRow = ({ item, parentName }: { item: FormattedCredentialValue; parentName?: string | number }) => {
+  const { t } = useLingui()
   if (item.type === 'object' || item.type === 'array') {
     return <NestedRow parentName={parentName} item={item} />
   }
@@ -82,10 +90,10 @@ const AnyRow = ({ item, parentName }: { item: FormattedCredentialValue; parentNa
   }
 
   if (typeof item.name === 'number' || !Number.isNaN(Number(item.name))) {
-    return <NamelessValueRow value={valueToPrimitive(item.value)} />
+    return <NamelessValueRow value={valueToPrimitive(t, item.value)} />
   }
 
-  return <ValueRow name={item.name} value={valueToPrimitive(item.value)} />
+  return <ValueRow name={item.name} value={valueToPrimitive(t, item.value)} />
 }
 
 const NestedRow = ({
@@ -160,7 +168,11 @@ const ImageRow = ({ name, value }: { name: string | number; value: string }) => 
           <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
             {name}
           </Paragraph>
-          <Paragraph color="$grey-900">Tap to view</Paragraph>
+          <Paragraph color="$grey-900">
+            <Trans id="common.tapToView" comment="Label shown on image rows prompting user to tap to view image">
+              Tap to view
+            </Trans>
+          </Paragraph>
         </YStack>
         <YStack br="$2" overflow="hidden">
           <Image height={36} width={36} src={value} alt={name.toString()} />
