@@ -32,7 +32,18 @@ export const commonMessages = {
     message: 'Success!',
     comment: 'Title shown when an action completes successfully',
   }),
-
+  confirmStop: defineMessage({
+    id: 'common.confirmStop',
+    message: 'Yes, stop',
+  }),
+  confirmDecline: defineMessage({
+    id: 'common.confirmDecline',
+    message: 'Yes, decline',
+  }),
+  confirmContinue: defineMessage({
+    id: 'common.confirmContinue',
+    message: 'Yes, continue',
+  }),
   reset: defineMessage({
     id: 'common.reset',
     message: 'Reset Wallet',

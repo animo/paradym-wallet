@@ -1,6 +1,7 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { DisplayImage, TrustMechanism, TrustedEntity } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   Circle,
   Heading,
@@ -231,8 +232,8 @@ export const VerifyPartySlide = ({
           align="horizontal"
           onAccept={handleContinue}
           onDecline={handleDecline}
-          acceptText={t({ id: 'verifyPartySlide.continueButton', message: 'Yes, continue' })}
-          declineText={t({ id: 'verifyPartySlide.stopButton', message: 'Stop' })}
+          acceptText={t(commonMessages.confirmContinue)}
+          declineText={t(commonMessages.stop)}
           isLoading={isLoading}
         />
       </Stack>

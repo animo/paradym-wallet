@@ -1,51 +1,37 @@
 import { defineMessage } from '@lingui/core/macro'
 import type { _t } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 const messages = {
   issueTitle: defineMessage({
-    id: 'flow.issueTitle',
+    id: 'didcommCancelFlow.issuance.title',
     message: 'Decline card?',
     comment: 'Confirmation title when declining to accept a credential (card)',
   }),
   issueDescription: defineMessage({
-    id: 'flow.issueDescription',
+    id: 'didcommCancelFlow.issuance.description',
     message: 'If you decline, you will not receive the card.',
     comment: 'Confirmation description when declining a credential offer',
   }),
-  issueConfirm: defineMessage({
-    id: 'flow.issueConfirmText',
-    message: 'Yes, decline',
-    comment: 'Confirmation button text when declining a credential offer',
-  }),
   verifyTitle: defineMessage({
-    id: 'flow.verifyTitle',
+    id: 'didcommCancelFlow.verification.title',
     message: 'Stop sharing?',
     comment: 'Confirmation title when cancelling a data sharing request',
   }),
   verifyDescription: defineMessage({
-    id: 'flow.verifyDescription',
+    id: 'didcommCancelFlow.verification.description',
     message: 'If you stop, no data will be shared.',
     comment: 'Confirmation description when cancelling a proof request',
   }),
-  verifyConfirm: defineMessage({
-    id: 'flow.verifyConfirmText',
-    message: 'Yes, stop',
-    comment: 'Confirmation button text when stopping data sharing',
-  }),
   connectTitle: defineMessage({
-    id: 'flow.connectTitle',
+    id: 'didcommCancelFlow.connect.title',
     message: 'Stop interaction?',
     comment: 'Confirmation title when cancelling a connection offer',
   }),
   connectDescription: defineMessage({
-    id: 'flow.connectDescription',
+    id: 'didcommCancelFlow.connect.description',
     message: 'If you stop, nothing will be saved.',
     comment: 'Confirmation description when cancelling a connection request',
-  }),
-  connectConfirm: defineMessage({
-    id: 'flow.connectConfirmText',
-    message: 'Yes, stop',
-    comment: 'Confirmation button text when stopping a connection attempt',
   }),
 }
 
@@ -56,7 +42,7 @@ export const getFlowConfirmationText = (t: typeof _t, type?: 'issue' | 'verify' 
     return {
       title: t(messages.issueTitle),
       description: t(messages.issueDescription),
-      confirmText: t(messages.issueConfirm),
+      confirmText: t(commonMessages.confirmDecline),
     }
   }
 
@@ -64,7 +50,7 @@ export const getFlowConfirmationText = (t: typeof _t, type?: 'issue' | 'verify' 
     return {
       title: t(messages.verifyTitle),
       description: t(messages.verifyDescription),
-      confirmText: t(messages.verifyConfirm),
+      confirmText: t(commonMessages.confirmStop),
     }
   }
 
@@ -72,6 +58,6 @@ export const getFlowConfirmationText = (t: typeof _t, type?: 'issue' | 'verify' 
   return {
     title: t(messages.connectTitle),
     description: t(messages.connectDescription),
-    confirmText: t(messages.connectConfirm),
+    confirmText: t(commonMessages.confirmStop),
   }
 }
