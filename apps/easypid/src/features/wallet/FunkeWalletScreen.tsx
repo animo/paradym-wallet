@@ -70,10 +70,10 @@ export function FunkeWalletScreen() {
                   {userName ? (
                     <Trans id="home.helloWithName">Hello, {userName}!</Trans>
                   ) : (
-                    <Trans id="home.helloWithouthName">Hello!</Trans>
+                    <Trans id="home.helloWithoutName">Hello!</Trans>
                   )}
                 </Heading>
-                <Paragraph>Receive or share from your wallet</Paragraph>
+                <Paragraph><Trans id="home.receiveOrShare">Receive or share from your wallet</Trans> </Paragraph>
               </YStack>
               <XStack gap="$4" jc="center" py="$2" w="95%" mx="auto">
                 <ActionCard

@@ -11,6 +11,8 @@ import { RequestPurposeSection } from '../share/components/RequestPurposeSection
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
 import { type IssuanceActivity, type PresentationActivity, type SignedActivity, useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
+import { useLingui, Trans } from '@lingui/react/macro'
+import { defineMessage } from '@lingui/core/macro'
 
 export function FunkeActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -65,22 +67,79 @@ export function FunkeActivityDetailScreen() {
   )
 }
 
+const activityMessages = {
+  unknownIssuer: defineMessage({
+    id: 'activity.unknownIssuer',
+    message: 'Unknown',
+    comment: 'Fallback issuer name shown when the credential issuer is missing',
+  }),
+  deletedCredential: defineMessage({
+    id: 'activity.deletedCredential',
+    message: 'Deleted credential',
+    comment: 'Shown when a credential no longer exists in the wallet',
+  }),
+  noPurposeGiven: defineMessage({
+    id: 'activity.noPurposeGiven',
+    message: 'No information was provided on the purpose of the data request. Be cautious',
+    comment: 'Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish.'
+  }),
+  documentSigned: defineMessage({
+    id: 'activity.documentSigned',
+    message: 'The document was signed.',
+    comment: 'Shown after a successful digital signature',
+  }),
+  documentNotSigned: defineMessage({
+    id: 'activity.documentNotSigned',
+    message: 'The document was not signed.',
+    comment: 'Shown after a failed digital signature',
+  }),
+  sharedAttributes: defineMessage({
+    id: 'activity.sharedAttributesHeading',
+    message: 'Shared attributes',
+    comment: 'Heading shown when attributes were successfully shared in an activity',
+  }),
+  requestedInformation: defineMessage({
+    id: 'activity.requestedInformationHeading',
+    message: 'Requested information',
+    comment: 'Heading shown when the request did not result in attributes being shared',
+  }),
+}
+
 export function ReceivedActivityDetailSection({ activity }: { activity: IssuanceActivity }) {
   const { credentials } = useCredentialsForDisplay()
   const { withHaptics } = useHaptics()
   const { push } = useRouter()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
+  const { t } = useLingui()
+
+  const description = activity.credentialIds.length > 1
+    ? t({
+      id: 'activity.receivedMultiple',
+      message: `You have received the following cards from ${activity.entity.name}.`,
+      comment: 'Shown in activity detail when multiple credentials have been received',
+    })
+    :
+    t({
+      id: 'activity.receivedSingle',
+      message: `You have received the following card from ${activity.entity.name}.`,
+      comment: 'Shown in activity detail when one credential has been received',
+    })
 
   return (
     <Stack gap="$6">
       <YStack gap="$4">
         <YStack gap="$2">
-          <Heading variant="sub2">Cards</Heading>
+          <Heading variant="sub2">
+            <Trans
+              id="activity.cardsHeading"
+              comment="Section heading for list of received cards in the activity detail screen"
+            >
+              Cards
+            </Trans>
+          </Heading>
+
           <Paragraph>
-            You have received the following
-            {activity.credentialIds.length < 1 ? ` ${activity.credentialIds.length}` : ''} card{' '}
-            {activity.credentialIds.length > 1 ? 's' : ''}
-            from {activity.entity.name}.
+            {description}
           </Paragraph>
         </YStack>
         {activity.credentialIds.map((credentialId) => {
@@ -90,10 +149,10 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
             return (
               <FunkeCredentialRowCard
                 key={credentialId}
-                name="Deleted credential"
+                name={t(activityMessages.deletedCredential)}
                 textColor="$grey-100"
                 backgroundColor="$grey-900"
-                issuer={activity.entity.name ?? 'Unknown'}
+                issuer={activity.entity.name ?? t(activityMessages.unknownIssuer)}
                 issuedAt={activity.date ? new Date(activity.date) : undefined}
               />
             )
@@ -123,13 +182,33 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
   const { credentials } = useCredentialsForDisplay()
 
   const amountShared = activity.request.credentials?.length ?? 0
-  const sharedCredentialAmount = amountShared > 1 ? 's' : ''
+  const { t } = useLingui()
+
+  const description =
+    activity.status === 'success'
+      ? amountShared > 1
+        ? t({
+          id: 'activity.sharedSummaryPlural',
+          message: `${amountShared} credentials were shared.`,
+          comment: 'Shown when multiple credentials were successfully shared',
+        })
+        : t({
+          id: 'activity.sharedSummarySingle',
+          message: '1 credential was shared.',
+          comment: 'Shown when one credential was successfully shared',
+        })
+      : t({
+        id: 'activity.sharedSummaryNone',
+        message: 'No credentials were shared.',
+        comment: 'Shown when sharing failed and no credentials were shared',
+      })
+
 
   return (
     <Stack gap="$6">
       <RequestPurposeSection
         purpose={
-          activity.request.purpose ?? 'No information was provided on the purpose of the data request. Be cautious'
+          activity.request.purpose ?? t(activityMessages.noPurposeGiven)
         }
         logo={activity.entity.logo}
         overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
@@ -137,9 +216,16 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
       {activity && activity.type === 'signed' && (
         <YStack gap="$4">
           <YStack gap="$2">
-            <Heading variant="sub2">Document</Heading>
+            <Heading variant="sub2">
+              <Trans
+                id="activity.documentHeading"
+                comment="Section heading shown when a document was signed or attempted to be signed"
+              >
+                Document
+              </Trans>
+            </Heading>
             <Paragraph>
-              {activity.status === 'success' ? 'The document was signed.' : 'The document was not signed.'}
+              {activity.status === 'success' ? t(activityMessages.documentSigned) : t(activityMessages.documentNotSigned)}
             </Paragraph>
           </YStack>
           <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
@@ -147,21 +233,29 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
               <Heading variant="sub2" textTransform="none" color="$grey-800">
                 {activity.transaction?.documentName}
               </Heading>
-              <Paragraph>Signing with {activity.transaction?.qtsp.name}</Paragraph>
+              <Paragraph>
+                <Trans
+                  id="activity.signedWithQTSP"
+                  comment="Shown below a document name to indicate the user signed it with a specific QTSP"
+                >
+                  Signing with {activity.transaction?.qtsp.name}
+                </Trans>
+              </Paragraph>
+
+
             </YStack>
             <MiniDocument logoUrl={activity.transaction?.qtsp.logo?.url} />
           </XStack>
         </YStack>
-      )}
+      )
+      }
       <Stack gap="$3">
         <Stack gap="$2">
           <Heading variant="sub2">
-            {activity.status === 'success' ? 'Shared attributes' : 'Requested information'}
+            {activity.status === 'success' ? t(activityMessages.sharedAttributes) : t(activityMessages.requestedInformation)}
           </Heading>
           <Paragraph>
-            {activity.status === 'success'
-              ? `${amountShared} credential${sharedCredentialAmount} ${amountShared === 1 ? 'was' : 'were'} shared.`
-              : 'No credentials were shared.'}
+            {description}
           </Paragraph>
         </Stack>
 
@@ -174,7 +268,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
                 return (
                   <CardWithAttributes
                     id={activityCredential.id}
-                    name="Deleted credential"
+                    name={t(activityMessages.deletedCredential)}
                     textColor="$grey-100"
                     backgroundColor="$primary-500"
                     formattedDisclosedAttributes={activityCredential.attributeNames}

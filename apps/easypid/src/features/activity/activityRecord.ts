@@ -13,7 +13,7 @@ import {
 } from '@package/agent'
 
 import { useMemo } from 'react'
-
+import { t } from '@lingui/core/macro'
 export type ActivityType = 'shared' | 'received' | 'signed'
 export type ActivityStatus = 'success' | 'failed' | 'stopped'
 export type SharingFailureReason = 'missing_credentials' | 'unknown'
@@ -203,7 +203,11 @@ export function addSharedActivityForSubmission(
     status,
     entity: {
       id: verifier.id,
-      name: verifier.name ?? 'Unknown verifier',
+      name: verifier.name ?? t({
+        id: 'activity.unknownVerifier',
+        message: 'Unknown verifier',
+        comment: 'Fallback name shown when the verifier/issuer name is missing',
+      }),
       logo: verifier.logo,
     },
     request: {

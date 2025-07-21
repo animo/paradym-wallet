@@ -1,3 +1,4 @@
+//translations: too long?
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import type {
   DisplayImage,

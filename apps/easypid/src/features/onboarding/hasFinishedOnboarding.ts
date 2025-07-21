@@ -1,3 +1,4 @@
+//translations: no translations needed
 import { useMMKVBoolean } from 'react-native-mmkv'
 import { mmkv } from '../../storage/mmkv'
 

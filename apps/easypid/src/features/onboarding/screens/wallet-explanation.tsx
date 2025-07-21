@@ -1,6 +1,5 @@
 import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, XStack, YStack, useSpringify } from '@package/ui'
 import { useRef, useState } from 'react'
-
 import { Dimensions } from 'react-native'
 import { LinearTransition } from 'react-native-reanimated'
 import Carousel from 'react-native-reanimated-carousel'
@@ -10,41 +9,82 @@ import { useImageScaler } from '@package/app/hooks'
 import { WalletExplanation } from './assets/WalletExplanation'
 import { WalletHowItWorks } from './assets/WalletHowItWorks'
 import { WalletStoring } from './assets/WalletStoring'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 interface OnboardingWalletExplanationProps {
   onSkip: () => void
   goToNextStep: () => void
 }
 
-const SLIDES = [
-  {
-    image: <WalletExplanation />,
-    title: 'This is your wallet',
-    subtitle:
-      'Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.',
-  },
-  {
-    image: <WalletStoring />,
-    title: 'What is it for?',
-    subtitle:
-      'The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.',
-  },
-  {
-    image: <WalletHowItWorks />,
-    title: 'How does it work?',
-    subtitle:
-      'Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.',
-  },
-]
-
 export function OnboardingWalletExplanation({ onSkip, goToNextStep }: OnboardingWalletExplanationProps) {
+  const { t } = useLingui()
   const [currentSlide, setCurrentSlide] = useState(0)
   const { width } = Dimensions.get('window')
   const carouselRef = useRef<ICarouselInstance>(null)
   const { height, onLayout } = useImageScaler()
 
+  const slides = [
+    {
+      image: <WalletExplanation />,
+      title: t({
+        id: 'onboardingWalletExplanation.slide1.title',
+        message: 'This is your wallet',
+        comment: 'Title for first slide of wallet onboarding',
+      }),
+      subtitle: t({
+        id: 'onboardingWalletExplanation.slide1.subtitle',
+        message:
+          'Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.',
+        comment: 'Subtitle for first slide of wallet onboarding',
+      }),
+    },
+    {
+      image: <WalletStoring />,
+      title: t({
+        id: 'onboardingWalletExplanation.slide2.title',
+        message: 'What is it for?',
+        comment: 'Title for second slide of wallet onboarding',
+      }),
+      subtitle: t({
+        id: 'onboardingWalletExplanation.slide2.subtitle',
+        message:
+          'The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.',
+        comment: 'Subtitle for second slide of wallet onboarding',
+      }),
+    },
+    {
+      image: <WalletHowItWorks />,
+      title: t({
+        id: 'onboardingWalletExplanation.slide3.title',
+        message: 'How does it work?',
+        comment: 'Title for third slide of wallet onboarding',
+      }),
+      subtitle: t({
+        id: 'onboardingWalletExplanation.slide3.subtitle',
+        message:
+          'Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.',
+        comment: 'Subtitle for third slide of wallet onboarding',
+      }),
+    },
+  ]
+
+  const getStartedLabel = t({
+    id: 'onboardingWalletExplanation.getStarted',
+    message: 'Get Started',
+    comment: 'Button label to finish onboarding explanation',
+  })
+
+  const skipLabel = t({
+    id: 'onboardingWalletExplanation.skip',
+    message: 'Skip explanation',
+    comment: 'Button label to skip wallet explanation slides',
+  })
+
+  const continueLabel = t(commonMessages.continue)
+
   const handleNext = () => {
-    if (currentSlide === SLIDES.length - 1) {
+    if (currentSlide === slides.length - 1) {
       goToNextStep()
     } else {
       carouselRef.current?.next()
@@ -58,7 +98,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
           ref={carouselRef}
           loop={false}
           width={width}
-          data={SLIDES}
+          data={slides}
           pagingEnabled={true}
           snapEnabled={true}
           containerStyle={{ width: '100%', flex: 1 }}
@@ -86,7 +126,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
       <AnimatedStack flexDirection="column" gap="$6" layout={useSpringify(LinearTransition)}>
         {/* Slide indicators */}
         <XStack jc="center" gap="$2">
-          {SLIDES.map((_, index) => (
+          {slides.map((_, index) => (
             <AnimatedStack
               key={`indicator-${index}-${currentSlide === index}`}
               h="$0.75"
@@ -99,11 +139,11 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
         </XStack>
         <YStack gap="$4">
           <Button.Solid onPress={handleNext}>
-            {currentSlide === SLIDES.length - 1 ? 'Get Started' : 'Continue'}
+            {currentSlide === slides.length - 1 ? getStartedLabel : continueLabel}
           </Button.Solid>
-          {currentSlide !== SLIDES.length - 1 && (
+          {currentSlide !== slides.length - 1 && (
             <Button.Text onPress={onSkip}>
-              <HeroIcons.ArrowRight color="$primary-500" size={20} /> Skip explanation
+              <HeroIcons.ArrowRight color="$primary-500" size={20} /> {skipLabel}
             </Button.Text>
           )}
         </YStack>

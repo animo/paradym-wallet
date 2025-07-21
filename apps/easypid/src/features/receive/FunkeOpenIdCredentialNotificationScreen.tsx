@@ -1,3 +1,4 @@
+//translations: too long?
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,

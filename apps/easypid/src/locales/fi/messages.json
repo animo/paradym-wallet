@@ -1,6 +1,6 @@
 {
   "trust.demo": {
-    "translation": "(Demo)",
+    "translation": "",
     "message": "(Demo)",
     "placeholders": {},
     "comments": [
@@ -14,7 +14,7 @@
     ]
   },
   "credentials.totalLabelPlural": {
-    "translation": "{0} cards total",
+    "translation": "",
     "message": "{0} cards total",
     "placeholders": {
       "0": [
@@ -32,7 +32,7 @@
     ]
   },
   "inbox.notificationType.fromLabel": {
-    "translation": "{baseLabel} from {0}",
+    "translation": "",
     "message": "{baseLabel} from {0}",
     "placeholders": {
       "0": [
@@ -53,7 +53,7 @@
     ]
   },
   "requestedAttributes.subheading": {
-    "translation": "{disclosedAttributeLength} from {0}",
+    "translation": "",
     "message": "{disclosedAttributeLength} from {0}",
     "placeholders": {
       "0": [
@@ -74,7 +74,7 @@
     ]
   },
   "credentialCardSlide.subtitle.default": {
-    "translation": "{issuerName} wants to issue you the following card:",
+    "translation": "",
     "message": "{issuerName} wants to issue you the following card:",
     "placeholders": {
       "issuerName": [
@@ -92,7 +92,7 @@
     ]
   },
   "credentials.totalLabel": {
-    "translation": "1 card total",
+    "translation": "",
     "message": "1 card total",
     "placeholders": {},
     "comments": [
@@ -106,7 +106,7 @@
     ]
   },
   "trust.approvedList": {
-    "translation": "A list of organizations that have approved {name}.",
+    "translation": "",
     "message": "A list of organizations that have approved {name}.",
     "placeholders": {
       "name": [
@@ -124,7 +124,7 @@
     ]
   },
   "trust.approvedListWithoutOrganizationName": {
-    "translation": "A list of organizations that have approved this unknown organization.",
+    "translation": "",
     "message": "A list of organizations that have approved this unknown organization.",
     "placeholders": {},
     "comments": [
@@ -138,7 +138,7 @@
     ]
   },
   "offlineQr.instruction": {
-    "translation": "A verifier needs to scan your QR-Code.",
+    "translation": "",
     "message": "A verifier needs to scan your QR-Code.",
     "placeholders": {},
     "comments": [
@@ -152,7 +152,7 @@
     ]
   },
   "funkeAboutScreen.header": {
-    "translation": "About the wallet",
+    "translation": "",
     "message": "About the wallet",
     "placeholders": {},
     "comments": [
@@ -166,7 +166,7 @@
     ]
   },
   "trust.headerTitle": {
-    "translation": "About this party",
+    "translation": "",
     "message": "About this party",
     "placeholders": {},
     "comments": [
@@ -180,7 +180,7 @@
     ]
   },
   "menu.item.about": {
-    "translation": "About this wallet",
+    "translation": "",
     "message": "About this wallet",
     "placeholders": {},
     "comments": [
@@ -194,7 +194,7 @@
     ]
   },
   "onboarding.biometrics.subtitle": {
-    "translation": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
+    "translation": "",
     "message": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
     "placeholders": {},
     "comments": [
@@ -208,7 +208,7 @@
     ]
   },
   "menu.item.activity": {
-    "translation": "Activity",
+    "translation": "",
     "message": "Activity",
     "placeholders": {},
     "comments": [
@@ -222,7 +222,7 @@
     ]
   },
   "onboardingWalletExplanation.slide1.subtitle": {
-    "translation": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
+    "translation": "",
     "message": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
     "placeholders": {},
     "comments": [
@@ -236,7 +236,7 @@
     ]
   },
   "onboardingWalletExplanation.slide3.subtitle": {
-    "translation": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
+    "translation": "",
     "message": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
     "placeholders": {},
     "comments": [
@@ -250,7 +250,7 @@
     ]
   },
   "activity.latest.addedCard": {
-    "translation": "Added {name}",
+    "translation": "",
     "message": "Added {name}",
     "placeholders": {
       "name": [
@@ -268,7 +268,7 @@
     ]
   },
   "credentials.allCardsTitle": {
-    "translation": "All cards",
+    "translation": "",
     "message": "All cards",
     "placeholders": {},
     "comments": [
@@ -282,7 +282,7 @@
     ]
   },
   "trust.warning": {
-    "translation": "Always consider whether sharing with a party is wise.",
+    "translation": "",
     "message": "Always consider whether sharing with a party is wise.",
     "placeholders": {},
     "comments": [
@@ -296,7 +296,7 @@
     ]
   },
   "interactionError.message.connect": {
-    "translation": "An error occurred while connecting. Generate a new QR-code or try again later.",
+    "translation": "",
     "message": "An error occurred while connecting. Generate a new QR-code or try again later.",
     "placeholders": {},
     "comments": [
@@ -310,7 +310,7 @@
     ]
   },
   "interactionError.message.issue": {
-    "translation": "An error occurred while fetching the card information. Ask the issuer to generate a new QR-code or try again later.",
+    "translation": "",
     "message": "An error occurred while fetching the card information. Ask the issuer to generate a new QR-code or try again later.",
     "placeholders": {},
     "comments": [
@@ -324,7 +324,7 @@
     ]
   },
   "interactionError.message.verify": {
-    "translation": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
+    "translation": "",
     "message": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
     "placeholders": {},
     "comments": [
@@ -338,7 +338,7 @@
     ]
   },
   "interactionError.message.sign": {
-    "translation": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
+    "translation": "",
     "message": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
     "placeholders": {},
     "comments": [
@@ -352,7 +352,7 @@
     ]
   },
   "menu.section.app": {
-    "translation": "APP",
+    "translation": "",
     "message": "APP",
     "placeholders": {},
     "comments": [
@@ -366,7 +366,7 @@
     ]
   },
   "pinLocked.alertMessage": {
-    "translation": "Are you sure you want to reset the wallet?",
+    "translation": "",
     "message": "Are you sure you want to reset the wallet?",
     "placeholders": {},
     "comments": [
@@ -380,7 +380,7 @@
     ]
   },
   "common.confirmResetWallet": {
-    "translation": "Are you sure you want to reset the wallet?",
+    "translation": "",
     "message": "Are you sure you want to reset the wallet?",
     "placeholders": {},
     "comments": [
@@ -394,7 +394,7 @@
     ]
   },
   "authCodeFlowSlide.authenticate": {
-    "translation": "Authenticate",
+    "translation": "",
     "message": "Authenticate",
     "placeholders": {},
     "comments": [
@@ -408,7 +408,7 @@
     ]
   },
   "funkeMdoc.error.auth": {
-    "translation": "Authentication Error",
+    "translation": "",
     "message": "Authentication Error",
     "placeholders": {},
     "comments": [
@@ -422,7 +422,7 @@
     ]
   },
   "presentation.authFailed": {
-    "translation": "Authentication failed",
+    "translation": "",
     "message": "Authentication failed",
     "placeholders": {},
     "comments": [
@@ -436,7 +436,7 @@
     ]
   },
   "authCodeFlowSlide.authorizationFailed": {
-    "translation": "Authorization failed",
+    "translation": "",
     "message": "Authorization failed",
     "placeholders": {},
     "comments": [
@@ -455,7 +455,7 @@
     ]
   },
   "onboarding.intro.subtitle": {
-    "translation": "Before you can use the app, we will guide you through these steps.",
+    "translation": "",
     "message": "Before you can use the app, we will guide you through these steps.",
     "placeholders": {},
     "comments": [
@@ -469,7 +469,7 @@
     ]
   },
   "presentation.biometricCancelled": {
-    "translation": "Biometric authentication cancelled",
+    "translation": "",
     "message": "Biometric authentication cancelled",
     "placeholders": {},
     "comments": [
@@ -483,7 +483,7 @@
     ]
   },
   "funkeMdoc.error.biometricCancelled": {
-    "translation": "Biometric authentication cancelled",
+    "translation": "",
     "message": "Biometric authentication cancelled",
     "placeholders": {},
     "comments": [
@@ -497,7 +497,7 @@
     ]
   },
   "common.cancel": {
-    "translation": "Cancel",
+    "translation": "",
     "message": "Cancel",
     "placeholders": {},
     "comments": [
@@ -511,7 +511,7 @@
     ]
   },
   "inbox.notificationType.card": {
-    "translation": "Card",
+    "translation": "",
     "message": "Card",
     "placeholders": {},
     "comments": [
@@ -525,7 +525,7 @@
     ]
   },
   "credentials.cardAttributes": {
-    "translation": "Card attributes",
+    "translation": "",
     "message": "Card attributes",
     "placeholders": {},
     "comments": [
@@ -544,7 +544,7 @@
     ]
   },
   "credentials.detailsTitle": {
-    "translation": "Card details",
+    "translation": "",
     "message": "Card details",
     "placeholders": {},
     "comments": [
@@ -558,7 +558,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.expired.title": {
-    "translation": "Card expired",
+    "translation": "",
     "message": "Card expired",
     "placeholders": {},
     "comments": [],
@@ -570,7 +570,7 @@
     ]
   },
   "cardLifecycle.active.title": {
-    "translation": "Card is active",
+    "translation": "",
     "message": "Card is active",
     "placeholders": {},
     "comments": [],
@@ -582,7 +582,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.notYetActive.title": {
-    "translation": "Card not active",
+    "translation": "",
     "message": "Card not active",
     "placeholders": {},
     "comments": [],
@@ -594,7 +594,7 @@
     ]
   },
   "cardLifecycle.revoked.description": {
-    "translation": "Card not usable anymore",
+    "translation": "",
     "message": "Card not usable anymore",
     "placeholders": {},
     "comments": [],
@@ -606,7 +606,7 @@
     ]
   },
   "credentialCardSlide.title": {
-    "translation": "Card offered",
+    "translation": "",
     "message": "Card offered",
     "placeholders": {},
     "comments": [
@@ -630,7 +630,7 @@
     ]
   },
   "cardLifecycle.revoked.title": {
-    "translation": "Card revoked",
+    "translation": "",
     "message": "Card revoked",
     "placeholders": {},
     "comments": [],
@@ -642,7 +642,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.willExpire.title": {
-    "translation": "Card will expire",
+    "translation": "",
     "message": "Card will expire",
     "placeholders": {},
     "comments": [],
@@ -654,7 +654,7 @@
     ]
   },
   "credentials.title": {
-    "translation": "Cards",
+    "translation": "",
     "message": "Cards",
     "placeholders": {},
     "comments": [
@@ -668,7 +668,7 @@
     ]
   },
   "menu.item.cards": {
-    "translation": "Cards",
+    "translation": "",
     "message": "Cards",
     "placeholders": {},
     "comments": [
@@ -682,7 +682,7 @@
     ]
   },
   "onboarding.pin.title": {
-    "translation": "Choose a 6-digit PIN",
+    "translation": "",
     "message": "Choose a 6-digit PIN",
     "placeholders": {},
     "comments": [
@@ -696,7 +696,7 @@
     ]
   },
   "onboardingIntroduction.step1.description": {
-    "translation": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
+    "translation": "",
     "message": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
     "placeholders": {},
     "comments": [
@@ -710,7 +710,7 @@
     ]
   },
   "common.close": {
-    "translation": "Close",
+    "translation": "",
     "message": "Close",
     "placeholders": {},
     "comments": [
@@ -724,7 +724,7 @@
     ]
   },
   "pidSetup.idCardVerify.title": {
-    "translation": "Confirm it’s you",
+    "translation": "",
     "message": "Confirm it’s you",
     "placeholders": {},
     "comments": [],
@@ -736,7 +736,7 @@
     ]
   },
   "connection.successTitle": {
-    "translation": "Connection established",
+    "translation": "",
     "message": "Connection established",
     "placeholders": {},
     "comments": [
@@ -750,7 +750,7 @@
     ]
   },
   "common.continue": {
-    "translation": "Continue",
+    "translation": "",
     "message": "Continue",
     "placeholders": {},
     "comments": [
@@ -764,7 +764,7 @@
     ]
   },
   "funkeMdoc.error.sharing": {
-    "translation": "Could not share device response",
+    "translation": "",
     "message": "Could not share device response",
     "placeholders": {},
     "comments": [
@@ -778,7 +778,7 @@
     ]
   },
   "requestedAttributes.fallbackCardLabel": {
-    "translation": "Credential",
+    "translation": "",
     "message": "Credential",
     "placeholders": {},
     "comments": [
@@ -792,7 +792,7 @@
     ]
   },
   "credential.declined": {
-    "translation": "Credential has been declined.",
+    "translation": "",
     "message": "Credential has been declined.",
     "placeholders": {},
     "comments": [
@@ -806,7 +806,7 @@
     ]
   },
   "credentials.notFound": {
-    "translation": "Credential not found",
+    "translation": "",
     "message": "Credential not found",
     "placeholders": {},
     "comments": [
@@ -820,7 +820,7 @@
     ]
   },
   "credentialDetail.errorMessage": {
-    "translation": "Credential not found",
+    "translation": "",
     "message": "Credential not found",
     "placeholders": {},
     "comments": [
@@ -834,7 +834,7 @@
     ]
   },
   "credentials.emptyDescription": {
-    "translation": "Credentials will appear here once you receive them.",
+    "translation": "",
     "message": "Credentials will appear here once you receive them.",
     "placeholders": {},
     "comments": [
@@ -848,7 +848,7 @@
     ]
   },
   "trust.demoOrg": {
-    "translation": "Demo organization",
+    "translation": "",
     "message": "Demo organization",
     "placeholders": {},
     "comments": [
@@ -862,7 +862,7 @@
     ]
   },
   "settings.developmentMode": {
-    "translation": "Development Mode",
+    "translation": "",
     "message": "Development Mode",
     "placeholders": {},
     "comments": [
@@ -876,7 +876,7 @@
     ]
   },
   "signShare.documentHeading": {
-    "translation": "Document",
+    "translation": "",
     "message": "Document",
     "placeholders": {},
     "comments": [
@@ -890,7 +890,7 @@
     ]
   },
   "common.enterPinToShareData": {
-    "translation": "Enter PIN to share data",
+    "translation": "",
     "message": "Enter PIN to share data",
     "placeholders": {},
     "comments": [
@@ -904,7 +904,7 @@
     ]
   },
   "txCodeSlide.title": {
-    "translation": "Enter transaction code",
+    "translation": "",
     "message": "Enter transaction code",
     "placeholders": {},
     "comments": [
@@ -918,7 +918,7 @@
     ]
   },
   "common.enterPin": {
-    "translation": "Enter your app PIN code",
+    "translation": "",
     "message": "Enter your app PIN code",
     "placeholders": {},
     "comments": [
@@ -932,7 +932,7 @@
     ]
   },
   "pidSetup.idCardPin.title": {
-    "translation": "Enter your eID card PIN",
+    "translation": "",
     "message": "Enter your eID card PIN",
     "placeholders": {},
     "comments": [],
@@ -944,7 +944,7 @@
     ]
   },
   "credentialDetail.errorTitle": {
-    "translation": "Error getting credential details",
+    "translation": "",
     "message": "Error getting credential details",
     "placeholders": {},
     "comments": [
@@ -958,7 +958,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.willExpire.description": {
-    "translation": "Expires in {expiryDaysString}",
+    "translation": "",
     "message": "Expires in {expiryDaysString}",
     "placeholders": {
       "expiryDaysString": [
@@ -974,7 +974,7 @@
     ]
   },
   "offlineQr.permissionError": {
-    "translation": "Failed to request permissions.",
+    "translation": "",
     "message": "Failed to request permissions.",
     "placeholders": {},
     "comments": [
@@ -988,7 +988,7 @@
     ]
   },
   "menu.item.feedback": {
-    "translation": "Feedback",
+    "translation": "",
     "message": "Feedback",
     "placeholders": {},
     "comments": [
@@ -1002,7 +1002,7 @@
     ]
   },
   "loadingRequestSlide.description": {
-    "translation": "Fetching information",
+    "translation": "",
     "message": "Fetching information",
     "placeholders": {},
     "comments": [
@@ -1016,7 +1016,7 @@
     ]
   },
   "funkeAboutScreen.contactIntro": {
-    "translation": "For more information, reach out to",
+    "translation": "",
     "message": "For more information, reach out to",
     "placeholders": {},
     "comments": [
@@ -1030,7 +1030,7 @@
     ]
   },
   "onboardingWelcome.getStarted": {
-    "translation": "Get Started",
+    "translation": "",
     "message": "Get Started",
     "placeholders": {},
     "comments": [
@@ -1044,7 +1044,7 @@
     ]
   },
   "onboardingWalletExplanation.getStarted": {
-    "translation": "Get Started",
+    "translation": "",
     "message": "Get Started",
     "placeholders": {},
     "comments": [
@@ -1058,7 +1058,7 @@
     ]
   },
   "pidSetup.idCardRequestedAttributes.title": {
-    "translation": "Get your national identity card",
+    "translation": "",
     "message": "Get your national identity card",
     "placeholders": {},
     "comments": [],
@@ -1070,7 +1070,7 @@
     ]
   },
   "pidSetup.idCardFetch.title": {
-    "translation": "Getting eID information",
+    "translation": "",
     "message": "Getting eID information",
     "placeholders": {},
     "comments": [],
@@ -1082,7 +1082,7 @@
     ]
   },
   "common.goToSettings": {
-    "translation": "Go to settings",
+    "translation": "",
     "message": "Go to settings",
     "placeholders": {},
     "comments": [
@@ -1096,7 +1096,7 @@
     ]
   },
   "common.goToWallet": {
-    "translation": "Go to wallet",
+    "translation": "",
     "message": "Go to wallet",
     "placeholders": {},
     "comments": [
@@ -1110,6 +1110,7 @@
     ]
   },
   "home.helloWithName": {
+    "translation": "",
     "message": "Hello, {userName}!",
     "placeholders": {
       "userName": [
@@ -1122,11 +1123,10 @@
         "src/features/wallet/FunkeWalletScreen.tsx",
         71
       ]
-    ],
-    "translation": "Hello, {userName}!"
+    ]
   },
   "home.helloWithoutName": {
-    "translation": "Hello!",
+    "translation": "",
     "message": "Hello!",
     "placeholders": {},
     "comments": [],
@@ -1137,21 +1137,8 @@
       ]
     ]
   },
-  "home.helloWithouthName": {
-    "message": "Hello!",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "apps/easypid/src/features/wallet/FunkeWalletScreen.tsx",
-        73
-      ]
-    ],
-    "translation": "Hello!",
-    "obsolete": true
-  },
   "credentials.hideMetadata": {
-    "translation": "Hide metadata attributes",
+    "translation": "",
     "message": "Hide metadata attributes",
     "placeholders": {},
     "comments": [
@@ -1165,7 +1152,7 @@
     ]
   },
   "optionSheet.hideMetadata": {
-    "translation": "Hide metadata attributes",
+    "translation": "",
     "message": "Hide metadata attributes",
     "placeholders": {},
     "comments": [
@@ -1179,7 +1166,7 @@
     ]
   },
   "credentials.hideShareableAttributes": {
-    "translation": "Hide shareable attributes",
+    "translation": "",
     "message": "Hide shareable attributes",
     "placeholders": {},
     "comments": [
@@ -1192,8 +1179,20 @@
       ]
     ]
   },
+  "home.howDoesItWork": {
+    "translation": "",
+    "message": "How does it work?",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/features/wallet/FunkeWalletScreen.tsx",
+        97
+      ]
+    ]
+  },
   "onboardingWalletExplanation.slide3.title": {
-    "translation": "How does it work?",
+    "translation": "",
     "message": "How does it work?",
     "placeholders": {},
     "comments": [
@@ -1206,20 +1205,8 @@
       ]
     ]
   },
-  "home.howDoesItWork": {
-    "message": "How does it work?",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/features/wallet/FunkeWalletScreen.tsx",
-        97
-      ]
-    ],
-    "translation": "How does it work?"
-  },
   "inbox.header": {
-    "translation": "Inbox",
+    "translation": "",
     "message": "Inbox",
     "placeholders": {},
     "comments": [
@@ -1233,7 +1220,7 @@
     ]
   },
   "submission.offlineRequestDescription": {
-    "translation": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
+    "translation": "",
     "message": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
     "placeholders": {},
     "comments": [
@@ -1247,7 +1234,7 @@
     ]
   },
   "presentation.requestDeclined": {
-    "translation": "Information request has been declined.",
+    "translation": "",
     "message": "Information request has been declined.",
     "placeholders": {},
     "comments": [
@@ -1261,7 +1248,7 @@
     ]
   },
   "presentation.declined": {
-    "translation": "Information request has been declined.",
+    "translation": "",
     "message": "Information request has been declined.",
     "placeholders": {},
     "comments": [
@@ -1275,7 +1262,7 @@
     ]
   },
   "presentation.invalidPin": {
-    "translation": "Invalid PIN entered",
+    "translation": "",
     "message": "Invalid PIN entered",
     "placeholders": {},
     "comments": [
@@ -1289,7 +1276,7 @@
     ]
   },
   "funkeMdoc.error.invalidPin": {
-    "translation": "Invalid PIN entered",
+    "translation": "",
     "message": "Invalid PIN entered",
     "placeholders": {},
     "comments": [
@@ -1303,7 +1290,7 @@
     ]
   },
   "common.issuedBy": {
-    "translation": "Issued by {0}.",
+    "translation": "",
     "message": "Issued by {0}.",
     "placeholders": {
       "0": [
@@ -1321,7 +1308,7 @@
     ]
   },
   "common.issuedOn": {
-    "translation": "Issued on {0}",
+    "translation": "",
     "message": "Issued on {0}",
     "placeholders": {
       "0": [
@@ -1339,7 +1326,7 @@
     ]
   },
   "cardLifecycle.batch.title": {
-    "translation": "Limited card usage",
+    "translation": "",
     "message": "Limited card usage",
     "placeholders": {},
     "comments": [],
@@ -1351,7 +1338,7 @@
     ]
   },
   "inbox.menuLabel": {
-    "translation": "Menu",
+    "translation": "",
     "message": "Menu",
     "placeholders": {},
     "comments": [
@@ -1365,7 +1352,7 @@
     ]
   },
   "menu.title": {
-    "translation": "Menu",
+    "translation": "",
     "message": "Menu",
     "placeholders": {},
     "comments": [
@@ -1379,7 +1366,7 @@
     ]
   },
   "credentials.metadataAttributes": {
-    "translation": "Metadata",
+    "translation": "",
     "message": "Metadata",
     "placeholders": {},
     "comments": [
@@ -1393,7 +1380,7 @@
     ]
   },
   "requestedAttributes.metadataTitle": {
-    "translation": "Metadata",
+    "translation": "",
     "message": "Metadata",
     "placeholders": {},
     "comments": [
@@ -1407,7 +1394,7 @@
     ]
   },
   "activity.latest.newCardFallback": {
-    "translation": "new card",
+    "translation": "",
     "message": "new card",
     "placeholders": {},
     "comments": [
@@ -1421,7 +1408,7 @@
     ]
   },
   "cardLifecycle.active.description": {
-    "translation": "No actions required",
+    "translation": "",
     "message": "No actions required",
     "placeholders": {},
     "comments": [],
@@ -1433,7 +1420,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.active.description": {
-    "translation": "No actions required",
+    "translation": "",
     "message": "No actions required",
     "placeholders": {},
     "comments": [],
@@ -1445,7 +1432,7 @@
     ]
   },
   "activity.latest.noActivity": {
-    "translation": "No activity yet",
+    "translation": "",
     "message": "No activity yet",
     "placeholders": {},
     "comments": [
@@ -1459,7 +1446,7 @@
     ]
   },
   "credentials.noAttributes": {
-    "translation": "No attributes found",
+    "translation": "",
     "message": "No attributes found",
     "placeholders": {},
     "comments": [
@@ -1473,7 +1460,7 @@
     ]
   },
   "common.noResultsSearch": {
-    "translation": "No cards found for \"{searchQuery}\"",
+    "translation": "",
     "message": "No cards found for \"{searchQuery}\"",
     "placeholders": {
       "searchQuery": [
@@ -1491,7 +1478,7 @@
     ]
   },
   "credentials.noCardsMessage": {
-    "translation": "No cards yet",
+    "translation": "",
     "message": "No cards yet",
     "placeholders": {},
     "comments": [
@@ -1505,7 +1492,7 @@
     ]
   },
   "presentation.noCredentialsSelected": {
-    "translation": "No credentials selected",
+    "translation": "",
     "message": "No credentials selected",
     "placeholders": {},
     "comments": [
@@ -1519,7 +1506,7 @@
     ]
   },
   "submission.fallbackPurpose": {
-    "translation": "No information was provided on the purpose of the data request. Be cautious",
+    "translation": "",
     "message": "No information was provided on the purpose of the data request. Be cautious",
     "placeholders": {},
     "comments": [
@@ -1533,7 +1520,7 @@
     ]
   },
   "onboardingDataProtection.toast.secureDevice": {
-    "translation": "Now using {0} for PID cryptographic keys.",
+    "translation": "",
     "message": "Now using {0} for PID cryptographic keys.",
     "placeholders": {
       "0": [
@@ -1551,7 +1538,7 @@
     ]
   },
   "onboardingDataProtection.toast.cloudHsm": {
-    "translation": "Now using Cloud HSM for PID cryptographic keys.",
+    "translation": "",
     "message": "Now using Cloud HSM for PID cryptographic keys.",
     "placeholders": {},
     "comments": [
@@ -1565,7 +1552,7 @@
     ]
   },
   "common.openSettings": {
-    "translation": "Open Settings",
+    "translation": "",
     "message": "Open Settings",
     "placeholders": {},
     "comments": [
@@ -1579,7 +1566,7 @@
     ]
   },
   "funkeAboutScreen.privacyPolicyDescription": {
-    "translation": "Open the privacy policy",
+    "translation": "",
     "message": "Open the privacy policy",
     "placeholders": {},
     "comments": [
@@ -1593,7 +1580,7 @@
     ]
   },
   "requestPurpose.infoSheet.title": {
-    "translation": "Overasking detected",
+    "translation": "",
     "message": "Overasking detected",
     "placeholders": {},
     "comments": [
@@ -1607,7 +1594,7 @@
     ]
   },
   "presentation.pinAuthFailed": {
-    "translation": "PIN authentication failed",
+    "translation": "",
     "message": "PIN authentication failed",
     "placeholders": {},
     "comments": [
@@ -1621,7 +1608,7 @@
     ]
   },
   "pidSetup.idCardScan.subtitle": {
-    "translation": "Place your device on top of your eID card to scan it.",
+    "translation": "",
     "message": "Place your device on top of your eID card to scan it.",
     "placeholders": {},
     "comments": [],
@@ -1637,7 +1624,7 @@
     ]
   },
   "offlineQr.permissionSettingsTitle": {
-    "translation": "Please enable required permissions in your phone settings",
+    "translation": "",
     "message": "Please enable required permissions in your phone settings",
     "placeholders": {},
     "comments": [
@@ -1651,7 +1638,7 @@
     ]
   },
   "loadingRequestSlide.title": {
-    "translation": "Please wait",
+    "translation": "",
     "message": "Please wait",
     "placeholders": {},
     "comments": [
@@ -1665,6 +1652,7 @@
     ]
   },
   "home.presentInPersonButton": {
+    "translation": "",
     "message": "Present In-person",
     "placeholders": {},
     "comments": [],
@@ -1673,11 +1661,10 @@
         "src/features/wallet/FunkeWalletScreen.tsx",
         88
       ]
-    ],
-    "translation": "Present In-person"
+    ]
   },
   "presentation.sharingFailed": {
-    "translation": "Presentation could not be shared.",
+    "translation": "",
     "message": "Presentation could not be shared.",
     "placeholders": {},
     "comments": [
@@ -1691,7 +1678,7 @@
     ]
   },
   "presentation.accept.error": {
-    "translation": "Presentation could not be shared.",
+    "translation": "",
     "message": "Presentation could not be shared.",
     "placeholders": {},
     "comments": [
@@ -1705,7 +1692,7 @@
     ]
   },
   "presentation.extractionFailed": {
-    "translation": "Presentation information could not be extracted.",
+    "translation": "",
     "message": "Presentation information could not be extracted.",
     "placeholders": {},
     "comments": [
@@ -1719,7 +1706,7 @@
     ]
   },
   "funkeMdoc.error.extracting": {
-    "translation": "Presentation information could not be extracted.",
+    "translation": "",
     "message": "Presentation information could not be extracted.",
     "placeholders": {},
     "comments": [
@@ -1733,7 +1720,7 @@
     ]
   },
   "funkeAboutScreen.privacyPolicyTitle": {
-    "translation": "Privacy Policy",
+    "translation": "",
     "message": "Privacy Policy",
     "placeholders": {},
     "comments": [
@@ -1747,7 +1734,7 @@
     ]
   },
   "funkeMdoc.proof.declined": {
-    "translation": "Proof has been declined",
+    "translation": "",
     "message": "Proof has been declined",
     "placeholders": {},
     "comments": [
@@ -1761,7 +1748,7 @@
     ]
   },
   "pidSetup.dataProtection.title": {
-    "translation": "Protect your data",
+    "translation": "",
     "message": "Protect your data",
     "placeholders": {},
     "comments": [],
@@ -1773,7 +1760,7 @@
     ]
   },
   "requestPurpose.purposeHeading": {
-    "translation": "PURPOSE",
+    "translation": "",
     "message": "PURPOSE",
     "placeholders": {},
     "comments": [
@@ -1787,7 +1774,7 @@
     ]
   },
   "funkeWallet.about.emailHeader": {
-    "translation": "Reach out from Funke EUDI Wallet",
+    "translation": "",
     "message": "Reach out from Funke EUDI Wallet",
     "placeholders": {},
     "comments": [
@@ -1801,7 +1788,7 @@
     ]
   },
   "paradymWallet.about.emailHeader": {
-    "translation": "Reach out from Paradym Wallet",
+    "translation": "",
     "message": "Reach out from Paradym Wallet",
     "placeholders": {},
     "comments": [
@@ -1815,7 +1802,7 @@
     ]
   },
   "onboardingDataProtection.privacy": {
-    "translation": "Read the Privacy Policy",
+    "translation": "",
     "message": "Read the Privacy Policy",
     "placeholders": {},
     "comments": [
@@ -1829,7 +1816,7 @@
     ]
   },
   "interactionError.reasonPrefix": {
-    "translation": "Reason:",
+    "translation": "",
     "message": "Reason:",
     "placeholders": {},
     "comments": [
@@ -1843,7 +1830,7 @@
     ]
   },
   "home.receiveOrShare": {
-    "translation": "Receive or share from your wallet",
+    "translation": "",
     "message": "Receive or share from your wallet",
     "placeholders": {},
     "comments": [],
@@ -1855,7 +1842,7 @@
     ]
   },
   "activity.latest.title": {
-    "translation": "Recent activity",
+    "translation": "",
     "message": "Recent activity",
     "placeholders": {},
     "comments": [
@@ -1869,7 +1856,7 @@
     ]
   },
   "cardLifecycle.refreshCardButton": {
-    "translation": "Refresh card",
+    "translation": "",
     "message": "Refresh card",
     "placeholders": {},
     "comments": [],
@@ -1881,7 +1868,7 @@
     ]
   },
   "onboarding.pinReenter.title": {
-    "translation": "Repeat your PIN",
+    "translation": "",
     "message": "Repeat your PIN",
     "placeholders": {},
     "comments": [
@@ -1895,7 +1882,7 @@
     ]
   },
   "inbox.notificationType.request": {
-    "translation": "Request",
+    "translation": "",
     "message": "Request",
     "placeholders": {},
     "comments": [
@@ -1909,7 +1896,7 @@
     ]
   },
   "requestedAttributes.heading": {
-    "translation": "Requested attributes",
+    "translation": "",
     "message": "Requested attributes",
     "placeholders": {},
     "comments": [
@@ -1923,7 +1910,7 @@
     ]
   },
   "requestedAttributes.requestedCardsHeading": {
-    "translation": "REQUESTED CARDS",
+    "translation": "",
     "message": "REQUESTED CARDS",
     "placeholders": {},
     "comments": [
@@ -1937,7 +1924,7 @@
     ]
   },
   "common.reset": {
-    "translation": "Reset Wallet",
+    "translation": "",
     "message": "Reset Wallet",
     "placeholders": {},
     "comments": [
@@ -1951,7 +1938,7 @@
     ]
   },
   "signShare.title": {
-    "translation": "Review the request",
+    "translation": "",
     "message": "Review the request",
     "placeholders": {},
     "comments": [
@@ -1965,7 +1952,7 @@
     ]
   },
   "submission.reviewTitle": {
-    "translation": "Review the request",
+    "translation": "",
     "message": "Review the request",
     "placeholders": {},
     "comments": [
@@ -1979,6 +1966,7 @@
     ]
   },
   "home.scanQrButton": {
+    "translation": "",
     "message": "Scan QR-code",
     "placeholders": {},
     "comments": [],
@@ -1987,11 +1975,10 @@
         "src/features/wallet/FunkeWalletScreen.tsx",
         82
       ]
-    ],
-    "translation": "Scan QR-code"
+    ]
   },
   "pidSetup.idCardScan.title": {
-    "translation": "Scan your eID card",
+    "translation": "",
     "message": "Scan your eID card",
     "placeholders": {},
     "comments": [],
@@ -2007,7 +1994,7 @@
     ]
   },
   "onboardingIntroduction.step2.title": {
-    "translation": "Scan your physical ID card",
+    "translation": "",
     "message": "Scan your physical ID card",
     "placeholders": {},
     "comments": [
@@ -2021,7 +2008,7 @@
     ]
   },
   "common.search": {
-    "translation": "Search cards",
+    "translation": "",
     "message": "Search cards",
     "placeholders": {},
     "comments": [
@@ -2035,7 +2022,7 @@
     ]
   },
   "onboardingIntroduction.step1.title": {
-    "translation": "Secure the wallet",
+    "translation": "",
     "message": "Secure the wallet",
     "placeholders": {},
     "comments": [
@@ -2049,7 +2036,7 @@
     ]
   },
   "pinSlide.title": {
-    "translation": "Send data with your PIN code",
+    "translation": "",
     "message": "Send data with your PIN code",
     "placeholders": {},
     "comments": [
@@ -2063,7 +2050,7 @@
     ]
   },
   "onboarding.biometrics.title": {
-    "translation": "Set up biometrics",
+    "translation": "",
     "message": "Set up biometrics",
     "placeholders": {},
     "comments": [
@@ -2077,7 +2064,7 @@
     ]
   },
   "onboardingIdCardRequestedAttributes.setupLater": {
-    "translation": "Set up later",
+    "translation": "",
     "message": "Set up later",
     "placeholders": {},
     "comments": [
@@ -2091,7 +2078,7 @@
     ]
   },
   "onboarding.intro.title": {
-    "translation": "Set up your wallet",
+    "translation": "",
     "message": "Set up your wallet",
     "placeholders": {},
     "comments": [
@@ -2105,7 +2092,7 @@
     ]
   },
   "settings.title": {
-    "translation": "Settings",
+    "translation": "",
     "message": "Settings",
     "placeholders": {},
     "comments": [
@@ -2119,7 +2106,7 @@
     ]
   },
   "menu.item.settings": {
-    "translation": "Settings",
+    "translation": "",
     "message": "Settings",
     "placeholders": {},
     "comments": [
@@ -2133,7 +2120,7 @@
     ]
   },
   "menu.setupEid.title": {
-    "translation": "Setup digital ID",
+    "translation": "",
     "message": "Setup digital ID",
     "placeholders": {},
     "comments": [
@@ -2147,6 +2134,7 @@
     ]
   },
   "home.setupYourId": {
+    "translation": "",
     "message": "Setup your ID",
     "placeholders": {},
     "comments": [],
@@ -2155,11 +2143,10 @@
         "src/features/wallet/FunkeWalletScreen.tsx",
         101
       ]
-    ],
-    "translation": "Setup your ID"
+    ]
   },
   "submission.share": {
-    "translation": "Share",
+    "translation": "",
     "message": "Share",
     "placeholders": {},
     "comments": [
@@ -2173,7 +2160,7 @@
     ]
   },
   "offlineQr.heading": {
-    "translation": "Share with QR code",
+    "translation": "",
     "message": "Share with QR code",
     "placeholders": {},
     "comments": [
@@ -2187,7 +2174,7 @@
     ]
   },
   "credentials.shareableAttributes": {
-    "translation": "Shareable attributes",
+    "translation": "",
     "message": "Shareable attributes",
     "placeholders": {},
     "comments": [
@@ -2201,7 +2188,7 @@
     ]
   },
   "activity.latest.sharedCard": {
-    "translation": "Shared card",
+    "translation": "",
     "message": "Shared card",
     "placeholders": {},
     "comments": [
@@ -2215,7 +2202,7 @@
     ]
   },
   "activity.latest.sharedCards": {
-    "translation": "Shared cards",
+    "translation": "",
     "message": "Shared cards",
     "placeholders": {},
     "comments": [
@@ -2229,7 +2216,7 @@
     ]
   },
   "activity.latest.sharingFailed": {
-    "translation": "Sharing failed",
+    "translation": "",
     "message": "Sharing failed",
     "placeholders": {},
     "comments": [
@@ -2243,7 +2230,7 @@
     ]
   },
   "offlineQr.permissionSettingsDescription": {
-    "translation": "Sharing with QR-Code needs access to Bluetooth and Location.",
+    "translation": "",
     "message": "Sharing with QR-Code needs access to Bluetooth and Location.",
     "placeholders": {},
     "comments": [
@@ -2257,7 +2244,7 @@
     ]
   },
   "credentials.showMetadata": {
-    "translation": "Show metadata attributes",
+    "translation": "",
     "message": "Show metadata attributes",
     "placeholders": {},
     "comments": [
@@ -2271,7 +2258,7 @@
     ]
   },
   "optionSheet.showMetadata": {
-    "translation": "Show metadata attributes",
+    "translation": "",
     "message": "Show metadata attributes",
     "placeholders": {},
     "comments": [
@@ -2285,7 +2272,7 @@
     ]
   },
   "credentials.showShareableAttributes": {
-    "translation": "Show shareable attributes",
+    "translation": "",
     "message": "Show shareable attributes",
     "placeholders": {},
     "comments": [
@@ -2299,7 +2286,7 @@
     ]
   },
   "signShare.accept": {
-    "translation": "Sign & share",
+    "translation": "",
     "message": "Sign & share",
     "placeholders": {},
     "comments": [
@@ -2313,7 +2300,7 @@
     ]
   },
   "activity.latest.signedDocument": {
-    "translation": "Signed document",
+    "translation": "",
     "message": "Signed document",
     "placeholders": {},
     "comments": [
@@ -2327,7 +2314,7 @@
     ]
   },
   "signing.title": {
-    "translation": "Signing a document",
+    "translation": "",
     "message": "Signing a document",
     "placeholders": {},
     "comments": [
@@ -2341,7 +2328,7 @@
     ]
   },
   "signShare.cardHeading": {
-    "translation": "Signing card",
+    "translation": "",
     "message": "Signing card",
     "placeholders": {},
     "comments": [
@@ -2355,7 +2342,7 @@
     ]
   },
   "activity.latest.signingFailed": {
-    "translation": "Signing failed",
+    "translation": "",
     "message": "Signing failed",
     "placeholders": {},
     "comments": [
@@ -2369,7 +2356,7 @@
     ]
   },
   "signShare.signingWith": {
-    "translation": "Signing with {0}",
+    "translation": "",
     "message": "Signing with {0}",
     "placeholders": {
       "0": [
@@ -2387,7 +2374,7 @@
     ]
   },
   "onboardingWalletExplanation.skip": {
-    "translation": "Skip explanation",
+    "translation": "",
     "message": "Skip explanation",
     "placeholders": {},
     "comments": [
@@ -2401,7 +2388,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.active.sheetDescription": {
-    "translation": "Some credentials may expire or require an active internet connection to validate",
+    "translation": "",
     "message": "Some credentials may expire or require an active internet connection to validate",
     "placeholders": {},
     "comments": [],
@@ -2413,7 +2400,7 @@
     ]
   },
   "interactionError.title": {
-    "translation": "Something went wrong",
+    "translation": "",
     "message": "Something went wrong",
     "placeholders": {},
     "comments": [
@@ -2427,7 +2414,7 @@
     ]
   },
   "credential.accept.error": {
-    "translation": "Something went wrong while storing the credential.",
+    "translation": "",
     "message": "Something went wrong while storing the credential.",
     "placeholders": {},
     "comments": [
@@ -2441,7 +2428,7 @@
     ]
   },
   "sharing.failed.unknown": {
-    "translation": "Something went wrong.",
+    "translation": "",
     "message": "Something went wrong.",
     "placeholders": {},
     "comments": [
@@ -2455,7 +2442,7 @@
     ]
   },
   "onboardingIdCardScan.startScanning": {
-    "translation": "Start scanning",
+    "translation": "",
     "message": "Start scanning",
     "placeholders": {},
     "comments": [
@@ -2469,7 +2456,7 @@
     ]
   },
   "onboardingIntroduction.step1": {
-    "translation": "Step 1",
+    "translation": "",
     "message": "Step 1",
     "placeholders": {},
     "comments": [
@@ -2483,7 +2470,7 @@
     ]
   },
   "onboardingIntroduction.step2": {
-    "translation": "Step 2",
+    "translation": "",
     "message": "Step 2",
     "placeholders": {},
     "comments": [
@@ -2497,7 +2484,7 @@
     ]
   },
   "common.stop": {
-    "translation": "Stop",
+    "translation": "",
     "message": "Stop",
     "placeholders": {},
     "comments": [
@@ -2511,7 +2498,7 @@
     ]
   },
   "pidSetup.idCardComplete.title": {
-    "translation": "Success!",
+    "translation": "",
     "message": "Success!",
     "placeholders": {},
     "comments": [],
@@ -2523,7 +2510,7 @@
     ]
   },
   "common.success": {
-    "translation": "Success!",
+    "translation": "",
     "message": "Success!",
     "placeholders": {},
     "comments": [
@@ -2537,7 +2524,7 @@
     ]
   },
   "onboardingWalletExplanation.slide2.subtitle": {
-    "translation": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
+    "translation": "",
     "message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
     "placeholders": {},
     "comments": [
@@ -2551,7 +2538,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.expired.description": {
-    "translation": "The expiration date of this card has passed",
+    "translation": "",
     "message": "The expiration date of this card has passed",
     "placeholders": {},
     "comments": [],
@@ -2563,7 +2550,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.expired.sheetDescription": {
-    "translation": "The expiration date of this card has passed on {0}.",
+    "translation": "",
     "message": "The expiration date of this card has passed on {0}.",
     "placeholders": {
       "0": [
@@ -2579,7 +2566,7 @@
     ]
   },
   "requestedAttributes.onlySatisfiedDescription": {
-    "translation": "The following cards will be shared.",
+    "translation": "",
     "message": "The following cards will be shared.",
     "placeholders": {},
     "comments": [
@@ -2593,7 +2580,7 @@
     ]
   },
   "signShare.documentIntro": {
-    "translation": "The following document will be signed.",
+    "translation": "",
     "message": "The following document will be signed.",
     "placeholders": {},
     "comments": [
@@ -2607,7 +2594,7 @@
     ]
   },
   "signShare.cardIntro": {
-    "translation": "The following personal information will be used to sign the document.",
+    "translation": "",
     "message": "The following personal information will be used to sign the document.",
     "placeholders": {},
     "comments": [
@@ -2621,7 +2608,7 @@
     ]
   },
   "cardLifecycle.revoked.sheetDescription": {
-    "translation": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
+    "translation": "",
     "message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
     "placeholders": {},
     "comments": [],
@@ -2633,7 +2620,7 @@
     ]
   },
   "txCodeSlide.descriptionIntro": {
-    "translation": "The issuer provided the following:",
+    "translation": "",
     "message": "The issuer provided the following:",
     "placeholders": {},
     "comments": [
@@ -2647,7 +2634,7 @@
     ]
   },
   "requestPurpose.overaskingWarning": {
-    "translation": "The purpose given does not match the data requested.",
+    "translation": "",
     "message": "The purpose given does not match the data requested.",
     "placeholders": {},
     "comments": [
@@ -2661,7 +2648,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.validityPeriod": {
-    "translation": "The validity period of this card is from {0} until {1}.",
+    "translation": "",
     "message": "The validity period of this card is from {0} until {1}.",
     "placeholders": {
       "0": [
@@ -2680,7 +2667,7 @@
     ]
   },
   "trust.noApprovals": {
-    "translation": "There are no organizations that have approved {name}.",
+    "translation": "",
     "message": "There are no organizations that have approved {name}.",
     "placeholders": {
       "name": [
@@ -2698,7 +2685,7 @@
     ]
   },
   "trust.noApprovalsWithoutOrganizationName": {
-    "translation": "There are no organizations that have approved this unknown organization.",
+    "translation": "",
     "message": "There are no organizations that have approved this unknown organization.",
     "placeholders": {},
     "comments": [
@@ -2712,7 +2699,7 @@
     ]
   },
   "credentials.emptyTitle": {
-    "translation": "There's nothing here, yet",
+    "translation": "",
     "message": "There's nothing here, yet",
     "placeholders": {},
     "comments": [
@@ -2726,7 +2713,7 @@
     ]
   },
   "onboardingIdCardRequestedAttributes.description": {
-    "translation": "These {0} attributes will be read from your eID card.",
+    "translation": "",
     "message": "These {0} attributes will be read from your eID card.",
     "placeholders": {
       "0": [
@@ -2744,7 +2731,7 @@
     ]
   },
   "paradymWallet.about.description": {
-    "translation": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
+    "translation": "",
     "message": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
     "placeholders": {},
     "comments": [
@@ -2758,7 +2745,7 @@
     ]
   },
   "funkeWallet.about.description": {
-    "translation": "This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
+    "translation": "",
     "message": "This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
     "placeholders": {},
     "comments": [
@@ -2772,7 +2759,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.expiresIn": {
-    "translation": "This card expires in {expiryDaysString}, on {0}.",
+    "translation": "",
     "message": "This card expires in {expiryDaysString}, on {0}.",
     "placeholders": {
       "0": [
@@ -2791,7 +2778,7 @@
     ]
   },
   "cardLifecycle.batch.sheetDescription": {
-    "translation": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
+    "translation": "",
     "message": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
     "placeholders": {},
     "comments": [],
@@ -2803,7 +2790,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.activeIn": {
-    "translation": "This card will be active in {activeDaysString}, on {0}.",
+    "translation": "",
     "message": "This card will be active in {activeDaysString}, on {0}.",
     "placeholders": {
       "0": [
@@ -2822,7 +2809,7 @@
     ]
   },
   "submission.offlineRequestTitle": {
-    "translation": "This is an offline request",
+    "translation": "",
     "message": "This is an offline request",
     "placeholders": {},
     "comments": [
@@ -2836,7 +2823,7 @@
     ]
   },
   "pidSetup.idCardPin.subtitle": {
-    "translation": "This is required to read data from your card.",
+    "translation": "",
     "message": "This is required to read data from your card.",
     "placeholders": {},
     "comments": [],
@@ -2848,7 +2835,7 @@
     ]
   },
   "onboardingWelcome.description": {
-    "translation": "This is your digital wallet. With it, you can store and share information about yourself.",
+    "translation": "",
     "message": "This is your digital wallet. With it, you can store and share information about yourself.",
     "placeholders": {},
     "comments": [
@@ -2862,7 +2849,7 @@
     ]
   },
   "onboardingWalletExplanation.slide1.title": {
-    "translation": "This is your wallet",
+    "translation": "",
     "message": "This is your wallet",
     "placeholders": {},
     "comments": [
@@ -2876,7 +2863,7 @@
     ]
   },
   "requestPurpose.infoSheet.description": {
-    "translation": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
+    "translation": "",
     "message": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
     "placeholders": {},
     "comments": [
@@ -2890,7 +2877,7 @@
     ]
   },
   "onboarding.pin.subtitle": {
-    "translation": "This PIN secures your identity wallet. You enter it every time you share data.",
+    "translation": "",
     "message": "This PIN secures your identity wallet. You enter it every time you share data.",
     "placeholders": {},
     "comments": [
@@ -2904,7 +2891,7 @@
     ]
   },
   "onboarding.pinReenter.subtitle": {
-    "translation": "This PIN secures your identity wallet. You enter it every time you share data.",
+    "translation": "",
     "message": "This PIN secures your identity wallet. You enter it every time you share data.",
     "placeholders": {},
     "comments": [
@@ -2918,7 +2905,7 @@
     ]
   },
   "onboarding.pin.subtitle.simple": {
-    "translation": "This PIN secures your wallet. You enter it every time you share data.",
+    "translation": "",
     "message": "This PIN secures your wallet. You enter it every time you share data.",
     "placeholders": {},
     "comments": [
@@ -2932,7 +2919,7 @@
     ]
   },
   "onboarding.pinReenter.subtitle.simple": {
-    "translation": "This PIN secures your wallet. You enter it every time you share data.",
+    "translation": "",
     "message": "This PIN secures your wallet. You enter it every time you share data.",
     "placeholders": {},
     "comments": [
@@ -2946,7 +2933,7 @@
     ]
   },
   "pidSetup.enableBiometrics.subtitle": {
-    "translation": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
+    "translation": "",
     "message": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
     "placeholders": {},
     "comments": [],
@@ -2958,7 +2945,7 @@
     ]
   },
   "credentialCardSlide.subtitle.pin": {
-    "translation": "To receive this card from {issuerName}, you need to enter a PIN.",
+    "translation": "",
     "message": "To receive this card from {issuerName}, you need to enter a PIN.",
     "placeholders": {
       "issuerName": [
@@ -2976,7 +2963,7 @@
     ]
   },
   "credentialCardSlide.subtitle.presentation": {
-    "translation": "To receive this card from {issuerName}, you need to share cards from your wallet.",
+    "translation": "",
     "message": "To receive this card from {issuerName}, you need to share cards from your wallet.",
     "placeholders": {
       "issuerName": [
@@ -2994,7 +2981,7 @@
     ]
   },
   "txCodeSlide.instructions": {
-    "translation": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
+    "translation": "",
     "message": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
     "placeholders": {},
     "comments": [
@@ -3008,7 +2995,7 @@
     ]
   },
   "authCodeFlowSlide.description": {
-    "translation": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
+    "translation": "",
     "message": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
     "placeholders": {},
     "comments": [
@@ -3022,7 +3009,7 @@
     ]
   },
   "pinLocked.title": {
-    "translation": "Too many incorrect attempts",
+    "translation": "",
     "message": "Too many incorrect attempts",
     "placeholders": {},
     "comments": [
@@ -3036,7 +3023,7 @@
     ]
   },
   "txCodeSlide.inputLabel": {
-    "translation": "Transaction code",
+    "translation": "",
     "message": "Transaction code",
     "placeholders": {},
     "comments": [
@@ -3050,7 +3037,7 @@
     ]
   },
   "trust.trustedBy": {
-    "translation": "Trusted by",
+    "translation": "",
     "message": "Trusted by",
     "placeholders": {},
     "comments": [
@@ -3064,7 +3051,7 @@
     ]
   },
   "requestedAttributes.unavailableCardsHeading": {
-    "translation": "UNAVAILABLE CARDS",
+    "translation": "",
     "message": "UNAVAILABLE CARDS",
     "placeholders": {},
     "comments": [
@@ -3078,7 +3065,7 @@
     ]
   },
   "trust.unknownOrgTitle": {
-    "translation": "Unknown organization",
+    "translation": "",
     "message": "Unknown organization",
     "placeholders": {},
     "comments": [
@@ -3092,7 +3079,7 @@
     ]
   },
   "onboardingIdCardVerify.unlock": {
-    "translation": "Unlock with biometrics",
+    "translation": "",
     "message": "Unlock with biometrics",
     "placeholders": {},
     "comments": [
@@ -3106,7 +3093,7 @@
     ]
   },
   "pinSlide.description": {
-    "translation": "Use your app PIN code to confirm the request.",
+    "translation": "",
     "message": "Use your app PIN code to confirm the request.",
     "placeholders": {},
     "comments": [
@@ -3120,7 +3107,7 @@
     ]
   },
   "menu.setupEid.message": {
-    "translation": "Use your eID card to set up your digital identity.",
+    "translation": "",
     "message": "Use your eID card to set up your digital identity.",
     "placeholders": {},
     "comments": [
@@ -3134,7 +3121,7 @@
     ]
   },
   "onboardingIntroduction.step2.description": {
-    "translation": "Use your ID card PIN to retrieve your identity information.",
+    "translation": "",
     "message": "Use your ID card PIN to retrieve your identity information.",
     "placeholders": {},
     "comments": [
@@ -3148,7 +3135,7 @@
     ]
   },
   "cardLifecycle.batch.description": {
-    "translation": "verifications left",
+    "translation": "",
     "message": "verifications left",
     "placeholders": {},
     "comments": [],
@@ -3160,7 +3147,7 @@
     ]
   },
   "authCodeFlowSlide.heading": {
-    "translation": "Verify your account",
+    "translation": "",
     "message": "Verify your account",
     "placeholders": {},
     "comments": [
@@ -3174,7 +3161,7 @@
     ]
   },
   "credentials.cardAttributesDescription": {
-    "translation": "View attributes of the card",
+    "translation": "",
     "message": "View attributes of the card",
     "placeholders": {},
     "comments": [
@@ -3188,7 +3175,7 @@
     ]
   },
   "menu.section.wallet": {
-    "translation": "WALLET",
+    "translation": "",
     "message": "WALLET",
     "placeholders": {},
     "comments": [
@@ -3202,7 +3189,7 @@
     ]
   },
   "pidSetup.idCardVerify.Subtitle": {
-    "translation": "We need your biometrics to verify your identity.",
+    "translation": "",
     "message": "We need your biometrics to verify your identity.",
     "placeholders": {},
     "comments": [],
@@ -3214,7 +3201,7 @@
     ]
   },
   "onboardingWalletExplanation.slide2.title": {
-    "translation": "What is it for?",
+    "translation": "",
     "message": "What is it for?",
     "placeholders": {},
     "comments": [
@@ -3228,7 +3215,7 @@
     ]
   },
   "cardLifecycle.limitedByDate.notYetActive.description": {
-    "translation": "Will be active in {activeDaysString}",
+    "translation": "",
     "message": "Will be active in {activeDaysString}",
     "placeholders": {
       "activeDaysString": [
@@ -3244,7 +3231,7 @@
     ]
   },
   "common.yes": {
-    "translation": "Yes",
+    "translation": "",
     "message": "Yes",
     "placeholders": {},
     "comments": [
@@ -3258,7 +3245,7 @@
     ]
   },
   "signing.description": {
-    "translation": "You are about to sign <0>{documentName}</0>.",
+    "translation": "",
     "message": "You are about to sign <0>{documentName}</0>.",
     "placeholders": {
       "documentName": [
@@ -3276,7 +3263,7 @@
     ]
   },
   "connection.successParagraph": {
-    "translation": "You can now receive notifications from \n<0>{name}</0>",
+    "translation": "",
     "message": "You can now receive notifications from \n<0>{name}</0>",
     "placeholders": {
       "name": [
@@ -3294,7 +3281,7 @@
     ]
   },
   "presentationSuccess.returnHint": {
-    "translation": "You can now return to the previous app.",
+    "translation": "",
     "message": "You can now return to the previous app.",
     "placeholders": {},
     "comments": [
@@ -3308,7 +3295,7 @@
     ]
   },
   "sharing.failed.missingCredentials": {
-    "translation": "You did not have the required credentials to disclose.",
+    "translation": "",
     "message": "You did not have the required credentials to disclose.",
     "placeholders": {},
     "comments": [
@@ -3322,7 +3309,7 @@
     ]
   },
   "requestedAttributes.partialDescription": {
-    "translation": "You don't have all of the requested cards.",
+    "translation": "",
     "message": "You don't have all of the requested cards.",
     "placeholders": {},
     "comments": [
@@ -3336,7 +3323,7 @@
     ]
   },
   "inbox.emptyMessage": {
-    "translation": "You don't have any notifications at the moment.",
+    "translation": "",
     "message": "You don't have any notifications at the moment.",
     "placeholders": {},
     "comments": [
@@ -3350,7 +3337,7 @@
     ]
   },
   "requestedAttributes.onlyUnsatisfiedDescription": {
-    "translation": "You don't have the requested card(s).",
+    "translation": "",
     "message": "You don't have the requested card(s).",
     "placeholders": {},
     "comments": [
@@ -3364,7 +3351,7 @@
     ]
   },
   "signShare.missingCards": {
-    "translation": "You don't have the required cards",
+    "translation": "",
     "message": "You don't have the required cards",
     "placeholders": {},
     "comments": [
@@ -3378,7 +3365,7 @@
     ]
   },
   "submission.missingCardsWarning": {
-    "translation": "You don't have the required cards",
+    "translation": "",
     "message": "You don't have the required cards",
     "placeholders": {},
     "comments": [
@@ -3392,7 +3379,7 @@
     ]
   },
   "pinLocked.description": {
-    "translation": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
+    "translation": "",
     "message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
     "placeholders": {},
     "comments": [
@@ -3406,7 +3393,7 @@
     ]
   },
   "pidSetup.enableBiometrics.title": {
-    "translation": "You need to enable biometrics",
+    "translation": "",
     "message": "You need to enable biometrics",
     "placeholders": {},
     "comments": [],
@@ -3418,7 +3405,7 @@
     ]
   },
   "onboardingIntroduction.reminder": {
-    "translation": "You'll need your eID card to setup the wallet",
+    "translation": "",
     "message": "You'll need your eID card to setup the wallet",
     "placeholders": {},
     "comments": [
@@ -3432,7 +3419,7 @@
     ]
   },
   "inbox.emptyTitle": {
-    "translation": "You're all caught up",
+    "translation": "",
     "message": "You're all caught up",
     "placeholders": {},
     "comments": [
@@ -3446,7 +3433,7 @@
     ]
   },
   "cardLifecycle.active.sheetDescription": {
-    "translation": "Your credentials may expire or require an active internet connection to validate.",
+    "translation": "",
     "message": "Your credentials may expire or require an active internet connection to validate.",
     "placeholders": {},
     "comments": [],
@@ -3458,7 +3445,7 @@
     ]
   },
   "pidSetup.dataProtection.subtitle": {
-    "translation": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
+    "translation": "",
     "message": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
     "placeholders": {},
     "comments": [],
@@ -3470,7 +3457,7 @@
     ]
   },
   "pidSetup.idCardComplete.subtitle": {
-    "translation": "Your information has been retrieved from your eID card.",
+    "translation": "",
     "message": "Your information has been retrieved from your eID card.",
     "placeholders": {},
     "comments": [],
@@ -3482,7 +3469,7 @@
     ]
   },
   "presentationSuccess.messageWithVerifier": {
-    "translation": "Your information has been shared with <0>{verifierName}</0>.",
+    "translation": "",
     "message": "Your information has been shared with <0>{verifierName}</0>.",
     "placeholders": {
       "verifierName": [
@@ -3500,7 +3487,7 @@
     ]
   },
   "presentationSuccess.message": {
-    "translation": "Your information has been shared.",
+    "translation": "",
     "message": "Your information has been shared.",
     "placeholders": {},
     "comments": [
@@ -3514,7 +3501,7 @@
     ]
   },
   "authenticate.pinRequiredToast": {
-    "translation": "Your PIN is required to unlock the app",
+    "translation": "",
     "message": "Your PIN is required to unlock the app",
     "placeholders": {},
     "comments": [],

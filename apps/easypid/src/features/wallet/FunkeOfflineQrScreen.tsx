@@ -29,6 +29,8 @@ import {
   shutdownDataTransfer,
   waitForDeviceRequest,
 } from '../proximity'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 export function FunkeOfflineQrScreen() {
   const appIcon = useAppIcon()
@@ -36,6 +38,7 @@ export function FunkeOfflineQrScreen() {
   const { replace, back } = useRouter()
   const { width } = useWindowDimensions()
   const toast = useToastController()
+  const { t } = useLingui()
 
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
@@ -67,7 +70,14 @@ export function FunkeOfflineQrScreen() {
     const permissions = await requestMdocPermissions()
 
     if (!permissions) {
-      toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
+      toast.show(
+        t({
+          id: 'offlineQr.permissionError',
+          message: 'Failed to request permissions.',
+          comment: 'Toast shown when system permission request fails',
+        }),
+        { customData: { preset: 'danger' } }
+      )
       return { granted: false, shouldShowSettings: false }
     }
 
@@ -97,11 +107,23 @@ export function FunkeOfflineQrScreen() {
     if (shouldShowSettings) {
       back()
       Alert.alert(
-        'Please enable required permissions in your phone settings',
-        'Sharing with QR-Code needs access to Bluetooth and Location.',
+        t({
+          id: 'offlineQr.permissionSettingsTitle',
+          message: 'Please enable required permissions in your phone settings',
+          comment: 'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
+        }),
+        t({
+          id: 'offlineQr.permissionSettingsDescription',
+          message: 'Sharing with QR-Code needs access to Bluetooth and Location.',
+          comment: 'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
+        }),
         [
           {
-            text: 'Open Settings',
+            text: t({
+              id: 'common.openSettings',
+              message: 'Open Settings',
+              comment: 'Button to open system settings from alert',
+            }),
             onPress: () => Linking.openSettings(),
           },
         ]
@@ -136,10 +158,17 @@ export function FunkeOfflineQrScreen() {
       <SystemBars style="light" />
       <AnimatedStack pt="$8" maxWidth="90%" gap="$2">
         <Heading variant="h1" lineHeight={36} ta="center" dark>
-          Share with QR code
+          <Trans id="offlineQr.heading" comment="Main heading for offline QR sharing screen">
+            Share with QR code
+          </Trans>
         </Heading>
-        <Paragraph color="$grey-400">A verifier needs to scan your QR-Code.</Paragraph>
+        <Paragraph color="$grey-400">
+          <Trans id="offlineQr.instruction" comment="Instruction for the verifier to scan the QR code">
+            A verifier needs to scan your QR-Code.
+          </Trans>
+        </Paragraph>
       </AnimatedStack>
+
       <AnimatedStack fg={1} pb="$12" jc="center">
         {qrCodeData ? (
           <Stack bg="$white" br="$8" p="$5">
@@ -155,6 +184,7 @@ export function FunkeOfflineQrScreen() {
           <Loader variant="dark" />
         )}
       </AnimatedStack>
+
       <YStack jc="center" ai="center" gap="$4">
         <XStack>
           <Button.Solid
@@ -168,7 +198,7 @@ export function FunkeOfflineQrScreen() {
             scaleOnPress
             alignSelf="center"
           >
-            Cancel
+            {t(commonMessages.cancel)}
           </Button.Solid>
         </XStack>
         <Spacer />

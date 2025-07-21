@@ -1,3 +1,4 @@
+//translations: too long?
 import type { DisplayImage, TrustMechanism, TrustedEntity } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import {

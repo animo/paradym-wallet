@@ -1,12 +1,20 @@
-import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
+import {
+  FlexPage,
+  HeaderContainer,
+  InfoButton,
+  Paragraph,
+  YStack,
+} from '@package/ui'
 
 import { TextBackButton } from '@package/app'
 import { Linking } from 'react-native'
 
 import { useAppCopy } from '@easypid/config/copy'
 import * as Application from 'expo-application'
+import { useLingui } from '@lingui/react/macro'
 
 export function FunkeAboutScreen() {
+  const { t } = useLingui()
   const { about } = useAppCopy()
 
   const openContact = () => {
@@ -19,12 +27,22 @@ export function FunkeAboutScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <HeaderContainer title="About the wallet" />
+      <HeaderContainer
+        title={t({
+          id: 'funkeAboutScreen.header',
+          message: 'About the wallet',
+          comment: 'Screen header shown on the about page of the wallet',
+        })}
+      />
       <YStack fg={1} px="$4" gap="$4">
         <YStack gap="$2">
-          <Paragraph color="$grey-700">{about.description}</Paragraph>
+          <Paragraph color="$grey-700">{t(about.description)}</Paragraph>
           <Paragraph>
-            For more information, reach out to{' '}
+            {t({
+              id: 'funkeAboutScreen.contactIntro',
+              message: 'For more information, reach out to',
+              comment: 'Intro sentence before showing support email address',
+            })}{' '}
             <Paragraph fontWeight="$semiBold" color="$primary-500" onPress={openContact}>
               ana@animo.id
             </Paragraph>
@@ -34,8 +52,16 @@ export function FunkeAboutScreen() {
         <YStack gap="$2" fg={1} jc="space-between">
           <InfoButton
             variant="view"
-            title="Privacy Policy"
-            description="Open the privacy policy"
+            title={t({
+              id: 'funkeAboutScreen.privacyPolicyTitle',
+              message: 'Privacy Policy',
+              comment: 'Label for button that opens the privacy policy',
+            })}
+            description={t({
+              id: 'funkeAboutScreen.privacyPolicyDescription',
+              message: 'Open the privacy policy',
+              comment: 'Description under the privacy policy button',
+            })}
             routingType="external"
             onPress={openPrivacyPolicy}
           />

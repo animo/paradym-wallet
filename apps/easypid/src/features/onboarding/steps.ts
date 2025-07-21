@@ -1,11 +1,74 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { type OnboardingStep, pidSetupSteps } from '@easypid/utils/sharedPidSetup'
+import { type OnboardingStep, pidSetupSteps, pidSetupMessages } from '@easypid/utils/sharedPidSetup'
 import { OnboardingBiometrics } from './screens/biometrics'
 import { OnboardingDataProtection } from './screens/data-protection'
 import { OnboardingIntroductionSteps } from './screens/introduction-steps'
 import OnboardingPinEnter from './screens/pin'
 import { OnboardingWalletExplanation } from './screens/wallet-explanation'
 import OnboardingWelcome from './screens/welcome'
+import { defineMessage } from '@lingui/core/macro'
+
+// Shared messages
+const pinTitle = defineMessage({
+  id: 'onboarding.pin.title',
+  message: 'Choose a 6-digit PIN',
+  comment: 'Heading when user chooses a PIN',
+})
+
+const pinSubtitle = defineMessage({
+  id: 'onboarding.pin.subtitle',
+  message: 'This PIN secures your identity wallet. You enter it every time you share data.',
+  comment: 'Explanation of the PIN purpose in onboarding',
+})
+
+const pinSubtitleSimple = defineMessage({
+  id: 'onboarding.pin.subtitle.simple',
+  message: 'This PIN secures your wallet. You enter it every time you share data.',
+  comment: 'PIN explanation in simpler flow without EID',
+})
+
+const pinReenterTitle = defineMessage({
+  id: 'onboarding.pinReenter.title',
+  message: 'Repeat your PIN',
+  comment: 'Heading when user repeats their PIN',
+})
+
+const pinReenterSubtitle = defineMessage({
+  id: 'onboarding.pinReenter.subtitle',
+  message: 'This PIN secures your identity wallet. You enter it every time you share data.',
+  comment: 'Explanation shown when re-entering the PIN',
+})
+
+const pinReenterSubtitleSimple = defineMessage({
+  id: 'onboarding.pinReenter.subtitle.simple',
+  message: 'This PIN secures your wallet. You enter it every time you share data.',
+  comment: 'PIN explanation in simpler flow without EID',
+})
+
+const biometricsTitle = defineMessage({
+  id: 'onboarding.biometrics.title',
+  message: 'Set up biometrics',
+  comment: 'Heading when user sets up biometrics',
+})
+
+const biometricsSubtitle = defineMessage({
+  id: 'onboarding.biometrics.subtitle',
+  message:
+    'Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.',
+  comment: 'Subtitle explaining purpose of biometrics',
+})
+
+const introTitle = defineMessage({
+  id: 'onboarding.intro.title',
+  message: 'Set up your wallet',
+  comment: 'Title for the introduction steps slide in onboarding',
+})
+
+const introSubtitle = defineMessage({
+  id: 'onboarding.intro.subtitle',
+  message: 'Before you can use the app, we will guide you through these steps.',
+  comment: 'Subtitle for the introduction steps slide in onboarding',
+})
 
 export const onboardingSteps = useFeatureFlag('EID_CARD')
   ? ([
@@ -25,7 +88,6 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         page: {
           animation: 'delayed',
           type: 'content',
-          title: '',
         },
         Screen: OnboardingWalletExplanation,
       },
@@ -36,20 +98,19 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         page: {
           animation: 'delayed',
           type: 'content',
-          title: 'Set up your wallet',
-          subtitle: 'Before you can use the app, we will guide you through these steps.',
+          title: introTitle,
+          subtitle: introSubtitle,
         },
         Screen: OnboardingIntroductionSteps,
       },
-
       {
         step: 'pin',
         alternativeFlow: false,
         progress: 30,
         page: {
           type: 'content',
-          title: 'Choose a 6-digit PIN',
-          subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
+          title: pinTitle,
+          subtitle: pinSubtitle,
           animationKey: 'pin',
         },
         Screen: OnboardingPinEnter,
@@ -60,8 +121,8 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         progress: 30,
         page: {
           type: 'content',
-          title: 'Repeat your PIN',
-          subtitle: 'This PIN secures your identity wallet. You enter it every time you share data.',
+          title: pinReenterTitle,
+          subtitle: pinReenterSubtitle,
           animationKey: 'pin',
         },
         Screen: OnboardingPinEnter,
@@ -72,9 +133,8 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         progress: 40,
         page: {
           type: 'content',
-          title: 'Set up biometrics',
-          subtitle:
-            'Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.',
+          title: biometricsTitle,
+          subtitle: biometricsSubtitle,
         },
         Screen: OnboardingBiometrics,
       },
@@ -84,9 +144,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         alternativeFlow: true,
         page: {
           type: 'content',
-          title: 'You need to enable biometrics',
-          subtitle:
-            'To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.',
+          ...pidSetupMessages.idCardBiometricsDisabled,
           animation: 'delayed',
         },
         Screen: OnboardingBiometrics,
@@ -109,8 +167,8 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         progress: 25,
         page: {
           type: 'content',
-          title: 'Choose a 6-digit PIN',
-          subtitle: 'This PIN secures your wallet. You enter it every time you share data.',
+          title: pinTitle,
+          subtitle: pinSubtitleSimple,
           animationKey: 'pin',
           animation: 'delayed',
         },
@@ -122,8 +180,8 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         progress: 25,
         page: {
           type: 'content',
-          title: 'Repeat your PIN',
-          subtitle: 'This PIN secures your wallet. You enter it every time you share data.',
+          title: pinReenterTitle,
+          subtitle: pinReenterSubtitleSimple,
           animationKey: 'pin',
         },
         Screen: OnboardingPinEnter,
@@ -134,9 +192,8 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         progress: 50,
         page: {
           type: 'content',
-          title: 'Set up biometrics',
-          subtitle:
-            'Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.',
+          title: biometricsTitle,
+          subtitle: biometricsSubtitle,
         },
         Screen: OnboardingBiometrics,
       },
@@ -146,10 +203,8 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         alternativeFlow: true,
         page: {
           type: 'content',
-          title: 'You need to enable biometrics',
+          ...pidSetupMessages.idCardBiometricsDisabled,
           animation: 'delayed',
-          subtitle:
-            'To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.',
         },
         Screen: OnboardingBiometrics,
       },
@@ -159,9 +214,7 @@ export const onboardingSteps = useFeatureFlag('EID_CARD')
         progress: 75,
         page: {
           type: 'content',
-          title: 'Protect your data',
-          subtitle:
-            'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
+          ...pidSetupMessages.dataProtection,
         },
         Screen: OnboardingDataProtection,
       },

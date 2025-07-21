@@ -1,3 +1,4 @@
+// translations: too complex
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
@@ -32,6 +33,8 @@ import { PidIdCardVerifySlide } from './PidEidCardVerifySlide'
 import { PidReviewRequestSlide } from './PidReviewRequestSlide'
 import { PidSetupStartSlide } from './PidSetupStartSlide'
 import { PidWalletPinSlide } from './PidWalletPinSlide'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 export function FunkePidSetupScreen() {
   const toast = useToastController()
@@ -48,6 +51,7 @@ export function FunkePidSetupScreen() {
     state: 'readyToScan',
     showScanModal: true,
   })
+  const { t } = useLingui()
   const [eidCardRequestedAccessRights, setEidCardRequestedAccessRights] = useState<string[]>([])
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
   const [userName, setUserName] = useState<string>()
@@ -368,14 +372,14 @@ export function FunkePidSetupScreen() {
         {
           step: 'id-card-start',
           progress: 20,
-          screen: <PidSetupStartSlide {...getPidSetupSlideContent('data-protection')} onStart={onStart} />,
+          screen: <PidSetupStartSlide {...getPidSetupSlideContent('data-protection', t)} onStart={onStart} />,
         },
         {
           step: 'id-card-pin',
           progress: 30,
           screen: (
             <PidWalletPinSlide
-              title="Enter your app PIN code"
+              title={t(commonMessages.enterPin)}
               subtitle="Enter the PIN code you use to unlock your wallet."
               onEnterPin={onWalletPinEnter}
             />
@@ -387,7 +391,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidReviewRequestSlide
-              {...getPidSetupSlideContent('id-card-requested-attributes')}
+              {...getPidSetupSlideContent('id-card-requested-attributes', t)}
               requestedAttributes={eidCardRequestedAccessRights}
             />
           ),
@@ -398,7 +402,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidEidCardPinSlide
-              {...getPidSetupSlideContent('id-card-pin')}
+              {...getPidSetupSlideContent('id-card-pin', t)}
               onEnterPin={onIdCardPinReEnter ?? onIdCardPinEnter}
             />
           ),
@@ -409,7 +413,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidCardScanSlide
-              {...getPidSetupSlideContent('id-card-start-scan')}
+              {...getPidSetupSlideContent('id-card-start-scan', t)}
               progress={idCardScanningState.progress}
               scanningState={idCardScanningState.state}
               isCardAttached={idCardScanningState.isCardAttached}
@@ -429,7 +433,7 @@ export function FunkePidSetupScreen() {
               backIsCancel: true,
               screen: (
                 <PidIdCardVerifySlide
-                  {...getPidSetupSlideContent('id-card-verify')}
+                  {...getPidSetupSlideContent('id-card-verify', t)}
                   onVerifyWithBiometrics={retrieveCredential}
                 />
               ),
@@ -441,7 +445,7 @@ export function FunkePidSetupScreen() {
           backIsCancel: true,
           screen: (
             <PidIdCardFetchSlide
-              {...getPidSetupSlideContent(userName ? 'id-card-complete' : 'id-card-fetch')}
+              {...getPidSetupSlideContent(userName ? 'id-card-complete' : 'id-card-fetch', t)}
               userName={userName}
               onComplete={() => pushToWallet('replace')}
             />

@@ -3,7 +3,7 @@ import { formatter } from '@lingui/format-json'
 
 export default defineConfig({
   sourceLocale: 'en',
-  locales: ['nl', 'en'],
+  locales: ['nl', 'en', 'fi'],
   format: formatter({ style: 'lingui' }),
   catalogs: [
     {
@@ -12,4 +12,7 @@ export default defineConfig({
       exclude: ['**/node_modules/**', 'node_modules'],
     },
   ],
+  fallbackLocales: {
+    default: 'en',
+  },
 })

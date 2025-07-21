@@ -9,3 +9,4 @@ export {
 } from './i18n'
 export { TranslationProvider } from './TranslationProvider'
 export { useDeviceLocale } from './useDeviceLocale'
+export { commonMessages } from './commonMessages'

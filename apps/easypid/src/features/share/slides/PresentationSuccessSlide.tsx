@@ -1,5 +1,17 @@
-import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, Stack, YStack, useSpringify } from '@package/ui'
+import {
+  AnimatedStack,
+  Button,
+  Heading,
+  HeroIcons,
+  Paragraph,
+  Stack,
+  YStack,
+  useSpringify,
+} from '@package/ui'
 import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
+import { commonMessages } from '@package/translations'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 
 interface PresentationSuccessSlideProps {
   onComplete: () => void
@@ -12,6 +24,8 @@ export const PresentationSuccessSlide = ({
   onComplete,
   showReturnToApp,
 }: PresentationSuccessSlideProps) => {
+  const buttonLabel = t(commonMessages.goToWallet)
+
   return (
     <YStack fg={1} jc="space-between">
       <YStack fg={1} mt="$10" gap="$4" key="12345">
@@ -65,28 +79,43 @@ export const PresentationSuccessSlide = ({
             <HeroIcons.Interaction color="white" size={36} strokeWidth={2} />
           </AnimatedStack>
         </YStack>
+
         <YStack gap="$4" p="$4" ai="center">
-          <Heading>Success!</Heading>
+          <Heading>{t(commonMessages.success)}</Heading>
+
           <Paragraph ta="center">
-            Your information has been shared
-            {verifierName && (
-              <>
-                {' '}
-                with <Paragraph fontWeight="$semiBold">{verifierName}</Paragraph>
-              </>
+            {verifierName ? (
+              <Trans
+                id="presentationSuccess.messageWithVerifier"
+                comment="Shown after credentials are shared with a specific verifier"
+              >
+                Your information has been shared with <Paragraph fontWeight="$semiBold">{verifierName}</Paragraph>.
+              </Trans>
+            ) : (
+              <Trans
+                id="presentationSuccess.message"
+                comment="Shown after credentials are shared (no verifier name)"
+              >
+                Your information has been shared.
+              </Trans>
             )}
-            .
           </Paragraph>
         </YStack>
       </YStack>
+
       <Stack gap="$3" borderTopWidth="$0.5" borderColor="$grey-200" p="$4" py="$2" mx="$-4">
         {showReturnToApp && (
           <Paragraph variant="annotation" ta="center">
-            You can now return to the previous app.
+            <Trans
+              id="presentationSuccess.returnHint"
+              comment="Instruction shown after presentation is completed"
+            >
+              You can now return to the previous app.
+            </Trans>
           </Paragraph>
         )}
         <Button.Solid scaleOnPress onPress={onComplete}>
-          Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
+          {buttonLabel} <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
       </Stack>
     </YStack>

@@ -9,6 +9,8 @@ import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, us
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 /**
  * Authenticate screen is redirect to from app layout when app is configured but locked
@@ -24,6 +26,8 @@ export default function Authenticate() {
   const { additionalPadding, noBottomSafeArea } = useDeviceMedia()
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
+  const { t } = useLingui()
+
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
@@ -86,7 +90,7 @@ export default function Authenticate() {
     if (secureUnlock.state === 'locked') {
       secureUnlock.tryUnlockingUsingBiometrics()
     } else {
-      toast.show('You PIN is required to unlock the app', {
+      toast.show(t({ id: 'authenticate.pinRequiredToast', message: 'Your PIN is required to unlock the app' }), {
         customData: {
           preset: 'danger',
         },
@@ -105,7 +109,7 @@ export default function Authenticate() {
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
           <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
           <Heading variant="h2" fontWeight="$semiBold">
-            Enter your app PIN code
+            {t(commonMessages.enterPin)}
           </Heading>
         </YStack>
         <PinDotsInput

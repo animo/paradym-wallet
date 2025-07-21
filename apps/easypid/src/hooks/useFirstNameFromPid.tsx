@@ -1,3 +1,4 @@
+// translations not needed
 import { useCredentialByCategory } from '@package/agent/hooks'
 import { capitalizeFirstLetter } from '@package/utils'
 

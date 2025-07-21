@@ -13,6 +13,8 @@ import {
 } from '@package/ui'
 import { ZoomIn } from 'react-native-reanimated'
 import { getFlowConfirmationText } from './utils'
+import { useLingui, Trans } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 type ConnectionSlidesProps = {
   name: string
@@ -21,6 +23,8 @@ type ConnectionSlidesProps = {
 }
 
 export function ConnectionSlides({ name, onCancel, onComplete }: ConnectionSlidesProps) {
+  const { t } = useLingui()
+
   return (
     <SlideWizard
       resumeFrom={66}
@@ -33,7 +37,7 @@ export function ConnectionSlides({ name, onCancel, onComplete }: ConnectionSlide
         },
       ]}
       onCancel={onCancel}
-      confirmation={getFlowConfirmationText('connect')}
+      confirmation={getFlowConfirmationText(t, 'connect')}
     />
   )
 }
@@ -44,6 +48,8 @@ type ConnectionSuccessSlideProps = {
 }
 
 const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProps) => {
+  const { t } = useLingui()
+
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$6" fg={1} ai="center" jc="center">
@@ -55,17 +61,29 @@ const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProp
           </Circle>
         </AnimatedStack>
         <YStack gap="$4" ai="center">
-          <Heading>Connection established</Heading>
+          <Heading>
+            <Trans
+              id="connection.successTitle"
+              comment="Heading shown when a secure connection to an issuer was successfully created"
+            >
+              Connection established
+            </Trans>
+          </Heading>
           <Paragraph ta="center">
-            You can now receive notifications from {'\n'}
-            <Paragraph fontWeight="$semiBold">{name}</Paragraph>
+            <Trans
+              id="connection.successParagraph"
+              comment="Explains that the user can now receive notifications from the connected issuer"
+            >
+              You can now receive notifications from {'\n'}
+              <Paragraph fontWeight="$semiBold">{name}</Paragraph>
+            </Trans>
           </Paragraph>
         </YStack>
         <Spacer />
       </YStack>
       <Stack borderTopWidth="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4">
         <Button.Solid scaleOnPress onPress={onComplete}>
-          Go to wallet <HeroIcons.ArrowRight size={20} color="$white" />
+          {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
       </Stack>
     </YStack>

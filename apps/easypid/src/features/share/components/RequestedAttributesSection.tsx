@@ -7,27 +7,69 @@ import {
 } from '@package/agent'
 import { CardWithAttributes } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
+import { useLingui } from '@lingui/react/macro'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission
 }
 
 export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
+  const { t } = useLingui()
+
   const satisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntrySatisfied => e.isSatisfied)
   const unsatisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntryNotSatisfied => !e.isSatisfied)
+
+  const requestedCardsHeading = t({
+    id: 'requestedAttributes.requestedCardsHeading',
+    message: 'REQUESTED CARDS',
+    comment: 'Heading shown above a list of requested cards the user has',
+  })
+
+  const unavailableCardsHeading = t({
+    id: 'requestedAttributes.unavailableCardsHeading',
+    message: 'UNAVAILABLE CARDS',
+    comment: 'Heading shown above a list of requested cards the user does not have',
+  })
+
+  const onlySatisfiedDescription = t({
+    id: 'requestedAttributes.onlySatisfiedDescription',
+    message: 'The following cards will be shared.',
+    comment: 'Description when the user has all requested cards',
+  })
+
+  const onlyUnsatisfiedDescription = t({
+    id: 'requestedAttributes.onlyUnsatisfiedDescription',
+    message: `You don't have the requested card(s).`,
+    comment: 'Description when the user has none of the requested cards',
+  })
+
+  const partialDescription = t({
+    id: 'requestedAttributes.partialDescription',
+    message: `You don't have all of the requested cards.`,
+    comment: 'Description when the user has some but not all requested cards',
+  })
+
+  const fallbackCardLabel = t({
+    id: 'requestedAttributes.fallbackCardLabel',
+    message: 'Credential',
+    comment: 'Fallback name shown when a credential does not have a display name',
+  })
 
   return (
     <YStack gap="$4">
       <YStack gap="$2">
-        <Heading variant="sub2">{satisfiedEntries.length > 0 ? 'REQUESTED CARDS' : 'UNAVAILABLE CARDS'}</Heading>
+        <Heading variant="sub2">
+          {satisfiedEntries.length > 0 ? requestedCardsHeading : unavailableCardsHeading}
+        </Heading>
         <Paragraph>
           {unsatisfiedEntries.length === 0
-            ? 'The following cards will be shared.'
+            ? onlySatisfiedDescription
             : satisfiedEntries.length === 0
-              ? `You don't have the requested card(s).`
-              : `You don't have all of the requested cards.`}
+              ? onlyUnsatisfiedDescription
+              : partialDescription}
         </Paragraph>
       </YStack>
+
       {/* We always take the first one for now (no selection) */}
       {satisfiedEntries.map(({ credentials: [credential], ...entry }) => {
         return (
@@ -54,17 +96,18 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
           />
         )
       })}
+
       {unsatisfiedEntries.length > 0 && (
         <>
           {satisfiedEntries.length !== 0 && (
             <YStack>
-              <Heading variant="sub2">UNAVAILABLE CARDS</Heading>
+              <Heading variant="sub2">{unavailableCardsHeading}</Heading>
             </YStack>
           )}
           {unsatisfiedEntries.map((entry) => (
             <CardWithAttributes
               key={entry.inputDescriptorId}
-              name={entry.name ?? 'Credential'}
+              name={entry.name ?? fallbackCardLabel}
               // We only have the attribute paths, no way to know how to render
               // TODO: we could look at the vct?
               // TODO: we should maybe support partial matches (i.e. vct matches), as then we can

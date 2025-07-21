@@ -3,6 +3,8 @@ import { CardWithAttributes } from '@package/app'
 import { Button, HeroIcons, Paragraph, ScrollView, YStack } from '@package/ui'
 import { sanitizeString } from '@package/utils'
 import { useState } from 'react'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 interface OnboardingIdCardRequestedAttributesProps {
   goToNextStep: () => void
@@ -15,6 +17,7 @@ export function OnboardingIdCardRequestedAttributes({
   onSkipCardSetup,
   requestedAttributes,
 }: OnboardingIdCardRequestedAttributesProps) {
+  const { t } = useLingui()
   const [isLoading, setIsLoading] = useState(false)
 
   const onSetupLater = () => {
@@ -25,11 +28,25 @@ export function OnboardingIdCardRequestedAttributes({
     setIsLoading(false)
   }
 
+  const attributesInfo = t({
+    id: 'onboardingIdCardRequestedAttributes.description',
+    message: `These ${requestedAttributes.length} attributes will be read from your eID card.`,
+    comment: 'Text explaining how many attributes will be read from the eID card',
+  })
+
+  const setUpLaterLabel = t({
+    id: 'onboardingIdCardRequestedAttributes.setupLater',
+    message: 'Set up later',
+    comment: 'Button label to allow skipping card setup during onboarding',
+  })
+
+  const continueLabel = t(commonMessages.continue)
+
   return (
     <YStack flexBasis={0} flexGrow={1} justifyContent="space-between">
       <ScrollView mt="$-4">
         <YStack gap="$4">
-          <Paragraph>These {requestedAttributes.length} attributes will be read from your eID card.</Paragraph>
+          <Paragraph>{attributesInfo}</Paragraph>
           <CardWithAttributes
             name="eID card"
             issuerImage={{ url: bdrPidIssuerDisplay.logo }}
@@ -43,11 +60,11 @@ export function OnboardingIdCardRequestedAttributes({
       <YStack gap="$4" alignItems="center">
         {onSkipCardSetup && (
           <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
-            Set up later
+            {setUpLaterLabel}
           </Button.Text>
         )}
         <Button.Solid scaleOnPress onPress={goToNextStep}>
-          Continue
+          {continueLabel}
         </Button.Solid>
       </YStack>
     </YStack>

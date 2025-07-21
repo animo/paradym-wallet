@@ -1,3 +1,4 @@
+// translations not needed
 import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
 
 export function useCanUseSecureEnclave() {

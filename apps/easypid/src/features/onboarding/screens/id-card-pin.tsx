@@ -1,3 +1,4 @@
+//translations: no translations needed
 import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack, useDeviceMedia } from '@package/ui'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'

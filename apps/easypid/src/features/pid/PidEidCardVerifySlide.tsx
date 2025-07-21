@@ -1,3 +1,4 @@
+//translations: no changes needed
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { OnboardingIdCardVerify } from '../onboarding/screens/id-card-verify'
 

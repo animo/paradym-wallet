@@ -1,3 +1,4 @@
+//translations: no translations needed
 import { useImageScaler } from '@package/app/hooks'
 import { Button, Spinner, YStack } from '@package/ui'
 import { useState } from 'react'

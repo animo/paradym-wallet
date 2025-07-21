@@ -1,3 +1,4 @@
+//translations: too long?
 import type { CredentialDisplay } from '@package/agent'
 import {
   CredentialAttributes,

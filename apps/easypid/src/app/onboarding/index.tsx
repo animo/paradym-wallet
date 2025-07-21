@@ -9,6 +9,9 @@ import { AccessibilityInfo, Alert } from 'react-native'
 import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
 import { resetWallet } from '../../utils/resetWallet'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
+
 
 export default function OnboardingScreens() {
   const { withHaptics } = useHaptics()
@@ -19,7 +22,7 @@ export default function OnboardingScreens() {
   const headerRef = useRef(null)
   const reset = useLocalSearchParams<{ reset?: 'true' }>().reset === 'true'
   const [hasResetWallet, setHasResetWallet] = useState(false)
-
+  const { t } = useLingui()
   // biome-ignore lint/correctness/useExhaustiveDependencies: When the step changes, move accessibility focus to the header
   useEffect(() => {
     if (headerRef.current) {
@@ -43,18 +46,30 @@ export default function OnboardingScreens() {
   }, [reset, secureUnlock, hasResetWallet])
 
   const onReset = withHaptics(() => {
-    Alert.alert('Reset Onboarding', 'Are you sure you want to reset the onboarding process?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Yes',
-        onPress: withHaptics(() => {
-          onboardingContext.reset()
-        }),
-      },
-    ])
+    Alert.alert(
+      t({
+        id: 'onboarding.resetAlert.title',
+        message: 'Reset Onboarding',
+        comment: 'Title of the alert when user attempts to reset onboarding',
+      }),
+      t({
+        id: 'onboarding.resetAlert.message',
+        message: 'Are you sure you want to reset the onboarding process?',
+        comment: 'Confirmation message for onboarding reset',
+      }),
+      [
+        {
+          text: t(commonMessages.cancel),
+          style: 'cancel',
+        },
+        {
+          text: t(commonMessages.yes),
+          onPress: withHaptics(() => {
+            onboardingContext.reset()
+          }),
+        },
+      ]
+    )
   })
 
   if (hasFinishedOnboarding) return null

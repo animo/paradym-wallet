@@ -1,3 +1,4 @@
+// translations not needed
 import { useEffect, useState } from 'react'
 
 import { useLLM } from '@easypid/llm'

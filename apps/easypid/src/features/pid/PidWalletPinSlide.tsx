@@ -1,3 +1,4 @@
+//translations: no changes needed
 import { PinDotsInput, type PinDotsInputRef, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack, useDeviceMedia } from '@package/ui'
 import { useRef, useState } from 'react'

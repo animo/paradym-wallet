@@ -1,8 +1,8 @@
 import { Button, NfcScannerModalAndroid, YStack } from '@package/ui'
-
 import { useImageScaler } from '@package/app/hooks'
 import { Platform } from 'react-native'
 import { ScanCard } from './assets/ScanCard'
+import { useLingui } from '@lingui/react/macro'
 
 export interface OnboardingIdCardScanProps {
   isCardAttached?: boolean
@@ -21,7 +21,14 @@ export function OnboardingIdCardScan({
   showScanModal,
   onStartScanning,
 }: OnboardingIdCardScanProps) {
+  const { t } = useLingui()
   const { height, onLayout } = useImageScaler({ scaleFactor: 0.6 })
+
+  const startScanningLabel = t({
+    id: 'onboardingIdCardScan.startScanning',
+    message: 'Start scanning',
+    comment: 'Button label to begin scanning the ID card using NFC',
+  })
 
   return (
     <>
@@ -33,7 +40,7 @@ export function OnboardingIdCardScan({
         </YStack>
         <YStack gap="$4" alignItems="center" opacity={onStartScanning ? 1 : 0}>
           <Button.Solid scaleOnPress onPress={onStartScanning}>
-            Start scanning
+            {startScanningLabel}
           </Button.Solid>
         </YStack>
       </YStack>

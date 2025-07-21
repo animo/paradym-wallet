@@ -2,6 +2,8 @@ import { PinDotsInput, type PinDotsInputRef, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
 
+import { Trans } from '@lingui/react/macro'
+
 export interface onPinSubmitProps {
   pin?: string
   onPinComplete?: () => void
@@ -34,8 +36,16 @@ export const PinSlide = ({ onPinSubmit, isLoading }: PinSlideProps) => {
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4">
-        <Heading>Send data with your PIN code</Heading>
-        <Paragraph>Use your app PIN code to confirm the request.</Paragraph>
+        <Heading>
+          <Trans id="pinSlide.title" comment="Heading shown when user is asked to enter their app PIN to confirm a request">
+            Send data with your PIN code
+          </Trans>
+        </Heading>
+        <Paragraph>
+          <Trans id="pinSlide.description" comment="Supporting text explaining why PIN is needed">
+            Use your app PIN code to confirm the request.
+          </Trans>
+        </Paragraph>
       </YStack>
       <YStack fg={1} mt="$10">
         <PinDotsInput

@@ -1,3 +1,4 @@
+//translations: too long?
 import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
 import { type MdlAttributes, getMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'

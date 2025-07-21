@@ -1,10 +1,25 @@
 import { Blob, Button, FlexPage, Heading, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import { useLingui } from '@lingui/react/macro'
 
 export interface OnboardingWelcomeProps {
   goToNextStep: () => void
 }
 
 export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomeProps) {
+  const { t } = useLingui()
+
+  const introText = t({
+    id: 'onboardingWelcome.description',
+    message: 'This is your digital wallet. With it, you can store and share information about yourself.',
+    comment: 'Intro paragraph on the welcome screen',
+  })
+
+  const getStartedLabel = t({
+    id: 'onboardingWelcome.getStarted',
+    message: 'Get Started',
+    comment: 'Button label to begin onboarding from the welcome screen',
+  })
+
   return (
     <YStack fg={1} pos="relative">
       <YStack pos="absolute" h="50%" w="100%">
@@ -35,12 +50,12 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
         <YStack gap="$4" ai="center">
           <Heading fontSize={32}>Paradym Wallet</Heading>
           <Paragraph px="$2" ta="center">
-            This is your digital wallet. With it, you can store and share information about yourself.
+            {introText}
           </Paragraph>
         </YStack>
         <XStack gap="$2">
           <Button.Solid flexGrow={1} onPress={goToNextStep}>
-            Get Started
+            {getStartedLabel}
           </Button.Solid>
         </XStack>
       </FlexPage>

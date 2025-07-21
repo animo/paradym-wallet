@@ -15,6 +15,7 @@ import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
+import { useLingui } from '@lingui/react/macro'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -34,16 +35,26 @@ export function FunkeMdocOfflineSharingScreen({
   const [submission, setSubmission] = useState<FormattedSubmission>()
   const [isProcessing, setIsProcessing] = useState(false)
   const shouldUsePin = useShouldUsePinForSubmission(submission)
+  const { t } = useLingui()
 
   useEffect(() => {
     getSubmissionForMdocDocumentRequest(agent, deviceRequest)
       .then(setSubmission)
       .catch((error) => {
-        toast.show('Presentation information could not be extracted.', {
-          message:
-            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
-          customData: { preset: 'danger' },
-        })
+        toast.show(
+          t({
+            id: 'funkeMdoc.error.extracting',
+            message: 'Presentation information could not be extracted.',
+            comment: 'Shown when submission data fails to load',
+          }),
+          {
+            message:
+              error instanceof Error && isDevelopmentModeEnabled
+                ? `Development mode error: ${error.message}`
+                : undefined,
+            customData: { preset: 'danger' },
+          }
+        )
         agent.config.logger.error('Error getting credentials for mdoc device request', {
           error,
         })
@@ -79,11 +90,22 @@ export function FunkeMdocOfflineSharingScreen({
         setIsProcessing(false)
         if (e instanceof InvalidPinError) {
           onPinError?.()
-          return handleError({ reason: 'Invalid PIN entered', redirect: false })
+          return handleError({
+            reason: t({
+              id: 'funkeMdoc.error.invalidPin',
+              message: 'Invalid PIN entered',
+              comment: 'Error shown when user enters an invalid PIN',
+            }),
+            redirect: false,
+          })
         }
 
         return handleError({
-          reason: 'Authentication Error',
+          reason: t({
+            id: 'funkeMdoc.error.auth',
+            message: 'Authentication Error',
+            comment: 'Shown when there is a general auth error during offline flow',
+          }),
           redirect: true,
           description:
             e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
@@ -103,12 +125,23 @@ export function FunkeMdocOfflineSharingScreen({
       if (e instanceof BiometricAuthenticationCancelledError) {
         // Triggers the pin animation
         onPinError?.()
-        return handleError({ reason: 'Biometric authentication cancelled', redirect: false })
+        return handleError({
+          reason: t({
+            id: 'funkeMdoc.error.biometricCancelled',
+            message: 'Biometric authentication cancelled',
+            comment: 'Error shown when user cancels biometric prompt',
+          }),
+          redirect: false,
+        })
       }
 
       await addActivity('failed')
-      handleError({
-        reason: 'Could not share device response',
+      return handleError({
+        reason: t({
+          id: 'funkeMdoc.error.sharing',
+          message: 'Could not share device response',
+          comment: 'Shown when shareDeviceResponse fails',
+        }),
         redirect: true,
         description:
           e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
@@ -129,7 +162,14 @@ export function FunkeMdocOfflineSharingScreen({
     setIsProcessing(false)
 
     shutdownDataTransfer()
-    handleError({ reason: 'Proof has been declined', redirect: true })
+    handleError({
+      reason: t({
+        id: 'funkeMdoc.proof.declined',
+        message: 'Proof has been declined',
+        comment: 'Shown when user declines sharing proof',
+      }),
+      redirect: true,
+    })
   }
 
   const onProofComplete = () => {

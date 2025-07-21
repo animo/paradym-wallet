@@ -1,3 +1,4 @@
+//translations:too long
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, MdocService } from '@credo-ts/core'

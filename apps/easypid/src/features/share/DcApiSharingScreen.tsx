@@ -4,10 +4,11 @@ import { initializeAppAgent } from '@easypid/agent'
 import { resolveRequestForDcApi, sendErrorResponseForDcApi, sendResponseForDcApi } from '@package/agent'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import { TranslationProvider } from '@package/translations'
+import { TranslationProvider, commonMessages } from '@package/translations'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { t } from '@lingui/core/macro'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 
@@ -55,13 +56,15 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           return
         }
 
+        // Not shown to the user
         sendErrorResponseForDcApi('Error initializing wallet')
       })
+
     if (!agent) return
 
     const resolvedRequest = await resolveRequestForDcApi({ agent, request })
       .then((resolvedRequest) => {
-        // We can't hare multiple documents at the moment
+        // We can't share multiple documents at the moment
         if (resolvedRequest.formattedSubmission.entries.length > 1) {
           throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
         }
@@ -73,6 +76,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           error,
         })
 
+        // Not shown to the user
         sendErrorResponseForDcApi('Presentation information could not be extracted')
       })
 
@@ -88,6 +92,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     } catch (error) {
       agent.config.logger.error('Could not share response', { error })
 
+      // Not shown to the user
       sendErrorResponseForDcApi('Unable to share credentials')
       return
     }
@@ -103,7 +108,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       paddingBottom={insets.bottom ?? '$6'}
     >
       <YStack>
-        <Heading>Enter PIN to share data</Heading>
+        <Heading>{t(commonMessages.enterPinToShareData)}</Heading>
         <Paragraph variant="annotation">{request.origin}</Paragraph>
       </YStack>
 

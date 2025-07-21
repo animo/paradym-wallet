@@ -1,3 +1,4 @@
+//translations: no changes needed
 import { useWizard } from '@package/app'
 import { Heading, YStack } from '@package/ui'
 import { OnboardingIdCardRequestedAttributes } from '../onboarding/screens/id-card-requested-attributes'

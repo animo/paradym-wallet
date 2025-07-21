@@ -3,6 +3,8 @@ import type { PinDotsInputRef } from '@package/app'
 import { FlexPage, Heading, HeroIcons, YStack } from '@package/ui'
 import { forwardRef } from 'react'
 import { Circle } from 'tamagui'
+import { commonMessages } from '@package/translations'
+import { useLingui } from '@lingui/react/macro'
 
 export interface FunkePidConfirmationScreenProps {
   onSubmitPin: (pin: string) => void
@@ -11,6 +13,8 @@ export interface FunkePidConfirmationScreenProps {
 
 export const FunkePidConfirmationScreen = forwardRef<PinDotsInputRef, FunkePidConfirmationScreenProps>(
   ({ onSubmitPin, isLoading }: FunkePidConfirmationScreenProps, ref) => {
+    const { t } = useLingui()
+
     return (
       <FlexPage flex-1 alignItems="center">
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
@@ -18,7 +22,7 @@ export const FunkePidConfirmationScreen = forwardRef<PinDotsInputRef, FunkePidCo
             <HeroIcons.LockClosed strokeWidth={2} color="$grey-700" />
           </Circle>
           <Heading variant="h2" fontWeight="$semiBold">
-            Enter your app PIN code
+            {t(commonMessages.enterPin)}
           </Heading>
         </YStack>
         <PinDotsInput
