@@ -21,6 +21,8 @@ import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import { getAttributesForCategory } from './display/category'
 import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
@@ -28,6 +30,7 @@ import type { FormattedSubmissionEntrySatisfiedCredential } from './format/forma
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
 
+const { t } = useLingui()
 /**
  * Paths that were requested but couldn't be satisfied.
  * Maybe belongs in agent, but adding here because the `nonRenderedPaths` is
@@ -237,7 +240,7 @@ function getW3cIssuerDisplay(
 
   return {
     ...issuerDisplay,
-    name: issuerDisplay.name ?? 'Unknown',
+    name: issuerDisplay.name ?? t(commonMessages.unknown),
   }
 }
 
@@ -282,17 +285,17 @@ export function getOpenId4VcIssuerDisplay(
 
   return {
     ...issuerDisplay,
-    name: issuerDisplay.name ?? 'Unknown',
+    name: issuerDisplay.name ?? t(commonMessages.unknown),
   }
 }
 
 export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<CredentialDisplay>): CredentialDisplay {
   return {
     ...credentialDisplay,
-    name: credentialDisplay?.name ?? 'Credential',
+    name: credentialDisplay?.name ?? t(commonMessages.credential),
     issuer: {
       ...credentialDisplay?.issuer,
-      name: credentialDisplay?.issuer?.name ?? 'Unknown',
+      name: credentialDisplay?.issuer?.name ?? t(commonMessages.unknown),
     },
   }
 }

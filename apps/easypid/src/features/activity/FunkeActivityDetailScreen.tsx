@@ -6,6 +6,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { useCredentialsForDisplay } from '@package/agent'
 import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -13,7 +14,6 @@ import { RequestPurposeSection } from '../share/components/RequestPurposeSection
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
 import { type IssuanceActivity, type PresentationActivity, type SignedActivity, useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
-
 export function FunkeActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
@@ -68,11 +68,6 @@ export function FunkeActivityDetailScreen() {
 }
 
 const activityMessages = {
-  unknownIssuer: defineMessage({
-    id: 'activity.unknownIssuer',
-    message: 'Unknown',
-    comment: 'Fallback issuer name shown when the credential issuer is missing',
-  }),
   deletedCredential: defineMessage({
     id: 'activity.deletedCredential',
     message: 'Deleted credential',
@@ -151,7 +146,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
                 name={t(activityMessages.deletedCredential)}
                 textColor="$grey-100"
                 backgroundColor="$grey-900"
-                issuer={activity.entity.name ?? t(activityMessages.unknownIssuer)}
+                issuer={activity.entity.name ?? t(commonMessages.unknown)}
                 issuedAt={activity.date ? new Date(activity.date) : undefined}
               />
             )

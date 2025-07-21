@@ -118,7 +118,7 @@ export const commonMessages = {
     comment: 'General title/message shown when something went wrong',
   }),
   informationRequestDeclined: defineMessage({
-    id: 'common.informationRequestDeclinded',
+    id: 'common.informationRequestDeclined',
     message: 'Information request has been declined.',
   }),
   featureNotSupported: defineMessage({
@@ -134,4 +134,30 @@ export const commonMessages = {
     id: 'common.declineButton',
     message: 'Decline',
   }),
+  unknown: defineMessage({
+    id: 'common.unknown',
+    message: 'Unknown',
+  }),
+  credential: defineMessage({ id: 'common.credential', message: 'Credential' }),
+  dataRequest: defineMessage({
+    id: 'common.dataRequest',
+    message: 'Data Request',
+    comment: 'Fallback title for a proof request notification',
+  }),
+  unableToRetrieveInvitation: defineMessage({
+    id: 'common.unableToRetrieveInvitation',
+    message: 'Unable to retrieve invitation.',
+    comment: 'Shown when fetching an invitation from a URL fails',
+  }),
+  invitationNotRecognized: defineMessage({
+    id: 'common.invitationNotRecognized',
+    message: 'Invitation not recognized.',
+    comment: 'Shown when the invitation data format is not supported or could not be parsed',
+  }),
+  issuedByWithName: (name: string) =>
+    defineMessage({
+      id: 'common.issuedByWithName',
+      message: `Issued by ${name}`,
+      comment: 'Label showing the name of the credential issuer, e.g. "Issued by Government of Austria"',
+    }),
 }
