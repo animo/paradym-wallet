@@ -16,21 +16,19 @@ import {
   SdJwtVcRecord,
   TypedArrayEncoder,
 } from '@credo-ts/core'
-import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
-import type { CredentialForDisplayId } from './hooks'
-import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
-import type { W3cCredentialJson, W3cIssuerJson } from './types'
-
-import { useLingui } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
+import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import { getAttributesForCategory } from './display/category'
 import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
+import type { CredentialForDisplayId } from './hooks'
+import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
+import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
-const { t } = useLingui()
 /**
  * Paths that were requested but couldn't be satisfied.
  * Maybe belongs in agent, but adding here because the `nonRenderedPaths` is

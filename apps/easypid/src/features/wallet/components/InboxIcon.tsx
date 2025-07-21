@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { useLingui } from '@lingui/react/macro'
 import { useHasInboxNotifications } from '@package/agent/hooks'
 import { useHaptics } from '@package/app'
 import { Circle, IconContainer } from '@package/ui'
@@ -11,6 +11,7 @@ export function InboxIcon() {
   const { push } = useRouter()
   const { hasInboxNotifications } = useHasInboxNotifications()
   const { withHaptics } = useHaptics()
+  const { t } = useLingui()
 
   const pushToInbox = withHaptics(() => push('/inbox'))
 

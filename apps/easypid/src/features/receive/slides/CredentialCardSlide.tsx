@@ -16,8 +16,9 @@ const cardOfferedTitleMessage = defineMessage({
   comment: 'Title shown when a credential card is offered to the user',
 })
 
-const getContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: string) => {
+const useContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: string) => {
   const { t } = useLingui()
+
   switch (type) {
     case 'presentation':
       return {
@@ -53,7 +54,7 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
   const { t } = useLingui()
   const { onNext, onCancel } = useWizard()
 
-  const content = getContentType(type, display.issuer.name)
+  const content = useContentType(type, display.issuer.name)
 
   const goToNextSlide = () => {
     onNext()

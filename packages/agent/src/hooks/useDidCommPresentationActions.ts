@@ -5,6 +5,7 @@ import type {
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
+import type { _t } from '@lingui/react/macro'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -133,15 +134,6 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         )
       }
 
-      const allCredentialIds = [
-        ...Object.values(anonCredsCredentials.attributes).flatMap((matches) =>
-          matches.map((match) => match.credentialId)
-        ),
-        ...Object.values(anonCredsCredentials.predicates).flatMap((matches) =>
-          matches.map((match) => match.credentialId)
-        ),
-      ]
-
       for (const [groupName, attributeArray] of Object.entries(anonCredsCredentials.attributes)) {
         const requestedAttribute = proofRequest.requested_attributes[groupName]
         if (!requestedAttribute) throw new Error('Invalid presentation request')
@@ -154,7 +146,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         const requestedPredicate = proofRequest.requested_predicates[groupName]
         if (!requestedPredicate) throw new Error('Invalid presentation request')
 
-        mergeOrSetEntry('predicate', groupName, [formatPredicate(requestedPredicate)], predicateArray)
+        mergeOrSetEntry('predicate', groupName, [formatPredicate(t, requestedPredicate)], predicateArray)
       }
 
       const entriesArray = await Promise.all(
@@ -328,8 +320,6 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
  *
  * @todo we could improve on this rendering, by e.g. recognizing dates in predicates (e.g. 20200101)
  */
-function formatPredicate(requestedPredicate: AnonCredsRequestedPredicate) {
-  const { t } = useLingui()
-
+function formatPredicate(t: typeof _t, requestedPredicate: AnonCredsRequestedPredicate) {
   return `${requestedPredicate.name} ${t(predicateMessages[requestedPredicate.p_type])} ${requestedPredicate.p_value}`
 }
