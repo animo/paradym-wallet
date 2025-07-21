@@ -13,6 +13,7 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { resetWallet } from '@easypid/utils/resetWallet'
+import { useLingui } from '@lingui/react/macro'
 import {
   type CardScanningState,
   type OnboardingPage,
@@ -40,6 +41,7 @@ import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
 import { useShouldUseCloudHsm } from './useShouldUseCloudHsm'
+import { commonMessages } from '@package/translations'
 
 export type OnboardingContext = {
   currentStep: OnboardingStep['step']
@@ -66,6 +68,7 @@ export function OnboardingContextProvider({
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
   const hasCloudHsmFeatureFlag = useFeatureFlag('CLOUD_HSM')
+  const { t } = useLingui()
 
   const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
@@ -159,16 +162,22 @@ export function OnboardingContextProvider({
     const isSimulatorPinCode = pin === SIMULATOR_PIN
 
     if (isSimulatorPinCode && hasEidCardFeatureFlag) {
-      toast.show('Simulator eID card activated', {
+      toast.show(t(commonMessages.simulatorEidCardActivated), {
         customData: {
           preset: 'success',
         },
       })
       setAllowSimulatorCard(true)
     } else if (!walletPin || walletPin !== pin) {
-      toast.show('Pin entries do not match', {
-        customData: { preset: 'danger' },
-      })
+      toast.show(
+        t({
+          id: 'onboarding.pinEntriesDoNotMatch',
+          message: 'Pin entries do not match',
+        }),
+        {
+          customData: { preset: 'danger' },
+        }
+      )
       setWalletPin(undefined)
       goToPreviousStep()
       throw new Error('Pin entries do not match')
@@ -251,7 +260,7 @@ export function OnboardingContextProvider({
     } catch (error) {
       // We can recover from this, and will show an error on the screen
       if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show('Biometric authentication cancelled', {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
           customData: { preset: 'danger' },
         })
         throw error
@@ -322,9 +331,15 @@ export function OnboardingContextProvider({
           // Navigate to the id-card-pin and show a toast
           promise.then(() => {
             setCurrentStepName('id-card-pin')
-            toast.show('Invalid PIN entered for eID Card. Please try again', {
-              customData: { preset: 'danger' },
-            })
+            toast.show(
+              t({
+                id: 'onboarding.invalidEidPinEntered',
+                message: 'Invalid PIN entered for eID Card. Please try again',
+              }),
+              {
+                customData: { preset: 'danger' },
+              }
+            )
           })
         })
       }
@@ -332,7 +347,7 @@ export function OnboardingContextProvider({
       setIdCardPin(undefined)
       return idCardPin
     },
-    [idCardPin, toast.show]
+    [idCardPin, toast.show, t]
   )
 
   // Bit unfortunate, but we need to keep it as ref, as otherwise the value passed to ReceivePidUseCase.initialize will not get updated and we
@@ -351,7 +366,7 @@ export function OnboardingContextProvider({
     resetToStep = 'welcome',
     error,
     showToast = true,
-    toastMessage = 'Please try again.',
+    toastMessage = t(commonMessages.pleaseTryAgain),
   }: {
     error?: unknown
     resetToStep: OnboardingStep['step']
@@ -403,7 +418,7 @@ export function OnboardingContextProvider({
     setCurrentStepName(resetToStep)
 
     if (showToast) {
-      toast.show('Error occurred during onboarding', {
+      toast.show(t({ id: 'onboarding.errorOccurred', message: 'Error occurred during onboarding' }), {
         message: toastMessage,
         customData: {
           preset: 'danger',
@@ -453,8 +468,8 @@ export function OnboardingContextProvider({
           error,
           showToast: false,
         })
-        toast.show('eID card scanning cancelled', {
-          message: 'Please try again.',
+        toast.show(t({ id: 'onboarding.eidScanningCancelled', message: 'eID card scanning cancelled' }), {
+          message: t(commonMessages.pleaseTryAgain),
           customData: {
             preset: 'danger',
           },
@@ -539,7 +554,7 @@ export function OnboardingContextProvider({
       setCurrentStepName('id-card-complete')
     } catch (error) {
       if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show('Biometric authentication cancelled', {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
           customData: { preset: 'danger' },
         })
         return

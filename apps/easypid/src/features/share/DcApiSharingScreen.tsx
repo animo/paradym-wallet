@@ -8,7 +8,7 @@ import { TranslationProvider, commonMessages } from '@package/translations'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 
@@ -34,6 +34,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const [isProcessing, setIsProcessing] = useState(false)
   const pinRef = useRef<PinDotsInputRef>(null)
   const insets = useSafeAreaInsets()
+  const { t } = useLingui()
 
   const onProofAccept = async (pin: string) => {
     setIsProcessing(true)

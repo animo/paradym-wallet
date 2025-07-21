@@ -1,6 +1,7 @@
 import { HeroIcons, MessageBox } from '@package/ui'
 import type { SharingFailureReason } from '../activityRecord'
 import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 interface FailedReasonContainerProps {
   reason: SharingFailureReason
@@ -15,11 +16,7 @@ export function FailedReasonContainer({ reason }: FailedReasonContainerProps) {
       message: 'You did not have the required credentials to disclose.',
       comment: 'Displayed when the user tries to share but lacks the needed credentials',
     }),
-    unknown: t({
-      id: 'sharing.failed.unknown',
-      message: 'Something went wrong.',
-      comment: 'Displayed when sharing fails due to an unknown reason',
-    }),
+    unknown: t(commonMessages.somethingWentWrong),
   }
 
   return <MessageBox variant="error" message={reasonText[reason]} icon={<HeroIcons.ExclamationCircleFilled />} />

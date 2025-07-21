@@ -16,6 +16,7 @@ import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
 import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -41,27 +42,18 @@ export function FunkeMdocOfflineSharingScreen({
     getSubmissionForMdocDocumentRequest(agent, deviceRequest)
       .then(setSubmission)
       .catch((error) => {
-        toast.show(
-          t({
-            id: 'funkeMdoc.error.extracting',
-            message: 'Presentation information could not be extracted.',
-            comment: 'Shown when submission data fails to load',
-          }),
-          {
-            message:
-              error instanceof Error && isDevelopmentModeEnabled
-                ? `Development mode error: ${error.message}`
-                : undefined,
-            customData: { preset: 'danger' },
-          }
-        )
+        toast.show(t(commonMessages.presentationInformationCouldNotBeExtracted), {
+          message:
+            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
+          customData: { preset: 'danger' },
+        })
         agent.config.logger.error('Error getting credentials for mdoc device request', {
           error,
         })
 
         pushToWallet()
       })
-  }, [agent, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled])
+  }, [agent, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled, t])
 
   const handleError = useCallback(
     ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
@@ -91,11 +83,7 @@ export function FunkeMdocOfflineSharingScreen({
         if (e instanceof InvalidPinError) {
           onPinError?.()
           return handleError({
-            reason: t({
-              id: 'funkeMdoc.error.invalidPin',
-              message: 'Invalid PIN entered',
-              comment: 'Error shown when user enters an invalid PIN',
-            }),
+            reason: t(commonMessages.invalidPinEntered),
             redirect: false,
           })
         }
@@ -126,11 +114,7 @@ export function FunkeMdocOfflineSharingScreen({
         // Triggers the pin animation
         onPinError?.()
         return handleError({
-          reason: t({
-            id: 'funkeMdoc.error.biometricCancelled',
-            message: 'Biometric authentication cancelled',
-            comment: 'Error shown when user cancels biometric prompt',
-          }),
+          reason: t(commonMessages.biometricAuthenticationCancelled),
           redirect: false,
         })
       }

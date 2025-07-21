@@ -6,6 +6,7 @@ import { addSharedActivityForSubmission } from '../activity/activityRecord'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { getFlowConfirmationText } from './utils'
+import { commonMessages } from '@package/translations'
 
 type PresentationSlidesProps = {
   isExisting: boolean
@@ -38,14 +39,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
         )
       })
       .catch(async () => {
-        toast.show(
-          t({
-            id: 'presentation.accept.error',
-            message: 'Presentation could not be shared.',
-            comment: 'Shown in toast when presentation sharing fails',
-          }),
-          { customData: { preset: 'danger' } }
-        )
+        toast.show(t(commonMessages.presentationCouldNotBeShared), { customData: { preset: 'danger' } })
 
         await addSharedActivityForSubmission(
           agent,
@@ -82,13 +76,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
       void agent.modules.proofs.deleteById(proofExchange.id)
     })
 
-    toast.show(
-      t({
-        id: 'presentation.declined',
-        message: 'Information request has been declined.',
-        comment: 'Shown in toast when user declines a presentation request',
-      })
-    )
+    toast.show(t(commonMessages.informationRequestDeclined))
 
     onCancel()
   }

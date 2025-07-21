@@ -25,6 +25,7 @@ import { FunkePresentationNotificationScreen } from './FunkePresentationNotifica
 import type { onPinSubmitProps } from './slides/PinSlide'
 
 import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 type Query = { uri: string }
 
@@ -42,20 +43,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const [isSharing, setIsSharing] = useState(false)
   const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
 
-  const handleError = useCallback(
-    ({ reason, description }: { reason: string; description?: string }) => {
-      setIsSharing(false)
-      setErrorReason(description ? `${reason}\n${description}` : reason)
-      return
-    },
-    []
-  )
-
-  const reasonExtractionFailed = t({
-    id: 'presentation.extractionFailed',
-    message: 'Presentation information could not be extracted.',
-    comment: 'Shown when extracting credentials for proof request fails',
-  })
+  const handleError = useCallback(({ reason, description }: { reason: string; description?: string }) => {
+    setIsSharing(false)
+    setErrorReason(description ? `${reason}\n${description}` : reason)
+    return
+  }, [])
 
   const reasonNoCredentials = t({
     id: 'presentation.noCredentialsSelected',
@@ -69,34 +61,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     comment: 'Shown when PIN is required but not provided',
   })
 
-  const toastInvalidPin = t({
-    id: 'presentation.invalidPin',
-    message: 'Invalid PIN entered',
-    comment: 'Toast message shown when the user enters an incorrect PIN',
-  })
-
   const reasonAuthFailed = t({
     id: 'presentation.authFailed',
     message: 'Authentication failed',
     comment: 'Shown when authentication with PIN fails for other reasons',
-  })
-
-  const reasonBiometricCancelled = t({
-    id: 'presentation.biometricCancelled',
-    message: 'Biometric authentication cancelled',
-    comment: 'Shown when the user cancels biometric authentication',
-  })
-
-  const reasonShareFailed = t({
-    id: 'presentation.sharingFailed',
-    message: 'Presentation could not be shared.',
-    comment: 'Shown when sharing the proof presentation fails',
-  })
-
-  const toastDeclined = t({
-    id: 'presentation.requestDeclined',
-    message: 'Information request has been declined.',
-    comment: 'Toast shown when the user declines the presentation request',
   })
 
   useEffect(() => {
@@ -113,11 +81,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       })
       .catch((error) => {
         const errorMessage =
-          error instanceof Error && isDevelopmentModeEnabled
-            ? `Development mode error: ${error.message}`
-            : undefined
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
 
-        handleError({ reason: reasonExtractionFailed, description: errorMessage })
+        handleError({ reason: t(commonMessages.presentationInformationCouldNotBeExtracted), description: errorMessage })
 
         agent.config.logger.error('Error getting credentials for request', {
           error,
@@ -130,7 +96,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       .catch((error) => {
         handleError({ reason: error.message })
       })
-  }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError, reasonExtractionFailed])
+  }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError, t])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
@@ -183,7 +149,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           setIsSharing(false)
           if (e instanceof InvalidPinError) {
             onPinError?.()
-            toast.show(toastInvalidPin, {
+            toast.show(t(commonMessages.invalidPinEntered), {
               customData: {
                 preset: 'danger',
               },
@@ -217,7 +183,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       } catch (error) {
         setIsSharing(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
-          return handleError({ reason: reasonBiometricCancelled })
+          return handleError({ reason: t(commonMessages.biometricAuthenticationCancelled) })
         }
 
         if (credentialsForRequest) {
@@ -234,7 +200,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
 
         return handleError({
-          reason: reasonShareFailed,
+          reason: t(commonMessages.presentationCouldNotBeShared),
           description:
             error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
         })
@@ -251,10 +217,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       formattedTransactionData,
       reasonNoCredentials,
       reasonPinAuthFailed,
-      toastInvalidPin,
+      t,
       reasonAuthFailed,
-      reasonBiometricCancelled,
-      reasonShareFailed,
     ]
   )
 
@@ -270,7 +234,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     }
 
     pushToWallet()
-    toast.show(toastDeclined, { customData: { preset: 'danger' } })
+    toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
   }
 
   return (

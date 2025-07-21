@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
+import { commonMessages } from '@package/translations'
+import { useLingui } from '@lingui/react/macro'
 
 type Query = {
   uri: string
@@ -22,6 +24,7 @@ export function OpenIdPresentationNotificationScreen() {
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
+  const { t } = useLingui()
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [isSharing, setIsSharing] = useState(false)
@@ -39,7 +42,7 @@ export function OpenIdPresentationNotificationScreen() {
         })
         setCredentialsForRequest(cfr)
       } catch (error: unknown) {
-        toast.show('Presentation information could not be extracted.', {
+        toast.show(t(commonMessages.presentationInformationCouldNotBeExtracted), {
           customData: { preset: 'danger' },
         })
         agent.config.logger.error('Error getting credentials for request', {
@@ -51,7 +54,7 @@ export function OpenIdPresentationNotificationScreen() {
     }
 
     void handleRequest()
-  }, [params, toast.show, agent, pushToWallet, toast])
+  }, [params, toast.show, agent, pushToWallet, toast, t])
 
   if (!credentialsForRequest) {
     return <GettingInformationScreen type="presentation" />
@@ -66,21 +69,21 @@ export function OpenIdPresentationNotificationScreen() {
       selectedCredentials,
     })
       .then(() => {
-        toast.show('Information has been successfully shared.', {
+        toast.show(t(commonMessages.presentationShared), {
           customData: { preset: 'success' },
         })
         pushToWallet()
       })
       .catch((e) => {
         if (e instanceof BiometricAuthenticationCancelledError) {
-          toast.show('Biometric authentication cancelled', {
+          toast.show(t(commonMessages.biometricAuthenticationCancelled), {
             customData: { preset: 'danger' },
           })
           setIsSharing(false)
           return
         }
 
-        toast.show('Presentation could not be shared.', {
+        toast.show(t(commonMessages.presentationCouldNotBeShared), {
           customData: { preset: 'danger' },
         })
         agent.config.logger.error('Error accepting presentation', {
@@ -92,7 +95,7 @@ export function OpenIdPresentationNotificationScreen() {
 
   const onProofDecline = () => {
     pushToWallet()
-    toast.show('Information request has been declined.')
+    toast.show(t(commonMessages.informationRequestDeclined))
   }
 
   return (

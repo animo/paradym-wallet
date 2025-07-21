@@ -18,7 +18,6 @@ import {
 } from '@package/ui'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'
-import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
 interface RequestPurposeSectionProps {

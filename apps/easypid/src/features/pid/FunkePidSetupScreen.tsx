@@ -182,7 +182,7 @@ export function FunkePidSetupScreen() {
     // they can set the real pin
     const isSimulatorPinCode = pin === SIMULATOR_PIN
     if (isSimulatorPinCode && !allowSimulatorCard) {
-      toast.show('Simulator eID card activated', {
+      toast.show(t(commonMessages.simulatorEidCardActivated), {
         message: 'Enter your real PIN to continue',
         customData: {
           preset: 'success',
@@ -259,8 +259,8 @@ export function FunkePidSetupScreen() {
         setIsScanning(false)
         pushToWallet()
       } else {
-        toast.show('Something went wrong', {
-          message: 'Please try again.',
+        toast.show(t(commonMessages.somethingWentWrong), {
+          message: t(commonMessages.pleaseTryAgain),
           customData: {
             preset: 'danger',
           },
@@ -294,7 +294,7 @@ export function FunkePidSetupScreen() {
         await retrieveCredential()
       }
     } catch (error) {
-      toast.show('Something went wrong', {
+      toast.show(t(commonMessages.somethingWentWrong), {
         customData: {
           preset: 'danger',
         },
@@ -345,7 +345,7 @@ export function FunkePidSetupScreen() {
       }
     } catch (error) {
       if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show('Biometric authentication cancelled', {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
           customData: { preset: 'danger' },
         })
         return
@@ -360,7 +360,7 @@ export function FunkePidSetupScreen() {
         return
       }
 
-      toast.show('Something went wrong', { customData: { preset: 'danger' } })
+      toast.show(t(commonMessages.somethingWentWrong), { customData: { preset: 'danger' } })
       pushToWallet()
     }
   }

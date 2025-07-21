@@ -1,17 +1,7 @@
-import {
-  AnimatedStack,
-  Button,
-  Heading,
-  HeroIcons,
-  Paragraph,
-  Stack,
-  YStack,
-  useSpringify,
-} from '@package/ui'
+import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, Stack, YStack, useSpringify } from '@package/ui'
 import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
 import { commonMessages } from '@package/translations'
-import { Trans } from '@lingui/react/macro'
-import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 interface PresentationSuccessSlideProps {
   onComplete: () => void
@@ -24,6 +14,7 @@ export const PresentationSuccessSlide = ({
   onComplete,
   showReturnToApp,
 }: PresentationSuccessSlideProps) => {
+  const { t } = useLingui()
   const buttonLabel = t(commonMessages.goToWallet)
 
   return (
@@ -92,10 +83,7 @@ export const PresentationSuccessSlide = ({
                 Your information has been shared with <Paragraph fontWeight="$semiBold">{verifierName}</Paragraph>.
               </Trans>
             ) : (
-              <Trans
-                id="presentationSuccess.message"
-                comment="Shown after credentials are shared (no verifier name)"
-              >
+              <Trans id="presentationSuccess.message" comment="Shown after credentials are shared (no verifier name)">
                 Your information has been shared.
               </Trans>
             )}
@@ -106,10 +94,7 @@ export const PresentationSuccessSlide = ({
       <Stack gap="$3" borderTopWidth="$0.5" borderColor="$grey-200" p="$4" py="$2" mx="$-4">
         {showReturnToApp && (
           <Paragraph variant="annotation" ta="center">
-            <Trans
-              id="presentationSuccess.returnHint"
-              comment="Instruction shown after presentation is completed"
-            >
+            <Trans id="presentationSuccess.returnHint" comment="Instruction shown after presentation is completed">
               You can now return to the previous app.
             </Trans>
           </Paragraph>

@@ -8,8 +8,7 @@ import { Spacer } from 'tamagui'
 import { RequestPurposeSection } from '../components/RequestPurposeSection'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 import { commonMessages } from '@package/translations'
-import { Trans } from '@lingui/react/macro'
-import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
@@ -34,6 +33,7 @@ export const ShareCredentialsSlide = ({
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
+  const { t } = useLingui()
 
   const handleAccept = async () => {
     // Manually set to instantly show the loading state
@@ -92,13 +92,12 @@ export const ShareCredentialsSlide = ({
                   message: 'This is an offline request',
                   comment: 'Title shown for offline message',
                 })}
-
                 message={t({
                   id: 'submission.offlineRequestDescription',
-                  message: 'Information about the verifier could not be shown. Carefully consider if you trust this party.',
+                  message:
+                    'Information about the verifier could not be shown. Carefully consider if you trust this party.',
                   comment: 'Message shown when the request is offline and verifier is unknown',
                 })}
-
                 icon={<HeroIcons.ExclamationTriangleFilled />}
               />
             ) : (

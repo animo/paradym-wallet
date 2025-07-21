@@ -1,29 +1,11 @@
-import {
-  type FormattedSubmission,
-  type QtspInfo,
-  getDisclosedAttributeNamesForDisplay,
-} from '@package/agent'
-import {
-  CardWithAttributes,
-  DualResponseButtons,
-  MiniDocument,
-  useScrollViewPosition,
-} from '@package/app'
+import { type FormattedSubmission, type QtspInfo, getDisclosedAttributeNamesForDisplay } from '@package/agent'
+import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
-import {
-  Button,
-  Heading,
-  Paragraph,
-  ScrollView,
-  Spacer,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 import { commonMessages } from '@package/translations'
-import { Trans } from '@lingui/react/macro'
-import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 interface SignAndShareSlideProps {
   onAccept?: () => Promise<void>
@@ -48,6 +30,7 @@ export const SignAndShareSlide = ({
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
+  const { t } = useLingui()
 
   const cardForSigning = submission?.entries.find(
     (entry): entry is typeof entry & { isSatisfied: true } =>
@@ -140,7 +123,9 @@ export const SignAndShareSlide = ({
               <YStack gap="$4">
                 <YStack gap="$2">
                   <Heading variant="sub2">
-                    <Trans id="signShare.cardHeading" comment="Heading above the signing card">Signing card</Trans>
+                    <Trans id="signShare.cardHeading" comment="Heading above the signing card">
+                      Signing card
+                    </Trans>
                   </Heading>
                   <Paragraph>
                     <Trans id="signShare.cardIntro" comment="Explains which info will be used to sign">

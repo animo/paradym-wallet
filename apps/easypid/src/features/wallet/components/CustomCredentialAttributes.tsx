@@ -1,4 +1,3 @@
-//translations: too long?
 import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
 import { type MdlAttributes, getMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
@@ -11,6 +10,7 @@ import {
 import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes } from '@package/app'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
+import { Trans } from '@lingui/react/macro'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
@@ -289,7 +289,10 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
                 <Heading variant="h3">{mainCard.name}</Heading>
-                <Paragraph>Führerschein</Paragraph>
+                <Paragraph>
+                  {/* Führerschein in german */}
+                  <Trans id="customCredentialDisplay.mdl.title">Driving License</Trans>
+                </Paragraph>
               </YStack>
             </YStack>
             <TableRow
