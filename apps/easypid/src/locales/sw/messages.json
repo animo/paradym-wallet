@@ -1,1477 +1,4 @@
 {
-	"pinLocked.title": {
-		"message": "Too many incorrect attempts",
-		"placeholders": {},
-		"comments": [
-			"Heading shown when the user has entered too many incorrect PINs"
-		],
-		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 42]],
-		"translation": "För många felaktiga försök"
-	},
-	"pinSlide.description": {
-		"message": "Use your app PIN code to confirm the request.",
-		"placeholders": {},
-		"comments": ["Supporting text explaining why PIN is needed"],
-		"origin": [["src/features/share/slides/PinSlide.tsx", 48]],
-		"translation": "Använd din app-PIN-kod för att bekräfta förfrågan."
-	},
-	"pinSlide.title": {
-		"message": "Send data with your PIN code",
-		"placeholders": {},
-		"comments": [
-			"Heading shown when user is asked to enter their app PIN to confirm a request"
-		],
-		"origin": [["src/features/share/slides/PinSlide.tsx", 40]],
-		"translation": "Skicka data med din PIN-kod"
-	},
-	"predicate.greaterThan": {
-		"message": "greater than",
-		"placeholders": {},
-		"comments": ["Used in predicate statements like: age greater than 18"],
-		"origin": [
-			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 31]
-		],
-		"translation": "större än"
-	},
-	"predicate.greaterThanOrEqual": {
-		"message": "greater than or equal to",
-		"placeholders": {},
-		"comments": [
-			"Used in predicate statements like: age greater than or equal to 18"
-		],
-		"origin": [
-			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 36]
-		],
-		"translation": "större än eller lika med"
-	},
-	"predicate.lessThan": {
-		"message": "less than",
-		"placeholders": {},
-		"comments": ["Used in predicate statements like: age less than 18"],
-		"origin": [
-			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 41]
-		],
-		"translation": "mindre än"
-	},
-	"predicate.lessThanOrEqual": {
-		"message": "less than or equal to",
-		"placeholders": {},
-		"comments": [
-			"Used in predicate statements like: age less than or equal to 18"
-		],
-		"origin": [
-			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 46]
-		],
-		"translation": "mindre än eller lika med"
-	},
-	"presentation.authFailed": {
-		"message": "Authentication failed",
-		"placeholders": {},
-		"comments": ["Shown when authentication with PIN fails for other reasons"],
-		"origin": [
-			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 64]
-		],
-		"translation": "Autentisering misslyckades"
-	},
-	"presentation.noCredentialsSelected": {
-		"message": "No credentials selected",
-		"placeholders": {},
-		"comments": [
-			"Shown when the user tries to accept a proof but no credentials are loaded"
-		],
-		"origin": [
-			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 52]
-		],
-		"translation": "Inga kort valda"
-	},
-	"presentation.pinAuthFailed": {
-		"message": "PIN authentication failed",
-		"placeholders": {},
-		"comments": ["Shown when PIN is required but not provided"],
-		"origin": [
-			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 58]
-		],
-		"translation": "PIN-autentisering misslyckades"
-	},
-	"presentationNotification.infoWillBePresented": {
-		"message": "The following information will be presented:",
-		"placeholders": {},
-		"comments": [
-			"Text shown before listing information that will be presented in response to an information request"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				149
-			]
-		],
-		"translation": "Följande information kommer att presenteras:"
-	},
-	"presentationNotification.missingCredential": {
-		"message": "This credential is not present in your wallet.",
-		"placeholders": {},
-		"comments": ["Shown when a required credential is missing"],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				170
-			]
-		],
-		"translation": "Detta kort finns inte i din plånbok."
-	},
-	"presentationNotification.missingRequiredCredentials": {
-		"message": "You don't have the required credentials to satisfy this request.",
-		"placeholders": {},
-		"comments": [
-			"Shown when the user lacks the required credentials to satisfy an information request"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				208
-			]
-		],
-		"translation": "Du har inte de kort som krävs för att uppfylla denna förfrågan."
-	},
-	"presentationNotification.receivedRequestWithVerifier": {
-		"message": "You have received an information request from {verifierName}",
-		"placeholders": {
-			"verifierName": ["verifierName"]
-		},
-		"comments": [
-			"Heading shown when the user receives an information request including the verifier's name"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				77
-			]
-		],
-		"translation": "Du har fått en informationsförfrågan från {verifierName}"
-	},
-	"presentationNotification.receivedRequestWithoutVerifier": {
-		"message": "You have received an information request",
-		"placeholders": {},
-		"comments": [
-			"Heading shown when the user receives an information request without the verifier's name"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				86
-			]
-		],
-		"translation": "Du har fått en informationsförfrågan"
-	},
-	"presentationNotification.requestedInformationPrefix": {
-		"message": "The following information is requested:",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				177
-			]
-		],
-		"translation": "Följande information begärs:"
-	},
-	"presentationNotification.selectCredentialTitle": {
-		"message": "Select the credential you want to use",
-		"placeholders": {},
-		"comments": [
-			"Title prompting the user to select which credential to use for the information request"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				229
-			]
-		],
-		"translation": "Välj det kort du vill använda"
-	},
-	"presentationSuccess.message": {
-		"message": "Your information has been shared.",
-		"placeholders": {},
-		"comments": ["Shown after credentials are shared (no verifier name)"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 86]],
-		"translation": "Din information har delats."
-	},
-	"presentationSuccess.messageWithVerifier": {
-		"message": "Your information has been shared with <0>{verifierName}</0>.",
-		"placeholders": {
-			"verifierName": ["verifierName"]
-		},
-		"comments": ["Shown after credentials are shared with a specific verifier"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 79]],
-		"translation": "Din information har delats med <0>{verifierName}</0>."
-	},
-	"presentationSuccess.returnHint": {
-		"message": "You can now return to the previous app.",
-		"placeholders": {},
-		"comments": ["Instruction shown after presentation is completed"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 97]],
-		"translation": "Du kan nu gå tillbaka till föregående app."
-	},
-	"qrScan.invalidQrCode": {
-		"message": "Invalid QR code. Try another.",
-		"placeholders": {},
-		"comments": ["Shown when scanned QR code is invalid"],
-		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 22]],
-		"translation": "Ogiltig QR-kod. Försök med en annan."
-	},
-	"qrScan.unsupportedQrCode": {
-		"message": "Unsupported QR code. Try another.",
-		"placeholders": {},
-		"comments": ["Shown when scanned QR code has unsupported URL prefix"],
-		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 17]],
-		"translation": "QR-kod stöds inte. Försök med en annan."
-	},
-	"qrScanScreen.loadingInvitation": {
-		"message": "Loading invitation",
-		"placeholders": {},
-		"comments": ["Text shown while an invitation is loading"],
-		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 91]],
-		"translation": "Laddar inbjudan"
-	},
-	"qrScanner.instructionHeading": {
-		"message": "Use the camera to scan a QR code",
-		"placeholders": {},
-		"comments": ["Instruction heading for scanning a QR code"],
-		"origin": [["../../packages/scanner/src/Scanner.tsx", 78]],
-		"translation": "Använd kameran för att skanna en QR-kod"
-	},
-	"qrScanner.openSettingsButton": {
-		"message": "Open settings",
-		"placeholders": {},
-		"comments": ["Button label to open device settings"],
-		"origin": [["../../packages/scanner/src/Scanner.tsx", 56]],
-		"translation": "Öppna inställningar"
-	},
-	"qrScanner.permissionDescription": {
-		"message": "This allows the app to scan QR codes that include credentials or data requests.",
-		"placeholders": {},
-		"comments": ["Description explaining why camera permission is needed"],
-		"origin": [["../../packages/scanner/src/Scanner.tsx", 51]],
-		"translation": "Detta gör att appen kan skanna QR-koder som innehåller kort eller dataförfrågningar."
-	},
-	"qrScanner.permissionHeading": {
-		"message": "Please allow camera access",
-		"placeholders": {},
-		"comments": ["Heading asking user to allow camera permission"],
-		"origin": [["../../packages/scanner/src/Scanner.tsx", 46]],
-		"translation": "Tillåt kameraåtkomst"
-	},
-	"receiveCredential.checkInformationHeader": {
-		"message": "Is the information correct?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 161]
-		],
-		"translation": "Är informationen korrekt?"
-	},
-	"receiveCredential.stopDescription": {
-		"message": "If you stop, the card offer will be cancelled.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 497]
-		],
-		"translation": "Om du stoppar kommer korterbjudandet att avbrytas."
-	},
-	"receiveCredential.stopTitle": {
-		"message": "Stop card offer?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 493]
-		],
-		"translation": "Stoppa korterbjudande?"
-	},
-	"receiveCredential.successHeader": {
-		"message": "Success!",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 157]
-		],
-		"translation": "Klart!"
-	},
-	"requestPurpose.infoSheet.description": {
-		"message": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
-		"placeholders": {},
-		"comments": ["Description text in the overasking info sheet"],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 56]],
-		"translation": "Denna organisation verkar begära annan eller mer data än vad deras syfte antyder. Läs förfrågan noggrant. Du kan avvisa förfrågan om du inte håller med om den begärda datan."
-	},
-	"requestPurpose.infoSheet.title": {
-		"message": "Overasking detected",
-		"placeholders": {},
-		"comments": [
-			"Title of the info sheet that appears when the user taps the warning about overasking"
-		],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 50]],
-		"translation": "Överdrivet begärande upptäckt"
-	},
-	"requestPurpose.overaskingWarning": {
-		"message": "The purpose given does not match the data requested.",
-		"placeholders": {},
-		"comments": [
-			"Warning shown when the declared purpose does not align with the data requested by the organization"
-		],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 38]],
-		"translation": "Det angivna syftet stämmer inte överens med den begärda datan."
-	},
-	"requestPurpose.purposeHeading": {
-		"message": "PURPOSE",
-		"placeholders": {},
-		"comments": ["Heading above the stated purpose of the data request"],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 44]],
-		"translation": "SYFTE"
-	},
-	"requestedAttributes.fallbackCardLabel": {
-		"message": "Credential",
-		"placeholders": {},
-		"comments": [
-			"Fallback name shown when a credential does not have a display name"
-		],
-		"origin": [
-			["src/features/share/components/RequestedAttributesSection.tsx", 52]
-		],
-		"translation": "Kort"
-	},
-	"requestedAttributes.heading": {
-		"message": "Requested attributes",
-		"placeholders": {},
-		"comments": ["Heading above list of attributes shown to the user"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 131]
-		],
-		"translation": "Begärda uppgifter"
-	},
-	"requestedAttributes.metadataTitle": {
-		"message": "Metadata",
-		"placeholders": {},
-		"comments": ["Section header title for metadata attributes"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
-		],
-		"translation": "Metadata"
-	},
-	"requestedAttributes.onlySatisfiedDescription": {
-		"message": "The following cards will be shared.",
-		"placeholders": {},
-		"comments": ["Description when the user has all requested cards"],
-		"origin": [
-			["src/features/share/components/RequestedAttributesSection.tsx", 34]
-		],
-		"translation": "Följande kort kommer att delas."
-	},
-	"requestedAttributes.onlyUnsatisfiedDescription": {
-		"message": "You don't have the requested card(s).",
-		"placeholders": {},
-		"comments": ["Description when the user has none of the requested cards"],
-		"origin": [
-			["src/features/share/components/RequestedAttributesSection.tsx", 40]
-		],
-		"translation": "Du har inte de begärda korten."
-	},
-	"requestedAttributes.partialDescription": {
-		"message": "You don't have all of the requested cards.",
-		"placeholders": {},
-		"comments": [
-			"Description when the user has some but not all requested cards"
-		],
-		"origin": [
-			["src/features/share/components/RequestedAttributesSection.tsx", 46]
-		],
-		"translation": "Du har inte alla begärda kort."
-	},
-	"requestedAttributes.requestedCardsHeading": {
-		"message": "REQUESTED CARDS",
-		"placeholders": {},
-		"comments": ["Heading shown above a list of requested cards the user has"],
-		"origin": [
-			["src/features/share/components/RequestedAttributesSection.tsx", 22]
-		],
-		"translation": "BEGÄRDA KORT"
-	},
-	"requestedAttributes.subheading": {
-		"message": "{disclosedAttributeLength} from {0}",
-		"placeholders": {
-			"0": ["activeCredential.display.name"],
-			"disclosedAttributeLength": ["disclosedAttributeLength"]
-		},
-		"comments": ["Subheading under attribute list: X from Y"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 138]
-		],
-		"translation": "{disclosedAttributeLength} från {0}"
-	},
-	"requestedAttributes.unavailableCardsHeading": {
-		"message": "UNAVAILABLE CARDS",
-		"placeholders": {},
-		"comments": [
-			"Heading shown above a list of requested cards the user does not have"
-		],
-		"origin": [
-			["src/features/share/components/RequestedAttributesSection.tsx", 28]
-		],
-		"translation": "OTILLGÄNGLIGA KORT"
-	},
-	"retrieveCredential.cardSuccessfully added": {
-		"message": "Card successfully added to your wallet!",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 175]
-		],
-		"translation": "Kort har lagts till i din plånbok!"
-	},
-	"selectLanguage.label": {
-		"translation": "Språk",
-		"message": "Language",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 29]]
-	},
-	"settings.developmentMode": {
-		"message": "Development Mode",
-		"placeholders": {},
-		"comments": ["Label for the toggle to enable developer mode"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 145]],
-		"translation": "Utvecklingsläge"
-	},
-	"settings.title": {
-		"message": "Settings",
-		"placeholders": {},
-		"comments": ["Header title for the settings screen"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 129]],
-		"translation": "Inställningar"
-	},
-	"sharing.failed.missingCredentials": {
-		"message": "You did not have the required credentials to disclose.",
-		"placeholders": {},
-		"comments": [
-			"Displayed when the user tries to share but lacks the needed credentials"
-		],
-		"origin": [
-			["src/features/activity/components/FailedReasonContainer.tsx", 14]
-		],
-		"translation": "Du hade inte de kort som krävdes för att dela."
-	},
-	"signShare.accept": {
-		"message": "Sign & share",
-		"placeholders": {},
-		"comments": ["Button label for accepting a sign-and-share request"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 63]],
-		"translation": "Signera & dela"
-	},
-	"signShare.cardHeading": {
-		"message": "Signing card",
-		"placeholders": {},
-		"comments": ["Heading above the signing card"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 126]],
-		"translation": "Signeringskort"
-	},
-	"signShare.cardIntro": {
-		"message": "The following personal information will be used to sign the document.",
-		"placeholders": {},
-		"comments": ["Explains which info will be used to sign"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 131]],
-		"translation": "Följande personliga information kommer att användas för att signera dokumentet."
-	},
-	"signShare.documentHeading": {
-		"message": "Document",
-		"placeholders": {},
-		"comments": ["Heading above the document name"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 101]],
-		"translation": "Dokument"
-	},
-	"signShare.documentIntro": {
-		"message": "The following document will be signed.",
-		"placeholders": {},
-		"comments": ["Text above the document to be signed"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 106]],
-		"translation": "Följande dokument kommer att signeras."
-	},
-	"signShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
-		"translation": "Du har inte de kort som krävs"
-	},
-	"signShare.signingWith": {
-		"message": "Signing with {0}",
-		"placeholders": {
-			"0": ["qtsp.name"]
-		},
-		"comments": [
-			"Shown under the document name to indicate which QTSP is used for signing"
-		],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 57]],
-		"translation": "Signerar med {0}"
-	},
-	"signShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the sign & share screen"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Granska förfrågan"
-	},
-	"signing.description": {
-		"message": "You are about to sign <0>{documentName}</0>.",
-		"placeholders": {
-			"documentName": ["documentName"]
-		},
-		"comments": ["Explanation that the user is about to sign a document"],
-		"origin": [["src/features/share/slides/SigningSlide.tsx", 28]],
-		"translation": "Du är på väg att signera <0>{documentName}</0>."
-	},
-	"signing.title": {
-		"message": "Signing a document",
-		"placeholders": {},
-		"comments": ["Heading above the document signing screen"],
-		"origin": [["src/features/share/slides/SigningSlide.tsx", 23]],
-		"translation": "Signerar ett dokument"
-	},
-	"slideWizard.confirmation.stopSharingConfirm": {
-		"message": "Stop",
-		"placeholders": {},
-		"comments": ["Confirm button text in stop sharing confirmation dialog"],
-		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 60]],
-		"translation": "Stoppa"
-	},
-	"slideWizard.confirmation.stopSharingDescription": {
-		"message": "If you stop, no data will be shared.",
-		"placeholders": {},
-		"comments": [
-			"Description in confirmation dialog about stopping data sharing"
-		],
-		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 55]],
-		"translation": "Om du stoppar delas ingen data."
-	},
-	"slideWizard.confirmation.stopSharingTitle": {
-		"message": "Stop sharing?",
-		"placeholders": {},
-		"comments": [
-			"Title of confirmation dialog shown when user attempts to stop sharing data"
-		],
-		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 50]],
-		"translation": "Stoppa delning?"
-	},
-	"submission.fallbackPurpose": {
-		"message": "No information was provided on the purpose of the data request. Be cautious",
-		"placeholders": {},
-		"comments": ["Shown when a submission has no stated purpose"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 46]],
-		"translation": "Ingen information gavs om syftet med dataförfrågan. Var försiktig"
-	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
-		"translation": "Du har inte de kort som krävs"
-	},
-	"submission.offlineRequestDescription": {
-		"message": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
-		"placeholders": {},
-		"comments": [
-			"Message shown when the request is offline and verifier is unknown"
-		],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 95]],
-		"translation": "Information om verifieraren kunde inte visas. Överväg noga om du litar på denna part."
-	},
-	"submission.offlineRequestTitle": {
-		"message": "This is an offline request",
-		"placeholders": {},
-		"comments": ["Title shown for offline message"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 90]],
-		"translation": "Detta är en offlineförfrågan"
-	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
-		"translation": "Granska förfrågan"
-	},
-	"submission.share": {
-		"message": "Share",
-		"placeholders": {},
-		"comments": ["Button label to accept and share credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 52]],
-		"translation": "Dela"
-	},
-	"trust.approvedList": {
-		"message": "A list of organizations that have approved {name}.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [
-			"A sentence that introduces a list of organizations that approved the current party"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 108]],
-		"translation": "En lista över organisationer som har godkänt {name}."
-	},
-	"trust.approvedListWithoutOrganizationName": {
-		"message": "A list of organizations that have approved this unknown organization.",
-		"placeholders": {},
-		"comments": [
-			"A sentence that introduces a list of organizations that approved the current party, but the organization name is not known"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 113]],
-		"translation": "En lista över organisationer som har godkänt denna okända organisation."
-	},
-	"trust.demo": {
-		"message": "(Demo)",
-		"placeholders": {},
-		"comments": [
-			"Label shown after an organization name if it is a demo version"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 90]],
-		"translation": "(Demo)"
-	},
-	"trust.demoOrg": {
-		"message": "Demo organization",
-		"placeholders": {},
-		"comments": [
-			"Shown under the name of an organization to indicate that it is a demo"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 149]],
-		"translation": "Demoorganisation"
-	},
-	"trust.headerTitle": {
-		"message": "About this party",
-		"placeholders": {},
-		"comments": [
-			"Screen title that describes information about a trusted party or organization"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 57]],
-		"translation": "Om denna part"
-	},
-	"trust.noApprovals": {
-		"message": "There are no organizations that have approved {name}.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [
-			"A message shown when there are no organizations that approved the current party"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 120]],
-		"translation": "Det finns inga organisationer som har godkänt {name}."
-	},
-	"trust.noApprovalsWithoutOrganizationName": {
-		"message": "There are no organizations that have approved this unknown organization.",
-		"placeholders": {},
-		"comments": [
-			"A message shown when there are no organizations that approved the current party, but the organization name is not known"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 125]],
-		"translation": "Det finns inga organisationer som har godkänt denna okända organisation."
-	},
-	"trust.trustedBy": {
-		"message": "Trusted by",
-		"placeholders": {},
-		"comments": [
-			"Subheading for list of organizations that trust the current one"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 100]],
-		"translation": "Betrodd av"
-	},
-	"trust.warning": {
-		"message": "Always consider whether sharing with a party is wise.",
-		"placeholders": {},
-		"comments": [
-			"Shown as a warning box when viewing a trusted party's detail"
-		],
-		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 69]],
-		"translation": "Överväg alltid om det är klokt att dela med en part."
-	},
-	"txCodeSlide.descriptionIntro": {
-		"message": "The issuer provided the following:",
-		"placeholders": {},
-		"comments": ["Label shown above optional extra description"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 56]],
-		"translation": "Utfärdaren angav följande:"
-	},
-	"txCodeSlide.inputLabel": {
-		"message": "Transaction code",
-		"placeholders": {},
-		"comments": [
-			"Label for the input field where the user types the transaction code"
-		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 68]],
-		"translation": "Transaktionskod"
-	},
-	"txCodeSlide.instructions": {
-		"message": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
-		"placeholders": {},
-		"comments": [
-			"Instructions explaining why the user must enter a transaction code"
-		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 46]],
-		"translation": "För att ta emot detta kort behöver du ange en transaktionskod. Denna kod har tillhandahållits av utfärdaren."
-	},
-	"txCodeSlide.title": {
-		"message": "Enter transaction code",
-		"placeholders": {},
-		"comments": ["Title prompting the user to enter a transaction code"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 39]],
-		"translation": "Ange transaktionskod"
-	},
-	"verifyPartySlide.approvedByMultipleOrganizations": {
-		"message": "Approved by {0} organizations",
-		"placeholders": {
-			"0": ["trustedEntitiesWithoutSelf.length"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
-		"translation": "Godkänd av {0} organisationer"
-	},
-	"verifyPartySlide.approvedByOneOrganization": {
-		"message": "Approved by one organization",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 173]],
-		"translation": "Godkänd av en organisation"
-	},
-	"verifyPartySlide.connectSubtitle": {
-		"message": "{name} wants to connect with you.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 147]],
-		"translation": "{name} vill ansluta med dig."
-	},
-	"verifyPartySlide.connectSubtitleUnknownOrganization": {
-		"message": "An unknown organization wants to connect with you.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 149]],
-		"translation": "En okänd organisation vill ansluta med dig."
-	},
-	"verifyPartySlide.demoTrustedEntityDescription": {
-		"message": "Do not share real data",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 199]],
-		"translation": "Dela inte riktig data"
-	},
-	"verifyPartySlide.demoTrustedEntityTitle": {
-		"message": "Demo organization",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 195]],
-		"translation": "Demoorganisation"
-	},
-	"verifyPartySlide.hasNoPreviousInteractionsDescription": {
-		"message": "No previous interactions found",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 218]],
-		"translation": "Inga tidigare interaktioner hittades"
-	},
-	"verifyPartySlide.hasNoPreviousInteractionsTitle": {
-		"message": "First time interaction",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 210]],
-		"translation": "Första interaktionen"
-	},
-	"verifyPartySlide.hasPreviousInteractionsDescription": {
-		"message": "Last interaction: {0}",
-		"placeholders": {
-			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 214]],
-		"translation": "Senaste interaktion: {0}"
-	},
-	"verifyPartySlide.hasPreviousInteractionsTitle": {
-		"message": "Previous interactions",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 209]],
-		"translation": "Tidigare interaktioner"
-	},
-	"verifyPartySlide.offerCardSubtitle": {
-		"message": "${name} wants to offer you a card.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 115]],
-		"translation": "{name} vill erbjuda dig ett kort."
-	},
-	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
-		"message": "An unknown organization wants to offer you a card.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 117]],
-		"translation": "En okänd organisation vill erbjuda dig ett kort."
-	},
-	"verifyPartySlide.recognizedOrganizationTitle": {
-		"message": "Recognized organization",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 162]],
-		"translation": "Erkänd organisation"
-	},
-	"verifyPartySlide.requestSubtitle": {
-		"message": "{name} wants to request information from you.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 137]],
-		"translation": "{name} vill begära information från dig."
-	},
-	"verifyPartySlide.requestSubtitleUnknownOrganization": {
-		"message": "An unknown organization wants to request information from you.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 139]],
-		"translation": "En okänd organisation vill begära information från dig."
-	},
-	"verifyPartySlide.signingSubtitle": {
-		"message": "{name} wants to interact to create a digital signature for a document.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
-		"translation": "{name} vill interagera för att skapa en digital signatur för ett dokument."
-	},
-	"verifyPartySlide.signingSubtitleUnknownOrganization": {
-		"message": "An unknown organization wants to interact to create a digital signature for a document.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 129]],
-		"translation": "En okänd organisation vill interagera för att skapa en digital signatur för ett dokument."
-	},
-	"verifyPartySlide.unknownOrganizationDescription": {
-		"message": "Organization is not verified",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 185]],
-		"translation": "Organisationen är inte verifierad"
-	},
-	"welcome.scanAQrCode": {
-		"message": "Scan a QR code to start an interaction.",
-		"placeholders": {},
-		"comments": ["Subtitle prompting user to scan a QR code"],
-		"origin": [["../../packages/ui/src/components/WelcomePopup.tsx", 26]],
-		"translation": "Skanna en QR-kod för att starta en interaktion."
-	},
-	"welcome.titleToYourWallet": {
-		"message": "Welcome to your wallet",
-		"placeholders": {},
-		"comments": ["Welcome title in wallet screen"],
-		"origin": [["../../packages/ui/src/components/WelcomePopup.tsx", 17]],
-		"translation": "Välkommen till din plånbok"
-	},
-	"onboardingWalletExplanation.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to finish onboarding explanation"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]],
-		"translation": "Kom igång"
-	},
-	"onboardingWalletExplanation.skip": {
-		"message": "Skip explanation",
-		"placeholders": {},
-		"comments": ["Button label to skip wallet explanation slides"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 78]],
-		"translation": "Hoppa över förklaring"
-	},
-	"onboardingWalletExplanation.slide1.subtitle": {
-		"message": "Add digital cards with your information, and  share them easily with others. It's like having your wallet on your phone.",
-		"placeholders": {},
-		"comments": ["Subtitle for first slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 35]],
-		"translation": "Lägg till digitala kort med din information och dela dem enkelt med andra. Det är som att ha din plånbok i telefonen."
-	},
-	"onboardingWalletExplanation.slide1.title": {
-		"message": "This is your wallet",
-		"placeholders": {},
-		"comments": ["Title for first slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 30]],
-		"translation": "Det här är din plånbok"
-	},
-	"onboardingWalletExplanation.slide2.subtitle": {
-		"message": "The digital wallet stores your important information all in one place on your phone. It's a secure and easy way to carry everything you need without using a physical wallet.",
-		"placeholders": {},
-		"comments": ["Subtitle for second slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 49]],
-		"translation": "Den digitala plånboken lagrar all din viktiga information på ett ställe i telefonen. Det är ett säkert och enkelt sätt att ha med dig allt du behöver utan att använda en fysisk plånbok."
-	},
-	"onboardingWalletExplanation.slide2.title": {
-		"message": "What is it for?",
-		"placeholders": {},
-		"comments": ["Title for second slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 44]],
-		"translation": "Vad är det till för?"
-	},
-	"onboardingWalletExplanation.slide3.subtitle": {
-		"message": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
-		"placeholders": {},
-		"comments": ["Subtitle for third slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 63]],
-		"translation": "Lägg till dina kort och dokument genom att skanna QR-koder. När organisationer begär dina uppgifter kan du granska och dela med ett knapptryck i appen. Din information är alltid säker med din PIN-kod eller fingeravtryck."
-	},
-	"onboardingWalletExplanation.slide3.title": {
-		"message": "How does it work?",
-		"placeholders": {},
-		"comments": ["Title for third slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 58]],
-		"translation": "Hur fungerar det?"
-	},
-	"onboardingWelcome.description": {
-		"message": "This is your digital wallet. With it, you can store and share information about yourself.",
-		"placeholders": {},
-		"comments": ["Intro paragraph on the welcome screen"],
-		"origin": [["src/features/onboarding/screens/welcome.tsx", 11]],
-		"translation": "Det här är din digitala plånbok. Med den kan du lagra och dela information om dig själv."
-	},
-	"onboardingWelcome.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to begin onboarding from the welcome screen"],
-		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
-		"translation": "Kom igång"
-	},
-	"optionSheet.hideMetadata": {
-		"message": "Hide metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to hide metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
-		],
-		"translation": "Dölj metadata"
-	},
-	"optionSheet.showMetadata": {
-		"message": "Show metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to show metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
-		],
-		"translation": "Visa metadata"
-	},
-	"paradymWallet.about.description": {
-		"message": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
-		"placeholders": {},
-		"comments": ["About screen description text for the Paradym wallet"],
-		"origin": [["src/config/copy.ts", 23]],
-		"translation": "Denna app skapades av Animo Solutions som en kompletterande app för Paradym. All kod är tillgänglig under Apache 2.0."
-	},
-	"paradymWallet.about.emailHeader": {
-		"message": "Reach out from Paradym Wallet",
-		"placeholders": {},
-		"comments": ["Email subject when contacting support from Paradym wallet"],
-		"origin": [["src/config/copy.ts", 29]],
-		"translation": "Kontakt från Paradym Wallet"
-	},
-	"pidSetup.dataProtection.subtitle": {
-		"message": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 26]],
-		"translation": "Dina uppgifter är säkrade med PIN-kod och biometri. Varje gång du delar data bekräftar vi din identitet."
-	},
-	"pidSetup.dataProtection.title": {
-		"message": "Protect your data",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 25]],
-		"translation": "Skydda dina uppgifter"
-	},
-	"pidSetup.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 264]],
-		"translation": "Skanning av eID-kort avbruten"
-	},
-	"pidSetup.enableBiometrics.subtitle": {
-		"message": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 70]],
-		"translation": "För att fortsätta, se till att din enhet har biometriskt skydd aktiverat och att Paradym Wallet får använda biometri."
-	},
-	"pidSetup.enableBiometrics.title": {
-		"message": "You need to enable biometrics",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 69]],
-		"translation": "Du behöver aktivera biometri"
-	},
-	"pidSetup.enterPinSubtitle": {
-		"message": "Enter the PIN code you use to unlock your wallet.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 393]],
-		"translation": "Ange PIN-koden som du använder för att låsa upp din plånbok."
-	},
-	"pidSetup.idCardComplete.subtitle": {
-		"message": "Your information has been retrieved from your eID card.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 78]],
-		"translation": "Din information har hämtats från ditt eID-kort."
-	},
-	"pidSetup.idCardComplete.title": {
-		"message": "Success!",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 77]],
-		"translation": "Klart!"
-	},
-	"pidSetup.idCardFetch.title": {
-		"message": "Getting eID information",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 59]],
-		"translation": "Hämtar eID-information"
-	},
-	"pidSetup.idCardPin.subtitle": {
-		"message": "This is required to read data from your card.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 39]],
-		"translation": "Detta krävs för att läsa data från ditt kort."
-	},
-	"pidSetup.idCardPin.title": {
-		"message": "Enter your eID card PIN",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 38]],
-		"translation": "Ange din eID-korts PIN-kod"
-	},
-	"pidSetup.idCardRequestedAttributes.title": {
-		"message": "Get your national identity card",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 32]],
-		"translation": "Skaffa ditt nationella identitetskort"
-	},
-	"pidSetup.idCardScan.subtitle": {
-		"message": "Place your device on top of your eID card to scan it.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/utils/sharedPidSetup.ts", 46],
-			["src/utils/sharedPidSetup.ts", 53]
-		],
-		"translation": "Placera din enhet ovanpå ditt eID-kort för att skanna det."
-	},
-	"pidSetup.idCardScan.title": {
-		"message": "Scan your eID card",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/utils/sharedPidSetup.ts", 45],
-			["src/utils/sharedPidSetup.ts", 52]
-		],
-		"translation": "Skanna ditt eID-kort"
-	},
-	"pidSetup.idCardVerify.Subtitle": {
-		"message": "We need your biometrics to verify your identity.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 63]],
-		"translation": "Vi behöver din biometri för att verifiera din identitet."
-	},
-	"pidSetup.idCardVerify.title": {
-		"message": "Confirm it's you",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/utils/sharedPidSetup.ts", 62]],
-		"translation": "Bekräfta att det är du"
-	},
-	"pidSetup.invalidEidPin": {
-		"message": "Invalid eID card PIN entered",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 113]],
-		"translation": "Felaktig eID-korts PIN-kod angiven"
-	},
-	"pidSetup.notReadyToReceivePid": {
-		"message": "Not ready to receive PID",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 40]],
-		"translation": "Inte redo att ta emot PID"
-	},
-	"pidSetup.stopDescription": {
-		"message": "If you stop, you can still do the setup later.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 473]],
-		"translation": "Om du stoppar kan du fortfarande göra inställningen senare."
-	},
-	"pidSetup.stopTitle": {
-		"message": "Stop ID Setup?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 469]],
-		"translation": "Stoppa ID-inställning?"
-	},
-	"pidSetup.walletNotUnlocked": {
-		"message": "Wallet not unlocked",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 39]],
-		"translation": "Plånbok inte upplåst"
-	},
-	"pidSetup.walletPinMissing": {
-		"message": "Wallet PIN is missing",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 153]],
-		"translation": "Plånbokens PIN-kod saknas"
-	},
-	"pinLocked.alertMessage": {
-		"message": "Are you sure you want to reset the wallet?",
-		"placeholders": {},
-		"comments": [
-			"Message body of the confirmation dialog (action button) for wallet reset"
-		],
-		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 17]],
-		"translation": "Är du säker på att du vill återställa plånboken?"
-	},
-	"pinLocked.description": {
-		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
-		"placeholders": {},
-		"comments": [
-			"Descriptive text explaining that the wallet is locked and must be reset"
-		],
-		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 47]],
-		"translation": "Du har angett en felaktig PIN-kod. Plånboken har låsts, återställ den för att sätta en ny PIN-kod och fortsätta."
-	},
-	"notification.errorParsingInvitation": {
-		"message": "Error parsing invitation",
-		"placeholders": {},
-		"comments": [
-			"Generic error message shown when an invitation could not be parsed"
-		],
-		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 35]],
-		"translation": "Fel vid tolkning av inbjudan"
-	},
-	"notification.noInvitation": {
-		"message": "No invitation was found. Please try again.",
-		"placeholders": {},
-		"comments": [
-			"Error shown when a DIDComm invitation is missing in the URL parameters"
-		],
-		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 30]],
-		"translation": "Ingen inbjudan hittades. Försök igen."
-	},
-	"notificationInbox.notificationType.credentialOffer": {
-		"message": "Credential offer",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
-				11
-			]
-		],
-		"translation": "Korterbjudande"
-	},
-	"notificationInbox.notificationType.credentialOfferFromName": {
-		"message": "Credential offer from {name}",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
-				16
-			]
-		],
-		"translation": "Korterbjudande från {name}"
-	},
-	"notificationInbox.notificationType.dataRequest": {
-		"message": "Data request",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
-				20
-			]
-		],
-		"translation": "Dataförfrågan"
-	},
-	"notificationInbox.notificationType.dataRequestFromName": {
-		"message": "Data request from {name}",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
-				25
-			]
-		],
-		"translation": "Dataförfrågan från {name}"
-	},
-	"offlineQr.heading": {
-		"message": "Share with QR code",
-		"placeholders": {},
-		"comments": ["Main heading for offline QR sharing screen"],
-		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 163]],
-		"translation": "Dela med QR-kod"
-	},
-	"offlineQr.instruction": {
-		"message": "A verifier needs to scan your QR-Code.",
-		"placeholders": {},
-		"comments": ["Instruction for the verifier to scan the QR code"],
-		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 168]],
-		"translation": "En verifierare behöver skanna din QR-kod."
-	},
-	"offlineQr.permissionError": {
-		"message": "Failed to request permissions.",
-		"placeholders": {},
-		"comments": ["Toast shown when system permission request fails"],
-		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 74]],
-		"translation": "Misslyckades med att begära behörigheter."
-	},
-	"offlineQr.permissionSettingsDescription": {
-		"message": "Sharing with QR-Code needs access to Bluetooth and Location.",
-		"placeholders": {},
-		"comments": [
-			"This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
-		],
-		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 116]],
-		"translation": "Delning med QR-kod kräver åtkomst till Bluetooth och Plats."
-	},
-	"offlineQr.permissionSettingsTitle": {
-		"message": "Please enable required permissions in your phone settings",
-		"placeholders": {},
-		"comments": [
-			"This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
-		],
-		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 110]],
-		"translation": "Aktivera nödvändiga behörigheter i telefonens inställningar"
-	},
-	"onboarding.biometrics.subtitle": {
-		"message": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
-		"placeholders": {},
-		"comments": ["Subtitle explaining purpose of biometrics"],
-		"origin": [["src/features/onboarding/steps.ts", 36]],
-		"translation": "Aktivera biometriska funktioner på telefonen för att säkerställa att bara du kan komma åt plånboken och dela data."
-	},
-	"onboarding.biometrics.title": {
-		"message": "Set up biometrics",
-		"placeholders": {},
-		"comments": ["Heading when user sets up biometrics"],
-		"origin": [["src/features/onboarding/steps.ts", 30]],
-		"translation": "Ställ in biometri"
-	},
-	"onboarding.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 469]],
-		"translation": "Skanning av eID-kort avbruten"
-	},
-	"onboarding.errorOccurred": {
-		"message": "Error occurred during onboarding",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 419]],
-		"translation": "Fel uppstod under inställningen"
-	},
-	"onboarding.intro.subtitle": {
-		"message": "Before you can use the app, we will guide you through these steps.",
-		"placeholders": {},
-		"comments": ["Subtitle for the introduction steps slide in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 49]],
-		"translation": "Innan du kan använda appen kommer vi att guida dig genom dessa steg."
-	},
-	"onboarding.intro.title": {
-		"message": "Set up your wallet",
-		"placeholders": {},
-		"comments": ["Title for the introduction steps slide in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 43]],
-		"translation": "Ställ in din plånbok"
-	},
-	"onboarding.invalidEidPinEntered": {
-		"message": "Invalid PIN entered for eID Card. Please try again",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 333]],
-		"translation": "Felaktig PIN-kod angiven för eID-kort. Försök igen"
-	},
-	"onboarding.pin.subtitle": {
-		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
-		"placeholders": {},
-		"comments": ["Explanation of the PIN purpose in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 18]],
-		"translation": "Denna PIN-kod säkrar din identitetsplånbok. Du anger den varje gång du delar data."
-	},
-	"onboarding.pin.title": {
-		"message": "Choose a 6-digit PIN",
-		"placeholders": {},
-		"comments": ["Heading when user chooses a PIN"],
-		"origin": [["src/features/onboarding/steps.ts", 12]],
-		"translation": "Välj en 6-siffrig PIN-kod"
-	},
-	"onboarding.pinEntriesDoNotMatch": {
-		"message": "Pin entries do not match",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 171]],
-		"translation": "PIN-koderna stämmer inte överens"
-	},
-	"onboarding.pinReenter.title": {
-		"message": "Repeat your PIN",
-		"placeholders": {},
-		"comments": ["Heading when user repeats their PIN"],
-		"origin": [["src/features/onboarding/steps.ts", 24]],
-		"translation": "Upprepa din PIN-kod"
-	},
-	"onboarding.resetAlert.message": {
-		"message": "Are you sure you want to reset the onboarding process?",
-		"placeholders": {},
-		"comments": ["Confirmation message for onboarding reset"],
-		"origin": [["src/app/onboarding/index.tsx", 54]],
-		"translation": "Är du säker på att du vill återställa inställningsprocessen?"
-	},
-	"onboarding.resetAlert.title": {
-		"message": "Reset Onboarding",
-		"placeholders": {},
-		"comments": ["Title of the alert when user attempts to reset onboarding"],
-		"origin": [["src/app/onboarding/index.tsx", 49]],
-		"translation": "Återställ inställning"
-	},
-	"onboardingDataProtection.privacy": {
-		"message": "Read the Privacy Policy",
-		"placeholders": {},
-		"comments": ["Button label to open the privacy policy"],
-		"origin": [["src/features/onboarding/screens/data-protection.tsx", 36]],
-		"translation": "Läs integritetspolicyn"
-	},
-	"onboardingDataProtection.toast.cloudHsm": {
-		"message": "Now using Cloud HSM for PID cryptographic keys.",
-		"placeholders": {},
-		"comments": ["Toast shown when Cloud HSM is selected for key storage"],
-		"origin": [["src/features/onboarding/screens/data-protection.tsx", 24]],
-		"translation": "Använder nu Cloud HSM för PID-kryptografiska nycklar."
-	},
-	"onboardingDataProtection.toast.secureDevice": {
-		"message": "Now using {0} for PID cryptographic keys.",
-		"placeholders": {
-			"0": ["Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'"]
-		},
-		"comments": [
-			"Toast shown when switching to local secure storage (e.g. Secure Enclave or Strongbox)"
-		],
-		"origin": [["src/features/onboarding/screens/data-protection.tsx", 30]],
-		"translation": "Använder nu {0} för PID-kryptografiska nycklar."
-	},
-	"onboardingIdCardRequestedAttributes.description": {
-		"message": "These {0} attributes will be read from your eID card.",
-		"placeholders": {
-			"0": ["requestedAttributes.length"]
-		},
-		"comments": [
-			"Text explaining how many attributes will be read from the eID card"
-		],
-		"origin": [
-			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 31]
-		],
-		"translation": "Dessa {0} uppgifter kommer att läsas från ditt eID-kort."
-	},
-	"onboardingIdCardRequestedAttributes.setupLater": {
-		"message": "Set up later",
-		"placeholders": {},
-		"comments": ["Button label to allow skipping card setup during onboarding"],
-		"origin": [
-			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 37]
-		],
-		"translation": "Ställ in senare"
-	},
-	"onboardingIdCardScan.startScanning": {
-		"message": "Start scanning",
-		"placeholders": {},
-		"comments": ["Button label to begin scanning the ID card using NFC"],
-		"origin": [["src/features/onboarding/screens/id-card-scan.tsx", 27]],
-		"translation": "Börja skanna"
-	},
-	"onboardingIdCardVerify.unlock": {
-		"message": "Unlock with biometrics",
-		"placeholders": {},
-		"comments": ["Button label for unlocking the ID card using biometrics"],
-		"origin": [["src/features/onboarding/screens/id-card-verify.tsx", 22]],
-		"translation": "Lås upp med biometri"
-	},
-	"onboardingIntroduction.reminder": {
-		"message": "You'll need your eID card to setup the wallet",
-		"placeholders": {},
-		"comments": ["Reminder shown before user continues onboarding"],
-		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 48]],
-		"translation": "Du behöver ditt eID-kort för att ställa in plånboken"
-	},
-	"onboardingIntroduction.step1": {
-		"message": "Step 1",
-		"placeholders": {},
-		"comments": ["Label for first onboarding step"],
-		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 12]],
-		"translation": "Steg 1"
-	},
-	"onboardingIntroduction.step1.description": {
-		"message": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
-		"placeholders": {},
-		"comments": [
-			"Description of the first onboarding step about securing the wallet"
-		],
-		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 30]],
-		"translation": "Välj en 6-siffrig PIN-kod och ställ in biometri för att säkra plånboken."
-	},
-	"onboardingIntroduction.step1.title": {
-		"message": "Secure the wallet",
-		"placeholders": {},
-		"comments": [
-			"Title of the first onboarding step explaining security setup"
-		],
-		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 24]],
-		"translation": "Säkra plånboken"
-	},
-	"onboardingIntroduction.step2": {
-		"message": "Step 2",
-		"placeholders": {},
-		"comments": ["Label for second onboarding step"],
-		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 18]],
-		"translation": "Steg 2"
-	},
-	"onboardingIntroduction.step2.description": {
-		"message": "Use your ID card PIN to retrieve your identity information.",
-		"placeholders": {},
-		"comments": [
-			"Description of the second onboarding step about reading identity info"
-		],
-		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 42]],
-		"translation": "Använd din ID-korts PIN-kod för att hämta din identitetsinformation."
-	},
-	"onboardingIntroduction.step2.title": {
-		"message": "Scan your physical ID card",
-		"placeholders": {},
-		"comments": [
-			"Title of the second onboarding step explaining card scanning"
-		],
-		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 36]],
-		"translation": "Skanna ditt fysiska ID-kort"
-	},
 	"activity.cardsHeading": {
 		"message": "Cards",
 		"placeholders": {},
@@ -3479,5 +2006,1478 @@
 		"comments": ["Label for button to scan a QR code"],
 		"origin": [["../../packages/app/src/components/NoContentWallet.tsx", 25]],
 		"translation": "Skanna en QR-kod"
+	},
+	"notification.errorParsingInvitation": {
+		"message": "Error parsing invitation",
+		"placeholders": {},
+		"comments": [
+			"Generic error message shown when an invitation could not be parsed"
+		],
+		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 35]],
+		"translation": "Fel vid tolkning av inbjudan"
+	},
+	"notification.noInvitation": {
+		"message": "No invitation was found. Please try again.",
+		"placeholders": {},
+		"comments": [
+			"Error shown when a DIDComm invitation is missing in the URL parameters"
+		],
+		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 30]],
+		"translation": "Ingen inbjudan hittades. Försök igen."
+	},
+	"notificationInbox.notificationType.credentialOffer": {
+		"message": "Credential offer",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				11
+			]
+		],
+		"translation": "Korterbjudande"
+	},
+	"notificationInbox.notificationType.credentialOfferFromName": {
+		"message": "Credential offer from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				16
+			]
+		],
+		"translation": "Korterbjudande från {name}"
+	},
+	"notificationInbox.notificationType.dataRequest": {
+		"message": "Data request",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				20
+			]
+		],
+		"translation": "Dataförfrågan"
+	},
+	"notificationInbox.notificationType.dataRequestFromName": {
+		"message": "Data request from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				25
+			]
+		],
+		"translation": "Dataförfrågan från {name}"
+	},
+	"offlineQr.heading": {
+		"message": "Share with QR code",
+		"placeholders": {},
+		"comments": ["Main heading for offline QR sharing screen"],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 163]],
+		"translation": "Dela med QR-kod"
+	},
+	"offlineQr.instruction": {
+		"message": "A verifier needs to scan your QR-Code.",
+		"placeholders": {},
+		"comments": ["Instruction for the verifier to scan the QR code"],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 168]],
+		"translation": "En verifierare behöver skanna din QR-kod."
+	},
+	"offlineQr.permissionError": {
+		"message": "Failed to request permissions.",
+		"placeholders": {},
+		"comments": ["Toast shown when system permission request fails"],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 74]],
+		"translation": "Misslyckades med att begära behörigheter."
+	},
+	"offlineQr.permissionSettingsDescription": {
+		"message": "Sharing with QR-Code needs access to Bluetooth and Location.",
+		"placeholders": {},
+		"comments": [
+			"This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
+		],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 116]],
+		"translation": "Delning med QR-kod kräver åtkomst till Bluetooth och Plats."
+	},
+	"offlineQr.permissionSettingsTitle": {
+		"message": "Please enable required permissions in your phone settings",
+		"placeholders": {},
+		"comments": [
+			"This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions"
+		],
+		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 110]],
+		"translation": "Aktivera nödvändiga behörigheter i telefonens inställningar"
+	},
+	"onboarding.biometrics.subtitle": {
+		"message": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
+		"placeholders": {},
+		"comments": ["Subtitle explaining purpose of biometrics"],
+		"origin": [["src/features/onboarding/steps.ts", 36]],
+		"translation": "Aktivera biometriska funktioner på telefonen för att säkerställa att bara du kan komma åt plånboken och dela data."
+	},
+	"onboarding.biometrics.title": {
+		"message": "Set up biometrics",
+		"placeholders": {},
+		"comments": ["Heading when user sets up biometrics"],
+		"origin": [["src/features/onboarding/steps.ts", 30]],
+		"translation": "Ställ in biometri"
+	},
+	"onboarding.eidScanningCancelled": {
+		"message": "eID card scanning cancelled",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 469]],
+		"translation": "Skanning av eID-kort avbruten"
+	},
+	"onboarding.errorOccurred": {
+		"message": "Error occurred during onboarding",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 419]],
+		"translation": "Fel uppstod under inställningen"
+	},
+	"onboarding.intro.subtitle": {
+		"message": "Before you can use the app, we will guide you through these steps.",
+		"placeholders": {},
+		"comments": ["Subtitle for the introduction steps slide in onboarding"],
+		"origin": [["src/features/onboarding/steps.ts", 49]],
+		"translation": "Innan du kan använda appen kommer vi att guida dig genom dessa steg."
+	},
+	"onboarding.intro.title": {
+		"message": "Set up your wallet",
+		"placeholders": {},
+		"comments": ["Title for the introduction steps slide in onboarding"],
+		"origin": [["src/features/onboarding/steps.ts", 43]],
+		"translation": "Ställ in din plånbok"
+	},
+	"onboarding.invalidEidPinEntered": {
+		"message": "Invalid PIN entered for eID Card. Please try again",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 333]],
+		"translation": "Felaktig PIN-kod angiven för eID-kort. Försök igen"
+	},
+	"onboarding.pin.subtitle": {
+		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
+		"placeholders": {},
+		"comments": ["Explanation of the PIN purpose in onboarding"],
+		"origin": [["src/features/onboarding/steps.ts", 18]],
+		"translation": "Denna PIN-kod säkrar din identitetsplånbok. Du anger den varje gång du delar data."
+	},
+	"onboarding.pin.title": {
+		"message": "Choose a 6-digit PIN",
+		"placeholders": {},
+		"comments": ["Heading when user chooses a PIN"],
+		"origin": [["src/features/onboarding/steps.ts", 12]],
+		"translation": "Välj en 6-siffrig PIN-kod"
+	},
+	"onboarding.pinEntriesDoNotMatch": {
+		"message": "Pin entries do not match",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 171]],
+		"translation": "PIN-koderna stämmer inte överens"
+	},
+	"onboarding.pinReenter.title": {
+		"message": "Repeat your PIN",
+		"placeholders": {},
+		"comments": ["Heading when user repeats their PIN"],
+		"origin": [["src/features/onboarding/steps.ts", 24]],
+		"translation": "Upprepa din PIN-kod"
+	},
+	"onboarding.resetAlert.message": {
+		"message": "Are you sure you want to reset the onboarding process?",
+		"placeholders": {},
+		"comments": ["Confirmation message for onboarding reset"],
+		"origin": [["src/app/onboarding/index.tsx", 54]],
+		"translation": "Är du säker på att du vill återställa inställningsprocessen?"
+	},
+	"onboarding.resetAlert.title": {
+		"message": "Reset Onboarding",
+		"placeholders": {},
+		"comments": ["Title of the alert when user attempts to reset onboarding"],
+		"origin": [["src/app/onboarding/index.tsx", 49]],
+		"translation": "Återställ inställning"
+	},
+	"onboardingDataProtection.privacy": {
+		"message": "Read the Privacy Policy",
+		"placeholders": {},
+		"comments": ["Button label to open the privacy policy"],
+		"origin": [["src/features/onboarding/screens/data-protection.tsx", 36]],
+		"translation": "Läs integritetspolicyn"
+	},
+	"onboardingDataProtection.toast.cloudHsm": {
+		"message": "Now using Cloud HSM for PID cryptographic keys.",
+		"placeholders": {},
+		"comments": ["Toast shown when Cloud HSM is selected for key storage"],
+		"origin": [["src/features/onboarding/screens/data-protection.tsx", 24]],
+		"translation": "Använder nu Cloud HSM för PID-kryptografiska nycklar."
+	},
+	"onboardingDataProtection.toast.secureDevice": {
+		"message": "Now using {0} for PID cryptographic keys.",
+		"placeholders": {
+			"0": ["Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'"]
+		},
+		"comments": [
+			"Toast shown when switching to local secure storage (e.g. Secure Enclave or Strongbox)"
+		],
+		"origin": [["src/features/onboarding/screens/data-protection.tsx", 30]],
+		"translation": "Använder nu {0} för PID-kryptografiska nycklar."
+	},
+	"onboardingIdCardRequestedAttributes.description": {
+		"message": "These {0} attributes will be read from your eID card.",
+		"placeholders": {
+			"0": ["requestedAttributes.length"]
+		},
+		"comments": [
+			"Text explaining how many attributes will be read from the eID card"
+		],
+		"origin": [
+			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 31]
+		],
+		"translation": "Dessa {0} uppgifter kommer att läsas från ditt eID-kort."
+	},
+	"onboardingIdCardRequestedAttributes.setupLater": {
+		"message": "Set up later",
+		"placeholders": {},
+		"comments": ["Button label to allow skipping card setup during onboarding"],
+		"origin": [
+			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 37]
+		],
+		"translation": "Ställ in senare"
+	},
+	"onboardingIdCardScan.startScanning": {
+		"message": "Start scanning",
+		"placeholders": {},
+		"comments": ["Button label to begin scanning the ID card using NFC"],
+		"origin": [["src/features/onboarding/screens/id-card-scan.tsx", 27]],
+		"translation": "Börja skanna"
+	},
+	"onboardingIdCardVerify.unlock": {
+		"message": "Unlock with biometrics",
+		"placeholders": {},
+		"comments": ["Button label for unlocking the ID card using biometrics"],
+		"origin": [["src/features/onboarding/screens/id-card-verify.tsx", 22]],
+		"translation": "Lås upp med biometri"
+	},
+	"onboardingIntroduction.reminder": {
+		"message": "You'll need your eID card to setup the wallet",
+		"placeholders": {},
+		"comments": ["Reminder shown before user continues onboarding"],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 48]],
+		"translation": "Du behöver ditt eID-kort för att ställa in plånboken"
+	},
+	"onboardingIntroduction.step1": {
+		"message": "Step 1",
+		"placeholders": {},
+		"comments": ["Label for first onboarding step"],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 12]],
+		"translation": "Steg 1"
+	},
+	"onboardingIntroduction.step1.description": {
+		"message": "Choose a 6-digit PIN and set up biometrics to secure the wallet.",
+		"placeholders": {},
+		"comments": [
+			"Description of the first onboarding step about securing the wallet"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 30]],
+		"translation": "Välj en 6-siffrig PIN-kod och ställ in biometri för att säkra plånboken."
+	},
+	"onboardingIntroduction.step1.title": {
+		"message": "Secure the wallet",
+		"placeholders": {},
+		"comments": [
+			"Title of the first onboarding step explaining security setup"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 24]],
+		"translation": "Säkra plånboken"
+	},
+	"onboardingIntroduction.step2": {
+		"message": "Step 2",
+		"placeholders": {},
+		"comments": ["Label for second onboarding step"],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 18]],
+		"translation": "Steg 2"
+	},
+	"onboardingIntroduction.step2.description": {
+		"message": "Use your ID card PIN to retrieve your identity information.",
+		"placeholders": {},
+		"comments": [
+			"Description of the second onboarding step about reading identity info"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 42]],
+		"translation": "Använd din ID-korts PIN-kod för att hämta din identitetsinformation."
+	},
+	"onboardingIntroduction.step2.title": {
+		"message": "Scan your physical ID card",
+		"placeholders": {},
+		"comments": [
+			"Title of the second onboarding step explaining card scanning"
+		],
+		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 36]],
+		"translation": "Skanna ditt fysiska ID-kort"
+	},
+	"onboardingWalletExplanation.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to finish onboarding explanation"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]],
+		"translation": "Kom igång"
+	},
+	"onboardingWalletExplanation.skip": {
+		"message": "Skip explanation",
+		"placeholders": {},
+		"comments": ["Button label to skip wallet explanation slides"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 78]],
+		"translation": "Hoppa över förklaring"
+	},
+	"onboardingWalletExplanation.slide1.subtitle": {
+		"message": "Add digital cards with your information, and  share them easily with others. It's like having your wallet on your phone.",
+		"placeholders": {},
+		"comments": ["Subtitle for first slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 35]],
+		"translation": "Lägg till digitala kort med din information och dela dem enkelt med andra. Det är som att ha din plånbok i telefonen."
+	},
+	"onboardingWalletExplanation.slide1.title": {
+		"message": "This is your wallet",
+		"placeholders": {},
+		"comments": ["Title for first slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 30]],
+		"translation": "Det här är din plånbok"
+	},
+	"onboardingWalletExplanation.slide2.subtitle": {
+		"message": "The digital wallet stores your important information all in one place on your phone. It's a secure and easy way to carry everything you need without using a physical wallet.",
+		"placeholders": {},
+		"comments": ["Subtitle for second slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 49]],
+		"translation": "Den digitala plånboken lagrar all din viktiga information på ett ställe i telefonen. Det är ett säkert och enkelt sätt att ha med dig allt du behöver utan att använda en fysisk plånbok."
+	},
+	"onboardingWalletExplanation.slide2.title": {
+		"message": "What is it for?",
+		"placeholders": {},
+		"comments": ["Title for second slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 44]],
+		"translation": "Vad är det till för?"
+	},
+	"onboardingWalletExplanation.slide3.subtitle": {
+		"message": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
+		"placeholders": {},
+		"comments": ["Subtitle for third slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 63]],
+		"translation": "Lägg till dina kort och dokument genom att skanna QR-koder. När organisationer begär dina uppgifter kan du granska och dela med ett knapptryck i appen. Din information är alltid säker med din PIN-kod eller fingeravtryck."
+	},
+	"onboardingWalletExplanation.slide3.title": {
+		"message": "How does it work?",
+		"placeholders": {},
+		"comments": ["Title for third slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 58]],
+		"translation": "Hur fungerar det?"
+	},
+	"onboardingWelcome.description": {
+		"message": "This is your digital wallet. With it, you can store and share information about yourself.",
+		"placeholders": {},
+		"comments": ["Intro paragraph on the welcome screen"],
+		"origin": [["src/features/onboarding/screens/welcome.tsx", 11]],
+		"translation": "Det här är din digitala plånbok. Med den kan du lagra och dela information om dig själv."
+	},
+	"onboardingWelcome.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to begin onboarding from the welcome screen"],
+		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
+		"translation": "Kom igång"
+	},
+	"optionSheet.hideMetadata": {
+		"message": "Hide metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to hide metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
+		],
+		"translation": "Dölj metadata"
+	},
+	"optionSheet.showMetadata": {
+		"message": "Show metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to show metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
+		],
+		"translation": "Visa metadata"
+	},
+	"paradymWallet.about.description": {
+		"message": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
+		"placeholders": {},
+		"comments": ["About screen description text for the Paradym wallet"],
+		"origin": [["src/config/copy.ts", 23]],
+		"translation": "Denna app skapades av Animo Solutions som en kompletterande app för Paradym. All kod är tillgänglig under Apache 2.0."
+	},
+	"paradymWallet.about.emailHeader": {
+		"message": "Reach out from Paradym Wallet",
+		"placeholders": {},
+		"comments": ["Email subject when contacting support from Paradym wallet"],
+		"origin": [["src/config/copy.ts", 29]],
+		"translation": "Kontakt från Paradym Wallet"
+	},
+	"pidSetup.dataProtection.subtitle": {
+		"message": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 26]],
+		"translation": "Dina uppgifter är säkrade med PIN-kod och biometri. Varje gång du delar data bekräftar vi din identitet."
+	},
+	"pidSetup.dataProtection.title": {
+		"message": "Protect your data",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 25]],
+		"translation": "Skydda dina uppgifter"
+	},
+	"pidSetup.eidScanningCancelled": {
+		"message": "eID card scanning cancelled",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 264]],
+		"translation": "Skanning av eID-kort avbruten"
+	},
+	"pidSetup.enableBiometrics.subtitle": {
+		"message": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 70]],
+		"translation": "För att fortsätta, se till att din enhet har biometriskt skydd aktiverat och att Paradym Wallet får använda biometri."
+	},
+	"pidSetup.enableBiometrics.title": {
+		"message": "You need to enable biometrics",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 69]],
+		"translation": "Du behöver aktivera biometri"
+	},
+	"pidSetup.enterPinSubtitle": {
+		"message": "Enter the PIN code you use to unlock your wallet.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 393]],
+		"translation": "Ange PIN-koden som du använder för att låsa upp din plånbok."
+	},
+	"pidSetup.idCardComplete.subtitle": {
+		"message": "Your information has been retrieved from your eID card.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 78]],
+		"translation": "Din information har hämtats från ditt eID-kort."
+	},
+	"pidSetup.idCardComplete.title": {
+		"message": "Success!",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 77]],
+		"translation": "Klart!"
+	},
+	"pidSetup.idCardFetch.title": {
+		"message": "Getting eID information",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 59]],
+		"translation": "Hämtar eID-information"
+	},
+	"pidSetup.idCardPin.subtitle": {
+		"message": "This is required to read data from your card.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 39]],
+		"translation": "Detta krävs för att läsa data från ditt kort."
+	},
+	"pidSetup.idCardPin.title": {
+		"message": "Enter your eID card PIN",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 38]],
+		"translation": "Ange din eID-korts PIN-kod"
+	},
+	"pidSetup.idCardRequestedAttributes.title": {
+		"message": "Get your national identity card",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 32]],
+		"translation": "Skaffa ditt nationella identitetskort"
+	},
+	"pidSetup.idCardScan.subtitle": {
+		"message": "Place your device on top of your eID card to scan it.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/utils/sharedPidSetup.ts", 46],
+			["src/utils/sharedPidSetup.ts", 53]
+		],
+		"translation": "Placera din enhet ovanpå ditt eID-kort för att skanna det."
+	},
+	"pidSetup.idCardScan.title": {
+		"message": "Scan your eID card",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/utils/sharedPidSetup.ts", 45],
+			["src/utils/sharedPidSetup.ts", 52]
+		],
+		"translation": "Skanna ditt eID-kort"
+	},
+	"pidSetup.idCardVerify.Subtitle": {
+		"message": "We need your biometrics to verify your identity.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 63]],
+		"translation": "Vi behöver din biometri för att verifiera din identitet."
+	},
+	"pidSetup.idCardVerify.title": {
+		"message": "Confirm it's you",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/utils/sharedPidSetup.ts", 62]],
+		"translation": "Bekräfta att det är du"
+	},
+	"pidSetup.invalidEidPin": {
+		"message": "Invalid eID card PIN entered",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 113]],
+		"translation": "Felaktig eID-korts PIN-kod angiven"
+	},
+	"pidSetup.notReadyToReceivePid": {
+		"message": "Not ready to receive PID",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 40]],
+		"translation": "Inte redo att ta emot PID"
+	},
+	"pidSetup.stopDescription": {
+		"message": "If you stop, you can still do the setup later.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 473]],
+		"translation": "Om du stoppar kan du fortfarande göra inställningen senare."
+	},
+	"pidSetup.stopTitle": {
+		"message": "Stop ID Setup?",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 469]],
+		"translation": "Stoppa ID-inställning?"
+	},
+	"pidSetup.walletNotUnlocked": {
+		"message": "Wallet not unlocked",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 39]],
+		"translation": "Plånbok inte upplåst"
+	},
+	"pidSetup.walletPinMissing": {
+		"message": "Wallet PIN is missing",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 153]],
+		"translation": "Plånbokens PIN-kod saknas"
+	},
+	"pinLocked.alertMessage": {
+		"message": "Are you sure you want to reset the wallet?",
+		"placeholders": {},
+		"comments": [
+			"Message body of the confirmation dialog (action button) for wallet reset"
+		],
+		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 17]],
+		"translation": "Är du säker på att du vill återställa plånboken?"
+	},
+	"pinLocked.description": {
+		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
+		"placeholders": {},
+		"comments": [
+			"Descriptive text explaining that the wallet is locked and must be reset"
+		],
+		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 47]],
+		"translation": "Du har angett en felaktig PIN-kod. Plånboken har låsts, återställ den för att sätta en ny PIN-kod och fortsätta."
+	},
+	"pinLocked.title": {
+		"message": "Too many incorrect attempts",
+		"placeholders": {},
+		"comments": [
+			"Heading shown when the user has entered too many incorrect PINs"
+		],
+		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 42]],
+		"translation": "För många felaktiga försök"
+	},
+	"pinSlide.description": {
+		"message": "Use your app PIN code to confirm the request.",
+		"placeholders": {},
+		"comments": ["Supporting text explaining why PIN is needed"],
+		"origin": [["src/features/share/slides/PinSlide.tsx", 48]],
+		"translation": "Använd din app-PIN-kod för att bekräfta förfrågan."
+	},
+	"pinSlide.title": {
+		"message": "Send data with your PIN code",
+		"placeholders": {},
+		"comments": [
+			"Heading shown when user is asked to enter their app PIN to confirm a request"
+		],
+		"origin": [["src/features/share/slides/PinSlide.tsx", 40]],
+		"translation": "Skicka data med din PIN-kod"
+	},
+	"predicate.greaterThan": {
+		"message": "greater than",
+		"placeholders": {},
+		"comments": ["Used in predicate statements like: age greater than 18"],
+		"origin": [
+			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 31]
+		],
+		"translation": "större än"
+	},
+	"predicate.greaterThanOrEqual": {
+		"message": "greater than or equal to",
+		"placeholders": {},
+		"comments": [
+			"Used in predicate statements like: age greater than or equal to 18"
+		],
+		"origin": [
+			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 36]
+		],
+		"translation": "större än eller lika med"
+	},
+	"predicate.lessThan": {
+		"message": "less than",
+		"placeholders": {},
+		"comments": ["Used in predicate statements like: age less than 18"],
+		"origin": [
+			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 41]
+		],
+		"translation": "mindre än"
+	},
+	"predicate.lessThanOrEqual": {
+		"message": "less than or equal to",
+		"placeholders": {},
+		"comments": [
+			"Used in predicate statements like: age less than or equal to 18"
+		],
+		"origin": [
+			["../../packages/agent/src/hooks/useDidCommPresentationActions.ts", 46]
+		],
+		"translation": "mindre än eller lika med"
+	},
+	"presentation.authFailed": {
+		"message": "Authentication failed",
+		"placeholders": {},
+		"comments": ["Shown when authentication with PIN fails for other reasons"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 64]
+		],
+		"translation": "Autentisering misslyckades"
+	},
+	"presentation.noCredentialsSelected": {
+		"message": "No credentials selected",
+		"placeholders": {},
+		"comments": [
+			"Shown when the user tries to accept a proof but no credentials are loaded"
+		],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 52]
+		],
+		"translation": "Inga kort valda"
+	},
+	"presentation.pinAuthFailed": {
+		"message": "PIN authentication failed",
+		"placeholders": {},
+		"comments": ["Shown when PIN is required but not provided"],
+		"origin": [
+			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 58]
+		],
+		"translation": "PIN-autentisering misslyckades"
+	},
+	"presentationNotification.infoWillBePresented": {
+		"message": "The following information will be presented:",
+		"placeholders": {},
+		"comments": [
+			"Text shown before listing information that will be presented in response to an information request"
+		],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
+				149
+			]
+		],
+		"translation": "Följande information kommer att presenteras:"
+	},
+	"presentationNotification.missingCredential": {
+		"message": "This credential is not present in your wallet.",
+		"placeholders": {},
+		"comments": ["Shown when a required credential is missing"],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
+				170
+			]
+		],
+		"translation": "Detta kort finns inte i din plånbok."
+	},
+	"presentationNotification.missingRequiredCredentials": {
+		"message": "You don't have the required credentials to satisfy this request.",
+		"placeholders": {},
+		"comments": [
+			"Shown when the user lacks the required credentials to satisfy an information request"
+		],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
+				208
+			]
+		],
+		"translation": "Du har inte de kort som krävs för att uppfylla denna förfrågan."
+	},
+	"presentationNotification.receivedRequestWithVerifier": {
+		"message": "You have received an information request from {verifierName}",
+		"placeholders": {
+			"verifierName": ["verifierName"]
+		},
+		"comments": [
+			"Heading shown when the user receives an information request including the verifier's name"
+		],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
+				77
+			]
+		],
+		"translation": "Du har fått en informationsförfrågan från {verifierName}"
+	},
+	"presentationNotification.receivedRequestWithoutVerifier": {
+		"message": "You have received an information request",
+		"placeholders": {},
+		"comments": [
+			"Heading shown when the user receives an information request without the verifier's name"
+		],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
+				86
+			]
+		],
+		"translation": "Du har fått en informationsförfrågan"
+	},
+	"presentationNotification.requestedInformationPrefix": {
+		"message": "The following information is requested:",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
+				177
+			]
+		],
+		"translation": "Följande information begärs:"
+	},
+	"presentationNotification.selectCredentialTitle": {
+		"message": "Select the credential you want to use",
+		"placeholders": {},
+		"comments": [
+			"Title prompting the user to select which credential to use for the information request"
+		],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
+				229
+			]
+		],
+		"translation": "Välj det kort du vill använda"
+	},
+	"presentationSuccess.message": {
+		"message": "Your information has been shared.",
+		"placeholders": {},
+		"comments": ["Shown after credentials are shared (no verifier name)"],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 86]],
+		"translation": "Din information har delats."
+	},
+	"presentationSuccess.messageWithVerifier": {
+		"message": "Your information has been shared with <0>{verifierName}</0>.",
+		"placeholders": {
+			"verifierName": ["verifierName"]
+		},
+		"comments": ["Shown after credentials are shared with a specific verifier"],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 79]],
+		"translation": "Din information har delats med <0>{verifierName}</0>."
+	},
+	"presentationSuccess.returnHint": {
+		"message": "You can now return to the previous app.",
+		"placeholders": {},
+		"comments": ["Instruction shown after presentation is completed"],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 97]],
+		"translation": "Du kan nu gå tillbaka till föregående app."
+	},
+	"qrScan.invalidQrCode": {
+		"message": "Invalid QR code. Try another.",
+		"placeholders": {},
+		"comments": ["Shown when scanned QR code is invalid"],
+		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 22]],
+		"translation": "Ogiltig QR-kod. Försök med en annan."
+	},
+	"qrScan.unsupportedQrCode": {
+		"message": "Unsupported QR code. Try another.",
+		"placeholders": {},
+		"comments": ["Shown when scanned QR code has unsupported URL prefix"],
+		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 17]],
+		"translation": "QR-kod stöds inte. Försök med en annan."
+	},
+	"qrScanScreen.loadingInvitation": {
+		"message": "Loading invitation",
+		"placeholders": {},
+		"comments": ["Text shown while an invitation is loading"],
+		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 91]],
+		"translation": "Laddar inbjudan"
+	},
+	"qrScanner.instructionHeading": {
+		"message": "Use the camera to scan a QR code",
+		"placeholders": {},
+		"comments": ["Instruction heading for scanning a QR code"],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 78]],
+		"translation": "Använd kameran för att skanna en QR-kod"
+	},
+	"qrScanner.openSettingsButton": {
+		"message": "Open settings",
+		"placeholders": {},
+		"comments": ["Button label to open device settings"],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 56]],
+		"translation": "Öppna inställningar"
+	},
+	"qrScanner.permissionDescription": {
+		"message": "This allows the app to scan QR codes that include credentials or data requests.",
+		"placeholders": {},
+		"comments": ["Description explaining why camera permission is needed"],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 51]],
+		"translation": "Detta gör att appen kan skanna QR-koder som innehåller kort eller dataförfrågningar."
+	},
+	"qrScanner.permissionHeading": {
+		"message": "Please allow camera access",
+		"placeholders": {},
+		"comments": ["Heading asking user to allow camera permission"],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 46]],
+		"translation": "Tillåt kameraåtkomst"
+	},
+	"receiveCredential.checkInformationHeader": {
+		"message": "Is the information correct?",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 161]
+		],
+		"translation": "Är informationen korrekt?"
+	},
+	"receiveCredential.stopDescription": {
+		"message": "If you stop, the card offer will be cancelled.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 497]
+		],
+		"translation": "Om du stoppar kommer korterbjudandet att avbrytas."
+	},
+	"receiveCredential.stopTitle": {
+		"message": "Stop card offer?",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 493]
+		],
+		"translation": "Stoppa korterbjudande?"
+	},
+	"receiveCredential.successHeader": {
+		"message": "Success!",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 157]
+		],
+		"translation": "Klart!"
+	},
+	"requestPurpose.infoSheet.description": {
+		"message": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
+		"placeholders": {},
+		"comments": ["Description text in the overasking info sheet"],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 56]],
+		"translation": "Denna organisation verkar begära annan eller mer data än vad deras syfte antyder. Läs förfrågan noggrant. Du kan avvisa förfrågan om du inte håller med om den begärda datan."
+	},
+	"requestPurpose.infoSheet.title": {
+		"message": "Overasking detected",
+		"placeholders": {},
+		"comments": [
+			"Title of the info sheet that appears when the user taps the warning about overasking"
+		],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 50]],
+		"translation": "Överdrivet begärande upptäckt"
+	},
+	"requestPurpose.overaskingWarning": {
+		"message": "The purpose given does not match the data requested.",
+		"placeholders": {},
+		"comments": [
+			"Warning shown when the declared purpose does not align with the data requested by the organization"
+		],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 38]],
+		"translation": "Det angivna syftet stämmer inte överens med den begärda datan."
+	},
+	"requestPurpose.purposeHeading": {
+		"message": "PURPOSE",
+		"placeholders": {},
+		"comments": ["Heading above the stated purpose of the data request"],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 44]],
+		"translation": "SYFTE"
+	},
+	"requestedAttributes.fallbackCardLabel": {
+		"message": "Credential",
+		"placeholders": {},
+		"comments": [
+			"Fallback name shown when a credential does not have a display name"
+		],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 52]
+		],
+		"translation": "Kort"
+	},
+	"requestedAttributes.heading": {
+		"message": "Requested attributes",
+		"placeholders": {},
+		"comments": ["Heading above list of attributes shown to the user"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 131]
+		],
+		"translation": "Begärda uppgifter"
+	},
+	"requestedAttributes.metadataTitle": {
+		"message": "Metadata",
+		"placeholders": {},
+		"comments": ["Section header title for metadata attributes"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
+		],
+		"translation": "Metadata"
+	},
+	"requestedAttributes.onlySatisfiedDescription": {
+		"message": "The following cards will be shared.",
+		"placeholders": {},
+		"comments": ["Description when the user has all requested cards"],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 34]
+		],
+		"translation": "Följande kort kommer att delas."
+	},
+	"requestedAttributes.onlyUnsatisfiedDescription": {
+		"message": "You don't have the requested card(s).",
+		"placeholders": {},
+		"comments": ["Description when the user has none of the requested cards"],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 40]
+		],
+		"translation": "Du har inte de begärda korten."
+	},
+	"requestedAttributes.partialDescription": {
+		"message": "You don't have all of the requested cards.",
+		"placeholders": {},
+		"comments": [
+			"Description when the user has some but not all requested cards"
+		],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 46]
+		],
+		"translation": "Du har inte alla begärda kort."
+	},
+	"requestedAttributes.requestedCardsHeading": {
+		"message": "REQUESTED CARDS",
+		"placeholders": {},
+		"comments": ["Heading shown above a list of requested cards the user has"],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 22]
+		],
+		"translation": "BEGÄRDA KORT"
+	},
+	"requestedAttributes.subheading": {
+		"message": "{disclosedAttributeLength} from {0}",
+		"placeholders": {
+			"0": ["activeCredential.display.name"],
+			"disclosedAttributeLength": ["disclosedAttributeLength"]
+		},
+		"comments": ["Subheading under attribute list: X from Y"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 138]
+		],
+		"translation": "{disclosedAttributeLength} från {0}"
+	},
+	"requestedAttributes.unavailableCardsHeading": {
+		"message": "UNAVAILABLE CARDS",
+		"placeholders": {},
+		"comments": [
+			"Heading shown above a list of requested cards the user does not have"
+		],
+		"origin": [
+			["src/features/share/components/RequestedAttributesSection.tsx", 28]
+		],
+		"translation": "OTILLGÄNGLIGA KORT"
+	},
+	"retrieveCredential.cardSuccessfully added": {
+		"message": "Card successfully added to your wallet!",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 175]
+		],
+		"translation": "Kort har lagts till i din plånbok!"
+	},
+	"selectLanguage.label": {
+		"translation": "Språk",
+		"message": "Language",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 29]]
+	},
+	"settings.developmentMode": {
+		"message": "Development Mode",
+		"placeholders": {},
+		"comments": ["Label for the toggle to enable developer mode"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 145]],
+		"translation": "Utvecklingsläge"
+	},
+	"settings.title": {
+		"message": "Settings",
+		"placeholders": {},
+		"comments": ["Header title for the settings screen"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 129]],
+		"translation": "Inställningar"
+	},
+	"sharing.failed.missingCredentials": {
+		"message": "You did not have the required credentials to disclose.",
+		"placeholders": {},
+		"comments": [
+			"Displayed when the user tries to share but lacks the needed credentials"
+		],
+		"origin": [
+			["src/features/activity/components/FailedReasonContainer.tsx", 14]
+		],
+		"translation": "Du hade inte de kort som krävdes för att dela."
+	},
+	"signShare.accept": {
+		"message": "Sign & share",
+		"placeholders": {},
+		"comments": ["Button label for accepting a sign-and-share request"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 63]],
+		"translation": "Signera & dela"
+	},
+	"signShare.cardHeading": {
+		"message": "Signing card",
+		"placeholders": {},
+		"comments": ["Heading above the signing card"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 126]],
+		"translation": "Signeringskort"
+	},
+	"signShare.cardIntro": {
+		"message": "The following personal information will be used to sign the document.",
+		"placeholders": {},
+		"comments": ["Explains which info will be used to sign"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 131]],
+		"translation": "Följande personliga information kommer att användas för att signera dokumentet."
+	},
+	"signShare.documentHeading": {
+		"message": "Document",
+		"placeholders": {},
+		"comments": ["Heading above the document name"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 101]],
+		"translation": "Dokument"
+	},
+	"signShare.documentIntro": {
+		"message": "The following document will be signed.",
+		"placeholders": {},
+		"comments": ["Text above the document to be signed"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 106]],
+		"translation": "Följande dokument kommer att signeras."
+	},
+	"signShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
+		"translation": "Du har inte de kort som krävs"
+	},
+	"signShare.signingWith": {
+		"message": "Signing with {0}",
+		"placeholders": {
+			"0": ["qtsp.name"]
+		},
+		"comments": [
+			"Shown under the document name to indicate which QTSP is used for signing"
+		],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 57]],
+		"translation": "Signerar med {0}"
+	},
+	"signShare.title": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
+		"translation": "Granska förfrågan"
+	},
+	"signing.description": {
+		"message": "You are about to sign <0>{documentName}</0>.",
+		"placeholders": {
+			"documentName": ["documentName"]
+		},
+		"comments": ["Explanation that the user is about to sign a document"],
+		"origin": [["src/features/share/slides/SigningSlide.tsx", 28]],
+		"translation": "Du är på väg att signera <0>{documentName}</0>."
+	},
+	"signing.title": {
+		"message": "Signing a document",
+		"placeholders": {},
+		"comments": ["Heading above the document signing screen"],
+		"origin": [["src/features/share/slides/SigningSlide.tsx", 23]],
+		"translation": "Signerar ett dokument"
+	},
+	"slideWizard.confirmation.stopSharingConfirm": {
+		"message": "Stop",
+		"placeholders": {},
+		"comments": ["Confirm button text in stop sharing confirmation dialog"],
+		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 60]],
+		"translation": "Stoppa"
+	},
+	"slideWizard.confirmation.stopSharingDescription": {
+		"message": "If you stop, no data will be shared.",
+		"placeholders": {},
+		"comments": [
+			"Description in confirmation dialog about stopping data sharing"
+		],
+		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 55]],
+		"translation": "Om du stoppar delas ingen data."
+	},
+	"slideWizard.confirmation.stopSharingTitle": {
+		"message": "Stop sharing?",
+		"placeholders": {},
+		"comments": [
+			"Title of confirmation dialog shown when user attempts to stop sharing data"
+		],
+		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 50]],
+		"translation": "Stoppa delning?"
+	},
+	"submission.fallbackPurpose": {
+		"message": "No information was provided on the purpose of the data request. Be cautious",
+		"placeholders": {},
+		"comments": ["Shown when a submission has no stated purpose"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 46]],
+		"translation": "Ingen information gavs om syftet med dataförfrågan. Var försiktig"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
+		"translation": "Du har inte de kort som krävs"
+	},
+	"submission.offlineRequestDescription": {
+		"message": "Information about the verifier could not be shown. Carefully consider if you trust this party.",
+		"placeholders": {},
+		"comments": [
+			"Message shown when the request is offline and verifier is unknown"
+		],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 95]],
+		"translation": "Information om verifieraren kunde inte visas. Överväg noga om du litar på denna part."
+	},
+	"submission.offlineRequestTitle": {
+		"message": "This is an offline request",
+		"placeholders": {},
+		"comments": ["Title shown for offline message"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 90]],
+		"translation": "Detta är en offlineförfrågan"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
+		"translation": "Granska förfrågan"
+	},
+	"submission.share": {
+		"message": "Share",
+		"placeholders": {},
+		"comments": ["Button label to accept and share credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 52]],
+		"translation": "Dela"
+	},
+	"trust.approvedList": {
+		"message": "A list of organizations that have approved {name}.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"A sentence that introduces a list of organizations that approved the current party"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 108]],
+		"translation": "En lista över organisationer som har godkänt {name}."
+	},
+	"trust.approvedListWithoutOrganizationName": {
+		"message": "A list of organizations that have approved this unknown organization.",
+		"placeholders": {},
+		"comments": [
+			"A sentence that introduces a list of organizations that approved the current party, but the organization name is not known"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 113]],
+		"translation": "En lista över organisationer som har godkänt denna okända organisation."
+	},
+	"trust.demo": {
+		"message": "(Demo)",
+		"placeholders": {},
+		"comments": [
+			"Label shown after an organization name if it is a demo version"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 90]],
+		"translation": "(Demo)"
+	},
+	"trust.demoOrg": {
+		"message": "Demo organization",
+		"placeholders": {},
+		"comments": [
+			"Shown under the name of an organization to indicate that it is a demo"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 149]],
+		"translation": "Demoorganisation"
+	},
+	"trust.headerTitle": {
+		"message": "About this party",
+		"placeholders": {},
+		"comments": [
+			"Screen title that describes information about a trusted party or organization"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 57]],
+		"translation": "Om denna part"
+	},
+	"trust.noApprovals": {
+		"message": "There are no organizations that have approved {name}.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"A message shown when there are no organizations that approved the current party"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 120]],
+		"translation": "Det finns inga organisationer som har godkänt {name}."
+	},
+	"trust.noApprovalsWithoutOrganizationName": {
+		"message": "There are no organizations that have approved this unknown organization.",
+		"placeholders": {},
+		"comments": [
+			"A message shown when there are no organizations that approved the current party, but the organization name is not known"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 125]],
+		"translation": "Det finns inga organisationer som har godkänt denna okända organisation."
+	},
+	"trust.trustedBy": {
+		"message": "Trusted by",
+		"placeholders": {},
+		"comments": [
+			"Subheading for list of organizations that trust the current one"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 100]],
+		"translation": "Betrodd av"
+	},
+	"trust.warning": {
+		"message": "Always consider whether sharing with a party is wise.",
+		"placeholders": {},
+		"comments": [
+			"Shown as a warning box when viewing a trusted party's detail"
+		],
+		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 69]],
+		"translation": "Överväg alltid om det är klokt att dela med en part."
+	},
+	"txCodeSlide.descriptionIntro": {
+		"message": "The issuer provided the following:",
+		"placeholders": {},
+		"comments": ["Label shown above optional extra description"],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 56]],
+		"translation": "Utfärdaren angav följande:"
+	},
+	"txCodeSlide.inputLabel": {
+		"message": "Transaction code",
+		"placeholders": {},
+		"comments": [
+			"Label for the input field where the user types the transaction code"
+		],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 68]],
+		"translation": "Transaktionskod"
+	},
+	"txCodeSlide.instructions": {
+		"message": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
+		"placeholders": {},
+		"comments": [
+			"Instructions explaining why the user must enter a transaction code"
+		],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 46]],
+		"translation": "För att ta emot detta kort behöver du ange en transaktionskod. Denna kod har tillhandahållits av utfärdaren."
+	},
+	"txCodeSlide.title": {
+		"message": "Enter transaction code",
+		"placeholders": {},
+		"comments": ["Title prompting the user to enter a transaction code"],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 39]],
+		"translation": "Ange transaktionskod"
+	},
+	"verifyPartySlide.approvedByMultipleOrganizations": {
+		"message": "Approved by {0} organizations",
+		"placeholders": {
+			"0": ["trustedEntitiesWithoutSelf.length"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
+		"translation": "Godkänd av {0} organisationer"
+	},
+	"verifyPartySlide.approvedByOneOrganization": {
+		"message": "Approved by one organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 173]],
+		"translation": "Godkänd av en organisation"
+	},
+	"verifyPartySlide.connectSubtitle": {
+		"message": "{name} wants to connect with you.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 147]],
+		"translation": "{name} vill ansluta med dig."
+	},
+	"verifyPartySlide.connectSubtitleUnknownOrganization": {
+		"message": "An unknown organization wants to connect with you.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 149]],
+		"translation": "En okänd organisation vill ansluta med dig."
+	},
+	"verifyPartySlide.demoTrustedEntityDescription": {
+		"message": "Do not share real data",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 199]],
+		"translation": "Dela inte riktig data"
+	},
+	"verifyPartySlide.demoTrustedEntityTitle": {
+		"message": "Demo organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 195]],
+		"translation": "Demoorganisation"
+	},
+	"verifyPartySlide.hasNoPreviousInteractionsDescription": {
+		"message": "No previous interactions found",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 218]],
+		"translation": "Inga tidigare interaktioner hittades"
+	},
+	"verifyPartySlide.hasNoPreviousInteractionsTitle": {
+		"message": "First time interaction",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 210]],
+		"translation": "Första interaktionen"
+	},
+	"verifyPartySlide.hasPreviousInteractionsDescription": {
+		"message": "Last interaction: {0}",
+		"placeholders": {
+			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 214]],
+		"translation": "Senaste interaktion: {0}"
+	},
+	"verifyPartySlide.hasPreviousInteractionsTitle": {
+		"message": "Previous interactions",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 209]],
+		"translation": "Tidigare interaktioner"
+	},
+	"verifyPartySlide.offerCardSubtitle": {
+		"message": "${name} wants to offer you a card.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 115]],
+		"translation": "{name} vill erbjuda dig ett kort."
+	},
+	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
+		"message": "An unknown organization wants to offer you a card.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 117]],
+		"translation": "En okänd organisation vill erbjuda dig ett kort."
+	},
+	"verifyPartySlide.recognizedOrganizationTitle": {
+		"message": "Recognized organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 162]],
+		"translation": "Erkänd organisation"
+	},
+	"verifyPartySlide.requestSubtitle": {
+		"message": "{name} wants to request information from you.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 137]],
+		"translation": "{name} vill begära information från dig."
+	},
+	"verifyPartySlide.requestSubtitleUnknownOrganization": {
+		"message": "An unknown organization wants to request information from you.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 139]],
+		"translation": "En okänd organisation vill begära information från dig."
+	},
+	"verifyPartySlide.signingSubtitle": {
+		"message": "{name} wants to interact to create a digital signature for a document.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
+		"translation": "{name} vill interagera för att skapa en digital signatur för ett dokument."
+	},
+	"verifyPartySlide.signingSubtitleUnknownOrganization": {
+		"message": "An unknown organization wants to interact to create a digital signature for a document.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 129]],
+		"translation": "En okänd organisation vill interagera för att skapa en digital signatur för ett dokument."
+	},
+	"verifyPartySlide.unknownOrganizationDescription": {
+		"message": "Organization is not verified",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 185]],
+		"translation": "Organisationen är inte verifierad"
+	},
+	"welcome.scanAQrCode": {
+		"message": "Scan a QR code to start an interaction.",
+		"placeholders": {},
+		"comments": ["Subtitle prompting user to scan a QR code"],
+		"origin": [["../../packages/ui/src/components/WelcomePopup.tsx", 26]],
+		"translation": "Skanna en QR-kod för att starta en interaktion."
+	},
+	"welcome.titleToYourWallet": {
+		"message": "Welcome to your wallet",
+		"placeholders": {},
+		"comments": ["Welcome title in wallet screen"],
+		"origin": [["../../packages/ui/src/components/WelcomePopup.tsx", 17]],
+		"translation": "Välkommen till din plånbok"
 	}
 }
