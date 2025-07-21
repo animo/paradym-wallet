@@ -6,7 +6,9 @@ export {
   i18n,
   activateLocale,
   registerLocales,
+  supportedLocales,
+  type SupportedLocale,
 } from './i18n'
 export { TranslationProvider } from './TranslationProvider'
-export { useDeviceLocale } from './useDeviceLocale'
-export { commonMessages } from './commonMessages'
+export { useLocale } from './useLocale'
+export { commonMessages, supportedLanguageMessages } from './commonMessages'

@@ -1,5 +1,7 @@
+import type { MessageDescriptor } from '@lingui/core'
 // src/i18n/messages.ts
 import { defineMessage } from '@lingui/core/macro'
+import type { SupportedLocale } from './i18n'
 
 export const commonMessages = {
   stop: defineMessage({
@@ -265,5 +267,24 @@ export const commonMessages = {
   authorizationFailed: defineMessage({
     id: 'common.authorizationFailed',
     message: 'Authorization failed',
+  }),
+}
+
+export const supportedLanguageMessages: Record<SupportedLocale, MessageDescriptor> = {
+  nl: defineMessage({
+    id: 'language.nl',
+    message: 'Dutch',
+  }),
+  fi: defineMessage({
+    id: 'language.fi',
+    message: 'Finnish',
+  }),
+  sw: defineMessage({
+    id: 'language.sw',
+    message: 'Swedish',
+  }),
+  en: defineMessage({
+    id: 'language.en',
+    message: 'English',
   }),
 }

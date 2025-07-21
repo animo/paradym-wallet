@@ -11,14 +11,17 @@ import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { useStoredLocale } from '../../hooks/useStoredLocale'
 
 type DcApiSharingScreenProps = {
   request: DigitalCredentialsRequest
 }
 
 export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
+  const [storedLocale] = useStoredLocale()
+
   return (
-    <TranslationProvider>
+    <TranslationProvider customLocale={storedLocale}>
       <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
         <SafeAreaProvider>
           <Stack flex-1 justifyContent="flex-end">

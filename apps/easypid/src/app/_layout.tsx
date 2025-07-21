@@ -9,6 +9,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { Platform } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
 import tamaguiConfig from '../../tamagui.config'
+import { useStoredLocale } from '../hooks/useStoredLocale'
 
 void SplashScreen.preventAutoHideAsync()
 
@@ -29,8 +30,10 @@ export default function RootLayoutWithoutDcApi() {
 }
 
 function RootLayout() {
+  const [storedLocale] = useStoredLocale()
+
   return (
-    <Provider config={tamaguiConfig}>
+    <Provider config={tamaguiConfig} customLocale={storedLocale}>
       <SystemBars style="dark" />
       <SecureUnlockProvider>
         <ThemeProvider
