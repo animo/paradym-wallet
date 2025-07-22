@@ -96,11 +96,17 @@ export function FunkeWalletScreen() {
                 <XStack ai="center" opacity={isLoading ? 0 : 1}>
                   {userName ? (
                     <Button.Text scaleOnPress bg="transparent" onPress={pushToAbout}>
-                      <Trans id="home.howDoesItWork">How does it work?</Trans>
+                      {t({
+                        id: 'home.howDoesItWork',
+                        message: 'How does it work?',
+                      })}
                     </Button.Text>
                   ) : (
                     <Button.Text scaleOnPress bg="transparent" onPress={pushToPidSetup}>
-                      <Trans id="home.setupYourId">Setup your ID</Trans>{' '}
+                      {t({
+                        id: 'home.setupYourId',
+                        message: 'Setup your ID',
+                      })}{' '}
                       <HeroIcons.ArrowRight ml="$-2.5" color="$primary-500" size={16} />
                     </Button.Text>
                   )}

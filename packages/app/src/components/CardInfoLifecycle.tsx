@@ -222,7 +222,7 @@ function getCardInfoLimitedByDateVariant(
       }),
       sheetDescription: defineMessage({
         id: 'cardLifecycle.limitedByDate.expired.sheetDescription',
-        message: `The expiration date of this card has passed on ${validUntil?.toLocaleDateString()}.`,
+        message: `The expiration date of this card has passed on ${formatDate(validUntil ?? new Date(), { includeTime: true })}.`,
       }),
     },
     'not-yet-active': {

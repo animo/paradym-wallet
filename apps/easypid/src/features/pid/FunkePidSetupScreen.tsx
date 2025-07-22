@@ -193,7 +193,10 @@ export function FunkePidSetupScreen() {
     const isSimulatorPinCode = pin === SIMULATOR_PIN
     if (isSimulatorPinCode && !allowSimulatorCard) {
       toast.show(t(commonMessages.simulatorEidCardActivated), {
-        message: 'Enter your real PIN to continue',
+        message: t({
+          id: 'simulatorEidCard.enterRealPin',
+          message: 'Enter your real PIN to continue',
+        }),
         customData: {
           preset: 'success',
         },

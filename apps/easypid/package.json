@@ -36,6 +36,7 @@
 		"@react-native-community/blur": "catalog:",
 		"@react-native-community/netinfo": "catalog:",
 		"@react-native-masked-view/masked-view": "catalog:",
+		"@react-native-picker/picker": "^2.11.1",
 		"@react-navigation/native": "catalog:",
 		"babel-plugin-module-resolver": "catalog:",
 		"buffer": "catalog:",

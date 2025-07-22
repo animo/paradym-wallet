@@ -1,6 +1,6 @@
 import { ClaimFormat } from '@credo-ts/core'
 import type { CredentialMetadata } from '@package/agent'
-import { sanitizeString } from '@package/utils'
+import { formatDate, sanitizeString } from '@package/utils'
 
 export type PidAttributes = PidMdocAttributes | PidSdJwtVcAttributes
 
@@ -207,8 +207,8 @@ export function getPidMetadataAttributesForDisplay(
 
     return {
       ...metadataRest,
-      issuedAt: issuedAt?.toLocaleString(),
-      expiresAt: validUntil?.toLocaleString(),
+      issuedAt: issuedAt ? formatDate(issuedAt, { includeTime: true }) : undefined,
+      expiresAt: validUntil ? formatDate(validUntil, { includeTime: true }) : undefined,
       credentialType: type,
     }
   }

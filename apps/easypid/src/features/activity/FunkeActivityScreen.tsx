@@ -44,7 +44,7 @@ const activityMessages = {
 
 export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
   const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { entityId } })
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   const groupedActivities = useMemo(() => {
@@ -95,7 +95,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
                 <React.Fragment key={key}>
                   <Stack bbw={1} btw={1} borderColor="$grey-200" px="$4" py="$3" mx={-18}>
                     <Heading variant="sub2">
-                      {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                      {date.toLocaleString(i18n.locale, { month: 'long', year: 'numeric' })}
                     </Heading>
                   </Stack>
                   {groupActivities.map((activity) => (

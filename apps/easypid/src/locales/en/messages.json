@@ -36,6 +36,15 @@
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 66]],
 		"translation": "{baseLabel} from {0}"
 	},
+	"dateFormatting.mulitpleDays": {
+		"translation": "{days} days",
+		"message": "{days} days",
+		"placeholders": {
+			"days": ["days"]
+		},
+		"comments": [],
+		"origin": [["../../packages/utils/src/format.ts", 111]]
+	},
 	"requestedAttributes.subheading": {
 		"message": "{disclosedAttributeLength} from {0}",
 		"placeholders": {
@@ -65,7 +74,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 147]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 151]],
 		"translation": "{name} wants to connect with you."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -74,7 +83,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 129]],
 		"translation": "{name} wants to interact to create a digital signature for a document."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -83,7 +92,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 137]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 141]],
 		"translation": "{name} wants to request information from you."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -92,7 +101,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 115]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 119]],
 		"translation": "${name} wants to offer you a card."
 	},
 	"credentials.totalLabel": {
@@ -108,6 +117,13 @@
 		"comments": ["Shown when one credential was successfully shared"],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 189]],
 		"translation": "1 credential was shared."
+	},
+	"dateFormatting.oneDay": {
+		"translation": "1 day",
+		"message": "1 day",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/utils/src/format.ts", 107]]
 	},
 	"trust.approvedList": {
 		"message": "A list of organizations that have approved {name}.",
@@ -282,28 +298,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 149]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
 		"translation": "An unknown organization wants to connect with you."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 129]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
 		"translation": "An unknown organization wants to interact to create a digital signature for a document."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 117]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
 		"translation": "An unknown organization wants to offer you a card."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 139]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
 		"translation": "An unknown organization wants to request information from you."
 	},
 	"menu.section.app": {
@@ -319,21 +335,21 @@
 			"0": ["trustedEntitiesWithoutSelf.length"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 172]],
 		"translation": "Approved by {0} organizations"
 	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 173]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 177]],
 		"translation": "Approved by one organization"
 	},
 	"common.archiveCardTitle": {
 		"message": "Archive card?",
 		"placeholders": {},
 		"comments": ["Title for confirmation dialog to archive a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 231]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 235]],
 		"translation": "Archive card?"
 	},
 	"onboarding.resetAlert.message": {
@@ -404,8 +420,15 @@
 		"message": "Authorization failed",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 267]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 271]],
 		"translation": "Authorization failed"
+	},
+	"common.backButton": {
+		"translation": "Back",
+		"message": "Back",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 156]]
 	},
 	"onboarding.intro.subtitle": {
 		"message": "Before you can use the app, we will guide you through these steps.",
@@ -413,6 +436,13 @@
 		"comments": ["Subtitle for the introduction steps slide in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 49]],
 		"translation": "Before you can use the app, we will guide you through these steps."
+	},
+	"betaTag": {
+		"message": "BETA",
+		"placeholders": {},
+		"comments": ["Tag shown next to new/experimental/beta features"],
+		"origin": [["../../packages/ui/src/components/BetaTag.tsx", 8]],
+		"translation": "BETA"
 	},
 	"common.biometricCancelled": {
 		"message": "Biometric authentication cancelled",
@@ -446,7 +476,7 @@
 		"message": "Card added",
 		"placeholders": {},
 		"comments": ["Shown when a card has been successfully received"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 186]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 190]],
 		"translation": "Card added"
 	},
 	"credentials.cardAttributes": {
@@ -498,7 +528,7 @@
 		"message": "Card not added",
 		"placeholders": {},
 		"comments": ["Shown when receiving a card failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 196]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 200]],
 		"translation": "Card not added"
 	},
 	"cardLifecycle.revoked.description": {
@@ -519,7 +549,7 @@
 		"message": "Card rejected",
 		"placeholders": {},
 		"comments": ["Shown when a received card was rejected"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 191]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 195]],
 		"translation": "Card rejected"
 	},
 	"cardLifecycle.revoked.title": {
@@ -542,7 +572,7 @@
 		"message": "Card successfully archived",
 		"placeholders": {},
 		"comments": ["Toast message shown after successfully archiving a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 247]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 251]],
 		"translation": "Card successfully archived"
 	},
 	"cardLifecycle.limitedByDate.willExpire.title": {
@@ -657,7 +687,7 @@
 		"message": "Credential",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 164]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 168]],
 		"translation": "Credential"
 	},
 	"common.credentialAdded": {
@@ -772,7 +802,7 @@
 		"message": "Data Request",
 		"placeholders": {},
 		"comments": ["Fallback title for a proof request notification"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 165]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 169]],
 		"translation": "Data Request"
 	},
 	"notificationInbox.notificationType.dataRequestFromName": {
@@ -825,14 +855,14 @@
 		"message": "Demo organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 195]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 199]],
 		"translation": "Demo organization"
 	},
 	"settings.developmentMode": {
 		"message": "Development Mode",
 		"placeholders": {},
 		"comments": ["Label for the toggle to enable developer mode"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 145]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 90]],
 		"translation": "Development Mode"
 	},
 	"localAi.toast.unsupported.title": {
@@ -857,7 +887,7 @@
 		"message": "Do not share real data",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 199]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 203]],
 		"translation": "Do not share real data"
 	},
 	"signShare.documentHeading": {
@@ -880,7 +910,7 @@
 		"message": "Document signed",
 		"placeholders": {},
 		"comments": ["Shown when signing a document succeeded"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 201]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 205]],
 		"translation": "Document signed"
 	},
 	"localAi.status.downloading": {
@@ -902,17 +932,28 @@
 		"translation": "Driving License"
 	},
 	"language.nl": {
-		"translation": "Dutch",
 		"message": "Dutch",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 274]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 278]],
+		"translation": "Dutch"
+	},
+	"eidCard.requestAttributesTitle": {
+		"translation": "eID card",
+		"message": "eID card",
+		"placeholders": {},
+		"comments": [
+			"Shown as the name of the credential card when requested attributes from eID card are shown"
+		],
+		"origin": [
+			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 51]
+		]
 	},
 	"pidSetup.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 264]],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 267]],
 		"translation": "eID card scanning cancelled"
 	},
 	"onboarding.eidScanningCancelled": {
@@ -939,11 +980,11 @@
 		"translation": "Enable local AI model"
 	},
 	"language.en": {
-		"translation": "English",
 		"message": "English",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 286]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 290]],
+		"translation": "English"
 	},
 	"common.enterPinToShareData": {
 		"message": "Enter PIN to share data",
@@ -958,7 +999,7 @@
 		"message": "Enter the PIN code you use to unlock your wallet.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 393]],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 396]],
 		"translation": "Enter the PIN code you use to unlock your wallet."
 	},
 	"txCodeSlide.title": {
@@ -982,11 +1023,18 @@
 		"origin": [["src/utils/sharedPidSetup.ts", 38]],
 		"translation": "Enter your eID card PIN"
 	},
+	"simulatorEidCard.enterRealPin": {
+		"translation": "Enter your real PIN to continue",
+		"message": "Enter your real PIN to continue",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 196]]
+	},
 	"common.toastCardDeleteError": {
 		"message": "Error deleting card",
 		"placeholders": {},
 		"comments": ["Toast message shown when card deletion failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 252]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 256]],
 		"translation": "Error deleting card"
 	},
 	"aiOverAking.errorReasonFallback": {
@@ -1034,7 +1082,7 @@
 		"message": "Expired",
 		"placeholders": {},
 		"comments": ["Label shown on a credential card when it is expired"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 257]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 261]],
 		"translation": "Expired"
 	},
 	"cardLifecycle.limitedByDate.willExpire.description": {
@@ -1070,17 +1118,17 @@
 		"translation": "Fetching information"
 	},
 	"language.fi": {
-		"translation": "Finnish",
 		"message": "Finnish",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 278]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 282]],
+		"translation": "Finnish"
 	},
 	"verifyPartySlide.hasNoPreviousInteractionsTitle": {
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 210]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 214]],
 		"translation": "First time interaction"
 	},
 	"funkeAboutScreen.contactIntro": {
@@ -1098,6 +1146,13 @@
 		],
 		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 40]],
 		"translation": "Force close the app to cancel the download"
+	},
+	"language.de": {
+		"message": "German",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 294]],
+		"translation": "German"
 	},
 	"onboardingWelcome.getStarted": {
 		"message": "Get Started",
@@ -1177,7 +1232,7 @@
 		"message": "Got it",
 		"placeholders": {},
 		"comments": ["Label for confirmation button"],
-		"origin": [["../../packages/ui/src/panels/InfoSheet.tsx", 63]],
+		"origin": [["../../packages/ui/src/panels/InfoSheet.tsx", 64]],
 		"translation": "Got it"
 	},
 	"predicate.greaterThan": {
@@ -1304,7 +1359,7 @@
 		"message": "If you stop, you can still do the setup later.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 473]],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 476]],
 		"translation": "If you stop, you can still do the setup later."
 	},
 	"inbox.header": {
@@ -1355,8 +1410,17 @@
 		"message": "Information shared",
 		"placeholders": {},
 		"comments": ["Shown when data was successfully shared"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 216]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 220]],
 		"translation": "Information shared"
+	},
+	"verifyPartySlide.interactWithHeading": {
+		"translation": "Interact with {name}?",
+		"message": "Interact with {name}?",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 111]]
 	},
 	"pidSetup.invalidEidPin": {
 		"message": "Invalid eID card PIN entered",
@@ -1413,7 +1477,7 @@
 		"comments": [
 			"Shown when the invitation data format is not supported or could not be parsed"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 175]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 179]],
 		"translation": "Invitation not recognized."
 	},
 	"error.invitationNotRecognized": {
@@ -1473,7 +1537,7 @@
 		"comments": [
 			"Label showing the name of the credential issuer, e.g. \"Issued by Government of Austria\""
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 181]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 185]],
 		"translation": "Issued by {name}"
 	},
 	"common.issuedOn": {
@@ -1493,11 +1557,11 @@
 		"translation": "Issuer"
 	},
 	"selectLanguage.label": {
-		"translation": "Language",
 		"message": "Language",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 29]]
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 44]],
+		"translation": "Language"
 	},
 	"verifyPartySlide.hasPreviousInteractionsDescription": {
 		"message": "Last interaction: {0}",
@@ -1505,7 +1569,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 214]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 218]],
 		"translation": "Last interaction: {0}"
 	},
 	"predicate.lessThan": {
@@ -1717,7 +1781,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 218]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 222]],
 		"translation": "No previous interactions found"
 	},
 	"pidSetup.notReadyToReceivePid": {
@@ -1779,8 +1843,15 @@
 		"message": "Organization is not verified",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 185]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 189]],
 		"translation": "Organization is not verified"
+	},
+	"verifyPartySlide.organizationNotVerifiedHeading": {
+		"translation": "Organization not verified",
+		"message": "Organization not verified",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]]
 	},
 	"requestPurpose.infoSheet.title": {
 		"message": "Overasking detected",
@@ -1915,7 +1986,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 209]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 213]],
 		"translation": "Previous interactions"
 	},
 	"funkeAboutScreen.privacyPolicyTitle": {
@@ -2001,7 +2072,7 @@
 		"message": "Recognized organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 162]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 166]],
 		"translation": "Recognized organization"
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2084,7 +2155,7 @@
 		"message": "Revoked",
 		"placeholders": {},
 		"comments": ["Label shown on a credential card when it is revoked"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 262]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 266]],
 		"translation": "Revoked"
 	},
 	"noContentWallet.scanButton": {
@@ -2220,7 +2291,7 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Header title for the settings screen"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 129]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 74]],
 		"translation": "Settings"
 	},
 	"menu.item.settings": {
@@ -2241,7 +2312,7 @@
 		"message": "Setup your ID",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 103]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 106]],
 		"translation": "Setup your ID"
 	},
 	"submission.share": {
@@ -2301,14 +2372,14 @@
 		"message": "Sharing failed",
 		"placeholders": {},
 		"comments": ["Shown when data sharing failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 226]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 230]],
 		"translation": "Sharing failed"
 	},
 	"common.sharingStopped": {
 		"message": "Sharing stopped",
 		"placeholders": {},
 		"comments": ["Shown when the user stopped the data sharing process"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 221]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 225]],
 		"translation": "Sharing stopped"
 	},
 	"offlineQr.permissionSettingsDescription": {
@@ -2388,14 +2459,14 @@
 		"message": "Signing failed",
 		"placeholders": {},
 		"comments": ["Shown when the signing process failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 211]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 215]],
 		"translation": "Signing failed"
 	},
 	"common.signingStopped": {
 		"message": "Signing stopped",
 		"placeholders": {},
 		"comments": ["Shown when the signing process was stopped"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 206]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 210]],
 		"translation": "Signing stopped"
 	},
 	"signShare.signingWith": {
@@ -2519,7 +2590,7 @@
 		"message": "Stop ID Setup?",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 469]],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 472]],
 		"translation": "Stop ID Setup?"
 	},
 	"didcommCancelFlow.connect.title": {
@@ -2569,11 +2640,11 @@
 		"translation": "Success!"
 	},
 	"language.sw": {
-		"translation": "Swedish",
 		"message": "Swedish",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 282]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 286]],
+		"translation": "Swedish"
 	},
 	"common.tapToView": {
 		"message": "Tap to view",
@@ -2619,7 +2690,7 @@
 	"cardLifecycle.limitedByDate.expired.sheetDescription": {
 		"message": "The expiration date of this card has passed on {0}.",
 		"placeholders": {
-			"0": ["validUntil?.toLocaleDateString()"]
+			"0": ["formatDate(validUntil ?? new Date(), { includeTime: true })"]
 		},
 		"comments": [],
 		"origin": [
@@ -2916,7 +2987,7 @@
 		"comments": [
 			"Description in confirmation dialog explaining card archiving"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 237]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 241]],
 		"translation": "This will make {name} unusable and delete it from your wallet."
 	},
 	"pidSetup.enableBiometrics.subtitle": {
@@ -2964,6 +3035,22 @@
 		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 105]],
 		"translation": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website."
 	},
+	"dateFormatting.today": {
+		"translation": "Today",
+		"message": "Today",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/utils/src/format.ts", 49]]
+	},
+	"dateFormatting.todayAtTime": {
+		"translation": "Today at {0}",
+		"message": "Today at {0}",
+		"placeholders": {
+			"0": ["formatTime(date)"]
+		},
+		"comments": [],
+		"origin": [["../../packages/utils/src/format.ts", 48]]
+	},
 	"pinLocked.title": {
 		"message": "Too many incorrect attempts",
 		"placeholders": {},
@@ -2995,7 +3082,7 @@
 		"message": "Unable to retrieve invitation.",
 		"placeholders": {},
 		"comments": ["Shown when fetching an invitation from a URL fails"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 170]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 174]],
 		"translation": "Unable to retrieve invitation."
 	},
 	"requestedAttributes.unavailableCardsHeading": {
@@ -3013,14 +3100,14 @@
 		"message": "Unknown",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 156]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 160]],
 		"translation": "Unknown"
 	},
 	"common.unknownOrganization": {
 		"message": "Unknown Organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 160]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 164]],
 		"translation": "Unknown Organization"
 	},
 	"activity.unknownParty": {
@@ -3184,7 +3271,7 @@
 		"message": "Yes, archive",
 		"placeholders": {},
 		"comments": ["Confirm button text for archiving a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 242]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 246]],
 		"translation": "Yes, archive"
 	},
 	"common.confirmContinue": {
@@ -3207,6 +3294,22 @@
 		"comments": [],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 37]],
 		"translation": "Yes, stop"
+	},
+	"dateFormatting.yesterday": {
+		"translation": "Yesterday",
+		"message": "Yesterday",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/utils/src/format.ts", 54]]
+	},
+	"dateFormatting.yesterdayAtTime": {
+		"translation": "Yesterday at {0}",
+		"message": "Yesterday at {0}",
+		"placeholders": {
+			"0": ["formatTime(date)"]
+		},
+		"comments": [],
+		"origin": [["../../packages/utils/src/format.ts", 53]]
 	},
 	"signing.description": {
 		"message": "You are about to sign <0>{documentName}</0>.",

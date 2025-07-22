@@ -48,7 +48,11 @@ export function OnboardingIdCardRequestedAttributes({
         <YStack gap="$4">
           <Paragraph>{attributesInfo}</Paragraph>
           <CardWithAttributes
-            name="eID card"
+            name={t({
+              id: 'eidCard.requestAttributesTitle',
+              message: 'eID card',
+              comment: 'Shown as the name of the credential card when requested attributes from eID card are shown',
+            })}
             issuerImage={{ url: bdrPidIssuerDisplay.logo }}
             backgroundImage={{ url: bdrPidCredentialDisplay.backgroundImage }}
             backgroundColor={bdrPidCredentialDisplay.backgroundColor}

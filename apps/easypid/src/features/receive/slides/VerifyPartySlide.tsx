@@ -107,7 +107,11 @@ export const VerifyPartySlide = ({
           </XStack>
           <Stack gap="$2">
             <Heading variant="h2" numberOfLines={2} center fontSize={24}>
-              {name ? `Interact with ${name}?` : 'Organization not verified'}
+              {name ? (
+                <Trans id="verifyPartySlide.interactWithHeading">Interact with {name}?</Trans>
+              ) : (
+                <Trans id="verifyPartySlide.organizationNotVerifiedHeading">Organization not verified</Trans>
+              )}
             </Heading>
             {type === 'offer' ? (
               <Paragraph center px="$4">

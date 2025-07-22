@@ -153,6 +153,10 @@ export const commonMessages = {
     id: 'common.declineButton',
     message: 'Decline',
   }),
+  backButton: defineMessage({
+    id: 'common.backButton',
+    message: 'Back',
+  }),
   unknown: defineMessage({
     id: 'common.unknown',
     message: 'Unknown',
@@ -286,5 +290,9 @@ export const supportedLanguageMessages: Record<SupportedLocale, MessageDescripto
   en: defineMessage({
     id: 'language.en',
     message: 'English',
+  }),
+  de: defineMessage({
+    id: 'language.de',
+    message: 'German',
   }),
 }
