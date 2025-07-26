@@ -1,0 +1,144 @@
+diff --git a/build/modules/kms/jwk/PublicJwk.js b/build/modules/kms/jwk/PublicJwk.js
+index 17a553d0243cb20dd1259a23d685c9aa19c35392..f7e8c6fd0a46fd7fe02633be8ec20a6600713141 100644
+--- a/build/modules/kms/jwk/PublicJwk.js
++++ b/build/modules/kms/jwk/PublicJwk.js
+@@ -122,6 +122,9 @@ class PublicJwk {
+     get publicKey() {
+         return this.jwk.publicKey;
+     }
++    get compressedPublicKey() {
++        return this.jwk.compressedPublicKey;
++    }
+     get JwkClass() {
+         return this.jwk.constructor;
+     }
+diff --git a/build/modules/kms/jwk/kty/ec/P256PublicJwk.js b/build/modules/kms/jwk/kty/ec/P256PublicJwk.js
+index a7505ea2684c7f06ac3f6180174ec93d78dcb90b..07b0ca723fe4be5f809f3bb919b539bce3172d7a 100644
+--- a/build/modules/kms/jwk/kty/ec/P256PublicJwk.js
++++ b/build/modules/kms/jwk/kty/ec/P256PublicJwk.js
+@@ -17,6 +17,13 @@ class P256PublicJwk {
+             publicKey: (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk),
+         };
+     }
++    get compressedPublicKey() {
++        return {
++            crv: this.jwk.crv,
++            kty: this.jwk.kty,
++            publicKey: (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true }),
++        };
++    }
+     get multicodec() {
+         return (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true });
+     }
+diff --git a/build/modules/kms/jwk/kty/ec/P384PublicJwk.js b/build/modules/kms/jwk/kty/ec/P384PublicJwk.js
+index ebbf7612526b107f7e0f58b2dca4ed7235c594c0..6bdc2daf639f301d37b4281eb29a16912e7715b3 100644
+--- a/build/modules/kms/jwk/kty/ec/P384PublicJwk.js
++++ b/build/modules/kms/jwk/kty/ec/P384PublicJwk.js
+@@ -20,6 +20,13 @@ class P384PublicJwk {
+     get multicodec() {
+         return (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true });
+     }
++    get compressedPublicKey() {
++        return {
++            crv: this.jwk.crv,
++            kty: this.jwk.kty,
++            publicKey: (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true }),
++        };
++    }
+     static fromPublicKey(publicKey) {
+         const jwk = (0, ecPublicKey_1.ecPublicKeyToPublicJwk)(publicKey, 'P-384');
+         return new P384PublicJwk(jwk);
+diff --git a/build/modules/kms/jwk/kty/ec/P521PublicJwk.js b/build/modules/kms/jwk/kty/ec/P521PublicJwk.js
+index 090df8febf989d070087ec4f5de062130567923b..8279012512c36e077aaf882f4c39f57dade3624a 100644
+--- a/build/modules/kms/jwk/kty/ec/P521PublicJwk.js
++++ b/build/modules/kms/jwk/kty/ec/P521PublicJwk.js
+@@ -17,6 +17,13 @@ class P521PublicJwk {
+             publicKey: (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk),
+         };
+     }
++    get compressedPublicKey() {
++        return {
++            crv: this.jwk.crv,
++            kty: this.jwk.kty,
++            publicKey: (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true }),
++        };
++    }
+     get multicodec() {
+         return (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true });
+     }
+diff --git a/build/modules/kms/jwk/kty/ec/Secp256k1PublicJwk.js b/build/modules/kms/jwk/kty/ec/Secp256k1PublicJwk.js
+index 2411d25565fbd7b8bb2589c8b3e07742a5012d41..f4b7ccad9776b6ad89d29f83411d8b623ae58d6c 100644
+--- a/build/modules/kms/jwk/kty/ec/Secp256k1PublicJwk.js
++++ b/build/modules/kms/jwk/kty/ec/Secp256k1PublicJwk.js
+@@ -17,6 +17,13 @@ class Secp256k1PublicJwk {
+             publicKey: (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk),
+         };
+     }
++    get compressedPublicKey() {
++        return {
++            crv: this.jwk.crv,
++            kty: this.jwk.kty,
++            publicKey: (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true }),
++        };
++    }
+     get multicodec() {
+         return (0, ecPublicKey_1.ecPublicJwkToPublicKey)(this.jwk, { compressed: true });
+     }
+diff --git a/build/modules/kms/jwk/kty/okp/Ed25519PublicJwk.js b/build/modules/kms/jwk/kty/okp/Ed25519PublicJwk.js
+index 0783636c5a2f7b62aebbcb657b624fb575c8e0ce..643c484b31ca46ede9c8bfd4d53861a04c24fb2d 100644
+--- a/build/modules/kms/jwk/kty/okp/Ed25519PublicJwk.js
++++ b/build/modules/kms/jwk/kty/okp/Ed25519PublicJwk.js
+@@ -19,6 +19,9 @@ class Ed25519PublicJwk {
+             publicKey: (0, okpPublicKey_1.okpPublicJwkToPublicKey)(this.jwk),
+         };
+     }
++    get compressedPublicKey() {
++        return null
++    }
+     get multicodec() {
+         return (0, okpPublicKey_1.okpPublicJwkToPublicKey)(this.jwk);
+     }
+diff --git a/build/modules/kms/jwk/kty/okp/X25519PublicJwk.js b/build/modules/kms/jwk/kty/okp/X25519PublicJwk.js
+index 55925916f6c5129095520f058b0d53e1f0af6935..f09bcc58e8f3fcadc1ded4aae65ce4a4848e235a 100644
+--- a/build/modules/kms/jwk/kty/okp/X25519PublicJwk.js
++++ b/build/modules/kms/jwk/kty/okp/X25519PublicJwk.js
+@@ -17,6 +17,9 @@ class X25519PublicJwk {
+             publicKey: (0, okpPublicKey_1.okpPublicJwkToPublicKey)(this.jwk),
+         };
+     }
++    get compressedPublicKey() {
++        return null
++    }
+     get multicodec() {
+         return (0, okpPublicKey_1.okpPublicJwkToPublicKey)(this.jwk);
+     }
+diff --git a/build/modules/kms/jwk/kty/rsa/RsaPublicJwk.js b/build/modules/kms/jwk/kty/rsa/RsaPublicJwk.js
+index a3c1109ca2cde3526e31aad4dc1d28328b9b6477..6d374f00d13383e5d4db5917ad545bf014168805 100644
+--- a/build/modules/kms/jwk/kty/rsa/RsaPublicJwk.js
++++ b/build/modules/kms/jwk/kty/rsa/RsaPublicJwk.js
+@@ -24,6 +24,9 @@ class RsaPublicJwk {
+             ...(0, rsaPublicKey_1.rsaPublicJwkToPublicKey)(this.jwk),
+         };
+     }
++    get compressedPublicKey() {
++        return null
++    }
+     get multicodec() {
+         throw new KeyManagementError_1.KeyManagementError('multicodec not supported for RsaPublicJwk');
+     }
+diff --git a/build/modules/kms/legacy.js b/build/modules/kms/legacy.js
+index bfb24d2070d365673f7b51d38402f6fe12375b5a..6f44bc48d138cb8db2d2730126b81d140903bf8b 100644
+--- a/build/modules/kms/legacy.js
++++ b/build/modules/kms/legacy.js
+@@ -9,6 +9,11 @@ const KeyManagementError_1 = require("./error/KeyManagementError");
+  * This is what was has been used by askar
+  */
+ function legacyKeyIdFromPublicJwk(publicJwk) {
++    const compressedPublicKey = publicJwk.compressedPublicKey
++    if (compressedPublicKey) {
++        return utils_1.TypedArrayEncoder.toBase58(compressedPublicKey.publicKey);
++    }
++
+     const publicKey = publicJwk.publicKey;
+     if (publicKey.kty === 'RSA') {
+         throw new KeyManagementError_1.KeyManagementError('Unable to derive legacy key id from RSA key. Support for RSA keys was only added after explit key ids were added.');
