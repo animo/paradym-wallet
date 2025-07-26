@@ -235,7 +235,7 @@ export function OnboardingContextProvider({
         const walletKey =
           secureUnlock.state === 'acquired-wallet-key'
             ? secureUnlock.walletKey
-            : secureUnlock.context.agent.config.walletConfig?.key
+            : secureUnlock.context.agent.modules.askar.config.store.key
         if (!walletKey) {
           await reset({ resetToStep: 'pin' })
           return

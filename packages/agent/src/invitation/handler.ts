@@ -1,8 +1,8 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import type { DifPresentationExchangeDefinitionV2, P256Jwk } from '@credo-ts/core'
-import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
-import type { PlaintextMessage } from '@credo-ts/core/build/types'
+import { type DifPresentationExchangeDefinitionV2, Kms } from '@credo-ts/core'
+import { Jwt } from '@credo-ts/core'
+import type { PlaintextMessage } from '@credo-ts/didcomm'
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
@@ -147,7 +147,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  dPopKeyJwk?: P256Jwk
+  dPopKeyJwk?: Kms.PublicJwk<Kms.P256PublicJwk>
   authSession: string
   presentationDuringIssuanceSession?: string
 }) {
@@ -281,7 +281,10 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       clientId,
       credentialConfigurationIds: Object.keys(offeredCredentialsToRequest),
       verifyCredentialStatus: false,
-      allowedProofOfPossessionSignatureAlgorithms: [JwaSignatureAlgorithm.ES256, JwaSignatureAlgorithm.EdDSA],
+      allowedProofOfPossessionSignatureAlgorithms: [
+        Kms.KnownJwaSignatureAlgorithms.ES256,
+        Kms.KnownJwaSignatureAlgorithms.EdDSA,
+      ],
       credentialBindingResolver: getCredentialBindingResolver({
         pidSchemes,
         requestBatch,

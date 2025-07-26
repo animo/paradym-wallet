@@ -14,7 +14,6 @@ import {
   DidsModule,
   JwkDidRegistrar,
   JwkDidResolver,
-  KeyDerivationMethod,
   KeyDidRegistrar,
   KeyDidResolver,
   LogLevel,
@@ -47,10 +46,6 @@ import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { appLogger } from './logger'
 
-const askarModule = new AskarModule({
-  askar,
-})
-
 export const initializeEasyPIDAgent = async ({
   walletLabel,
   walletId,
@@ -68,16 +63,18 @@ export const initializeEasyPIDAgent = async ({
     dependencies: agentDependencies,
     config: {
       label: walletLabel,
-      walletConfig: {
-        id: walletId,
-        key: walletKey,
-        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
-      },
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.trace),
     },
     modules: {
-      askar: askarModule,
+      askar: new AskarModule({
+        askar,
+        store: {
+          id: walletId,
+          key: walletKey,
+          keyDerivationMethod: keyDerivation === 'raw' ? 'raw' : 'kdf:argon2i:mod',
+        },
+      }),
       openId4VcHolder: new OpenId4VcHolderModule(),
       x509: new X509Module({
         getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
@@ -137,18 +134,20 @@ export const initializeParadymAgent = async ({
     dependencies: agentDependencies,
     config: {
       label: walletLabel,
-      walletConfig: {
-        id: walletId,
-        key: walletKey,
-        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
-      },
       autoUpdateStorageOnStartup: true,
       logger: appLogger(LogLevel.debug),
     },
     modules: {
       messagePickup: new MessagePickupModule(),
       discovery: new DiscoverFeaturesModule(),
-      ariesAskar: askarModule,
+      askar: new AskarModule({
+        askar,
+        store: {
+          id: walletId,
+          key: walletKey,
+          keyDerivationMethod: keyDerivation === 'raw' ? 'raw' : 'kdf:argon2i:mod',
+        },
+      }),
       openId4VcHolder: new OpenId4VcHolderModule(),
       x509: new X509Module({
         getTrustedCertificatesForVerification: (_, { certificateChain, verification }) => {

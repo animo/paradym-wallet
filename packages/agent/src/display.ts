@@ -1,11 +1,10 @@
 import {
   DateOnly,
-  type JwkJson,
+  type Kms,
   type MdocNameSpaces,
   type SdJwtVcTypeMetadata,
   type SingleOrArray,
   W3cCredentialRecord,
-  getJwkFromKey,
 } from '@credo-ts/core'
 import {
   ClaimFormat,
@@ -424,7 +423,7 @@ function getSdJwtCredentialDisplay(
   }
 }
 
-function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
+function safeCalculateJwkThumbprint(jwk: Kms.Jwk): string | undefined {
   try {
     const thumbprint = TypedArrayEncoder.toBase64URL(
       Hasher.hash(
@@ -449,9 +448,7 @@ export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpace
   // When you call toISOString() on a Date containing NaN, it will throw an error.
   const mdocMetadata: CredentialMetadata = {
     type: mdocInstance.docType,
-    holder: mdocInstance.deviceKey
-      ? safeCalculateJwkThumbprint(getJwkFromKey(mdocInstance.deviceKey).toJson())
-      : undefined,
+    holder: mdocInstance.deviceKey ? safeCalculateJwkThumbprint(mdocInstance.deviceKey.toJson()) : undefined,
     issuedAt: mdocInstance.validityInfo.signed.toISOString(),
     validFrom:
       mdocInstance.validityInfo.validFrom instanceof Date &&
@@ -484,7 +481,7 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, status, ...visibleProperties } =
     sdJwtVcPayload as SdJwtVcPayload
 
-  const holder = cnf ? (cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as JwkJson) : undefined) : undefined
+  const holder = cnf ? (cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
     issuer: iss,

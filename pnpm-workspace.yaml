@@ -35,14 +35,14 @@ catalog:
   isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
   fast-text-encoding: ^1.0.6
   "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250604111322
-  "@credo-ts/askar": npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250604111322
-  "@credo-ts/cheqd": npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250604111322
-  "@credo-ts/core": npm:@animo-id/credo-ts-core@0.5.14-alpha-20250604111322
-  "@credo-ts/openid4vc": npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250604111322
-  "@credo-ts/question-answer": npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250604111322
-  "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250604111322
-  "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20250604111322
+  "@credo-ts/anoncreds": npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250726105031
+  "@credo-ts/askar": npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250726105031
+  "@credo-ts/cheqd": npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250726105031
+  "@credo-ts/core": npm:@animo-id/credo-ts-core@0.5.14-alpha-20250726105031
+  "@credo-ts/openid4vc": npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250726105031
+  "@credo-ts/question-answer": npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250726105031
+  "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250726105031
+  "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20250726105031
   "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": 0.3.1
   "@hyperledger/anoncreds-shared": 0.3.1
