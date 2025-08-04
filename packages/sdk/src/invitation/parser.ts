@@ -14,28 +14,21 @@ import {
 
 export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
 
-export type InvitationResult =
-  | {
-      __internal: {
-        id: string
-      }
-      didcomm: {
-        imageUrl?: string
-        label?: string
-      }
-    }
-  | {
-      __internal: { id: string }
-      credentialOffer: {
-        display: CredentialForDisplay
-      }
-    }
-  | {
-      __internal: { id: string }
-      presentationRequest: {
-        formattedSubmission: FormattedSubmission
-      }
-    }
+export type InvitationResult = {
+  __internal: {
+    id: string
+  }
+  didcomm?: {
+    imageUrl?: string
+    label?: string
+  }
+  openId4VcPresentationRequest?: {
+    formattedSubmission: FormattedSubmission
+  }
+  openId4VcCredentialOffer?: {
+    display: CredentialForDisplay
+  }
+}
 
 export enum InvitationQrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
@@ -151,14 +144,13 @@ export async function parseOpenIdPresentationRequestInvitation(agent: OpenId4VcA
   }
 }
 
-// TODO: do not just return the invitation URL, but actually the useful information
 export async function parseInvitationUrl(agent: FullAgent, invitationUrl: string): Promise<InvitationResult> {
   if (isOpenIdCredentialOffer(invitationUrl)) {
     const metadata = await parseOpenIdCredentialOfferInvitation(agent, invitationUrl)
 
     return {
       __internal: { id: metadata.id },
-      credentialOffer: {
+      openId4VcCredentialOffer: {
         display: metadata.display,
       },
     }
@@ -169,7 +161,7 @@ export async function parseInvitationUrl(agent: FullAgent, invitationUrl: string
 
     return {
       __internal: { id },
-      presentationRequest: { formattedSubmission },
+      openId4VcPresentationRequest: { formattedSubmission },
     }
   }
 

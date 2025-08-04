@@ -23,6 +23,7 @@ import type {
 import { useAgent } from '../providers/AgentProvider'
 import { useConnectionById } from '../providers/ConnectionProvider'
 import { useProofById } from '../providers/ProofExchangeProvider'
+import { addSharedActivityForSubmission } from '../storage/activities'
 import { getCredential } from '../storage/credentials'
 import type { NonEmptyArray } from '../types'
 import { capitalizeFirstLetter } from '../utils/capitalizeFirstLetter'
@@ -49,6 +50,16 @@ export const predicateMessages = {
     comment: 'Used in predicate statements like: age less than or equal to 18',
   }),
 } as const
+
+type AcceptPresentationOptions = {
+  selectedCredentials?: { [inputDescriptorId: string]: string }
+  storeAsActivity?: boolean
+}
+
+type DeclinePresentationOptions = {
+  deletePresentation?: boolean
+  storeAsActivity?: boolean
+}
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
   const { agent } = useAgent<DidCommAgent>()
@@ -221,65 +232,99 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
   const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
-    mutationFn: async (selectedCredentials?: { [inputDescriptorId: string]: string }) => {
-      let formatInput: { indy?: AnonCredsSelectedCredentials; anoncreds?: AnonCredsSelectedCredentials } | undefined =
-        undefined
+    mutationFn: async (options: AcceptPresentationOptions = { storeAsActivity: true }) => {
+      try {
+        let formatInput: { indy?: AnonCredsSelectedCredentials; anoncreds?: AnonCredsSelectedCredentials } | undefined =
+          undefined
 
-      if (selectedCredentials && Object.keys(selectedCredentials).length > 0) {
-        if (!data?.formatKey || !data.entries) throw new Error('Unable to accept presentation without credentials')
+        if (options?.selectedCredentials && Object.keys(options.selectedCredentials).length > 0) {
+          if (!data?.formatKey || !data.entries) throw new Error('Unable to accept presentation without credentials')
 
-        const selectedAttributes: Record<string, AnonCredsRequestedAttributeMatch> = {}
-        const selectedPredicates: Record<string, AnonCredsRequestedPredicateMatch> = {}
+          const selectedAttributes: Record<string, AnonCredsRequestedAttributeMatch> = {}
+          const selectedPredicates: Record<string, AnonCredsRequestedPredicateMatch> = {}
 
-        for (const [inputDescriptorId, entry] of Array.from(data.entries.entries())) {
-          const credentialId = selectedCredentials[inputDescriptorId]
-          const match = entry.matches.find((match) => match.credentialId === credentialId) ?? entry.matches[0]
+          for (const [inputDescriptorId, entry] of Array.from(data.entries.entries())) {
+            const credentialId = options.selectedCredentials[inputDescriptorId]
+            const match = entry.matches.find((match) => match.credentialId === credentialId) ?? entry.matches[0]
 
-          for (const groupName of entry.groupNames.attributes) {
-            selectedAttributes[groupName] = {
-              ...match,
-              revealed: true,
+            for (const groupName of entry.groupNames.attributes) {
+              selectedAttributes[groupName] = {
+                ...match,
+                revealed: true,
+              }
+            }
+
+            for (const groupName of entry.groupNames.predicates) {
+              selectedPredicates[groupName] = match
             }
           }
 
-          for (const groupName of entry.groupNames.predicates) {
-            selectedPredicates[groupName] = match
+          formatInput = {
+            [data.formatKey]: {
+              attributes: selectedAttributes,
+              predicates: selectedPredicates,
+              selfAttestedAttributes: {},
+            },
           }
         }
 
-        formatInput = {
-          [data.formatKey]: {
-            attributes: selectedAttributes,
-            predicates: selectedPredicates,
-            selfAttestedAttributes: {},
-          },
+        const presentationDone$ = agent.events
+          .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
+          .pipe(
+            // Correct record with id and state
+            filter(
+              (event) =>
+                event.payload.proofRecord.id === proofExchangeId &&
+                [ProofState.PresentationSent, ProofState.Done].includes(event.payload.proofRecord.state)
+            ),
+            // 10 seconds to complete exchange
+            timeout(10000),
+            first()
+          )
+
+        const presentationDonePromise = firstValueFrom(presentationDone$)
+        await agent.modules.proofs.acceptRequest({
+          proofRecordId: proofExchangeId,
+          proofFormats: formatInput,
+        })
+        await presentationDonePromise
+
+        if (options.storeAsActivity && data) {
+          await addSharedActivityForSubmission(
+            agent,
+            data.submission,
+            {
+              id: proofExchangeId,
+              name: connection?.theirLabel,
+              logo: {
+                url: connection?.imageUrl,
+              },
+            },
+            'success'
+          )
+        }
+      } catch {
+        if (options.storeAsActivity && data) {
+          await addSharedActivityForSubmission(
+            agent,
+            data.submission,
+            {
+              id: proofExchangeId,
+              name: connection?.theirLabel,
+              logo: {
+                url: connection?.imageUrl,
+              },
+            },
+            'failed'
+          )
         }
       }
-
-      const presentationDone$ = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
-        // Correct record with id and state
-        filter(
-          (event) =>
-            event.payload.proofRecord.id === proofExchangeId &&
-            [ProofState.PresentationSent, ProofState.Done].includes(event.payload.proofRecord.state)
-        ),
-        // 10 seconds to complete exchange
-        timeout(10000),
-        first()
-      )
-
-      const presentationDonePromise = firstValueFrom(presentationDone$)
-      await agent.modules.proofs.acceptRequest({
-        proofRecordId: proofExchangeId,
-        proofFormats: formatInput,
-      })
-      await presentationDonePromise
     },
   })
 
   const { mutateAsync: declineMutateAsync, status: declineStatus } = useMutation({
     mutationKey: ['declineDidCommPresentation', proofExchangeId],
-    mutationFn: async () => {
+    mutationFn: async (options: DeclinePresentationOptions = { deletePresentation: true, storeAsActivity: true }) => {
       const presentationDeclined$ = agent.events
         .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
         .pipe(
@@ -297,12 +342,31 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       const presentationDeclinePromise = firstValueFrom(presentationDeclined$)
       await agent.modules.proofs.declineRequest({ proofRecordId: proofExchangeId, sendProblemReport: true })
       await presentationDeclinePromise
+
+      if (options.deletePresentation) {
+        void agent.modules.proofs.deleteById(proofExchangeId)
+      }
+
+      if (options.storeAsActivity && data) {
+        await addSharedActivityForSubmission(
+          agent,
+          data.submission,
+          {
+            id: proofExchangeId,
+            name: connection?.theirLabel,
+            logo: {
+              url: connection?.imageUrl,
+            },
+          },
+          'stopped'
+        )
+      }
     },
   })
 
   return {
-    acceptPresentation: acceptMutateAsync,
-    declinePresentation: declineMutateAsync,
+    acceptPresentation: (options?: AcceptPresentationOptions) => acceptMutateAsync(options),
+    declinePresentation: (options?: DeclinePresentationOptions) => declineMutateAsync(options),
     acceptStatus,
     declineStatus,
     proofExchange,

@@ -3,7 +3,7 @@ import { commonMessages, i18n } from '@package/translations'
 import queryString from 'query-string'
 
 import { JsonEncoder } from '@credo-ts/core'
-import type { DidCommAgent } from 'packages/sdk/src/agent'
+import type { DidCommAgent } from '@paradym/wallet-sdk/agent'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'

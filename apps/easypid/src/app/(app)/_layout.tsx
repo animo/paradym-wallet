@@ -1,16 +1,17 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { useSecureUnlock } from '@easypid/agent'
 import { mediatorDid } from '@easypid/constants'
-import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { paradymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { type InvitationType, registerCredentialsForDcApi } from '@package/agent'
-import { isParadymAgent } from '@package/agent'
 import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
-import { useMediatorSetup } from '@paradym/wallet-sdk/src/hooks/useMediatorSetup'
-import { AgentProvider } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { useDidCommMediatorSetup } from '@paradym/wallet-sdk/hooks'
+import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
+import { registerCredentialsForDcApi } from '@paradym/wallet-sdk/openid4vc/dcApi'
+import { ParadymWalletSdkProvider, useParadym } from '@paradym/wallet-sdk/providers/ParadymWalletSdkProvider'
+import { activityStorage } from '@paradym/wallet-sdk/storage/activities'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
@@ -31,6 +32,8 @@ export const credentialDataHandlerOptions = {
 } satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {
+  const paradym = useParadym()
+
   useResetWalletDevMenu()
   const secureUnlock = useSecureUnlock()
   const theme = useTheme()
@@ -44,8 +47,9 @@ export default function AppLayout() {
   useEffect(() => {
     if (secureUnlock.state !== 'unlocked') return
 
-    registerCredentialsForDcApi(secureUnlock.context.agent)
-  }, [secureUnlock])
+    // TODO(sdk): handle in sdk
+    registerCredentialsForDcApi(paradym.agent)
+  }, [secureUnlock, paradym.agent])
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
@@ -55,11 +59,7 @@ export default function AppLayout() {
   const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
 
   // Only setup mediation if the agent is a paradym agent
-  useMediatorSetup({
-    agent:
-      secureUnlock.state === 'unlocked' && isParadymAgent(secureUnlock.context.agent) && isDIDCommEnabled
-        ? secureUnlock.context.agent
-        : undefined,
+  useDidCommMediatorSetup({
     hasInternetConnection,
     mediatorDid,
   })
@@ -123,7 +123,7 @@ export default function AppLayout() {
 
   // Render the normal wallet, which is everything inside (app)
   return (
-    <AgentProvider agent={secureUnlock.context.agent} recordIds={jsonRecordIds}>
+    <ParadymWalletSdkProvider paradymWalletSdk={paradymWalletSdk()} recordIds={jsonRecordIds}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           options={{
@@ -179,6 +179,6 @@ export default function AppLayout() {
         <Stack.Screen name="pidSetup" />
         <Stack.Screen name="inbox" options={headerNormalOptions} />
       </Stack>
-    </AgentProvider>
+    </ParadymWalletSdkProvider>
   )
 }

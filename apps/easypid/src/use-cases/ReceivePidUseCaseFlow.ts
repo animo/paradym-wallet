@@ -6,17 +6,17 @@ import {
   sendCommand,
 } from '@animo-id/expo-ausweis-sdk'
 import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
 import {
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedCredentialOffer,
   type OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
   acquireAuthorizationCodeAccessToken,
 } from '@package/agent'
+import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
 
 export interface ReceivePidUseCaseFlowOptions
   extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {
-  agent: AppAgent
+  agent: OpenId4VcAgent
   onStateChange?: (newState: ReceivePidUseCaseState) => void
   onEnterPin: (
     options: Parameters<AusweisAuthFlowOptions['onEnterPin']>[0] & {

@@ -12,10 +12,10 @@ import {
   YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
-import { useEffect, useState } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
 import { useNavigation } from 'expo-router'
+import { useEffect, useState } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CredentialRowCard, DualResponseButtons } from '../../../components'
 
 interface PresentationNotificationScreenProps {

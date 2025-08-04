@@ -1,4 +1,5 @@
 import type { Agent } from '@credo-ts/core'
+import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import { type PropsWithChildren, createContext, useContext, useMemo } from 'react'
 import type { setupAgent } from '../agent'
 import { ConnectionProvider } from './ConnectionProvider'
@@ -24,17 +25,8 @@ export type AgentProviderProps = {
  *
  * Hook to retrieve the agent.
  *
- * It is recommended to Re-export this in your app with the correct agent type, like so
- *
- * ```typescript
- * import { initializeAgent, useAgent } from '@paradym/wallet-sdk'
- *
- * const agent = await initializeAgent(agentOptions)
- * export const useAppAgent = useAgent<typeof agent>
- * ```
- *
  */
-export const useAgent = <AppAgent extends Agent = Awaited<ReturnType<typeof setupAgent>>>() => {
+export const useAgent = <ProvidedAgent extends Agent = Awaited<ReturnType<typeof setupAgent>>>() => {
   const agentContext = useContext(AgentContext)
 
   if (!agentContext) {
@@ -42,7 +34,7 @@ export const useAgent = <AppAgent extends Agent = Awaited<ReturnType<typeof setu
   }
 
   return {
-    agent: agentContext as AppAgent,
+    agent: agentContext as ProvidedAgent,
   }
 }
 
@@ -81,5 +73,9 @@ export const AgentProvider = ({ agent, recordIds, children }: PropsWithChildren<
     )
   }, [DynamicProviders, agent, children, recordIds])
 
-  return <AgentContext.Provider value={agent}>{providers}</AgentContext.Provider>
+  return (
+    <SecureUnlockProvider>
+      <AgentContext.Provider value={agent}>{providers}</AgentContext.Provider>
+    </SecureUnlockProvider>
+  )
 }

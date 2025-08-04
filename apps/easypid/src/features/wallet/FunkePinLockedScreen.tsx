@@ -1,12 +1,13 @@
-import { useSecureUnlock } from '@easypid/agent'
-import { resetWallet } from '@easypid/utils/resetWallet'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
 
 export const FunkePinLockedScreen = () => {
+  const paradym = useParadym()
   const secureUnlock = useSecureUnlock()
   const router = useRouter()
   const { t } = useLingui()
@@ -27,7 +28,7 @@ export const FunkePinLockedScreen = () => {
         {
           text: t(commonMessages.yes),
           onPress: () => {
-            resetWallet(secureUnlock).then(() => router.replace('onboarding'))
+            // TODO: reset
           },
         },
       ]

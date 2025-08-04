@@ -1,4 +1,3 @@
-import { useAppAgent } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
@@ -8,10 +7,11 @@ import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/src/format/mdocDocumentRequest'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activities'
 import { useCallback, useEffect, useState } from 'react'
-import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
@@ -26,9 +26,9 @@ export function FunkeMdocOfflineSharingScreen({
   sessionTranscript,
   deviceRequest,
 }: FunkeMdocOfflineSharingScreenProps) {
+  const { agent } = useOpenId4VcAgent()
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
-  const { agent } = useAppAgent()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [submission, setSubmission] = useState<FormattedSubmission>()

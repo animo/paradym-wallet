@@ -16,17 +16,8 @@ export {
   isEasyPIDAgent,
   isParadymAgent,
 } from './agent'
-export * from './batch'
 export * from './invitation'
-export * from './hooks'
 export * from './crypto'
 export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
 
 export * from './utils/trust'
-
-export {
-  resolveRequestForDcApi,
-  sendResponseForDcApi,
-  sendErrorResponseForDcApi,
-} from './openid4vc/dcApi'
-export { registerCredentialsForDcApi } from './openid4vc/registerDcApi'

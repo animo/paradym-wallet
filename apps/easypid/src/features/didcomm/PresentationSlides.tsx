@@ -2,11 +2,8 @@ import { useLingui } from '@lingui/react/macro'
 import { SlideWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
-import { useDidCommPresentationActions } from '@paradym/wallet-sdk/src/hooks/useDidCommPresentationActions'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
-import { addSharedActivityForSubmission } from '../activity/activityRecord'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { useDidCommPresentationActions, useParadym } from '@paradym/wallet-sdk/hooks'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { getFlowConfirmationText } from './utils'
@@ -19,7 +16,7 @@ type PresentationSlidesProps = {
 }
 
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
-  const { agent } = useAgent<DidCommAgent>()
+  const paradym = useParadym()
   const toast = useToastController()
   const { t } = useLingui()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
@@ -28,58 +25,19 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
   const onProofAccept = async () => {
     if (!submission) return
 
-    await acceptPresentation({})
-      .then(async () => {
-        await addSharedActivityForSubmission(
-          agent,
-          submission,
-          {
-            id: proofExchangeId,
-            name: verifierName,
-            logo,
-          },
-          'success'
-        )
-      })
-      .catch(async () => {
-        toast.show(t(commonMessages.presentationCouldNotBeShared), { customData: { preset: 'danger' } })
+    await acceptPresentation({}).catch(async () => {
+      toast.show(t(commonMessages.presentationCouldNotBeShared), { customData: { preset: 'danger' } })
 
-        await addSharedActivityForSubmission(
-          agent,
-          submission,
-          {
-            id: proofExchangeId,
-            name: verifierName,
-            logo,
-          },
-          'failed'
-        )
+      if (proofExchange) paradym.agent.modules.proofs.deleteById(proofExchange.id)
 
-        if (proofExchange) agent.modules.proofs.deleteById(proofExchange.id)
-
-        onCancel()
-      })
+      onCancel()
+    })
   }
 
   const onProofDecline = async () => {
     if (!proofExchange) return
 
-    if (submission) {
-      await addSharedActivityForSubmission(
-        agent,
-        submission,
-        {
-          id: proofExchangeId,
-          name: verifierName,
-          logo,
-        },
-        'stopped'
-      )
-    }
-
-    declinePresentation().finally(() => {
-      void agent.modules.proofs.deleteById(proofExchange.id)
-    })
+    void declinePresentation()
 
     toast.show(t(commonMessages.informationRequestDeclined))
 

@@ -1,9 +1,7 @@
-import { useParadymAgent } from '@easypid/agent'
 import { useLingui } from '@lingui/react/macro'
 import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
-import { useDidCommCredentialActions } from '@paradym/wallet-sdk/src/hooks/useDidCommCredentialActions'
-import { addReceivedActivity } from '../activity/activityRecord'
+import { useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk/hooks'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 import { getFlowConfirmationText } from './utils'
 
@@ -15,15 +13,15 @@ type CredentialSlidesProps = {
 }
 
 export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, onComplete }: CredentialSlidesProps) {
-  const { agent } = useParadymAgent()
+  const paradym = useParadym()
   const toast = useToastController()
-  const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
+  const { acceptCredential, acceptStatus, declineCredential, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
 
   const { t } = useLingui()
 
   const onCredentialAccept = async () => {
-    const w3cRecord = await acceptCredential().catch(() => {
+    await acceptCredential().catch(() => {
       toast.show(
         t({
           id: 'credential.accept.error',
@@ -32,27 +30,13 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
         }),
         { customData: { preset: 'danger' } }
       )
-      if (credentialExchange) agent.modules.credentials.deleteById(credentialExchange.id)
+      if (credentialExchangeId) paradym.agent.modules.credentials.deleteById(credentialExchangeId)
       onCancel()
     })
-
-    if (w3cRecord) {
-      await addReceivedActivity(agent, {
-        entityId: credentialExchange?.connectionId,
-        name: display.issuer.name,
-        logo: display.issuer.logo,
-        backgroundColor: '#ffffff', // Default to a white background for now
-        credentialIds: [`w3c-credential-${w3cRecord?.id}`],
-      })
-    }
   }
 
   const onCredentialDecline = () => {
-    if (credentialExchange) {
-      declineCredential().finally(() => {
-        void agent.modules.credentials.deleteById(credentialExchange.id)
-      })
-    }
+    void declineCredential()
 
     toast.show(
       t({

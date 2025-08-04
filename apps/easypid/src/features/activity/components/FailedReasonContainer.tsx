@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { HeroIcons, MessageBox } from '@package/ui'
-import type { SharingFailureReason } from '../activityRecord'
+import type { SharingFailureReason } from '@paradym/wallet-sdk/storage/activities'
 
 interface FailedReasonContainerProps {
   reason: SharingFailureReason

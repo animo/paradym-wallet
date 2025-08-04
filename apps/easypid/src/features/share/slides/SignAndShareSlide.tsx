@@ -4,8 +4,8 @@ import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPos
 import { useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
-import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/src/display/common'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/display/common'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 

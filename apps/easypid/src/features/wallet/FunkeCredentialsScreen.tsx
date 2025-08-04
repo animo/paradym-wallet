@@ -20,8 +20,8 @@ import {
   useScaleAnimation,
 } from '@package/ui'
 import { formatDate } from '@package/utils'
-import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
-import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
+import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
+import { useCredentials } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'

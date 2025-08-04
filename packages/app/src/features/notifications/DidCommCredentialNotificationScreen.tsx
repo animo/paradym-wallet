@@ -1,12 +1,12 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { useToastController } from '@package/ui'
-import { useDidCommCredentialActions } from '@paradym/wallet-sdk/src/hooks/useDidCommCredentialActions'
+import { useDidCommCredentialActions } from '@paradym/wallet-sdk/hooks'
 import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import type { DidCommAgent } from 'packages/sdk/src/agent'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
-import { DidCommAgent } from 'packages/sdk/src/agent'
 
 interface DidCommCredentialNotificationScreenProps {
   credentialExchangeId: string
@@ -47,7 +47,7 @@ export function DidCommCredentialNotificationScreen({
   }
 
   const onCredentialAccept = async () => {
-    await acceptCredential()
+    void acceptCredential()
       .then(() => {
         toast.show(t(credentialNotificationMessages.credentialAdded), { customData: { preset: 'success' } })
       })
@@ -60,7 +60,7 @@ export function DidCommCredentialNotificationScreen({
   }
 
   const onCredentialDecline = () => {
-    declineCredential().finally(() => {
+    void declineCredential().finally(() => {
       void agent.modules.credentials.deleteById(credentialExchange.id)
     })
 

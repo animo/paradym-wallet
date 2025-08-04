@@ -1,8 +1,12 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
-import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import {
+  initializeParadymWalletSdk,
+  isParadymWalletSdkInitialized,
+  shutdownParadymWalletSdk,
+} from '@easypid/sdk/paradymWalletSdk'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -29,12 +33,13 @@ import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import { useParadym, useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
 import { useShouldUseCloudHsm } from './useShouldUseCloudHsm'
@@ -55,6 +60,8 @@ export function OnboardingContextProvider({
 }: PropsWithChildren<{
   initialStep?: OnboardingStep['step']
 }>) {
+  const paradym = useParadym()
+
   const { successHaptic, lightHaptic } = useHaptics()
   const toast = useToastController()
   const secureUnlock = useSecureUnlock()
@@ -76,7 +83,6 @@ export function OnboardingContextProvider({
   const [walletPin, setWalletPin] = useState<string>()
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
-  const [agent, setAgent] = useState<AppAgent>()
   const [idCardScanningState, setIdCardScanningState] = useState<CardScanningState>({
     isCardAttached: undefined,
     progress: 0,
@@ -140,16 +146,15 @@ export function OnboardingContextProvider({
   // in the secure unlock yet, which means that it will throw an error, so we use an effect. Probably need
   // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
   useEffect(() => {
-    if (secureUnlock.state !== 'acquired-wallet-key' || !agent) return
-  }, [secureUnlock, agent])
+    if (secureUnlock.state !== 'acquired-wallet-key' || !isParadymWalletSdkInitialized()) return
+  }, [secureUnlock])
 
   const initializeAgent = useCallback(async (walletKey: string) => {
-    const agent = await initializeAppAgent({
+    await initializeParadymWalletSdk({
       walletKey,
       walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
       registerWallet: true,
     })
-    setAgent(agent)
   }, [])
 
   const onPinReEnter = async (pin: string) => {
@@ -222,7 +227,10 @@ export function OnboardingContextProvider({
   }
 
   const onEnableBiometrics = async () => {
-    if (!agent || (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')) {
+    if (
+      !isParadymWalletSdkInitialized ||
+      (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')
+    ) {
       await reset({
         resetToStep: 'pin',
       })
@@ -231,7 +239,7 @@ export function OnboardingContextProvider({
 
     try {
       if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true })
+        await secureUnlock.setWalletKeyValid({ enableBiometrics: true })
       }
 
       // Directly try getting the wallet key so the user can enable biometrics
@@ -240,9 +248,7 @@ export function OnboardingContextProvider({
 
       if (!walletKey) {
         const walletKey =
-          secureUnlock.state === 'acquired-wallet-key'
-            ? secureUnlock.walletKey
-            : secureUnlock.context.agent.config.walletConfig?.key
+          secureUnlock.state === 'acquired-wallet-key' ? secureUnlock.walletKey : paradym.agent.config.walletConfig?.key
         if (!walletKey) {
           await reset({ resetToStep: 'pin' })
           return
@@ -379,7 +385,7 @@ export function OnboardingContextProvider({
       // Reset PIN state
       setWalletPin(undefined)
       setAllowSimulatorCard(false)
-      setAgent(undefined)
+      shutdownParadymWalletSdk()
     }
 
     if (stepsToCompleteAfterReset.includes('id-card-requested-attributes')) {
@@ -406,7 +412,7 @@ export function OnboardingContextProvider({
     }
 
     if (stepsToCompleteAfterReset.includes('pin')) {
-      await resetWallet(secureUnlock)
+      await resetWallet(secureUnlock, paradym.agent)
     }
 
     // TODO: if we already have the agent, we should either remove the wallet and start again,
@@ -538,7 +544,7 @@ export function OnboardingContextProvider({
 
       for (const credential of credentials) {
         if (credential instanceof SdJwtVcRecord) {
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
+          const parsed = paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
             credential.compactSdJwtVc
           )
           setUserName(
@@ -548,7 +554,7 @@ export function OnboardingContextProvider({
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(secureUnlock.context.agent, {
+          await addReceivedActivity(paradym.agent, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
@@ -610,7 +616,7 @@ export function OnboardingContextProvider({
     }
 
     const baseOptions = {
-      agent: secureUnlock.context.agent,
+      agent: paradym.agent,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({

@@ -1,9 +1,7 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
-import { useDidCommPresentationActions } from '@paradym/wallet-sdk/src/hooks/useDidCommPresentationActions'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { useDidCommPresentationActions } from '@paradym/wallet-sdk/hooks'
 import { useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -14,8 +12,6 @@ interface DidCommPresentationNotificationScreenProps {
 }
 
 export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCommPresentationNotificationScreenProps) {
-  const { agent } = useAgent<DidCommAgent>()
-
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const { t } = useLingui()
@@ -32,7 +28,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   }
 
   const onProofAccept = () => {
-    acceptPresentation(selectedCredentials)
+    acceptPresentation({ selectedCredentials, storeAsActivity: false })
       .then(() => {
         toast.show(t(commonMessages.presentationShared), { customData: { preset: 'success' } })
       })
@@ -45,11 +41,12 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   }
 
   const onProofDecline = () => {
-    declinePresentation().finally(() => {
-      void agent.modules.proofs.deleteById(proofExchange.id)
+    toast.show(t(commonMessages.informationRequestDeclined))
+
+    void declinePresentation().finally(() => {
+      void paradym.agent.modules.proofs.deleteById(proofExchange.id)
     })
 
-    toast.show(t(commonMessages.informationRequestDeclined))
     pushToWallet()
   }
 

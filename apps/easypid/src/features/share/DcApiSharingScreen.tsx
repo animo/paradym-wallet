@@ -1,12 +1,17 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
 import { WalletInvalidKeyError } from '@credo-ts/core'
-import { initializeAppAgent } from '@easypid/agent'
+import { initializeParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { useLingui } from '@lingui/react/macro'
-import { resolveRequestForDcApi, sendErrorResponseForDcApi, sendResponseForDcApi } from '@package/agent'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { TranslationProvider, commonMessages } from '@package/translations'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
+import {
+  resolveRequestForDcApi,
+  sendErrorResponseForDcApi,
+  sendResponseForDcApi,
+} from '@paradym/wallet-sdk/openid4vc/dcApi'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
@@ -45,12 +50,12 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     const agent = await secureWalletKey
       .getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
       .then(async (walletKey) => {
-        const agent = initializeAppAgent({
+        const paradym = await initializeParadymWalletSdk({
           walletKey,
           walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
         })
         await setWalletServiceProviderPin(pin.split('').map(Number), false)
-        return agent
+        return paradym.agent
       })
       .catch((e) => {
         setIsProcessing(false)
@@ -92,6 +97,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         agent,
         dcRequest: request,
         resolvedRequest,
+        fetchBatchCredentialCallback: refreshPid,
       })
     } catch (error) {
       agent.config.logger.error('Could not share response', { error })

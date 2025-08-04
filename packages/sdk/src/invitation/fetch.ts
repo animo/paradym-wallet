@@ -65,7 +65,7 @@ async function handleTextResponse(agent: OpenId4VcAgent, text: string): Promise<
       __internal: {
         id,
       },
-      presentationRequest: {
+      openId4VcPresentationRequest: {
         formattedSubmission,
       },
     }

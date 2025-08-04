@@ -14,6 +14,15 @@ import {
 } from '../metadata/credentials'
 import { useAgent } from '../providers/AgentProvider'
 import { useCredentialById } from '../providers/CredentialExchangeProvider'
+import { addReceivedActivity } from '../storage/activities'
+
+type AcceptCredentialOptions = {
+  storeAsActivity?: boolean
+}
+
+type DeclineCredentialOptions = {
+  deleteCredential?: boolean
+}
 
 function useOfferAttributes(credentialExchangeId: string) {
   const { agent } = useAgent<DidCommAgent>()
@@ -50,7 +59,9 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
   const { mutateAsync: acceptCredentialMutation, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommCredential', credentialExchangeId],
-    mutationFn: async () => {
+    mutationFn: async (options: AcceptCredentialOptions = { storeAsActivity: true }) => {
+      if (!credentialExchange) return
+
       const credentialDone$ = agent.events
         .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
         .pipe(
@@ -94,6 +105,16 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
         const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
         await w3cCredentialRepository.update(agent.context, w3cRecord)
 
+        if (options.storeAsActivity) {
+          await addReceivedActivity(agent, {
+            entityId: credentialExchange?.connectionId,
+            name: didcommDisplayMetadata?.issuerName ?? 'Unknown',
+            logo: { url: didcommDisplayMetadata?.issuerLogoUri },
+            backgroundColor: '#ffffff', // Default to a white background for now
+            credentialIds: [`w3c-credential-${w3cRecord?.id}`],
+          })
+        }
+
         return w3cRecord
       }
     },
@@ -102,7 +123,9 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
   const { mutateAsync: declineCredentialMutation, status: declineStatus } = useMutation({
     mutationKey: ['declineDidCommCredential', credentialExchangeId],
-    mutationFn: async () => {
+    mutationFn: async (options: DeclineCredentialOptions = { deleteCredential: true }) => {
+      if (!credentialExchange) return
+
       const credentialDone$ = agent.events
         .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
         .pipe(
@@ -122,6 +145,11 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
       await agent.modules.credentials.declineOffer(credentialExchangeId, {
         sendProblemReport: true,
       })
+
+      if (options.deleteCredential) {
+        await agent.modules.credentials.deleteById(credentialExchangeId)
+      }
+
       await credentialDonePromise
     },
   })
@@ -131,8 +159,8 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
     : undefined
 
   return {
-    acceptCredential: acceptCredentialMutation,
-    declineCredential: declineCredentialMutation,
+    acceptCredential: (options?: AcceptCredentialOptions) => acceptCredentialMutation(options),
+    declineCredential: (options?: DeclineCredentialOptions) => declineCredentialMutation(options),
     acceptStatus,
     declineStatus,
     credentialExchange,

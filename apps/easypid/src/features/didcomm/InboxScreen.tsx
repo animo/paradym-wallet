@@ -1,7 +1,7 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
-import { useInboxNotifications } from '@paradym/wallet-sdk/src/hooks/useInboxNotifications'
+import { useInboxNotifications } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { FadeInDown } from 'react-native-reanimated'
 

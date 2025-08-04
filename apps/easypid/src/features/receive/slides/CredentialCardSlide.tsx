@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Heading, MiniCardRowItem, Paragraph, Stack, YStack } from '@package/ui'
-import type { CredentialDisplay } from '@paradym/wallet-sdk/src/display/credential'
+import type { CredentialDisplay } from '@paradym/wallet-sdk/display/credential'
 
 interface CredentialCardSlideProps {
   type: 'presentation' | 'pin' | 'noAuth'

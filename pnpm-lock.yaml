@@ -731,6 +731,9 @@ importers:
       '@openwallet-foundation/askar-react-native':
         specifier: 0.3.2
         version: 0.3.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+      '@package/secure-store':
+        specifier: 'workspace:'
+        version: link:../secure-store
       '@sd-jwt/decode':
         specifier: 'catalog:'
         version: 0.14.0

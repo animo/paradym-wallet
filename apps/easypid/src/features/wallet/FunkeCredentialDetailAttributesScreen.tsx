@@ -14,8 +14,8 @@ import {
   useSpringify,
   useToastController,
 } from '@package/ui'
-import { metadataForDisplay } from '@paradym/wallet-sdk/src/display/common'
-import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
+import { metadataForDisplay } from '@paradym/wallet-sdk/display/common'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/hooks/useCredentialById'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import { FadeOutUp } from 'react-native-reanimated'

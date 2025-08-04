@@ -1,10 +1,9 @@
-import { useActivities } from '@easypid/features/activity/activityRecord'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
+import { useActivities, useCredentials } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 
