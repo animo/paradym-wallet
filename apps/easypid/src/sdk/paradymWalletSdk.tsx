@@ -13,12 +13,12 @@ export function getWalletId(walletKeyVersion: number) {
 
 export const paradymWalletSdk = () => {
   if (!paradym) {
-    throw new Error('Paradym Wallet Sdk is not yet created. Call `initializeParadymWalletSdk()` first')
+    throw new Error('Paradym Wallet SDK is not yet created. Call `initializeParadymWalletSdk()` first')
   }
 
   if (!paradym.agent.isInitialized) {
     throw new Error(
-      'Paradym Wallet Sdk is not yet initialized. Something went wrong while calling `initializeParadymWalletSdk()`'
+      'Paradym Wallet SDK is not yet initialized. Something went wrong while calling `initializeParadymWalletSdk()`'
     )
   }
 
