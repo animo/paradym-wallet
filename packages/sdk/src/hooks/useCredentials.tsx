@@ -10,7 +10,6 @@ export const useCredentials = ({
   credentialCategory,
 }: {
   removeCanonicalRecords?: boolean
-  // TODO: remove this?
   credentialCategory?: CredentialCategoryMetadata['credentialCategory']
 } = {}) => {
   const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()
