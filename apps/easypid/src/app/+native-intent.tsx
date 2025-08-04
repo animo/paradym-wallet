@@ -1,5 +1,6 @@
 import 'fast-text-encoding'
 
+import { TypedArrayEncoder } from '@credo-ts/core'
 import { appScheme } from '@easypid/constants'
 import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
@@ -57,14 +58,18 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     }
 
     if (redirectPath) {
+      // Always make the user authenticate first when opening with a deeplink
+      const encodedRedirect = TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(redirectPath))
+      const newPath = `/authenticate?redirectAfterUnlock=${encodedRedirect}`
+
       // NOTE: it somehow doesn't handle the intent if the app is already open
       // so we replace the router to the path. I think it can break easily though if e.g.
       // the wallet is locked in the background. Not sure how to proceed, this is best effort fix
       if (!initial) {
-        router.replace(redirectPath)
+        router.replace(newPath)
         return null
       }
-      return redirectPath
+      return newPath
     }
 
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
