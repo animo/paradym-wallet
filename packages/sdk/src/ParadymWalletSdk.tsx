@@ -21,7 +21,7 @@ import { type ResolveOutOfBandInvitationResult, resolveOutOfBandInvitation } fro
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 
-export type ParadymWalletSdkResult<T extends Record<string, unknown>> =
+export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
   | { success: false; message: string }
 
@@ -167,13 +167,25 @@ export class ParadymWalletSdk {
     }
   }
 
-  private async deleteCredentials(ids: CredentialForDisplayId | Array<CredentialForDisplayId>) {
-    const deleteCredentials = (Array.isArray(ids) ? ids : [ids]).map((id) => deleteCredential(this.agent, id))
-    await Promise.all(deleteCredentials)
+  private async deleteCredentials(
+    ids: CredentialForDisplayId | Array<CredentialForDisplayId>
+  ): Promise<ParadymWalletSdkResult> {
+    try {
+      const deleteCredentials = (Array.isArray(ids) ? ids : [ids]).map((id) => deleteCredential(this.agent, id))
+      await Promise.all(deleteCredentials)
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : (error as string) }
+    }
   }
 
-  private async storeCredential(record: CredentialRecord) {
-    return storeCredential(this.agent, record)
+  private async storeCredential(record: CredentialRecord): Promise<ParadymWalletSdkResult> {
+    try {
+      await storeCredential(this.agent, record)
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : (error as string) }
+    }
   }
 
   public async resolveDidCommInvitation(
@@ -182,8 +194,8 @@ export class ParadymWalletSdk {
     try {
       const parsedInvitation = await parseDidCommInvitation(this.agent, invitation)
       return { success: true, ...(await resolveOutOfBandInvitation(this.agent, parsedInvitation)) }
-    } catch (e) {
-      return { success: false, message: e instanceof Error ? e.message : `${e}` }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : `${error}` }
     }
   }
 }

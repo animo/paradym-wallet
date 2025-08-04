@@ -7,12 +7,12 @@ import { useCredentialById } from './useCredentialById'
 import { useCredentials } from './useCredentials'
 import { useDidCommConnectionActions } from './useDidCommConnectionActions'
 import { useDidCommCredentialActions } from './useDidCommCredentialActions'
+import { useDidCommMediatorSetup } from './useDidCommMediatorSetup'
 import { useDidCommPresentationActions } from './useDidCommPresentationActions'
 import { useDidCommAgent } from './useDidcommAgent'
 import { useHasInboxNotifications } from './useHasInboxNotifications'
 import { useInboxNotifications } from './useInboxNotifications'
 import { useOpenId4VcAgent } from './useOpenId4VcAgent'
-import { useDidCommMediatorSetup } from './useDidCommMediatorSetup'
 
 export {
   useParadym,
@@ -31,8 +31,7 @@ export {
   useDidCommAgent,
   useInboxNotifications,
   useHasInboxNotifications,
-
-  useDidCommMediatorSetup
+  useDidCommMediatorSetup,
 }
 
 export type * from './useActivities'
