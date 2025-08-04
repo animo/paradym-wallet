@@ -1,35 +1,34 @@
-import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
-import {
-  BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
-  type FormattedTransactionData,
-  getCredentialsForProofRequest,
-  getFormattedTransactionData,
-  shareProof,
-} from '@package/agent'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
+import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
-import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/src/display/common'
-import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/src/format/submission'
+import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/display/common'
+import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/format/submission'
+import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { shareProof } from '@paradym/wallet-sdk/invitation/shareProof'
+import {
+  type CredentialsForProofRequest,
+  getCredentialsForProofRequest,
+} from '@paradym/wallet-sdk/openid4vc/getCredentialsForProofRequest'
+import { type FormattedTransactionData, getFormattedTransactionData } from '@paradym/wallet-sdk/openid4vc/transaction'
+import { addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activities'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
 
 type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
+  const { agent } = useOpenId4VcAgent()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
-  const { agent } = useAppAgent()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [errorReason, setErrorReason] = useState<string>()
 
@@ -50,7 +49,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     getCredentialsForProofRequest({
       agent,
       uri: params.uri,
-      trustedX509Entities,
+      // TODO: add back when trust
+      // trustedX509Entities,
     })
       .then((r) => {
         setCredentialsForRequest(r)
@@ -147,6 +147,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
+          fetchBatchCredentialCallback: refreshPid,
           acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
         })
 

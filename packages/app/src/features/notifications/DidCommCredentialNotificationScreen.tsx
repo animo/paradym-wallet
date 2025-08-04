@@ -1,8 +1,5 @@
 import { useToastController } from '@package/ui'
-
-import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
-import { useDidCommCredentialActions } from '@paradym/wallet-sdk/src/hooks/useDidCommCredentialActions'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { useDidCommCredentialActions } from '@paradym/wallet-sdk/hooks'
 import { usePushToWallet } from '../../hooks'
 import { CredentialNotificationScreen } from './components/CredentialNotificationScreen'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -14,8 +11,6 @@ interface DidCommCredentialNotificationScreenProps {
 export function DidCommCredentialNotificationScreen({
   credentialExchangeId,
 }: DidCommCredentialNotificationScreenProps) {
-  const { agent } = useAgent<DidCommAgent>()
-
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
 
@@ -27,7 +22,7 @@ export function DidCommCredentialNotificationScreen({
   }
 
   const onCredentialAccept = async () => {
-    await acceptCredential()
+    void acceptCredential()
       .then(() => {
         toast.show('Credential has been added to your wallet.', { customData: { preset: 'success' } })
       })
@@ -40,10 +35,7 @@ export function DidCommCredentialNotificationScreen({
   }
 
   const onCredentialDecline = () => {
-    declineCredential().finally(() => {
-      void agent.modules.credentials.deleteById(credentialExchange.id)
-    })
-
+    void declineCredential()
     toast.show('Credential has been declined.')
     pushToWallet()
   }

@@ -9,7 +9,7 @@ import {
   darken,
   getTextColorBasedOnBg,
 } from '@package/ui'
-import type { DisplayImage } from '@paradym/wallet-sdk/src/display/credential'
+import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
 
 type CredentialCardProps = {
   onPress?(): void

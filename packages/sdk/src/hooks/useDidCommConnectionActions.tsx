@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import type { DidCommAgent } from '../agent'
-import { type ResolveOutOfBandInvitationResultSuccess, acceptOutOfBandInvitation } from '../invitation/resolver'
+import { type ResolveOutOfBandInvitationResult, acceptOutOfBandInvitation } from '../invitation/resolver'
 import { useAgent } from '../providers/AgentProvider'
 
-export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitationResultSuccess) {
+export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitationResult) {
   const { agent } = useAgent<DidCommAgent>()
 
   const { mutateAsync: acceptConnectionMutation, status: acceptStatus } = useMutation({

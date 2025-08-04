@@ -3,12 +3,12 @@ import { Heading, Paragraph, YStack } from '@package/ui'
 import {
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
-} from '@paradym/wallet-sdk/src/display/common'
+} from '@paradym/wallet-sdk/display/common'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntryNotSatisfied,
   FormattedSubmissionEntrySatisfied,
-} from '@paradym/wallet-sdk/src/format/submission'
+} from '@paradym/wallet-sdk/format/submission'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission

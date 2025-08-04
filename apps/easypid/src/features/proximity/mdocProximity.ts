@@ -1,15 +1,16 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
 import { Mdoc, type MdocRecord, MdocService } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
-import { handleBatchCredential } from '@package/agent'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
+import type { BaseAgent } from '@paradym/wallet-sdk/agent'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { handleBatchCredential } from '@paradym/wallet-sdk/openid4vc/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  agent: AppAgent
+  agent: BaseAgent
   submission: FormattedSubmission
 }
 
@@ -83,7 +84,7 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
       const credential = e.credentials[0].credential.record as MdocRecord
 
       // Optionally handle batch issuance
-      const credentialRecord = await handleBatchCredential(options.agent, credential)
+      const credentialRecord = (await handleBatchCredential(options.agent, credential, refreshPid)) as MdocRecord
 
       return Mdoc.fromBase64Url(credentialRecord.base64Url, credential.getTags().docType)
     })

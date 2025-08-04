@@ -54,7 +54,7 @@ export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' 
         : never
 >
 
-export interface ResolveOutOfBandInvitationResultSuccess {
+export type ResolveOutOfBandInvitationResult = {
   outOfBandInvitation: OutOfBandInvitation
 
   /**
@@ -232,7 +232,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 export async function resolveOutOfBandInvitation(
   agent: DidCommAgent,
   invitation: OutOfBandInvitation
-): Promise<ResolveOutOfBandInvitationResultSuccess> {
+): Promise<ResolveOutOfBandInvitationResult> {
   const requestMessages = invitation.getRequests() ?? []
 
   let flowType: 'issue' | 'verify' | 'connect'

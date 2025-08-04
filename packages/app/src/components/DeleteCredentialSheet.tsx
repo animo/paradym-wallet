@@ -1,9 +1,7 @@
-import { useCredentialByCategory } from '@package/agent'
 import { useToastController } from '@package/ui'
-import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/src/hooks/useCredentialById'
-import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
-import { deleteCredential } from '@paradym/wallet-sdk/src/storage/credentials'
+import { useCredentialByCategory, useCredentialById, useParadym } from '@paradym/wallet-sdk/hooks'
+import type { CredentialId } from '@paradym/wallet-sdk/hooks'
+import type { CredentialCategoryMetadata } from '@paradym/wallet-sdk/metadata/credentials'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
@@ -17,8 +15,9 @@ interface DeleteCredentialSheetProps {
 }
 
 export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }: DeleteCredentialSheetProps) {
+  const paradym = useParadym()
+
   const toast = useToastController()
-  const { agent } = useAgent()
   const navigation = useNavigation()
   const { withHaptics, successHaptic, errorHaptic } = useHaptics()
 
@@ -31,11 +30,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
       navigation.goBack()
       setIsSheetOpen(false)
 
-      if (credentials?.length) {
-        await Promise.all(credentials.map((credential) => deleteCredential(agent, credential.id)))
-      } else {
-        await deleteCredential(agent, id)
-      }
+      await paradym.credentials.delete(credentials?.map((c) => c.id) ?? id)
 
       toast.show('Card successfully archived', {
         customData: { preset: 'success' },

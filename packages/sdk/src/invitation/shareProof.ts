@@ -8,23 +8,24 @@ import {
   type W3cCredentialRecord,
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
-import type { EitherAgent } from '../agent'
-import { handleBatchCredential } from '../batch'
-import { BiometricAuthenticationError } from './error'
-import type { CredentialsForProofRequest } from './handler'
-import { getFormattedTransactionData } from './transactions'
+import type { OpenId4VcAgent } from '../agent'
+import { type FetchBatchCredentialCallback, handleBatchCredential } from '../openid4vc/batch'
+import type { CredentialsForProofRequest } from '../openid4vc/getCredentialsForProofRequest'
+import { getFormattedTransactionData } from '../openid4vc/transaction'
 
 export const shareProof = async ({
   agent,
   resolvedRequest,
   selectedCredentials,
   acceptTransactionData,
+  fetchBatchCredentialCallback,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedRequest: CredentialsForProofRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
   // FIXME: Should be a more complex structure allowing which credential to use for which entry
   acceptTransactionData?: boolean
+  fetchBatchCredentialCallback?: FetchBatchCredentialCallback
 }) => {
   const { authorizationRequest } = resolvedRequest
   if (
@@ -48,7 +49,11 @@ export const shareProof = async ({
                 entry.verifiableCredentials[0]
 
               // Optionally use a batch credential
-              const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
+              const credentialRecord = await handleBatchCredential(
+                agent,
+                credential.credentialRecord,
+                fetchBatchCredentialCallback
+              )
 
               return [entry.inputDescriptorId, [{ ...credential, credentialRecord }]]
             })
@@ -66,7 +71,11 @@ export const shareProof = async ({
               : agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
           ).map(async ([queryCredentialId, credential]) => {
             // Optionally use a batch credential
-            const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
+            const credentialRecord = await handleBatchCredential(
+              agent,
+              credential.credentialRecord,
+              fetchBatchCredentialCallback
+            )
 
             return [queryCredentialId, { ...credential, credentialRecord }]
           })
@@ -115,8 +124,8 @@ export const shareProof = async ({
 
     return result
   } catch (error) {
-    // Handle biometric authentication errors
-    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
+    // TODO
+    throw Error('TODO')
   }
 }
 

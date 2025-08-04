@@ -16,7 +16,7 @@ import {
   YStack,
   ZStack,
 } from '@package/ui'
-import { useCredentials } from '@paradym/wallet-sdk/src/hooks/useCredentials'
+import { useCredentials } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CredentialCard, CredentialRowCard, InboxIcon, NoContentWallet } from '../../components'

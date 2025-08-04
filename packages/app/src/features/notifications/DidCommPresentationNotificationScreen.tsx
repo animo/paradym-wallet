@@ -1,7 +1,5 @@
 import { useToastController } from '@package/ui'
-import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
-import { useDidCommPresentationActions } from '@paradym/wallet-sdk/src/hooks/useDidCommPresentationActions'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
+import { useDidCommPresentationActions } from '@paradym/wallet-sdk/hooks'
 import { useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -12,8 +10,6 @@ interface DidCommPresentationNotificationScreenProps {
 }
 
 export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCommPresentationNotificationScreenProps) {
-  const { agent } = useAgent<DidCommAgent>()
-
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
 
@@ -29,7 +25,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   }
 
   const onProofAccept = () => {
-    acceptPresentation(selectedCredentials)
+    acceptPresentation({ selectedCredentials, storeAsActivity: false })
       .then(() => {
         toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
       })
@@ -42,10 +38,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   }
 
   const onProofDecline = () => {
-    declinePresentation().finally(() => {
-      void agent.modules.proofs.deleteById(proofExchange.id)
-    })
-
+    void declinePresentation()
     toast.show('Information request has been declined.')
     pushToWallet()
   }

@@ -1,6 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
-import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
@@ -15,11 +14,13 @@ import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnable
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { useShouldUseCloudHsm } from '../onboarding/useShouldUseCloudHsm'
 import { PidCardScanSlide } from './PidCardScanSlide'
 import { PidIdCardFetchSlide } from './PidEidCardFetchSlide'
@@ -30,6 +31,8 @@ import { PidSetupStartSlide } from './PidSetupStartSlide'
 import { PidWalletPinSlide } from './PidWalletPinSlide'
 
 export function FunkePidSetupScreen() {
+  const paradym = useParadym()
+
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const secureUnlock = useSecureUnlock()
@@ -140,7 +143,7 @@ export function FunkePidSetupScreen() {
     }
 
     const baseOptions = {
-      agent: secureUnlock.context.agent,
+      agent: paradym.agent,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({
@@ -314,7 +317,7 @@ export function FunkePidSetupScreen() {
 
       for (const credential of credentials) {
         if (credential instanceof SdJwtVcRecord) {
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
+          const parsed = paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
             credential.compactSdJwtVc
           )
           setUserName(
@@ -324,7 +327,7 @@ export function FunkePidSetupScreen() {
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(secureUnlock.context.agent, {
+          await addReceivedActivity(paradym.agent, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,

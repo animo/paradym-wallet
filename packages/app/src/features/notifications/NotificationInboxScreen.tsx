@@ -1,5 +1,5 @@
 import { Heading, ScrollView, Stack, YStack } from '@package/ui'
-import { useInboxNotifications } from '@paradym/wallet-sdk/src/hooks/useInboxNotifications'
+import { useInboxNotifications } from '@paradym/wallet-sdk/hooks/useInboxNotifications'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { InboxNotificationRowCard, NoContentInbox } from '../../components'

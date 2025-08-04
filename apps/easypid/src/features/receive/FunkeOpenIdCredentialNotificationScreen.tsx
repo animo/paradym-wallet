@@ -1,35 +1,41 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
-import { useAppAgent } from '@easypid/agent'
 import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import {
   BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
-  acquirePreAuthorizedAccessToken,
-  getCredentialsForProofRequest,
-  receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
-  shareProof,
 } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
-import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/src/display/common'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/src/display/credential'
-import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/src/display/openid4vc'
-import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/src/metadata/credentials'
-import { storeCredential } from '@paradym/wallet-sdk/src/storage/credentials'
+import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
+import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import {
+  acquirePreAuthorizedAccessToken,
+  receiveCredentialFromOpenId4VciOffer,
+  resolveOpenId4VciOffer,
+} from '@paradym/wallet-sdk/invitation/resolver'
+import { shareProof } from '@paradym/wallet-sdk/invitation/shareProof'
+import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/metadata/credentials'
+import {
+  type CredentialsForProofRequest,
+  getCredentialsForProofRequest,
+} from '@paradym/wallet-sdk/openid4vc/getCredentialsForProofRequest'
+import { useParadym } from '@paradym/wallet-sdk/providers/ParadymWalletSdkProvider'
+import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
+import { storeCredential } from '@paradym/wallet-sdk/storage/credentials'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { PinSlide, type onPinSubmitProps } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
@@ -49,7 +55,8 @@ const authorization = {
 }
 
 export function FunkeCredentialNotificationScreen() {
-  const { agent } = useAppAgent()
+  const paradym = useParadym()
+  const { agent } = useOpenId4VcAgent()
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
 
@@ -121,11 +128,11 @@ export function FunkeCredentialNotificationScreen() {
       })
       .catch((error) => {
         setErrorReasonWithError('Credential information could not be extracted', error)
-        agent.config.logger.error(`Couldn't resolve OpenID4VCI offer`, {
+        paradym.logger.error(`Couldn't resolve OpenID4VCI offer`, {
           error,
         })
       })
-  }, [params.uri, agent, setErrorReasonWithError])
+  }, [params.uri, agent, setErrorReasonWithError, paradym.logger.error])
 
   const retrieveCredentials = useCallback(
     async (
@@ -194,7 +201,7 @@ export function FunkeCredentialNotificationScreen() {
 
         await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId, resolvedAuthorizationRequest)
       } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+        paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
         setErrorReasonWithError('Error while retrieving credentials', error)
@@ -207,6 +214,7 @@ export function FunkeCredentialNotificationScreen() {
       agent,
       configurationId,
       setErrorReasonWithError,
+      paradym.logger.error,
     ]
   )
 
@@ -225,13 +233,20 @@ export function FunkeCredentialNotificationScreen() {
         })
         await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId)
       } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+        paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
         setErrorReasonWithError('Error while retrieving credentials', error)
       }
     },
-    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError]
+    [
+      resolvedCredentialOffer,
+      agent,
+      retrieveCredentials,
+      configurationId,
+      setErrorReasonWithError,
+      paradym.logger.error,
+    ]
   )
 
   const parsePresentationRequestUrl = useCallback(
@@ -243,11 +258,11 @@ export function FunkeCredentialNotificationScreen() {
         .then(setCredentialsForRequest)
         .catch((error) => {
           setErrorReasonWithError('Presentation information could not be extracted.', error)
-          agent.config.logger.error('Error getting credentials for request', {
+          paradym.logger.error('Error getting credentials for request', {
             error,
           })
         }),
-    [agent, setErrorReasonWithError]
+    [agent, setErrorReasonWithError, paradym.logger.error]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -306,6 +321,7 @@ export function FunkeCredentialNotificationScreen() {
           agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
+          fetchBatchCredentialCallback: refreshPid,
         })
 
         const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({
@@ -330,7 +346,7 @@ export function FunkeCredentialNotificationScreen() {
           return
         }
 
-        agent.config.logger.error('Error accepting presentation', {
+        paradym.logger.error('Error accepting presentation', {
           error,
         })
         setErrorReasonWithError('Presentation could not be shared.', error)
@@ -345,6 +361,7 @@ export function FunkeCredentialNotificationScreen() {
       shouldUsePinForPresentation,
       toast.show,
       setErrorReasonWithError,
+      paradym.logger.error,
     ]
   )
 

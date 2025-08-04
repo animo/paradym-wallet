@@ -1,10 +1,7 @@
 import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
-import type { DidCommAgent } from '@paradym/wallet-sdk/src/agent'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/src/format/submission'
-import { useDidCommPresentationActions } from '@paradym/wallet-sdk/src/hooks/useDidCommPresentationActions'
-import { useAgent } from '@paradym/wallet-sdk/src/providers/AgentProvider'
-import { addSharedActivityForSubmission } from '../activity/activityRecord'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { useDidCommPresentationActions } from '@paradym/wallet-sdk/hooks'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { getFlowConfirmationText } from './utils'
@@ -17,62 +14,23 @@ type PresentationSlidesProps = {
 }
 
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
-  const { agent } = useAgent<DidCommAgent>()
   const toast = useToastController()
-  const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
+  const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
 
   const onProofAccept = async () => {
     if (!submission) return
 
-    await acceptPresentation({})
-      .then(async () => {
-        await addSharedActivityForSubmission(
-          agent,
-          submission,
-          {
-            id: proofExchangeId,
-            name: verifierName,
-            logo,
-          },
-          'success'
-        )
-      })
-      .catch(async () => {
-        toast.show('Presentation could not be shared.', { customData: { preset: 'danger' } })
-        await addSharedActivityForSubmission(
-          agent,
-          submission,
-          {
-            id: proofExchangeId,
-            name: verifierName,
-            logo,
-          },
-          'failed'
-        )
-        onCancel()
-      })
+    void acceptPresentation().catch(async () => {
+      toast.show('Presentation could not be shared.', { customData: { preset: 'danger' } })
+      onCancel()
+    })
   }
 
   const onProofDecline = async () => {
     if (!proofExchange) return
 
-    if (submission) {
-      await addSharedActivityForSubmission(
-        agent,
-        submission,
-        {
-          id: proofExchangeId,
-          name: verifierName,
-          logo,
-        },
-        'stopped'
-      )
-    }
-
-    declinePresentation().finally(() => {
-      void agent.modules.proofs.deleteById(proofExchange.id)
-    })
+    void declinePresentation()
 
     toast.show('Information request has been declined.')
     onCancel()
