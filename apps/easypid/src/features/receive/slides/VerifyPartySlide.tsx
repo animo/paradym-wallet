@@ -59,7 +59,10 @@ export const VerifyPartySlide = ({
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
   const trustedEntitiesWithoutSelf = trustedEntities
     ?.filter((entity) => entity.entityId !== entityId)
-    .map((entity) => ({ ...entity, demo: isDemoTrustedEntity ? true : entity.demo }))
+    .map((entity) => ({
+      ...entity,
+      demo: isDemoTrustedEntity ? true : entity.demo,
+    }))
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -106,7 +109,7 @@ export const VerifyPartySlide = ({
             </Circle>
           </XStack>
           <Stack gap="$2">
-            <Heading variant="h2" numberOfLines={2} center fontSize={24}>
+            <Heading variant="h2" numberOfLines={2} center fontSize={24} lineHeight="$5">
               {name ? (
                 <Trans id="verifyPartySlide.interactWithHeading">Interact with {name}?</Trans>
               ) : (
@@ -116,7 +119,7 @@ export const VerifyPartySlide = ({
             {type === 'offer' ? (
               <Paragraph center px="$4">
                 {name ? (
-                  <Trans id="verifyPartySlide.offerCardSubtitle">${name} wants to offer you a card.</Trans>
+                  <Trans id="verifyPartySlide.offerCardSubtitle">{name} wants to offer you a card.</Trans>
                 ) : (
                   <Trans id="verifyPartySlide.offerCardSubtitleUnknownOrganization">
                     An unknown organization wants to offer you a card.
@@ -210,8 +213,14 @@ export const VerifyPartySlide = ({
             variant={lastInteractionDate ? 'interaction-success' : 'interaction-new'}
             title={
               lastInteractionDate
-                ? t({ id: 'verifyPartySlide.hasPreviousInteractionsTitle', message: 'Previous interactions' })
-                : t({ id: 'verifyPartySlide.hasNoPreviousInteractionsTitle', message: 'First time interaction' })
+                ? t({
+                    id: 'verifyPartySlide.hasPreviousInteractionsTitle',
+                    message: 'Previous interactions',
+                  })
+                : t({
+                    id: 'verifyPartySlide.hasNoPreviousInteractionsTitle',
+                    message: 'First time interaction',
+                  })
             }
             description={
               lastInteractionDate

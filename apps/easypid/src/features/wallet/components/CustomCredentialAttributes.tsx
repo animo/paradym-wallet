@@ -3,6 +3,7 @@ import { mdlSchemes, pidSchemes } from '@easypid/constants'
 import { type MdlAttributes, getMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
 import {
   type Arf15PidSdJwtVcAttributes,
+  type Arf18PidSdJwtVcAttributes,
   type PidMdocAttributes,
   type PidSdJwtVcAttributes,
   mapPidAttributeName,
@@ -44,6 +45,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
 
   const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtVc
   const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
+  const isLegacySdJwtPid = isPidSdJwtVc && credential.metadata.type !== 'urn:eudi:pid:1'
 
   const personalInfoCard = {
     name: '',
@@ -60,7 +62,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
 
   let headerImage = credential?.display.issuer.logo?.url ?? ''
 
-  if (isPidSdJwtVc) {
+  if (isLegacySdJwtPid) {
     const raw = credential?.rawAttributes as Arf15PidSdJwtVcAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `born ${raw.birth_date} (${raw.age_in_years})`
@@ -73,9 +75,19 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
     addressTable.postalCode = raw.resident_postal_code ?? ''
     headerImage = raw.portrait ?? headerImage
-  }
+  } else if (isPidSdJwtVc) {
+    const raw = credential?.rawAttributes as Arf18PidSdJwtVcAttributes
+    personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
+    personalInfoCard.born = `born ${raw.birthdate}`
+    personalInfoCard.placeOfBirth = `${raw.place_of_birth.locality} (${raw.place_of_birth.country})`
+    personalInfoCard.nationalities = raw.nationalities?.join(', ')
 
-  if (isPidMdoc) {
+    addressTable.locality = `${raw.address.locality} (${raw.address.country})`
+    addressTable.street = raw.address.street_address ?? ''
+    addressTable.postalCode = raw.address.postal_code ?? ''
+
+    headerImage = raw.portrait ?? headerImage
+  } else if (isPidMdoc) {
     const raw = credential?.rawAttributes as PidMdocAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `born ${raw.birth_date}`
@@ -135,7 +147,9 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
           Address
         </Heading>
         <TableContainer>
-          <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressTable.street]} />
+          {addressTable.street !== '' && (
+            <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressTable.street]} />
+          )}
           <TableRow
             attributes={[mapPidAttributeName('postal_code'), mapPidAttributeName('locality')]}
             values={[addressTable.postalCode, addressTable.locality]}
@@ -238,7 +252,10 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
   const raw = credential.rawAttributes as MdlAttributes
 
   const sortedPrivileges = raw.driving_privileges
-    .map((privilege) => ({ privilege, code: getMdlCode(privilege.vehicle_category_code) }))
+    .map((privilege) => ({
+      privilege,
+      code: getMdlCode(privilege.vehicle_category_code),
+    }))
     .sort((a, b) => (a.code.index === undefined ? 1 : b.code.index === undefined ? -1 : a.code.index - b.code.index))
 
   const mainCard = {

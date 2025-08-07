@@ -44,31 +44,32 @@ export default function OnboardingScreens() {
     resetWallet(secureUnlock)
   }, [reset, secureUnlock, hasResetWallet])
 
+  const resetAlertTitle = t({
+    id: 'onboarding.resetAlert.title',
+    message: 'Reset Onboarding',
+    comment: 'Title of the alert when user attempts to reset onboarding',
+  })
+  const resetAlertMessage = t({
+    id: 'onboarding.resetAlert.message',
+    message: 'Are you sure you want to reset the onboarding process?',
+    comment: 'Confirmation message for onboarding reset',
+  })
+  const cancelMessage = t(commonMessages.cancel)
+  const yesMessage = t(commonMessages.yes)
+
   const onReset = withHaptics(() => {
-    Alert.alert(
-      t({
-        id: 'onboarding.resetAlert.title',
-        message: 'Reset Onboarding',
-        comment: 'Title of the alert when user attempts to reset onboarding',
-      }),
-      t({
-        id: 'onboarding.resetAlert.message',
-        message: 'Are you sure you want to reset the onboarding process?',
-        comment: 'Confirmation message for onboarding reset',
-      }),
-      [
-        {
-          text: t(commonMessages.cancel),
-          style: 'cancel',
-        },
-        {
-          text: t(commonMessages.yes),
-          onPress: withHaptics(() => {
-            onboardingContext.reset()
-          }),
-        },
-      ]
-    )
+    Alert.alert(resetAlertTitle, resetAlertMessage, [
+      {
+        text: cancelMessage,
+        style: 'cancel',
+      },
+      {
+        text: yesMessage,
+        onPress: withHaptics(() => {
+          onboardingContext.reset()
+        }),
+      },
+    ])
   })
 
   if (hasFinishedOnboarding) return null
@@ -93,10 +94,10 @@ export default function OnboardingScreens() {
             <YStack gap={media.short ? '$2' : '$3'}>
               {onboardingContext.page.title && (
                 <Heading ref={headerRef} variant="h1">
-                  {onboardingContext.page.title}
+                  {t(onboardingContext.page.title)}
                 </Heading>
               )}
-              {onboardingContext.page.subtitle && <Paragraph>{onboardingContext.page.subtitle}</Paragraph>}
+              {onboardingContext.page.subtitle && <Paragraph>{t(onboardingContext.page.subtitle)}</Paragraph>}
             </YStack>
             {onboardingContext.screen}
           </YStack>

@@ -295,4 +295,8 @@ export const supportedLanguageMessages: Record<SupportedLocale, MessageDescripto
     id: 'language.de',
     message: 'German',
   }),
+  al: defineMessage({
+    id: 'language.al',
+    message: 'Albanian',
+  }),
 }

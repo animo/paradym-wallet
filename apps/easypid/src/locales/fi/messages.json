@@ -23,7 +23,7 @@
 			"amountShared": ["amountShared"]
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 184]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 185]],
 		"translation": "{amountShared} valtuutusta jaettiin."
 	},
 	"inbox.notificationType.fromLabel": {
@@ -37,13 +37,13 @@
 		"translation": "{baseLabel} taholta {0}"
 	},
 	"dateFormatting.mulitpleDays": {
-		"translation": "",
 		"message": "{days} days",
 		"placeholders": {
 			"days": ["days"]
 		},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 111]]
+		"origin": [["../../packages/utils/src/format.ts", 111]],
+		"translation": ""
 	},
 	"requestedAttributes.subheading": {
 		"message": "{disclosedAttributeLength} from {0}",
@@ -74,7 +74,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 151]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 184]],
 		"translation": "{name} haluaa muodostaa yhteyden kanssasi."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -83,8 +83,17 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 129]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 157]],
 		"translation": "{name} haluaa luoda digitaalisen allekirjoituksen asiakirjalle."
+	},
+	"verifyPartySlide.offerCardSubtitle": {
+		"message": "{name} wants to offer you a card.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
+		"translation": "{name} haluaa tarjota sinulle kortin."
 	},
 	"verifyPartySlide.requestSubtitle": {
 		"message": "{name} wants to request information from you.",
@@ -92,17 +101,8 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 141]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 171]],
 		"translation": "{name} haluaa pyytää sinulta tietoja."
-	},
-	"verifyPartySlide.offerCardSubtitle": {
-		"message": "${name} wants to offer you a card.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 119]],
-		"translation": "{name} haluaa tarjota sinulle kortin."
 	},
 	"credentials.totalLabel": {
 		"message": "1 card total",
@@ -115,15 +115,15 @@
 		"message": "1 credential was shared.",
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 189]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 190]],
 		"translation": "1 valtuutus jaettiin."
 	},
 	"dateFormatting.oneDay": {
-		"translation": "",
 		"message": "1 day",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 107]]
+		"origin": [["../../packages/utils/src/format.ts", 107]],
+		"translation": ""
 	},
 	"trust.approvedList": {
 		"message": "A list of organizations that have approved {name}.",
@@ -237,6 +237,13 @@
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 101]],
 		"translation": "Lisätty {name}"
 	},
+	"language.al": {
+		"translation": "",
+		"message": "Albanian",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 298]]
+	},
 	"credentials.allCardsTitle": {
 		"message": "All cards",
 		"placeholders": {},
@@ -298,28 +305,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 188]],
 		"translation": "Tuntematon organisaatio haluaa muodostaa yhteyden kanssasi."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 162]],
 		"translation": "Tuntematon organisaatio haluaa luoda digitaalisen allekirjoituksen asiakirjalle."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 149]],
 		"translation": "Tuntematon organisaatio haluaa tarjota sinulle kortin."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 175]],
 		"translation": "Tuntematon organisaatio haluaa pyytää sinulta tietoja."
 	},
 	"menu.section.app": {
@@ -335,14 +342,14 @@
 			"0": ["trustedEntitiesWithoutSelf.length"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 172]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 208]],
 		"translation": "Hyväksytty {0} organisaation toimesta"
 	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 177]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 213]],
 		"translation": "Hyväksytty yhden organisaation toimesta"
 	},
 	"common.archiveCardTitle": {
@@ -356,7 +363,7 @@
 		"message": "Are you sure you want to reset the onboarding process?",
 		"placeholders": {},
 		"comments": ["Confirmation message for onboarding reset"],
-		"origin": [["src/app/onboarding/index.tsx", 54]],
+		"origin": [["src/app/onboarding/index.tsx", 52]],
 		"translation": "Oletko varma, että haluat aloittaa käyttöönoton alusta?"
 	},
 	"pinLocked.alertMessage": {
@@ -424,11 +431,11 @@
 		"translation": "Valtuutus epäonnistui"
 	},
 	"common.backButton": {
-		"translation": "",
 		"message": "Back",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 156]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 156]],
+		"translation": ""
 	},
 	"onboarding.intro.subtitle": {
 		"message": "Before you can use the app, we will guide you through these steps.",
@@ -604,7 +611,7 @@
 		"comments": [
 			"Section heading for list of received cards in the activity detail screen"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 129]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 130]],
 		"translation": "Kortit"
 	},
 	"onboarding.pin.title": {
@@ -839,7 +846,7 @@
 		"message": "Deleted credential",
 		"placeholders": {},
 		"comments": ["Shown when a credential no longer exists in the wallet"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 71]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 72]],
 		"translation": "Poistettu valtuutus"
 	},
 	"trust.demoOrg": {
@@ -855,7 +862,7 @@
 		"message": "Demo organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 199]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 235]],
 		"translation": "Demo-organisaatio"
 	},
 	"settings.developmentMode": {
@@ -887,7 +894,7 @@
 		"message": "Do not share real data",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 203]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 239]],
 		"translation": "Älä jaa oikeita tietoja"
 	},
 	"signShare.documentHeading": {
@@ -903,7 +910,7 @@
 		"comments": [
 			"Section heading shown when a document was signed or attempted to be signed"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 211]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 212]],
 		"translation": "Asiakirja"
 	},
 	"common.documentSigned": {
@@ -939,7 +946,6 @@
 		"translation": "Hollanti"
 	},
 	"eidCard.requestAttributesTitle": {
-		"translation": "",
 		"message": "eID card",
 		"placeholders": {},
 		"comments": [
@@ -947,7 +953,8 @@
 		],
 		"origin": [
 			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 51]
-		]
+		],
+		"translation": ""
 	},
 	"pidSetup.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
@@ -1024,11 +1031,11 @@
 		"translation": "Syötä henkilökortin PIN-koodi"
 	},
 	"simulatorEidCard.enterRealPin": {
-		"translation": "",
 		"message": "Enter your real PIN to continue",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 196]]
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 196]],
+		"translation": ""
 	},
 	"common.toastCardDeleteError": {
 		"message": "Error deleting card",
@@ -1128,7 +1135,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 214]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 255]],
 		"translation": "Ensimmäinen vuorovaikutus"
 	},
 	"funkeAboutScreen.contactIntro": {
@@ -1414,13 +1421,13 @@
 		"translation": "Tiedot jaettu"
 	},
 	"verifyPartySlide.interactWithHeading": {
-		"translation": "",
 		"message": "Interact with {name}?",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 111]]
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
+		"translation": ""
 	},
 	"pidSetup.invalidEidPin": {
 		"message": "Invalid eID card PIN entered",
@@ -1566,10 +1573,12 @@
 	"verifyPartySlide.hasPreviousInteractionsDescription": {
 		"message": "Last interaction: {0}",
 		"placeholders": {
-			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
+			"0": [
+				"formatRelativeDate(\n                      new Date(lastInteractionDate)\n                    )"
+			]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 218]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 262]],
 		"translation": "Viimeisin vuorovaikutus: {0}"
 	},
 	"predicate.lessThan": {
@@ -1731,7 +1740,7 @@
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 194]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 195]],
 		"translation": "Valtuutuksia ei jaettu."
 	},
 	"submission.fallbackPurpose": {
@@ -1747,7 +1756,7 @@
 		"comments": [
 			"Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish."
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 76]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 77]],
 		"translation": "Tietopyynnön tarkoituksesta ei annettu tietoa. Ole varovainen"
 	},
 	"network.noInternet": {
@@ -1781,7 +1790,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 222]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 268]],
 		"translation": "Aiempia vuorovaikutuksia ei löytynyt"
 	},
 	"pidSetup.notReadyToReceivePid": {
@@ -1843,15 +1852,15 @@
 		"message": "Organization is not verified",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 189]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 225]],
 		"translation": "Organisaatiota ei ole vahvistettu"
 	},
 	"verifyPartySlide.organizationNotVerifiedHeading": {
-		"translation": "",
 		"message": "Organization not verified",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]]
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 137]],
+		"translation": ""
 	},
 	"requestPurpose.infoSheet.title": {
 		"message": "Overasking detected",
@@ -1986,7 +1995,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 213]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 251]],
 		"translation": "Aiemmat vuorovaikutukset"
 	},
 	"funkeAboutScreen.privacyPolicyTitle": {
@@ -2072,7 +2081,7 @@
 		"message": "Recognized organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 166]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 202]],
 		"translation": "Tunnistettu organisaatio"
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2120,14 +2129,14 @@
 		"comments": [
 			"Heading shown when the request did not result in attributes being shared"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 97]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 98]],
 		"translation": "Pyydetyt tiedot"
 	},
 	"onboarding.resetAlert.title": {
 		"message": "Reset Onboarding",
 		"placeholders": {},
 		"comments": ["Title of the alert when user attempts to reset onboarding"],
-		"origin": [["src/app/onboarding/index.tsx", 49]],
+		"origin": [["src/app/onboarding/index.tsx", 47]],
 		"translation": "Nollaa käyttöönotto"
 	},
 	"common.reset": {
@@ -2344,7 +2353,7 @@
 		"comments": [
 			"Heading shown when attributes were successfully shared in an activity"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 92]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 93]],
 		"translation": "Jaetut tiedot"
 	},
 	"activity.latest.sharedCard": {
@@ -2488,7 +2497,7 @@
 		"comments": [
 			"Shown below a document name to indicate the user signed it with a specific QTSP"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 230]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 231]],
 		"translation": "Allekirjoitettu palvelulla {0}"
 	},
 	"common.simulatorEidCardActivated": {
@@ -2668,14 +2677,14 @@
 		"message": "The document was not signed.",
 		"placeholders": {},
 		"comments": ["Shown after a failed digital signature"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 87]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 88]],
 		"translation": "Asiakirjaa ei allekirjoitettu."
 	},
 	"activity.documentSigned": {
 		"message": "The document was signed.",
 		"placeholders": {},
 		"comments": ["Shown after a successful digital signature"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 82]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 83]],
 		"translation": "Asiakirja allekirjoitettiin."
 	},
 	"cardLifecycle.limitedByDate.expired.description": {
@@ -3036,20 +3045,20 @@
 		"translation": "Vastaanottaaksesi tämän kortin sinun tulee valtuuttaa tilisi. Sinut ohjataan nyt myöntäjän verkkosivulle."
 	},
 	"dateFormatting.today": {
-		"translation": "",
 		"message": "Today",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 49]]
+		"origin": [["../../packages/utils/src/format.ts", 49]],
+		"translation": ""
 	},
 	"dateFormatting.todayAtTime": {
-		"translation": "",
 		"message": "Today at {0}",
 		"placeholders": {
 			"0": ["formatTime(date)"]
 		},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 48]]
+		"origin": [["../../packages/utils/src/format.ts", 48]],
+		"translation": ""
 	},
 	"pinLocked.title": {
 		"message": "Too many incorrect attempts",
@@ -3296,20 +3305,20 @@
 		"translation": "Kyllä, lopeta"
 	},
 	"dateFormatting.yesterday": {
-		"translation": "",
 		"message": "Yesterday",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 54]]
+		"origin": [["../../packages/utils/src/format.ts", 54]],
+		"translation": ""
 	},
 	"dateFormatting.yesterdayAtTime": {
-		"translation": "",
 		"message": "Yesterday at {0}",
 		"placeholders": {
 			"0": ["formatTime(date)"]
 		},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 53]]
+		"origin": [["../../packages/utils/src/format.ts", 53]],
+		"translation": ""
 	},
 	"signing.description": {
 		"message": "You are about to sign <0>{documentName}</0>.",
@@ -3497,7 +3506,7 @@
 		"comments": [
 			"Shown in activity detail when one credential has been received"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 118]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 119]],
 		"translation": "Olet vastaanottanut seuraavan kortin taholta {0}."
 	},
 	"activity.receivedMultiple": {
@@ -3508,7 +3517,7 @@
 		"comments": [
 			"Shown in activity detail when multiple credentials have been received"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 113]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 114]],
 		"translation": "Olet vastaanottanut seuraavat kortit taholta {0}."
 	},
 	"pidSetup.enableBiometrics.title": {

@@ -23,7 +23,7 @@
 			"amountShared": ["amountShared"]
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 184]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 185]],
 		"translation": ""
 	},
 	"inbox.notificationType.fromLabel": {
@@ -37,13 +37,13 @@
 		"translation": ""
 	},
 	"dateFormatting.mulitpleDays": {
-		"translation": "",
 		"message": "{days} days",
 		"placeholders": {
 			"days": ["days"]
 		},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 111]]
+		"origin": [["../../packages/utils/src/format.ts", 111]],
+		"translation": ""
 	},
 	"requestedAttributes.subheading": {
 		"message": "{disclosedAttributeLength} from {0}",
@@ -74,7 +74,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 151]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 184]],
 		"translation": ""
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -83,7 +83,16 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 129]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 157]],
+		"translation": ""
+	},
+	"verifyPartySlide.offerCardSubtitle": {
+		"message": "{name} wants to offer you a card.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
 		"translation": ""
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -92,16 +101,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 141]],
-		"translation": ""
-	},
-	"verifyPartySlide.offerCardSubtitle": {
-		"message": "${name} wants to offer you a card.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 119]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 171]],
 		"translation": ""
 	},
 	"credentials.totalLabel": {
@@ -115,15 +115,15 @@
 		"message": "1 credential was shared.",
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 189]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 190]],
 		"translation": ""
 	},
 	"dateFormatting.oneDay": {
-		"translation": "",
 		"message": "1 day",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 107]]
+		"origin": [["../../packages/utils/src/format.ts", 107]],
+		"translation": ""
 	},
 	"trust.approvedList": {
 		"message": "A list of organizations that have approved {name}.",
@@ -237,6 +237,13 @@
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 101]],
 		"translation": ""
 	},
+	"language.al": {
+		"translation": "",
+		"message": "Albanian",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 298]]
+	},
 	"credentials.allCardsTitle": {
 		"message": "All cards",
 		"placeholders": {},
@@ -298,28 +305,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 188]],
 		"translation": ""
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 162]],
 		"translation": ""
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 149]],
 		"translation": ""
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 175]],
 		"translation": ""
 	},
 	"menu.section.app": {
@@ -335,14 +342,14 @@
 			"0": ["trustedEntitiesWithoutSelf.length"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 172]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 208]],
 		"translation": ""
 	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 177]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 213]],
 		"translation": ""
 	},
 	"common.archiveCardTitle": {
@@ -356,7 +363,7 @@
 		"message": "Are you sure you want to reset the onboarding process?",
 		"placeholders": {},
 		"comments": ["Confirmation message for onboarding reset"],
-		"origin": [["src/app/onboarding/index.tsx", 54]],
+		"origin": [["src/app/onboarding/index.tsx", 52]],
 		"translation": ""
 	},
 	"pinLocked.alertMessage": {
@@ -424,11 +431,11 @@
 		"translation": ""
 	},
 	"common.backButton": {
-		"translation": "",
 		"message": "Back",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 156]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 156]],
+		"translation": ""
 	},
 	"onboarding.intro.subtitle": {
 		"message": "Before you can use the app, we will guide you through these steps.",
@@ -604,7 +611,7 @@
 		"comments": [
 			"Section heading for list of received cards in the activity detail screen"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 129]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 130]],
 		"translation": ""
 	},
 	"onboarding.pin.title": {
@@ -839,7 +846,7 @@
 		"message": "Deleted credential",
 		"placeholders": {},
 		"comments": ["Shown when a credential no longer exists in the wallet"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 71]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 72]],
 		"translation": ""
 	},
 	"trust.demoOrg": {
@@ -855,7 +862,7 @@
 		"message": "Demo organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 199]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 235]],
 		"translation": ""
 	},
 	"settings.developmentMode": {
@@ -887,7 +894,7 @@
 		"message": "Do not share real data",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 203]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 239]],
 		"translation": ""
 	},
 	"signShare.documentHeading": {
@@ -903,7 +910,7 @@
 		"comments": [
 			"Section heading shown when a document was signed or attempted to be signed"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 211]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 212]],
 		"translation": ""
 	},
 	"common.documentSigned": {
@@ -939,7 +946,6 @@
 		"translation": ""
 	},
 	"eidCard.requestAttributesTitle": {
-		"translation": "",
 		"message": "eID card",
 		"placeholders": {},
 		"comments": [
@@ -947,7 +953,8 @@
 		],
 		"origin": [
 			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 51]
-		]
+		],
+		"translation": ""
 	},
 	"pidSetup.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
@@ -1024,11 +1031,11 @@
 		"translation": ""
 	},
 	"simulatorEidCard.enterRealPin": {
-		"translation": "",
 		"message": "Enter your real PIN to continue",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 196]]
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 196]],
+		"translation": ""
 	},
 	"common.toastCardDeleteError": {
 		"message": "Error deleting card",
@@ -1128,7 +1135,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 214]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 255]],
 		"translation": ""
 	},
 	"funkeAboutScreen.contactIntro": {
@@ -1414,13 +1421,13 @@
 		"translation": ""
 	},
 	"verifyPartySlide.interactWithHeading": {
-		"translation": "",
 		"message": "Interact with {name}?",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 111]]
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
+		"translation": ""
 	},
 	"pidSetup.invalidEidPin": {
 		"message": "Invalid eID card PIN entered",
@@ -1566,10 +1573,12 @@
 	"verifyPartySlide.hasPreviousInteractionsDescription": {
 		"message": "Last interaction: {0}",
 		"placeholders": {
-			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
+			"0": [
+				"formatRelativeDate(\n                      new Date(lastInteractionDate)\n                    )"
+			]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 218]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 262]],
 		"translation": ""
 	},
 	"predicate.lessThan": {
@@ -1731,7 +1740,7 @@
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 194]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 195]],
 		"translation": ""
 	},
 	"submission.fallbackPurpose": {
@@ -1747,7 +1756,7 @@
 		"comments": [
 			"Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish."
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 76]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 77]],
 		"translation": ""
 	},
 	"network.noInternet": {
@@ -1781,7 +1790,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 222]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 268]],
 		"translation": ""
 	},
 	"pidSetup.notReadyToReceivePid": {
@@ -1843,15 +1852,15 @@
 		"message": "Organization is not verified",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 189]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 225]],
 		"translation": ""
 	},
 	"verifyPartySlide.organizationNotVerifiedHeading": {
-		"translation": "",
 		"message": "Organization not verified",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]]
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 137]],
+		"translation": ""
 	},
 	"requestPurpose.infoSheet.title": {
 		"message": "Overasking detected",
@@ -1986,7 +1995,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 213]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 251]],
 		"translation": ""
 	},
 	"funkeAboutScreen.privacyPolicyTitle": {
@@ -2072,7 +2081,7 @@
 		"message": "Recognized organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 166]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 202]],
 		"translation": ""
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2120,14 +2129,14 @@
 		"comments": [
 			"Heading shown when the request did not result in attributes being shared"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 97]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 98]],
 		"translation": ""
 	},
 	"onboarding.resetAlert.title": {
 		"message": "Reset Onboarding",
 		"placeholders": {},
 		"comments": ["Title of the alert when user attempts to reset onboarding"],
-		"origin": [["src/app/onboarding/index.tsx", 49]],
+		"origin": [["src/app/onboarding/index.tsx", 47]],
 		"translation": ""
 	},
 	"common.reset": {
@@ -2344,7 +2353,7 @@
 		"comments": [
 			"Heading shown when attributes were successfully shared in an activity"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 92]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 93]],
 		"translation": ""
 	},
 	"activity.latest.sharedCard": {
@@ -2488,7 +2497,7 @@
 		"comments": [
 			"Shown below a document name to indicate the user signed it with a specific QTSP"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 230]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 231]],
 		"translation": ""
 	},
 	"common.simulatorEidCardActivated": {
@@ -2668,14 +2677,14 @@
 		"message": "The document was not signed.",
 		"placeholders": {},
 		"comments": ["Shown after a failed digital signature"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 87]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 88]],
 		"translation": ""
 	},
 	"activity.documentSigned": {
 		"message": "The document was signed.",
 		"placeholders": {},
 		"comments": ["Shown after a successful digital signature"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 82]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 83]],
 		"translation": ""
 	},
 	"cardLifecycle.limitedByDate.expired.description": {
@@ -3036,20 +3045,20 @@
 		"translation": ""
 	},
 	"dateFormatting.today": {
-		"translation": "",
 		"message": "Today",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 49]]
+		"origin": [["../../packages/utils/src/format.ts", 49]],
+		"translation": ""
 	},
 	"dateFormatting.todayAtTime": {
-		"translation": "",
 		"message": "Today at {0}",
 		"placeholders": {
 			"0": ["formatTime(date)"]
 		},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 48]]
+		"origin": [["../../packages/utils/src/format.ts", 48]],
+		"translation": ""
 	},
 	"pinLocked.title": {
 		"message": "Too many incorrect attempts",
@@ -3296,20 +3305,20 @@
 		"translation": ""
 	},
 	"dateFormatting.yesterday": {
-		"translation": "",
 		"message": "Yesterday",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 54]]
+		"origin": [["../../packages/utils/src/format.ts", 54]],
+		"translation": ""
 	},
 	"dateFormatting.yesterdayAtTime": {
-		"translation": "",
 		"message": "Yesterday at {0}",
 		"placeholders": {
 			"0": ["formatTime(date)"]
 		},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 53]]
+		"origin": [["../../packages/utils/src/format.ts", 53]],
+		"translation": ""
 	},
 	"signing.description": {
 		"message": "You are about to sign <0>{documentName}</0>.",
@@ -3497,7 +3506,7 @@
 		"comments": [
 			"Shown in activity detail when one credential has been received"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 118]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 119]],
 		"translation": ""
 	},
 	"activity.receivedMultiple": {
@@ -3508,7 +3517,7 @@
 		"comments": [
 			"Shown in activity detail when multiple credentials have been received"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 113]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 114]],
 		"translation": ""
 	},
 	"pidSetup.enableBiometrics.title": {

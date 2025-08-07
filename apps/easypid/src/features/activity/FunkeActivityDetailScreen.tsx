@@ -18,6 +18,7 @@ export function FunkeActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
   const { bottom } = useSafeAreaInsets()
+  const { t } = useLingui()
 
   const { activities } = useActivities()
   const activity = activities.find((activity) => activity.id === id)
@@ -28,7 +29,7 @@ export function FunkeActivityDetailScreen() {
   }
 
   const Icon = activityInteractions[activity.type][activity.status]
-  const Title = activityInteractions[activity.type][activity.status].text
+  const Title = t(activityInteractions[activity.type][activity.status].text)
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 

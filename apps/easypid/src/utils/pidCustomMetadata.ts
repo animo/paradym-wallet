@@ -48,6 +48,27 @@ export type Arf15PidSdJwtVcAttributes = {
   portrait?: string
 }
 
+// NOTE: this is a subset
+export type Arf18PidSdJwtVcAttributes = {
+  given_name: string
+  family_name: string
+
+  address: {
+    locality: string
+    street_address: string
+    country: string
+    postal_code: string
+  }
+  birthdate: string
+  place_of_birth: {
+    country: string
+    locality: string
+    region: string
+  }
+  nationalities: string[]
+  portrait?: string
+}
+
 export type PidSdJwtVcAttributes = {
   issuing_country: string
   issuing_authority: string
