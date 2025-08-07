@@ -1,21 +1,9 @@
 import { mmkv } from '@easypid/storage/mmkv'
 import { isIos, useHaptics } from '@package/app'
-import {
-  AnimatedStack,
-  Button,
-  Heading,
-  Loader,
-  Page,
-  Paragraph,
-  Spacer,
-  Stack,
-  XStack,
-  YStack,
-  useToastController,
-} from '@package/ui'
+import { AnimatedStack, Button, Heading, Loader, Page, Paragraph, Spacer, Stack, XStack, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { Alert, Linking, useWindowDimensions } from 'react-native'
+import { Linking, useWindowDimensions } from 'react-native'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
 
@@ -37,7 +25,6 @@ export function FunkeOfflineQrScreen() {
   const { withHaptics } = useHaptics()
   const { replace, back } = useRouter()
   const { width } = useWindowDimensions()
-  const toast = useToastController()
   const { t } = useLingui()
 
   const [qrCodeData, setQrCodeData] = useState<string>()
@@ -59,80 +46,52 @@ export function FunkeOfflineQrScreen() {
 
   useEffect(() => {
     if (arePermissionsGranted) {
-      void getMdocQrCode().then(setQrCodeData)
+      void getMdocQrCode()
+        .then(setQrCodeData)
+        .catch(() => {
+          // NOTE: iOS automatically handles Bluetooth permissions, so we can't
+          // easily detect if they've been granted or not. This is a workaround
+          // to ensure the user is aware of the need for permissions.
+          if (isIos()) setArePermissionsGranted(false)
+        })
     } else {
       setQrCodeData(undefined)
     }
   }, [arePermissionsGranted])
 
-  const handlePermissions = async () => {
-    if (isIos()) return { granted: true, shouldShowSettings: false }
-    const permissions = await requestMdocPermissions()
+  const checkPermissions = async () => {
+    if (isIos()) {
+      // NOTE: iOS automatically asks for Bluetooth permissions when we try to use it.
+      // We can't easily detect if permissions have been granted until we try to use Bluetooth
+      // and get an error.
+      return true
+    }
 
+    const permissions = await requestMdocPermissions()
     if (!permissions) {
-      toast.show(
-        t({
-          id: 'offlineQr.permissionError',
-          message: 'Failed to request permissions.',
-          comment: 'Toast shown when system permission request fails',
-        }),
-        { customData: { preset: 'danger' } }
-      )
-      return { granted: false, shouldShowSettings: false }
+      return false
     }
 
     // Check if any permission is in 'never_ask_again' state
     const hasNeverAskAgain = Object.values(permissions).some((status) => status === 'never_ask_again')
-
     if (hasNeverAskAgain) {
-      return { granted: false, shouldShowSettings: true }
+      return false
     }
 
-    const permissionStatus = await checkMdocPermissions()
-    return { granted: !!permissionStatus, shouldShowSettings: false }
+    return await checkMdocPermissions()
   }
 
   const requestPermissions = async () => {
     // First request without checking the never_ask_again state
     if (!arePermissionsRequested) {
-      const { granted } = await handlePermissions()
+      const granted = await checkPermissions()
       setArePermissionsRequested(true)
       setArePermissionsGranted(granted)
       return
     }
 
     // Subsequent requests need to check for the never_ask_again state
-    const { granted, shouldShowSettings } = await handlePermissions()
-
-    if (shouldShowSettings) {
-      back()
-      Alert.alert(
-        t({
-          id: 'offlineQr.permissionSettingsTitle',
-          message: 'Please enable required permissions in your phone settings',
-          comment:
-            'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
-        }),
-        t({
-          id: 'offlineQr.permissionSettingsDescription',
-          message: 'Sharing with QR-Code needs access to Bluetooth and Location.',
-          comment:
-            'This is a heading in a system alert that asks the user to go to Settings to enable Bluetooth/Location permissions',
-        }),
-        [
-          {
-            text: t({
-              id: 'common.openSettings',
-              message: 'Open Settings',
-              comment: 'Button to open system settings from alert',
-            }),
-            onPress: () => Linking.openSettings(),
-          },
-        ]
-      )
-      return
-    }
-
+    const granted = await checkPermissions()
     setArePermissionsGranted(granted)
   }
 
@@ -154,6 +113,18 @@ export function FunkeOfflineQrScreen() {
       params: data,
     })
   })
+
+  if (arePermissionsGranted === false) {
+    return (
+      <Page justifyContent="center" alignItems="center">
+        <Heading variant="h2" letterSpacing={-0.5}>
+          Please allow bluetooth access
+        </Heading>
+        <Paragraph textAlign="center">This allows the app to share with a QR code.</Paragraph>
+        <Button.Text onPress={() => Linking.openSettings()}>Open settings</Button.Text>
+      </Page>
+    )
+  }
 
   return (
     <Page bg="$black" ai="center">
