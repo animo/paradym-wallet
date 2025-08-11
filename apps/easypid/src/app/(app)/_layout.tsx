@@ -14,7 +14,6 @@ import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
 const jsonRecordIds = [activityStorage.recordId]
-
 const isDIDCommEnabled = useFeatureFlag('DIDCOMM')
 
 // When deeplink routing we want to push
@@ -45,6 +44,12 @@ export default function AppLayout() {
   const shouldResetWallet =
     paradym.state !== 'not-configured' && paradym.state !== 'initializing' && !hasFinishedOnboarding
   const isWalletLocked = paradym.state === 'locked' || paradym.state === 'acquired-wallet-key'
+
+  // Only setup mediation if the agent is a paradym agent
+  // useDidCommMediatorSetup({
+  //   hasInternetConnection,
+  //   mediatorDid,
+  // })
 
   // If we are initializing and the wallet was opened using a deeplink we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
