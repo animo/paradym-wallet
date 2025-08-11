@@ -17,7 +17,7 @@ import { useToastController } from '@package/ui'
 import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
 import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
-import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import {
   acquirePreAuthorizedAccessToken,
   receiveCredentialFromOpenId4VciOffer,
@@ -29,7 +29,6 @@ import {
   type CredentialsForProofRequest,
   getCredentialsForProofRequest,
 } from '@paradym/wallet-sdk/openid4vc/getCredentialsForProofRequest'
-import { useParadym } from '@paradym/wallet-sdk/providers/ParadymWalletSdkProvider'
 import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
 import { storeCredential } from '@paradym/wallet-sdk/storage/credentials'
 import { useLocalSearchParams } from 'expo-router'
@@ -55,8 +54,7 @@ const authorization = {
 }
 
 export function FunkeCredentialNotificationScreen() {
-  const paradym = useParadym()
-  const { agent } = useOpenId4VcAgent()
+  const { paradym } = useParadym('unlocked')
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
 
@@ -116,7 +114,7 @@ export function FunkeCredentialNotificationScreen() {
 
   useEffect(() => {
     resolveOpenId4VciOffer({
-      agent,
+      agent: paradym.agent,
       offer: {
         uri: params.uri,
       },
@@ -132,7 +130,7 @@ export function FunkeCredentialNotificationScreen() {
           error,
         })
       })
-  }, [params.uri, agent, setErrorReasonWithError, paradym.logger.error])
+  }, [params.uri, paradym.agent, setErrorReasonWithError, paradym.logger.error])
 
   const retrieveCredentials = useCallback(
     async (
@@ -142,7 +140,7 @@ export function FunkeCredentialNotificationScreen() {
       resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequest
     ) => {
       const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
-        agent,
+        agent: paradym.agent,
         resolvedCredentialOffer,
         credentialConfigurationIdsToRequest: [configurationId],
         accessToken: tokenResponse,
@@ -156,7 +154,7 @@ export function FunkeCredentialNotificationScreen() {
       setCredentialAttributes(attributes)
       setReceivedRecord(credentialRecord)
     },
-    [agent]
+    [paradym.agent]
   )
 
   // TODO: Should we add this to the activitiy? We also don't do it for issuance
@@ -168,8 +166,8 @@ export function FunkeCredentialNotificationScreen() {
   const onCompleteCredentialRetrieval = async () => {
     if (!receivedRecord) return
 
-    await storeCredential(agent, receivedRecord)
-    await addReceivedActivity(agent, {
+    await storeCredential(paradym.agent, receivedRecord)
+    await addReceivedActivity(paradym.agent, {
       // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
       // the credential. Signed issuer metadata is the solution.
       entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
@@ -190,7 +188,7 @@ export function FunkeCredentialNotificationScreen() {
       }
       try {
         const tokenResponse = await acquireAuthorizationCodeAccessToken({
-          agent,
+          agent: paradym.agent,
           resolvedCredentialOffer,
           redirectUri: authorization.redirectUri,
           authorizationCode,
@@ -211,7 +209,7 @@ export function FunkeCredentialNotificationScreen() {
       resolvedCredentialOffer,
       resolvedAuthorizationRequest,
       retrieveCredentials,
-      agent,
+      paradym.agent,
       configurationId,
       setErrorReasonWithError,
       paradym.logger.error,
@@ -227,7 +225,7 @@ export function FunkeCredentialNotificationScreen() {
 
       try {
         const tokenResponse = await acquirePreAuthorizedAccessToken({
-          agent,
+          agent: paradym.agent,
           resolvedCredentialOffer,
           txCode,
         })
@@ -241,7 +239,7 @@ export function FunkeCredentialNotificationScreen() {
     },
     [
       resolvedCredentialOffer,
-      agent,
+      paradym.agent,
       retrieveCredentials,
       configurationId,
       setErrorReasonWithError,
@@ -252,7 +250,7 @@ export function FunkeCredentialNotificationScreen() {
   const parsePresentationRequestUrl = useCallback(
     (oid4vpRequestUrl: string) =>
       getCredentialsForProofRequest({
-        agent,
+        agent: paradym.agent,
         uri: oid4vpRequestUrl,
       })
         .then(setCredentialsForRequest)
@@ -262,7 +260,7 @@ export function FunkeCredentialNotificationScreen() {
             error,
           })
         }),
-    [agent, setErrorReasonWithError, paradym.logger.error]
+    [paradym.agent, setErrorReasonWithError, paradym.logger.error]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -318,7 +316,7 @@ export function FunkeCredentialNotificationScreen() {
 
       try {
         const { presentationDuringIssuanceSession } = await shareProof({
-          agent,
+          agent: paradym.agent,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
           fetchBatchCredentialCallback: refreshPid,
@@ -328,7 +326,7 @@ export function FunkeCredentialNotificationScreen() {
           resolvedCredentialOffer,
           authSession: resolvedAuthorizationRequest.authSession,
           presentationDuringIssuanceSession,
-          agent,
+          agent: paradym.agent,
         })
 
         await acquireCredentialsAuth(authorizationCode)
@@ -354,7 +352,7 @@ export function FunkeCredentialNotificationScreen() {
     },
     [
       credentialsForRequest,
-      agent,
+      paradym.agent,
       acquireCredentialsAuth,
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,

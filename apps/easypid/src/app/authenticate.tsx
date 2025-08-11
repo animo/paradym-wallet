@@ -2,11 +2,9 @@ import { Redirect, useLocalSearchParams } from 'expo-router'
 
 import { TypedArrayEncoder, WalletInvalidKeyError } from '@credo-ts/core'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
-import { initializeParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
-import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
 import { useResetWalletDevMenu } from '../utils/resetWallet'
@@ -17,16 +15,16 @@ import { useResetWalletDevMenu } from '../utils/resetWallet'
 export default function Authenticate() {
   useResetWalletDevMenu()
 
+  const paradym = useParadym()
+
   const { redirectAfterUnlock } = useLocalSearchParams<{ redirectAfterUnlock?: string }>()
   const toast = useToastController()
-  const secureUnlock = useSecureUnlock()
   const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const { additionalPadding, noBottomSafeArea } = useDeviceMedia()
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
-  const isLoading =
-    secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
+  const isLoading = paradym.state === 'locked' && paradym.isUnlocking
 
   // After resetting the wallet, we want to avoid prompting for face id immediately
   // So we add an artificial delay
@@ -38,37 +36,32 @@ export default function Authenticate() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: canTryUnlockingUsingBiometrics not needed
   useEffect(() => {
-    if (secureUnlock.state === 'locked' && secureUnlock.canTryUnlockingUsingBiometrics && isAllowedToUnlockWithFaceId) {
-      secureUnlock.tryUnlockingUsingBiometrics()
+    if (paradym.state === 'locked' && paradym.canTryUnlockingUsingBiometrics && isAllowedToUnlockWithFaceId) {
+      paradym.tryUnlockingUsingBiometrics()
     }
-  }, [secureUnlock.state, isAllowedToUnlockWithFaceId])
+  }, [paradym.state, isAllowedToUnlockWithFaceId])
 
   useEffect(() => {
-    if (secureUnlock.state !== 'acquired-wallet-key') return
-    if (isInitializingAgent) return
+    if (isInitializingAgent || paradym.state !== 'acquired-wallet-key') return
 
     setIsInitializingAgent(true)
-    initializeParadymWalletSdk({
-      walletKey: secureUnlock.walletKey,
-      walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
-    })
-      .then(() => secureUnlock.setWalletKeyValid({ enableBiometrics: true }))
+
+    paradym
+      .setWalletKeyValid({ enableBiometrics: true })
       .catch((error) => {
         if (error instanceof WalletInvalidKeyError) {
-          secureUnlock.setWalletKeyInvalid()
+          paradym.setWalletKeyInvalid()
           pinInputRef.current?.clear()
           pinInputRef.current?.shake()
         }
-
-        // TODO: handle other
         console.error(error)
       })
       .finally(() => {
         setIsInitializingAgent(false)
       })
-  }, [secureUnlock, isInitializingAgent])
+  }, [paradym, isInitializingAgent])
 
-  if (secureUnlock.state === 'unlocked') {
+  if (paradym.state === 'unlocked') {
     // Expo and urls as query params don't go well together, so we encoded the url as base64
     const redirect = redirectAfterUnlock
       ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(redirectAfterUnlock))
@@ -77,15 +70,15 @@ export default function Authenticate() {
     return <Redirect href={redirect} />
   }
 
-  if (secureUnlock.state === 'initializing' || secureUnlock.state === 'not-configured') {
+  if (paradym.state === 'not-configured' || paradym.state === 'loading') {
     return <Redirect href="/" />
   }
 
   void SplashScreen.hideAsync()
 
   const unlockUsingBiometrics = async () => {
-    if (secureUnlock.state === 'locked') {
-      secureUnlock.tryUnlockingUsingBiometrics()
+    if (paradym.state === 'locked') {
+      await paradym.tryUnlockingUsingBiometrics()
     } else {
       toast.show('You PIN is required to unlock the app', {
         customData: {
@@ -96,8 +89,8 @@ export default function Authenticate() {
   }
 
   const unlockUsingPin = async (pin: string) => {
-    if (secureUnlock.state !== 'locked') return
-    await secureUnlock.unlockUsingPin(pin)
+    if (paradym.state !== 'locked') return
+    await paradym.unlockUsingPin(pin)
   }
 
   return (

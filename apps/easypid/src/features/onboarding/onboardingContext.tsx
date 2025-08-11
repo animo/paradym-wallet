@@ -1,12 +1,8 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
-import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import {
-  initializeParadymWalletSdk,
-  isParadymWalletSdkInitialized,
-  shutdownParadymWalletSdk,
-} from '@easypid/sdk/paradymWalletSdk'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { shutdownParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -21,18 +17,13 @@ import {
   type OnboardingStep,
   SIMULATOR_PIN,
 } from '@easypid/utils/sharedPidSetup'
-import {
-  BiometricAuthenticationCancelledError,
-  BiometricAuthenticationNotEnabledError,
-  migrateLegacyParadymWallet,
-} from '@package/agent'
+import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError } from '@package/agent'
 import { useHaptics } from '@package/app'
-import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
-import { useParadym, useSecureUnlock } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
 import { useRouter } from 'expo-router'
 import type React from 'react'
@@ -62,7 +53,6 @@ export function OnboardingContextProvider({
 
   const { successHaptic, lightHaptic } = useHaptics()
   const toast = useToastController()
-  const secureUnlock = useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
@@ -142,17 +132,9 @@ export function OnboardingContextProvider({
   // Bit sad but if we try to call this in the initializeAgent callback sometimes the state hasn't updated
   // in the secure unlock yet, which means that it will throw an error, so we use an effect. Probably need
   // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
-  useEffect(() => {
-    if (secureUnlock.state !== 'acquired-wallet-key' || !isParadymWalletSdkInitialized()) return
-  }, [secureUnlock])
-
-  const initializeAgent = useCallback(async (walletKey: string) => {
-    await initializeParadymWalletSdk({
-      walletKey,
-      walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
-      registerWallet: true,
-    })
-  }, [])
+  // useEffect(() => {
+  //   if (paradym.state !== 'acquired-wallet-key' || !isParadymWalletSdkInitialized()) return
+  // }, [paradym])
 
   const onPinReEnter = async (pin: string) => {
     // Spells BROKEN on the pin pad (with letters)
@@ -175,42 +157,23 @@ export function OnboardingContextProvider({
       throw new Error('Pin entries do not match')
     }
 
-    if (secureUnlock.state !== 'not-configured') {
+    console.log(paradym.state)
+
+    // TODO: unreachable state here, but if this is reached, it will end in an infinite loop from pin entering back to onboarding
+    //       It might be good to reset the state if this is hit?
+    if (paradym.state !== 'not-configured') {
       router.replace('/')
       return
     }
 
-    return secureUnlock
-      .setup(walletPin as string)
-      .then(async ({ walletKey }) => {
-        await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
-
-        if (isParadymWallet()) {
-          const legacyWalletKey = await getLegacySecureWalletKey().catch(() => null)
-
-          if (legacyWalletKey) {
-            await migrateLegacyParadymWallet({
-              legacyWalletKey,
-              newWalletKey: walletKey,
-              walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
-            })
-              .catch((e) => {
-                // We ignore this, it's unfortunate but the wallet migration failed
-                console.error('error migrating wallet', e)
-              })
-              .finally(async () => {
-                await removeLegacySecureWalletKey()
-              })
-          }
-        }
-
-        await initializeAgent(walletKey)
-      })
-      .then(goToNextStep)
-      .catch((e) => {
-        reset({ error: e, resetToStep: 'welcome' })
-        throw e
-      })
+    try {
+      await paradym.setup(walletPin as string)
+      await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
+      goToNextStep()
+    } catch (e) {
+      reset({ error: e, resetToStep: 'welcome' })
+      throw e
+    }
   }
 
   const onEnableBiometricsDisabled = async () => {
@@ -218,10 +181,7 @@ export function OnboardingContextProvider({
   }
 
   const onEnableBiometrics = async () => {
-    if (
-      !isParadymWalletSdkInitialized ||
-      (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')
-    ) {
+    if (paradym.state !== 'acquired-wallet-key' && paradym.state !== 'unlocked') {
       await reset({
         resetToStep: 'pin',
       })
@@ -229,25 +189,25 @@ export function OnboardingContextProvider({
     }
 
     try {
-      if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ enableBiometrics: true })
+      if (paradym.state === 'acquired-wallet-key') {
+        await paradym.setWalletKeyValid({ enableBiometrics: true })
       }
 
       // Directly try getting the wallet key so the user can enable biometrics
       // and we can check if biometrics works
-      const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+      // const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
 
-      if (!walletKey) {
-        const walletKey =
-          secureUnlock.state === 'acquired-wallet-key' ? secureUnlock.walletKey : paradym.agent.config.walletConfig?.key
-        if (!walletKey) {
-          await reset({ resetToStep: 'pin' })
-          return
-        }
+      // if (!walletKey) {
+      //   const walletKey =
+      //     paradym.state === 'acquired-wallet-key' ? paradym.walletKey : paradym.paradym.agent.config.walletConfig?.key
+      //   if (!walletKey) {
+      //     await reset({ resetToStep: 'pin' })
+      //     return
+      //   }
 
-        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-      }
+      //   await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
+      await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+      // }
 
       goToNextStep()
     } catch (error) {
@@ -397,7 +357,7 @@ export function OnboardingContextProvider({
     }
 
     if (stepsToCompleteAfterReset.includes('pin')) {
-      await resetWallet(secureUnlock, paradym.agent)
+      await resetWallet(paradym)
     }
 
     // TODO: if we already have the agent, we should either remove the wallet and start again,
@@ -423,10 +383,10 @@ export function OnboardingContextProvider({
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       await reset({
         resetToStep: 'welcome',
-        error: 'onStartScanning: secureUnlock.state is not unlocked',
+        error: 'onStartScanning: paradym.state is not initialized',
       })
       return
     }
@@ -503,10 +463,10 @@ export function OnboardingContextProvider({
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       await reset({
         resetToStep: 'welcome',
-        error: 'retrieveCredential: secureUnlock.state is not unlocked',
+        error: 'retrieveCredential: paradym.state is not initialized',
       })
       return
     }
@@ -517,7 +477,7 @@ export function OnboardingContextProvider({
 
       for (const credential of credentials) {
         if (credential instanceof SdJwtVcRecord) {
-          const parsed = paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
+          const parsed = paradym.paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
             credential.compactSdJwtVc
           )
           setUserName(
@@ -527,7 +487,7 @@ export function OnboardingContextProvider({
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(paradym.agent, {
+          await addReceivedActivity(paradym.paradym.agent, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
@@ -572,7 +532,7 @@ export function OnboardingContextProvider({
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       await reset({
         error: 'onIdCardStart: Secure unlock state is not unlocked',
         resetToStep: 'welcome',
@@ -586,7 +546,7 @@ export function OnboardingContextProvider({
     }
 
     const baseOptions = {
-      agent: paradym.agent,
+      agent: paradym.paradym.agent,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({

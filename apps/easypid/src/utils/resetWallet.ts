@@ -4,22 +4,20 @@ import {
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
 import { getWalletId } from '@easypid/sdk/paradymWalletSdk'
-import { type SecureUnlockReturn, secureWalletKey } from '@package/secure-store/secureUnlock'
-import type { BaseAgent } from '@paradym/wallet-sdk/agent'
-import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
-import { useParadym } from '@paradym/wallet-sdk/providers/ParadymWalletSdkProvider'
+import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { type ParadymState, useParadym } from '@paradym/wallet-sdk/hooks/useParadym'
 import { isDevelopmentBuild, registerDevMenuItems } from 'expo-dev-client'
 import { useEffect } from 'react'
 import { DevSettings } from 'react-native'
 import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
-export async function resetWallet(secureUnlock: SecureUnlockReturn, agent: BaseAgent) {
-  agent.config.logger.info(`Resetting wallet with secure unlock state: ${secureUnlock.state}`)
+export async function resetWallet(paradym: ParadymState) {
+  console.log(`Resetting wallet with secure unlock state: ${paradym.state}`)
 
-  if (secureUnlock.state === 'unlocked') {
-    secureUnlock.lock()
-    await agent.wallet.delete()
-    await agent.shutdown()
+  if (paradym.state === 'unlocked') {
+    await paradym.lock()
+    await paradym.paradym.agent.wallet.delete()
+    await paradym.paradym.agent.shutdown()
   }
 
   const fs = new agentDependencies.FileSystem()
@@ -48,14 +46,13 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn, agent: BaseA
   removeHasSeenIntroTooltip()
   removeShouldUseCloudHsm()
 
-  if (secureUnlock.state !== 'initializing') {
-    secureUnlock.reinitialize()
+  if (paradym.state !== 'loading') {
+    paradym.reinitialize()
   }
 }
 
 export function useResetWalletDevMenu() {
   const paradym = useParadym()
-  const secureUnlock = useSecureUnlock()
 
   useEffect(() => {
     if (!isDevelopmentBuild()) return
@@ -64,10 +61,10 @@ export function useResetWalletDevMenu() {
         name: 'Reset Wallet',
         callback: () =>
           // TODO(sdk): move this to the sdk
-          resetWallet(secureUnlock, paradym.agent)
+          resetWallet(paradym)
             .then(() => DevSettings.reload('Wallet Reset'))
             .catch((error) => console.error('error resetting wallet', error)),
       },
     ])
-  }, [secureUnlock, paradym.agent])
+  }, [paradym])
 }
