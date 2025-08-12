@@ -47,10 +47,9 @@ export default function Authenticate() {
     setIsInitializingAgent(true)
 
     paradym
-      .setWalletKeyValid({ enableBiometrics: true })
+      .unlock()
       .catch((error) => {
         if (error instanceof WalletInvalidKeyError) {
-          paradym.setWalletKeyInvalid()
           pinInputRef.current?.clear()
           pinInputRef.current?.shake()
         }
@@ -70,7 +69,7 @@ export default function Authenticate() {
     return <Redirect href={redirect} />
   }
 
-  if (paradym.state === 'not-configured' || paradym.state === 'loading') {
+  if (paradym.state === 'not-configured' || paradym.state === 'initializing') {
     return <Redirect href="/" />
   }
 

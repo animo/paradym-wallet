@@ -19,7 +19,6 @@ import {
 } from '@easypid/utils/sharedPidSetup'
 import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError } from '@package/agent'
 import { useHaptics } from '@package/app'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
@@ -80,6 +79,12 @@ export function OnboardingContextProvider({
   const [progressBar, setProgressBar] = useState(currentStep.progress)
 
   useEffect(() => {
+    if (currentStepName === 'welcome' && paradym.state === 'locked') {
+      void resetWallet(paradym)
+    }
+  }, [currentStepName, paradym])
+
+  useEffect(() => {
     if (currentStepName && currentStepName !== 'welcome' && currentStepName !== 'pin-reenter') {
       lightHaptic()
     }
@@ -129,13 +134,6 @@ export function OnboardingContextProvider({
     goToNextStep()
   }
 
-  // Bit sad but if we try to call this in the initializeAgent callback sometimes the state hasn't updated
-  // in the secure unlock yet, which means that it will throw an error, so we use an effect. Probably need
-  // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
-  // useEffect(() => {
-  //   if (paradym.state !== 'acquired-wallet-key' || !isParadymWalletSdkInitialized()) return
-  // }, [paradym])
-
   const onPinReEnter = async (pin: string) => {
     // Spells BROKEN on the pin pad (with letters)
     // Allows bypassing the eID card and use a simulator card
@@ -157,12 +155,10 @@ export function OnboardingContextProvider({
       throw new Error('Pin entries do not match')
     }
 
-    console.log(paradym.state)
-
-    // TODO: unreachable state here, but if this is reached, it will end in an infinite loop from pin entering back to onboarding
-    //       It might be good to reset the state if this is hit?
+    // When the onboarding is cancelled between the pin slide and the biometrics slide, a state occurs where the wallet is `locked`, but biometrics is not setup.
     if (paradym.state !== 'not-configured') {
-      router.replace('/')
+      await resetWallet(paradym)
+      await reset({ resetToStep: 'welcome' })
       return
     }
 
@@ -190,24 +186,8 @@ export function OnboardingContextProvider({
 
     try {
       if (paradym.state === 'acquired-wallet-key') {
-        await paradym.setWalletKeyValid({ enableBiometrics: true })
+        await paradym.unlock({ enableBiometrics: true })
       }
-
-      // Directly try getting the wallet key so the user can enable biometrics
-      // and we can check if biometrics works
-      // const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-
-      // if (!walletKey) {
-      //   const walletKey =
-      //     paradym.state === 'acquired-wallet-key' ? paradym.walletKey : paradym.paradym.agent.config.walletConfig?.key
-      //   if (!walletKey) {
-      //     await reset({ resetToStep: 'pin' })
-      //     return
-      //   }
-
-      //   await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-      await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-      // }
 
       goToNextStep()
     } catch (error) {

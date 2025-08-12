@@ -21,7 +21,7 @@ type Query = {
 }
 
 export function OpenIdCredentialNotificationScreen() {
-  const paradym = useParadym()
+  const { paradym } = useParadym('unlocked')
   const { agent } = useOpenId4VcAgent()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()

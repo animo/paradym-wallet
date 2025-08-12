@@ -1,8 +1,10 @@
-import { useSecureUnlock } from '@package/secure-store/secureUnlock'
+import { WalletInvalidKeyError } from '@credo-ts/core'
+import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import type { CredentialForDisplayId } from './display/credential'
 import { ParadymWalletMustBeInitializedError } from './error'
+import { useParadym } from './hooks'
 import { useActivities } from './hooks/useActivities'
 import { useActivityById } from './hooks/useActivityById'
 import { useCredentialByCategory } from './hooks/useCredentialByCategory'
@@ -52,8 +54,16 @@ export class ParadymWalletSdk {
    * @note this must be called before any usage of the agent, such as retrieving credentials
    *
    */
-  public async initialize() {
-    await this.agent.initialize()
+  public async initialize(): Promise<ParadymWalletSdkResult> {
+    try {
+      await this.agent.initialize()
+      return { success: true }
+    } catch (e) {
+      if (e instanceof WalletInvalidKeyError) {
+        return { success: false, message: 'Invalid key' }
+      }
+      return { success: false, message: (e as Error).message }
+    }
   }
 
   /**
@@ -85,8 +95,6 @@ export class ParadymWalletSdk {
     this.assertAgentIsInitialized()
 
     return {
-      useSecureUnlock,
-
       useLogger,
 
       useCredentials,
@@ -130,10 +138,15 @@ export class ParadymWalletSdk {
    * Wrap your application in this, if you want to leverage the provided `this.hooks`
    *
    */
-  public Provider({ children, recordIds }: PropsWithChildren<{ recordIds: Array<string> }>) {
-    this.assertAgentIsInitialized()
+  public static UnlockProvider({ children }: PropsWithChildren) {
+    return <SecureUnlockProvider>{children}</SecureUnlockProvider>
+  }
+
+  public static AppProvider({ children, recordIds }: PropsWithChildren<{ recordIds: string[] }>) {
+    const { paradym } = useParadym('unlocked')
+
     return (
-      <AgentProvider agent={this.agent} recordIds={recordIds}>
+      <AgentProvider agent={paradym.agent} recordIds={recordIds}>
         {children}
       </AgentProvider>
     )

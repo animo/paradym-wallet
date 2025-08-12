@@ -2,15 +2,18 @@ import { TypedArrayEncoder } from '@credo-ts/core'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
+import { type CredentialDataHandlerOptions, useHaptics } from '@package/app'
+import { ParadymWalletSdk } from '@package/sdk'
 import { HeroIcons, IconContainer } from '@package/ui'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
-import { AgentProvider } from '@paradym/wallet-sdk/providers/AgentProvider'
+import { activityStorage } from '@paradym/wallet-sdk/storage/activities'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
+
+const jsonRecordIds = [activityStorage.recordId]
 
 const isDIDCommEnabled = useFeatureFlag('DIDCOMM')
 
@@ -35,31 +38,18 @@ export default function AppLayout() {
   const [redirectAfterUnlocked, setRedirectAfterUnlocked] = useState<string>()
   const pathname = usePathname()
   const params = useGlobalSearchParams()
-  const hasInternetConnection = useHasInternetConnection()
-
-  useEffect(() => {
-    if (paradym.state !== 'unlocked') return
-
-    // TODO(sdk): handle in sdk
-    // registerCredentialsForDcApi(paradym.agent)
-  }, [paradym])
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
-  const shouldResetWallet = paradym.state !== 'not-configured' && paradym.state !== 'loading' && !hasFinishedOnboarding
+  const shouldResetWallet =
+    paradym.state !== 'not-configured' && paradym.state !== 'initializing' && !hasFinishedOnboarding
   const isWalletLocked = paradym.state === 'locked' || paradym.state === 'acquired-wallet-key'
-
-  // Only setup mediation if the agent is a paradym agent
-  // useDidCommMediatorSetup({
-  //   hasInternetConnection,
-  //   mediatorDid,
-  // })
 
   // If we are initializing and the wallet was opened using a deeplink we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
   // to the auth screen
-  if ((paradym.state === 'loading' || isWalletLocked) && pathname && pathname !== '/' && !redirectAfterUnlocked) {
+  if ((paradym.state === 'initializing' || isWalletLocked) && pathname && pathname !== '/' && !redirectAfterUnlocked) {
     // Expo and urls as query params don't go well together, so we encoded the url as base64
     const encodedRedirect = TypedArrayEncoder.toBase64URL(
       TypedArrayEncoder.fromString(`${pathname}?${new URLSearchParams(params as Record<string, string>).toString()}`)
@@ -68,7 +58,7 @@ export default function AppLayout() {
   }
 
   // Clear the redirection in case the wallet is locked in the background
-  if (paradym.state !== 'loading' && paradym.state !== 'locked' && redirectAfterUnlocked) {
+  if (paradym.state !== 'initializing' && paradym.state !== 'locked' && redirectAfterUnlocked) {
     setRedirectAfterUnlocked(undefined)
   }
 
@@ -77,7 +67,7 @@ export default function AppLayout() {
   }
 
   // This should show the splash screen
-  if (paradym.state === 'loading') {
+  if (paradym.state === 'initializing') {
     return null
   }
 
@@ -110,7 +100,7 @@ export default function AppLayout() {
 
   // Render the normal wallet, which is everything inside (app)
   return (
-    <AgentProvider agent={paradym.paradym.agent} recordIds={['1']}>
+    <ParadymWalletSdk.AppProvider recordIds={jsonRecordIds}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           options={{
@@ -166,6 +156,6 @@ export default function AppLayout() {
         <Stack.Screen name="pidSetup" />
         <Stack.Screen name="inbox" options={headerNormalOptions} />
       </Stack>
-    </AgentProvider>
+    </ParadymWalletSdk.AppProvider>
   )
 }

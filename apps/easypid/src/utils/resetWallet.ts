@@ -46,7 +46,7 @@ export async function resetWallet(paradym: ParadymState) {
   removeHasSeenIntroTooltip()
   removeShouldUseCloudHsm()
 
-  if (paradym.state !== 'loading') {
+  if (paradym.state !== 'initializing') {
     paradym.reinitialize()
   }
 }
