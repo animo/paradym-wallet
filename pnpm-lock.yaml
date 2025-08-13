@@ -187,8 +187,8 @@ catalogs:
       specifier: ^1.6.0
       version: 1.6.0
     react-native-executorch:
-      specifier: 0.4.6
-      version: 0.4.6
+      specifier: 0.4.8
+      version: 0.4.8
     react-native-fs:
       specifier: ^2.20.0
       version: 2.20.0
@@ -266,9 +266,6 @@ patchedDependencies:
   '@tamagui/lucide-icons':
     hash: 6tcfru5vipogbierrf422gjex4
     path: patches/@tamagui__lucide-icons.patch
-  react-native-executorch:
-    hash: 5is663j56w3awtqakrs3htqlzq
-    path: patches/react-native-executorch.patch
 
 importers:
 
@@ -453,7 +450,7 @@ importers:
         version: 1.6.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       react-native-executorch:
         specifier: 'catalog:'
-        version: 0.4.6(patch_hash=5is663j56w3awtqakrs3htqlzq)(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+        version: 0.4.8(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       react-native-fs:
         specifier: 'catalog:'
         version: 2.20.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))
@@ -5557,8 +5554,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-executorch@0.4.6:
-    resolution: {integrity: sha512-w8fn6+cjg7YnHXm2FEtPp9pPXJC6GL7DtSAnIV0Og5Grg9RrybLRQPaSMhzGBN7zx95BrnqUwVNgiCC54n85yw==}
+  react-native-executorch@0.4.8:
+    resolution: {integrity: sha512-CTFmSAJAG2Ez5r3dsEkac7T19R70ZVVliKhLY1/IKaqlBO/9XPxuJKBr0M+GcLbt+DOesSB+I/S/t8EP9NSwPA==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -13096,7 +13093,7 @@ snapshots:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
 
-  react-native-executorch@0.4.6(patch_hash=5is663j56w3awtqakrs3htqlzq)(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0):
+  react-native-executorch@0.4.8(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0):
     dependencies:
       '@huggingface/jinja': 0.5.0
       expo: 53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
