@@ -463,7 +463,7 @@ export const commonMessages = {
       }),
       signature_usual_mark: defineMessage({
         id: 'common.credentials.mdl.signature_usual_mark',
-        message: 'Signature usual mark',
+        message: 'Signature',
         comment: 'Image of signature in an mDL',
       }),
     },

@@ -2616,7 +2616,7 @@
 		"translation": "Signera & dela"
 	},
 	"common.credentials.mdl.signature_usual_mark": {
-		"message": "Signature usual mark",
+		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 464]],

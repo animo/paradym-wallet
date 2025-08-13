@@ -2616,11 +2616,11 @@
 		"translation": "Ondertekenen en delen"
 	},
 	"common.credentials.mdl.signature_usual_mark": {
-		"message": "Signature usual mark",
+		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 464]],
-		"translation": "Handtekening gebruikelijk teken"
+		"translation": "Handtekening"
 	},
 	"activity.latest.signedDocument": {
 		"message": "Signed document",

@@ -2616,11 +2616,11 @@
 		"translation": "Sign & share"
 	},
 	"common.credentials.mdl.signature_usual_mark": {
-		"message": "Signature usual mark",
+		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 464]],
-		"translation": "Signature usual mark"
+		"translation": "Signature"
 	},
 	"activity.latest.signedDocument": {
 		"message": "Signed document",
