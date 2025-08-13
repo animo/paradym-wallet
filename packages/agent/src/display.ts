@@ -145,12 +145,12 @@ export function metadataForDisplay(metadata: CredentialMetadata) {
   const { type, holder, issuedAt, issuer, validFrom, validUntil } = metadata
 
   return {
-    type,
-    issuer,
-    holder,
-    issuedAt: issuedAt ? formatDate(new Date(issuedAt)) : undefined,
-    validFrom: validFrom ? formatDate(new Date(validFrom)) : undefined,
-    validUntil: validUntil ? formatDate(new Date(validUntil)) : undefined,
+    [t(commonMessages.fields.credentialType)]: type,
+    [t(commonMessages.fields.issuer)]: issuer,
+    [t(commonMessages.fields.holder)]: holder,
+    [t(commonMessages.fields.issued_at)]: issuedAt ? formatDate(new Date(issuedAt)) : undefined,
+    [t(commonMessages.fields.validFrom)]: validFrom ? formatDate(new Date(validFrom)) : undefined,
+    [t(commonMessages.fields.expires_at)]: validUntil ? formatDate(new Date(validUntil)) : undefined,
   }
 }
 

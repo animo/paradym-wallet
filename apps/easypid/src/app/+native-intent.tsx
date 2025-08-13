@@ -5,11 +5,18 @@ import { appScheme } from '@easypid/constants'
 import { t } from '@lingui/core/macro'
 import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
+import { commonMessages } from '@package/translations'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
 import { credentialDataHandlerOptions } from './(app)/_layout'
 
-export async function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
+export async function redirectSystemPath({
+  path,
+  initial,
+}: {
+  path: string
+  initial: boolean
+}) {
   const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))
   if (!isRecognizedDeeplink) return path
 
@@ -44,11 +51,7 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
       return {
         success: false,
         error: 'invitation_not_supported',
-        message: t({
-          id: 'deeplink.invitationNotSupported',
-          message: 'Invitation not supported.',
-          comment: 'Error message shown when the type of invitation is not supported by the wallet',
-        }),
+        message: t(commonMessages.invitationNotSupported),
       } as const
     }
 
@@ -81,11 +84,7 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     return {
       success: false,
       error: 'invitation_not_recognized',
-      message: t({
-        id: 'deeplink.invitationNotRecognized',
-        message: 'Invitation not recognized.',
-        comment: 'Error message shown when the invitation URL could not be parsed or recognized',
-      }),
+      message: t(commonMessages.invitationNotRecognized),
     } as const
   } catch (error) {
     return '/'

@@ -416,12 +416,18 @@ export function OnboardingContextProvider({
     setCurrentStepName(resetToStep)
 
     if (showToast) {
-      toast.show(t({ id: 'onboarding.errorOccurred', message: 'Error occurred during onboarding' }), {
-        message: toastMessage,
-        customData: {
-          preset: 'danger',
-        },
-      })
+      toast.show(
+        t({
+          id: 'onboarding.errorOccurred',
+          message: 'Error occurred during onboarding',
+        }),
+        {
+          message: toastMessage,
+          customData: {
+            preset: 'danger',
+          },
+        }
+      )
     }
   }
 
@@ -466,12 +472,18 @@ export function OnboardingContextProvider({
           error,
           showToast: false,
         })
-        toast.show(t({ id: 'onboarding.eidScanningCancelled', message: 'eID card scanning cancelled' }), {
-          message: t(commonMessages.pleaseTryAgain),
-          customData: {
-            preset: 'danger',
-          },
-        })
+        toast.show(
+          t({
+            id: 'onboarding.eidScanningCancelled',
+            message: 'eID card scanning cancelled',
+          }),
+          {
+            message: t(commonMessages.pleaseTryAgain),
+            customData: {
+              preset: 'danger',
+            },
+          }
+        )
       } else {
         await reset({ resetToStep: 'data-protection', error })
       }
@@ -592,7 +604,10 @@ export function OnboardingContextProvider({
     }
 
     if (!walletPin) {
-      await reset({ error: 'onIdCardStart: Missing walletKey in state', resetToStep: 'welcome' })
+      await reset({
+        error: 'onIdCardStart: Missing walletKey in state',
+        resetToStep: 'welcome',
+      })
       throw new Error('onIdCardStart: Missing walletKey in state')
     }
 
@@ -638,9 +653,19 @@ export function OnboardingContextProvider({
       />
     )
   } else if (currentStep.step === 'biometrics') {
-    screen = <currentStep.Screen goToNextStep={onEnableBiometrics} actionText="Activate Biometrics" />
+    screen = (
+      <currentStep.Screen
+        goToNextStep={onEnableBiometrics}
+        actionText={t({
+          id: 'biometrics.activateBiometricsButton',
+          message: 'Activate Biometrics',
+        })}
+      />
+    )
   } else if (currentStep.step === 'biometrics-disabled') {
-    screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Open settings" />
+    screen = (
+      <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText={t(commonMessages.openSettingsButton)} />
+    )
   } else if (currentStep.step === 'data-protection') {
     screen = <currentStep.Screen goToNextStep={onIdCardStart} />
   } else if (currentStep.step === 'id-card-requested-attributes') {

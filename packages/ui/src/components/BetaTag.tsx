@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro'
-import { Paragraph, YStack } from '../base'
+import { Paragraph } from '../base/Paragraph'
+import { YStack } from '../base/Stacks'
 
 export function BetaTag() {
   return (

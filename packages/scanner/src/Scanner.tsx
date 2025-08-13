@@ -52,11 +52,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
             This allows the app to scan QR codes that include credentials or data requests.
           </Trans>
         </Paragraph>
-        <Button.Text onPress={() => _openAppSetting()}>
-          <Trans id="qrScanner.openSettingsButton" comment="Button label to open device settings">
-            Open settings
-          </Trans>
-        </Button.Text>
+        <Button.Text onPress={() => _openAppSetting()}>{t(commonMessages.openSettingsButton)}</Button.Text>
       </Page>
     )
   }

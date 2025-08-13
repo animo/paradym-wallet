@@ -118,10 +118,12 @@ export function FunkeOfflineQrScreen() {
     return (
       <Page justifyContent="center" alignItems="center">
         <Heading variant="h2" letterSpacing={-0.5}>
-          Please allow bluetooth access
+          <Trans id="offlineQr.allowBluetoothAccessTitle">Please allow bluetooth access</Trans>
         </Heading>
-        <Paragraph textAlign="center">This allows the app to share with a QR code.</Paragraph>
-        <Button.Text onPress={() => Linking.openSettings()}>Open settings</Button.Text>
+        <Paragraph textAlign="center">
+          <Trans id="offlineQr.allowBluetoothAccessDescription">This allows the app to share with a QR code.</Trans>
+        </Paragraph>
+        <Button.Text onPress={() => Linking.openSettings()}>{t(commonMessages.openSettingsButton)}</Button.Text>
       </Page>
     )
   }

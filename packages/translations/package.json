@@ -3,6 +3,10 @@
 	"version": "0.0.0",
 	"private": true,
 	"main": "src/index.ts",
+	"scripts": {
+		"merge-missing-translations": "node ./scripts/merge-missing-translations",
+		"extract-missing-translations": "node ./scripts/extract-missing-translations"
+	},
 	"dependencies": {
 		"@lingui/core": "^5.3.3",
 		"@lingui/react": "^5.3.3",

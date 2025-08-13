@@ -66,7 +66,6 @@ export const commonMessages = {
     message: 'No',
     comment: 'Generic no/deny action label',
   }),
-
   enterPin: defineMessage({
     id: 'common.enterPin',
     message: 'Enter your app PIN code',
@@ -82,7 +81,6 @@ export const commonMessages = {
     message: 'Enter PIN to share data',
     comment: 'Heading prompting the user to enter their PIN code before sharing data',
   }),
-
   confirmResetWallet: defineMessage({
     id: 'common.confirmResetWallet',
     message: 'Are you sure you want to reset the wallet?',
@@ -181,6 +179,19 @@ export const commonMessages = {
     message: 'Invitation not recognized.',
     comment: 'Shown when the invitation data format is not supported or could not be parsed',
   }),
+  invitationTypeNotAllowed: defineMessage({
+    id: 'common.invitationTypeNotAllowed',
+    message: 'Invitation type not allowed.',
+  }),
+  invitationParsingFailed: defineMessage({
+    id: 'common.invitationParsingFailed',
+    message: 'Failed to parse invitation.',
+  }),
+  invitationNotSupported: defineMessage({
+    id: 'common.invitationNotSupported',
+    message: 'Invitation not supported.',
+    comment: 'Error message shown when the type of invitation is not supported by the wallet',
+  }),
   issuedByWithName: (name: string) =>
     defineMessage({
       id: 'common.issuedByWithName',
@@ -272,6 +283,191 @@ export const commonMessages = {
     id: 'common.authorizationFailed',
     message: 'Authorization failed',
   }),
+  openSettingsButton: defineMessage({
+    id: 'common.openSettingsButton',
+    message: 'Open settings',
+  }),
+  fields: {
+    place_of_birth: defineMessage({
+      id: 'common.fields.placeOfBirth',
+      message: 'Place of birth',
+    }),
+    date_of_birth: defineMessage({
+      id: 'common.fields.dateOfBirth',
+      message: 'Date of birth',
+    }),
+    address: defineMessage({
+      id: 'common.fields.address',
+      message: 'Address',
+    }),
+    nationalities: defineMessage({
+      id: 'common.fields.nationalities',
+      message: 'Nationalities',
+    }),
+    nationality: defineMessage({
+      id: 'common.fields.nationality',
+      message: 'Nationality',
+    }),
+    street: defineMessage({
+      id: 'common.fields.street',
+      message: 'Street',
+      comment: 'The street where someone lives',
+    }),
+    city: defineMessage({
+      id: 'common.fields.city',
+      message: 'City',
+      comment: 'The city where someone lives',
+    }),
+    country: defineMessage({
+      id: 'common.fields.country',
+      message: 'Country',
+      comment: 'The country where someone lives',
+    }),
+    postal_code: defineMessage({
+      id: 'common.fields.postalCode',
+      message: 'Postal code',
+      comment: 'The postal code where someone lives',
+    }),
+    age: defineMessage({
+      id: 'common.fields.age',
+      message: 'Age',
+      comment: 'The age of a person',
+    }),
+    birth_year: defineMessage({
+      id: 'common.fields.birthYear',
+      message: 'Birth year',
+      comment: 'The birth year of a person',
+    }),
+    age_over: defineMessage({
+      id: 'common.fields.ageOver',
+      message: 'Age over',
+      comment: 'Used as prefix to indicate the age of a person is over a certain age.',
+    }),
+    family_name: defineMessage({
+      id: 'common.fields.familyName',
+      message: 'Family name',
+      comment: 'The family name of a person.',
+    }),
+    given_name: defineMessage({
+      id: 'common.fields.givenName',
+      message: 'Given name',
+      comment: 'The given name of a person.',
+    }),
+    portrait: defineMessage({
+      id: 'common.fields.portrait',
+      message: 'Portrait',
+      comment: 'The portrait of a person.',
+    }),
+    issuing_authority: defineMessage({
+      id: 'common.fields.issuingAuthority',
+      message: 'Issuing authority',
+      comment: 'The issuing authority of a credential',
+    }),
+    issuing_country: defineMessage({
+      id: 'common.fields.issuingCountry',
+      message: 'Issuing country',
+      comment: 'The issuing country of a credential',
+    }),
+    issued_at: defineMessage({
+      id: 'common.fields.issuedAt',
+      message: 'Issued at',
+      comment: 'The time at which a credential is issued',
+    }),
+    validFrom: defineMessage({
+      id: 'common.fields.validFrom',
+      message: 'Valid from',
+      comment: 'The time ƒrom which a credential is valid',
+    }),
+    expires_at: defineMessage({
+      id: 'common.fields.expiresAt',
+      message: 'Expires at',
+      comment: 'The time at which a credential expires',
+    }),
+    credentialType: defineMessage({
+      id: 'common.fields.credentialType',
+      message: 'Credential type',
+      comment: 'The type of credential, usually a complex url structure',
+    }),
+    issuer: defineMessage({
+      id: 'common.fields.issuer',
+      message: 'Issuer',
+      comment: 'The issuer identifier of a credential, usually a complex url structure',
+    }),
+    holder: defineMessage({
+      id: 'common.fields.holder',
+      message: 'Holder',
+      comment: 'The holder identifier of a credential, usually a complex url structure',
+    }),
+    locality: defineMessage({
+      id: 'common.fields.locality',
+      message: 'Locality',
+      comment: 'The locality of a person',
+    }),
+    region: defineMessage({
+      id: 'common.fields.region',
+      message: 'Region',
+      comment: 'The region of a person',
+    }),
+    born: defineMessage({
+      id: 'common.fields.born',
+      message: 'Born',
+      comment: 'Used a prefix for when a person is born',
+    }),
+  },
+  credentials: {
+    mdl: {
+      driving_license: defineMessage({
+        id: 'common.credentials.mdl.title',
+        message: 'Driving License',
+        comment: 'The title of a driving license',
+      }),
+      driving_privileges: defineMessage({
+        id: 'common.credentials.mdl.drivingPrivileges',
+        message: 'Driving privileges',
+        comment: 'The title of driving privileges',
+      }),
+      document_number: defineMessage({
+        id: 'common.credentials.mdl.documentNumber',
+        message: 'Document number',
+        comment: 'The document number of an mDL',
+      }),
+      code: defineMessage({
+        id: 'common.credentials.mdl.code',
+        message: 'Code',
+        comment: 'The code of a driving privilege in an mDL',
+      }),
+      value: defineMessage({
+        id: 'common.credentials.mdl.value',
+        message: 'Value',
+        comment: 'The value of a driving privilege in an mDL',
+      }),
+      sign: defineMessage({
+        id: 'common.credentials.mdl.sign',
+        message: 'Sign',
+        comment: 'The sign of a driving privilege in an mDL (e.g. >=)',
+      }),
+      codes: defineMessage({
+        id: 'common.credentials.mdl.codes',
+        message: 'Codes',
+        comment: 'The codes of a driving privilege in an mDL',
+      }),
+      vehicle_category_code: defineMessage({
+        id: 'common.credentials.mdl.vehicleCategoryCode',
+        message: 'Vehicle category code',
+        comment: 'The vehicle category code of an mDL',
+      }),
+      un_distinguishing_sign: defineMessage({
+        id: 'common.credentials.mdl.unDistinguishingSign',
+        message: 'UN sign',
+        comment: 'The United Nations distinguishing sign of an mDL',
+      }),
+      signature_usual_mark: defineMessage({
+        id: 'common.credentials.mdl.signature_usual_mark',
+        message: 'Signature usual mark',
+        comment: 'Image of signature in an mDL',
+      }),
+    },
+  },
 }
 
 export const supportedLanguageMessages: Record<SupportedLocale, MessageDescriptor> = {
