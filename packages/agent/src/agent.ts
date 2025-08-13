@@ -17,7 +17,6 @@ import {
   KeyDerivationMethod,
   KeyDidRegistrar,
   KeyDidResolver,
-  LogLevel,
   PeerDidNumAlgo,
   WebDidResolver,
   X509Module,
@@ -45,7 +44,7 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
-import { appLogger } from './logger'
+import { logger } from './logger'
 
 const askarModule = new AskarModule({
   askar,
@@ -74,7 +73,7 @@ export const initializeEasyPIDAgent = async ({
         keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.trace),
+      logger,
     },
     modules: {
       askar: askarModule,
@@ -143,7 +142,7 @@ export const initializeParadymAgent = async ({
         keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
       },
       autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.debug),
+      logger,
     },
     modules: {
       messagePickup: new MessagePickupModule(),

@@ -83,7 +83,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         const errorMessage =
           error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
 
-        handleError({ reason: t(commonMessages.presentationInformationCouldNotBeExtracted), description: errorMessage })
+        handleError({
+          reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
+          description: errorMessage,
+        })
 
         agent.config.logger.error('Error getting credentials for request', {
           error,
@@ -183,7 +186,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       } catch (error) {
         setIsSharing(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
-          return handleError({ reason: t(commonMessages.biometricAuthenticationCancelled) })
+          return handleError({
+            reason: t(commonMessages.biometricAuthenticationCancelled),
+          })
         }
 
         if (credentialsForRequest) {
@@ -234,7 +239,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     }
 
     pushToWallet()
-    toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
+    toast.show(t(commonMessages.informationRequestDeclined), {
+      customData: { preset: 'danger' },
+    })
   }
 
   return (
