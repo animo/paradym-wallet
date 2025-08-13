@@ -1,19 +1,15 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { mediatorDid } from '@easypid/constants'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { paradymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
-import { type CredentialDataHandlerOptions, useHaptics, useHasInternetConnection } from '@package/app'
+import { type CredentialDataHandlerOptions, useHaptics } from '@package/app'
+import { ParadymWalletSdk } from '@package/sdk'
 import { HeroIcons, IconContainer } from '@package/ui'
-import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
-import { useDidCommMediatorSetup } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
-import { registerCredentialsForDcApi } from '@paradym/wallet-sdk/openid4vc/dcApi'
-import { ParadymWalletSdkProvider, useParadym } from '@paradym/wallet-sdk/providers/ParadymWalletSdkProvider'
 import { activityStorage } from '@paradym/wallet-sdk/storage/activities'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
@@ -32,47 +28,28 @@ export const credentialDataHandlerOptions = {
 } satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {
+  useResetWalletDevMenu()
+
   const paradym = useParadym()
 
-  useResetWalletDevMenu()
-  const secureUnlock = useSecureUnlock()
   const theme = useTheme()
   const router = useRouter()
   const { withHaptics } = useHaptics()
   const [redirectAfterUnlocked, setRedirectAfterUnlocked] = useState<string>()
   const pathname = usePathname()
   const params = useGlobalSearchParams()
-  const hasInternetConnection = useHasInternetConnection()
-
-  useEffect(() => {
-    if (secureUnlock.state !== 'unlocked') return
-
-    // TODO(sdk): handle in sdk
-    registerCredentialsForDcApi(paradym.agent)
-  }, [secureUnlock, paradym.agent])
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const shouldResetWallet =
-    secureUnlock.state !== 'not-configured' && secureUnlock.state !== 'initializing' && !hasFinishedOnboarding
-  const isWalletLocked = secureUnlock.state === 'locked' || secureUnlock.state === 'acquired-wallet-key'
-
-  // Only setup mediation if the agent is a paradym agent
-  useDidCommMediatorSetup({
-    hasInternetConnection,
-    mediatorDid,
-  })
+    paradym.state !== 'not-configured' && paradym.state !== 'initializing' && !hasFinishedOnboarding
+  const isWalletLocked = paradym.state === 'locked' || paradym.state === 'acquired-wallet-key'
 
   // If we are initializing and the wallet was opened using a deeplink we will be redirected
   // to the authentication screen. We first save the redirection url and use that when navigation
   // to the auth screen
-  if (
-    (secureUnlock.state === 'initializing' || isWalletLocked) &&
-    pathname &&
-    pathname !== '/' &&
-    !redirectAfterUnlocked
-  ) {
+  if ((paradym.state === 'initializing' || isWalletLocked) && pathname && pathname !== '/' && !redirectAfterUnlocked) {
     // Expo and urls as query params don't go well together, so we encoded the url as base64
     const encodedRedirect = TypedArrayEncoder.toBase64URL(
       TypedArrayEncoder.fromString(`${pathname}?${new URLSearchParams(params as Record<string, string>).toString()}`)
@@ -81,16 +58,16 @@ export default function AppLayout() {
   }
 
   // Clear the redirection in case the wallet is locked in the background
-  if (secureUnlock.state !== 'initializing' && secureUnlock.state !== 'locked' && redirectAfterUnlocked) {
+  if (paradym.state !== 'initializing' && paradym.state !== 'locked' && redirectAfterUnlocked) {
     setRedirectAfterUnlocked(undefined)
   }
 
-  if (secureUnlock.state === 'not-configured' || shouldResetWallet) {
+  if (paradym.state === 'not-configured' || shouldResetWallet) {
     return <Redirect href={`/onboarding?reset=${shouldResetWallet}`} />
   }
 
   // This should show the splash screen
-  if (secureUnlock.state === 'initializing') {
+  if (paradym.state === 'initializing') {
     return null
   }
 
@@ -123,7 +100,7 @@ export default function AppLayout() {
 
   // Render the normal wallet, which is everything inside (app)
   return (
-    <ParadymWalletSdkProvider paradymWalletSdk={paradymWalletSdk()} recordIds={jsonRecordIds}>
+    <ParadymWalletSdk.AppProvider recordIds={jsonRecordIds}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           options={{
@@ -179,6 +156,6 @@ export default function AppLayout() {
         <Stack.Screen name="pidSetup" />
         <Stack.Screen name="inbox" options={headerNormalOptions} />
       </Stack>
-    </ParadymWalletSdkProvider>
+    </ParadymWalletSdk.AppProvider>
   )
 }

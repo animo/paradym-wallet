@@ -40,7 +40,6 @@ export {
   getCredentialsForProofRequest,
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'
-export * from './error'
 
 export type { TrustedEntity } from './trustedEntities'
 export * from './transactions'

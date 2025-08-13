@@ -1,1 +1,0 @@
-export { importDbcCredentialWithDid } from './dbcCredential'

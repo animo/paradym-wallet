@@ -152,6 +152,7 @@ async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
   }
 }
 
+// TODO(sdk): should be a method on the sdk
 export async function registerCredentialsForDcApi(agent: BaseAgent) {
   if (Platform.OS === 'ios') return
 
