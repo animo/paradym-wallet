@@ -1,5 +1,5 @@
-import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
 import { shareProof } from '@paradym/wallet-sdk/invitation/shareProof'
 import {
@@ -71,7 +71,7 @@ export function OpenIdPresentationNotificationScreen() {
         pushToWallet()
       })
       .catch((e) => {
-        if (e instanceof BiometricAuthenticationCancelledError) {
+        if (e instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           toast.show('Biometric authentication cancelled', {
             customData: { preset: 'danger' },
           })

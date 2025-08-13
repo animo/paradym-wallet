@@ -17,11 +17,14 @@ import {
   type OnboardingStep,
   SIMULATOR_PIN,
 } from '@easypid/utils/sharedPidSetup'
-import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError } from '@package/agent'
 import { useHaptics } from '@package/app'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import {
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
+} from '@paradym/wallet-sdk/error'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
 import { useRouter } from 'expo-router'
@@ -192,14 +195,14 @@ export function OnboardingContextProvider({
       goToNextStep()
     } catch (error) {
       // We can recover from this, and will show an error on the screen
-      if (error instanceof BiometricAuthenticationCancelledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         toast.show('Biometric authentication cancelled', {
           customData: { preset: 'danger' },
         })
         throw error
       }
 
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
         setCurrentStepName('biometrics-disabled')
         throw error
       }
@@ -480,7 +483,7 @@ export function OnboardingContextProvider({
 
       setCurrentStepName('id-card-complete')
     } catch (error) {
-      if (error instanceof BiometricAuthenticationCancelledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         toast.show('Biometric authentication cancelled', {
           customData: { preset: 'danger' },
         })
@@ -488,7 +491,7 @@ export function OnboardingContextProvider({
       }
 
       // What if not supported?!?
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
         setCurrentStepName('id-card-biometrics-disabled')
         return
       }

@@ -4,7 +4,6 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import {
-  BiometricAuthenticationCancelledError,
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
@@ -17,6 +16,7 @@ import { useToastController } from '@package/ui'
 import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
 import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
+import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import {
   acquirePreAuthorizedAccessToken,
@@ -334,7 +334,7 @@ export function FunkeCredentialNotificationScreen() {
         setIsSharingPresentation(false)
       } catch (error) {
         setIsSharingPresentation(false)
-        if (error instanceof BiometricAuthenticationCancelledError) {
+        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           setErrorReason('Biometric authentication cancelled')
           return
         }

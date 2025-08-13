@@ -1,11 +1,11 @@
 import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
 import {
-  BiometricAuthenticationError,
   OpenId4VciAuthorizationFlow,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
 } from '@package/agent'
+import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import {
   setCredentialCategoryMetadata,
   setOpenId4VcCredentialMetadata,
@@ -120,7 +120,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       return credentialRecords
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
-      if (error instanceof BiometricAuthenticationError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationError) {
         throw error
       }
 

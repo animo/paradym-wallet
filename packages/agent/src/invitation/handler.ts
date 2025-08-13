@@ -39,6 +39,7 @@ import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import type { DidCommAgent } from '@paradym/wallet-sdk/agent'
+import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import { formatDcqlCredentialsForRequest } from '@paradym/wallet-sdk/format/dcqlRequest'
 import { formatDifPexCredentialsForRequest } from '@paradym/wallet-sdk/format/presentationExchangeRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
@@ -54,7 +55,6 @@ import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
 import { getTrustedEntities } from '../utils/trust'
-import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type TrustedX509Entity = {
@@ -324,7 +324,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
     // can retry e.g. the second credential
     // Handle biometric authentication errors
-    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
+    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
   }
 }
 

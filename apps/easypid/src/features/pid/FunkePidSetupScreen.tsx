@@ -10,11 +10,14 @@ import type {
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
-import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError } from '@package/agent'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import {
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
+} from '@paradym/wallet-sdk/error'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -331,15 +334,15 @@ export function FunkePidSetupScreen() {
         }
       }
     } catch (error) {
-      if (error instanceof BiometricAuthenticationCancelledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         toast.show('Biometric authentication cancelled', {
           customData: { preset: 'danger' },
         })
         return
       }
 
-      // What if not supported?!?
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
+      // TODO: What if not supported?
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
         toast.show('Biometric authentication not enabled', {
           customData: { preset: 'danger' },
         })
