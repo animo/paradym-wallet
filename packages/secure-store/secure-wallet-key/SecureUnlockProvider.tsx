@@ -1,5 +1,5 @@
 import { WalletInvalidKeyError } from '@credo-ts/core'
-import { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
+import { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk/ParadymWalletSdk'
 import { useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { KeychainError } from '../error/KeychainError'
@@ -27,7 +27,7 @@ export type SecureUnlockReturnInitializing = {
 
 export type SecureUnlockReturnNotConfigured = {
   state: 'not-configured'
-  setup: (pin: string) => Promise<void>
+  setPin: (pin: string) => Promise<void>
   reinitialize: () => void
 }
 
@@ -75,13 +75,16 @@ export function useSecureUnlock(): SecureUnlockReturn {
   return value
 }
 
-export function SecureUnlockProvider({ children }: PropsWithChildren) {
-  const secureUnlockState = _useSecureUnlockState()
+export function SecureUnlockProvider({
+  children,
+  configuration,
+}: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions }>) {
+  const secureUnlockState = _useSecureUnlockState(configuration)
 
   return <SecureUnlockContext.Provider value={secureUnlockState}>{children}</SecureUnlockContext.Provider>
 }
 
-function _useSecureUnlockState(): SecureUnlockReturn {
+function _useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): SecureUnlockReturn {
   const [state, setState] = useState<SecureUnlockState>('initializing')
   const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
   const [canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
@@ -127,7 +130,7 @@ function _useSecureUnlockState(): SecureUnlockReturn {
     return {
       state,
       reinitialize,
-      setup: async (pin) => {
+      setPin: async (pin) => {
         await secureWalletKey.createAndStoreSalt(true, secureWalletKey.getWalletKeyVersion())
         const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
 
@@ -157,10 +160,14 @@ function _useSecureUnlockState(): SecureUnlockReturn {
             await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
           }
 
+          const id = `easypid-wallet-${walletKeyVersion}`
+          const key = walletKey
+
           // TODO: let the user provide an id? Or should we create one by default
           const pws = new ParadymWalletSdk({
-            id: `easypid-wallet-${walletKeyVersion}`,
-            key: walletKey,
+            ...configuration,
+            id,
+            key,
           })
           pws.initialize().then((result) => {
             if (result.success) {

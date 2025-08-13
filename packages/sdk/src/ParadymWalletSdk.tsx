@@ -27,14 +27,9 @@ export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<st
   | ({ success: true } & T)
   | { success: false; message: string }
 
-/**
- *
- * Options that will be used when initializing the Paradym Wallet SDK
- *
- * Make sure to instantiate the `ParadymWalletSdk` once and use the same instance within the application, via for example a `useContext`
- *
- */
 export type ParadymWalletSdkOptions = SetupAgentOptions
+
+export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'id' | 'key'>
 
 export class ParadymWalletSdk {
   public readonly agent: FullAgent
@@ -137,11 +132,21 @@ export class ParadymWalletSdk {
    *
    * Wrap your application in this, if you want to leverage the provided `this.hooks`
    *
+   * @todo(sdk) New name for this provider
+   *
    */
-  public static UnlockProvider({ children }: PropsWithChildren) {
-    return <SecureUnlockProvider>{children}</SecureUnlockProvider>
+  public static UnlockProvider({
+    children,
+    configuration,
+  }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions }>) {
+    return <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
   }
 
+  /**
+   *
+   * @todo(sdk) New name for this provider
+   *
+   */
   public static AppProvider({ children, recordIds }: PropsWithChildren<{ recordIds: string[] }>) {
     const { paradym } = useParadym('unlocked')
 
