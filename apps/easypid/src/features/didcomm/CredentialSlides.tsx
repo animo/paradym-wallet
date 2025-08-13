@@ -1,4 +1,5 @@
 import { useParadymAgent } from '@easypid/agent'
+import { useLingui } from '@lingui/react/macro'
 import { useDidCommCredentialActions } from '@package/agent'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { useToastController } from '@package/ui'
@@ -19,9 +20,18 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
 
+  const { t } = useLingui()
+
   const onCredentialAccept = async () => {
     const w3cRecord = await acceptCredential().catch(() => {
-      toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
+      toast.show(
+        t({
+          id: 'credential.accept.error',
+          message: 'Something went wrong while storing the credential.',
+          comment: 'Shown in a toast when credential storage fails',
+        }),
+        { customData: { preset: 'danger' } }
+      )
       onCancel()
     })
 
@@ -43,7 +53,13 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
       })
     }
 
-    toast.show('Credential has been declined.')
+    toast.show(
+      t({
+        id: 'credential.declined',
+        message: 'Credential has been declined.',
+        comment: 'Shown in a toast when user declines the credential',
+      })
+    )
     onCancel()
   }
 
@@ -71,7 +87,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
         },
       ]}
       onCancel={onCancel}
-      confirmation={getFlowConfirmationText('issue')}
+      confirmation={getFlowConfirmationText(t, 'issue')}
     />
   )
 }

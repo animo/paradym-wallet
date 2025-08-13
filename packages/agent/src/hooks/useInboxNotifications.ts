@@ -1,6 +1,7 @@
 import { CredentialState, ProofState } from '@credo-ts/didcomm'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { useEffect, useMemo } from 'react'
-
 import type { ParadymAppAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
@@ -33,7 +34,6 @@ export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAg
   const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
   const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
   const { records: connections } = useConnections()
-
   // Fetch associated metadata for each record
   useEffect(() => {
     credentialExchangeRecords.map(async (record) => {
@@ -114,7 +114,7 @@ export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAg
 export const useInboxNotifications = () => {
   const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
   const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
-
+  const { t } = useLingui()
   const sortedNotifications = useMemo(() => {
     // Sort by creation date
     const sortedRecords = [...credentialExchangeRecords, ...proofExchangeRecords].sort(
@@ -130,7 +130,7 @@ export const useInboxNotifications = () => {
           type: record.type,
           createdAt: record.createdAt,
           contactLabel: metadata?.issuerName,
-          notificationTitle: metadata?.credentialName ?? 'Credential',
+          notificationTitle: metadata?.credentialName ?? t(commonMessages.credential),
         } as const
       }
       const metadata = getDidCommProofExchangeDisplayMetadata(record)
@@ -140,10 +140,10 @@ export const useInboxNotifications = () => {
         type: record.type,
         createdAt: record.createdAt,
         contactLabel: metadata?.verifierName,
-        notificationTitle: metadata?.proofName ?? 'Data Request',
+        notificationTitle: metadata?.proofName ?? t(commonMessages.dataRequest),
       } as const
     })
-  }, [proofExchangeRecords, credentialExchangeRecords])
+  }, [proofExchangeRecords, credentialExchangeRecords, t])
 
   return sortedNotifications
 }

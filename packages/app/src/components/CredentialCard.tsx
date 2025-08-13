@@ -1,5 +1,5 @@
+import { Trans } from '@lingui/react/macro'
 import type { DisplayImage } from '@package/agent'
-
 import {
   Card,
   Heading,
@@ -89,7 +89,9 @@ export function CredentialCard({
           <XStack>
             <YStack>
               <Paragraph variant="annotation" opacity={0.8} color={textColor}>
-                Issuer
+                <Trans id="credentialCard.issuerLabel" comment="Label for the issuer name on a credential card">
+                  Issuer
+                </Trans>
               </Paragraph>
               <Paragraph variant="sub" color={textColor} numberOfLines={2}>
                 {issuerName}

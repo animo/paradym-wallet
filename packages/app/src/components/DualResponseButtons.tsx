@@ -1,3 +1,5 @@
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { Button, Spinner, YStack } from '@package/ui'
 import { PixelRatio } from 'react-native'
 
@@ -17,12 +19,16 @@ export function DualResponseButtons({
   onDecline,
   isLoading,
   align = 'vertical',
-  acceptText = 'Accept',
-  declineText = 'Decline',
+  acceptText,
+  declineText,
   variant = 'regular',
 }: DualResponseButtonProps) {
+  const { t } = useLingui()
+  const accept = acceptText ?? t(commonMessages.acceptButton)
+  const deline = declineText ?? t(commonMessages.declineButton)
+
   // Give accept button more space to avoid truncation when OS font is scaled
-  const giveAcceptButtonMoreSpace = PixelRatio.getFontScale() > 1.2 && acceptText.length > 6
+  const giveAcceptButtonMoreSpace = PixelRatio.getFontScale() > 1.2 && accept.length > 6
 
   return (
     <YStack
@@ -36,10 +42,10 @@ export function DualResponseButtons({
         onPress={onAccept}
         {...(variant === 'confirmation' ? { bg: '$danger-500' } : {})}
       >
-        {isLoading ? <Spinner variant="dark" /> : acceptText}
+        {isLoading ? <Spinner variant="dark" /> : accept}
       </Button.Solid>
       <Button.Outline f={1} bg="$grey-100" disabled={isLoading} onPress={onDecline}>
-        {declineText}
+        {deline}
       </Button.Outline>
     </YStack>
   )

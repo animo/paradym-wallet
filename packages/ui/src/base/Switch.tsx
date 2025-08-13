@@ -1,6 +1,7 @@
 import { cloneElement } from 'react'
 import Animated from 'react-native-reanimated'
 import { Label, Switch as TamaguiSwitch } from 'tamagui'
+import { BetaTag } from '../components/BetaTag'
 import type { IconContainerProps } from '../content'
 import { useScaleAnimation } from '../hooks'
 import { Paragraph } from './Paragraph'
@@ -34,7 +35,6 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
           <XStack gap="$2">
             <Label
               maxWidth={200}
-              numberOfLines={1}
               fontWeight="$semiBold"
               fontFamily="$default"
               fontSize={17}
@@ -44,10 +44,8 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
               {label}
             </Label>
             {beta && (
-              <YStack bg="$primary-100" h="$1.5" br="$12" mt="$0.5" px="$2">
-                <Paragraph h="$2" fontSize="$1" mt="$-1" fontWeight="$semiBold" color="$primary-500">
-                  BETA
-                </Paragraph>
+              <YStack mt="$0.5" justifyContent="center">
+                <BetaTag />
               </YStack>
             )}
           </XStack>

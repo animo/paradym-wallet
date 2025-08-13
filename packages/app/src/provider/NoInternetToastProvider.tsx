@@ -1,11 +1,13 @@
 import type { PropsWithChildren } from 'react'
 
+import { useLingui } from '@lingui/react/macro'
 import { useToastController } from '@package/ui'
 import { useNetInfo } from '@react-native-community/netinfo'
 import { useEffect, useState } from 'react'
 
 export function NoInternetToastProvider({ children }: PropsWithChildren) {
   const toast = useToastController()
+  const { t } = useLingui()
 
   const { isConnected, isInternetReachable } = useNetInfo()
   const [hasBeenOffline, setHasBeenOffline] = useState(false)
@@ -16,15 +18,28 @@ export function NoInternetToastProvider({ children }: PropsWithChildren) {
     // Not loaded yet (null) or false
     (isConnected === null || isInternetReachable === null ? null : false)
 
+  // Define messages once outside useEffect for clarity
+  const onlineAgainMessage = t({
+    id: 'network.onlineAgain',
+    message: 'Online again.',
+    comment: 'Toast message shown when internet connection is restored',
+  })
+
+  const noInternetWarningMessage = t({
+    id: 'network.noInternetWarning',
+    message: 'No internet connection. Some features may not work.',
+    comment: 'Toast warning shown when the user loses internet connectivity',
+  })
+
   useEffect(() => {
     if (hasBeenOffline && hasInternet === true) {
-      toast.show('Online again.', { customData: { preset: 'success' } })
+      toast.show(onlineAgainMessage, { customData: { preset: 'success' } })
       setHasBeenOffline(false)
     } else if (hasInternet === false && !hasBeenOffline) {
-      toast.show('No internet connection. Some features may not work.', { customData: { preset: 'danger' } })
+      toast.show(noInternetWarningMessage, { customData: { preset: 'danger' } })
       setHasBeenOffline(true)
     }
-  }, [hasInternet, toast, hasBeenOffline])
+  }, [hasInternet, toast, hasBeenOffline, onlineAgainMessage, noInternetWarningMessage])
 
   return <>{children}</>
 }

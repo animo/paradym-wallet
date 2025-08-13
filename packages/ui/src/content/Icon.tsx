@@ -41,6 +41,7 @@ import {
   IdentificationIcon,
   InformationCircleIcon,
   KeyIcon,
+  LanguageIcon,
   LinkIcon,
   LockClosedIcon,
   MagnifyingGlassIcon,
@@ -126,6 +127,7 @@ function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
 export type HeroIcon = ReturnType<typeof wrapHeroIcon>
 export const HeroIcons = {
   Bell: wrapHeroIcon(BellIcon),
+  Langugae: wrapHeroIcon(LanguageIcon),
   BellFilled: wrapHeroIcon(BellFilledIcon),
   Plus: wrapHeroIcon(PlusIcon),
   Trash: wrapHeroIcon(TrashIcon),

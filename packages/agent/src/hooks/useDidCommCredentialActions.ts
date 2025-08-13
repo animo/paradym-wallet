@@ -2,6 +2,8 @@ import type { CredentialStateChangedEvent } from '@credo-ts/didcomm'
 
 import { W3cCredentialRepository } from '@credo-ts/core'
 import { CredentialEventTypes, CredentialState } from '@credo-ts/didcomm'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
@@ -97,6 +99,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
       }
     },
   })
+  const { t } = useLingui()
 
   const { mutateAsync: declineCredentialMutation, status: declineStatus } = useMutation({
     mutationKey: ['declineDidCommCredential', credentialExchangeId],
@@ -136,12 +139,12 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
     credentialExchange,
     display: {
       issuer: {
-        name: didcommDisplayMetadata?.issuerName ?? 'Unknown',
+        name: didcommDisplayMetadata?.issuerName ?? t(commonMessages.unknown),
         logo: {
           url: didcommDisplayMetadata?.issuerLogoUri,
         },
       },
-      name: didcommDisplayMetadata?.credentialName ?? 'Credential',
+      name: didcommDisplayMetadata?.credentialName ?? t(commonMessages.credential),
     },
     attributes: data?.attributes,
   }

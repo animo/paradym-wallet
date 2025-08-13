@@ -1,3 +1,5 @@
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { useMutation } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useAgent } from '../agent'
@@ -5,7 +7,7 @@ import { type ResolveOutOfBandInvitationResultSuccess, acceptOutOfBandInvitation
 
 export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitationResultSuccess) {
   const { agent } = useAgent()
-
+  const { t } = useLingui()
   const { mutateAsync: acceptConnectionMutation, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommConnection', resolved?.outOfBandInvitation.id],
     mutationFn: async () => {
@@ -27,8 +29,8 @@ export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitatio
     display: {
       connection: {
         name: resolved?.existingConnection
-          ? resolved.existingConnection?.alias ?? resolved.existingConnection?.theirLabel ?? 'Unknown'
-          : resolved?.outOfBandInvitation.label ?? 'Unknown',
+          ? resolved.existingConnection?.alias ?? resolved.existingConnection?.theirLabel ?? t(commonMessages.unknown)
+          : resolved?.outOfBandInvitation.label ?? t(commonMessages.unknown),
         logo: {
           url: resolved?.existingConnection
             ? resolved?.existingConnection.imageUrl

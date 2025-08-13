@@ -1,4 +1,6 @@
+import { useLingui } from '@lingui/react/macro'
 import type { DisplayImage } from '@package/agent'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Card,
@@ -18,7 +20,6 @@ import {
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 import { BlurBadge } from './BlurBadge'
-
 type FunkeCredentialCardProps = {
   onPress?(): void
   name: string
@@ -57,7 +58,7 @@ export function FunkeCredentialCard({
   )
 
   const bgColorValue = bgColor ?? '$grey-900'
-
+  const { t } = useLingui()
   return (
     <AnimatedStack
       shadow={shadow}
@@ -116,7 +117,7 @@ export function FunkeCredentialCard({
         )}
         {(isExpired || isRevoked) && (
           <Stack pos="absolute" bottom="$5" left="$5">
-            <BlurBadge color={textColor} label={isExpired ? 'Expired' : 'Revoked'} />
+            <BlurBadge color={textColor} label={isExpired ? t(commonMessages.expired) : t(commonMessages.revoked)} />
           </Stack>
         )}
       </Card>

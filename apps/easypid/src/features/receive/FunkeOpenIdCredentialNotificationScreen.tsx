@@ -1,3 +1,5 @@
+import { useAppAgent } from '@easypid/agent'
+import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
@@ -23,12 +25,11 @@ import {
   storeCredential,
 } from '@package/agent'
 
-import { useAppAgent } from '@easypid/agent'
-
 import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
@@ -58,6 +59,7 @@ export function FunkeCredentialNotificationScreen() {
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
 
+  const { t } = useLingui()
   const pushToWallet = usePushToWallet()
 
   const [errorReason, setErrorReason] = useState<string>()
@@ -125,12 +127,12 @@ export function FunkeCredentialNotificationScreen() {
         setResolvedAuthorizationRequest(resolvedAuthorizationRequest)
       })
       .catch((error) => {
-        setErrorReasonWithError('Credential information could not be extracted', error)
+        setErrorReasonWithError(t(commonMessages.credentialInformationCouldNotBeExtracted), error)
         agent.config.logger.error(`Couldn't resolve OpenID4VCI offer`, {
           error,
         })
       })
-  }, [params.uri, agent, setErrorReasonWithError])
+  }, [params.uri, agent, setErrorReasonWithError, t])
 
   const retrieveCredentials = useCallback(
     async (
@@ -159,7 +161,7 @@ export function FunkeCredentialNotificationScreen() {
 
   // TODO: Should we add this to the activitiy? We also don't do it for issuance
   const onProofDecline = async () => {
-    toast.show('Information request has been declined.', { customData: { preset: 'danger' } })
+    toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
     pushToWallet('back')
   }
 
@@ -183,7 +185,7 @@ export function FunkeCredentialNotificationScreen() {
   const acquireCredentialsAuth = useCallback(
     async (authorizationCode: string) => {
       if (!resolvedCredentialOffer || !resolvedAuthorizationRequest || !configurationId) {
-        setErrorReason('Credential information could not be extracted')
+        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
         return
       }
       try {
@@ -202,7 +204,7 @@ export function FunkeCredentialNotificationScreen() {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
-        setErrorReasonWithError('Error while retrieving credentials', error)
+        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
       }
     },
     [
@@ -212,13 +214,14 @@ export function FunkeCredentialNotificationScreen() {
       agent,
       configurationId,
       setErrorReasonWithError,
+      t,
     ]
   )
 
   const acquireCredentialsPreAuth = useCallback(
     async (txCode?: string) => {
       if (!resolvedCredentialOffer || !configurationId) {
-        setErrorReason('Credential information could not be extracted')
+        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
         return
       }
 
@@ -233,10 +236,10 @@ export function FunkeCredentialNotificationScreen() {
         agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
-        setErrorReasonWithError('Error while retrieving credentials', error)
+        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
       }
     },
-    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError]
+    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError, t]
   )
 
   const parsePresentationRequestUrl = useCallback(
@@ -247,12 +250,12 @@ export function FunkeCredentialNotificationScreen() {
       })
         .then(setCredentialsForRequest)
         .catch((error) => {
-          setErrorReasonWithError('Presentation information could not be extracted.', error)
+          setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
           agent.config.logger.error('Error getting credentials for request', {
             error,
           })
         }),
-    [agent, setErrorReasonWithError]
+    [agent, setErrorReasonWithError, t]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -279,7 +282,7 @@ export function FunkeCredentialNotificationScreen() {
         !resolvedAuthorizationRequest ||
         resolvedAuthorizationRequest.authorizationFlow !== OpenId4VciAuthorizationFlow.PresentationDuringIssuance
       ) {
-        setErrorReason('Presentation information could not be extracted.')
+        setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
         return
       }
 
@@ -297,11 +300,11 @@ export function FunkeCredentialNotificationScreen() {
           if (error instanceof InvalidPinError) {
             onPinError?.()
             setIsSharingPresentation(false)
-            toast.show('Invalid PIN entered', { customData: { preset: 'warning' } })
+            toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
             return
           }
 
-          setErrorReasonWithError('Presentation information could not be extracted', error)
+          setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
           return
         }
       }
@@ -326,24 +329,25 @@ export function FunkeCredentialNotificationScreen() {
       } catch (error) {
         setIsSharingPresentation(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
-          setErrorReason('Biometric authentication cancelled')
+          setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
           return
         }
         if (error instanceof InvalidPinError) {
           onPinError?.()
-          toast.show('Invalid PIN entered', { customData: { preset: 'warning' } })
+          toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
           return
         }
 
         agent.config.logger.error('Error accepting presentation', {
           error,
         })
-        setErrorReasonWithError('Presentation could not be shared.', error)
+        setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
       }
     },
     [
       credentialsForRequest,
       agent,
+      t,
       acquireCredentialsAuth,
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,
@@ -367,8 +371,11 @@ export function FunkeCredentialNotificationScreen() {
     resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.Oauth2Redirect
 
   // These are callbacks to not change on every render
-  const onCancelAuthorization = useCallback(() => setErrorReason('Authorization cancelled'), [])
-  const onErrorAuthorization = useCallback(() => setErrorReason('Authorization failed'), [])
+  const onCancelAuthorization = useCallback(
+    () => setErrorReason(t({ id: 'browserAuthFlow.authorizationCancelled', message: 'Authorization cancelled' })),
+    [t]
+  )
+  const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
 
   return (
     <SlideWizard
@@ -483,8 +490,14 @@ export function FunkeCredentialNotificationScreen() {
       isError={errorReason !== undefined}
       onCancel={onProofDecline}
       confirmation={{
-        title: 'Stop card offer?',
-        description: 'If you stop, the card offer will be cancelled.',
+        title: t({
+          id: 'receiveCredential.stopTitle',
+          message: 'Stop card offer?',
+        }),
+        description: t({
+          id: 'receiveCredential.stopDescription',
+          message: 'If you stop, the card offer will be cancelled.',
+        }),
       }}
     />
   )

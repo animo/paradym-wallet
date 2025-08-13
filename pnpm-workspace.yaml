@@ -96,17 +96,18 @@ catalog:
   expo-updates: ~0.28.15
   expo-web-browser: ~14.2.0
   expo-build-properties: ~0.14.8
+  expo-localization: ~16.1.6
   "@expo-google-fonts/open-sans": ^0.4.1
   "@expo-google-fonts/raleway": ^0.4.1
 
   # Tamagui
-  "@tamagui/animations-react-native": 1.129.12
-  "@tamagui/font-inter": 1.129.12
-  "@tamagui/shorthands": 1.129.12
-  "@tamagui/themes": 1.129.12
-  "@tamagui/toast": 1.129.12
-  "@tamagui/react-native-media-driver": 1.129.12
-  "@tamagui/colors": 1.129.12
-  "@tamagui/lucide-icons": 1.129.12
-  "@tamagui/babel-plugin": 1.129.12
-  tamagui: 1.129.12
+  "@tamagui/animations-react-native": 1.132.11
+  "@tamagui/font-inter": 1.132.11
+  "@tamagui/shorthands": 1.132.11
+  "@tamagui/themes": 1.132.11
+  "@tamagui/toast": 1.132.11
+  "@tamagui/react-native-media-driver": 1.132.11
+  "@tamagui/colors": 1.132.11
+  "@tamagui/lucide-icons": 1.132.11
+  "@tamagui/babel-plugin": 1.132.11
+  tamagui: 1.132.11

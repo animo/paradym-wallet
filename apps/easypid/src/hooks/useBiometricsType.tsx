@@ -1,3 +1,4 @@
+// translations not needed
 import { useEffect, useState } from 'react'
 import { Platform } from 'react-native'
 import * as Keychain from 'react-native-keychain'

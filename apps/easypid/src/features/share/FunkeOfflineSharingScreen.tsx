@@ -1,3 +1,4 @@
+//no tranlation needed
 import type { FormattedSubmission } from '@package/agent'
 import { type SlideStep, SlideWizard } from '@package/app/components'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'

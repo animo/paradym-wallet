@@ -89,6 +89,7 @@ const createBaseConfig = (appSpecific) => {
       fallbackToCacheTimeout: 0,
     },
     plugins: [
+      'expo-localization',
       [
         'react-native-edge-to-edge',
         {

@@ -2,13 +2,21 @@ import 'fast-text-encoding'
 
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { appScheme } from '@easypid/constants'
+import { t } from '@lingui/core/macro'
 import { parseInvitationUrl } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
+import { commonMessages } from '@package/translations'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
 import { credentialDataHandlerOptions } from './(app)/_layout'
 
-export async function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
+export async function redirectSystemPath({
+  path,
+  initial,
+}: {
+  path: string
+  initial: boolean
+}) {
   const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))
   if (!isRecognizedDeeplink) return path
 
@@ -43,7 +51,7 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
       return {
         success: false,
         error: 'invitation_not_supported',
-        message: 'Invitation not supported.',
+        message: t(commonMessages.invitationNotSupported),
       } as const
     }
 
@@ -76,7 +84,7 @@ export async function redirectSystemPath({ path, initial }: { path: string; init
     return {
       success: false,
       error: 'invitation_not_recognized',
-      message: 'Invitation not recognized.',
+      message: t(commonMessages.invitationNotRecognized),
     } as const
   } catch (error) {
     return '/'

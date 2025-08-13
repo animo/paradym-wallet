@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro'
 import type { OpenId4VciTxCode } from '@package/agent'
 import { useWizard } from '@package/app'
 import { Heading, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
@@ -11,6 +12,7 @@ interface TxCodeSlideProps {
 }
 
 export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
+  const { t } = useLingui()
   const [txCodeEntry, setTxCodeEntry] = useState<string>('')
   const { onNext } = useWizard()
 
@@ -33,19 +35,42 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
     <YStack fg={1} gap="$6">
       <ScrollView contentContainerStyle={{ gap: '$6' }} scrollEnabled={txCode.description !== undefined}>
         <YStack gap="$4">
-          <Heading>Enter transaction code</Heading>
+          <Heading>
+            {t({
+              id: 'txCodeSlide.title',
+              message: 'Enter transaction code',
+              comment: 'Title prompting the user to enter a transaction code',
+            })}
+          </Heading>
           <Paragraph>
-            To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.
+            {t({
+              id: 'txCodeSlide.instructions',
+              message:
+                'To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.',
+              comment: 'Instructions explaining why the user must enter a transaction code',
+            })}
           </Paragraph>
           {txCode.description && (
             <YStack gap="$2">
-              <Paragraph>The issuer provided the following:</Paragraph>
+              <Paragraph>
+                {t({
+                  id: 'txCodeSlide.descriptionIntro',
+                  message: 'The issuer provided the following:',
+                  comment: 'Label shown above optional extra description',
+                })}
+              </Paragraph>
               <MessageBox variant="light" message={txCode.description} />
             </YStack>
           )}
         </YStack>
         <YStack gap="$2">
-          <Heading variant="sub2">Transaction code</Heading>
+          <Heading variant="sub2">
+            {t({
+              id: 'txCodeSlide.inputLabel',
+              message: 'Transaction code',
+              comment: 'Label for the input field where the user types the transaction code',
+            })}
+          </Heading>
           <Input
             secureTextEntry
             autoFocus

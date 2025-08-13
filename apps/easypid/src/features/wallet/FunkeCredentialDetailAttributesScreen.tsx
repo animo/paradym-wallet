@@ -16,6 +16,7 @@ import { useRef, useState } from 'react'
 import { CredentialAttributes, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 
+import { useLingui } from '@lingui/react/macro'
 import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { FadeOutUp } from 'react-native-reanimated'
@@ -34,6 +35,7 @@ export function FunkeCredentialDetailAttributesScreen() {
   const { withHaptics } = useHaptics()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
+  const { t } = useLingui()
   const isCustomDisplayAvailable = credential?.metadata.type
     ? hasCustomCredentialDisplay(credential?.metadata.type)
     : false
@@ -70,11 +72,18 @@ export function FunkeCredentialDetailAttributesScreen() {
   })
 
   if (!credential) {
-    toast.show('No attributes found', {
-      customData: {
-        preset: 'danger',
-      },
-    })
+    toast.show(
+      t({
+        id: 'credentials.noAttributes',
+        message: 'No attributes found',
+        comment: 'Error toast when a credential has no displayable attributes',
+      }),
+      {
+        customData: {
+          preset: 'danger',
+        },
+      }
+    )
     router.back()
     return
   }
@@ -82,7 +91,14 @@ export function FunkeCredentialDetailAttributesScreen() {
   return (
     <>
       <FlexPage gap="$0" paddingHorizontal="$0">
-        <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Card attributes" />
+        <HeaderContainer
+          isScrolledByOffset={isScrolledByOffset}
+          title={t({
+            id: 'credentials.cardAttributes',
+            message: 'Card attributes',
+            comment: 'Title shown in header for the credential detail attributes screen',
+          })}
+        />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack px="$4" gap="$4" marginBottom={bottom}>
             <CustomCredentialAttributes credential={credential} />
@@ -95,7 +111,11 @@ export function FunkeCredentialDetailAttributesScreen() {
               {isShareableAttributesVisible && (
                 <CredentialAttributes
                   key="shareable-attributes"
-                  headerTitle="Shareable attributes"
+                  headerTitle={t({
+                    id: 'credentials.shareableAttributes',
+                    message: 'Shareable attributes',
+                    comment: 'Header for attributes that can be shared with a verifier',
+                  })}
                   attributes={credential.attributes}
                 />
               )}
@@ -109,7 +129,11 @@ export function FunkeCredentialDetailAttributesScreen() {
               {isMetadataVisible && (
                 <CredentialAttributes
                   key="metadata"
-                  headerTitle="Metadata"
+                  headerTitle={t({
+                    id: 'credentials.metadataAttributes',
+                    message: 'Metadata',
+                    comment: 'Header for metadata attributes of a credential',
+                  })}
                   attributes={metadataForDisplay(credential.metadata)}
                 />
               )}
@@ -132,18 +156,34 @@ export function FunkeCredentialDetailAttributesScreen() {
                   ) : (
                     <HeroIcons.Eye color="$grey-500" />
                   ),
-                  title: isShareableAttributesVisible ? 'Hide shareable attributes' : 'Show shareable attributes',
+                  title: isShareableAttributesVisible
+                    ? t({
+                        id: 'credentials.hideShareableAttributes',
+                        message: 'Hide shareable attributes',
+                        comment: 'Button label that toggles visibility of shareable attributes',
+                      })
+                    : t({
+                        id: 'credentials.showShareableAttributes',
+                        message: 'Show shareable attributes',
+                        comment: 'Button label that toggles visibility of shareable attributes',
+                      }),
                   onPress: handleToggleShareableAttributes,
                 },
               ]
             : []),
           {
-            icon: isMetadataVisible ? (
-              <HeroIcons.CodeBracketFilled color="$grey-500" />
-            ) : (
-              <HeroIcons.CodeBracketFilled color="$grey-500" />
-            ),
-            title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
+            icon: <HeroIcons.CodeBracketFilled color="$grey-500" />,
+            title: isMetadataVisible
+              ? t({
+                  id: 'credentials.hideMetadata',
+                  message: 'Hide metadata attributes',
+                  comment: 'Button label: toggles visibility of metadata attributes',
+                })
+              : t({
+                  id: 'credentials.showMetadata',
+                  message: 'Show metadata attributes',
+                  comment: 'Button label: toggles visibility of metadata attributes',
+                }),
             onPress: handleToggleMetadata,
           },
         ]}

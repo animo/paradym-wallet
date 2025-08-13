@@ -1,5 +1,6 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { FormattedSubmission } from '@package/agent'
-
+import { commonMessages } from '@package/translations'
 import {
   Button,
   FloatingSheet,
@@ -12,10 +13,9 @@ import {
   YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
+import { useNavigation } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-import { useNavigation } from 'expo-router'
 import { CredentialRowCard, DualResponseButtons } from '../../../components'
 
 interface PresentationNotificationScreenProps {
@@ -40,7 +40,7 @@ export function PresentationNotificationScreen({
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [changeSubmissionCredentialIndex, setChangeSubmissionCredentialIndex] = useState(-1)
   const { bottom } = useSafeAreaInsets()
-
+  const { t } = useLingui()
   const currentSubmissionEntry =
     changeSubmissionCredentialIndex !== -1 ? submission.entries[changeSubmissionCredentialIndex] : undefined
 
@@ -72,10 +72,26 @@ export function PresentationNotificationScreen({
         <YStack g="3xl" jc="space-between" pad="lg" py="$6" height="100%" bg="$background">
           <YStack g="xl">
             <YStack ai="center" jc="center" gap="$4">
-              <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
-                You have received an information request
-                {verifierName ? ` from ${verifierName}` : ''}.
-              </Heading>
+              {verifierName ? (
+                <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
+                  <Trans
+                    id="presentationNotification.receivedRequestWithVerifier"
+                    comment="Heading shown when the user receives an information request including the verifier's name"
+                  >
+                    You have received an information request from {verifierName}
+                  </Trans>
+                </Heading>
+              ) : (
+                <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
+                  <Trans
+                    id="presentationNotification.receivedRequestWithoutVerifier"
+                    comment="Heading shown when the user receives an information request without the verifier's name"
+                  >
+                    You have received an information request
+                  </Trans>
+                </Heading>
+              )}
+
               {submission.purpose && (
                 <Paragraph variant="sub" ta="center" mx="$3" numberOfLines={3} secondary>
                   {submission.purpose}
@@ -103,7 +119,9 @@ export function PresentationNotificationScreen({
                           <Stack flex={1}>
                             <CredentialRowCard
                               issuer={selectedCredential?.credential.display.issuer.name}
-                              name={selectedCredential?.credential.display.name ?? s.name ?? 'Credential'}
+                              name={
+                                selectedCredential?.credential.display.name ?? s.name ?? t(commonMessages.credential)
+                              }
                               hideBorder={true}
                               bgColor={selectedCredential?.credential.display.backgroundColor}
                             />
@@ -127,7 +145,14 @@ export function PresentationNotificationScreen({
                       </YStack>
                       {s.isSatisfied ? (
                         <YStack px="$3" pb="$3" gap="$2">
-                          <Paragraph variant="sub">The following information will be presented:</Paragraph>
+                          <Paragraph variant="sub">
+                            <Trans
+                              id="presentationNotification.infoWillBePresented"
+                              comment="Text shown before listing information that will be presented in response to an information request"
+                            >
+                              The following information will be presented:
+                            </Trans>
+                          </Paragraph>
                           <YStack flexDirection="row" flexWrap="wrap">
                             {Array.from(new Set(selectedCredential?.disclosed.paths.map((path) => path[0])))?.map(
                               (a) => (
@@ -140,10 +165,22 @@ export function PresentationNotificationScreen({
                         </YStack>
                       ) : (
                         <YStack px="$3" pb="$3" gap="$2">
-                          <Paragraph px="$3" pb="$3" variant="sub" color="$danger-500">
-                            This credential is not present in your wallet.{' '}
-                            {s.requestedAttributePaths.length > 0 ? 'The folloing information is requested:' : ''}
-                          </Paragraph>
+                          {
+                            <Paragraph px="$3" pb="$3" variant="sub" color="$danger-500">
+                              <Trans
+                                id="presentationNotification.missingCredential"
+                                comment="Shown when a required credential is missing"
+                              >
+                                This credential is not present in your wallet.
+                              </Trans>
+                              {s.requestedAttributePaths.length > 0 && (
+                                <Trans id="presentationNotification.requestedInformationPrefix">
+                                  The following information is requested:
+                                </Trans>
+                              )}
+                            </Paragraph>
+                          }
+
                           {s.requestedAttributePaths.length > 0 && (
                             <YStack flexDirection="row" flexWrap="wrap">
                               {Array.from(new Set(s.requestedAttributePaths.map((p) => p[0])))
@@ -168,9 +205,14 @@ export function PresentationNotificationScreen({
           ) : (
             <YStack gap="$4">
               <Paragraph variant="sub" ta="center">
-                You don't have the required credentials to satisfy this request.
+                <Trans
+                  id="presentationNotification.missingRequiredCredentials"
+                  comment="Shown when the user lacks the required credentials to satisfy an information request"
+                >
+                  You don't have the required credentials to satisfy this request.
+                </Trans>
               </Paragraph>
-              <Button.Solid onPress={onDecline}>Close</Button.Solid>
+              <Button.Solid onPress={onDecline}>t(commonMessages.close)</Button.Solid>
             </YStack>
           )}
         </YStack>
@@ -184,7 +226,12 @@ export function PresentationNotificationScreen({
       >
         <Stack bg="$grey-100" p="$4" gap="$4" pb={bottom}>
           <Heading variant="h3" ta="center" py="$2">
-            Select the credential you want to use
+            <Trans
+              id="presentationNotification.selectCredentialTitle"
+              comment="Title prompting the user to select which credential to use for the information request"
+            >
+              Select the credential you want to use
+            </Trans>
           </Heading>
           <TableContainer>
             {currentSubmissionEntry?.isSatisfied &&

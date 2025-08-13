@@ -6,6 +6,8 @@ import {
 } from '@credo-ts/core'
 
 import { JSONPath } from '@astronautlabs/jsonpath'
+import { t } from '@lingui/core/macro'
+import { commonMessages } from '@package/translations'
 import type { NonEmptyArray } from '@package/utils'
 import {
   type CredentialForDisplay,
@@ -266,7 +268,7 @@ function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryRe
   if (credential.format === 'mso_mdoc') {
     return {
       claimFormat: ClaimFormat.MsoMdoc,
-      credentialName: credential.meta?.doctype_value ?? 'Unknown',
+      credentialName: credential.meta?.doctype_value ?? t(commonMessages.unknown),
       requestedAttributePaths: credential.claims?.map((c) => ('path' in c ? [c.path[1]] : [c.claim_name])),
     }
   }

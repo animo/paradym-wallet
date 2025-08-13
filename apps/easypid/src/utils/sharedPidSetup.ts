@@ -5,6 +5,9 @@ import { OnboardingIdCardPinEnter } from '@easypid/features/onboarding/screens/i
 import { OnboardingIdCardRequestedAttributes } from '@easypid/features/onboarding/screens/id-card-requested-attributes'
 import { OnboardingIdCardScan } from '@easypid/features/onboarding/screens/id-card-scan'
 import { OnboardingIdCardVerify } from '@easypid/features/onboarding/screens/id-card-verify'
+import type { MessageDescriptor } from '@lingui/core'
+import { defineMessage } from '@lingui/core/macro'
+import type { _t } from '@lingui/react/macro'
 
 export const SIMULATOR_PIN = '276536'
 
@@ -17,6 +20,68 @@ export interface CardScanningState {
   state: 'readyToScan' | 'scanning' | 'complete' | 'error'
 }
 
+export const pidSetupMessages = {
+  dataProtection: {
+    title: defineMessage({ id: 'pidSetup.dataProtection.title', message: 'Protect your data' }),
+    subtitle: defineMessage({
+      id: 'pidSetup.dataProtection.subtitle',
+      message: 'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
+    }),
+  },
+  idCardRequestedAttributes: {
+    title: defineMessage({
+      id: 'pidSetup.idCardRequestedAttributes.title',
+      message: 'Get your national identity card',
+    }),
+  },
+  idCardPin: {
+    title: defineMessage({ id: 'pidSetup.idCardPin.title', message: 'Enter your eID card PIN' }),
+    subtitle: defineMessage({
+      id: 'pidSetup.idCardPin.subtitle',
+      message: 'This is required to read data from your card.',
+    }),
+  },
+  idCardStartScan: {
+    title: defineMessage({ id: 'pidSetup.idCardScan.title', message: 'Scan your eID card' }),
+    subtitle: defineMessage({
+      id: 'pidSetup.idCardScan.subtitle',
+      message: 'Place your device on top of your eID card to scan it.',
+    }),
+  },
+  idCardScan: {
+    title: defineMessage({ id: 'pidSetup.idCardScan.title', message: 'Scan your eID card' }),
+    subtitle: defineMessage({
+      id: 'pidSetup.idCardScan.subtitle',
+      message: 'Place your device on top of your eID card to scan it.',
+    }),
+  },
+  idCardFetch: {
+    title: defineMessage({ id: 'pidSetup.idCardFetch.title', message: 'Getting eID information' }),
+  },
+  idCardVerify: {
+    title: defineMessage({ id: 'pidSetup.idCardVerify.title', message: 'Confirm it’s you' }),
+    subtitle: defineMessage({
+      id: 'pidSetup.idCardVerify.Subtitle',
+      message: 'We need your biometrics to verify your identity.',
+    }),
+  },
+  idCardBiometricsDisabled: {
+    title: defineMessage({ id: 'pidSetup.enableBiometrics.title', message: 'You need to enable biometrics' }),
+    subtitle: defineMessage({
+      id: 'pidSetup.enableBiometrics.subtitle',
+      message:
+        'To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.',
+    }),
+  },
+  idCardComplete: {
+    title: defineMessage({ id: 'pidSetup.idCardComplete.title', message: 'Success!' }),
+    subtitle: defineMessage({
+      id: 'pidSetup.idCardComplete.subtitle',
+      message: 'Your information has been retrieved from your eID card.',
+    }),
+  },
+}
+
 export const pidSetupSteps = [
   {
     step: 'data-protection',
@@ -24,8 +89,7 @@ export const pidSetupSteps = [
     progress: 50,
     page: {
       type: 'content',
-      title: 'Protect your data',
-      subtitle: 'Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.',
+      ...pidSetupMessages.dataProtection,
     },
     Screen: OnboardingDataProtection,
   },
@@ -35,7 +99,7 @@ export const pidSetupSteps = [
     progress: 60,
     page: {
       type: 'content',
-      title: 'Get your national identity card',
+      ...pidSetupMessages.idCardRequestedAttributes,
     },
     Screen: OnboardingIdCardRequestedAttributes,
   },
@@ -45,8 +109,7 @@ export const pidSetupSteps = [
     progress: 60,
     page: {
       type: 'content',
-      title: 'Enter your eID card PIN',
-      subtitle: 'This is required to read data from your card.',
+      ...pidSetupMessages.idCardPin,
     },
     Screen: OnboardingIdCardPinEnter,
   },
@@ -56,8 +119,7 @@ export const pidSetupSteps = [
     progress: 70,
     page: {
       type: 'content',
-      title: 'Scan your eID card',
-      subtitle: 'Place your device on top of your eID card to scan it.',
+      ...pidSetupMessages.idCardStartScan,
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardScan,
@@ -68,8 +130,7 @@ export const pidSetupSteps = [
     progress: 70,
     page: {
       type: 'content',
-      title: 'Scan your eID card',
-      subtitle: 'Place your device on top of your eID card to scan it.',
+      ...pidSetupMessages.idCardScan,
       animationKey: 'id-card-scan',
     },
     Screen: OnboardingIdCardScan,
@@ -80,7 +141,7 @@ export const pidSetupSteps = [
     progress: 80,
     page: {
       type: 'content',
-      title: 'Getting eID information',
+      ...pidSetupMessages.idCardFetch,
     },
     Screen: OnboardingIdCardFetch,
   },
@@ -90,8 +151,7 @@ export const pidSetupSteps = [
     alternativeFlow: true,
     page: {
       type: 'content',
-      title: 'Confirm it’s you',
-      subtitle: 'We need your biometrics to verify your identity.',
+      ...pidSetupMessages.idCardVerify,
       animationKey: 'id-card',
     },
     Screen: OnboardingIdCardVerify,
@@ -102,9 +162,7 @@ export const pidSetupSteps = [
     alternativeFlow: true,
     page: {
       type: 'content',
-      title: 'You need to enable biometrics',
-      subtitle:
-        'To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.',
+      ...pidSetupMessages.idCardBiometricsDisabled,
     },
     Screen: OnboardingIdCardBiometricsDisabled,
   },
@@ -114,8 +172,7 @@ export const pidSetupSteps = [
     alternativeFlow: false,
     page: {
       type: 'content',
-      title: 'Success!',
-      subtitle: 'Your information has been retrieved from your eID card.',
+      ...pidSetupMessages.idCardComplete,
       animationKey: 'id-card-success',
     },
     Screen: OnboardingIdCardFetch,
@@ -136,21 +193,20 @@ export type OnboardingPage =
   | { type: 'fullscreen' }
   | {
       type: 'content'
-      title: string
+      title?: MessageDescriptor
       animation?: 'default' | 'delayed'
-      subtitle?: string
+      subtitle?: MessageDescriptor
       animationKey?: string
     }
 
-export const getPidSetupSlideContent = (stepId: string) => {
+export const getPidSetupSlideContent = (stepId: string, t: typeof _t) => {
   const step = pidSetupSteps.find((s) => s.step === stepId)
   if (!step || step.page.type !== 'content') {
-    return { title: '', subtitle: undefined, caption: undefined }
+    return { title: '', subtitle: undefined }
   }
 
   return {
-    title: step.page.title,
-    subtitle: 'subtitle' in step.page ? step.page.subtitle : undefined,
-    caption: 'caption' in step.page ? step.page.caption : undefined,
+    title: t(step.page.title) ?? '',
+    subtitle: 'subtitle' in step.page ? t(step.page.subtitle) : undefined,
   }
 }

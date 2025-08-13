@@ -1,28 +1,35 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent } from '@easypid/agent'
+import { useLingui } from '@lingui/react/macro'
 import { resolveRequestForDcApi, sendErrorResponseForDcApi, sendResponseForDcApi } from '@package/agent'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { TranslationProvider, commonMessages } from '@package/translations'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { useStoredLocale } from '../../hooks/useStoredLocale'
 
 type DcApiSharingScreenProps = {
   request: DigitalCredentialsRequest
 }
 
 export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
+  const [storedLocale] = useStoredLocale()
+
   return (
-    <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
-      <SafeAreaProvider>
-        <Stack flex-1 justifyContent="flex-end">
-          <DcApiSharingScreenWithContext request={request} />
-        </Stack>
-      </SafeAreaProvider>
-    </TamaguiProvider>
+    <TranslationProvider customLocale={storedLocale}>
+      <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
+        <SafeAreaProvider>
+          <Stack flex-1 justifyContent="flex-end">
+            <DcApiSharingScreenWithContext request={request} />
+          </Stack>
+        </SafeAreaProvider>
+      </TamaguiProvider>
+    </TranslationProvider>
   )
 }
 
@@ -30,6 +37,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const [isProcessing, setIsProcessing] = useState(false)
   const pinRef = useRef<PinDotsInputRef>(null)
   const insets = useSafeAreaInsets()
+  const { t } = useLingui()
 
   const onProofAccept = async (pin: string) => {
     setIsProcessing(true)
@@ -52,13 +60,15 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           return
         }
 
+        // Not shown to the user
         sendErrorResponseForDcApi('Error initializing wallet')
       })
+
     if (!agent) return
 
     const resolvedRequest = await resolveRequestForDcApi({ agent, request })
       .then((resolvedRequest) => {
-        // We can't hare multiple documents at the moment
+        // We can't share multiple documents at the moment
         if (resolvedRequest.formattedSubmission.entries.length > 1) {
           throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
         }
@@ -70,6 +80,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           error,
         })
 
+        // Not shown to the user
         sendErrorResponseForDcApi('Presentation information could not be extracted')
       })
 
@@ -85,6 +96,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     } catch (error) {
       agent.config.logger.error('Could not share response', { error })
 
+      // Not shown to the user
       sendErrorResponseForDcApi('Unable to share credentials')
       return
     }
@@ -100,7 +112,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       paddingBottom={insets.bottom ?? '$6'}
     >
       <YStack>
-        <Heading>Enter PIN to share data</Heading>
+        <Heading>{t(commonMessages.enterPinToShareData)}</Heading>
         <Paragraph variant="annotation">{request.origin}</Paragraph>
       </YStack>
 

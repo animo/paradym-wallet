@@ -8,6 +8,8 @@ import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
 
 import { useAppIcon } from '@easypid/config/copy'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { SystemBars } from 'react-native-edge-to-edge'
 import {
   checkMdocPermissions,
@@ -23,6 +25,8 @@ export function FunkeOfflineQrScreen() {
   const { withHaptics } = useHaptics()
   const { replace, back } = useRouter()
   const { width } = useWindowDimensions()
+  const { t } = useLingui()
+
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
   const [arePermissionsRequested, setArePermissionsRequested] = useMMKVBoolean('arePermissionsRequested', mmkv)
@@ -114,10 +118,12 @@ export function FunkeOfflineQrScreen() {
     return (
       <Page justifyContent="center" alignItems="center">
         <Heading variant="h2" letterSpacing={-0.5}>
-          Please allow bluetooth access
+          <Trans id="offlineQr.allowBluetoothAccessTitle">Please allow bluetooth access</Trans>
         </Heading>
-        <Paragraph textAlign="center">This allows the app to share with a QR code.</Paragraph>
-        <Button.Text onPress={() => Linking.openSettings()}>Open settings</Button.Text>
+        <Paragraph textAlign="center">
+          <Trans id="offlineQr.allowBluetoothAccessDescription">This allows the app to share with a QR code.</Trans>
+        </Paragraph>
+        <Button.Text onPress={() => Linking.openSettings()}>{t(commonMessages.openSettingsButton)}</Button.Text>
       </Page>
     )
   }
@@ -127,10 +133,17 @@ export function FunkeOfflineQrScreen() {
       <SystemBars style="light" />
       <AnimatedStack pt="$8" maxWidth="90%" gap="$2">
         <Heading variant="h1" lineHeight={36} ta="center" dark>
-          Share with QR code
+          <Trans id="offlineQr.heading" comment="Main heading for offline QR sharing screen">
+            Share with QR code
+          </Trans>
         </Heading>
-        <Paragraph color="$grey-400">A verifier needs to scan your QR-Code.</Paragraph>
+        <Paragraph color="$grey-400">
+          <Trans id="offlineQr.instruction" comment="Instruction for the verifier to scan the QR code">
+            A verifier needs to scan your QR-Code.
+          </Trans>
+        </Paragraph>
       </AnimatedStack>
+
       <AnimatedStack fg={1} pb="$12" jc="center">
         {qrCodeData ? (
           <Stack bg="$white" br="$8" p="$5">
@@ -146,6 +159,7 @@ export function FunkeOfflineQrScreen() {
           <Loader variant="dark" />
         )}
       </AnimatedStack>
+
       <YStack jc="center" ai="center" gap="$4">
         <XStack>
           <Button.Solid
@@ -159,7 +173,7 @@ export function FunkeOfflineQrScreen() {
             scaleOnPress
             alignSelf="center"
           >
-            Cancel
+            {t(commonMessages.cancel)}
           </Button.Solid>
         </XStack>
         <Spacer />

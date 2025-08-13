@@ -1,3 +1,5 @@
+import { defineMessage } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { ActivityRowItem } from '@package/app'
 import { TextBackButton } from '@package/app'
 import { useScrollViewPosition } from '@package/app/hooks'
@@ -17,9 +19,32 @@ import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 import { useActivities } from './activityRecord'
 
+const activityMessages = {
+  screenTitle: defineMessage({
+    id: 'activity.title',
+    message: 'Activity',
+    comment: 'Title of the activity screen showing shared or received credentials',
+  }),
+  noActivityTitle: defineMessage({
+    id: 'activity.emptyTitle',
+    message: "There's nothing here, yet",
+    comment: 'Shown when the user has no activity items yet',
+  }),
+  noActivityDescription: defineMessage({
+    id: 'activity.emptyDescription',
+    message: 'Activity will appear here once you share or receive credentials.',
+    comment: 'Shown below the empty activity title to explain why the list is empty',
+  }),
+  unknownParty: defineMessage({
+    id: 'activity.unknownParty',
+    message: 'Unknown party',
+    comment: 'Fallback name shown for a party involved in the activity when no name or host is available',
+  }),
+}
+
 export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
   const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { entityId } })
-
+  const { t, i18n } = useLingui()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   const groupedActivities = useMemo(() => {
@@ -39,7 +64,8 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <HeaderContainer title="Activity" isScrolledByOffset={isScrolledByOffset} />
+      <HeaderContainer title={t(activityMessages.screenTitle)} isScrolledByOffset={isScrolledByOffset} />
+
       {activities.length === 0 ? (
         <AnimatedStack
           flexDirection="column"
@@ -50,9 +76,9 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
           fg={1}
         >
           <Heading ta="center" variant="h3" fontWeight="$semiBold">
-            There's nothing here, yet
+            {t(activityMessages.noActivityTitle)}
           </Heading>
-          <Paragraph ta="center">Activity will appear here once you share or receive credentials.</Paragraph>
+          <Paragraph ta="center">{t(activityMessages.noActivityDescription)}</Paragraph>
         </AnimatedStack>
       ) : isLoadingActivities ? (
         <YStack fg={1} ai="center" jc="center">
@@ -69,7 +95,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
                 <React.Fragment key={key}>
                   <Stack bbw={1} btw={1} borderColor="$grey-200" px="$4" py="$3" mx={-18}>
                     <Heading variant="sub2">
-                      {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                      {date.toLocaleString(i18n.locale, { month: 'long', year: 'numeric' })}
                     </Heading>
                   </Stack>
                   {groupActivities.map((activity) => (
@@ -78,7 +104,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
                       id={activity.id}
                       logo={activity.entity.logo}
                       backgroundColor={activity.entity.backgroundColor}
-                      subtitle={activity.entity.name ?? activity.entity.host ?? 'Unknown party'}
+                      subtitle={activity.entity.name ?? activity.entity.host ?? t(activityMessages.unknownParty)}
                       date={new Date(activity.date)}
                       type={activity.type}
                       status={activity.status}

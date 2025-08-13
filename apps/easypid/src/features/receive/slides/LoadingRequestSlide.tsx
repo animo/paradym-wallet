@@ -1,4 +1,6 @@
+import { useLingui } from '@lingui/react/macro'
 import { useWizard } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Button,
@@ -19,6 +21,7 @@ interface LoadingRequestSlideProps {
 }
 
 export const LoadingRequestSlide = ({ isLoading, isError }: LoadingRequestSlideProps) => {
+  const { t } = useLingui()
   const { onNext, onCancel } = useWizard()
   const canProceed = useMinimumLoadingTime()
 
@@ -37,12 +40,24 @@ export const LoadingRequestSlide = ({ isLoading, isError }: LoadingRequestSlideP
             <Stack py="$2">
               <Loader />
             </Stack>
-            <Heading variant="sub1">Please wait</Heading>
-            <Paragraph>Fetching information</Paragraph>
+            <Heading variant="sub1">
+              {t({
+                id: 'loadingRequestSlide.title',
+                message: 'Please wait',
+                comment: 'Shown while loading request data from the issuer or verifier',
+              })}
+            </Heading>
+            <Paragraph>
+              {t({
+                id: 'loadingRequestSlide.description',
+                message: 'Fetching information',
+                comment: 'Shown while waiting for data to be received from backend',
+              })}
+            </Paragraph>
           </YStack>
         </AnimatedStack>
       </AnimatedStack>
-      <Button.Text onPress={onCancel}>Stop</Button.Text>
+      <Button.Text onPress={onCancel}>{t(commonMessages.stop)}</Button.Text>
     </YStack>
   )
 }

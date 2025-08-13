@@ -1,8 +1,11 @@
+import type { MessageDescriptor } from '@lingui/core'
+import { defineMessage } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Button, HeroIcons, InfoButton, InfoSheet, Stack } from '@package/ui'
 import type { StatusVariant } from '@package/ui/utils/variants'
 import { formatDate, formatDaysString, getDaysUntil } from '@package/utils'
 import { useRouter } from 'expo-router'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { useState } from 'react'
 import { useHaptics } from '../hooks/useHaptics'
 
@@ -11,32 +14,41 @@ type BaseLifeCycle = 'active' | 'revoked' | 'batch'
 
 type LifeCycleContent = {
   variant: StatusVariant
-  title: string
-  description: string
-  sheetDescription: string
+  title: MessageDescriptor
+  description: MessageDescriptor
+  sheetDescription: MessageDescriptor
 }
 
 const cardInfoLifecycleVariant: Record<BaseLifeCycle, LifeCycleContent> = {
   active: {
     variant: 'positive',
-    title: 'Card is active',
-    description: 'No actions required',
-    sheetDescription: 'Your credentials may expire or require an active internet connection to validate.',
+    title: defineMessage({ id: 'cardLifecycle.active.title', message: 'Card is active' }),
+    description: defineMessage({ id: 'cardLifecycle.active.description', message: 'No actions required' }),
+    sheetDescription: defineMessage({
+      id: 'cardLifecycle.active.sheetDescription',
+      message: 'Your credentials may expire or require an active internet connection to validate.',
+    }),
   },
   revoked: {
     variant: 'danger',
-    title: 'Card revoked',
-    description: 'Card not usable anymore',
-    sheetDescription:
-      'The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.',
+    title: defineMessage({ id: 'cardLifecycle.revoked.title', message: 'Card revoked' }),
+    description: defineMessage({ id: 'cardLifecycle.revoked.description', message: 'Card not usable anymore' }),
+    sheetDescription: defineMessage({
+      id: 'cardLifecycle.revoked.sheetDescription',
+      message:
+        'The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.',
+    }),
   },
   // We can hardcode this to the rules for the PID credential as this will be the only of this type for now.
   batch: {
     variant: 'warning',
-    title: 'Limited card usage',
-    description: 'verifications left',
-    sheetDescription:
-      'This card requires periodic validation using an internet connection. When usage is low you will be notified.',
+    title: defineMessage({ id: 'cardLifecycle.batch.title', message: 'Limited card usage' }),
+    description: defineMessage({ id: 'cardLifecycle.batch.description', message: 'verifications left' }),
+    sheetDescription: defineMessage({
+      id: 'cardLifecycle.batch.sheetDescription',
+      message:
+        'This card requires periodic validation using an internet connection. When usage is low you will be notified.',
+    }),
   },
 }
 
@@ -51,12 +63,9 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
   const { push } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
+  const state = isRevoked ? 'revoked' : 'active'
 
-  const state = useMemo(() => {
-    if (isRevoked) return 'revoked'
-
-    return 'active'
-  }, [isRevoked])
+  const { t } = useLingui()
 
   // TODO: Check if refresh token is expired
   // Should also make sure that pid setup works when refresh token is expired
@@ -74,15 +83,16 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
       {isRefreshTokenExpired && (
         <Stack pb="$4">
           <Button.Solid bg="$grey-50" bw="$0.5" borderColor="$grey-200" color="$grey-900" onPress={onPressValidate}>
-            Refresh card <HeroIcons.ArrowPath ml="$-2" size={20} color="$grey-700" />
+            <Trans id="cardLifecycle.refreshCardButton">Refresh card</Trans>{' '}
+            <HeroIcons.ArrowPath ml="$-2" size={20} color="$grey-700" />
           </Button.Solid>
         </Stack>
       )}
       <InfoButton
         routingType="modal"
         variant={cardInfoLifecycleVariant[state].variant}
-        title={cardInfoLifecycleVariant[state].title}
-        description={cardInfoLifecycleVariant[state].description}
+        title={t(cardInfoLifecycleVariant[state].title)}
+        description={t(cardInfoLifecycleVariant[state].description)}
         onPress={withHaptics(() => setIsOpen(true))}
       />
       <InfoSheet
@@ -90,8 +100,8 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
         setIsOpen={setIsOpen}
         onClose={withHaptics(() => setIsOpen(false))}
         variant={cardInfoLifecycleVariant[state].variant}
-        title={cardInfoLifecycleVariant[state].title}
-        description={cardInfoLifecycleVariant[state].sheetDescription}
+        title={t(cardInfoLifecycleVariant[state].title)}
+        description={t(cardInfoLifecycleVariant[state].sheetDescription)}
       />
     </>
   )
@@ -107,6 +117,7 @@ function CardInfoLimitedByDate({
   const [state, setState] = useState<CardInfoLimitedByDateState>('active')
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
+  const { t } = useLingui()
 
   useEffect(() => {
     // If both are passed, then the credential is expired
@@ -138,8 +149,8 @@ function CardInfoLimitedByDate({
       <InfoButton
         routingType="modal"
         variant={content.variant}
-        title={content.title}
-        description={content.description}
+        title={t(content.title)}
+        description={t(content.description)}
         onPress={withHaptics(() => setIsOpen(true))}
       />
       <InfoSheet
@@ -147,8 +158,8 @@ function CardInfoLimitedByDate({
         setIsOpen={setIsOpen}
         onClose={withHaptics(() => setIsOpen(false))}
         variant={content.variant}
-        title={content.title}
-        description={content.sheetDescription}
+        title={t(content.title)}
+        description={t(content.sheetDescription)}
       />
     </>
   )
@@ -166,11 +177,24 @@ function getCardInfoLimitedByDateVariant(
 
   const validityPeriod =
     validFrom && validUntil
-      ? `The validity period of this card is from ${formatDate(validFrom)} until ${formatDate(validUntil)}.`
+      ? defineMessage({
+          id: 'cardLifecycle.limitedByDate.validityPeriod',
+          message: `The validity period of this card is from ${formatDate(validFrom)} until ${formatDate(validUntil)}.`,
+        })
       : undefined
 
-  const activeString = validFrom && `This card will be active in ${activeDaysString}, on ${formatDate(validFrom)}.`
-  const expiryString = validUntil && `This card expires in ${expiryDaysString}, on ${formatDate(validUntil)}.`
+  const activeString =
+    validFrom &&
+    defineMessage({
+      id: 'cardLifecycle.limitedByDate.activeIn',
+      message: `This card will be active in ${activeDaysString}, on ${formatDate(validFrom)}.`,
+    })
+  const expiryString =
+    validUntil &&
+    defineMessage({
+      id: 'cardLifecycle.limitedByDate.expiresIn',
+      message: `This card expires in ${expiryDaysString}, on ${formatDate(validUntil)}.`,
+    })
 
   // Check if card expires in more than 2 weeks (14 days)
   const hasMoreThanTwoWeeksUntilExpiry =
@@ -179,27 +203,49 @@ function getCardInfoLimitedByDateVariant(
   return {
     active: {
       variant: 'positive',
-      title: 'Card is active',
-      description: 'No actions required',
-      sheetDescription: 'Some credentials may expire or require an active internet connection to validate',
+      title: cardInfoLifecycleVariant.active.title,
+      description: defineMessage({
+        id: 'cardLifecycle.limitedByDate.active.description',
+        message: 'No actions required',
+      }),
+      sheetDescription: defineMessage({
+        id: 'cardLifecycle.limitedByDate.active.sheetDescription',
+        message: 'Some credentials may expire or require an active internet connection to validate',
+      }),
     },
     expired: {
       variant: 'default',
-      title: 'Card expired',
-      description: 'The expiration date of this card has passed',
-      sheetDescription: `The expiration date of this card has passed on ${validUntil?.toLocaleDateString()}.`,
+      title: defineMessage({ id: 'cardLifecycle.limitedByDate.expired.title', message: 'Card expired' }),
+      description: defineMessage({
+        id: 'cardLifecycle.limitedByDate.expired.description',
+        message: 'The expiration date of this card has passed',
+      }),
+      sheetDescription: defineMessage({
+        id: 'cardLifecycle.limitedByDate.expired.sheetDescription',
+        message: `The expiration date of this card has passed on ${formatDate(validUntil ?? new Date(), { includeTime: true })}.`,
+      }),
     },
     'not-yet-active': {
       variant: 'default',
-      title: 'Card not active',
-      description: `Will be active in ${activeDaysString}`,
-      sheetDescription: (validityPeriod ?? activeString) as string,
+      title: defineMessage({ id: 'cardLifecycle.limitedByDate.notYetActive.title', message: 'Card not active' }),
+      description: defineMessage({
+        id: 'cardLifecycle.limitedByDate.notYetActive.description',
+        message: `Will be active in ${activeDaysString}`,
+      }),
+      sheetDescription: (validityPeriod ?? activeString) as MessageDescriptor,
     },
     'will-expire': {
       variant: hasMoreThanTwoWeeksUntilExpiry ? 'positive' : 'warning',
-      title: hasMoreThanTwoWeeksUntilExpiry ? 'Card is active' : 'Card will expire',
-      description: hasMoreThanTwoWeeksUntilExpiry ? 'No actions required' : `Expires in ${expiryDaysString}`,
-      sheetDescription: (validityPeriod ?? expiryString) as string,
+      title: hasMoreThanTwoWeeksUntilExpiry
+        ? cardInfoLifecycleVariant.active.title
+        : defineMessage({ id: 'cardLifecycle.limitedByDate.willExpire.title', message: 'Card will expire' }),
+      description: hasMoreThanTwoWeeksUntilExpiry
+        ? cardInfoLifecycleVariant.active.description
+        : defineMessage({
+            id: 'cardLifecycle.limitedByDate.willExpire.description',
+            message: `Expires in ${expiryDaysString}`,
+          }),
+      sheetDescription: (validityPeriod ?? expiryString) as MessageDescriptor,
     },
   }
 }
