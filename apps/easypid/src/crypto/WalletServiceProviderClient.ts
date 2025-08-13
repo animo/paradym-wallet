@@ -13,8 +13,8 @@ import {
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
-import type { EasyPIDAppAgent } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import type { BaseAgent } from '@paradym/wallet-sdk/agent'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -62,7 +62,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
 
   public constructor(
     private hsmUrl: string,
-    private agent: EasyPIDAppAgent
+    private agent: BaseAgent
   ) {}
 
   private async post<T>(path: string, claims: Record<string, unknown>): Promise<T> {
@@ -101,7 +101,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     })
 
     const parsedData = await response.json()
-    return parsedData
+    return parsedData as T
   }
 
   public async register() {

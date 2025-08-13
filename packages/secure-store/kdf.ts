@@ -11,7 +11,7 @@ import argon2 from 'react-native-argon2'
  */
 const derive = async (pin: string, salt: string): Promise<string> => {
   // Takes about 1.5 second on iPhone 14 Pro
-  // Need to test on Android/different devices as well
+  // TODO: Need to test on Android/different devices as well
   const { rawHash } = await argon2(pin, salt, {
     hashLength: 32,
     mode: 'argon2id',
