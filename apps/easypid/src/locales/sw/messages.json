@@ -964,7 +964,7 @@
 		"message": "Development Mode",
 		"placeholders": {},
 		"comments": ["Label for the toggle to enable developer mode"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 90]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 102]],
 		"translation": "Utvecklingsläge"
 	},
 	"localAi.toast.unsupported.title": {
@@ -1216,6 +1216,20 @@
 			["../../packages/app/src/components/CardInfoLifecycle.tsx", 244]
 		],
 		"translation": "Går ut om {expiryDaysString}"
+	},
+	"settings.exportDebugLogs": {
+		"message": "Export debug logs",
+		"placeholders": {},
+		"comments": ["Label for the button to export debug logs"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 115]],
+		"translation": "Exportera felsökningsloggar"
+	},
+	"settings.exportDebugLogsDescription": {
+		"message": "Export the last 1000 debug logs from the wallet. Note that this can contain sensitive information.",
+		"placeholders": {},
+		"comments": ["Description for the feature to export debug logs"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 122]],
+		"translation": "Exportera de senaste 1000 felsökningsloggarna från plånboken. Observera att detta kan innehålla känslig information."
 	},
 	"common.invitationParsingFailed": {
 		"message": "Failed to parse invitation.",
@@ -1710,7 +1724,7 @@
 		"message": "Language",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 44]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 56]],
 		"translation": "Språk"
 	},
 	"verifyPartySlide.hasPreviousInteractionsDescription": {
@@ -2481,7 +2495,7 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Header title for the settings screen"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 74]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 86]],
 		"translation": "Inställningar"
 	},
 	"menu.item.settings": {

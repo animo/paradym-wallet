@@ -1,15 +1,27 @@
 import { TextBackButton } from '@package/app'
-import { BetaTag, FlexPage, HeaderContainer, HeroIcons, ScrollView, Switch, XStack, YStack } from '@package/ui'
+import {
+  BetaTag,
+  FlexPage,
+  HeaderContainer,
+  HeroIcons,
+  ScrollView,
+  SettingsButton,
+  Switch,
+  XStack,
+  YStack,
+} from '@package/ui'
 import { Label } from 'tamagui'
 import { LocalAiContainer } from './components/LocalAiContainer'
 
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useLingui } from '@lingui/react/macro'
 import { Trans } from '@lingui/react/macro'
+import { logger } from '@package/agent'
 import { useScrollViewPosition } from '@package/app/hooks'
 import { type SupportedLocale, supportedLanguageMessages, supportedLocales, useLocale } from '@package/translations'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
+import { Share } from 'react-native'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
 
@@ -98,6 +110,24 @@ export function FunkeSettingsScreen() {
             />
             {isOverAskingAiEnabled && <LocalAiContainer />}
             <LocaleSelect />
+            {isDevelopmentModeEnabled && (
+              <SettingsButton
+                label={t({
+                  id: 'settings.exportDebugLogs',
+                  message: 'Export debug logs',
+                  comment: 'Label for the button to export debug logs',
+                })}
+                beta
+                onPress={() => Share.share({ message: logger.loggedMessageContents })}
+                description={t({
+                  id: 'settings.exportDebugLogsDescription',
+                  message:
+                    'Export the last 1000 debug logs from the wallet. Note that this can contain sensitive information.',
+                  comment: 'Description for the feature to export debug logs',
+                })}
+                icon={<HeroIcons.QueueListFilled />}
+              />
+            )}
           </YStack>
           <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
             <TextBackButton />
