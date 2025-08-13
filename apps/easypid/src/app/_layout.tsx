@@ -1,6 +1,7 @@
 import 'fast-text-encoding'
 
 import { isGetCredentialActivity } from '@animo-id/expo-digital-credentials-api'
+import { paradymWalletSdkOptions } from '@easypid/config/paradym'
 import { BackgroundLockProvider, NoInternetToastProvider, Provider } from '@package/app'
 import { ParadymWalletSdk } from '@package/sdk'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
@@ -32,7 +33,7 @@ function RootLayout() {
   return (
     <Provider config={tamaguiConfig}>
       <SystemBars style="dark" />
-      <ParadymWalletSdk.UnlockProvider>
+      <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
         <ThemeProvider
           value={{
             ...DefaultTheme,
