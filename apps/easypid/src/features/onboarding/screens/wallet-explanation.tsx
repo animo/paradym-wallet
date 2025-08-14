@@ -111,7 +111,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
           }}
           renderItem={({ item }) => (
             <AnimatedStack flexDirection="column" flex={1} gap="$3" pr={36}>
-              <Heading variant="h1">{item.title}</Heading>
+              <Heading heading="h1">{item.title}</Heading>
               <Paragraph>{item.subtitle}</Paragraph>
               <YStack ai="center" f={1} onLayout={onLayout} pos="relative">
                 <YStack height={height} mt="$4">

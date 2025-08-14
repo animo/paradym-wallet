@@ -97,7 +97,7 @@ export const SignAndShareSlide = ({
           >
             <YStack gap="$4">
               <YStack gap="$2">
-                <Heading variant="sub2">
+                <Heading heading="sub2">
                   <Trans id="signShare.documentHeading" comment="Heading above the document name">
                     Document
                   </Trans>
@@ -110,7 +110,7 @@ export const SignAndShareSlide = ({
               </YStack>
               <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
                 <YStack f={1} gap="$2">
-                  <Heading variant="sub2" textTransform="none" color="$grey-800">
+                  <Heading heading="sub2" textTransform="none" color="$grey-800">
                     {documentName}
                   </Heading>
                   <Paragraph>{signingWithLabel}</Paragraph>
@@ -122,7 +122,7 @@ export const SignAndShareSlide = ({
             {cardForSigning && (
               <YStack gap="$4">
                 <YStack gap="$2">
-                  <Heading variant="sub2">
+                  <Heading heading="sub2">
                     <Trans id="signShare.cardHeading" comment="Heading above the signing card">
                       Signing card
                     </Trans>

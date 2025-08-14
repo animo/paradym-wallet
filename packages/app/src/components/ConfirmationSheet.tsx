@@ -41,7 +41,7 @@ export function ConfirmationSheet({
     <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
       <Stack p="$4" gap="$4">
         <XStack jc="space-between">
-          <Heading color="$grey-900" variant="h2">
+          <Heading color="$grey-900" heading="h2">
             {title || t(defaultTitleMessage)}
           </Heading>
           <Stack ml="$2" br="$12" p="$2" bg="$grey-50" onPress={() => setIsOpen(false)}>

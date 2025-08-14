@@ -46,7 +46,7 @@ export function FormattedCredentialAttributes({ attributes, headerTitle }: Formt
     <YStack gap="$6">
       {primitiveItems.length > 0 && (
         <YStack gap="$4">
-          {headerTitle && <Heading variant="sub2">{headerTitle}</Heading>}
+          {headerTitle && <Heading heading="sub2">{headerTitle}</Heading>}
 
           <TableContainer>
             {primitiveItems.map((item) => (
@@ -58,7 +58,7 @@ export function FormattedCredentialAttributes({ attributes, headerTitle }: Formt
 
       {objectItems.map((item) => (
         <YStack key={item.key} gap="$4">
-          {typeof item.name === 'string' && <Heading variant="sub2">{item.name}</Heading>}
+          {typeof item.name === 'string' && <Heading heading="sub2">{item.name}</Heading>}
           <TableContainer>
             {item.value.map((value) => (
               <AnyRow key={value.key} item={value} parentName={item.name} />
@@ -193,7 +193,7 @@ const ImageRow = ({
       <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
         <Stack p="$4" gap="$4">
           <XStack jc="space-between">
-            <Heading color="$grey-900" variant="h2">
+            <Heading color="$grey-900" heading="h2">
               {name}
             </Heading>
             <Stack br="$12" p="$2" bg="$grey-50" onPress={() => setIsOpen(false)}>

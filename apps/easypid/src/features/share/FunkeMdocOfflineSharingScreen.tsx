@@ -170,7 +170,7 @@ export function FunkeMdocOfflineSharingScreen({
         verifier: {
           hostName: undefined,
           logo: undefined,
-          name: 'Unknown party',
+          name: t(commonMessages.unknownOrganization),
           trustedEntities: [],
         },
       },

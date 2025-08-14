@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro'
 import { ActivityRowItem } from '@package/app'
 import { TextBackButton } from '@package/app'
 import { useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -34,11 +35,6 @@ const activityMessages = {
     id: 'activity.emptyDescription',
     message: 'Activity will appear here once you share or receive credentials.',
     comment: 'Shown below the empty activity title to explain why the list is empty',
-  }),
-  unknownParty: defineMessage({
-    id: 'activity.unknownParty',
-    message: 'Unknown party',
-    comment: 'Fallback name shown for a party involved in the activity when no name or host is available',
   }),
 }
 
@@ -75,7 +71,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
           p="$4"
           fg={1}
         >
-          <Heading ta="center" variant="h3" fontWeight="$semiBold">
+          <Heading ta="center" heading="h3" fontWeight="$semiBold">
             {t(activityMessages.noActivityTitle)}
           </Heading>
           <Paragraph ta="center">{t(activityMessages.noActivityDescription)}</Paragraph>
@@ -94,7 +90,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
               return (
                 <React.Fragment key={key}>
                   <Stack bbw={1} btw={1} borderColor="$grey-200" px="$4" py="$3" mx={-18}>
-                    <Heading variant="sub2">
+                    <Heading heading="sub2">
                       {date.toLocaleString(i18n.locale, { month: 'long', year: 'numeric' })}
                     </Heading>
                   </Stack>
@@ -104,7 +100,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
                       id={activity.id}
                       logo={activity.entity.logo}
                       backgroundColor={activity.entity.backgroundColor}
-                      subtitle={activity.entity.name ?? activity.entity.host ?? t(activityMessages.unknownParty)}
+                      subtitle={activity.entity.name ?? activity.entity.host ?? t(commonMessages.unknownOrganization)}
                       date={new Date(activity.date)}
                       type={activity.type}
                       status={activity.status}

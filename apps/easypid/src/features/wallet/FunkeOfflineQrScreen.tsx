@@ -117,7 +117,7 @@ export function FunkeOfflineQrScreen() {
   if (arePermissionsGranted === false) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <Heading variant="h2" letterSpacing={-0.5}>
+        <Heading heading="h2" letterSpacing={-0.5}>
           <Trans id="offlineQr.allowBluetoothAccessTitle">Please allow bluetooth access</Trans>
         </Heading>
         <Paragraph textAlign="center">
@@ -132,7 +132,7 @@ export function FunkeOfflineQrScreen() {
     <Page bg="$black" ai="center">
       <SystemBars style="light" />
       <AnimatedStack pt="$8" maxWidth="90%" gap="$2">
-        <Heading variant="h1" lineHeight={36} ta="center" dark>
+        <Heading heading="h1" lineHeight={36} ta="center" dark>
           <Trans id="offlineQr.heading" comment="Main heading for offline QR sharing screen">
             Share with QR code
           </Trans>

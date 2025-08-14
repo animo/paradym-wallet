@@ -127,7 +127,7 @@ export function FunkeRequestedAttributesDetailScreen({
               </Stack>
               <Stack gap="$4">
                 <Stack gap="$2">
-                  <Heading ta="center" variant="h1">
+                  <Heading ta="center" heading="h1">
                     {t({
                       id: 'requestedAttributes.heading',
                       message: 'Requested attributes',

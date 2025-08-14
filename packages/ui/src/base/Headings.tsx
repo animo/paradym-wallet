@@ -34,7 +34,7 @@ export const Heading = styled(THeading, {
       },
     },
     // Margin left is used to remove the whitespace that is added by the font-family
-    variant: {
+    heading: {
       h1: {
         name: 'H1',
         tag: 'h1',
@@ -89,7 +89,7 @@ export const Heading = styled(THeading, {
   } as const,
   defaultVariants: {
     light: true,
-    variant: 'h1',
+    heading: 'h1',
   },
 })
 

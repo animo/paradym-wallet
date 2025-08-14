@@ -56,7 +56,7 @@ export function FunkeTrustDetailScreen({
       <HeaderContainer
         title={t({
           id: 'trust.headerTitle',
-          message: 'About this party',
+          message: 'About this organization',
           comment: 'Screen title that describes information about a trusted party or organization',
         })}
         isScrolledByOffset={isScrolledByOffset}
@@ -68,7 +68,7 @@ export function FunkeTrustDetailScreen({
             variant="light"
             message={t({
               id: 'trust.warning',
-              message: 'Always consider whether sharing with a party is wise.',
+              message: 'Always consider whether sharing with an organization is wise.',
               comment: 'Shown as a warning box when viewing a trusted party’s detail',
             })}
             icon={<HeroIcons.ExclamationTriangleFilled />}
@@ -84,7 +84,7 @@ export function FunkeTrustDetailScreen({
                 <HeroIcons.BuildingOffice color="$grey-700" />
               </Circle>
             )}
-            <Heading flex={1} numberOfLines={3} variant="h2">
+            <Heading flex={1} numberOfLines={3} heading="h2">
               {name || t(commonMessages.unknownOrganization)}{' '}
               {isDemoTrustedEntity ? (
                 <Trans id="trust.demo" comment="Label shown after an organization name if it is a demo version">
@@ -96,7 +96,7 @@ export function FunkeTrustDetailScreen({
 
           <YStack gap="$4" py="$2">
             <YStack gap="$2">
-              <Heading variant="sub2">
+              <Heading heading="sub2">
                 <Trans id="trust.trustedBy" comment="Subheading for list of organizations that trust the current one">
                   Trusted by
                 </Trans>{' '}
@@ -141,7 +141,7 @@ export function FunkeTrustDetailScreen({
                   )}
                   <XStack gap="$1" f={1} justifyContent="space-between" ai="center">
                     <YStack>
-                      <Heading f={1} numberOfLines={2} variant="h3">
+                      <Heading f={1} numberOfLines={2} heading="h3">
                         {entity.organizationName}
                       </Heading>
                       {entity.demo && (

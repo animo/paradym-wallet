@@ -36,8 +36,10 @@ import {
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
+import { t } from '@lingui/core/macro'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
+import { commonMessages } from '@package/translations'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 import type { ParadymAppAgent } from '../agent'
@@ -578,7 +580,7 @@ export async function resolveOutOfBandInvitation(
       agent.config.logger.error('No requests and no handshake protocols found in invitation.')
       return {
         success: false,
-        error: 'Invalid invitation.',
+        error: t(commonMessages.invalidInvitation),
       }
     }
 
@@ -610,7 +612,7 @@ export async function resolveOutOfBandInvitation(
       agent.config.logger.error('Message request is not from supported protocol.')
       return {
         success: false,
-        error: 'Invalid invitation.',
+        error: t(commonMessages.invalidInvitation),
       }
     }
   }
@@ -621,7 +623,7 @@ export async function resolveOutOfBandInvitation(
     if (receivedInvite) {
       return {
         success: false,
-        error: 'Invitation has already been scanned.',
+        error: t(commonMessages.invitationAlreadyScanned),
       }
     }
 
@@ -640,7 +642,7 @@ export async function resolveOutOfBandInvitation(
 
     return {
       success: false,
-      error: 'Invalid invitation.',
+      error: t(commonMessages.invalidInvitation),
     }
   }
 }
@@ -708,7 +710,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
 
     return {
       success: false,
-      error: 'Invalid invitation.',
+      error: t(commonMessages.invalidInvitation),
     }
   }
 
@@ -758,12 +760,12 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
 
     return {
       success: false,
-      error: 'Invalid invitation.',
+      error: t(commonMessages.invalidInvitation),
     }
   }
 
   return {
     success: false,
-    error: 'Invalid invitation.',
+    error: t(commonMessages.invalidInvitation),
   }
 }

@@ -181,7 +181,7 @@ export async function parseInvitationUrl(invitationUrl: string): Promise<ParseIn
       return {
         success: true,
         result: {
-          data: `didcomm://oob=${JsonEncoder.toBase64URL(invitation.result.data)}`,
+          data: `didcomm://?oob=${JsonEncoder.toBase64URL(invitation.result.data)}`,
           format: 'url',
           type: 'didcomm',
         },

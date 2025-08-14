@@ -192,6 +192,15 @@ export const commonMessages = {
     message: 'Invitation not supported.',
     comment: 'Error message shown when the type of invitation is not supported by the wallet',
   }),
+  invalidInvitation: defineMessage({
+    id: 'common.invalidInvitation',
+    message: 'Invalid invitation.',
+    comment: 'Error message shown when the invitation is not valid',
+  }),
+  invitationAlreadyScanned: defineMessage({
+    id: 'common.invitationAlreadyScanned',
+    message: 'Invitation has already been scanned.',
+  }),
   issuedByWithName: (name: string) =>
     defineMessage({
       id: 'common.issuedByWithName',

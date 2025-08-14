@@ -58,7 +58,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
   return (
     <YStack gap="$4">
       <YStack gap="$2">
-        <Heading variant="sub2">
+        <Heading heading="sub2">
           {satisfiedEntries.length > 0 ? requestedCardsHeading : unavailableCardsHeading}
         </Heading>
         <Paragraph>
@@ -101,7 +101,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         <>
           {satisfiedEntries.length !== 0 && (
             <YStack>
-              <Heading variant="sub2">{unavailableCardsHeading}</Heading>
+              <Heading heading="sub2">{unavailableCardsHeading}</Heading>
             </YStack>
           )}
           {unsatisfiedEntries.map((entry) => (

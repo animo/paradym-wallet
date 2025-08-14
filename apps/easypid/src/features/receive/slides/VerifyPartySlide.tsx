@@ -109,7 +109,7 @@ export const VerifyPartySlide = ({
             </Circle>
           </XStack>
           <Stack gap="$2">
-            <Heading variant="h2" numberOfLines={2} center fontSize={24} lineHeight="$5">
+            <Heading heading="h2" numberOfLines={2} center fontSize={24} lineHeight="$5">
               {name ? (
                 <Trans id="verifyPartySlide.interactWithHeading">Interact with {name}?</Trans>
               ) : (

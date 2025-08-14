@@ -38,7 +38,7 @@ export function NotificationInboxScreen() {
   return (
     <YStack bg="$background" pt={top} height="100%" position="relative">
       <Stack mt="$7" p="$2" px="$4" border={isScrolledByOffset} borderTopWidth={0}>
-        <Heading variant="h1" lineHeight={36} fontSize={36}>
+        <Heading heading="h1" lineHeight={36} fontSize={36}>
           <Trans id="inbox.title" comment="Title heading for the Inbox screen">
             Inbox
           </Trans>

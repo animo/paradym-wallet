@@ -55,7 +55,7 @@ export function InfoSheet({ isOpen, setIsOpen, title, description, onClose, vari
         </Circle>
       </Stack>
       <Stack gap="$3" p="$4">
-        <Heading color="$grey-900" variant="h2">
+        <Heading color="$grey-900" heading="h2">
           {title}
         </Heading>
         <Paragraph>{description}</Paragraph>

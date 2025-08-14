@@ -10,7 +10,7 @@ export function NoContentInbox() {
       <Spacer />
       <YStack>
         <YStack jc="center" ai="center" gap="$2">
-          <Heading variant="h2" fontWeight="$medium" letterSpacing={-0.5}>
+          <Heading heading="h2" fontWeight="$medium" letterSpacing={-0.5}>
             <Trans id="noContentInbox.heading" comment="Heading shown when user has no notifications">
               You're all caught up
             </Trans>

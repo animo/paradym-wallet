@@ -60,7 +60,7 @@ export function FunkeWalletScreen() {
             <YStack fg={1} f={1} gap="$4">
               <YStack ai="center" jc="center" gap="$2">
                 <Heading
-                  variant="h1"
+                  heading="h1"
                   fontSize={userName.length < 14 ? 38 : 26}
                   lineHeight={userName.length < 14 ? 40 : 32}
                   opacity={isLoading ? 0 : 1}

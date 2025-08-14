@@ -76,7 +76,7 @@ export function CredentialCard({
           <XStack jc="space-between">
             <XStack pr="$4">{icon}</XStack>
             <YStack f={1}>
-              <Heading variant="h3" size="$4" textAlign="right" color={textColor} numberOfLines={2}>
+              <Heading heading="h3" size="$4" textAlign="right" color={textColor} numberOfLines={2}>
                 {name}
               </Heading>
               <Paragraph variant="annotation" textAlign="right" color={textColor} numberOfLines={1} opacity={0.8}>

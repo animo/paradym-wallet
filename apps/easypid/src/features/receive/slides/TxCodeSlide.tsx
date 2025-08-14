@@ -64,7 +64,7 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
           )}
         </YStack>
         <YStack gap="$2">
-          <Heading variant="sub2">
+          <Heading heading="sub2">
             {t({
               id: 'txCodeSlide.inputLabel',
               message: 'Transaction code',

@@ -49,7 +49,7 @@ const MenuListItem = ({ variant = 'regular', onPress, icon, label, action = 'rou
     >
       <XStack ai="center" gap="$4">
         <IconContainer icon={icon} radius="normal" variant={variant} />
-        <Heading variant="h3" fontWeight="$semiBold" color={variant === 'regular' ? '$grey-900' : '$danger-600'}>
+        <Heading heading="h3" fontWeight="$semiBold" color={variant === 'regular' ? '$grey-900' : '$danger-600'}>
           {label}
         </Heading>
       </XStack>
@@ -106,7 +106,7 @@ export function FunkeMenuScreen() {
           )}
 
           <YStack gap="$3">
-            <Heading px="$4" variant="sub2" fontWeight="$semiBold">
+            <Heading px="$4" heading="sub2" fontWeight="$semiBold">
               {t({
                 id: 'menu.section.wallet',
                 message: 'WALLET',
@@ -136,7 +136,7 @@ export function FunkeMenuScreen() {
           </YStack>
 
           <YStack gap="$3">
-            <Heading px="$4" variant="sub2" fontWeight="$semiBold">
+            <Heading px="$4" heading="sub2" fontWeight="$semiBold">
               {t({
                 id: 'menu.section.app',
                 message: 'APP',

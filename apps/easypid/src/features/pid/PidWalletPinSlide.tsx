@@ -33,7 +33,7 @@ export function PidWalletPinSlide({ title, subtitle, onEnterPin }: PidWalletPinS
     <YStack fg={1} jc="space-between" mb={noBottomSafeArea ? -additionalPadding : undefined}>
       <YStack gap="$6">
         <YStack gap="$3">
-          <Heading variant="h1">{title}</Heading>
+          <Heading heading="h1">{title}</Heading>
           {subtitle && <Paragraph>{subtitle}</Paragraph>}
         </YStack>
       </YStack>

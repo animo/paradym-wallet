@@ -32,6 +32,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
         }),
         { customData: { preset: 'danger' } }
       )
+      if (credentialExchange) agent.modules.credentials.deleteById(credentialExchange.id)
       onCancel()
     })
 
@@ -79,14 +80,13 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
               attributes={attributes ?? {}}
               isCompleted={acceptStatus === 'success'}
               onAccept={onCredentialAccept}
-              onDecline={onCredentialDecline}
               // If state is not idle, it means we have pressed accept
               isAccepting={acceptStatus !== 'idle'}
             />
           ),
         },
       ]}
-      onCancel={onCancel}
+      onCancel={onCredentialDecline}
       confirmation={getFlowConfirmationText(t, 'issue')}
     />
   )
