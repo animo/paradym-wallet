@@ -1,4 +1,3 @@
-import { eudiTrustList, trustedEntityIds, trustedX509Entities } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
@@ -50,9 +49,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     getCredentialsForProofRequest({
       paradym,
       uri: params.uri,
-      trustList: eudiTrustList,
-      trustedEntityIds,
-      trustedX509Entities,
     })
       .then((r) => {
         setCredentialsForRequest(r)

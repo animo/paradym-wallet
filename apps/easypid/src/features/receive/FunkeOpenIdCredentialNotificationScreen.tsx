@@ -1,5 +1,5 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
-import { appScheme, eudiTrustList, trustedEntityIds, trustedX509Entities } from '@easypid/constants'
+import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
@@ -252,9 +252,6 @@ export function FunkeCredentialNotificationScreen() {
       getCredentialsForProofRequest({
         paradym,
         uri: oid4vpRequestUrl,
-        trustedEntityIds,
-        trustedX509Entities,
-        trustList: eudiTrustList,
       })
         .then(setCredentialsForRequest)
         .catch((error) => {

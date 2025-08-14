@@ -15,7 +15,6 @@ import type { BaseAgent } from '../agent'
 import { getCredentialForDisplay } from '../display/credential'
 import { sanitizeString } from '../display/strings'
 import { shareProof } from '../invitation/shareProof'
-import type { TrustList } from '../trust/handlers/eudiRpAuthentication'
 import { getHostNameFromUrl } from '../utils/url'
 import type { FetchBatchCredentialCallback } from './batch'
 import { type CredentialsForProofRequest, getCredentialsForProofRequest } from './getCredentialsForProofRequest'
@@ -226,8 +225,7 @@ export async function registerCredentialsForDcApi(agent: BaseAgent) {
 export async function resolveRequestForDcApi({
   paradym,
   request,
-  trustList,
-}: { paradym: ParadymWalletSdk; request: DigitalCredentialsRequest; trustList: TrustList }) {
+}: { paradym: ParadymWalletSdk; request: DigitalCredentialsRequest }) {
   const providerRequest = request.request.requests
     ? request.request.requests[request.selectedEntry.providerIndex].data
     : request.request.providers[request.selectedEntry.providerIndex].request
@@ -240,11 +238,6 @@ export async function resolveRequestForDcApi({
     paradym,
     requestPayload: authorizationRequestPayload,
     origin: request.origin,
-
-    // TODO(sdk): how do we want to manage this in the dc api?
-    trustList,
-    trustedEntityIds: [],
-    trustedX509Entities: [],
   })
 
   if (result.formattedSubmission.entries.length !== 1) {

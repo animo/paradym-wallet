@@ -1,7 +1,7 @@
 import { X509Certificate, X509ModuleConfig } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
-import type { TrustedEntity } from '../trustMechanism'
+import type { TrustedEntity, X509TrustMechanismConfiguration } from '../trustMechanism'
 
 export type TrustedX509Entity = {
   certificate: string
@@ -15,15 +15,15 @@ export type TrustedX509Entity = {
 export type GetTrustedEntitiesForX509CertificateOptions = {
   paradym: ParadymWalletSdk
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
-  trustedX509Entities: TrustedX509Entity[]
+  trustMechanismConfiguration: X509TrustMechanismConfiguration
   walletTrustedEntity?: TrustedEntity
 }
 
 export const getTrustedEntitiesForX509Certificate = async ({
   resolvedAuthorizationRequest,
   paradym,
-  trustedX509Entities,
   walletTrustedEntity,
+  trustMechanismConfiguration,
 }: GetTrustedEntitiesForX509CertificateOptions) => {
   const trustedEntities: TrustedEntity[] = []
   let organizationName: string | undefined
@@ -50,7 +50,9 @@ export const getTrustedEntitiesForX509Certificate = async ({
         .catch(() => null)
 
       const trustedEntity = chain
-        ? trustedX509Entities?.find((e) => X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0]))
+        ? trustMechanismConfiguration.trustedX509Entities.find((e) =>
+            X509Certificate.fromEncodedCertificate(e.certificate).equal(chain[0])
+          )
         : null
       if (trustedEntity) {
         organizationName = trustedEntity.name

@@ -1,4 +1,3 @@
-import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
 import queryString from 'query-string'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
@@ -130,12 +129,6 @@ export async function parseOpenIdCredentialOfferInvitation(paradym: ParadymWalle
 
 export async function parseOpenIdPresentationRequestInvitation(paradym: ParadymWalletSdk, invitationUrl: string) {
   const resolved = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(invitationUrl)
-
-  if (paradym.trustMechanisms.includes('eudi_rp_authentication')) {
-    const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(paradym.agent.context, {
-      resolvedAuthorizationRequest: resolved,
-    })
-  }
 
   const formattedSubmission = getFormattedSubmission(resolved)
 

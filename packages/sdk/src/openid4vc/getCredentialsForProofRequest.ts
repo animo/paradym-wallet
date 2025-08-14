@@ -6,8 +6,6 @@ import { ParadymWalletNoRequestToResolveError } from '../error'
 import { formatDcqlCredentialsForRequest } from '../format/dcqlRequest'
 import { formatDifPexCredentialsForRequest } from '../format/presentationExchangeRequest'
 import type { FormattedSubmission } from '../format/submission'
-import type { TrustList } from '../trust/handlers/eudiRpAuthentication'
-import type { TrustedX509Entity } from '../trust/handlers/x509'
 import { getTrustedEntities } from '../trust/trustMechanism'
 
 export type GetCredentialsForProofRequestOptions = {
@@ -16,10 +14,6 @@ export type GetCredentialsForProofRequestOptions = {
   uri?: string
   allowUntrusted?: boolean
   origin?: string
-
-  trustedX509Entities: TrustedX509Entity[]
-  trustedEntityIds: string[]
-  trustList: TrustList
 }
 
 const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: string): string | null => {
@@ -46,9 +40,6 @@ export const getCredentialsForProofRequest = async ({
   allowUntrusted = true,
   requestPayload,
   origin,
-  trustedEntityIds,
-  trustedX509Entities,
-  trustList,
 }: GetCredentialsForProofRequestOptions) => {
   const requestToResolve = uri ?? requestPayload
 
@@ -60,7 +51,8 @@ export const getCredentialsForProofRequest = async ({
 
   const resolved = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
     origin,
-    trustedFederationEntityIds: trustedEntityIds,
+    trustedFederationEntityIds: paradym.trustMechanisms.find((tm) => tm.trustMechanism === 'openid_federation')
+      ?.trustedEntityIds,
   })
 
   // TODO(sdk): will this still work if no eudi is used?
@@ -72,12 +64,9 @@ export const getCredentialsForProofRequest = async ({
   // TODO(sdk): wallet trusted entity, how to manage this?
   const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
     paradym,
-    trustedX509Entities,
-    trustedEntityIds,
     resolvedAuthorizationRequest: resolved,
     origin,
     authorizationRequestVerificationResult,
-    trustList,
   })
 
   let formattedSubmission: FormattedSubmission

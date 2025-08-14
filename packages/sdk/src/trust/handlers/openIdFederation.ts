@@ -1,13 +1,13 @@
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
-import type { GetTrustedEntitiesForX509CertificateOptions } from './x509'
+import type { OpenIdFederationTrustMechanismConfiguration } from '../trustMechanism'
 
 export type GetTrustedEntitiesForOpenIdFederationOptions = {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   paradym: ParadymWalletSdk
   origin?: string
-  trustedEntityIds: string[]
-} & GetTrustedEntitiesForX509CertificateOptions
+  trustMechanismConfiguration: OpenIdFederationTrustMechanismConfiguration
+}
 
 export const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntitiesForOpenIdFederationOptions) => {
   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
@@ -18,7 +18,7 @@ export const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedE
   const resolvedChains = entityId
     ? await options.paradym.agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
         entityId,
-        trustAnchorEntityIds: options.trustedEntityIds as [string, ...string[]],
+        trustAnchorEntityIds: options.trustMechanismConfiguration.trustedEntityIds as [string, ...string[]],
       })
     : undefined
 

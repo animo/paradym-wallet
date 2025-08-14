@@ -1,20 +1,23 @@
 import { X509Certificate } from '@credo-ts/core'
-import type { AuthorizationRequestVerificationResult, TrustedEntity } from '../trustMechanism'
-import {
-  type GetTrustedEntitiesForX509CertificateOptions,
-  type TrustedX509Entity,
-  getTrustedEntitiesForX509Certificate,
-} from './x509'
+import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
+import type {
+  AuthorizationRequestVerificationResult,
+  EudiRpAuthenticationTrustMechanismConfiguration,
+  TrustedEntity,
+} from '../trustMechanism'
+import { type GetTrustedEntitiesForX509CertificateOptions, getTrustedEntitiesForX509Certificate } from './x509'
 
 export type TrustList = TrustedEntity & {
   trustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }>
 }
 
 export type GetTrustedEntitiesForEudiRpAuthenticationOptions = {
+  paradym: ParadymWalletSdk
   authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
-  trustedX509Entities: TrustedX509Entity[]
-  trustList: TrustList
-} & GetTrustedEntitiesForX509CertificateOptions
+  resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
+  trustMechanismConfiguration: EudiRpAuthenticationTrustMechanismConfiguration
+}
 
 export const getTrustedEntitiesForEudiRpAuthentication = async (
   options: GetTrustedEntitiesForEudiRpAuthenticationOptions
@@ -29,7 +32,7 @@ export const getTrustedEntitiesForEudiRpAuthentication = async (
   // This is the certificate of the relying party
   const [entry] = options.authorizationRequestVerificationResult ?? []
 
-  const matchedCert = options.trustedX509Entities.find(
+  const matchedCert = options.trustMechanismConfiguration.trustedX509Entities.find(
     (t) => X509Certificate.fromEncodedCertificate(t.certificate).subject === entry.x509RegistrationCertificate.issuer
   )
 
@@ -44,7 +47,7 @@ export const getTrustedEntitiesForEudiRpAuthentication = async (
 
     // FIXME: why do we match the SAN dnsName of the registration certificate
     // to the entity-id of the trusted relying party? Shouldn't it be the IAN
-    const country = options.trustList.trustList.find(({ trustedRelyingPartyRegistrars }) =>
+    const country = options.trustMechanismConfiguration.trustList.trustList.find(({ trustedRelyingPartyRegistrars }) =>
       trustedRelyingPartyRegistrars.some((rpr) => rpr.entityId === dnsName)
     )
 
@@ -52,11 +55,15 @@ export const getTrustedEntitiesForEudiRpAuthentication = async (
       const registrar = country.trustedRelyingPartyRegistrars.find((rpr) => rpr.entityId === dnsName) as TrustedEntity
       trustedEntities.push(registrar)
       trustedEntities.push(country)
-      trustedEntities.push(options.trustList)
+      trustedEntities.push(options.trustMechanismConfiguration.trustList)
     }
   }
 
-  const { trustedEntities: x509TrustedEntities, relyingParty } = await getTrustedEntitiesForX509Certificate(options)
+  // Casting works here as eudi_rp_authentication trust mechanism configuration extends
+  // x509 trust mechanism configuration
+  const { trustedEntities: x509TrustedEntities, relyingParty } = await getTrustedEntitiesForX509Certificate(
+    options as unknown as GetTrustedEntitiesForX509CertificateOptions
+  )
 
   return {
     relyingParty: {

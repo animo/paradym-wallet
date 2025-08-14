@@ -1,4 +1,3 @@
-import { eudiTrustList, trustedEntityIds, trustedX509Entities } from '@easypid/constants'
 import { useToastController } from '@package/ui'
 import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
@@ -36,9 +35,6 @@ export function OpenIdPresentationNotificationScreen() {
         const cfr = await getCredentialsForProofRequest({
           paradym,
           uri: params.uri,
-          trustList: eudiTrustList,
-          trustedX509Entities,
-          trustedEntityIds,
         })
         setCredentialsForRequest(cfr)
       } catch (error: unknown) {

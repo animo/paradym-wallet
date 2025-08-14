@@ -23,7 +23,7 @@ import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } fro
 import { type ResolveOutOfBandInvitationResult, resolveOutOfBandInvitation } from './invitation/resolver'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
-import type { TrustMechanism } from './trust/trustMechanism'
+import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
@@ -40,13 +40,13 @@ export type ParadymWalletSdkOptions = SetupAgentOptions & {
    *
    */
   // TODO(sdk): this will get more complex, as eudi_rp_auth needs more configuration
-  trustMechanisms: TrustMechanism[]
+  trustMechanisms: TrustMechanismConfiguration[]
 }
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'id' | 'key'>
 
 export class ParadymWalletSdk {
-  public trustMechanisms: TrustMechanism[]
+  public trustMechanisms: TrustMechanismConfiguration[]
   public readonly agent: FullAgent
 
   public constructor(options: ParadymWalletSdkOptions) {

@@ -1,15 +1,21 @@
 import type { X509Certificate } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { type GetTrustedEntitiesForDidOptions, getTrustedEntitiesForDid } from './handlers/did'
 import {
   type GetTrustedEntitiesForEudiRpAuthenticationOptions,
+  type TrustList,
   getTrustedEntitiesForEudiRpAuthentication,
 } from './handlers/eudiRpAuthentication'
 import {
   type GetTrustedEntitiesForOpenIdFederationOptions,
   getTrustedEntitiesForOpenIdFederation,
 } from './handlers/openIdFederation'
-import { type GetTrustedEntitiesForX509CertificateOptions, getTrustedEntitiesForX509Certificate } from './handlers/x509'
+import {
+  type GetTrustedEntitiesForX509CertificateOptions,
+  type TrustedX509Entity,
+  getTrustedEntitiesForX509Certificate,
+} from './handlers/x509'
 
 export type TrustedEntity = {
   entityId: string
@@ -21,16 +27,45 @@ export type TrustedEntity = {
 
 export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did'
 
+export type EudiRpAuthenticationTrustMechanismConfiguration = {
+  trustMechanism: 'eudi_rp_authentication'
+  trustList: TrustList
+  trustedX509Entities: TrustedX509Entity[]
+}
+
+export type OpenIdFederationTrustMechanismConfiguration = {
+  trustMechanism: 'openid_federation'
+  trustedEntityIds: string[]
+}
+
+export type X509TrustMechanismConfiguration = {
+  trustMechanism: 'x509'
+  trustedX509Entities: TrustedX509Entity[]
+}
+
+export type DidTrustMechanismConfiguration = {
+  trustMechanism: 'did'
+}
+
+export type TrustMechanismConfiguration =
+  | EudiRpAuthenticationTrustMechanismConfiguration
+  | OpenIdFederationTrustMechanismConfiguration
+  | X509TrustMechanismConfiguration
+  | DidTrustMechanismConfiguration
+
 export type AuthorizationRequestVerificationResult = {
   isValidButUntrusted: boolean
   isValidAndTrusted: boolean
   x509RegistrationCertificate: X509Certificate
 }[]
 
-export type GetTrustedEntitiesOptions = GetTrustedEntitiesForEudiRpAuthenticationOptions &
-  GetTrustedEntitiesForOpenIdFederationOptions &
-  GetTrustedEntitiesForDidOptions &
-  GetTrustedEntitiesForX509CertificateOptions
+export type GetTrustedEntitiesOptions = Omit<
+  { paradym: ParadymWalletSdk } & GetTrustedEntitiesForEudiRpAuthenticationOptions &
+    GetTrustedEntitiesForOpenIdFederationOptions &
+    GetTrustedEntitiesForDidOptions &
+    GetTrustedEntitiesForX509CertificateOptions,
+  'trustMechanismConfiguration'
+>
 
 export const detectTrustMechanism = (options: {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
@@ -64,17 +99,33 @@ export const getTrustedEntities = async (
 }> => {
   const trustMechanism = detectTrustMechanism(options)
 
+  const trustMechanismConfiguration = options.paradym.trustMechanisms.find((tm) => tm.trustMechanism === trustMechanism)
+
+  // TODO(sdk): what do we want to do when a trust mechanism is used, but not configured? Ignore or error?
+  if (!trustMechanismConfiguration) {
+    throw new Error(`Found '${trustMechanism}', but without any configuration`)
+  }
+
   // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
   let trustedEntities
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
-      trustedEntities = await getTrustedEntitiesForEudiRpAuthentication({ ...options, walletTrustedEntity: undefined })
+      trustedEntities = await getTrustedEntitiesForEudiRpAuthentication({
+        ...options,
+        trustMechanismConfiguration: trustMechanismConfiguration as EudiRpAuthenticationTrustMechanismConfiguration,
+      })
       break
     case 'openid_federation':
-      trustedEntities = await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })
+      trustedEntities = await getTrustedEntitiesForOpenIdFederation({
+        ...options,
+        trustMechanismConfiguration: trustMechanismConfiguration as OpenIdFederationTrustMechanismConfiguration,
+      })
       break
     case 'x509':
-      trustedEntities = await getTrustedEntitiesForX509Certificate(options)
+      trustedEntities = await getTrustedEntitiesForX509Certificate({
+        ...options,
+        trustMechanismConfiguration: trustMechanismConfiguration as X509TrustMechanismConfiguration,
+      })
       break
     case 'did':
       trustedEntities = await getTrustedEntitiesForDid(options)
