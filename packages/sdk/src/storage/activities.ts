@@ -1,4 +1,5 @@
 import { utils } from '@credo-ts/core'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type { BaseAgent } from '../agent'
 import { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay } from '../display/common'
 import type { DisplayImage } from '../display/credential'
@@ -116,18 +117,18 @@ export const addReceivedActivity = async (
 }
 
 export const addSharedOrSignedActivity = async (
-  agent: BaseAgent,
+  paradym: ParadymWalletSdk,
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
   if ('transaction' in input && input.transaction) {
-    await activityStorage.addActivity(agent, {
+    await activityStorage.addActivity(paradym.agent, {
       ...input,
       id: utils.uuid(),
       date: new Date().toISOString(),
       type: 'signed',
     })
   } else {
-    await activityStorage.addActivity(agent, {
+    await activityStorage.addActivity(paradym.agent, {
       ...input,
       id: utils.uuid(),
       date: new Date().toISOString(),
@@ -137,14 +138,14 @@ export const addSharedOrSignedActivity = async (
 }
 
 export function addSharedActivityForCredentialsForRequest(
-  agent: BaseAgent,
+  paradym: ParadymWalletSdk,
   credentialsForRequest: Pick<CredentialsForProofRequest, 'formattedSubmission'> & {
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
   status: ActivityStatus,
   transaction?: FormattedTransactionData
 ) {
-  return addSharedOrSignedActivity(agent, {
+  return addSharedOrSignedActivity(paradym, {
     status,
     entity: {
       id: credentialsForRequest.verifier.entityId,
@@ -168,7 +169,7 @@ export function addSharedActivityForCredentialsForRequest(
 }
 
 export function addSharedActivityForSubmission(
-  agent: BaseAgent,
+  paradym: ParadymWalletSdk,
   submission: FormattedSubmission,
   verifier: {
     id: string
@@ -177,7 +178,7 @@ export function addSharedActivityForSubmission(
   },
   status: ActivityStatus
 ) {
-  return addSharedOrSignedActivity(agent, {
+  return addSharedOrSignedActivity(paradym, {
     status,
     entity: {
       id: verifier.id,

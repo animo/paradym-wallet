@@ -10,10 +10,12 @@ import * as ExpoAsset from 'expo-asset'
 import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
-import type { BaseAgent, OpenId4VcAgent } from '../agent'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import type { BaseAgent } from '../agent'
 import { getCredentialForDisplay } from '../display/credential'
 import { sanitizeString } from '../display/strings'
 import { shareProof } from '../invitation/shareProof'
+import type { TrustList } from '../trust/handlers/eudiRpAuthentication'
 import { getHostNameFromUrl } from '../utils/url'
 import type { FetchBatchCredentialCallback } from './batch'
 import { type CredentialsForProofRequest, getCredentialsForProofRequest } from './getCredentialsForProofRequest'
@@ -222,9 +224,10 @@ export async function registerCredentialsForDcApi(agent: BaseAgent) {
 }
 
 export async function resolveRequestForDcApi({
-  agent,
+  paradym,
   request,
-}: { agent: OpenId4VcAgent; request: DigitalCredentialsRequest }) {
+  trustList,
+}: { paradym: ParadymWalletSdk; request: DigitalCredentialsRequest; trustList: TrustList }) {
   const providerRequest = request.request.requests
     ? request.request.requests[request.selectedEntry.providerIndex].data
     : request.request.providers[request.selectedEntry.providerIndex].request
@@ -234,16 +237,21 @@ export async function resolveRequestForDcApi({
 
   // TODO: should allow limiting it to a specific credential (as we already know the credential id)
   const result = await getCredentialsForProofRequest({
-    agent,
+    paradym,
     requestPayload: authorizationRequestPayload,
     origin: request.origin,
+
+    // TODO(sdk): how do we want to manage this in the dc api?
+    trustList,
+    trustedEntityIds: [],
+    trustedX509Entities: [],
   })
 
   if (result.formattedSubmission.entries.length !== 1) {
     throw new Error('Only requests for a single credential supported for digital credentials api')
   }
 
-  agent.config.logger.debug('Resolved request', {
+  paradym.logger.debug('Resolved request', {
     result,
   })
   if (result.formattedSubmission.entries[0].isSatisfied) {
@@ -269,12 +277,12 @@ export async function resolveRequestForDcApi({
 }
 
 export async function sendResponseForDcApi({
-  agent,
+  paradym,
   resolvedRequest,
   dcRequest,
   fetchBatchCredentialCallback,
 }: {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
   resolvedRequest: CredentialsForProofRequest
   dcRequest: DigitalCredentialsRequest
 
@@ -282,7 +290,7 @@ export async function sendResponseForDcApi({
 }) {
   const firstEntry = resolvedRequest.formattedSubmission.entries[0]
   if (!firstEntry.isSatisfied) {
-    agent.config.logger.debug('Expected one entry for DC API response', {
+    paradym.logger.debug('Expected one entry for DC API response', {
       resolvedRequest,
       dcRequest,
     })
@@ -290,7 +298,7 @@ export async function sendResponseForDcApi({
   }
 
   const result = await shareProof({
-    agent,
+    paradym,
     resolvedRequest,
     fetchBatchCredentialCallback,
     selectedCredentials: {
@@ -298,7 +306,7 @@ export async function sendResponseForDcApi({
     },
   })
 
-  agent.config.logger.debug('Sending response for Digital Credentials API', {
+  paradym.logger.debug('Sending response for Digital Credentials API', {
     result,
   })
 

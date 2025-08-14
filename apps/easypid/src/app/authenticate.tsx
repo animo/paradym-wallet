@@ -7,7 +7,7 @@ import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, us
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
-import { useResetWalletDevMenu } from '../utils/resetWallet'
+import { useResetWalletDevMenu } from '../hooks/useResetWalletDevMenu'
 
 /**
  * Authenticate screen is redirect to from app layout when app is configured but locked
