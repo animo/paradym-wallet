@@ -194,7 +194,6 @@ export type BaseAgent = Agent
 export type DidCommAgent = Agent<ReturnType<typeof getDidCommModules>>
 export type OpenId4VcAgent = Agent<ReturnType<typeof getOpenid4VcModules>>
 export type FullAgent = DidCommAgent & OpenId4VcAgent
-export type EitherAgent = DidCommAgent | OpenId4VcAgent
 
 export const isDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): boolean => 'didcomm' in agent.modules
 export const assertDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): DidCommAgent => {

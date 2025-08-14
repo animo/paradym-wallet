@@ -2,12 +2,12 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
-import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/display/common'
+import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/format/submission'
-import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { shareProof } from '@paradym/wallet-sdk/invitation/shareProof'
 import {
   type CredentialsForProofRequest,
@@ -25,7 +25,7 @@ import type { onPinSubmitProps } from './slides/PinSlide'
 type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
-  const { agent } = useOpenId4VcAgent()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
@@ -47,10 +47,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     if (credentialsForRequest) return
 
     getCredentialsForProofRequest({
-      agent,
+      paradym,
       uri: params.uri,
-      // TODO: add back when trust
-      // trustedX509Entities,
     })
       .then((r) => {
         setCredentialsForRequest(r)
@@ -62,7 +60,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
         handleError({ reason: 'Presentation information could not be extracted.', description: errorMessage })
 
-        agent.config.logger.error('Error getting credentials for request', {
+        paradym.logger.error('Error getting credentials for request', {
           error,
         })
         return
@@ -73,7 +71,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       .catch((error) => {
         handleError({ reason: error.message })
       })
-  }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError])
+  }, [credentialsForRequest, params.uri, paradym, isDevelopmentModeEnabled, handleError])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
@@ -144,7 +142,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
       try {
         await shareProof({
-          agent,
+          paradym,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
           fetchBatchCredentialCallback: refreshPid,
@@ -153,27 +151,27 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
         onPinComplete?.()
         await addSharedActivityForCredentialsForRequest(
-          agent,
+          paradym,
           credentialsForRequest,
           'success',
           formattedTransactionData
         ).catch(console.error)
       } catch (error) {
         setIsSharing(false)
-        if (error instanceof BiometricAuthenticationCancelledError) {
+        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           return handleError({ reason: 'Biometric authentication cancelled' })
         }
 
         if (credentialsForRequest) {
           await addSharedActivityForCredentialsForRequest(
-            agent,
+            paradym,
             credentialsForRequest,
             'failed',
             formattedTransactionData
           ).catch(console.error)
         }
 
-        agent.config.logger.error('Error accepting presentation', {
+        paradym.logger.error('Error accepting presentation', {
           error,
         })
 
@@ -186,7 +184,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     },
     [
       credentialsForRequest,
-      agent,
+      paradym,
       shouldUsePin,
       stopOverAsking,
       toast.show,
@@ -200,7 +198,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     stopOverAsking()
     if (credentialsForRequest) {
       await addSharedActivityForCredentialsForRequest(
-        agent,
+        paradym,
         credentialsForRequest,
         credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed',
         formattedTransactionData

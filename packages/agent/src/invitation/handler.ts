@@ -1,6 +1,5 @@
-import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import type { DifPresentationExchangeDefinitionV2, P256Jwk } from '@credo-ts/core'
+import type { P256Jwk } from '@credo-ts/core'
 import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
@@ -34,14 +33,11 @@ import {
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import { eudiTrustList } from '@easypid/constants'
-import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
-import type { DidCommAgent } from '@paradym/wallet-sdk/agent'
-import { formatDcqlCredentialsForRequest } from '@paradym/wallet-sdk/format/dcqlRequest'
-import { formatDifPexCredentialsForRequest } from '@paradym/wallet-sdk/format/presentationExchangeRequest'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import type { ParadymWalletSdk } from '@package/sdk'
+import type { DidCommAgent, OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
+import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
@@ -51,10 +47,6 @@ import { getCredentialBindingResolver } from '@paradym/wallet-sdk/openid4vc/cred
 import { credentialRecordFromCredential, encodeCredential } from '@paradym/wallet-sdk/utils/encoding'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
-import type { ParadymAppAgent } from '../agent'
-import type { EitherAgent } from '../agent'
-import { getTrustedEntities } from '../utils/trust'
-import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type TrustedX509Entity = {
@@ -73,7 +65,7 @@ export async function resolveOpenId4VciOffer({
   customHeaders,
   fetchAuthorization = true,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   offer: { uri: string }
   authorization?: { clientId: string; redirectUri: string }
   customHeaders?: Record<string, unknown>
@@ -130,7 +122,7 @@ export async function acquirePreAuthorizedAccessToken({
   resolvedCredentialOffer,
   txCode,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   txCode?: string
 }) {
@@ -147,7 +139,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
   presentationDuringIssuanceSession,
   dPopKeyJwk,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   dPopKeyJwk?: P256Jwk
   authSession: string
@@ -174,7 +166,7 @@ export async function acquireRefreshTokenAccessToken({
   refreshToken,
   dpop,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   authorizationServer: string
   clientId: string
@@ -228,7 +220,7 @@ export async function acquireAuthorizationCodeAccessToken({
   clientId,
   redirectUri,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   codeVerifier?: string
   authorizationCode: string
@@ -253,7 +245,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   pidSchemes,
   requestBatch,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdsToRequest?: string[]
   clientId?: string
@@ -324,7 +316,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
     // can retry e.g. the second credential
     // Handle biometric authentication errors
-    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
+    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
   }
 }
 
@@ -402,112 +394,13 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   return { data: null, entityId: null }
 }
 
-export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
-
 export type GetCredentialsForProofRequestOptions = {
-  agent: EitherAgent
+  paradym: ParadymWalletSdk
   requestPayload?: Record<string, unknown>
   uri?: string
   allowUntrusted?: boolean
   origin?: string
   trustedX509Entities?: TrustedX509Entity[]
-}
-
-export const getCredentialsForProofRequest = async ({
-  agent,
-  uri,
-  requestPayload,
-  allowUntrusted = true,
-  origin,
-  trustedX509Entities = [],
-}: GetCredentialsForProofRequestOptions) => {
-  const { entityId = undefined, data: fromFederationData = null } = allowUntrusted
-    ? await extractEntityIdFromAuthorizationRequest({ uri, requestPayload, origin })
-    : {}
-
-  let request: string | Record<string, unknown>
-  if (fromFederationData) {
-    if (!uri) {
-      throw new Error('Missing required uri')
-    }
-
-    const updatedUrl = new URL(uri)
-    updatedUrl.searchParams.delete('request_uri')
-    updatedUrl.searchParams.set('request', fromFederationData)
-
-    request = updatedUrl.toJSON()
-  } else if (uri) {
-    request = uri
-  } else if (requestPayload) {
-    request = requestPayload
-  } else {
-    throw new Error('Either requestPayload or uri must be provided')
-  }
-
-  agent.config.logger.info('Receiving openid request', {
-    request,
-  })
-
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(request, {
-    origin,
-    trustedFederationEntityIds: entityId ? [entityId] : undefined,
-  })
-
-  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agent.context, {
-    resolvedAuthorizationRequest: resolved,
-    allowUntrustedSigned: allowUntrusted,
-  })
-
-  const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
-    agent,
-    trustedX509Entities,
-    resolvedAuthorizationRequest: resolved,
-    origin,
-    authorizationRequestVerificationResult,
-    walletTrustedEntity: {
-      organizationName: isParadymWallet() ? 'Paradym Wallet' : 'Funke Wallet',
-      entityId: '__',
-      logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
-      uri: isParadymWallet() ? 'https://paradym.id' : 'https://funke.animo.id',
-    },
-    trustList: eudiTrustList,
-  })
-
-  let formattedSubmission: FormattedSubmission
-  if (resolved.presentationExchange) {
-    formattedSubmission = formatDifPexCredentialsForRequest(
-      resolved.presentationExchange.credentialsForRequest,
-      resolved.presentationExchange.definition as DifPresentationExchangeDefinitionV2
-    )
-  } else if (resolved.dcql) {
-    formattedSubmission = formatDcqlCredentialsForRequest(resolved.dcql.queryResult)
-  } else {
-    throw new Error('No presentation exchange or dcql found in authorization request.')
-  }
-
-  return {
-    ...resolved.presentationExchange,
-    ...resolved.dcql,
-    // FIXME: origin should be part of resolved from Credo, as it's also needed
-    // in the accept method now, which wouldn't be the case if we just add it to
-    // the resolved version
-    origin,
-    authorizationRequest: resolved.authorizationRequestPayload,
-    verifier: {
-      hostName: relyingParty.uri,
-      entityId: relyingParty.entityId,
-      logo: relyingParty.logoUri
-        ? {
-            url: relyingParty.logoUri,
-          }
-        : undefined,
-      name: relyingParty.organizationName,
-      trustedEntities,
-    },
-    formattedSubmission,
-    transactionData: resolved.transactionData,
-    trustMechanism,
-  } as const
 }
 
 async function findExistingDidcommConnectionForInvitation(
@@ -662,7 +555,7 @@ export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' 
  * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
  */
 export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   invitation: OutOfBandInvitation,
   flowType: FlowType
 ): AcceptOutOfBandInvitationResult<FlowType> {

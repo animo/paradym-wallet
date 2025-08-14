@@ -1,5 +1,4 @@
 import { useSecureUnlock } from '@package/secure-store/secureUnlock'
-import { useParadym } from '../providers/ParadymWalletSdkProvider'
 import { useActivities } from './useActivities'
 import { useActivityById } from './useActivityById'
 import { useCredentialByCategory } from './useCredentialByCategory'
@@ -13,6 +12,8 @@ import { useDidCommAgent } from './useDidcommAgent'
 import { useHasInboxNotifications } from './useHasInboxNotifications'
 import { useInboxNotifications } from './useInboxNotifications'
 import { useOpenId4VcAgent } from './useOpenId4VcAgent'
+import { useParadym } from './useParadym'
+import { useResetWalletDevMenu } from './useResetWalletDevMenu'
 
 export {
   useParadym,
@@ -32,8 +33,10 @@ export {
   useInboxNotifications,
   useHasInboxNotifications,
   useDidCommMediatorSetup,
+  useResetWalletDevMenu,
 }
 
+export type * from './useResetWalletDevMenu'
 export type * from './useActivities'
 export type * from './useActivityById'
 export type * from './useCredentialByCategory'

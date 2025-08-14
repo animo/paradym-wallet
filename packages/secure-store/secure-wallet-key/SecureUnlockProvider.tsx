@@ -1,7 +1,66 @@
+import { WalletInvalidKeyError } from '@credo-ts/core'
+import { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk/ParadymWalletSdk'
 import { useQuery } from '@tanstack/react-query'
-import { type PropsWithChildren, createContext, useContext, useState } from 'react'
+import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { KeychainError } from '../error/KeychainError'
 import { secureWalletKey } from './secureWalletKey'
+
+type UnlockOptions = {
+  /**
+   *
+   * When setting up the agent for the first time, the app might want to prompt the biometrics to make sure
+   * the user has access
+   *
+   * This should be set on the unlock call during the onboarding of the user, but not during authentication afterwards
+   *
+   */
+  enableBiometrics: boolean
+}
+
+export type SecureUnlockState = 'initializing' | 'not-configured' | 'acquired-wallet-key' | 'locked' | 'unlocked'
+
+export type UnlockMethod = 'pin' | 'biometrics'
+
+export type SecureUnlockReturnInitializing = {
+  state: 'initializing'
+}
+
+export type SecureUnlockReturnNotConfigured = {
+  state: 'not-configured'
+  setPin: (pin: string) => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturnWalletKeyAcquired = {
+  state: 'acquired-wallet-key'
+  unlockMethod: UnlockMethod
+  unlock: (options?: UnlockOptions) => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturnLocked = {
+  state: 'locked'
+  canTryUnlockingUsingBiometrics: boolean
+  isUnlocking: boolean
+  tryUnlockingUsingBiometrics: () => Promise<void>
+  unlockUsingPin: (pin: string) => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturnUnlocked = {
+  state: 'unlocked'
+  paradym: ParadymWalletSdk
+  unlockMethod: UnlockMethod
+  lock: () => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturn =
+  | SecureUnlockReturnInitializing
+  | SecureUnlockReturnNotConfigured
+  | SecureUnlockReturnWalletKeyAcquired
+  | SecureUnlockReturnLocked
+  | SecureUnlockReturnUnlocked
 
 const SecureUnlockContext = createContext<SecureUnlockReturn>({
   state: 'initializing',
@@ -13,73 +72,27 @@ export function useSecureUnlock(): SecureUnlockReturn {
     throw new Error('useSecureUnlock must be wrapped in a <SecureUnlockProvider />')
   }
 
-  return value as SecureUnlockReturn
+  return value
 }
 
-export function SecureUnlockProvider({ children }: PropsWithChildren) {
-  const secureUnlockState = _useSecureUnlockState()
+export function SecureUnlockProvider({
+  children,
+  configuration,
+}: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions }>) {
+  const secureUnlockState = _useSecureUnlockState(configuration)
 
-  return (
-    <SecureUnlockContext.Provider value={secureUnlockState as SecureUnlockReturn}>
-      {children}
-    </SecureUnlockContext.Provider>
-  )
+  return <SecureUnlockContext.Provider value={secureUnlockState}>{children}</SecureUnlockContext.Provider>
 }
 
-export type SecureUnlockState = 'initializing' | 'not-configured' | 'locked' | 'acquired-wallet-key' | 'unlocked'
-export type SecureUnlockMethod = 'pin' | 'biometrics'
-
-export type SecureUnlockReturnInitializing = {
-  state: 'initializing'
-}
-
-export type SecureUnlockReturnNotConfigured = {
-  state: 'not-configured'
-  setup: (pin: string) => Promise<{ walletKey: string }>
-  reinitialize: () => void
-}
-
-export type SecureUnlockReturnLocked = {
-  state: 'locked'
-  tryUnlockingUsingBiometrics: () => Promise<string | null>
-  canTryUnlockingUsingBiometrics: boolean
-  unlockUsingPin: (pin: string) => Promise<string>
-  isUnlocking: boolean
-  reinitialize: () => void
-}
-
-export type SecureUnlockReturnWalletKeyAcquired = {
-  state: 'acquired-wallet-key'
-  walletKey: string
-  unlockMethod: SecureUnlockMethod
-  setWalletKeyValid: (options: { enableBiometrics: boolean }) => Promise<void>
-  setWalletKeyInvalid: () => void
-  reinitialize: () => void
-}
-
-export type SecureUnlockReturnUnlocked = {
-  state: 'unlocked'
-  unlockMethod: SecureUnlockMethod
-  lock: () => void
-  reinitialize: () => void
-}
-
-export type SecureUnlockReturn =
-  | SecureUnlockReturnInitializing
-  | SecureUnlockReturnNotConfigured
-  | SecureUnlockReturnLocked
-  | SecureUnlockReturnWalletKeyAcquired
-  | SecureUnlockReturnUnlocked
-
-function _useSecureUnlockState<Context extends Record<string, unknown>>(): SecureUnlockReturn {
+function _useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): SecureUnlockReturn {
   const [state, setState] = useState<SecureUnlockState>('initializing')
-  const [walletKey, setWalletKey] = useState<string>()
   const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
-  const [biometricsUnlockAttempts, setBiometricsUnlockAttempts] = useState(0)
   const [canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
-  const [unlockMethod, setUnlockMethod] = useState<SecureUnlockMethod>()
-  const [context, setContext] = useState<Context>()
+  const [biometricsUnlockAttempts, setBiometricsUnlockAttempts] = useState(0)
+  const [unlockMethod, setUnlockMethod] = useState<UnlockMethod>()
   const [isUnlocking, setIsUnlocking] = useState(false)
+  const [paradym, setParadym] = useState<ParadymWalletSdk>()
+  const [walletKey, setWalletKey] = useState<string>()
 
   useQuery({
     queryFn: async () => {
@@ -89,9 +102,9 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       // We have two params. If e.g. unlocking using biometrics failed, we will
       // set setCanTryUnlockingUsingBiometrics to false, but `setCanUseBiometrics`
       // will still be true (so we can store it)
-      const canUseBiometrics = await secureWalletKey.canUseBiometryBackedWalletKey()
-      setCanUseBiometrics(canUseBiometrics)
-      setCanTryUnlockingUsingBiometrics(canUseBiometrics)
+      const cub = await secureWalletKey.canUseBiometryBackedWalletKey()
+      setCanUseBiometrics(cub)
+      setCanTryUnlockingUsingBiometrics(cub)
 
       setState(salt ? 'locked' : 'not-configured')
       return salt
@@ -100,15 +113,32 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
     enabled: state === 'initializing',
   })
 
+  useEffect(() => {
+    console.log('secure unlock state: ', state)
+  }, [state])
+
   const reinitialize = () => {
     setState('initializing')
-    setWalletKey(undefined)
     setCanTryUnlockingUsingBiometrics(true)
     setBiometricsUnlockAttempts(0)
-    setCanUseBiometrics(undefined)
     setUnlockMethod(undefined)
-    setContext(undefined)
+    setCanUseBiometrics(undefined)
     setIsUnlocking(false)
+  }
+
+  if (state === 'not-configured') {
+    return {
+      state,
+      reinitialize,
+      setPin: async (pin) => {
+        await secureWalletKey.createAndStoreSalt(true, secureWalletKey.getWalletKeyVersion())
+        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
+
+        setWalletKey(walletKey)
+        setUnlockMethod('pin')
+        setState('acquired-wallet-key')
+      },
+    }
   }
 
   if (state === 'acquired-wallet-key') {
@@ -118,45 +148,48 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
 
     return {
       state,
-      walletKey,
       unlockMethod,
       reinitialize,
-      setWalletKeyInvalid: () => {
-        if (unlockMethod === 'biometrics') {
-          setCanTryUnlockingUsingBiometrics(false)
+      unlock: async (options) => {
+        try {
+          const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+          // TODO: need extra option to know whether user wants to use biometrics?
+          // TODO: do we need to check whether already stored?
+          if (canUseBiometrics && options?.enableBiometrics) {
+            await secureWalletKey.storeWalletKey(walletKey, walletKeyVersion)
+            await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+          }
+
+          const id = `easypid-wallet-${walletKeyVersion}`
+          const key = walletKey
+
+          // TODO: let the user provide an id? Or should we create one by default
+          const pws = new ParadymWalletSdk({
+            ...configuration,
+            id,
+            key,
+          })
+          pws.initialize().then((result) => {
+            if (result.success) {
+              setState('unlocked')
+              setParadym(pws)
+            } else {
+              console.error(result.message)
+              throw Error(result.message)
+            }
+          })
+        } catch (error) {
+          if (error instanceof WalletInvalidKeyError) {
+            if (unlockMethod === 'biometrics') {
+              setCanTryUnlockingUsingBiometrics(false)
+            }
+
+            setState('locked')
+            setWalletKey(undefined)
+            setUnlockMethod(undefined)
+          }
+          throw error
         }
-
-        setState('locked')
-        setWalletKey(undefined)
-        setUnlockMethod(undefined)
-      },
-      setWalletKeyValid: async (options) => {
-        setContext(context)
-        setState('unlocked')
-
-        // TODO: need extra option to know whether user wants to use biometrics?
-        // TODO: do we need to check whether already stored?
-        if (canUseBiometrics && options.enableBiometrics) {
-          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-        }
-      },
-    }
-  }
-
-  if (state === 'unlocked') {
-    if (!walletKey || !unlockMethod || !context) {
-      throw new Error('Missing walletKey, unlockMethod or context')
-    }
-
-    return {
-      state,
-      unlockMethod,
-      reinitialize,
-      lock: () => {
-        setState('locked')
-        setWalletKey(undefined)
-        setUnlockMethod(undefined)
-        setContext(undefined)
       },
     }
   }
@@ -169,7 +202,7 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
       reinitialize,
       tryUnlockingUsingBiometrics: async () => {
         // TODO: need to somehow inform user that the unlocking went wrong
-        if (!canTryUnlockingUsingBiometrics) return null
+        if (!canTryUnlockingUsingBiometrics) return
 
         setIsUnlocking(true)
         setBiometricsUnlockAttempts((attempts) => attempts + 1)
@@ -180,8 +213,6 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
             setUnlockMethod('biometrics')
             setState('acquired-wallet-key')
           }
-
-          return walletKey
         } catch (error) {
           // If use cancelled we won't allow trying using biometrics again
           if (error instanceof KeychainError && error.reason === 'userCancelled') {
@@ -194,8 +225,6 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
         } finally {
           setIsUnlocking(false)
         }
-
-        return null
       },
       unlockUsingPin: async (pin: string) => {
         setIsUnlocking(true)
@@ -205,8 +234,6 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
           setWalletKey(walletKey)
           setUnlockMethod('pin')
           setState('acquired-wallet-key')
-
-          return walletKey
         } finally {
           setIsUnlocking(false)
         }
@@ -214,18 +241,21 @@ function _useSecureUnlockState<Context extends Record<string, unknown>>(): Secur
     }
   }
 
-  if (state === 'not-configured') {
+  if (state === 'unlocked') {
+    if (!unlockMethod || !paradym) {
+      throw new Error(`unlockMethod (${!!unlockMethod}) or paradym (${!!paradym})`)
+    }
+
     return {
       state,
+      unlockMethod,
+      paradym,
       reinitialize,
-      setup: async (pin) => {
-        await secureWalletKey.createAndStoreSalt(true, secureWalletKey.getWalletKeyVersion())
-        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
-
-        setWalletKey(walletKey)
-        setUnlockMethod('pin')
-        setState('acquired-wallet-key')
-        return { walletKey }
+      lock: async () => {
+        await paradym.shutdown()
+        setParadym(undefined)
+        setState('locked')
+        setUnlockMethod(undefined)
       },
     }
   }

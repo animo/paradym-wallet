@@ -10,6 +10,8 @@ export function usePushToWallet() {
         router.replace('/')
       } else {
         router.back()
+        // TODO: this is "broken" when you scan an offer and you cannot fulfill it. It just throws "action 'GO_BACK' was not handled by any navigator". It is a dev error, but it might be good to resolve this. I think it might happen because the `canGoback` is not yet updated when `router.back()` is called.
+        //
         // If we do a PIN confirmation we need to go back twice
         if (router.canGoBack()) router.back()
       }

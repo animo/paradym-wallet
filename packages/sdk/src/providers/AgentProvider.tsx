@@ -1,5 +1,4 @@
 import type { Agent } from '@credo-ts/core'
-import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
 import { type PropsWithChildren, createContext, useContext, useMemo } from 'react'
 import type { setupAgent } from '../agent'
 import { ConnectionProvider } from './ConnectionProvider'
@@ -73,9 +72,5 @@ export const AgentProvider = ({ agent, recordIds, children }: PropsWithChildren<
     )
   }, [DynamicProviders, agent, children, recordIds])
 
-  return (
-    <SecureUnlockProvider>
-      <AgentContext.Provider value={agent}>{providers}</AgentContext.Provider>
-    </SecureUnlockProvider>
-  )
+  return <AgentContext.Provider value={agent}>{providers}</AgentContext.Provider>
 }

@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { hasMediationConfigured, setupMediationWithDid } from '../didcomm/mediation'
 import { ParadymWalletNoMediatorDidProvidedError } from '../error'
-import { useParadym } from '../providers/ParadymWalletSdkProvider'
 import { useDidCommMessagePickup } from './useDidCommMessagePickup'
 
 export function useDidCommMediatorSetup({
   hasInternetConnection,
   mediatorDid,
+  paradym,
 }: {
   hasInternetConnection: boolean
   mediatorDid?: string
+  paradym?: ParadymWalletSdk
 }) {
-  const paradym = useParadym()
   const [isSettingUpMediation, setIsSettingUpMediation] = useState(false)
   const [isMediationConfigured, setIsMediationConfigured] = useState(false)
 
@@ -21,6 +22,7 @@ export function useDidCommMediatorSetup({
   })
 
   useEffect(() => {
+    if (!paradym) return
     if (!hasInternetConnection || isMediationConfigured) return
     if (isSettingUpMediation) return
 
@@ -42,7 +44,7 @@ export function useDidCommMediatorSetup({
       .finally(() => {
         setIsSettingUpMediation(false)
       })
-  }, [isMediationConfigured, isSettingUpMediation, hasInternetConnection, mediatorDid, paradym.agent, paradym.logger])
+  }, [isMediationConfigured, isSettingUpMediation, hasInternetConnection, mediatorDid, paradym])
 
   return { isMediationConfigured, isSettingUpMediation }
 }

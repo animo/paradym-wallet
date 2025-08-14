@@ -1,8 +1,11 @@
-import { useSecureUnlock } from '@package/secure-store/secureUnlock'
+import { WalletInvalidKeyError } from '@credo-ts/core'
+import { agentDependencies } from '@credo-ts/react-native'
+import { SecureUnlockProvider, secureWalletKey } from '@package/secure-store/secureUnlock'
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import type { CredentialForDisplayId } from './display/credential'
 import { ParadymWalletMustBeInitializedError } from './error'
+import { useParadym } from './hooks'
 import { useActivities } from './hooks/useActivities'
 import { useActivityById } from './hooks/useActivityById'
 import { useCredentialByCategory } from './hooks/useCredentialByCategory'
@@ -20,40 +23,93 @@ import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } fro
 import { type ResolveOutOfBandInvitationResult, resolveOutOfBandInvitation } from './invitation/resolver'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
+import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
   | { success: false; message: string }
 
-/**
- *
- * Options that will be used when initializing the Paradym Wallet SDK
- *
- * Make sure to instantiate the `ParadymWalletSdk` once and use the same instance within the application, via for example a `useContext`
- *
- */
-export type ParadymWalletSdkOptions = SetupAgentOptions
+export type ParadymWalletSdkOptions = SetupAgentOptions & {
+  /**
+   *
+   * Trust mechanisms supported by the wallet
+   *
+   * The order matters. The first index will be tried first, until the last
+   *
+   * When one is found that works, it will be used
+   *
+   */
+  // TODO(sdk): this will get more complex, as eudi_rp_auth needs more configuration
+  trustMechanisms: TrustMechanismConfiguration[]
+}
+
+export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'id' | 'key'>
 
 export class ParadymWalletSdk {
+  public trustMechanisms: TrustMechanismConfiguration[]
   public readonly agent: FullAgent
 
   public constructor(options: ParadymWalletSdkOptions) {
     this.agent = setupAgent(options) as FullAgent
+    this.trustMechanisms = options.trustMechanisms
   }
 
   private assertAgentIsInitialized() {
     if (!this.agent.isInitialized) throw new ParadymWalletMustBeInitializedError()
   }
 
+  public get walletId() {
+    const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+
+    // TODO(sdk): how do we want to deal with the `easypid` wallet id?
+    return `easypid-wallet-${walletKeyVersion}`
+  }
+
+  public async reset(additionalResetCb?: () => Promise<void> | void) {
+    this.logger.debug('Resetting wallet')
+
+    await this.agent.wallet.delete()
+    await this.agent.shutdown()
+
+    const fs = new agentDependencies.FileSystem()
+
+    // Clear cach and temp path
+    if (await fs.exists(fs.cachePath)) await fs.delete(fs.cachePath)
+    if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
+
+    const walletDirectory = `${fs.dataPath}/wallet/${this.walletId}`
+
+    const walletDirectoryExists = await fs.exists(walletDirectory)
+    if (walletDirectoryExists) {
+      console.log('wallet directory exists, deleting')
+      await fs.delete(walletDirectory)
+    } else {
+      console.log('wallet directory does not exist')
+    }
+
+    // I think removing triggers the biometrics somehow. We look at the salt
+    // to see if the secure unlock has been setup.
+    // await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
+    await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
+
+    await additionalResetCb?.()
+  }
+
   /**
    *
    * Initialized the wallet sdk and sets everything up for usage
    *
-   * @note this must be called before any usage of the agent, such as retrieving credentials
-   *
    */
-  public async initialize() {
-    await this.agent.initialize()
+  public async initialize(): Promise<ParadymWalletSdkResult> {
+    try {
+      await this.agent.initialize()
+      return { success: true }
+    } catch (e) {
+      if (e instanceof WalletInvalidKeyError) {
+        return { success: false, message: 'Invalid key' }
+      }
+      return { success: false, message: (e as Error).message }
+    }
   }
 
   /**
@@ -85,8 +141,6 @@ export class ParadymWalletSdk {
     this.assertAgentIsInitialized()
 
     return {
-      useSecureUnlock,
-
       useLogger,
 
       useCredentials,
@@ -130,10 +184,18 @@ export class ParadymWalletSdk {
    * Wrap your application in this, if you want to leverage the provided `this.hooks`
    *
    */
-  public Provider({ children, recordIds }: PropsWithChildren<{ recordIds: Array<string> }>) {
-    this.assertAgentIsInitialized()
+  public static UnlockProvider({
+    children,
+    configuration,
+  }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions }>) {
+    return <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
+  }
+
+  public static AppProvider({ children, recordIds }: PropsWithChildren<{ recordIds: string[] }>) {
+    const { paradym } = useParadym('unlocked')
+
     return (
-      <AgentProvider agent={this.agent} recordIds={recordIds}>
+      <AgentProvider agent={paradym.agent} recordIds={recordIds}>
         {children}
       </AgentProvider>
     )
@@ -145,7 +207,7 @@ export class ParadymWalletSdk {
     this.assertAgentIsInitialized()
 
     try {
-      const invitationResult = await parseInvitationUrl(this.agent, invitationUrl)
+      const invitationResult = await parseInvitationUrl(this, invitationUrl)
       return { success: true, ...invitationResult }
     } catch (error) {
       return {
@@ -192,7 +254,7 @@ export class ParadymWalletSdk {
     invitation: string | Record<string, unknown>
   ): Promise<ParadymWalletSdkResult<ResolveOutOfBandInvitationResult>> {
     try {
-      const parsedInvitation = await parseDidCommInvitation(this.agent, invitation)
+      const parsedInvitation = await parseDidCommInvitation(this, invitation)
       return { success: true, ...(await resolveOutOfBandInvitation(this.agent, parsedInvitation)) }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : `${error}` }

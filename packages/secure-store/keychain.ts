@@ -1,4 +1,4 @@
-import { BiometricAuthenticationError } from '@package/agent'
+import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import * as Keychain from 'react-native-keychain'
 import { KeychainError } from './error/KeychainError'
 
@@ -15,7 +15,7 @@ export async function storeKeychainItem(id: string, value: string, options: Keyc
     service: id,
   }).catch((error) => {
     throw (
-      BiometricAuthenticationError.tryParseFromError(error) ??
+      ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ??
       new KeychainError(`Error storing value for id '${id}' in keychain`, {
         cause: error,
       })
@@ -40,7 +40,7 @@ export async function getKeychainItemById(id: string, options: KeychainOptions):
     service: id,
   }).catch((error) => {
     throw (
-      BiometricAuthenticationError.tryParseFromError(error) ??
+      ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ??
       new KeychainError(`Error retrieving value with id '${id}' from keychain`, {
         cause: error,
         reason: 'unknown',

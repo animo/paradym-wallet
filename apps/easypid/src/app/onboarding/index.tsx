@@ -1,15 +1,14 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
+import { additionalResetApp } from '@easypid/hooks/useResetWalletDevMenu'
 import { useHaptics } from '@package/app'
 import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
-import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
 import { router, useLocalSearchParams } from 'expo-router'
 import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { AccessibilityInfo, Alert } from 'react-native'
 import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
-import { resetWallet } from '../../utils/resetWallet'
 
 export default function OnboardingScreens() {
   const paradym = useParadym()
@@ -17,7 +16,6 @@ export default function OnboardingScreens() {
   const media = useMedia()
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const onboardingContext = useOnboardingContext()
-  const secureUnlock = useSecureUnlock()
   const headerRef = useRef(null)
   const reset = useLocalSearchParams<{ reset?: 'true' }>().reset === 'true'
   const [hasResetWallet, setHasResetWallet] = useState(false)
@@ -41,9 +39,11 @@ export default function OnboardingScreens() {
 
     setHasResetWallet(true)
     router.setParams({ reset: 'false' })
-    // TODO(sdk): move to sdk
-    resetWallet(secureUnlock, paradym.agent)
-  }, [reset, secureUnlock, hasResetWallet, paradym.agent])
+
+    if (paradym.state === 'unlocked') {
+      paradym.paradym.reset(additionalResetApp)
+    }
+  }, [reset, hasResetWallet, paradym])
 
   const onReset = withHaptics(() => {
     Alert.alert('Reset Onboarding', 'Are you sure you want to reset the onboarding process?', [

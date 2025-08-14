@@ -27,7 +27,6 @@ export {
   ParseInvitationResultError,
 } from './parsers'
 export {
-  type CredentialsForProofRequest,
   type TrustedX509Entity,
   type ResolveOutOfBandInvitationResultSuccess,
   acceptOutOfBandInvitation,
@@ -37,10 +36,8 @@ export {
   acquireRefreshTokenAccessToken,
   acquirePreAuthorizedAccessToken,
   resolveOpenId4VciOffer,
-  getCredentialsForProofRequest,
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'
-export * from './error'
 
 export type { TrustedEntity } from './trustedEntities'
 export * from './transactions'
