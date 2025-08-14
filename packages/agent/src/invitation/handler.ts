@@ -1,6 +1,5 @@
-import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import type { DifPresentationExchangeDefinitionV2, P256Jwk } from '@credo-ts/core'
+import type { P256Jwk } from '@credo-ts/core'
 import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
@@ -34,15 +33,11 @@ import {
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import { eudiTrustList } from '@easypid/constants'
-import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
+import type { ParadymWalletSdk } from '@package/sdk'
 import type { DidCommAgent, OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
 import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
-import { formatDcqlCredentialsForRequest } from '@paradym/wallet-sdk/format/dcqlRequest'
-import { formatDifPexCredentialsForRequest } from '@paradym/wallet-sdk/format/presentationExchangeRequest'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
 import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
@@ -52,7 +47,6 @@ import { getCredentialBindingResolver } from '@paradym/wallet-sdk/openid4vc/cred
 import { credentialRecordFromCredential, encodeCredential } from '@paradym/wallet-sdk/utils/encoding'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
-import { getTrustedEntities } from '../utils/trust'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type TrustedX509Entity = {
@@ -400,112 +394,13 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   return { data: null, entityId: null }
 }
 
-export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
-
 export type GetCredentialsForProofRequestOptions = {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
   requestPayload?: Record<string, unknown>
   uri?: string
   allowUntrusted?: boolean
   origin?: string
   trustedX509Entities?: TrustedX509Entity[]
-}
-
-export const getCredentialsForProofRequest = async ({
-  agent,
-  uri,
-  requestPayload,
-  allowUntrusted = true,
-  origin,
-  trustedX509Entities = [],
-}: GetCredentialsForProofRequestOptions) => {
-  const { entityId = undefined, data: fromFederationData = null } = allowUntrusted
-    ? await extractEntityIdFromAuthorizationRequest({ uri, requestPayload, origin })
-    : {}
-
-  let request: string | Record<string, unknown>
-  if (fromFederationData) {
-    if (!uri) {
-      throw new Error('Missing required uri')
-    }
-
-    const updatedUrl = new URL(uri)
-    updatedUrl.searchParams.delete('request_uri')
-    updatedUrl.searchParams.set('request', fromFederationData)
-
-    request = updatedUrl.toJSON()
-  } else if (uri) {
-    request = uri
-  } else if (requestPayload) {
-    request = requestPayload
-  } else {
-    throw new Error('Either requestPayload or uri must be provided')
-  }
-
-  agent.config.logger.info('Receiving openid request', {
-    request,
-  })
-
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(request, {
-    origin,
-    trustedFederationEntityIds: entityId ? [entityId] : undefined,
-  })
-
-  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agent.context, {
-    resolvedAuthorizationRequest: resolved,
-    allowUntrustedSigned: allowUntrusted,
-  })
-
-  const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
-    agent,
-    trustedX509Entities,
-    resolvedAuthorizationRequest: resolved,
-    origin,
-    authorizationRequestVerificationResult,
-    walletTrustedEntity: {
-      organizationName: isParadymWallet() ? 'Paradym Wallet' : 'Funke Wallet',
-      entityId: '__',
-      logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
-      uri: isParadymWallet() ? 'https://paradym.id' : 'https://funke.animo.id',
-    },
-    trustList: eudiTrustList,
-  })
-
-  let formattedSubmission: FormattedSubmission
-  if (resolved.presentationExchange) {
-    formattedSubmission = formatDifPexCredentialsForRequest(
-      resolved.presentationExchange.credentialsForRequest,
-      resolved.presentationExchange.definition as DifPresentationExchangeDefinitionV2
-    )
-  } else if (resolved.dcql) {
-    formattedSubmission = formatDcqlCredentialsForRequest(resolved.dcql.queryResult)
-  } else {
-    throw new Error('No presentation exchange or dcql found in authorization request.')
-  }
-
-  return {
-    ...resolved.presentationExchange,
-    ...resolved.dcql,
-    // FIXME: origin should be part of resolved from Credo, as it's also needed
-    // in the accept method now, which wouldn't be the case if we just add it to
-    // the resolved version
-    origin,
-    authorizationRequest: resolved.authorizationRequestPayload,
-    verifier: {
-      hostName: relyingParty.uri,
-      entityId: relyingParty.entityId,
-      logo: relyingParty.logoUri
-        ? {
-            url: relyingParty.logoUri,
-          }
-        : undefined,
-      name: relyingParty.organizationName,
-      trustedEntities,
-    },
-    formattedSubmission,
-    transactionData: resolved.transactionData,
-    trustMechanism,
-  } as const
 }
 
 async function findExistingDidcommConnectionForInvitation(

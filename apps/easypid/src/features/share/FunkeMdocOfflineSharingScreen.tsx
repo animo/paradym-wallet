@@ -7,7 +7,7 @@ import { useToastController } from '@package/ui'
 import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
-import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activities'
 import { useCallback, useEffect, useState } from 'react'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
@@ -24,7 +24,7 @@ export function FunkeMdocOfflineSharingScreen({
   sessionTranscript,
   deviceRequest,
 }: FunkeMdocOfflineSharingScreenProps) {
-  const { agent } = useOpenId4VcAgent()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
@@ -34,7 +34,7 @@ export function FunkeMdocOfflineSharingScreen({
   const shouldUsePin = useShouldUsePinForSubmission(submission)
 
   useEffect(() => {
-    getSubmissionForMdocDocumentRequest(agent, deviceRequest)
+    getSubmissionForMdocDocumentRequest(paradym, deviceRequest)
       .then(setSubmission)
       .catch((error) => {
         toast.show('Presentation information could not be extracted.', {
@@ -42,13 +42,13 @@ export function FunkeMdocOfflineSharingScreen({
             error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
           customData: { preset: 'danger' },
         })
-        agent.config.logger.error('Error getting credentials for mdoc device request', {
+        paradym.logger.error('Error getting credentials for mdoc device request', {
           error,
         })
 
         pushToWallet()
       })
-  }, [agent, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled])
+  }, [paradym, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled])
 
   const handleError = useCallback(
     ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
@@ -92,7 +92,7 @@ export function FunkeMdocOfflineSharingScreen({
     // Once this returns we just assume it's successful
     try {
       await shareDeviceResponse({
-        agent,
+        paradym,
         deviceRequest,
         sessionTranscript,
         submission,
@@ -138,7 +138,7 @@ export function FunkeMdocOfflineSharingScreen({
   const addActivity = async (status: ActivityStatus) => {
     if (!submission) return
     await addSharedActivityForCredentialsForRequest(
-      agent,
+      paradym,
       {
         formattedSubmission: submission,
         verifier: {

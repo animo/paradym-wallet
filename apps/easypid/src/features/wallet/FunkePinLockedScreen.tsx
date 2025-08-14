@@ -1,11 +1,11 @@
-import { resetWallet } from '@easypid/utils/resetWallet'
+import { additionalResetApp } from '@easypid/hooks/useResetWalletDevMenu'
 import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
 
 export const FunkePinLockedScreen = () => {
-  const paradym = useParadym('unlocked')
+  const { paradym } = useParadym('unlocked')
   const router = useRouter()
 
   const onResetWallet = () => {
@@ -17,8 +17,7 @@ export const FunkePinLockedScreen = () => {
       {
         text: 'Yes',
         onPress: () => {
-          // TODO(sdk): move to sdk
-          resetWallet(paradym).then(() => router.replace('onboarding'))
+          paradym.reset(additionalResetApp).then(() => router.replace('onboarding'))
         },
       },
     ])

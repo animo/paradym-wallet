@@ -1,21 +1,25 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { type DifPresentationExchangeDefinitionV2, Jwt } from '@credo-ts/core'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
-import type { OpenId4VcAgent } from '../agent'
-import type { DisplayImage } from '../display/credential'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { ParadymWalletNoRequestToResolveError } from '../error'
 import { formatDcqlCredentialsForRequest } from '../format/dcqlRequest'
 import { formatDifPexCredentialsForRequest } from '../format/presentationExchangeRequest'
 import type { FormattedSubmission } from '../format/submission'
-import type { TrustedEntity } from '../trust/entity'
+import type { TrustList } from '../trust/handlers/eudiRpAuthentication'
+import type { TrustedX509Entity } from '../trust/handlers/x509'
+import { getTrustedEntities } from '../trust/trustMechanism'
 
 export type GetCredentialsForProofRequestOptions = {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
   requestPayload?: Record<string, unknown>
   uri?: string
   allowUntrusted?: boolean
   origin?: string
-  // trustedX509Entities?: TrustedX509Entity[]
+
+  trustedX509Entities: TrustedX509Entity[]
+  trustedEntityIds: string[]
+  trustList: TrustList
 }
 
 const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: string): string | null => {
@@ -37,11 +41,14 @@ const extractEntityIdFromJwt = (jwt: string, origin?: string): string | null => 
 }
 
 export const getCredentialsForProofRequest = async ({
-  agent,
+  paradym,
   uri,
   allowUntrusted = true,
   requestPayload,
   origin,
+  trustedEntityIds,
+  trustedX509Entities,
+  trustList,
 }: GetCredentialsForProofRequestOptions) => {
   const requestToResolve = uri ?? requestPayload
 
@@ -51,14 +58,26 @@ export const getCredentialsForProofRequest = async ({
     )
   }
 
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
+  const resolved = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
     origin,
+    trustedFederationEntityIds: trustedEntityIds,
   })
 
-  // TODO: only with EUDI
-  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agent.context, {
+  // TODO(sdk): will this still work if no eudi is used?
+  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(paradym.agent.context, {
     resolvedAuthorizationRequest: resolved,
     allowUntrustedSigned: allowUntrusted,
+  })
+
+  // TODO(sdk): wallet trusted entity, how to manage this?
+  const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
+    paradym,
+    trustedX509Entities,
+    trustedEntityIds,
+    resolvedAuthorizationRequest: resolved,
+    origin,
+    authorizationRequestVerificationResult,
+    trustList,
   })
 
   let formattedSubmission: FormattedSubmission
@@ -80,14 +99,17 @@ export const getCredentialsForProofRequest = async ({
     authorizationRequest: resolved.authorizationRequestPayload,
     formattedSubmission,
     transactionData: resolved.transactionData,
-    // TODO: add verifier with trust integration
-    trustMechanism: undefined,
-    verifier: { entityId: 'TODO', hostName: 'TODO', logo: { url: 'TODO' }, name: 'TODO' } as {
-      hostName?: string
-      logo?: DisplayImage
-      name: string
-      trustedEntities: TrustedEntity[]
-      entityId: string
+    trustMechanism,
+    verifier: {
+      hostName: relyingParty.uri,
+      entityId: relyingParty.entityId,
+      logo: relyingParty.logoUri
+        ? {
+            url: relyingParty.logoUri,
+          }
+        : undefined,
+      name: relyingParty.organizationName,
+      trustedEntities,
     },
   } as const
 }

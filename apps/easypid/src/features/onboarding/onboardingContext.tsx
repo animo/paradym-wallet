@@ -2,7 +2,7 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { shutdownParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
+import { additionalResetApp } from '@easypid/hooks/useResetWalletDevMenu'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -10,7 +10,6 @@ import type {
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
-import { resetWallet } from '@easypid/utils/resetWallet'
 import {
   type CardScanningState,
   type OnboardingPage,
@@ -27,6 +26,7 @@ import {
 } from '@paradym/wallet-sdk/error'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { addReceivedActivity } from '@paradym/wallet-sdk/storage/activities'
+import { resetWallet } from '@paradym/wallet-sdk/utils/resetWallet'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
@@ -160,7 +160,7 @@ export function OnboardingContextProvider({
 
     // When the onboarding is cancelled between the pin slide and the biometrics slide, a state occurs where the wallet is `locked`, but biometrics is not setup.
     if (paradym.state !== 'not-configured') {
-      await resetWallet(paradym)
+      await resetWallet(paradym, additionalResetApp)
       await reset({ resetToStep: 'welcome' })
       return
     }
@@ -313,7 +313,7 @@ export function OnboardingContextProvider({
       // Reset PIN state
       setWalletPin(undefined)
       setAllowSimulatorCard(false)
-      shutdownParadymWalletSdk()
+      // TODO(sdk): is paradym shutdown required here?
     }
 
     if (stepsToCompleteAfterReset.includes('id-card-requested-attributes')) {

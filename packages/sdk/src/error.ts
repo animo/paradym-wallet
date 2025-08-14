@@ -28,6 +28,8 @@ export class ParadymWalletInvitationOpenIdAuthorizationRequestHandlerMustBeDefin
 
 export class ParadymWalletNoRequestToResolveError extends ParadymWalletInvitationError {}
 
+export class ParadymWalletInvalidTrustMechnismError extends ParadymWalletSdkError {}
+
 // biome-ignore lint/complexity/noStaticOnlyClass:
 export class ParadymWalletBiometricAuthenticationError extends ParadymWalletSdkError {
   public static tryParseFromError(error: unknown): ParadymWalletBiometricAuthenticationError | null {

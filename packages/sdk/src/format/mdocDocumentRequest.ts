@@ -1,6 +1,6 @@
 import { DeviceRequest, limitDisclosureToDeviceRequestNameSpaces, parseIssuerSigned } from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
-import type { OpenId4VcAgent } from '../agent'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { getCredentialForDisplay } from '../display/credential'
 import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
 import type {
@@ -10,12 +10,12 @@ import type {
 } from './submission'
 
 export async function getSubmissionForMdocDocumentRequest(
-  agent: OpenId4VcAgent,
+  paradym: ParadymWalletSdk,
   encodedDeviceRequest: Uint8Array
 ): Promise<FormattedSubmission> {
   const deviceRequest = DeviceRequest.parse(encodedDeviceRequest)
 
-  const matchingDocTypeRecords = await agent.mdoc.findAllByQuery({
+  const matchingDocTypeRecords = await paradym.agent.mdoc.findAllByQuery({
     $or: deviceRequest.docRequests.map((request) => ({
       docType: request.itemsRequest.data.docType,
     })),

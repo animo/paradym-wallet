@@ -1,6 +1,7 @@
+import { eudiTrustList, trustedEntityIds, trustedX509Entities } from '@easypid/constants'
 import { useToastController } from '@package/ui'
 import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
-import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { shareProof } from '@paradym/wallet-sdk/invitation/shareProof'
 import {
   type CredentialsForProofRequest,
@@ -17,7 +18,7 @@ type Query = {
 }
 
 export function OpenIdPresentationNotificationScreen() {
-  const { agent } = useOpenId4VcAgent()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
@@ -33,15 +34,18 @@ export function OpenIdPresentationNotificationScreen() {
     async function handleRequest() {
       try {
         const cfr = await getCredentialsForProofRequest({
-          agent,
+          paradym,
           uri: params.uri,
+          trustList: eudiTrustList,
+          trustedX509Entities,
+          trustedEntityIds,
         })
         setCredentialsForRequest(cfr)
       } catch (error: unknown) {
         toast.show('Presentation information could not be extracted.', {
           customData: { preset: 'danger' },
         })
-        agent.config.logger.error('Error getting credentials for request', {
+        paradym.logger.error('Error getting credentials for request', {
           error,
         })
 
@@ -50,7 +54,7 @@ export function OpenIdPresentationNotificationScreen() {
     }
 
     void handleRequest()
-  }, [params, toast.show, agent, pushToWallet, toast])
+  }, [params, toast.show, paradym, pushToWallet, toast])
 
   if (!credentialsForRequest) {
     return <GettingInformationScreen type="presentation" />
@@ -60,7 +64,7 @@ export function OpenIdPresentationNotificationScreen() {
     setIsSharing(true)
 
     shareProof({
-      agent,
+      paradym,
       resolvedRequest: credentialsForRequest,
       selectedCredentials,
     })
@@ -82,7 +86,7 @@ export function OpenIdPresentationNotificationScreen() {
         toast.show('Presentation could not be shared.', {
           customData: { preset: 'danger' },
         })
-        agent.config.logger.error('Error accepting presentation', {
+        paradym.logger.error('Error accepting presentation', {
           error: e,
         })
         pushToWallet()

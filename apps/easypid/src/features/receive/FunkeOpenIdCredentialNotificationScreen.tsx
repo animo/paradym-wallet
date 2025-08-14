@@ -1,5 +1,5 @@
 import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
-import { appScheme } from '@easypid/constants'
+import { appScheme, eudiTrustList, trustedEntityIds, trustedX509Entities } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
@@ -250,8 +250,11 @@ export function FunkeCredentialNotificationScreen() {
   const parsePresentationRequestUrl = useCallback(
     (oid4vpRequestUrl: string) =>
       getCredentialsForProofRequest({
-        agent: paradym.agent,
+        paradym,
         uri: oid4vpRequestUrl,
+        trustedEntityIds,
+        trustedX509Entities,
+        trustList: eudiTrustList,
       })
         .then(setCredentialsForRequest)
         .catch((error) => {
@@ -260,7 +263,7 @@ export function FunkeCredentialNotificationScreen() {
             error,
           })
         }),
-    [paradym.agent, setErrorReasonWithError, paradym.logger.error]
+    [paradym, setErrorReasonWithError, paradym.logger.error]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -316,7 +319,7 @@ export function FunkeCredentialNotificationScreen() {
 
       try {
         const { presentationDuringIssuanceSession } = await shareProof({
-          agent: paradym.agent,
+          paradym,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
           fetchBatchCredentialCallback: refreshPid,
@@ -352,7 +355,7 @@ export function FunkeCredentialNotificationScreen() {
     },
     [
       credentialsForRequest,
-      paradym.agent,
+      paradym,
       acquireCredentialsAuth,
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,

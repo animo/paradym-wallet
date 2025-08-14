@@ -1,7 +1,7 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
+import { useResetWalletDevMenu } from '@easypid/hooks/useResetWalletDevMenu'
 import { type CredentialDataHandlerOptions, useHaptics } from '@package/app'
 import { ParadymWalletSdk } from '@package/sdk'
 import { HeroIcons, IconContainer } from '@package/ui'

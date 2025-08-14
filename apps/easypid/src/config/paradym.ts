@@ -7,4 +7,5 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   openId4VcConfiguration: {
     trustedCertificates: trustedX509Certificates as [string, ...string[]],
   },
+  trustMechanisms: ['eudi_rp_authentication', 'openid_federation', 'x509', 'did'],
 }
