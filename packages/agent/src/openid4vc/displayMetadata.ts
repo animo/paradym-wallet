@@ -5,18 +5,18 @@ import type {
   OpenId4VciCredentialIssuerMetadataDisplay,
 } from '@credo-ts/openid4vc'
 
-export type CredentialDisplayClaims =
-  | (OpenId4VciCredentialConfigurationSupportedWithFormats & {
-      format: 'vc+sd-jwt'
-    })['claims']
-  | (OpenId4VciCredentialConfigurationSupportedWithFormats & {
-      format: 'dc+sd-jwt'
-    })['claims']
+export type OpenId4VciCredentialDisplayClaims = (OpenId4VciCredentialConfigurationSupportedWithFormats & {
+  format: 'dc+sd-jwt'
+})['claims']
+
+export type OpenId4VciCredentialDisplay = NonNullable<
+  OpenId4VciCredentialConfigurationSupported['credential_metadata']
+>['display']
 
 export interface OpenId4VcCredentialMetadata {
   credential: {
-    display?: OpenId4VciCredentialConfigurationSupported['display']
-    claims?: CredentialDisplayClaims
+    display?: OpenId4VciCredentialDisplay
+    claims?: OpenId4VciCredentialDisplayClaims
     order?: OpenId4VciCredentialConfigurationSupportedWithFormats['order']
   }
   issuer: {
@@ -31,11 +31,15 @@ export function extractOpenId4VcCredentialMetadata(
   credentialMetadata: OpenId4VciCredentialConfigurationSupportedWithFormats,
   serverMetadata: { display?: OpenId4VciCredentialIssuerMetadataDisplay[]; id: string }
 ): OpenId4VcCredentialMetadata {
+  // We only store claims for the new array-based syntax
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const claims = (credentialMetadata.credential_metadata as any)?.claims ?? credentialMetadata.claims
+
   return {
     credential: {
-      display: credentialMetadata.display,
-      order: credentialMetadata.order,
-      claims: credentialMetadata.claims ? (credentialMetadata.claims as CredentialDisplayClaims) : undefined,
+      display:
+        credentialMetadata.credential_metadata?.display ?? (credentialMetadata.display as OpenId4VciCredentialDisplay),
+      claims: Array.isArray(claims) ? (claims as OpenId4VciCredentialDisplayClaims) : undefined,
     },
     issuer: {
       display: serverMetadata.display,
@@ -75,6 +79,8 @@ export function getOpenId4VcCredentialMetadata(
         // We need to map the url values to uri
         logo: logo ? { ...logo, uri: logo.uri ?? (logo.url as string) } : undefined,
       })),
+      // We might have stored non-array claims syntax in the past. We don't want to use these
+      claims: Array.isArray(recordMetadata.credential.claims) ? recordMetadata.credential.claims : undefined,
     },
   }
 }

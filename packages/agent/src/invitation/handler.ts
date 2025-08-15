@@ -338,14 +338,14 @@ const extractEntityIdFromJwt = (jwt: string, origin?: string): string | null => 
 }
 
 const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: string): string | null => {
-  const { clientId, clientIdScheme } = getOpenid4vpClientId({
+  const { clientIdIdentifier, clientIdPrefix } = getOpenid4vpClientId({
     clientId: payload.client_id as string,
     legacyClientIdScheme: payload.client_id_scheme,
     responseMode: payload.response_mode,
     origin,
   })
 
-  if (clientIdScheme === 'https') return clientId
+  if (clientIdPrefix === 'decentralized_identifier') return clientIdIdentifier
   return null
 }
 

@@ -1,8 +1,9 @@
 import {
-  type BaseRecord,
   ClaimFormat,
   type DcqlCredentialsForRequest,
   type DcqlQueryResult,
+  type JsonObject,
+  type MdocNameSpaces,
   type MdocRecord,
   type SdJwtVcRecord,
   type W3cCredentialRecord,
@@ -29,7 +30,7 @@ export const shareProof = async ({
   const { authorizationRequest } = resolvedRequest
   if (
     !resolvedRequest.credentialsForRequest?.areRequirementsSatisfied &&
-    !resolvedRequest.queryResult?.canBeSatisfied
+    !resolvedRequest.queryResult?.can_be_satisfied
   ) {
     throw new Error('Requirements from proof request are not satisfied')
   }
@@ -64,11 +65,16 @@ export const shareProof = async ({
             Object.keys(selectedCredentials).length > 0
               ? getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
               : agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
-          ).map(async ([queryCredentialId, credential]) => {
+          ).map(async ([queryCredentialId, credentials]) => {
             // Optionally use a batch credential
-            const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
+            const updatedCredentials = await Promise.all(
+              credentials.map(async (credential) => ({
+                ...credential,
+                credentialRecord: await handleBatchCredential(agent, credential.credentialRecord),
+              }))
+            )
 
-            return [queryCredentialId, { ...credential, credentialRecord }]
+            return [queryCredentialId, updatedCredentials]
           })
         )
       )
@@ -128,48 +134,50 @@ function getSelectedCredentialsForRequest(
   dcqlQueryResult: DcqlQueryResult,
   selectedCredentials: { [credentialQueryId: string]: string }
 ): DcqlCredentialsForRequest {
-  if (!dcqlQueryResult.canBeSatisfied) {
+  if (!dcqlQueryResult.can_be_satisfied) {
     throw new Error('Cannot select the credentials for the dcql query presentation if the request cannot be satisfied')
   }
 
   const credentials: DcqlCredentialsForRequest = {}
 
+  type WithRecord<T> = T & {
+    record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord
+  }
+
   for (const [credentialQueryId, credentialRecordId] of Object.entries(selectedCredentials)) {
     const matchesForCredentialQuery = dcqlQueryResult.credential_matches[credentialQueryId]
     if (matchesForCredentialQuery.success) {
-      const match = matchesForCredentialQuery.all
-        .map((credential) =>
-          credential.find((claimSet) =>
-            claimSet?.success && 'record' in claimSet && (claimSet.record as BaseRecord).id === credentialRecordId
-              ? claimSet
-              : undefined
-          )
-        )
-        .find((i) => i !== undefined)
-      // TODO: fix the typing, make selection in Credo easier
-      const matchWithRecord = match as typeof match & { record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord }
+      const validCredentialMatch = matchesForCredentialQuery.valid_credentials.find(
+        (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId
+      )
 
-      if (
-        matchWithRecord?.success &&
-        matchWithRecord.record.type === 'MdocRecord' &&
-        matchWithRecord.output.credential_format === 'mso_mdoc'
-      ) {
-        credentials[credentialQueryId] = {
-          claimFormat: ClaimFormat.MsoMdoc,
-          credentialRecord: matchWithRecord.record,
-          disclosedPayload: matchWithRecord.output.namespaces,
-        }
-      } else if (
-        matchWithRecord?.success &&
-        matchWithRecord.record.type === 'SdJwtVcRecord' &&
-        (matchWithRecord.output.credential_format === 'dc+sd-jwt' ||
-          matchWithRecord.output.credential_format === 'vc+sd-jwt')
-      ) {
-        credentials[credentialQueryId] = {
-          claimFormat: ClaimFormat.SdJwtVc,
-          credentialRecord: matchWithRecord.record,
-          disclosedPayload: matchWithRecord.output.claims,
-        }
+      if (!validCredentialMatch) {
+        throw new Error(
+          `Could not find credential record ${credentialRecordId} in valid credential matches for credentialQueryId ${credentialQueryId}`
+        )
+      }
+
+      // TODO: fix the typing, make selection in Credo easier
+      const matchWithRecord = validCredentialMatch as typeof validCredentialMatch & {
+        record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord
+      }
+
+      if (matchWithRecord.record.type === 'MdocRecord') {
+        credentials[credentialQueryId] = [
+          {
+            claimFormat: ClaimFormat.MsoMdoc,
+            credentialRecord: matchWithRecord.record,
+            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as MdocNameSpaces,
+          },
+        ]
+      } else if (matchWithRecord.record.type === 'SdJwtVcRecord') {
+        credentials[credentialQueryId] = [
+          {
+            claimFormat: ClaimFormat.SdJwtVc,
+            credentialRecord: matchWithRecord.record,
+            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as JsonObject,
+          },
+        ]
       }
     }
   }
