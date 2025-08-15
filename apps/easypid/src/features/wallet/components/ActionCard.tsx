@@ -37,7 +37,7 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
       </XStack>
       <YStack>
         {titleParts.map((word) => (
-          <Heading key={word} color={variant === 'primary' ? 'white' : '$grey-900'} variant="h2">
+          <Heading key={word} color={variant === 'primary' ? 'white' : '$grey-900'} heading="h2">
             {word}
           </Heading>
         ))}

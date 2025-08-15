@@ -442,10 +442,10 @@ export function FunkeCredentialNotificationScreen() {
                 <ShareCredentialsSlide
                   key="share-credentials"
                   onAccept={shouldUsePinForPresentation ? undefined : () => onPresentationAccept({})}
-                  onDecline={onProofDecline}
                   logo={credentialsForRequest.verifier.logo}
                   submission={credentialsForRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
+                  onDecline={onProofDecline}
                   // Not supported for this flow atm
                   overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
                 />

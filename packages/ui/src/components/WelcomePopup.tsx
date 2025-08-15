@@ -13,7 +13,7 @@ export function WelcomePopup({ bottom, onClose }: { bottom: number; onClose: () 
         <YStack ai="center" width="100%">
           <Stack bg="$grey-900" gap="$2" maxWidth="80%" br="$8" p="$4">
             <XStack jc="space-between">
-              <Heading color="$white" variant="h4" fontWeight="$semiBold">
+              <Heading color="$white" heading="h4" fontWeight="$semiBold">
                 <Trans id="welcome.titleToYourWallet" comment="Welcome title in wallet screen">
                   Welcome to your wallet
                 </Trans>

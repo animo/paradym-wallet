@@ -24,7 +24,7 @@ export const OnboardingStepItem = ({ stepName, title, description, icon }: Onboa
         <Paragraph variant="caption" textTransform="uppercase">
           {stepName}
         </Paragraph>
-        <Heading variant="sub1">{title}</Heading>
+        <Heading heading="sub1">{title}</Heading>
         <Paragraph>{description}</Paragraph>
       </YStack>
     </XStack>

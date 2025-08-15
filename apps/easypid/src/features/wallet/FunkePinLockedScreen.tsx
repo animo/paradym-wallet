@@ -38,7 +38,7 @@ export const FunkePinLockedScreen = () => {
     <FlexPage gap="$2" jc="space-between">
       <YStack fg={1} gap="$6" mt="$6">
         <YStack gap="$6">
-          <Heading variant="h1">
+          <Heading heading="h1">
             <Trans id="pinLocked.title" comment="Heading shown when the user has entered too many incorrect PINs">
               Too many incorrect attempts
             </Trans>

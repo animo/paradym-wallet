@@ -73,7 +73,7 @@ export function PresentationNotificationScreen({
           <YStack g="xl">
             <YStack ai="center" jc="center" gap="$4">
               {verifierName ? (
-                <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
+                <Heading heading="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
                   <Trans
                     id="presentationNotification.receivedRequestWithVerifier"
                     comment="Heading shown when the user receives an information request including the verifier's name"
@@ -82,7 +82,7 @@ export function PresentationNotificationScreen({
                   </Trans>
                 </Heading>
               ) : (
-                <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
+                <Heading heading="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
                   <Trans
                     id="presentationNotification.receivedRequestWithoutVerifier"
                     comment="Heading shown when the user receives an information request without the verifier's name"
@@ -225,7 +225,7 @@ export function PresentationNotificationScreen({
         }}
       >
         <Stack bg="$grey-100" p="$4" gap="$4" pb={bottom}>
-          <Heading variant="h3" ta="center" py="$2">
+          <Heading heading="h3" ta="center" py="$2">
             <Trans
               id="presentationNotification.selectCredentialTitle"
               comment="Title prompting the user to select which credential to use for the information request"

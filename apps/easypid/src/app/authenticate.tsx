@@ -115,7 +115,7 @@ export default function Authenticate() {
       <YStack fg={1} gap="$6" mb={noBottomSafeArea ? -additionalPadding : undefined}>
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
           <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
-          <Heading variant="h2" fontWeight="$semiBold">
+          <Heading heading="h2" fontWeight="$semiBold">
             {t(commonMessages.enterPin)}
           </Heading>
         </YStack>

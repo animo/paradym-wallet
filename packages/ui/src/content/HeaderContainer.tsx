@@ -13,11 +13,11 @@ export function HeaderContainer({ isScrolledByOffset, title, subtitle }: HeaderC
     <YStack py={media.short ? '$3' : '$4'} px="$4" gap="$2">
       <Stack h={media.short ? '$2' : '$3'} />
       {subtitle && (
-        <Heading variant="sub2" secondary>
+        <Heading heading="sub2" secondary>
           {subtitle}
         </Heading>
       )}
-      <Heading variant="h1">{title}</Heading>
+      <Heading heading="h1">{title}</Heading>
     </YStack>
   ) : null
 

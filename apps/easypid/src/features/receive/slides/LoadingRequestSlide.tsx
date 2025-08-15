@@ -40,7 +40,7 @@ export const LoadingRequestSlide = ({ isLoading, isError }: LoadingRequestSlideP
             <Stack py="$2">
               <Loader />
             </Stack>
-            <Heading variant="sub1">
+            <Heading heading="sub1">
               {t({
                 id: 'loadingRequestSlide.title',
                 message: 'Please wait',

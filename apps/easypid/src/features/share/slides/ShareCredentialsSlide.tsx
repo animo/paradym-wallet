@@ -13,7 +13,7 @@ import { RequestedAttributesSection } from '../components/RequestedAttributesSec
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage
   onAccept?: () => Promise<void>
-  onDecline?: () => void
+  onDecline: () => void
   submission: FormattedSubmission
   isAccepting: boolean
   isOffline?: boolean
@@ -95,7 +95,7 @@ export const ShareCredentialsSlide = ({
                 message={t({
                   id: 'submission.offlineRequestDescription',
                   message:
-                    'Information about the verifier could not be shown. Carefully consider if you trust this party.',
+                    'Information about the verifier could not be shown. Carefully consider if you trust this organization.',
                   comment: 'Message shown when the request is offline and verifier is unknown',
                 })}
                 icon={<HeroIcons.ExclamationTriangleFilled />}

@@ -10,7 +10,7 @@ export function NoContentWallet() {
       <Spacer />
       <YStack>
         <YStack jc="center" ai="center" gap="$2">
-          <Heading variant="h2" fontWeight="$medium" letterSpacing={-0.5}>
+          <Heading heading="h2" fontWeight="$medium" letterSpacing={-0.5}>
             <Trans id="noContentWallet.heading" comment="Heading shown on empty wallet screen">
               This is your wallet
             </Trans>

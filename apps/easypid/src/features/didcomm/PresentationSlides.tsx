@@ -52,6 +52,8 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           'failed'
         )
 
+        if (proofExchange) agent.modules.proofs.deleteById(proofExchange.id)
+
         onCancel()
       })
   }
@@ -107,7 +109,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           screen: <PresentationSuccessSlide showReturnToApp verifierName={verifierName} onComplete={onComplete} />,
         },
       ]}
-      onCancel={onCancel}
+      onCancel={onProofDecline}
       confirmation={getFlowConfirmationText(t, 'verify')}
     />
   )

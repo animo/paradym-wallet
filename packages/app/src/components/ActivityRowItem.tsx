@@ -146,7 +146,7 @@ export function ActivityRowItem({
               {formatRelativeDate(date)}
             </Paragraph>
           </XStack>
-          <Heading variant="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
+          <Heading heading="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
             {subtitle}
           </Heading>
         </YStack>

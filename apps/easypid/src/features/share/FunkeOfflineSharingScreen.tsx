@@ -40,8 +40,8 @@ export function FunkeOfflineSharingScreen({
               <ShareCredentialsSlide
                 key="share-credentials"
                 onAccept={usePin ? undefined : onAccept}
-                onDecline={onDecline}
                 submission={submission as FormattedSubmission}
+                onDecline={onDecline}
                 isAccepting={isAccepting}
                 isOffline
               />

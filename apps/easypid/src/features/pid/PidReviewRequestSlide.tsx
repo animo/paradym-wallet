@@ -13,7 +13,7 @@ export function PidReviewRequestSlide({ title, requestedAttributes }: PidReviewR
   return (
     <YStack fg={1} gap="$6" jc="space-between">
       <YStack gap="$3">
-        <Heading variant="h1">{title}</Heading>
+        <Heading heading="h1">{title}</Heading>
       </YStack>
       <OnboardingIdCardRequestedAttributes
         goToNextStep={async () => onNext()}

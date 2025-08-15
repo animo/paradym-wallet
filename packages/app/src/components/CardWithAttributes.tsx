@@ -93,7 +93,7 @@ export function CardWithAttributes({
         )}
         <XStack ai="center" jc="space-between">
           <YStack f={1}>
-            <Heading variant="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-200'}>
+            <Heading heading="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-200'}>
               {name.toLocaleUpperCase()}
             </Heading>
           </YStack>

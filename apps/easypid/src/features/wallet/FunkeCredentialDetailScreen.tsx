@@ -89,7 +89,7 @@ export function FunkeCredentialDetailScreen() {
               />
             </AnimatedStack>
             <Stack gap="$2">
-              <Heading ta="center" variant="h1">
+              <Heading ta="center" heading="h1">
                 <Trans id="credentials.detailsTitle" comment="Title of the credential details screen">
                   Card details
                 </Trans>

@@ -25,7 +25,7 @@ export function InboxNotificationRowCard({ title, description, onPress, bgColor 
         <XStack jc="space-between">
           <Paragraph numberOfLines={1}>{description}</Paragraph>
         </XStack>
-        <Heading variant="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
+        <Heading heading="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
           {title}
         </Heading>
       </YStack>

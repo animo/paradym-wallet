@@ -53,7 +53,7 @@ export function MessageBox({
     <XStack gap="$2" p="$3.5" bg={messageBoxVariants[variant].bg} borderRadius="$8">
       <YStack gap="$2" f={1}>
         {title && (
-          <Heading variant="sub2" color={messageBoxVariants[variant].color}>
+          <Heading heading="sub2" color={messageBoxVariants[variant].color}>
             {title}
           </Heading>
         )}

@@ -28,7 +28,7 @@ export function CredentialRowCard({
       >
         <XStack border bg={bgColor ?? '$grey-700'} h="$4.5" w="24%" br="$2" />
         <YStack flex={1} jc={issuer ? 'space-between' : 'center'}>
-          <Heading variant="h3" fontWeight="$medium" numberOfLines={showFullText ? 2 : 1}>
+          <Heading heading="h3" fontWeight="$medium" numberOfLines={showFullText ? 2 : 1}>
             {name}
           </Heading>
           {issuer && (

@@ -81,7 +81,7 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
           </AnimatedStack>
         )}
         <XStack gap="$2" jc="space-between" ai="center">
-          <Heading variant="sub2">{headingLabel}</Heading>
+          <Heading heading="sub2">{headingLabel}</Heading>
           {hasAiAnalysisFeatureFlag && (
             <Stack h="$2" w="$2" ai="center" jc="center">
               <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>

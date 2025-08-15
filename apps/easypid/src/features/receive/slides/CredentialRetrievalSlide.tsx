@@ -40,7 +40,6 @@ interface CredentialRetrievalSlideProps {
   display: CredentialDisplay
   isCompleted: boolean
   onAccept: () => Promise<void>
-  onDecline?: () => void
   onGoToWallet: () => void
   isAccepting?: boolean
 }
@@ -50,7 +49,6 @@ export const CredentialRetrievalSlide = ({
   display,
   isCompleted,
   onAccept,
-  onDecline,
   onGoToWallet,
   isAccepting,
 }: CredentialRetrievalSlideProps) => {
@@ -73,7 +71,6 @@ export const CredentialRetrievalSlide = ({
   }
 
   const handleDecline = () => {
-    onDecline?.()
     onCancel()
   }
 
@@ -149,13 +146,15 @@ export const CredentialRetrievalSlide = ({
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-title' : 'info-title'}
             entering={!isInitialRender ? FadeIn.duration(300) : undefined}
-            opacity={isStoring ? 0 : 1}
+            opacity={isStoring || (isCompleted && !isAllowedToComplete) ? 0 : 1}
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
-            {isCompleteAndAllowed ? (
+            {isCompleted ? (
               <Heading ta="center">
                 <Trans id="receiveCredential.successHeader">Success!</Trans>
               </Heading>
+            ) : isStoring ? (
+              <Heading> </Heading>
             ) : (
               <Heading>
                 <Trans id="receiveCredential.checkInformationHeader">Is the information correct?</Trans>

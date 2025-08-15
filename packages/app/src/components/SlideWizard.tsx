@@ -140,10 +140,15 @@ export const SlideWizard = forwardRef(
     const animateTransition = useCallback(
       (isForward: boolean, slide?: string) => {
         'worklet'
+
+        const shouldNavigateToWhite = isForward && currentStepIndex + 1 === steps.length && willResume
+
         // Fade out and translate current screen
         opacity.value = withTiming(0, { duration: FADE_OUT_DURATION, easing: EASE_OUT }, () => {
           runOnJS(scrollToTop)()
-          runOnJS(updateStep)(isForward ? 1 : -1, slide)
+          if (!shouldNavigateToWhite) {
+            runOnJS(updateStep)(isForward ? 1 : -1, slide)
+          }
         })
         translateX.value = withTiming(isForward ? -DISTANCE : DISTANCE, {
           duration: FADE_OUT_DURATION,
@@ -151,18 +156,20 @@ export const SlideWizard = forwardRef(
         })
 
         // After fadeOutDuration + delay, fade in and translate new screen
-        setTimeout(() => {
-          opacity.value = withTiming(1, { duration: FADE_IN_DURATION, easing: EASE_OUT })
-          translateX.value = withSequence(
-            withTiming(isForward ? DISTANCE : -DISTANCE, { duration: 0 }),
-            withTiming(0, { duration: FADE_IN_DURATION, easing: EASE_OUT }, () => {
-              // Reset navigation state
-              runOnJS(setIsNavigating)(false)
-            })
-          )
-        }, FADE_OUT_DURATION + DELAY)
+        if (!shouldNavigateToWhite) {
+          setTimeout(() => {
+            opacity.value = withTiming(1, { duration: FADE_IN_DURATION, easing: EASE_OUT })
+            translateX.value = withSequence(
+              withTiming(isForward ? DISTANCE : -DISTANCE, { duration: 0 }),
+              withTiming(0, { duration: FADE_IN_DURATION, easing: EASE_OUT }, () => {
+                // Reset navigation state
+                runOnJS(setIsNavigating)(false)
+              })
+            )
+          }, FADE_OUT_DURATION + DELAY)
+        }
       },
-      [opacity, translateX, updateStep, scrollToTop]
+      [opacity, translateX, updateStep, scrollToTop, currentStepIndex, steps.length, willResume]
     )
 
     const handleCancel = withHaptics(

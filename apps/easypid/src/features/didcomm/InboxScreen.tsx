@@ -35,7 +35,7 @@ export function InboxScreen() {
             p="$4"
             fg={1}
           >
-            <Heading ta="center" variant="h3" fontWeight="$semiBold">
+            <Heading ta="center" heading="h3" fontWeight="$semiBold">
               <Trans id="inbox.emptyTitle" comment="Heading shown when the inbox is empty">
                 You're all caught up
               </Trans>

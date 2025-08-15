@@ -129,7 +129,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading ta="center" variant="h3">
+                <Heading ta="center" heading="h3">
                   {personalInfoCard.name}
                 </Heading>
                 <Paragraph>{personalInfoCard.born}</Paragraph>
@@ -144,7 +144,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
         </Stack>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
+        <Heading heading="sub2" secondary>
           {t(commonMessages.fields.address)}
         </Heading>
         <TableContainer>
@@ -221,7 +221,7 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading ta="center" variant="h3">
+                <Heading ta="center" heading="h3">
                   {personalInfoCard.name}
                 </Heading>
                 <Paragraph>{personalInfoCard.born}</Paragraph>
@@ -236,7 +236,7 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
         </Stack>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
+        <Heading heading="sub2" secondary>
           Address
         </Heading>
         <TableContainer>
@@ -309,7 +309,7 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading variant="h3">{mainCard.name}</Heading>
+                <Heading heading="h3">{mainCard.name}</Heading>
                 <Paragraph>
                   {/* Führerschein in german */}
                   {t(commonMessages.credentials.mdl.driving_license)}
@@ -335,7 +335,7 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
         </Stack>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
+        <Heading heading="sub2" secondary>
           {t(commonMessages.credentials.mdl.driving_privileges)}
         </Heading>
         <TableContainer>
@@ -364,7 +364,7 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
         </TableContainer>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
+        <Heading heading="sub2" secondary>
           <Trans id="cardAttributes.aboutTheCard">About the card</Trans>
         </Heading>
         <TableContainer>

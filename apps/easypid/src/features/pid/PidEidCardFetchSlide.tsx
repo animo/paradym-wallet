@@ -22,7 +22,7 @@ export function PidIdCardFetchSlide({ title, subtitle, userName, onComplete }: P
   return (
     <YStack fg={1} gap="$6">
       <YStack gap="$3">
-        <Heading variant="h1">{title}</Heading>
+        <Heading heading="h1">{title}</Heading>
         {subtitle && <Paragraph>{subtitle}</Paragraph>}
       </YStack>
       <OnboardingIdCardFetch goToNextStep={onComplete} userName={userName} />

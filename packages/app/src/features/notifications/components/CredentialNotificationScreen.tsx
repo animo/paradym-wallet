@@ -34,7 +34,7 @@ export function CredentialNotificationScreen({
     >
       <YStack g="3xl" jc="space-between" height="100%" pad="lg" py="$6">
         <YStack g="2xl">
-          <Heading variant="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
+          <Heading heading="h2" fontWeight="$medium" ta="center" px="$4" letterSpacing={-0.5}>
             {display.issuer?.name ? (
               <Trans
                 id="credentialNotification.receivedCredentialWithIssuerName"

@@ -47,7 +47,7 @@ export function FunkeActivityDetailScreen() {
           </Stack>
           <YStack gap="$4" px="$4">
             <Stack gap="$2" ai="center">
-              <Heading textAlign="center" variant="h1">
+              <Heading textAlign="center" heading="h1">
                 {Title}
               </Heading>
               <Paragraph textAlign="center">{formatRelativeDate(new Date(activity.date), undefined, true)}</Paragraph>
@@ -126,7 +126,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
     <Stack gap="$6">
       <YStack gap="$4">
         <YStack gap="$2">
-          <Heading variant="sub2">
+          <Heading heading="sub2">
             <Trans
               id="activity.cardsHeading"
               comment="Section heading for list of received cards in the activity detail screen"
@@ -208,7 +208,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
       {activity && activity.type === 'signed' && (
         <YStack gap="$4">
           <YStack gap="$2">
-            <Heading variant="sub2">
+            <Heading heading="sub2">
               <Trans
                 id="activity.documentHeading"
                 comment="Section heading shown when a document was signed or attempted to be signed"
@@ -224,7 +224,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
           </YStack>
           <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
             <YStack f={1} gap="$2">
-              <Heading variant="sub2" textTransform="none" color="$grey-800">
+              <Heading heading="sub2" textTransform="none" color="$grey-800">
                 {activity.transaction?.documentName}
               </Heading>
               <Paragraph>
@@ -242,7 +242,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
       )}
       <Stack gap="$3">
         <Stack gap="$2">
-          <Heading variant="sub2">
+          <Heading heading="sub2">
             {activity.status === 'success'
               ? t(activityMessages.sharedAttributes)
               : t(activityMessages.requestedInformation)}

@@ -42,7 +42,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <Heading variant="h2" letterSpacing={-0.5}>
+        <Heading heading="h2" letterSpacing={-0.5}>
           <Trans id="qrScanner.permissionHeading" comment="Heading asking user to allow camera permission">
             Please allow camera access
           </Trans>
@@ -70,7 +70,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
         />
       )}
       <YStack zi="$5" ai="center">
-        <Heading variant="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
+        <Heading heading="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
           <Trans id="qrScanner.instructionHeading" comment="Instruction heading for scanning a QR code">
             Use the camera to scan a QR code
           </Trans>

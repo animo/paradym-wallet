@@ -21,7 +21,7 @@ export const FunkePidConfirmationScreen = forwardRef<PinDotsInputRef, FunkePidCo
           <Circle size="$4" backgroundColor="$grey-100">
             <HeroIcons.LockClosed strokeWidth={2} color="$grey-700" />
           </Circle>
-          <Heading variant="h2" fontWeight="$semiBold">
+          <Heading heading="h2" fontWeight="$semiBold">
             {t(commonMessages.enterPin)}
           </Heading>
         </YStack>
