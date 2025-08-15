@@ -3,35 +3,46 @@ import { DualResponseButtons, useImageScaler, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { Defs, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
+
 interface SigningSlideProps {
   documentName: string
   qtsp: QtspInfo
 }
 
 export function SigningSlide({ documentName, qtsp }: SigningSlideProps) {
-  const { height, onLayout } = useImageScaler({ scaleFactor: 0.65 })
-
   const { onNext, onCancel } = useWizard()
+  const { height, onLayout } = useImageScaler({ scaleFactor: 0.65 })
+  const { t } = useLingui()
 
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4">
-        <Heading>Signing a document</Heading>
+        <Heading>
+          <Trans id="signing.title" comment="Heading above the document signing screen">
+            Signing a document
+          </Trans>
+        </Heading>
         <Paragraph>
-          You are about to sign <Paragraph emphasis>{documentName}</Paragraph>.
+          <Trans id="signing.description" comment="Explanation that the user is about to sign a document">
+            You are about to sign <Paragraph emphasis>{documentName}</Paragraph>.
+          </Trans>
         </Paragraph>
       </YStack>
+
       <YStack fg={1} jc="center" ai="center" onLayout={onLayout}>
         <YStack height={height}>
           <SigningSvg />
         </YStack>
         <YStack h="$4" />
       </YStack>
+
       <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
         <DualResponseButtons
           align="horizontal"
-          acceptText="Continue"
-          declineText="Stop"
+          acceptText={t(commonMessages.continue)}
+          declineText={t(commonMessages.stop)}
           onAccept={() => onNext()}
           onDecline={() => onCancel()}
           isLoading={false}

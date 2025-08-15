@@ -1,7 +1,9 @@
 import { X509Certificate, X509ModuleConfig } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import { t } from '@lingui/core/macro'
 import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
 import type { EitherAgent } from '@package/agent'
+import { commonMessages } from '@package/translations'
 import { TRUSTED_ENTITIES } from '../invitation/trustedEntities'
 
 export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did'
@@ -184,7 +186,8 @@ const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntities
       ?.map((chain) => ({
         entityId: chain.trustAnchorEntityConfiguration.sub,
         organizationName:
-          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ?? 'Unknown organization',
+          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ??
+          t(commonMessages.unknownOrganization),
         logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
       }))
       .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index) ?? []

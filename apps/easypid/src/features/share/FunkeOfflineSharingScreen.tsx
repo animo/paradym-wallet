@@ -1,3 +1,4 @@
+//no tranlation needed
 import type { FormattedSubmission } from '@package/agent'
 import { type SlideStep, SlideWizard } from '@package/app/components'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
@@ -39,8 +40,8 @@ export function FunkeOfflineSharingScreen({
               <ShareCredentialsSlide
                 key="share-credentials"
                 onAccept={usePin ? undefined : onAccept}
-                onDecline={onDecline}
                 submission={submission as FormattedSubmission}
+                onDecline={onDecline}
                 isAccepting={isAccepting}
                 isOffline
               />

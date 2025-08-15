@@ -17,6 +17,7 @@ import {
   type OnboardingStep,
   SIMULATOR_PIN,
 } from '@easypid/utils/sharedPidSetup'
+import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
@@ -28,6 +29,7 @@ import {
 import { useHaptics } from '@package/app'
 import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
@@ -64,6 +66,7 @@ export function OnboardingContextProvider({
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
   const hasCloudHsmFeatureFlag = useFeatureFlag('CLOUD_HSM')
+  const { t } = useLingui()
 
   const currentStep = onboardingSteps.find((step) => step.step === currentStepName)
   if (!currentStep) throw new Error(`Invalid step ${currentStepName}`)
@@ -157,16 +160,22 @@ export function OnboardingContextProvider({
     const isSimulatorPinCode = pin === SIMULATOR_PIN
 
     if (isSimulatorPinCode && hasEidCardFeatureFlag) {
-      toast.show('Simulator eID card activated', {
+      toast.show(t(commonMessages.simulatorEidCardActivated), {
         customData: {
           preset: 'success',
         },
       })
       setAllowSimulatorCard(true)
     } else if (!walletPin || walletPin !== pin) {
-      toast.show('Pin entries do not match', {
-        customData: { preset: 'danger' },
-      })
+      toast.show(
+        t({
+          id: 'onboarding.pinEntriesDoNotMatch',
+          message: 'Pin entries do not match',
+        }),
+        {
+          customData: { preset: 'danger' },
+        }
+      )
       setWalletPin(undefined)
       goToPreviousStep()
       throw new Error('Pin entries do not match')
@@ -249,7 +258,7 @@ export function OnboardingContextProvider({
     } catch (error) {
       // We can recover from this, and will show an error on the screen
       if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show('Biometric authentication cancelled', {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
           customData: { preset: 'danger' },
         })
         throw error
@@ -320,9 +329,15 @@ export function OnboardingContextProvider({
           // Navigate to the id-card-pin and show a toast
           promise.then(() => {
             setCurrentStepName('id-card-pin')
-            toast.show('Invalid PIN entered for eID Card. Please try again', {
-              customData: { preset: 'danger' },
-            })
+            toast.show(
+              t({
+                id: 'onboarding.invalidEidPinEntered',
+                message: 'Invalid PIN entered for eID Card. Please try again',
+              }),
+              {
+                customData: { preset: 'danger' },
+              }
+            )
           })
         })
       }
@@ -330,7 +345,7 @@ export function OnboardingContextProvider({
       setIdCardPin(undefined)
       return idCardPin
     },
-    [idCardPin, toast.show]
+    [idCardPin, toast.show, t]
   )
 
   // Bit unfortunate, but we need to keep it as ref, as otherwise the value passed to ReceivePidUseCase.initialize will not get updated and we
@@ -349,7 +364,7 @@ export function OnboardingContextProvider({
     resetToStep = 'welcome',
     error,
     showToast = true,
-    toastMessage = 'Please try again.',
+    toastMessage = t(commonMessages.pleaseTryAgain),
   }: {
     error?: unknown
     resetToStep: OnboardingStep['step']
@@ -401,12 +416,18 @@ export function OnboardingContextProvider({
     setCurrentStepName(resetToStep)
 
     if (showToast) {
-      toast.show('Error occurred during onboarding', {
-        message: toastMessage,
-        customData: {
-          preset: 'danger',
-        },
-      })
+      toast.show(
+        t({
+          id: 'onboarding.errorOccurred',
+          message: 'Error occurred during onboarding',
+        }),
+        {
+          message: toastMessage,
+          customData: {
+            preset: 'danger',
+          },
+        }
+      )
     }
   }
 
@@ -451,12 +472,18 @@ export function OnboardingContextProvider({
           error,
           showToast: false,
         })
-        toast.show('eID card scanning cancelled', {
-          message: 'Please try again.',
-          customData: {
-            preset: 'danger',
-          },
-        })
+        toast.show(
+          t({
+            id: 'onboarding.eidScanningCancelled',
+            message: 'eID card scanning cancelled',
+          }),
+          {
+            message: t(commonMessages.pleaseTryAgain),
+            customData: {
+              preset: 'danger',
+            },
+          }
+        )
       } else {
         await reset({ resetToStep: 'data-protection', error })
       }
@@ -537,7 +564,7 @@ export function OnboardingContextProvider({
       setCurrentStepName('id-card-complete')
     } catch (error) {
       if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show('Biometric authentication cancelled', {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
           customData: { preset: 'danger' },
         })
         return
@@ -577,7 +604,10 @@ export function OnboardingContextProvider({
     }
 
     if (!walletPin) {
-      await reset({ error: 'onIdCardStart: Missing walletKey in state', resetToStep: 'welcome' })
+      await reset({
+        error: 'onIdCardStart: Missing walletKey in state',
+        resetToStep: 'welcome',
+      })
       throw new Error('onIdCardStart: Missing walletKey in state')
     }
 
@@ -623,9 +653,19 @@ export function OnboardingContextProvider({
       />
     )
   } else if (currentStep.step === 'biometrics') {
-    screen = <currentStep.Screen goToNextStep={onEnableBiometrics} actionText="Activate Biometrics" />
+    screen = (
+      <currentStep.Screen
+        goToNextStep={onEnableBiometrics}
+        actionText={t({
+          id: 'biometrics.activateBiometricsButton',
+          message: 'Activate Biometrics',
+        })}
+      />
+    )
   } else if (currentStep.step === 'biometrics-disabled') {
-    screen = <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText="Open settings" />
+    screen = (
+      <currentStep.Screen goToNextStep={onEnableBiometricsDisabled} actionText={t(commonMessages.openSettingsButton)} />
+    )
   } else if (currentStep.step === 'data-protection') {
     screen = <currentStep.Screen goToNextStep={onIdCardStart} />
   } else if (currentStep.step === 'id-card-requested-attributes') {

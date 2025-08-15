@@ -1,5 +1,7 @@
 import type { ActivityType } from '@easypid/features/activity/activityRecord'
+import { useLingui } from '@lingui/react/macro'
 import type { DisplayImage } from '@package/agent'
+import { commonMessages } from '@package/translations'
 import {
   CustomIcons,
   Heading,
@@ -21,51 +23,51 @@ export const activityInteractions = {
     success: {
       icon: HeroIcons.Plus,
       color: '$feature-500',
-      text: 'Card added',
+      text: commonMessages.cardAdded,
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
       color: '$grey-500',
-      text: 'Card rejected',
+      text: commonMessages.cardRejected,
     },
     failed: {
       icon: CustomIcons.Exclamation,
       color: '$danger-500',
-      text: 'Card not added',
+      text: commonMessages.cardNotAdded,
     },
   },
   signed: {
     success: {
       icon: HeroIcons.PenFilled,
       color: '#008FFF',
-      text: 'Document signed',
+      text: commonMessages.documentSigned,
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
       color: '$grey-500',
-      text: 'Signing stopped',
+      text: commonMessages.signingStopped,
     },
     failed: {
       icon: CustomIcons.Exclamation,
       color: '$danger-500',
-      text: 'Signing failed',
+      text: commonMessages.signingFailed,
     },
   },
   shared: {
     success: {
       icon: HeroIcons.Interaction,
       color: '$positive-500',
-      text: 'Information shared',
+      text: commonMessages.informationShared,
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
       color: '$grey-500',
-      text: 'Sharing stopped',
+      text: commonMessages.sharingStopped,
     },
     failed: {
       icon: CustomIcons.Exclamation,
       color: '$danger-500',
-      text: 'Sharing failed',
+      text: commonMessages.sharingFailed,
     },
   },
 }
@@ -90,10 +92,10 @@ export function ActivityRowItem({
   status = 'success',
 }: ActivityRowItemProps) {
   const router = useRouter()
-
+  const { t } = useLingui()
   const Icon = type === 'received' ? activityInteractions.received.success : activityInteractions[type][status]
   const Title =
-    type === 'received' ? activityInteractions.received.success.text : activityInteractions[type][status].text
+    type === 'received' ? t(activityInteractions.received.success.text) : t(activityInteractions[type][status].text)
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
   const { withHaptics } = useHaptics()
@@ -144,7 +146,7 @@ export function ActivityRowItem({
               {formatRelativeDate(date)}
             </Paragraph>
           </XStack>
-          <Heading variant="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
+          <Heading heading="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
             {subtitle}
           </Heading>
         </YStack>

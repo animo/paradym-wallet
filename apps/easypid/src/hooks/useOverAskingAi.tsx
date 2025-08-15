@@ -3,38 +3,44 @@ import { useEffect, useState } from 'react'
 import { useLLM } from '@easypid/llm'
 import type { OverAskingInput, OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { EXCLUDED_ATTRIBUTES_FOR_ANALYSIS, checkForOverAskingApi } from '@easypid/use-cases/OverAskingApi'
+import { defineMessage } from '@lingui/core/macro'
+import { type _t, useLingui } from '@lingui/react/macro'
 import { useFeatureFlag } from './useFeatureFlag'
 
-const fallbackResponse: OverAskingResponse = {
+const fallbackResponse = {
   validRequest: 'could_not_determine',
-  reason: 'Error determining if the request is valid.',
-}
+  reason: defineMessage({
+    id: 'aiOverAking.errorReasonFallback',
+    message: 'Error determining if the request is valid.',
+  }),
+} as const
 
 export function useOverAskingAi() {
   const [isProcessingOverAsking, setIsProcessingOverAsking] = useState(false)
   const [overAskingResponse, setOverAskingResponse] = useState<OverAskingResponse>()
 
+  const { t } = useLingui()
   const { generate, response, error, isModelReady, isModelGenerating, interrupt } = useLLM()
   const isOverAskingAiEnabled = useFeatureFlag('AI_ANALYSIS')
 
   useEffect(() => {
     if (error) {
       setIsProcessingOverAsking(false)
-      setOverAskingResponse(fallbackResponse)
+      setOverAskingResponse({ ...fallbackResponse, reason: t(fallbackResponse.reason) })
       return
     }
 
     if (!response || isModelGenerating) return
 
     try {
-      const result = formatLocalResult(response)
+      const result = formatLocalResult(t, response)
       setOverAskingResponse(result)
     } catch (e) {
       console.error('Error parsing AI response:', e)
-      setOverAskingResponse(fallbackResponse)
+      setOverAskingResponse({ ...fallbackResponse, reason: t(fallbackResponse.reason) })
       setIsProcessingOverAsking(false)
     }
-  }, [response, isModelGenerating, error])
+  }, [response, isModelGenerating, error, t])
 
   const checkForOverAsking = async (input: OverAskingInput) => {
     if (!isOverAskingAiEnabled) {
@@ -53,7 +59,7 @@ export function useOverAskingAi() {
         .then(setOverAskingResponse)
         .catch((e) => {
           console.error('Error analyzing verification using API:', e)
-          setOverAskingResponse(fallbackResponse)
+          setOverAskingResponse({ ...fallbackResponse, reason: t(fallbackResponse.reason) })
         })
         .finally(() => setIsProcessingOverAsking(false))
     }
@@ -61,7 +67,7 @@ export function useOverAskingAi() {
 
   const stopOverAsking = () => {
     if (isModelReady) interrupt()
-    if (!overAskingResponse) setOverAskingResponse(fallbackResponse)
+    if (!overAskingResponse) setOverAskingResponse({ ...fallbackResponse, reason: t(fallbackResponse.reason) })
     setIsProcessingOverAsking(false)
   }
 
@@ -73,9 +79,9 @@ export function useOverAskingAi() {
   }
 }
 
-const formatLocalResult = (response: string) => {
+const formatLocalResult = (t: typeof _t, response: string) => {
   const match = response.match(/<response>([\s\S]*?)<\/response>/)
-  if (!match) return fallbackResponse
+  if (!match) return { ...fallbackResponse, reason: t(fallbackResponse.reason) }
 
   const responseContent = match[1]
 
@@ -89,7 +95,7 @@ const formatLocalResult = (response: string) => {
     }
   }
 
-  return fallbackResponse
+  return { ...fallbackResponse, reason: t(fallbackResponse.reason) }
 }
 
 const formatLocalPrompt = (input: OverAskingInput) => {

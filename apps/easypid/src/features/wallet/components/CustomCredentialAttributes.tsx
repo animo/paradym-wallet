@@ -1,14 +1,16 @@
 import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
-import { type MdlAttributes, getMdlCode, mapMdlAttributeName } from '@easypid/utils/mdlCustomMetadata'
-import {
-  type Arf15PidSdJwtVcAttributes,
-  type PidMdocAttributes,
-  type PidSdJwtVcAttributes,
-  mapPidAttributeName,
+import { type MdlAttributes, getMdlCode } from '@easypid/utils/mdlCustomMetadata'
+import type {
+  Arf15PidSdJwtVcAttributes,
+  Arf18PidSdJwtVcAttributes,
+  PidMdocAttributes,
+  PidSdJwtVcAttributes,
 } from '@easypid/utils/pidCustomMetadata'
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
 
 type CustomCredentialAttributesProps = {
@@ -38,11 +40,13 @@ export function CustomCredentialAttributes({ credential }: CustomCredentialAttri
 }
 
 export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  const { t } = useLingui()
   // We don't pass attributes here as props because we need to use the specified displayPriority
   // const { credential } = useCredentialByCategory('DE-PID')
 
   const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtVc
   const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
+  const isLegacySdJwtPid = isPidSdJwtVc && credential.metadata.type !== 'urn:eudi:pid:1'
 
   const personalInfoCard = {
     name: '',
@@ -59,10 +63,10 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
 
   let headerImage = credential?.display.issuer.logo?.url ?? ''
 
-  if (isPidSdJwtVc) {
+  if (isLegacySdJwtPid) {
     const raw = credential?.rawAttributes as Arf15PidSdJwtVcAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
-    personalInfoCard.born = `born ${raw.birth_date} (${raw.age_in_years})`
+    personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birth_date} (${raw.age_in_years})`
     personalInfoCard.placeOfBirth = raw.birth_place ?? ''
     personalInfoCard.nationalities = Array.isArray(raw.nationality)
       ? raw.nationality?.join(', ')
@@ -72,12 +76,22 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
     addressTable.postalCode = raw.resident_postal_code ?? ''
     headerImage = raw.portrait ?? headerImage
-  }
+  } else if (isPidSdJwtVc) {
+    const raw = credential?.rawAttributes as Arf18PidSdJwtVcAttributes
+    personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
+    personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birthdate}`
+    personalInfoCard.placeOfBirth = `${raw.place_of_birth.locality} (${raw.place_of_birth.country})`
+    personalInfoCard.nationalities = raw.nationalities?.join(', ')
 
-  if (isPidMdoc) {
+    addressTable.locality = `${raw.address.locality} (${raw.address.country})`
+    addressTable.street = raw.address.street_address ?? ''
+    addressTable.postalCode = raw.address.postal_code ?? ''
+
+    headerImage = raw.portrait ?? headerImage
+  } else if (isPidMdoc) {
     const raw = credential?.rawAttributes as PidMdocAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
-    personalInfoCard.born = `born ${raw.birth_date}`
+    personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birth_date}`
     personalInfoCard.placeOfBirth = raw.birth_place ?? ''
     personalInfoCard.nationalities = Array.isArray(raw.nationality) ? raw.nationality.join(',') : raw.nationality ?? ''
 
@@ -115,7 +129,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading ta="center" variant="h3">
+                <Heading ta="center" heading="h3">
                   {personalInfoCard.name}
                 </Heading>
                 <Paragraph>{personalInfoCard.born}</Paragraph>
@@ -123,20 +137,22 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
             </YStack>
             <TableRow
               centred
-              attributes={[mapPidAttributeName('place_of_birth'), mapPidAttributeName('nationalities')]}
+              attributes={[t(commonMessages.fields.place_of_birth), t(commonMessages.fields.nationalities)]}
               values={[personalInfoCard.placeOfBirth, personalInfoCard.nationalities]}
             />
           </TableContainer>
         </Stack>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
-          Address
+        <Heading heading="sub2" secondary>
+          {t(commonMessages.fields.address)}
         </Heading>
         <TableContainer>
-          <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressTable.street]} />
+          {addressTable.street !== '' && (
+            <TableRow attributes={[t(commonMessages.fields.street)]} values={[addressTable.street]} />
+          )}
           <TableRow
-            attributes={[mapPidAttributeName('postal_code'), mapPidAttributeName('locality')]}
+            attributes={[t(commonMessages.fields.postal_code), t(commonMessages.fields.locality)]}
             values={[addressTable.postalCode, addressTable.locality]}
           />
         </TableContainer>
@@ -149,6 +165,8 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
  * Bdr
  */
 export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  const { t } = useLingui()
+
   const personalInfoCard = {
     name: '',
     born: '',
@@ -164,7 +182,7 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
 
   const raw = credential?.rawAttributes as PidSdJwtVcAttributes
   personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
-  personalInfoCard.born = `born ${raw.birthdate} (${raw.age_in_years})`
+  personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birthdate} (${raw.age_in_years})`
   personalInfoCard.placeOfBirth = raw.place_of_birth?.locality ?? ''
   personalInfoCard.nationalities = raw.nationalities?.join(', ') ?? ''
 
@@ -203,7 +221,7 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading ta="center" variant="h3">
+                <Heading ta="center" heading="h3">
                   {personalInfoCard.name}
                 </Heading>
                 <Paragraph>{personalInfoCard.born}</Paragraph>
@@ -211,20 +229,20 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
             </YStack>
             <TableRow
               centred
-              attributes={[mapPidAttributeName('place_of_birth'), mapPidAttributeName('nationalities')]}
+              attributes={[t(commonMessages.fields.place_of_birth), t(commonMessages.fields.nationalities)]}
               values={[personalInfoCard.placeOfBirth, personalInfoCard.nationalities]}
             />
           </TableContainer>
         </Stack>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
+        <Heading heading="sub2" secondary>
           Address
         </Heading>
         <TableContainer>
-          <TableRow attributes={[mapPidAttributeName('street_address')]} values={[addressTable.street]} />
+          <TableRow attributes={[t(commonMessages.fields.street)]} values={[addressTable.street]} />
           <TableRow
-            attributes={[mapPidAttributeName('postal_code'), mapPidAttributeName('locality')]}
+            attributes={[t(commonMessages.fields.postal_code), t(commonMessages.fields.locality)]}
             values={[addressTable.postalCode, addressTable.locality]}
           />
         </TableContainer>
@@ -234,10 +252,14 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
 }
 
 export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  const { t } = useLingui()
   const raw = credential.rawAttributes as MdlAttributes
 
   const sortedPrivileges = raw.driving_privileges
-    .map((privilege) => ({ privilege, code: getMdlCode(privilege.vehicle_category_code) }))
+    .map((privilege) => ({
+      privilege,
+      code: getMdlCode(privilege.vehicle_category_code),
+    }))
     .sort((a, b) => (a.code.index === undefined ? 1 : b.code.index === undefined ? -1 : a.code.index - b.code.index))
 
   const mainCard = {
@@ -287,15 +309,18 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
             >
               <Stack h="$3" />
               <YStack gap="$2" ai="center">
-                <Heading variant="h3">{mainCard.name}</Heading>
-                <Paragraph>Führerschein</Paragraph>
+                <Heading heading="h3">{mainCard.name}</Heading>
+                <Paragraph>
+                  {/* Führerschein in german */}
+                  {t(commonMessages.credentials.mdl.driving_license)}
+                </Paragraph>
               </YStack>
             </YStack>
             <TableRow
               centred
               attributes={[
-                `${mapMdlAttributeName('privileges')} ${privilegesCountString}`,
-                mapMdlAttributeName('document_number'),
+                `${t(commonMessages.credentials.mdl.driving_privileges)} ${privilegesCountString}`,
+                t(commonMessages.credentials.mdl.document_number),
               ]}
               values={[
                 <XStack key="driving-privileges-icons" gap="$3">
@@ -310,8 +335,8 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
         </Stack>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
-          Driving privileges
+        <Heading heading="sub2" secondary>
+          {t(commonMessages.credentials.mdl.driving_privileges)}
         </Heading>
         <TableContainer>
           {sortedPrivileges.map(({ privilege, code }) => {
@@ -319,8 +344,8 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
               <TableRow
                 key={`${privilege.vehicle_category_code}-${privilege.expiry_date}`}
                 attributes={[
-                  mapMdlAttributeName('code'),
-                  ...(privilege.expiry_date ? [mapMdlAttributeName('expiry_date')] : []),
+                  t(commonMessages.credentials.mdl.code),
+                  ...(privilege.expiry_date ? [t(commonMessages.fields.expires_at)] : []),
                 ]}
                 values={[
                   <XStack key={privilege.vehicle_category_code} ai="center" gap="$3">
@@ -339,14 +364,20 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
         </TableContainer>
       </YStack>
       <YStack gap="$2">
-        <Heading variant="sub2" secondary>
-          About the card
+        <Heading heading="sub2" secondary>
+          <Trans id="cardAttributes.aboutTheCard">About the card</Trans>
         </Heading>
         <TableContainer>
-          <TableRow attributes={[mapMdlAttributeName('issuing_authority')]} values={[issuanceInfo.issuingAuthority]} />
-          <TableRow attributes={[mapMdlAttributeName('expiry_date')]} values={[issuanceInfo.expiryDate]} />
           <TableRow
-            attributes={[mapMdlAttributeName('issuing_country'), mapMdlAttributeName('un_distinguishing_sign')]}
+            attributes={[t(commonMessages.fields.issuing_authority)]}
+            values={[issuanceInfo.issuingAuthority]}
+          />
+          <TableRow attributes={[t(commonMessages.fields.expires_at)]} values={[issuanceInfo.expiryDate]} />
+          <TableRow
+            attributes={[
+              t(commonMessages.fields.issuing_country),
+              t(commonMessages.credentials.mdl.un_distinguishing_sign),
+            ]}
             values={[issuanceInfo.issuingCountry, issuanceInfo.unDistinguishingSign]}
           />
         </TableContainer>

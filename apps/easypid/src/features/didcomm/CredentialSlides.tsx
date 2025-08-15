@@ -1,4 +1,5 @@
 import { useParadymAgent } from '@easypid/agent'
+import { useLingui } from '@lingui/react/macro'
 import { useDidCommCredentialActions } from '@package/agent'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { useToastController } from '@package/ui'
@@ -19,9 +20,19 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
 
+  const { t } = useLingui()
+
   const onCredentialAccept = async () => {
     const w3cRecord = await acceptCredential().catch(() => {
-      toast.show('Something went wrong while storing the credential.', { customData: { preset: 'danger' } })
+      toast.show(
+        t({
+          id: 'credential.accept.error',
+          message: 'Something went wrong while storing the credential.',
+          comment: 'Shown in a toast when credential storage fails',
+        }),
+        { customData: { preset: 'danger' } }
+      )
+      if (credentialExchange) agent.modules.credentials.deleteById(credentialExchange.id)
       onCancel()
     })
 
@@ -43,7 +54,13 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
       })
     }
 
-    toast.show('Credential has been declined.')
+    toast.show(
+      t({
+        id: 'credential.declined',
+        message: 'Credential has been declined.',
+        comment: 'Shown in a toast when user declines the credential',
+      })
+    )
     onCancel()
   }
 
@@ -63,15 +80,14 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
               attributes={attributes ?? {}}
               isCompleted={acceptStatus === 'success'}
               onAccept={onCredentialAccept}
-              onDecline={onCredentialDecline}
               // If state is not idle, it means we have pressed accept
               isAccepting={acceptStatus !== 'idle'}
             />
           ),
         },
       ]}
-      onCancel={onCancel}
-      confirmation={getFlowConfirmationText('issue')}
+      onCancel={onCredentialDecline}
+      confirmation={getFlowConfirmationText(t, 'issue')}
     />
   )
 }

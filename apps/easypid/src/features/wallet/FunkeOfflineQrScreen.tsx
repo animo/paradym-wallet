@@ -1,25 +1,15 @@
 import { mmkv } from '@easypid/storage/mmkv'
 import { isIos, useHaptics } from '@package/app'
-import {
-  AnimatedStack,
-  Button,
-  Heading,
-  Loader,
-  Page,
-  Paragraph,
-  Spacer,
-  Stack,
-  XStack,
-  YStack,
-  useToastController,
-} from '@package/ui'
+import { AnimatedStack, Button, Heading, Loader, Page, Paragraph, Spacer, Stack, XStack, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { Alert, Linking, useWindowDimensions } from 'react-native'
+import { Linking, useWindowDimensions } from 'react-native'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
 
 import { useAppIcon } from '@easypid/config/copy'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { SystemBars } from 'react-native-edge-to-edge'
 import {
   checkMdocPermissions,
@@ -35,7 +25,7 @@ export function FunkeOfflineQrScreen() {
   const { withHaptics } = useHaptics()
   const { replace, back } = useRouter()
   const { width } = useWindowDimensions()
-  const toast = useToastController()
+  const { t } = useLingui()
 
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
@@ -56,59 +46,52 @@ export function FunkeOfflineQrScreen() {
 
   useEffect(() => {
     if (arePermissionsGranted) {
-      void getMdocQrCode().then(setQrCodeData)
+      void getMdocQrCode()
+        .then(setQrCodeData)
+        .catch(() => {
+          // NOTE: iOS automatically handles Bluetooth permissions, so we can't
+          // easily detect if they've been granted or not. This is a workaround
+          // to ensure the user is aware of the need for permissions.
+          if (isIos()) setArePermissionsGranted(false)
+        })
     } else {
       setQrCodeData(undefined)
     }
   }, [arePermissionsGranted])
 
-  const handlePermissions = async () => {
-    if (isIos()) return { granted: true, shouldShowSettings: false }
-    const permissions = await requestMdocPermissions()
+  const checkPermissions = async () => {
+    if (isIos()) {
+      // NOTE: iOS automatically asks for Bluetooth permissions when we try to use it.
+      // We can't easily detect if permissions have been granted until we try to use Bluetooth
+      // and get an error.
+      return true
+    }
 
+    const permissions = await requestMdocPermissions()
     if (!permissions) {
-      toast.show('Failed to request permissions.', { customData: { preset: 'danger' } })
-      return { granted: false, shouldShowSettings: false }
+      return false
     }
 
     // Check if any permission is in 'never_ask_again' state
     const hasNeverAskAgain = Object.values(permissions).some((status) => status === 'never_ask_again')
-
     if (hasNeverAskAgain) {
-      return { granted: false, shouldShowSettings: true }
+      return false
     }
 
-    const permissionStatus = await checkMdocPermissions()
-    return { granted: !!permissionStatus, shouldShowSettings: false }
+    return await checkMdocPermissions()
   }
 
   const requestPermissions = async () => {
     // First request without checking the never_ask_again state
     if (!arePermissionsRequested) {
-      const { granted } = await handlePermissions()
+      const granted = await checkPermissions()
       setArePermissionsRequested(true)
       setArePermissionsGranted(granted)
       return
     }
 
     // Subsequent requests need to check for the never_ask_again state
-    const { granted, shouldShowSettings } = await handlePermissions()
-
-    if (shouldShowSettings) {
-      back()
-      Alert.alert(
-        'Please enable required permissions in your phone settings',
-        'Sharing with QR-Code needs access to Bluetooth and Location.',
-        [
-          {
-            text: 'Open Settings',
-            onPress: () => Linking.openSettings(),
-          },
-        ]
-      )
-      return
-    }
-
+    const granted = await checkPermissions()
     setArePermissionsGranted(granted)
   }
 
@@ -131,15 +114,36 @@ export function FunkeOfflineQrScreen() {
     })
   })
 
+  if (arePermissionsGranted === false) {
+    return (
+      <Page justifyContent="center" alignItems="center">
+        <Heading heading="h2" letterSpacing={-0.5}>
+          <Trans id="offlineQr.allowBluetoothAccessTitle">Please allow bluetooth access</Trans>
+        </Heading>
+        <Paragraph textAlign="center">
+          <Trans id="offlineQr.allowBluetoothAccessDescription">This allows the app to share with a QR code.</Trans>
+        </Paragraph>
+        <Button.Text onPress={() => Linking.openSettings()}>{t(commonMessages.openSettingsButton)}</Button.Text>
+      </Page>
+    )
+  }
+
   return (
     <Page bg="$black" ai="center">
       <SystemBars style="light" />
       <AnimatedStack pt="$8" maxWidth="90%" gap="$2">
-        <Heading variant="h1" lineHeight={36} ta="center" dark>
-          Share with QR code
+        <Heading heading="h1" lineHeight={36} ta="center" dark>
+          <Trans id="offlineQr.heading" comment="Main heading for offline QR sharing screen">
+            Share with QR code
+          </Trans>
         </Heading>
-        <Paragraph color="$grey-400">A verifier needs to scan your QR-Code.</Paragraph>
+        <Paragraph color="$grey-400">
+          <Trans id="offlineQr.instruction" comment="Instruction for the verifier to scan the QR code">
+            A verifier needs to scan your QR-Code.
+          </Trans>
+        </Paragraph>
       </AnimatedStack>
+
       <AnimatedStack fg={1} pb="$12" jc="center">
         {qrCodeData ? (
           <Stack bg="$white" br="$8" p="$5">
@@ -155,6 +159,7 @@ export function FunkeOfflineQrScreen() {
           <Loader variant="dark" />
         )}
       </AnimatedStack>
+
       <YStack jc="center" ai="center" gap="$4">
         <XStack>
           <Button.Solid
@@ -168,7 +173,7 @@ export function FunkeOfflineQrScreen() {
             scaleOnPress
             alignSelf="center"
           >
-            Cancel
+            {t(commonMessages.cancel)}
           </Button.Solid>
         </XStack>
         <Spacer />

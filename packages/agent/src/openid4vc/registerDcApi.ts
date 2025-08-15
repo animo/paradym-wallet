@@ -1,5 +1,7 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
 import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
+import { t } from '@lingui/core/macro'
+import { commonMessages } from '@package/translations'
 import { sanitizeString } from '@package/utils'
 import * as ExpoAsset from 'expo-asset'
 import { Image } from 'expo-image'
@@ -144,10 +146,8 @@ async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
 
 export async function registerCredentialsForDcApi(agent: EitherAgent) {
   if (Platform.OS === 'ios') return
-
   const mdocRecords = await agent.mdoc.getAll()
   const sdJwtVcRecords = await agent.sdJwtVc.getAll()
-
   const mdocCredentials = mdocRecords.map(async (record): Promise<CredentialItem> => {
     const mdoc = record.credential
     const { display } = getCredentialForDisplay(record)
@@ -167,7 +167,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
       },
       display: {
         title: display.name,
-        subtitle: `Issued by ${display.issuer.name}`,
+        subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
         claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces),
         iconDataUrl,
       },
@@ -194,7 +194,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
       },
       display: {
         title: display.name,
-        subtitle: `Issued by ${display.issuer.name}`,
+        subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
         claims: mapSdJwtAttributesToClaimDisplay(sdJwtVc.prettyClaims),
         iconDataUrl,
       },

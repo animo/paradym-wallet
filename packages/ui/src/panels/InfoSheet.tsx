@@ -1,8 +1,8 @@
+import { useLingui } from '@lingui/react/macro'
+import { cloneElement } from 'react'
 import { Circle } from 'tamagui'
 import { Button, Heading, Paragraph, Stack } from '../base'
 import { HeroIcons } from '../content/Icon'
-
-import { cloneElement } from 'react'
 import type { StatusVariant } from '../utils/variants'
 import { FloatingSheet, type FloatingSheetProps } from './FloatingSheet'
 
@@ -41,6 +41,7 @@ export interface InfoSheetProps extends FloatingSheetProps {
 }
 
 export function InfoSheet({ isOpen, setIsOpen, title, description, onClose, variant = 'default' }: InfoSheetProps) {
+  const { t } = useLingui()
   return (
     <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
       <Stack ai="center" jc="center" h="$12" bg={infoSheetVariants[variant].background}>
@@ -54,13 +55,17 @@ export function InfoSheet({ isOpen, setIsOpen, title, description, onClose, vari
         </Circle>
       </Stack>
       <Stack gap="$3" p="$4">
-        <Heading color="$grey-900" variant="h2">
+        <Heading color="$grey-900" heading="h2">
           {title}
         </Heading>
         <Paragraph>{description}</Paragraph>
         <Stack />
         <Button.Solid scaleOnPress onPress={onClose}>
-          Got it
+          {t({
+            id: 'button.gotIt',
+            message: 'Got it',
+            comment: 'Label for confirmation button',
+          })}
         </Button.Solid>
       </Stack>
     </FloatingSheet>

@@ -1,3 +1,5 @@
+import { t } from '@lingui/core/macro'
+import { commonMessages } from '@package/translations'
 import type { ParseInvitationResult, ParseInvitationResultError, ParsedInvitationTypeData } from './parsers'
 
 const errorResponse = (error: ParseInvitationResultError, message: string) => {
@@ -27,7 +29,7 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<FetchInvi
     })
     clearTimeout(timeout)
     if (!response.ok) {
-      return errorResponse('retrieve_invitation_error', 'Unable to retrieve invitation.')
+      return errorResponse('retrieve_invitation_error', t(commonMessages.unableToRetrieveInvitation))
     }
 
     const contentType = response.headers.get('content-type')
@@ -39,14 +41,14 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<FetchInvi
     return handleTextResponse(text)
   } catch (error) {
     clearTimeout(timeout)
-    return errorResponse('retrieve_invitation_error', 'Unable to retrieve invitation.')
+    return errorResponse('retrieve_invitation_error', t(commonMessages.unableToRetrieveInvitation))
   }
 }
 
 function handleJsonResponse(json: unknown): FetchInvitationResult {
   // We expect a JSON object
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
-    return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
+    return errorResponse('invitation_not_recognized', t(commonMessages.invitationNotRecognized))
   }
 
   if ('@type' in json) {
@@ -71,7 +73,7 @@ function handleJsonResponse(json: unknown): FetchInvitationResult {
     }
   }
 
-  return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
+  return errorResponse('invitation_not_recognized', t(commonMessages.invitationNotRecognized))
 }
 
 function handleTextResponse(text: string): FetchInvitationResult {
@@ -94,6 +96,6 @@ function handleTextResponse(text: string): FetchInvitationResult {
 
     // handel like above
   } catch (error) {
-    return errorResponse('invitation_not_recognized', 'Invitation not recognized.')
+    return errorResponse('invitation_not_recognized', t(commonMessages.invitationNotRecognized))
   }
 }

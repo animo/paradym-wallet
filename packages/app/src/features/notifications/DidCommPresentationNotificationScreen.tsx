@@ -2,6 +2,8 @@ import { useAgent, useDidCommPresentationActions } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useState } from 'react'
 
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
 import { PresentationNotificationScreen } from './components/PresentationNotificationScreen'
@@ -15,6 +17,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
 
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
+  const { t } = useLingui()
 
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
@@ -30,10 +33,10 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   const onProofAccept = () => {
     acceptPresentation(selectedCredentials)
       .then(() => {
-        toast.show('Information has been successfully shared.', { customData: { preset: 'success' } })
+        toast.show(t(commonMessages.presentationShared), { customData: { preset: 'success' } })
       })
       .catch(() => {
-        toast.show('Presentation could not be shared.', { customData: { preset: 'danger' } })
+        toast.show(t(commonMessages.presentationCouldNotBeShared), { customData: { preset: 'danger' } })
       })
       .finally(() => {
         pushToWallet()
@@ -45,7 +48,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
       void agent.modules.proofs.deleteById(proofExchange.id)
     })
 
-    toast.show('Information request has been declined.')
+    toast.show(t(commonMessages.informationRequestDeclined))
     pushToWallet()
   }
 

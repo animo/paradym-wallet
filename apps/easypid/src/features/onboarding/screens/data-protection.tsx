@@ -1,6 +1,8 @@
 import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { useLingui } from '@lingui/react/macro'
 import { useImageScaler } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useState } from 'react'
 import { Linking, Platform } from 'react-native'
@@ -11,12 +13,34 @@ interface OnboardingDataProtectionProps {
 }
 
 export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtectionProps) {
+  const { t } = useLingui()
   const toast = useToastController()
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useState(true)
   const isCloudHsmFeatureEnabled = useFeatureFlag('CLOUD_HSM')
 
   const { height, onLayout } = useImageScaler()
   const [isLoading, setIsLoading] = useState(false)
+
+  const cloudHsmToast = t({
+    id: 'onboardingDataProtection.toast.cloudHsm',
+    message: 'Now using Cloud HSM for PID cryptographic keys.',
+    comment: 'Toast shown when Cloud HSM is selected for key storage',
+  })
+
+  const secureStorageToast = t({
+    id: 'onboardingDataProtection.toast.secureDevice',
+    message: `Now using ${Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'} for PID cryptographic keys.`,
+    comment: 'Toast shown when switching to local secure storage (e.g. Secure Enclave or Strongbox)',
+  })
+
+  const privacyButtonText = t({
+    id: 'onboardingDataProtection.privacy',
+    message: 'Read the Privacy Policy',
+    comment: 'Button label to open the privacy policy',
+  })
+
+  const continueLabel = t(commonMessages.continue)
+  const goToWalletLabel = t(commonMessages.goToWallet)
 
   const onContinue = () => {
     if (isLoading) return
@@ -29,16 +53,11 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
     if (isLoading) return
     const newShouldUseCloudHsm = !shouldUseCloudHsm
 
-    toast.show(
-      newShouldUseCloudHsm
-        ? 'Now using Cloud HSM for PID cryptographic keys.'
-        : `Now using ${Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'} for PID cryptographic keys.`,
-      {
-        customData: {
-          preset: 'none',
-        },
-      }
-    )
+    toast.show(newShouldUseCloudHsm ? cloudHsmToast : secureStorageToast, {
+      customData: {
+        preset: 'none',
+      },
+    })
 
     setShouldUseCloudHsm(newShouldUseCloudHsm)
   }
@@ -56,7 +75,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
       </YStack>
       <YStack gap="$4" alignItems="center">
         <Button.Text onPress={onPressPrivacy} icon={HeroIcons.Link} color="$primary-500" py="$2" textAlign="center">
-          Read the Privacy Policy
+          {privacyButtonText}
         </Button.Text>
         <XStack gap="$2" width="100%">
           {isCloudHsmFeatureEnabled && (
@@ -71,7 +90,7 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
             </Button.Outline>
           )}
           <Button.Solid scaleOnPress flexGrow={1} disabled={isLoading} onPress={onContinue}>
-            {isLoading ? <Spinner variant="dark" /> : isCloudHsmFeatureEnabled ? 'Continue' : 'Go to wallet'}
+            {isLoading ? <Spinner variant="dark" /> : isCloudHsmFeatureEnabled ? continueLabel : goToWalletLabel}
           </Button.Solid>
         </XStack>
       </YStack>

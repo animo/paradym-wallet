@@ -23,6 +23,8 @@ import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDispla
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { useLingui } from '@lingui/react/macro'
+
 interface FunkeRequestedAttributesDetailScreenProps {
   id: CredentialForDisplayId
   disclosedPayload: Record<string, unknown>
@@ -41,6 +43,7 @@ export function FunkeRequestedAttributesDetailScreen({
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { withHaptics } = useHaptics()
+  const { t } = useLingui()
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
@@ -66,12 +69,23 @@ export function FunkeRequestedAttributesDetailScreen({
   if (isLoading) return null
 
   if (!activeCredential) {
-    toast.show('Error getting credential details', {
-      message: 'Credential not found',
-      customData: {
-        preset: 'danger',
-      },
-    })
+    toast.show(
+      t({
+        id: 'credentialDetail.errorTitle',
+        message: 'Error getting credential details',
+        comment: 'Title shown in toast when credential cannot be loaded',
+      }),
+      {
+        message: t({
+          id: 'credentialDetail.errorMessage',
+          message: 'Credential not found',
+          comment: 'Error message when a credential is missing',
+        }),
+        customData: {
+          preset: 'danger',
+        },
+      }
+    )
     router.back()
     return null
   }
@@ -113,11 +127,19 @@ export function FunkeRequestedAttributesDetailScreen({
               </Stack>
               <Stack gap="$4">
                 <Stack gap="$2">
-                  <Heading ta="center" variant="h1">
-                    Requested attributes
+                  <Heading ta="center" heading="h1">
+                    {t({
+                      id: 'requestedAttributes.heading',
+                      message: 'Requested attributes',
+                      comment: 'Heading above list of attributes shown to the user',
+                    })}
                   </Heading>
                   <Paragraph ta="center">
-                    {disclosedAttributeLength} from {activeCredential.display.name}
+                    {t({
+                      id: 'requestedAttributes.subheading',
+                      message: `${disclosedAttributeLength} from ${activeCredential.display.name}`,
+                      comment: 'Subheading under attribute list: X from Y',
+                    })}
                   </Paragraph>
                 </Stack>
                 <CredentialAttributes attributes={disclosedPayload} />
@@ -130,7 +152,11 @@ export function FunkeRequestedAttributesDetailScreen({
                   {isMetadataVisible && (
                     <CredentialAttributes
                       key="metadata"
-                      headerTitle="Metadata"
+                      headerTitle={t({
+                        id: 'requestedAttributes.metadataTitle',
+                        message: 'Metadata',
+                        comment: 'Section header title for metadata attributes',
+                      })}
                       attributes={metadataForDisplay(activeCredential.metadata)}
                     />
                   )}
@@ -149,7 +175,17 @@ export function FunkeRequestedAttributesDetailScreen({
         items={[
           {
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
-            title: isMetadataVisible ? 'Hide metadata attributes' : 'Show metadata attributes',
+            title: isMetadataVisible
+              ? t({
+                  id: 'optionSheet.hideMetadata',
+                  message: 'Hide metadata attributes',
+                  comment: 'Option to hide metadata in option sheet',
+                })
+              : t({
+                  id: 'optionSheet.showMetadata',
+                  message: 'Show metadata attributes',
+                  comment: 'Option to show metadata in option sheet',
+                }),
             onPress: handleToggleMetadata,
           },
         ]}

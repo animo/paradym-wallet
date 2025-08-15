@@ -1,11 +1,11 @@
 import type {
-  AnonCredsPredicateType,
   AnonCredsRequestedAttributeMatch,
   AnonCredsRequestedPredicate,
   AnonCredsRequestedPredicateMatch,
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
+import type { _t } from '@lingui/react/macro'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -19,17 +19,43 @@ import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 import { useConnectionById, useProofById } from '../providers'
 
+import { defineMessage } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
 import { useAgent } from '../agent'
 import { getCredentialForDisplay } from '../display'
 import { getCredential } from '../storage'
+
+export const predicateMessages = {
+  '>': defineMessage({
+    id: 'predicate.greaterThan',
+    message: 'greater than',
+    comment: 'Used in predicate statements like: age greater than 18',
+  }),
+  '>=': defineMessage({
+    id: 'predicate.greaterThanOrEqual',
+    message: 'greater than or equal to',
+    comment: 'Used in predicate statements like: age greater than or equal to 18',
+  }),
+  '<': defineMessage({
+    id: 'predicate.lessThan',
+    message: 'less than',
+    comment: 'Used in predicate statements like: age less than 18',
+  }),
+  '<=': defineMessage({
+    id: 'predicate.lessThanOrEqual',
+    message: 'less than or equal to',
+    comment: 'Used in predicate statements like: age less than or equal to 18',
+  }),
+} as const
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
   const { agent } = useAgent()
 
   const proofExchange = useProofById(proofExchangeId)
   const connection = useConnectionById(proofExchange?.connectionId ?? '')
-
+  const { t } = useLingui()
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
     queryFn: async () => {
@@ -108,15 +134,6 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         )
       }
 
-      const allCredentialIds = [
-        ...Object.values(anonCredsCredentials.attributes).flatMap((matches) =>
-          matches.map((match) => match.credentialId)
-        ),
-        ...Object.values(anonCredsCredentials.predicates).flatMap((matches) =>
-          matches.map((match) => match.credentialId)
-        ),
-      ]
-
       for (const [groupName, attributeArray] of Object.entries(anonCredsCredentials.attributes)) {
         const requestedAttribute = proofRequest.requested_attributes[groupName]
         if (!requestedAttribute) throw new Error('Invalid presentation request')
@@ -129,7 +146,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         const requestedPredicate = proofRequest.requested_predicates[groupName]
         if (!requestedPredicate) throw new Error('Invalid presentation request')
 
-        mergeOrSetEntry('predicate', groupName, [formatPredicate(requestedPredicate)], predicateArray)
+        mergeOrSetEntry('predicate', groupName, [formatPredicate(t, requestedPredicate)], predicateArray)
       }
 
       const entriesArray = await Promise.all(
@@ -139,7 +156,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               inputDescriptorId: entryHash,
               isSatisfied: false,
               // TODO: we can fetch the schema name based on requirements
-              name: 'Credential',
+              name: t(commonMessages.credential),
               requestedAttributePaths: Array.from(entry.requestedAttributes).map((a) => [a]),
             }
           }
@@ -158,7 +175,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
                   const requestedPredicate = proofRequest.requested_predicates[groupName]
                   return {
                     ...acc,
-                    [requestedPredicate.name]: `${capitalizeFirstLetter(predicateTypeMap[requestedPredicate.p_type])} ${requestedPredicate.p_value}`,
+                    [requestedPredicate.name]: `${capitalizeFirstLetter(t(predicateMessages[requestedPredicate.p_type]))} ${requestedPredicate.p_value}`,
                   }
                 },
                 {}
@@ -194,7 +211,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       const submission: FormattedSubmission = {
         areAllSatisfied: entriesArray.every((entry) => entry.isSatisfied),
         entries: entriesArray,
-        name: proofRequest?.name ?? 'Unknown',
+        name: proofRequest?.name ?? t(commonMessages.unknown),
         purpose,
       }
 
@@ -297,19 +314,12 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   }
 }
 
-const predicateTypeMap: Record<AnonCredsPredicateType, string> = {
-  '>': 'greater than',
-  '>=': 'greater than', // or equal to
-  '<': 'less than',
-  '<=': 'less than', // or equal to
-}
-
 /**
  * Format requested predicate into string
  * @example `age greater than 18`
  *
  * @todo we could improve on this rendering, by e.g. recognizing dates in predicates (e.g. 20200101)
  */
-function formatPredicate(requestedPredicate: AnonCredsRequestedPredicate) {
-  return `${requestedPredicate.name} ${predicateTypeMap[requestedPredicate.p_type]} ${requestedPredicate.p_value}`
+function formatPredicate(t: typeof _t, requestedPredicate: AnonCredsRequestedPredicate) {
+  return `${requestedPredicate.name} ${t(predicateMessages[requestedPredicate.p_type])} ${requestedPredicate.p_value}`
 }

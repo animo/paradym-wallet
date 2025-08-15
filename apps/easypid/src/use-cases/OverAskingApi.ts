@@ -1,3 +1,4 @@
+import { t } from '@lingui/core/macro'
 const PLAYGROUND_URL = 'https://funke.animo.id'
 
 export const EXCLUDED_ATTRIBUTES_FOR_ANALYSIS = ['Issuing authority', 'Issuing country', 'Issued at', 'Expires at']
@@ -57,7 +58,7 @@ export const checkForOverAskingApi = async ({
     console.error('AI analysis failed:', error)
     return {
       validRequest: 'could_not_determine',
-      reason: 'An error occurred while validating the verification',
+      reason: t({ id: 'aiOverAking.errorReason', message: 'An error occurred while validating the verification' }),
     }
   }
 }

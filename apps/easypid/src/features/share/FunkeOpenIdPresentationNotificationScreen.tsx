@@ -24,9 +24,13 @@ import { addSharedActivityForCredentialsForRequest } from '../activity/activityR
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
 
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
+
 type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
+  const { t } = useLingui()
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
@@ -45,6 +49,24 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     return
   }, [])
 
+  const reasonNoCredentials = t({
+    id: 'presentation.noCredentialsSelected',
+    message: 'No credentials selected',
+    comment: 'Shown when the user tries to accept a proof but no credentials are loaded',
+  })
+
+  const reasonPinAuthFailed = t({
+    id: 'presentation.pinAuthFailed',
+    message: 'PIN authentication failed',
+    comment: 'Shown when PIN is required but not provided',
+  })
+
+  const reasonAuthFailed = t({
+    id: 'presentation.authFailed',
+    message: 'Authentication failed',
+    comment: 'Shown when authentication with PIN fails for other reasons',
+  })
+
   useEffect(() => {
     if (credentialsForRequest) return
 
@@ -61,7 +83,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         const errorMessage =
           error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
 
-        handleError({ reason: 'Presentation information could not be extracted.', description: errorMessage })
+        handleError({
+          reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
+          description: errorMessage,
+        })
 
         agent.config.logger.error('Error getting credentials for request', {
           error,
@@ -74,7 +99,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       .catch((error) => {
         handleError({ reason: error.message })
       })
-  }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError])
+  }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError, t])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
@@ -111,23 +136,23 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const onProofAccept = useCallback(
     async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
       stopOverAsking()
-      if (!credentialsForRequest) return handleError({ reason: 'No credentials selected' })
+      if (!credentialsForRequest) return handleError({ reason: reasonNoCredentials })
 
       setIsSharing(true)
 
       if (shouldUsePin) {
         if (!pin) {
           setIsSharing(false)
-          return handleError({ reason: 'PIN authentication failed' })
+          return handleError({ reason: reasonPinAuthFailed })
         }
-        // TODO: maybe provide to shareProof method?
+
         try {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (e) {
           setIsSharing(false)
           if (e instanceof InvalidPinError) {
             onPinError?.()
-            toast.show('Invalid PIN entered', {
+            toast.show(t(commonMessages.invalidPinEntered), {
               customData: {
                 preset: 'danger',
               },
@@ -136,7 +161,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           }
 
           return handleError({
-            reason: 'Authentication failed',
+            reason: reasonAuthFailed,
             description:
               e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
           })
@@ -161,7 +186,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       } catch (error) {
         setIsSharing(false)
         if (error instanceof BiometricAuthenticationCancelledError) {
-          return handleError({ reason: 'Biometric authentication cancelled' })
+          return handleError({
+            reason: t(commonMessages.biometricAuthenticationCancelled),
+          })
         }
 
         if (credentialsForRequest) {
@@ -178,7 +205,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
 
         return handleError({
-          reason: 'Presentation could not be shared.',
+          reason: t(commonMessages.presentationCouldNotBeShared),
           description:
             error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
         })
@@ -189,10 +216,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       agent,
       shouldUsePin,
       stopOverAsking,
-      toast.show,
+      toast,
       isDevelopmentModeEnabled,
       handleError,
       formattedTransactionData,
+      reasonNoCredentials,
+      reasonPinAuthFailed,
+      t,
+      reasonAuthFailed,
     ]
   )
 
@@ -208,7 +239,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     }
 
     pushToWallet()
-    toast.show('Information request has been declined.', { customData: { preset: 'danger' } })
+    toast.show(t(commonMessages.informationRequestDeclined), {
+      customData: { preset: 'danger' },
+    })
   }
 
   return (

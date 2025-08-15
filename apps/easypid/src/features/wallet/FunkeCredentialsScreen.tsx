@@ -1,3 +1,4 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { type DisplayImage, useCredentialsForDisplay } from '@package/agent'
 import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
@@ -37,11 +38,20 @@ export function FunkeCredentialsScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
 
+  const { t } = useLingui()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <HeaderContainer title="Cards" isScrolledByOffset={isScrolledByOffset} />
+      <HeaderContainer
+        title={t({
+          id: 'credentials.title',
+          message: 'Cards',
+          comment: 'Heading for the list of user credentials',
+        })}
+        isScrolledByOffset={isScrolledByOffset}
+      />
+
       {credentials.length === 0 ? (
         <AnimatedStack
           flexDirection="column"
@@ -51,11 +61,15 @@ export function FunkeCredentialsScreen() {
           p="$4"
           fg={1}
         >
-          <Heading ta="center" variant="h3" fontWeight="$semiBold">
-            There's nothing here, yet
+          <Heading ta="center" heading="h3" fontWeight="$semiBold">
+            <Trans id="credentials.emptyTitle" comment="Shown when the user has no credentials">
+              There's nothing here, yet
+            </Trans>
           </Heading>
           <Paragraph ta="center" px="$2">
-            Credentials will appear here once you receive them.
+            <Trans id="credentials.emptyDescription" comment="Subtext explaining that credentials will appear later">
+              Credentials will appear here once you receive them.
+            </Trans>
           </Paragraph>
         </AnimatedStack>
       ) : isLoadingCredentials ? (
@@ -74,7 +88,11 @@ export function FunkeCredentialsScreen() {
               bg="$grey-50"
               placeholderTextColor="$grey-500"
               borderColor="$borderTranslucent"
-              placeholder="Search cards"
+              placeholder={t({
+                id: 'common.search',
+                message: 'Search cards',
+                comment: 'Placeholder for search input in credentials list',
+              })}
             />
             <HeroIcons.MagnifyingGlass
               size={20}
@@ -104,12 +122,15 @@ export function FunkeCredentialsScreen() {
               ))
             ) : (
               <Paragraph mt="$8" ta="center">
-                No cards found for "{searchQuery}"
+                <Trans id="common.noResultsSearch" comment="Shown when search yields no results; includes query string">
+                  No cards found for "{searchQuery}"
+                </Trans>
               </Paragraph>
             )}
           </YStack>
         </ScrollView>
       )}
+
       <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
         <TextBackButton />
       </YStack>
@@ -168,7 +189,9 @@ export function FunkeCredentialRowCard({
         </Paragraph>
         {issuedAt && (
           <Paragraph variant="sub" opacity={0.9} color={textColor}>
-            Issued on {formatDate(issuedAt, { includeTime: false })}
+            <Trans id="common.issuedOn" comment="Label before the date a credential was issued">
+              Issued on {formatDate(issuedAt, { includeTime: false })}
+            </Trans>
           </Paragraph>
         )}
       </YStack>

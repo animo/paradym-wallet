@@ -1,5 +1,7 @@
+import { useLingui } from '@lingui/react/macro'
 import { type FormattedSubmission, useAgent, useDidCommPresentationActions } from '@package/agent'
 import { SlideWizard } from '@package/app/components/SlideWizard'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { addSharedActivityForSubmission } from '../activity/activityRecord'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
@@ -16,6 +18,7 @@ type PresentationSlidesProps = {
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
   const { agent } = useAgent()
   const toast = useToastController()
+  const { t } = useLingui()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
     useDidCommPresentationActions(proofExchangeId)
 
@@ -36,7 +39,8 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
         )
       })
       .catch(async () => {
-        toast.show('Presentation could not be shared.', { customData: { preset: 'danger' } })
+        toast.show(t(commonMessages.presentationCouldNotBeShared), { customData: { preset: 'danger' } })
+
         await addSharedActivityForSubmission(
           agent,
           submission,
@@ -47,6 +51,9 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           },
           'failed'
         )
+
+        if (proofExchange) agent.modules.proofs.deleteById(proofExchange.id)
+
         onCancel()
       })
   }
@@ -71,7 +78,8 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
       void agent.modules.proofs.deleteById(proofExchange.id)
     })
 
-    toast.show('Information request has been declined.')
+    toast.show(t(commonMessages.informationRequestDeclined))
+
     onCancel()
   }
 
@@ -101,8 +109,8 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           screen: <PresentationSuccessSlide showReturnToApp verifierName={verifierName} onComplete={onComplete} />,
         },
       ]}
-      onCancel={onCancel}
-      confirmation={getFlowConfirmationText('verify')}
+      onCancel={onProofDecline}
+      confirmation={getFlowConfirmationText(t, 'verify')}
     />
   )
 }

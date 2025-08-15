@@ -12,7 +12,7 @@ export function OptionSheet({ isOpen, setIsOpen, items }: OptionSheetProps) {
     <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
       <Stack p="$4" gap="$4">
         <XStack jc="space-between">
-          <Heading color="$grey-900" variant="h2">
+          <Heading color="$grey-900" heading="h2">
             More actions
           </Heading>
           <Stack br="$12" p="$2" bg="$grey-50" onPress={() => setIsOpen(false)}>
@@ -62,7 +62,7 @@ export function OptionSheetItem({ icon, title, onPress }: OptionSheetItemProps) 
       onPress={onPress}
     >
       {icon && <Stack>{icon}</Stack>}
-      <Heading variant="sub1" fg={1} fontSize="$3" color="$grey-700">
+      <Heading heading="sub1" fg={1} fontSize="$3" color="$grey-700">
         {title}
       </Heading>
     </AnimatedStack>

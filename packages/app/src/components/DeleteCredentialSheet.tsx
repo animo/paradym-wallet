@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro'
 import {
   type CredentialCategoryMetadata,
   type CredentialForDisplayId,
@@ -6,6 +7,7 @@ import {
   useCredentialByCategory,
   useCredentialForDisplayById,
 } from '@package/agent'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
@@ -24,7 +26,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
   const { agent } = useAgent()
   const navigation = useNavigation()
   const { withHaptics, successHaptic, errorHaptic } = useHaptics()
-
+  const { t } = useLingui()
   const { credential } = useCredentialForDisplayById(id)
   const { credentials } = useCredentialByCategory(credential?.category?.credentialCategory)
 
@@ -40,12 +42,12 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
         await deleteCredential(agent, id)
       }
 
-      toast.show('Card successfully archived', {
+      toast.show(t(commonMessages.toastCardArchived), {
         customData: { preset: 'success' },
       })
       successHaptic()
     } catch (error) {
-      toast.show('Error deleting card', {
+      toast.show(t(commonMessages.toastCardDeleteError), {
         customData: { preset: 'danger' },
       })
       errorHaptic()
@@ -58,9 +60,9 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
     <ConfirmationSheet
       isOpen={isSheetOpen}
       setIsOpen={setIsSheetOpen}
-      title="Archive card?"
-      description={`This will make '${name}' unusable and delete it from your wallet.`}
-      confirmText="Yes, archive"
+      title={t(commonMessages.archiveCardTitle)}
+      description={t(commonMessages.archiveCardDescription(name))}
+      confirmText={t(commonMessages.archiveCardConfirm)}
       onConfirm={onDeleteCredential}
       onCancel={onCancel}
     />

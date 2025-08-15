@@ -16,7 +16,6 @@ import {
   JwkDidResolver,
   KeyDidRegistrar,
   KeyDidResolver,
-  LogLevel,
   PeerDidNumAlgo,
   WebDidResolver,
   X509Module,
@@ -44,7 +43,7 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
-import { appLogger } from './logger'
+import { logger } from './logger'
 
 export const initializeEasyPIDAgent = async ({
   walletLabel,
@@ -64,7 +63,7 @@ export const initializeEasyPIDAgent = async ({
     config: {
       label: walletLabel,
       autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.trace),
+      logger,
     },
     modules: {
       askar: new AskarModule({
@@ -135,7 +134,7 @@ export const initializeParadymAgent = async ({
     config: {
       label: walletLabel,
       autoUpdateStorageOnStartup: true,
-      logger: appLogger(LogLevel.debug),
+      logger,
     },
     modules: {
       messagePickup: new MessagePickupModule(),

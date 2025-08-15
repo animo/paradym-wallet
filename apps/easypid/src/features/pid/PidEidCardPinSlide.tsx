@@ -25,7 +25,7 @@ export function PidEidCardPinSlide({ title, subtitle, onEnterPin }: PidEidCardPi
   return (
     <YStack fg={1} gap="$6">
       <YStack gap="$3">
-        <Heading variant="h1">{title}</Heading>
+        <Heading heading="h1">{title}</Heading>
         {subtitle && <Paragraph>{subtitle}</Paragraph>}
       </YStack>
       <OnboardingIdCardPinEnter goToNextStep={onSubmitPin} />

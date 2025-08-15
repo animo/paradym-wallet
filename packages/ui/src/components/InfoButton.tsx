@@ -100,7 +100,7 @@ export function InfoButton({
       )}
       <XStack fg={1} f={1} ai="center">
         <YStack gap="$1" f={1} fg={1}>
-          <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} variant="sub1">
+          <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} heading="sub1">
             {title}
           </Heading>
           {description && (

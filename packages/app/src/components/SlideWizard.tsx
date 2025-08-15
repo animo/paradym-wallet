@@ -1,3 +1,5 @@
+import { defineMessage } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack } from '@package/ui'
 import type React from 'react'
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
@@ -43,6 +45,24 @@ const FADE_OUT_DURATION = 250
 const DELAY = 100
 const FADE_IN_DURATION = 250
 const EASE_OUT = Easing.bezier(0.25, 0.1, 0.25, 1)
+
+const sharingMessages = {
+  stopSharingTitle: defineMessage({
+    id: 'slideWizard.confirmation.stopSharingTitle',
+    message: 'Stop sharing?',
+    comment: 'Title of confirmation dialog shown when user attempts to stop sharing data',
+  }),
+  stopSharingDescription: defineMessage({
+    id: 'slideWizard.confirmation.stopSharingDescription',
+    message: 'If you stop, no data will be shared.',
+    comment: 'Description in confirmation dialog about stopping data sharing',
+  }),
+  stopSharingConfirm: defineMessage({
+    id: 'slideWizard.confirmation.stopSharingConfirm',
+    message: 'Stop',
+    comment: 'Confirm button text in stop sharing confirmation dialog',
+  }),
+}
 
 export interface SlideWizardRef {
   goToNextSlide: () => void
@@ -120,10 +140,15 @@ export const SlideWizard = forwardRef(
     const animateTransition = useCallback(
       (isForward: boolean, slide?: string) => {
         'worklet'
+
+        const shouldNavigateToWhite = isForward && currentStepIndex + 1 === steps.length && willResume
+
         // Fade out and translate current screen
         opacity.value = withTiming(0, { duration: FADE_OUT_DURATION, easing: EASE_OUT }, () => {
           runOnJS(scrollToTop)()
-          runOnJS(updateStep)(isForward ? 1 : -1, slide)
+          if (!shouldNavigateToWhite) {
+            runOnJS(updateStep)(isForward ? 1 : -1, slide)
+          }
         })
         translateX.value = withTiming(isForward ? -DISTANCE : DISTANCE, {
           duration: FADE_OUT_DURATION,
@@ -131,18 +156,20 @@ export const SlideWizard = forwardRef(
         })
 
         // After fadeOutDuration + delay, fade in and translate new screen
-        setTimeout(() => {
-          opacity.value = withTiming(1, { duration: FADE_IN_DURATION, easing: EASE_OUT })
-          translateX.value = withSequence(
-            withTiming(isForward ? DISTANCE : -DISTANCE, { duration: 0 }),
-            withTiming(0, { duration: FADE_IN_DURATION, easing: EASE_OUT }, () => {
-              // Reset navigation state
-              runOnJS(setIsNavigating)(false)
-            })
-          )
-        }, FADE_OUT_DURATION + DELAY)
+        if (!shouldNavigateToWhite) {
+          setTimeout(() => {
+            opacity.value = withTiming(1, { duration: FADE_IN_DURATION, easing: EASE_OUT })
+            translateX.value = withSequence(
+              withTiming(isForward ? DISTANCE : -DISTANCE, { duration: 0 }),
+              withTiming(0, { duration: FADE_IN_DURATION, easing: EASE_OUT }, () => {
+                // Reset navigation state
+                runOnJS(setIsNavigating)(false)
+              })
+            )
+          }, FADE_OUT_DURATION + DELAY)
+        }
       },
-      [opacity, translateX, updateStep, scrollToTop]
+      [opacity, translateX, updateStep, scrollToTop, currentStepIndex, steps.length, willResume]
     )
 
     const handleCancel = withHaptics(
@@ -201,6 +228,7 @@ export const SlideWizard = forwardRef(
 
     const contextValue = { onNext, onBack, onCancel: handleCancel, completeProgressBar }
     const Screen = isError && errorScreen ? errorScreen : steps[currentStepIndex].screen
+    const { t } = useLingui()
 
     return (
       <WizardProvider value={contextValue}>
@@ -232,9 +260,9 @@ export const SlideWizard = forwardRef(
           </AnimatedStack>
         </FlexPage>
         <ConfirmationSheet
-          title={confirmation?.title ?? 'Stop sharing?'}
-          description={confirmation?.description ?? 'If you stop, no data will be shared.'}
-          confirmText={confirmation?.confirmText}
+          title={confirmation?.title ?? t(sharingMessages.stopSharingTitle)}
+          description={confirmation?.description ?? t(sharingMessages.stopSharingDescription)}
+          confirmText={confirmation?.confirmText ?? t(sharingMessages.stopSharingConfirm)}
           isOpen={isSheetOpen}
           setIsOpen={setIsSheetOpen}
           onConfirm={onConfirmCancel}

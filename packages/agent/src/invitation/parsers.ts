@@ -1,6 +1,7 @@
 import type { ParadymAppAgent } from '../agent'
 
 import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
+import { commonMessages, i18n } from '@package/translations'
 import queryString from 'query-string'
 
 import { JsonEncoder } from '@credo-ts/core'
@@ -121,7 +122,7 @@ export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation:
     return {
       success: false,
       error: 'parsing_failed',
-      message: 'Failed to parse invitation.',
+      message: i18n.t(commonMessages.invitationParsingFailed),
     } as const
   }
 }
@@ -171,7 +172,7 @@ export async function parseInvitationUrl(invitationUrl: string): Promise<ParseIn
       return {
         success: false,
         error: 'invitation_not_recognized',
-        message: 'Invitation not recognized.',
+        message: i18n.t(commonMessages.invitationNotRecognized),
       }
     }
 
@@ -180,7 +181,7 @@ export async function parseInvitationUrl(invitationUrl: string): Promise<ParseIn
       return {
         success: true,
         result: {
-          data: `didcomm://oob=${JsonEncoder.toBase64URL(invitation.result.data)}`,
+          data: `didcomm://?oob=${JsonEncoder.toBase64URL(invitation.result.data)}`,
           format: 'url',
           type: 'didcomm',
         },
@@ -191,6 +192,6 @@ export async function parseInvitationUrl(invitationUrl: string): Promise<ParseIn
   return {
     success: false,
     error: 'invitation_not_recognized',
-    message: 'Invitation not recognized.',
+    message: i18n.t(commonMessages.invitationNotRecognized),
   }
 }

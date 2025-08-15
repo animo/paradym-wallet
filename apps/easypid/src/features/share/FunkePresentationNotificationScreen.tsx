@@ -109,9 +109,9 @@ export function FunkePresentationNotificationScreen({
                       <ShareCredentialsSlide
                         key="share-credentials"
                         onAccept={usePin ? undefined : onAccept}
-                        onDecline={onDecline}
                         logo={logo}
                         submission={submission}
+                        onDecline={onDecline}
                         isAccepting={isAccepting}
                         overAskingResponse={overAskingResponse}
                       />

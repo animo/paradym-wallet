@@ -1,6 +1,8 @@
+import { useLingui } from '@lingui/react/macro'
 import { type InvitationType, type ParseInvitationResultError, parseInvitationUrl } from '@package/agent'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'expo-router'
+import { commonMessages } from '../../../translations/src'
 
 export interface CredentialDataHandlerOptions {
   allowedInvitationTypes?: Array<InvitationType>
@@ -9,13 +11,18 @@ export interface CredentialDataHandlerOptions {
 
 export const useCredentialDataHandler = () => {
   const { push, replace } = useRouter()
+  const { t } = useLingui()
 
   const handleCredentialData = async (
     dataUrl: string,
     options?: CredentialDataHandlerOptions
   ): Promise<
     | { success: true }
-    | { success: false; error: ParseInvitationResultError | 'invitation_type_not_allowed'; message: string }
+    | {
+        success: false
+        error: ParseInvitationResultError | 'invitation_type_not_allowed'
+        message: string
+      }
   > => {
     const parseResult = await parseInvitationUrl(dataUrl)
     const routeMethodName = options?.routeMethod ?? 'push'
@@ -31,7 +38,7 @@ export const useCredentialDataHandler = () => {
       return {
         success: false,
         error: 'invitation_type_not_allowed',
-        message: 'Invitation type not allowed',
+        message: t(commonMessages.invitationTypeNotAllowed),
       } as const
     }
 
@@ -70,7 +77,7 @@ export const useCredentialDataHandler = () => {
     return {
       success: false,
       error: 'invitation_not_recognized',
-      message: 'Invitation not recognized.',
+      message: t(commonMessages.invitationNotRecognized),
     } as const
   }
 

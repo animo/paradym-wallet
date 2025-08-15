@@ -11,7 +11,7 @@ export default function Screen() {
   const router = useRouter()
   const navigation = useNavigation()
 
-  // makes so you can't navigat back on iOS by swiping and also hides the header button
+  // makes so you can't navigate back on iOS by swiping and also hides the header button
   // TODO: prevent hardware back button on Android from being used.
   useEffect(() => {
     navigation.setOptions({

@@ -33,7 +33,7 @@ export function MiniCardRowItem({
         {issuerImageUri && <Image src={issuerImageUri} alt="Issuer" width={16} height={16} />}
       </Stack>
       <YStack gap="$1" f={1} fg={1}>
-        <Heading numberOfLines={1} variant="h3">
+        <Heading numberOfLines={1} heading="h3">
           {name}
         </Heading>
         <Paragraph numberOfLines={1}>{subtitle}</Paragraph>

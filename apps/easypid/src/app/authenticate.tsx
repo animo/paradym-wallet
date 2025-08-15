@@ -3,8 +3,10 @@ import { Redirect, useLocalSearchParams } from 'expo-router'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
+import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { commonMessages } from '@package/translations'
 import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
@@ -25,8 +27,17 @@ export default function Authenticate() {
   const { additionalPadding, noBottomSafeArea } = useDeviceMedia()
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
+  const { t } = useLingui()
+
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: no recheck required, only on mount
+  useEffect(() => {
+    if (secureUnlock.state === 'unlocked' && redirectAfterUnlock) {
+      secureUnlock.lock()
+    }
+  }, [])
 
   // After resetting the wallet, we want to avoid prompting for face id immediately
   // So we add an artificial delay
@@ -87,7 +98,7 @@ export default function Authenticate() {
     if (secureUnlock.state === 'locked') {
       secureUnlock.tryUnlockingUsingBiometrics()
     } else {
-      toast.show('You PIN is required to unlock the app', {
+      toast.show(t({ id: 'authenticate.pinRequiredToast', message: 'Your PIN is required to unlock the app' }), {
         customData: {
           preset: 'danger',
         },
@@ -105,8 +116,8 @@ export default function Authenticate() {
       <YStack fg={1} gap="$6" mb={noBottomSafeArea ? -additionalPadding : undefined}>
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
           <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
-          <Heading variant="h2" fontWeight="$semiBold">
-            Enter your app PIN code
+          <Heading heading="h2" fontWeight="$semiBold">
+            {t(commonMessages.enterPin)}
           </Heading>
         </YStack>
         <PinDotsInput

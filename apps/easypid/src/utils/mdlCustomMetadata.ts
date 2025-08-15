@@ -1,5 +1,5 @@
-import { sanitizeString } from '@package/utils'
-
+import { mapAttributeName } from '@package/app/utils/formatSubject'
+import { commonMessages, i18n } from '@package/translations'
 import mdlCodeA from '../../assets/mdl/code_a.png'
 import mdlCodeA1 from '../../assets/mdl/code_a1.png'
 import mdlCodeA2 from '../../assets/mdl/code_a2.png'
@@ -41,27 +41,6 @@ export type MdlAttributes = {
   [key: string]: unknown
 }
 
-const attributeNameMapping = {
-  family_name: 'Family name',
-  given_name: 'Given name',
-  birth_date: 'Birth date',
-  document_number: 'Document number',
-  portrait: 'Portrait',
-  un_distinguishing_sign: 'UN sign',
-  issuing_authority: 'Issuing authority',
-  issuing_country: 'Issuing country',
-  expiry_date: 'Expiry date',
-  issue_date: 'Issue date',
-  driving_privileges: 'Driving privileges',
-  codes: 'Codes',
-  code: 'Code',
-  vehicle_category_code: 'Vehicle category code',
-} as Record<string, string>
-
-export const mapMdlAttributeName = (key: string) => {
-  return attributeNameMapping[key] ?? sanitizeString(key)
-}
-
 export function getMdlAttributesForDisplay(attributes: Partial<MdlAttributes>) {
   const attributeGroups: Array<[string, unknown]> = []
 
@@ -75,17 +54,17 @@ export function getMdlAttributesForDisplay(attributes: Partial<MdlAttributes>) {
 
   if (driving_privileges) {
     attributeGroups.push([
-      'Driving privileges',
-      Object.fromEntries(Object.entries(driving_privileges).map(([key, value]) => [mapMdlAttributeName(key), value])),
+      i18n.t(commonMessages.credentials.mdl.driving_privileges),
+      Object.fromEntries(Object.entries(driving_privileges).map(([key, value]) => [mapAttributeName(key), value])),
     ])
   }
 
   if (ageOverEntries.length > 0) {
-    attributeGroups.push(['Age over', Object.fromEntries(ageOverEntries)])
+    attributeGroups.push([i18n.t(commonMessages.fields.age_over), Object.fromEntries(ageOverEntries)])
   }
 
   return Object.fromEntries([
-    ...Object.entries(remainingWithoutAgeEntries).map(([key, value]) => [mapMdlAttributeName(key), value]),
+    ...Object.entries(remainingWithoutAgeEntries).map(([key, value]) => [mapAttributeName(key), value]),
     ...attributeGroups,
   ])
 }

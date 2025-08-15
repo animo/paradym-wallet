@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro'
 import { useHasInboxNotifications } from '@package/agent/hooks'
 import { useHaptics } from '@package/app'
 import { Circle, IconContainer } from '@package/ui'
@@ -10,8 +11,15 @@ export function InboxIcon() {
   const { push } = useRouter()
   const { hasInboxNotifications } = useHasInboxNotifications()
   const { withHaptics } = useHaptics()
+  const { t } = useLingui()
 
   const pushToInbox = withHaptics(() => push('/inbox'))
+
+  const ariaLabel = t({
+    id: 'inbox.menuLabel',
+    message: 'Menu',
+    comment: 'Aria label for the inbox/bell icon in the header',
+  })
 
   return (
     <Stack onPress={pushToInbox}>
@@ -20,7 +28,7 @@ export function InboxIcon() {
           <Circle size={12} backgroundColor="$primary-500" />
         </AnimatedStack>
       )}
-      <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Bell />} onPress={pushToInbox} />
+      <IconContainer bg="white" aria-label={ariaLabel} icon={<HeroIcons.Bell />} onPress={pushToInbox} />
     </Stack>
   )
 }

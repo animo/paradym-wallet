@@ -1,5 +1,6 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import { useLingui } from '@lingui/react/macro'
 import type { DisplayImage } from '@package/agent'
 import { isAndroid } from '@package/app'
 import {
@@ -27,11 +28,37 @@ interface RequestPurposeSectionProps {
 
 export function RequestPurposeSection({ purpose, logo, overAskingResponse }: RequestPurposeSectionProps) {
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false)
+  const { t } = useLingui()
 
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const hasAiAnalysisFeatureFlag = useFeatureFlag('AI_ANALYSIS')
 
   const toggleAnalysisModal = () => setIsAnalysisModalOpen(!isAnalysisModalOpen)
+
+  const overaskingWarningMessage = t({
+    id: 'requestPurpose.overaskingWarning',
+    message: 'The purpose given does not match the data requested.',
+    comment: 'Warning shown when the declared purpose does not align with the data requested by the organization',
+  })
+
+  const headingLabel = t({
+    id: 'requestPurpose.purposeHeading',
+    message: 'PURPOSE',
+    comment: 'Heading above the stated purpose of the data request',
+  })
+
+  const infoSheetTitle = t({
+    id: 'requestPurpose.infoSheet.title',
+    message: 'Overasking detected',
+    comment: 'Title of the info sheet that appears when the user taps the warning about overasking',
+  })
+
+  const infoSheetDescription = t({
+    id: 'requestPurpose.infoSheet.description',
+    message:
+      'This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.',
+    comment: 'Description text in the overasking info sheet',
+  })
 
   return (
     <>
@@ -49,12 +76,12 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
             <MessageBox
               icon={<HeroIcons.InformationCircleFilled />}
               variant="error"
-              message="The purpose given does not match the data requested."
+              message={overaskingWarningMessage}
             />
           </AnimatedStack>
         )}
         <XStack gap="$2" jc="space-between" ai="center">
-          <Heading variant="sub2">PURPOSE</Heading>
+          <Heading heading="sub2">{headingLabel}</Heading>
           {hasAiAnalysisFeatureFlag && (
             <Stack h="$2" w="$2" ai="center" jc="center">
               <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>
@@ -89,8 +116,8 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
         variant="danger"
         isOpen={isAnalysisModalOpen}
         setIsOpen={setIsAnalysisModalOpen}
-        title="Overasking detected"
-        description="This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked."
+        title={infoSheetTitle}
+        description={infoSheetDescription}
         onClose={toggleAnalysisModal}
       />
     </>

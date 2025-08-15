@@ -1,5 +1,7 @@
 import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { defineMessage } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import {
   type ResolveOutOfBandInvitationResultSuccess,
   parseDidCommInvitation,
@@ -24,6 +26,18 @@ type Query = {
   proofExchangeId?: string
   navigationType?: 'inbox'
 }
+const messages = {
+  noInvitation: defineMessage({
+    id: 'notification.noInvitation',
+    message: 'No invitation was found. Please try again.',
+    comment: 'Error shown when a DIDComm invitation is missing in the URL parameters',
+  }),
+  errorParsingInvitation: defineMessage({
+    id: 'notification.errorParsingInvitation',
+    message: 'Error parsing invitation',
+    comment: 'Generic error message shown when an invitation could not be parsed',
+  }),
+}
 
 export function DidCommNotificationScreen() {
   const { agent } = useParadymAgent()
@@ -40,7 +54,7 @@ export function DidCommNotificationScreen() {
     id: string
   }>()
   const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
-
+  const { t } = useLingui()
   const handleNavigation = (type: 'replace' | 'back') => {
     // When starting from the inbox, we want to go back to the inbox on finish
     if (params.navigationType === 'inbox') {
@@ -82,7 +96,7 @@ export function DidCommNotificationScreen() {
             ? decodeURIComponent(params.invitationUrl)
             : undefined
         if (!invitation) {
-          setErrorReason('No invitation was found. Please try again.')
+          setErrorReason(t(messages.noInvitation))
           return
         }
 
@@ -104,9 +118,9 @@ export function DidCommNotificationScreen() {
           error,
         })
         if (isDevelopmentModeEnabled && error instanceof Error) {
-          setErrorReason(`Error parsing invitation\n\nDevelopment mode error:\n${error.message}`)
+          setErrorReason(`${t(messages.errorParsingInvitation)}\n\nDevelopment mode error:\n${error.message}`)
         } else {
-          setErrorReason('Error parsing invitation')
+          setErrorReason(t(messages.errorParsingInvitation))
         }
       }
     }
@@ -114,7 +128,7 @@ export function DidCommNotificationScreen() {
     if (params.invitation || params.invitationUrl) {
       void handleInvitation()
     }
-  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled])
+  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled, t])
 
   // Delay the navigation to hide the fact we're loading in the new slides based on the flow type
   useEffect(() => {
@@ -203,7 +217,7 @@ export function DidCommNotificationScreen() {
       )}
       isError={!!errorReason}
       onCancel={onCancel}
-      confirmation={getFlowConfirmationText(flow?.type)}
+      confirmation={getFlowConfirmationText(t, flow?.type)}
     />
   )
 }

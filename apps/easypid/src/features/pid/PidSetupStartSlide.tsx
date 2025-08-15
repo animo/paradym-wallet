@@ -15,7 +15,7 @@ export function PidSetupStartSlide({ title, subtitle, onStart }: PidSetupStartSl
     <YStack fg={1} jc="space-between">
       <YStack gap="$6">
         <YStack gap="$3">
-          <Heading variant="h1">{title}</Heading>
+          <Heading heading="h1">{title}</Heading>
           {subtitle && <Paragraph>{subtitle}</Paragraph>}
         </YStack>
       </YStack>

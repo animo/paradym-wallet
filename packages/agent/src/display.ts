@@ -15,17 +15,18 @@ import {
   SdJwtVcRecord,
   TypedArrayEncoder,
 } from '@credo-ts/core'
+import { t } from '@lingui/core/macro'
+import { commonMessages } from '@package/translations'
 import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
-import type { CredentialForDisplayId } from './hooks'
-import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
-import type { W3cCredentialJson, W3cIssuerJson } from './types'
-
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import { getAttributesForCategory } from './display/category'
 import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
+import type { CredentialForDisplayId } from './hooks'
+import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
+import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
 /**
  * Paths that were requested but couldn't be satisfied.
@@ -143,12 +144,12 @@ export function metadataForDisplay(metadata: CredentialMetadata) {
   const { type, holder, issuedAt, issuer, validFrom, validUntil } = metadata
 
   return {
-    type,
-    issuer,
-    holder,
-    issuedAt: issuedAt ? formatDate(new Date(issuedAt)) : undefined,
-    validFrom: validFrom ? formatDate(new Date(validFrom)) : undefined,
-    validUntil: validUntil ? formatDate(new Date(validUntil)) : undefined,
+    [t(commonMessages.fields.credentialType)]: type,
+    [t(commonMessages.fields.issuer)]: issuer,
+    [t(commonMessages.fields.holder)]: holder,
+    [t(commonMessages.fields.issued_at)]: issuedAt ? formatDate(new Date(issuedAt)) : undefined,
+    [t(commonMessages.fields.validFrom)]: validFrom ? formatDate(new Date(validFrom)) : undefined,
+    [t(commonMessages.fields.expires_at)]: validUntil ? formatDate(new Date(validUntil)) : undefined,
   }
 }
 
@@ -236,7 +237,7 @@ function getW3cIssuerDisplay(
 
   return {
     ...issuerDisplay,
-    name: issuerDisplay.name ?? 'Unknown',
+    name: issuerDisplay.name ?? t(commonMessages.unknown),
   }
 }
 
@@ -281,17 +282,17 @@ export function getOpenId4VcIssuerDisplay(
 
   return {
     ...issuerDisplay,
-    name: issuerDisplay.name ?? 'Unknown',
+    name: issuerDisplay.name ?? t(commonMessages.unknown),
   }
 }
 
 export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<CredentialDisplay>): CredentialDisplay {
   return {
     ...credentialDisplay,
-    name: credentialDisplay?.name ?? 'Credential',
+    name: credentialDisplay?.name ?? t(commonMessages.credential),
     issuer: {
       ...credentialDisplay?.issuer,
-      name: credentialDisplay?.issuer?.name ?? 'Unknown',
+      name: credentialDisplay?.issuer?.name ?? t(commonMessages.unknown),
     },
   }
 }

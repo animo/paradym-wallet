@@ -1,3 +1,4 @@
+// translations not needed
 import { useMMKVBoolean } from 'react-native-mmkv'
 import { mmkv } from '../storage/mmkv'
 import { isFunkeWallet } from './useFeatureFlag'

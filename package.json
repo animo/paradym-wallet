@@ -47,7 +47,6 @@
 		},
 		"patchedDependencies": {
 			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",
-			"react-native-executorch": "patches/react-native-executorch.patch",
 			"@animo-id/credo-ts-core": "patches/@animo-id__credo-ts-core.patch"
 		}
 	},

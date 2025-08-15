@@ -1,6 +1,8 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialDisplay } from '@package/agent'
 import { useWizard } from '@package/app'
 import { DualResponseButtons } from '@package/app/components/DualResponseButtons'
+import { commonMessages } from '@package/translations'
 import { Heading, MiniCardRowItem, Paragraph, YStack, useToastController } from '@package/ui'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
@@ -29,8 +31,11 @@ export const AuthCodeFlowSlide = ({
   display,
 }: AuthCodeFlowSlideProps) => {
   const toast = useToastController()
+  const { t } = useLingui()
   const { onNext, onCancel: wizardOnCancel } = useWizard()
-  const { credentialAuthorizationCode } = useGlobalSearchParams<{ credentialAuthorizationCode?: string }>()
+  const { credentialAuthorizationCode } = useGlobalSearchParams<{
+    credentialAuthorizationCode?: string
+  }>()
   const [browserResult, setBrowserResult] = useState<WebBrowser.WebBrowserAuthSessionResult>()
   const [hasHandledResult, setHasHandledResult] = useState(false)
 
@@ -53,7 +58,7 @@ export const AuthCodeFlowSlide = ({
       onAuthFlowCallback(credentialAuthorizationCode)
     } else if (browserResult) {
       if (browserResult.type !== 'success') {
-        toast.show('Authorization failed', { customData: { preset: 'warning' } })
+        toast.show(t(commonMessages.authorizationFailed), { customData: { preset: 'warning' } })
 
         browserResult.type === 'cancel' || browserResult.type === 'dismiss' ? onCancel() : onError()
         return
@@ -61,7 +66,7 @@ export const AuthCodeFlowSlide = ({
 
       const authorizationCode = new URL(browserResult.url).searchParams.get('code')
       if (!authorizationCode) {
-        toast.show('Authorization failed', { customData: { preset: 'warning' } })
+        toast.show(t(commonMessages.authorizationFailed), { customData: { preset: 'warning' } })
         onError()
         return
       }
@@ -79,6 +84,7 @@ export const AuthCodeFlowSlide = ({
     onCancel,
     onError,
     onNext,
+    t,
   ])
 
   const onPressContinue = async () => {
@@ -90,10 +96,16 @@ export const AuthCodeFlowSlide = ({
     <YStack fg={1} jc="space-between">
       <YStack fg={1} gap="$6">
         <YStack gap="$4">
-          <Heading>Verify your account</Heading>
+          <Heading>
+            <Trans id="authCodeFlowSlide.heading" comment="Heading shown when user is about to authenticate">
+              Verify your account
+            </Trans>
+          </Heading>
           <Paragraph>
-            To receive this card, you need to authorize with your account. You will now be redirected to the issuer's
-            website.
+            <Trans id="authCodeFlowSlide.description" comment="Explanation for why user is redirected to external site">
+              To receive this card, you need to authorize with your account. You will now be redirected to the issuer's
+              website.
+            </Trans>
           </Paragraph>
         </YStack>
         <MiniCardRowItem
@@ -107,8 +119,12 @@ export const AuthCodeFlowSlide = ({
       <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
         <DualResponseButtons
           align="horizontal"
-          acceptText="Authenticate"
-          declineText="Stop"
+          acceptText={t({
+            id: 'authCodeFlowSlide.authenticate',
+            message: 'Authenticate',
+            comment: 'Button label to start authentication process',
+          })}
+          declineText={t(commonMessages.stop)}
           onAccept={onPressContinue}
           onDecline={wizardOnCancel}
         />

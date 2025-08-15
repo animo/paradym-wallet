@@ -22,7 +22,7 @@ export function PidCardScanSlide({ title, subtitle, onStartScanning, ...props }:
   return (
     <YStack fg={1} gap="$6">
       <YStack gap="$3">
-        <Heading variant="h1">{title}</Heading>
+        <Heading heading="h1">{title}</Heading>
         {subtitle && <Paragraph>{subtitle}</Paragraph>}
       </YStack>
       <OnboardingIdCardScan {...props} onStartScanning={onStartScan} />

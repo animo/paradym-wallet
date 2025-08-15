@@ -15,6 +15,9 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
     handlePressOut: qrHandlePressOut,
   } = useScaleAnimation({ scaleInValue: 0.95 })
 
+  const spaceIndex = title.lastIndexOf(' ')
+  const titleParts = spaceIndex ? [title.slice(0, spaceIndex), title.slice(spaceIndex)] : [title]
+
   return (
     <AnimatedStack
       style={qrPressStyle}
@@ -33,8 +36,8 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
         {icon}
       </XStack>
       <YStack>
-        {title.split(' ').map((word) => (
-          <Heading key={word} color={variant === 'primary' ? 'white' : '$grey-900'} variant="h2">
+        {titleParts.map((word) => (
+          <Heading key={word} color={variant === 'primary' ? 'white' : '$grey-900'} heading="h2">
             {word}
           </Heading>
         ))}

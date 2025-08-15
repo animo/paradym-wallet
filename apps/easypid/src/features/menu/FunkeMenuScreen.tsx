@@ -1,8 +1,10 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
+import { useLingui } from '@lingui/react/macro'
 import { useCredentialByCategory } from '@package/agent/hooks/useCredentialByCategory'
 import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -29,7 +31,7 @@ type MenuListItemProps = {
   action?: 'outside' | 'info' | 'route' | 'none'
 }
 
-export const MenuListItem = ({ variant = 'regular', onPress, icon, label, action = 'route' }: MenuListItemProps) => {
+const MenuListItem = ({ variant = 'regular', onPress, icon, label, action = 'route' }: MenuListItemProps) => {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   return (
@@ -47,7 +49,7 @@ export const MenuListItem = ({ variant = 'regular', onPress, icon, label, action
     >
       <XStack ai="center" gap="$4">
         <IconContainer icon={icon} radius="normal" variant={variant} />
-        <Heading variant="h3" fontWeight="$semiBold" color={variant === 'regular' ? '$grey-900' : '$danger-600'}>
+        <Heading heading="h3" fontWeight="$semiBold" color={variant === 'regular' ? '$grey-900' : '$danger-600'}>
           {label}
         </Heading>
       </XStack>
@@ -57,11 +59,12 @@ export const MenuListItem = ({ variant = 'regular', onPress, icon, label, action
     </AnimatedStack>
   )
 }
+
 export function FunkeMenuScreen() {
+  const { t } = useLingui()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const onResetWallet = useWalletReset()
   const { withHaptics } = useHaptics()
-
   const { credential, isLoading } = useCredentialByCategory('DE-PID')
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
@@ -70,7 +73,14 @@ export function FunkeMenuScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <HeaderContainer isScrolledByOffset={isScrolledByOffset} title="Menu" />
+      <HeaderContainer
+        isScrolledByOffset={isScrolledByOffset}
+        title={t({
+          id: 'menu.title',
+          message: 'Menu',
+          comment: 'Title of the menu screen',
+        })}
+      />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack fg={1} gap="$6" jc="space-between">
           {!credential && !isLoading && hasEidCardFeatureFlag ? (
@@ -78,49 +88,95 @@ export function FunkeMenuScreen() {
               <MessageBox
                 variant="info"
                 icon={<HeroIcons.ArrowRight />}
-                title="Setup digital ID"
-                message="Use your eID card to set up your digital identity."
+                title={t({
+                  id: 'menu.setupEid.title',
+                  message: 'Setup digital ID',
+                  comment: 'Title for the eID setup prompt',
+                })}
+                message={t({
+                  id: 'menu.setupEid.message',
+                  message: 'Use your eID card to set up your digital identity.',
+                  comment: 'Explanation for setting up eID card',
+                })}
                 onPress={handlePush('/pidSetup')}
               />
             </Stack>
           ) : (
             <Stack my="$-3" />
           )}
+
           <YStack gap="$3">
-            <Heading px="$4" variant="sub2" fontWeight="$semiBold">
-              WALLET
+            <Heading px="$4" heading="sub2" fontWeight="$semiBold">
+              {t({
+                id: 'menu.section.wallet',
+                message: 'WALLET',
+                comment: 'Heading above the wallet section',
+              })}
             </Heading>
             <YStack>
-              <MenuListItem onPress={handlePush('/credentials')} icon={<HeroIcons.CreditCardFilled />} label="Cards" />
-              <MenuListItem onPress={handlePush('/activity')} icon={<HeroIcons.QueueListFilled />} label="Activity" />
+              <MenuListItem
+                onPress={handlePush('/credentials')}
+                icon={<HeroIcons.CreditCardFilled />}
+                label={t({
+                  id: 'menu.item.cards',
+                  message: 'Cards',
+                  comment: 'Label for the credentials menu item',
+                })}
+              />
+              <MenuListItem
+                onPress={handlePush('/activity')}
+                icon={<HeroIcons.QueueListFilled />}
+                label={t({
+                  id: 'menu.item.activity',
+                  message: 'Activity',
+                  comment: 'Label for activity log',
+                })}
+              />
             </YStack>
           </YStack>
+
           <YStack gap="$3">
-            <Heading px="$4" variant="sub2" fontWeight="$semiBold">
-              APP
+            <Heading px="$4" heading="sub2" fontWeight="$semiBold">
+              {t({
+                id: 'menu.section.app',
+                message: 'APP',
+                comment: 'Heading above the app section',
+              })}
             </Heading>
             <YStack>
               <MenuListItem
                 onPress={handlePush('/menu/settings')}
                 icon={<HeroIcons.Cog8ToothFilled />}
-                label="Settings"
+                label={t({
+                  id: 'menu.item.settings',
+                  message: 'Settings',
+                  comment: 'Label for settings menu item',
+                })}
               />
               <MenuListItem
                 onPress={handleFeedback}
                 icon={<HeroIcons.ChatBubbleBottomCenterTextFilled />}
-                label="Feedback"
+                label={t({
+                  id: 'menu.item.feedback',
+                  message: 'Feedback',
+                  comment: 'Label for feedback menu item',
+                })}
                 action="outside"
               />
               <MenuListItem
                 onPress={handlePush('/menu/about')}
                 icon={<HeroIcons.InformationCircleFilled />}
-                label="About this wallet"
+                label={t({
+                  id: 'menu.item.about',
+                  message: 'About this wallet',
+                  comment: 'Label for about screen menu item',
+                })}
               />
               <MenuListItem
                 variant="danger"
                 onPress={onResetWallet}
                 icon={<HeroIcons.TrashFilled />}
-                label="Reset wallet"
+                label={t(commonMessages.reset)}
                 action="none"
               />
             </YStack>

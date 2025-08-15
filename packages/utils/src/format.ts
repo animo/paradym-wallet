@@ -1,3 +1,8 @@
+import { t } from '@lingui/core/macro'
+import { i18n } from '@package/translations'
+
+const getLocaleForFormat = () => i18n.locale ?? 'en-US'
+
 /**
  * Capitalize first letter of a string
  * i.e. capitalizeFirstLetter("helloworld")  // returns: 'Helloworld'
@@ -35,16 +40,21 @@ export function formatRelativeDate(date: Date, now: Date = new Date(), includeTi
   const msPerDay = 24 * 60 * 60 * 1000
   const days = Math.round((now.getTime() - date.getTime()) / msPerDay)
 
-  const formatTime = (d: Date) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })
+  const formatTime = (d: Date) =>
+    d.toLocaleTimeString(getLocaleForFormat(), { hour: 'numeric', minute: '2-digit', hour12: false })
 
   if (days === 0) {
-    return includeTime ? `Today at ${formatTime(date)}` : 'Today'
+    return includeTime
+      ? t({ id: 'dateFormatting.todayAtTime', message: `Today at ${formatTime(date)}` })
+      : t({ id: 'dateFormatting.today', message: 'Today' })
   }
   if (days === 1) {
-    return includeTime ? `Yesterday at ${formatTime(date)}` : 'Yesterday'
+    return includeTime
+      ? t({ id: 'dateFormatting.yesterdayAtTime', message: `Yesterday at ${formatTime(date)}` })
+      : t({ id: 'dateFormatting.yesterday', message: 'Yesterday' })
   }
   return `${
-    date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) +
+    date.toLocaleDateString(getLocaleForFormat(), { month: 'long', day: 'numeric' }) +
     (date.getDate() === 1 || date.getDate() === 21 || date.getDate() === 31
       ? 'st'
       : date.getDate() === 2 || date.getDate() === 22
@@ -77,7 +87,7 @@ export function formatDate(input: string | Date, options?: { includeTime?: boole
       } as const)
     : {}
 
-  return date.toLocaleString('en-US', {
+  return date.toLocaleString(getLocaleForFormat(), {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -92,5 +102,14 @@ export function getDaysUntil(date?: Date): number | undefined {
 
 export function formatDaysString(days?: number): string | undefined {
   if (days === undefined) return undefined
-  return `${days} day${days === 1 ? '' : 's'}`
+
+  return days === 1
+    ? t({
+        id: 'dateFormatting.oneDay',
+        message: '1 day',
+      })
+    : t({
+        id: 'dateFormatting.mulitpleDays',
+        message: `${days} days`,
+      })
 }

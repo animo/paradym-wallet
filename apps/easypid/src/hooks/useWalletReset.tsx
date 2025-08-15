@@ -1,5 +1,6 @@
+import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app/hooks'
-
+import { commonMessages } from '@package/translations'
 import { useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { Alert } from 'react-native'
@@ -7,22 +8,23 @@ import { Alert } from 'react-native'
 export const useWalletReset = () => {
   const router = useRouter()
   const { withHaptics } = useHaptics()
+  const { t } = useLingui()
 
   const onResetWallet = withHaptics(
     useCallback(() => {
-      Alert.alert('Reset Wallet', 'Are you sure you want to reset the wallet?', [
+      Alert.alert(t(commonMessages.reset), t(commonMessages.confirmResetWallet), [
         {
-          text: 'Cancel',
+          text: t(commonMessages.cancel),
           style: 'cancel',
         },
         {
-          text: 'Yes',
+          text: t(commonMessages.yes),
           onPress: withHaptics(() => {
             router.replace('/onboarding?reset=true')
           }),
         },
       ])
-    }, [router, withHaptics])
+    }, [router, withHaptics, t])
   )
 
   return onResetWallet

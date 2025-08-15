@@ -1,12 +1,13 @@
 import type { StyleProp, ViewStyle } from 'react-native'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { AnimatePresence, Button, Heading, HeroIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { Camera, CameraView } from 'expo-camera'
 import { useCallback, useEffect, useState } from 'react'
 import { Dimensions, Linking, Platform, StyleSheet } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
-
 interface BarcodeScannerProps {
   onScan(data: string): void
   onCancel?(): void
@@ -15,7 +16,7 @@ interface BarcodeScannerProps {
 
 export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) => {
   const [hasPermission, setHasPermission] = useState<boolean>()
-
+  const { t } = useLingui()
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync()
@@ -41,13 +42,17 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
   if (hasPermission === false) {
     return (
       <Page justifyContent="center" alignItems="center">
-        <Heading variant="h2" letterSpacing={-0.5}>
-          Please allow camera access
+        <Heading heading="h2" letterSpacing={-0.5}>
+          <Trans id="qrScanner.permissionHeading" comment="Heading asking user to allow camera permission">
+            Please allow camera access
+          </Trans>
         </Heading>
         <Paragraph textAlign="center">
-          This allows the app to scan QR codes that include credentials or data requests.
+          <Trans id="qrScanner.permissionDescription" comment="Description explaining why camera permission is needed">
+            This allows the app to scan QR codes that include credentials or data requests.
+          </Trans>
         </Paragraph>
-        <Button.Text onPress={() => _openAppSetting()}>Open settings</Button.Text>
+        <Button.Text onPress={() => _openAppSetting()}>{t(commonMessages.openSettingsButton)}</Button.Text>
       </Page>
     )
   }
@@ -65,8 +70,10 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
         />
       )}
       <YStack zi="$5" ai="center">
-        <Heading variant="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
-          Use the camera to scan a QR code
+        <Heading heading="h1" lineHeight={36} ta="center" dark py="$8" maxWidth="80%">
+          <Trans id="qrScanner.instructionHeading" comment="Instruction heading for scanning a QR code">
+            Use the camera to scan a QR code
+          </Trans>
         </Heading>
         <XStack maxHeight="$10">
           <AnimatePresence>
@@ -125,7 +132,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
               scaleOnPress
               alignSelf="center"
             >
-              Cancel
+              {t(commonMessages.cancel)}
             </Button.Solid>
           </XStack>
         )}
