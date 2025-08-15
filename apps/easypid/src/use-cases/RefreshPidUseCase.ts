@@ -1,4 +1,4 @@
-import { ClaimFormat, MdocRecord, getJwkFromJson } from '@credo-ts/core'
+import { ClaimFormat, Kms, MdocRecord } from '@credo-ts/core'
 import { SdJwtVcRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@package/agent'
@@ -74,7 +74,7 @@ export class RefreshPidUseCase {
       authorizationServer: this.resolvedCredentialOffer.metadata.authorizationServers[0].issuer,
       refreshToken: existingRefreshMetadata?.refreshToken,
       dpop: existingRefreshMetadata?.dpop
-        ? { alg: existingRefreshMetadata.dpop.alg, jwk: getJwkFromJson(existingRefreshMetadata.dpop.jwk) }
+        ? { alg: existingRefreshMetadata.dpop.alg, jwk: Kms.PublicJwk.fromUnknown(existingRefreshMetadata.dpop.jwk) }
         : undefined,
     })
 

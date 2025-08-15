@@ -1,5 +1,6 @@
 import {
   ClaimFormat,
+  type MdocNameSpaces,
   type DcqlQueryResult,
   type DifPexCredentialsForRequest,
   type DifPresentationExchangeDefinitionV2,
@@ -180,7 +181,7 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
     {
       required: true,
       options: [dcqlQueryResult.credentials.map((c) => c.id)],
-      matching_options: dcqlQueryResult.canBeSatisfied ? [dcqlQueryResult.credentials.map((c) => c.id)] : undefined,
+      matching_options: dcqlQueryResult.can_be_satisfied ? [dcqlQueryResult.credentials.map((c) => c.id)] : undefined,
     },
   ]
 
@@ -205,54 +206,51 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
         continue
       }
 
-      const credentialForDisplay = getCredentialForDisplay(match.record)
+      const credentials: FormattedSubmissionEntrySatisfiedCredential[] = []
 
-      let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
-      if (match.output.credential_format === 'vc+sd-jwt' || match.output.credential_format === 'dc+sd-jwt') {
-        if (match.record.type !== 'SdJwtVcRecord') throw new Error('Expected SdJwtRecord')
+      for (const validMatch of match.valid_credentials) {
+        const credentialForDisplay = getCredentialForDisplay(validMatch.record)
+        let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
 
-        if (queryCredential.format !== 'vc+sd-jwt' && queryCredential.format !== 'dc+sd-jwt') {
-          throw new Error(`Expected queryr credential format ${queryCredential.format} to be vc+sd-jwt or dc+sd-jwt`)
+        if (validMatch.record.type === 'SdJwtVcRecord') {
+          // Credo already applied selective disclosure on payload
+          const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
+            validMatch.claims.valid_claim_sets[0].output
+          )
+          disclosed = {
+            attributes,
+            metadata,
+            paths: getDisclosedAttributePathArrays(attributes, 2),
+          }
+        } else if (validMatch.record.type === 'MdocRecord') {
+          // TODO: check if fixed now
+          // FIXME: the disclosed payload here doesn't have the correct encoding anymore
+          // once we serialize input??
+          const namespaces = validMatch.claims.valid_claim_sets[0].output as MdocNameSpaces
+          disclosed = {
+            ...getAttributesAndMetadataForMdocPayload(namespaces, validMatch.record.credential),
+            paths: getDisclosedAttributePathArrays(namespaces, 2),
+          }
+        } else {
+          // All paths disclosed for W3C
+          disclosed = {
+            attributes: credentialForDisplay.attributes,
+            metadata: credentialForDisplay.metadata,
+            paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
+          }
         }
 
-        // Creod already applied selective disclosure on payload
-        const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(match.output.claims)
-        disclosed = {
-          attributes,
-          metadata,
-          paths: getDisclosedAttributePathArrays(attributes, 2),
-        }
-      } else if (match.output.credential_format === 'mso_mdoc') {
-        if (match.record.type !== 'MdocRecord') throw new Error('Expected MdocRecord')
-
-        // TODO: check if fixed now
-        // FIXME: the disclosed payload here doesn't have the correct encoding anymore
-        // once we serialize input??
-        disclosed = {
-          ...getAttributesAndMetadataForMdocPayload(match.output.namespaces, match.record.credential),
-          paths: getDisclosedAttributePathArrays(match.output.namespaces, 2),
-        }
-      } else {
-        if (match.record.type !== 'W3cCredentialRecord') throw new Error('Expected W3cCredentialRecord')
-
-        // All paths disclosed for W3C
-        disclosed = {
-          attributes: credentialForDisplay.attributes,
-          metadata: credentialForDisplay.metadata,
-          paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
-        }
+        credentials.push({
+          credential: credentialForDisplay,
+          disclosed,
+        })
       }
 
       entries.push({
         inputDescriptorId: credentialId,
-        credentials: [
-          {
-            credential: credentialForDisplay,
-            disclosed,
-          },
-        ],
+        credentials: credentials as NonEmptyArray<FormattedSubmissionEntrySatisfiedCredential>,
         isSatisfied: true,
-        name: credentialForDisplay.display.name,
+        name: credentials[0].credential.display.name,
       })
     }
   }
