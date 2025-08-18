@@ -1,5 +1,4 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
-import { WalletInvalidKeyError } from '@credo-ts/core'
 import { initializeAppAgent } from '@easypid/agent'
 import { useLingui } from '@lingui/react/macro'
 import { resolveRequestForDcApi, sendErrorResponseForDcApi, sendResponseForDcApi } from '@package/agent'
@@ -11,6 +10,7 @@ import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { InvalidPinError } from '../../crypto/error'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
 
 type DcApiSharingScreenProps = {
@@ -45,7 +45,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     const agent = await secureWalletKey
       .getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
       .then(async (walletKey) => {
-        const agent = initializeAppAgent({
+        const agent = await initializeAppAgent({
           walletKey,
           walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
         })
@@ -54,7 +54,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       })
       .catch((e) => {
         setIsProcessing(false)
-        if (e instanceof WalletInvalidKeyError) {
+        if (e instanceof InvalidPinError) {
           pinRef.current?.clear()
           pinRef.current?.shake()
           return

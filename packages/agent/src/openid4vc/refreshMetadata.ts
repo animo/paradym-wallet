@@ -1,8 +1,8 @@
-import type { JwaSignatureAlgorithm, JwkJson, MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import type { Kms, MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
 
 export interface RefreshCredentialMetadata {
   refreshToken: string
-  dpop?: { alg: JwaSignatureAlgorithm; jwk: JwkJson }
+  dpop?: { alg: Kms.KnownJwaSignatureAlgorithm; jwk: Kms.KmsJwkPublic }
 }
 
 const refreshCredentialMetadataKey = '_paradym/refreshCredentialMetadata'

@@ -1,15 +1,14 @@
 import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
 import { AskarModule } from '@credo-ts/askar'
+// FIXME: export in Credo
+import { AskarStoreInvalidKeyError } from '@credo-ts/askar/build/error'
 import {
   Agent,
   CredoWebCrypto,
   type JwsProtectedHeaderOptions,
   JwsService,
   JwtPayload,
-  KeyDerivationMethod,
   TypedArrayEncoder,
-  WalletInvalidKeyError,
-  getJwkFromKey,
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
@@ -29,10 +28,16 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
     const agent = new Agent({
       config: {
         label: 'pin_test_agent',
-        walletConfig: { id: walletId, key: walletKey, keyDerivationMethod: KeyDerivationMethod.Raw },
       },
       modules: {
-        askar: new AskarModule({ askar }),
+        askar: new AskarModule({
+          askar,
+          store: {
+            id: walletId,
+            key: walletKey,
+            keyDerivationMethod: 'raw',
+          },
+        }),
       },
       dependencies: agentDependencies,
     })
@@ -40,7 +45,7 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
     try {
       await agent.initialize()
     } catch (e) {
-      if (e instanceof WalletInvalidKeyError) {
+      if (e instanceof AskarStoreInvalidKeyError) {
         throw new InvalidPinError()
       }
       throw e
@@ -73,7 +78,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
       )
     const jwsService = this.agent.context.dependencyManager.resolve(JwsService)
     const salt = await this.getOrCreateSalt()
-    const key = await deriveKeypairFromPin(this.agent.context, pin, salt)
+    const jwk = await deriveKeypairFromPin(this.agent.context, pin, salt)
 
     const payload = new JwtPayload({
       additionalClaims: claims,
@@ -81,11 +86,11 @@ export class WalletServiceProviderClient implements SecureEnvironment {
 
     const protectedHeaderOptions: JwsProtectedHeaderOptions = {
       alg: 'ES256',
-      jwk: getJwkFromKey(key),
+      jwk: jwk.toJson({ includeKid: false }),
     }
 
     const compactJws = await jwsService.createJwsCompact(this.agent.context, {
-      key,
+      keyId: jwk.keyId,
       payload,
       protectedHeaderOptions,
     })
