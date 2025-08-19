@@ -2,9 +2,9 @@ import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProvid
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
-import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
+import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
 import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
@@ -97,8 +97,8 @@ export function FunkeMdocOfflineSharingScreen({
         sessionTranscript,
         submission,
       })
-    } catch (e) {
-      if (e instanceof BiometricAuthenticationCancelledError) {
+    } catch (error) {
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         // Triggers the pin animation
         onPinError?.()
         return handleError({ reason: 'Biometric authentication cancelled', redirect: false })
@@ -109,7 +109,7 @@ export function FunkeMdocOfflineSharingScreen({
         reason: 'Could not share device response',
         redirect: true,
         description:
-          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
       })
     }
 

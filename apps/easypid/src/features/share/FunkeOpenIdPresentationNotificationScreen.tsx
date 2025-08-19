@@ -2,10 +2,10 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
-import { BiometricAuthenticationCancelledError } from '@package/agent'
 import { usePushToWallet } from '@package/app'
 import { useToastController } from '@package/ui'
 import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/display/common'
+import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/format/submission'
 import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
 import { shareProof } from '@paradym/wallet-sdk/invitation/shareProof'
@@ -160,7 +160,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         ).catch(console.error)
       } catch (error) {
         setIsSharing(false)
-        if (error instanceof BiometricAuthenticationCancelledError) {
+        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           return handleError({ reason: 'Biometric authentication cancelled' })
         }
 

@@ -21,7 +21,7 @@ type Query = {
 }
 
 export function DidCommNotificationScreen() {
-  const paradym = useParadym()
+  const { paradym } = useParadym('unlocked')
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()

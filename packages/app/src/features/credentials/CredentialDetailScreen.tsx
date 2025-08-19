@@ -22,7 +22,7 @@ import { CredentialCard } from '../../components'
 import { useScrollViewPosition } from '../../hooks'
 
 export function CredentialDetailScreen() {
-  const paradym = useParadym()
+  const { paradym } = useParadym('unlocked')
 
   const navigation = useNavigation()
   const params = useLocalSearchParams<{ id: CredentialForDisplayId }>()
