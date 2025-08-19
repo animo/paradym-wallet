@@ -17,7 +17,7 @@ interface DeleteCredentialSheetProps {
 }
 
 export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }: DeleteCredentialSheetProps) {
-  const paradym = useParadym()
+  const { paradym } = useParadym('unlocked')
 
   const toast = useToastController()
   const navigation = useNavigation()

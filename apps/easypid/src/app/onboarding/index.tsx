@@ -4,7 +4,6 @@ import { useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
-import { useSecureUnlock } from '@paradym/wallet-sdk/hooks'
 import { router, useLocalSearchParams } from 'expo-router'
 import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
@@ -19,7 +18,6 @@ export default function OnboardingScreens() {
   const media = useMedia()
   const [hasFinishedOnboarding] = useHasFinishedOnboarding()
   const onboardingContext = useOnboardingContext()
-  const secureUnlock = useSecureUnlock()
   const headerRef = useRef(null)
   const reset = useLocalSearchParams<{ reset?: 'true' }>().reset === 'true'
   const [hasResetWallet, setHasResetWallet] = useState(false)
@@ -44,8 +42,10 @@ export default function OnboardingScreens() {
     setHasResetWallet(true)
     router.setParams({ reset: 'false' })
     // TODO(sdk): move to sdk
-    resetWallet(secureUnlock, paradym.agent)
-  }, [reset, secureUnlock, hasResetWallet, paradym.agent])
+    if (paradym.state === 'unlocked') {
+      resetWallet(paradym)
+    }
+  }, [reset, hasResetWallet, paradym])
 
   const resetAlertTitle = t({
     id: 'onboarding.resetAlert.title',

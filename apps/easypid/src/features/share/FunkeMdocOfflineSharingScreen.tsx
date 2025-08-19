@@ -3,10 +3,10 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
 import { useLingui } from '@lingui/react/macro'
-import { BiometricAuthenticationCancelledError } from '@package/agent'
-import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
+import { usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
 import { useOpenId4VcAgent } from '@paradym/wallet-sdk/hooks'
@@ -107,8 +107,8 @@ export function FunkeMdocOfflineSharingScreen({
         sessionTranscript,
         submission,
       })
-    } catch (e) {
-      if (e instanceof BiometricAuthenticationCancelledError) {
+    } catch (error) {
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         // Triggers the pin animation
         onPinError?.()
         return handleError({
@@ -126,7 +126,7 @@ export function FunkeMdocOfflineSharingScreen({
         }),
         redirect: true,
         description:
-          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
       })
     }
 
