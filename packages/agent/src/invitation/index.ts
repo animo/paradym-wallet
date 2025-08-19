@@ -22,8 +22,6 @@ export type OpenId4VciResolvedPresentationDuringIssuanceAuthorizationRequest = E
 export {
   parseInvitationUrl,
   parseDidCommInvitation,
-  InvitationQrTypes,
-  InvitationType,
   ParseInvitationResultError,
 } from './parsers'
 export {
@@ -38,6 +36,3 @@ export {
   resolveOpenId4VciOffer,
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'
-
-export type { TrustedEntity } from './trustedEntities'
-export * from './transactions'

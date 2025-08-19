@@ -3,16 +3,15 @@ import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
+import { acquireAuthorizationCodeAccessToken, acquireAuthorizationCodeUsingPresentation } from '@package/agent'
+import { SlideWizard, usePushToWallet } from '@package/app'
+import { useToastController } from '@package/ui'
 import {
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
-  acquireAuthorizationCodeAccessToken,
-  acquireAuthorizationCodeUsingPresentation,
-} from '@package/agent'
-import { SlideWizard, usePushToWallet } from '@package/app'
-import { useToastController } from '@package/ui'
+} from '@paradym/wallet-sdk'
 import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
 import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'

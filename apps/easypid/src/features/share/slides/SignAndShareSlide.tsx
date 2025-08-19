@@ -1,9 +1,9 @@
-import type { QtspInfo } from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition } from '@package/app'
 import { useWizard } from '@package/app'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/display/common'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import type { QtspInfo } from '@paradym/wallet-sdk/openid4vc/transaction'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 

@@ -3,9 +3,9 @@ import queryString from 'query-string'
 
 import { JsonEncoder } from '@credo-ts/core'
 import type { DidCommAgent } from '@paradym/wallet-sdk/agent'
+import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
-export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
 export type ParseInvitationResultError = 'invitation_not_recognized' | 'parse_error' | 'retrieve_invitation_error'
 export type ParseInvitationResult =
   | {

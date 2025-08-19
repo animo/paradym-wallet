@@ -1,11 +1,11 @@
 import { ClaimFormat, MdocRecord, getJwkFromJson } from '@credo-ts/core'
 import { SdJwtVcRecord } from '@credo-ts/core'
-import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@package/agent'
 import {
   acquireRefreshTokenAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
 } from '@package/agent'
+import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@paradym/wallet-sdk'
 import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
 import {
   getBatchCredentialMetadata,

@@ -1,6 +1,6 @@
-import type { QtspInfo } from '@package/agent'
 import { DualResponseButtons, useImageScaler, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
+import type { QtspInfo } from '@paradym/wallet-sdk/openid4vc/transaction'
 import { Defs, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
 interface SigningSlideProps {

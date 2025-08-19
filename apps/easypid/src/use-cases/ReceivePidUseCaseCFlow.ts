@@ -1,10 +1,7 @@
 import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
-import {
-  OpenId4VciAuthorizationFlow,
-  receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
-} from '@package/agent'
+import { receiveCredentialFromOpenId4VciOffer, resolveOpenId4VciOffer } from '@package/agent'
+import { OpenId4VciAuthorizationFlow } from '@paradym/wallet-sdk'
 import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import {
   setCredentialCategoryMetadata,

@@ -1,11 +1,10 @@
-import { useCallback } from 'react'
-import type { ReactNode } from 'react'
-
-import { InvitationQrTypes } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { InvitationQrTypes } from '@paradym/wallet-sdk/invitation/parser'
 import { CommonActions } from '@react-navigation/native'
 import * as Linking from 'expo-linking'
 import { useNavigation } from 'expo-router'
+import { useCallback } from 'react'
+import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { type CredentialDataHandlerOptions, useCredentialDataHandler } from '../hooks'
 

@@ -140,6 +140,7 @@ export async function parseOpenIdPresentationRequestInvitation(paradym: ParadymW
   }
 }
 
+// TODO(sdk): this, or another version of this method, cannot depend on the paradym instance for deeplink redirecting
 export async function parseInvitationUrl(paradym: ParadymWalletSdk, invitationUrl: string): Promise<InvitationResult> {
   if (isOpenIdCredentialOffer(invitationUrl)) {
     const metadata = await parseOpenIdCredentialOfferInvitation(paradym, invitationUrl)

@@ -1,6 +1,6 @@
-import type { OpenId4VciTxCode } from '@package/agent'
 import { useWizard } from '@package/app'
 import { Heading, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
+import type { OpenId4VciTxCode } from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import type { NativeSyntheticEvent, TextInputSubmitEditingEventData } from 'react-native'
 import { Input } from 'tamagui'

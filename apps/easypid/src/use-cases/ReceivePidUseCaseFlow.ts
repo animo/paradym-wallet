@@ -6,12 +6,12 @@ import {
   sendCommand,
 } from '@animo-id/expo-ausweis-sdk'
 import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import {
-  type OpenId4VciRequestTokenResponse,
-  type OpenId4VciResolvedCredentialOffer,
-  type OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
-  acquireAuthorizationCodeAccessToken,
-} from '@package/agent'
+import { acquireAuthorizationCodeAccessToken } from '@package/agent'
+import type {
+  OpenId4VciRequestTokenResponse,
+  OpenId4VciResolvedCredentialOffer,
+  OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
+} from '@paradym/wallet-sdk'
 import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
 
 export interface ReceivePidUseCaseFlowOptions
@@ -179,7 +179,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   private async cancelPotentiallyAbandonedAuthFlow() {
     await initializeSdk()
 
-    const cancelPromise = new Promise((resolve, reject) => {
+    const cancelPromise = new Promise((resolve) => {
       let hasCancelled = false
       const subscription = addMessageListener((message) => {
         // Auth flow is now cancelled

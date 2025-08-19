@@ -1,4 +1,5 @@
-import { type InvitationType, type ParseInvitationResultError, parseInvitationUrl } from '@package/agent'
+import { type ParseInvitationResultError, parseInvitationUrl } from '@package/agent'
+import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'expo-router'
 
