@@ -52,6 +52,7 @@ export type SecureUnlockReturnUnlocked = {
   paradym: ParadymWalletSdk
   unlockMethod: UnlockMethod
   lock: () => Promise<void>
+  reset: () => Promise<void>
   reinitialize: () => void
 }
 
@@ -250,6 +251,7 @@ function _useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Sec
       state,
       unlockMethod,
       paradym,
+      reset: paradym.reset,
       reinitialize,
       lock: async () => {
         await paradym.shutdown()

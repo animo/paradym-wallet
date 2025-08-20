@@ -1,5 +1,5 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
-import { resetAppState } from '@easypid/hooks/useResetWalletDevMenu'
+import { resetAppState } from '@easypid/utils/resetAppState'
 import { useHaptics } from '@package/app'
 import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
@@ -41,7 +41,7 @@ export default function OnboardingScreens() {
     router.setParams({ reset: 'false' })
 
     if (paradym.state === 'unlocked') {
-      paradym.paradym.reset()
+      paradym.reset()
       resetAppState()
     }
   }, [reset, hasResetWallet, paradym])

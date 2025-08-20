@@ -1,4 +1,4 @@
-import { resetAppState } from '@easypid/hooks/useResetWalletDevMenu'
+import { resetAppState } from '@easypid/utils/resetAppState'
 import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'

@@ -2,22 +2,28 @@ import { useParadym } from '@paradym/wallet-sdk/hooks/useParadym'
 import { isDevelopmentBuild, registerDevMenuItems } from 'expo-dev-client'
 import { useCallback, useEffect } from 'react'
 import { DevSettings } from 'react-native'
-import { resetWallet } from '../utils/resetWallet'
 
 export function useResetWalletDevMenu() {
   const paradym = useParadym()
 
-  const reset = useCallback(() => resetWallet(paradym), [paradym])
+  const reset = useCallback(() => {
+    if (paradym.state === 'unlocked') {
+      paradym.reset()
+    }
+    if (paradym.state !== 'initializing') {
+      paradym.reinitialize()
+    }
+  }, [paradym])
 
   useEffect(() => {
     if (!isDevelopmentBuild()) return
     registerDevMenuItems([
       {
         name: 'Reset Wallet',
-        callback: () =>
+        callback: () => {
           reset()
-            .then(() => DevSettings.reload('Wallet Reset'))
-            .catch((error) => console.error('error resetting wallet', error)),
+          DevSettings.reload('Wallet Reset')
+        },
       },
     ])
   }, [reset])
