@@ -1,7 +1,6 @@
-import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
 import queryString from 'query-string'
-import type { DidCommAgent, FullAgent, OpenId4VcAgent } from '../agent'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { type CredentialForDisplay, getCredentialForDisplay } from '../display/credential'
 import { ParadymWalletInvitationNotRecognizedError } from '../error'
 import { type FormattedSubmission, getFormattedSubmission } from '../format/submission'
@@ -89,7 +88,7 @@ export const isDidCommInvitation = (url: string) => {
   return false
 }
 
-export async function parseDidCommInvitation(agent: DidCommAgent, invitation: string | Record<string, unknown>) {
+export async function parseDidCommInvitation(paradym: ParadymWalletSdk, invitation: string | Record<string, unknown>) {
   if (typeof invitation === 'string') {
     const parsedUrl = queryString.parseUrl(invitation)
     const updatedInvitationUrl = (parsedUrl.query.oobUrl as string | undefined) ?? invitation
@@ -99,18 +98,21 @@ export async function parseDidCommInvitation(agent: DidCommAgent, invitation: st
     // So we use the parseMessage from credo and see if this returns a valid message.
     // Parse invitation supports legacy connection invitations, oob invitations, and
     // legacy connectionless invitations, and will all transform them into an OOB invitation.
-    const parsedInvitation = await agent.modules.outOfBand.parseInvitation(updatedInvitationUrl)
-    agent.config.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
+    const parsedInvitation = await paradym.agent.modules.outOfBand.parseInvitation(updatedInvitationUrl)
+    paradym.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
     return parsedInvitation
   }
   return parseInvitationJson(invitation)
 }
 
-export async function parseOpenIdCredentialOfferInvitation(agent: OpenId4VcAgent, invitationUrl: string) {
-  const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({ agent, offer: { uri: invitationUrl } })
-  const tokenResponse = await acquirePreAuthorizedAccessToken({ agent, resolvedCredentialOffer })
+export async function parseOpenIdCredentialOfferInvitation(paradym: ParadymWalletSdk, invitationUrl: string) {
+  const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({
+    agent: paradym.agent,
+    offer: { uri: invitationUrl },
+  })
+  const tokenResponse = await acquirePreAuthorizedAccessToken({ agent: paradym.agent, resolvedCredentialOffer })
   const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
-    agent,
+    agent: paradym.agent,
     resolvedCredentialOffer,
     accessToken: tokenResponse,
   })
@@ -125,15 +127,9 @@ export async function parseOpenIdCredentialOfferInvitation(agent: OpenId4VcAgent
   }
 }
 
-export async function parseOpenIdPresentationRequestInvitation(agent: OpenId4VcAgent, invitationUrl: string) {
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(invitationUrl)
+export async function parseOpenIdPresentationRequestInvitation(paradym: ParadymWalletSdk, invitationUrl: string) {
+  const resolved = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(invitationUrl)
 
-  // TODO: only when eudi trust is enabled
-  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agent.context, {
-    resolvedAuthorizationRequest: resolved,
-  })
-
-  // TODO: this object is too complex. Should be extremely simplified
   const formattedSubmission = getFormattedSubmission(resolved)
 
   // The output of this should be the input into the `shareProof` method
@@ -144,9 +140,10 @@ export async function parseOpenIdPresentationRequestInvitation(agent: OpenId4VcA
   }
 }
 
-export async function parseInvitationUrl(agent: FullAgent, invitationUrl: string): Promise<InvitationResult> {
+// TODO(sdk): this, or another version of this method, cannot depend on the paradym instance for deeplink redirecting
+export async function parseInvitationUrl(paradym: ParadymWalletSdk, invitationUrl: string): Promise<InvitationResult> {
   if (isOpenIdCredentialOffer(invitationUrl)) {
-    const metadata = await parseOpenIdCredentialOfferInvitation(agent, invitationUrl)
+    const metadata = await parseOpenIdCredentialOfferInvitation(paradym, invitationUrl)
 
     return {
       __internal: { id: metadata.id },
@@ -157,7 +154,7 @@ export async function parseInvitationUrl(agent: FullAgent, invitationUrl: string
   }
 
   if (isOpenIdPresentationRequest(invitationUrl)) {
-    const { formattedSubmission, id } = await parseOpenIdPresentationRequestInvitation(agent, invitationUrl)
+    const { formattedSubmission, id } = await parseOpenIdPresentationRequestInvitation(paradym, invitationUrl)
 
     return {
       __internal: { id },
@@ -166,7 +163,7 @@ export async function parseInvitationUrl(agent: FullAgent, invitationUrl: string
   }
 
   if (isDidCommInvitation(invitationUrl)) {
-    const outOfBandInvitation = await parseDidCommInvitation(agent, invitationUrl)
+    const outOfBandInvitation = await parseDidCommInvitation(paradym, invitationUrl)
 
     return {
       __internal: { id: outOfBandInvitation.id },
@@ -180,7 +177,7 @@ export async function parseInvitationUrl(agent: FullAgent, invitationUrl: string
   // If we can't detect the type of invitation from the URL, we will try to fetch the data from the URL
   // and see if we can detect if based on the response
   if (invitationUrl.startsWith('https://')) {
-    return await fetchInvitationDataUrl(agent, invitationUrl)
+    return await fetchInvitationDataUrl(paradym, invitationUrl)
   }
 
   throw new ParadymWalletInvitationNotRecognizedError()

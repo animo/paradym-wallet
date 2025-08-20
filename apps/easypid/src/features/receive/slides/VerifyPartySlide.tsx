@@ -1,5 +1,4 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
@@ -18,6 +17,7 @@ import {
 import { formatRelativeDate } from '@package/utils'
 import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
 import { useActivities } from '@paradym/wallet-sdk/hooks'
+import type { TrustMechanism, TrustedEntity } from '@paradym/wallet-sdk/trust/trustMechanism'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 

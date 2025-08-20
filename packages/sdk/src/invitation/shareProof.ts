@@ -8,19 +8,19 @@ import {
   type W3cCredentialRecord,
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
-import type { OpenId4VcAgent } from '../agent'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { type FetchBatchCredentialCallback, handleBatchCredential } from '../openid4vc/batch'
 import type { CredentialsForProofRequest } from '../openid4vc/getCredentialsForProofRequest'
 import { getFormattedTransactionData } from '../openid4vc/transaction'
 
 export const shareProof = async ({
-  agent,
   resolvedRequest,
   selectedCredentials,
   acceptTransactionData,
   fetchBatchCredentialCallback,
+  paradym,
 }: {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
   resolvedRequest: CredentialsForProofRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
   // FIXME: Should be a more complex structure allowing which credential to use for which entry
@@ -50,7 +50,7 @@ export const shareProof = async ({
 
               // Optionally use a batch credential
               const credentialRecord = await handleBatchCredential(
-                agent,
+                paradym.agent,
                 credential.credentialRecord,
                 fetchBatchCredentialCallback
               )
@@ -68,11 +68,11 @@ export const shareProof = async ({
           Object.entries(
             Object.keys(selectedCredentials).length > 0
               ? getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
-              : agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+              : paradym.agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
           ).map(async ([queryCredentialId, credential]) => {
             // Optionally use a batch credential
             const credentialRecord = await handleBatchCredential(
-              agent,
+              paradym.agent,
               credential.credentialRecord,
               fetchBatchCredentialCallback
             )
@@ -86,7 +86,7 @@ export const shareProof = async ({
   const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
 
   try {
-    const result = await agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
+    const result = await paradym.agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
       presentationExchange: presentationExchangeCredentials
         ? {
@@ -112,7 +112,7 @@ export const shareProof = async ({
     }
 
     if (result.serverResponse && (result.serverResponse.status < 200 || result.serverResponse.status > 299)) {
-      agent.config.logger.error('Error while accepting authorization request', {
+      paradym.logger.error('Error while accepting authorization request', {
         authorizationRequest,
         response: result.authorizationResponse,
         responsePayload: result.authorizationResponsePayload,

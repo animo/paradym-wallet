@@ -1,10 +1,13 @@
-import type { FullAgent, OpenId4VcAgent } from '../agent'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { ParadymWalletInvitationNotRecognizedError, ParadymWalletInvitationRetrievalError } from '../error'
 import { type InvitationResult, parseOpenIdPresentationRequestInvitation } from './parser'
 
 export type FetchInvitationResult = InvitationResult
 
-export async function fetchInvitationDataUrl(agent: FullAgent, dataUrl: string): Promise<FetchInvitationResult> {
+export async function fetchInvitationDataUrl(
+  paradym: ParadymWalletSdk,
+  dataUrl: string
+): Promise<FetchInvitationResult> {
   // If we haven't had a response after 10 seconds, we will handle as if the invitation is not valid.
   const abortController = new AbortController()
   const timeout = setTimeout(() => abortController.abort(), 10000)
@@ -32,7 +35,7 @@ export async function fetchInvitationDataUrl(agent: FullAgent, dataUrl: string):
     }
 
     const text = await response.text()
-    return handleTextResponse(agent, text)
+    return handleTextResponse(paradym, text)
   } catch (error) {
     clearTimeout(timeout)
     throw new ParadymWalletInvitationRetrievalError()
@@ -57,10 +60,10 @@ function handleJsonResponse(json: unknown): FetchInvitationResult {
   throw new ParadymWalletInvitationNotRecognizedError()
 }
 
-async function handleTextResponse(agent: OpenId4VcAgent, text: string): Promise<FetchInvitationResult> {
+async function handleTextResponse(paradym: ParadymWalletSdk, text: string): Promise<FetchInvitationResult> {
   // If the text starts with 'ey' we assume it's a JWT and thus an OpenID authorization request
   if (text.startsWith('ey')) {
-    const { id, formattedSubmission } = await parseOpenIdPresentationRequestInvitation(agent, text)
+    const { id, formattedSubmission } = await parseOpenIdPresentationRequestInvitation(paradym, text)
     return {
       __internal: {
         id,

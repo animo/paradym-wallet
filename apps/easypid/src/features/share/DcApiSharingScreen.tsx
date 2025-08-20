@@ -1,21 +1,11 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
-import { WalletInvalidKeyError } from '@credo-ts/core'
-import { initializeParadymWalletSdk } from '@easypid/sdk/paradymWalletSdk'
-import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { TranslationProvider, commonMessages } from '@package/translations'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
-import {
-  resolveRequestForDcApi,
-  sendErrorResponseForDcApi,
-  sendResponseForDcApi,
-} from '@paradym/wallet-sdk/openid4vc/dcApi'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
-import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
 
 type DcApiSharingScreenProps = {
@@ -47,65 +37,62 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const onProofAccept = async (pin: string) => {
     setIsProcessing(true)
 
-    const agent = await secureWalletKey
-      .getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
-      .then(async (walletKey) => {
-        const paradym = await initializeParadymWalletSdk({
-          walletKey,
-          walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
-        })
-        await setWalletServiceProviderPin(pin.split('').map(Number), false)
-        return paradym.agent
-      })
-      .catch((e) => {
-        setIsProcessing(false)
-        if (e instanceof WalletInvalidKeyError) {
-          pinRef.current?.clear()
-          pinRef.current?.shake()
-          return
-        }
+    // TODO(sdk): create agent here for DcApiSharing
+    // const agent = await secureWalletKey
+    //   .getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
+    //   .then(async (walletKey) => {
+    //     const paradym = await initializeParadymWalletSdk({
+    //       walletKey,
+    //       walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
+    //     })
+    //     await setWalletServiceProviderPin(pin.split('').map(Number), false)
+    //     return paradym.agent
+    //   })
+    //   .catch((e) => {
+    //     setIsProcessing(false)
+    //     if (e instanceof WalletInvalidKeyError) {
+    //       pinRef.current?.clear()
+    //       pinRef.current?.shake()
+    //       return
+    //     }
+    //
+    //     sendErrorResponseForDcApi('Error initializing wallet')
+    //   })
+    // if (!agent) return
 
-        // Not shown to the user
-        sendErrorResponseForDcApi('Error initializing wallet')
-      })
+    // const resolvedRequest = await resolveRequestForDcApi({ agent, request })
+    //   .then((resolvedRequest) => {
+    //     // We can't hare multiple documents at the moment
+    //     if (resolvedRequest.formattedSubmission.entries.length > 1) {
+    //       throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
+    //     }
 
-    if (!agent) return
+    //     return resolvedRequest
+    //   })
+    //   .catch((error) => {
+    //     agent.config.logger.error('Error getting credentials for dc api request', {
+    //       error,
+    //     })
 
-    const resolvedRequest = await resolveRequestForDcApi({ agent, request })
-      .then((resolvedRequest) => {
-        // We can't share multiple documents at the moment
-        if (resolvedRequest.formattedSubmission.entries.length > 1) {
-          throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
-        }
+    //     sendErrorResponseForDcApi('Presentation information could not be extracted')
+    //   })
 
-        return resolvedRequest
-      })
-      .catch((error) => {
-        agent.config.logger.error('Error getting credentials for dc api request', {
-          error,
-        })
+    // if (!resolvedRequest) return
 
-        // Not shown to the user
-        sendErrorResponseForDcApi('Presentation information could not be extracted')
-      })
+    // // Once this returns we just assume it's successful
+    // try {
+    //   await sendResponseForDcApi({
+    //     agent,
+    //     dcRequest: request,
+    //     resolvedRequest,
+    //     fetchBatchCredentialCallback: refreshPid,
+    //   })
+    // } catch (error) {
+    //   agent.config.logger.error('Could not share response', { error })
 
-    if (!resolvedRequest) return
-
-    // Once this returns we just assume it's successful
-    try {
-      await sendResponseForDcApi({
-        agent,
-        dcRequest: request,
-        resolvedRequest,
-        fetchBatchCredentialCallback: refreshPid,
-      })
-    } catch (error) {
-      agent.config.logger.error('Could not share response', { error })
-
-      // Not shown to the user
-      sendErrorResponseForDcApi('Unable to share credentials')
-      return
-    }
+    //   sendErrorResponseForDcApi('Unable to share credentials')
+    //   return
+    // }
   }
 
   return (

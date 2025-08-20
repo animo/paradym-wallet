@@ -1,6 +1,5 @@
 import { useDevelopmentMode } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { TrustMechanism, TrustedEntity } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
@@ -18,6 +17,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import type { TrustMechanism, TrustedEntity } from '@paradym/wallet-sdk/trust/trustMechanism'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

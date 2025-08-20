@@ -1,4 +1,5 @@
 import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/features/onboarding'
+import { resetAppState } from '@easypid/utils/resetAppState'
 import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -10,7 +11,6 @@ import { useEffect, useRef, useState } from 'react'
 import { AccessibilityInfo, Alert } from 'react-native'
 import { findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
-import { resetWallet } from '../../utils/resetWallet'
 
 export default function OnboardingScreens() {
   const paradym = useParadym()
@@ -41,9 +41,10 @@ export default function OnboardingScreens() {
 
     setHasResetWallet(true)
     router.setParams({ reset: 'false' })
-    // TODO(sdk): move to sdk
+
     if (paradym.state === 'unlocked') {
-      resetWallet(paradym)
+      paradym.reset()
+      resetAppState()
     }
   }, [reset, hasResetWallet, paradym])
 

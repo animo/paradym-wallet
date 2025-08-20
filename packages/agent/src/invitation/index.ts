@@ -22,12 +22,9 @@ export type OpenId4VciResolvedPresentationDuringIssuanceAuthorizationRequest = E
 export {
   parseInvitationUrl,
   parseDidCommInvitation,
-  InvitationQrTypes,
-  InvitationType,
   ParseInvitationResultError,
 } from './parsers'
 export {
-  type CredentialsForProofRequest,
   type TrustedX509Entity,
   type ResolveOutOfBandInvitationResultSuccess,
   acceptOutOfBandInvitation,
@@ -37,9 +34,5 @@ export {
   acquireRefreshTokenAccessToken,
   acquirePreAuthorizedAccessToken,
   resolveOpenId4VciOffer,
-  getCredentialsForProofRequest,
   acquireAuthorizationCodeUsingPresentation,
 } from './handler'
-
-export type { TrustedEntity } from './trustedEntities'
-export * from './transactions'

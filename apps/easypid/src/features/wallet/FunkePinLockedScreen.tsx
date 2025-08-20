@@ -1,4 +1,4 @@
-import { resetWallet } from '@easypid/utils/resetWallet'
+import { resetAppState } from '@easypid/utils/resetAppState'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
 
 export const FunkePinLockedScreen = () => {
-  const paradym = useParadym('unlocked')
+  const { paradym } = useParadym('unlocked')
   const router = useRouter()
   const { t } = useLingui()
 
@@ -23,9 +23,12 @@ export const FunkePinLockedScreen = () => {
         {
           style: 'cancel',
           text: t(commonMessages.yes),
-          onPress: () =>
-            // TODO(sdk): move to sdk
-            resetWallet(paradym).then(() => router.replace('onboarding')),
+          onPress: () => {
+            paradym.reset().then(() => {
+              resetAppState()
+              router.replace('onboarding')
+            })
+          },
         },
       ]
     )

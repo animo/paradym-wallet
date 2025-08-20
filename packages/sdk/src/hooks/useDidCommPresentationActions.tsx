@@ -13,20 +13,19 @@ import { useLingui } from '@lingui/react/macro'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
-import type { DidCommAgent } from '../agent'
 import { getCredentialForDisplay } from '../display/credential'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
   FormattedSubmissionEntrySatisfiedCredential,
 } from '../format/submission'
-import { useAgent } from '../providers/AgentProvider'
 import { useConnectionById } from '../providers/ConnectionProvider'
 import { useProofById } from '../providers/ProofExchangeProvider'
 import { addSharedActivityForSubmission } from '../storage/activities'
 import { getCredential } from '../storage/credentials'
 import type { NonEmptyArray } from '../types'
 import { capitalizeFirstLetter } from '../utils/capitalizeFirstLetter'
+import { useParadym } from './useParadym'
 
 export const predicateMessages = {
   '>': defineMessage({
@@ -62,7 +61,7 @@ type DeclinePresentationOptions = {
 }
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
-  const { agent } = useAgent<DidCommAgent>()
+  const { paradym } = useParadym('unlocked')
 
   const proofExchange = useProofById(proofExchangeId)
   const connection = useConnectionById(proofExchange?.connectionId ?? '')
@@ -70,11 +69,11 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
     queryFn: async () => {
-      const formatData = await agent.modules.proofs.getFormatData(proofExchangeId)
+      const formatData = await paradym.agent.modules.proofs.getFormatData(proofExchangeId)
 
       const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
 
-      const credentialsForRequest = await agent.modules.proofs.getCredentialsForRequest({
+      const credentialsForRequest = await paradym.agent.modules.proofs.getCredentialsForRequest({
         proofRecordId: proofExchangeId,
       })
 
@@ -174,7 +173,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
           const credentials = (await Promise.all(
             entry.matches.map(async (match): Promise<FormattedSubmissionEntrySatisfiedCredential> => {
-              const credential = await getCredential(agent, `w3c-credential-${match.credentialId}`)
+              const credential = await getCredential(paradym.agent, `w3c-credential-${match.credentialId}`)
               const credentialForDisplay = getCredentialForDisplay(credential)
 
               const disclosedAttributesWithValues = Object.entries(credentialForDisplay.attributes)
@@ -214,7 +213,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           }
         })
       )
-      const requestMessage = await agent.modules.proofs.findRequestMessage(proofExchangeId)
+      const requestMessage = await paradym.agent.modules.proofs.findRequestMessage(proofExchangeId)
       const purpose =
         requestMessage?.comment ??
         (requestMessage instanceof V2RequestPresentationMessage ? requestMessage.goal : undefined)
@@ -268,7 +267,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           }
         }
 
-        const presentationDone$ = agent.events
+        const presentationDone$ = paradym.agent.events
           .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
           .pipe(
             // Correct record with id and state
@@ -283,7 +282,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           )
 
         const presentationDonePromise = firstValueFrom(presentationDone$)
-        await agent.modules.proofs.acceptRequest({
+        await paradym.agent.modules.proofs.acceptRequest({
           proofRecordId: proofExchangeId,
           proofFormats: formatInput,
         })
@@ -291,7 +290,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
         if (options.storeAsActivity && data) {
           await addSharedActivityForSubmission(
-            agent,
+            paradym,
             data.submission,
             {
               id: proofExchangeId,
@@ -306,7 +305,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       } catch {
         if (options.storeAsActivity && data) {
           await addSharedActivityForSubmission(
-            agent,
+            paradym,
             data.submission,
             {
               id: proofExchangeId,
@@ -325,7 +324,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   const { mutateAsync: declineMutateAsync, status: declineStatus } = useMutation({
     mutationKey: ['declineDidCommPresentation', proofExchangeId],
     mutationFn: async (options: DeclinePresentationOptions = { deletePresentation: true, storeAsActivity: true }) => {
-      const presentationDeclined$ = agent.events
+      const presentationDeclined$ = paradym.agent.events
         .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
         .pipe(
           // Correct record with id and state
@@ -340,16 +339,16 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         )
 
       const presentationDeclinePromise = firstValueFrom(presentationDeclined$)
-      await agent.modules.proofs.declineRequest({ proofRecordId: proofExchangeId, sendProblemReport: true })
+      await paradym.agent.modules.proofs.declineRequest({ proofRecordId: proofExchangeId, sendProblemReport: true })
       await presentationDeclinePromise
 
       if (options.deletePresentation) {
-        void agent.modules.proofs.deleteById(proofExchangeId)
+        void paradym.agent.modules.proofs.deleteById(proofExchangeId)
       }
 
       if (options.storeAsActivity && data) {
         await addSharedActivityForSubmission(
-          agent,
+          paradym,
           data.submission,
           {
             id: proofExchangeId,

@@ -4,17 +4,16 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { useLingui } from '@lingui/react/macro'
+import { acquireAuthorizationCodeAccessToken, acquireAuthorizationCodeUsingPresentation } from '@package/agent'
+import { SlideWizard, usePushToWallet } from '@package/app'
+import { commonMessages } from '@package/translations'
+import { useToastController } from '@package/ui'
 import {
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
-  acquireAuthorizationCodeAccessToken,
-  acquireAuthorizationCodeUsingPresentation,
-} from '@package/agent'
-import { SlideWizard, usePushToWallet } from '@package/app'
-import { commonMessages } from '@package/translations'
-import { useToastController } from '@package/ui'
+} from '@paradym/wallet-sdk'
 import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
 import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
@@ -255,7 +254,7 @@ export function FunkeCredentialNotificationScreen() {
   const parsePresentationRequestUrl = useCallback(
     (oid4vpRequestUrl: string) =>
       getCredentialsForProofRequest({
-        agent: paradym.agent,
+        paradym,
         uri: oid4vpRequestUrl,
       })
         .then(setCredentialsForRequest)
@@ -265,7 +264,7 @@ export function FunkeCredentialNotificationScreen() {
             error,
           })
         }),
-    [paradym.agent, setErrorReasonWithError, t, paradym.logger.error]
+    [paradym, setErrorReasonWithError, paradym.logger.error, t]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -321,7 +320,7 @@ export function FunkeCredentialNotificationScreen() {
 
       try {
         const { presentationDuringIssuanceSession } = await shareProof({
-          agent: paradym.agent,
+          paradym,
           resolvedRequest: credentialsForRequest,
           selectedCredentials: {},
           fetchBatchCredentialCallback: refreshPid,
@@ -358,7 +357,7 @@ export function FunkeCredentialNotificationScreen() {
     [
       credentialsForRequest,
       t,
-      paradym.agent,
+      paradym,
       acquireCredentialsAuth,
       resolvedAuthorizationRequest,
       resolvedCredentialOffer,

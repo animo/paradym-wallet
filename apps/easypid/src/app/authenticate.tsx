@@ -4,10 +4,10 @@ import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
-import { Redirect, SplashScreen, useLocalSearchParams } from 'expo-router'
+import { useParadym, useResetWalletDevMenu } from '@paradym/wallet-sdk/hooks'
+import { Redirect, useLocalSearchParams } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
-import { useResetWalletDevMenu } from '../utils/resetWallet'
 
 /**
  * Authenticate screen is redirect to from app layout when app is configured but locked

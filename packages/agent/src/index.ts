@@ -11,4 +11,3 @@ export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
 
 export * from './invitation'
 export * from './crypto'
-export * from './utils/trust'
