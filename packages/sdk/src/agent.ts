@@ -30,6 +30,7 @@ import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
+import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { ParadymWalletMustBeDidCommAgentError, ParadymWalletMustBeOpenId4VcAgentError } from './error'
 import { type LogLevel, logger } from './logger'
@@ -40,7 +41,7 @@ export type SetupAgentOptions = {
    * Unique identifier of your wallet storage
    *
    */
-  id: string
+  id?: string
 
   /**
    *
@@ -110,11 +111,13 @@ export const setupAgent = (options: SetupAgentOptions) => {
     ...(didcommConfiguration ? getDidCommModules(didcommConfiguration) : {}),
   }
 
+  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+
   const agent = new Agent({
     config: {
       label: didcommConfiguration ? didcommConfiguration.label : '',
       walletConfig: {
-        id: options.id,
+        id: `${options.id ?? 'paradym-wallet'}-${walletKeyVersion}`,
         key: options.key,
         keyDerivationMethod: KeyDerivationMethod.Raw,
       },

@@ -3,6 +3,7 @@ import { LogLevel } from '@paradym/wallet-sdk'
 import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk/ParadymWalletSdk'
 
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
+  id: 'easypid-wallet',
   logLevel: LogLevel.debug,
   openId4VcConfiguration: {
     // TODO: maybe we can remove this because of the trustMechanisms?

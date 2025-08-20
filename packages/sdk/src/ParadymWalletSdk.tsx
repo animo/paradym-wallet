@@ -43,7 +43,7 @@ export type ParadymWalletSdkOptions = SetupAgentOptions & {
   trustMechanisms: TrustMechanismConfiguration[]
 }
 
-export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'id' | 'key'>
+export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
 export class ParadymWalletSdk {
   public trustMechanisms: TrustMechanismConfiguration[]
@@ -59,10 +59,7 @@ export class ParadymWalletSdk {
   }
 
   public get walletId() {
-    const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-
-    // TODO(sdk): how do we want to deal with the `easypid` wallet id?
-    return `easypid-wallet-${walletKeyVersion}`
+    return this.agent.config.walletConfig?.id
   }
 
   public async reset() {
