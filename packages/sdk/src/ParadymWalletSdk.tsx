@@ -65,7 +65,7 @@ export class ParadymWalletSdk {
     return `easypid-wallet-${walletKeyVersion}`
   }
 
-  public async reset(additionalResetCb?: () => Promise<void> | void) {
+  public async reset() {
     this.logger.debug('Resetting wallet')
 
     await this.agent.wallet.delete()
@@ -91,8 +91,6 @@ export class ParadymWalletSdk {
     // to see if the secure unlock has been setup.
     // await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
     await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
-
-    await additionalResetCb?.()
   }
 
   /**

@@ -1,4 +1,4 @@
-import { additionalResetApp } from '@easypid/hooks/useResetWalletDevMenu'
+import { resetAppState } from '@easypid/hooks/useResetWalletDevMenu'
 import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
@@ -17,7 +17,10 @@ export const FunkePinLockedScreen = () => {
       {
         text: 'Yes',
         onPress: () => {
-          paradym.reset(additionalResetApp).then(() => router.replace('onboarding'))
+          paradym.reset().then(() => {
+            resetAppState()
+            router.replace('onboarding')
+          })
         },
       },
     ])

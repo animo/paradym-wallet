@@ -2,7 +2,7 @@ import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { additionalResetApp } from '@easypid/hooks/useResetWalletDevMenu'
+import { resetAppState } from '@easypid/hooks/useResetWalletDevMenu'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -160,7 +160,8 @@ export function OnboardingContextProvider({
 
     // When the onboarding is cancelled between the pin slide and the biometrics slide, a state occurs where the wallet is `locked`, but biometrics is not setup.
     if (paradym.state !== 'not-configured') {
-      await resetWallet(paradym, additionalResetApp)
+      await resetWallet(paradym)
+      resetAppState()
       await reset({ resetToStep: 'welcome' })
       return
     }
