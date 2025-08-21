@@ -13,7 +13,7 @@ type CredentialSlidesProps = {
 }
 
 export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, onComplete }: CredentialSlidesProps) {
-  const paradym = useParadym()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const { acceptCredential, acceptStatus, declineCredential, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)

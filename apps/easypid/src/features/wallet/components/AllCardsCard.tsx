@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
 import { useCredentials } from '@paradym/wallet-sdk/hooks/useCredentials'

@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { useDidCommPresentationActions } from '@paradym/wallet-sdk/hooks'
+import { useDidCommPresentationActions, useParadym } from '@paradym/wallet-sdk/hooks'
 import { useState } from 'react'
 import { usePushToWallet } from '../../hooks'
 import { GettingInformationScreen } from './components/GettingInformationScreen'
@@ -12,6 +12,7 @@ interface DidCommPresentationNotificationScreenProps {
 }
 
 export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCommPresentationNotificationScreenProps) {
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
   const { t } = useLingui()

@@ -16,10 +16,10 @@ type PresentationSlidesProps = {
 }
 
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
-  const paradym = useParadym()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const { t } = useLingui()
-  const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
+  const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName } =
     useDidCommPresentationActions(proofExchangeId)
 
   const onProofAccept = async () => {

@@ -97,7 +97,7 @@ export function CredentialDetailScreen() {
       <FloatingSheet isOpen={isSheetOpen} setIsOpen={setIsSheetOpen}>
         <Stack p="$4" gap="$6" pb={bottom}>
           <Stack gap="$3">
-            <Heading variant="h2">Delete '{display.name}'?</Heading>
+            <Heading heading="h2">Delete '{display.name}'?</Heading>
             <Paragraph secondary>This will make the credential unusable and delete it from your wallet.</Paragraph>
           </Stack>
           <DualResponseButtons
