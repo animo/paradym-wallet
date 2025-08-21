@@ -17,10 +17,10 @@ import { useDidCommConnectionActions } from './hooks/useDidCommConnectionActions
 import { useDidCommCredentialActions } from './hooks/useDidCommCredentialActions'
 import { useDidCommPresentationActions } from './hooks/useDidCommPresentationActions'
 import { useDidCommAgent } from './hooks/useDidcommAgent'
-import { useLogger } from './hooks/useLogger'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
 import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
 import { type ResolveOutOfBandInvitationResult, resolveOutOfBandInvitation } from './invitation/resolver'
+import type { ParadymWalletSdkLogger } from './logger'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
@@ -124,7 +124,7 @@ export class ParadymWalletSdk {
    *
    */
   public get logger() {
-    return this.agent.config.logger
+    return this.agent.config.logger as ParadymWalletSdkLogger
   }
 
   /**
@@ -136,8 +136,6 @@ export class ParadymWalletSdk {
     this.assertAgentIsInitialized()
 
     return {
-      useLogger,
-
       useCredentials,
       useCredentialById,
       useCredentialByCategory,

@@ -55,10 +55,38 @@ export type SetupAgentOptions = {
 
   /**
    *
-   * The log level of the events that occur within the wallet
+   * Configuration regarding logging with the Paradym Wallet SDK
    *
    */
-  logLevel?: LogLevel
+  logging?: {
+    /**
+     *
+     * Loglevel to be used. Set to `trace` to log everything and `off` for nothing
+     *
+     */
+    level: LogLevel
+
+    /**
+     *
+     * Whether to trace the logs. Later, this can be exported
+     *
+     * exporting the logs can be done with the following:
+     *
+     * ```typescript
+     * const { paradym } = useParadym('unlocked')
+     * const logs = paradym.logger.loggedMessageContents
+     * ```
+     *
+     */
+    trace?: boolean
+
+    /**
+     *
+     * Number of logs to be traced.
+     *
+     */
+    traceLimit?: number
+  }
 
   /**
    *
@@ -113,6 +141,12 @@ export const setupAgent = (options: SetupAgentOptions) => {
 
   const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
 
+  const paradymWalletSdkLogger = options.logging ? logger(options.logging.level) : undefined
+
+  if (options.logging?.trace) {
+    paradymWalletSdkLogger?.trackLoggedMessages(options.logging.traceLimit)
+  }
+
   const agent = new Agent({
     config: {
       label: didcommConfiguration ? didcommConfiguration.label : '',
@@ -121,7 +155,7 @@ export const setupAgent = (options: SetupAgentOptions) => {
         key: options.key,
         keyDerivationMethod: KeyDerivationMethod.Raw,
       },
-      logger: options.logLevel ? logger(options.logLevel) : undefined,
+      logger: paradymWalletSdkLogger,
     },
     dependencies: agentDependencies,
     modules,

@@ -1,4 +1,3 @@
-import { useSecureUnlock } from '@package/secure-store/secureUnlock'
 import { useActivities } from './useActivities'
 import { useActivityById } from './useActivityById'
 import { useCredentialByCategory } from './useCredentialByCategory'
@@ -17,7 +16,6 @@ import { useResetWalletDevMenu } from './useResetWalletDevMenu'
 
 export {
   useParadym,
-  useSecureUnlock,
   useCredentials,
   useCredentialById,
   useCredentialByCategory,
@@ -51,6 +49,5 @@ export type * from './useDidCommMessagePickup'
 export type * from './useDidCommPresentationActions'
 export type * from './useDidcommAgent'
 export type * from './useInboxNotifications'
-export type * from './useLogger'
 export type * from './useOpenId4VcAgent'
 export type * from './usePreFetchInboxDisplayMetadata'

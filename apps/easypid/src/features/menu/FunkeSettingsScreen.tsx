@@ -1,10 +1,10 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useLingui } from '@lingui/react/macro'
 import { Trans } from '@lingui/react/macro'
-import { logger } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
 import { type SupportedLocale, supportedLanguageMessages, supportedLocales, useLocale } from '@package/translations'
 import { BetaTag, FlexPage, HeaderContainer, HeroIcons, SettingsButton, Switch, XStack, YStack } from '@package/ui'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
 import { ScrollView, Share } from 'react-native'
@@ -62,6 +62,7 @@ export function LocaleSelect() {
 }
 
 export function FunkeSettingsScreen() {
+  const { paradym } = useParadym('unlocked')
   const { t } = useLingui()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
@@ -106,7 +107,7 @@ export function FunkeSettingsScreen() {
                   comment: 'Label for the button to export debug logs',
                 })}
                 beta
-                onPress={() => Share.share({ message: logger.loggedMessageContents })}
+                onPress={() => Share.share({ message: paradym.logger.loggedMessageContents })}
                 description={t({
                   id: 'settings.exportDebugLogsDescription',
                   message:
