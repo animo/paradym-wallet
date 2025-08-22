@@ -158,7 +158,7 @@ export function FunkePidSetupScreen() {
     }
 
     const baseOptions = {
-      agent: paradym.paradym.agent,
+      paradym: paradym.paradym,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({
@@ -345,7 +345,7 @@ export function FunkePidSetupScreen() {
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(paradym.paradym.agent, {
+          await addReceivedActivity(paradym.paradym, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,

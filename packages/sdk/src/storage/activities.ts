@@ -91,7 +91,7 @@ export const activityStorage = {
 }
 
 export const addReceivedActivity = async (
-  agent: BaseAgent,
+  paradym: ParadymWalletSdk,
   input: {
     entityId?: string
     name: string
@@ -101,7 +101,7 @@ export const addReceivedActivity = async (
     credentialIds: CredentialId[]
   }
 ) => {
-  await activityStorage.addActivity(agent, {
+  await activityStorage.addActivity(paradym.agent, {
     id: utils.uuid(),
     date: new Date().toISOString(),
     type: 'received',

@@ -19,11 +19,22 @@ import { useDidCommPresentationActions } from './hooks/useDidCommPresentationAct
 import { useDidCommAgent } from './hooks/useDidcommAgent'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
 import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
-import { type ResolveOutOfBandInvitationResult, resolveOutOfBandInvitation } from './invitation/resolver'
+import {
+  type ResolveCredentialOfferOptions,
+  type ResolveOutOfBandInvitationResult,
+  resolveCredentialOffer,
+  resolveOutOfBandInvitation,
+} from './invitation/resolver'
 import type { ParadymWalletSdkLogger } from './logger'
+import { type AcquireCredentialsOptions, acquireCredentials } from './openid4vc/func/acquireCredentials'
+import {
+  type CompleteCredentialRetrievalOptions,
+  completeCredentialRetrieval,
+} from './openid4vc/func/completeCredentialRetrieval'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
+import type { DistributedOmit } from './types'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
@@ -243,7 +254,7 @@ export class ParadymWalletSdk {
 
   private async storeCredential(record: CredentialRecord): Promise<ParadymWalletSdkResult> {
     try {
-      await storeCredential(this.agent, record)
+      await storeCredential(this, record)
       return { success: true }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : (error as string) }
@@ -258,6 +269,19 @@ export class ParadymWalletSdk {
       return { success: true, ...(await resolveOutOfBandInvitation(this.agent, parsedInvitation)) }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : `${error}` }
+    }
+  }
+
+  public get openid4vc() {
+    return {
+      resolveCredentialOffer: (options: Omit<ResolveCredentialOfferOptions, 'paradym'>) =>
+        resolveCredentialOffer({ ...options, paradym: this }),
+
+      acquireCredentials: (options: DistributedOmit<AcquireCredentialsOptions, 'paradym'>) =>
+        acquireCredentials({ ...options, paradym: this }),
+
+      completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
+        completeCredentialRetrieval({ ...options, paradym: this }),
     }
   }
 }
