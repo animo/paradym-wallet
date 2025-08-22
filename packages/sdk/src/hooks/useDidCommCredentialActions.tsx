@@ -15,6 +15,7 @@ import {
 import { useAgent } from '../providers/AgentProvider'
 import { useCredentialById } from '../providers/CredentialExchangeProvider'
 import { addReceivedActivity } from '../storage/activities'
+import { useParadym } from './useParadym'
 
 type AcceptCredentialOptions = {
   storeAsActivity?: boolean
@@ -52,7 +53,7 @@ function useOfferAttributes(credentialExchangeId: string) {
 }
 
 export function useDidCommCredentialActions(credentialExchangeId: string) {
-  const { agent } = useAgent<DidCommAgent>()
+  const { paradym } = useParadym('unlocked')
 
   const credentialExchange = useCredentialById(credentialExchangeId)
   const { data } = useOfferAttributes(credentialExchangeId)
@@ -62,7 +63,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
     mutationFn: async (options: AcceptCredentialOptions = { storeAsActivity: true }) => {
       if (!credentialExchange) return
 
-      const credentialDone$ = agent.events
+      const credentialDone$ = paradym.agent.events
         .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
         .pipe(
           // Correct record with id and state
@@ -78,7 +79,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.modules.credentials.acceptOffer({ credentialRecordId: credentialExchangeId })
+      await paradym.agent.modules.credentials.acceptOffer({ credentialRecordId: credentialExchangeId })
       const doneEvent = await credentialDonePromise
 
       const w3cCredentialRecordId = doneEvent.payload.credentialRecord.credentials.find(
@@ -90,7 +91,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
       if (w3cCredentialRecordId && didCommDisplayMetadata) {
         // NOTE: we store the metadata also in openid4vc format, just because it's simple. In the future
         // we may want to have our own display format we use for all credential types
-        const w3cRecord = await agent.w3cCredentials.getCredentialRecordById(w3cCredentialRecordId)
+        const w3cRecord = await paradym.agent.w3cCredentials.getCredentialRecordById(w3cCredentialRecordId)
 
         // TODO: we must somehow link the w3c credential record to a DIDComm connection
         // first in Paradym Wallet, but would alos be nice to do this within Credo
@@ -102,11 +103,11 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
           )
         )
 
-        const w3cCredentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
-        await w3cCredentialRepository.update(agent.context, w3cRecord)
+        const w3cCredentialRepository = paradym.agent.dependencyManager.resolve(W3cCredentialRepository)
+        await w3cCredentialRepository.update(paradym.agent.context, w3cRecord)
 
         if (options.storeAsActivity) {
-          await addReceivedActivity(agent, {
+          await addReceivedActivity(paradym, {
             entityId: credentialExchange?.connectionId,
             name: didcommDisplayMetadata?.issuerName ?? 'Unknown',
             logo: { url: didcommDisplayMetadata?.issuerLogoUri },
@@ -126,7 +127,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
     mutationFn: async (options: DeclineCredentialOptions = { deleteCredential: true }) => {
       if (!credentialExchange) return
 
-      const credentialDone$ = agent.events
+      const credentialDone$ = paradym.agent.events
         .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
         .pipe(
           // Correct record with id and state
@@ -142,12 +143,12 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.modules.credentials.declineOffer(credentialExchangeId, {
+      await paradym.agent.modules.credentials.declineOffer(credentialExchangeId, {
         sendProblemReport: true,
       })
 
       if (options.deleteCredential) {
-        await agent.modules.credentials.deleteById(credentialExchangeId)
+        await paradym.agent.modules.credentials.deleteById(credentialExchangeId)
       }
 
       await credentialDonePromise
