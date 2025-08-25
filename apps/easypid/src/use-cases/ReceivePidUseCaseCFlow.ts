@@ -1,7 +1,6 @@
 import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
-import { receiveCredentialFromOpenId4VciOffer, resolveOpenId4VciOffer } from '@package/agent'
-import { OpenId4VciAuthorizationFlow } from '@paradym/wallet-sdk'
+import { receiveCredentialFromOpenId4VciOffer } from '@package/agent'
 import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import {
   setCredentialCategoryMetadata,
@@ -15,9 +14,9 @@ import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 import { bdrPidOpenId4VcMetadata, bdrPidSdJwtTypeMetadata } from './bdrPidMetadata'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
+  // TODO(sdk): not tested
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
-    const resolved = await resolveOpenId4VciOffer({
-      agent: options.agent,
+    const resolved = await options.paradym.openid4vc.resolveCredentialOffer({
       offer: { uri: C_PRIME_SD_JWT_MDOC_OFFER },
       authorization: {
         clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
@@ -33,10 +32,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       }
     }
 
-    if (
-      !resolved.resolvedAuthorizationRequest ||
-      resolved.resolvedAuthorizationRequest.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
-    ) {
+    if (resolved.flow !== 'auth') {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
@@ -63,8 +59,10 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       const credentialConfigurationIdsToRequest = Object.keys(
         this.resolvedCredentialOffer.offeredCredentialConfigurations
       )
+
+      // TODO(sdk): create sdk functionality
       const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
-        agent: this.options.agent,
+        agent: this.options.paradym.agent,
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdsToRequest,
@@ -111,7 +109,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         }
 
         credentialRecords.push(credentialRecord)
-        await storeCredential(this.options.agent, credentialRecord)
+        await storeCredential(this.options.paradym, credentialRecord)
       }
 
       return credentialRecords

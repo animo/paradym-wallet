@@ -11,12 +11,12 @@ import type {
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
+  ParadymWalletSdk,
 } from '@paradym/wallet-sdk'
-import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
 
 export interface ReceivePidUseCaseFlowOptions
   extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
   onStateChange?: (newState: ReceivePidUseCaseState) => void
   onEnterPin: (
     options: Parameters<AusweisAuthFlowOptions['onEnterPin']>[0] & {
@@ -157,7 +157,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
         codeVerifier: this.resolvedAuthorizationRequest.codeVerifier,
         clientId: ReceivePidUseCaseFlow.CLIENT_ID,
         redirectUri: ReceivePidUseCaseFlow.REDIRECT_URI,
-        agent: this.options.agent,
+        paradym: this.options.paradym,
       })
 
       this.assertState({

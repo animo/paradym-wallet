@@ -6,7 +6,6 @@ import { Buffer } from '@credo-ts/core'
 global.Buffer = Buffer
 
 export type { OpenId4VciTxCode, OpenId4VciDpopRequestOptions } from '@credo-ts/openid4vc'
-export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
 
 export * from './invitation'
 export * from './crypto'

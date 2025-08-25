@@ -505,7 +505,7 @@ export function OnboardingContextProvider({
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(paradym.paradym.agent, {
+          await addReceivedActivity(paradym.paradym, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
@@ -565,7 +565,7 @@ export function OnboardingContextProvider({
     }
 
     const baseOptions = {
-      agent: paradym.paradym.agent,
+      paradym: paradym.paradym,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({

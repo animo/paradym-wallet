@@ -19,8 +19,26 @@ import { useDidCommPresentationActions } from './hooks/useDidCommPresentationAct
 import { useDidCommAgent } from './hooks/useDidcommAgent'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
 import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
-import { type ResolveOutOfBandInvitationResult, resolveOutOfBandInvitation } from './invitation/resolver'
+import {
+  type ResolveCredentialOfferOptions,
+  type ResolveOutOfBandInvitationResult,
+  resolveCredentialOffer,
+  resolveOutOfBandInvitation,
+} from './invitation/resolver'
 import type { ParadymWalletSdkLogger } from './logger'
+import { type AcquireCredentialsAuthOptions, acquireCredentialsAuth } from './openid4vc/func/acquireCredentialsAuth'
+import {
+  type AcquireCredentialsAuthPresentationDuringIssuanceOptions,
+  acquireCredentialsAuthPresentationDuringIssuance,
+} from './openid4vc/func/acquireCredentialsAuthPresentationDuringIssuance'
+import {
+  type AcquireCredentialsPreAuthOptions,
+  acquireCredentialsPreAuth,
+} from './openid4vc/func/acquireCredentialsPreAuth'
+import {
+  type CompleteCredentialRetrievalOptions,
+  completeCredentialRetrieval,
+} from './openid4vc/func/completeCredentialRetrieval'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
@@ -243,7 +261,7 @@ export class ParadymWalletSdk {
 
   private async storeCredential(record: CredentialRecord): Promise<ParadymWalletSdkResult> {
     try {
-      await storeCredential(this.agent, record)
+      await storeCredential(this, record)
       return { success: true }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : (error as string) }
@@ -258,6 +276,27 @@ export class ParadymWalletSdk {
       return { success: true, ...(await resolveOutOfBandInvitation(this.agent, parsedInvitation)) }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : `${error}` }
+    }
+  }
+
+  public get openid4vc() {
+    return {
+      resolveCredentialOffer: (options: Omit<ResolveCredentialOfferOptions, 'paradym'>) =>
+        resolveCredentialOffer({ ...options, paradym: this }),
+
+      // TODO(sdk): do we just want a acquireCredentials, and handle it according to the input?
+      acquireCredentialsPreAuth: (options: Omit<AcquireCredentialsPreAuthOptions, 'paradym'>) =>
+        acquireCredentialsPreAuth({ ...options, paradym: this }),
+
+      completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
+        completeCredentialRetrieval({ ...options, paradym: this }),
+
+      acquireCredentialsAuth: (options: Omit<AcquireCredentialsAuthOptions, 'paradym'>) =>
+        acquireCredentialsAuth({ ...options, paradym: this }),
+
+      acquireCredentialsAuthPresentationDuringIssuance: (
+        options: Omit<AcquireCredentialsAuthPresentationDuringIssuanceOptions, 'paradym'>
+      ) => acquireCredentialsAuthPresentationDuringIssuance({ ...options, paradym: this }),
     }
   }
 }

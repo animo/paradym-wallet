@@ -215,21 +215,21 @@ export async function acquireRefreshTokenAccessToken({
 }
 
 export async function acquireAuthorizationCodeAccessToken({
+  paradym,
   resolvedCredentialOffer,
-  agent,
   codeVerifier,
   authorizationCode,
   clientId,
   redirectUri,
 }: {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   codeVerifier?: string
   authorizationCode: string
   clientId: string
   redirectUri?: string
 }) {
-  return await agent.modules.openId4VcHolder.requestToken({
+  return await paradym.agent.modules.openId4VcHolder.requestToken({
     resolvedCredentialOffer,
     code: authorizationCode,
     codeVerifier,
