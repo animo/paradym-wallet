@@ -33,6 +33,9 @@
 			"@credo-ts/anoncreds": "catalog:",
 			"@credo-ts/askar": "catalog:",
 			"@credo-ts/cheqd": "catalog:",
+			"@cheqd/sdk": "5.2.1",
+			"@cheqd/ts-proto": "2.4.1",
+			"@cheqd/ts-proto-cjs": "npm:@cheqd/ts-proto@2.4.1",
 			"@credo-ts/core": "catalog:",
 			"@credo-ts/openid4vc": "catalog:",
 			"@credo-ts/question-answer": "catalog:",
@@ -47,7 +50,8 @@
 		},
 		"patchedDependencies": {
 			"@animo-id/credo-ts-openid4vc": "patches/@animo-id__credo-ts-openid4vc.patch",
-			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch"
+			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",
+			"@cheqd/sdk": "patches/@cheqd__sdk.patch"
 		}
 	},
 	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
