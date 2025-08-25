@@ -127,6 +127,58 @@ export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation:
   }
 }
 
+export function parseInvitationUrlSync(invitationUrl: string): ParseInvitationResult {
+  if (isOpenIdCredentialOffer(invitationUrl)) {
+    return {
+      success: true,
+      result: {
+        format: 'url',
+        type: 'openid-credential-offer',
+        data: invitationUrl,
+      },
+    }
+  }
+
+  if (isOpenIdPresentationRequest(invitationUrl)) {
+    return {
+      success: true,
+      result: {
+        format: 'url',
+        type: 'openid-authorization-request',
+        data: invitationUrl,
+      },
+    }
+  }
+
+  if (isDidCommInvitation(invitationUrl)) {
+    return {
+      success: true,
+      result: {
+        format: 'url',
+        type: 'didcomm',
+        data: invitationUrl,
+      },
+    }
+  }
+
+  if (invitationUrl.startsWith('https://')) {
+    return {
+      success: true,
+      result: {
+        data: invitationUrl,
+        format: 'url',
+        type: 'didcomm',
+      },
+    }
+  }
+
+  return {
+    success: false,
+    error: 'invitation_not_recognized',
+    message: i18n.t(commonMessages.invitationNotRecognized),
+  }
+}
+
 export async function parseInvitationUrl(invitationUrl: string): Promise<ParseInvitationResult> {
   if (isOpenIdCredentialOffer(invitationUrl)) {
     return {
