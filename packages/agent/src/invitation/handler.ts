@@ -1,6 +1,6 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import type { DifPresentationExchangeDefinitionV2, P256Jwk } from '@credo-ts/core'
+import type { DifPresentationExchangeDefinitionV2, Jwk } from '@credo-ts/core'
 import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
 import type { PlaintextMessage } from '@credo-ts/core/build/types'
 import type {
@@ -149,7 +149,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  dPopKeyJwk?: P256Jwk
+  dPopKeyJwk?: Jwk
   authSession: string
   presentationDuringIssuanceSession?: string
 }) {
@@ -227,6 +227,7 @@ export async function acquireAuthorizationCodeAccessToken({
   authorizationCode,
   clientId,
   redirectUri,
+  dPopKeyJwk,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
@@ -234,6 +235,7 @@ export async function acquireAuthorizationCodeAccessToken({
   authorizationCode: string
   clientId: string
   redirectUri?: string
+  dPopKeyJwk?: Jwk
 }) {
   return await agent.modules.openId4VcHolder.requestToken({
     resolvedCredentialOffer,
@@ -241,6 +243,12 @@ export async function acquireAuthorizationCodeAccessToken({
     codeVerifier,
     redirectUri,
     clientId,
+    dpop: dPopKeyJwk
+      ? {
+          alg: dPopKeyJwk.supportedSignatureAlgorithms[0],
+          jwk: dPopKeyJwk,
+        }
+      : undefined,
   })
 }
 

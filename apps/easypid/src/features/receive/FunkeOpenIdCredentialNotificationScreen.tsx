@@ -195,6 +195,8 @@ export function FunkeCredentialNotificationScreen() {
           redirectUri: authorization.redirectUri,
           authorizationCode,
           clientId: authorization.clientId,
+          dPopKeyJwk: resolvedAuthorizationRequest.dpop?.jwk,
+
           codeVerifier:
             'codeVerifier' in resolvedAuthorizationRequest ? resolvedAuthorizationRequest.codeVerifier : undefined,
         })
@@ -321,6 +323,7 @@ export function FunkeCredentialNotificationScreen() {
           authSession: resolvedAuthorizationRequest.authSession,
           presentationDuringIssuanceSession,
           agent,
+          dPopKeyJwk: resolvedAuthorizationRequest?.dpop?.jwk,
         })
 
         await acquireCredentialsAuth(authorizationCode)
