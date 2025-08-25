@@ -117,7 +117,8 @@ const createBaseConfig = (appSpecific) => {
       [
         'expo-camera',
         {
-          cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera.',
+          cameraPermission:
+            '$(PRODUCT_NAME) uses the camera to scan invitation QR-codes, allowing you to receive or share cards from your wallet.',
         },
       ],
       [
