@@ -3,6 +3,28 @@ import { ConsoleLogger, LogLevel } from '@credo-ts/core'
 type LogData = Record<string, unknown>
 type LogMessage = { level: LogLevel; message: string; data?: LogData }
 
+/*
+ * NOTE: temporary copy from Credo, until we have integrated the following PR:
+ * https://github.com/openwallet-foundation/credo-ts/pull/2384
+ */
+function replaceError(_: unknown, value: unknown) {
+  /**
+   * This special handling for error classes is mostly to not hide error messages in React Native.
+   * The error serialization works differently from node, so a lot of times you get `error: {}`, which
+   * really compliactes debugging.
+   */
+  if (value instanceof Error) {
+    return {
+      serialized: 'toJSON' in value && typeof value.toJSON === 'function' ? value.toJSON() : value.toString(),
+      message: value.message,
+      name: value.name,
+      stack: value.stack,
+    }
+  }
+
+  return value
+}
+
 export class ParadymWalletLogger extends ConsoleLogger {
   private loggedMessages: LogMessage[] = []
   private loggedMessagesLimit = 0
@@ -27,11 +49,20 @@ export class ParadymWalletLogger extends ConsoleLogger {
   private addToLoggedMessages(level: LogLevel, message: string, data?: LogData) {
     if (this.loggedMessagesLimit === 0) return
     if (this.loggedMessages.length >= this.loggedMessagesLimit) this.loggedMessages.shift()
-    this.loggedMessages.push({
-      level,
-      message,
-      data,
-    })
+
+    // We already stringify the message here, to not keep any class/object references
+    this.loggedMessages.push(
+      JSON.parse(
+        JSON.stringify(
+          {
+            level,
+            message,
+            data,
+          },
+          replaceError
+        )
+      )
+    )
   }
 
   public fatal(message: string, data?: LogData): void {
