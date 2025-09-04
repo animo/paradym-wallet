@@ -1,11 +1,12 @@
 import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
 import { type MdlAttributes, getMdlCode } from '@easypid/utils/mdlCustomMetadata'
-import type {
-  Arf15PidSdJwtVcAttributes,
-  Arf18PidSdJwtVcAttributes,
-  PidMdocAttributes,
-  PidSdJwtVcAttributes,
+import {
+  type Arf15PidSdJwtVcAttributes,
+  type Arf18PidSdJwtVcAttributes,
+  type PidMdocAttributes,
+  type PidSdJwtVcAttributes,
+  formatArfPid18PlaceOfBirth,
 } from '@easypid/utils/pidCustomMetadata'
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialForDisplay } from '@package/agent'
@@ -48,18 +49,27 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
   const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
   const isLegacySdJwtPid = isPidSdJwtVc && credential.metadata.type !== 'urn:eudi:pid:1'
 
-  const personalInfoCard = {
-    name: '',
-    born: '',
-    placeOfBirth: '',
-    nationalities: '',
+  const personalInfoCard: {
+    name: string | null
+    born: string | null
+    placeOfBirth: string | null
+    nationalities: string | null
+  } = {
+    name: null,
+    born: null,
+    placeOfBirth: null,
+    nationalities: null,
   }
 
-  const addressTable = {
-    street: '',
-    locality: '',
-    postalCode: '',
-  }
+  let addressTable:
+    | string
+    | {
+        street: string | null
+        locality: string | null
+        postalCode: string | null
+        country: string | null
+      }
+    | null = null
 
   let headerImage = credential?.display.issuer.logo?.url ?? ''
 
@@ -72,22 +82,45 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
       ? raw.nationality?.join(', ')
       : raw.nationality ?? ''
 
-    addressTable.street = raw.resident_street ?? ''
-    addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
-    addressTable.postalCode = raw.resident_postal_code ?? ''
+    addressTable = {
+      street: raw.resident_street ?? '',
+      locality: `${raw.resident_city} (${raw.resident_country})`,
+      postalCode: raw.resident_postal_code ?? '',
+      country: null,
+    }
     headerImage = raw.portrait ?? headerImage
   } else if (isPidSdJwtVc) {
-    const raw = credential?.rawAttributes as Arf18PidSdJwtVcAttributes
+    const raw = credential?.rawAttributes as unknown as Arf18PidSdJwtVcAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birthdate}`
-    personalInfoCard.placeOfBirth = `${raw.place_of_birth.locality} (${raw.place_of_birth.country})`
+    personalInfoCard.placeOfBirth = formatArfPid18PlaceOfBirth(raw.place_of_birth)
     personalInfoCard.nationalities = raw.nationalities?.join(', ')
 
-    addressTable.locality = `${raw.address.locality} (${raw.address.country})`
-    addressTable.street = raw.address.street_address ?? ''
-    addressTable.postalCode = raw.address.postal_code ?? ''
+    if (raw.address?.formatted) {
+      addressTable = raw.address.formatted
+    } else if (raw.address) {
+      const locality =
+        raw.address.locality || raw.address.region
+          ? `${raw.address.locality || raw.address.region}${raw.address.country ? ` (${raw.address.country})` : ''}`
+          : null
 
-    headerImage = raw.portrait ?? headerImage
+      const country = raw.address.country && !locality ? raw.address.country : null
+      const postalCode = raw.address.postal_code || null
+      const street = raw.address.street_address
+        ? `${raw.address.street_address}${raw.address.house_number !== undefined ? ` ${raw.address.house_number}` : ''}`
+        : null
+
+      if (locality || country || postalCode || street) {
+        addressTable = {
+          postalCode,
+          locality,
+          country,
+          street,
+        }
+      }
+    }
+
+    headerImage = raw.picture ?? headerImage
   } else if (isPidMdoc) {
     const raw = credential?.rawAttributes as PidMdocAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
@@ -95,9 +128,12 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     personalInfoCard.placeOfBirth = raw.birth_place ?? ''
     personalInfoCard.nationalities = Array.isArray(raw.nationality) ? raw.nationality.join(',') : raw.nationality ?? ''
 
-    addressTable.street = raw.resident_street ?? ''
-    addressTable.locality = `${raw.resident_city} (${raw.resident_country})`
-    addressTable.postalCode = raw.resident_postal_code ?? ''
+    addressTable = {
+      street: raw.resident_street ?? '',
+      locality: `${raw.resident_city} (${raw.resident_country})`,
+      postalCode: raw.resident_postal_code ?? '',
+      country: null,
+    }
     headerImage = raw.portrait ?? headerImage
   }
   return (
@@ -143,20 +179,39 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
           </TableContainer>
         </Stack>
       </YStack>
-      <YStack gap="$2">
-        <Heading heading="sub2" secondary>
-          {t(commonMessages.fields.address)}
-        </Heading>
-        <TableContainer>
-          {addressTable.street !== '' && (
-            <TableRow attributes={[t(commonMessages.fields.street)]} values={[addressTable.street]} />
-          )}
-          <TableRow
-            attributes={[t(commonMessages.fields.postal_code), t(commonMessages.fields.locality)]}
-            values={[addressTable.postalCode, addressTable.locality]}
-          />
-        </TableContainer>
-      </YStack>
+      {addressTable && (
+        <YStack gap="$2">
+          <Heading heading="sub2" secondary>
+            {t(commonMessages.fields.address)}
+          </Heading>
+
+          <TableContainer>
+            {typeof addressTable === 'string' && <TableRow values={[addressTable]} />}
+            {typeof addressTable !== 'string' && (
+              <>
+                {addressTable.street && (
+                  <TableRow attributes={t(commonMessages.fields.street)} values={[addressTable.street]} />
+                )}
+                {(addressTable.postalCode || addressTable.locality || addressTable.country) && (
+                  <TableRow
+                    attributes={[
+                      addressTable.postalCode ? t(commonMessages.fields.postal_code) : undefined,
+                      addressTable.locality
+                        ? t(commonMessages.fields.locality)
+                        : addressTable.country
+                          ? t(commonMessages.fields.country)
+                          : undefined,
+                    ].filter((a) => a !== undefined)}
+                    values={[addressTable.postalCode, addressTable.locality ?? addressTable.country].filter(
+                      (a) => a !== null
+                    )}
+                  />
+                )}
+              </>
+            )}
+          </TableContainer>
+        </YStack>
+      )}
     </Stack>
   )
 }
