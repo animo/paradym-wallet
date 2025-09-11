@@ -1,9 +1,9 @@
 import {
   ClaimFormat,
-  type MdocNameSpaces,
   type DcqlQueryResult,
   type DifPexCredentialsForRequest,
   type DifPresentationExchangeDefinitionV2,
+  type MdocNameSpaces,
 } from '@credo-ts/core'
 
 import { JSONPath } from '@astronautlabs/jsonpath'
