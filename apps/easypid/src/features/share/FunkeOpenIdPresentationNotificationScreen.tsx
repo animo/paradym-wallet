@@ -227,7 +227,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     ]
   )
 
-  const onProofDecline = async () => {
+  const onProofDecline = useCallback(async () => {
     stopOverAsking()
     if (credentialsForRequest) {
       await addSharedActivityForCredentialsForRequest(
@@ -242,10 +242,13 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     toast.show(t(commonMessages.informationRequestDeclined), {
       customData: { preset: 'danger' },
     })
-  }
+  }, [agent, credentialsForRequest, formattedTransactionData, pushToWallet, stopOverAsking, t, toast])
+
+  const replace = useCallback(() => pushToWallet('replace'), [pushToWallet])
 
   return (
     <FunkePresentationNotificationScreen
+      key="presentation"
       usePin={shouldUsePin ?? false}
       onAccept={onProofAccept}
       onDecline={onProofDecline}
@@ -256,8 +259,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       logo={credentialsForRequest?.verifier.logo}
       trustedEntities={credentialsForRequest?.verifier.trustedEntities}
       trustMechanism={credentialsForRequest?.trustMechanism}
-      onComplete={() => pushToWallet('replace')}
-      onCancel={() => pushToWallet('replace')}
+      onComplete={replace}
+      onCancel={replace}
       overAskingResponse={overAskingResponse}
       transaction={formattedTransactionData}
       errorReason={errorReason}

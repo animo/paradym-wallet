@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useLLM } from '@easypid/llm'
 import type { OverAskingInput, OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
@@ -42,34 +42,37 @@ export function useOverAskingAi() {
     }
   }, [response, isModelGenerating, error, t])
 
-  const checkForOverAsking = async (input: OverAskingInput) => {
-    if (!isOverAskingAiEnabled) {
-      console.debug('Over-asking AI feature flag is not enabled, skipping')
-      return
-    }
+  const checkForOverAsking = useCallback(
+    async (input: OverAskingInput) => {
+      if (!isOverAskingAiEnabled) {
+        console.debug('Over-asking AI feature flag is not enabled, skipping')
+        return
+      }
 
-    setIsProcessingOverAsking(true)
-    if (isModelReady) {
-      console.debug('Local LLM ready, using local LLM')
-      const prompt = formatLocalPrompt(input)
-      await generate(prompt)
-    } else {
-      console.debug('Local LLM not ready, using API')
-      await checkForOverAskingApi(input)
-        .then(setOverAskingResponse)
-        .catch((e) => {
-          console.error('Error analyzing verification using API:', e)
-          setOverAskingResponse({ ...fallbackResponse, reason: t(fallbackResponse.reason) })
-        })
-        .finally(() => setIsProcessingOverAsking(false))
-    }
-  }
+      setIsProcessingOverAsking(true)
+      if (isModelReady) {
+        console.debug('Local LLM ready, using local LLM')
+        const prompt = formatLocalPrompt(input)
+        await generate(prompt)
+      } else {
+        console.debug('Local LLM not ready, using API')
+        await checkForOverAskingApi(input)
+          .then(setOverAskingResponse)
+          .catch((e) => {
+            console.error('Error analyzing verification using API:', e)
+            setOverAskingResponse({ ...fallbackResponse, reason: t(fallbackResponse.reason) })
+          })
+          .finally(() => setIsProcessingOverAsking(false))
+      }
+    },
+    [generate, isModelReady, isOverAskingAiEnabled, t]
+  )
 
-  const stopOverAsking = () => {
+  const stopOverAsking = useCallback(() => {
     if (isModelReady) interrupt()
     if (!overAskingResponse) setOverAskingResponse({ ...fallbackResponse, reason: t(fallbackResponse.reason) })
     setIsProcessingOverAsking(false)
-  }
+  }, [interrupt, isModelReady, overAskingResponse, t])
 
   return {
     isProcessingOverAsking,

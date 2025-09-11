@@ -53,16 +53,10 @@ export function formatRelativeDate(date: Date, now: Date = new Date(), includeTi
       ? t({ id: 'dateFormatting.yesterdayAtTime', message: `Yesterday at ${formatTime(date)}` })
       : t({ id: 'dateFormatting.yesterday', message: 'Yesterday' })
   }
-  return `${
-    date.toLocaleDateString(getLocaleForFormat(), { month: 'long', day: 'numeric' }) +
-    (date.getDate() === 1 || date.getDate() === 21 || date.getDate() === 31
-      ? 'st'
-      : date.getDate() === 2 || date.getDate() === 22
-        ? 'nd'
-        : date.getDate() === 3 || date.getDate() === 23
-          ? 'rd'
-          : 'th')
-  } ${includeTime ? `at ${formatTime(date)}` : ''}`
+  return `${date.toLocaleDateString(getLocaleForFormat(), {
+    month: 'long',
+    day: 'numeric',
+  })} ${includeTime ? `at ${formatTime(date)}` : ''}`
 }
 
 /**

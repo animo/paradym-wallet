@@ -21,6 +21,7 @@ export type OpenId4VciResolvedPresentationDuringIssuanceAuthorizationRequest = E
 
 export {
   parseInvitationUrl,
+  parseInvitationUrlSync,
   parseDidCommInvitation,
   InvitationQrTypes,
   InvitationType,

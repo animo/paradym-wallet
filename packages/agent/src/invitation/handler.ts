@@ -149,7 +149,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  dPopKeyJwk?: Kms.PublicJwk<Kms.P256PublicJwk>
+  dPopKeyJwk?: Kms.PublicJwk
   authSession: string
   presentationDuringIssuanceSession?: string
 }) {
@@ -227,6 +227,7 @@ export async function acquireAuthorizationCodeAccessToken({
   authorizationCode,
   clientId,
   redirectUri,
+  dPopKeyJwk,
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
@@ -234,6 +235,7 @@ export async function acquireAuthorizationCodeAccessToken({
   authorizationCode: string
   clientId: string
   redirectUri?: string
+  dPopKeyJwk?: Kms.PublicJwk
 }) {
   return await agent.modules.openId4VcHolder.requestToken({
     resolvedCredentialOffer,
@@ -241,6 +243,12 @@ export async function acquireAuthorizationCodeAccessToken({
     codeVerifier,
     redirectUri,
     clientId,
+    dpop: dPopKeyJwk
+      ? {
+          alg: dPopKeyJwk.supportedSignatureAlgorithms[0],
+          jwk: dPopKeyJwk,
+        }
+      : undefined,
   })
 }
 

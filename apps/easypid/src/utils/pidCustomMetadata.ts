@@ -48,25 +48,68 @@ export type Arf15PidSdJwtVcAttributes = {
   portrait?: string
 }
 
-// NOTE: this is a subset
-export type Arf18PidSdJwtVcAttributes = {
-  given_name: string
-  family_name: string
+// EU Digital Identity Wallet - Person Identification Data (PID) Interface
+// Based on ARF Annex 3.01 - PID Rulebook for SD-JWT VC encoding
 
-  address: {
-    locality: string
-    street_address: string
-    country: string
-    postal_code: string
-  }
-  birthdate: string
-  place_of_birth: {
-    country: string
-    locality: string
-    region: string
-  }
-  nationalities: string[]
-  portrait?: string
+interface PlaceOfBirth {
+  country?: string // Alpha-2 country code as specified in ISO 3166-1
+  region?: string // State, province, district, or local area
+  locality?: string // Municipality, city, town, or village
+}
+
+interface Address {
+  formatted?: string // Complete formatted address
+  street_address?: string // Street name where the user resides
+  house_number?: string // House number including any affix or suffix
+  locality?: string // Municipality, city, town, or village
+  region?: string // State, province, district, or local area
+  postal_code?: string // Postal code of residence
+  country?: string // Alpha-2 country code as specified in ISO 3166-1
+}
+
+interface AgeEqualOrOver {
+  [key: number]: boolean | undefined // Generic age verification for any age
+  12?: boolean // Whether user is 12 years old or older
+  14?: boolean // Whether user is 14 years old or older
+  16?: boolean // Whether user is 16 years old or older
+  18?: boolean // Whether user is 18 years old or older (adult)
+  21?: boolean // Whether user is 21 years old or older
+  65?: boolean // Whether user is 65 years old or older
+}
+
+export interface Arf18PidSdJwtVcAttributes {
+  // Required mandatory attributes (CIR 2024/2977)
+  family_name: string // Current last name(s) or surname(s) of the user
+  given_name: string // Current first name(s), including middle name(s) where applicable
+  birthdate: string // Date of birth in ISO 8601-1 YYYY-MM-DD format
+  place_of_birth: PlaceOfBirth // Country, region, or locality where the user was born (at least one property required)
+  nationalities: string[] // One or more alpha-2 country codes representing nationality
+
+  // Required mandatory metadata (CIR 2024/2977)
+  date_of_expiry: string // Administrative expiry date in ISO 8601-1 YYYY-MM-DD format
+  issuing_authority: string // Name of the administrative authority that issued the PID
+  issuing_country: string // Alpha-2 country code of the issuing country
+
+  // Optional attributes (CIR 2024/2977)
+  address?: Address // Address where the user currently resides
+  personal_administrative_number?: string // Unique administrative number assigned by the provider
+  picture?: string // Data URL containing base64-encoded portrait in JPEG format
+  birth_family_name?: string // Last name(s) at the time of birth
+  birth_given_name?: string // First name(s) at the time of birth
+  sex?: number // Sex classification (0=not known, 1=male, 2=female, 3=other, 4=inter, 5=diverse, 6=open, 9=not applicable)
+  email?: string // Electronic mail address in conformance with RFC 5322
+  phone_number?: string // Mobile telephone number starting with '+' and country code
+
+  // Optional metadata (CIR 2024/2977)
+  document_number?: string // Document number assigned by the provider
+  issuing_jurisdiction?: string // Country subdivision code as specified in ISO 3166-2:2020
+
+  // Additional optional attributes (PID Rulebook)
+  date_of_issuance?: string // Date when the PID was issued in ISO 8601-1 YYYY-MM-DD format
+  age_equal_or_over?: AgeEqualOrOver // Boolean indicators for age thresholds
+  age_in_years?: number // Current age in years
+  age_birth_year?: number // Year when the user was born
+  trust_anchor?: string // URL for machine-readable trust anchor information
 }
 
 export type PidSdJwtVcAttributes = {
@@ -90,6 +133,42 @@ export type PidSdJwtVcAttributes = {
   age_birth_year: number
   nationalities: string[]
   iss: string
+}
+
+export function formatArfPid18PlaceOfBirth(place: PlaceOfBirth): string | null {
+  const { country, region, locality } = place
+
+  // If nothing is provided, return empty string
+  if (!country && !region && !locality) {
+    return null
+  }
+
+  // Build the string from most specific to least specific
+  const parts: string[] = []
+
+  // Add locality if available
+  if (locality) {
+    parts.push(locality)
+  }
+
+  // Add region if available and different from locality
+  if (region && region !== locality) {
+    parts.push(region)
+  }
+
+  // Handle country code
+  if (country) {
+    if (parts.length > 0) {
+      // Add country in parentheses if we have other location info
+      return `${parts.join(', ')} (${country})`
+    }
+
+    // Just return country code if that's all we have
+    return country
+  }
+
+  // If no country but we have region/locality
+  return parts.join(', ')
 }
 
 export function getPidAttributesForDisplay(

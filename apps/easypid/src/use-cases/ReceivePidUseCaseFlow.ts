@@ -159,6 +159,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
         clientId: ReceivePidUseCaseFlow.CLIENT_ID,
         redirectUri: ReceivePidUseCaseFlow.REDIRECT_URI,
         agent: this.options.agent,
+        dPopKeyJwk: this.resolvedAuthorizationRequest.dpop?.jwk,
       })
 
       this.assertState({

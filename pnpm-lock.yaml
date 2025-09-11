@@ -247,6 +247,9 @@ overrides:
   '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250815090500
   '@credo-ts/askar': npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250815090500
   '@credo-ts/cheqd': npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250815090500
+  '@cheqd/sdk': 5.2.1
+  '@cheqd/ts-proto': 2.4.1
+  '@cheqd/ts-proto-cjs': npm:@cheqd/ts-proto@2.4.1
   '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250815090500
   '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250815090500
   '@credo-ts/question-answer': npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250815090500
@@ -260,6 +263,9 @@ overrides:
   '@openwallet-foundation/askar-shared': 0.3.2
 
 patchedDependencies:
+  '@cheqd/sdk':
+    hash: 2s4efmdelpranon2lx4m6hsi6a
+    path: patches/@cheqd__sdk.patch
   '@tamagui/lucide-icons':
     hash: 6tcfru5vipogbierrf422gjex4
     path: patches/@tamagui__lucide-icons.patch
@@ -315,7 +321,7 @@ importers:
         version: 0.3.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@lingui/babel-plugin-lingui-macro':
         specifier: ^5.3.3
-        version: 5.3.3(typescript@5.8.3)
+        version: 5.4.1(typescript@5.8.3)
       '@openwallet-foundation/askar-react-native':
         specifier: 0.3.2
         version: 0.3.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -351,7 +357,7 @@ importers:
         version: 0.3.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@react-native-picker/picker':
         specifier: ^2.11.1
-        version: 2.11.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
+        version: 2.11.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@react-navigation/native':
         specifier: 'catalog:'
         version: 7.1.14(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -487,10 +493,10 @@ importers:
         version: 7.28.0
       '@lingui/cli':
         specifier: ^5.3.3
-        version: 5.3.3(typescript@5.8.3)
+        version: 5.4.1(typescript@5.8.3)
       '@lingui/format-json':
         specifier: ^5.3.3
-        version: 5.3.3(typescript@5.8.3)
+        version: 5.4.1(typescript@5.8.3)
       '@tamagui/babel-plugin':
         specifier: 'catalog:'
         version: 1.132.18(react-dom@19.1.0(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -703,10 +709,10 @@ importers:
         version: 5.4.4
       '@lingui/core':
         specifier: ^5.3.3
-        version: 5.3.3(@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3))
+        version: 5.4.1(@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3))
       '@lingui/react':
         specifier: ^5.3.3
-        version: 5.3.3(@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3))(react@19.0.0)
+        version: 5.4.1(@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3))(react@19.0.0)
       expo-localization:
         specifier: 'catalog:'
         version: 16.1.6(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -1409,21 +1415,13 @@ packages:
   '@bufbuild/protobuf@2.6.0':
     resolution: {integrity: sha512-6cuonJVNOIL7lTj5zgo/Rc2bKAo4/GvN+rKCrUj7GdEHRzCk8zKOfFwUsL9nAVk5rSIsRmlgcpLzTRysopEeeg==}
 
-  '@cheqd/sdk@5.3.1':
-    resolution: {integrity: sha512-4iwB8Ct6A2jlZw3qx7cPi34JcRsGnb+Mw3dzsAJY+83Fv2aC7ndO3YbUwouPK02scObq/fK5jbV6Dh35M6iMAg==}
+  '@cheqd/sdk@5.2.1':
+    resolution: {integrity: sha512-R6lpEEF0fTpDr4yebT/WUIs7AUgvVbR/V3RMGudcq2nVRv248fD2zpcJroKOpUKsoTUCa9Fw5PkWz01VvdmUEw==}
     engines: {node: '>=20.0.0'}
 
   '@cheqd/ts-proto@2.4.1':
     resolution: {integrity: sha512-tT9MvXjk+GmJXWjFKIMwhXWuStjdhECSBSrx8uyt1cJKVBtFpRBrFLEomA7XIclmfwL6z74YmhM7lEtf5Bn8vg==}
     engines: {node: '>=20'}
-
-  '@cheqd/ts-proto@2.5.0':
-    resolution: {integrity: sha512-3KqyvcruFxvkz+p6LnSCyUnqBJ2bJeOnIDkaYoAMcmGcSNKti3VECOKGdjjEO3rG/0/gAR9bhEHu9j1mUKSFqA==}
-    engines: {node: '>=20'}
-
-  '@cheqd/ts-proto@4.1.1':
-    resolution: {integrity: sha512-iaz1sSlyTVT6u82vbIDuTk3ytiN31CQEc62xWfKeH/XaJE8RZQXYsjbtk5sIoXKJ63pb65XoHLY7JVOsqmRhFA==}
-    engines: {node: '>=22.0.0'}
 
   '@confio/ics23@0.6.8':
     resolution: {integrity: sha512-wB6uo+3A50m0sW/EWcU64xpV/8wShZ6bMTa7pF8eYsTrSkQA7oLUIJcs/wb8g4y2Oyq701BaGiO6n/ak5WXO1w==}
@@ -1989,12 +1987,12 @@ packages:
     peerDependencies:
       '@js-joda/core': '>=1.11.0'
 
-  '@lingui/babel-plugin-extract-messages@5.3.3':
-    resolution: {integrity: sha512-Cgac9D9ZrTrNdQPxRc5gmZXVUnofBoSUC7CHSEuua5tPolr20oP4snYEnpOvs2D/sM6AWTbM199i7F2e5m4HYA==}
+  '@lingui/babel-plugin-extract-messages@5.4.1':
+    resolution: {integrity: sha512-sjkVaLyuK3ZW62mv5gU6pOdl3ZpwDReeSaNodJuf9LssbMIQPa5WOirTnMeBaalrQ8BA2srrRzQAWgsXPQVdXA==}
     engines: {node: '>=20.0.0'}
 
-  '@lingui/babel-plugin-lingui-macro@5.3.3':
-    resolution: {integrity: sha512-LSdJVBchjHPtFemQJiykDlpSksN9jusKcLbkuhdpgMETNMS5EyFwLTud7YUo5qkOIhtpYIf9mj94t1vGRVeSYQ==}
+  '@lingui/babel-plugin-lingui-macro@5.4.1':
+    resolution: {integrity: sha512-9IO+PDvdneY8OCI8zvI1oDXpzryTMtyRv7uq9O0U1mFCvIPVd5dWQKQDu/CpgpYAc2+JG/izn5PNl9xzPc6ckw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       babel-plugin-macros: 2 || 3
@@ -2002,20 +2000,20 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  '@lingui/cli@5.3.3':
-    resolution: {integrity: sha512-db3aI637XO7z5QeZkrj9pEI3diTuXp0FVHn8TdFgKzQqmKLcv0CgJNftMoQ+DiibifOApyl01ZX81UVXtnQNdA==}
+  '@lingui/cli@5.4.1':
+    resolution: {integrity: sha512-UAKA9Iz4zMDJS7fzWMZ4hzQWontrTBnI5XCsPm7ttB0Ed0F4Pwph/Vu7pg4bJdiYr4d6nqEpRWd9aTxcC15/IA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
-  '@lingui/conf@5.3.3':
-    resolution: {integrity: sha512-YVjGeGQg4BrHrC+/s7kHYYjcBzAPFoGWl/ujdp05J6+PjV7yXnwUaMa3A7XhKFdRqpJReXf9FOWZUsIIBcPSEQ==}
+  '@lingui/conf@5.4.1':
+    resolution: {integrity: sha512-aDkj/bMSr/mCL8Nr1TS52v0GLCuVa4YqtRz+WvUCFZw/ovVInX0hKq1TClx/bSlhu60FzB/CbclxFMBw8aLVUg==}
     engines: {node: '>=20.0.0'}
 
-  '@lingui/core@5.3.3':
-    resolution: {integrity: sha512-H2PAJrbcPBjJg2q3JqMS9OndPkx0kUV+zDLSguONNFGYbe/G7vcNpgEfyYfcCoJBrWaZzJ0iy3Se6LdFbvn6nA==}
+  '@lingui/core@5.4.1':
+    resolution: {integrity: sha512-4FeIh56PH5vziPg2BYo4XYWWOHE4XaY/XR8Jakwn0/qwtLpydWMNVpZOpGWi7nfPZtcLaJLmZKup6UNxEl1Pfw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@lingui/babel-plugin-lingui-macro': 5.3.3
+      '@lingui/babel-plugin-lingui-macro': 5.4.1
       babel-plugin-macros: 2 || 3
     peerDependenciesMeta:
       '@lingui/babel-plugin-lingui-macro':
@@ -2023,25 +2021,23 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  '@lingui/format-json@5.3.3':
-    resolution: {integrity: sha512-WOjasQJzzvdDOflYREYaJxwRIuBl/RWbuIRGlrUu7rWpggjoYS8BemL1XLnl9mbqmi6W7f/4vqW3Jy5tfLxnpQ==}
+  '@lingui/format-json@5.4.1':
+    resolution: {integrity: sha512-pd6JT2DnEAydvFkB07NyNc4JatQ+9PBnRZ1ni3eV3Xb38n/0JFjEKoam8j0lWTO8hZb4zf35E43dQ80v6IvADw==}
     engines: {node: '>=20.0.0'}
 
-  '@lingui/format-po@5.3.3':
-    resolution: {integrity: sha512-sKGJqsIJLPMKwtSP1js7cfFzEXsNSppzYxDPVO06i71Xd0jn8a+KXLMaSAQj9jY/dpxN8wKsCt26gOnHYi5c5g==}
+  '@lingui/format-po@5.4.1':
+    resolution: {integrity: sha512-IBVq3RRLNEVRzNZcdEw0qpM5NKX4e9wDmvJMorkR2OYrgTbhWx5gDYhXpEZ9yqtuEVhILMdriVNjAAUnDAJibA==}
     engines: {node: '>=20.0.0'}
 
-  '@lingui/message-utils@5.3.3':
-    resolution: {integrity: sha512-Xn1jFX9pworCEKvPwyEo/YJEp8qjELoRkFMUQ+D9AMi8jpaBUbcJpKdJ/TcIt7SKfk8koR/TMxoayMVsh++KCw==}
+  '@lingui/message-utils@5.4.1':
+    resolution: {integrity: sha512-hXfL90fFBoKp5YgLaWo3HbJS/7q+WlWs7VwVbUxl4pa+YladqNZf08JoDeBUDtlEVx5a3bNUSACXHs2FZo12aw==}
     engines: {node: '>=20.0.0'}
-    bundledDependencies:
-      - '@messageformat/date-skeleton'
 
-  '@lingui/react@5.3.3':
-    resolution: {integrity: sha512-DEFmI24pDdy/wsIDYtmYg5qwAPmgZIjoy9q10GVGmjq952D0sQJoGBGz+ucGQFSNmT7SnktauJHH+xEUdO/Cgg==}
+  '@lingui/react@5.4.1':
+    resolution: {integrity: sha512-BfWHRTyu+Je4Km9ZYCTgFuRHgQI9TJa/fMYKJBw3dNy3I09oIqnJ21qbdDimnb/Z9ztMCGQ75EIFoqAB6bdwaw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@lingui/babel-plugin-lingui-macro': 5.3.3
+      '@lingui/babel-plugin-lingui-macro': 5.4.1
       babel-plugin-macros: 2 || 3
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
@@ -2108,35 +2104,47 @@ packages:
   '@openwallet-foundation/askar-shared@0.3.2':
     resolution: {integrity: sha512-WQSHM5+5Vy1QMUpUTj0DpwFKYdciNcksWsft/iD6Ff+AdDERKo5Mjv/4JSIZIzXUEyq7kqqNbejl4a3TDGeU3A==}
 
-  '@peculiar/asn1-cms@2.3.15':
-    resolution: {integrity: sha512-B+DoudF+TCrxoJSTjjcY8Mmu+lbv8e7pXGWrhNp2/EGJp9EEcpzjBCar7puU57sGifyzaRVM03oD5L7t7PghQg==}
+  '@peculiar/asn1-cms@2.5.0':
+    resolution: {integrity: sha512-p0SjJ3TuuleIvjPM4aYfvYw8Fk1Hn/zAVyPJZTtZ2eE9/MIer6/18ROxX6N/e6edVSfvuZBqhxAj3YgsmSjQ/A==}
 
-  '@peculiar/asn1-csr@2.3.15':
-    resolution: {integrity: sha512-caxAOrvw2hUZpxzhz8Kp8iBYKsHbGXZPl2KYRMIPvAfFateRebS3136+orUpcVwHRmpXWX2kzpb6COlIrqCumA==}
+  '@peculiar/asn1-csr@2.5.0':
+    resolution: {integrity: sha512-ioigvA6WSYN9h/YssMmmoIwgl3RvZlAYx4A/9jD2qaqXZwGcNlAxaw54eSx2QG1Yu7YyBC5Rku3nNoHrQ16YsQ==}
 
   '@peculiar/asn1-ecc@2.3.15':
     resolution: {integrity: sha512-/HtR91dvgog7z/WhCVdxZJ/jitJuIu8iTqiyWVgRE9Ac5imt2sT/E4obqIVGKQw7PIy+X6i8lVBoT6wC73XUgA==}
 
-  '@peculiar/asn1-pfx@2.3.15':
-    resolution: {integrity: sha512-E3kzQe3J2xV9DP6SJS4X6/N1e4cYa2xOAK46VtvpaRk8jlheNri8v0rBezKFVPB1rz/jW8npO+u1xOvpATFMWg==}
+  '@peculiar/asn1-ecc@2.5.0':
+    resolution: {integrity: sha512-t4eYGNhXtLRxaP50h3sfO6aJebUCDGQACoeexcelL4roMFRRVgB20yBIu2LxsPh/tdW9I282gNgMOyg3ywg/mg==}
 
-  '@peculiar/asn1-pkcs8@2.3.15':
-    resolution: {integrity: sha512-/PuQj2BIAw1/v76DV1LUOA6YOqh/UvptKLJHtec/DQwruXOCFlUo7k6llegn8N5BTeZTWMwz5EXruBw0Q10TMg==}
+  '@peculiar/asn1-pfx@2.5.0':
+    resolution: {integrity: sha512-Vj0d0wxJZA+Ztqfb7W+/iu8Uasw6hhKtCdLKXLG/P3kEPIQpqGI4P4YXlROfl7gOCqFIbgsj1HzFIFwQ5s20ug==}
 
-  '@peculiar/asn1-pkcs9@2.3.15':
-    resolution: {integrity: sha512-yiZo/1EGvU1KiQUrbcnaPGWc0C7ElMMskWn7+kHsCFm+/9fU0+V1D/3a5oG0Jpy96iaXggQpA9tzdhnYDgjyFg==}
+  '@peculiar/asn1-pkcs8@2.5.0':
+    resolution: {integrity: sha512-L7599HTI2SLlitlpEP8oAPaJgYssByI4eCwQq2C9eC90otFpm8MRn66PpbKviweAlhinWQ3ZjDD2KIVtx7PaVw==}
+
+  '@peculiar/asn1-pkcs9@2.5.0':
+    resolution: {integrity: sha512-UgqSMBLNLR5TzEZ5ZzxR45Nk6VJrammxd60WMSkofyNzd3DQLSNycGWSK5Xg3UTYbXcDFyG8pA/7/y/ztVCa6A==}
 
   '@peculiar/asn1-rsa@2.3.15':
     resolution: {integrity: sha512-p6hsanvPhexRtYSOHihLvUUgrJ8y0FtOM97N5UEpC+VifFYyZa0iZ5cXjTkZoDwxJ/TTJ1IJo3HVTB2JJTpXvg==}
 
+  '@peculiar/asn1-rsa@2.5.0':
+    resolution: {integrity: sha512-qMZ/vweiTHy9syrkkqWFvbT3eLoedvamcUdnnvwyyUNv5FgFXA3KP8td+ATibnlZ0EANW5PYRm8E6MJzEB/72Q==}
+
   '@peculiar/asn1-schema@2.3.15':
     resolution: {integrity: sha512-QPeD8UA8axQREpgR5UTAfu2mqQmm97oUqahDtNdBcfj3qAnoXzFdQW+aNf/tD2WVXF8Fhmftxoj0eMIT++gX2w==}
 
-  '@peculiar/asn1-x509-attr@2.3.15':
-    resolution: {integrity: sha512-TWJVJhqc+IS4MTEML3l6W1b0sMowVqdsnI4dnojg96LvTuP8dga9f76fjP07MUuss60uSyT2ckoti/2qHXA10A==}
+  '@peculiar/asn1-schema@2.5.0':
+    resolution: {integrity: sha512-YM/nFfskFJSlHqv59ed6dZlLZqtZQwjRVJ4bBAiWV08Oc+1rSd5lDZcBEx0lGDHfSoH3UziI2pXt2UM33KerPQ==}
+
+  '@peculiar/asn1-x509-attr@2.5.0':
+    resolution: {integrity: sha512-9f0hPOxiJDoG/bfNLAFven+Bd4gwz/VzrCIIWc1025LEI4BXO0U5fOCTNDPbbp2ll+UzqKsZ3g61mpBp74gk9A==}
 
   '@peculiar/asn1-x509@2.3.15':
     resolution: {integrity: sha512-0dK5xqTqSLaxv1FHXIcd4Q/BZNuopg+u1l23hT9rOmQ1g4dNtw0g/RnEi+TboB0gOwGtrWn269v27cMgchFIIg==}
+
+  '@peculiar/asn1-x509@2.5.0':
+    resolution: {integrity: sha512-CpwtMCTJvfvYTFMuiME5IH+8qmDe3yEWzKHe7OOADbGfq7ohxeLaXwQo0q4du3qs0AII3UbLCvb9NF/6q0oTKQ==}
 
   '@peculiar/json-schema@1.1.12':
     resolution: {integrity: sha512-coUfuoMeIB7B8/NMekxaDzLhaYmp0HZNPEjYRm9goRou8UZIC3z21s0sL9AWoCw4EG876QyO3kYrc61WNF9B/w==}
@@ -2146,8 +2154,8 @@ packages:
     resolution: {integrity: sha512-BRs5XUAwiyCDQMsVA9IDvDa7UBR9gAvPHgugOeGng3YN6vJ9JYonyDc0lNczErgtCWtucjR5N7VtaonboD/ezg==}
     engines: {node: '>=10.12.0'}
 
-  '@peculiar/x509@1.13.0':
-    resolution: {integrity: sha512-r9BOb1GZ3gx58Pog7u9x70spnHlCQPFm7u/ZNlFv+uBsU7kTDY9QkUD+l+X0awopDuCK1fkH3nEIZeMDSG/jlw==}
+  '@peculiar/x509@1.14.0':
+    resolution: {integrity: sha512-Yc4PDxN3OrxUPiXgU63c+ZRXKGE8YKF2McTciYhUHFtHVB0KMnjeFSU0qpztGhsp4P0uKix4+J2xEpIEDu8oXg==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -2218,8 +2226,8 @@ packages:
       react: '>=16'
       react-native: '>=0.57'
 
-  '@react-native-picker/picker@2.11.1':
-    resolution: {integrity: sha512-ThklnkK4fV3yynnIIRBkxxjxR4IFbdMNJVF6tlLdOJ/zEFUEFUEdXY0KmH0iYzMwY8W4/InWsLiA7AkpAbnexA==}
+  '@react-native-picker/picker@2.11.2':
+    resolution: {integrity: sha512-2zyFdW4jgHjF+NeuDZ4nl3hJ+8suey69bI3yljqhNyowfklW2NwNrdDUaJ2iwtPCpk2pt7834aPF8TI6iyZRhA==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -4949,8 +4957,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lru-cache@11.1.0:
-    resolution: {integrity: sha512-QIXZUBJUx+2zHUdQujWejBkcD9+cs94tLn0+YL8UrCh+D5sCXZ4c7LaEH48pNwRY3MLDgqUFyhlCyjJPf1WP0A==}
+  lru-cache@11.2.1:
+    resolution: {integrity: sha512-r8LA6i4LP4EeWOhqBaZZjDWwehd1xUJPCJd9Sv300H0ZmcUER4+JPh7bqqZeqs1o5pgtgvXm+d9UGrB5zZGDiQ==}
     engines: {node: 20 || >=22}
 
   lru-cache@5.1.1:
@@ -6585,7 +6593,7 @@ snapshots:
 
   '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250815090500(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@cheqd/sdk': 5.3.1
+      '@cheqd/sdk': 5.2.1(patch_hash=2s4efmdelpranon2lx4m6hsi6a)
       '@cheqd/ts-proto': 2.4.1
       '@cosmjs/crypto': 0.30.1
       '@cosmjs/proto-signing': 0.30.1
@@ -6628,7 +6636,7 @@ snapshots:
       '@peculiar/asn1-rsa': 2.3.15
       '@peculiar/asn1-schema': 2.3.15
       '@peculiar/asn1-x509': 2.3.15
-      '@peculiar/x509': 1.13.0
+      '@peculiar/x509': 1.14.0
       '@sd-jwt/core': 0.10.0
       '@sd-jwt/decode': 0.10.0
       '@sd-jwt/jwt-status-list': 0.10.0
@@ -7469,10 +7477,10 @@ snapshots:
 
   '@bufbuild/protobuf@2.6.0': {}
 
-  '@cheqd/sdk@5.3.1':
+  '@cheqd/sdk@5.2.1(patch_hash=2s4efmdelpranon2lx4m6hsi6a)':
     dependencies:
-      '@cheqd/ts-proto': 4.1.1
-      '@cheqd/ts-proto-cjs': '@cheqd/ts-proto@2.5.0'
+      '@cheqd/ts-proto': 2.4.1
+      '@cheqd/ts-proto-cjs': '@cheqd/ts-proto@2.4.1'
       '@cosmjs/amino': 0.33.1
       '@cosmjs/amino-cjs': '@cosmjs/amino@0.30.1'
       '@cosmjs/crypto': 0.33.1
@@ -7519,18 +7527,6 @@ snapshots:
       - utf-8-validate
 
   '@cheqd/ts-proto@2.4.1':
-    dependencies:
-      '@bufbuild/protobuf': 2.6.0
-      long: 5.3.2
-      protobufjs: 7.5.3
-
-  '@cheqd/ts-proto@2.5.0':
-    dependencies:
-      '@bufbuild/protobuf': 2.6.0
-      long: 5.3.2
-      protobufjs: 7.5.3
-
-  '@cheqd/ts-proto@4.1.1':
     dependencies:
       '@bufbuild/protobuf': 2.6.0
       long: 5.3.2
@@ -8513,33 +8509,33 @@ snapshots:
     dependencies:
       '@js-joda/core': 5.6.3
 
-  '@lingui/babel-plugin-extract-messages@5.3.3': {}
+  '@lingui/babel-plugin-extract-messages@5.4.1': {}
 
-  '@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3)':
+  '@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3)':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/runtime': 7.27.6
       '@babel/types': 7.28.0
-      '@lingui/conf': 5.3.3(typescript@5.8.3)
-      '@lingui/core': 5.3.3(@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3))
-      '@lingui/message-utils': 5.3.3
+      '@lingui/conf': 5.4.1(typescript@5.8.3)
+      '@lingui/core': 5.4.1(@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3))
+      '@lingui/message-utils': 5.4.1
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@lingui/cli@5.3.3(typescript@5.8.3)':
+  '@lingui/cli@5.4.1(typescript@5.8.3)':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/generator': 7.28.0
       '@babel/parser': 7.28.0
       '@babel/runtime': 7.27.6
       '@babel/types': 7.28.0
-      '@lingui/babel-plugin-extract-messages': 5.3.3
-      '@lingui/babel-plugin-lingui-macro': 5.3.3(typescript@5.8.3)
-      '@lingui/conf': 5.3.3(typescript@5.8.3)
-      '@lingui/core': 5.3.3(@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3))
-      '@lingui/format-po': 5.3.3(typescript@5.8.3)
-      '@lingui/message-utils': 5.3.3
+      '@lingui/babel-plugin-extract-messages': 5.4.1
+      '@lingui/babel-plugin-lingui-macro': 5.4.1(typescript@5.8.3)
+      '@lingui/conf': 5.4.1(typescript@5.8.3)
+      '@lingui/core': 5.4.1(@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3))
+      '@lingui/format-po': 5.4.1(typescript@5.8.3)
+      '@lingui/message-utils': 5.4.1
       chokidar: 3.5.1
       cli-table: 0.3.11
       commander: 10.0.1
@@ -8559,7 +8555,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@lingui/conf@5.3.3(typescript@5.8.3)':
+  '@lingui/conf@5.4.1(typescript@5.8.3)':
     dependencies:
       '@babel/runtime': 7.27.6
       cosmiconfig: 8.3.6(typescript@5.8.3)
@@ -8569,40 +8565,40 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@lingui/core@5.3.3(@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3))':
+  '@lingui/core@5.4.1(@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3))':
     dependencies:
       '@babel/runtime': 7.27.6
-      '@lingui/message-utils': 5.3.3
+      '@lingui/message-utils': 5.4.1
     optionalDependencies:
-      '@lingui/babel-plugin-lingui-macro': 5.3.3(typescript@5.8.3)
+      '@lingui/babel-plugin-lingui-macro': 5.4.1(typescript@5.8.3)
 
-  '@lingui/format-json@5.3.3(typescript@5.8.3)':
+  '@lingui/format-json@5.4.1(typescript@5.8.3)':
     dependencies:
-      '@lingui/conf': 5.3.3(typescript@5.8.3)
+      '@lingui/conf': 5.4.1(typescript@5.8.3)
     transitivePeerDependencies:
       - typescript
 
-  '@lingui/format-po@5.3.3(typescript@5.8.3)':
+  '@lingui/format-po@5.4.1(typescript@5.8.3)':
     dependencies:
-      '@lingui/conf': 5.3.3(typescript@5.8.3)
-      '@lingui/message-utils': 5.3.3
+      '@lingui/conf': 5.4.1(typescript@5.8.3)
+      '@lingui/message-utils': 5.4.1
       date-fns: 3.6.0
       pofile: 1.1.4
     transitivePeerDependencies:
       - typescript
 
-  '@lingui/message-utils@5.3.3':
+  '@lingui/message-utils@5.4.1':
     dependencies:
       '@messageformat/parser': 5.1.1
       js-sha256: 0.10.1
 
-  '@lingui/react@5.3.3(@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3))(react@19.0.0)':
+  '@lingui/react@5.4.1(@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3))(react@19.0.0)':
     dependencies:
       '@babel/runtime': 7.27.6
-      '@lingui/core': 5.3.3(@lingui/babel-plugin-lingui-macro@5.3.3(typescript@5.8.3))
+      '@lingui/core': 5.4.1(@lingui/babel-plugin-lingui-macro@5.4.1(typescript@5.8.3))
       react: 19.0.0
     optionalDependencies:
-      '@lingui/babel-plugin-lingui-macro': 5.3.3(typescript@5.8.3)
+      '@lingui/babel-plugin-lingui-macro': 5.4.1(typescript@5.8.3)
 
   '@messageformat/parser@5.1.1':
     dependencies:
@@ -8670,18 +8666,18 @@ snapshots:
       buffer: 6.0.3
       tar: 7.4.3
 
-  '@peculiar/asn1-cms@2.3.15':
+  '@peculiar/asn1-cms@2.5.0':
     dependencies:
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
-      '@peculiar/asn1-x509-attr': 2.3.15
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
+      '@peculiar/asn1-x509-attr': 2.5.0
       asn1js: 3.0.6
       tslib: 2.8.1
 
-  '@peculiar/asn1-csr@2.3.15':
+  '@peculiar/asn1-csr@2.5.0':
     dependencies:
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
       asn1js: 3.0.6
       tslib: 2.8.1
 
@@ -8692,30 +8688,37 @@ snapshots:
       asn1js: 3.0.6
       tslib: 2.8.1
 
-  '@peculiar/asn1-pfx@2.3.15':
+  '@peculiar/asn1-ecc@2.5.0':
     dependencies:
-      '@peculiar/asn1-cms': 2.3.15
-      '@peculiar/asn1-pkcs8': 2.3.15
-      '@peculiar/asn1-rsa': 2.3.15
-      '@peculiar/asn1-schema': 2.3.15
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
       asn1js: 3.0.6
       tslib: 2.8.1
 
-  '@peculiar/asn1-pkcs8@2.3.15':
+  '@peculiar/asn1-pfx@2.5.0':
     dependencies:
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
+      '@peculiar/asn1-cms': 2.5.0
+      '@peculiar/asn1-pkcs8': 2.5.0
+      '@peculiar/asn1-rsa': 2.5.0
+      '@peculiar/asn1-schema': 2.5.0
       asn1js: 3.0.6
       tslib: 2.8.1
 
-  '@peculiar/asn1-pkcs9@2.3.15':
+  '@peculiar/asn1-pkcs8@2.5.0':
     dependencies:
-      '@peculiar/asn1-cms': 2.3.15
-      '@peculiar/asn1-pfx': 2.3.15
-      '@peculiar/asn1-pkcs8': 2.3.15
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
-      '@peculiar/asn1-x509-attr': 2.3.15
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
+      asn1js: 3.0.6
+      tslib: 2.8.1
+
+  '@peculiar/asn1-pkcs9@2.5.0':
+    dependencies:
+      '@peculiar/asn1-cms': 2.5.0
+      '@peculiar/asn1-pfx': 2.5.0
+      '@peculiar/asn1-pkcs8': 2.5.0
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
+      '@peculiar/asn1-x509-attr': 2.5.0
       asn1js: 3.0.6
       tslib: 2.8.1
 
@@ -8726,22 +8729,42 @@ snapshots:
       asn1js: 3.0.6
       tslib: 2.8.1
 
+  '@peculiar/asn1-rsa@2.5.0':
+    dependencies:
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
+      asn1js: 3.0.6
+      tslib: 2.8.1
+
   '@peculiar/asn1-schema@2.3.15':
     dependencies:
       asn1js: 3.0.6
       pvtsutils: 1.3.6
       tslib: 2.8.1
 
-  '@peculiar/asn1-x509-attr@2.3.15':
+  '@peculiar/asn1-schema@2.5.0':
     dependencies:
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
+      asn1js: 3.0.6
+      pvtsutils: 1.3.6
+      tslib: 2.8.1
+
+  '@peculiar/asn1-x509-attr@2.5.0':
+    dependencies:
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
       asn1js: 3.0.6
       tslib: 2.8.1
 
   '@peculiar/asn1-x509@2.3.15':
     dependencies:
       '@peculiar/asn1-schema': 2.3.15
+      asn1js: 3.0.6
+      pvtsutils: 1.3.6
+      tslib: 2.8.1
+
+  '@peculiar/asn1-x509@2.5.0':
+    dependencies:
+      '@peculiar/asn1-schema': 2.5.0
       asn1js: 3.0.6
       pvtsutils: 1.3.6
       tslib: 2.8.1
@@ -8758,15 +8781,15 @@ snapshots:
       tslib: 2.8.1
       webcrypto-core: 1.8.1
 
-  '@peculiar/x509@1.13.0':
+  '@peculiar/x509@1.14.0':
     dependencies:
-      '@peculiar/asn1-cms': 2.3.15
-      '@peculiar/asn1-csr': 2.3.15
-      '@peculiar/asn1-ecc': 2.3.15
-      '@peculiar/asn1-pkcs9': 2.3.15
-      '@peculiar/asn1-rsa': 2.3.15
-      '@peculiar/asn1-schema': 2.3.15
-      '@peculiar/asn1-x509': 2.3.15
+      '@peculiar/asn1-cms': 2.5.0
+      '@peculiar/asn1-csr': 2.5.0
+      '@peculiar/asn1-ecc': 2.5.0
+      '@peculiar/asn1-pkcs9': 2.5.0
+      '@peculiar/asn1-rsa': 2.5.0
+      '@peculiar/asn1-schema': 2.5.0
+      '@peculiar/asn1-x509': 2.5.0
       pvtsutils: 1.3.6
       reflect-metadata: 0.2.2
       tslib: 2.8.1
@@ -8825,7 +8848,7 @@ snapshots:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
 
-  '@react-native-picker/picker@2.11.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
+  '@react-native-picker/picker@2.11.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
     dependencies:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
@@ -12433,7 +12456,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lru-cache@11.1.0: {}
+  lru-cache@11.2.1: {}
 
   lru-cache@5.1.1:
     dependencies:
@@ -12917,7 +12940,7 @@ snapshots:
 
   path-scurry@2.0.0:
     dependencies:
-      lru-cache: 11.1.0
+      lru-cache: 11.2.1
       minipass: 7.1.2
 
   path-type@4.0.0: {}
