@@ -8,7 +8,7 @@ import { fetchInvitationDataUrl } from './fetch'
 import {
   acquirePreAuthorizedAccessToken,
   receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
+  resolveCredentialOffer,
 } from './resolver'
 
 export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
@@ -106,8 +106,8 @@ export async function parseDidCommInvitation(paradym: ParadymWalletSdk, invitati
 }
 
 export async function parseOpenIdCredentialOfferInvitation(paradym: ParadymWalletSdk, invitationUrl: string) {
-  const { resolvedCredentialOffer } = await resolveOpenId4VciOffer({
-    agent: paradym.agent,
+  const { resolvedCredentialOffer } = await resolveCredentialOffer({
+    paradym,
     offer: { uri: invitationUrl },
   })
   const tokenResponse = await acquirePreAuthorizedAccessToken({ agent: paradym.agent, resolvedCredentialOffer })

@@ -6,6 +6,7 @@ import {
   W3cCredentialRecord,
   W3cCredentialRepository,
 } from '@credo-ts/core'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type { BaseAgent } from '../agent'
 import type { CredentialForDisplayId } from '../display/credential'
 import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
@@ -44,17 +45,17 @@ export async function updateCredential(agent: BaseAgent, credentialRecord: Crede
   await registerCredentialsForDcApi(agent)
 }
 
-export async function storeCredential(agent: BaseAgent, credentialRecord: CredentialRecord) {
+export async function storeCredential(paradym: ParadymWalletSdk, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
-    await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
+    await paradym.agent.dependencyManager.resolve(W3cCredentialRepository).save(paradym.agent.context, credentialRecord)
   } else if (credentialRecord instanceof MdocRecord) {
-    await agent.dependencyManager.resolve(MdocRepository).save(agent.context, credentialRecord)
+    await paradym.agent.dependencyManager.resolve(MdocRepository).save(paradym.agent.context, credentialRecord)
   } else {
-    await agent.dependencyManager.resolve(SdJwtVcRepository).save(agent.context, credentialRecord)
+    await paradym.agent.dependencyManager.resolve(SdJwtVcRepository).save(paradym.agent.context, credentialRecord)
   }
 
   // Update database when we store a credential
-  await registerCredentialsForDcApi(agent)
+  await registerCredentialsForDcApi(paradym.agent)
 }
 
 export async function deleteCredential(agent: BaseAgent, credentialId: CredentialForDisplayId) {

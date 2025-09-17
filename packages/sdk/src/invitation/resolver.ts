@@ -18,16 +18,18 @@ import {
 } from '@credo-ts/didcomm'
 import { supportsIncomingMessageType } from '@credo-ts/didcomm/build/util/messageType'
 import {
+  OpenId4VciAuthorizationFlow,
   type OpenId4VciCredentialConfigurationSupportedWithFormats,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
   getOfferedCredentials,
   getScopesFromCredentialConfigurationsSupported,
-  preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type { DidCommAgent, OpenId4VcAgent } from '../agent'
+import type { CredentialDisplay } from '../display/credential'
 import {
   ParadymWalletInvitationAlreadyUsedError,
   ParadymWalletInvitationDidcommUnsupportedProtocolError,
@@ -42,6 +44,11 @@ import {
   setOpenId4VcCredentialMetadata,
 } from '../metadata/credentials'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
+import { getCredentialDisplay } from '../openid4vc/func/getCredentialDisplay'
+import {
+  type CredentialsForProofRequest,
+  getCredentialsForProofRequest,
+} from '../openid4vc/getCredentialsForProofRequest'
 import { credentialRecordFromCredential, encodeCredential } from '../utils/encoding'
 
 export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
@@ -83,52 +90,149 @@ export type ResolveOutOfBandInvitationResult = {
   flowType: 'issue' | 'verify' | 'connect'
 }
 
-export async function resolveOpenId4VciOffer({
-  agent,
-  offer,
-  authorization,
-  fetchAuthorization = true,
-}: {
-  agent: OpenId4VcAgent
+export type ResolveCredentialOfferOptions = {
+  paradym: ParadymWalletSdk
   offer: { uri: string }
   authorization?: { clientId: string; redirectUri: string }
   fetchAuthorization?: boolean
-}) {
-  agent.config.logger.info(`Receiving openid uri ${offer.uri}`, {
+}
+
+// TODO: export from openid4vc
+export type TransactionCodeInfo = {
+  description?: string
+  length?: number
+  input_mode?: 'numeric' | 'text'
+}
+
+type OpenId4VciResolvedAuthRequestPresentationDuringIssuance = Extract<
+  OpenId4VciResolvedAuthorizationRequest,
+  { authorizationFlow: OpenId4VciAuthorizationFlow.PresentationDuringIssuance }
+>
+
+type OpenId4VciResolvedAuthRequestOauth2Redirect = Extract<
+  OpenId4VciResolvedAuthorizationRequest,
+  { authorizationFlow: OpenId4VciAuthorizationFlow.Oauth2Redirect }
+>
+
+type ResolveCredentialOfferPreAuthReturn = {
+  flow: 'pre-auth'
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  credentialDisplay: CredentialDisplay
+}
+
+type ResolveCredentialOfferPreAuthWithTxCodeReturn = {
+  flow: 'pre-auth-with-tx-code'
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  credentialDisplay: CredentialDisplay
+  txCodeInfo: {
+    description?: string
+    length?: number
+    input_mode?: 'numeric' | 'text'
+  }
+}
+
+type ResolveCredentialOfferAuthReturn = {
+  flow: 'auth'
+  credentialDisplay: CredentialDisplay
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  resolvedAuthorizationRequest: OpenId4VciResolvedAuthRequestOauth2Redirect
+}
+
+type ResolveCredentialOfferAuthPresentationDuringIssuanceReturn = {
+  flow: 'auth-presentation-during-issuance'
+  credentialDisplay: CredentialDisplay
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  resolvedAuthorizationRequest: OpenId4VciResolvedAuthRequestPresentationDuringIssuance
+  credentialsForProofRequest: CredentialsForProofRequest
+}
+
+export type ResolveCredentialOfferReturn =
+  | ResolveCredentialOfferPreAuthReturn
+  | ResolveCredentialOfferPreAuthWithTxCodeReturn
+  | ResolveCredentialOfferAuthReturn
+  | ResolveCredentialOfferAuthPresentationDuringIssuanceReturn
+
+export async function resolveCredentialOffer({
+  paradym,
+  offer,
+  authorization,
+  fetchAuthorization = true,
+}: ResolveCredentialOfferOptions): Promise<ResolveCredentialOfferReturn> {
+  paradym.logger.info(`Receiving openid uri ${offer.uri}`, {
     uri: offer.uri,
   })
 
-  const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
+  const resolvedCredentialOffer = await paradym.agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
   let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
+
+  const preAuthGrant =
+    resolvedCredentialOffer.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
+
+  const txCodeInfo = preAuthGrant?.tx_code
+
+  const credentialDisplay = getCredentialDisplay(resolvedCredentialOffer)
+
+  if (preAuthGrant) {
+    if (txCodeInfo) {
+      return {
+        flow: 'pre-auth-with-tx-code',
+        credentialDisplay,
+        resolvedCredentialOffer,
+        txCodeInfo,
+      }
+    }
+    return {
+      flow: 'pre-auth',
+      credentialDisplay,
+      resolvedCredentialOffer,
+    }
+  }
 
   // NOTE: we always assume scopes are used at the moment
   if (fetchAuthorization && resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
     // If only authorization_code grant is valid and user didn't provide authorization details we can't continue
-    if (!resolvedCredentialOffer.credentialOfferPayload.grants[preAuthorizedCodeGrantIdentifier] && !authorization) {
+    if (!authorization) {
       throw new Error(
         "Missing 'authorization' parameter with 'clientId' and 'redirectUri' and authorization code flow is only allowed grant type on offer."
       )
     }
 
     // TODO: authorization should only be initiated after we know which credentials we're going to request
-    if (authorization) {
-      resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
+    resolvedAuthorizationRequest = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
+      resolvedCredentialOffer,
+      {
+        redirectUri: authorization.redirectUri,
+        clientId: authorization.clientId,
+        scope: getScopesFromCredentialConfigurationsSupported(resolvedCredentialOffer.offeredCredentialConfigurations),
+      }
+    )
+
+    if (resolvedAuthorizationRequest.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance) {
+      const credentialsForProofRequest = await getCredentialsForProofRequest({
+        paradym,
+        uri: resolvedAuthorizationRequest.openid4vpRequestUrl,
+      })
+
+      return {
+        flow: 'auth-presentation-during-issuance',
+        credentialDisplay,
         resolvedCredentialOffer,
-        {
-          redirectUri: authorization.redirectUri,
-          clientId: authorization.clientId,
-          scope: getScopesFromCredentialConfigurationsSupported(
-            resolvedCredentialOffer.offeredCredentialConfigurations
-          ),
-        }
-      )
+        resolvedAuthorizationRequest,
+        credentialsForProofRequest,
+      }
+    }
+
+    return {
+      flow: 'auth',
+      credentialDisplay,
+      resolvedCredentialOffer,
+      resolvedAuthorizationRequest,
     }
   }
 
-  return {
-    resolvedCredentialOffer,
-    resolvedAuthorizationRequest,
-  }
+  throw new Error(
+    `Unable to determine whether it is the auth of pre-auth flow with the following grants: [${Object.keys(resolvedCredentialOffer.credentialOfferPayload.grants ?? {}).join(', ')}]`
+  )
 }
 
 export async function acquirePreAuthorizedAccessToken({
