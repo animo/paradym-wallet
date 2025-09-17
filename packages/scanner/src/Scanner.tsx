@@ -2,10 +2,10 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { AnimatePresence, Button, Heading, HeroIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
-import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera'
 import { useCallback, useEffect, useState } from 'react'
 import { Linking, StyleSheet } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
+import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera'
 
 interface BarcodeScannerProps {
   onScan(data: string): void
