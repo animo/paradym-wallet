@@ -1,13 +1,12 @@
-import type { StyleProp, ViewStyle } from 'react-native'
-
 import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { AnimatePresence, Button, Heading, HeroIcons, Page, Paragraph, Spacer, XStack, YStack } from '@package/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
-import { Camera, CameraView } from 'expo-camera'
+import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera'
 import { useCallback, useEffect, useState } from 'react'
-import { Dimensions, Linking, Platform, StyleSheet } from 'react-native'
+import { Linking, StyleSheet } from 'react-native'
 import { SystemBars } from 'react-native-edge-to-edge'
+
 interface BarcodeScannerProps {
   onScan(data: string): void
   onCancel?(): void
@@ -15,31 +14,35 @@ interface BarcodeScannerProps {
 }
 
 export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) => {
-  const [hasPermission, setHasPermission] = useState<boolean>()
-  const { t } = useLingui()
-  useEffect(() => {
-    const getCameraPermissions = async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync()
-      setHasPermission(status === 'granted')
-    }
+  const [requestPermissionResult, setRequestPermissionResult] = useState<null | 'pending' | boolean>(null)
+  const { hasPermission, requestPermission } = useCameraPermission()
 
-    void getCameraPermissions()
-  }, [])
+  const { t } = useLingui()
+
+  const device = useCameraDevice('back')
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr'],
+    onCodeScanned: (codes) => {
+      const code = codes[0]
+      if (!code) return
+      if (!code.value) return
+
+      onScan(code.value)
+    },
+  })
+
+  useEffect(() => {
+    if (hasPermission || requestPermissionResult !== null) return
+
+    setRequestPermissionResult('pending')
+    requestPermission().then((result) => setRequestPermissionResult(result))
+  }, [hasPermission, requestPermission, requestPermissionResult])
 
   const _openAppSetting = useCallback(() => {
     void Linking.openSettings()
   }, [])
 
-  // Android has issues with aspect ratio
-  let cameraStyle: StyleProp<ViewStyle> = StyleSheet.absoluteFill
-  if (Platform.OS === 'android') {
-    const { width, height } = Dimensions.get('screen')
-    const cameraWidth = (height / 16) * 9
-    const widthOffset = -(cameraWidth - width) / 2
-    cameraStyle = { height, width: cameraWidth, left: widthOffset }
-  }
-
-  if (hasPermission === false) {
+  if (requestPermissionResult === false) {
     return (
       <Page justifyContent="center" alignItems="center">
         <Heading heading="h2" letterSpacing={-0.5}>
@@ -57,16 +60,36 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
     )
   }
 
+  if (!device) {
+    return (
+      <Page justifyContent="center" alignItems="center">
+        <Heading heading="h2" letterSpacing={-0.5}>
+          <Trans
+            id="qrScanner.noCameraHeader"
+            comment="Heading informing the user the device does not have a back camera"
+          >
+            No camera found
+          </Trans>
+        </Heading>
+        <Paragraph textAlign="center">
+          <Trans id="qrScanner.noCameraDescription" comment="Description explaining why camera permission is needed">
+            This device does not have a camera. Unable to scan QR codes
+          </Trans>
+        </Paragraph>
+      </Page>
+    )
+  }
+
   return (
     <Page f={1} fd="column" jc="space-between" bg="$black">
       <SystemBars style="light" />
       {hasPermission && (
-        <CameraView
-          style={[cameraStyle, StyleSheet.absoluteFill]}
-          onBarcodeScanned={({ data }) => onScan(data)}
-          barcodeScannerSettings={{
-            barcodeTypes: ['qr'],
-          }}
+        <Camera
+          style={[StyleSheet.absoluteFill]}
+          resizeMode="cover"
+          device={device}
+          isActive={true}
+          codeScanner={codeScanner}
         />
       )}
       <YStack zi="$5" ai="center">

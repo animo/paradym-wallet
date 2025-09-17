@@ -1,12 +1,7 @@
 import * as Device from 'expo-device'
 import { useCallback } from 'react'
 import { Platform } from 'react-native'
-import {
-  LLAMA3_2_1B_QLORA_URL,
-  LLAMA3_2_1B_TOKENIZER,
-  LLAMA3_2_TOKENIZER_CONFIG,
-  useLLM as useExecutorchLLM,
-} from 'react-native-executorch'
+import { LLAMA3_2_1B, useLLM as useExecutorchLLM } from 'react-native-executorch'
 import { useIsModelActivated } from './state'
 
 // FIXME: The model expects a system prompt on initializing, but this blocks it from being used for different tasks.
@@ -22,9 +17,7 @@ export const useLLM = () => {
     generate: rawGenerate,
     response,
   } = useExecutorchLLM({
-    modelSource: LLAMA3_2_1B_QLORA_URL,
-    tokenizerSource: LLAMA3_2_1B_TOKENIZER,
-    tokenizerConfigSource: LLAMA3_2_TOKENIZER_CONFIG,
+    model: LLAMA3_2_1B,
     preventLoad: isModelActivated,
   })
 

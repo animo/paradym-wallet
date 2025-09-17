@@ -45,7 +45,7 @@
 		"expo-application": "catalog:",
 		"expo-asset": "catalog:",
 		"expo-blur": "catalog:",
-		"expo-camera": "catalog:",
+		"react-native-vision-camera": "catalog:",
 		"expo-constants": "catalog:",
 		"expo-dev-client": "catalog:",
 		"expo-device": "catalog:",
