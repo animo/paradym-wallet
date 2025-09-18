@@ -42,7 +42,7 @@
 			"days": ["days"]
 		},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 111]],
+		"origin": [["../../packages/utils/src/format.ts", 105]],
 		"translation": "{days} Tage"
 	},
 	"requestedAttributes.subheading": {
@@ -122,7 +122,7 @@
 		"message": "1 day",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/utils/src/format.ts", 107]],
+		"origin": [["../../packages/utils/src/format.ts", 101]],
 		"translation": "1 Tag"
 	},
 	"trust.approvedList": {
@@ -157,7 +157,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/wallet/components/CustomCredentialAttributes.tsx", 368]
+			["src/features/wallet/components/CustomCredentialAttributes.tsx", 423]
 		],
 		"translation": "Über die Karte"
 	},
@@ -458,7 +458,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 375]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 378]
 		],
 		"translation": "Autorisierung abgebrochen"
 	},
@@ -547,8 +547,8 @@
 			"Title shown in header for the credential detail attributes screen"
 		],
 		"origin": [
-			["src/features/wallet/FunkeCredentialDetailScreen.tsx", 111],
-			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 96]
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 96],
+			["src/features/wallet/FunkeCredentialDetailScreen.tsx", 111]
 		],
 		"translation": "Karteneigenschaften"
 	},
@@ -1296,19 +1296,19 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 499]],
 		"translation": "Deutsch"
 	},
-	"onboardingWelcome.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to begin onboarding from the welcome screen"],
-		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
-		"translation": "Loslegen"
-	},
 	"onboardingWalletExplanation.getStarted": {
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to finish onboarding explanation"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]],
 		"translation": "Los geht's"
+	},
+	"onboardingWelcome.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to begin onboarding from the welcome screen"],
+		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
+		"translation": "Loslegen"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
 		"message": "Get your national identity card",
@@ -1509,7 +1509,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 497]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 500]
 		],
 		"translation": "Wenn du aufhörst, wird das Kartenangebot abgebrochen."
 	},
@@ -1897,6 +1897,15 @@
 		],
 		"translation": "Keine Eigenschaften gefunden"
 	},
+	"qrScanner.noCameraHeader": {
+		"message": "No camera found",
+		"placeholders": {},
+		"comments": [
+			"Heading informing the user the device does not have a back camera"
+		],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 67]],
+		"translation": "Keine Kamera gefunden"
+	},
 	"common.noResultsSearch": {
 		"message": "No cards found for \"{searchQuery}\"",
 		"placeholders": {
@@ -1963,7 +1972,7 @@
 			"Toast warning shown when the user loses internet connectivity"
 		],
 		"origin": [
-			["../../packages/app/src/provider/NoInternetToastProvider.tsx", 28]
+			["../../packages/app/src/provider/NoInternetToastProvider.tsx", 31]
 		],
 		"translation": "Keine Internetverbindung. Einige Funktionen funktionieren möglicherweise nicht."
 	},
@@ -2013,7 +2022,7 @@
 		"placeholders": {},
 		"comments": ["Toast message shown when internet connection is restored"],
 		"origin": [
-			["../../packages/app/src/provider/NoInternetToastProvider.tsx", 22]
+			["../../packages/app/src/provider/NoInternetToastProvider.tsx", 25]
 		],
 		"translation": "Wieder online."
 	},
@@ -2107,7 +2116,7 @@
 		"message": "Please allow camera access",
 		"placeholders": {},
 		"comments": ["Heading asking user to allow camera permission"],
-		"origin": [["../../packages/scanner/src/Scanner.tsx", 46]],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 49]],
 		"translation": "Bitte erlaube Kamera-Zugriff"
 	},
 	"localAi.toast.noWifi.message": {
@@ -2505,18 +2514,18 @@
 		"origin": [["src/features/onboarding/steps.ts", 43]],
 		"translation": "Richte deine Wallet ein"
 	},
-	"settings.title": {
-		"message": "Settings",
-		"placeholders": {},
-		"comments": ["Header title for the settings screen"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 86]],
-		"translation": "Einstellungen"
-	},
 	"menu.item.settings": {
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Label for settings menu item"],
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 150]],
+		"translation": "Einstellungen"
+	},
+	"settings.title": {
+		"message": "Settings",
+		"placeholders": {},
+		"comments": ["Header title for the settings screen"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 86]],
 		"translation": "Einstellungen"
 	},
 	"menu.setupEid.title": {
@@ -2805,7 +2814,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 493]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 496]
 		],
 		"translation": "Kartenangebot stoppen?"
 	},
@@ -3070,7 +3079,7 @@
 		"message": "This allows the app to scan QR codes that include credentials or data requests.",
 		"placeholders": {},
 		"comments": ["Description explaining why camera permission is needed"],
-		"origin": [["../../packages/scanner/src/Scanner.tsx", 51]],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 54]],
 		"translation": "Dies ermöglicht der App, QR-Codes mit Nachweisen oder Datenanfragen zu scannen."
 	},
 	"offlineQr.allowBluetoothAccessDescription": {
@@ -3136,6 +3145,13 @@
 			]
 		],
 		"translation": "Dieser Nachweis ist nicht in deiner Wallet vorhanden."
+	},
+	"qrScanner.noCameraDescription": {
+		"message": "This device does not have a camera. Unable to scan QR codes",
+		"placeholders": {},
+		"comments": ["Description explaining why camera permission is needed"],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 75]],
+		"translation": "Dieses Gerät hat keine Kamera. QR-Codes können nicht gescannt werden"
 	},
 	"localAi.toast.unsupported.message": {
 		"message": "This device is not powerful enough to run local AI models",
@@ -3388,7 +3404,7 @@
 		"message": "Use the camera to scan a QR code",
 		"placeholders": {},
 		"comments": ["Instruction heading for scanning a QR code"],
-		"origin": [["../../packages/scanner/src/Scanner.tsx", 74]],
+		"origin": [["../../packages/scanner/src/Scanner.tsx", 97]],
 		"translation": "Verwende die Kamera, um einen QR-Code zu scannen"
 	},
 	"pinSlide.description": {

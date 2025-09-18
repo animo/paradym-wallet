@@ -114,9 +114,6 @@ catalogs:
     expo-build-properties:
       specifier: ~0.14.8
       version: 0.14.8
-    expo-camera:
-      specifier: ~16.1.10
-      version: 16.1.11
     expo-constants:
       specifier: ~17.1.6
       version: 17.1.7
@@ -187,8 +184,8 @@ catalogs:
       specifier: ^1.6.0
       version: 1.6.2
     react-native-executorch:
-      specifier: 0.4.8
-      version: 0.4.8
+      specifier: 0.5.5
+      version: 0.5.5
     react-native-fs:
       specifier: ^2.20.0
       version: 2.20.0
@@ -225,6 +222,9 @@ catalogs:
     react-native-svg:
       specifier: 15.11.2
       version: 15.11.2
+    react-native-vision-camera:
+      specifier: ^4.7.2
+      version: 4.7.2
     rxjs:
       specifier: ^7.8.1
       version: 7.8.2
@@ -385,9 +385,6 @@ importers:
       expo-blur:
         specifier: 'catalog:'
         version: 14.1.5(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
-      expo-camera:
-        specifier: 'catalog:'
-        version: 16.1.11(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.1.1(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       expo-constants:
         specifier: 'catalog:'
         version: 17.1.7(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))
@@ -456,7 +453,7 @@ importers:
         version: 1.6.2(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       react-native-executorch:
         specifier: 'catalog:'
-        version: 0.4.8(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
+        version: 0.5.5(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       react-native-fs:
         specifier: 'catalog:'
         version: 2.20.0(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))
@@ -490,6 +487,9 @@ importers:
       react-native-svg:
         specifier: 'catalog:'
         version: 15.11.2(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
+      react-native-vision-camera:
+        specifier: 'catalog:'
+        version: 4.7.2(react-native-reanimated@3.17.5(@babel/core@7.28.3)(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
     devDependencies:
       '@babel/core':
         specifier: 'catalog:'
@@ -671,12 +671,12 @@ importers:
       '@types/react':
         specifier: 'catalog:'
         version: 19.1.11
-      expo-camera:
-        specifier: 'catalog:'
-        version: 16.1.11(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.1.1(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       react-native:
         specifier: 'catalog:'
         version: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
+      react-native-vision-camera:
+        specifier: 'catalog:'
+        version: 4.7.2(react-native-reanimated@3.17.5(@babel/core@7.28.3)(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
 
   packages/secure-store:
     dependencies:
@@ -3071,6 +3071,9 @@ packages:
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
 
+  '@types/node@18.18.8':
+    resolution: {integrity: sha512-OLGBaaK5V3VRBS1bAkMVP2/W9B+H8meUfl866OrMNQqt7wDgdpWPp5o6gmIc9pB+lIQHSq4ZL8ypeH1vPxcPaQ==}
+
   '@types/node@24.3.0':
     resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
 
@@ -3986,17 +3989,6 @@ packages:
     peerDependencies:
       expo: '*'
 
-  expo-camera@16.1.11:
-    resolution: {integrity: sha512-etA5ZKoC6nPBnWWqiTmlX//zoFZ6cWQCCIdmpUHTGHAKd4qZNCkhPvBWbi8o32pDe57lix1V4+TPFgEcvPwsaA==}
-    peerDependencies:
-      expo: '*'
-      react: '*'
-      react-native: '*'
-      react-native-web: '*'
-    peerDependenciesMeta:
-      react-native-web:
-        optional: true
-
   expo-constants@17.1.7:
     resolution: {integrity: sha512-byBjGsJ6T6FrLlhOBxw4EaiMXrZEn/MlUYIj/JAd+FS7ll5X/S4qVRbIimSJtdW47hXMq0zxPfJX6njtA56hHA==}
     peerDependencies:
@@ -4742,6 +4734,13 @@ packages:
   jsonld@8.3.3:
     resolution: {integrity: sha512-9YcilrF+dLfg9NTEof/mJLMtbdX1RJ8dbWtJgE00cMOIohb1lIyJl710vFiTaiHTl6ZYODJuBd32xFvUhmv3kg==}
     engines: {node: '>=14'}
+
+  jsonrepair@3.13.0:
+    resolution: {integrity: sha512-5YRzlAQ7tuzV1nAJu3LvDlrKtBFIALHN2+a+I1MGJCt3ldRDBF/bZuvIPzae8Epot6KBXd0awRZZcuoeAsZ/mw==}
+    hasBin: true
+
+  jsonschema@1.5.0:
+    resolution: {integrity: sha512-K+A9hhqbn0f3pJX17Q/7H6yQfD/5OXgdrR5UE12gMXCiN9D5Xq2o5mddV2QEcX/bjla99ASsAAQUyMCCRWAEhw==}
 
   jwt-decode@3.1.2:
     resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
@@ -5556,8 +5555,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-executorch@0.4.8:
-    resolution: {integrity: sha512-CTFmSAJAG2Ez5r3dsEkac7T19R70ZVVliKhLY1/IKaqlBO/9XPxuJKBr0M+GcLbt+DOesSB+I/S/t8EP9NSwPA==}
+  react-native-executorch@0.5.5:
+    resolution: {integrity: sha512-q5SyxA3MNX6NFSygw+3v1rnzibjtZB9biqbJyKLdahk7KYxS5WMrnq4tiXb+gcfHMZ+7F5MUkIqOG4dcPcua0A==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -5602,9 +5601,6 @@ packages:
 
   react-native-keychain@8.2.0:
     resolution: {integrity: sha512-SkRtd9McIl1Ss2XSWNLorG+KMEbgeVqX+gV+t3u1EAAqT8q2/OpRmRbxpneT2vnb/dMhiU7g6K/pf3nxLUXRvA==}
-
-  react-native-live-audio-stream@1.1.1:
-    resolution: {integrity: sha512-Yk0O51hY7eFMUv1umYxGDs4SJVPHyhUX6uz4jI+GiowOwSqIzLLRNh03hJjCVZRFXTWLPCntqOKZ+N8fVAc6BQ==}
 
   react-native-mmkv@3.3.0:
     resolution: {integrity: sha512-2iPjIJ+IAODXN35wm53EN6nv+hR/0NXLLiLWOdPA/0gXDB2dYVrr6MqvoiFpxhLhdj0B8fkf5ARNVavJaSvuuQ==}
@@ -5651,6 +5647,22 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
+
+  react-native-vision-camera@4.7.2:
+    resolution: {integrity: sha512-C+5PvlSunN6I4aYplSask+v3jfhgduZumIVw6H6lG+Afpf8boIcG3uFSsSfVgj+hxI7fx6qM6bsciEhzgxEUYg==}
+    peerDependencies:
+      '@shopify/react-native-skia': '*'
+      react: '*'
+      react-native: '*'
+      react-native-reanimated: '*'
+      react-native-worklets-core: '*'
+    peerDependenciesMeta:
+      '@shopify/react-native-skia':
+        optional: true
+      react-native-reanimated:
+        optional: true
+      react-native-worklets-core:
+        optional: true
 
   react-native-web@0.20.0:
     resolution: {integrity: sha512-OOSgrw+aON6R3hRosCau/xVxdLzbjEcsLysYedka0ZON4ZZe6n9xgeN9ZkoejhARM36oTlUgHIQqxGutEJ9Wxg==}
@@ -6211,6 +6223,9 @@ packages:
 
   uint8arrays@5.1.0:
     resolution: {integrity: sha512-vA6nFepEmlSKkMBnLBaUMVvAC4G3CTmO58C12y4sq6WPDOR7mOFYOi7GlrQ4djeSbP6JG9Pv9tJDM97PedRSww==}
+
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
   undici-types@7.10.0:
     resolution: {integrity: sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==}
@@ -10355,6 +10370,10 @@ snapshots:
 
   '@types/long@4.0.2': {}
 
+  '@types/node@18.18.8':
+    dependencies:
+      undici-types: 5.26.5
+
   '@types/node@24.3.0':
     dependencies:
       undici-types: 7.10.0
@@ -10365,7 +10384,7 @@ snapshots:
 
   '@types/secp256k1@4.0.6':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 18.18.8
 
   '@types/stack-utils@2.0.3': {}
 
@@ -11363,15 +11382,6 @@ snapshots:
       expo: 53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       semver: 7.7.2
 
-  expo-camera@16.1.11(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.1.1(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0):
-    dependencies:
-      expo: 53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
-      invariant: 2.2.4
-      react: 19.0.0
-      react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
-    optionalDependencies:
-      react-native-web: 0.20.0(react-dom@19.1.1(react@19.0.0))(react@19.0.0)
-
   expo-constants@17.1.7(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)):
     dependencies:
       '@expo/config': 11.0.13
@@ -12220,6 +12230,10 @@ snapshots:
       rdf-canonize: 3.4.0
     transitivePeerDependencies:
       - web-streams-polyfill
+
+  jsonrepair@3.13.0: {}
+
+  jsonschema@1.5.0: {}
 
   jwt-decode@3.1.2: {}
 
@@ -13071,15 +13085,17 @@ snapshots:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
 
-  react-native-executorch@0.4.8(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0):
+  react-native-executorch@0.5.5(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0):
     dependencies:
       '@huggingface/jinja': 0.5.1
       expo: 53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       expo-asset: 11.1.7(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       expo-file-system: 18.1.11(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))
+      jsonrepair: 3.13.0
+      jsonschema: 1.5.0
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
-      react-native-live-audio-stream: 1.1.1
+      zod: 3.25.76
     transitivePeerDependencies:
       - '@babel/core'
       - '@expo/dom-webview'
@@ -13126,8 +13142,6 @@ snapshots:
       react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
 
   react-native-keychain@8.2.0: {}
-
-  react-native-live-audio-stream@1.1.1: {}
 
   react-native-mmkv@3.3.0(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -13190,6 +13204,13 @@ snapshots:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
       warn-once: 0.1.1
+
+  react-native-vision-camera@4.7.2(react-native-reanimated@3.17.5(@babel/core@7.28.3)(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0):
+    dependencies:
+      react: 19.0.0
+      react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
+    optionalDependencies:
+      react-native-reanimated: 3.17.5(@babel/core@7.28.3)(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
 
   react-native-web@0.20.0(react-dom@19.1.1(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -13833,6 +13854,8 @@ snapshots:
   uint8arrays@5.1.0:
     dependencies:
       multiformats: 13.4.0
+
+  undici-types@5.26.5: {}
 
   undici-types@7.10.0: {}
 
