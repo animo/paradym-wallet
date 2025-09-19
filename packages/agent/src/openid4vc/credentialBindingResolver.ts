@@ -1,12 +1,4 @@
-import {
-  DidJwk,
-  DidKey,
-  DidsApi,
-  type JwkDidCreateOptions,
-  KeyBackend,
-  type KeyDidCreateOptions,
-  getJwkFromKey,
-} from '@credo-ts/core'
+import { DidJwk, DidKey, DidsApi, type JwkDidCreateOptions, type KeyDidCreateOptions, Kms } from '@credo-ts/core'
 import { type OpenId4VciCredentialBindingResolver, OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
 
 export function getCredentialBindingResolver({
@@ -26,6 +18,8 @@ export function getCredentialBindingResolver({
     credentialFormat,
     agentContext,
   }) => {
+    const kms = agentContext.resolve(Kms.KeyManagementApi)
+
     // First, we try to pick a did method
     // Prefer did:jwk, otherwise use did:key, otherwise use undefined
     let didMethod: 'key' | 'jwk' | undefined =
@@ -65,13 +59,16 @@ export function getCredentialBindingResolver({
       throw new Error('Unable to request credentials. Only jwt proof type without key attestations supported')
     }
 
-    const keyType = proofTypes.jwt.supportedKeyTypes[0]
+    const signatureAlgorithm = proofTypes.jwt.supportedSignatureAlgorithms[0]
     const keys = await Promise.all(
       new Array(batchSize).fill(0).map(() =>
-        agentContext.wallet.createKey({
-          keyType,
-          keyBackend: shouldKeyBeHardwareBacked ? KeyBackend.SecureElement : KeyBackend.Software,
-        })
+        kms
+          .createKeyForSignatureAlgorithm({
+            algorithm: signatureAlgorithm,
+            // FIXME: what should happen with already existing keys created in the secure environment?
+            backend: shouldKeyBeHardwareBacked ? 'secureEnvironment' : 'askar',
+          })
+          .then((key) => Kms.PublicJwk.fromUnknown(key.publicJwk))
       )
     )
 
@@ -83,7 +80,7 @@ export function getCredentialBindingResolver({
           const didResult = await didsApi.create<JwkDidCreateOptions | KeyDidCreateOptions>({
             method: dm,
             options: {
-              key,
+              keyId: key.keyId,
             },
           })
 
@@ -97,7 +94,7 @@ export function getCredentialBindingResolver({
             verificationMethodId = didJwk.verificationMethodId
           } else {
             const didKey = DidKey.fromDid(didResult.didState.did)
-            verificationMethodId = `${didKey.did}#${didKey.key.fingerprint}`
+            verificationMethodId = `${didKey.did}#${didKey.publicJwk.fingerprint}`
           }
 
           return verificationMethodId
@@ -119,7 +116,7 @@ export function getCredentialBindingResolver({
     ) {
       return {
         method: 'jwk',
-        keys: keys.map((key) => getJwkFromKey(key)),
+        keys,
       }
     }
 

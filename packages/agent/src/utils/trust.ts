@@ -6,7 +6,7 @@ import type { EitherAgent } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import { TRUSTED_ENTITIES } from '../invitation/trustedEntities'
 
-export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did'
+export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did' | 'none'
 
 export type TrustList = TrustedEntity & {
   trustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }>
@@ -49,11 +49,17 @@ export const detectTrustMechanism = (options: {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
 }): TrustMechanism => {
+  const clientIdPrefix = options.resolvedAuthorizationRequest.verifier.clientIdPrefix
+
   if (options.authorizationRequestVerificationResult && options.authorizationRequestVerificationResult.length > 0) {
     return 'eudi_rp_authentication'
   }
 
-  if (options.resolvedAuthorizationRequest.verifier.clientIdScheme === 'https') {
+  if (clientIdPrefix === 'origin' || clientIdPrefix === 'redirect_uri') {
+    return 'none'
+  }
+
+  if (clientIdPrefix === 'openid_federation') {
     return 'openid_federation'
   }
 
@@ -61,7 +67,7 @@ export const detectTrustMechanism = (options: {
     return 'x509'
   }
 
-  if (options.resolvedAuthorizationRequest.verifier.clientIdScheme === 'did') {
+  if (clientIdPrefix === 'decentralized_identifier') {
     return 'did'
   }
 
@@ -92,6 +98,22 @@ export const getTrustedEntities = async (
     case 'did':
       trustedEntities = await getTrustedEntitiesForDid(options)
       break
+    case 'none': {
+      const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
+      const entityId = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id
+      const organizationName = clientMetadata?.client_name
+      const logoUri = clientMetadata?.logo_uri
+
+      trustedEntities = {
+        relyingParty: {
+          organizationName,
+          logoUri,
+          entityId,
+        },
+        trustedEntities: [],
+      }
+      break
+    }
     default:
       throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
   }

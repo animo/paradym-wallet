@@ -18,7 +18,7 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
   if (secureUnlock.state === 'unlocked') {
     const agent = secureUnlock.context.agent
     secureUnlock.lock()
-    await agent.wallet.delete()
+    await agent.dependencyManager.deleteAgentContext(agent.context)
     await agent.shutdown()
   }
 
