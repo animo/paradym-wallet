@@ -115,10 +115,11 @@ const createBaseConfig = (appSpecific) => {
       'expo-secure-store',
       'expo-router',
       [
-        'expo-camera',
+        'react-native-vision-camera',
         {
-          cameraPermission:
+          cameraPermissionText:
             '$(PRODUCT_NAME) uses the camera to scan invitation QR-codes, allowing you to receive or share cards from your wallet.',
+          enableCodeScanner: true,
         },
       ],
       [

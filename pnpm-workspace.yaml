@@ -64,7 +64,7 @@ catalog:
   react-native-screens: ~4.11.1
   react-native-svg: 15.11.2
   "@react-navigation/native": ^7.1.14
-  react-native-executorch: 0.4.8
+  react-native-executorch: 0.5.5
   react-native-fs: ^2.20.0
   react-native-mmkv: ^3.3.0
   react-native-qrcode-svg: ^6.3.12
@@ -73,13 +73,13 @@ catalog:
   "@react-native-community/blur": ^4.3.2
   "@gorhom/bottom-sheet": ^5
   react-native-edge-to-edge: ^1.6.0
+  react-native-vision-camera: ^4.7.2
 
   # Expo
   expo-standard-web-crypto: 2.1.4
   expo-application: ~6.1.5
   expo-asset: ~11.1.6
   expo-blur: ~14.1.5
-  expo-camera: ~16.1.10
   expo-constants: ~17.1.6
   expo-dev-client: ~5.2.2
   expo-device: ~7.1.4
