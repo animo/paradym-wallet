@@ -1,8 +1,8 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
-import type { DifPresentationExchangeDefinitionV2, Jwk } from '@credo-ts/core'
-import { JwaSignatureAlgorithm, Jwt } from '@credo-ts/core'
-import type { PlaintextMessage } from '@credo-ts/core/build/types'
+import { type DifPresentationExchangeDefinitionV2, Kms } from '@credo-ts/core'
+import { Jwt } from '@credo-ts/core'
+import type { PlaintextMessage } from '@credo-ts/didcomm'
 import type {
   ConnectionRecord,
   CredentialStateChangedEvent,
@@ -149,7 +149,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
 }: {
   agent: EitherAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  dPopKeyJwk?: Jwk
+  dPopKeyJwk?: Kms.PublicJwk
   authSession: string
   presentationDuringIssuanceSession?: string
 }) {
@@ -235,7 +235,7 @@ export async function acquireAuthorizationCodeAccessToken({
   authorizationCode: string
   clientId: string
   redirectUri?: string
-  dPopKeyJwk?: Jwk
+  dPopKeyJwk?: Kms.PublicJwk
 }) {
   return await agent.modules.openId4VcHolder.requestToken({
     resolvedCredentialOffer,
@@ -291,7 +291,10 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       clientId,
       credentialConfigurationIds: Object.keys(offeredCredentialsToRequest),
       verifyCredentialStatus: false,
-      allowedProofOfPossessionSignatureAlgorithms: [JwaSignatureAlgorithm.ES256, JwaSignatureAlgorithm.EdDSA],
+      allowedProofOfPossessionSignatureAlgorithms: [
+        Kms.KnownJwaSignatureAlgorithms.ES256,
+        Kms.KnownJwaSignatureAlgorithms.EdDSA,
+      ],
       credentialBindingResolver: getCredentialBindingResolver({
         pidSchemes,
         requestBatch,
@@ -343,14 +346,14 @@ const extractEntityIdFromJwt = (jwt: string, origin?: string): string | null => 
 }
 
 const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: string): string | null => {
-  const { clientId, clientIdScheme } = getOpenid4vpClientId({
+  const { clientIdIdentifier, clientIdPrefix } = getOpenid4vpClientId({
     clientId: payload.client_id as string,
     legacyClientIdScheme: payload.client_id_scheme,
     responseMode: payload.response_mode,
     origin,
   })
 
-  if (clientIdScheme === 'https') return clientId
+  if (clientIdPrefix === 'decentralized_identifier') return clientIdIdentifier
   return null
 }
 

@@ -49,7 +49,6 @@
 			"@openwallet-foundation/askar-shared": "catalog:"
 		},
 		"patchedDependencies": {
-			"@animo-id/credo-ts-openid4vc": "patches/@animo-id__credo-ts-openid4vc.patch",
 			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",
 			"@cheqd/sdk": "patches/@cheqd__sdk.patch"
 		}
