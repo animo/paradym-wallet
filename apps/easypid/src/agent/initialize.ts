@@ -21,7 +21,6 @@ export async function initializeAppAgent({
         keyDerivation: 'raw',
         walletId: getWalletId(walletKeyVersion),
         walletKey,
-        walletLabel: 'EasyPID Wallet',
         trustedX509Certificates,
       }).catch((error) => {
         if (error instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
@@ -31,7 +30,6 @@ export async function initializeAppAgent({
         keyDerivation: 'raw',
         walletId: getWalletId(walletKeyVersion),
         walletKey,
-        walletLabel: 'Paradym Wallet',
         trustedX509Certificates,
       }).catch((error) => {
         if (error instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()

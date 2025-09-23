@@ -26,9 +26,7 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
     const walletId = `easypid-wallet-${walletKeyVersion}`
     const agent = new Agent({
-      config: {
-        label: 'pin_test_agent',
-      },
+      config: {},
       modules: {
         askar: new AskarModule({
           askar,
@@ -106,7 +104,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     })
 
     const parsedData = await response.json()
-    return parsedData
+    return parsedData as T
   }
 
   public async register() {

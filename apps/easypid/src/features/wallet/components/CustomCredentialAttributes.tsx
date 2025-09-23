@@ -45,7 +45,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
   // We don't pass attributes here as props because we need to use the specified displayPriority
   // const { credential } = useCredentialByCategory('DE-PID')
 
-  const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtVc
+  const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtDc
   const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
   const isLegacySdJwtPid = isPidSdJwtVc && credential.metadata.type !== 'urn:eudi:pid:1'
 

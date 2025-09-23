@@ -46,13 +46,11 @@ import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { logger } from './logger'
 
 export const initializeEasyPIDAgent = async ({
-  walletLabel,
   walletId,
   walletKey,
   keyDerivation,
   trustedX509Certificates,
 }: {
-  walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
@@ -61,7 +59,6 @@ export const initializeEasyPIDAgent = async ({
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
-      label: walletLabel,
       autoUpdateStorageOnStartup: true,
       logger,
     },
@@ -88,7 +85,7 @@ export const initializeEasyPIDAgent = async ({
             // }
 
             // if (
-            //   verification.credential.claimFormat === ClaimFormat.SdJwtVc &&
+            //   verification.credential.claimFormat === ClaimFormat.SdJwtDc &&
             //   pidSchemes.sdJwtVcVcts.includes(verification.credential.payload.vct as string)
             // ) {
             //   return [bdrPidIssuerCertificate]
@@ -117,13 +114,11 @@ export const initializeEasyPIDAgent = async ({
 }
 
 export const initializeParadymAgent = async ({
-  walletLabel,
   walletId,
   walletKey,
   keyDerivation,
   trustedX509Certificates = [],
 }: {
-  walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
@@ -132,7 +127,6 @@ export const initializeParadymAgent = async ({
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
-      label: walletLabel,
       autoUpdateStorageOnStartup: true,
       logger,
     },

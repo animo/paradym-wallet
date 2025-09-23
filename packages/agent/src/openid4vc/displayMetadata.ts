@@ -1,4 +1,4 @@
-import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '@credo-ts/core'
 import type {
   OpenId4VciCredentialConfigurationSupported,
   OpenId4VciCredentialConfigurationSupportedWithFormats,
@@ -52,7 +52,7 @@ export function extractOpenId4VcCredentialMetadata(
  * Gets the OpenId4Vc credential metadata from the given credential record.
  */
 export function getOpenId4VcCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 ): OpenId4VcCredentialMetadata | null {
   const recordMetadata: OpenId4VcCredentialMetadata | null =
     credentialRecord.metadata.get(openId4VcCredentialMetadataKey)
@@ -91,7 +91,7 @@ export function getOpenId4VcCredentialMetadata(
  * NOTE: this does not save the record.
  */
 export function setOpenId4VcCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord,
   metadata: OpenId4VcCredentialMetadata
 ) {
   credentialRecord.metadata.set(openId4VcCredentialMetadataKey, metadata)

@@ -301,16 +301,16 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       }),
     })
 
-    return credentials.credentials.map(({ credentials, ...credentialResponse }) => {
-      const configuration = resolvedCredentialOffer.offeredCredentialConfigurations[
-        credentialResponse.credentialConfigurationId
-      ] as OpenId4VciCredentialConfigurationSupportedWithFormats
+    if (credentials.deferredCredentials.length > 0) {
+      // TODO: handle deferred credentials
+    }
 
+    return credentials.credentials.map(({ credentials, ...credentialResponse }) => {
       const firstCredential = credentials[0]
       const record = credentialRecordFromCredential(firstCredential)
 
       // OpenID4VC metadata
-      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(configuration, {
+      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
         id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
         display: resolvedCredentialOffer.metadata.credentialIssuer.display,
       })
@@ -327,7 +327,6 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
       return {
         ...credentialResponse,
-        configuration,
         credential: record,
       }
     })
@@ -710,6 +709,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   try {
     const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
       reuseConnection: true,
+      label: 'TODO',
     })
     connectionRecord = receiveInvitationResult.connectionRecord
     outOfBandRecord = receiveInvitationResult.outOfBandRecord

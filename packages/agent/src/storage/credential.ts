@@ -5,12 +5,14 @@ import {
   SdJwtVcRepository,
   W3cCredentialRecord,
   W3cCredentialRepository,
+  W3cV2CredentialRecord,
+  W3cV2CredentialRepository,
 } from '@credo-ts/core'
 import type { EitherAgent } from '../agent'
 import type { CredentialForDisplayId } from '../hooks'
 import { registerCredentialsForDcApi } from '../openid4vc/registerDcApi'
 
-type CredentialRecord = W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+type CredentialRecord = W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 
 export async function getCredential(
   agent: EitherAgent,
@@ -19,6 +21,11 @@ export async function getCredential(
   if (credentialId.startsWith('w3c-credential-')) {
     const w3cCredentialId = credentialId.replace('w3c-credential-', '')
     return agent.w3cCredentials.getCredentialRecordById(w3cCredentialId)
+  }
+
+  if (credentialId.startsWith('w3c-v2-credential-')) {
+    const w3cV2CredentialId = credentialId.replace('w3c-v2-credential-', '')
+    return agent.w3cV2Credentials.getCredentialRecordById(w3cV2CredentialId)
   }
 
   if (credentialId.startsWith('sd-jwt-vc')) {
@@ -37,6 +44,8 @@ export async function getCredential(
 export async function updateCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).update(agent.context, credentialRecord)
+  } else if (credentialRecord instanceof W3cV2CredentialRecord) {
+    await agent.dependencyManager.resolve(W3cV2CredentialRepository).update(agent.context, credentialRecord)
   } else if (credentialRecord instanceof MdocRecord) {
     await agent.dependencyManager.resolve(MdocRepository).update(agent.context, credentialRecord)
   } else {
@@ -50,6 +59,8 @@ export async function updateCredential(agent: EitherAgent, credentialRecord: Cre
 export async function storeCredential(agent: EitherAgent, credentialRecord: CredentialRecord) {
   if (credentialRecord instanceof W3cCredentialRecord) {
     await agent.dependencyManager.resolve(W3cCredentialRepository).save(agent.context, credentialRecord)
+  } else if (credentialRecord instanceof W3cV2CredentialRecord) {
+    await agent.dependencyManager.resolve(W3cV2CredentialRepository).save(agent.context, credentialRecord)
   } else if (credentialRecord instanceof MdocRecord) {
     await agent.dependencyManager.resolve(MdocRepository).save(agent.context, credentialRecord)
   } else {
@@ -64,6 +75,9 @@ export async function deleteCredential(agent: EitherAgent, credentialId: Credent
   if (credentialId.startsWith('w3c-credential-')) {
     const w3cCredentialId = credentialId.replace('w3c-credential-', '')
     await agent.w3cCredentials.removeCredentialRecord(w3cCredentialId)
+  } else if (credentialId.startsWith('w3c-v2-credential-')) {
+    const w3cV2CredentialId = credentialId.replace('w3c-v2-credential-', '')
+    await agent.w3cV2Credentials.removeCredentialRecord(w3cV2CredentialId)
   } else if (credentialId.startsWith('sd-jwt-vc')) {
     const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
     await agent.sdJwtVc.deleteById(sdJwtVcId)

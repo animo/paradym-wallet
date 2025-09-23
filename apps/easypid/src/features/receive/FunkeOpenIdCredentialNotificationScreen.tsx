@@ -25,6 +25,7 @@ import {
   storeCredential,
 } from '@package/agent'
 
+import type { W3cV2CredentialRecord } from '@credo-ts/core'
 import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
@@ -73,7 +74,9 @@ export function FunkeCredentialNotificationScreen() {
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [credentialAttributes, setCredentialAttributes] = useState<Record<string, unknown>>()
-  const [receivedRecord, setReceivedRecord] = useState<SdJwtVcRecord | MdocRecord | W3cCredentialRecord>()
+  const [receivedRecord, setReceivedRecord] = useState<
+    SdJwtVcRecord | MdocRecord | W3cCredentialRecord | W3cV2CredentialRecord
+  >()
 
   // TODO: where to transform?
   // Combine oid4vci issuer metadata and openid fed into one pipeline. If openid it's trusted

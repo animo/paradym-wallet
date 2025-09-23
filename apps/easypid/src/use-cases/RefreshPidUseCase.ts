@@ -80,7 +80,7 @@ export class RefreshPidUseCase {
 
     const limitToFormats: string[] = []
     if (mdoc) limitToFormats.push(ClaimFormat.MsoMdoc)
-    if (sdJwt) limitToFormats.push(ClaimFormat.SdJwtVc)
+    if (sdJwt) limitToFormats.push(ClaimFormat.SdJwtDc)
 
     const credentialConfigurationIdsToRequest = Object.entries(
       this.resolvedCredentialOffer.offeredCredentialConfigurations

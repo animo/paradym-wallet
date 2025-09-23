@@ -32,6 +32,7 @@ export async function setupMediationWithDid(agent: ParadymAppAgent, mediatorDid:
     const { connectionRecord: newConnection } = await agent.modules.outOfBand.receiveImplicitInvitation({
       did: mediatorDid,
       routing,
+      label: 'TODO',
     })
     agent.config.logger.debug('Mediation invitation processed', { mediatorDid })
 
