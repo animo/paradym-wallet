@@ -68,7 +68,6 @@
 		"react-native": "catalog:",
 		"react-native-argon2": "catalog:",
 		"react-native-edge-to-edge": "catalog:",
-		"react-native-executorch": "catalog:",
 		"react-native-fs": "catalog:",
 		"react-native-gesture-handler": "catalog:",
 		"react-native-get-random-values": "catalog:",

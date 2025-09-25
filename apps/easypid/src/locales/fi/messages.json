@@ -964,17 +964,8 @@
 		"message": "Development Mode",
 		"placeholders": {},
 		"comments": ["Label for the toggle to enable developer mode"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 102]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 101]],
 		"translation": "Kehitystila"
-	},
-	"localAi.toast.unsupported.title": {
-		"message": "Device not supported",
-		"placeholders": {},
-		"comments": [
-			"Title of toast when local AI model cannot be used due to device limitations"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 15]],
-		"translation": "Laitetta ei tueta"
 	},
 	"nfcScanner.scanning.title": {
 		"message": "Do not move the eID card",
@@ -1022,15 +1013,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 225]],
 		"translation": "Asiakirja allekirjoitettu"
 	},
-	"localAi.status.downloading": {
-		"message": "Downloading model {0}%",
-		"placeholders": {
-			"0": ["(downloadProgress * 100).toFixed(2)"]
-		},
-		"comments": ["Status text while model is downloading, showing percentage"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 150]],
-		"translation": "Ladataan mallia, {0}%"
-	},
 	"common.credentials.mdl.title": {
 		"message": "Driving License",
 		"placeholders": {},
@@ -1076,22 +1058,6 @@
 		"comments": [],
 		"origin": [["src/features/onboarding/onboardingContext.tsx", 476]],
 		"translation": "Henkilökortin skannaus peruutettu"
-	},
-	"common.enable": {
-		"message": "Enable",
-		"placeholders": {},
-		"comments": ["Generic label for enabling a feature"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 65]],
-		"translation": "Ota käyttöön"
-	},
-	"localAi.confirm.title": {
-		"message": "Enable local AI model",
-		"placeholders": {},
-		"comments": [
-			"Title of the confirmation dialog before activating the local model"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 60]],
-		"translation": "Ota käyttöön tekoälymalli"
 	},
 	"language.en": {
 		"message": "English",
@@ -1155,7 +1121,7 @@
 		"message": "Error determining if the request is valid.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/hooks/useOverAskingAi.tsx", 12]],
+		"origin": [["src/hooks/useOverAskingAi.tsx", 11]],
 		"translation": "Virhe pyynnön oikeellisuuden määrittämisessä."
 	},
 	"credentialDetail.errorTitle": {
@@ -1221,14 +1187,14 @@
 		"message": "Export debug logs",
 		"placeholders": {},
 		"comments": ["Label for the button to export debug logs"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 115]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 113]],
 		"translation": "Vie virheenkorjauslokeja"
 	},
 	"settings.exportDebugLogsDescription": {
 		"message": "Export the last 1000 debug logs from the wallet. Note that this can contain sensitive information.",
 		"placeholders": {},
 		"comments": ["Description for the feature to export debug logs"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 122]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 120]],
 		"translation": "Vie lompakon viimeiset 1000 virheenkorjauslokia. Huomaa, että lokit voivat sisältää arkaluonteista tietoa."
 	},
 	"common.invitationParsingFailed": {
@@ -1280,15 +1246,6 @@
 		"origin": [["src/features/menu/FunkeAboutScreen.tsx", 35]],
 		"translation": "Lisätietoja saat ottamalla yhteyttä"
 	},
-	"localAi.toast.downloading.message": {
-		"message": "Force close the app to cancel the download",
-		"placeholders": {},
-		"comments": [
-			"Message shown when a download is in progress and cannot be stopped from the UI"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 40]],
-		"translation": "Sulje sovellus väkisin peruuttaaksesi latauksen"
-	},
 	"language.de": {
 		"message": "German",
 		"placeholders": {},
@@ -1296,18 +1253,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 499]],
 		"translation": "Saksa"
 	},
-	"onboardingWalletExplanation.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to finish onboarding explanation"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]],
-		"translation": "Aloita"
-	},
 	"onboardingWelcome.getStarted": {
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to begin onboarding from the welcome screen"],
 		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
+		"translation": "Aloita"
+	},
+	"onboardingWalletExplanation.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to finish onboarding explanation"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]],
 		"translation": "Aloita"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
@@ -1339,15 +1296,6 @@
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 59]],
 		"translation": "Haetaan henkilökortin tietoja"
-	},
-	"localAi.status.preparing": {
-		"message": "Getting ready...",
-		"placeholders": {},
-		"comments": [
-			"Status text when the model is not ready yet and not downloading"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 55]],
-		"translation": "Valmistellaan..."
 	},
 	"common.fields.givenName": {
 		"message": "Given name",
@@ -1738,7 +1686,7 @@
 		"message": "Language",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 56]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 55]],
 		"translation": "Kieli"
 	},
 	"verifyPartySlide.hasPreviousInteractionsDescription": {
@@ -1822,20 +1770,6 @@
 			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
 		],
 		"translation": "Metatiedot"
-	},
-	"localAi.status.ready": {
-		"message": "Model active and ready to use",
-		"placeholders": {},
-		"comments": ["Status text when the AI model is ready"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 50]],
-		"translation": "Malli on käyttövalmis"
-	},
-	"localAi.toast.downloading.title": {
-		"message": "Model download in progress",
-		"placeholders": {},
-		"comments": ["Title of toast when model is already downloading"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 35]],
-		"translation": "Mallin lataus käynnissä"
 	},
 	"common.fields.nationalities": {
 		"message": "Nationalities",
@@ -2119,13 +2053,6 @@
 		"origin": [["../../packages/scanner/src/Scanner.tsx", 49]],
 		"translation": "Anna lupa kameran käyttöön"
 	},
-	"localAi.toast.noWifi.message": {
-		"message": "Please connect to WiFi to activate and download the model",
-		"placeholders": {},
-		"comments": ["Message shown when trying to download AI model without WiFi"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 30]],
-		"translation": "Yhdistä WiFi-verkkoon ladataksesi mallin"
-	},
 	"common.pleaseTryAgain": {
 		"message": "Please try again",
 		"placeholders": {},
@@ -2364,19 +2291,19 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Nollaa lompakko"
 	},
-	"signShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the sign & share screen"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Tarkista pyyntö"
-	},
 	"submission.reviewTitle": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Heading shown at the top of the share credentials screen"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
 		"translation": "Tarkasta pyyntö"
+	},
+	"signShare.title": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
+		"translation": "Tarkista pyyntö"
 	},
 	"common.revoked": {
 		"message": "Revoked",
@@ -2525,7 +2452,7 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Header title for the settings screen"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 86]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 85]],
 		"translation": "Asetukset"
 	},
 	"menu.setupEid.title": {
@@ -3153,28 +3080,12 @@
 		"origin": [["../../packages/scanner/src/Scanner.tsx", 75]],
 		"translation": "Tässä laitteessa ei ole kameraa. QR-koodien skannaus ei ole mahdollista"
 	},
-	"localAi.toast.unsupported.message": {
-		"message": "This device is not powerful enough to run local AI models",
-		"placeholders": {},
-		"comments": ["Message shown when device cannot handle the AI model"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 20]],
-		"translation": "Tämä laite ei ole riittävän tehokas tekoälymallien ajamiseen"
-	},
 	"common.featureNotSupported": {
 		"message": "This feature is not supported in this version of the app.",
 		"placeholders": {},
 		"comments": ["Shown when a feature that is not supported is accessed"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 141]],
 		"translation": "Ominaisuus ei toimi tässä sovelluksen versiossa."
-	},
-	"localAi.confirm.description2": {
-		"message": "This is an experimental feature. Only supported on high-end devices.",
-		"placeholders": {},
-		"comments": [
-			"Second paragraph of confirmation sheet warning about device compatibility"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 75]],
-		"translation": "Tämä on kokeellinen ominaisuus. Toimii vain tehokkaissa laitteissa."
 	},
 	"submission.offlineRequestTitle": {
 		"message": "This is an offline request",
@@ -3224,13 +3135,6 @@
 		"comments": ["Explanation of the PIN purpose in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 18]],
 		"translation": "Tämä PIN-koodi suojaa lompakkoasi. Syötät sen aina jakaessasi tietoja."
-	},
-	"localAi.confirm.description1": {
-		"message": "This will download a local AI model to your device which will take up to around 1.3GB of space.",
-		"placeholders": {},
-		"comments": ["First paragraph of confirmation sheet explaining model size"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 70]],
-		"translation": "Tämä lataa laitteeseesi tekoälymallin, joka vie noin 1,3 GB tilaa."
 	},
 	"common.archiveCardDescription": {
 		"message": "This will make {name} unusable and delete it from your wallet.",
@@ -3393,13 +3297,6 @@
 		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 17]],
 		"translation": "QR-koodia ei tueta. Kokeile toista."
 	},
-	"localAi.switch.label": {
-		"message": "Use local AI model",
-		"placeholders": {},
-		"comments": ["Label for switch to enable or disable local AI model"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 45]],
-		"translation": "Käytä tekoälymallia"
-	},
 	"qrScanner.instructionHeading": {
 		"message": "Use the camera to scan a QR code",
 		"placeholders": {},
@@ -3513,13 +3410,6 @@
 		"comments": ["Title for second slide of wallet onboarding"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 44]],
 		"translation": "Mihin sitä käytetään?"
-	},
-	"localAi.toast.noWifi.title": {
-		"message": "WiFi connection required",
-		"placeholders": {},
-		"comments": ["Title of toast when no internet or WiFi is available"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 25]],
-		"translation": "WiFi-yhteys vaaditaan"
 	},
 	"cardLifecycle.limitedByDate.notYetActive.description": {
 		"message": "Will be active in {activeDaysString}",
@@ -3664,18 +3554,18 @@
 		],
 		"translation": "Sinulla ei ole pyydettyjä kortteja."
 	},
-	"signShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
-		"translation": "Sinulla ei ole tarvittavia kortteja"
-	},
 	"submission.missingCardsWarning": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when user lacks required credentials"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
+		"translation": "Sinulla ei ole tarvittavia kortteja"
+	},
+	"signShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
 		"translation": "Sinulla ei ole tarvittavia kortteja"
 	},
 	"presentationNotification.missingRequiredCredentials": {

@@ -11,7 +11,6 @@ import {
   YStack,
 } from '@package/ui'
 import { Label } from 'tamagui'
-import { LocalAiContainer } from './components/LocalAiContainer'
 
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useLingui } from '@lingui/react/macro'
@@ -108,7 +107,6 @@ export function FunkeSettingsScreen() {
               value={isDevelopmentModeEnabled ?? false}
               onChange={setIsDevelopmentModeEnabled}
             />
-            {isOverAskingAiEnabled && <LocalAiContainer />}
             <LocaleSelect />
             {isDevelopmentModeEnabled && (
               <SettingsButton
