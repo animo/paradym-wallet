@@ -183,9 +183,6 @@ catalogs:
     react-native-edge-to-edge:
       specifier: ^1.6.0
       version: 1.6.2
-    react-native-executorch:
-      specifier: 0.5.5
-      version: 0.5.5
     react-native-fs:
       specifier: ^2.20.0
       version: 2.20.0
@@ -451,9 +448,6 @@ importers:
       react-native-edge-to-edge:
         specifier: 'catalog:'
         version: 1.6.2(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
-      react-native-executorch:
-        specifier: 'catalog:'
-        version: 0.5.5(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
       react-native-fs:
         specifier: 'catalog:'
         version: 2.20.0(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))
@@ -1906,10 +1900,6 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
-
-  '@huggingface/jinja@0.5.1':
-    resolution: {integrity: sha512-yUZLld4lrM9iFxHCwFQ7D1HW2MWMwSbeB7WzWqFYDWK+rEb+WldkLdAJxUPOmgICMHZLzZGVcVjFh3w/YGubng==}
-    engines: {node: '>=18'}
 
   '@hyperledger/anoncreds-react-native@0.3.1':
     resolution: {integrity: sha512-SvIJrWi2iI+8jcyWGJymN7AfgGlpmsgtk3X9ZKQyHfDGXYk6zX+IaXeH7tQNJ9P4rjOAJsG0Xh5ui8Mj9xlplA==}
@@ -4735,13 +4725,6 @@ packages:
     resolution: {integrity: sha512-9YcilrF+dLfg9NTEof/mJLMtbdX1RJ8dbWtJgE00cMOIohb1lIyJl710vFiTaiHTl6ZYODJuBd32xFvUhmv3kg==}
     engines: {node: '>=14'}
 
-  jsonrepair@3.13.0:
-    resolution: {integrity: sha512-5YRzlAQ7tuzV1nAJu3LvDlrKtBFIALHN2+a+I1MGJCt3ldRDBF/bZuvIPzae8Epot6KBXd0awRZZcuoeAsZ/mw==}
-    hasBin: true
-
-  jsonschema@1.5.0:
-    resolution: {integrity: sha512-K+A9hhqbn0f3pJX17Q/7H6yQfD/5OXgdrR5UE12gMXCiN9D5Xq2o5mddV2QEcX/bjla99ASsAAQUyMCCRWAEhw==}
-
   jwt-decode@3.1.2:
     resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
 
@@ -5551,12 +5534,6 @@ packages:
 
   react-native-edge-to-edge@1.6.2:
     resolution: {integrity: sha512-koEF6WRAfdGNelXlP7NtHrQhFGtplwciYNWLHOCTCk0Thc7dlxtqxHRYSA5vPJgWOEkVBFqxcoOqKwAtqOmLNw==}
-    peerDependencies:
-      react: '*'
-      react-native: '*'
-
-  react-native-executorch@0.5.5:
-    resolution: {integrity: sha512-q5SyxA3MNX6NFSygw+3v1rnzibjtZB9biqbJyKLdahk7KYxS5WMrnq4tiXb+gcfHMZ+7F5MUkIqOG4dcPcua0A==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -8369,8 +8346,6 @@ snapshots:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
 
-  '@huggingface/jinja@0.5.1': {}
-
   '@hyperledger/anoncreds-react-native@0.3.1(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@hyperledger/anoncreds-shared': 0.3.1
@@ -10878,7 +10853,7 @@ snapshots:
 
   chrome-launcher@0.15.2:
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 18.18.8
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -10887,7 +10862,7 @@ snapshots:
 
   chromium-edge-launcher@0.2.0:
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 18.18.8
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -12231,10 +12206,6 @@ snapshots:
     transitivePeerDependencies:
       - web-streams-polyfill
 
-  jsonrepair@3.13.0: {}
-
-  jsonschema@1.5.0: {}
-
   jwt-decode@3.1.2: {}
 
   jwt-decode@4.0.0: {}
@@ -13084,28 +13055,6 @@ snapshots:
     dependencies:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
-
-  react-native-executorch@0.5.5(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0):
-    dependencies:
-      '@huggingface/jinja': 0.5.1
-      expo: 53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
-      expo-asset: 11.1.7(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0)
-      expo-file-system: 18.1.11(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0))
-      jsonrepair: 3.13.0
-      jsonschema: 1.5.0
-      react: 19.0.0
-      react-native: 0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@expo/dom-webview'
-      - '@expo/metro-runtime'
-      - babel-plugin-react-compiler
-      - bufferutil
-      - graphql
-      - react-native-webview
-      - supports-color
-      - utf-8-validate
 
   react-native-fs@2.20.0(react-native@0.79.4(@babel/core@7.28.3)(@types/react@19.1.11)(react@19.0.0)):
     dependencies:

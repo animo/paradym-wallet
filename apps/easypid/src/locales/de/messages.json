@@ -964,17 +964,8 @@
 		"message": "Development Mode",
 		"placeholders": {},
 		"comments": ["Label for the toggle to enable developer mode"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 102]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 101]],
 		"translation": "Entwicklermodus"
-	},
-	"localAi.toast.unsupported.title": {
-		"message": "Device not supported",
-		"placeholders": {},
-		"comments": [
-			"Title of toast when local AI model cannot be used due to device limitations"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 15]],
-		"translation": "Gerät nicht unterstützt"
 	},
 	"nfcScanner.scanning.title": {
 		"message": "Do not move the eID card",
@@ -1022,15 +1013,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 225]],
 		"translation": "Dokument signiert"
 	},
-	"localAi.status.downloading": {
-		"message": "Downloading model {0}%",
-		"placeholders": {
-			"0": ["(downloadProgress * 100).toFixed(2)"]
-		},
-		"comments": ["Status text while model is downloading, showing percentage"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 150]],
-		"translation": "Modell wird heruntergeladen {0}%"
-	},
 	"common.credentials.mdl.title": {
 		"message": "Driving License",
 		"placeholders": {},
@@ -1076,22 +1058,6 @@
 		"comments": [],
 		"origin": [["src/features/onboarding/onboardingContext.tsx", 476]],
 		"translation": "eID-Karten-Scan abgebrochen"
-	},
-	"common.enable": {
-		"message": "Enable",
-		"placeholders": {},
-		"comments": ["Generic label for enabling a feature"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 65]],
-		"translation": "Aktivieren"
-	},
-	"localAi.confirm.title": {
-		"message": "Enable local AI model",
-		"placeholders": {},
-		"comments": [
-			"Title of the confirmation dialog before activating the local model"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 60]],
-		"translation": "Lokales KI-Modell aktivieren"
 	},
 	"language.en": {
 		"message": "English",
@@ -1155,7 +1121,7 @@
 		"message": "Error determining if the request is valid.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/hooks/useOverAskingAi.tsx", 12]],
+		"origin": [["src/hooks/useOverAskingAi.tsx", 11]],
 		"translation": "Fehler bei der Bestimmung, ob die Anfrage gültig ist."
 	},
 	"credentialDetail.errorTitle": {
@@ -1221,14 +1187,14 @@
 		"message": "Export debug logs",
 		"placeholders": {},
 		"comments": ["Label for the button to export debug logs"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 115]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 113]],
 		"translation": "Debug-Logs exportieren"
 	},
 	"settings.exportDebugLogsDescription": {
 		"message": "Export the last 1000 debug logs from the wallet. Note that this can contain sensitive information.",
 		"placeholders": {},
 		"comments": ["Description for the feature to export debug logs"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 122]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 120]],
 		"translation": "Exportiere die letzten 1000 Debug-Logs aus deiner Wallet. Beachte, dass diese sensible Daten enthalten können."
 	},
 	"common.invitationParsingFailed": {
@@ -1280,15 +1246,6 @@
 		"origin": [["src/features/menu/FunkeAboutScreen.tsx", 35]],
 		"translation": "Für weitere Informationen, wende dich an"
 	},
-	"localAi.toast.downloading.message": {
-		"message": "Force close the app to cancel the download",
-		"placeholders": {},
-		"comments": [
-			"Message shown when a download is in progress and cannot be stopped from the UI"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 40]],
-		"translation": "App schließen erzwingen, um den Download abzubrechen"
-	},
 	"language.de": {
 		"message": "German",
 		"placeholders": {},
@@ -1296,19 +1253,19 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 499]],
 		"translation": "Deutsch"
 	},
-	"onboardingWalletExplanation.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to finish onboarding explanation"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]],
-		"translation": "Los geht's"
-	},
 	"onboardingWelcome.getStarted": {
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to begin onboarding from the welcome screen"],
 		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
 		"translation": "Loslegen"
+	},
+	"onboardingWalletExplanation.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to finish onboarding explanation"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 72]],
+		"translation": "Los geht's"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
 		"message": "Get your national identity card",
@@ -1339,15 +1296,6 @@
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 59]],
 		"translation": "Hole eID-Informationen"
-	},
-	"localAi.status.preparing": {
-		"message": "Getting ready...",
-		"placeholders": {},
-		"comments": [
-			"Status text when the model is not ready yet and not downloading"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 55]],
-		"translation": "Wird vorbereitet..."
 	},
 	"common.fields.givenName": {
 		"message": "Given name",
@@ -1738,7 +1686,7 @@
 		"message": "Language",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 56]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 55]],
 		"translation": "Sprache"
 	},
 	"verifyPartySlide.hasPreviousInteractionsDescription": {
@@ -1822,20 +1770,6 @@
 			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
 		],
 		"translation": "Metadaten"
-	},
-	"localAi.status.ready": {
-		"message": "Model active and ready to use",
-		"placeholders": {},
-		"comments": ["Status text when the AI model is ready"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 50]],
-		"translation": "Modell ist aktiv und einsatzbereit"
-	},
-	"localAi.toast.downloading.title": {
-		"message": "Model download in progress",
-		"placeholders": {},
-		"comments": ["Title of toast when model is already downloading"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 35]],
-		"translation": "Modell-Download läuft"
 	},
 	"common.fields.nationalities": {
 		"message": "Nationalities",
@@ -2119,13 +2053,6 @@
 		"origin": [["../../packages/scanner/src/Scanner.tsx", 49]],
 		"translation": "Bitte erlaube Kamera-Zugriff"
 	},
-	"localAi.toast.noWifi.message": {
-		"message": "Please connect to WiFi to activate and download the model",
-		"placeholders": {},
-		"comments": ["Message shown when trying to download AI model without WiFi"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 30]],
-		"translation": "Bitte verbinde dich mit WLAN, um das Modell zu aktivieren und herunterzuladen"
-	},
 	"common.pleaseTryAgain": {
 		"message": "Please try again",
 		"placeholders": {},
@@ -2364,18 +2291,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Wallet zurücksetzen"
 	},
-	"signShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the sign & share screen"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Anfrage überprüfen"
-	},
 	"submission.reviewTitle": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Heading shown at the top of the share credentials screen"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
+		"translation": "Anfrage überprüfen"
+	},
+	"signShare.title": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
 		"translation": "Anfrage überprüfen"
 	},
 	"common.revoked": {
@@ -2525,7 +2452,7 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Header title for the settings screen"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 86]],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 85]],
 		"translation": "Einstellungen"
 	},
 	"menu.setupEid.title": {
@@ -3153,28 +3080,12 @@
 		"origin": [["../../packages/scanner/src/Scanner.tsx", 75]],
 		"translation": "Dieses Gerät hat keine Kamera. QR-Codes können nicht gescannt werden"
 	},
-	"localAi.toast.unsupported.message": {
-		"message": "This device is not powerful enough to run local AI models",
-		"placeholders": {},
-		"comments": ["Message shown when device cannot handle the AI model"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 20]],
-		"translation": "Dieses Gerät ist nicht leistungsstark genug für lokale KI-Modelle"
-	},
 	"common.featureNotSupported": {
 		"message": "This feature is not supported in this version of the app.",
 		"placeholders": {},
 		"comments": ["Shown when a feature that is not supported is accessed"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 141]],
 		"translation": "Diese Funktion wird in dieser App-Version nicht unterstützt."
-	},
-	"localAi.confirm.description2": {
-		"message": "This is an experimental feature. Only supported on high-end devices.",
-		"placeholders": {},
-		"comments": [
-			"Second paragraph of confirmation sheet warning about device compatibility"
-		],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 75]],
-		"translation": "Dies ist eine experimentelle Funktion. Wird nur auf leistungsstarken Geräten unterstützt."
 	},
 	"submission.offlineRequestTitle": {
 		"message": "This is an offline request",
@@ -3224,13 +3135,6 @@
 		"comments": ["Explanation of the PIN purpose in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 18]],
 		"translation": "Diese PIN sichert deine Identitäts-Wallet. Du gibst sie jedes Mal ein, wenn du Daten teilst."
-	},
-	"localAi.confirm.description1": {
-		"message": "This will download a local AI model to your device which will take up to around 1.3GB of space.",
-		"placeholders": {},
-		"comments": ["First paragraph of confirmation sheet explaining model size"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 70]],
-		"translation": "Dies lädt ein lokales KI-Modell auf dein Gerät herunter, das etwa 1,3 GB Speicherplatz benötigt."
 	},
 	"common.archiveCardDescription": {
 		"message": "This will make {name} unusable and delete it from your wallet.",
@@ -3393,13 +3297,6 @@
 		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 17]],
 		"translation": "Nicht unterstützter QR-Code. Versuche einen anderen."
 	},
-	"localAi.switch.label": {
-		"message": "Use local AI model",
-		"placeholders": {},
-		"comments": ["Label for switch to enable or disable local AI model"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 45]],
-		"translation": "Lokales KI-Modell verwenden"
-	},
 	"qrScanner.instructionHeading": {
 		"message": "Use the camera to scan a QR code",
 		"placeholders": {},
@@ -3513,13 +3410,6 @@
 		"comments": ["Title for second slide of wallet onboarding"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 44]],
 		"translation": "Wofür ist es da?"
-	},
-	"localAi.toast.noWifi.title": {
-		"message": "WiFi connection required",
-		"placeholders": {},
-		"comments": ["Title of toast when no internet or WiFi is available"],
-		"origin": [["src/features/menu/components/LocalAiContainer.tsx", 25]],
-		"translation": "WLAN-Verbindung erforderlich"
 	},
 	"cardLifecycle.limitedByDate.notYetActive.description": {
 		"message": "Will be active in {activeDaysString}",
@@ -3664,18 +3554,18 @@
 		],
 		"translation": "Du hast die angeforderte(n) Karte(n) nicht."
 	},
-	"signShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
-		"translation": "Du hast nicht die erforderlichen Karten"
-	},
 	"submission.missingCardsWarning": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when user lacks required credentials"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
+		"translation": "Du hast nicht die erforderlichen Karten"
+	},
+	"signShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
 		"translation": "Du hast nicht die erforderlichen Karten"
 	},
 	"presentationNotification.missingRequiredCredentials": {
