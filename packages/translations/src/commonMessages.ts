@@ -94,7 +94,7 @@ export const commonMessages = {
   errorWhileRetrievingCredentials: defineMessage({
     id: 'common.errorWhileRetrievingCredentials',
     message: 'Error while retrieving credentials',
-    comment: 'Toast or message shown when an error ocurred during retrieval of credentials',
+    comment: 'Toast or message shown when an error occurred during retrieval of credentials',
   }),
   presentationInformationCouldNotBeExtracted: defineMessage({
     id: 'common.presentationInformationCouldNotBeExtracted',
@@ -212,6 +212,11 @@ export const commonMessages = {
     message: 'Card added',
     comment: 'Shown when a card has been successfully received',
   }),
+  cardPending: defineMessage({
+    id: 'common.cardPending',
+    message: 'Card pending',
+    comment: 'Shown when the issuance of a card is pending',
+  }),
   cardRejected: defineMessage({
     id: 'common.cardRejected',
     message: 'Card rejected',
@@ -227,6 +232,11 @@ export const commonMessages = {
     message: 'Document signed',
     comment: 'Shown when signing a document succeeded',
   }),
+  signingPending: defineMessage({
+    id: 'common.signingPending',
+    message: 'Signing pending',
+    comment: 'Shown when the signing process is pending',
+  }),
   signingStopped: defineMessage({
     id: 'common.signingStopped',
     message: 'Signing stopped',
@@ -241,6 +251,11 @@ export const commonMessages = {
     id: 'common.informationShared',
     message: 'Information shared',
     comment: 'Shown when data was successfully shared',
+  }),
+  sharingPending: defineMessage({
+    id: 'common.sharingPending',
+    message: 'Sharing pending',
+    comment: 'Shown when the sharing process is pending',
   }),
   sharingStopped: defineMessage({
     id: 'common.sharingStopped',
@@ -277,6 +292,32 @@ export const commonMessages = {
     id: 'common.toastCardDeleteError',
     message: 'Error deleting card',
     comment: 'Toast message shown when card deletion failed',
+  }),
+  deleteDeferredCredentialTitle: defineMessage({
+    id: 'common.deleteDeferredCredentialTitle',
+    message: 'Delete deferred credential?',
+    comment: 'Title for confirmation dialog to delete a deferred credential',
+  }),
+  deleteDeferredCredentialDescription: (name: string) =>
+    defineMessage({
+      id: 'common.deleteDeferredCredentialConfirmDescription',
+      message: `By deleting ${name}, you will no longer be able to retrieve your credential from the issuer.`,
+      comment: 'Description in confirmation dialog explaining deferred credential deletion',
+    }),
+  deleteDeferredCredentialConfirm: defineMessage({
+    id: 'common.deleteCardConfirm',
+    message: 'Yes, delete',
+    comment: 'Confirm button text for deleting a deferred credential',
+  }),
+  toastDeferredCredentialDeleted: defineMessage({
+    id: 'common.toastDeferredCredentialDeleted',
+    message: 'Deferred credential deleted',
+    comment: 'Toast message shown after successfully deleting a deferred credential',
+  }),
+  toastDeferredCredentialDeleteError: defineMessage({
+    id: 'common.toastDeferredCredentialDeleteError',
+    message: 'Error deleting deferred credential',
+    comment: 'Toast message shown when deferred credential deletion failed',
   }),
   expired: defineMessage({
     id: 'common.expired',

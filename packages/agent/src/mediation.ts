@@ -2,6 +2,7 @@ import type { ParadymAppAgent } from './agent'
 
 import { CredoError } from '@credo-ts/core'
 import { MediatorPickupStrategy } from '@credo-ts/didcomm'
+import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { useEffect } from 'react'
 
 /**
@@ -32,7 +33,7 @@ export async function setupMediationWithDid(agent: ParadymAppAgent, mediatorDid:
     const { connectionRecord: newConnection } = await agent.modules.outOfBand.receiveImplicitInvitation({
       did: mediatorDid,
       routing,
-      label: 'TODO',
+      label: isParadymWallet() ? 'Paradym Wallet' : 'EasyPID',
     })
     agent.config.logger.debug('Mediation invitation processed', { mediatorDid })
 

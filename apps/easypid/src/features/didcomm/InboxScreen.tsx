@@ -1,15 +1,37 @@
+import { useAppAgent } from '@easypid/agent'
 import { Trans, useLingui } from '@lingui/react/macro'
+import { fetchAndProcessDeferredCredentials } from '@package/agent'
 import { useInboxNotifications } from '@package/agent/hooks'
 import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
+import { useCallback, useState } from 'react'
+import { RefreshControl } from 'react-native'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function InboxScreen() {
   const inboxNotifications = useInboxNotifications()
+  const { agent } = useAppAgent()
+  const [refreshing, setRefreshing] = useState(false)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(0)
   const { push } = useRouter()
   const { t } = useLingui()
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+
+    const deferredCredentialRecords = inboxNotifications
+      .filter((n) => n.type === 'DeferredCredentialRecord')
+      .map((n) => n.deferredCredentialRecord)
+      .filter(
+        ({ response, lastCheckedAt }) =>
+          !response.interval || new Date(lastCheckedAt).getTime() + response.interval * 1000 < Date.now()
+      )
+
+    fetchAndProcessDeferredCredentials(agent, deferredCredentialRecords).finally(() => {
+      setRefreshing(false)
+    })
+  }, [inboxNotifications, agent])
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -23,6 +45,7 @@ export function InboxScreen() {
       />
       <ScrollView
         onScroll={handleScroll}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={{ flexGrow: 1 }}
       >
@@ -50,17 +73,23 @@ export function InboxScreen() {
           <YStack overflow="hidden" px="$4" gap="$4">
             {inboxNotifications.map((notification) => {
               const baseLabel =
-                notification.type === 'CredentialRecord'
+                notification.type === 'DeferredCredentialRecord'
                   ? t({
-                      id: 'inbox.notificationType.card',
-                      message: 'Card',
-                      comment: 'Label for a notification about a received credential',
+                      id: 'inbox.notificationType.pending',
+                      message: 'Pending',
+                      comment: 'Label for a notification about a pending credential',
                     })
-                  : t({
-                      id: 'inbox.notificationType.request',
-                      message: 'Request',
-                      comment: 'Label for a notification about a proof request',
-                    })
+                  : notification.type === 'CredentialRecord'
+                    ? t({
+                        id: 'inbox.notificationType.card',
+                        message: 'Card',
+                        comment: 'Label for a notification about a received credential',
+                      })
+                    : t({
+                        id: 'inbox.notificationType.request',
+                        message: 'Request',
+                        comment: 'Label for a notification about a proof request',
+                      })
 
               const description = notification.contactLabel
                 ? t({
@@ -75,12 +104,22 @@ export function InboxScreen() {
                   key={notification.id}
                   title={notification.notificationTitle}
                   description={description}
+                  backgroundColor={notification.backgroundColor}
+                  backgroundImageUrl={notification.backgroundImageUrl}
                   onPress={() => {
                     if (notification.type === 'CredentialRecord') {
                       push({
                         pathname: '/notifications/didcomm',
                         params: {
                           credentialExchangeId: notification.id,
+                          navigationType: 'inbox',
+                        },
+                      })
+                    } else if (notification.type === 'DeferredCredentialRecord') {
+                      push({
+                        pathname: '/notifications/deferredCredential',
+                        params: {
+                          deferredCredentialId: notification.id,
                           navigationType: 'inbox',
                         },
                       })

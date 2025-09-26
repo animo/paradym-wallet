@@ -65,7 +65,7 @@ export const shareProof = async ({
           Object.entries(
             Object.keys(selectedCredentials).length > 0
               ? getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
-              : agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+              : agent.modules.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
           ).map(async ([queryCredentialId, credentials]) => {
             // Optionally use a batch credential
             const updatedCredentials = await Promise.all(
@@ -84,7 +84,7 @@ export const shareProof = async ({
   const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
 
   try {
-    const result = await agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
+    const result = await agent.modules.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
       presentationExchange: presentationExchangeCredentials
         ? {

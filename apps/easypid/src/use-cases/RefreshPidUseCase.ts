@@ -88,7 +88,7 @@ export class RefreshPidUseCase {
       .filter(([, configuration]) => limitToFormats.includes(configuration.format))
       .map(([id]) => id)
 
-    const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
+    const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
       agent: this.options.agent,
       accessToken,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
@@ -98,8 +98,12 @@ export class RefreshPidUseCase {
       pidSchemes,
     })
 
+    if (deferredCredentials && deferredCredentials.length > 0) {
+      throw new Error('Unexpected deferred credentials in refresh pid use case flow')
+    }
+
     const credentialRecords: Array<SdJwtVcRecord | MdocRecord> = []
-    for (const credentialResponse of credentialResponses) {
+    for (const credentialResponse of credentials) {
       const credentialRecord = credentialResponse.credential
 
       if (credentialRecord.type !== 'SdJwtVcRecord' && credentialRecord.type !== 'MdocRecord') {

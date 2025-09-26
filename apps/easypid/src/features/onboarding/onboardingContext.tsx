@@ -25,6 +25,7 @@ import {
   getCredentialForDisplay,
   getCredentialForDisplayId,
   migrateLegacyParadymWallet,
+  storeReceivedActivity,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
 import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
@@ -36,7 +37,6 @@ import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
 import { useShouldUseCloudHsm } from './useShouldUseCloudHsm'
@@ -550,12 +550,13 @@ export function OnboardingContextProvider({
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(secureUnlock.context.agent, {
+          await storeReceivedActivity(secureUnlock.context.agent, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
+            deferredCredentials: [],
             credentialIds: [getCredentialForDisplayId(credential)],
           })
         }

@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
+  type DeferredCredential,
   type MdocRecord,
   OpenId4VciAuthorizationFlow,
   type OpenId4VciRequestTokenResponse,
@@ -23,6 +24,8 @@ import {
   resolveOpenId4VciOffer,
   shareProof,
   storeCredential,
+  storeDeferredCredential,
+  storeReceivedActivity,
 } from '@package/agent'
 
 import type { W3cV2CredentialRecord } from '@credo-ts/core'
@@ -36,7 +39,6 @@ import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { PinSlide, type onPinSubmitProps } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
@@ -77,6 +79,9 @@ export function FunkeCredentialNotificationScreen() {
   const [receivedRecord, setReceivedRecord] = useState<
     SdJwtVcRecord | MdocRecord | W3cCredentialRecord | W3cV2CredentialRecord
   >()
+
+  const [deferredCredential, setDeferredCredential] =
+    useState<Omit<DeferredCredential, 'id' | 'createdAt' | 'lastCheckedAt' | 'activityId'>>()
 
   // TODO: where to transform?
   // Combine oid4vci issuer metadata and openid fed into one pipeline. If openid it's trusted
@@ -144,7 +149,8 @@ export function FunkeCredentialNotificationScreen() {
       configurationId: string,
       resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequest
     ) => {
-      const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
+      console.log('ClientId', resolvedAuthorizationRequest ? authorization.clientId : undefined)
+      const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
         agent,
         resolvedCredentialOffer,
         credentialConfigurationIdsToRequest: [configurationId],
@@ -154,12 +160,36 @@ export function FunkeCredentialNotificationScreen() {
         requestBatch: true,
       })
 
-      const credentialRecord = credentialResponses[0].credential
-      const { attributes } = getCredentialForDisplay(credentialRecord)
-      setCredentialAttributes(attributes)
-      setReceivedRecord(credentialRecord)
+      if (deferredCredentials.length && credentials.length) {
+        setErrorReasonWithError(
+          t(commonMessages.credentialInformationCouldNotBeExtracted),
+          new Error('Received both immediate and deferred credentials')
+        )
+        agent.config.logger.error('Received both immediate and deferred credentials in OpenID4VCI response')
+        return
+      }
+
+      if (deferredCredentials.length) {
+        setDeferredCredential({
+          accessToken: {
+            ...tokenResponse,
+            dpop: tokenResponse.dpop ? { ...tokenResponse.dpop, jwk: tokenResponse.dpop.jwk.toJson() } : undefined,
+          },
+          response: deferredCredentials[0],
+          issuerMetadata: resolvedCredentialOffer.metadata,
+          clientId: resolvedAuthorizationRequest ? authorization.clientId : undefined,
+        })
+      }
+
+      if (credentials.length) {
+        const credentialRecord = credentials[0].credential
+        const { attributes } = getCredentialForDisplay(credentialRecord)
+        console.log(attributes)
+        setCredentialAttributes(attributes)
+        setReceivedRecord(credentialRecord)
+      }
     },
-    [agent]
+    [agent, setErrorReasonWithError, t]
   )
 
   // TODO: Should we add this to the activitiy? We also don't do it for issuance
@@ -169,10 +199,18 @@ export function FunkeCredentialNotificationScreen() {
   }
 
   const onCompleteCredentialRetrieval = async () => {
-    if (!receivedRecord) return
+    if (!receivedRecord && !deferredCredential) return
 
-    await storeCredential(agent, receivedRecord)
-    await addReceivedActivity(agent, {
+    let deferredCredentialId: string | undefined
+
+    if (receivedRecord) {
+      await storeCredential(agent, receivedRecord)
+    } else if (deferredCredential) {
+      const { id } = await storeDeferredCredential(agent, deferredCredential)
+      deferredCredentialId = id
+    }
+
+    await storeReceivedActivity(agent, {
       // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
       // the credential. Signed issuer metadata is the solution.
       entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
@@ -180,8 +218,11 @@ export function FunkeCredentialNotificationScreen() {
       name: credentialDisplay.issuer.name,
       logo: credentialDisplay.issuer.logo,
       backgroundColor: '#ffffff', // Default to a white background for now
-      credentialIds: [getCredentialForDisplayId(receivedRecord)],
+      status: deferredCredentialId ? 'pending' : 'success',
+      deferredCredentials: deferredCredentialId ? [credentialDisplay] : [],
+      credentialIds: receivedRecord ? [getCredentialForDisplayId(receivedRecord)] : [],
     })
+
     setIsCompleted(true)
   }
 
@@ -199,7 +240,6 @@ export function FunkeCredentialNotificationScreen() {
           authorizationCode,
           clientId: authorization.clientId,
           dPopKeyJwk: resolvedAuthorizationRequest.dpop?.jwk,
-
           codeVerifier:
             'codeVerifier' in resolvedAuthorizationRequest ? resolvedAuthorizationRequest.codeVerifier : undefined,
         })
@@ -483,7 +523,8 @@ export function FunkeCredentialNotificationScreen() {
               key="retrieve-credential"
               onGoToWallet={onGoToWallet}
               display={credentialDisplay}
-              attributes={credentialAttributes ?? {}}
+              attributes={credentialAttributes}
+              deferred={!!deferredCredential}
               isCompleted={isCompleted}
               onAccept={onCompleteCredentialRetrieval}
             />

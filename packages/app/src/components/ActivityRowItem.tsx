@@ -1,6 +1,5 @@
-import type { ActivityType } from '@easypid/features/activity/activityRecord'
 import { useLingui } from '@lingui/react/macro'
-import type { DisplayImage } from '@package/agent'
+import type { Activity } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   CustomIcons,
@@ -25,6 +24,11 @@ export const activityInteractions = {
       color: '$feature-500',
       text: commonMessages.cardAdded,
     },
+    pending: {
+      icon: HeroIcons.ClockFilled,
+      color: '$warning-500',
+      text: commonMessages.cardPending,
+    },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
       color: '$grey-500',
@@ -41,6 +45,11 @@ export const activityInteractions = {
       icon: HeroIcons.PenFilled,
       color: '#008FFF',
       text: commonMessages.documentSigned,
+    },
+    pending: {
+      icon: HeroIcons.ClockFilled,
+      color: '$warning-500',
+      text: commonMessages.signingPending,
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
@@ -59,6 +68,11 @@ export const activityInteractions = {
       color: '$positive-500',
       text: commonMessages.informationShared,
     },
+    pending: {
+      icon: HeroIcons.ClockFilled,
+      color: '$warning-500',
+      text: commonMessages.sharingPending,
+    },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
       color: '$grey-500',
@@ -73,29 +87,19 @@ export const activityInteractions = {
 }
 
 interface ActivityRowItemProps {
-  id: string
-  logo?: DisplayImage
-  status: 'success' | 'stopped' | 'failed'
-  backgroundColor?: string
-  subtitle: string
-  date: Date
-  type: ActivityType
+  activity: Activity
 }
 
-export function ActivityRowItem({
-  id,
-  logo,
-  backgroundColor,
-  subtitle,
-  date,
-  type = 'shared',
-  status = 'success',
-}: ActivityRowItemProps) {
-  const router = useRouter()
+export function ActivityRowItem({ activity }: ActivityRowItemProps) {
   const { t } = useLingui()
-  const Icon = type === 'received' ? activityInteractions.received.success : activityInteractions[type][status]
-  const Title =
-    type === 'received' ? t(activityInteractions.received.success.text) : t(activityInteractions[type][status].text)
+  const { id, entity } = activity
+  const { logo, backgroundColor } = entity
+  const date = new Date(activity.date)
+  const subtitle = entity.name ?? entity.host ?? t(commonMessages.unknownOrganization)
+
+  const router = useRouter()
+  const Icon = activityInteractions[activity.type][activity.status]
+  const Title = t(Icon.text)
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
   const { withHaptics } = useHaptics()

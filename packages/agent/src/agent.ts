@@ -37,7 +37,7 @@ import {
   V2ProofProtocol,
   WsOutboundTransport,
 } from '@credo-ts/didcomm'
-import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
+import { OpenId4VcModule } from '@credo-ts/openid4vc'
 export { useAgent } from './providers'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
@@ -71,7 +71,7 @@ export const initializeEasyPIDAgent = async ({
           keyDerivationMethod: keyDerivation === 'raw' ? 'raw' : 'kdf:argon2i:mod',
         },
       }),
-      openId4VcHolder: new OpenId4VcHolderModule(),
+      openid4vc: new OpenId4VcModule({}),
       x509: new X509Module({
         getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
           if (verification.type === 'credential') {
@@ -141,7 +141,7 @@ export const initializeParadymAgent = async ({
           keyDerivationMethod: keyDerivation === 'raw' ? 'raw' : 'kdf:argon2i:mod',
         },
       }),
-      openId4VcHolder: new OpenId4VcHolderModule(),
+      openid4vc: new OpenId4VcModule({}),
       x509: new X509Module({
         getTrustedCertificatesForVerification: (_, { certificateChain, verification }) => {
           if (verification.type === 'credential') {

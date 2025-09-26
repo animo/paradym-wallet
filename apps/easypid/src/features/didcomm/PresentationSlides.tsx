@@ -1,9 +1,13 @@
 import { useLingui } from '@lingui/react/macro'
-import { type FormattedSubmission, useAgent, useDidCommPresentationActions } from '@package/agent'
+import {
+  type FormattedSubmission,
+  storeSharedActivityForSubmission,
+  useAgent,
+  useDidCommPresentationActions,
+} from '@package/agent'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { addSharedActivityForSubmission } from '../activity/activityRecord'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { getFlowConfirmationText } from './utils'
@@ -27,7 +31,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
 
     await acceptPresentation({})
       .then(async () => {
-        await addSharedActivityForSubmission(
+        await storeSharedActivityForSubmission(
           agent,
           submission,
           {
@@ -41,7 +45,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
       .catch(async () => {
         toast.show(t(commonMessages.presentationCouldNotBeShared), { customData: { preset: 'danger' } })
 
-        await addSharedActivityForSubmission(
+        await storeSharedActivityForSubmission(
           agent,
           submission,
           {
@@ -62,7 +66,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
     if (!proofExchange) return
 
     if (submission) {
-      await addSharedActivityForSubmission(
+      await storeSharedActivityForSubmission(
         agent,
         submission,
         {

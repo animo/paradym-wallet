@@ -33,10 +33,6 @@ export async function refreshPid({
 export async function handleBatchCredential<
   CredentialRecord extends W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord,
 >(agent: EitherAgent, credentialRecord: CredentialRecord): Promise<CredentialRecord> {
-  if (credentialRecord instanceof W3cV2CredentialRecord) {
-    throw new Error('TODO: w3c vcdm 2.0 not yet supported')
-  }
-
   const batchMetadata = getBatchCredentialMetadata(credentialRecord)
   if (!batchMetadata) return credentialRecord
 

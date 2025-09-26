@@ -2,6 +2,8 @@ import type { OpenId4VciAuthorizationFlow, OpenId4VciResolvedAuthorizationReques
 
 export {
   OpenId4VciResolvedCredentialOffer,
+  OpenId4VciDeferredCredentialResponse,
+  OpenId4VciMetadata,
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciRequestTokenResponse,
   OpenId4VciAuthorizationFlow,
@@ -34,6 +36,7 @@ export {
   acceptOutOfBandInvitation,
   resolveOutOfBandInvitation,
   receiveCredentialFromOpenId4VciOffer,
+  receiveDeferredCredentialFromOpenId4VciOffer,
   acquireAuthorizationCodeAccessToken,
   acquireRefreshTokenAccessToken,
   acquirePreAuthorizedAccessToken,

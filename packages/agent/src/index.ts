@@ -39,6 +39,8 @@ export * from './mediation'
 export * from './crypto'
 export * from './storage'
 export * from './openid4vc/displayMetadata'
+export * from './openid4vc/deferredCredentialRecord'
+
 export * from './credentialCategoryMetadata'
 export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
 

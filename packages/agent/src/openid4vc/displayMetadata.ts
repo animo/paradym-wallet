@@ -5,9 +5,11 @@ import type {
   OpenId4VciCredentialIssuerMetadataDisplay,
 } from '@credo-ts/openid4vc'
 
-export type OpenId4VciCredentialDisplayClaims = (OpenId4VciCredentialConfigurationSupportedWithFormats & {
-  format: 'dc+sd-jwt'
-})['claims']
+export type OpenId4VciCredentialDisplayClaims = NonNullable<
+  (OpenId4VciCredentialConfigurationSupportedWithFormats & {
+    format: 'dc+sd-jwt'
+  })['credential_metadata']
+>['claims']
 
 export type OpenId4VciCredentialDisplay = NonNullable<
   OpenId4VciCredentialConfigurationSupported['credential_metadata']
@@ -32,8 +34,7 @@ export function extractOpenId4VcCredentialMetadata(
   serverMetadata: { display?: OpenId4VciCredentialIssuerMetadataDisplay[]; id: string }
 ): OpenId4VcCredentialMetadata {
   // We only store claims for the new array-based syntax
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const claims = (credentialMetadata.credential_metadata as any)?.claims ?? credentialMetadata.claims
+  const claims = credentialMetadata.credential_metadata?.claims ?? credentialMetadata.claims
 
   return {
     credential: {

@@ -1,3 +1,9 @@
+import { useAppAgent } from '@easypid/agent'
+import { useFirstNameFromPidCredential } from '@easypid/hooks'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { fetchAndProcessDeferredCredentials, useDeferredCredentials } from '@package/agent'
+import { useHaptics } from '@package/app/hooks'
 import {
   AnimatedStack,
   Blob,
@@ -16,11 +22,7 @@ import {
   useSpringify,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
-
-import { useFirstNameFromPidCredential } from '@easypid/hooks'
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { useHaptics } from '@package/app/hooks'
+import { useEffect, useState } from 'react'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
@@ -29,10 +31,13 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
+  const { agent } = useAppAgent()
   const { withHaptics } = useHaptics()
   const { userName, isLoading } = useFirstNameFromPidCredential()
+  const { deferredCredentials, isLoading: isLoadingDeferredCredentials } = useDeferredCredentials()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
-  const hasInboxFeatureFlag = useFeatureFlag('INBOX')
+
+  const [refreshedDeferredCredentials, setRefreshedDeferredCredentials] = useState(false)
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
@@ -43,6 +48,16 @@ export function FunkeWalletScreen() {
   }
   const { t } = useLingui()
 
+  useEffect(() => {
+    if (isLoadingDeferredCredentials || refreshedDeferredCredentials) return
+
+    setRefreshedDeferredCredentials(true)
+
+    console.log('checking')
+
+    fetchAndProcessDeferredCredentials(agent, deferredCredentials)
+  }, [agent, refreshedDeferredCredentials, deferredCredentials, isLoadingDeferredCredentials])
+
   return (
     <YStack pos="relative" fg={1} bg="$background">
       <YStack pos="absolute" h="50%" w="100%">
@@ -52,7 +67,7 @@ export function FunkeWalletScreen() {
       <FlexPage fg={1} flex-1={false} bg="transparent">
         <XStack pt="$2" jc="space-between">
           <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
-          {hasInboxFeatureFlag && <InboxIcon />}
+          <InboxIcon />
         </XStack>
 
         <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>

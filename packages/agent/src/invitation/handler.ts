@@ -23,7 +23,10 @@ import {
 import { supportsIncomingMessageType } from '@credo-ts/didcomm/build/util/messageType'
 import type {
   OpenId4VciCredentialConfigurationSupportedWithFormats,
+  OpenId4VciCredentialResponse,
+  OpenId4VciDeferredCredentialResponse,
   OpenId4VciDpopRequestOptions,
+  OpenId4VciMetadata,
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
@@ -84,7 +87,7 @@ export async function resolveOpenId4VciOffer({
       uri: offer.uri,
     })
 
-    const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
+    const resolvedCredentialOffer = await agent.modules.openid4vc.holder.resolveCredentialOffer(offer.uri)
     let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
     // NOTE: we always assume scopes are used at the moment
@@ -98,7 +101,7 @@ export async function resolveOpenId4VciOffer({
 
       // TODO: authorization should only be initiated after we know which credentials we're going to request
       if (authorization) {
-        resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
+        resolvedAuthorizationRequest = await agent.modules.openid4vc.holder.resolveOpenId4VciAuthorizationRequest(
           resolvedCredentialOffer,
           {
             redirectUri: authorization.redirectUri,
@@ -134,7 +137,7 @@ export async function acquirePreAuthorizedAccessToken({
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   txCode?: string
 }) {
-  return await agent.modules.openId4VcHolder.requestToken({
+  return await agent.modules.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     txCode,
   })
@@ -153,7 +156,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
   authSession: string
   presentationDuringIssuanceSession?: string
 }) {
-  return await agent.modules.openId4VcHolder.retrieveAuthorizationCodeUsingPresentation({
+  return await agent.modules.openid4vc.holder.retrieveAuthorizationCodeUsingPresentation({
     authSession,
     dpop: dPopKeyJwk
       ? {
@@ -237,7 +240,7 @@ export async function acquireAuthorizationCodeAccessToken({
   redirectUri?: string
   dPopKeyJwk?: Kms.PublicJwk
 }) {
-  return await agent.modules.openId4VcHolder.requestToken({
+  return await agent.modules.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     code: authorizationCode,
     codeVerifier,
@@ -251,6 +254,33 @@ export async function acquireAuthorizationCodeAccessToken({
       : undefined,
   })
 }
+
+const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], issuerMetadata: OpenId4VciMetadata) =>
+  credentials.map(({ credentials, ...credentialResponse }) => {
+    const firstCredential = credentials[0]
+    const record = credentialRecordFromCredential(firstCredential)
+
+    // OpenID4VC metadata
+    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
+      id: issuerMetadata.credentialIssuer.credential_issuer,
+      display: issuerMetadata.credentialIssuer.display,
+    })
+    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+    // Match metadata
+    if (credentials.length > 1) {
+      setBatchCredentialMetadata(record, {
+        additionalCredentials: credentials.slice(1).map(encodeCredential) as
+          | Array<string>
+          | Array<Record<string, unknown>>,
+      })
+    }
+
+    return {
+      ...credentialResponse,
+      credential: record,
+    }
+  })
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
   agent,
@@ -285,7 +315,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 
   try {
-    const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestCredentials({
       resolvedCredentialOffer,
       ...accessToken,
       clientId,
@@ -301,35 +331,42 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       }),
     })
 
-    if (credentials.deferredCredentials.length > 0) {
-      // TODO: handle deferred credentials
+    return {
+      deferredCredentials,
+      credentials: parseCredentialResponses(credentials, resolvedCredentialOffer.metadata),
     }
+  } catch (error) {
+    // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
+    // can retry e.g. the second credential
+    // Handle biometric authentication errors
+    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
+  }
+}
 
-    return credentials.credentials.map(({ credentials, ...credentialResponse }) => {
-      const firstCredential = credentials[0]
-      const record = credentialRecordFromCredential(firstCredential)
-
-      // OpenID4VC metadata
-      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
-        id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
-        display: resolvedCredentialOffer.metadata.credentialIssuer.display,
-      })
-      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-      // Match metadata
-      if (credentials.length > 1) {
-        setBatchCredentialMetadata(record, {
-          additionalCredentials: credentials.slice(1).map(encodeCredential) as
-            | Array<string>
-            | Array<Record<string, unknown>>,
-        })
-      }
-
-      return {
-        ...credentialResponse,
-        credential: record,
-      }
+export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
+  agent,
+  deferredCredentialResponse,
+  issuerMetadata,
+  accessToken,
+}: {
+  agent: EitherAgent
+  deferredCredentialResponse: OpenId4VciDeferredCredentialResponse
+  issuerMetadata: OpenId4VciMetadata
+  // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
+  accessToken: OpenId4VciRequestTokenResponse
+}) => {
+  try {
+    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestDeferredCredentials({
+      ...deferredCredentialResponse,
+      ...accessToken,
+      issuerMetadata,
+      verifyCredentialStatus: false,
     })
+
+    return {
+      deferredCredentials,
+      credentials: parseCredentialResponses(credentials, issuerMetadata),
+    }
   } catch (error) {
     // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
     // can retry e.g. the second credential
@@ -458,7 +495,7 @@ export const getCredentialsForProofRequest = async ({
     request,
   })
 
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(request, {
+  const resolved = await agent.modules.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
     origin,
     trustedFederationEntityIds: entityId ? [entityId] : undefined,
   })
@@ -709,7 +746,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   try {
     const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
       reuseConnection: true,
-      label: 'TODO',
+      label: isParadymWallet() ? 'Paradym Wallet' : 'EasyPID',
     })
     connectionRecord = receiveInvitationResult.connectionRecord
     outOfBandRecord = receiveInvitationResult.outOfBandRecord

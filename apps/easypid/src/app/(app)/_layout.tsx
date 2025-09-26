@@ -3,7 +3,6 @@ import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from '
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { mediatorDid } from '@easypid/constants'
-import { activityStorage } from '@easypid/features/activity/activityRecord'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/utils/resetWallet'
@@ -11,6 +10,8 @@ import {
   AgentProvider,
   type InvitationType,
   WalletJsonStoreProvider,
+  activityStorage,
+  deferredCredentialStorage,
   registerCredentialsForDcApi,
   useMediatorSetup,
 } from '@package/agent'
@@ -21,7 +22,7 @@ import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
-const jsonRecordIds = [activityStorage.recordId]
+const jsonRecordIds = [activityStorage.recordId, deferredCredentialStorage.recordId]
 
 const isDIDCommEnabled = useFeatureFlag('DIDCOMM')
 
@@ -169,6 +170,7 @@ export default function AppLayout() {
             }}
           />
 
+          <Stack.Screen name="notifications/deferredCredential" options={headerNormalOptions} />
           <Stack.Screen name="credentials/index" options={headerNormalOptions} />
           <Stack.Screen name="credentials/[id]/index" options={headerNormalOptions} />
           <Stack.Screen name="credentials/[id]/attributes" options={headerNormalOptions} />
