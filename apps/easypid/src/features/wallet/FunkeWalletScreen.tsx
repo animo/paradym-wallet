@@ -1,8 +1,7 @@
-import { useAppAgent } from '@easypid/agent'
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { fetchAndProcessDeferredCredentials, useDeferredCredentials } from '@package/agent'
+import { useRefreshedDeferredCredentials } from '@package/agent'
 import { useHaptics } from '@package/app/hooks'
 import {
   AnimatedStack,
@@ -22,7 +21,6 @@ import {
   useSpringify,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
@@ -31,13 +29,9 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 
 export function FunkeWalletScreen() {
   const { push } = useRouter()
-  const { agent } = useAppAgent()
   const { withHaptics } = useHaptics()
   const { userName, isLoading } = useFirstNameFromPidCredential()
-  const { deferredCredentials, isLoading: isLoadingDeferredCredentials } = useDeferredCredentials()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
-
-  const [refreshedDeferredCredentials, setRefreshedDeferredCredentials] = useState(false)
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
@@ -48,15 +42,7 @@ export function FunkeWalletScreen() {
   }
   const { t } = useLingui()
 
-  useEffect(() => {
-    if (isLoadingDeferredCredentials || refreshedDeferredCredentials) return
-
-    setRefreshedDeferredCredentials(true)
-
-    console.log('checking')
-
-    fetchAndProcessDeferredCredentials(agent, deferredCredentials)
-  }, [agent, refreshedDeferredCredentials, deferredCredentials, isLoadingDeferredCredentials])
+  useRefreshedDeferredCredentials()
 
   return (
     <YStack pos="relative" fg={1} bg="$background">

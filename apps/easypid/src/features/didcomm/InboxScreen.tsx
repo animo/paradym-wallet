@@ -23,10 +23,6 @@ export function InboxScreen() {
     const deferredCredentialRecords = inboxNotifications
       .filter((n) => n.type === 'DeferredCredentialRecord')
       .map((n) => n.deferredCredentialRecord)
-      .filter(
-        ({ response, lastCheckedAt }) =>
-          !response.interval || new Date(lastCheckedAt).getTime() + response.interval * 1000 < Date.now()
-      )
 
     fetchAndProcessDeferredCredentials(agent, deferredCredentialRecords).finally(() => {
       setRefreshing(false)

@@ -300,12 +300,12 @@ export const commonMessages = {
   }),
   deleteDeferredCredentialDescription: (name: string) =>
     defineMessage({
-      id: 'common.deleteDeferredCredentialConfirmDescription',
+      id: 'common.deleteDeferredCredentialDescription',
       message: `By deleting ${name}, you will no longer be able to retrieve your credential from the issuer.`,
       comment: 'Description in confirmation dialog explaining deferred credential deletion',
     }),
   deleteDeferredCredentialConfirm: defineMessage({
-    id: 'common.deleteCardConfirm',
+    id: 'common.deleteDeferredCredentialConfirm',
     message: 'Yes, delete',
     comment: 'Confirm button text for deleting a deferred credential',
   }),

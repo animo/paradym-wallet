@@ -149,7 +149,6 @@ export function FunkeCredentialNotificationScreen() {
       configurationId: string,
       resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequest
     ) => {
-      console.log('ClientId', resolvedAuthorizationRequest ? authorization.clientId : undefined)
       const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
         agent,
         resolvedCredentialOffer,

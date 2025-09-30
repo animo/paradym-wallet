@@ -27,7 +27,7 @@ interface DeferredCredentialRecord {
 }
 
 const _deferredCredentialStorage = getWalletJsonStore<DeferredCredentialRecord>(
-  'EASYPID_OID4VCI_DEFERRED_CREDENTIAL_RECORD'
+  'PARADYM_OID4VCI_DEFERRED_CREDENTIAL_RECORD'
 )
 export const deferredCredentialStorage = {
   recordId: _deferredCredentialStorage.recordId,

@@ -746,7 +746,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   try {
     const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
       reuseConnection: true,
-      label: isParadymWallet() ? 'Paradym Wallet' : 'EasyPID',
+      label: '',
     })
     connectionRecord = receiveInvitationResult.connectionRecord
     outOfBandRecord = receiveInvitationResult.outOfBandRecord

@@ -36,7 +36,10 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
     // In the future, this could be improved with a retry: first try the token
     // we already have, and if that fails, refresh the token and try again.
     if (accessToken.refreshToken) {
-      console.log('Going to Refresh access token')
+      agent.config.logger.debug('Refreshing access token for deferred credential', {
+        deferredCredentialId: deferredCredential.id,
+      })
+
       accessToken = await agent.modules.openid4vc.holder.refreshToken({
         issuerMetadata,
         clientId,

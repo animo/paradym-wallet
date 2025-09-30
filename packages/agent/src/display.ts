@@ -695,8 +695,6 @@ export function getCredentialForDisplay(
     const resolvedCredential = credentialRecord.credential.resolvedCredential
     const credential = resolvedCredential.toJSON()
 
-    // let type = credentialRecord.credential.type[credentialRecord.credential.type.length - 1]
-
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
     const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
