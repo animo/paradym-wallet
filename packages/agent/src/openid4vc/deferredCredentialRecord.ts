@@ -32,10 +32,12 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
         : undefined,
     }
 
+    const accessTokenExpiresAt = accessToken.accessTokenResponse.expires_in
+      ? new Date(deferredCredential.createdAt).getTime() + accessToken.accessTokenResponse.expires_in * 1000
+      : undefined
+
     // Determine whether or not to use the refresh token to get a new access token.
-    // In the future, this could be improved with a retry: first try the token
-    // we already have, and if that fails, refresh the token and try again.
-    if (accessToken.refreshToken) {
+    if (accessToken.refreshToken && (!accessTokenExpiresAt || accessTokenExpiresAt < Date.now())) {
       agent.config.logger.debug('Refreshing access token for deferred credential', {
         deferredCredentialId: deferredCredential.id,
       })
