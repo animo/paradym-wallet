@@ -118,3 +118,9 @@ export const updateDeferredCredential = async (
 export const deleteDeferredCredential = async (agent: Agent, id: string) => {
   await deferredCredentialStorage.deleteDeferredCredential(agent, id)
 }
+
+export const getDeferredCredentialNextCheckAt = (deferredCredential: DeferredCredential) => {
+  return deferredCredential.response.interval
+    ? new Date(new Date(deferredCredential.lastCheckedAt).getTime() + deferredCredential.response.interval * 1000)
+    : undefined
+}

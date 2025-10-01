@@ -223,8 +223,8 @@ export const CredentialRetrievalSlide = ({
                     ) : (
                       <Paragraph>
                         <Trans id="receiveCredential.deferredCredentialParagraph">
-                          Your credentials are not yet ready. We will check once in a while in the background and notify
-                          you once they are ready.
+                          Your credentials are not yet ready. We will check once in a while in the background and fetch
+                          the credentials once they're ready.
                         </Trans>
                       </Paragraph>
                     )}

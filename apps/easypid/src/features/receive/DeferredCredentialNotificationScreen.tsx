@@ -2,6 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import {
   extractOpenId4VcCredentialMetadata,
   getCredentialDisplayWithDefaults,
+  getDeferredCredentialNextCheckAt,
   getOpenId4VcCredentialDisplay,
   useDeferredCredentials,
 } from '@package/agent'
@@ -35,7 +36,7 @@ export function DeferredCredentialNotificationScreen() {
   const { withHaptics } = useHaptics()
   const { bottom } = useSafeAreaInsets()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-  const { t } = useLingui()
+  const { i18n, t } = useLingui()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const { deferredCredentialId } = useLocalSearchParams<Query>()
   const { deferredCredentials } = useDeferredCredentials()
@@ -47,6 +48,7 @@ export function DeferredCredentialNotificationScreen() {
   }
 
   const { response, issuerMetadata } = deferredCredential
+  const nextCheck = getDeferredCredentialNextCheckAt(deferredCredential)
 
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
@@ -119,19 +121,60 @@ export function DeferredCredentialNotificationScreen() {
                   })}
                 />
               )}
-              <InfoButton
-                variant="info"
-                title={t({
-                  id: 'deferredCredentials.cardNotAvailableYet',
-                  message: 'Card not available yet',
-                  comment: 'Title of the info box explaining deferred credentials',
-                })}
-                description={t({
-                  id: 'deferredCredentials.cardNotAvailableYetDescription',
-                  message: 'The issuer has not yet made the card available. Please check back later.',
-                  comment: 'Description of the info box explaining deferred credentials',
-                })}
-              />
+              {nextCheck ? (
+                nextCheck.toDateString() === new Date().toDateString() ? (
+                  <InfoButton
+                    variant="info"
+                    title={t({
+                      id: 'deferredCredentials.cardNotAvailableYet',
+                      message: 'Card not available yet',
+                      comment: 'Title of the info box explaining deferred credentials',
+                    })}
+                    description={t({
+                      id: 'deferredCredentials.cardNotAvailableYetWithTimeDescription',
+                      message: `The issuer of the card indicated you should check again at ${i18n.date(nextCheck, {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                      })}.`,
+                      comment: 'Description of the info box explaining deferred credentials with time',
+                    })}
+                  />
+                ) : (
+                  <InfoButton
+                    variant="info"
+                    title={t({
+                      id: 'deferredCredentials.cardNotAvailableYet',
+                      message: 'Card not available yet',
+                      comment: 'Title of the info box explaining deferred credentials',
+                    })}
+                    description={t({
+                      id: 'deferredCredentials.cardNotAvailableYetWithDateDescription',
+                      message: `The issuer of the card indicated you should check again on ${i18n.date(nextCheck, {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                      })}.`,
+                      comment: 'Description of the info box explaining deferred credentials with date',
+                    })}
+                  />
+                )
+              ) : (
+                <InfoButton
+                  variant="info"
+                  title={t({
+                    id: 'deferredCredentials.cardNotAvailableYet',
+                    message: 'Card not available yet',
+                    comment: 'Title of the info box explaining deferred credentials',
+                  })}
+                  description={t({
+                    id: 'deferredCredentials.cardNotAvailableYetDescription',
+                    message: 'The issuer has not yet made the card available. Please check again later.',
+                    comment: 'Description of the info box explaining deferred credentials',
+                  })}
+                />
+              )}
             </YStack>
           </YStack>
         </ScrollView>
