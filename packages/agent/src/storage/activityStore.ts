@@ -51,6 +51,7 @@ export interface PresentationActivityCredential {
 
 export interface PresentationActivity extends BaseActivity {
   type: 'shared'
+  status: Exclude<ActivityStatus, 'pending'>
   request: {
     credentials: Array<PresentationActivityCredential | PresentationActivityCredentialNotFound>
     name?: string
@@ -61,12 +62,14 @@ export interface PresentationActivity extends BaseActivity {
 
 export interface IssuanceActivity extends BaseActivity {
   type: 'received'
+  status: ActivityStatus
   deferredCredentials?: CredentialDisplay[]
   credentialIds: CredentialForDisplayId[]
 }
 
 export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
   type: 'signed'
+  status: Exclude<ActivityStatus, 'pending'>
   transaction: FormattedTransactionData
 }
 
@@ -177,7 +180,7 @@ export function storeSharedActivityForCredentialsForRequest(
   credentialsForRequest: Pick<CredentialsForProofRequest, 'formattedSubmission'> & {
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
-  status: ActivityStatus,
+  status: Exclude<ActivityStatus, 'pending'>,
   transaction?: FormattedTransactionData
 ) {
   return storeSharedOrSignedActivity(agent, {
@@ -211,7 +214,7 @@ export function storeSharedActivityForSubmission(
     name?: string
     logo?: DisplayImage
   },
-  status: ActivityStatus
+  status: Exclude<ActivityStatus, 'pending'>
 ) {
   return storeSharedOrSignedActivity(agent, {
     status,

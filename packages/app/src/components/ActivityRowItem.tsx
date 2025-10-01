@@ -1,9 +1,11 @@
+import type { MessageDescriptor } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
-import type { Activity } from '@package/agent'
+import type { Activity, ActivityType } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   CustomIcons,
   Heading,
+  type HeroIcon,
   HeroIcons,
   Image,
   Paragraph,
@@ -17,7 +19,19 @@ import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'
 
-export const activityInteractions = {
+export type ActivityInteraction = {
+  icon: HeroIcon
+  color: string
+  text: MessageDescriptor
+}
+
+export type ActivityInteractions = {
+  [K in ActivityType]: {
+    [status in (Activity & { type: K })['status']]: ActivityInteraction
+  }
+}
+
+export const activityInteractions: ActivityInteractions = {
   received: {
     success: {
       icon: HeroIcons.Plus,
@@ -46,11 +60,6 @@ export const activityInteractions = {
       color: '#008FFF',
       text: commonMessages.documentSigned,
     },
-    pending: {
-      icon: HeroIcons.ClockFilled,
-      color: '$warning-500',
-      text: commonMessages.signingPending,
-    },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
       color: '$grey-500',
@@ -68,11 +77,6 @@ export const activityInteractions = {
       color: '$positive-500',
       text: commonMessages.informationShared,
     },
-    pending: {
-      icon: HeroIcons.ClockFilled,
-      color: '$warning-500',
-      text: commonMessages.sharingPending,
-    },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
       color: '$grey-500',
@@ -84,6 +88,14 @@ export const activityInteractions = {
       text: commonMessages.sharingFailed,
     },
   },
+}
+
+export const getActivityInteraction = (activity: Activity) => {
+  const byType = activityInteractions[activity.type] as {
+    [status in (Activity & { type: (typeof activity)['type'] })['status']]: ActivityInteraction
+  }
+
+  return byType[activity.status]
 }
 
 interface ActivityRowItemProps {
@@ -98,7 +110,7 @@ export function ActivityRowItem({ activity }: ActivityRowItemProps) {
   const subtitle = entity.name ?? entity.host ?? t(commonMessages.unknownOrganization)
 
   const router = useRouter()
-  const Icon = activityInteractions[activity.type][activity.status]
+  const Icon = getActivityInteraction(activity)
   const Title = t(Icon.text)
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()

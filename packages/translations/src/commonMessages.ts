@@ -232,11 +232,6 @@ export const commonMessages = {
     message: 'Document signed',
     comment: 'Shown when signing a document succeeded',
   }),
-  signingPending: defineMessage({
-    id: 'common.signingPending',
-    message: 'Signing pending',
-    comment: 'Shown when the signing process is pending',
-  }),
   signingStopped: defineMessage({
     id: 'common.signingStopped',
     message: 'Signing stopped',
@@ -251,11 +246,6 @@ export const commonMessages = {
     id: 'common.informationShared',
     message: 'Information shared',
     comment: 'Shown when data was successfully shared',
-  }),
-  sharingPending: defineMessage({
-    id: 'common.sharingPending',
-    message: 'Sharing pending',
-    comment: 'Shown when the sharing process is pending',
   }),
   sharingStopped: defineMessage({
     id: 'common.sharingStopped',

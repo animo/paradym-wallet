@@ -10,7 +10,7 @@ import {
   useActivities,
   useCredentialsForDisplay,
 } from '@package/agent'
-import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
+import { CardWithAttributes, MiniDocument, TextBackButton, getActivityInteraction } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import { formatRelativeDate } from '@package/utils'
@@ -34,7 +34,7 @@ export function FunkeActivityDetailScreen() {
     return
   }
 
-  const Icon = activityInteractions[activity.type][activity.status]
+  const Icon = getActivityInteraction(activity)
   const Title = t(Icon.text)
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()

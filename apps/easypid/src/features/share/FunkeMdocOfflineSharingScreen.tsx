@@ -162,7 +162,7 @@ export function FunkeMdocOfflineSharingScreen({
     pushToWallet('replace')
   }
 
-  const addActivity = async (status: ActivityStatus) => {
+  const addActivity = async (status: Exclude<ActivityStatus, 'pending'>) => {
     if (!submission) return
     await storeSharedActivityForCredentialsForRequest(
       agent,
