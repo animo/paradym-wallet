@@ -1,10 +1,10 @@
-import { useAppAgent } from '@easypid/agent'
 import { useEffect, useState } from 'react'
+import { useAgent } from '../agent'
 import { fetchAndProcessDeferredCredentials } from '../openid4vc/deferredCredentialRecord'
 import { getDeferredCredentialNextCheckAt, useDeferredCredentials } from '../storage/deferredCredentialStore'
 
 export const useRefreshedDeferredCredentials = () => {
-  const { agent, loading: isLoadingAgent } = useAppAgent()
+  const { agent, loading: isLoadingAgent } = useAgent()
   const { deferredCredentials, isLoading: isLoadingDeferredCredentials } = useDeferredCredentials()
   const [refreshedDeferredCredentials, setRefreshedDeferredCredentials] = useState(false)
 

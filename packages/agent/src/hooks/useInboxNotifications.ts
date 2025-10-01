@@ -1,4 +1,4 @@
-import { CredentialState, ProofState } from '@credo-ts/didcomm'
+import { DidCommCredentialState, DidCommProofState } from '@credo-ts/didcomm'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
@@ -27,8 +27,8 @@ export const useHasInboxNotifications = () => {
 
   // DID Comm
   if (isDIDCommEnabled) {
-    const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-    const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
+    const credentialExchangeRecords = useCredentialByState([DidCommCredentialState.OfferReceived])
+    const proofExchangeRecords = useProofByState([DidCommProofState.RequestReceived])
 
     hasInboxNotifications ||= credentialExchangeRecords?.length > 0 || proofExchangeRecords.length > 0
     inboxNotificationsCount += (credentialExchangeRecords?.length ?? 0) + proofExchangeRecords.length
@@ -48,8 +48,8 @@ export const useHasInboxNotifications = () => {
  * is added to the inbox.
  */
 export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAgent }) => {
-  const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-  const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
+  const credentialExchangeRecords = useCredentialByState([DidCommCredentialState.OfferReceived])
+  const proofExchangeRecords = useProofByState([DidCommProofState.RequestReceived])
   const { records: connections } = useConnections()
   // Fetch associated metadata for each record
   useEffect(() => {
@@ -129,8 +129,8 @@ export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAg
 }
 
 export const useInboxNotifications = () => {
-  const credentialExchangeRecords = isDIDCommEnabled ? useCredentialByState([CredentialState.OfferReceived]) : []
-  const proofExchangeRecords = isDIDCommEnabled ? useProofByState([ProofState.RequestReceived]) : []
+  const credentialExchangeRecords = isDIDCommEnabled ? useCredentialByState([DidCommCredentialState.OfferReceived]) : []
+  const proofExchangeRecords = isDIDCommEnabled ? useProofByState([DidCommProofState.RequestReceived]) : []
   const { deferredCredentials } = useDeferredCredentials()
 
   const { t } = useLingui()

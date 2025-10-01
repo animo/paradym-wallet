@@ -4,7 +4,7 @@ import type {
   AnonCredsRequestedPredicateMatch,
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
-import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
+import type { DidCommProofStateChangedEvent } from '@credo-ts/didcomm'
 import type { _t } from '@lingui/react/macro'
 import type {
   FormattedSubmission,
@@ -13,7 +13,7 @@ import type {
 } from '../format/formatPresentation'
 
 import { CredoError } from '@credo-ts/core'
-import { ProofEventTypes, ProofState, V2RequestPresentationMessage } from '@credo-ts/didcomm'
+import { DidCommProofEventTypes, DidCommProofState, DidCommRequestPresentationV2Message } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
@@ -64,7 +64,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
 
       const credentialsForRequest = await agent.modules.proofs.getCredentialsForRequest({
-        proofRecordId: proofExchangeId,
+        proofExchangeRecordId: proofExchangeId,
       })
 
       const formatKey = formatData.request?.anoncreds !== undefined ? 'anoncreds' : 'indy'
@@ -206,7 +206,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       const requestMessage = await agent.modules.proofs.findRequestMessage(proofExchangeId)
       const purpose =
         requestMessage?.comment ??
-        (requestMessage instanceof V2RequestPresentationMessage ? requestMessage.goal : undefined)
+        (requestMessage instanceof DidCommRequestPresentationV2Message ? requestMessage.goal : undefined)
 
       const submission: FormattedSubmission = {
         areAllSatisfied: entriesArray.every((entry) => entry.isSatisfied),
@@ -256,21 +256,23 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         }
       }
 
-      const presentationDone$ = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
-        // Correct record with id and state
-        filter(
-          (event) =>
-            event.payload.proofRecord.id === proofExchangeId &&
-            [ProofState.PresentationSent, ProofState.Done].includes(event.payload.proofRecord.state)
-        ),
-        // 10 seconds to complete exchange
-        timeout(10000),
-        first()
-      )
+      const presentationDone$ = agent.events
+        .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
+        .pipe(
+          // Correct record with id and state
+          filter(
+            (event) =>
+              event.payload.proofRecord.id === proofExchangeId &&
+              [DidCommProofState.PresentationSent, DidCommProofState.Done].includes(event.payload.proofRecord.state)
+          ),
+          // 10 seconds to complete exchange
+          timeout(10000),
+          first()
+        )
 
       const presentationDonePromise = firstValueFrom(presentationDone$)
       await agent.modules.proofs.acceptRequest({
-        proofRecordId: proofExchangeId,
+        proofExchangeRecordId: proofExchangeId,
         proofFormats: formatInput,
       })
       await presentationDonePromise
@@ -281,13 +283,13 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     mutationKey: ['declineDidCommPresentation', proofExchangeId],
     mutationFn: async () => {
       const presentationDeclined$ = agent.events
-        .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
+        .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
         .pipe(
           // Correct record with id and state
           filter(
             (event) =>
               event.payload.proofRecord.id === proofExchangeId &&
-              [ProofState.Declined].includes(event.payload.proofRecord.state)
+              [DidCommProofState.Declined].includes(event.payload.proofRecord.state)
           ),
           // 10 seconds to complete exchange
           timeout(10000),
@@ -295,7 +297,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         )
 
       const presentationDeclinePromise = firstValueFrom(presentationDeclined$)
-      await agent.modules.proofs.declineRequest({ proofRecordId: proofExchangeId, sendProblemReport: true })
+      await agent.modules.proofs.declineRequest({ proofExchangeRecordId: proofExchangeId, sendProblemReport: true })
       await presentationDeclinePromise
     },
   })

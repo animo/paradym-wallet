@@ -241,17 +241,17 @@ overrides:
   '@unimodules/react-native-adapter': ./noop
   '@unimodules/core': ./noop
   react-docgen-typescript: 2.2.2
-  '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636
-  '@credo-ts/askar': npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250925094636
-  '@credo-ts/cheqd': npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250925094636
+  '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506
+  '@credo-ts/askar': npm:@animo-id/credo-ts-askar@0.5.14-alpha-20251001132506
+  '@credo-ts/cheqd': npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20251001132506
   '@cheqd/sdk': 5.2.1
   '@cheqd/ts-proto': 2.4.1
   '@cheqd/ts-proto-cjs': npm:@cheqd/ts-proto@2.4.1
-  '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250925094636
-  '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250925094636
-  '@credo-ts/question-answer': npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250925094636
-  '@credo-ts/react-native': npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250925094636
-  '@credo-ts/didcomm': npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20250925094636
+  '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20251001132506
+  '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251001132506
+  '@credo-ts/question-answer': npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20251001132506
+  '@credo-ts/react-native': npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20251001132506
+  '@credo-ts/didcomm': npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20251001132506
   '@openid-federation/core': 0.1.1-alpha.17
   isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
   '@hyperledger/anoncreds-react-native': 0.3.1
@@ -285,7 +285,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250917090914(shxn2uy2ve5jpemc6tma4xq5nm)
+        version: 0.0.0-alpha-20250917090914(hmi7xonfpbadygvu5qodvp2p2m)
       '@animo-id/expo-ausweis-sdk':
         specifier: 'catalog:'
         version: 0.0.1-alpha.14(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -302,8 +302,8 @@ importers:
         specifier: 0.5.2
         version: 0.5.2
       '@credo-ts/core':
-        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@expo-google-fonts/open-sans':
         specifier: 'catalog:'
         version: 0.4.1
@@ -508,7 +508,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250917090914(shxn2uy2ve5jpemc6tma4xq5nm)
+        version: 0.0.0-alpha-20250917090914(hmi7xonfpbadygvu5qodvp2p2m)
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
         version: 0.4.0(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -516,29 +516,29 @@ importers:
         specifier: 'catalog:'
         version: 1.1.2
       '@credo-ts/anoncreds':
-        specifier: npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/askar':
-        specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20250925094636(@openwallet-foundation/askar-shared@0.3.2)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20251001132506(@openwallet-foundation/askar-shared@0.3.2)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/cheqd':
-        specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250925094636(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20251001132506(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/core':
-        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-core@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/didcomm':
-        specifier: npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-didcomm@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/openid4vc':
-        specifier: npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/question-answer':
-        specifier: npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-question-answer@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@credo-ts/react-native':
-        specifier: npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250925094636
-        version: '@animo-id/credo-ts-react-native@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native-get-random-values@1.11.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+        specifier: npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20251001132506
+        version: '@animo-id/credo-ts-react-native@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native-get-random-values@1.11.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@hyperledger/anoncreds-react-native':
         specifier: 0.3.1
         version: 0.3.1(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -556,7 +556,7 @@ importers:
         version: 5.81.5(react@19.0.0)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
-        version: 0.0.1-alpha.14(nag5uy4rdzq67ajb4d5pvutvoe)
+        version: 0.0.1-alpha.14(lv7axmvxpn7qw6sm3rh7d2q7cq)
       expo:
         specifier: 'catalog:'
         version: 53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -760,33 +760,33 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-5HTSlx0iXWteiUZZrPfjpkmbSwIfBEOiAaOVpZB5TTmcjAbujoo6RY59bm+rdY6XZ65X2SOQW6LnT/LChyXYXw==}
+  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-vLz7dtoOTW4La4VY/SkMLwYJfAtBEmj/0+upenH2JN3D9ia7zHXTeimHDWHDw8wZ6d4a7aE3o7H96/sOBoW2cQ==}
     peerDependencies:
       '@hyperledger/anoncreds-shared': 0.3.1
 
-  '@animo-id/credo-ts-askar@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-zHp5WpVsGuHK9Ir6UrbLoQXFnHThVC/9LV5ssIhwh432ye0pxUqMAZDMHr+37/YhgTjFYlM+4/lTon3g/GJWAA==}
+  '@animo-id/credo-ts-askar@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-S5HjijMz/63zh46hkXsO4VD2GU/6HHRDRzNGtZuulqd57fAxwcmYfH4W8cdKIvWwzx3nFDWwZ3rqq4tEHxWMMg==}
     peerDependencies:
       '@openwallet-foundation/askar-shared': 0.3.2
 
-  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-z0U+Cxle/ckBgYZidynHOuWVXbGBXRH1orVDOz0l/RiMMPyZFGUDnl89TbNn1Nnx5QK7gIqQDW2XMkuam2dQug==}
+  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-9Xmg61lRmoT9QjSsS4sXoeuulOP+lL8nUeRcJQgaSJ9CDbjG8pL0FZNBbZGdgZJ9iq8e7WWlComp1mR13+5G9Q==}
 
-  '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-VI3bvfOwv4pfFMMBHNMbHrWCNbFrI8/Ax6eZeK//Gs/QScTd4g13ehUfikR+KQno5FWGaRS1Q9bQd5HaU4xL3w==}
+  '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-Os+lT6eqdsKGvzLHzoQ6k0n9qKTs68BMqXkd9TiexZ7ucNAjyyGCw7ANv5b5qODpdrndxF5n/gwjWsynqSf7ow==}
 
-  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-gEC4AcGEGveYtQoGJH/58utEgB5IUG6U0H9y0A39C1EaOaqCgV70KHQWEFpYHh7z8qlNWp1h2tES8EWYsSOrqQ==}
+  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-mTfHZE1RA7TvFmYICkFbtYUSzi+AuSfKEu13lyedURE0v0GUBt+HwdQif0rQPUxG+Ml4OPobb6V8D7SSQvuoIw==}
 
-  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-vEeSVVdUC6qnN41Jim20V3DsK/EjLrOFpSGNsyjhvGLEGneaqRPx1caYb/X/spueN14+KlyX40PVGjB9+BS1xg==}
+  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-3DWMFdd3BD7ZRjvXhoP51e6NUQeTyavGJW+kemix2AWpmmnbhyN9e0CIHZozbZYsJJEePo4jMpvjTTTQVxmJEA==}
 
-  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-O5Bk6AI3BiOYGos7JQSAdssy/OkjlKXFQakC82XkhVSXPEzT/zXReDlh6A+TPp/u7Wtse7aPwgZQOzW4Yb3P4w==}
+  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-azp5HXlAvmwqiRJX1nxUi1ZBILRquGXmPeUNHJijBb1gkJaJzg6SkwabM8vCDIvgZzLYHMtwB/VNhE2O0GQCJw==}
 
-  '@animo-id/credo-ts-react-native@0.5.14-alpha-20250925094636':
-    resolution: {integrity: sha512-L0uyAG5Y0zV0LRitOkJsnPMWr2ttEBYs/aNv/YCTOQ31ZaDw0zDRCIFEpXx91XuVFPI2nKP6Aq9Om7BFQUo2kg==}
+  '@animo-id/credo-ts-react-native@0.5.14-alpha-20251001132506':
+    resolution: {integrity: sha512-s1dAnGlxaBoA/5YTFPFPPM/ECErJrBFmGDaYr9vb2DHIzISPxEn9mRDVr2gBO6fwx7GeFneCU9qTNrMvm26lmA==}
     peerDependencies:
       '@animo-id/expo-secure-environment': ^0.1.1
       react-native: '>=0.71.4'
@@ -799,8 +799,8 @@ packages:
   '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250917090914':
     resolution: {integrity: sha512-Fh2Fl3NoRotuMV28lP0e+s67aUNMfqsOFzs/1h2YLkj7Gs8n+9V38xfvqbByT+pyQZ7uA1cbWpEReLxUJMK7gw==}
     peerDependencies:
-      '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250925094636
-      '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250925094636
+      '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20251001132506
+      '@credo-ts/openid4vc': npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251001132506
 
   '@animo-id/expo-ausweis-sdk@0.0.1-alpha.14':
     resolution: {integrity: sha512-LJJyuVvljHqrzEjm0MtVx/SgH4Q+dWilzI1cxb1QqsMUWJgDfB9on3+/hJKSnleeaTR5VcByEudWcgR45424wQ==}
@@ -3685,8 +3685,8 @@ packages:
   credo-ts-didweb-anoncreds@0.0.1-alpha.14:
     resolution: {integrity: sha512-NLC2UzPKApw6wPE8o3ux/eVnxcOmQqA2AC+2ugTnM48Q+O9RxIZZFVBC90VfhvimV7TvpNdM+MyczEQfvAu09w==}
     peerDependencies:
-      '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636
-      '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20250925094636
+      '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506
+      '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20251001132506
       '@hyperledger/anoncreds-shared': 0.3.1
 
   cross-fetch@3.2.0:
@@ -6562,11 +6562,11 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@hyperledger/anoncreds-shared': 0.3.1
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
@@ -6584,9 +6584,9 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-askar@0.5.14-alpha-20250925094636(@openwallet-foundation/askar-shared@0.3.2)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-askar@0.5.14-alpha-20251001132506(@openwallet-foundation/askar-shared@0.3.2)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@openwallet-foundation/askar-shared': 0.3.2
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -6604,15 +6604,15 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20250925094636(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-cheqd@0.5.14-alpha-20251001132506(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@cheqd/sdk': 5.2.1(patch_hash=2s4efmdelpranon2lx4m6hsi6a)
       '@cheqd/ts-proto': 2.4.1
       '@cosmjs/crypto': 0.30.1
       '@cosmjs/proto-signing': 0.30.1
       '@cosmjs/stargate': 0.30.1
-      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@stablelib/ed25519': 1.0.3
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -6634,7 +6634,7 @@ snapshots:
       - utf-8-validate
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@animo-id/mdoc': 0.5.2
       '@animo-id/pex': 6.1.1
@@ -6691,9 +6691,9 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-didcomm@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       class-transformer: 0.5.1
       class-validator: 0.14.1
       luxon: 3.7.2
@@ -6711,9 +6711,9 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@openid-federation/core': 0.1.1-alpha.17
       '@openid4vc/oauth2': 0.3.0-alpha-20250922085649
       '@openid4vc/openid4vci': 0.3.0-alpha-20250922085649
@@ -6734,10 +6734,10 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-question-answer@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/didcomm': '@animo-id/credo-ts-didcomm@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       class-transformer: 0.5.1
       class-validator: 0.14.1
       rxjs: 7.8.2
@@ -6753,10 +6753,10 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/credo-ts-react-native@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native-get-random-values@1.11.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
+  '@animo-id/credo-ts-react-native@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(react-native-fs@2.20.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native-get-random-values@1.11.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(typescript@5.8.3)(web-streams-polyfill@3.3.3)':
     dependencies:
       '@azure/core-asynciterator-polyfill': 1.0.2
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       events: 3.3.0
       react-native: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
       react-native-fs: 2.20.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))
@@ -6773,10 +6773,10 @@ snapshots:
       - typescript
       - web-streams-polyfill
 
-  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250917090914(shxn2uy2ve5jpemc6tma4xq5nm)':
+  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250917090914(hmi7xonfpbadygvu5qodvp2p2m)':
     dependencies:
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/openid4vc': '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/openid4vc': '@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       zod: 3.25.76
 
   '@animo-id/expo-ausweis-sdk@0.0.1-alpha.14(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)':
@@ -11128,10 +11128,10 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.14(nag5uy4rdzq67ajb4d5pvutvoe):
+  credo-ts-didweb-anoncreds@0.0.1-alpha.14(lv7axmvxpn7qw6sm3rh7d2q7cq):
     dependencies:
-      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250925094636(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
-      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20250925094636(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251001132506(@hyperledger/anoncreds-shared@0.3.1)(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
+      '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251001132506(expo-crypto@14.1.5(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)))(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(msrcrypto@1.5.8)(typescript@5.8.3)(web-streams-polyfill@3.3.3)'
       '@hyperledger/anoncreds-shared': 0.3.1
       canonicalize: 1.0.8
       query-string: 7.1.3

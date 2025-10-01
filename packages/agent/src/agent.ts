@@ -1,11 +1,11 @@
 import {
-  AnonCredsCredentialFormatService,
+  AnonCredsDidCommCredentialFormatService,
+  AnonCredsDidCommProofFormatService,
   AnonCredsModule,
-  AnonCredsProofFormatService,
-  LegacyIndyCredentialFormatService,
-  LegacyIndyProofFormatService,
-  V1CredentialProtocol,
-  V1ProofProtocol,
+  DidCommCredentialV1Protocol,
+  DidCommProofV1Protocol,
+  LegacyIndyDidCommCredentialFormatService,
+  LegacyIndyDidCommProofFormatService,
 } from '@credo-ts/anoncreds'
 import { AskarModule } from '@credo-ts/askar'
 import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
@@ -21,21 +21,21 @@ import {
   X509Module,
 } from '@credo-ts/core'
 import {
-  AutoAcceptCredential,
-  AutoAcceptProof,
-  ConnectionsModule,
-  CredentialsModule,
+  DidCommAutoAcceptCredential,
+  DidCommAutoAcceptProof,
+  DidCommConnectionsModule,
+  DidCommCredentialV2Protocol,
+  DidCommCredentialsModule,
+  DidCommDiscoverFeaturesModule,
+  DidCommHttpOutboundTransport,
+  DidCommMediationRecipientModule,
+  DidCommMediatorPickupStrategy,
+  DidCommMessagePickupModule,
   DidCommModule,
-  DiscoverFeaturesModule,
-  HttpOutboundTransport,
-  MediationRecipientModule,
-  MediatorPickupStrategy,
-  MessagePickupModule,
-  OutOfBandModule,
-  ProofsModule,
-  V2CredentialProtocol,
-  V2ProofProtocol,
-  WsOutboundTransport,
+  DidCommOutOfBandModule,
+  DidCommProofV2Protocol,
+  DidCommProofsModule,
+  DidCommWsOutboundTransport,
 } from '@credo-ts/didcomm'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 export { useAgent } from './providers'
@@ -131,8 +131,8 @@ export const initializeParadymAgent = async ({
       logger,
     },
     modules: {
-      messagePickup: new MessagePickupModule(),
-      discovery: new DiscoverFeaturesModule(),
+      messagePickup: new DidCommMessagePickupModule(),
+      discovery: new DidCommDiscoverFeaturesModule(),
       askar: new AskarModule({
         askar,
         store: {
@@ -163,17 +163,17 @@ export const initializeParadymAgent = async ({
         registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
         resolvers: [new WebDidResolver(), new KeyDidResolver(), new JwkDidResolver(), new CheqdDidResolver()],
       }),
-      outOfBand: new OutOfBandModule(),
+      outOfBand: new DidCommOutOfBandModule(),
       didcomm: new DidCommModule(),
       anoncreds: new AnonCredsModule({
         registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
         anoncreds,
       }),
-      mediationRecipient: new MediationRecipientModule({
+      mediationRecipient: new DidCommMediationRecipientModule({
         // We want to manually connect to the mediator, so it doesn't impact wallet startup
-        mediatorPickupStrategy: MediatorPickupStrategy.None,
+        mediatorPickupStrategy: DidCommMediatorPickupStrategy.None,
       }),
-      connections: new ConnectionsModule({
+      connections: new DidCommConnectionsModule({
         autoAcceptConnections: true,
         peerNumAlgoForDidExchangeRequests: PeerDidNumAlgo.GenesisDoc,
       }),
@@ -189,33 +189,36 @@ export const initializeParadymAgent = async ({
           ],
         })
       ),
-      credentials: new CredentialsModule({
-        autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
+      credentials: new DidCommCredentialsModule({
+        autoAcceptCredentials: DidCommAutoAcceptCredential.ContentApproved,
         credentialProtocols: [
-          new V1CredentialProtocol({
-            indyCredentialFormat: new LegacyIndyCredentialFormatService(),
+          new DidCommCredentialV1Protocol({
+            indyCredentialFormat: new LegacyIndyDidCommCredentialFormatService(),
           }),
-          new V2CredentialProtocol({
-            credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
+          new DidCommCredentialV2Protocol({
+            credentialFormats: [
+              new LegacyIndyDidCommCredentialFormatService(),
+              new AnonCredsDidCommCredentialFormatService(),
+            ],
           }),
         ],
       }),
-      proofs: new ProofsModule({
-        autoAcceptProofs: AutoAcceptProof.ContentApproved,
+      proofs: new DidCommProofsModule({
+        autoAcceptProofs: DidCommAutoAcceptProof.ContentApproved,
         proofProtocols: [
-          new V1ProofProtocol({
-            indyProofFormat: new LegacyIndyProofFormatService(),
+          new DidCommProofV1Protocol({
+            indyProofFormat: new LegacyIndyDidCommProofFormatService(),
           }),
-          new V2ProofProtocol({
-            proofFormats: [new LegacyIndyProofFormatService(), new AnonCredsProofFormatService()],
+          new DidCommProofV2Protocol({
+            proofFormats: [new LegacyIndyDidCommProofFormatService(), new AnonCredsDidCommProofFormatService()],
           }),
         ],
       }),
     },
   })
 
-  agent.modules.didcomm.registerOutboundTransport(new HttpOutboundTransport())
-  agent.modules.didcomm.registerOutboundTransport(new WsOutboundTransport())
+  agent.modules.didcomm.registerOutboundTransport(new DidCommHttpOutboundTransport())
+  agent.modules.didcomm.registerOutboundTransport(new DidCommWsOutboundTransport())
 
   await agent.initialize()
 

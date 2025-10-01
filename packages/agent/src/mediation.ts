@@ -1,7 +1,7 @@
 import type { ParadymAppAgent } from './agent'
 
 import { CredoError } from '@credo-ts/core'
-import { MediatorPickupStrategy } from '@credo-ts/didcomm'
+import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { useEffect } from 'react'
 
 /**
@@ -57,7 +57,7 @@ async function initiateMessagePickup(agent: ParadymAppAgent) {
   agent.config.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
-  await agent.modules.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.Implicit)
+  await agent.modules.mediationRecipient.initiateMessagePickup(undefined, DidCommMediatorPickupStrategy.Implicit)
 }
 
 /**

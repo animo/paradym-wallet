@@ -5,7 +5,8 @@ import type {
   OpenId4VciRequestTokenResponse,
 } from '@credo-ts/openid4vc'
 import { useMemo } from 'react'
-import { getWalletJsonStore, useWalletJsonRecord } from '../storage'
+import { useWalletJsonRecord } from './WalletJsonStoreProvider'
+import { getWalletJsonStore } from './walletJsonStore'
 
 export interface DeferredCredential {
   id: string

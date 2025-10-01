@@ -1,7 +1,7 @@
-import type { CredentialStateChangedEvent } from '@credo-ts/didcomm'
+import type { DidCommCredentialStateChangedEvent } from '@credo-ts/didcomm'
 
 import { W3cCredentialRepository } from '@credo-ts/core'
-import { CredentialEventTypes, CredentialState } from '@credo-ts/didcomm'
+import { DidCommCredentialEventTypes, DidCommCredentialState } from '@credo-ts/didcomm'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -53,13 +53,15 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
     mutationKey: ['acceptDidCommCredential', credentialExchangeId],
     mutationFn: async () => {
       const credentialDone$ = agent.events
-        .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
+        .observable<DidCommCredentialStateChangedEvent>(DidCommCredentialEventTypes.DidCommCredentialStateChanged)
         .pipe(
           // Correct record with id and state
           filter(
             (event) =>
-              event.payload.credentialRecord.id === credentialExchangeId &&
-              [CredentialState.CredentialReceived, CredentialState.Done].includes(event.payload.credentialRecord.state)
+              event.payload.credentialExchangeRecord.id === credentialExchangeId &&
+              [DidCommCredentialState.CredentialReceived, DidCommCredentialState.Done].includes(
+                event.payload.credentialExchangeRecord.state
+              )
           ),
           // 10 seconds to complete exchange
           timeout(10000),
@@ -68,13 +70,15 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.modules.credentials.acceptOffer({ credentialRecordId: credentialExchangeId })
+      await agent.modules.credentials.acceptOffer({ credentialExchangeRecordId: credentialExchangeId })
       const doneEvent = await credentialDonePromise
 
-      const w3cCredentialRecordId = doneEvent.payload.credentialRecord.credentials.find(
+      const w3cCredentialRecordId = doneEvent.payload.credentialExchangeRecord.credentials.find(
         (c) => c.credentialRecordType === 'w3c'
       )?.credentialRecordId
-      const didCommDisplayMetadata = getDidCommCredentialExchangeDisplayMetadata(doneEvent.payload.credentialRecord)
+      const didCommDisplayMetadata = getDidCommCredentialExchangeDisplayMetadata(
+        doneEvent.payload.credentialExchangeRecord
+      )
 
       // Update the w3c credential record metadata, based on the didcomm credential exchange display metadata
       if (w3cCredentialRecordId && didCommDisplayMetadata) {
@@ -87,7 +91,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
         setOpenId4VcCredentialMetadata(
           w3cRecord,
           openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(
-            doneEvent.payload.credentialRecord,
+            doneEvent.payload.credentialExchangeRecord,
             didCommDisplayMetadata
           )
         )
@@ -105,13 +109,13 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
     mutationKey: ['declineDidCommCredential', credentialExchangeId],
     mutationFn: async () => {
       const credentialDone$ = agent.events
-        .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
+        .observable<DidCommCredentialStateChangedEvent>(DidCommCredentialEventTypes.DidCommCredentialStateChanged)
         .pipe(
           // Correct record with id and state
           filter(
             (event) =>
-              event.payload.credentialRecord.id === credentialExchangeId &&
-              event.payload.credentialRecord.state === CredentialState.Declined
+              event.payload.credentialExchangeRecord.id === credentialExchangeId &&
+              event.payload.credentialExchangeRecord.state === DidCommCredentialState.Declined
           ),
           // 10 seconds to complete exchange
           timeout(10000),
@@ -120,7 +124,8 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.modules.credentials.declineOffer(credentialExchangeId, {
+      await agent.modules.credentials.declineOffer({
+        credentialExchangeRecordId: credentialExchangeId,
         sendProblemReport: true,
       })
       await credentialDonePromise
