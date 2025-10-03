@@ -326,7 +326,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 117]
 		],
-		"translation": ""
+		"translation": "Er is een fout opgetreden bij het ophalen van de kaart van de uitgever."
 	},
 	"interactionError.message.verify": {
 		"message": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
@@ -530,7 +530,6 @@
 		"translation": "Geboren"
 	},
 	"common.deleteDeferredCredentialDescription": {
-		"translation": "",
 		"message": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
 		"placeholders": {
 			"name": ["name"]
@@ -538,10 +537,11 @@
 		"comments": [
 			"Description in confirmation dialog explaining deferred credential deletion"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 292]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 292]],
+		"translation": "Als je {name} verwijdert, kun je je kaart niet meer ophalen bij de uitgever."
 	},
 	"common.deleteDeferredCredentialConfirmDescription": {
-		"translation": "",
+		"translation": "Als je {name} verwijdert, kun je je kaart niet meer ophalen bij de uitgever.",
 		"message": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
 		"placeholders": {
 			"name": ["name"]
@@ -638,7 +638,7 @@
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 145],
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 166]
 		],
-		"translation": ""
+		"translation": "Kaart nog niet beschikbaar"
 	},
 	"cardLifecycle.revoked.description": {
 		"message": "Card not usable anymore",
@@ -659,7 +659,7 @@
 		"placeholders": {},
 		"comments": ["Shown when the issuance of a card is pending"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 215]],
-		"translation": ""
+		"translation": "Kaart in behandeling"
 	},
 	"common.cardRejected": {
 		"message": "Card rejected",
@@ -881,7 +881,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 162]
 		],
-		"translation": ""
+		"translation": "Je kaart is nog niet klaar"
 	},
 	"credentials.notFound": {
 		"message": "Credential not found",
@@ -1013,7 +1013,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 98]
 		],
-		"translation": ""
+		"translation": "Uitgestelde kaart"
 	},
 	"common.toastDeferredCredentialDeleted": {
 		"message": "Deferred credential deleted",
@@ -1022,7 +1022,7 @@
 			"Toast message shown after successfully deleting a deferred credential"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 302]],
-		"translation": ""
+		"translation": "Uitgestelde kaart verwijderd"
 	},
 	"common.deleteDeferredCredentialTitle": {
 		"message": "Delete deferred credential?",
@@ -1031,7 +1031,7 @@
 			"Title for confirmation dialog to delete a deferred credential"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 286]],
-		"translation": ""
+		"translation": "Uitgestelde kaart verwijderen?"
 	},
 	"activity.deletedCredential": {
 		"message": "Deleted credential",
@@ -1141,18 +1141,18 @@
 		],
 		"translation": "eID-kaart"
 	},
-	"pidSetup.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 267]],
-		"translation": "eID-kaart scannen geannuleerd"
-	},
 	"onboarding.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/onboarding/onboardingContext.tsx", 476]],
+		"translation": "eID-kaart scannen geannuleerd"
+	},
+	"pidSetup.eidScanningCancelled": {
+		"message": "eID card scanning cancelled",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 267]],
 		"translation": "eID-kaart scannen geannuleerd"
 	},
 	"language.en": {
@@ -1220,7 +1220,7 @@
 			"Toast message shown when deferred credential deletion failed"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 307]],
-		"translation": ""
+		"translation": "Fout bij verwijderen uitgestelde kaart"
 	},
 	"aiOverAking.errorReasonFallback": {
 		"message": "Error determining if the request is valid.",
@@ -1309,7 +1309,7 @@
 		},
 		"comments": ["Shown when it has failed to add a new card"],
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 102]],
-		"translation": ""
+		"translation": "Toevoegen van {name} mislukt"
 	},
 	"common.invitationParsingFailed": {
 		"message": "Failed to parse invitation.",
@@ -1325,7 +1325,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 112]
 		],
-		"translation": ""
+		"translation": "Ophalen van kaart mislukt"
 	},
 	"common.fields.familyName": {
 		"message": "Family name",
@@ -1491,21 +1491,21 @@
 		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 74]],
 		"translation": "Hallo!"
 	},
-	"optionSheet.hideMetadata": {
-		"message": "Hide metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to hide metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
-		],
-		"translation": "Metadata-attributen verbergen"
-	},
 	"credentials.hideMetadata": {
 		"message": "Hide metadata attributes",
 		"placeholders": {},
 		"comments": ["Button label: toggles visibility of metadata attributes"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 177]
+		],
+		"translation": "Metadata-attributen verbergen"
+	},
+	"optionSheet.hideMetadata": {
+		"message": "Hide metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to hide metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
 		],
 		"translation": "Metadata-attributen verbergen"
 	},
@@ -1880,21 +1880,21 @@
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 78]],
 		"translation": "Menu"
 	},
-	"requestedAttributes.metadataTitle": {
-		"message": "Metadata",
-		"placeholders": {},
-		"comments": ["Section header title for metadata attributes"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
-		],
-		"translation": "Metadata"
-	},
 	"credentials.metadataAttributes": {
 		"message": "Metadata",
 		"placeholders": {},
 		"comments": ["Header for metadata attributes of a credential"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 132]
+		],
+		"translation": "Metadata"
+	},
+	"requestedAttributes.metadataTitle": {
+		"message": "Metadata",
+		"placeholders": {},
+		"comments": ["Section header title for metadata attributes"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
 		],
 		"translation": "Metadata"
 	},
@@ -2129,7 +2129,7 @@
 		"placeholders": {},
 		"comments": ["Label for a notification about a pending credential"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 73]],
-		"translation": ""
+		"translation": "In behandeling"
 	},
 	"activity.latest.pendingCard": {
 		"message": "Pending {name}",
@@ -2138,7 +2138,7 @@
 		},
 		"comments": ["Shown when a new card is pending"],
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 125]],
-		"translation": ""
+		"translation": "{name} in behandeling"
 	},
 	"presentation.pinAuthFailed": {
 		"message": "PIN authentication failed",
@@ -2358,7 +2358,7 @@
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 121]],
-		"translation": ""
+		"translation": "Ontvangen van de kaarten van {0} is mislukt."
 	},
 	"activity.receivedStopped": {
 		"message": "Receiving the cards from {0} was cancelled.",
@@ -2369,7 +2369,7 @@
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 128]],
-		"translation": ""
+		"translation": "Ontvangen van de kaarten van {0} is geannuleerd."
 	},
 	"activity.latest.title": {
 		"message": "Recent activity",
@@ -2693,7 +2693,7 @@
 		"translation": "Delen mislukt"
 	},
 	"common.sharingPending": {
-		"translation": "",
+		"translation": "Delen in behandeling",
 		"message": "Sharing pending",
 		"placeholders": {},
 		"comments": ["Shown when the sharing process is pending"],
@@ -2707,21 +2707,21 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 250]],
 		"translation": "Delen gestopt"
 	},
-	"optionSheet.showMetadata": {
-		"message": "Show metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to show metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
-		],
-		"translation": "Metadata-attributen tonen"
-	},
 	"credentials.showMetadata": {
 		"message": "Show metadata attributes",
 		"placeholders": {},
 		"comments": ["Button label: toggles visibility of metadata attributes"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 182]
+		],
+		"translation": "Metadata-attributen tonen"
+	},
+	"optionSheet.showMetadata": {
+		"message": "Show metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to show metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
 		],
 		"translation": "Metadata-attributen tonen"
 	},
@@ -2793,7 +2793,7 @@
 		"translation": "Ondertekenen mislukt"
 	},
 	"common.signingPending": {
-		"translation": "",
+		"translation": "Ondertekenen in behandeling",
 		"message": "Signing pending",
 		"placeholders": {},
 		"comments": ["Shown when the signing process is pending"],
@@ -3011,7 +3011,7 @@
 			"Shown in activity detail when the received credentials are pending"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 135]],
-		"translation": ""
+		"translation": "De kaarten van {0} zijn nog niet klaar en worden later opgehaald."
 	},
 	"onboardingWalletExplanation.slide2.subtitle": {
 		"message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
@@ -3110,7 +3110,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 171]
 		],
-		"translation": ""
+		"translation": "De uitgever heeft de kaart nog niet beschikbaar gemaakt. Probeer het later opnieuw."
 	},
 	"cardLifecycle.revoked.sheetDescription": {
 		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
@@ -3120,7 +3120,6 @@
 		"translation": "De uitgever heeft deze kaart ingetrokken en kan niet meer worden gebruikt. Neem contact op met de uitgever voor meer informatie."
 	},
 	"deferredCredentials.cardNotAvailableYetWithTimeDescription": {
-		"translation": "",
 		"message": "The issuer of the card indicated you should check again at {0}.",
 		"placeholders": {
 			"0": [
@@ -3132,10 +3131,10 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 133]
-		]
+		],
+		"translation": "De uitgever van de kaart geeft aan dat je het om {0} opnieuw kunt proberen."
 	},
 	"deferredCredentials.cardNotAvailableYetWithDateDescription": {
-		"translation": "",
 		"message": "The issuer of the card indicated you should check again on {0}.",
 		"placeholders": {
 			"0": [
@@ -3147,7 +3146,8 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 150]
-		]
+		],
+		"translation": "De uitgever van de kaart geeft aan dat je het op {0} opnieuw kunt proberen."
 	},
 	"txCodeSlide.descriptionIntro": {
 		"message": "The issuer provided the following:",
@@ -3680,14 +3680,14 @@
 		"translation": "Ja, weigeren"
 	},
 	"common.deleteDeferredCredentialConfirm": {
-		"translation": "",
 		"message": "Yes, delete",
 		"placeholders": {},
 		"comments": ["Confirm button text for deleting a deferred credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 297]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 297]],
+		"translation": "Ja, verwijderen"
 	},
 	"common.deleteCardConfirm": {
-		"translation": "",
+		"translation": "Ja, verwijderen",
 		"message": "Yes, delete",
 		"placeholders": {},
 		"comments": ["Confirm button text for deleting a deferred credential"],
@@ -3952,7 +3952,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 225]
 		],
-		"translation": ""
+		"translation": "Je kaarten zijn nog niet klaar. We checken af en toe op de achtergrond en halen de kaarten op zodra ze beschikbaar zijn."
 	},
 	"cardLifecycle.active.sheetDescription": {
 		"message": "Your credentials may expire or require an active internet connection to validate.",

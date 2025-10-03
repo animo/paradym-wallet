@@ -530,7 +530,6 @@
 		"translation": "Born"
 	},
 	"common.deleteDeferredCredentialDescription": {
-		"translation": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
 		"message": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
 		"placeholders": {
 			"name": ["name"]
@@ -538,7 +537,8 @@
 		"comments": [
 			"Description in confirmation dialog explaining deferred credential deletion"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 292]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 292]],
+		"translation": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer."
 	},
 	"common.deleteDeferredCredentialConfirmDescription": {
 		"translation": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
@@ -1141,18 +1141,18 @@
 		],
 		"translation": "eID card"
 	},
-	"pidSetup.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 267]],
-		"translation": "eID card scanning cancelled"
-	},
 	"onboarding.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/onboarding/onboardingContext.tsx", 476]],
+		"translation": "eID card scanning cancelled"
+	},
+	"pidSetup.eidScanningCancelled": {
+		"message": "eID card scanning cancelled",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 267]],
 		"translation": "eID card scanning cancelled"
 	},
 	"language.en": {
@@ -1491,21 +1491,21 @@
 		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 74]],
 		"translation": "Hello!"
 	},
-	"optionSheet.hideMetadata": {
-		"message": "Hide metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to hide metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
-		],
-		"translation": "Hide metadata attributes"
-	},
 	"credentials.hideMetadata": {
 		"message": "Hide metadata attributes",
 		"placeholders": {},
 		"comments": ["Button label: toggles visibility of metadata attributes"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 177]
+		],
+		"translation": "Hide metadata attributes"
+	},
+	"optionSheet.hideMetadata": {
+		"message": "Hide metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to hide metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
 		],
 		"translation": "Hide metadata attributes"
 	},
@@ -1880,21 +1880,21 @@
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 78]],
 		"translation": "Menu"
 	},
-	"requestedAttributes.metadataTitle": {
-		"message": "Metadata",
-		"placeholders": {},
-		"comments": ["Section header title for metadata attributes"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
-		],
-		"translation": "Metadata"
-	},
 	"credentials.metadataAttributes": {
 		"message": "Metadata",
 		"placeholders": {},
 		"comments": ["Header for metadata attributes of a credential"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 132]
+		],
+		"translation": "Metadata"
+	},
+	"requestedAttributes.metadataTitle": {
+		"message": "Metadata",
+		"placeholders": {},
+		"comments": ["Section header title for metadata attributes"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
 		],
 		"translation": "Metadata"
 	},
@@ -2707,21 +2707,21 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 250]],
 		"translation": "Sharing stopped"
 	},
-	"optionSheet.showMetadata": {
-		"message": "Show metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to show metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
-		],
-		"translation": "Show metadata attributes"
-	},
 	"credentials.showMetadata": {
 		"message": "Show metadata attributes",
 		"placeholders": {},
 		"comments": ["Button label: toggles visibility of metadata attributes"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 182]
+		],
+		"translation": "Show metadata attributes"
+	},
+	"optionSheet.showMetadata": {
+		"message": "Show metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to show metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
 		],
 		"translation": "Show metadata attributes"
 	},
@@ -3120,7 +3120,6 @@
 		"translation": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information."
 	},
 	"deferredCredentials.cardNotAvailableYetWithTimeDescription": {
-		"translation": "The issuer of the card indicated you should check again at {0}.",
 		"message": "The issuer of the card indicated you should check again at {0}.",
 		"placeholders": {
 			"0": [
@@ -3132,10 +3131,10 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 133]
-		]
+		],
+		"translation": "The issuer of the card indicated you should check again at {0}."
 	},
 	"deferredCredentials.cardNotAvailableYetWithDateDescription": {
-		"translation": "The issuer of the card indicated you should check again on {0}.",
 		"message": "The issuer of the card indicated you should check again on {0}.",
 		"placeholders": {
 			"0": [
@@ -3147,7 +3146,8 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 150]
-		]
+		],
+		"translation": "The issuer of the card indicated you should check again on {0}."
 	},
 	"txCodeSlide.descriptionIntro": {
 		"message": "The issuer provided the following:",
@@ -3680,11 +3680,11 @@
 		"translation": "Yes, decline"
 	},
 	"common.deleteDeferredCredentialConfirm": {
-		"translation": "Yes, delete",
 		"message": "Yes, delete",
 		"placeholders": {},
 		"comments": ["Confirm button text for deleting a deferred credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 297]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 297]],
+		"translation": "Yes, delete"
 	},
 	"common.deleteCardConfirm": {
 		"translation": "Yes, delete",

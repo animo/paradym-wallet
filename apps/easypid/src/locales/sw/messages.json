@@ -326,7 +326,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 117]
 		],
-		"translation": ""
+		"translation": "Ett fel uppstod när kortet skulle hämtas från utfärdaren."
 	},
 	"interactionError.message.verify": {
 		"message": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
@@ -530,7 +530,6 @@
 		"translation": "Född"
 	},
 	"common.deleteDeferredCredentialDescription": {
-		"translation": "",
 		"message": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
 		"placeholders": {
 			"name": ["name"]
@@ -538,10 +537,11 @@
 		"comments": [
 			"Description in confirmation dialog explaining deferred credential deletion"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 292]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 292]],
+		"translation": "Om du tar bort {name} kan du inte längre hämta ditt bevis från utfärdaren."
 	},
 	"common.deleteDeferredCredentialConfirmDescription": {
-		"translation": "",
+		"translation": "Om du tar bort {name} kan du inte längre hämta ditt bevis från utfärdaren.",
 		"message": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
 		"placeholders": {
 			"name": ["name"]
@@ -638,7 +638,7 @@
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 145],
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 166]
 		],
-		"translation": ""
+		"translation": "Kortet är inte tillgängligt ännu"
 	},
 	"cardLifecycle.revoked.description": {
 		"message": "Card not usable anymore",
@@ -659,7 +659,7 @@
 		"placeholders": {},
 		"comments": ["Shown when the issuance of a card is pending"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 215]],
-		"translation": ""
+		"translation": "Kort väntar"
 	},
 	"common.cardRejected": {
 		"message": "Card rejected",
@@ -881,7 +881,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 162]
 		],
-		"translation": ""
+		"translation": "Beviset är inte klart ännu"
 	},
 	"credentials.notFound": {
 		"message": "Credential not found",
@@ -1013,7 +1013,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 98]
 		],
-		"translation": ""
+		"translation": "Uppskjutet bevis"
 	},
 	"common.toastDeferredCredentialDeleted": {
 		"message": "Deferred credential deleted",
@@ -1022,7 +1022,7 @@
 			"Toast message shown after successfully deleting a deferred credential"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 302]],
-		"translation": ""
+		"translation": "Uppskjutet bevis borttaget"
 	},
 	"common.deleteDeferredCredentialTitle": {
 		"message": "Delete deferred credential?",
@@ -1031,7 +1031,7 @@
 			"Title for confirmation dialog to delete a deferred credential"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 286]],
-		"translation": ""
+		"translation": "Ta bort uppskjutet bevis?"
 	},
 	"activity.deletedCredential": {
 		"message": "Deleted credential",
@@ -1141,18 +1141,18 @@
 		],
 		"translation": "eID-kort"
 	},
-	"pidSetup.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 267]],
-		"translation": "Skanning av eID-kort avbruten"
-	},
 	"onboarding.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/onboarding/onboardingContext.tsx", 476]],
+		"translation": "Skanning av eID-kort avbruten"
+	},
+	"pidSetup.eidScanningCancelled": {
+		"message": "eID card scanning cancelled",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 267]],
 		"translation": "Skanning av eID-kort avbruten"
 	},
 	"language.en": {
@@ -1220,7 +1220,7 @@
 			"Toast message shown when deferred credential deletion failed"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 307]],
-		"translation": ""
+		"translation": "Kunde inte ta bort uppskjutet bevis"
 	},
 	"aiOverAking.errorReasonFallback": {
 		"message": "Error determining if the request is valid.",
@@ -1309,7 +1309,7 @@
 		},
 		"comments": ["Shown when it has failed to add a new card"],
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 102]],
-		"translation": ""
+		"translation": "Misslyckades med att lägga till {name}"
 	},
 	"common.invitationParsingFailed": {
 		"message": "Failed to parse invitation.",
@@ -1325,7 +1325,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 112]
 		],
-		"translation": ""
+		"translation": "Kunde inte hämta kortet"
 	},
 	"common.fields.familyName": {
 		"message": "Family name",
@@ -1491,21 +1491,21 @@
 		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 74]],
 		"translation": "Hej!"
 	},
-	"optionSheet.hideMetadata": {
-		"message": "Hide metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to hide metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
-		],
-		"translation": "Dölj metadata"
-	},
 	"credentials.hideMetadata": {
 		"message": "Hide metadata attributes",
 		"placeholders": {},
 		"comments": ["Button label: toggles visibility of metadata attributes"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 177]
+		],
+		"translation": "Dölj metadata"
+	},
+	"optionSheet.hideMetadata": {
+		"message": "Hide metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to hide metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 179]
 		],
 		"translation": "Dölj metadata"
 	},
@@ -1880,21 +1880,21 @@
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 78]],
 		"translation": "Meny"
 	},
-	"requestedAttributes.metadataTitle": {
-		"message": "Metadata",
-		"placeholders": {},
-		"comments": ["Section header title for metadata attributes"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
-		],
-		"translation": "Metadata"
-	},
 	"credentials.metadataAttributes": {
 		"message": "Metadata",
 		"placeholders": {},
 		"comments": ["Header for metadata attributes of a credential"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 132]
+		],
+		"translation": "Metadata"
+	},
+	"requestedAttributes.metadataTitle": {
+		"message": "Metadata",
+		"placeholders": {},
+		"comments": ["Section header title for metadata attributes"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 155]
 		],
 		"translation": "Metadata"
 	},
@@ -2129,7 +2129,7 @@
 		"placeholders": {},
 		"comments": ["Label for a notification about a pending credential"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 73]],
-		"translation": ""
+		"translation": "Väntar"
 	},
 	"activity.latest.pendingCard": {
 		"message": "Pending {name}",
@@ -2138,7 +2138,7 @@
 		},
 		"comments": ["Shown when a new card is pending"],
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 125]],
-		"translation": ""
+		"translation": "Väntar på {name}"
 	},
 	"presentation.pinAuthFailed": {
 		"message": "PIN authentication failed",
@@ -2358,7 +2358,7 @@
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 121]],
-		"translation": ""
+		"translation": "Misslyckades med att ta emot kort från {0}."
 	},
 	"activity.receivedStopped": {
 		"message": "Receiving the cards from {0} was cancelled.",
@@ -2369,7 +2369,7 @@
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 128]],
-		"translation": ""
+		"translation": "Mottagningen av kort från {0} avbröts."
 	},
 	"activity.latest.title": {
 		"message": "Recent activity",
@@ -2693,7 +2693,7 @@
 		"translation": "Delning misslyckades"
 	},
 	"common.sharingPending": {
-		"translation": "",
+		"translation": "Delning väntar",
 		"message": "Sharing pending",
 		"placeholders": {},
 		"comments": ["Shown when the sharing process is pending"],
@@ -2707,21 +2707,21 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 250]],
 		"translation": "Delning stoppad"
 	},
-	"optionSheet.showMetadata": {
-		"message": "Show metadata attributes",
-		"placeholders": {},
-		"comments": ["Option to show metadata in option sheet"],
-		"origin": [
-			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
-		],
-		"translation": "Visa metadata"
-	},
 	"credentials.showMetadata": {
 		"message": "Show metadata attributes",
 		"placeholders": {},
 		"comments": ["Button label: toggles visibility of metadata attributes"],
 		"origin": [
 			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 182]
+		],
+		"translation": "Visa metadata"
+	},
+	"optionSheet.showMetadata": {
+		"message": "Show metadata attributes",
+		"placeholders": {},
+		"comments": ["Option to show metadata in option sheet"],
+		"origin": [
+			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 184]
 		],
 		"translation": "Visa metadata"
 	},
@@ -2793,7 +2793,7 @@
 		"translation": "Signering misslyckades"
 	},
 	"common.signingPending": {
-		"translation": "",
+		"translation": "Signering väntar",
 		"message": "Signing pending",
 		"placeholders": {},
 		"comments": ["Shown when the signing process is pending"],
@@ -3011,7 +3011,7 @@
 			"Shown in activity detail when the received credentials are pending"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 135]],
-		"translation": ""
+		"translation": "Kort från {0} är inte redo ännu och hämtas senare."
 	},
 	"onboardingWalletExplanation.slide2.subtitle": {
 		"message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
@@ -3110,7 +3110,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 171]
 		],
-		"translation": ""
+		"translation": "Utfärdaren har inte gjort kortet tillgängligt ännu. Försök igen senare."
 	},
 	"cardLifecycle.revoked.sheetDescription": {
 		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
@@ -3120,7 +3120,6 @@
 		"translation": "Utfärdaren har återkallat detta kort och det kan inte användas längre. Kontakta utfärdaren för mer information."
 	},
 	"deferredCredentials.cardNotAvailableYetWithTimeDescription": {
-		"translation": "",
 		"message": "The issuer of the card indicated you should check again at {0}.",
 		"placeholders": {
 			"0": [
@@ -3132,10 +3131,10 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 133]
-		]
+		],
+		"translation": "Utfärdaren angav att du ska kolla igen kl. {0}."
 	},
 	"deferredCredentials.cardNotAvailableYetWithDateDescription": {
-		"translation": "",
 		"message": "The issuer of the card indicated you should check again on {0}.",
 		"placeholders": {
 			"0": [
@@ -3147,7 +3146,8 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 150]
-		]
+		],
+		"translation": "Utfärdaren angav att du ska kolla igen den {0}."
 	},
 	"txCodeSlide.descriptionIntro": {
 		"message": "The issuer provided the following:",
@@ -3680,14 +3680,14 @@
 		"translation": "Ja, avvisa"
 	},
 	"common.deleteDeferredCredentialConfirm": {
-		"translation": "",
 		"message": "Yes, delete",
 		"placeholders": {},
 		"comments": ["Confirm button text for deleting a deferred credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 297]]
+		"origin": [["../../packages/translations/src/commonMessages.ts", 297]],
+		"translation": "Ja, ta bort"
 	},
 	"common.deleteCardConfirm": {
-		"translation": "",
+		"translation": "Ja, ta bort",
 		"message": "Yes, delete",
 		"placeholders": {},
 		"comments": ["Confirm button text for deleting a deferred credential"],
@@ -3952,7 +3952,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 225]
 		],
-		"translation": ""
+		"translation": "Dina bevis är inte klara ännu. Vi kollar då och då i bakgrunden och hämtar dem när de är redo."
 	},
 	"cardLifecycle.active.sheetDescription": {
 		"message": "Your credentials may expire or require an active internet connection to validate.",
