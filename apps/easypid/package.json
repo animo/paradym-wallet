@@ -87,6 +87,7 @@
 		"@lingui/cli": "^5.3.3",
 		"@lingui/format-json": "^5.3.3",
 		"@tamagui/babel-plugin": "catalog:",
+		"babel-plugin-macros": "^3.1.0",
 		"babel-plugin-syntax-hermes-parser": "catalog:",
 		"expo-build-properties": "catalog:",
 		"typescript": "catalog:"

@@ -1,0 +1,48 @@
+diff --git a/js/MaskedView.js b/js/MaskedView.js
+index b336b7ab9966b1c8d6f29f0b68bf9e72e60b0120..67b3ee4502d460bbab05bc6fe35dc7eec7fed02a 100644
+--- a/js/MaskedView.js
++++ b/js/MaskedView.js
+@@ -13,7 +13,7 @@ import { View, StyleSheet, requireNativeComponent } from 'react-native';
+ 
+ const RNCMaskedView = requireNativeComponent<any>('RNCMaskedView');
+ 
+-import type { MaskedViewProps } from './MaskedViewTypes';
++import { MaskedViewProps } from './MaskedViewTypes';
+ 
+ /**
+  * Renders the child view with a mask specified in the `maskElement` prop.
+@@ -52,10 +52,10 @@ import type { MaskedViewProps } from './MaskedViewTypes';
+  * transparent pixels block that content.
+  *
+  */
+-export default class MaskedView extends React.Component<MaskedViewProps> {
++export default class MaskedView extends React.Component {
+   _hasWarnedInvalidRenderMask = false;
+ 
+-  render(): React.Node {
++  render() {
+     const { maskElement, children, ...otherViewProps } = this.props;
+ 
+     if (!React.isValidElement(maskElement)) {
+diff --git a/js/MaskedViewTypes.js b/js/MaskedViewTypes.js
+index b51c43d134a68de2167dc604d9c38dbad8ef5ebe..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 100644
+--- a/js/MaskedViewTypes.js
++++ b/js/MaskedViewTypes.js
+@@ -1,17 +0,0 @@
+-// @flow
+-import { type Node } from 'react';
+-import { type ViewProps } from 'react-native/Libraries/Components/View/ViewPropTypes';
+-
+-export type MaskedViewProps = Partial<ViewProps> &
+-  $ReadOnly<{|
+-    children: Node,
+-    /**
+-     * Should be a React element to be rendered and applied as the
+-     * mask for the child element.
+-     */
+-    maskElement: Node,
+-    /**
+-     * Opt into software rendering to enable animated masks.
+-     */
+-    androidRenderingMode?: 'software' | 'hardware',
+-  |}>;
