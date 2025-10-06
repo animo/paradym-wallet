@@ -43,8 +43,7 @@ jobs:
   release-unstable:
     runs-on: ubuntu-latest
     name: Release Unstable
-    needs: release-stable
-    if: always() && github.event_name == 'push' && needs.release-stable.outputs.published == 'false'
+    if: always() && github.event_name == 'push'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
