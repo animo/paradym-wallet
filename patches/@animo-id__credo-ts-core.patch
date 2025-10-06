@@ -1,0 +1,14 @@
+diff --git a/build/modules/sd-jwt-vc/SdJwtVcService.js b/build/modules/sd-jwt-vc/SdJwtVcService.js
+index 987e5afcd6426a7d0b0edc840f3d659493561ada..9c8beb9f95dbd2b6b50dfcf46cc2350815ac8751 100644
+--- a/build/modules/sd-jwt-vc/SdJwtVcService.js
++++ b/build/modules/sd-jwt-vc/SdJwtVcService.js
+@@ -102,7 +102,8 @@ let SdJwtVcService = class SdJwtVcService {
+             value: d.value,
+         })), presentationFrame);
+         const [jwt] = compactSdJwtVc.split('~');
+-        const sdJwt = `${jwt}~${requiredDisclosures.map((d) => d.encoded).join('~')}~`;
++        const disclosuresString = requiredDisclosures.length > 0 ? `${requiredDisclosures.map((d) => d.encoded).join('~')}~` : ''
++        const sdJwt = `${jwt}~${disclosuresString}`
+         const disclosedDecoded = (0, decodeSdJwtVc_1.decodeSdJwtVc)(sdJwt);
+         return disclosedDecoded;
+     }
