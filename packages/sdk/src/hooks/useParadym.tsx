@@ -1,4 +1,5 @@
 import { useHasInternetConnection } from '@package/app'
+import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
 import {
   type SecureUnlockReturnInitializing,
   type SecureUnlockReturnLocked,
@@ -6,8 +7,7 @@ import {
   type SecureUnlockReturnUnlocked,
   type SecureUnlockReturnWalletKeyAcquired,
   useSecureUnlock,
-} from '@package/secure-store/secureUnlock'
-import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
+} from '../secure'
 import { useDidCommMediatorSetup } from './useDidCommMediatorSetup'
 
 type ParadymLoadingState = SecureUnlockReturnInitializing /*{

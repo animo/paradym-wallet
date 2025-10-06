@@ -737,24 +737,36 @@ importers:
       '@openwallet-foundation/askar-react-native':
         specifier: 0.3.2
         version: 0.3.2(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
-      '@package/secure-store':
-        specifier: 'workspace:'
-        version: link:../secure-store
       '@sd-jwt/decode':
         specifier: 'catalog:'
         version: 0.14.0
       '@sd-jwt/present':
         specifier: 'catalog:'
         version: 0.14.0
+      '@tanstack/react-query':
+        specifier: 'catalog:'
+        version: 5.81.5(react@19.0.0)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
         version: 0.0.1-alpha.14(3hkwiaygjmbsgc2chwdreilhba)
+      expo-secure-store:
+        specifier: 'catalog:'
+        version: 14.2.3(expo@53.0.16(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))
       react:
         specifier: 'catalog:'
         version: 19.0.0
       react-native:
         specifier: 'catalog:'
         version: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
+      react-native-argon2:
+        specifier: 'catalog:'
+        version: 2.0.1
+      react-native-get-random-values:
+        specifier: 'catalog:'
+        version: 1.11.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))
+      react-native-keychain:
+        specifier: 'catalog:'
+        version: 8.2.0
 
   packages/secure-store:
     dependencies:

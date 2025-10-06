@@ -32,7 +32,6 @@
 		"@credo-ts/openid4vc": "catalog:",
 		"@credo-ts/react-native": "catalog:",
 		"@openid4vc/openid4vp": "catalog:",
-		"@package/secure-store": "workspace:",
 		"@sd-jwt/decode": "catalog:",
 		"@sd-jwt/present": "catalog:",
 		"credo-ts-didweb-anoncreds": "catalog:"
@@ -41,7 +40,23 @@
 		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
+		"expo-secure-store": "catalog:",
+		"react-native-argon2": "catalog:",
+		"react-native-get-random-values": "catalog:",
+		"react-native-keychain": "catalog:",
+		"@tanstack/react-query": "catalog:",
 		"react": "catalog:",
 		"react-native": "catalog:"
+	},
+	"peerDependenciesMeta": {
+		"expo-secure-store": {
+			"optional": true
+		},
+		"react-native-keychain": {
+			"optional": true
+		},
+		"react-native-argon2": {
+			"optional": true
+		}
 	}
 }

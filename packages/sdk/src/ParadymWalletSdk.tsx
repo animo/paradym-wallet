@@ -1,6 +1,5 @@
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
-import { SecureUnlockProvider, secureWalletKey } from '@package/secure-store/secureUnlock'
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import type { CredentialForDisplayId } from './display/credential'
@@ -32,6 +31,7 @@ import {
   completeCredentialRetrieval,
 } from './openid4vc/func/completeCredentialRetrieval'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
+import { SecureUnlockProvider, secureWalletKey } from './secure'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'

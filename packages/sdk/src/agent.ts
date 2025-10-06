@@ -30,10 +30,10 @@ import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { ParadymWalletMustBeDidCommAgentError, ParadymWalletMustBeOpenId4VcAgentError } from './error'
 import { type LogLevel, logger } from './logger'
+import { secureWalletKey } from './secure'
 
 export type SetupAgentOptions = {
   /**
