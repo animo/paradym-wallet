@@ -13,6 +13,8 @@ export {
   type OpenId4VciResolvedAuthorizationRequest,
 } from '@credo-ts/openid4vc'
 
+export * from './hooks'
+
 // FIXME: create two types in Credo so we can easily only have type for one flow
 export type OpenId4VciResolvedOauth2RedirectAuthorizationRequest = Exclude<
   OpenId4VciResolvedAuthorizationRequest,

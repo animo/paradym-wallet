@@ -1,15 +1,11 @@
 import type {
   AnonCredsRequestedAttributeMatch,
-  AnonCredsRequestedPredicate,
   AnonCredsRequestedPredicateMatch,
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
 import { CredoError } from '@credo-ts/core'
 import type { ProofStateChangedEvent } from '@credo-ts/didcomm'
 import { ProofEventTypes, ProofState, V2RequestPresentationMessage } from '@credo-ts/didcomm'
-import { defineMessage } from '@lingui/core/macro'
-import type { _t } from '@lingui/react/macro'
-import { useLingui } from '@lingui/react/macro'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
@@ -24,31 +20,7 @@ import { useProofById } from '../providers/ProofExchangeProvider'
 import { addSharedActivityForSubmission } from '../storage/activities'
 import { getCredential } from '../storage/credentials'
 import type { NonEmptyArray } from '../types'
-import { capitalizeFirstLetter } from '../utils/capitalizeFirstLetter'
 import { useParadym } from './useParadym'
-
-export const predicateMessages = {
-  '>': defineMessage({
-    id: 'predicate.greaterThan',
-    message: 'greater than',
-    comment: 'Used in predicate statements like: age greater than 18',
-  }),
-  '>=': defineMessage({
-    id: 'predicate.greaterThanOrEqual',
-    message: 'greater than or equal to',
-    comment: 'Used in predicate statements like: age greater than or equal to 18',
-  }),
-  '<': defineMessage({
-    id: 'predicate.lessThan',
-    message: 'less than',
-    comment: 'Used in predicate statements like: age less than 18',
-  }),
-  '<=': defineMessage({
-    id: 'predicate.lessThanOrEqual',
-    message: 'less than or equal to',
-    comment: 'Used in predicate statements like: age less than or equal to 18',
-  }),
-} as const
 
 type AcceptPresentationOptions = {
   selectedCredentials?: { [inputDescriptorId: string]: string }
@@ -65,7 +37,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
 
   const proofExchange = useProofById(proofExchangeId)
   const connection = useConnectionById(proofExchange?.connectionId ?? '')
-  const { t } = useLingui()
+
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
     queryFn: async () => {
@@ -156,7 +128,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         const requestedPredicate = proofRequest.requested_predicates[groupName]
         if (!requestedPredicate) throw new Error('Invalid presentation request')
 
-        mergeOrSetEntry('predicate', groupName, [formatPredicate(t, requestedPredicate)], predicateArray)
+        mergeOrSetEntry('predicate', groupName, ['TODO'], predicateArray)
       }
 
       const entriesArray = await Promise.all(
@@ -185,7 +157,10 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
                   const requestedPredicate = proofRequest.requested_predicates[groupName]
                   return {
                     ...acc,
-                    [requestedPredicate.name]: `${capitalizeFirstLetter(t(predicateMessages[requestedPredicate.p_type]))} ${requestedPredicate.p_value}`,
+                    [requestedPredicate.name]: {
+                      type: requestedPredicate.p_type,
+                      value: requestedPredicate.p_value,
+                    },
                   }
                 },
                 {}
@@ -383,6 +358,6 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
  *
  * @todo we could improve on this rendering, by e.g. recognizing dates in predicates (e.g. 20200101)
  */
-function formatPredicate(t: typeof _t, requestedPredicate: AnonCredsRequestedPredicate) {
-  return `${requestedPredicate.name} ${t(predicateMessages[requestedPredicate.p_type])} ${requestedPredicate.p_value}`
-}
+// function formatPredicate(t: typeof _t, requestedPredicate: AnonCredsRequestedPredicate) {
+//   return `${requestedPredicate.name} ${t(predicateMessages[requestedPredicate.p_type])} ${requestedPredicate.p_value}`
+// }

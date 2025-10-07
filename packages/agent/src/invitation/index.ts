@@ -22,7 +22,7 @@ export type OpenId4VciResolvedPresentationDuringIssuanceAuthorizationRequest = E
 export {
   parseInvitationUrl,
   parseDidCommInvitation,
-  ParseInvitationResultError,
+  type ParseInvitationResultError,
 } from './parsers'
 export {
   type TrustedX509Entity,

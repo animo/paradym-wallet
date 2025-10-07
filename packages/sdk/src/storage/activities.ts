@@ -1,5 +1,4 @@
 import { utils } from '@credo-ts/core'
-import { t } from '@lingui/core/macro'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type { BaseAgent } from '../agent'
 import { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay } from '../display/common'
@@ -183,13 +182,7 @@ export function addSharedActivityForSubmission(
     status,
     entity: {
       id: verifier.id,
-      name:
-        verifier.name ??
-        t({
-          id: 'activity.unknownVerifier',
-          message: 'Unknown verifier',
-          comment: 'Fallback name shown when the verifier/issuer name is missing',
-        }),
+      name: verifier.name,
       logo: verifier.logo,
     },
     request: {

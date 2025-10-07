@@ -1,4 +1,3 @@
-import { useHasInternetConnection } from '@package/app'
 import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
 import {
   type SecureUnlockReturnInitializing,
@@ -60,9 +59,7 @@ export function useParadym(assertState: 'unlocked'): ParadymUnlockedState
 export function useParadym(assertState?: ParadymState['state']): ParadymState {
   const unlock = useSecureUnlock()
 
-  const hasInternetConnection = useHasInternetConnection()
-  // TODO: set mediator did
-  useDidCommMediatorSetup({ hasInternetConnection, paradym: unlock.state === 'unlocked' ? unlock.paradym : undefined })
+  useDidCommMediatorSetup({ paradym: unlock.state === 'unlocked' ? unlock.paradym : undefined })
 
   if (assertState && unlock.state !== assertState) {
     throw new Error(`Unlock state '${unlock.state}' did not match the asserted state of '${assertState}'`)

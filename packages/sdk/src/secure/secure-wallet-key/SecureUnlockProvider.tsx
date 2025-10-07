@@ -1,5 +1,6 @@
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk/ParadymWalletSdk'
+import { logger } from '@paradym/wallet-sdk/logger'
 import { useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { KeychainError } from '../error/KeychainError'
@@ -115,8 +116,8 @@ function _useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Sec
   })
 
   useEffect(() => {
-    console.log('secure unlock state: ', state)
-  }, [state])
+    logger(configuration.logging?.level).debug(`secure unlock state: '${state}'`)
+  }, [state, configuration.logging?.level])
 
   const reinitialize = () => {
     setState('initializing')

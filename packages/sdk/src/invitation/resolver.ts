@@ -92,7 +92,7 @@ export type ResolveOutOfBandInvitationResult = {
 
 export type ResolveCredentialOfferOptions = {
   paradym: ParadymWalletSdk
-  offer: { uri: string }
+  offerUri: string
   authorization?: { clientId: string; redirectUri: string }
   fetchAuthorization?: boolean
 }
@@ -154,15 +154,13 @@ export type ResolveCredentialOfferReturn =
 
 export async function resolveCredentialOffer({
   paradym,
-  offer,
+  offerUri,
   authorization,
   fetchAuthorization = true,
 }: ResolveCredentialOfferOptions): Promise<ResolveCredentialOfferReturn> {
-  paradym.logger.info(`Receiving openid uri ${offer.uri}`, {
-    uri: offer.uri,
-  })
+  paradym.logger.info(`Receiving openid uri '${offerUri}'`)
 
-  const resolvedCredentialOffer = await paradym.agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
+  const resolvedCredentialOffer = await paradym.agent.modules.openId4VcHolder.resolveCredentialOffer(offerUri)
   let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
   const preAuthGrant =

@@ -19,10 +19,11 @@
 		}
 	},
 	"scripts": {
-		"build": "tsup src/index.ts"
+		"build": "tsdown"
 	},
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
+		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@astronautlabs/jsonpath": "catalog:",
 		"@credo-ts/anoncreds": "catalog:",
 		"@credo-ts/askar": "catalog:",
@@ -31,32 +32,23 @@
 		"@credo-ts/didcomm": "catalog:",
 		"@credo-ts/openid4vc": "catalog:",
 		"@credo-ts/react-native": "catalog:",
+		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@openid4vc/openid4vp": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@sd-jwt/decode": "catalog:",
 		"@sd-jwt/present": "catalog:",
-		"credo-ts-didweb-anoncreds": "catalog:"
-	},
-	"peerDependencies": {
-		"@animo-id/expo-digital-credentials-api": "catalog:",
-		"@hyperledger/anoncreds-react-native": "catalog:",
-		"@openwallet-foundation/askar-react-native": "catalog:",
-		"expo-secure-store": "catalog:",
+		"@tanstack/react-query": "catalog:",
+		"credo-ts-didweb-anoncreds": "catalog:",
 		"react-native-argon2": "catalog:",
 		"react-native-get-random-values": "catalog:",
 		"react-native-keychain": "catalog:",
-		"@tanstack/react-query": "catalog:",
+		"react-native-mmkv": "catalog:"
+	},
+	"peerDependencies": {
 		"react": "catalog:",
 		"react-native": "catalog:"
 	},
-	"peerDependenciesMeta": {
-		"expo-secure-store": {
-			"optional": true
-		},
-		"react-native-keychain": {
-			"optional": true
-		},
-		"react-native-argon2": {
-			"optional": true
-		}
+	"devDependencies": {
+		"tsdown": "^0.15.6"
 	}
 }

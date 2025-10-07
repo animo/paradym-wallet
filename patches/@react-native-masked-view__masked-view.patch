@@ -1,17 +1,17 @@
 diff --git a/js/MaskedView.js b/js/MaskedView.js
-index b336b7ab9966b1c8d6f29f0b68bf9e72e60b0120..67b3ee4502d460bbab05bc6fe35dc7eec7fed02a 100644
+index b336b7ab9966b1c8d6f29f0b68bf9e72e60b0120..7edc542377e0d42184e058d189af6374a0d2ba0c 100644
 --- a/js/MaskedView.js
 +++ b/js/MaskedView.js
-@@ -13,7 +13,7 @@ import { View, StyleSheet, requireNativeComponent } from 'react-native';
+@@ -13,8 +13,6 @@ import { View, StyleSheet, requireNativeComponent } from 'react-native';
  
  const RNCMaskedView = requireNativeComponent<any>('RNCMaskedView');
  
 -import type { MaskedViewProps } from './MaskedViewTypes';
-+import { MaskedViewProps } from './MaskedViewTypes';
- 
+-
  /**
   * Renders the child view with a mask specified in the `maskElement` prop.
-@@ -52,10 +52,10 @@ import type { MaskedViewProps } from './MaskedViewTypes';
+  *
+@@ -52,10 +50,10 @@ import type { MaskedViewProps } from './MaskedViewTypes';
   * transparent pixels block that content.
   *
   */

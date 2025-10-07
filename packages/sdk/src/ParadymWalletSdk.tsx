@@ -35,6 +35,7 @@ import { SecureUnlockProvider, secureWalletKey } from './secure'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
@@ -193,8 +194,11 @@ export class ParadymWalletSdk {
   public static UnlockProvider({
     children,
     configuration,
-  }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions }>) {
-    return <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
+    queryClient = new QueryClient()
+  }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions, queryClient?: QueryClient }>) {
+    return  <QueryClientProvider  client={queryClient}>
+      <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
+      </QueryClientProvider>
   }
 
   /**

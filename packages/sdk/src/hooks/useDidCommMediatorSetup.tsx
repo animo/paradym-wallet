@@ -5,11 +5,9 @@ import { ParadymWalletNoMediatorDidProvidedError } from '../error'
 import { useDidCommMessagePickup } from './useDidCommMessagePickup'
 
 export function useDidCommMediatorSetup({
-  hasInternetConnection,
   mediatorDid,
   paradym,
 }: {
-  hasInternetConnection: boolean
   mediatorDid?: string
   paradym?: ParadymWalletSdk
 }) {
@@ -18,13 +16,14 @@ export function useDidCommMediatorSetup({
 
   // Enable message pickup when mediation is configured and internet connection is available
   useDidCommMessagePickup({
-    isEnabled: hasInternetConnection && isMediationConfigured,
+    isEnabled: isMediationConfigured,
   })
 
   useEffect(() => {
     if (!paradym) return
-    if (!hasInternetConnection || isMediationConfigured) return
+    if (isMediationConfigured) return
     if (isSettingUpMediation) return
+    if (!('mediationRecipient' in paradym.agent.modules)) return
 
     setIsSettingUpMediation(true)
 
@@ -44,7 +43,7 @@ export function useDidCommMediatorSetup({
       .finally(() => {
         setIsSettingUpMediation(false)
       })
-  }, [isMediationConfigured, isSettingUpMediation, hasInternetConnection, mediatorDid, paradym])
+  }, [isMediationConfigured, isSettingUpMediation, mediatorDid, paradym])
 
   return { isMediationConfigured, isSettingUpMediation }
 }
