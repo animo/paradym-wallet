@@ -1,0 +1,40 @@
+{
+  "name": "sdkexample",
+  "private": true,
+  "main": "index.ts",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "expo start -c --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "prebuild": "expo prebuild --no-install"
+  },
+  "dependencies": {
+		"@lingui/babel-plugin-lingui-macro": "^5.3.3",
+    "@react-navigation/native": "catalog:",
+    "expo": "catalog:",
+    "expo-constants": "catalog:",
+    "expo-font": "catalog:",
+    "expo-haptics": "catalog:",
+    "expo-image": "catalog:",
+    "expo-linking": "catalog:",
+    "expo-router": "catalog:",
+    "expo-splash-screen": "catalog:",
+    "expo-system-ui": "catalog:",
+    "react": "catalog:",
+    "react-native": "catalog:",
+    "react-native-gesture-handler": "catalog:",
+    "react-native-reanimated": "catalog:",
+    "react-native-safe-area-context": "catalog:",
+    "react-native-screens": "catalog:"
+  },
+  "devDependencies": {
+		"@babel/core": "catalog:",
+		"@lingui/cli": "^5.3.3",
+		"@lingui/format-json": "^5.3.3",
+		"@tamagui/babel-plugin": "catalog:",
+		"babel-plugin-syntax-hermes-parser": "catalog:",
+		"expo-build-properties": "catalog:",
+		"typescript": "catalog:"
+  }
+}
