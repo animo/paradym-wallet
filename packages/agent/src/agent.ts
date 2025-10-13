@@ -7,7 +7,7 @@ import {
   LegacyIndyDidCommCredentialFormatService,
   LegacyIndyDidCommProofFormatService,
 } from '@credo-ts/anoncreds'
-import { AskarModule } from '@credo-ts/askar'
+import { AskarKeyManagementService, AskarModule } from '@credo-ts/askar'
 import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import {
   Agent,
@@ -16,6 +16,7 @@ import {
   JwkDidResolver,
   KeyDidRegistrar,
   KeyDidResolver,
+  Kms,
   PeerDidNumAlgo,
   WebDidResolver,
   X509Module,
@@ -39,7 +40,7 @@ import {
 } from '@credo-ts/didcomm'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 export { useAgent } from './providers'
-import { agentDependencies } from '@credo-ts/react-native'
+import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
@@ -65,11 +66,19 @@ export const initializeEasyPIDAgent = async ({
     modules: {
       askar: new AskarModule({
         askar,
+        // We register it manually to set default / determine order
+        // FIXME: we should not require enableKms to be set to false
+        // but just not re-register
+        enableKms: false,
         store: {
           id: walletId,
           key: walletKey,
           keyDerivationMethod: keyDerivation === 'raw' ? 'raw' : 'kdf:argon2i:mod',
         },
+      }),
+      kms: new Kms.KeyManagementModule({
+        backends: [new AskarKeyManagementService(), new SecureEnvironmentKeyManagementService()],
+        defaultBackend: 'askar',
       }),
       openid4vc: new OpenId4VcModule({}),
       x509: new X509Module({
