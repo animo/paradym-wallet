@@ -51,7 +51,8 @@
 		"patchedDependencies": {
 			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",
 			"@cheqd/sdk": "patches/@cheqd__sdk.patch",
-			"@animo-id/credo-ts-core": "patches/@animo-id__credo-ts-core.patch"
+			"@animo-id/credo-ts-core": "patches/@animo-id__credo-ts-core.patch",
+			"@animo-id/credo-ts-openid4vc": "patches/@animo-id__credo-ts-openid4vc.patch"
 		}
 	},
 	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"

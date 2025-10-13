@@ -1,0 +1,19 @@
+diff --git a/build/openid4vc-holder/OpenId4VciHolderService.js b/build/openid4vc-holder/OpenId4VciHolderService.js
+index df6d5fe69d6dc64a04ccc280f0cfddb8fe8a0038..8a53b0ff3059e698d6641d4897d0a404fb476980 100644
+--- a/build/openid4vc-holder/OpenId4VciHolderService.js
++++ b/build/openid4vc-holder/OpenId4VciHolderService.js
+@@ -148,7 +148,13 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+         const alg = dpopSigningAlgValuesSupported.find((alg) => {
+             try {
+                 core_2.Kms.PublicJwk.supportedPublicJwkClassForSignatureAlgorithm(alg);
+-                return true;
++                // TODO: we should allow providing allowed backends to OID4VC API so you can limit which
++                // KMS backends can be used for DPOP
++                const supportedBackends = kms.supportedBackendsForOperation({
++                    operation: 'sign',
++                    algorithm: alg,
++                })
++                return supportedBackends.length > 0
+             }
+             catch {
+                 return false;
