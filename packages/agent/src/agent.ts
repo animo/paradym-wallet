@@ -40,7 +40,7 @@ import {
 } from '@credo-ts/didcomm'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 export { useAgent } from './providers'
-import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
+import { SecureEnvironmentKeyManagementService, agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
