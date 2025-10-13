@@ -183,7 +183,6 @@ export function FunkeCredentialNotificationScreen() {
       if (credentials.length) {
         const credentialRecord = credentials[0].credential
         const { attributes } = getCredentialForDisplay(credentialRecord)
-        console.log(attributes)
         setCredentialAttributes(attributes)
         setReceivedRecord(credentialRecord)
       }

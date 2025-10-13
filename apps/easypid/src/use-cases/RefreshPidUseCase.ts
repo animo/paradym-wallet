@@ -80,7 +80,8 @@ export class RefreshPidUseCase {
 
     const limitToFormats: string[] = []
     if (mdoc) limitToFormats.push(ClaimFormat.MsoMdoc)
-    if (sdJwt) limitToFormats.push(ClaimFormat.SdJwtDc)
+    // NOTE: BDR issuer still uses legacy vc+sd-jwt
+    if (sdJwt) limitToFormats.push(ClaimFormat.SdJwtDc, 'vc+sd-jwt')
 
     const credentialConfigurationIdsToRequest = Object.entries(
       this.resolvedCredentialOffer.offeredCredentialConfigurations
