@@ -1,7 +1,6 @@
 import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
 import { AskarModule } from '@credo-ts/askar'
-// FIXME: export in Credo
-import { AskarStoreInvalidKeyError } from '@credo-ts/askar/build/error'
+import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import {
   Agent,
   CredoWebCrypto,
@@ -148,6 +147,12 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     }
 
     return new Uint8Array(publicKey)
+  }
+
+  public async deleteKey(keyId: string): Promise<void> {
+    this.agent.config.logger.warn('Deleting key from wallet service provider is not supported yet.', {
+      keyId,
+    })
   }
 
   public async createSalt() {

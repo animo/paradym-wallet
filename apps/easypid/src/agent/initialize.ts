@@ -1,5 +1,5 @@
 import { setFallbackSecureEnvironment, shouldUseFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
-import { AskarStoreInvalidKeyError } from '@credo-ts/askar/build/error/AskarStoreInvalidKeyError'
+import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'

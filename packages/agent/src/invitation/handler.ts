@@ -19,8 +19,8 @@ import {
   DidCommProofState,
   DidCommRequestPresentationV2Message,
   parseMessageType,
+  supportsIncomingMessageType,
 } from '@credo-ts/didcomm'
-import { supportsIncomingMessageType } from '@credo-ts/didcomm/build/util/messageType'
 import type {
   OpenId4VciCredentialConfigurationSupportedWithFormats,
   OpenId4VciCredentialResponse,
@@ -33,10 +33,10 @@ import type {
 } from '@credo-ts/openid4vc'
 import {
   getOfferedCredentials,
+  getOid4vcCallbacks,
   getScopesFromCredentialConfigurationsSupported,
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
-import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { t } from '@lingui/core/macro'
