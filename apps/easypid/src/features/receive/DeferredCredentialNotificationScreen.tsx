@@ -95,8 +95,8 @@ export function DeferredCredentialNotificationScreen() {
             </AnimatedStack>
             <Stack gap="$2">
               <Heading ta="center" heading="h1">
-                <Trans id="deferredCredentials.title" comment="Title of the deferred credential notification screen">
-                  Deferred credential
+                <Trans id="deferredCredentials.title" comment="Title of the pending credential notification screen">
+                  Pending card
                 </Trans>
               </Heading>
               <Paragraph numberOfLines={2} ta="center">
@@ -112,12 +112,12 @@ export function DeferredCredentialNotificationScreen() {
                   title={t({
                     id: 'deferredCredentials.failedToRetrieveCard',
                     message: 'Failed to retrieve card',
-                    comment: 'Title of the error box explaining deferred credentials',
+                    comment: 'Title of the error box explaining pending credentials',
                   })}
                   description={t({
                     id: 'deferredCredentials.failedToRetrieveCardDescription',
-                    message: 'An error occurred while retrieving the deferred card from the issuer.',
-                    comment: 'Description of the error box explaining deferred credentials',
+                    message: 'An error occurred while retrieving the card from the issuer.',
+                    comment: 'Description of the error box explaining pending credentials',
                   })}
                 />
               )}
@@ -128,7 +128,7 @@ export function DeferredCredentialNotificationScreen() {
                     title={t({
                       id: 'deferredCredentials.cardNotAvailableYet',
                       message: 'Card not available yet',
-                      comment: 'Title of the info box explaining deferred credentials',
+                      comment: 'Title of the info box explaining that the credential is not available yet',
                     })}
                     description={t({
                       id: 'deferredCredentials.cardNotAvailableYetWithTimeDescription',
@@ -136,7 +136,7 @@ export function DeferredCredentialNotificationScreen() {
                         hour: 'numeric',
                         minute: 'numeric',
                       })}.`,
-                      comment: 'Description of the info box explaining deferred credentials with time',
+                      comment: 'Description of the info box explaining the card is pending with expected time',
                     })}
                   />
                 ) : (
@@ -145,7 +145,7 @@ export function DeferredCredentialNotificationScreen() {
                     title={t({
                       id: 'deferredCredentials.cardNotAvailableYet',
                       message: 'Card not available yet',
-                      comment: 'Title of the info box explaining deferred credentials',
+                      comment: 'Title of the info box explaining that the credential is not available yet',
                     })}
                     description={t({
                       id: 'deferredCredentials.cardNotAvailableYetWithDateDescription',
@@ -156,7 +156,7 @@ export function DeferredCredentialNotificationScreen() {
                         hour: 'numeric',
                         minute: 'numeric',
                       })}.`,
-                      comment: 'Description of the info box explaining deferred credentials with date',
+                      comment: 'Description of the info box explaining the card is pending with expected date',
                     })}
                   />
                 )
@@ -166,12 +166,12 @@ export function DeferredCredentialNotificationScreen() {
                   title={t({
                     id: 'deferredCredentials.cardNotAvailableYet',
                     message: 'Card not available yet',
-                    comment: 'Title of the info box explaining deferred credentials',
+                    comment: 'Title of the info box explaining that the credential is not available yet',
                   })}
                   description={t({
                     id: 'deferredCredentials.cardNotAvailableYetDescription',
                     message: 'The issuer has not yet made the card available. Please check again later.',
-                    comment: 'Description of the info box explaining deferred credentials',
+                    comment: 'Description of the info box explaining the card is pending',
                   })}
                 />
               )}

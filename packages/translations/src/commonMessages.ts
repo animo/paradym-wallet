@@ -285,29 +285,29 @@ export const commonMessages = {
   }),
   deleteDeferredCredentialTitle: defineMessage({
     id: 'common.deleteDeferredCredentialTitle',
-    message: 'Delete deferred credential?',
-    comment: 'Title for confirmation dialog to delete a deferred credential',
+    message: 'Delete pending card?',
+    comment: 'Title for confirmation dialog to delete a pending card',
   }),
   deleteDeferredCredentialDescription: (name: string) =>
     defineMessage({
       id: 'common.deleteDeferredCredentialDescription',
-      message: `By deleting ${name}, you will no longer be able to retrieve your credential from the issuer.`,
-      comment: 'Description in confirmation dialog explaining deferred credential deletion',
+      message: `By deleting ${name}, you will no longer be able to retrieve your card from the issuer.`,
+      comment: 'Description in confirmation dialog explaining pending card deletion',
     }),
   deleteDeferredCredentialConfirm: defineMessage({
     id: 'common.deleteDeferredCredentialConfirm',
     message: 'Yes, delete',
-    comment: 'Confirm button text for deleting a deferred credential',
+    comment: 'Confirm button text for deleting a pending card',
   }),
   toastDeferredCredentialDeleted: defineMessage({
     id: 'common.toastDeferredCredentialDeleted',
-    message: 'Deferred credential deleted',
-    comment: 'Toast message shown after successfully deleting a deferred credential',
+    message: 'Pending card deleted',
+    comment: 'Toast message shown after successfully deleting a pending card',
   }),
   toastDeferredCredentialDeleteError: defineMessage({
     id: 'common.toastDeferredCredentialDeleteError',
-    message: 'Error deleting deferred credential',
-    comment: 'Toast message shown when deferred credential deletion failed',
+    message: 'Error deleting pending card',
+    comment: 'Toast message shown when pending card deletion failed',
   }),
   expired: defineMessage({
     id: 'common.expired',

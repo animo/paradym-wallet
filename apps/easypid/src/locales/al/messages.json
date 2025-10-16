@@ -318,15 +318,13 @@
 		"translation": "Ndodhi një gabim gjatë marrjes së informacionit të kartës. Kërko nga lëshuesi të gjenerojë një kod QR të ri ose provo përsëri më vonë."
 	},
 	"deferredCredentials.failedToRetrieveCardDescription": {
-		"message": "An error occurred while retrieving the deferred card from the issuer.",
+		"translation": "Ndodhi një gabim gjatë marrjes së kartës nga lëshuesi.",
+		"message": "An error occurred while retrieving the card from the issuer.",
 		"placeholders": {},
-		"comments": [
-			"Description of the error box explaining deferred credentials"
-		],
+		"comments": ["Description of the error box explaining pending credentials"],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 117]
-		],
-		"translation": "Ndodhi një gabim gjatë marrjes së kartës së shtyrë nga lëshuesi."
+		]
 	},
 	"interactionError.message.verify": {
 		"message": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
@@ -469,7 +467,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 420]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 419]
 		],
 		"translation": "Autorizimi u anulua"
 	},
@@ -530,27 +528,15 @@
 		"translation": "I lindur"
 	},
 	"common.deleteDeferredCredentialDescription": {
-		"message": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
+		"translation": "Duke fshirë {name}, nuk do të mund ta marrësh më kartën nga lëshuesi.",
+		"message": "By deleting {name}, you will no longer be able to retrieve your card from the issuer.",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": [
-			"Description in confirmation dialog explaining deferred credential deletion"
+			"Description in confirmation dialog explaining pending card deletion"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 292]],
-		"translation": "Duke fshirë {name}, nuk do të mundesh më ta marrësh këtë kredencial nga lëshuesi."
-	},
-	"common.deleteDeferredCredentialConfirmDescription": {
-		"translation": "Duke fshirë {name}, nuk do të mundesh më ta marrësh këtë kredencial nga lëshuesi.",
-		"message": "By deleting {name}, you will no longer be able to retrieve your credential from the issuer.",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [
-			"Description in confirmation dialog explaining deferred credential deletion"
-		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 302]],
-		"obsolete": true
+		"origin": [["../../packages/translations/src/commonMessages.ts", 292]]
 	},
 	"common.cancel": {
 		"message": "Cancel",
@@ -609,6 +595,15 @@
 		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 25]],
 		"translation": "Karta është aktive"
 	},
+	"receiveCredential.deferredCredentialHeader": {
+		"translation": "Karta ende nuk është gati",
+		"message": "Card is not ready yet",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 162]
+		]
+	},
 	"cardLifecycle.limitedByDate.notYetActive.title": {
 		"message": "Card not active",
 		"placeholders": {},
@@ -626,19 +621,19 @@
 		"translation": "Karta nuk u shtua"
 	},
 	"deferredCredentials.cardNotAvailableYet": {
+		"translation": "Karta ende nuk është e disponueshme",
 		"message": "Card not available yet",
 		"placeholders": {},
 		"comments": [
-			"Title of the info box explaining deferred credentials",
-			"Title of the info box explaining deferred credentials",
-			"Title of the info box explaining deferred credentials"
+			"Title of the info box explaining that the credential is not available yet",
+			"Title of the info box explaining that the credential is not available yet",
+			"Title of the info box explaining that the credential is not available yet"
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 128],
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 145],
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 166]
-		],
-		"translation": "Karta nuk është ende gati"
+		]
 	},
 	"cardLifecycle.revoked.description": {
 		"message": "Card not usable anymore",
@@ -655,11 +650,11 @@
 		"translation": "Kartë e ofruar"
 	},
 	"common.cardPending": {
+		"translation": "Kartë në pritje",
 		"message": "Card pending",
 		"placeholders": {},
 		"comments": ["Shown when the issuance of a card is pending"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 215]],
-		"translation": "Karta në pritje"
+		"origin": [["../../packages/translations/src/commonMessages.ts", 215]]
 	},
 	"common.cardRejected": {
 		"message": "Card rejected",
@@ -680,7 +675,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 180]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 185]
 		],
 		"translation": "Karta u shtua me sukses në portofolin tënd!"
 	},
@@ -874,15 +869,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 89]],
 		"translation": "Informacioni i kredencialit nuk mund të nxirret"
 	},
-	"receiveCredential.deferredCredentialHeader": {
-		"message": "Credential is not yet ready",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 162]
-		],
-		"translation": "Kredenciali nuk është ende gati"
-	},
 	"credentials.notFound": {
 		"message": "Credential not found",
 		"placeholders": {},
@@ -1006,32 +992,12 @@
 		"origin": [["src/features/didcomm/utils.ts", 6]],
 		"translation": "Refuzo kartën?"
 	},
-	"deferredCredentials.title": {
-		"message": "Deferred credential",
-		"placeholders": {},
-		"comments": ["Title of the deferred credential notification screen"],
-		"origin": [
-			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 98]
-		],
-		"translation": "Kredencial i shtyrë"
-	},
-	"common.toastDeferredCredentialDeleted": {
-		"message": "Deferred credential deleted",
-		"placeholders": {},
-		"comments": [
-			"Toast message shown after successfully deleting a deferred credential"
-		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 302]],
-		"translation": "Kredenciali i shtyrë u fshi"
-	},
 	"common.deleteDeferredCredentialTitle": {
-		"message": "Delete deferred credential?",
+		"translation": "Fshi kartën në pritje?",
+		"message": "Delete pending card?",
 		"placeholders": {},
-		"comments": [
-			"Title for confirmation dialog to delete a deferred credential"
-		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 286]],
-		"translation": "Fshi kredencialin e shtyrë?"
+		"comments": ["Title for confirmation dialog to delete a pending card"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 286]]
 	},
 	"activity.deletedCredential": {
 		"message": "Deleted credential",
@@ -1214,13 +1180,11 @@
 		"translation": "Gabim në fshirjen e kartës"
 	},
 	"common.toastDeferredCredentialDeleteError": {
-		"message": "Error deleting deferred credential",
+		"translation": "Gabim gjatë fshirjes së kartës në pritje",
+		"message": "Error deleting pending card",
 		"placeholders": {},
-		"comments": [
-			"Toast message shown when deferred credential deletion failed"
-		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 307]],
-		"translation": "Gabim gjatë fshirjes së kredencialit të shtyrë"
+		"comments": ["Toast message shown when pending card deletion failed"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 307]]
 	},
 	"aiOverAking.errorReasonFallback": {
 		"message": "Error determining if the request is valid.",
@@ -1303,13 +1267,13 @@
 		"translation": "Eksporto 1000 ditarët e fundit të diagnostikimit nga portofolit. Kini parasysh që mund të përmbajnë informacion të ndjeshëm."
 	},
 	"activity.latest.failedCard": {
+		"translation": "Dështoi shtimi i {name}",
 		"message": "Failed to add {name}",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": ["Shown when it has failed to add a new card"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 102]],
-		"translation": "Dështoi shtimi i {name}"
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 102]]
 	},
 	"common.invitationParsingFailed": {
 		"message": "Failed to parse invitation.",
@@ -1319,13 +1283,13 @@
 		"translation": "Dështoi leximi i ftesës."
 	},
 	"deferredCredentials.failedToRetrieveCard": {
+		"translation": "Dështoi marrja e kartës",
 		"message": "Failed to retrieve card",
 		"placeholders": {},
-		"comments": ["Title of the error box explaining deferred credentials"],
+		"comments": ["Title of the error box explaining pending credentials"],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 112]
-		],
-		"translation": "Dështoi marrja e kartës"
+		]
 	},
 	"common.fields.familyName": {
 		"message": "Family name",
@@ -1580,7 +1544,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 543]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 542]
 		],
 		"translation": "Nëse ndalon, oferta e kartës do të anulohet."
 	},
@@ -2125,20 +2089,38 @@
 		"translation": "U zbulua kërkesë e tepërt"
 	},
 	"inbox.notificationType.pending": {
+		"translation": "Në pritje",
 		"message": "Pending",
 		"placeholders": {},
 		"comments": ["Label for a notification about a pending credential"],
-		"origin": [["src/features/didcomm/InboxScreen.tsx", 73]],
-		"translation": "Në pritje"
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 73]]
 	},
 	"activity.latest.pendingCard": {
+		"translation": "{name} në pritje",
 		"message": "Pending {name}",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": ["Shown when a new card is pending"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 125]],
-		"translation": "{name} në pritje"
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 125]]
+	},
+	"deferredCredentials.title": {
+		"translation": "Kartë në pritje",
+		"message": "Pending card",
+		"placeholders": {},
+		"comments": ["Title of the pending credential notification screen"],
+		"origin": [
+			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 98]
+		]
+	},
+	"common.toastDeferredCredentialDeleted": {
+		"translation": "Karta në pritje u fshi",
+		"message": "Pending card deleted",
+		"placeholders": {},
+		"comments": [
+			"Toast message shown after successfully deleting a pending card"
+		],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 302]]
 	},
 	"presentation.pinAuthFailed": {
 		"message": "PIN authentication failed",
@@ -2352,15 +2334,16 @@
 		"translation": "Merr ose nda nga portofoli yt"
 	},
 	"activity.receivedFailed": {
+		"translation": "Marrja e kartave nga {0} dështoi.",
 		"message": "Receiving the cards from {0} failed.",
 		"placeholders": {
 			"0": ["activity.entity.name"]
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 121]],
-		"translation": "Marrja e kartave nga {0} dështoi."
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 121]]
 	},
 	"activity.receivedStopped": {
+		"translation": "Marrja e kartave nga {0} u anulua.",
 		"message": "Receiving the cards from {0} was cancelled.",
 		"placeholders": {
 			"0": ["activity.entity.name"]
@@ -2368,8 +2351,7 @@
 		"comments": [
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 128]],
-		"translation": "Marrja e kartave nga {0} u anulua."
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 128]]
 	},
 	"activity.latest.title": {
 		"message": "Recent activity",
@@ -2692,14 +2674,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 255]],
 		"translation": "Ndarja dështoi"
 	},
-	"common.sharingPending": {
-		"translation": "",
-		"message": "Sharing pending",
-		"placeholders": {},
-		"comments": ["Shown when the sharing process is pending"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 255]],
-		"obsolete": true
-	},
 	"common.sharingStopped": {
 		"message": "Sharing stopped",
 		"placeholders": {},
@@ -2791,14 +2765,6 @@
 		"comments": ["Shown when the signing process failed"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 240]],
 		"translation": "Nënshkrimi dështoi"
-	},
-	"common.signingPending": {
-		"translation": "",
-		"message": "Signing pending",
-		"placeholders": {},
-		"comments": ["Shown when the signing process is pending"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 235]],
-		"obsolete": true
 	},
 	"common.signingStopped": {
 		"message": "Signing stopped",
@@ -2920,7 +2886,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 539]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 538]
 		],
 		"translation": "Ndal ofertën e kartës?"
 	},
@@ -3002,7 +2968,17 @@
 		],
 		"translation": "Prek për të parë"
 	},
+	"retrieveCredential.cardPending": {
+		"translation": "Karta do të merret sapo të jetë e disponueshme.",
+		"message": "The card will be fetched once available.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 181]
+		]
+	},
 	"activity.receivedPending": {
+		"translation": "Kartat nga {0} ende nuk janë gati dhe do të merren më vonë.",
 		"message": "The cards from {0} is are not ready yet and will be fetched at a later date.",
 		"placeholders": {
 			"0": ["activity.entity.name"]
@@ -3010,8 +2986,7 @@
 		"comments": [
 			"Shown in activity detail when the received credentials are pending"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 135]],
-		"translation": "Karta nga {0} nuk janë ende gati dhe do të merren më vonë."
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 135]]
 	},
 	"onboardingWalletExplanation.slide2.subtitle": {
 		"message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
@@ -3104,13 +3079,13 @@
 		"translation": "Informacioni personal i mëposhtëm do të përdoret për të nënshkruar dokumentin."
 	},
 	"deferredCredentials.cardNotAvailableYetDescription": {
+		"translation": "Lëshuesi ende nuk e ka bërë kartën të disponueshme. Provoje përsëri më vonë.",
 		"message": "The issuer has not yet made the card available. Please check again later.",
 		"placeholders": {},
-		"comments": ["Description of the info box explaining deferred credentials"],
+		"comments": ["Description of the info box explaining the card is pending"],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 171]
-		],
-		"translation": "Lëshuesi nuk e ka bërë ende kartën të disponueshme. Ju lutem kontrolloni më vonë."
+		]
 	},
 	"cardLifecycle.revoked.sheetDescription": {
 		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
@@ -3120,6 +3095,7 @@
 		"translation": "Lëshuesi e ka anuluar këtë kartë dhe nuk mund të përdoret më. Kontakto lëshuesin për më shumë informacion."
 	},
 	"deferredCredentials.cardNotAvailableYetWithTimeDescription": {
+		"translation": "Lëshuesi i kartës të ka këshilluar të kontrollosh përsëri në orën {0}.",
 		"message": "The issuer of the card indicated you should check again at {0}.",
 		"placeholders": {
 			"0": [
@@ -3127,14 +3103,14 @@
 			]
 		},
 		"comments": [
-			"Description of the info box explaining deferred credentials with time"
+			"Description of the info box explaining the card is pending with expected time"
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 133]
-		],
-		"translation": "Lëshuesi i kartës ka treguar që duhet të kontrolloni përsëri në orën {0}."
+		]
 	},
 	"deferredCredentials.cardNotAvailableYetWithDateDescription": {
+		"translation": "Lëshuesi i kartës të ka këshilluar të kontrollosh përsëri më {0}.",
 		"message": "The issuer of the card indicated you should check again on {0}.",
 		"placeholders": {
 			"0": [
@@ -3142,12 +3118,11 @@
 			]
 		},
 		"comments": [
-			"Description of the info box explaining deferred credentials with date"
+			"Description of the info box explaining the card is pending with expected date"
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 150]
-		],
-		"translation": "Lëshuesi i kartës ka treguar që duhet të kontrolloni përsëri më {0}."
+		]
 	},
 	"txCodeSlide.descriptionIntro": {
 		"message": "The issuer provided the following:",
@@ -3680,19 +3655,11 @@
 		"translation": "Po, refuzo"
 	},
 	"common.deleteDeferredCredentialConfirm": {
+		"translation": "Po, fshije",
 		"message": "Yes, delete",
 		"placeholders": {},
-		"comments": ["Confirm button text for deleting a deferred credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 297]],
-		"translation": "Po, fshije"
-	},
-	"common.deleteCardConfirm": {
-		"translation": "",
-		"message": "Yes, delete",
-		"placeholders": {},
-		"comments": ["Confirm button text for deleting a deferred credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 307]],
-		"obsolete": true
+		"comments": ["Confirm button text for deleting a pending card"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 297]]
 	},
 	"common.confirmStop": {
 		"message": "Yes, stop",
@@ -3946,13 +3913,13 @@
 		"translation": "I ke lexuar të gjitha"
 	},
 	"receiveCredential.deferredCredentialParagraph": {
-		"message": "Your credentials are not yet ready. We will check once in a while in the background and fetch the credentials once they're ready.",
+		"translation": "Kartat e tua ende nuk janë gati. Do të kontrollojmë herë pas here në sfond dhe do t'i marrim kartat sapo të jenë gati.",
+		"message": "Your cards are not yet ready. We will check once in a while in the background and fetch the cards once they're ready.",
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 225]
-		],
-		"translation": "Kredencialet tuaja nuk janë ende gati. Ne do t’i kontrollojmë herë pas here në sfond dhe do t’i marrim sapo të jenë gati."
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 231]
+		]
 	},
 	"cardLifecycle.active.sheetDescription": {
 		"message": "Your credentials may expire or require an active internet connection to validate.",

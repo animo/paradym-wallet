@@ -159,7 +159,7 @@ export const CredentialRetrievalSlide = ({
               <Heading> </Heading>
             ) : deferred ? (
               <Heading>
-                <Trans id="receiveCredential.deferredCredentialHeader">Credential is not yet ready</Trans>
+                <Trans id="receiveCredential.deferredCredentialHeader">Card is not ready yet</Trans>
               </Heading>
             ) : (
               <Heading>
@@ -176,9 +176,15 @@ export const CredentialRetrievalSlide = ({
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
             {isStoringOrCompleted ? (
-              <Paragraph ta="center" mt="$-2" mb="$6">
-                <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
-              </Paragraph>
+              deferred ? (
+                <Paragraph ta="center" mt="$-2" mb="$6">
+                  <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
+                </Paragraph>
+              ) : (
+                <Paragraph ta="center" mt="$-2" mb="$6">
+                  <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
+                </Paragraph>
+              )
             ) : null}
           </AnimatedStack>
         </AnimatedStack>
@@ -223,8 +229,8 @@ export const CredentialRetrievalSlide = ({
                     ) : (
                       <Paragraph>
                         <Trans id="receiveCredential.deferredCredentialParagraph">
-                          Your credentials are not yet ready. We will check once in a while in the background and fetch
-                          the credentials once they're ready.
+                          Your cards are not yet ready. We will check once in a while in the background and fetch the
+                          cards once they're ready.
                         </Trans>
                       </Paragraph>
                     )}

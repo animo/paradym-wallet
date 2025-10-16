@@ -103,11 +103,7 @@ export function InfoButton({
           <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} heading="sub1">
             {title}
           </Heading>
-          {description && (
-            <Paragraph numberOfLines={2} fontSize={15}>
-              {description}
-            </Paragraph>
-          )}
+          {description && <Paragraph fontSize={15}>{description}</Paragraph>}
         </YStack>
         {isPressable && (
           <Stack>
