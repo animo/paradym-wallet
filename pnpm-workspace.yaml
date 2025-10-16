@@ -75,6 +75,7 @@ catalog:
   react-native-vision-camera: ^4.7.2
 
   # Expo
+  expo-crypto: ^15.0.7
   expo-standard-web-crypto: 2.1.4
   expo-application: ~6.1.5
   expo-asset: ~11.1.6
