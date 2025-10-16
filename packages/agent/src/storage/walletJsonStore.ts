@@ -1,5 +1,5 @@
 import type { Agent } from '@credo-ts/core'
-import { GenericRecord } from '@credo-ts/core/build/modules/generic-records/repository/GenericRecord'
+import { GenericRecord } from '@credo-ts/core'
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const store = async (agent: Agent, id: string, value: any) => {

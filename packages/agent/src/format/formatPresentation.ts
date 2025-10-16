@@ -106,7 +106,7 @@ export function formatDifPexCredentialsForRequest(
 
               // By default the whole credential is disclosed
               let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
-              if (verifiableCredential.claimFormat === ClaimFormat.SdJwtVc) {
+              if (verifiableCredential.claimFormat === ClaimFormat.SdJwtDc) {
                 const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
                   verifiableCredential.disclosedPayload
                 )
@@ -271,9 +271,24 @@ function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryRe
     }
   }
 
-  if (credential.format === 'vc+sd-jwt' || credential.format === 'dc+sd-jwt') {
+  if (credential.format === 'vc+sd-jwt') {
+    if (credential.meta && 'type_values' in credential.meta) {
+      return {
+        claimFormat: ClaimFormat.SdJwtW3cVc,
+        requestedAttributePaths: credential.claims?.map((c) => c.path),
+      }
+    }
+
     return {
-      claimFormat: ClaimFormat.SdJwtVc,
+      claimFormat: ClaimFormat.SdJwtDc,
+      credentialName: credential.meta?.vct_values?.[0].replace('https://', ''),
+      requestedAttributePaths: credential.claims?.map((c) => c.path),
+    }
+  }
+
+  if (credential.format === 'dc+sd-jwt') {
+    return {
+      claimFormat: ClaimFormat.SdJwtDc,
       credentialName: credential.meta?.vct_values?.[0].replace('https://', ''),
       requestedAttributePaths: credential.claims?.map((c) => c.path),
     }

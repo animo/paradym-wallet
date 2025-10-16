@@ -1,21 +1,20 @@
-import { utils } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
-import {
-  type CredentialForDisplayId,
-  type CredentialsForProofRequest,
-  type DisplayImage,
-  type FormattedSubmission,
-  type FormattedTransactionData,
-  getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
-  getWalletJsonStore,
-  useWalletJsonRecord,
-} from '@package/agent'
-
+import { type Agent, utils } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { useMemo } from 'react'
+import {
+  type CredentialDisplay,
+  type DisplayImage,
+  getDisclosedAttributeNamesForDisplay,
+  getUnsatisfiedAttributePathsForDisplay,
+} from '../display'
+import type { FormattedSubmission } from '../format/formatPresentation'
+import type { CredentialForDisplayId } from '../hooks'
+import type { CredentialsForProofRequest, FormattedTransactionData } from '../invitation'
+import { useWalletJsonRecord } from './WalletJsonStoreProvider'
+import { getWalletJsonStore } from './walletJsonStore'
+
 export type ActivityType = 'shared' | 'received' | 'signed'
-export type ActivityStatus = 'success' | 'failed' | 'stopped'
+export type ActivityStatus = 'success' | 'failed' | 'stopped' | 'pending'
 export type SharingFailureReason = 'missing_credentials' | 'unknown'
 
 interface BaseActivity {
@@ -52,6 +51,7 @@ export interface PresentationActivityCredential {
 
 export interface PresentationActivity extends BaseActivity {
   type: 'shared'
+  status: Exclude<ActivityStatus, 'pending'>
   request: {
     credentials: Array<PresentationActivityCredential | PresentationActivityCredentialNotFound>
     name?: string
@@ -62,11 +62,14 @@ export interface PresentationActivity extends BaseActivity {
 
 export interface IssuanceActivity extends BaseActivity {
   type: 'received'
+  status: ActivityStatus
+  deferredCredentials?: CredentialDisplay[]
   credentialIds: CredentialForDisplayId[]
 }
 
 export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
   type: 'signed'
+  status: Exclude<ActivityStatus, 'pending'>
   transaction: FormattedTransactionData
 }
 
@@ -79,7 +82,7 @@ interface ActivityRecord {
 const _activityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: _activityStorage.recordId,
-  addActivity: async (agent: AppAgent, activity: Activity) => {
+  addActivity: async (agent: Agent, activity: Activity) => {
     // get activity. then add this activity
     const record = await _activityStorage.get(agent)
     if (!record) {
@@ -90,6 +93,17 @@ export const activityStorage = {
       record.activities.push(activity)
       await _activityStorage.update(agent, record)
     }
+
+    return activity
+  },
+  deleteActivity: async (agent: Agent, id: string) => {
+    const record = await _activityStorage.get(agent)
+    if (!record) {
+      throw new Error('No activity record found')
+    }
+
+    record.activities = record.activities.filter((d) => d.id !== id)
+    await _activityStorage.update(agent, record)
   },
 }
 
@@ -110,22 +124,24 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
   }
 }
 
-export const addReceivedActivity = async (
-  agent: AppAgent,
+export const storeReceivedActivity = async (
+  agent: Agent,
   input: {
     entityId?: string
     name: string
     host?: string
     logo?: DisplayImage
     backgroundColor?: string
+    deferredCredentials: CredentialDisplay[]
+    status?: ActivityStatus
     credentialIds: CredentialForDisplayId[]
   }
 ) => {
-  await activityStorage.addActivity(agent, {
+  return await activityStorage.addActivity(agent, {
     id: utils.uuid(),
     date: new Date().toISOString(),
     type: 'received',
-    status: 'success',
+    status: input.status ?? 'success',
     entity: {
       id: input.entityId,
       name: input.name,
@@ -133,12 +149,13 @@ export const addReceivedActivity = async (
       logo: input.logo,
       backgroundColor: input.backgroundColor,
     },
+    deferredCredentials: input.deferredCredentials,
     credentialIds: input.credentialIds,
   })
 }
 
-export const addSharedOrSignedActivity = async (
-  agent: AppAgent,
+export const storeSharedOrSignedActivity = async (
+  agent: Agent,
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
   if ('transaction' in input && input.transaction) {
@@ -158,15 +175,15 @@ export const addSharedOrSignedActivity = async (
   }
 }
 
-export function addSharedActivityForCredentialsForRequest(
-  agent: AppAgent,
+export function storeSharedActivityForCredentialsForRequest(
+  agent: Agent,
   credentialsForRequest: Pick<CredentialsForProofRequest, 'formattedSubmission'> & {
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
-  status: ActivityStatus,
+  status: Exclude<ActivityStatus, 'pending'>,
   transaction?: FormattedTransactionData
 ) {
-  return addSharedOrSignedActivity(agent, {
+  return storeSharedOrSignedActivity(agent, {
     status,
     entity: {
       id: credentialsForRequest.verifier.entityId,
@@ -189,17 +206,17 @@ export function addSharedActivityForCredentialsForRequest(
   })
 }
 
-export function addSharedActivityForSubmission(
-  agent: AppAgent,
+export function storeSharedActivityForSubmission(
+  agent: Agent,
   submission: FormattedSubmission,
   verifier: {
     id: string
     name?: string
     logo?: DisplayImage
   },
-  status: ActivityStatus
+  status: Exclude<ActivityStatus, 'pending'>
 ) {
-  return addSharedOrSignedActivity(agent, {
+  return storeSharedOrSignedActivity(agent, {
     status,
     entity: {
       id: verifier.id,

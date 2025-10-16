@@ -1,13 +1,15 @@
-import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '@credo-ts/core'
 import type {
   OpenId4VciCredentialConfigurationSupported,
   OpenId4VciCredentialConfigurationSupportedWithFormats,
   OpenId4VciCredentialIssuerMetadataDisplay,
 } from '@credo-ts/openid4vc'
 
-export type OpenId4VciCredentialDisplayClaims = (OpenId4VciCredentialConfigurationSupportedWithFormats & {
-  format: 'dc+sd-jwt'
-})['claims']
+export type OpenId4VciCredentialDisplayClaims = NonNullable<
+  (OpenId4VciCredentialConfigurationSupportedWithFormats & {
+    format: 'dc+sd-jwt'
+  })['credential_metadata']
+>['claims']
 
 export type OpenId4VciCredentialDisplay = NonNullable<
   OpenId4VciCredentialConfigurationSupported['credential_metadata']
@@ -32,8 +34,7 @@ export function extractOpenId4VcCredentialMetadata(
   serverMetadata: { display?: OpenId4VciCredentialIssuerMetadataDisplay[]; id: string }
 ): OpenId4VcCredentialMetadata {
   // We only store claims for the new array-based syntax
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const claims = (credentialMetadata.credential_metadata as any)?.claims ?? credentialMetadata.claims
+  const claims = credentialMetadata.credential_metadata?.claims ?? credentialMetadata.claims
 
   return {
     credential: {
@@ -52,7 +53,7 @@ export function extractOpenId4VcCredentialMetadata(
  * Gets the OpenId4Vc credential metadata from the given credential record.
  */
 export function getOpenId4VcCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 ): OpenId4VcCredentialMetadata | null {
   const recordMetadata: OpenId4VcCredentialMetadata | null =
     credentialRecord.metadata.get(openId4VcCredentialMetadataKey)
@@ -91,7 +92,7 @@ export function getOpenId4VcCredentialMetadata(
  * NOTE: this does not save the record.
  */
 export function setOpenId4VcCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord,
   metadata: OpenId4VcCredentialMetadata
 ) {
   credentialRecord.metadata.set(openId4VcCredentialMetadataKey, metadata)

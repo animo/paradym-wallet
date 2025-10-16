@@ -3,8 +3,14 @@ import { useLocalSearchParams } from 'expo-router'
 
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { useCredentialsForDisplay } from '@package/agent'
-import { CardWithAttributes, MiniDocument, TextBackButton, activityInteractions } from '@package/app'
+import {
+  type IssuanceActivity,
+  type PresentationActivity,
+  type SignedActivity,
+  useActivities,
+  useCredentialsForDisplay,
+} from '@package/agent'
+import { CardWithAttributes, MiniDocument, TextBackButton, getActivityInteraction } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import { formatRelativeDate } from '@package/utils'
@@ -12,8 +18,8 @@ import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
-import { type IssuanceActivity, type PresentationActivity, type SignedActivity, useActivities } from './activityRecord'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
+
 export function FunkeActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
@@ -28,8 +34,8 @@ export function FunkeActivityDetailScreen() {
     return
   }
 
-  const Icon = activityInteractions[activity.type][activity.status]
-  const Title = t(activityInteractions[activity.type][activity.status].text)
+  const Icon = getActivityInteraction(activity)
+  const Title = t(Icon.text)
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
@@ -109,18 +115,45 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
   const { t } = useLingui()
 
-  const description =
-    activity.credentialIds.length > 1
-      ? t({
+  let description: string
+  switch (activity.status) {
+    case 'failed':
+      description = t({
+        id: 'activity.receivedFailed',
+        message: `Receiving the cards from ${activity.entity.name} failed.`,
+        comment: 'Shown in activity detail when receiving credentials failed',
+      })
+      break
+    case 'stopped':
+      description = t({
+        id: 'activity.receivedStopped',
+        message: `Receiving the cards from ${activity.entity.name} was cancelled.`,
+        comment: 'Shown in activity detail when receiving credentials was cancelled by the user',
+      })
+      break
+    case 'pending':
+      description = t({
+        id: 'activity.receivedPending',
+        message: `The cards from ${activity.entity.name} is are not ready yet and will be fetched at a later date.`,
+        comment: 'Shown in activity detail when the received credentials are pending',
+      })
+      break
+    default:
+      if (activity.credentialIds.length > 1) {
+        description = t({
           id: 'activity.receivedMultiple',
           message: `You have received the following cards from ${activity.entity.name}.`,
           comment: 'Shown in activity detail when multiple credentials have been received',
         })
-      : t({
+      } else {
+        description = t({
           id: 'activity.receivedSingle',
           message: `You have received the following card from ${activity.entity.name}.`,
           comment: 'Shown in activity detail when one credential has been received',
         })
+      }
+      break
+  }
 
   return (
     <Stack gap="$6">

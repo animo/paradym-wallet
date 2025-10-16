@@ -1,10 +1,11 @@
-import type { ActivityType } from '@easypid/features/activity/activityRecord'
+import type { MessageDescriptor } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
-import type { DisplayImage } from '@package/agent'
+import type { Activity, ActivityType } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   CustomIcons,
   Heading,
+  type HeroIcon,
   HeroIcons,
   Image,
   Paragraph,
@@ -18,12 +19,29 @@ import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'
 
-export const activityInteractions = {
+export type ActivityInteraction = {
+  icon: HeroIcon
+  color: string
+  text: MessageDescriptor
+}
+
+export type ActivityInteractions = {
+  [K in ActivityType]: {
+    [status in (Activity & { type: K })['status']]: ActivityInteraction
+  }
+}
+
+export const activityInteractions: ActivityInteractions = {
   received: {
     success: {
       icon: HeroIcons.Plus,
       color: '$feature-500',
       text: commonMessages.cardAdded,
+    },
+    pending: {
+      icon: HeroIcons.ClockFilled,
+      color: '$warning-500',
+      text: commonMessages.cardPending,
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
@@ -72,30 +90,28 @@ export const activityInteractions = {
   },
 }
 
-interface ActivityRowItemProps {
-  id: string
-  logo?: DisplayImage
-  status: 'success' | 'stopped' | 'failed'
-  backgroundColor?: string
-  subtitle: string
-  date: Date
-  type: ActivityType
+export const getActivityInteraction = (activity: Activity) => {
+  const byType = activityInteractions[activity.type] as {
+    [status in (Activity & { type: (typeof activity)['type'] })['status']]: ActivityInteraction
+  }
+
+  return byType[activity.status]
 }
 
-export function ActivityRowItem({
-  id,
-  logo,
-  backgroundColor,
-  subtitle,
-  date,
-  type = 'shared',
-  status = 'success',
-}: ActivityRowItemProps) {
-  const router = useRouter()
+interface ActivityRowItemProps {
+  activity: Activity
+}
+
+export function ActivityRowItem({ activity }: ActivityRowItemProps) {
   const { t } = useLingui()
-  const Icon = type === 'received' ? activityInteractions.received.success : activityInteractions[type][status]
-  const Title =
-    type === 'received' ? t(activityInteractions.received.success.text) : t(activityInteractions[type][status].text)
+  const { id, entity } = activity
+  const { logo, backgroundColor } = entity
+  const date = new Date(activity.date)
+  const subtitle = entity.name ?? entity.host ?? t(commonMessages.unknownOrganization)
+
+  const router = useRouter()
+  const Icon = getActivityInteraction(activity)
+  const Title = t(Icon.text)
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
   const { withHaptics } = useHaptics()

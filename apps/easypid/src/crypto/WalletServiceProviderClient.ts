@@ -1,7 +1,6 @@
 import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
 import { AskarModule } from '@credo-ts/askar'
-// FIXME: export in Credo
-import { AskarStoreInvalidKeyError } from '@credo-ts/askar/build/error'
+import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import {
   Agent,
   CredoWebCrypto,
@@ -26,9 +25,7 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
     const walletId = `easypid-wallet-${walletKeyVersion}`
     const agent = new Agent({
-      config: {
-        label: 'pin_test_agent',
-      },
+      config: {},
       modules: {
         askar: new AskarModule({
           askar,
@@ -106,7 +103,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     })
 
     const parsedData = await response.json()
-    return parsedData
+    return parsedData as T
   }
 
   public async register() {
@@ -150,6 +147,12 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     }
 
     return new Uint8Array(publicKey)
+  }
+
+  public async deleteKey(keyId: string): Promise<void> {
+    this.agent.config.logger.warn('Deleting key from wallet service provider is not supported yet.', {
+      keyId,
+    })
   }
 
   public async createSalt() {

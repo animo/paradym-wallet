@@ -42,6 +42,7 @@ export function getCredentialBindingResolver({
 
     const shouldKeyBeHardwareBackedForSdJwtVc =
       (credentialConfiguration?.format === 'vc+sd-jwt' || credentialConfiguration.format === 'dc+sd-jwt') &&
+      credentialConfiguration.vct &&
       pidSchemes?.sdJwtVcVcts.includes(credentialConfiguration.vct)
 
     const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc

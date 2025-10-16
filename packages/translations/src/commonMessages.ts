@@ -94,7 +94,7 @@ export const commonMessages = {
   errorWhileRetrievingCredentials: defineMessage({
     id: 'common.errorWhileRetrievingCredentials',
     message: 'Error while retrieving credentials',
-    comment: 'Toast or message shown when an error ocurred during retrieval of credentials',
+    comment: 'Toast or message shown when an error occurred during retrieval of credentials',
   }),
   presentationInformationCouldNotBeExtracted: defineMessage({
     id: 'common.presentationInformationCouldNotBeExtracted',
@@ -212,6 +212,11 @@ export const commonMessages = {
     message: 'Card added',
     comment: 'Shown when a card has been successfully received',
   }),
+  cardPending: defineMessage({
+    id: 'common.cardPending',
+    message: 'Card pending',
+    comment: 'Shown when the issuance of a card is pending',
+  }),
   cardRejected: defineMessage({
     id: 'common.cardRejected',
     message: 'Card rejected',
@@ -277,6 +282,32 @@ export const commonMessages = {
     id: 'common.toastCardDeleteError',
     message: 'Error deleting card',
     comment: 'Toast message shown when card deletion failed',
+  }),
+  deleteDeferredCredentialTitle: defineMessage({
+    id: 'common.deleteDeferredCredentialTitle',
+    message: 'Delete pending card?',
+    comment: 'Title for confirmation dialog to delete a pending card',
+  }),
+  deleteDeferredCredentialDescription: (name: string) =>
+    defineMessage({
+      id: 'common.deleteDeferredCredentialDescription',
+      message: `By deleting ${name}, you will no longer be able to retrieve your card from the issuer.`,
+      comment: 'Description in confirmation dialog explaining pending card deletion',
+    }),
+  deleteDeferredCredentialConfirm: defineMessage({
+    id: 'common.deleteDeferredCredentialConfirm',
+    message: 'Yes, delete',
+    comment: 'Confirm button text for deleting a pending card',
+  }),
+  toastDeferredCredentialDeleted: defineMessage({
+    id: 'common.toastDeferredCredentialDeleted',
+    message: 'Pending card deleted',
+    comment: 'Toast message shown after successfully deleting a pending card',
+  }),
+  toastDeferredCredentialDeleteError: defineMessage({
+    id: 'common.toastDeferredCredentialDeleteError',
+    message: 'Error deleting pending card',
+    comment: 'Toast message shown when pending card deletion failed',
   }),
   expired: defineMessage({
     id: 'common.expired',

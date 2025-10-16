@@ -1,4 +1,4 @@
-import type { CredentialExchangeRecord, ProofExchangeRecord } from '@credo-ts/didcomm'
+import type { DidCommCredentialExchangeRecord, DidCommProofExchangeRecord } from '@credo-ts/didcomm'
 import type { OpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 
 // TODO: store this on the credential record
@@ -18,49 +18,49 @@ const didCommCredentialExchangeDisplayMetadataKey = '_paradym/credentialDisplayM
 const didCommProofExchangeDisplayMetadataKey = '_paradym/proofDisplayMetadata'
 
 /**
- * Gets the display metadata for the credential exchange from the given CredentialExchangeRecord.
+ * Gets the display metadata for the credential exchange from the given DidCommCredentialExchangeRecord.
  */
 export function getDidCommCredentialExchangeDisplayMetadata(
-  credentialExchangeRecord: CredentialExchangeRecord
+  DidCommCredentialExchangeRecord: DidCommCredentialExchangeRecord
 ): DidCommCredentialExchangeDisplayMetadata | null {
-  return credentialExchangeRecord.metadata.get(didCommCredentialExchangeDisplayMetadataKey)
+  return DidCommCredentialExchangeRecord.metadata.get(didCommCredentialExchangeDisplayMetadataKey)
 }
 
 /**
- * Sets the display metadata for the credential exchange on the given CredentialExchangeRecord.
+ * Sets the display metadata for the credential exchange on the given DidCommCredentialExchangeRecord.
  *
  * NOTE: this does not save the record.
  */
 export function setDidCommCredentialExchangeMetadata(
-  credentialExchangeRecord: CredentialExchangeRecord,
+  DidCommCredentialExchangeRecord: DidCommCredentialExchangeRecord,
   metadata: DidCommCredentialExchangeDisplayMetadata
 ) {
-  credentialExchangeRecord.metadata.set(didCommCredentialExchangeDisplayMetadataKey, metadata)
+  DidCommCredentialExchangeRecord.metadata.set(didCommCredentialExchangeDisplayMetadataKey, metadata)
 }
 
 /**
- * Gets the display metadata for the proof exchange from the given ProofExchangeRecord.
+ * Gets the display metadata for the proof exchange from the given DidCommProofExchangeRecord.
  */
 export function getDidCommProofExchangeDisplayMetadata(
-  proofExchangeRecord: ProofExchangeRecord
+  proofExchangeRecord: DidCommProofExchangeRecord
 ): DidCommProofExchangeDisplayMetadata | null {
   return proofExchangeRecord.metadata.get(didCommProofExchangeDisplayMetadataKey)
 }
 
 /**
- * Sets the display metadata for the proof exchange on the given ProofExchangeRecord.
+ * Sets the display metadata for the proof exchange on the given DidCommProofExchangeRecord.
  *
  * NOTE: this does not save the record.
  */
 export function setDidCommProofExchangeMetadata(
-  proofExchangeRecord: ProofExchangeRecord,
+  proofExchangeRecord: DidCommProofExchangeRecord,
   metadata: DidCommProofExchangeDisplayMetadata
 ) {
   proofExchangeRecord.metadata.set(didCommProofExchangeDisplayMetadataKey, metadata)
 }
 
 export function openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(
-  credentialExchangeRecord: CredentialExchangeRecord,
+  credentialExchangeRecord: DidCommCredentialExchangeRecord,
   didcommMetadata: DidCommCredentialExchangeDisplayMetadata
 ): OpenId4VcCredentialMetadata {
   return {

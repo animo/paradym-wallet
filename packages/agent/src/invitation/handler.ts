@@ -1,39 +1,42 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
-import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
+import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
 import { type DifPresentationExchangeDefinitionV2, Kms } from '@credo-ts/core'
 import { Jwt } from '@credo-ts/core'
-import type { PlaintextMessage } from '@credo-ts/didcomm'
+import type { DidCommPlaintextMessage } from '@credo-ts/didcomm'
 import type {
-  ConnectionRecord,
-  CredentialStateChangedEvent,
-  OutOfBandInvitation,
-  OutOfBandRecord,
-  ProofStateChangedEvent,
+  DidCommConnectionRecord,
+  DidCommCredentialStateChangedEvent,
+  DidCommOutOfBandInvitation,
+  DidCommOutOfBandRecord,
+  DidCommProofStateChangedEvent,
 } from '@credo-ts/didcomm'
 import {
-  CredentialEventTypes,
-  CredentialState,
-  OutOfBandRepository,
-  ProofEventTypes,
-  ProofState,
-  V2OfferCredentialMessage,
-  V2RequestPresentationMessage,
+  DidCommCredentialEventTypes,
+  DidCommCredentialState,
+  DidCommOfferCredentialV2Message,
+  DidCommOutOfBandRepository,
+  DidCommProofEventTypes,
+  DidCommProofState,
+  DidCommRequestPresentationV2Message,
   parseMessageType,
+  supportsIncomingMessageType,
 } from '@credo-ts/didcomm'
-import { supportsIncomingMessageType } from '@credo-ts/didcomm/build/util/messageType'
 import type {
   OpenId4VciCredentialConfigurationSupportedWithFormats,
+  OpenId4VciCredentialResponse,
+  OpenId4VciDeferredCredentialResponse,
   OpenId4VciDpopRequestOptions,
+  OpenId4VciMetadata,
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
 import {
   getOfferedCredentials,
+  getOid4vcCallbacks,
   getScopesFromCredentialConfigurationsSupported,
   preAuthorizedCodeGrantIdentifier,
 } from '@credo-ts/openid4vc'
-import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { t } from '@lingui/core/macro'
@@ -84,7 +87,7 @@ export async function resolveOpenId4VciOffer({
       uri: offer.uri,
     })
 
-    const resolvedCredentialOffer = await agent.modules.openId4VcHolder.resolveCredentialOffer(offer.uri)
+    const resolvedCredentialOffer = await agent.modules.openid4vc.holder.resolveCredentialOffer(offer.uri)
     let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
     // NOTE: we always assume scopes are used at the moment
@@ -98,7 +101,7 @@ export async function resolveOpenId4VciOffer({
 
       // TODO: authorization should only be initiated after we know which credentials we're going to request
       if (authorization) {
-        resolvedAuthorizationRequest = await agent.modules.openId4VcHolder.resolveOpenId4VciAuthorizationRequest(
+        resolvedAuthorizationRequest = await agent.modules.openid4vc.holder.resolveOpenId4VciAuthorizationRequest(
           resolvedCredentialOffer,
           {
             redirectUri: authorization.redirectUri,
@@ -134,7 +137,7 @@ export async function acquirePreAuthorizedAccessToken({
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   txCode?: string
 }) {
-  return await agent.modules.openId4VcHolder.requestToken({
+  return await agent.modules.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     txCode,
   })
@@ -153,7 +156,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
   authSession: string
   presentationDuringIssuanceSession?: string
 }) {
-  return await agent.modules.openId4VcHolder.retrieveAuthorizationCodeUsingPresentation({
+  return await agent.modules.openid4vc.holder.retrieveAuthorizationCodeUsingPresentation({
     authSession,
     dpop: dPopKeyJwk
       ? {
@@ -237,7 +240,7 @@ export async function acquireAuthorizationCodeAccessToken({
   redirectUri?: string
   dPopKeyJwk?: Kms.PublicJwk
 }) {
-  return await agent.modules.openId4VcHolder.requestToken({
+  return await agent.modules.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     code: authorizationCode,
     codeVerifier,
@@ -251,6 +254,33 @@ export async function acquireAuthorizationCodeAccessToken({
       : undefined,
   })
 }
+
+const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], issuerMetadata: OpenId4VciMetadata) =>
+  credentials.map(({ credentials, ...credentialResponse }) => {
+    const firstCredential = credentials[0]
+    const record = credentialRecordFromCredential(firstCredential)
+
+    // OpenID4VC metadata
+    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
+      id: issuerMetadata.credentialIssuer.credential_issuer,
+      display: issuerMetadata.credentialIssuer.display,
+    })
+    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+    // Match metadata
+    if (credentials.length > 1) {
+      setBatchCredentialMetadata(record, {
+        additionalCredentials: credentials.slice(1).map(encodeCredential) as
+          | Array<string>
+          | Array<Record<string, unknown>>,
+      })
+    }
+
+    return {
+      ...credentialResponse,
+      credential: record,
+    }
+  })
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
   agent,
@@ -285,7 +315,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 
   try {
-    const credentials = await agent.modules.openId4VcHolder.requestCredentials({
+    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestCredentials({
       resolvedCredentialOffer,
       ...accessToken,
       clientId,
@@ -301,36 +331,42 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       }),
     })
 
-    return credentials.credentials.map(({ credentials, ...credentialResponse }) => {
-      const configuration = resolvedCredentialOffer.offeredCredentialConfigurations[
-        credentialResponse.credentialConfigurationId
-      ] as OpenId4VciCredentialConfigurationSupportedWithFormats
+    return {
+      deferredCredentials,
+      credentials: parseCredentialResponses(credentials, resolvedCredentialOffer.metadata),
+    }
+  } catch (error) {
+    // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
+    // can retry e.g. the second credential
+    // Handle biometric authentication errors
+    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
+  }
+}
 
-      const firstCredential = credentials[0]
-      const record = credentialRecordFromCredential(firstCredential)
-
-      // OpenID4VC metadata
-      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(configuration, {
-        id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
-        display: resolvedCredentialOffer.metadata.credentialIssuer.display,
-      })
-      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-      // Match metadata
-      if (credentials.length > 1) {
-        setBatchCredentialMetadata(record, {
-          additionalCredentials: credentials.slice(1).map(encodeCredential) as
-            | Array<string>
-            | Array<Record<string, unknown>>,
-        })
-      }
-
-      return {
-        ...credentialResponse,
-        configuration,
-        credential: record,
-      }
+export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
+  agent,
+  deferredCredentialResponse,
+  issuerMetadata,
+  accessToken,
+}: {
+  agent: EitherAgent
+  deferredCredentialResponse: OpenId4VciDeferredCredentialResponse
+  issuerMetadata: OpenId4VciMetadata
+  // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
+  accessToken: OpenId4VciRequestTokenResponse
+}) => {
+  try {
+    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestDeferredCredentials({
+      ...deferredCredentialResponse,
+      ...accessToken,
+      issuerMetadata,
+      verifyCredentialStatus: false,
     })
+
+    return {
+      deferredCredentials,
+      credentials: parseCredentialResponses(credentials, issuerMetadata),
+    }
   } catch (error) {
     // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
     // can retry e.g. the second credential
@@ -459,7 +495,7 @@ export const getCredentialsForProofRequest = async ({
     request,
   })
 
-  const resolved = await agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(request, {
+  const resolved = await agent.modules.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
     origin,
     trustedFederationEntityIds: entityId ? [entityId] : undefined,
   })
@@ -523,8 +559,8 @@ export const getCredentialsForProofRequest = async ({
 
 async function findExistingDidcommConnectionForInvitation(
   agent: ParadymAppAgent,
-  outOfBandInvitation: OutOfBandInvitation
-): Promise<ConnectionRecord | null> {
+  outOfBandInvitation: DidCommOutOfBandInvitation
+): Promise<DidCommConnectionRecord | null> {
   for (const invitationDid of outOfBandInvitation.invitationDids) {
     const [connection] = await agent.modules.connections.findByInvitationDid(invitationDid)
     if (connection) return connection
@@ -536,12 +572,12 @@ async function findExistingDidcommConnectionForInvitation(
 export interface ResolveOutOfBandInvitationResultSuccess {
   success: true
 
-  outOfBandInvitation: OutOfBandInvitation
+  outOfBandInvitation: DidCommOutOfBandInvitation
 
   /**
    * Whether an existing connection already exists based on this invitation
    */
-  existingConnection?: ConnectionRecord
+  existingConnection?: DidCommConnectionRecord
 
   /**
    * Whether a connection will be created as part of the exchange.
@@ -569,7 +605,7 @@ export interface ResolveOutOfBandInvitationResultSuccess {
  */
 export async function resolveOutOfBandInvitation(
   agent: ParadymAppAgent,
-  invitation: OutOfBandInvitation
+  invitation: DidCommOutOfBandInvitation
 ): Promise<ResolveOutOfBandInvitationResultSuccess | { success: false; error: string }> {
   const requestMessages = invitation.getRequests() ?? []
 
@@ -605,15 +641,15 @@ export async function resolveOutOfBandInvitation(
   }
   // Validate the type of the request message
   else {
-    const requestMessage = requestMessages[0] as PlaintextMessage
+    const requestMessage = requestMessages[0] as DidCommPlaintextMessage
     const parsedMessageType = parseMessageType(requestMessage['@type'])
     const isValidOfferMessage =
       supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
-      supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type)
+      supportsIncomingMessageType(parsedMessageType, DidCommOfferCredentialV2Message.type)
 
     const isValidRequestMessage =
-      supportsIncomingMessageType(parsedMessageType, V1RequestPresentationMessage.type) ||
-      supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type)
+      supportsIncomingMessageType(parsedMessageType, DidCommRequestPresentationV1Message.type) ||
+      supportsIncomingMessageType(parsedMessageType, DidCommRequestPresentationV2Message.type)
 
     if (isValidRequestMessage) {
       flowType = 'verify'
@@ -674,22 +710,24 @@ export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' 
  */
 export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
   agent: ParadymAppAgent,
-  invitation: OutOfBandInvitation,
+  invitation: DidCommOutOfBandInvitation,
   flowType: FlowType
 ): AcceptOutOfBandInvitationResult<FlowType> {
   // The value is reassigned, but eslint doesn't know this.
   let connectionId: string | undefined
 
-  let observable: Observable<CredentialStateChangedEvent | ProofStateChangedEvent> | undefined = undefined
+  let observable: Observable<DidCommCredentialStateChangedEvent | DidCommProofStateChangedEvent> | undefined = undefined
 
   if (flowType === 'issue') {
-    observable = agent.events.observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged).pipe(
-      filter((event) => event.payload.credentialRecord.state === CredentialState.OfferReceived),
-      filter((event) => event.payload.credentialRecord.connectionId === connectionId)
-    )
+    observable = agent.events
+      .observable<DidCommCredentialStateChangedEvent>(DidCommCredentialEventTypes.DidCommCredentialStateChanged)
+      .pipe(
+        filter((event) => event.payload.credentialExchangeRecord.state === DidCommCredentialState.OfferReceived),
+        filter((event) => event.payload.credentialExchangeRecord.connectionId === connectionId)
+      )
   } else if (flowType === 'verify') {
-    observable = agent.events.observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged).pipe(
-      filter((event) => event.payload.proofRecord.state === ProofState.RequestReceived),
+    observable = agent.events.observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged).pipe(
+      filter((event) => event.payload.proofRecord.state === DidCommProofState.RequestReceived),
       filter((event) => event.payload.proofRecord.connectionId === connectionId)
     )
   }
@@ -704,12 +742,13 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
       )
     : undefined
 
-  let connectionRecord: ConnectionRecord | undefined
-  let outOfBandRecord: OutOfBandRecord
+  let connectionRecord: DidCommConnectionRecord | undefined
+  let outOfBandRecord: DidCommOutOfBandRecord
 
   try {
     const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
       reuseConnection: true,
+      label: '',
     })
     connectionRecord = receiveInvitationResult.connectionRecord
     outOfBandRecord = receiveInvitationResult.outOfBandRecord
@@ -738,16 +777,16 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
       } as unknown as any
     }
 
-    if (event.type === CredentialEventTypes.CredentialStateChanged) {
+    if (event.type === DidCommCredentialEventTypes.DidCommCredentialStateChanged) {
       return {
         success: true,
-        credentialExchangeId: event.payload.credentialRecord.id,
+        credentialExchangeId: event.payload.credentialExchangeRecord.id,
         connectionId,
         flowType: 'issue',
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       } as unknown as any
     }
-    if (event.type === ProofEventTypes.ProofStateChanged) {
+    if (event.type === DidCommProofEventTypes.ProofStateChanged) {
       return {
         success: true,
         proofExchangeId: event.payload.proofRecord.id,
@@ -760,7 +799,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
     agent.config.logger.error('Error while accepting out of band invitation.')
 
     // Delete OOB record
-    const outOfBandRepository = agent.dependencyManager.resolve(OutOfBandRepository)
+    const outOfBandRepository = agent.dependencyManager.resolve(DidCommOutOfBandRepository)
     await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
 
     // Delete connection record

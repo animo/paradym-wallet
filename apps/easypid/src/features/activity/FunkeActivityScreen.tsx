@@ -1,9 +1,9 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { useActivities } from '@package/agent'
 import { ActivityRowItem } from '@package/app'
 import { TextBackButton } from '@package/app'
 import { useScrollViewPosition } from '@package/app/hooks'
-import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -18,7 +18,6 @@ import {
 } from '@package/ui'
 import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
-import { useActivities } from './activityRecord'
 
 const activityMessages = {
   screenTitle: defineMessage({
@@ -95,16 +94,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
                     </Heading>
                   </Stack>
                   {groupActivities.map((activity) => (
-                    <ActivityRowItem
-                      key={activity.id}
-                      id={activity.id}
-                      logo={activity.entity.logo}
-                      backgroundColor={activity.entity.backgroundColor}
-                      subtitle={activity.entity.name ?? activity.entity.host ?? t(commonMessages.unknownOrganization)}
-                      date={new Date(activity.date)}
-                      type={activity.type}
-                      status={activity.status}
-                    />
+                    <ActivityRowItem activity={activity} key={activity.id} />
                   ))}
                 </React.Fragment>
               )

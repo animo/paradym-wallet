@@ -1,4 +1,4 @@
-import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '@credo-ts/core'
 
 export interface BatchCredentialMetadata {
   /**
@@ -13,7 +13,7 @@ const batchCredentialMetadataKey = '_paradym/batchCredentialMetadata'
  * Gets the batch credential metadata from the given credential record.
  */
 export function getBatchCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 ): BatchCredentialMetadata | null {
   return credentialRecord.metadata.get(batchCredentialMetadataKey)
 }
@@ -24,7 +24,7 @@ export function getBatchCredentialMetadata(
  * NOTE: this does not save the record.
  */
 export function setBatchCredentialMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord,
   metadata: BatchCredentialMetadata
 ) {
   credentialRecord.metadata.set(batchCredentialMetadataKey, metadata)

@@ -1,3 +1,8 @@
+import { useFirstNameFromPidCredential } from '@easypid/hooks'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { useRefreshedDeferredCredentials } from '@package/agent'
+import { useHaptics } from '@package/app/hooks'
 import {
   AnimatedStack,
   Blob,
@@ -16,11 +21,6 @@ import {
   useSpringify,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
-
-import { useFirstNameFromPidCredential } from '@easypid/hooks'
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { useHaptics } from '@package/app/hooks'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
@@ -32,7 +32,6 @@ export function FunkeWalletScreen() {
   const { withHaptics } = useHaptics()
   const { userName, isLoading } = useFirstNameFromPidCredential()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
-  const hasInboxFeatureFlag = useFeatureFlag('INBOX')
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
@@ -43,6 +42,8 @@ export function FunkeWalletScreen() {
   }
   const { t } = useLingui()
 
+  useRefreshedDeferredCredentials()
+
   return (
     <YStack pos="relative" fg={1} bg="$background">
       <YStack pos="absolute" h="50%" w="100%">
@@ -52,7 +53,7 @@ export function FunkeWalletScreen() {
       <FlexPage fg={1} flex-1={false} bg="transparent">
         <XStack pt="$2" jc="space-between">
           <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
-          {hasInboxFeatureFlag && <InboxIcon />}
+          <InboxIcon />
         </XStack>
 
         <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>

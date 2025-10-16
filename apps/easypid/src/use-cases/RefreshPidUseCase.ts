@@ -80,7 +80,8 @@ export class RefreshPidUseCase {
 
     const limitToFormats: string[] = []
     if (mdoc) limitToFormats.push(ClaimFormat.MsoMdoc)
-    if (sdJwt) limitToFormats.push(ClaimFormat.SdJwtVc)
+    // NOTE: BDR issuer still uses legacy vc+sd-jwt
+    if (sdJwt) limitToFormats.push(ClaimFormat.SdJwtDc, 'vc+sd-jwt')
 
     const credentialConfigurationIdsToRequest = Object.entries(
       this.resolvedCredentialOffer.offeredCredentialConfigurations
@@ -88,7 +89,7 @@ export class RefreshPidUseCase {
       .filter(([, configuration]) => limitToFormats.includes(configuration.format))
       .map(([id]) => id)
 
-    const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
+    const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
       agent: this.options.agent,
       accessToken,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
@@ -98,8 +99,12 @@ export class RefreshPidUseCase {
       pidSchemes,
     })
 
+    if (deferredCredentials && deferredCredentials.length > 0) {
+      throw new Error('Unexpected deferred credentials in refresh pid use case flow')
+    }
+
     const credentialRecords: Array<SdJwtVcRecord | MdocRecord> = []
-    for (const credentialResponse of credentialResponses) {
+    for (const credentialResponse of credentials) {
       const credentialRecord = credentialResponse.credential
 
       if (credentialRecord.type !== 'SdJwtVcRecord' && credentialRecord.type !== 'MdocRecord') {

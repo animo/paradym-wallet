@@ -18,6 +18,7 @@ import {
   BiometricAuthenticationNotEnabledError,
   getCredentialForDisplay,
   getCredentialForDisplayId,
+  storeReceivedActivity,
 } from '@package/agent'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -26,7 +27,6 @@ import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { useShouldUseCloudHsm } from '../onboarding/useShouldUseCloudHsm'
 import { PidCardScanSlide } from './PidCardScanSlide'
 import { PidIdCardFetchSlide } from './PidEidCardFetchSlide'
@@ -345,13 +345,14 @@ export function FunkePidSetupScreen() {
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await addReceivedActivity(secureUnlock.context.agent, {
+          await storeReceivedActivity(secureUnlock.context.agent, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
+            deferredCredentials: [],
             credentialIds: [getCredentialForDisplayId(credential)],
           })
         }

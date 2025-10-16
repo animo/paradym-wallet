@@ -7,6 +7,7 @@ import {
   type MdocRecord,
   type SdJwtVcRecord,
   type W3cCredentialRecord,
+  type W3cV2CredentialRecord,
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
 import type { EitherAgent } from '../agent'
@@ -64,7 +65,7 @@ export const shareProof = async ({
           Object.entries(
             Object.keys(selectedCredentials).length > 0
               ? getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
-              : agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+              : agent.modules.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
           ).map(async ([queryCredentialId, credentials]) => {
             // Optionally use a batch credential
             const updatedCredentials = await Promise.all(
@@ -83,7 +84,7 @@ export const shareProof = async ({
   const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
 
   try {
-    const result = await agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
+    const result = await agent.modules.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
       presentationExchange: presentationExchangeCredentials
         ? {
@@ -141,7 +142,7 @@ function getSelectedCredentialsForRequest(
   const credentials: DcqlCredentialsForRequest = {}
 
   type WithRecord<T> = T & {
-    record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord
+    record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord | W3cV2CredentialRecord
   }
 
   for (const [credentialQueryId, credentialRecordId] of Object.entries(selectedCredentials)) {
@@ -159,7 +160,7 @@ function getSelectedCredentialsForRequest(
 
       // TODO: fix the typing, make selection in Credo easier
       const matchWithRecord = validCredentialMatch as typeof validCredentialMatch & {
-        record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord
+        record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord | W3cV2CredentialRecord
       }
 
       if (matchWithRecord.record.type === 'MdocRecord') {
@@ -173,7 +174,7 @@ function getSelectedCredentialsForRequest(
       } else if (matchWithRecord.record.type === 'SdJwtVcRecord') {
         credentials[credentialQueryId] = [
           {
-            claimFormat: ClaimFormat.SdJwtVc,
+            claimFormat: ClaimFormat.SdJwtDc,
             credentialRecord: matchWithRecord.record,
             disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as JsonObject,
           },

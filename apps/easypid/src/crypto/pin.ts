@@ -34,6 +34,9 @@ export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Arra
   const jwk = Kms.PublicJwk.fromUnknown(Kms.publicJwkFromPrivateJwk(privateJwk))
   const kms = agentContext.resolve(Kms.KeyManagementApi)
 
+  // Need to set the keyId
+  jwk.keyId = jwk.legacyKeyId
+
   await kms.getPublicKey({ keyId: jwk.legacyKeyId }).catch(async (error) => {
     if (error instanceof Kms.KeyManagementKeyNotFoundError) {
       // FIXME: we can't assign custom kid with all backends. I think we should
