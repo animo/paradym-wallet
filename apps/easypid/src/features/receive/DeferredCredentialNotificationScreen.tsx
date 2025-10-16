@@ -20,35 +20,36 @@ import {
   Heading,
   HeroIcons,
   InfoButton,
+  Loader,
   Paragraph,
   ScrollView,
   Stack,
   YStack,
 } from '@package/ui'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type Query = { deferredCredentialId: string }
 
 export function DeferredCredentialNotificationScreen() {
   const router = useRouter()
-  const { withHaptics } = useHaptics()
-  const { bottom } = useSafeAreaInsets()
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-  const { i18n, t } = useLingui()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const { i18n, t } = useLingui()
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+  const { bottom } = useSafeAreaInsets()
+  const { withHaptics } = useHaptics()
+
   const { deferredCredentialId } = useLocalSearchParams<Query>()
-  const { deferredCredentials } = useDeferredCredentials()
-
+  const { deferredCredentials, isLoading } = useDeferredCredentials()
   const deferredCredential = deferredCredentials?.find((dc) => dc.id === deferredCredentialId)
-  if (!deferredCredential) {
-    router.back()
-    return
-  }
+  const nextCheck = deferredCredential ? getDeferredCredentialNextCheckAt(deferredCredential) : undefined
 
-  const { response, issuerMetadata } = deferredCredential
-  const nextCheck = getDeferredCredentialNextCheckAt(deferredCredential)
+  useEffect(() => {
+    if (!isLoading && !deferredCredential) {
+      router.back()
+    }
+  }, [router, isLoading, deferredCredential])
 
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
@@ -56,16 +57,18 @@ export function DeferredCredentialNotificationScreen() {
     renderCondition: true,
   })
 
-  const credentialDisplay = getCredentialDisplayWithDefaults(
-    getOpenId4VcCredentialDisplay(
-      extractOpenId4VcCredentialMetadata(response.credentialConfiguration, {
-        display: issuerMetadata.credentialIssuer?.display,
-        id: issuerMetadata.credentialIssuer?.credential_issuer,
-      })
-    )
-  )
+  const credentialDisplay = deferredCredential
+    ? getCredentialDisplayWithDefaults(
+        getOpenId4VcCredentialDisplay(
+          extractOpenId4VcCredentialMetadata(deferredCredential.response.credentialConfiguration, {
+            display: deferredCredential.issuerMetadata.credentialIssuer?.display,
+            id: deferredCredential.issuerMetadata.credentialIssuer?.credential_issuer,
+          })
+        )
+      )
+    : undefined
 
-  return (
+  return deferredCredential && credentialDisplay ? (
     <>
       <FlexPage p={0} gap={0}>
         <YStack
@@ -189,8 +192,10 @@ export function DeferredCredentialNotificationScreen() {
         name={credentialDisplay.name}
         hasErrors={!!deferredCredential.lastErroredAt}
         issuerDisplay={credentialDisplay.issuer}
-        issuerId={issuerMetadata?.credentialIssuer?.credential_issuer}
+        issuerId={deferredCredential.issuerMetadata?.credentialIssuer?.credential_issuer}
       />
     </>
+  ) : (
+    <Loader />
   )
 }
