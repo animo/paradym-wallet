@@ -5,15 +5,16 @@ import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
 import { useLingui } from '@lingui/react/macro'
 import {
+  type ActivityStatus,
   BiometricAuthenticationCancelledError,
   type FormattedSubmission,
   getSubmissionForMdocDocumentRequest,
+  storeSharedActivityForCredentialsForRequest,
 } from '@package/agent'
 import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { useCallback, useEffect, useState } from 'react'
-import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
@@ -161,9 +162,9 @@ export function FunkeMdocOfflineSharingScreen({
     pushToWallet('replace')
   }
 
-  const addActivity = async (status: ActivityStatus) => {
+  const addActivity = async (status: Exclude<ActivityStatus, 'pending'>) => {
     if (!submission) return
-    await addSharedActivityForCredentialsForRequest(
+    await storeSharedActivityForCredentialsForRequest(
       agent,
       {
         formattedSubmission: submission,

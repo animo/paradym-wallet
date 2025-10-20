@@ -1,0 +1,32 @@
+diff --git a/build/kms/AskarKeyManagementService.mjs b/build/kms/AskarKeyManagementService.mjs
+index ad1489cd8e90237eecc20361913a4fe2841e91c2..16e47cb014e7f19b33b90a45539b16cff15c69ac 100644
+--- a/build/kms/AskarKeyManagementService.mjs
++++ b/build/kms/AskarKeyManagementService.mjs
+@@ -100,12 +100,13 @@ var AskarKeyManagementService = class AskarKeyManagementService {
+ 	}
+ 	async createKey(agentContext, options) {
+ 		const { type, keyId } = options;
+-		const kid = keyId ?? utils.uuid();
++		let kid = keyId;
+ 		let askarKey;
+ 		try {
+ 			if (type.kty === "EC" || type.kty === "OKP") {
+ 				const keyAlg = this.assertAskarAlgForJwkCrv(type.kty, type.crv);
+ 				askarKey = Key.generate(keyAlg);
++				kid = kid ?? TypedArrayEncoder.toBase58(askarKey.publicBytes)
+ 			} else if (type.kty === "oct") if (type.algorithm === "aes") {
+ 				const lengthToKeyAlg = {
+ 					128: KeyAlgorithm.AesA128Gcm,
+@@ -115,7 +116,11 @@ var AskarKeyManagementService = class AskarKeyManagementService {
+ 				const keyAlg = lengthToKeyAlg[type.length];
+ 				if (!keyAlg) throw new Kms.KeyManagementAlgorithmNotSupportedError(`length '${type.length}' for kty '${type.kty}' with algorithm '${type.algorithm}'. Supported length values are ${Object.keys(lengthToKeyAlg).join(", ")}`, this.backend);
+ 				askarKey = Key.generate(keyAlg);
+-			} else if (type.algorithm === "C20P") askarKey = Key.generate(KeyAlgorithm.Chacha20C20P);
++				kid = kid ?? utils.uuid();
++			} else if (type.algorithm === "C20P") {
++				askarKey = Key.generate(KeyAlgorithm.Chacha20C20P);
++				kid = kid ?? utils.uuid();
++			}
+ 			else throw new Kms.KeyManagementAlgorithmNotSupportedError(`algorithm '${type.algorithm}' for kty '${type.kty}'`, this.backend);
+ 			const _key = askarKey;
+ 			if (!_key) throw new Kms.KeyManagementAlgorithmNotSupportedError(`kty '${type.kty}'`, this.backend);

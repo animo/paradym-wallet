@@ -32,12 +32,12 @@ export function CredentialAttributes({ attributes, headerTitle }: CredentialAttr
   return <FormattedCredentialAttributes attributes={formattedData} headerTitle={headerTitle} />
 }
 
-export type FormttedCredentialAttributesProps = {
+export type FormattedCredentialAttributesProps = {
   attributes: FormattedCredentialValue[]
   headerTitle?: string
 }
 
-export function FormattedCredentialAttributes({ attributes, headerTitle }: FormttedCredentialAttributesProps) {
+export function FormattedCredentialAttributes({ attributes, headerTitle }: FormattedCredentialAttributesProps) {
   // Separate data into primitive values and objects at the parent level
   const primitiveItems = attributes.filter((item) => item.type !== 'object' && item.type !== 'array')
   const objectItems = attributes.filter((item) => item.type === 'object' || item.type === 'array')

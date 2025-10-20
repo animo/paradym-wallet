@@ -7,6 +7,7 @@ import {
   getDisclosedAttributeNamesForDisplay,
   getFormattedTransactionData,
   shareProof,
+  storeSharedActivityForCredentialsForRequest,
 } from '@package/agent'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
@@ -20,7 +21,6 @@ import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { addSharedActivityForCredentialsForRequest } from '../activity/activityRecord'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
 
@@ -177,7 +177,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
 
         onPinComplete?.()
-        await addSharedActivityForCredentialsForRequest(
+        await storeSharedActivityForCredentialsForRequest(
           agent,
           credentialsForRequest,
           'success',
@@ -192,7 +192,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
 
         if (credentialsForRequest) {
-          await addSharedActivityForCredentialsForRequest(
+          await storeSharedActivityForCredentialsForRequest(
             agent,
             credentialsForRequest,
             'failed',
@@ -230,7 +230,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const onProofDecline = useCallback(async () => {
     stopOverAsking()
     if (credentialsForRequest) {
-      await addSharedActivityForCredentialsForRequest(
+      await storeSharedActivityForCredentialsForRequest(
         agent,
         credentialsForRequest,
         credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed',

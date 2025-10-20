@@ -36,7 +36,8 @@ import {
 } from 'react-native-reanimated'
 
 interface CredentialRetrievalSlideProps {
-  attributes: Record<string, unknown>
+  attributes?: Record<string, unknown>
+  deferred?: boolean
   display: CredentialDisplay
   isCompleted: boolean
   onAccept: () => Promise<void>
@@ -46,6 +47,7 @@ interface CredentialRetrievalSlideProps {
 
 export const CredentialRetrievalSlide = ({
   attributes,
+  deferred,
   display,
   isCompleted,
   onAccept,
@@ -63,7 +65,7 @@ export const CredentialRetrievalSlide = ({
   const [isStoring, setIsStoring] = useState(isAccepting ?? false)
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
   const isStoringOrCompleted = isStoring || isCompleted
-  const isAllowedToAccept = attributes && Object.keys(attributes).length > 0
+  const isAllowedToAccept = (attributes && Object.keys(attributes).length > 0) || deferred
 
   const handleAccept = async () => {
     setIsStoring(true)
@@ -155,6 +157,10 @@ export const CredentialRetrievalSlide = ({
               </Heading>
             ) : isStoring ? (
               <Heading> </Heading>
+            ) : deferred ? (
+              <Heading>
+                <Trans id="receiveCredential.deferredCredentialHeader">Card is not ready yet</Trans>
+              </Heading>
             ) : (
               <Heading>
                 <Trans id="receiveCredential.checkInformationHeader">Is the information correct?</Trans>
@@ -170,9 +176,15 @@ export const CredentialRetrievalSlide = ({
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
             {isStoringOrCompleted ? (
-              <Paragraph ta="center" mt="$-2" mb="$6">
-                <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
-              </Paragraph>
+              deferred ? (
+                <Paragraph ta="center" mt="$-2" mb="$6">
+                  <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
+                </Paragraph>
+              ) : (
+                <Paragraph ta="center" mt="$-2" mb="$6">
+                  <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
+                </Paragraph>
+              )
             ) : null}
           </AnimatedStack>
         </AnimatedStack>
@@ -212,7 +224,16 @@ export const CredentialRetrievalSlide = ({
               >
                 {scrollViewHeight && isAllowedToAccept ? (
                   <AnimatedStack key="credential-attributes" entering={FadeIn.duration(200)}>
-                    <CredentialAttributes attributes={attributes} />
+                    {attributes ? (
+                      <CredentialAttributes attributes={attributes} />
+                    ) : (
+                      <Paragraph>
+                        <Trans id="receiveCredential.deferredCredentialParagraph">
+                          Your cards are not yet ready. We will check once in a while in the background and fetch the
+                          cards once they're ready.
+                        </Trans>
+                      </Paragraph>
+                    )}
                   </AnimatedStack>
                 ) : (
                   <YStack fg={1} jc="center" ai="center">

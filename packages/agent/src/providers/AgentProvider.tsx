@@ -9,6 +9,7 @@ import { MdocRecordProvider } from './MdocProvider'
 import { ProofExchangeProvider } from './ProofExchangeProvider'
 import { SdJwtVcRecordProvider } from './SdJwtVcsProvider'
 import { W3cCredentialRecordProvider } from './W3cCredentialsProvider'
+import { W3cV2CredentialRecordProvider } from './W3cV2CredentialsProvider'
 
 const AgentContext = createContext<Agent | undefined>(undefined)
 
@@ -56,11 +57,13 @@ export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProvid
           {accChildren}
         </Provider>
       ),
-      <W3cCredentialRecordProvider agent={agent}>
-        <SdJwtVcRecordProvider agent={agent}>
-          <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
-        </SdJwtVcRecordProvider>
-      </W3cCredentialRecordProvider>
+      <W3cV2CredentialRecordProvider agent={agent}>
+        <W3cCredentialRecordProvider agent={agent}>
+          <SdJwtVcRecordProvider agent={agent}>
+            <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
+          </SdJwtVcRecordProvider>
+        </W3cCredentialRecordProvider>
+      </W3cV2CredentialRecordProvider>
     )
   }, [DynamicProviders, agent, children])
 

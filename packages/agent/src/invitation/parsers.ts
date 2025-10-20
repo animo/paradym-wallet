@@ -1,6 +1,6 @@
 import type { ParadymAppAgent } from '../agent'
 
-import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
+import { parseInvitationJson } from '@credo-ts/didcomm'
 import { commonMessages, i18n } from '@package/translations'
 import queryString from 'query-string'
 

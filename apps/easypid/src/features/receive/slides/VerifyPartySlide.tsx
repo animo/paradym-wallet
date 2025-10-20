@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { DisplayImage, TrustMechanism, TrustedEntity } from '@package/agent'
+import { type DisplayImage, type TrustMechanism, type TrustedEntity, useActivities } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
@@ -18,7 +18,6 @@ import {
 import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { useActivities } from '../../activity/activityRecord'
 
 const NO_ENTITY_ID = 'NO_ENTITY_ID'
 

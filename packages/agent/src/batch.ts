@@ -1,8 +1,8 @@
-import { Mdoc, MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import { Mdoc, MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '@credo-ts/core'
 import { RefreshPidUseCase } from '../../../apps/easypid/src/use-cases/RefreshPidUseCase'
 import type { EitherAgent } from './agent'
 import { getCredentialCategoryMetadata } from './credentialCategoryMetadata'
-import { decodeW3cCredential } from './format/credentialEncoding'
+import { decodeW3cCredential, decodeW3cV2Credential } from './format/credentialEncoding'
 import { getBatchCredentialMetadata } from './openid4vc/batchMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
 import { updateCredential } from './storage'
@@ -30,10 +30,9 @@ export async function refreshPid({
  *
  * @todo: what if batch is gone?
  */
-export async function handleBatchCredential<CredentialRecord extends W3cCredentialRecord | SdJwtVcRecord | MdocRecord>(
-  agent: EitherAgent,
-  credentialRecord: CredentialRecord
-): Promise<CredentialRecord> {
+export async function handleBatchCredential<
+  CredentialRecord extends W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord,
+>(agent: EitherAgent, credentialRecord: CredentialRecord): Promise<CredentialRecord> {
   const batchMetadata = getBatchCredentialMetadata(credentialRecord)
   if (!batchMetadata) return credentialRecord
 
@@ -87,6 +86,11 @@ export async function handleBatchCredential<CredentialRecord extends W3cCredenti
       return new W3cCredentialRecord({
         tags: { expandedTypes: [] },
         credential: decodeW3cCredential(batchCredential),
+      }) as CredentialRecord
+    }
+    if (credentialRecord instanceof W3cV2CredentialRecord) {
+      return new W3cV2CredentialRecord({
+        credential: decodeW3cV2Credential(batchCredential as string),
       }) as CredentialRecord
     }
   }

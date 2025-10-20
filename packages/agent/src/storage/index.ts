@@ -1,3 +1,5 @@
 export * from './walletJsonStore'
 export * from './WalletJsonStoreProvider'
 export * from './credential'
+export * from './activityStore'
+export * from './deferredCredentialStore'

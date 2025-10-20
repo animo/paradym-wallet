@@ -33,7 +33,7 @@ export function useCredentialByCategory(credentialCategory?: string) {
       (c): c is typeof c & { record: MdocRecord; claimFormat: ClaimFormat.MsoMdoc } => c.record instanceof MdocRecord
     ),
     sdJwt: credentials.find(
-      (c): c is typeof c & { record: SdJwtVcRecord; claimFormat: ClaimFormat.SdJwtVc } =>
+      (c): c is typeof c & { record: SdJwtVcRecord; claimFormat: ClaimFormat.SdJwtDc } =>
         c.record instanceof SdJwtVcRecord
     ),
   } as const

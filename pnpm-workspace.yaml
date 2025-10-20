@@ -20,29 +20,29 @@ catalog:
   credo-ts-didweb-anoncreds: 0.0.1-alpha.14
   rxjs: ^7.8.1
   query-string: ^8.1.0
-  "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250604122408
+  "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250917090914
   "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
-  "@animo-id/expo-secure-environment": 0.1.0
+  "@animo-id/expo-secure-environment": 0.1.4
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.1.4-alpha.3
   "@animo-id/mdoc": 0.5.2
   "@unimodules/react-native-adapter": ./noop
   "@unimodules/core": ./noop
-  "@openid4vc/oauth2": 0.3.0-alpha-20250602121005
-  "@openid4vc/openid4vp": 0.3.0-alpha-20250602121005
-  "@openid4vc/openid4vci": 0.3.0-alpha-20250602121005
-  "@openid4vc/utils": 0.3.0-alpha-20250602121005
+  "@openid4vc/oauth2": 0.3.0-alpha-20251001121503
+  "@openid4vc/openid4vp": 0.3.0-alpha-20251001121503
+  "@openid4vc/openid4vci": 0.3.0-alpha-20251001121503
+  "@openid4vc/utils": 0.3.0-alpha-20251001121503
   isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
   fast-text-encoding: ^1.0.6
   "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20250604111322
-  "@credo-ts/askar": npm:@animo-id/credo-ts-askar@0.5.14-alpha-20250604111322
-  "@credo-ts/cheqd": npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20250604111322
-  "@credo-ts/core": npm:@animo-id/credo-ts-core@0.5.14-alpha-20250604111322
-  "@credo-ts/openid4vc": npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20250604111322
-  "@credo-ts/question-answer": npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20250604111322
-  "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20250604111322
-  "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20250604111322
+  "@credo-ts/anoncreds": npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257
+  "@credo-ts/askar": npm:@animo-id/credo-ts-askar@0.5.14-alpha-20251016134257
+  "@credo-ts/cheqd": npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20251016134257
+  "@credo-ts/core": npm:@animo-id/credo-ts-core@0.5.14-alpha-20251016134257
+  "@credo-ts/openid4vc": npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251016134257
+  "@credo-ts/question-answer": npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20251016134257
+  "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20251016134257
+  "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20251016134257
   "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": 0.3.1
   "@hyperledger/anoncreds-shared": 0.3.1
@@ -75,6 +75,7 @@ catalog:
   react-native-vision-camera: ^4.7.2
 
   # Expo
+  expo-crypto: ^15.0.7
   expo-standard-web-crypto: 2.1.4
   expo-application: ~6.1.5
   expo-asset: ~11.1.6

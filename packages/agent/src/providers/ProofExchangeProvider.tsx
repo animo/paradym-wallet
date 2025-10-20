@@ -1,8 +1,8 @@
-import type { ProofState } from '@credo-ts/didcomm'
+import type { DidCommProofState } from '@credo-ts/didcomm'
 import type { PropsWithChildren } from 'react'
 import type { RecordsState } from './recordUtils'
 
-import { ProofExchangeRecord } from '@credo-ts/didcomm'
+import { DidCommProofExchangeRecord } from '@credo-ts/didcomm'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import type { ParadymAppAgent } from '../agent'
@@ -15,7 +15,7 @@ import {
   updateRecord,
 } from './recordUtils'
 
-const ProofContext = createContext<RecordsState<ProofExchangeRecord> | undefined>(undefined)
+const ProofContext = createContext<RecordsState<DidCommProofExchangeRecord> | undefined>(undefined)
 
 export const useProofs = () => {
   const proofContext = useContext(ProofContext)
@@ -25,38 +25,38 @@ export const useProofs = () => {
   return proofContext
 }
 
-export const useProofsByConnectionId = (connectionId: string): ProofExchangeRecord[] => {
+export const useProofsByConnectionId = (connectionId: string): DidCommProofExchangeRecord[] => {
   const { records: proofs } = useProofs()
   return useMemo(
-    () => proofs.filter((proof: ProofExchangeRecord) => proof.connectionId === connectionId),
+    () => proofs.filter((proof: DidCommProofExchangeRecord) => proof.connectionId === connectionId),
     [proofs, connectionId]
   )
 }
 
-export const useProofById = (id: string): ProofExchangeRecord | undefined => {
+export const useProofById = (id: string): DidCommProofExchangeRecord | undefined => {
   const { records: proofs } = useProofs()
-  return proofs.find((c: ProofExchangeRecord) => c.id === id)
+  return proofs.find((c: DidCommProofExchangeRecord) => c.id === id)
 }
 
-export const useProofByState = (state: ProofState | ProofState[]): ProofExchangeRecord[] => {
+export const useProofByState = (state: DidCommProofState | DidCommProofState[]): DidCommProofExchangeRecord[] => {
   const states = useMemo(() => (typeof state === 'string' ? [state] : state), [state])
 
   const { records: proofs } = useProofs()
 
   const filteredProofs = useMemo(
-    () => proofs.filter((r: ProofExchangeRecord) => states.includes(r.state)),
+    () => proofs.filter((r: DidCommProofExchangeRecord) => states.includes(r.state)),
     [proofs, states]
   )
   return filteredProofs
 }
 
-export const useProofNotInState = (state: ProofState | ProofState[]) => {
+export const useProofNotInState = (state: DidCommProofState | DidCommProofState[]) => {
   const states = useMemo(() => (typeof state === 'string' ? [state] : state), [state])
 
   const { records: proofs } = useProofs()
 
   const filteredProofs = useMemo(
-    () => proofs.filter((r: ProofExchangeRecord) => !states.includes(r.state)),
+    () => proofs.filter((r: DidCommProofExchangeRecord) => !states.includes(r.state)),
     [proofs, states]
   )
 
@@ -68,7 +68,7 @@ interface Props {
 }
 
 export const ProofExchangeProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {
-  const [state, setState] = useState<RecordsState<ProofExchangeRecord>>({
+  const [state, setState] = useState<RecordsState<DidCommProofExchangeRecord>>({
     records: [],
     loading: true,
   })
@@ -80,15 +80,15 @@ export const ProofExchangeProvider: React.FC<PropsWithChildren<Props>> = ({ agen
   useEffect(() => {
     if (state.loading) return
 
-    const proofAdded$ = recordsAddedByType(agent, ProofExchangeRecord).subscribe((record) =>
+    const proofAdded$ = recordsAddedByType(agent, DidCommProofExchangeRecord).subscribe((record) =>
       setState(addRecord(record, state))
     )
 
-    const proofUpdated$ = recordsUpdatedByType(agent, ProofExchangeRecord).subscribe((record) =>
+    const proofUpdated$ = recordsUpdatedByType(agent, DidCommProofExchangeRecord).subscribe((record) =>
       setState(updateRecord(record, state))
     )
 
-    const proofRemoved$ = recordsRemovedByType(agent, ProofExchangeRecord).subscribe((record) =>
+    const proofRemoved$ = recordsRemovedByType(agent, DidCommProofExchangeRecord).subscribe((record) =>
       setState(removeRecord(record, state))
     )
 

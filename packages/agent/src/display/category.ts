@@ -3,9 +3,9 @@ import { getPidAttributesForDisplay } from '@easypid/utils/pidCustomMetadata'
 import type { CredentialCategoryMetadata } from '../credentialCategoryMetadata'
 
 const categoryDisplay = {
-  [ClaimFormat.SdJwtVc]: {
+  [ClaimFormat.SdJwtDc]: {
     'DE-PID': (attributes: Record<string, unknown>) => {
-      return getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtVc)
+      return getPidAttributesForDisplay(attributes, ClaimFormat.SdJwtDc)
     },
   },
   [ClaimFormat.MsoMdoc]: {
@@ -20,7 +20,7 @@ export const getAttributesForCategory = ({
   credentialCategory,
   attributes,
 }: {
-  format: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+  format: ClaimFormat.SdJwtDc | ClaimFormat.MsoMdoc
   credentialCategory?: CredentialCategoryMetadata['credentialCategory']
   attributes: Record<string, unknown>
 }) => {

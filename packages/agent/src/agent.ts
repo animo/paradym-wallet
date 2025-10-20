@@ -1,63 +1,57 @@
 import {
-  AnonCredsCredentialFormatService,
+  AnonCredsDidCommCredentialFormatService,
+  AnonCredsDidCommProofFormatService,
   AnonCredsModule,
-  AnonCredsProofFormatService,
-  LegacyIndyCredentialFormatService,
-  LegacyIndyProofFormatService,
-  V1CredentialProtocol,
-  V1ProofProtocol,
+  DidCommCredentialV1Protocol,
+  DidCommProofV1Protocol,
+  LegacyIndyDidCommCredentialFormatService,
+  LegacyIndyDidCommProofFormatService,
 } from '@credo-ts/anoncreds'
-import { AskarModule } from '@credo-ts/askar'
+import { AskarKeyManagementService, AskarModule } from '@credo-ts/askar'
 import { CheqdAnonCredsRegistry, CheqdDidResolver, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
 import {
   Agent,
   DidsModule,
   JwkDidRegistrar,
   JwkDidResolver,
-  KeyDerivationMethod,
   KeyDidRegistrar,
   KeyDidResolver,
+  Kms,
   PeerDidNumAlgo,
   WebDidResolver,
   X509Module,
 } from '@credo-ts/core'
 import {
-  AutoAcceptCredential,
-  AutoAcceptProof,
-  ConnectionsModule,
-  CredentialsModule,
+  DidCommAutoAcceptCredential,
+  DidCommAutoAcceptProof,
+  DidCommConnectionsModule,
+  DidCommCredentialV2Protocol,
+  DidCommCredentialsModule,
+  DidCommDiscoverFeaturesModule,
+  DidCommHttpOutboundTransport,
+  DidCommMediationRecipientModule,
+  DidCommMediatorPickupStrategy,
+  DidCommMessagePickupModule,
   DidCommModule,
-  DiscoverFeaturesModule,
-  HttpOutboundTransport,
-  MediationRecipientModule,
-  MediatorPickupStrategy,
-  MessagePickupModule,
-  OutOfBandModule,
-  ProofsModule,
-  V2CredentialProtocol,
-  V2ProofProtocol,
-  WsOutboundTransport,
+  DidCommOutOfBandModule,
+  DidCommProofV2Protocol,
+  DidCommProofsModule,
+  DidCommWsOutboundTransport,
 } from '@credo-ts/didcomm'
-import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
+import { OpenId4VcModule } from '@credo-ts/openid4vc'
 export { useAgent } from './providers'
-import { agentDependencies } from '@credo-ts/react-native'
+import { SecureEnvironmentKeyManagementService, agentDependencies } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { logger } from './logger'
 
-const askarModule = new AskarModule({
-  askar,
-})
-
 export const initializeEasyPIDAgent = async ({
-  walletLabel,
   walletId,
   walletKey,
   keyDerivation,
   trustedX509Certificates,
 }: {
-  walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
@@ -66,18 +60,27 @@ export const initializeEasyPIDAgent = async ({
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
-      label: walletLabel,
-      walletConfig: {
-        id: walletId,
-        key: walletKey,
-        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
-      },
       autoUpdateStorageOnStartup: true,
       logger,
     },
     modules: {
-      askar: askarModule,
-      openId4VcHolder: new OpenId4VcHolderModule(),
+      askar: new AskarModule({
+        askar,
+        // We register it manually to set default / determine order
+        // FIXME: we should not require enableKms to be set to false
+        // but just not re-register
+        enableKms: false,
+        store: {
+          id: walletId,
+          key: walletKey,
+          keyDerivationMethod: keyDerivation === 'raw' ? 'raw' : 'kdf:argon2i:mod',
+        },
+      }),
+      kms: new Kms.KeyManagementModule({
+        backends: [new AskarKeyManagementService(), new SecureEnvironmentKeyManagementService()],
+        defaultBackend: 'askar',
+      }),
+      openid4vc: new OpenId4VcModule({}),
       x509: new X509Module({
         getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
           if (verification.type === 'credential') {
@@ -91,7 +94,7 @@ export const initializeEasyPIDAgent = async ({
             // }
 
             // if (
-            //   verification.credential.claimFormat === ClaimFormat.SdJwtVc &&
+            //   verification.credential.claimFormat === ClaimFormat.SdJwtDc &&
             //   pidSchemes.sdJwtVcVcts.includes(verification.credential.payload.vct as string)
             // ) {
             //   return [bdrPidIssuerCertificate]
@@ -120,13 +123,11 @@ export const initializeEasyPIDAgent = async ({
 }
 
 export const initializeParadymAgent = async ({
-  walletLabel,
   walletId,
   walletKey,
   keyDerivation,
   trustedX509Certificates = [],
 }: {
-  walletLabel: string
   walletId: string
   walletKey: string
   keyDerivation: 'raw' | 'derive'
@@ -135,20 +136,21 @@ export const initializeParadymAgent = async ({
   const agent = new Agent({
     dependencies: agentDependencies,
     config: {
-      label: walletLabel,
-      walletConfig: {
-        id: walletId,
-        key: walletKey,
-        keyDerivationMethod: keyDerivation === 'raw' ? KeyDerivationMethod.Raw : KeyDerivationMethod.Argon2IMod,
-      },
       autoUpdateStorageOnStartup: true,
       logger,
     },
     modules: {
-      messagePickup: new MessagePickupModule(),
-      discovery: new DiscoverFeaturesModule(),
-      ariesAskar: askarModule,
-      openId4VcHolder: new OpenId4VcHolderModule(),
+      messagePickup: new DidCommMessagePickupModule(),
+      discovery: new DidCommDiscoverFeaturesModule(),
+      askar: new AskarModule({
+        askar,
+        store: {
+          id: walletId,
+          key: walletKey,
+          keyDerivationMethod: keyDerivation === 'raw' ? 'raw' : 'kdf:argon2i:mod',
+        },
+      }),
+      openid4vc: new OpenId4VcModule({}),
       x509: new X509Module({
         getTrustedCertificatesForVerification: (_, { certificateChain, verification }) => {
           if (verification.type === 'credential') {
@@ -170,17 +172,17 @@ export const initializeParadymAgent = async ({
         registrars: [new KeyDidRegistrar(), new JwkDidRegistrar()],
         resolvers: [new WebDidResolver(), new KeyDidResolver(), new JwkDidResolver(), new CheqdDidResolver()],
       }),
-      outOfBand: new OutOfBandModule(),
+      outOfBand: new DidCommOutOfBandModule(),
       didcomm: new DidCommModule(),
       anoncreds: new AnonCredsModule({
         registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
         anoncreds,
       }),
-      mediationRecipient: new MediationRecipientModule({
+      mediationRecipient: new DidCommMediationRecipientModule({
         // We want to manually connect to the mediator, so it doesn't impact wallet startup
-        mediatorPickupStrategy: MediatorPickupStrategy.None,
+        mediatorPickupStrategy: DidCommMediatorPickupStrategy.None,
       }),
-      connections: new ConnectionsModule({
+      connections: new DidCommConnectionsModule({
         autoAcceptConnections: true,
         peerNumAlgoForDidExchangeRequests: PeerDidNumAlgo.GenesisDoc,
       }),
@@ -196,33 +198,36 @@ export const initializeParadymAgent = async ({
           ],
         })
       ),
-      credentials: new CredentialsModule({
-        autoAcceptCredentials: AutoAcceptCredential.ContentApproved,
+      credentials: new DidCommCredentialsModule({
+        autoAcceptCredentials: DidCommAutoAcceptCredential.ContentApproved,
         credentialProtocols: [
-          new V1CredentialProtocol({
-            indyCredentialFormat: new LegacyIndyCredentialFormatService(),
+          new DidCommCredentialV1Protocol({
+            indyCredentialFormat: new LegacyIndyDidCommCredentialFormatService(),
           }),
-          new V2CredentialProtocol({
-            credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
+          new DidCommCredentialV2Protocol({
+            credentialFormats: [
+              new LegacyIndyDidCommCredentialFormatService(),
+              new AnonCredsDidCommCredentialFormatService(),
+            ],
           }),
         ],
       }),
-      proofs: new ProofsModule({
-        autoAcceptProofs: AutoAcceptProof.ContentApproved,
+      proofs: new DidCommProofsModule({
+        autoAcceptProofs: DidCommAutoAcceptProof.ContentApproved,
         proofProtocols: [
-          new V1ProofProtocol({
-            indyProofFormat: new LegacyIndyProofFormatService(),
+          new DidCommProofV1Protocol({
+            indyProofFormat: new LegacyIndyDidCommProofFormatService(),
           }),
-          new V2ProofProtocol({
-            proofFormats: [new LegacyIndyProofFormatService(), new AnonCredsProofFormatService()],
+          new DidCommProofV2Protocol({
+            proofFormats: [new LegacyIndyDidCommProofFormatService(), new AnonCredsDidCommProofFormatService()],
           }),
         ],
       }),
     },
   })
 
-  agent.modules.didcomm.registerOutboundTransport(new HttpOutboundTransport())
-  agent.modules.didcomm.registerOutboundTransport(new WsOutboundTransport())
+  agent.modules.didcomm.registerOutboundTransport(new DidCommHttpOutboundTransport())
+  agent.modules.didcomm.registerOutboundTransport(new DidCommWsOutboundTransport())
 
   await agent.initialize()
 

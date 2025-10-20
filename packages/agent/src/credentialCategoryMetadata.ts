@@ -1,4 +1,4 @@
-import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '@credo-ts/core'
 
 export interface CredentialCategoryMetadata {
   /**
@@ -26,7 +26,7 @@ const credentialCategoryMetadataKey = '_paradym/credentialCategoryMetadata'
  * Gets the credential type metadata from the given credential record.
  */
 export function getCredentialCategoryMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 ): CredentialCategoryMetadata | null {
   return credentialRecord.metadata.get(credentialCategoryMetadataKey)
 }
@@ -37,7 +37,7 @@ export function getCredentialCategoryMetadata(
  * NOTE: this does not save the record.
  */
 export function setCredentialCategoryMetadata(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
+  credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord,
   metadata: CredentialCategoryMetadata
 ) {
   credentialRecord.metadata.set(credentialCategoryMetadataKey, metadata)

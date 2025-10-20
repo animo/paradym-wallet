@@ -173,9 +173,9 @@ export function formatArfPid18PlaceOfBirth(place: PlaceOfBirth): string | null {
 
 export function getPidAttributesForDisplay(
   attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  claimFormat: ClaimFormat.SdJwtVc | ClaimFormat.MsoMdoc
+  claimFormat: ClaimFormat.SdJwtDc | ClaimFormat.MsoMdoc
 ) {
-  if (claimFormat === ClaimFormat.SdJwtVc) {
+  if (claimFormat === ClaimFormat.SdJwtDc) {
     return getSdJwtPidAttributesForDisplay(attributes)
   }
 

@@ -1,4 +1,5 @@
-import { CredentialState, ProofState } from '@credo-ts/didcomm'
+import { DidCommCredentialState, DidCommProofState } from '@credo-ts/didcomm'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { useEffect, useMemo } from 'react'
@@ -9,17 +10,33 @@ import {
   setDidCommCredentialExchangeMetadata,
   setDidCommProofExchangeMetadata,
 } from '../didcomm/metadata'
+import { getCredentialDisplayWithDefaults, getOpenId4VcCredentialDisplay } from '../display'
+import { extractOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { useConnections } from '../providers/ConnectionProvider'
 import { useCredentialByState } from '../providers/CredentialExchangeProvider'
 import { useProofByState } from '../providers/ProofExchangeProvider'
+import { useDeferredCredentials } from '../storage'
+
+const isDIDCommEnabled = useFeatureFlag('DIDCOMM')
 
 export const useHasInboxNotifications = () => {
-  const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-  const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
+  // Deferred credentials
+  const { deferredCredentials } = useDeferredCredentials()
+  let hasInboxNotifications = deferredCredentials.length > 0
+  let inboxNotificationsCount = deferredCredentials.length
+
+  // DID Comm
+  if (isDIDCommEnabled) {
+    const credentialExchangeRecords = useCredentialByState([DidCommCredentialState.OfferReceived])
+    const proofExchangeRecords = useProofByState([DidCommProofState.RequestReceived])
+
+    hasInboxNotifications ||= credentialExchangeRecords?.length > 0 || proofExchangeRecords.length > 0
+    inboxNotificationsCount += (credentialExchangeRecords?.length ?? 0) + proofExchangeRecords.length
+  }
 
   return {
-    hasInboxNotifications: credentialExchangeRecords.length > 0 || proofExchangeRecords.length > 0,
-    inboxNotificationsCount: credentialExchangeRecords.length + proofExchangeRecords.length,
+    hasInboxNotifications,
+    inboxNotificationsCount,
   }
 }
 
@@ -31,8 +48,8 @@ export const useHasInboxNotifications = () => {
  * is added to the inbox.
  */
 export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAgent }) => {
-  const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-  const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
+  const credentialExchangeRecords = useCredentialByState([DidCommCredentialState.OfferReceived])
+  const proofExchangeRecords = useProofByState([DidCommProofState.RequestReceived])
   const { records: connections } = useConnections()
   // Fetch associated metadata for each record
   useEffect(() => {
@@ -112,16 +129,48 @@ export const usePreFetchInboxDisplayMetadata = ({ agent }: { agent: ParadymAppAg
 }
 
 export const useInboxNotifications = () => {
-  const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-  const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
+  const credentialExchangeRecords = isDIDCommEnabled ? useCredentialByState([DidCommCredentialState.OfferReceived]) : []
+  const proofExchangeRecords = isDIDCommEnabled ? useProofByState([DidCommProofState.RequestReceived]) : []
+  const { deferredCredentials } = useDeferredCredentials()
+
   const { t } = useLingui()
   const sortedNotifications = useMemo(() => {
     // Sort by creation date
-    const sortedRecords = [...credentialExchangeRecords, ...proofExchangeRecords].sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-    )
+    const sortedRecords = [
+      ...credentialExchangeRecords,
+      ...proofExchangeRecords,
+      ...deferredCredentials.map((record) => ({
+        type: 'DeferredCredentialRecord' as const,
+        createdAt: new Date(record.createdAt),
+        deferredCredentialRecord: record,
+      })),
+    ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
     return sortedRecords.map((record) => {
+      if (record.type === 'DeferredCredentialRecord') {
+        const { response, issuerMetadata, id } = record.deferredCredentialRecord
+
+        const credentialDisplay = getCredentialDisplayWithDefaults(
+          getOpenId4VcCredentialDisplay(
+            extractOpenId4VcCredentialMetadata(response.credentialConfiguration, {
+              display: issuerMetadata.credentialIssuer?.display,
+              id: issuerMetadata.credentialIssuer?.credential_issuer,
+            })
+          )
+        )
+
+        return {
+          id: id,
+          type: record.type,
+          createdAt: record.createdAt,
+          contactLabel: credentialDisplay.issuer.name,
+          notificationTitle: credentialDisplay.name,
+          backgroundColor: credentialDisplay.backgroundColor,
+          backgroundImageUrl: credentialDisplay.backgroundImage?.url,
+          deferredCredentialRecord: record.deferredCredentialRecord,
+        }
+      }
+
       if (record.type === 'CredentialRecord') {
         const metadata = getDidCommCredentialExchangeDisplayMetadata(record)
 
@@ -133,6 +182,7 @@ export const useInboxNotifications = () => {
           notificationTitle: metadata?.credentialName ?? t(commonMessages.credential),
         } as const
       }
+
       const metadata = getDidCommProofExchangeDisplayMetadata(record)
 
       return {
@@ -143,7 +193,7 @@ export const useInboxNotifications = () => {
         notificationTitle: metadata?.proofName ?? t(commonMessages.dataRequest),
       } as const
     })
-  }, [proofExchangeRecords, credentialExchangeRecords, t])
+  }, [proofExchangeRecords, credentialExchangeRecords, deferredCredentials, t])
 
   return sortedNotifications
 }

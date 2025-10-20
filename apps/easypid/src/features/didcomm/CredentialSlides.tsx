@@ -1,9 +1,8 @@
 import { useParadymAgent } from '@easypid/agent'
 import { useLingui } from '@lingui/react/macro'
-import { useDidCommCredentialActions } from '@package/agent'
+import { storeReceivedActivity, useDidCommCredentialActions } from '@package/agent'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { useToastController } from '@package/ui'
-import { addReceivedActivity } from '../activity/activityRecord'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 import { getFlowConfirmationText } from './utils'
 
@@ -37,11 +36,12 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
     })
 
     if (w3cRecord) {
-      await addReceivedActivity(agent, {
+      await storeReceivedActivity(agent, {
         entityId: credentialExchange?.connectionId,
         name: display.issuer.name,
         logo: display.issuer.logo,
         backgroundColor: '#ffffff', // Default to a white background for now
+        deferredCredentials: [],
         credentialIds: [`w3c-credential-${w3cRecord?.id}`],
       })
     }

@@ -5,6 +5,12 @@ export {
   W3cCredentialRecord,
   W3cVerifiableCredential,
 } from './W3cCredentialsProvider'
+export {
+  useW3cV2CredentialRecordById,
+  useW3cV2CredentialRecords,
+  W3cV2CredentialRecord,
+  W3cV2VerifiableCredential,
+} from './W3cV2CredentialsProvider'
 export { useSdJwtVcRecordById, useSdJwtVcRecords, SdJwtVcRecord, SdJwtVc } from './SdJwtVcsProvider'
 export { useMdocRecordById, useMdocRecords, Mdoc, MdocRecord } from './MdocProvider'
 export { useConnectionById, useConnections } from './ConnectionProvider'

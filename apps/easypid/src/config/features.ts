@@ -4,14 +4,12 @@ export const APP_CONFIGS = {
     AI_ANALYSIS: true,
     DIDCOMM: false,
     CLOUD_HSM: true,
-    INBOX: false,
   },
   PARADYM_WALLET: {
     EID_CARD: false,
     AI_ANALYSIS: false,
     DIDCOMM: true,
     CLOUD_HSM: false,
-    INBOX: true,
   },
 } satisfies Record<string, Features>
 
@@ -20,7 +18,6 @@ export interface Features {
   AI_ANALYSIS: boolean
   DIDCOMM: boolean
   CLOUD_HSM: boolean
-  INBOX: boolean
 }
 
 export type FeatureKey = keyof Features

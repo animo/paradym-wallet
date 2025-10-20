@@ -1,7 +1,6 @@
-import { useActivities } from '@easypid/features/activity/activityRecord'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { useCredentialsForDisplay } from '@package/agent'
+import { useActivities, useCredentialsForDisplay } from '@package/agent'
 import { useHaptics } from '@package/app/hooks'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
@@ -94,15 +93,42 @@ export function LatestActivityCard() {
     }
 
     if (latestActivity.type === 'received') {
-      const credential = credentials.find((c) => c.id === latestActivity.credentialIds[0])
-      const name = credential?.display.name ?? fallbackCardName
-      return {
-        title: date,
-        description: t({
-          id: 'activity.latest.addedCard',
-          message: `Added ${name}`,
-          comment: 'Shown when a new card has been added',
-        }),
+      switch (latestActivity.status) {
+        case 'failed':
+        case 'stopped': {
+          const name = latestActivity.deferredCredentials?.[0]?.name ?? fallbackCardName.message
+          return {
+            title: date,
+            description: t({
+              id: 'activity.latest.failedCard',
+              message: `Failed to add ${name}`,
+              comment: 'Shown when it has failed to add a new card',
+            }),
+          }
+        }
+        case 'success': {
+          const credential = credentials.find((c) => c.id === latestActivity.credentialIds[0])
+          const name = credential?.display.name ?? fallbackCardName.message
+          return {
+            title: date,
+            description: t({
+              id: 'activity.latest.addedCard',
+              message: `Added ${name}`,
+              comment: 'Shown when a new card has been added',
+            }),
+          }
+        }
+        case 'pending': {
+          const name = latestActivity.deferredCredentials?.[0]?.name ?? fallbackCardName.message
+          return {
+            title: date,
+            description: t({
+              id: 'activity.latest.pendingCard',
+              message: `Pending ${name}`,
+              comment: 'Shown when a new card is pending',
+            }),
+          }
+        }
       }
     }
 
