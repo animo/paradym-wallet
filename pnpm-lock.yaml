@@ -263,6 +263,9 @@ overrides:
   '@openwallet-foundation/askar-shared': 0.3.2
 
 patchedDependencies:
+  '@animo-id/credo-ts-askar':
+    hash: 3ooszmum3ucrh6mdwa3k4uc27m
+    path: patches/@animo-id__credo-ts-askar.patch
   '@cheqd/sdk':
     hash: 2s4efmdelpranon2lx4m6hsi6a
     path: patches/@cheqd__sdk.patch
@@ -526,7 +529,7 @@ importers:
         version: '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.1)(typescript@5.8.3)'
       '@credo-ts/askar':
         specifier: npm:@animo-id/credo-ts-askar@0.5.14-alpha-20251016134257
-        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20251016134257(@openwallet-foundation/askar-shared@0.3.2)(typescript@5.8.3)'
+        version: '@animo-id/credo-ts-askar@0.5.14-alpha-20251016134257(patch_hash=3ooszmum3ucrh6mdwa3k4uc27m)(@openwallet-foundation/askar-shared@0.3.2)(typescript@5.8.3)'
       '@credo-ts/cheqd':
         specifier: npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20251016134257
         version: '@animo-id/credo-ts-cheqd@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.1)(typescript@5.8.3)'
@@ -6455,7 +6458,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@animo-id/credo-ts-askar@0.5.14-alpha-20251016134257(@openwallet-foundation/askar-shared@0.3.2)(typescript@5.8.3)':
+  '@animo-id/credo-ts-askar@0.5.14-alpha-20251016134257(patch_hash=3ooszmum3ucrh6mdwa3k4uc27m)(@openwallet-foundation/askar-shared@0.3.2)(typescript@5.8.3)':
     dependencies:
       '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251016134257(typescript@5.8.3)'
       '@openwallet-foundation/askar-shared': 0.3.2
