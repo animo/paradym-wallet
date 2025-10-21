@@ -35,20 +35,23 @@ You can test out the wallets in these environments (as well as any solution that
 
 ## Project Structure
 
-The project is a monorepo managed using **pnpm**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router, React Navigation and Solito**. For the Agent and SSI capabilities **Aries Framework JavaScript (AFJ)** is used.
+The project is a monorepo managed using **pnpm**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router and React Navigation**. For the Agent and SSI capabilities **Credo Framework** is used.
 
 The folder structure is as follows
 
 - `apps` top level applications
-  - `paradym` Paradym Wallet - react native app for iOS & Android
-  - `easypid` EasyPID Wallet - react native app for iOS & Android
+  - `easypid` Paradym and Funke Wallet - react native app for iOS & Android
 - `packages` shared packages
   - `ui` includes our custom UI kit that will be optimized by Tamagui
-  - `agent` includes the Aries Framework JavaScript (AFJ) agent and SSI capabilities
+  - `agent` includes the Credo agent and SSI capabilities
   - `app` you'll be importing most files from `app/`
     - `features` (don't use a `screens` folder. organize by feature.)
     - `provider` (all the providers that wrap the app, and some no-ops for Web.)
     - `navigation` This folder contains navigation-related code for RN. You may use it for any navigation code, such as custom links.
+  - `scanner` includes utils for scanning QR codes.
+  - `secure-store` contains methods to securely store, derive and retrieve the wallet key.
+  - `translations` includes utils for translations based on the Lingui package.
+  - `utils` contains varied utils used across the other packages.
 
 You can add other folders inside of `packages/` if you know what you're doing and have a good reason to.
 
@@ -56,8 +59,7 @@ You can add other folders inside of `packages/` if you know what you're doing an
 
 First, start by installing all dependencies by running `pnpm install`.
 
-Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device.
-You can install this using the following commands:
+Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device. You can install this using the following commands:
 
 ```sh
 cd apps/easypid

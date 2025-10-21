@@ -4,7 +4,7 @@
 
 <h1 align="center"><b>Translations</b></h1>
 
-This package contains utils for tranlations based on the Lingui package.
+This package contains utils for translations based on the Lingui package.
 
 ## Defining translatable components
 
