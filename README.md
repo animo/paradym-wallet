@@ -73,7 +73,22 @@ Once installed you can run `pnpm start` from the root of the project to start yo
 
 ## 📦 Releasing
 
-🚧 Soon documentation will be added on how to publish a new release to the Apple App Store and Google Play Stores. 🚧
+Uploading builds to Appstore Connect and the Google Play Console are automated using Github Actions and Expo Build. 
+
+Before making a release, make sure to update the `version` in the `apps/easypid/package.json`. We generally follow semver, and so for fixes we update the patch version, for new features we update the minor version, and for large refactorings we can use the major version. However we often push user-facing changes as minor and not major, as the wallet is not interacted with by a machine, so "breaking change" is hard to define.
+
+
+
+To trigger a release of the Paradym Wallet, run the [Continuous Deployment](https://github.com/animo/paradym-wallet/actions/workflows/continuous-deployment.yaml) workflow. Make sure to:
+- Set the channel to `production`
+- The platform to `all` (unless you only want to release for iOS OR Android)
+- App to `paradym` (or to `funke` in case you want to deploy our EUDI Wallet Prototype).
+
+This will trigger builds in Expo, and will then automatically upload the builds to Appstore Connect and Google Play. Build numbers are automatically incremented by Expo.
+
+Releases are automatically published as internal release on Testflight and Google Play, allowing them to be tested.
+
+From there on you can manually create a release in the respective platforms (of which plentry documentation can be found online).
 
 ## 🆕 Add new dependencies
 
