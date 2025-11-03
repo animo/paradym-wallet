@@ -57,7 +57,7 @@ catalog:
   "@react-native-community/netinfo": ~11.4.1
   react-native-heroicons: ^4.0.0
   "@react-native-masked-view/masked-view": 0.3.2
-  react-native-argon2: ^2.0.1
+  react-native-argon2: ^3.0.0
   react-native-keychain: ^8.2.0
   react-native-get-random-values: ~1.11.0
   react-native-gesture-handler: ~2.24.0
