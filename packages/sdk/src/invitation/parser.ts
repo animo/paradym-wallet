@@ -108,7 +108,7 @@ export async function parseDidCommInvitation(paradym: ParadymWalletSdk, invitati
 export async function parseOpenIdCredentialOfferInvitation(paradym: ParadymWalletSdk, invitationUrl: string) {
   const { resolvedCredentialOffer } = await resolveCredentialOffer({
     paradym,
-    offer: { uri: invitationUrl },
+    offerUri: invitationUrl,
   })
   const tokenResponse = await acquirePreAuthorizedAccessToken({ agent: paradym.agent, resolvedCredentialOffer })
   const credentialResponses = await receiveCredentialFromOpenId4VciOffer({

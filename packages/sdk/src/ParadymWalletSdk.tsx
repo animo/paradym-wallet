@@ -1,5 +1,6 @@
 import { WalletInvalidKeyError } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { PropsWithChildren } from 'react'
 import { type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
 import type { CredentialForDisplayId } from './display/credential'
@@ -30,12 +31,20 @@ import {
   type CompleteCredentialRetrievalOptions,
   completeCredentialRetrieval,
 } from './openid4vc/func/completeCredentialRetrieval'
+import {
+  type DeclineCredentialRequestOptions,
+  declineCredentialRequest,
+} from './openid4vc/func/declineCredentialRequest'
+import {
+  type ResolveCredentialRequestOptions,
+  resolveCredentialRequest,
+} from './openid4vc/func/resolveCredentialRequest'
+import { type ShareCredentialsOptions, shareCredentials } from './openid4vc/func/shareCredentials'
 import { AgentProvider, useAgent } from './providers/AgentProvider'
 import { SecureUnlockProvider, secureWalletKey } from './secure'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
@@ -194,11 +203,13 @@ export class ParadymWalletSdk {
   public static UnlockProvider({
     children,
     configuration,
-    queryClient = new QueryClient()
-  }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions, queryClient?: QueryClient }>) {
-    return  <QueryClientProvider  client={queryClient}>
-      <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
+    queryClient = new QueryClient(),
+  }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions; queryClient?: QueryClient }>) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
       </QueryClientProvider>
+    )
   }
 
   /**
@@ -276,6 +287,11 @@ export class ParadymWalletSdk {
     }
   }
 
+  /**
+   *
+   * @todo should we scope this in proof/issuance?
+   *
+   */
   public get openid4vc() {
     return {
       resolveCredentialOffer: (options: Omit<ResolveCredentialOfferOptions, 'paradym'>) =>
@@ -286,6 +302,15 @@ export class ParadymWalletSdk {
 
       completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
         completeCredentialRetrieval({ ...options, paradym: this }),
+
+      resolveCredentialRequest: (options: Omit<ResolveCredentialRequestOptions, 'paradym'>) =>
+        resolveCredentialRequest({ ...options, paradym: this }),
+
+      declineCredentialRequest: (options: Omit<DeclineCredentialRequestOptions, 'paradym'>) =>
+        declineCredentialRequest({ ...options, paradym: this }),
+
+      shareCredentials: (options: Omit<ShareCredentialsOptions, 'paradym'>) =>
+        shareCredentials({ ...options, paradym: this }),
     }
   }
 }

@@ -19,7 +19,7 @@ export function Provider({
         <GestureHandlerRootView style={{ flex: 1 }}>
           <BottomSheetModalProvider>
             <ToastProvider swipeDirection="up" duration={6000}>
-                <SafeAreaProvider style={{ backgroundColor: 'white' }}>{children}</SafeAreaProvider>
+              <SafeAreaProvider style={{ backgroundColor: 'white' }}>{children}</SafeAreaProvider>
               <CustomToast />
               <ToastViewport />
             </ToastProvider>

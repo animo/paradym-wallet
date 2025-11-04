@@ -163,12 +163,12 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
     credentialExchange,
     display: {
       issuer: {
-        name: didcommDisplayMetadata?.issuerName,
+        name: didcommDisplayMetadata?.issuerName ?? 'Unknown Issuer',
         logo: {
           url: didcommDisplayMetadata?.issuerLogoUri,
         },
       },
-      name: didcommDisplayMetadata?.credentialName,
+      name: didcommDisplayMetadata?.credentialName ?? 'Unknown Credential',
     },
     attributes: data?.attributes,
   }

@@ -73,7 +73,7 @@ export function FunkeCredentialNotificationScreen() {
 
     paradym.openid4vc
       .resolveCredentialOffer({
-        offer: params,
+        offerUri: params.uri,
         authorization,
       })
       .then((result) => {

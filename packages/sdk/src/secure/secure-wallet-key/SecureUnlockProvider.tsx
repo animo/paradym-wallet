@@ -176,7 +176,6 @@ function _useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Sec
               setState('unlocked')
               setParadym(pws)
             } else {
-              console.error(result.message)
               throw Error(result.message)
             }
           })

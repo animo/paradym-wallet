@@ -17,7 +17,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
   // TODO(sdk): not tested
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
     const resolved = await options.paradym.openid4vc.resolveCredentialOffer({
-      offer: { uri: C_PRIME_SD_JWT_MDOC_OFFER },
+      offerUri: C_PRIME_SD_JWT_MDOC_OFFER,
       authorization: {
         clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
         redirectUri: ReceivePidUseCaseCFlow.REDIRECT_URI,
