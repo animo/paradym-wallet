@@ -22,7 +22,8 @@
 			"@package/scanner/*": ["./packages/scanner/src/*"],
 			"@package/secure-store/*": ["./packages/secure-store/*"],
 			"@package/utils/*": ["./packages/utils/src/*"],
-			"@easypid/*": ["./apps/easypid/src/*"]
+			"@easypid/*": ["./apps/easypid/src/*"],
+			"@paradym/wallet-sdk/*": ["./packages/sdk/src/*"]
 		}
 	},
 	"exclude": ["node_modules", "build"]

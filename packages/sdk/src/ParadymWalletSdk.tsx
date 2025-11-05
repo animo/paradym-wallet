@@ -1,0 +1,584 @@
+import { AskarModule } from '@credo-ts/askar'
+import { WalletInvalidKeyError } from '@credo-ts/core'
+import { agentDependencies } from '@credo-ts/react-native'
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
+import { type DidCommAgent, type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
+import type { CredentialForDisplayId } from './display/credential'
+import { ParadymWalletMustBeInitializedError } from './error'
+import { useActivities, useActivityById, useParadym } from './hooks'
+import { useCredentialByCategory } from './hooks/useCredentialByCategory'
+import { useCredentialById } from './hooks/useCredentialById'
+import { useCredentialRecordById } from './hooks/useCredentialRecordById'
+import { useCredentialRecords } from './hooks/useCredentialRecords'
+import { useCredentials } from './hooks/useCredentials'
+import { useDidCommConnectionActions } from './hooks/useDidCommConnectionActions'
+import { useDidCommCredentialActions } from './hooks/useDidCommCredentialActions'
+import { useDidCommPresentationActions } from './hooks/useDidCommPresentationActions'
+import { useDidCommAgent } from './hooks/useDidcommAgent'
+import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
+import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
+import {
+  type ResolveCredentialOfferOptions,
+  type ResolveOutOfBandInvitationResult,
+  resolveCredentialOffer,
+  resolveOutOfBandInvitation,
+} from './invitation/resolver'
+import { type ParadymWalletLogger, logger } from './logger'
+import { type AcquireCredentialsOptions, acquireCredentials } from './openid4vc/func/acquireCredentials'
+import {
+  type CompleteCredentialRetrievalOptions,
+  completeCredentialRetrieval,
+} from './openid4vc/func/completeCredentialRetrieval'
+import {
+  type DeclineCredentialRequestOptions,
+  declineCredentialRequest,
+} from './openid4vc/func/declineCredentialRequest'
+import {
+  type ResolveCredentialRequestOptions,
+  resolveCredentialRequest,
+} from './openid4vc/func/resolveCredentialRequest'
+import { type ShareCredentialsOptions, shareCredentials } from './openid4vc/func/shareCredentials'
+import { AgentProvider, useAgent } from './providers/AgentProvider'
+import { secureWalletKey } from './secure'
+import { KeychainError } from './secure/error/KeychainError'
+import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
+import type { TrustMechanismConfiguration } from './trust/trustMechanism'
+import type { DistributedOmit } from './types'
+
+export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
+  | ({ success: true } & T)
+  | { success: false; message: string }
+
+export type ParadymWalletSdkOptions = SetupAgentOptions & {
+  /**
+   *
+   * Trust mechanisms supported by the wallet
+   *
+   * The order matters. The first index will be tried first, until the last
+   *
+   * When one is found that works, it will be used
+   *
+   */
+  // TODO(sdk): this will get more complex, as eudi_rp_auth needs more configuration
+  trustMechanisms: TrustMechanismConfiguration[]
+}
+
+export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
+
+export class ParadymWalletSdk {
+  public trustMechanisms: TrustMechanismConfiguration[]
+  // TODO(sdk): fix this typing
+  public readonly agent: FullAgent
+
+  public constructor(options: ParadymWalletSdkOptions) {
+    this.agent = setupAgent(options) as unknown as FullAgent
+    this.trustMechanisms = options.trustMechanisms
+  }
+
+  private assertAgentIsInitialized() {
+    if (!this.agent.isInitialized) throw new ParadymWalletMustBeInitializedError()
+  }
+
+  public get walletId() {
+    const askar = this.agent.context.resolve(AskarModule)
+    return askar.config.store.id
+  }
+
+  public async reset() {
+    this.logger.debug('Resetting wallet')
+
+    // TODO(sdk): how to do this now?
+    // await this.agent.wallet.delete()
+    await this.agent.shutdown()
+
+    const fs = new agentDependencies.FileSystem()
+
+    // Clear cach and temp path
+    if (await fs.exists(fs.cachePath)) await fs.delete(fs.cachePath)
+    if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
+
+    const walletDirectory = `${fs.dataPath}/wallet/${this.walletId}`
+
+    const walletDirectoryExists = await fs.exists(walletDirectory)
+    if (walletDirectoryExists) {
+      console.log('wallet directory exists, deleting')
+      await fs.delete(walletDirectory)
+    } else {
+      console.log('wallet directory does not exist')
+    }
+
+    // I think removing triggers the biometrics somehow. We look at the salt
+    // to see if the secure unlock has been setup.
+    // await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
+    await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
+  }
+
+  /**
+   *
+   * Initialized the wallet sdk and sets everything up for usage
+   *
+   */
+  public async initialize(): Promise<ParadymWalletSdkResult> {
+    try {
+      await this.agent.initialize()
+      return { success: true }
+    } catch (e) {
+      if (e instanceof WalletInvalidKeyError) {
+        return { success: false, message: 'Invalid key' }
+      }
+      return { success: false, message: (e as Error).message }
+    }
+  }
+
+  /**
+   *
+   * Shutsdown the agent and closes the wallet
+   *
+   */
+  public async shutdown() {
+    await this.agent.shutdown()
+  }
+
+  /**
+   *
+   * Paradym logger
+   *
+   * defaults to a console logger
+   *
+   */
+  public get logger() {
+    return this.agent.config.logger as ParadymWalletLogger
+  }
+
+  /**
+   *
+   * All available hooks provided by the wallet SDK
+   *
+   */
+  public get hooks() {
+    this.assertAgentIsInitialized()
+
+    return {
+      useCredentials,
+      useCredentialById,
+      useCredentialByCategory,
+
+      useActivities,
+      useActivityById,
+
+      // TODO: these are quite different than the openid4vc way
+      //       do we want to keep it like this or make them more consistent?
+      useDidCommConnectionActions,
+      useDidCommCredentialActions,
+      useDidCommPresentationActions,
+    }
+  }
+
+  /**
+   *
+   * Unstable hooks that can be used for more low-level functionality
+   *
+   * It is generally recommended to see if the desired output can be reached with `ParadymWalletSdk.hooks` first
+   *
+   */
+  public get internalHooks() {
+    this.assertAgentIsInitialized()
+
+    return {
+      useAgent,
+      useDidCommAgent,
+      useOpenId4VcAgent,
+      useCredentialRecords,
+      useCredentialRecordById,
+    }
+  }
+
+  /**
+   *
+   * Provider for the WalletSdk
+   *
+   * Wrap your application in this, if you want to leverage the provided `this.hooks`
+   *
+   * @todo(sdk) New name for this provider
+   *
+   */
+  public static UnlockProvider({
+    children,
+    configuration,
+    queryClient = new QueryClient(),
+  }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions; queryClient?: QueryClient }>) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
+      </QueryClientProvider>
+    )
+  }
+
+  /**
+   *
+   * @todo(sdk) New name for this provider
+   *
+   */
+  public static AppProvider({ children, recordIds }: PropsWithChildren<{ recordIds: string[] }>) {
+    const { paradym } = useParadym('unlocked')
+
+    return (
+      <AgentProvider agent={paradym.agent} recordIds={recordIds}>
+        {children}
+      </AgentProvider>
+    )
+  }
+
+  public async receiveInvitation(
+    invitationUrl: string
+  ): Promise<ParadymWalletSdkResult<Omit<InvitationResult, '__internal'>>> {
+    this.assertAgentIsInitialized()
+
+    try {
+      const invitationResult = await parseInvitationUrl(this, invitationUrl)
+      return { success: true, ...invitationResult }
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : (error as string),
+      }
+    }
+  }
+
+  /**
+   *
+   * @todo how do we want to deal with didcomm proofs and credentials?
+   *
+   */
+  public get credentials() {
+    return {
+      delete: this.deleteCredentials,
+      store: this.storeCredential,
+    }
+  }
+
+  private async deleteCredentials(
+    ids: CredentialForDisplayId | Array<CredentialForDisplayId>
+  ): Promise<ParadymWalletSdkResult> {
+    try {
+      const deleteCredentials = (Array.isArray(ids) ? ids : [ids]).map((id) => deleteCredential(this.agent, id))
+      await Promise.all(deleteCredentials)
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : (error as string) }
+    }
+  }
+
+  private async storeCredential(record: CredentialRecord): Promise<ParadymWalletSdkResult> {
+    try {
+      await storeCredential(this, record)
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : (error as string) }
+    }
+  }
+
+  public async resolveDidCommInvitation(
+    invitation: string | Record<string, unknown>
+  ): Promise<ParadymWalletSdkResult<ResolveOutOfBandInvitationResult>> {
+    try {
+      const parsedInvitation = await parseDidCommInvitation(this, invitation)
+      return {
+        success: true,
+        ...(await resolveOutOfBandInvitation(this.agent as unknown as DidCommAgent, parsedInvitation)),
+      }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : `${error}` }
+    }
+  }
+
+  /**
+   *
+   * @todo should we scope this in proof/issuance?
+   *
+   */
+  public get openid4vc() {
+    return {
+      resolveCredentialOffer: (options: Omit<ResolveCredentialOfferOptions, 'paradym'>) =>
+        resolveCredentialOffer({ ...options, paradym: this }),
+
+      acquireCredentials: (options: DistributedOmit<AcquireCredentialsOptions, 'paradym'>) =>
+        acquireCredentials({ ...options, paradym: this }),
+
+      completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
+        completeCredentialRetrieval({ ...options, paradym: this }),
+
+      resolveCredentialRequest: (options: Omit<ResolveCredentialRequestOptions, 'paradym'>) =>
+        resolveCredentialRequest({ ...options, paradym: this }),
+
+      declineCredentialRequest: (options: Omit<DeclineCredentialRequestOptions, 'paradym'>) =>
+        declineCredentialRequest({ ...options, paradym: this }),
+
+      shareCredentials: (options: Omit<ShareCredentialsOptions, 'paradym'>) =>
+        shareCredentials({ ...options, paradym: this }),
+    }
+  }
+}
+
+function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): SecureUnlockReturn {
+  const [state, setState] = useState<SecureUnlockState>('initializing')
+  const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
+  const [canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
+  const [biometricsUnlockAttempts, setBiometricsUnlockAttempts] = useState(0)
+  const [unlockMethod, setUnlockMethod] = useState<UnlockMethod>()
+  const [isUnlocking, setIsUnlocking] = useState(false)
+  const [paradym, setParadym] = useState<ParadymWalletSdk>()
+  const [walletKey, setWalletKey] = useState<string>()
+
+  useQuery({
+    queryFn: async () => {
+      const salt = await secureWalletKey.getSalt(secureWalletKey.getWalletKeyVersion())
+      // TODO: is salt the best way to test this?
+
+      // We have two params. If e.g. unlocking using biometrics failed, we will
+      // set setCanTryUnlockingUsingBiometrics to false, but `setCanUseBiometrics`
+      // will still be true (so we can store it)
+      const cub = await secureWalletKey.canUseBiometryBackedWalletKey()
+      setCanUseBiometrics(cub)
+      setCanTryUnlockingUsingBiometrics(cub)
+
+      setState(salt ? 'locked' : 'not-configured')
+      return salt
+    },
+    queryKey: ['wallet_unlock_salt'],
+    enabled: state === 'initializing',
+  })
+
+  useEffect(() => {
+    logger(configuration.logging?.level).debug(`secure unlock state: '${state}'`)
+  }, [state, configuration.logging?.level])
+
+  const reinitialize = () => {
+    setState('initializing')
+    setCanTryUnlockingUsingBiometrics(true)
+    setBiometricsUnlockAttempts(0)
+    setUnlockMethod(undefined)
+    setCanUseBiometrics(undefined)
+    setIsUnlocking(false)
+  }
+
+  if (state === 'not-configured') {
+    return {
+      state,
+      reinitialize,
+      setPin: async (pin) => {
+        await secureWalletKey.createAndStoreSalt(true, secureWalletKey.getWalletKeyVersion())
+        const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
+
+        setWalletKey(walletKey)
+        setUnlockMethod('pin')
+        setState('acquired-wallet-key')
+      },
+    }
+  }
+
+  if (state === 'acquired-wallet-key') {
+    if (!walletKey || !unlockMethod) {
+      throw new Error('Missing walletKey or unlockMethod')
+    }
+
+    return {
+      state,
+      unlockMethod,
+      reinitialize,
+      unlock: async (options) => {
+        try {
+          const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+          // TODO: need extra option to know whether user wants to use biometrics?
+          // TODO: do we need to check whether already stored?
+          if (canUseBiometrics && options?.enableBiometrics) {
+            await secureWalletKey.storeWalletKey(walletKey, walletKeyVersion)
+            await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+          }
+
+          const id = `easypid-wallet-${walletKeyVersion}`
+          const key = walletKey
+
+          // TODO: let the user provide an id? Or should we create one by default
+          const pws = new ParadymWalletSdk({
+            ...configuration,
+            id,
+            key,
+          })
+          pws.initialize().then((result) => {
+            if (result.success) {
+              setState('unlocked')
+              setParadym(pws)
+            } else {
+              throw Error(result.message)
+            }
+          })
+        } catch (error) {
+          if (error instanceof WalletInvalidKeyError) {
+            if (unlockMethod === 'biometrics') {
+              setCanTryUnlockingUsingBiometrics(false)
+            }
+
+            setState('locked')
+            setWalletKey(undefined)
+            setUnlockMethod(undefined)
+          }
+          throw error
+        }
+      },
+    }
+  }
+
+  if (state === 'locked') {
+    console.log('state is locked')
+    return {
+      state,
+      isUnlocking,
+      canTryUnlockingUsingBiometrics,
+      reinitialize,
+      tryUnlockingUsingBiometrics: async () => {
+        // TODO: need to somehow inform user that the unlocking went wrong
+        if (!canTryUnlockingUsingBiometrics) return
+
+        setIsUnlocking(true)
+        setBiometricsUnlockAttempts((attempts) => attempts + 1)
+        try {
+          const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+          if (walletKey) {
+            setWalletKey(walletKey)
+            setUnlockMethod('biometrics')
+            setState('acquired-wallet-key')
+          }
+        } catch (error) {
+          // If use cancelled we won't allow trying using biometrics again
+          if (error instanceof KeychainError && error.reason === 'userCancelled') {
+            setCanTryUnlockingUsingBiometrics(false)
+          }
+          // If other error, we will allow up to three attempts
+          else if (biometricsUnlockAttempts > 3) {
+            setCanTryUnlockingUsingBiometrics(false)
+          }
+        } finally {
+          setIsUnlocking(false)
+        }
+      },
+      unlockUsingPin: async (pin: string) => {
+        setIsUnlocking(true)
+        try {
+          const walletKey = await secureWalletKey.getWalletKeyUsingPin(pin, secureWalletKey.getWalletKeyVersion())
+
+          setWalletKey(walletKey)
+          setUnlockMethod('pin')
+          setState('acquired-wallet-key')
+        } finally {
+          setIsUnlocking(false)
+        }
+      },
+    }
+  }
+
+  if (state === 'unlocked') {
+    if (!unlockMethod || !paradym) {
+      throw new Error(`unlockMethod (${!!unlockMethod}) or paradym (${!!paradym})`)
+    }
+
+    return {
+      state,
+      unlockMethod,
+      paradym,
+      reset: paradym.reset,
+      reinitialize,
+      lock: async () => {
+        await paradym.shutdown()
+        setParadym(undefined)
+        setState('locked')
+        setUnlockMethod(undefined)
+      },
+    }
+  }
+
+  return {
+    state,
+  }
+}
+
+type UnlockOptions = {
+  /**
+   *
+   * When setting up the agent for the first time, the app might want to prompt the biometrics to make sure
+   * the user has access
+   *
+   * This should be set on the unlock call during the onboarding of the user, but not during authentication afterwards
+   *
+   */
+  enableBiometrics: boolean
+}
+
+export type SecureUnlockState = 'initializing' | 'not-configured' | 'acquired-wallet-key' | 'locked' | 'unlocked'
+
+export type UnlockMethod = 'pin' | 'biometrics'
+
+export type SecureUnlockReturnInitializing = {
+  state: 'initializing'
+}
+
+export type SecureUnlockReturnNotConfigured = {
+  state: 'not-configured'
+  setPin: (pin: string) => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturnWalletKeyAcquired = {
+  state: 'acquired-wallet-key'
+  unlockMethod: UnlockMethod
+  unlock: (options?: UnlockOptions) => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturnLocked = {
+  state: 'locked'
+  canTryUnlockingUsingBiometrics: boolean
+  isUnlocking: boolean
+  tryUnlockingUsingBiometrics: () => Promise<void>
+  unlockUsingPin: (pin: string) => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturnUnlocked = {
+  state: 'unlocked'
+  paradym: ParadymWalletSdk
+  unlockMethod: UnlockMethod
+  lock: () => Promise<void>
+  reset: () => Promise<void>
+  reinitialize: () => void
+}
+
+export type SecureUnlockReturn =
+  | SecureUnlockReturnInitializing
+  | SecureUnlockReturnNotConfigured
+  | SecureUnlockReturnWalletKeyAcquired
+  | SecureUnlockReturnLocked
+  | SecureUnlockReturnUnlocked
+
+const SecureUnlockContext = createContext<SecureUnlockReturn>({
+  state: 'initializing',
+})
+
+export function useSecureUnlock(): SecureUnlockReturn {
+  const value = useContext(SecureUnlockContext)
+  if (!value) {
+    throw new Error('useSecureUnlock must be wrapped in a <SecureUnlockProvider />')
+  }
+
+  return value
+}
+
+export function SecureUnlockProvider({
+  children,
+  configuration,
+}: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions }>) {
+  const secureUnlockState = useSecureUnlockState(configuration)
+
+  return <SecureUnlockContext.Provider value={secureUnlockState}>{children}</SecureUnlockContext.Provider>
+}

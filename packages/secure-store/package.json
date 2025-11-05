@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"peerDependencies": {
+		"@credo-ts/core": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"expo-secure-store": "catalog:",
 		"react-native": "catalog:",

@@ -1,15 +1,16 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
-import { Mdoc, MdocService } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
-import type { FormattedSubmission, MdocRecord } from '@package/agent'
-import { handleBatchCredential } from '@package/agent/batch'
+import { Mdoc, type MdocRecord, MdocService } from '@credo-ts/core'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
+import type { ParadymWalletSdk } from '@package/sdk'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { handleBatchCredential } from '@paradym/wallet-sdk/openid4vc/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
+  paradym: ParadymWalletSdk
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  agent: AppAgent
   submission: FormattedSubmission
 }
 
@@ -83,15 +84,19 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
       const credential = e.credentials[0].credential.record as MdocRecord
 
       // Optionally handle batch issuance
-      const credentialRecord = await handleBatchCredential(options.agent, credential)
+      const credentialRecord = (await handleBatchCredential(
+        options.paradym.agent,
+        credential,
+        refreshPid
+      )) as MdocRecord
 
       return Mdoc.fromBase64Url(credentialRecord.base64Url, credential.getTags().docType)
     })
   )
 
-  const mdocService = options.agent.dependencyManager.resolve(MdocService)
+  const mdocService = options.paradym.agent.dependencyManager.resolve(MdocService)
 
-  const deviceResponse = await mdocService.createDeviceResponse(options.agent.context, {
+  const deviceResponse = await mdocService.createDeviceResponse(options.paradym.agent.context, {
     documentRequests: DeviceRequest.parse(options.deviceRequest).docRequests.map((d) => ({
       docType: d.itemsRequest.data.docType,
       nameSpaces: Object.fromEntries(

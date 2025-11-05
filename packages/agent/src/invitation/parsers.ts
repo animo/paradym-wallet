@@ -1,13 +1,12 @@
-import type { ParadymAppAgent } from '../agent'
-
-import { parseInvitationJson } from '@credo-ts/didcomm'
+import { parseInvitationJson } from '@credo-ts/didcomm/build/util/parseInvitation'
 import { commonMessages, i18n } from '@package/translations'
 import queryString from 'query-string'
 
 import { JsonEncoder } from '@credo-ts/core'
+import type { DidCommAgent } from '@paradym/wallet-sdk/agent'
+import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
-export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
 export type ParseInvitationResultError = 'invitation_not_recognized' | 'parse_error' | 'retrieve_invitation_error'
 export type ParseInvitationResult =
   | {
@@ -94,7 +93,7 @@ export const isDidCommInvitation = (url: string) => {
   return false
 }
 
-export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation: string | Record<string, unknown>) {
+export async function parseDidCommInvitation(agent: DidCommAgent, invitation: string | Record<string, unknown>) {
   try {
     if (typeof invitation === 'string') {
       const parsedUrl = queryString.parseUrl(invitation)

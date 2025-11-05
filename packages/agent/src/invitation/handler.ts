@@ -10,17 +10,6 @@ import type {
   DidCommOutOfBandRecord,
   DidCommProofStateChangedEvent,
 } from '@credo-ts/didcomm'
-import {
-  DidCommCredentialEventTypes,
-  DidCommCredentialState,
-  DidCommOfferCredentialV2Message,
-  DidCommOutOfBandRepository,
-  DidCommProofEventTypes,
-  DidCommProofState,
-  DidCommRequestPresentationV2Message,
-  parseMessageType,
-  supportsIncomingMessageType,
-} from '@credo-ts/didcomm'
 import type {
   OpenId4VciCredentialConfigurationSupportedWithFormats,
   OpenId4VciCredentialResponse,
@@ -31,33 +20,25 @@ import type {
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
-import {
-  getOfferedCredentials,
-  getOid4vcCallbacks,
-  getScopesFromCredentialConfigurationsSupported,
-  preAuthorizedCodeGrantIdentifier,
-} from '@credo-ts/openid4vc'
+import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
 import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { t } from '@lingui/core/macro'
 import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
+import type { ParadymWalletSdk } from '@package/sdk'
 import { commonMessages } from '@package/translations'
+import type { DidCommAgent, OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
+import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
+import {
+  extractOpenId4VcCredentialMetadata,
+  setBatchCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '@paradym/wallet-sdk/metadata/credentials'
+import { getCredentialBindingResolver } from '@paradym/wallet-sdk/openid4vc/credentialBindingResolver'
+import { credentialRecordFromCredential, encodeCredential } from '@paradym/wallet-sdk/utils/encoding'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
-import type { ParadymAppAgent } from '../agent'
-import type { EitherAgent } from '../agent'
-import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
-import {
-  type FormattedSubmission,
-  formatDcqlCredentialsForRequest,
-  formatDifPexCredentialsForRequest,
-} from '../format/formatPresentation'
-import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
-import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
-import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
-import { getTrustedEntities } from '../utils/trust'
-import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type TrustedX509Entity = {
@@ -76,7 +57,7 @@ export async function resolveOpenId4VciOffer({
   customHeaders,
   fetchAuthorization = true,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   offer: { uri: string }
   authorization?: { clientId: string; redirectUri: string }
   customHeaders?: Record<string, unknown>
@@ -87,7 +68,7 @@ export async function resolveOpenId4VciOffer({
       uri: offer.uri,
     })
 
-    const resolvedCredentialOffer = await agent.modules.openid4vc.holder.resolveCredentialOffer(offer.uri)
+    const resolvedCredentialOffer = await agent.openid4vc.holder.resolveCredentialOffer(offer.uri)
     let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
     // NOTE: we always assume scopes are used at the moment
@@ -133,7 +114,7 @@ export async function acquirePreAuthorizedAccessToken({
   resolvedCredentialOffer,
   txCode,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   txCode?: string
 }) {
@@ -150,7 +131,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
   presentationDuringIssuanceSession,
   dPopKeyJwk,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   dPopKeyJwk?: Kms.PublicJwk
   authSession: string
@@ -177,7 +158,7 @@ export async function acquireRefreshTokenAccessToken({
   refreshToken,
   dpop,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   authorizationServer: string
   clientId: string
@@ -224,15 +205,15 @@ export async function acquireRefreshTokenAccessToken({
 }
 
 export async function acquireAuthorizationCodeAccessToken({
-  resolvedCredentialOffer,
   agent,
+  resolvedCredentialOffer,
   codeVerifier,
   authorizationCode,
   clientId,
   redirectUri,
   dPopKeyJwk,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   codeVerifier?: string
   authorizationCode: string
@@ -240,7 +221,7 @@ export async function acquireAuthorizationCodeAccessToken({
   redirectUri?: string
   dPopKeyJwk?: Kms.PublicJwk
 }) {
-  return await agent.modules.openid4vc.holder.requestToken({
+  return await agent.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     code: authorizationCode,
     codeVerifier,
@@ -283,7 +264,7 @@ const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], i
   })
 
 export const receiveCredentialFromOpenId4VciOffer = async ({
-  agent,
+  paradym,
   resolvedCredentialOffer,
   credentialConfigurationIdsToRequest,
   accessToken,
@@ -291,7 +272,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   pidSchemes,
   requestBatch,
 }: {
-  agent: EitherAgent
+  paradym: ParadymWalletSdk
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdsToRequest?: string[]
   clientId?: string
@@ -315,7 +296,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 
   try {
-    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestCredentials({
+    const { credentials, deferredCredentials } = await paradym.agent.openid4vc.holder.requestCredentials({
       resolvedCredentialOffer,
       ...accessToken,
       clientId,
@@ -349,7 +330,7 @@ export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
   issuerMetadata,
   accessToken,
 }: {
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   deferredCredentialResponse: OpenId4VciDeferredCredentialResponse
   issuerMetadata: OpenId4VciMetadata
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
@@ -371,7 +352,7 @@ export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
     // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
     // can retry e.g. the second credential
     // Handle biometric authentication errors
-    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
+    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
   }
 }
 
@@ -449,10 +430,8 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   return { data: null, entityId: null }
 }
 
-export type CredentialsForProofRequest = Awaited<ReturnType<typeof getCredentialsForProofRequest>>
-
 export type GetCredentialsForProofRequestOptions = {
-  agent: EitherAgent
+  paradym: ParadymWalletSdk
   requestPayload?: Record<string, unknown>
   uri?: string
   allowUntrusted?: boolean
@@ -558,7 +537,7 @@ export const getCredentialsForProofRequest = async ({
 }
 
 async function findExistingDidcommConnectionForInvitation(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   outOfBandInvitation: DidCommOutOfBandInvitation
 ): Promise<DidCommConnectionRecord | null> {
   for (const invitationDid of outOfBandInvitation.invitationDids) {
@@ -604,7 +583,7 @@ export interface ResolveOutOfBandInvitationResultSuccess {
  * @todo we probably need a way to cancel this method, if the qr scanner is .e.g dismissed.
  */
 export async function resolveOutOfBandInvitation(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   invitation: DidCommOutOfBandInvitation
 ): Promise<ResolveOutOfBandInvitationResultSuccess | { success: false; error: string }> {
   const requestMessages = invitation.getRequests() ?? []
@@ -709,7 +688,7 @@ export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' 
  * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
  */
 export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
-  agent: ParadymAppAgent,
+  agent: DidCommAgent,
   invitation: DidCommOutOfBandInvitation,
   flowType: FlowType
 ): AcceptOutOfBandInvitationResult<FlowType> {

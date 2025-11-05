@@ -2,7 +2,7 @@ import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useRefreshedDeferredCredentials } from '@package/agent'
-import { useHaptics } from '@package/app/hooks'
+import { useHaptics } from '@package/app'
 import {
   AnimatedStack,
   Blob,
