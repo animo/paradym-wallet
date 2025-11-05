@@ -46,7 +46,8 @@
 			"@hyperledger/anoncreds-react-native": "catalog:",
 			"@hyperledger/anoncreds-shared": "catalog:",
 			"@openwallet-foundation/askar-react-native": "catalog:",
-			"@openwallet-foundation/askar-shared": "catalog:"
+			"@openwallet-foundation/askar-shared": "catalog:",
+			"@expo/config-plugins": "catalog:"
 		},
 		"patchedDependencies": {
 			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",

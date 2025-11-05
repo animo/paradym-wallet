@@ -3,7 +3,7 @@ packages:
   - 'apps/*'
 
 catalog:
-  expo: ~53.0.15
+  expo: 53.0.13
   react-native: 0.79.4
   react: 19.0.0
   "@types/react": ~19.1.8
@@ -99,6 +99,7 @@ catalog:
   expo-localization: ~16.1.6
   "@expo-google-fonts/open-sans": ^0.4.1
   "@expo-google-fonts/raleway": ^0.4.1
+  "@expo/config-plugins": 10.1.2
 
   # Tamagui
   "@tamagui/animations-react-native": 1.132.18
