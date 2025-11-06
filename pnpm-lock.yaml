@@ -181,8 +181,8 @@ catalogs:
       specifier: 0.79.4
       version: 0.79.4
     react-native-argon2:
-      specifier: ^2.0.1
-      version: 2.0.1
+      specifier: ^3.0.0
+      version: 3.0.0
     react-native-edge-to-edge:
       specifier: ^1.6.0
       version: 1.6.0
@@ -451,7 +451,7 @@ importers:
         version: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
       react-native-argon2:
         specifier: 'catalog:'
-        version: 2.0.1
+        version: 3.0.0
       react-native-edge-to-edge:
         specifier: 'catalog:'
         version: 1.6.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -695,7 +695,7 @@ importers:
         version: 0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0)
       react-native-argon2:
         specifier: 'catalog:'
-        version: 2.0.1
+        version: 3.0.0
       react-native-get-random-values:
         specifier: 'catalog:'
         version: 1.11.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))
@@ -5462,8 +5462,8 @@ packages:
   react-is@19.1.1:
     resolution: {integrity: sha512-tr41fA15Vn8p4X9ntI+yCyeGSf1TlYaY5vlTZfQmeLBrFo3psOPX6HhTDnFNL9uj3EhP0KAQ80cugCl4b4BERA==}
 
-  react-native-argon2@2.0.1:
-    resolution: {integrity: sha512-/iOi0S+VVgS1gQGtQgL4ZxUVS4gz6Lav3bgIbtNmr9KbOunnBYzP6/yBe/XxkbpXvasHDwdQnuppOH/nuOBn7w==}
+  react-native-argon2@3.0.0:
+    resolution: {integrity: sha512-x0k8MzLidNnVsygn9z/tdYeF2SsHqU8lZk1A/+P9YbeYe6Tldb25Ud05ZcYxc5MUcE/p/gvUBW6xkP24hBjy4A==}
 
   react-native-edge-to-edge@1.6.0:
     resolution: {integrity: sha512-2WCNdE3Qd6Fwg9+4BpbATUxCLcouF6YRY7K+J36KJ4l3y+tWN6XCqAC4DuoGblAAbb2sLkhEDp4FOlbOIot2Og==}
@@ -12935,7 +12935,7 @@ snapshots:
 
   react-is@19.1.1: {}
 
-  react-native-argon2@2.0.1: {}
+  react-native-argon2@3.0.0: {}
 
   react-native-edge-to-edge@1.6.0(react-native@0.79.4(@babel/core@7.28.0)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0):
     dependencies:
