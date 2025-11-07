@@ -32,6 +32,9 @@
 		"funke-preview": {
 			"extends": "base",
 			"distribution": "internal",
+			"android": {
+				"buildType": "apk"
+			},
 			"env": {
 				"APP_VARIANT": "preview",
 				"EXPO_PUBLIC_APP_TYPE": "FUNKE_WALLET"
@@ -52,6 +55,9 @@
 		"paradym-preview": {
 			"extends": "base",
 			"distribution": "internal",
+			"android": {
+				"buildType": "apk"
+			},
 			"env": {
 				"APP_VARIANT": "preview",
 				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET"
@@ -82,15 +88,6 @@
 				"track": "internal"
 			}
 		},
-		"funke-preview": {
-			"ios": {
-				"companyName": "Animo Solutions",
-				"ascAppId": "6636489314"
-			},
-			"android": {
-				"track": "internal"
-			}
-		},
 		"paradym-production": {
 			"ios": {
 				"companyName": "Animo Solutions",
@@ -98,15 +95,6 @@
 			},
 			"android": {
 				"track": "alpha"
-			}
-		},
-		"paradym-preview": {
-			"ios": {
-				"companyName": "Animo Solutions",
-				"ascAppId": "6449938864"
-			},
-			"android": {
-				"track": "internal"
 			}
 		}
 	}
