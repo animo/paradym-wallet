@@ -126,10 +126,6 @@ pnpm extract-missing-translations ../../apps/easypid/src/locales/<lang>/messages
 
 This will generate a new `missing.json` file at `../../apps/easypid/src/locales/<language>/missing.json`. Copy the contents of this file to Claude/ChatGPT with the following message, make sure to change the `<Language>` into the full language name.
 
-```
-Hi, i've used Lingui (https://lingui.dev/ref/macro) to create translation files for my user-facing identity app. Can you help me translate the files into <Language> by filling the "translation" attribute? Take into account the comments and placeholders according to their intent from the Lingui library .The translations need to be pleasant, informal, to the point, natural and in a similar vain to the original text. Please make sure to watch out to not create too literal translations that would not make sense in the translation language.
-```
-
 After you got the translations, place them in the same `missing.json` file, and then run:
 
 ```sh
@@ -142,7 +138,7 @@ Once this is done you can extract and compile the new messages. From the `apps/e
 pnpm translations:extract
 pnpm translations:compile
 
-# before comitting make sure to also run formatting
+# before committing make sure to also run formatting
 cd ../..
 pnpm style:fix
 ```
