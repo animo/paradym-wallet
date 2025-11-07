@@ -20,7 +20,7 @@ registerLocales({
   sw,
   de,
   al,
-  pt
+  pt,
 })
 
 // Always register the custom component for Android
