@@ -1490,7 +1490,7 @@
 		"origin": [
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 542]
 		],
-		"translation": "Om du stoppar kommer korterbjudandet att avbrytas."
+		"translation": "Om du stoppar kommer intygserbjudandet att avbrytas."
 	},
 	"pidSetup.stopDescription": {
 		"message": "If you stop, you can still do the setup later.",
@@ -2819,7 +2819,7 @@
 		"origin": [
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 538]
 		],
-		"translation": "Stoppa korterbjudande?"
+		"translation": "Stoppa intygserbjudande?"
 	},
 	"pidSetup.stopTitle": {
 		"message": "Stop ID Setup?",
