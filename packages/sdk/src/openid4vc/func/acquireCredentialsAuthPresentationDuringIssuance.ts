@@ -25,12 +25,13 @@ export const acquireCredentialsAuthPresentationDuringIssuance = async (
     throw new Error('Auth session is not available in the resolved authorization request')
   }
 
-  const { authorizationCode } =
-    await options.paradym.agent.modules.openId4VcHolder.retrieveAuthorizationCodeUsingPresentation({
+  const { authorizationCode } = await options.paradym.agent.openid4vc.holder.retrieveAuthorizationCodeUsingPresentation(
+    {
       authSession: options.resolvedAuthorizationRequest.authSession,
       resolvedCredentialOffer: options.resolvedCredentialOffer,
       presentationDuringIssuanceSession,
-    })
+    }
+  )
 
   return await acquireCredentialsAuth({ ...options, authorizationCode })
 }

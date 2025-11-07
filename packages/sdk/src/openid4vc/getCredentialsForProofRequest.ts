@@ -17,14 +17,14 @@ export type GetCredentialsForProofRequestOptions = {
 }
 
 const extractEntityIdFromPayload = (payload: Record<string, unknown>, origin?: string): string | null => {
-  const { clientId, clientIdScheme } = getOpenid4vpClientId({
+  const { clientIdIdentifier, clientIdPrefix } = getOpenid4vpClientId({
     clientId: payload.client_id as string,
     legacyClientIdScheme: payload.client_id_scheme,
     responseMode: payload.response_mode,
     origin,
   })
 
-  if (clientIdScheme === 'https') return clientId
+  if (clientIdPrefix === 'decentralized_identifier') return clientIdIdentifier
   return null
 }
 
@@ -49,7 +49,7 @@ export const getCredentialsForProofRequest = async ({
     )
   }
 
-  const resolved = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
+  const resolved = await paradym.agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
     origin,
     trustedFederationEntityIds: paradym.trustMechanisms.find((tm) => tm.trustMechanism === 'openid_federation')
       ?.trustedEntityIds,

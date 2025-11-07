@@ -11,16 +11,16 @@ export * from './invitation'
 export * from './crypto'
 export * from './storage'
 export * from './openid4vc/displayMetadata'
-export * from './openid4vc/deferredCredentialRecord'
+// export * from './openid4vc/deferredCredentialRecord'
 
 export * from './credentialCategoryMetadata'
-export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
+// export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
 
 export * from './utils/trust'
 
-export {
-  resolveRequestForDcApi,
-  sendResponseForDcApi,
-  sendErrorResponseForDcApi,
-} from './openid4vc/dcApi'
-export { registerCredentialsForDcApi } from './openid4vc/registerDcApi'
+// export {
+//   resolveRequestForDcApi,
+//   sendResponseForDcApi,
+//   sendErrorResponseForDcApi,
+// } from './openid4vc/dcApi'
+//export { registerCredentialsForDcApi } from './openid4vc/registerDcApi'

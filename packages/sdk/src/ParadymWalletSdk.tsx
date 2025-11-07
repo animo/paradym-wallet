@@ -1,5 +1,4 @@
-import { AskarModule } from '@credo-ts/askar'
-import { WalletInvalidKeyError } from '@credo-ts/core'
+import { AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import { agentDependencies } from '@credo-ts/react-native'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
@@ -17,6 +16,7 @@ import { useDidCommCredentialActions } from './hooks/useDidCommCredentialActions
 import { useDidCommPresentationActions } from './hooks/useDidCommPresentationActions'
 import { useDidCommAgent } from './hooks/useDidcommAgent'
 import { useOpenId4VcAgent } from './hooks/useOpenId4VcAgent'
+import { useRefreshedDeferredCredentials } from './hooks/useRefreshedDeferredCredentials'
 import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
 import {
   type ResolveCredentialOfferOptions,
@@ -24,7 +24,7 @@ import {
   resolveCredentialOffer,
   resolveOutOfBandInvitation,
 } from './invitation/resolver'
-import { type ParadymWalletLogger, logger } from './logger'
+import { type ParadymWalletSdkLogger, logger } from './logger'
 import { type AcquireCredentialsOptions, acquireCredentials } from './openid4vc/func/acquireCredentials'
 import {
   type CompleteCredentialRetrievalOptions,
@@ -76,6 +76,14 @@ export class ParadymWalletSdk {
     this.trustMechanisms = options.trustMechanisms
   }
 
+  public get isDidCommEnabled() {
+    return !!this.agent.didcomm
+  }
+
+  public get isOpenId4VcEnabled() {
+    return !!this.agent.openid4vc
+  }
+
   private assertAgentIsInitialized() {
     if (!this.agent.isInitialized) throw new ParadymWalletMustBeInitializedError()
   }
@@ -124,7 +132,7 @@ export class ParadymWalletSdk {
       await this.agent.initialize()
       return { success: true }
     } catch (e) {
-      if (e instanceof WalletInvalidKeyError) {
+      if (e instanceof AskarStoreInvalidKeyError) {
         return { success: false, message: 'Invalid key' }
       }
       return { success: false, message: (e as Error).message }
@@ -148,7 +156,7 @@ export class ParadymWalletSdk {
    *
    */
   public get logger() {
-    return this.agent.config.logger as ParadymWalletLogger
+    return this.agent.config.logger as ParadymWalletSdkLogger
   }
 
   /**
@@ -172,6 +180,8 @@ export class ParadymWalletSdk {
       useDidCommConnectionActions,
       useDidCommCredentialActions,
       useDidCommPresentationActions,
+
+      useRefreshedDeferredCredentials,
     }
   }
 
@@ -400,7 +410,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
           const id = `easypid-wallet-${walletKeyVersion}`
           const key = walletKey
 
-          // TODO: let the user provide an id? Or should we create one by default
+          // TODO(sdk): let the user provide an id? Or should we create one by default
           const pws = new ParadymWalletSdk({
             ...configuration,
             id,
@@ -415,7 +425,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             }
           })
         } catch (error) {
-          if (error instanceof WalletInvalidKeyError) {
+          if (error instanceof AskarStoreInvalidKeyError) {
             if (unlockMethod === 'biometrics') {
               setCanTryUnlockingUsingBiometrics(false)
             }
@@ -431,7 +441,6 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
   }
 
   if (state === 'locked') {
-    console.log('state is locked')
     return {
       state,
       isUnlocking,

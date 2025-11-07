@@ -8,7 +8,7 @@ import {
 import type { CredentialRecord } from '../storage/credentials'
 import { getDisplayInformationForMdocCredential } from './mdoc'
 import { getDisplayInformationForSdJwtCredential } from './sdJwt'
-import { getDisplayInformationForW3cCredential } from './w3c'
+import { getDisplayInformationForW3cCredential, getDisplayInformationForW3cV2Credential } from './w3c'
 
 export type CredentialForDisplayId =
   | `w3c-credential-${string}`
@@ -71,8 +71,14 @@ export interface CredentialForDisplay {
   attributes: Record<string, unknown>
   rawAttributes: Record<string, unknown>
   metadata: CredentialMetadata
-  claimFormat: ClaimFormat.SdJwtDc | ClaimFormat.MsoMdoc | ClaimFormat.JwtVc | ClaimFormat.LdpVc
-  record: W3cCredentialRecord | MdocRecord | SdJwtVcRecord
+  claimFormat:
+    | ClaimFormat.SdJwtDc
+    | ClaimFormat.SdJwtW3cVc
+    | ClaimFormat.JwtW3cVc
+    | ClaimFormat.MsoMdoc
+    | ClaimFormat.JwtVc
+    | ClaimFormat.LdpVc
+  record: CredentialRecord
 
   category?: CredentialCategoryMetadata
   hasRefreshToken: boolean
@@ -98,7 +104,7 @@ export function getCredentialForDisplayId(credentialRecord: CredentialRecord): C
 export function getCredentialForDisplay(
   credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord | W3cV2CredentialRecord
 ): CredentialForDisplay {
-  const credentialCategoryMetadata = getCredentialCategoryMetadata(credentialRecord)
+  const credentialCategoryMetadata = getCredentialCategoryMetadata(credentialRecord) ?? undefined
   const credentialForDisplayId = getCredentialForDisplayId(credentialRecord)
   const hasRefreshToken = getRefreshCredentialMetadata(credentialRecord) !== null
 
@@ -126,7 +132,14 @@ export function getCredentialForDisplay(
       credentialCategoryMetadata
     )
   }
-  // TODO(sdk): add support for W3c V2
+  if (credentialRecord instanceof W3cV2CredentialRecord) {
+    return getDisplayInformationForW3cV2Credential(
+      credentialRecord,
+      credentialForDisplayId,
+      hasRefreshToken,
+      credentialCategoryMetadata
+    )
+  }
 
   throw new ParadymWalletUnsupportedCredentialRecordTypeError()
 }

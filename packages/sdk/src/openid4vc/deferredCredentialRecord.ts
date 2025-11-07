@@ -1,24 +1,32 @@
-import { type Agent, Kms } from '@credo-ts/core'
+import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
-import { getCredentialDisplayWithDefaults, getCredentialForDisplayId, getOpenId4VcCredentialDisplay } from '../display'
-import { receiveDeferredCredentialFromOpenId4VciOffer } from '../invitation'
-import { logger } from '../logger'
+import { receiveDeferredCredentialFromOpenId4VciOffer } from '@package/agent'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import { getCredentialDisplayWithDefaults } from '../display/common'
+import { getCredentialForDisplayId } from '../display/credential'
+import { getOpenId4VcCredentialDisplay } from '../display/openid4vc'
+import { extractOpenId4VcCredentialMetadata } from '../metadata/credentials'
+import { storeReceivedActivity } from '../storage/activityStore'
+import { storeCredential } from '../storage/credentials'
 import {
   type DeferredCredential,
   deleteDeferredCredential,
-  storeCredential,
-  storeReceivedActivity,
   updateDeferredCredential,
-} from '../storage'
-import { extractOpenId4VcCredentialMetadata } from './displayMetadata'
+} from '../storage/deferredCredentialStore'
 
-export async function fetchAndProcessDeferredCredentials(agent: Agent, deferredCredentials: DeferredCredential[]) {
+export async function fetchAndProcessDeferredCredentials(
+  paradym: ParadymWalletSdk,
+  deferredCredentials: DeferredCredential[]
+) {
   await Promise.allSettled(
-    deferredCredentials.map((deferredCredential) => fetchAndProcessDeferredCredential(agent, deferredCredential))
+    deferredCredentials.map((deferredCredential) => fetchAndProcessDeferredCredential(paradym, deferredCredential))
   )
 }
 
-export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCredential: DeferredCredential) {
+export async function fetchAndProcessDeferredCredential(
+  paradym: ParadymWalletSdk,
+  deferredCredential: DeferredCredential
+) {
   const { issuerMetadata, clientId, response: deferredCredentialResponse } = deferredCredential
 
   try {
@@ -38,11 +46,11 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
 
     // Determine whether or not to use the refresh token to get a new access token.
     if (accessToken.refreshToken && (!accessTokenExpiresAt || accessTokenExpiresAt < Date.now())) {
-      agent.config.logger.debug('Refreshing access token for deferred credential', {
+      paradym.logger.debug('Refreshing access token for deferred credential', {
         deferredCredentialId: deferredCredential.id,
       })
 
-      accessToken = await agent.modules.openid4vc.holder.refreshToken({
+      accessToken = await paradym.agent.openid4vc.holder.refreshToken({
         issuerMetadata,
         clientId,
         refreshToken: accessToken.refreshToken,
@@ -52,10 +60,11 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
     }
 
     // Fetch the credentials from the deferred credential endpoint
+    // TODO(sdk): move to sdk handlers
     const { credentials, deferredCredentials } = await receiveDeferredCredentialFromOpenId4VciOffer({
+      paradym,
       accessToken,
       issuerMetadata,
-      agent,
       deferredCredentialResponse,
     })
 
@@ -65,7 +74,7 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
 
     if (credentials.length) {
       for (const { credential } of credentials) {
-        await storeCredential(agent, credential)
+        await storeCredential(paradym, credential)
       }
 
       const { issuer: issuerDisplay } = getCredentialDisplayWithDefaults(
@@ -77,7 +86,7 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
         )
       )
 
-      await storeReceivedActivity(agent, {
+      await storeReceivedActivity(paradym, {
         // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
         // the credential. Signed issuer metadata is the solution.
         entityId: issuerMetadata?.credentialIssuer.credential_issuer,
@@ -89,9 +98,9 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
         credentialIds: credentials.map(({ credential }) => getCredentialForDisplayId(credential)),
       })
 
-      await deleteDeferredCredential(agent, deferredCredential.id)
+      await deleteDeferredCredential(paradym, deferredCredential.id)
     } else {
-      await updateDeferredCredential(agent, {
+      await updateDeferredCredential(paradym, {
         id: deferredCredential.id,
         lastCheckedAt: new Date().toISOString(),
         // Update access token with a new one if we got a new refresh token.
@@ -110,15 +119,15 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
       })
     }
   } catch (error) {
-    logger.error('Failed to fetch deferred credentials', { error })
+    paradym.logger.error('Failed to fetch deferred credentials', { error })
 
     try {
-      await updateDeferredCredential(agent, {
+      await updateDeferredCredential(paradym, {
         id: deferredCredential.id,
         lastErroredAt: new Date().toISOString(),
       })
     } catch (error) {
-      logger.error('Failed to update deferred credential', { error })
+      paradym.logger.error('Failed to update deferred credential', { error })
     }
   }
 }

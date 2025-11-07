@@ -1,8 +1,8 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import { type SdJwtVcHeader, SdJwtVcRecord, } from '@credo-ts/core'
+import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import type { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
+import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
   ReceivePidUseCaseFlowOptions,
@@ -27,10 +27,10 @@ import {
   ParadymWalletBiometricAuthenticationNotEnabledError,
 } from '@paradym/wallet-sdk/error'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
-import {storeReceivedActivity} from '@paradym/wallet-sdk/storage/activityStore'
+import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useRouter } from 'expo-router'
 import type React from 'react'
-import { type PropsWithChildren, createContext, useCallback, useEffect, useRef, useState } from 'react'
+import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
@@ -175,7 +175,7 @@ export function OnboardingContextProvider({
         isCardAttached: undefined,
         showScanModal: true,
       })
-      setOnIdCardPinReEnter(undefined)
+      // setOnIdCardPinReEnter(undefined)
     }
     if (stepsToCompleteAfterReset.includes('id-card-fetch')) {
       setUserName(undefined)
@@ -209,8 +209,6 @@ export function OnboardingContextProvider({
       )
     }
   }
-
-
 
   const onPinEnter = async (pin: string) => {
     setWalletPin(pin)
@@ -285,7 +283,7 @@ export function OnboardingContextProvider({
       }
 
       goToNextStep()
-    } catch (error)  {
+    } catch (error) {
       // We can recover from this, and will show an error on the screen
       if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         toast.show(t(commonMessages.biometricAuthenticationCancelled), {})
@@ -302,6 +300,7 @@ export function OnboardingContextProvider({
         error,
       })
       throw error
+    }
   }
 
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
@@ -372,7 +371,7 @@ export function OnboardingContextProvider({
       setIdCardPin(undefined)
       return idCardPin
     },
-    [idCardPin, toast.show, t]
+    [toast.show, t, idCardPin]
   )
 
   // Bit unfortunate, but we need to keep it as ref, as otherwise the value passed to ReceivePidUseCase.initialize will not get updated and we

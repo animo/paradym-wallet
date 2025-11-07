@@ -1,4 +1,12 @@
-import { ClaimFormat, JsonTransformer, type SingleOrArray, type W3cCredentialRecord } from '@credo-ts/core'
+import {
+  ClaimFormat,
+  JsonTransformer,
+  type SingleOrArray,
+  type W3cCredentialRecord,
+  type W3cJsonCredential,
+  type W3cV2CredentialRecord,
+  type W3cV2JsonCredential,
+} from '@credo-ts/core'
 import {
   type CredentialCategoryMetadata,
   type OpenId4VcCredentialMetadata,
@@ -53,16 +61,15 @@ export function getDisplayInformationForW3cCredential(
   credentialRecord: W3cCredentialRecord,
   credentialForDisplayId: CredentialForDisplayId,
   hasRefreshToken: boolean,
-  credentialCategoryMetadata: CredentialCategoryMetadata | null
+  credentialCategoryMetadata?: CredentialCategoryMetadata
 ): CredentialForDisplay {
   const credential = JsonTransformer.toJSON(
     credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
       ? credentialRecord.credential.credential
       : credentialRecord.credential.toJson()
-  ) as W3cCredentialJson
+  ) as W3cJsonCredential | W3cV2JsonCredential
 
-  // TODO why is this casted to `any`?
-  // biome-ignore lint/suspicious/noExplicitAny:
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const proof = (credential as any).proof as SingleOrArray<{
     type: string
     cryptosuite?: string
@@ -106,13 +113,56 @@ export function getDisplayInformationForW3cCredential(
     },
     claimFormat: credentialRecord.credential.claimFormat,
     record: credentialRecord,
-    category: credentialCategoryMetadata ?? undefined,
+    hasRefreshToken,
+  }
+}
+
+export function getDisplayInformationForW3cV2Credential(
+  credentialRecord: W3cV2CredentialRecord,
+  credentialForDisplayId: CredentialForDisplayId,
+  hasRefreshToken: boolean,
+  credentialCategoryMetadata?: CredentialCategoryMetadata
+): CredentialForDisplay {
+  const resolvedCredential = credentialRecord.credential.resolvedCredential
+  const credential = resolvedCredential.toJSON()
+
+  const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+  const issuerDisplay = getW3cIssuerDisplay(credential, openId4VcMetadata)
+  const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
+
+  // FIXME: support credential with multiple subjects
+  const credentialAttributes = Array.isArray(credential.credentialSubject)
+    ? credential.credentialSubject[0] ?? {}
+    : credential.credentialSubject
+
+  return {
+    id: credentialForDisplayId,
+    createdAt: credentialRecord.createdAt,
+    display: {
+      ...credentialDisplay,
+      issuer: issuerDisplay,
+    },
+    attributes: credentialAttributes,
+    rawAttributes: credentialAttributes,
+    metadata: {
+      holder: resolvedCredential.credentialSubjectIds[0],
+      issuer: resolvedCredential.issuerId,
+      type: Array.isArray(resolvedCredential.type)
+        ? resolvedCredential.type[resolvedCredential.type.length - 1]
+        : resolvedCredential.type,
+      issuedAt: resolvedCredential.validFrom ? new Date(resolvedCredential.validFrom).toISOString() : undefined,
+      validUntil: resolvedCredential.validUntil ? new Date(resolvedCredential.validUntil).toISOString() : undefined,
+      validFrom: resolvedCredential.validFrom ? new Date(resolvedCredential.validFrom).toISOString() : undefined,
+    },
+    claimFormat: credentialRecord.credential.claimFormat,
+    record: credentialRecord,
+    category: credentialCategoryMetadata,
     hasRefreshToken,
   }
 }
 
 function getW3cIssuerDisplay(
-  credential: W3cCredentialJson,
+  credential: W3cJsonCredential | W3cV2JsonCredential,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
 ): CredentialIssuerDisplay {
   const issuerDisplay: Partial<CredentialIssuerDisplay> = {}
@@ -143,12 +193,18 @@ function getW3cIssuerDisplay(
   }
 
   // If openid metadata is not available, try to extract display metadata from the credential based on JFF metadata
-  const jffCredential = credential as JffW3cCredentialJson
-  const issuerJson = typeof jffCredential.issuer === 'string' ? undefined : jffCredential.issuer
+  const issuerJson = (typeof credential.issuer === 'string' ? undefined : credential.issuer) as
+    | {
+        name?: string
+        iconUrl?: string
+        logoUrl?: string
+        image?: string | { id?: string; type?: 'Image' }
+      }
+    | undefined
 
   // Issuer Display from JFF
   if (!issuerDisplay.logo || !issuerDisplay.logo.url) {
-    if (issuerJson?.logoUrl) {
+    if (typeof issuerJson?.logoUrl === 'string' && issuerJson.logoUrl) {
       issuerDisplay.logo = {
         url: issuerJson?.logoUrl,
       }
@@ -176,7 +232,7 @@ function getW3cIssuerDisplay(
 }
 
 function getW3cCredentialDisplay(
-  credential: W3cCredentialJson,
+  credential: W3cJsonCredential | W3cV2JsonCredential,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
 ) {
   let credentialDisplay: Partial<CredentialDisplay> = {}
@@ -186,24 +242,24 @@ function getW3cCredentialDisplay(
   }
 
   // If openid metadata is not available, try to extract display metadata from the credential based on JFF metadata
-  const jffCredential = credential as JffW3cCredentialJson
-
-  if (!credentialDisplay.name) {
-    credentialDisplay.name = jffCredential.name
+  if (!credentialDisplay.name && typeof credential.name === 'string') {
+    credentialDisplay.name = credential.name
   }
 
   // If there's no name for the credential, we extract it from the last type
   // and sanitize it. This is not optimal. But provides at least something.
-  if (!credentialDisplay.name && jffCredential.type.length > 1) {
-    const lastType = jffCredential.type[jffCredential.type.length - 1]
+  if (!credentialDisplay.name && credential.type.length > 1) {
+    const lastType = credential.type[credential.type.length - 1]
     if (lastType && !lastType.startsWith('http')) {
       credentialDisplay.name = sanitizeString(lastType)
     }
   }
 
+  const credentialBranding = credential.credentialBranding as { backgroundColor?: string } | undefined
+
   // Use background color from the JFF credential if not provided by the OID4VCI metadata
-  if (!credentialDisplay.backgroundColor && jffCredential.credentialBranding?.backgroundColor) {
-    credentialDisplay.backgroundColor = jffCredential.credentialBranding.backgroundColor
+  if (!credentialDisplay.backgroundColor && credentialBranding?.backgroundColor) {
+    credentialDisplay.backgroundColor = credentialBranding.backgroundColor
   }
 
   return {

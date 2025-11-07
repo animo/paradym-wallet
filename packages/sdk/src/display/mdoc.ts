@@ -1,4 +1,4 @@
-import { ClaimFormat, type Mdoc, type MdocNameSpaces, type MdocRecord, getJwkFromKey } from '@credo-ts/core'
+import { ClaimFormat, type Mdoc, type MdocNameSpaces, type MdocRecord } from '@credo-ts/core'
 import {
   type CredentialCategoryMetadata,
   type OpenId4VcCredentialMetadata,
@@ -14,7 +14,7 @@ export function getDisplayInformationForMdocCredential(
   credentialRecord: MdocRecord,
   credentialForDisplayId: CredentialForDisplayId,
   hasRefreshToken: boolean,
-  credentialCategoryMetadata: CredentialCategoryMetadata | null
+  credentialCategoryMetadata?: CredentialCategoryMetadata
 ): CredentialForDisplay {
   const mdocInstance = credentialRecord.credential
 
@@ -74,9 +74,7 @@ export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpace
   // When you call toISOString() on a Date containing NaN, it will throw an error.
   const mdocMetadata: CredentialMetadata = {
     type: mdocInstance.docType,
-    holder: mdocInstance.deviceKey
-      ? safeCalculateJwkThumbprint(getJwkFromKey(mdocInstance.deviceKey).toJson())
-      : undefined,
+    holder: mdocInstance.deviceKey ? safeCalculateJwkThumbprint(mdocInstance.deviceKey.toJson()) : undefined,
     issuedAt: mdocInstance.validityInfo.signed.toISOString(),
     validFrom:
       mdocInstance.validityInfo.validFrom instanceof Date &&

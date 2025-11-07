@@ -19,4 +19,5 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
     { trustMechanism: 'x509', trustedX509Entities },
     { trustMechanism: 'did' },
   ],
+  didcommConfiguration: { label: 'easyPID wallet' },
 }

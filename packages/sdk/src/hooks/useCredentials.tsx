@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { getCredentialForDisplay } from '../display/credential'
+import { type CredentialForDisplay, getCredentialForDisplay } from '../display/credential'
+import type { CredentialCategoryMetadata } from '../metadata/credentials'
 import { useMdocRecords } from '../providers/MdocProvider'
 import { useSdJwtVcRecords } from '../providers/SdJwtVcProvider'
 import { useW3cCredentialRecords } from '../providers/W3cCredentialsProvider'
@@ -10,7 +11,7 @@ export const useCredentials = ({
   credentialCategory,
 }: {
   removeCanonicalRecords?: boolean
-  credentialCategory?: CredentialCategoryMetadata.credentialCategory
+  credentialCategory?: CredentialCategoryMetadata['credentialCategory']
 } = {}) => {
   const { w3cCredentialRecords, isLoading: isLoadingW3c } = useW3cCredentialRecords()
   const { w3cV2CredentialRecords, isLoading: isLoadingW3cV2 } = useW3cV2CredentialRecords()

@@ -5,7 +5,11 @@ import {
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
 } from '@package/agent'
-import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@paradym/wallet-sdk'
+import type {
+  OpenId4VciRequestTokenResponse,
+  OpenId4VciResolvedCredentialOffer,
+  ParadymWalletSdk,
+} from '@paradym/wallet-sdk'
 import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
 import {
   getBatchCredentialMetadata,
@@ -26,7 +30,7 @@ export async function refreshPid(options: FetchBatchCredentialOptions) {
 
   if (categoryMetadata?.credentialCategory === 'DE-PID' && batchMetadata?.additionalCredentials.length === 0) {
     const useCase = await RefreshPidUseCase.initialize({
-      agent: options.agent,
+      paradym: options.paradym,
     })
 
     const credentials = await useCase.retrieveCredentialsUsingExistingRecords({
@@ -42,7 +46,7 @@ export async function refreshPid(options: FetchBatchCredentialOptions) {
 }
 
 export interface RefreshPidUseCaseOptions {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
 }
 
 export class RefreshPidUseCase {
@@ -56,7 +60,7 @@ export class RefreshPidUseCase {
 
   public static async initialize(options: RefreshPidUseCaseOptions) {
     const resolved = await resolveOpenId4VciOffer({
-      agent: options.agent,
+      agent: options.paradym.agent as unknown as OpenId4VcAgent,
       offer: { uri: C_PRIME_SD_JWT_MDOC_OFFER },
       fetchAuthorization: false,
     })
@@ -95,7 +99,7 @@ export class RefreshPidUseCase {
     }
 
     const accessToken = await acquireRefreshTokenAccessToken({
-      agent: this.options.agent,
+      agent: this.options.paradym.agent as unknown as OpenId4VcAgent,
       clientId: ReceivePidUseCaseFlow.CLIENT_ID,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       authorizationServer: this.resolvedCredentialOffer.metadata.authorizationServers[0].issuer,
@@ -117,7 +121,7 @@ export class RefreshPidUseCase {
       .map(([id]) => id)
 
     const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
-      agent: this.options.agent,
+      paradym: this.options.paradym,
       accessToken,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       credentialConfigurationIdsToRequest,
@@ -150,7 +154,7 @@ export class RefreshPidUseCase {
         sdJwt.compactSdJwtVc = credentialRecord.compactSdJwtVc
 
         // Should we update the type metadata as well? For now we use hardcoded anyway
-        await updateCredential(this.options.agent, sdJwt)
+        await updateCredential(this.options.paradym, sdJwt)
       } else if (credentialRecord instanceof MdocRecord && mdoc) {
         credentialRecords.push(mdoc)
 
@@ -159,7 +163,7 @@ export class RefreshPidUseCase {
         if (batchMetadata) setBatchCredentialMetadata(mdoc, batchMetadata)
         mdoc.base64Url = credentialRecord.base64Url
 
-        await updateCredential(this.options.agent, mdoc)
+        await updateCredential(this.options.paradym, mdoc)
       }
     }
 

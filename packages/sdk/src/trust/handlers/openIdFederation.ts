@@ -16,7 +16,7 @@ export const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedE
   const logoUri = clientMetadata?.logo_uri
 
   const resolvedChains = entityId
-    ? await options.paradym.agent.modules.openId4VcHolder.resolveOpenIdFederationChains({
+    ? await options.paradym.agent.openid4vc.holder.resolveOpenIdFederationChains({
         entityId,
         trustAnchorEntityIds: options.trustMechanismConfiguration.trustedEntityIds as [string, ...string[]],
       })

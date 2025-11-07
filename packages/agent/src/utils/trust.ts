@@ -1,10 +1,10 @@
 import { X509Certificate, X509ModuleConfig } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import { t } from '@lingui/core/macro'
-import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
-import type { EitherAgent } from '@package/agent'
 import { commonMessages } from '@package/translations'
-import { TRUSTED_ENTITIES } from '../invitation/trustedEntities'
+import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
+import type { TrustedEntity } from '@paradym/wallet-sdk/trust/trustMechanism'
+import type { TrustedX509Entity } from '../invitation'
 
 export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did' | 'none'
 
@@ -26,14 +26,14 @@ type GetTrustedEntitiesForEudiRpAuthenticationOptions = {
 
 type GetTrustedEntitiesForOpenIdFederationOptions = {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   origin?: string
 } & GetTrustedEntitiesForX509CertificateOptions
 
 type GetTrustedEntitiesForX509CertificateOptions = {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   trustedX509Entities: TrustedX509Entity[]
-  agent: EitherAgent
+  agent: OpenId4VcAgent
   walletTrustedEntity?: TrustedEntity
 }
 
@@ -194,7 +194,7 @@ const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntities
   const resolvedChains = entityId
     ? await options.agent.modules.openid4vc.holder.resolveOpenIdFederationChains({
         entityId,
-        trustAnchorEntityIds: TRUSTED_ENTITIES,
+        trustAnchorEntityIds: ['a'],
       })
     : undefined
 

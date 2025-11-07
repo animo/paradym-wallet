@@ -2,23 +2,20 @@ import { appScheme } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
+import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { useLingui } from '@lingui/react/macro'
-import {
-  OpenId4VciAuthorizationFlow,
-  OpenId4VciDeferredCredentialResponse,
-  acquireAuthorizationCodeUsingPresentation,
-} from '@package/agent'
+import type { OpenId4VciDeferredCredentialResponse } from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk/display/credential'
 import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
-import { getCredentialsForProofRequest, type CredentialsForProofRequest } from '@paradym/wallet-sdk/openid4vc/getCredentialsForProofRequest'
-import { type CredentialRecord } from '@paradym/wallet-sdk/storage/credentials'
+import type { ResolveCredentialOfferReturn } from '@paradym/wallet-sdk/invitation/resolver'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
-import { PinSlide } from '../share/slides/PinSlide'
+import { PinSlide, type onPinSubmitProps } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
@@ -27,9 +24,6 @@ import { InteractionErrorSlide } from './slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
-import { CredentialForDisplay } from '@paradym/wallet-sdk/display/credential'
-import { ResolveCredentialOfferReturn } from '@paradym/wallet-sdk/invitation/resolver'
-import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 
 type Query = { uri: string }
 
@@ -52,10 +46,6 @@ export function FunkeCredentialNotificationScreen() {
   const [errorReason, setErrorReason] = useState<string>()
   const [isCompleted, setIsCompleted] = useState(false)
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
-
-  const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
-  const [credentialAttributes, setCredentialAttributes] = useState<Record<string, unknown>>()
-  const [receivedRecord, setReceivedRecord] = useState<CredentialRecord>()
 
   const [resolvedOffer, setResolvedOffer] = useState<ResolveCredentialOfferReturn>()
   const [deferredCredential, setDeferredCredential] = useState<CredentialForDisplay>()
@@ -98,7 +88,7 @@ export function FunkeCredentialNotificationScreen() {
           error,
         })
       })
-  }, [params.uri, paradym, setErrorReasonWithError, t])
+  }, [params.uri, paradym, setErrorReasonWithError, t, resolvedOffer])
 
   // TODO: Should we add this to the activitiy? We also don't do it for issuance
   const onProofDecline = async () => {
@@ -106,39 +96,22 @@ export function FunkeCredentialNotificationScreen() {
     pushToWallet('back')
   }
 
-
   // TODO(sdk): set up in SDK
-  const parsePresentationRequestUrl = useCallback(
-    (oid4vpRequestUrl: string) =>
-      getCredentialsForProofRequest({
-        paradym,
-        uri: oid4vpRequestUrl,
-      })
-        .then(setCredentialsForRequest)
-        .catch((error) => {
-          setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
-          paradym.logger.error('Error getting credentials for request', {
-            error,
-          })
-        }),
-    [paradym, setErrorReasonWithError, t]
-  )
-
-  const onCheckCardContinue = useCallback(async () => {
-    if (preAuthGrant && !preAuthGrant.tx_code) {
-      await acquireCredentialsPreAuth()
-    }
-    if (resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance) {
-      await parsePresentationRequestUrl(resolvedAuthorizationRequest.openid4vpRequestUrl)
-    }
-  }, [acquireCredentialsPreAuth, parsePresentationRequestUrl, preAuthGrant, resolvedAuthorizationRequest])
-
-  const onSubmitTxCode = useCallback(
-    async (txCode: string) => {
-      await acquireCredentialsPreAuth(txCode)
-    },
-    [acquireCredentialsPreAuth]
-  )
+  // const parsePresentationRequestUrl = useCallback(
+  //   (oid4vpRequestUrl: string) =>
+  //     getCredentialsForProofRequest({
+  //       paradym,
+  //       uri: oid4vpRequestUrl,
+  //     })
+  //       .then(setCredentialsForRequest)
+  //       .catch((error) => {
+  //         setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
+  //         paradym.logger.error('Error getting credentials for request', {
+  //           error,
+  //         })
+  //       }),
+  //   [paradym, setErrorReasonWithError, t]
+  // )
 
   const onPresentationAccept = useCallback(
     async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
@@ -178,15 +151,6 @@ export function FunkeCredentialNotificationScreen() {
           fetchBatchCredentialCallback: refreshPid,
         })
 
-        const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({
-          resolvedCredentialOffer,
-          authSession: resolvedAuthorizationRequest.authSession,
-          presentationDuringIssuanceSession,
-          agent,
-          dPopKeyJwk: resolvedAuthorizationRequest?.dpop?.jwk,
-        })
-
-        await acquireCredentialsAuth(authorizationCode)
         onPinComplete?.()
 
         updateCredentials(acquiredCredentials)
@@ -220,7 +184,6 @@ export function FunkeCredentialNotificationScreen() {
 
   const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
 
-
   const acquireCredentialsAuth = useCallback(
     async (authorizationCode: string) => {
       if (resolvedOffer?.flow !== 'auth' && resolvedOffer?.flow !== 'auth-presentation-during-issuance') {
@@ -240,7 +203,6 @@ export function FunkeCredentialNotificationScreen() {
         })
 
         updateCredentials(acquiredCredentials)
-
       } catch (error) {
         paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
@@ -262,12 +224,12 @@ export function FunkeCredentialNotificationScreen() {
       if (resolvedOffer.flow === 'pre-auth') return
 
       try {
-        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({ resolvedCredentialOffer: resolvedOffer.resolvedCredentialOffer,
+        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
+          resolvedCredentialOffer: resolvedOffer.resolvedCredentialOffer,
           transactionCode: txCode,
         })
 
         updateCredentials(acquiredCredentials)
-
       } catch (error) {
         paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
@@ -281,30 +243,33 @@ export function FunkeCredentialNotificationScreen() {
   const onCompleteCredentialRetrieval = async () => {
     if (!receivedCredential && !deferredCredential) return
 
+    if (deferredCredential) {
+      throw new Error('Add support for deferred credentials')
+    }
+
     await paradym.openid4vc.completeCredentialRetrieval({
       resolvedCredentialOffer: resolvedOffer?.resolvedCredentialOffer,
       record: receivedCredential?.record,
-      deferredCredential
     })
 
     setIsCompleted(true)
   }
 
   const updateCredentials = (options: {
-    deferredCredentials: OpenId4VciDeferredCredentialResponse[];
-    credentials: CredentialForDisplay[];
+    deferredCredentials: OpenId4VciDeferredCredentialResponse[]
+    credentials: CredentialForDisplay[]
   }) => {
-      if (options.deferredCredentials.length > 0 && options.credentials.length > 0) {
-        setErrorReasonWithError(
-          t(commonMessages.credentialInformationCouldNotBeExtracted),
-          new Error('Received both immediate and deferred credentials')
-        )
-        paradym.logger.error('Received both immediate and deferred credentials in OpenID4VCI response')
-        return
-      }
+    if (options.deferredCredentials.length > 0 && options.credentials.length > 0) {
+      setErrorReasonWithError(
+        t(commonMessages.credentialInformationCouldNotBeExtracted),
+        new Error('Received both immediate and deferred credentials')
+      )
+      paradym.logger.error('Received both immediate and deferred credentials in OpenID4VCI response')
+      return
+    }
 
-      setReceivedCredential(options.credentials[0])
-      setDeferredCredential(options.deferredCredentials[0])
+    setReceivedCredential(options.credentials[0])
+    // setDeferredCredential(options.deferredCredentials[0])
   }
 
   // TODO: it is not the cleanest, but the UI shows it perfectly.

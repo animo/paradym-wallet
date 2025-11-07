@@ -9,13 +9,13 @@ import { Redirect, useLocalSearchParams } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
 import { InvalidPinError } from '../crypto/error'
-import { useResetWalletDevMenu } from '../utils/resetWallet'
+// import { useResetWalletDevMenu } from '../utils/resetWallet'
 
 /**
  * Authenticate screen is redirect to from app layout when app is configured but locked
  */
 export default function Authenticate() {
-  useResetWalletDevMenu()
+  // useResetWalletDevMenu()
   const { t } = useLingui()
 
   const paradym = useParadym()

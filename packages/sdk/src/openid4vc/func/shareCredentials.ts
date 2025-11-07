@@ -1,38 +1,39 @@
 import {
-  type BaseRecord,
   ClaimFormat,
   type DcqlCredentialsForRequest,
   type DcqlQueryResult,
+  type JsonObject,
+  type MdocNameSpaces,
   type MdocRecord,
   type SdJwtVcRecord,
   type W3cCredentialRecord,
+  type W3cV2CredentialRecord,
 } from '@credo-ts/core'
-import { addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activities'
+import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
+import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import { Linking } from 'react-native'
-import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
-import { type FetchBatchCredentialCallback, handleBatchCredential } from '../batch'
+import { handleBatchCredential } from '../batch'
 import type { CredentialsForProofRequest } from '../getCredentialsForProofRequest'
 import { getFormattedTransactionData } from '../transaction'
 
 export type ShareCredentialsOptions = {
   paradym: ParadymWalletSdk
   resolvedRequest: CredentialsForProofRequest
-  selectedCredentialsForRequest: { [inputDescriptorId: string]: string }
+  selectedCredentials: { [inputDescriptorId: string]: string }
+  // FIXME: Should be a more complex structure allowing which credential to use for which entry
   acceptTransactionData?: boolean
-  fetchBatchCredentialCallback?: FetchBatchCredentialCallback
 }
 
 export const shareCredentials = async ({
   paradym,
-  fetchBatchCredentialCallback,
-  selectedCredentialsForRequest,
-  acceptTransactionData,
   resolvedRequest,
+  selectedCredentials,
+  acceptTransactionData,
 }: ShareCredentialsOptions) => {
   const { authorizationRequest } = resolvedRequest
   if (
     !resolvedRequest.credentialsForRequest?.areRequirementsSatisfied &&
-    !resolvedRequest.queryResult?.canBeSatisfied
+    !resolvedRequest.queryResult?.can_be_satisfied
   ) {
     throw new Error('Requirements from proof request are not satisfied')
   }
@@ -45,17 +46,13 @@ export const shareCredentials = async ({
         await Promise.all(
           resolvedRequest.credentialsForRequest.requirements.flatMap((requirement) =>
             requirement.submissionEntry.slice(0, requirement.needsCount).map(async (entry) => {
-              const credentialId = selectedCredentialsForRequest[entry.inputDescriptorId]
+              const credentialId = selectedCredentials[entry.inputDescriptorId]
               const credential =
                 entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
                 entry.verifiableCredentials[0]
 
               // Optionally use a batch credential
-              const credentialRecord = await handleBatchCredential(
-                paradym.agent,
-                credential.credentialRecord,
-                fetchBatchCredentialCallback
-              )
+              const credentialRecord = await handleBatchCredential(paradym, credential.credentialRecord)
 
               return [entry.inputDescriptorId, [{ ...credential, credentialRecord }]]
             })
@@ -68,28 +65,28 @@ export const shareCredentials = async ({
     ? Object.fromEntries(
         await Promise.all(
           Object.entries(
-            Object.keys(selectedCredentialsForRequest).length > 0
-              ? getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentialsForRequest)
-              : paradym.agent.modules.openId4VcHolder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
-          ).map(async ([queryCredentialId, credential]) => {
+            Object.keys(selectedCredentials).length > 0
+              ? getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
+              : paradym.agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+          ).map(async ([queryCredentialId, credentials]) => {
             // Optionally use a batch credential
-            const credentialRecord = await handleBatchCredential(
-              paradym.agent,
-              credential.credentialRecord,
-              fetchBatchCredentialCallback
+            const updatedCredentials = await Promise.all(
+              credentials.map(async (credential) => ({
+                ...credential,
+                credentialRecord: await handleBatchCredential(paradym, credential.credentialRecord),
+              }))
             )
 
-            return [queryCredentialId, { ...credential, credentialRecord }]
+            return [queryCredentialId, updatedCredentials]
           })
         )
       )
     : undefined
 
-  const formattedTransactionData = getFormattedTransactionData(resolvedRequest)
-  const cardForSigningId = formattedTransactionData?.cardForSigningId
+  const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
 
   try {
-    const result = await paradym.agent.modules.openId4VcHolder.acceptOpenId4VpAuthorizationRequest({
+    const result = await paradym.agent.modules.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
       presentationExchange: presentationExchangeCredentials
         ? {
@@ -124,15 +121,11 @@ export const shareCredentials = async ({
         `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
       )
     }
-    await addSharedActivityForCredentialsForRequest(paradym, resolvedRequest, 'success', formattedTransactionData)
 
     return result
   } catch (error) {
-    paradym.logger.error('Error accepting presentation', {
-      error,
-    })
-    await addSharedActivityForCredentialsForRequest(paradym, resolvedRequest, 'failed', formattedTransactionData)
-    throw error
+    // Handle biometric authentication errors
+    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
   }
 }
 
@@ -144,48 +137,50 @@ function getSelectedCredentialsForRequest(
   dcqlQueryResult: DcqlQueryResult,
   selectedCredentials: { [credentialQueryId: string]: string }
 ): DcqlCredentialsForRequest {
-  if (!dcqlQueryResult.canBeSatisfied) {
+  if (!dcqlQueryResult.can_be_satisfied) {
     throw new Error('Cannot select the credentials for the dcql query presentation if the request cannot be satisfied')
   }
 
   const credentials: DcqlCredentialsForRequest = {}
 
+  type WithRecord<T> = T & {
+    record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord | W3cV2CredentialRecord
+  }
+
   for (const [credentialQueryId, credentialRecordId] of Object.entries(selectedCredentials)) {
     const matchesForCredentialQuery = dcqlQueryResult.credential_matches[credentialQueryId]
     if (matchesForCredentialQuery.success) {
-      const match = matchesForCredentialQuery.all
-        .map((credential) =>
-          credential.find((claimSet) =>
-            claimSet?.success && 'record' in claimSet && (claimSet.record as BaseRecord).id === credentialRecordId
-              ? claimSet
-              : undefined
-          )
-        )
-        .find((i) => i !== undefined)
-      // TODO: fix the typing, make selection in Credo easier
-      const matchWithRecord = match as typeof match & { record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord }
+      const validCredentialMatch = matchesForCredentialQuery.valid_credentials.find(
+        (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId
+      )
 
-      if (
-        matchWithRecord?.success &&
-        matchWithRecord.record.type === 'MdocRecord' &&
-        matchWithRecord.output.credential_format === 'mso_mdoc'
-      ) {
-        credentials[credentialQueryId] = {
-          claimFormat: ClaimFormat.MsoMdoc,
-          credentialRecord: matchWithRecord.record,
-          disclosedPayload: matchWithRecord.output.namespaces,
-        }
-      } else if (
-        matchWithRecord?.success &&
-        matchWithRecord.record.type === 'SdJwtVcRecord' &&
-        (matchWithRecord.output.credential_format === 'dc+sd-jwt' ||
-          matchWithRecord.output.credential_format === 'vc+sd-jwt')
-      ) {
-        credentials[credentialQueryId] = {
-          claimFormat: ClaimFormat.SdJwtVc,
-          credentialRecord: matchWithRecord.record,
-          disclosedPayload: matchWithRecord.output.claims,
-        }
+      if (!validCredentialMatch) {
+        throw new Error(
+          `Could not find credential record ${credentialRecordId} in valid credential matches for credentialQueryId ${credentialQueryId}`
+        )
+      }
+
+      // TODO: fix the typing, make selection in Credo easier
+      const matchWithRecord = validCredentialMatch as typeof validCredentialMatch & {
+        record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord | W3cV2CredentialRecord
+      }
+
+      if (matchWithRecord.record.type === 'MdocRecord') {
+        credentials[credentialQueryId] = [
+          {
+            claimFormat: ClaimFormat.MsoMdoc,
+            credentialRecord: matchWithRecord.record,
+            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as MdocNameSpaces,
+          },
+        ]
+      } else if (matchWithRecord.record.type === 'SdJwtVcRecord') {
+        credentials[credentialQueryId] = [
+          {
+            claimFormat: ClaimFormat.SdJwtDc,
+            credentialRecord: matchWithRecord.record,
+            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as JsonObject,
+          },
+        ]
       }
     }
   }

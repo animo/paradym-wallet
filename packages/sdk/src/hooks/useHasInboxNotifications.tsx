@@ -1,10 +1,15 @@
-import { CredentialState, ProofState } from '@credo-ts/didcomm'
+import { DidCommCredentialState, DidCommProofState } from '@credo-ts/didcomm'
 import { useCredentialByState } from '../providers/CredentialExchangeProvider'
 import { useProofByState } from '../providers/ProofExchangeProvider'
+import { useParadym } from './useParadym'
 
 export const useHasInboxNotifications = () => {
-  const credentialExchangeRecords = useCredentialByState([CredentialState.OfferReceived])
-  const proofExchangeRecords = useProofByState([ProofState.RequestReceived])
+  const { paradym } = useParadym('unlocked')
+
+  const credentialExchangeRecords = paradym.isDidCommEnabled
+    ? useCredentialByState([DidCommCredentialState.OfferReceived])
+    : []
+  const proofExchangeRecords = paradym.isDidCommEnabled ? useProofByState([DidCommProofState.RequestReceived]) : []
 
   return {
     hasInboxNotifications: credentialExchangeRecords.length > 0 || proofExchangeRecords.length > 0,

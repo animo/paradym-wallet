@@ -10,7 +10,10 @@ import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wal
 import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
 import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
 import { useParadym } from '@paradym/wallet-sdk/hooks'
-import { type ActivityStatus, addSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activities'
+import {
+  type ActivityStatus,
+  storeSharedActivityForCredentialsForRequest,
+} from '@paradym/wallet-sdk/storage/activityStore'
 import { useCallback, useEffect, useState } from 'react'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
@@ -161,7 +164,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   const addActivity = async (status: Exclude<ActivityStatus, 'pending'>) => {
     if (!submission) return
-    await addSharedActivityForCredentialsForRequest(
+    await storeSharedActivityForCredentialsForRequest(
       paradym,
       {
         formattedSubmission: submission,

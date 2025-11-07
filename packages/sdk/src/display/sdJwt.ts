@@ -1,4 +1,4 @@
-import { ClaimFormat, type JwkJson, type SdJwtVcRecord, type SdJwtVcTypeMetadata } from '@credo-ts/core'
+import { ClaimFormat, type Kms, type SdJwtVcRecord, type SdJwtVcTypeMetadata } from '@credo-ts/core'
 import {
   type CredentialCategoryMetadata,
   type OpenId4VcCredentialMetadata,
@@ -16,11 +16,11 @@ export function getDisplayInformationForSdJwtCredential(
   credentialRecord: SdJwtVcRecord,
   credentialForDisplayId: CredentialForDisplayId,
   hasRefreshToken: boolean,
-  credentialCategoryMetadata: CredentialCategoryMetadata | null
+  credentialCategoryMetadata?: CredentialCategoryMetadata
 ): CredentialForDisplay {
   const sdJwtVc = credentialRecord.credential
 
-  const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
+  const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord) ?? undefined
   const sdJwtTypeMetadata = credentialRecord.typeMetadata
   const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
 
@@ -51,7 +51,7 @@ export function getDisplayInformationForSdJwtCredential(
     attributes: customAttributesForDisplay,
     rawAttributes: attributes,
     metadata,
-    claimFormat: ClaimFormat.SdJwtVc,
+    claimFormat: ClaimFormat.SdJwtDc,
     record: credentialRecord,
     category: credentialCategoryMetadata ?? undefined,
     hasRefreshToken,
@@ -123,7 +123,7 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, status, ...visibleProperties } =
     sdJwtVcPayload as SdJwtVcPayload
 
-  const holder = cnf ? (cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as JwkJson) : undefined) : undefined
+  const holder = cnf ? (cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
     issuer: iss,

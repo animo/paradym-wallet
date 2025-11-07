@@ -9,6 +9,7 @@ import { ProofExchangeProvider } from './ProofExchangeProvider'
 import { SdJwtVcRecordProvider } from './SdJwtVcProvider'
 import { W3cCredentialRecordProvider } from './W3cCredentialsProvider'
 import { W3cV2CredentialRecordProvider } from './W3cV2CredentialsProvider'
+import { WalletJsonStoreProvider } from './WalletJsonStoreProvider'
 
 const AgentContext = createContext<Agent | undefined>(undefined)
 
@@ -39,16 +40,9 @@ export const useAgent = <ProvidedAgent extends Agent = Awaited<ReturnType<typeof
 
 export const AgentProvider = ({ agent, recordIds, children }: PropsWithChildren<AgentProviderProps>) => {
   const DynamicProviders = useMemo(() => {
-    return [
-      agent.modules.proofs || agent.modules.credentials
-        ? ({ children }: PropsWithChildren<{ agent: Agent }>) => (
-            <ExchangeRecordDisplayMetadataProvider agent={agent}>{children}</ExchangeRecordDisplayMetadataProvider>
-          )
-        : undefined,
-      agent.modules.credentials ? CredentialExchangeProvider : undefined,
-      agent.modules.proofs ? ProofExchangeProvider : undefined,
-      agent.modules.connections ? ConnectionProvider : undefined,
-    ].filter((p): p is Exclude<typeof p, undefined> => p !== undefined)
+    return agent.didcomm
+      ? [ExchangeRecordDisplayMetadataProvider, CredentialExchangeProvider, ProofExchangeProvider, ConnectionProvider]
+      : []
   }, [agent])
 
   // Memoize the nested providers structure to prevent recreation on each render
@@ -60,13 +54,15 @@ export const AgentProvider = ({ agent, recordIds, children }: PropsWithChildren<
           {accChildren}
         </Provider>
       ),
-      <W3cV2CredentialRecordProvider agent={agent}>
-        <W3cCredentialRecordProvider agent={agent}>
-          <SdJwtVcRecordProvider agent={agent}>
-            <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
-          </SdJwtVcRecordProvider>
-        </W3cCredentialRecordProvider>
-      </W3cV2CredentialRecordProvider>
+      <WalletJsonStoreProvider agent={agent} recordIds={recordIds}>
+        <W3cV2CredentialRecordProvider agent={agent}>
+          <W3cCredentialRecordProvider agent={agent}>
+            <SdJwtVcRecordProvider agent={agent}>
+              <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
+            </SdJwtVcRecordProvider>
+          </W3cCredentialRecordProvider>
+        </W3cV2CredentialRecordProvider>
+      </WalletJsonStoreProvider>
     )
   }, [DynamicProviders, agent, children, recordIds])
 

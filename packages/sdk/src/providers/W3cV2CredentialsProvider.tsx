@@ -2,8 +2,8 @@ import { W3cV2CredentialRecord } from '@credo-ts/core'
 import type { PropsWithChildren } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import type * as React from 'react'
-import type { EitherAgent } from '../agent'
-import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from './recordUtils'
+import type { BaseAgent } from '../agent'
+import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
 
 export { W3cV2CredentialRecord, W3cV2VerifiableCredential } from '@credo-ts/core'
 
@@ -57,11 +57,14 @@ export const useW3cV2CredentialRecordById = (id: string): W3cV2CredentialRecord 
   return w3cV2CredentialRecords.find((c) => c.id === id)
 }
 
-interface Props {
-  agent: EitherAgent
+interface W3cV2CredentialRecordProviderProps {
+  agent: BaseAgent
 }
 
-export const W3cV2CredentialRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agent, children }) => {
+export const W3cV2CredentialRecordProvider: React.FC<PropsWithChildren<W3cV2CredentialRecordProviderProps>> = ({
+  agent,
+  children,
+}) => {
   const [state, setState] = useState<W3cV2CredentialRecordState>({
     w3cV2CredentialRecords: [],
     isLoading: true,

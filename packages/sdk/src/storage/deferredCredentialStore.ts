@@ -1,4 +1,4 @@
-import { type Agent, type Kms, utils } from '@credo-ts/core'
+import { type Kms, utils } from '@credo-ts/core'
 import type {
   OpenId4VciDeferredCredentialResponse,
   OpenId4VciMetadata,
@@ -6,7 +6,7 @@ import type {
 } from '@credo-ts/openid4vc'
 import { useMemo } from 'react'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
-import { useWalletJsonRecord } from './WalletJsonStoreProvider'
+import { useWalletJsonRecord } from '../providers/WalletJsonStoreProvider'
 import { getWalletJsonStore } from './walletJsonStore'
 
 export interface DeferredCredential {
@@ -24,7 +24,7 @@ export interface DeferredCredential {
   }
 }
 
-interface DeferredCredentialRecord {
+type DeferredCredentialRecord = {
   deferredCredentials: DeferredCredential[]
 }
 
@@ -33,23 +33,23 @@ const _deferredCredentialStorage = getWalletJsonStore<DeferredCredentialRecord>(
 )
 export const deferredCredentialStorage = {
   recordId: _deferredCredentialStorage.recordId,
-  addDeferredCredential: async (agent: Agent, deferredCredential: DeferredCredential) => {
-    const record = await _deferredCredentialStorage.get(agent)
+  addDeferredCredential: async (paradym: ParadymWalletSdk, deferredCredential: DeferredCredential) => {
+    const record = await _deferredCredentialStorage.get(paradym.agent)
     if (!record) {
-      await _deferredCredentialStorage.store(agent, {
+      await _deferredCredentialStorage.store(paradym.agent, {
         deferredCredentials: [deferredCredential],
       })
     } else {
       record.deferredCredentials.push(deferredCredential)
-      await _deferredCredentialStorage.update(agent, record)
+      await _deferredCredentialStorage.update(paradym.agent, record)
     }
     return deferredCredential
   },
   updateDeferredCredential: async (
-    agent: Agent,
+    paradym: ParadymWalletSdk,
     updatedDeferredCredential: Partial<DeferredCredential> & Pick<DeferredCredential, 'id'>
   ) => {
-    const record = await _deferredCredentialStorage.get(agent)
+    const record = await _deferredCredentialStorage.get(paradym.agent)
     if (!record) {
       throw new Error('No deferred credential record found')
     }
@@ -64,17 +64,17 @@ export const deferredCredentialStorage = {
       ...updatedDeferredCredential,
     }
 
-    await _deferredCredentialStorage.update(agent, record)
+    await _deferredCredentialStorage.update(paradym.agent, record)
     return updatedDeferredCredential
   },
-  deleteDeferredCredential: async (agent: Agent, id: string) => {
-    const record = await _deferredCredentialStorage.get(agent)
+  deleteDeferredCredential: async (paradym: ParadymWalletSdk, id: string) => {
+    const record = await _deferredCredentialStorage.get(paradym.agent)
     if (!record) {
       throw new Error('No deferred credential record found')
     }
 
     record.deferredCredentials = record.deferredCredentials.filter((d) => d.id !== id)
-    await _deferredCredentialStorage.update(agent, record)
+    await _deferredCredentialStorage.update(paradym.agent, record)
   },
 }
 
@@ -99,7 +99,7 @@ export const storeDeferredCredential = async (
   paradym: ParadymWalletSdk,
   input: Omit<DeferredCredential, 'id' | 'createdAt' | 'lastCheckedAt'>
 ) => {
-  return await deferredCredentialStorage.addDeferredCredential(paradym.agent, {
+  return await deferredCredentialStorage.addDeferredCredential(paradym, {
     id: utils.uuid(),
     createdAt: new Date().toISOString(),
     lastCheckedAt: new Date().toISOString(),
@@ -111,14 +111,14 @@ export const storeDeferredCredential = async (
 }
 
 export const updateDeferredCredential = async (
-  agent: Agent,
+  paradym: ParadymWalletSdk,
   input: Partial<Omit<DeferredCredential, 'createdAt'>> & Pick<DeferredCredential, 'id'>
 ) => {
-  return await deferredCredentialStorage.updateDeferredCredential(agent, input)
+  return await deferredCredentialStorage.updateDeferredCredential(paradym, input)
 }
 
-export const deleteDeferredCredential = async (agent: Agent, id: string) => {
-  await deferredCredentialStorage.deleteDeferredCredential(agent, id)
+export const deleteDeferredCredential = async (paradym: ParadymWalletSdk, id: string) => {
+  await deferredCredentialStorage.deleteDeferredCredential(paradym, id)
 }
 
 export const getDeferredCredentialNextCheckAt = (deferredCredential: DeferredCredential) => {

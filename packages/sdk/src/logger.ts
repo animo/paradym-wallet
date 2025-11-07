@@ -94,4 +94,4 @@ export class ParadymWalletSdkLogger extends ConsoleLogger {
   }
 }
 
-export const logger = (logLevel: LogLevel = LogLevel.warn) => new ParadymWalletSdkLogger(logLevel)
+export const logger = (logLevel: LogLevel = LogLevel.debug) => new ParadymWalletSdkLogger(logLevel)

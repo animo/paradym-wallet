@@ -52,7 +52,7 @@ export const shareProof = async ({
 
               // Optionally use a batch credential
               const credentialRecord = await handleBatchCredential(
-                paradym.agent,
+                paradym,
                 credential.credentialRecord,
                 fetchBatchCredentialCallback
               )

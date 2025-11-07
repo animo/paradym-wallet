@@ -23,7 +23,7 @@ export const acquireCredentialsPreAuthWithTransactionCode = async (
   }
 
   const tokenResponse = await acquirePreAuthorizedAccessToken({
-    agent: options.paradym.agent,
+    paradym: options.paradym,
     resolvedCredentialOffer: options.resolvedCredentialOffer,
   })
 

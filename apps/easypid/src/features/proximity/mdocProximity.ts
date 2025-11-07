@@ -84,11 +84,7 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
       const credential = e.credentials[0].credential.record as MdocRecord
 
       // Optionally handle batch issuance
-      const credentialRecord = (await handleBatchCredential(
-        options.paradym.agent,
-        credential,
-        refreshPid
-      )) as MdocRecord
+      const credentialRecord = (await handleBatchCredential(options.paradym, credential, refreshPid)) as MdocRecord
 
       return Mdoc.fromBase64Url(credentialRecord.base64Url, credential.getTags().docType)
     })

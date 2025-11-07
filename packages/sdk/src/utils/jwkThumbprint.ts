@@ -1,6 +1,6 @@
-import { Hasher, type JwkJson, TypedArrayEncoder } from '@credo-ts/core'
+import { Hasher, type Kms, TypedArrayEncoder } from '@credo-ts/core'
 
-export function safeCalculateJwkThumbprint(jwk: JwkJson): string | undefined {
+export function safeCalculateJwkThumbprint(jwk: Kms.Jwk): string | undefined {
   try {
     const thumbprint = TypedArrayEncoder.toBase64URL(
       Hasher.hash(

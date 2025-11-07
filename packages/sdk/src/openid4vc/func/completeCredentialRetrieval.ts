@@ -16,7 +16,11 @@ export type CompleteCredentialRetrievalOptions = {
 }
 
 export const completeCredentialRetrieval = async (options: CompleteCredentialRetrievalOptions) => {
-  if (!options.record && !options.deferredCredential) {
+  if (options.deferredCredential) {
+    throw new Error('Add support for deferred credentials')
+  }
+
+  if (!options.record) {
     throw new Error('Either supply a credentail record or deferred credential to complete the flow')
   }
 

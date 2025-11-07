@@ -1,7 +1,6 @@
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useOverAskingAi } from '@easypid/hooks'
 import { useDevelopmentMode } from '@easypid/hooks'
-import { refreshPid } from '@easypid/use-cases/RefreshPidUseCase'
 import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -158,8 +157,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       try {
         await paradym.openid4vc.shareCredentials({
           resolvedRequest,
-          selectedCredentialsForRequest: {},
-          fetchBatchCredentialCallback: refreshPid,
+          selectedCredentials: {},
           acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
         })
 

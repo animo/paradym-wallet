@@ -1,4 +1,4 @@
-import { WalletInvalidKeyError } from '@credo-ts/core'
+import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk/ParadymWalletSdk'
 import { useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
@@ -180,7 +180,7 @@ function _useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Sec
             }
           })
         } catch (error) {
-          if (error instanceof WalletInvalidKeyError) {
+          if (error instanceof AskarStoreInvalidKeyError) {
             if (unlockMethod === 'biometrics') {
               setCanTryUnlockingUsingBiometrics(false)
             }

@@ -75,7 +75,7 @@ export const detectTrustMechanism = (options: {
     return 'eudi_rp_authentication'
   }
 
-  if (options.resolvedAuthorizationRequest.verifier.clientIdScheme === 'https') {
+  if (options.resolvedAuthorizationRequest.verifier.clientIdPrefix === 'openid_federation') {
     return 'openid_federation'
   }
 
@@ -83,7 +83,7 @@ export const detectTrustMechanism = (options: {
     return 'x509'
   }
 
-  if (options.resolvedAuthorizationRequest.verifier.clientIdScheme === 'did') {
+  if (options.resolvedAuthorizationRequest.verifier.clientIdPrefix === 'decentralized_identifier') {
     return 'did'
   }
 

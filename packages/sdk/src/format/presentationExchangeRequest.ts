@@ -89,7 +89,7 @@ export function formatDifPexCredentialsForRequest(
 
               // By default the whole credential is disclosed
               let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
-              if (verifiableCredential.claimFormat === ClaimFormat.SdJwtVc) {
+              if (verifiableCredential.claimFormat === ClaimFormat.SdJwtDc) {
                 const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
                   verifiableCredential.disclosedPayload
                 )

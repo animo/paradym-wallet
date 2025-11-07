@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react'
-import { useAgent } from '../agent'
 import { fetchAndProcessDeferredCredentials } from '../openid4vc/deferredCredentialRecord'
 import { getDeferredCredentialNextCheckAt, useDeferredCredentials } from '../storage/deferredCredentialStore'
+import { useParadym } from './useParadym'
 
 export const useRefreshedDeferredCredentials = () => {
-  const { agent, loading: isLoadingAgent } = useAgent()
+  const { paradym } = useParadym('unlocked')
   const { deferredCredentials, isLoading: isLoadingDeferredCredentials } = useDeferredCredentials()
   const [refreshedDeferredCredentials, setRefreshedDeferredCredentials] = useState(false)
 
   useEffect(() => {
-    if (isLoadingDeferredCredentials || isLoadingAgent || refreshedDeferredCredentials) return
-    agent.config.logger.debug('Refreshing deferred credentials')
+    if (isLoadingDeferredCredentials || refreshedDeferredCredentials) return
+    paradym.logger.debug('Refreshing deferred credentials')
 
     setRefreshedDeferredCredentials(true)
 
     fetchAndProcessDeferredCredentials(
-      agent,
+      paradym,
       deferredCredentials
         .map((deferredCredential) => ({
           ...deferredCredential,
@@ -26,7 +26,7 @@ export const useRefreshedDeferredCredentials = () => {
             !deferredCredential.nextCheckAt || deferredCredential.nextCheckAt.getTime() < Date.now()
         )
     ).finally(() => {
-      agent.config.logger.debug('Finished refreshing deferred credentials')
+      paradym.logger.debug('Finished refreshing deferred credentials')
     })
-  }, [isLoadingAgent, agent, refreshedDeferredCredentials, isLoadingDeferredCredentials, deferredCredentials])
+  }, [paradym, refreshedDeferredCredentials, isLoadingDeferredCredentials, deferredCredentials])
 }

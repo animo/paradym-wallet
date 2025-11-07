@@ -2,8 +2,9 @@ import 'fast-text-encoding'
 
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { appScheme } from '@easypid/constants'
-import { logger, parseInvitationUrlSync } from '@package/agent'
+import { parseInvitationUrlSync } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
+import { logger } from '@paradym/wallet-sdk/logger'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
 import { credentialDataHandlerOptions } from './(app)/_layout'
@@ -18,13 +19,13 @@ export function redirectSystemPath({
   path: string
   initial: boolean
 }) {
-  logger.debug(`Handling deeplink for path ${path}.`, {
+  logger().debug(`Handling deeplink for path ${path}.`, {
     initial,
   })
 
   const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))
   if (!isRecognizedDeeplink) {
-    logger.debug(
+    logger().debug(
       'Deeplink is not a recognized deeplink scheme, routing to deeplink directly instead of parsing as invitation.'
     )
     return path
@@ -41,7 +42,7 @@ export function redirectSystemPath({
       parsedPath.pathname === '/wallet/redirect' &&
       credentialAuthorizationCode
     ) {
-      logger.debug(
+      logger().debug(
         'Deeplink is redirect after authorization code flow. Setting credentialAuthorizationCode search param, but not routing to any screen',
         {
           credentialAuthorizationCode,
@@ -55,7 +56,7 @@ export function redirectSystemPath({
 
     const parseResult = parseInvitationUrlSync(path)
     if (!parseResult.success) {
-      logger.error('Error parsing invitation. Routing to home screen', {
+      logger().error('Error parsing invitation. Routing to home screen', {
         error: parseResult.error,
         message: parseResult.message,
       })
@@ -68,7 +69,7 @@ export function redirectSystemPath({
     let redirectPath: string | undefined = undefined
 
     if (!credentialDataHandlerOptions.allowedInvitationTypes.includes(invitationData.type)) {
-      logger.warn(`Invitation type ${invitationData.type} is not allowed. Routing to home screen`)
+      logger().warn(`Invitation type ${invitationData.type} is not allowed. Routing to home screen`)
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       return '/'
     }
@@ -91,7 +92,7 @@ export function redirectSystemPath({
         redirectPath = `/authenticate?redirectAfterUnlock=${encodedRedirect}`
       }
 
-      logger.debug(`Redirecting to path ${redirectPath}`)
+      logger().debug(`Redirecting to path ${redirectPath}`)
       return redirectPath
     }
 

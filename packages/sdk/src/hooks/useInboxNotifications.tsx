@@ -9,13 +9,18 @@ import {
 } from '../metadata/credentials'
 import { useCredentialByState } from '../providers/CredentialExchangeProvider'
 import { useProofByState } from '../providers/ProofExchangeProvider'
+import { useDeferredCredentials } from '../storage/deferredCredentialStore'
+import { useParadym } from './useParadym'
 
 export const useInboxNotifications = () => {
-  const credentialExchangeRecords = isDIDCommEnabled ? useCredentialByState([DidCommCredentialState.OfferReceived]) : []
-  const proofExchangeRecords = isDIDCommEnabled ? useProofByState([DidCommProofState.RequestReceived]) : []
+  const { paradym } = useParadym('unlocked')
+
+  const credentialExchangeRecords = paradym.isDidCommEnabled
+    ? useCredentialByState([DidCommCredentialState.OfferReceived])
+    : []
+  const proofExchangeRecords = paradym.isDidCommEnabled ? useProofByState([DidCommProofState.RequestReceived]) : []
   const { deferredCredentials } = useDeferredCredentials()
 
-  const { t } = useLingui()
   const sortedNotifications = useMemo(() => {
     // Sort by creation date
     const sortedRecords = [
@@ -75,7 +80,7 @@ export const useInboxNotifications = () => {
         notificationTitle: metadata?.proofName ?? 'Data request',
       } as const
     })
-  }, [proofExchangeRecords, credentialExchangeRecords, deferredCredentials, t])
+  }, [proofExchangeRecords, credentialExchangeRecords, deferredCredentials])
 
   return sortedNotifications
 }

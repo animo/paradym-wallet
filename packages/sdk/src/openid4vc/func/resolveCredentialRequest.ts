@@ -31,14 +31,11 @@ export const resolveCredentialRequest = async ({
       )
     }
 
-    const resolved = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(
-      requestToResolve,
-      {
-        origin,
-        trustedFederationEntityIds: paradym.trustMechanisms.find((tm) => tm.trustMechanism === 'openid_federation')
-          ?.trustedEntityIds,
-      }
-    )
+    const resolved = await paradym.agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
+      origin,
+      trustedFederationEntityIds: paradym.trustMechanisms.find((tm) => tm.trustMechanism === 'openid_federation')
+        ?.trustedEntityIds,
+    })
 
     // TODO(sdk): will this still work if no eudi is used?
     const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(paradym.agent.context, {

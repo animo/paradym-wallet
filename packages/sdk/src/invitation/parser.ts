@@ -110,14 +110,16 @@ export async function parseOpenIdCredentialOfferInvitation(paradym: ParadymWalle
     paradym,
     offerUri: invitationUrl,
   })
-  const tokenResponse = await acquirePreAuthorizedAccessToken({ agent: paradym.agent, resolvedCredentialOffer })
+  const tokenResponse = await acquirePreAuthorizedAccessToken({ paradym, resolvedCredentialOffer })
   const credentialResponses = await receiveCredentialFromOpenId4VciOffer({
-    agent: paradym.agent,
+    paradym,
     resolvedCredentialOffer,
     accessToken: tokenResponse,
   })
 
-  const [{ credential }] = credentialResponses
+  const {
+    credentials: [{ credential }],
+  } = credentialResponses
 
   const display = getCredentialForDisplay(credential)
 
@@ -128,7 +130,7 @@ export async function parseOpenIdCredentialOfferInvitation(paradym: ParadymWalle
 }
 
 export async function parseOpenIdPresentationRequestInvitation(paradym: ParadymWalletSdk, invitationUrl: string) {
-  const resolved = await paradym.agent.modules.openId4VcHolder.resolveOpenId4VpAuthorizationRequest(invitationUrl)
+  const resolved = await paradym.agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(invitationUrl)
 
   const formattedSubmission = getFormattedSubmission(resolved)
 
@@ -146,6 +148,7 @@ export async function parseInvitationUrl(paradym: ParadymWalletSdk, invitationUr
     const metadata = await parseOpenIdCredentialOfferInvitation(paradym, invitationUrl)
 
     return {
+      // TODO(sdk): remove these __internal attributes
       __internal: { id: metadata.id },
       openId4VcCredentialOffer: {
         display: metadata.display,

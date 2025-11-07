@@ -29,12 +29,12 @@ export function useDidCommMediatorSetup({
 
     paradym.logger.debug('Checking if mediation is configured')
 
-    void hasMediationConfigured(paradym.agent)
+    void hasMediationConfigured(paradym)
       .then(async (mediationConfigured) => {
         if (!mediationConfigured) {
           paradym.logger.debug('Mediation not configured yet')
           if (!mediatorDid) throw new ParadymWalletNoMediatorDidProvidedError()
-          await setupMediationWithDid(paradym.agent, mediatorDid)
+          await setupMediationWithDid(paradym, mediatorDid)
         }
 
         paradym.logger.info('Mediation configured')

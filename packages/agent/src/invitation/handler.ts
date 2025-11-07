@@ -2,7 +2,18 @@ import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-funct
 import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
 import { type DifPresentationExchangeDefinitionV2, Kms } from '@credo-ts/core'
 import { Jwt } from '@credo-ts/core'
-import type { DidCommPlaintextMessage } from '@credo-ts/didcomm'
+import {
+  DidCommCredentialEventTypes,
+  DidCommCredentialState,
+  DidCommOfferCredentialV2Message,
+  DidCommOutOfBandRepository,
+  type DidCommPlaintextMessage,
+  DidCommProofEventTypes,
+  DidCommProofState,
+  DidCommRequestPresentationV2Message,
+  parseMessageType,
+  supportsIncomingMessageType,
+} from '@credo-ts/didcomm'
 import type {
   DidCommConnectionRecord,
   DidCommCredentialStateChangedEvent,
@@ -10,21 +21,27 @@ import type {
   DidCommOutOfBandRecord,
   DidCommProofStateChangedEvent,
 } from '@credo-ts/didcomm'
-import type {
-  OpenId4VciCredentialConfigurationSupportedWithFormats,
-  OpenId4VciCredentialResponse,
-  OpenId4VciDeferredCredentialResponse,
-  OpenId4VciDpopRequestOptions,
-  OpenId4VciMetadata,
-  OpenId4VciRequestTokenResponse,
-  OpenId4VciResolvedAuthorizationRequest,
-  OpenId4VciResolvedCredentialOffer,
+import {
+  type OpenId4VciCredentialConfigurationSupportedWithFormats,
+  type OpenId4VciCredentialResponse,
+  type OpenId4VciDeferredCredentialResponse,
+  type OpenId4VciDpopRequestOptions,
+  type OpenId4VciMetadata,
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedAuthorizationRequest,
+  type OpenId4VciResolvedCredentialOffer,
+  getOfferedCredentials,
+  getScopesFromCredentialConfigurationsSupported,
 } from '@credo-ts/openid4vc'
 import { getOid4vcCallbacks } from '@credo-ts/openid4vc/build/shared/callbacks'
-import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { t } from '@lingui/core/macro'
-import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
+import {
+  Oauth2Client,
+  clientAuthenticationNone,
+  getAuthorizationServerMetadataFromList,
+  preAuthorizedCodeGrantIdentifier,
+} from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import type { ParadymWalletSdk } from '@package/sdk'
 import { commonMessages } from '@package/translations'
@@ -36,9 +53,15 @@ import {
   setOpenId4VcCredentialMetadata,
 } from '@paradym/wallet-sdk/metadata/credentials'
 import { getCredentialBindingResolver } from '@paradym/wallet-sdk/openid4vc/credentialBindingResolver'
+import { getTrustedEntities } from '@paradym/wallet-sdk/trust/trustMechanism'
 import { credentialRecordFromCredential, encodeCredential } from '@paradym/wallet-sdk/utils/encoding'
 import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
+import {
+  type FormattedSubmission,
+  formatDcqlCredentialsForRequest,
+  formatDifPexCredentialsForRequest,
+} from '../format/formatPresentation'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type TrustedX509Entity = {
@@ -320,24 +343,24 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
     // can retry e.g. the second credential
     // Handle biometric authentication errors
-    throw BiometricAuthenticationError.tryParseFromError(error) ?? error
+    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
   }
 }
 
 export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
-  agent,
+  paradym,
   deferredCredentialResponse,
   issuerMetadata,
   accessToken,
 }: {
-  agent: OpenId4VcAgent
+  paradym: ParadymWalletSdk
   deferredCredentialResponse: OpenId4VciDeferredCredentialResponse
   issuerMetadata: OpenId4VciMetadata
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
 }) => {
   try {
-    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestDeferredCredentials({
+    const { credentials, deferredCredentials } = await paradym.agent.openid4vc.holder.requestDeferredCredentials({
       ...deferredCredentialResponse,
       ...accessToken,
       issuerMetadata,
@@ -440,7 +463,7 @@ export type GetCredentialsForProofRequestOptions = {
 }
 
 export const getCredentialsForProofRequest = async ({
-  agent,
+  paradym,
   uri,
   requestPayload,
   allowUntrusted = true,
@@ -470,23 +493,22 @@ export const getCredentialsForProofRequest = async ({
     throw new Error('Either requestPayload or uri must be provided')
   }
 
-  agent.config.logger.info('Receiving openid request', {
+  paradym.logger.info('Receiving openid request', {
     request,
   })
 
-  const resolved = await agent.modules.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
+  const resolved = await paradym.agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
     origin,
     trustedFederationEntityIds: entityId ? [entityId] : undefined,
   })
 
-  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agent.context, {
+  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(paradym.agent.context, {
     resolvedAuthorizationRequest: resolved,
     allowUntrustedSigned: allowUntrusted,
   })
 
   const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
-    agent,
-    trustedX509Entities,
+    paradym,
     resolvedAuthorizationRequest: resolved,
     origin,
     authorizationRequestVerificationResult,
@@ -496,7 +518,6 @@ export const getCredentialsForProofRequest = async ({
       logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
       uri: isParadymWallet() ? 'https://paradym.id' : 'https://funke.animo.id',
     },
-    trustList: eudiTrustList,
   })
 
   let formattedSubmission: FormattedSubmission

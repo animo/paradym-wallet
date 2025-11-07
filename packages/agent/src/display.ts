@@ -21,9 +21,9 @@ import {
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
 import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
+import { getAttributesForDocTypeOrVct } from '@paradym/wallet-sdk/display/docTypeOfVct'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import { getAttributesForCategory } from './display/category'
-import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
@@ -158,7 +158,9 @@ export interface CredentialForDisplay {
   hasRefreshToken: boolean
 }
 
-function findDisplay<Display extends { locale?: string; lang?: string }>(display?: Display[]): Display | undefined {
+export function findDisplay<Display extends { locale?: string; lang?: string }>(
+  display?: Display[]
+): Display | undefined {
   if (!display) return undefined
 
   let item = display.find((d) => d.locale?.startsWith('en-') || d.lang?.startsWith('en-'))
