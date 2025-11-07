@@ -11,7 +11,7 @@
 - **Wallet** → "carteira" (consistently used)
 - **Card/Credential** → "cartão" for cards, "credencial" for credentials
 - **PIN** → "PIN" (keep in English, masculine: o PIN, use "o teu PIN")
-- **App** → "aplicação" (European) or "app" (informal, widely understood)
+- **App** → "aplicação" (European Portuguese - NEVER "aplicativo" which is Brazilian)
 - **QR Code** → "código QR"
 - **Biometrics** → "biometria" or "autenticação biométrica"
 - **eID card** → "cartão eID"
@@ -21,7 +21,12 @@
 
 ### **Technical Terms**
 - **Share/Sharing** → "compartilhar/compartilhamento"
-- **Scan** → "escanear" or "digitalizar"
+- **Scan** → "ler" (European Portuguese - NEVER "escanear" which is Brazilian)
+  - For QR codes: "ler um código QR" not "escanear"
+  - For eID cards: "ler o cartão" not "escanear o cartão"
+- **Fetch/Retrieve** → "obter" or "recuperar" (NEVER "buscar" which is Brazilian)
+- **Delete** → "eliminar" (European Portuguese - NEVER "excluir" which is Brazilian)
+- **Note/Observe** → "Note" (NEVER "Observe" in imperative form)
 - **Authentication** → "autenticação"
 - **Verification** → "verificação"
 - **Attributes** → "atributos"
@@ -53,6 +58,15 @@
 - Use proper gender agreement for adjectives and articles
 - For questions, use natural Portuguese question structure
 - Capitalize only proper nouns and first words of sentences (Portuguese uses less capitalization than English)
+- **Pronoun omission**: In Portuguese, subject pronouns (tu, eu, você) are often omitted when the verb conjugation makes the subject clear
+  - GOOD: "podes armazenar" (you can store)
+  - AVOID: "tu podes armazenar" (unnecessary pronoun)
+  - GOOD: "assim que receberes" (once you receive)
+  - AVOID: "assim que tu receberes" (unnecessary pronoun)
+  - Use pronouns only for emphasis or clarity
+- **Verb conjugation consistency**: Always use informal second person (tu) verb forms
+  - GOOD: "Pede ao emissor" (informal imperative)
+  - WRONG: "Peça ao emissor" (formal imperative mixed with informal)
 
 ### **Context Awareness**
 - **Button labels**: Keep short and action-oriented
@@ -74,11 +88,20 @@
 - **"from X"** → "de {name}" or "por {name}"
 - **"About this party"** → "Sobre esta organização" or "Sobre este emissor"
 - **"Successfully..."** → Often expressed with "com sucesso" or past participle
-- **"your"** → "o teu/a tua" (not "seu/sua" which is Brazilian or formal)
+- **"your" (possessive)** → "o teu/a tua/os teus/as tuas" (NEVER "seu/sua/seus/suas" which is Brazilian or formal)
+  - GOOD: "a tua carteira", "os teus dados", "as tuas informações"
+  - WRONG: "sua carteira", "seus dados", "suas informações"
+- **"your information/data" at sentence start** → "As tuas informações" or "Os teus dados" (include article)
+  - WRONG: "Suas informações" (Brazilian possessive)
 
 ### **What NOT to do**
 - Don't use overly formal language
-- Don't use Brazilian Portuguese forms (você, seu/sua, aplicativo, etc.)
+- Don't use Brazilian Portuguese forms:
+  - NEVER: você, seu/sua/seus/suas, aplicativo, buscar, escanear, excluir
+  - ALWAYS use European equivalents: tu, teu/tua/teus/tuas, aplicação, obter, ler, eliminar
+- Don't mix formal and informal verb forms (e.g., "Peça" + "tenta")
+  - Stay consistent with informal "tu" forms throughout
+- Don't overuse subject pronouns - omit "tu" when the verb conjugation is clear
 - Don't translate brand names or widely-adopted English tech terms
 - Don't create literal translations that sound unnatural
 - Don't change the meaning or intent of the original message
