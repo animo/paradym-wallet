@@ -66,7 +66,7 @@
 			"Subtitle shown when the issuer wants to give the user a card with no auth required"
 		],
 		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 44]],
-		"translation": "{issuerName} quer emitir o seguinte cartão para você:"
+		"translation": "{issuerName} quer emitir o seguinte cartão para ti:"
 	},
 	"verifyPartySlide.connectSubtitle": {
 		"message": "{name} wants to connect with you.",
@@ -75,7 +75,7 @@
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
-		"translation": "{name} quer se conectar com você."
+		"translation": "{name} quer se conectar contigo."
 	},
 	"verifyPartySlide.signingSubtitle": {
 		"message": "{name} wants to interact to create a digital signature for a document.",
@@ -93,7 +93,7 @@
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
-		"translation": "{name} quer oferecer um cartão para você."
+		"translation": "{name} quer oferecer um cartão para ti."
 	},
 	"verifyPartySlide.requestSubtitle": {
 		"message": "{name} wants to request information from you.",
@@ -102,7 +102,7 @@
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
-		"translation": "{name} quer solicitar informações de você."
+		"translation": "{name} quer solicitar informações de ti."
 	},
 	"credentials.totalLabel": {
 		"message": "1 card total",
@@ -150,7 +150,7 @@
 		"placeholders": {},
 		"comments": ["Instruction for the verifier to scan the QR code"],
 		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 141]],
-		"translation": "Um verificador precisa escanear seu código QR."
+		"translation": "Um verificador precisa escanear teu código QR."
 	},
 	"cardAttributes.aboutTheCard": {
 		"message": "About the card",
@@ -203,7 +203,7 @@
 		"placeholders": {},
 		"comments": ["Subtitle explaining purpose of biometrics"],
 		"origin": [["src/features/onboarding/steps.ts", 36]],
-		"translation": "Ative a funcionalidade de biometria do seu telefone para garantir que apenas você possa entrar na sua carteira e compartilhar dados."
+		"translation": "Ative a funcionalidade de biometria do teu telefone para garantir que apenas tu possas entrar na tua carteira e compartilhar dados."
 	},
 	"menu.item.activity": {
 		"message": "Activity",
@@ -228,21 +228,21 @@
 			"Shown below the empty activity title to explain why the list is empty"
 		],
 		"origin": [["src/features/activity/FunkeActivityScreen.tsx", 33]],
-		"translation": "A atividade aparecerá aqui assim que você compartilhar ou receber credenciais."
+		"translation": "A atividade aparecerá aqui assim que tu compartilhares ou receber credenciais."
 	},
 	"onboardingWalletExplanation.slide1.subtitle": {
 		"message": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
 		"placeholders": {},
 		"comments": ["Subtitle for first slide of wallet onboarding"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 35]],
-		"translation": "Adicione cartões digitais com suas informações e compartilhe-os facilmente com outras pessoas. É como ter sua carteira no seu telefone."
+		"translation": "Adicione cartões digitais com tuas informações e compartilhe-os facilmente com outras pessoas. É como ter tua carteira no teu telefone."
 	},
 	"onboardingWalletExplanation.slide3.subtitle": {
 		"message": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
 		"placeholders": {},
 		"comments": ["Subtitle for third slide of wallet onboarding"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 63]],
-		"translation": "Adicione seus cartões e documentos escaneando códigos QR. Quando as organizações solicitarem seus dados, você pode revisar e compartilhar com um toque no aplicativo. Suas informações estão sempre seguras com seu PIN ou impressão digital."
+		"translation": "Adicione teus cartões e documentos escaneando códigos QR. Quando as organizações solicitarem teus dados, tu podes revisar e compartilhar com um toque no aplicação. Suas informações estão sempre seguras com teu PIN ou impressão digital."
 	},
 	"activity.latest.addedCard": {
 		"message": "Added {name}",
@@ -306,7 +306,7 @@
 			"Error message when connection fails during connect interaction"
 		],
 		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 18]],
-		"translation": "Ocorreu um erro ao conectar. Gere um novo código QR ou tente novamente mais tarde."
+		"translation": "Ocorreu um erro ao conectar. Gere um novo código QR ou tenta novamente mais tarde."
 	},
 	"interactionError.message.issue": {
 		"message": "An error occurred while fetching the card information. Ask the issuer to generate a new QR-code or try again later.",
@@ -315,7 +315,7 @@
 			"Error message when credential issuance fails to fetch card info"
 		],
 		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 24]],
-		"translation": "Ocorreu um erro ao buscar as informações do cartão. Peça ao emissor para gerar um novo código QR ou tente novamente mais tarde."
+		"translation": "Ocorreu um erro ao buscar as informações do cartão. Peça ao emissor para gerar um novo código QR ou tenta novamente mais tarde."
 	},
 	"deferredCredentials.failedToRetrieveCardDescription": {
 		"message": "An error occurred while retrieving the card from the issuer.",
@@ -333,14 +333,14 @@
 			"Error message when sharing a credential for verification fails"
 		],
 		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 31]],
-		"translation": "Ocorreu um erro ao compartilhar as informações do cartão. Peça ao verificador para gerar um novo código QR ou tente novamente mais tarde."
+		"translation": "Ocorreu um erro ao compartilhar as informações do cartão. Peça ao verificador para gerar um novo código QR ou tenta novamente mais tarde."
 	},
 	"interactionError.message.sign": {
 		"message": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
 		"placeholders": {},
 		"comments": ["Error message when signing fails with selected credentials"],
 		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 37]],
-		"translation": "Ocorreu um erro ao assinar com as informações do seu cartão. Peça ao verificador para gerar um novo código QR ou tente novamente mais tarde."
+		"translation": "Ocorreu um erro ao assinar com as informações do teu cartão. Peça ao verificador para gerar um novo código QR ou tenta novamente mais tarde."
 	},
 	"aiOverAking.errorReason": {
 		"message": "An error occurred while validating the verification",
@@ -354,7 +354,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
-		"translation": "Uma organização desconhecida quer se conectar com você."
+		"translation": "Uma organização desconhecida quer se conectar contigo."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
@@ -368,14 +368,14 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
-		"translation": "Uma organização desconhecida quer oferecer um cartão para você."
+		"translation": "Uma organização desconhecida quer oferecer um cartão para ti."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
-		"translation": "Uma organização desconhecida quer solicitar informações de você."
+		"translation": "Uma organização desconhecida quer solicitar informações de ti."
 	},
 	"menu.section.app": {
 		"message": "APP",
@@ -412,7 +412,7 @@
 		"placeholders": {},
 		"comments": ["Confirmation message for onboarding reset"],
 		"origin": [["src/app/onboarding/index.tsx", 52]],
-		"translation": "Tem certeza de que deseja redefinir o processo de integração?"
+		"translation": "Tens a certeza de que desejas redefinir o processo de integração?"
 	},
 	"pinLocked.alertMessage": {
 		"message": "Are you sure you want to reset the wallet?",
@@ -421,21 +421,21 @@
 			"Message body of the confirmation dialog (action button) for wallet reset"
 		],
 		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 17]],
-		"translation": "Tem certeza de que deseja redefinir a carteira?"
+		"translation": "Tens a certeza de que desejas redefinir a carteira?"
 	},
 	"common.confirmResetWallet": {
 		"message": "Are you sure you want to reset the wallet?",
 		"placeholders": {},
 		"comments": ["Confirmation prompt before wallet reset"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 84]],
-		"translation": "Tem certeza de que deseja redefinir a carteira?"
+		"translation": "Tens a certeza de que desejas redefinir a carteira?"
 	},
 	"confirmationSheet.title": {
 		"message": "Are you sure you want to stop?",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["../../packages/app/src/components/ConfirmationSheet.tsx", 7]],
-		"translation": "Tem certeza de que deseja parar?"
+		"translation": "Tens a certeza de que desejas parar?"
 	},
 	"authCodeFlowSlide.authenticate": {
 		"message": "Authenticate",
@@ -490,7 +490,7 @@
 		"placeholders": {},
 		"comments": ["Subtitle for the introduction steps slide in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 49]],
-		"translation": "Antes de poder usar o aplicativo, vamos guiá-lo através destas etapas."
+		"translation": "Antes de poder usar o aplicação, vamos guiá-lo através destas etapas."
 	},
 	"betaTag": {
 		"message": "BETA",
@@ -536,7 +536,7 @@
 			"Description in confirmation dialog explaining pending card deletion"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 292]],
-		"translation": "Ao excluir {name}, você não poderá mais recuperar seu cartão do emissor."
+		"translation": "Ao excluir {name}, tu não poderás mais recuperar teu cartão do emissor."
 	},
 	"common.cancel": {
 		"message": "Cancel",
@@ -677,7 +677,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 185]
 		],
-		"translation": "Cartão adicionado com sucesso à sua carteira!"
+		"translation": "Cartão adicionado com sucesso à tua carteira!"
 	},
 	"common.toastCardArchived": {
 		"message": "Card successfully archived",
@@ -767,7 +767,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 62]],
-		"translation": "Confirme que é você"
+		"translation": "Confirme que és tu"
 	},
 	"connection.successTitle": {
 		"message": "Connection established",
@@ -839,7 +839,7 @@
 				14
 			]
 		],
-		"translation": "A credencial foi adicionada à sua carteira."
+		"translation": "A credencial foi adicionada à tua carteira."
 	},
 	"credential.declined": {
 		"message": "Credential has been declined.",
@@ -897,7 +897,7 @@
 		"placeholders": {},
 		"comments": ["Subtext explaining that credentials will appear later"],
 		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 70]],
-		"translation": "As credenciais aparecerão aqui assim que você as receber."
+		"translation": "As credenciais aparecerão aqui assim que tu as receber."
 	},
 	"noContentWallet.message": {
 		"message": "Credentials will be shown here.",
@@ -1086,7 +1086,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 397]],
-		"translation": "Digite o código PIN que você usa para desbloquear sua carteira."
+		"translation": "Digite o código PIN que tu usa para desbloquear tua carteira."
 	},
 	"txCodeSlide.title": {
 		"message": "Enter transaction code",
@@ -1100,21 +1100,21 @@
 		"placeholders": {},
 		"comments": ["Heading prompting the user to enter their PIN code"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 69]],
-		"translation": "Digite o código PIN do seu aplicativo"
+		"translation": "Digite o código PIN do teu aplicação"
 	},
 	"pidSetup.idCardPin.title": {
 		"message": "Enter your eID card PIN",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 38]],
-		"translation": "Digite o PIN do seu cartão eID"
+		"translation": "Digite o PIN do teu cartão eID"
 	},
 	"simulatorEidCard.enterRealPin": {
 		"message": "Enter your real PIN to continue",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 196]],
-		"translation": "Digite seu PIN real para continuar"
+		"translation": "Digite teu PIN real para continuar"
 	},
 	"common.toastCardDeleteError": {
 		"message": "Error deleting card",
@@ -1303,7 +1303,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 32]],
-		"translation": "Obtenha seu cartão de identidade nacional"
+		"translation": "Obtenha teu cartão de identidade nacional"
 	},
 	"gettingInformation.message": {
 		"message": "Getting {0} information",
@@ -1456,14 +1456,14 @@
 		"placeholders": {},
 		"comments": ["Confirmation description when declining a credential offer"],
 		"origin": [["src/features/didcomm/utils.ts", 11]],
-		"translation": "Se você recusar, não receberá o cartão."
+		"translation": "Se tu recusar, não receberá o cartão."
 	},
 	"didcommCancelFlow.verification.description": {
 		"message": "If you stop, no data will be shared.",
 		"placeholders": {},
 		"comments": ["Confirmation description when cancelling a proof request"],
 		"origin": [["src/features/didcomm/utils.ts", 21]],
-		"translation": "Se você parar, nenhum dado será compartilhado."
+		"translation": "Se tu parar, nenhum dado será compartilhado."
 	},
 	"slideWizard.confirmation.stopSharingDescription": {
 		"message": "If you stop, no data will be shared.",
@@ -1472,7 +1472,7 @@
 			"Description in confirmation dialog about stopping data sharing"
 		],
 		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 55]],
-		"translation": "Se você parar, nenhum dado será compartilhado."
+		"translation": "Se tu parar, nenhum dado será compartilhado."
 	},
 	"didcommCancelFlow.connect.description": {
 		"message": "If you stop, nothing will be saved.",
@@ -1481,7 +1481,7 @@
 			"Confirmation description when cancelling a connection request"
 		],
 		"origin": [["src/features/didcomm/utils.ts", 31]],
-		"translation": "Se você parar, nada será salvo."
+		"translation": "Se tu parar, nada será salvo."
 	},
 	"receiveCredential.stopDescription": {
 		"message": "If you stop, the card offer will be cancelled.",
@@ -1490,14 +1490,14 @@
 		"origin": [
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 542]
 		],
-		"translation": "Se você parar, a oferta do cartão será cancelada."
+		"translation": "Se tu parar, a oferta do cartão será cancelada."
 	},
 	"pidSetup.stopDescription": {
 		"message": "If you stop, you can still do the setup later.",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 477]],
-		"translation": "Se você parar, ainda poderá fazer a configuração mais tarde."
+		"translation": "Se tu parar, ainda poderá fazer a configuração mais tarde."
 	},
 	"inbox.header": {
 		"message": "Inbox",
@@ -1513,7 +1513,7 @@
 			"Message shown when the request is offline and verifier is unknown"
 		],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 95]],
-		"translation": "As informações sobre o verificador não puderam ser mostradas. Considere cuidadosamente se você confia nesta organização."
+		"translation": "As informações sobre o verificador não puderam ser mostradas. Considere cuidadosamente se tu confia nesta organização."
 	},
 	"common.presentationShared": {
 		"message": "Information has been successfully shared.",
@@ -1573,7 +1573,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/onboarding/onboardingContext.tsx", 333]],
-		"translation": "PIN inválido digitado para o cartão eID. Por favor, tente novamente"
+		"translation": "PIN inválido digitado para o cartão eID. Por favor, tenta novamente"
 	},
 	"qrScan.invalidQrCode": {
 		"message": "Invalid QR code. Try another.",
@@ -1919,7 +1919,7 @@
 		"placeholders": {},
 		"comments": ["Toast message shown when there is no internet connection"],
 		"origin": [["../../packages/app/src/hooks/useNetworkCallback.tsx", 12]],
-		"translation": "Sem conexão à internet. Por favor, verifique suas configurações de rede."
+		"translation": "Sem conexão à internet. Por favor, verifique tuas configurações de rede."
 	},
 	"network.noInternetWarning": {
 		"message": "No internet connection. Some features may not work.",
@@ -1939,7 +1939,7 @@
 			"Error shown when a DIDComm invitation is missing in the URL parameters"
 		],
 		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 30]],
-		"translation": "Nenhum convite foi encontrado. Por favor, tente novamente."
+		"translation": "Nenhum convite foi encontrado. Por favor, tenta novamente."
 	},
 	"verifyPartySlide.hasNoPreviousInteractionsDescription": {
 		"message": "No previous interactions found",
@@ -2084,7 +2084,7 @@
 			["src/utils/sharedPidSetup.ts", 46],
 			["src/utils/sharedPidSetup.ts", 53]
 		],
-		"translation": "Coloque seu dispositivo em cima do seu cartão eID para escaneá-lo."
+		"translation": "Coloque teu dispositivo em cima do teu cartão eID para escaneá-lo."
 	},
 	"nfcScanner.readyToScan.description": {
 		"message": "Place your device on top of your eID card to scan it.",
@@ -2093,7 +2093,7 @@
 		"origin": [
 			["../../packages/ui/src/components/NfcScannerModalAndroid.tsx", 21]
 		],
-		"translation": "Coloque seu dispositivo em cima do seu cartão eID para escaneá-lo."
+		"translation": "Coloque teu dispositivo em cima do teu cartão eID para escaneá-lo."
 	},
 	"offlineQr.allowBluetoothAccessTitle": {
 		"message": "Please allow bluetooth access",
@@ -2114,7 +2114,7 @@
 		"placeholders": {},
 		"comments": ["Shown when an action should be retried."],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 127]],
-		"translation": "Por favor, tente novamente"
+		"translation": "Por favor, tenta novamente"
 	},
 	"nfcScanner.error.description": {
 		"message": "Please try again.",
@@ -2123,7 +2123,7 @@
 		"origin": [
 			["../../packages/ui/src/components/NfcScannerModalAndroid.tsx", 51]
 		],
-		"translation": "Por favor, tente novamente."
+		"translation": "Por favor, tenta novamente."
 	},
 	"loadingRequestSlide.title": {
 		"message": "Please wait",
@@ -2218,7 +2218,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 25]],
-		"translation": "Proteja seus dados"
+		"translation": "Proteja teus dados"
 	},
 	"requestPurpose.purposeHeading": {
 		"message": "PURPOSE",
@@ -2269,7 +2269,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 78]],
-		"translation": "Receba ou compartilhe de sua carteira"
+		"translation": "Receba ou compartilhe de tua carteira"
 	},
 	"activity.receivedFailed": {
 		"message": "Receiving the cards from {0} failed.",
@@ -2324,7 +2324,7 @@
 		"placeholders": {},
 		"comments": ["Heading when user repeats their PIN"],
 		"origin": [["src/features/onboarding/steps.ts", 24]],
-		"translation": "Repita seu PIN"
+		"translation": "Repita teu PIN"
 	},
 	"inbox.notificationType.request": {
 		"message": "Request",
@@ -2442,7 +2442,7 @@
 			["src/utils/sharedPidSetup.ts", 45],
 			["src/utils/sharedPidSetup.ts", 52]
 		],
-		"translation": "Escaneie seu cartão eID"
+		"translation": "Escaneie teu cartão eID"
 	},
 	"onboardingIntroduction.step2.title": {
 		"message": "Scan your physical ID card",
@@ -2451,7 +2451,7 @@
 			"Title of the second onboarding step explaining card scanning"
 		],
 		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 36]],
-		"translation": "Escaneie seu cartão de identidade físico"
+		"translation": "Escaneie teu cartão de identidade físico"
 	},
 	"nfcScanner.scanning.description": {
 		"message": "Scanning in progress.",
@@ -2499,7 +2499,7 @@
 			"Heading shown when user is asked to enter their app PIN to confirm a request"
 		],
 		"origin": [["src/features/share/slides/PinSlide.tsx", 40]],
-		"translation": "Enviar dados com seu código PIN"
+		"translation": "Enviar dados com teu código PIN"
 	},
 	"onboarding.biometrics.title": {
 		"message": "Set up biometrics",
@@ -2522,7 +2522,7 @@
 		"placeholders": {},
 		"comments": ["Title for the introduction steps slide in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 43]],
-		"translation": "Configure sua carteira"
+		"translation": "Configure tua carteira"
 	},
 	"settings.title": {
 		"message": "Settings",
@@ -2550,7 +2550,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 107]],
-		"translation": "Configure seu ID"
+		"translation": "Configure teu ID"
 	},
 	"submission.share": {
 		"message": "Share",
@@ -2761,14 +2761,14 @@
 		"placeholders": {},
 		"comments": ["General title/message shown when something went wrong"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 132]],
-		"translation": "Algo deu errado"
+		"translation": "Algo correu mal"
 	},
 	"credential.accept.error": {
 		"message": "Something went wrong while storing the credential.",
 		"placeholders": {},
 		"comments": ["Shown in a toast when credential storage fails"],
 		"origin": [["src/features/didcomm/CredentialSlides.tsx", 27]],
-		"translation": "Algo deu errado ao armazenar a credencial."
+		"translation": "Algo correu mal ao armazenar a credencial."
 	},
 	"common.credentialStoreError": {
 		"message": "Something went wrong while storing the credential.",
@@ -2782,7 +2782,7 @@
 				19
 			]
 		],
-		"translation": "Algo deu errado ao armazenar a credencial."
+		"translation": "Algo correu mal ao armazenar a credencial."
 	},
 	"onboardingIdCardScan.startScanning": {
 		"message": "Start scanning",
@@ -2931,7 +2931,7 @@
 		"placeholders": {},
 		"comments": ["Subtitle for second slide of wallet onboarding"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 49]],
-		"translation": "A carteira digital armazena suas informações importantes em um só lugar no seu telefone. É uma maneira segura e fácil de carregar tudo o que você precisa sem usar uma carteira física."
+		"translation": "A carteira digital armazena tuas informações importantes em um só lugar no teu telefone. É uma maneira segura e fácil de carregar tudo o que tu precisa sem usar uma carteira física."
 	},
 	"activity.documentNotSigned": {
 		"message": "The document was not signed.",
@@ -3045,7 +3045,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 136]
 		],
-		"translation": "O emissor do cartão indicou que você deve verificar novamente em {0}."
+		"translation": "O emissor do cartão indicou que tu deve verificar novamente em {0}."
 	},
 	"deferredCredentials.cardNotAvailableYetWithDateDescription": {
 		"message": "The issuer of the card indicated you should check again on {0}.",
@@ -3060,7 +3060,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 153]
 		],
-		"translation": "O emissor do cartão indicou que você deve verificar novamente em {0}."
+		"translation": "O emissor do cartão indicou que tu deve verificar novamente em {0}."
 	},
 	"txCodeSlide.descriptionIntro": {
 		"message": "The issuer provided the following:",
@@ -3135,7 +3135,7 @@
 		"origin": [
 			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 31]
 		],
-		"translation": "Estes {0} atributos serão lidos do seu cartão eID."
+		"translation": "Estes {0} atributos serão lidos do teu cartão eID."
 	},
 	"confirmationSheet.description": {
 		"message": "This action cannot be undone.",
@@ -3149,28 +3149,28 @@
 		"placeholders": {},
 		"comments": ["Description explaining why camera permission is needed"],
 		"origin": [["../../packages/scanner/src/Scanner.tsx", 54]],
-		"translation": "Isso permite que o aplicativo escaneie códigos QR que incluem credenciais ou solicitações de dados."
+		"translation": "Isso permite que o aplicação escaneie códigos QR que incluem credenciais ou solicitações de dados."
 	},
 	"offlineQr.allowBluetoothAccessDescription": {
 		"message": "This allows the app to share with a QR code.",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 124]],
-		"translation": "Isso permite que o aplicativo compartilhe com um código QR."
+		"translation": "Isso permite que o aplicação compartilhe com um código QR."
 	},
 	"paradymWallet.about.description": {
 		"message": "This app was created by Animo Solutions as a companion app for Paradym. All code is available under Apache 2.0.",
 		"placeholders": {},
 		"comments": ["About screen description text for the Paradym wallet"],
 		"origin": [["src/config/copy.ts", 23]],
-		"translation": "Este aplicativo foi criado pela Animo Solutions como um aplicativo complementar para Paradym. Todo o código está disponível sob Apache 2.0."
+		"translation": "Este aplicação foi criado pela Animo Solutions como um aplicação complementar para Paradym. Todo o código está disponível sob Apache 2.0."
 	},
 	"funkeWallet.about.description": {
 		"message": "This app was created by Animo Solutions in the context of the SPRIN-D Funke ‘EUDI Wallet Prototypes’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
 		"placeholders": {},
 		"comments": ["About screen description text for the Funke wallet"],
 		"origin": [["src/config/copy.ts", 8]],
-		"translation": "Este aplicativo foi criado pela Animo Solutions no contexto dos 'Protótipos EUDI Wallet' SPRIN-D Funke. Ele serve como um protótipo para futuros provedores de carteira. Todo o código está disponível sob Apache 2.0."
+		"translation": "Este aplicação foi criado pela Animo Solutions no contexto dos 'Protótipos EUDI Wallet' SPRIN-D Funke. Ele serve como um protótipo para futuros provedores de carteira. Todo o código está disponível sob Apache 2.0."
 	},
 	"cardLifecycle.limitedByDate.expiresIn": {
 		"message": "This card expires in {expiryDaysString}, on {0}.",
@@ -3189,7 +3189,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 47]],
-		"translation": "Este cartão requer validação periódica usando uma conexão à internet. Quando o uso estiver baixo, você será notificado."
+		"translation": "Este cartão requer validação periódica usando uma conexão à internet. Quando o uso estiver baixo, tu será notificado."
 	},
 	"cardLifecycle.limitedByDate.activeIn": {
 		"message": "This card will be active in {activeDaysString}, on {0}.",
@@ -3213,7 +3213,7 @@
 				170
 			]
 		],
-		"translation": "Esta credencial não está presente em sua carteira."
+		"translation": "Esta credencial não está presente em tua carteira."
 	},
 	"qrScanner.noCameraDescription": {
 		"message": "This device does not have a camera. Unable to scan QR codes",
@@ -3227,7 +3227,7 @@
 		"placeholders": {},
 		"comments": ["Shown when a feature that is not supported is accessed"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 141]],
-		"translation": "Este recurso não é suportado nesta versão do aplicativo."
+		"translation": "Este recurso não é suportado nesta versão do aplicação."
 	},
 	"submission.offlineRequestTitle": {
 		"message": "This is an offline request",
@@ -3241,42 +3241,42 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 39]],
-		"translation": "Isto é necessário para ler dados do seu cartão."
+		"translation": "Isto é necessário para ler dados do teu cartão."
 	},
 	"onboardingWelcome.description": {
 		"message": "This is your digital wallet. With it, you can store and share information about yourself.",
 		"placeholders": {},
 		"comments": ["Intro paragraph on the welcome screen"],
 		"origin": [["src/features/onboarding/screens/welcome.tsx", 11]],
-		"translation": "Esta é sua carteira digital. Com ela, você pode armazenar e compartilhar informações sobre você."
+		"translation": "Esta é tua carteira digital. Com ela, tu podes armazenar e compartilhar informações sobre tu."
 	},
 	"onboardingWalletExplanation.slide1.title": {
 		"message": "This is your wallet",
 		"placeholders": {},
 		"comments": ["Title for first slide of wallet onboarding"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 30]],
-		"translation": "Esta é a sua carteira"
+		"translation": "Esta é a tua carteira"
 	},
 	"noContentWallet.heading": {
 		"message": "This is your wallet",
 		"placeholders": {},
 		"comments": ["Heading shown on empty wallet screen"],
 		"origin": [["../../packages/app/src/components/NoContentWallet.tsx", 14]],
-		"translation": "Esta é a sua carteira"
+		"translation": "Esta é a tua carteira"
 	},
 	"requestPurpose.infoSheet.description": {
 		"message": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
 		"placeholders": {},
 		"comments": ["Description text in the overasking info sheet"],
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 56]],
-		"translation": "Esta organização parece estar solicitando dados diferentes ou mais dados do que seu propósito sugere. Leia a solicitação cuidadosamente. Você pode negar a solicitação se não concordar com os dados solicitados."
+		"translation": "Esta organização parece estar solicitando dados diferentes ou mais dados do que teu propósito sugere. Leia a solicitação cuidadosamente. Tu pode negar a solicitação se não concordar com os dados solicitados."
 	},
 	"onboarding.pin.subtitle": {
 		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
 		"placeholders": {},
 		"comments": ["Explanation of the PIN purpose in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 18]],
-		"translation": "Este PIN protege sua carteira de identidade. Você o digita toda vez que compartilha dados."
+		"translation": "Este PIN protege tua carteira de identidade. Tu o digita toda vez que compartilha dados."
 	},
 	"common.archiveCardDescription": {
 		"message": "This will make {name} unusable and delete it from your wallet.",
@@ -3287,14 +3287,14 @@
 			"Description in confirmation dialog explaining card archiving"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 266]],
-		"translation": "Isso tornará {name} inutilizável e o excluirá da sua carteira."
+		"translation": "Isso tornará {name} inutilizável e o excluirá da tua carteira."
 	},
 	"pidSetup.enableBiometrics.subtitle": {
 		"message": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 70]],
-		"translation": "Para continuar, certifique-se de que seu dispositivo tem proteção biométrica ativada e que a Paradym Wallet tem permissão para usar biometria."
+		"translation": "Para continuar, certifique-se de que teu dispositivo tem proteção biométrica ativada e que a Paradym Wallet tem permissão para usar biometria."
 	},
 	"credentialCardSlide.subtitle.pin": {
 		"message": "To receive this card from {issuerName}, you need to enter a PIN.",
@@ -3305,7 +3305,7 @@
 			"Subtitle shown when entering a PIN is required to receive the credential"
 		],
 		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 35]],
-		"translation": "Para receber este cartão de {issuerName}, você precisa digitar um PIN."
+		"translation": "Para receber este cartão de {issuerName}, tu precisa digitar um PIN."
 	},
 	"credentialCardSlide.subtitle.presentation": {
 		"message": "To receive this card from {issuerName}, you need to share cards from your wallet.",
@@ -3316,7 +3316,7 @@
 			"Subtitle shown when presentation of other credentials is required"
 		],
 		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 26]],
-		"translation": "Para receber este cartão de {issuerName}, você precisa compartilhar cartões da sua carteira."
+		"translation": "Para receber este cartão de {issuerName}, tu precisa compartilhar cartões da tua carteira."
 	},
 	"txCodeSlide.instructions": {
 		"message": "To receive this card you need to enter a transaction code. This code has been provided to you by the issuer.",
@@ -3325,14 +3325,14 @@
 			"Instructions explaining why the user must enter a transaction code"
 		],
 		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 46]],
-		"translation": "Para receber este cartão, você precisa digitar um código de transação. Este código foi fornecido a você pelo emissor."
+		"translation": "Para receber este cartão, tu precisa digitar um código de transação. Este código foi fornecido a tu pelo emissor."
 	},
 	"authCodeFlowSlide.description": {
 		"message": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
 		"placeholders": {},
 		"comments": ["Explanation for why user is redirected to external site"],
 		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 105]],
-		"translation": "Para receber este cartão, você precisa autorizar com sua conta. Você será redirecionado agora para o site do emissor."
+		"translation": "Para receber este cartão, tu precisa autorizar com tua conta. Tu será redirecionado agora para o site do emissor."
 	},
 	"dateFormatting.today": {
 		"message": "Today",
@@ -3451,14 +3451,14 @@
 		"placeholders": {},
 		"comments": ["Supporting text explaining why PIN is needed"],
 		"origin": [["src/features/share/slides/PinSlide.tsx", 48]],
-		"translation": "Use o código PIN do seu aplicativo para confirmar a solicitação."
+		"translation": "Use o código PIN do teu aplicação para confirmar a solicitação."
 	},
 	"menu.setupEid.message": {
 		"message": "Use your eID card to set up your digital identity.",
 		"placeholders": {},
 		"comments": ["Explanation for setting up eID card"],
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 96]],
-		"translation": "Use seu cartão eID para configurar sua identidade digital."
+		"translation": "Use teu cartão eID para configurar tua identidade digital."
 	},
 	"onboardingIntroduction.step2.description": {
 		"message": "Use your ID card PIN to retrieve your identity information.",
@@ -3467,7 +3467,7 @@
 			"Description of the second onboarding step about reading identity info"
 		],
 		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 42]],
-		"translation": "Use o PIN do seu cartão de identidade para recuperar suas informações de identidade."
+		"translation": "Use o PIN do teu cartão de identidade para recuperar tuas informações de identidade."
 	},
 	"common.fields.validFrom": {
 		"message": "Valid from",
@@ -3502,7 +3502,7 @@
 		"placeholders": {},
 		"comments": ["Heading shown when user is about to authenticate"],
 		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 100]],
-		"translation": "Verifique sua conta"
+		"translation": "Verifique tua conta"
 	},
 	"credentials.cardAttributesDescription": {
 		"message": "View attributes of the card",
@@ -3537,14 +3537,14 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 63]],
-		"translation": "Precisamos de sua biometria para verificar sua identidade."
+		"translation": "Precisamos de tua biometria para verificar tua identidade."
 	},
 	"welcome.titleToYourWallet": {
 		"message": "Welcome to your wallet",
 		"placeholders": {},
 		"comments": ["Welcome title in wallet screen"],
 		"origin": [["../../packages/ui/src/components/WelcomePopup.tsx", 17]],
-		"translation": "Bem-vindo à sua carteira"
+		"translation": "Bem-vindo à tua carteira"
 	},
 	"onboardingWalletExplanation.slide2.title": {
 		"message": "What is it for?",
@@ -3629,7 +3629,7 @@
 		},
 		"comments": ["Explanation that the user is about to sign a document"],
 		"origin": [["src/features/share/slides/SigningSlide.tsx", 28]],
-		"translation": "Você está prestes a assinar <0>{documentName}</0>."
+		"translation": "Tu está prestes a assinar <0>{documentName}</0>."
 	},
 	"connection.successParagraph": {
 		"message": "You can now receive notifications from \n<0>{name}</0>",
@@ -3640,7 +3640,7 @@
 			"Explains that the user can now receive notifications from the connected issuer"
 		],
 		"origin": [["src/features/didcomm/ConnectionSlides.tsx", 73]],
-		"translation": "Você pode agora receber notificações de \n<0>{name}</0>"
+		"translation": "Tu pode agora receber notificações de \n<0>{name}</0>"
 	},
 	"nfcScanner.complete.description": {
 		"message": "You can now remove your eID card.",
@@ -3649,14 +3649,14 @@
 		"origin": [
 			["../../packages/ui/src/components/NfcScannerModalAndroid.tsx", 41]
 		],
-		"translation": "Você pode agora remover seu cartão eID."
+		"translation": "Tu pode agora remover teu cartão eID."
 	},
 	"presentationSuccess.returnHint": {
 		"message": "You can now return to the previous app.",
 		"placeholders": {},
 		"comments": ["Instruction shown after presentation is completed"],
 		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 97]],
-		"translation": "Você pode agora retornar ao aplicativo anterior."
+		"translation": "Tu pode agora retornar ao aplicação anterior."
 	},
 	"sharing.failed.missingCredentials": {
 		"message": "You did not have the required credentials to disclose.",
@@ -3667,7 +3667,7 @@
 		"origin": [
 			["src/features/activity/components/FailedReasonContainer.tsx", 14]
 		],
-		"translation": "Você não tinha as credenciais necessárias para divulgar."
+		"translation": "Tu não tinha as credenciais necessárias para divulgar."
 	},
 	"requestedAttributes.partialDescription": {
 		"message": "You don't have all of the requested cards.",
@@ -3678,21 +3678,21 @@
 		"origin": [
 			["src/features/share/components/RequestedAttributesSection.tsx", 46]
 		],
-		"translation": "Você não tem todos os cartões solicitados."
+		"translation": "Tu não tem todos os cartões solicitados."
 	},
 	"inbox.emptyMessage": {
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
 		"comments": ["Paragraph shown when the inbox is empty"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 63]],
-		"translation": "Você não tem nenhuma notificação no momento."
+		"translation": "Tu não tem nenhuma notificação no momento."
 	},
 	"noContentInbox.message": {
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
 		"comments": ["Message shown when user has no notifications"],
 		"origin": [["../../packages/app/src/components/NoContentInbox.tsx", 19]],
-		"translation": "Você não tem nenhuma notificação no momento."
+		"translation": "Tu não tem nenhuma notificação no momento."
 	},
 	"requestedAttributes.onlyUnsatisfiedDescription": {
 		"message": "You don't have the requested card(s).",
@@ -3701,21 +3701,21 @@
 		"origin": [
 			["src/features/share/components/RequestedAttributesSection.tsx", 40]
 		],
-		"translation": "Você não tem o(s) cartão(ões) solicitado(s)."
+		"translation": "Tu não tem o(s) cartão(ões) solicitado(s)."
 	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
-		"translation": "Você não tem os cartões necessários"
+		"translation": "Tu não tem os cartões necessários"
 	},
 	"submission.missingCardsWarning": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when user lacks required credentials"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
-		"translation": "Você não tem os cartões necessários"
+		"translation": "Tu não tem os cartões necessários"
 	},
 	"presentationNotification.missingRequiredCredentials": {
 		"message": "You don't have the required credentials to satisfy this request.",
@@ -3729,7 +3729,7 @@
 				208
 			]
 		],
-		"translation": "Você não tem as credenciais necessárias para satisfazer esta solicitação."
+		"translation": "Tu não tem as credenciais necessárias para satisfazer esta solicitação."
 	},
 	"pinLocked.description": {
 		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
@@ -3738,7 +3738,7 @@
 			"Descriptive text explaining that the wallet is locked and must be reset"
 		],
 		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 47]],
-		"translation": "Você digitou um PIN incorreto. A carteira foi bloqueada, por favor, redefina-a para configurar um novo PIN e continuar."
+		"translation": "Tu digitou um PIN incorreto. A carteira foi bloqueada, por favor, redefina-a para configurar um novo PIN e continuar."
 	},
 	"credentialNotification.receivedCredential": {
 		"message": "You have received a credential",
@@ -3752,7 +3752,7 @@
 				46
 			]
 		],
-		"translation": "Você recebeu uma credencial"
+		"translation": "Tu recebeu uma credencial"
 	},
 	"credentialNotification.receivedCredentialWithIssuerName": {
 		"message": "You have received a credential from {0}",
@@ -3768,7 +3768,7 @@
 				39
 			]
 		],
-		"translation": "Você recebeu uma credencial de {0}"
+		"translation": "Tu recebeu uma credencial de {0}"
 	},
 	"presentationNotification.receivedRequestWithoutVerifier": {
 		"message": "You have received an information request",
@@ -3782,7 +3782,7 @@
 				86
 			]
 		],
-		"translation": "Você recebeu uma solicitação de informações"
+		"translation": "Tu recebeu uma solicitação de informações"
 	},
 	"presentationNotification.receivedRequestWithVerifier": {
 		"message": "You have received an information request from {verifierName}",
@@ -3798,7 +3798,7 @@
 				77
 			]
 		],
-		"translation": "Você recebeu uma solicitação de informações de {verifierName}"
+		"translation": "Tu recebeu uma solicitação de informações de {verifierName}"
 	},
 	"activity.receivedSingle": {
 		"message": "You have received the following card from {0}.",
@@ -3809,7 +3809,7 @@
 			"Shown in activity detail when one credential has been received"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 149]],
-		"translation": "Você recebeu o seguinte cartão de {0}."
+		"translation": "Tu recebeu o seguinte cartão de {0}."
 	},
 	"activity.receivedMultiple": {
 		"message": "You have received the following cards from {0}.",
@@ -3820,35 +3820,35 @@
 			"Shown in activity detail when multiple credentials have been received"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 143]],
-		"translation": "Você recebeu os seguintes cartões de {0}."
+		"translation": "Tu recebeu os seguintes cartões de {0}."
 	},
 	"pidSetup.enableBiometrics.title": {
 		"message": "You need to enable biometrics",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 69]],
-		"translation": "Você precisa ativar a biometria"
+		"translation": "Tu precisa ativar a biometria"
 	},
 	"onboardingIntroduction.reminder": {
 		"message": "You'll need your eID card to setup the wallet",
 		"placeholders": {},
 		"comments": ["Reminder shown before user continues onboarding"],
 		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 48]],
-		"translation": "Você precisará do seu cartão eID para configurar a carteira"
+		"translation": "Tu precisará do teu cartão eID para configurar a carteira"
 	},
 	"inbox.emptyTitle": {
 		"message": "You're all caught up",
 		"placeholders": {},
 		"comments": ["Heading shown when the inbox is empty"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 58]],
-		"translation": "Você está em dia"
+		"translation": "Tu está em dia"
 	},
 	"noContentInbox.heading": {
 		"message": "You're all caught up",
 		"placeholders": {},
 		"comments": ["Heading shown when user has no notifications"],
 		"origin": [["../../packages/app/src/components/NoContentInbox.tsx", 14]],
-		"translation": "Você está em dia"
+		"translation": "Tu está em dia"
 	},
 	"receiveCredential.deferredCredentialParagraph": {
 		"message": "Your cards are not yet ready. We will check once in a while in the background and fetch the cards once they're ready.",
@@ -3871,14 +3871,14 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 26]],
-		"translation": "Seus dados estão protegidos com um PIN e biometria. Cada vez que você compartilha dados, confirmamos sua identidade."
+		"translation": "Seus dados estão protegidos com um PIN e biometria. Cada vez que tu compartilha dados, confirmamos tua identidade."
 	},
 	"pidSetup.idCardComplete.subtitle": {
 		"message": "Your information has been retrieved from your eID card.",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 78]],
-		"translation": "Suas informações foram recuperadas do seu cartão eID."
+		"translation": "Suas informações foram recuperadas do teu cartão eID."
 	},
 	"presentationSuccess.messageWithVerifier": {
 		"message": "Your information has been shared with <0>{verifierName}</0>.",
@@ -3901,6 +3901,6 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/app/authenticate.tsx", 101]],
-		"translation": "Seu PIN é necessário para desbloquear o aplicativo"
+		"translation": "Teu PIN é necessário para desbloquear o aplicação"
 	}
 }

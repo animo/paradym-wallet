@@ -1,17 +1,17 @@
 ## Portuguese Translation Rules for Identity Wallet App
 
 ### **Tone & Style**
-- Use informal "você/tu" address (not formal "o senhor/a senhora")
+- Use informal "tu" address with second person singular verb forms (not formal "o senhor/a senhora" or Brazilian "você")
 - Keep translations natural and conversational, not literal
 - Maintain a friendly, approachable tone that matches the original English
 - Be clear and direct - avoid unnecessary words
-- Prefer Brazilian Portuguese conventions for broader accessibility
+- Use European Portuguese conventions (Portugal)
 
 ### **Key Terminology**
 - **Wallet** → "carteira" (consistently used)
 - **Card/Credential** → "cartão" for cards, "credencial" for credentials
-- **PIN** → "PIN" (keep in English, masculine: o PIN, use "seu PIN")
-- **App** → "aplicativo" (Brazilian) or "app" (informal, widely understood)
+- **PIN** → "PIN" (keep in English, masculine: o PIN, use "o teu PIN")
+- **App** → "aplicação" (European) or "app" (informal, widely understood)
 - **QR Code** → "código QR"
 - **Biometrics** → "biometria" or "autenticação biométrica"
 - **eID card** → "cartão eID"
@@ -30,10 +30,10 @@
 - **Online** → "on-line" (with hyphen in Portuguese)
 
 ### **Common Phrases**
-- "Go to" → "Ir para" or "Acessar"
+- "Go to" → "Ir para" or "Aceder"
 - "Set up" → "configurar"
-- "Please try again" → "Por favor, tente novamente"
-- "Something went wrong" → "Algo deu errado"
+- "Please try again" → "Por favor, tenta novamente"
+- "Something went wrong" → "Algo correu mal"
 - "Continue" → "Continuar"
 - "Cancel" → "Cancelar"
 - "Stop" → "Parar"
@@ -59,7 +59,7 @@
 - **Success messages**: Use encouraging tone ("Sucesso!", "Pronto!", "Feito!")
 - **Error messages**: Be helpful and actionable, not alarming
 - **Security messages**: Inspire confidence while being clear about actions
-- **Confirmations**: Use "Tem certeza que..." or "Deseja realmente..."
+- **Confirmations**: Use "Tens a certeza que..." or "Desejas realmente..."
 
 ### **Special Considerations**
 - For time expressions, use Portuguese formats ("hoje às", "ontem às")
@@ -69,19 +69,20 @@
 - Use gender-neutral language when the subject is unknown
 
 ### **Specific Patterns**
-- **"wants to offer"** → "quer oferecer" or simply "oferece" (present tense)
+- **"wants to offer"** → "quer oferecer-te" or "oferece-te"
 - **"wants to request"** → "quer solicitar" or simply "solicita"
 - **"from X"** → "de {name}" or "por {name}"
 - **"About this party"** → "Sobre esta organização" or "Sobre este emissor"
 - **"Successfully..."** → Often expressed with "com sucesso" or past participle
+- **"your"** → "o teu/a tua" (not "seu/sua" which is Brazilian or formal)
 
 ### **What NOT to do**
 - Don't use overly formal language
+- Don't use Brazilian Portuguese forms (você, seu/sua, aplicativo, etc.)
 - Don't translate brand names or widely-adopted English tech terms
 - Don't create literal translations that sound unnatural
 - Don't change the meaning or intent of the original message
 - Don't add or remove information not present in the source
-- Don't mix European and Brazilian Portuguese conventions inconsistently
 
 ### **Quality Checks**
 - Read translations aloud - they should sound natural in conversation
