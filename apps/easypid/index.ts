@@ -9,6 +9,7 @@ import { messages as de } from './src/locales/de/messages'
 import { messages as en } from './src/locales/en/messages'
 import { messages as fi } from './src/locales/fi/messages'
 import { messages as nl } from './src/locales/nl/messages'
+import { messages as pt } from './src/locales/pt/messages'
 import { messages as sw } from './src/locales/sw/messages'
 
 // Register translations
@@ -19,6 +20,7 @@ registerLocales({
   sw,
   de,
   al,
+  pt
 })
 
 // Always register the custom component for Android
