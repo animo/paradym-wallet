@@ -66,7 +66,7 @@
 			"Subtitle shown when the issuer wants to give the user a card with no auth required"
 		],
 		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 44]],
-		"translation": "{issuerName} quer emitir o seguinte cartão para ti:"
+		"translation": "{issuerName} quer-lhe emitir o seguinte cartão:"
 	},
 	"verifyPartySlide.connectSubtitle": {
 		"message": "{name} wants to connect with you.",
@@ -93,7 +93,7 @@
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
-		"translation": "{name} quer oferecer um cartão para ti."
+		"translation": "{name} quer-lhe oferecer um cartão."
 	},
 	"verifyPartySlide.requestSubtitle": {
 		"message": "{name} wants to request information from you.",
@@ -368,7 +368,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
-		"translation": "Uma organização desconhecida quer oferecer um cartão para ti."
+		"translation": "Uma organização desconhecida quer-lhe oferecer um cartão."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
@@ -2374,18 +2374,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Redefinir carteira"
 	},
-	"signShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the sign & share screen"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Revisar a solicitação"
-	},
 	"submission.reviewTitle": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Heading shown at the top of the share credentials screen"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
+		"translation": "Revisar a solicitação"
+	},
+	"signShare.title": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
 		"translation": "Revisar a solicitação"
 	},
 	"common.revoked": {
@@ -3703,18 +3703,18 @@
 		],
 		"translation": "Tu não tem o(s) cartão(ões) solicitado(s)."
 	},
-	"signShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
-		"translation": "Tu não tem os cartões necessários"
-	},
 	"submission.missingCardsWarning": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when user lacks required credentials"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
+		"translation": "Tu não tem os cartões necessários"
+	},
+	"signShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
 		"translation": "Tu não tem os cartões necessários"
 	},
 	"presentationNotification.missingRequiredCredentials": {
