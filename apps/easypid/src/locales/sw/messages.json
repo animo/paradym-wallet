@@ -2443,18 +2443,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Återställ plånbok"
 	},
-	"signShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the sign & share screen"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Granska förfrågan"
-	},
 	"submission.reviewTitle": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Heading shown at the top of the share credentials screen"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
+		"translation": "Granska förfrågan"
+	},
+	"signShare.title": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
 		"translation": "Granska förfrågan"
 	},
 	"common.revoked": {
@@ -3772,18 +3772,18 @@
 		],
 		"translation": "Du har inte de begärda korten."
 	},
-	"signShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
-		"translation": "Du har inte de kort som krävs"
-	},
 	"submission.missingCardsWarning": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when user lacks required credentials"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
+		"translation": "Du har inte de kort som krävs"
+	},
+	"signShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
 		"translation": "Du har inte de kort som krävs"
 	},
 	"presentationNotification.missingRequiredCredentials": {
