@@ -1,36 +1,45 @@
 ## Portuguese Translation Rules for Identity Wallet App
 
 ### **Tone & Style**
-- Use informal "tu" address with second person singular verb forms (not formal "o senhor/a senhora" or Brazilian "você")
+- Use third person singular (formal but not overly formal) - omit the subject pronoun
+- This means using verb forms like "pode", "tem", "quer" (same as "você" form but WITHOUT the pronoun)
+- NEVER use "você" explicitly - just use the third person verb forms
 - Keep translations natural and conversational, not literal
-- Maintain a friendly, approachable tone that matches the original English
+- Maintain a friendly, professional tone that matches the original English
 - Be clear and direct - avoid unnecessary words
 - Use European Portuguese conventions (Portugal)
 
 ### **Key Terminology**
 - **Wallet** → "carteira" (consistently used)
 - **Card/Credential** → "cartão" for cards, "credencial" for credentials
-- **PIN** → "PIN" (keep in English, masculine: o PIN, use "o teu PIN")
+- **PIN** → "PIN" (keep in English, masculine: o PIN, use "o seu PIN")
 - **App** → "aplicação" (European Portuguese - NEVER "aplicativo" which is Brazilian)
+- **Phone** → "telemóvel" (European Portuguese - NEVER "telefone" for mobile devices)
 - **QR Code** → "código QR"
 - **Biometrics** → "biometria" or "autenticação biométrica"
 - **eID card** → "cartão eID"
 - **Organization** → "organização"
 - **Verifier** → "verificador"
 - **Issuer** → "emissor"
+- **Connection** → "ligação" (European Portuguese - NEVER "conexão" which is Brazilian)
 
 ### **Technical Terms**
-- **Share/Sharing** → "compartilhar/compartilhamento"
+- **Share/Sharing** → "partilhar/partilha" (European Portuguese - NEVER "compartilhar/compartilhamento" which is Brazilian)
+  - "to share" → "partilhar"
+  - "sharing" (noun) → "partilha"
+  - "shareable" → "partilhável"
+  - "shared" → "partilhado/partilhada"
 - **Scan** → "ler" (European Portuguese - NEVER "escanear" which is Brazilian)
   - For QR codes: "ler um código QR" not "escanear"
   - For eID cards: "ler o cartão" not "escanear o cartão"
+  - "Reading" → "Leitura" (not "Escaneamento")
 - **Fetch/Retrieve** → "obter" or "recuperar" (NEVER "buscar" which is Brazilian)
 - **Delete** → "eliminar" (European Portuguese - NEVER "excluir" which is Brazilian)
 - **Note/Observe** → "Note" (NEVER "Observe" in imperative form)
 - **Authentication** → "autenticação"
 - **Verification** → "verificação"
 - **Attributes** → "atributos"
-- **Request** → "solicitação" or "pedido"
+- **Request** → "pedido" (preferred) or "solicitação" (use "pedido" for consistency)
 - **Offline** → "off-line" (with hyphen in Portuguese)
 - **Online** → "on-line" (with hyphen in Portuguese)
 
@@ -58,22 +67,26 @@
 - Use proper gender agreement for adjectives and articles
 - For questions, use natural Portuguese question structure
 - Capitalize only proper nouns and first words of sentences (Portuguese uses less capitalization than English)
-- **Pronoun omission**: In Portuguese, subject pronouns (tu, eu, você) are often omitted when the verb conjugation makes the subject clear
-  - GOOD: "podes armazenar" (you can store)
-  - AVOID: "tu podes armazenar" (unnecessary pronoun)
-  - GOOD: "assim que receberes" (once you receive)
-  - AVOID: "assim que tu receberes" (unnecessary pronoun)
-  - Use pronouns only for emphasis or clarity
-- **Verb conjugation consistency**: Always use informal second person (tu) verb forms
-  - GOOD: "Pede ao emissor" (informal imperative)
-  - WRONG: "Peça ao emissor" (formal imperative mixed with informal)
+- **Pronoun omission**: ALWAYS omit subject pronouns - third person singular never uses explicit pronouns
+  - GOOD: "pode armazenar" (can store)
+  - WRONG: "você pode armazenar" (never use "você")
+  - GOOD: "assim que receber" (once [you] receive)
+  - Subject is understood from context and verb form
+- **Verb conjugation**: Always use third person singular forms (same as "você" but WITHOUT the pronoun)
+  - Present: "pode", "tem", "quer", "deseja", "precisa", "usa", "faz", "está", "é", "vê", "sabe"
+  - Subjunctive: "possa", "tenha", "queira", "deseje", "precise", "use", "faça", "seja", "veja"
+  - Imperative: "peça", "tente", "verifique", "adicione", "ative", "digite", "reveja", "leia"
+  - Personal infinitive: Use impersonal forms ("receber", "partilhar", "ter", "fazer") not ("receberes", "partilhares")
+- **Determinants**: ALWAYS use definite articles (o/a/os/as) before nouns, especially possessives
+  - GOOD: "a sua carteira", "os seus dados", "as suas informações"
+  - WRONG: "sua carteira", "seus dados" (sounds Brazilian without article)
 
 ### **Context Awareness**
 - **Button labels**: Keep short and action-oriented
 - **Success messages**: Use encouraging tone ("Sucesso!", "Pronto!", "Feito!")
 - **Error messages**: Be helpful and actionable, not alarming
 - **Security messages**: Inspire confidence while being clear about actions
-- **Confirmations**: Use "Tens a certeza que..." or "Desejas realmente..."
+- **Confirmations**: Use "Tem a certeza que..." or "Deseja realmente..." (third person, not "Tens/Desejas")
 
 ### **Special Considerations**
 - For time expressions, use Portuguese formats ("hoje às", "ontem às")
@@ -83,25 +96,31 @@
 - Use gender-neutral language when the subject is unknown
 
 ### **Specific Patterns**
-- **"wants to offer"** → "quer oferecer-te" or "oferece-te"
-- **"wants to request"** → "quer solicitar" or simply "solicita"
+- **"wants to offer"** → "quer oferecer" or "deseja oferecer" (no "-te", just omit the pronoun)
+- **"wants to request"** → "deseja solicitar" or "quer solicitar"
 - **"from X"** → "de {name}" or "por {name}"
+- **"from you"** → Often can be omitted entirely, or use "suas" (e.g., "informações suas" = your information)
+- **"to you"** / **"for you"** → Usually omit, or context makes it clear without pronoun
 - **"About this party"** → "Sobre esta organização" or "Sobre este emissor"
-- **"Successfully..."** → Often expressed with "com sucesso" or past participle
-- **"your" (possessive)** → "o teu/a tua/os teus/as tuas" (NEVER "seu/sua/seus/suas" which is Brazilian or formal)
-  - GOOD: "a tua carteira", "os teus dados", "as tuas informações"
-  - WRONG: "sua carteira", "seus dados", "suas informações"
-- **"your information/data" at sentence start** → "As tuas informações" or "Os teus dados" (include article)
-  - WRONG: "Suas informações" (Brazilian possessive)
+- **"Successfully..."** → Often expressed with "com sucesso" or "bem sucedida/sucedido" (no hyphen in this context)
+- **"your" (possessive)** → "o seu/a sua/os seus/as suas" with article (third person possessive)
+  - GOOD: "a sua carteira", "os seus dados", "as suas informações"
+  - WRONG: "sua carteira" (missing article - sounds Brazilian)
+  - WRONG: "a tua carteira" (informal second person - not third person)
+- **"your information/data" at sentence start** → "As suas informações" or "Os seus dados" (ALWAYS include article)
 
 ### **What NOT to do**
-- Don't use overly formal language
+- Don't use "você" explicitly - always omit the pronoun
 - Don't use Brazilian Portuguese forms:
-  - NEVER: você, seu/sua/seus/suas, aplicativo, buscar, escanear, excluir
-  - ALWAYS use European equivalents: tu, teu/tua/teus/tuas, aplicação, obter, ler, eliminar
-- Don't mix formal and informal verb forms (e.g., "Peça" + "tenta")
-  - Stay consistent with informal "tu" forms throughout
-- Don't overuse subject pronouns - omit "tu" when the verb conjugation is clear
+  - NEVER: você (explicit), compartilhar, aplicativo, telefone (for mobile), conexão, buscar, escanear, excluir
+  - ALWAYS use European equivalents: (omit pronoun), partilhar, aplicação, telemóvel, ligação, obter, ler, eliminar
+- Don't use informal "tu" forms - use third person singular instead:
+  - WRONG: "podes", "tens", "tua carteira", "Pede"
+  - RIGHT: "pode", "tem", "a sua carteira", "Peça"
+- Don't mix verb tenses or formality levels inconsistently
+- Don't omit definite articles before possessives (sounds Brazilian)
+  - WRONG: "seus dados", "sua carteira"
+  - RIGHT: "os seus dados", "a sua carteira"
 - Don't translate brand names or widely-adopted English tech terms
 - Don't create literal translations that sound unnatural
 - Don't change the meaning or intent of the original message
