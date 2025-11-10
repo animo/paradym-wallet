@@ -885,6 +885,34 @@
 		],
 		"translation": "Kaart niet gevonden"
 	},
+	"notificationInbox.notificationType.credentialOffer": {
+		"message": "Credential offer",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				11
+			]
+		],
+		"translation": "Kaartaanbod",
+		"obsolete": true
+	},
+	"notificationInbox.notificationType.credentialOfferFromName": {
+		"message": "Credential offer from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				16
+			]
+		],
+		"translation": "Kaartaanbod van {name}",
+		"obsolete": true
+	},
 	"common.fields.credentialType": {
 		"message": "Credential type",
 		"placeholders": {},
@@ -906,12 +934,40 @@
 		"origin": [["../../packages/app/src/components/NoContentWallet.tsx", 19]],
 		"translation": "Kaarten worden hier getoond."
 	},
+	"notificationInbox.notificationType.dataRequest": {
+		"message": "Data request",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				20
+			]
+		],
+		"translation": "Gegevensverzoek",
+		"obsolete": true
+	},
 	"common.dataRequest": {
 		"message": "Data Request",
 		"placeholders": {},
 		"comments": ["Fallback title for a proof request notification"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 167]],
 		"translation": "Gegevensverzoek"
+	},
+	"notificationInbox.notificationType.dataRequestFromName": {
+		"message": "Data request from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				25
+			]
+		],
+		"translation": "Gegevensverzoek van {name}",
+		"obsolete": true
 	},
 	"common.fields.dateOfBirth": {
 		"message": "Date of birth",
@@ -1505,6 +1561,19 @@
 		"comments": ["Header title for the inbox screen"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 35]],
 		"translation": "Postvak"
+	},
+	"inbox.title": {
+		"message": "Inbox",
+		"placeholders": {},
+		"comments": ["Title heading for the Inbox screen"],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				42
+			]
+		],
+		"translation": "Postvak",
+		"obsolete": true
 	},
 	"submission.offlineRequestDescription": {
 		"message": "Information about the verifier could not be shown. Carefully consider if you trust this organization.",
@@ -2141,6 +2210,13 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 396]],
 		"translation": "Portret"
 	},
+	"language.pt": {
+		"message": "Portuguese",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 538]],
+		"translation": "Portugees"
+	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
 		"placeholders": {},
@@ -2367,18 +2443,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Wallet resetten"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
-		"translation": "Bekijk het verzoek"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
+		"translation": "Bekijk het verzoek"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
 		"translation": "Bekijk het verzoek"
 	},
 	"common.revoked": {
@@ -3696,18 +3772,18 @@
 		],
 		"translation": "Je hebt de gevraagde kaart(en) niet."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
-		"translation": "Je hebt niet de vereiste kaarten"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
+		"translation": "Je hebt niet de vereiste kaarten"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
 		"translation": "Je hebt niet de vereiste kaarten"
 	},
 	"presentationNotification.missingRequiredCredentials": {

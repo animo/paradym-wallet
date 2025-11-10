@@ -885,6 +885,34 @@
 		],
 		"translation": "Kredenciali nuk u gjet"
 	},
+	"notificationInbox.notificationType.credentialOffer": {
+		"message": "Credential offer",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				11
+			]
+		],
+		"translation": "Ofertë kredenciali",
+		"obsolete": true
+	},
+	"notificationInbox.notificationType.credentialOfferFromName": {
+		"message": "Credential offer from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				16
+			]
+		],
+		"translation": "Ofertë kredenciali nga {name}",
+		"obsolete": true
+	},
 	"common.fields.credentialType": {
 		"message": "Credential type",
 		"placeholders": {},
@@ -906,12 +934,40 @@
 		"origin": [["../../packages/app/src/components/NoContentWallet.tsx", 19]],
 		"translation": "Kredencialet do të shfaqen këtu."
 	},
+	"notificationInbox.notificationType.dataRequest": {
+		"message": "Data request",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				20
+			]
+		],
+		"translation": "Kërkesë të dhënash",
+		"obsolete": true
+	},
 	"common.dataRequest": {
 		"message": "Data Request",
 		"placeholders": {},
 		"comments": ["Fallback title for a proof request notification"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 167]],
 		"translation": "Kërkesë Të Dhënash"
+	},
+	"notificationInbox.notificationType.dataRequestFromName": {
+		"message": "Data request from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				25
+			]
+		],
+		"translation": "Kërkesë të dhënash nga {name}",
+		"obsolete": true
 	},
 	"common.fields.dateOfBirth": {
 		"message": "Date of birth",
@@ -1505,6 +1561,19 @@
 		"comments": ["Header title for the inbox screen"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 35]],
 		"translation": "Mesazhet"
+	},
+	"inbox.title": {
+		"message": "Inbox",
+		"placeholders": {},
+		"comments": ["Title heading for the Inbox screen"],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				42
+			]
+		],
+		"translation": "Mesazhet",
+		"obsolete": true
 	},
 	"submission.offlineRequestDescription": {
 		"message": "Information about the verifier could not be shown. Carefully consider if you trust this organization.",
@@ -2141,6 +2210,13 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 396]],
 		"translation": "Fotografia"
 	},
+	"language.pt": {
+		"message": "Portuguese",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 538]],
+		"translation": "Portugeze"
+	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
 		"placeholders": {},
@@ -2367,18 +2443,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Rivendos Portofolin"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
-		"translation": "Shiko kërkesën"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
+		"translation": "Shiko kërkesën"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
 		"translation": "Shiko kërkesën"
 	},
 	"common.revoked": {
@@ -3696,18 +3772,18 @@
 		],
 		"translation": "Nuk i ke kartën/kartat e kërkuara."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
-		"translation": "Nuk i ke kartat e nevojshme"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
+		"translation": "Nuk i ke kartat e nevojshme"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
 		"translation": "Nuk i ke kartat e nevojshme"
 	},
 	"presentationNotification.missingRequiredCredentials": {

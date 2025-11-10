@@ -24,7 +24,7 @@
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 218]],
-		"translation": "{amountShared} intyg delades."
+		"translation": "{amountShared} kort delades."
 	},
 	"inbox.notificationType.fromLabel": {
 		"message": "{baseLabel} from {0}",
@@ -116,7 +116,7 @@
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 223]],
-		"translation": "1 intyg delades."
+		"translation": "1 kort delades."
 	},
 	"dateFormatting.oneDay": {
 		"message": "1 day",
@@ -228,7 +228,7 @@
 			"Shown below the empty activity title to explain why the list is empty"
 		],
 		"origin": [["src/features/activity/FunkeActivityScreen.tsx", 33]],
-		"translation": "Aktivitet visas här när du delar eller tar emot intyg."
+		"translation": "Aktivitet visas här när du delar eller tar emot kort."
 	},
 	"onboardingWalletExplanation.slide1.subtitle": {
 		"message": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
@@ -274,7 +274,7 @@
 			"Used as prefix to indicate the age of a person is over a certain age."
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 381]],
-		"translation": "Ålder över"
+		"translation": "Över"
 	},
 	"language.al": {
 		"message": "Albanian",
@@ -324,7 +324,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 120]
 		],
-		"translation": "Ett fel inträffade vid hämtning av kortet från utfärdaren."
+		"translation": "Ett fel uppstod när kortet skulle hämtas från utfärdaren."
 	},
 	"interactionError.message.verify": {
 		"message": "An error occurred while sharing the card information. Ask the verifier to generate a new QR-code or try again later.",
@@ -536,7 +536,7 @@
 			"Description in confirmation dialog explaining pending card deletion"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 292]],
-		"translation": "Genom att ta bort {name} kommer du inte längre kunna hämta ditt kort från utfärdaren."
+		"translation": "Om du tar bort {name} kommer du inte längre kunna hämta kortet från utfärdaren."
 	},
 	"common.cancel": {
 		"message": "Cancel",
@@ -602,7 +602,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 162]
 		],
-		"translation": "Kortet är inte klart ännu"
+		"translation": "Kortet är inte redo än"
 	},
 	"cardLifecycle.limitedByDate.notYetActive.title": {
 		"message": "Card not active",
@@ -633,7 +633,7 @@
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 148],
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 169]
 		],
-		"translation": "Kortet är inte tillgängligt ännu"
+		"translation": "Kortet är ännu inte tillgängligt"
 	},
 	"cardLifecycle.revoked.description": {
 		"message": "Card not usable anymore",
@@ -654,7 +654,7 @@
 		"placeholders": {},
 		"comments": ["Shown when the issuance of a card is pending"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 215]],
-		"translation": "Kort pågår"
+		"translation": "Kort väntar"
 	},
 	"common.cardRejected": {
 		"message": "Card rejected",
@@ -677,7 +677,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 185]
 		],
-		"translation": "Kortet har lagts till i din plånbok!"
+		"translation": "Kort har lagts till i din plånbok!"
 	},
 	"common.toastCardArchived": {
 		"message": "Card successfully archived",
@@ -809,7 +809,7 @@
 				9
 			]
 		],
-		"translation": "intyg"
+		"translation": "kort"
 	},
 	"requestedAttributes.fallbackCardLabel": {
 		"message": "Credential",
@@ -820,7 +820,7 @@
 		"origin": [
 			["src/features/share/components/RequestedAttributesSection.tsx", 52]
 		],
-		"translation": "Intyg"
+		"translation": "Kort"
 	},
 	"common.credential": {
 		"message": "Credential",
@@ -867,14 +867,14 @@
 			"Toast or message shown when a credential offer could not be parsed correctly"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 89]],
-		"translation": "Intygsinformation kunde inte extraheras"
+		"translation": "Kortinformation kunde inte extraheras"
 	},
 	"credentials.notFound": {
 		"message": "Credential not found",
 		"placeholders": {},
 		"comments": ["Shown if a credential is missing or cannot be loaded"],
 		"origin": [["src/features/wallet/FunkeCredentialDetailScreen.tsx", 45]],
-		"translation": "Intyg hittas inte"
+		"translation": "Kort inte hittat"
 	},
 	"credentialDetail.errorMessage": {
 		"message": "Credential not found",
@@ -885,26 +885,67 @@
 		],
 		"translation": "Kort inte hittat"
 	},
+	"notificationInbox.notificationType.credentialOffer": {
+		"message": "Credential offer",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				11
+			]
+		],
+		"translation": "Korterbjudande",
+		"obsolete": true
+	},
+	"notificationInbox.notificationType.credentialOfferFromName": {
+		"message": "Credential offer from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				16
+			]
+		],
+		"translation": "Korterbjudande från {name}",
+		"obsolete": true
+	},
 	"common.fields.credentialType": {
 		"message": "Credential type",
 		"placeholders": {},
 		"comments": ["The type of credential, usually a complex url structure"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 426]],
-		"translation": "Intygstyp"
+		"translation": "Korttyp"
 	},
 	"credentials.emptyDescription": {
 		"message": "Credentials will appear here once you receive them.",
 		"placeholders": {},
 		"comments": ["Subtext explaining that credentials will appear later"],
 		"origin": [["src/features/wallet/FunkeCredentialsScreen.tsx", 70]],
-		"translation": "Intyg kommer att visas här när du tar emot dem."
+		"translation": "Kort kommer att visas här när du tar emot dem."
 	},
 	"noContentWallet.message": {
 		"message": "Credentials will be shown here.",
 		"placeholders": {},
 		"comments": ["Message shown when wallet has no credentials"],
 		"origin": [["../../packages/app/src/components/NoContentWallet.tsx", 19]],
-		"translation": "Intyg kommer att visas här."
+		"translation": "Kort kommer att visas här."
+	},
+	"notificationInbox.notificationType.dataRequest": {
+		"message": "Data request",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				20
+			]
+		],
+		"translation": "Dataförfrågan",
+		"obsolete": true
 	},
 	"common.dataRequest": {
 		"message": "Data Request",
@@ -912,6 +953,21 @@
 		"comments": ["Fallback title for a proof request notification"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 167]],
 		"translation": "Dataförfrågan"
+	},
+	"notificationInbox.notificationType.dataRequestFromName": {
+		"message": "Data request from {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				25
+			]
+		],
+		"translation": "Dataförfrågan från {name}",
+		"obsolete": true
 	},
 	"common.fields.dateOfBirth": {
 		"message": "Date of birth",
@@ -948,7 +1004,7 @@
 		"placeholders": {},
 		"comments": ["Shown when a credential no longer exists in the wallet"],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 78]],
-		"translation": "Borttaget intyg"
+		"translation": "Borttaget kort"
 	},
 	"trust.demoOrg": {
 		"message": "Demo organization",
@@ -1031,7 +1087,7 @@
 		"placeholders": {},
 		"comments": ["The title of driving privileges"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 464]],
-		"translation": "Körbehörigheter"
+		"translation": "Körbehörighet"
 	},
 	"language.nl": {
 		"message": "Dutch",
@@ -1049,7 +1105,7 @@
 		"origin": [
 			["src/features/onboarding/screens/id-card-requested-attributes.tsx", 51]
 		],
-		"translation": "e-legitimation"
+		"translation": "eID-kort"
 	},
 	"pidSetup.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
@@ -1169,7 +1225,7 @@
 			"Toast or message shown when an error occurred during retrieval of credentials"
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 94]],
-		"translation": "Fel vid hämtning av intyg"
+		"translation": "Fel vid hämtning av kort"
 	},
 	"common.expired": {
 		"message": "Expired",
@@ -1183,7 +1239,7 @@
 		"placeholders": {},
 		"comments": ["The time at which a credential expires"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 421]],
-		"translation": "Utgår"
+		"translation": "Giltig till"
 	},
 	"cardLifecycle.limitedByDate.willExpire.description": {
 		"message": "Expires in {expiryDaysString}",
@@ -1208,7 +1264,7 @@
 		"placeholders": {},
 		"comments": ["Description for the feature to export debug logs"],
 		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 120]],
-		"translation": "Exportera de senaste 1000 felsökningsloggarna från plånboken. Observera att dessa kan innehålla känslig information."
+		"translation": "Exportera de senaste 1000 felsökningsloggarna från plånboken. Observera att detta kan innehålla känslig information."
 	},
 	"activity.latest.failedCard": {
 		"message": "Failed to add {name}",
@@ -1217,7 +1273,7 @@
 		},
 		"comments": ["Shown when it has failed to add a new card"],
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 102]],
-		"translation": "Misslyckades lägga till {name}"
+		"translation": "Misslyckades med att lägga till {name}"
 	},
 	"common.invitationParsingFailed": {
 		"message": "Failed to parse invitation.",
@@ -1233,7 +1289,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 115]
 		],
-		"translation": "Misslyckades hämta kort"
+		"translation": "Misslyckades med att hämta kortet"
 	},
 	"common.fields.familyName": {
 		"message": "Family name",
@@ -1490,7 +1546,7 @@
 		"origin": [
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 542]
 		],
-		"translation": "Om du stoppar kommer intygserbjudandet att avbrytas."
+		"translation": "Om du stoppar kommer korterbjudandet att avbrytas."
 	},
 	"pidSetup.stopDescription": {
 		"message": "If you stop, you can still do the setup later.",
@@ -1505,6 +1561,19 @@
 		"comments": ["Header title for the inbox screen"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 35]],
 		"translation": "Inkorg"
+	},
+	"inbox.title": {
+		"message": "Inbox",
+		"placeholders": {},
+		"comments": ["Title heading for the Inbox screen"],
+		"origin": [
+			[
+				"../../packages/app/src/features/notifications/NotificationInboxScreen.tsx",
+				42
+			]
+		],
+		"translation": "Inkorg",
+		"obsolete": true
 	},
 	"submission.offlineRequestDescription": {
 		"message": "Information about the verifier could not be shown. Carefully consider if you trust this organization.",
@@ -1624,7 +1693,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 182]],
-		"translation": "Inbjudningstyp är inte tillåten."
+		"translation": "Inbjudningstyp inte tillåten."
 	},
 	"receiveCredential.checkInformationHeader": {
 		"message": "Is the information correct?",
@@ -1860,7 +1929,7 @@
 			"Heading informing the user the device does not have a back camera"
 		],
 		"origin": [["../../packages/scanner/src/Scanner.tsx", 67]],
-		"translation": "Ingen kamera hittades"
+		"translation": "Ingen kamera hittad"
 	},
 	"common.noResultsSearch": {
 		"message": "No cards found for \"{searchQuery}\"",
@@ -1889,14 +1958,14 @@
 		"origin": [
 			["src/features/share/FunkeOpenIdPresentationNotificationScreen.tsx", 52]
 		],
-		"translation": "Inga intyg valda"
+		"translation": "Inga kort valda"
 	},
 	"activity.sharedSummaryNone": {
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 228]],
-		"translation": "Inga intyg delades."
+		"translation": "Inga kort delades."
 	},
 	"submission.fallbackPurpose": {
 		"message": "No information was provided on the purpose of the data request. Be cautious",
@@ -2008,7 +2077,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 115]],
-		"translation": "Organisation inte verifierad"
+		"translation": "Organisation ej verifierad"
 	},
 	"requestPurpose.infoSheet.title": {
 		"message": "Overasking detected",
@@ -2017,7 +2086,7 @@
 			"Title of the info sheet that appears when the user taps the warning about overasking"
 		],
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 50]],
-		"translation": "Överdrivet informationsbegärande upptäckt"
+		"translation": "Överdrivet begärande upptäckt"
 	},
 	"inbox.notificationType.pending": {
 		"message": "Pending",
@@ -2100,7 +2169,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/wallet/FunkeOfflineQrScreen.tsx", 121]],
-		"translation": "Tillåt bluetooth-åtkomst"
+		"translation": "Tillåt Bluetooth-åtkomst"
 	},
 	"qrScanner.permissionHeading": {
 		"message": "Please allow camera access",
@@ -2132,7 +2201,7 @@
 			"Shown while loading request data from the issuer or verifier"
 		],
 		"origin": [["src/features/receive/slides/LoadingRequestSlide.tsx", 44]],
-		"translation": "Vänligen vänta"
+		"translation": "Vänta"
 	},
 	"common.fields.portrait": {
 		"message": "Portrait",
@@ -2140,6 +2209,13 @@
 		"comments": ["The portrait of a person."],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 396]],
 		"translation": "Porträtt"
+	},
+	"language.pt": {
+		"message": "Portuguese",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 538]],
+		"translation": "Portugisiska"
 	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
@@ -2282,7 +2358,7 @@
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 128]],
-		"translation": "Mottagning av korten från {0} avbröts."
+		"translation": "Mottagningen av korten från {0} avbröts."
 	},
 	"activity.latest.title": {
 		"message": "Recent activity",
@@ -2367,18 +2443,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Återställ plånbok"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
-		"translation": "Granska förfrågan"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
+		"translation": "Granska förfrågan"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
 		"translation": "Granska förfrågan"
 	},
 	"common.revoked": {
@@ -2483,7 +2559,7 @@
 				229
 			]
 		],
-		"translation": "Välj det intyg du vill använda"
+		"translation": "Välj det kort du vill använda"
 	},
 	"pinSlide.title": {
 		"message": "Send data with your PIN code",
@@ -2747,7 +2823,7 @@
 		"origin": [
 			["../../packages/app/src/components/CardInfoLifecycle.tsx", 211]
 		],
-		"translation": "Vissa intyg kan gå ut eller kräva en aktiv internetanslutning för validering"
+		"translation": "Vissa kort kan gå ut eller kräva en aktiv internetanslutning för validering"
 	},
 	"common.somethingWentWrong": {
 		"message": "Something went wrong",
@@ -2775,7 +2851,7 @@
 				19
 			]
 		],
-		"translation": "Något gick fel när intyget skulle sparas."
+		"translation": "Något gick fel när kortet skulle sparas."
 	},
 	"onboardingIdCardScan.startScanning": {
 		"message": "Start scanning",
@@ -2819,7 +2895,7 @@
 		"origin": [
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 538]
 		],
-		"translation": "Stoppa intygserbjudande?"
+		"translation": "Stoppa korterbjudande?"
 	},
 	"pidSetup.stopTitle": {
 		"message": "Stop ID Setup?",
@@ -2879,7 +2955,7 @@
 		"placeholders": {},
 		"comments": ["Title shown when an action completes successfully"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 32]],
-		"translation": "Färdigt!"
+		"translation": "Klart!"
 	},
 	"language.sw": {
 		"message": "Swedish",
@@ -2906,7 +2982,7 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 181]
 		],
-		"translation": "Kortet kommer att hämtas när det blir tillgängligt."
+		"translation": "Kortet hämtas så snart det är tillgängligt."
 	},
 	"activity.receivedPending": {
 		"message": "The cards from {0} is are not ready yet and will be fetched at a later date.",
@@ -2917,7 +2993,7 @@
 			"Shown in activity detail when the received credentials are pending"
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 135]],
-		"translation": "Korten från {0} är inte klara ännu och kommer att hämtas senare."
+		"translation": "Korten från {0} är inte redo än och kommer att hämtas senare."
 	},
 	"onboardingWalletExplanation.slide2.subtitle": {
 		"message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
@@ -3016,7 +3092,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 174]
 		],
-		"translation": "Utfärdaren har inte gjort kortet tillgängligt ännu. Försök igen senare."
+		"translation": "Utfärdaren har ännu inte gjort kortet tillgängligt. Försök igen senare."
 	},
 	"cardLifecycle.revoked.sheetDescription": {
 		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
@@ -3038,7 +3114,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 136]
 		],
-		"translation": "Kortets utfärdare angav att du bör försöka igen kl {0}."
+		"translation": "Utfärdaren av kortet har sagt att du kan kolla igen kl. {0}."
 	},
 	"deferredCredentials.cardNotAvailableYetWithDateDescription": {
 		"message": "The issuer of the card indicated you should check again on {0}.",
@@ -3053,7 +3129,7 @@
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 153]
 		],
-		"translation": "Kortets utfärdare angav att du bör försöka igen den {0}."
+		"translation": "Utfärdaren av kortet har sagt att du kan kolla igen den {0}."
 	},
 	"txCodeSlide.descriptionIntro": {
 		"message": "The issuer provided the following:",
@@ -3206,14 +3282,14 @@
 				170
 			]
 		],
-		"translation": "Detta intyg finns inte i din plånbok."
+		"translation": "Detta kort finns inte i din plånbok."
 	},
 	"qrScanner.noCameraDescription": {
 		"message": "This device does not have a camera. Unable to scan QR codes",
 		"placeholders": {},
 		"comments": ["Description explaining why camera permission is needed"],
 		"origin": [["../../packages/scanner/src/Scanner.tsx", 75]],
-		"translation": "Den här enheten har ingen kamera. Kan inte skanna QR-koder"
+		"translation": "Denna enhet har ingen kamera. Kan inte skanna QR-koder"
 	},
 	"common.featureNotSupported": {
 		"message": "This feature is not supported in this version of the app.",
@@ -3341,7 +3417,7 @@
 		},
 		"comments": [],
 		"origin": [["../../packages/utils/src/format.ts", 48]],
-		"translation": "Idag kl {0}"
+		"translation": "Idag kl. {0}"
 	},
 	"pinLocked.title": {
 		"message": "Too many incorrect attempts",
@@ -3375,7 +3451,7 @@
 		"placeholders": {},
 		"comments": ["The United Nations distinguishing sign of an mDL"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 499]],
-		"translation": "FN-tecken"
+		"translation": "FN-märke"
 	},
 	"common.unableToRetrieveInvitation": {
 		"message": "Unable to retrieve invitation.",
@@ -3451,7 +3527,7 @@
 		"placeholders": {},
 		"comments": ["Explanation for setting up eID card"],
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 96]],
-		"translation": "Använd ditt eID-kort för att aktivera din digitala identitet."
+		"translation": "Använd ditt eID-kort för att ställa in din digitala identitet."
 	},
 	"onboardingIntroduction.step2.description": {
 		"message": "Use your ID card PIN to retrieve your identity information.",
@@ -3467,7 +3543,7 @@
 		"placeholders": {},
 		"comments": ["The time ƒrom which a credential is valid"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 416]],
-		"translation": "Giltigt från"
+		"translation": "Giltig från"
 	},
 	"common.credentials.mdl.value": {
 		"message": "Value",
@@ -3613,7 +3689,7 @@
 		},
 		"comments": [],
 		"origin": [["../../packages/utils/src/format.ts", 53]],
-		"translation": "Igår kl {0}"
+		"translation": "Igår kl. {0}"
 	},
 	"signing.description": {
 		"message": "You are about to sign <0>{documentName}</0>.",
@@ -3660,7 +3736,7 @@
 		"origin": [
 			["src/features/activity/components/FailedReasonContainer.tsx", 14]
 		],
-		"translation": "Du hade inte de intyg som krävdes för att dela."
+		"translation": "Du hade inte de kort som krävdes för att dela."
 	},
 	"requestedAttributes.partialDescription": {
 		"message": "You don't have all of the requested cards.",
@@ -3696,18 +3772,18 @@
 		],
 		"translation": "Du har inte de begärda korten."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
-		"translation": "Du har inte de kort som krävs"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
+		"translation": "Du har inte de kort som krävs"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
 		"translation": "Du har inte de kort som krävs"
 	},
 	"presentationNotification.missingRequiredCredentials": {
@@ -3722,7 +3798,7 @@
 				208
 			]
 		],
-		"translation": "Du har inte de intyg som krävs för att uppfylla denna förfrågan."
+		"translation": "Du har inte de kort som krävs för att uppfylla denna förfrågan."
 	},
 	"pinLocked.description": {
 		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
@@ -3834,14 +3910,14 @@
 		"placeholders": {},
 		"comments": ["Heading shown when the inbox is empty"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 58]],
-		"translation": "Du är fullt uppdaterad"
+		"translation": "Du är ikapp med allt"
 	},
 	"noContentInbox.heading": {
 		"message": "You're all caught up",
 		"placeholders": {},
 		"comments": ["Heading shown when user has no notifications"],
 		"origin": [["../../packages/app/src/components/NoContentInbox.tsx", 14]],
-		"translation": "Du är fullt uppdaterad"
+		"translation": "Du är ikapp med allt"
 	},
 	"receiveCredential.deferredCredentialParagraph": {
 		"message": "Your cards are not yet ready. We will check once in a while in the background and fetch the cards once they're ready.",
@@ -3850,14 +3926,14 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 231]
 		],
-		"translation": "Dina kort är inte klara ännu. Vi kommer att kontrollera med jämna mellanrum i bakgrunden och hämta korten när de är klara."
+		"translation": "Dina kort är inte klara ännu. Vi kollar med jämna mellanrum i bakgrunden och hämtar dem så snart de är redo."
 	},
 	"cardLifecycle.active.sheetDescription": {
 		"message": "Your credentials may expire or require an active internet connection to validate.",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 27]],
-		"translation": "Dina intyg kan gå ut eller kräva en aktiv internetanslutning för validering."
+		"translation": "Dina kort kan gå ut eller kräva en aktiv internetanslutning för validering."
 	},
 	"pidSetup.dataProtection.subtitle": {
 		"message": "Your data is secured with a PIN and biometrics. Each time you share data, we confirm your identity.",
