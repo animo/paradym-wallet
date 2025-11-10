@@ -39,7 +39,9 @@
 - **Authentication** → "autenticação"
 - **Verification** → "verificação"
 - **Attributes** → "atributos"
-- **Request** → "pedido" (preferred) or "solicitação" (use "pedido" for consistency)
+- **Request** → "pedido" (preferred - masculine: o pedido, este pedido, um pedido) or "solicitação" (use "pedido" for consistency)
+- **Save** → "guardar" (for saving files - European Portuguese - NEVER "salvar" which is Brazilian)
+- **Review** → "analisar" (for analyzing/reviewing requests - NEVER "revisar" in this context)
 - **Offline** → "off-line" (with hyphen in Portuguese)
 - **Online** → "on-line" (with hyphen in Portuguese)
 
@@ -112,8 +114,8 @@
 ### **What NOT to do**
 - Don't use "você" explicitly - always omit the pronoun
 - Don't use Brazilian Portuguese forms:
-  - NEVER: você (explicit), compartilhar, aplicativo, telefone (for mobile), conexão, buscar, escanear, excluir
-  - ALWAYS use European equivalents: (omit pronoun), partilhar, aplicação, telemóvel, ligação, obter, ler, eliminar
+  - NEVER: você (explicit), compartilhar, aplicativo, telefone (for mobile), conexão, buscar, escanear, excluir, salvar, revisar
+  - ALWAYS use European equivalents: (omit pronoun), partilhar, aplicação, telemóvel, ligação, obter, ler, eliminar, guardar, analisar
 - Don't use informal "tu" forms - use third person singular instead:
   - WRONG: "podes", "tens", "tua carteira", "Pede"
   - RIGHT: "pode", "tem", "a sua carteira", "Peça"

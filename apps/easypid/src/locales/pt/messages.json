@@ -1537,7 +1537,7 @@
 			"Confirmation description when cancelling a connection request"
 		],
 		"origin": [["src/features/didcomm/utils.ts", 31]],
-		"translation": "Se parar, nada será salvo."
+		"translation": "Se parar, nada será guardado."
 	},
 	"receiveCredential.stopDescription": {
 		"message": "If you stop, the card offer will be cancelled.",
@@ -1972,7 +1972,7 @@
 		"placeholders": {},
 		"comments": ["Shown when a submission has no stated purpose"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 46]],
-		"translation": "Nenhuma informação foi fornecida sobre o propósito da pedido de dados. Seja cauteloso"
+		"translation": "Nenhuma informação foi fornecida sobre o propósito do pedido de dados. Seja cauteloso"
 	},
 	"activity.noPurposeGiven": {
 		"message": "No information was provided on the purpose of the data request. Be cautious",
@@ -1981,7 +1981,7 @@
 			"Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish."
 		],
 		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 83]],
-		"translation": "Nenhuma informação foi fornecida sobre o propósito da pedido de dados. Seja cauteloso"
+		"translation": "Nenhuma informação foi fornecida sobre o propósito do pedido de dados. Seja cauteloso"
 	},
 	"network.noInternet": {
 		"message": "No internet connection. Please check your network settings.",
@@ -2443,19 +2443,19 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Redefinir carteira"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
-		"translation": "Revisar a pedido"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Revisar a pedido"
+		"translation": "Analisar o pedido"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
+		"translation": "Analisar o pedido"
 	},
 	"common.revoked": {
 		"message": "Revoked",
@@ -3303,7 +3303,7 @@
 		"placeholders": {},
 		"comments": ["Title shown for offline message"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 90]],
-		"translation": "Esta é uma pedido off-line"
+		"translation": "Este é um pedido off-line"
 	},
 	"pidSetup.idCardPin.subtitle": {
 		"message": "This is required to read data from your card.",
@@ -3317,7 +3317,7 @@
 		"placeholders": {},
 		"comments": ["Intro paragraph on the welcome screen"],
 		"origin": [["src/features/onboarding/screens/welcome.tsx", 11]],
-		"translation": "Esta é a sua carteira digital. Com ela, pode armazenar e partilhar informações sobre ti."
+		"translation": "Esta é a sua carteira digital. Com ela, pode armazenar e partilhar as suas informações."
 	},
 	"onboardingWalletExplanation.slide1.title": {
 		"message": "This is your wallet",
@@ -3338,7 +3338,7 @@
 		"placeholders": {},
 		"comments": ["Description text in the overasking info sheet"],
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 56]],
-		"translation": "Esta organização parece estar solicitando dados diferentes ou mais dados do que o seu propósito sugere. Leia a pedido cuidadosamente. Pode negar a pedido se não concordar com os dados solicitados."
+		"translation": "Esta organização parece estar solicitando dados diferentes ou mais dados do que o seu propósito sugere. Leia o pedido cuidadosamente. Pode negar o pedido se não concordar com os dados solicitados."
 	},
 	"onboarding.pin.subtitle": {
 		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
@@ -3520,7 +3520,7 @@
 		"placeholders": {},
 		"comments": ["Supporting text explaining why PIN is needed"],
 		"origin": [["src/features/share/slides/PinSlide.tsx", 48]],
-		"translation": "Use o código PIN do seu aplicação para confirmar a pedido."
+		"translation": "Use o código PIN da sua aplicação para confirmar o pedido."
 	},
 	"menu.setupEid.message": {
 		"message": "Use your eID card to set up your digital identity.",
@@ -3772,18 +3772,18 @@
 		],
 		"translation": "Não tem o(s) cartão(ões) solicitado(s)."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
-		"translation": "Não tem os cartões necessários"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
+		"translation": "Não tem os cartões necessários"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
 		"translation": "Não tem os cartões necessários"
 	},
 	"presentationNotification.missingRequiredCredentials": {
@@ -3798,7 +3798,7 @@
 				208
 			]
 		],
-		"translation": "Não tem as credenciais necessárias para satisfazer esta pedido."
+		"translation": "Não tem as credenciais necessárias para satisfazer este pedido."
 	},
 	"pinLocked.description": {
 		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
@@ -3851,7 +3851,7 @@
 				86
 			]
 		],
-		"translation": "Recebeu uma pedido de informações"
+		"translation": "Recebeu um pedido de informações"
 	},
 	"presentationNotification.receivedRequestWithVerifier": {
 		"message": "You have received an information request from {verifierName}",
@@ -3867,7 +3867,7 @@
 				77
 			]
 		],
-		"translation": "Recebeu uma pedido de informações de {verifierName}"
+		"translation": "Recebeu um pedido de informações de {verifierName}"
 	},
 	"activity.receivedSingle": {
 		"message": "You have received the following card from {0}.",
