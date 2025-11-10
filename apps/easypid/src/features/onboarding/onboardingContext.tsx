@@ -85,7 +85,7 @@ export function OnboardingContextProvider({
 
   useEffect(() => {
     if (currentStepName === 'welcome' && paradym.state === 'locked') {
-      paradym.reinitialize()
+      paradym.reset().then(paradym.reinitialize)
     }
   }, [currentStepName, paradym])
 

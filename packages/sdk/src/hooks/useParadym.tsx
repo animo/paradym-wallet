@@ -59,7 +59,7 @@ export function useParadym(assertState: 'unlocked'): ParadymUnlockedState
 export function useParadym(assertState?: ParadymState['state']): ParadymState {
   const unlock = useSecureUnlock()
 
-  useDidCommMediatorSetup({ paradym: unlock.state === 'unlocked' ? unlock.paradym : undefined })
+  // useDidCommMediatorSetup({ paradym: unlock.state === 'unlocked' ? unlock.paradym : undefined })
 
   if (assertState && unlock.state !== assertState) {
     throw new Error(`Unlock state '${unlock.state}' did not match the asserted state of '${assertState}'`)

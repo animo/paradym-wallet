@@ -20,6 +20,7 @@ export function useDidCommMediatorSetup({
     isEnabled: isMediationConfigured,
   })
 
+  // TODO(sdk): triggered a lot during onboarding
   useEffect(() => {
     if (!paradym) return
     if (isMediationConfigured) return

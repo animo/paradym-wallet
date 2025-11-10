@@ -1,5 +1,4 @@
 import { AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
-import { agentDependencies } from '@credo-ts/react-native'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { type PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { type DidCommAgent, type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
@@ -49,6 +48,7 @@ import { KeychainError } from './secure/error/KeychainError'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
+import { reset } from './utils/reset'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
@@ -98,32 +98,7 @@ export class ParadymWalletSdk {
   }
 
   public async reset() {
-    this.logger.debug('Resetting wallet')
-
-    // TODO(sdk): how to do this now?
-    // await this.agent.wallet.delete()
-    await this.agent.shutdown()
-
-    const fs = new agentDependencies.FileSystem()
-
-    // Clear cach and temp path
-    if (await fs.exists(fs.cachePath)) await fs.delete(fs.cachePath)
-    if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
-
-    const walletDirectory = `${fs.dataPath}/wallet/${this.walletId}`
-
-    const walletDirectoryExists = await fs.exists(walletDirectory)
-    if (walletDirectoryExists) {
-      console.log('wallet directory exists, deleting')
-      await fs.delete(walletDirectory)
-    } else {
-      console.log('wallet directory does not exist')
-    }
-
-    // I think removing triggers the biometrics somehow. We look at the salt
-    // to see if the secure unlock has been setup.
-    // await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
-    await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
+    reset(this)
   }
 
   /**
@@ -453,6 +428,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       isUnlocking,
       canTryUnlockingUsingBiometrics,
       reinitialize,
+      reset,
       tryUnlockingUsingBiometrics: async () => {
         // TODO: need to somehow inform user that the unlocking went wrong
         if (!canTryUnlockingUsingBiometrics) return
@@ -556,6 +532,7 @@ export type SecureUnlockReturnLocked = {
   state: 'locked'
   canTryUnlockingUsingBiometrics: boolean
   isUnlocking: boolean
+  reset: () => Promise<void>
   tryUnlockingUsingBiometrics: () => Promise<void>
   unlockUsingPin: (pin: string) => Promise<void>
   reinitialize: () => void

@@ -66,5 +66,5 @@ export const AgentProvider = ({ agent, recordIds, children }: PropsWithChildren<
     )
   }, [DynamicProviders, agent, children, recordIds])
 
-  return <AgentContext.Provider value={agent}>{providers}</AgentContext.Provider>
+  return <AgentContext.Provider value={agent}>{children}</AgentContext.Provider>
 }

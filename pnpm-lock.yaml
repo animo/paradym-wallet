@@ -375,8 +375,8 @@ importers:
         specifier: 'catalog:'
         version: 0.3.2(patch_hash=pq2cgdvxwwzy5vwpsuccgvzrcm)(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0))(react@19.0.0)
       '@react-native-picker/picker':
-        specifier: ^2.11.2
-        version: 2.11.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0))(react@19.0.0)
+        specifier: 2.11.1
+        version: 2.11.1(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0))(react@19.0.0)
       '@react-navigation/native':
         specifier: 'catalog:'
         version: 7.1.19(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0))(react@19.0.0)
@@ -2351,8 +2351,8 @@ packages:
       react: '>=16'
       react-native: '>=0.57'
 
-  '@react-native-picker/picker@2.11.4':
-    resolution: {integrity: sha512-Kf8h1AMnBo54b1fdiVylP2P/iFcZqzpMYcglC28EEFB1DEnOjsNr6Ucqc+3R9e91vHxEDnhZFbYDmAe79P2gjA==}
+  '@react-native-picker/picker@2.11.1':
+    resolution: {integrity: sha512-ThklnkK4fV3yynnIIRBkxxjxR4IFbdMNJVF6tlLdOJ/zEFUEFUEdXY0KmH0iYzMwY8W4/InWsLiA7AkpAbnexA==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -9516,7 +9516,7 @@ snapshots:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0)
 
-  '@react-native-picker/picker@2.11.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0))(react@19.0.0)':
+  '@react-native-picker/picker@2.11.1(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0))(react@19.0.0)':
     dependencies:
       react: 19.0.0
       react-native: 0.79.4(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.0.0)
