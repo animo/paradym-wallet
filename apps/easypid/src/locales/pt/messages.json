@@ -1310,7 +1310,7 @@
 		"placeholders": {},
 		"comments": ["Shown while waiting for data to be received from backend"],
 		"origin": [["src/features/receive/slides/LoadingRequestSlide.tsx", 51]],
-		"translation": "Buscando informações"
+		"translation": "Obtendo informações"
 	},
 	"language.fi": {
 		"message": "Finnish",
