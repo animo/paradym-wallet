@@ -1,6 +1,6 @@
 import { type AllMessages, i18n } from '@lingui/core'
 
-export const supportedLocales = ['en', 'nl', 'fi', 'sw', 'de', 'al'] as const
+export const supportedLocales = ['en', 'nl', 'fi', 'sw', 'de', 'al', 'pt'] as const
 export type SupportedLocale = (typeof supportedLocales)[number]
 
 export function registerLocales(messages: AllMessages) {
