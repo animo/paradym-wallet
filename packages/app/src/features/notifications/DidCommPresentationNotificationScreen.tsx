@@ -29,7 +29,7 @@ export function DidCommPresentationNotificationScreen({ proofExchangeId }: DidCo
   }
 
   const onProofAccept = () => {
-    acceptPresentation({ selectedCredentials, storeAsActivity: false })
+    acceptPresentation(selectedCredentials)
       .then(() => {
         toast.show(t(commonMessages.presentationShared), { customData: { preset: 'success' } })
       })

@@ -1,6 +1,5 @@
 import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
-import { receiveDeferredCredentialFromOpenId4VciOffer } from '@package/agent'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { getCredentialDisplayWithDefaults } from '../display/common'
 import { getCredentialForDisplayId } from '../display/credential'
@@ -60,9 +59,7 @@ export async function fetchAndProcessDeferredCredential(
     }
 
     // Fetch the credentials from the deferred credential endpoint
-    // TODO(sdk): move to sdk handlers
-    const { credentials, deferredCredentials } = await receiveDeferredCredentialFromOpenId4VciOffer({
-      paradym,
+    const { credentials, deferredCredentials } = await paradym.openid4vc.receiveDeferredCredential({
       accessToken,
       issuerMetadata,
       deferredCredentialResponse,

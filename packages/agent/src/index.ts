@@ -9,7 +9,7 @@ export type { OpenId4VciTxCode, OpenId4VciDpopRequestOptions } from '@credo-ts/o
 
 export * from './invitation'
 export * from './crypto'
-export * from './storage'
+// export * from './storage'
 export * from './openid4vc/displayMetadata'
 // export * from './openid4vc/deferredCredentialRecord'
 

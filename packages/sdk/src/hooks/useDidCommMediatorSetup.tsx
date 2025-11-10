@@ -16,6 +16,7 @@ export function useDidCommMediatorSetup({
 
   // Enable message pickup when mediation is configured and internet connection is available
   useDidCommMessagePickup({
+    paradym,
     isEnabled: isMediationConfigured,
   })
 

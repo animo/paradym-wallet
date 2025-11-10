@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { initiateMessagePickup, stopMessagePickup } from '../didcomm/mediation'
-import { useParadym } from './useParadym'
 
 /**
  * Hook to enable message pickup from the mediator.
@@ -9,15 +9,15 @@ import { useParadym } from './useParadym'
  * This is useful if e.g. there's no internet connection, or mediation has not been setup yet
  */
 export function useDidCommMessagePickup({
+  paradym,
   isEnabled = true,
 }: {
+  paradym?: ParadymWalletSdk
   isEnabled?: boolean
 }) {
-  const { paradym } = useParadym('unlocked')
-
   useEffect(() => {
     // Do not pickup messages if not enabled
-    if (!isEnabled || !paradym.isDidCommEnabled) return
+    if (!isEnabled || !paradym || !paradym.isDidCommEnabled) return
 
     paradym.logger.debug('Initiating message pickup.')
 

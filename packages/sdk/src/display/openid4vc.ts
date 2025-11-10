@@ -24,7 +24,7 @@ export function getOpenId4VcIssuerDisplay(
     }
 
     // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata?.credential.display)
+    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
       issuerDisplay.logo = {
         url: openidCredentialDisplay.logo?.uri,

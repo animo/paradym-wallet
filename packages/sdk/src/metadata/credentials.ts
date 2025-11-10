@@ -31,18 +31,20 @@ export interface RefreshCredentialMetadata {
   dpop?: { alg: Kms.KnownJwaSignatureAlgorithm; jwk: Kms.KmsJwkPublic }
 }
 
-export type CredentialDisplayClaims =
-  | (OpenId4VciCredentialConfigurationSupportedWithFormats & {
-      format: 'vc+sd-jwt'
-    })['claims']
-  | (OpenId4VciCredentialConfigurationSupportedWithFormats & {
-      format: 'dc+sd-jwt'
-    })['claims']
+export type OpenId4VciCredentialDisplayClaims = NonNullable<
+  (OpenId4VciCredentialConfigurationSupportedWithFormats & {
+    format: 'dc+sd-jwt'
+  })['credential_metadata']
+>['claims']
+
+export type OpenId4VciCredentialDisplay = NonNullable<
+  OpenId4VciCredentialConfigurationSupported['credential_metadata']
+>['display']
 
 export interface OpenId4VcCredentialMetadata {
   credential: {
-    display?: OpenId4VciCredentialConfigurationSupported['display']
-    claims?: CredentialDisplayClaims
+    display?: OpenId4VciCredentialDisplay
+    claims?: OpenId4VciCredentialDisplayClaims
     order?: OpenId4VciCredentialConfigurationSupportedWithFormats['order']
   }
   issuer: {
@@ -96,11 +98,14 @@ export function extractOpenId4VcCredentialMetadata(
   credentialMetadata: OpenId4VciCredentialConfigurationSupportedWithFormats,
   serverMetadata: { display?: OpenId4VciCredentialIssuerMetadataDisplay[]; id: string }
 ): OpenId4VcCredentialMetadata {
+  // We only store claims for the new array-based syntax
+  const claims = credentialMetadata.credential_metadata?.claims ?? credentialMetadata.claims
+
   return {
     credential: {
-      display: credentialMetadata.display,
-      order: credentialMetadata.order,
-      claims: credentialMetadata.claims ? (credentialMetadata.claims as CredentialDisplayClaims) : undefined,
+      display:
+        credentialMetadata.credential_metadata?.display ?? (credentialMetadata.display as OpenId4VciCredentialDisplay),
+      claims: Array.isArray(claims) ? (claims as OpenId4VciCredentialDisplayClaims) : undefined,
     },
     issuer: {
       display: serverMetadata.display,

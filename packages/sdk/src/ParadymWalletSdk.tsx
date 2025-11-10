@@ -35,6 +35,10 @@ import {
   declineCredentialRequest,
 } from './openid4vc/func/declineCredentialRequest'
 import {
+  type ReceiveDeferredCredentialFromOpenId4VciOfferOptions,
+  receiveDeferredCredentialFromOpenId4VciOffer,
+} from './openid4vc/func/receiveDeferredCredentialFromOpenId4VciOffer'
+import {
   type ResolveCredentialRequestOptions,
   resolveCredentialRequest,
 } from './openid4vc/func/resolveCredentialRequest'
@@ -318,6 +322,9 @@ export class ParadymWalletSdk {
 
       completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
         completeCredentialRetrieval({ ...options, paradym: this }),
+
+      receiveDeferredCredential: (options: Omit<ReceiveDeferredCredentialFromOpenId4VciOfferOptions, 'paradym'>) =>
+        receiveDeferredCredentialFromOpenId4VciOffer({ ...options, paradym: this }),
 
       resolveCredentialRequest: (options: Omit<ResolveCredentialRequestOptions, 'paradym'>) =>
         resolveCredentialRequest({ ...options, paradym: this }),

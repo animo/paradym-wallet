@@ -1,7 +1,5 @@
 import { DidCommCredentialState, DidCommProofState } from '@credo-ts/didcomm'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 import { useEffect, useMemo } from 'react'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { getCredentialDisplayWithDefaults } from '../display/common'
@@ -134,7 +132,6 @@ export const useInboxNotifications = () => {
   const proofExchangeRecords = isDIDCommEnabled ? useProofByState([DidCommProofState.RequestReceived]) : []
   const { deferredCredentials } = useDeferredCredentials()
 
-  const { t } = useLingui()
   const sortedNotifications = useMemo(() => {
     // Sort by creation date
     const sortedRecords = [
@@ -180,7 +177,7 @@ export const useInboxNotifications = () => {
           type: record.type,
           createdAt: record.createdAt,
           contactLabel: metadata?.issuerName,
-          notificationTitle: metadata?.credentialName ?? t(commonMessages.credential),
+          notificationTitle: metadata?.credentialName ?? 'Credential',
         } as const
       }
 
@@ -191,10 +188,10 @@ export const useInboxNotifications = () => {
         type: record.type,
         createdAt: record.createdAt,
         contactLabel: metadata?.verifierName,
-        notificationTitle: metadata?.proofName ?? t(commonMessages.dataRequest),
+        notificationTitle: metadata?.proofName ?? 'Data Request',
       } as const
     })
-  }, [proofExchangeRecords, credentialExchangeRecords, deferredCredentials, t])
+  }, [proofExchangeRecords, credentialExchangeRecords, deferredCredentials])
 
   return sortedNotifications
 }

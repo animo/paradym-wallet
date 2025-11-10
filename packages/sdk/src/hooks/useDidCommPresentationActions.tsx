@@ -203,6 +203,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     },
   })
 
+  // TODO(sdk): why is store as activity removed?
   const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
     mutationFn: async (selectedCredentials?: { [inputDescriptorId: string]: string }) => {
