@@ -305,7 +305,10 @@ export function FunkeCredentialNotificationScreen() {
     if (preAuthGrant && !preAuthGrant.tx_code) {
       await acquireCredentialsPreAuth()
     }
-    if (resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance) {
+    if (
+      !preAuthGrant &&
+      resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
+    ) {
       await parsePresentationRequestUrl(resolvedAuthorizationRequest.openid4vpRequestUrl)
     }
   }, [acquireCredentialsPreAuth, parsePresentationRequestUrl, preAuthGrant, resolvedAuthorizationRequest])
@@ -405,12 +408,14 @@ export function FunkeCredentialNotificationScreen() {
   const onGoToWallet = () => pushToWallet('replace')
 
   const isAuthFlow =
+    !preAuthGrant &&
     resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance &&
     credentialsForRequest
 
   const isPreAuthWithTxFlow = preAuthGrant && txCode
 
   const isBrowserAuthFlow =
+    !preAuthGrant &&
     resolvedCredentialOffer &&
     resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.Oauth2Redirect
 
