@@ -467,7 +467,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 419]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 424]
 		],
 		"translation": "Authorization cancelled"
 	},
@@ -1544,7 +1544,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 542]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 547]
 		],
 		"translation": "If you stop, the card offer will be cancelled."
 	},
@@ -2893,7 +2893,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 538]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 543]
 		],
 		"translation": "Stop card offer?"
 	},

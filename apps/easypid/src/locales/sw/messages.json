@@ -467,7 +467,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 419]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 424]
 		],
 		"translation": "Auktorisering avbruten"
 	},
@@ -1544,9 +1544,9 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 542]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 547]
 		],
-		"translation": "Om du stoppar kommer korterbjudandet att avbrytas."
+		"translation": "Om du stoppar kommer intygserbjudandet att avbrytas."
 	},
 	"pidSetup.stopDescription": {
 		"message": "If you stop, you can still do the setup later.",
@@ -2893,9 +2893,9 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 538]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 543]
 		],
-		"translation": "Stoppa korterbjudande?"
+		"translation": "Stoppa intygserbjudande?"
 	},
 	"pidSetup.stopTitle": {
 		"message": "Stop ID Setup?",
