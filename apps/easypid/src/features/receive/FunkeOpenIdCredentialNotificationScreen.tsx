@@ -336,7 +336,7 @@ export function FunkeCredentialNotificationScreen() {
 
       if (shouldUsePinForPresentation) {
         if (!pin) {
-          setErrorReason('PIN is required to accept the presentation.')
+          setErrorReason(t(commonMessages.pinRequiredToAcceptPresentation))
           return
         }
         // TODO: maybe provide to shareProof method?
@@ -421,10 +421,13 @@ export function FunkeCredentialNotificationScreen() {
 
   // These are callbacks to not change on every render
   const onCancelAuthorization = useCallback(
-    () => setErrorReason(t({ id: 'browserAuthFlow.authorizationCancelled', message: 'Authorization cancelled' })),
+    (errorMessage?: string) => setErrorReason(errorMessage ?? t(commonMessages.authorizationCancelled)),
     [t]
   )
-  const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
+  const onErrorAuthorization = useCallback(
+    (errorMessage?: string) => setErrorReason(errorMessage ?? t(commonMessages.authorizationFailed)),
+    [t]
+  )
 
   return (
     <SlideWizard

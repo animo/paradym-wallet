@@ -257,14 +257,14 @@
 		"message": "Address",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 339]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 343]],
 		"translation": "Osoite"
 	},
 	"common.fields.age": {
 		"message": "Age",
 		"placeholders": {},
 		"comments": ["The age of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 371]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 375]],
 		"translation": "Ikä"
 	},
 	"common.fields.ageOver": {
@@ -273,14 +273,14 @@
 		"comments": [
 			"Used as prefix to indicate the age of a person is over a certain age."
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 381]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 385]],
 		"translation": "Ikä yli"
 	},
 	"language.al": {
 		"message": "Albanian",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 534]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 538]],
 		"translation": "Albania"
 	},
 	"credentials.allCardsTitle": {
@@ -441,7 +441,7 @@
 		"message": "Authenticate",
 		"placeholders": {},
 		"comments": ["Button label to start authentication process"],
-		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 122]],
+		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 157]],
 		"translation": "Tunnistaudu"
 	},
 	"funkeMdoc.error.auth": {
@@ -462,13 +462,11 @@
 		],
 		"translation": "Tunnistautuminen epäonnistui"
 	},
-	"browserAuthFlow.authorizationCancelled": {
+	"common.authorizationCancelled": {
 		"message": "Authorization cancelled",
 		"placeholders": {},
 		"comments": [],
-		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 424]
-		],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 326]],
 		"translation": "Valtuutus peruutettu"
 	},
 	"common.authorizationFailed": {
@@ -517,14 +515,14 @@
 		"message": "Birth year",
 		"placeholders": {},
 		"comments": ["The birth year of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 376]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 380]],
 		"translation": "Syntymävuosi"
 	},
 	"common.fields.born": {
 		"message": "Born",
 		"placeholders": {},
 		"comments": ["Used a prefix for when a person is born"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 451]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 455]],
 		"translation": "Syntynyt"
 	},
 	"common.deleteDeferredCredentialDescription": {
@@ -738,7 +736,7 @@
 		"message": "City",
 		"placeholders": {},
 		"comments": ["The city where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 356]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 360]],
 		"translation": "Kaupunki"
 	},
 	"common.close": {
@@ -752,14 +750,14 @@
 		"message": "Code",
 		"placeholders": {},
 		"comments": ["The code of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 474]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 478]],
 		"translation": "Koodi"
 	},
 	"common.credentials.mdl.codes": {
 		"message": "Codes",
 		"placeholders": {},
 		"comments": ["The codes of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 489]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 493]],
 		"translation": "Koodit"
 	},
 	"pidSetup.idCardVerify.title": {
@@ -796,7 +794,7 @@
 		"message": "Country",
 		"placeholders": {},
 		"comments": ["The country where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 361]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 365]],
 		"translation": "Maa"
 	},
 	"informationType.credential": {
@@ -917,7 +915,7 @@
 		"message": "Credential type",
 		"placeholders": {},
 		"comments": ["The type of credential, usually a complex url structure"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 426]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 430]],
 		"translation": "Valtuustietojen tyyppi"
 	},
 	"credentials.emptyDescription": {
@@ -973,7 +971,7 @@
 		"message": "Date of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 335]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 339]],
 		"translation": "Syntymäaika"
 	},
 	"common.declineButton": {
@@ -1065,7 +1063,7 @@
 		"message": "Document number",
 		"placeholders": {},
 		"comments": ["The document number of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 469]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 473]],
 		"translation": "Asiakirjan numero"
 	},
 	"common.documentSigned": {
@@ -1079,21 +1077,21 @@
 		"message": "Driving License",
 		"placeholders": {},
 		"comments": ["The title of a driving license"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 459]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 463]],
 		"translation": "Ajokortti"
 	},
 	"common.credentials.mdl.drivingPrivileges": {
 		"message": "Driving privileges",
 		"placeholders": {},
 		"comments": ["The title of driving privileges"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 464]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 468]],
 		"translation": "Ajoluokat"
 	},
 	"language.nl": {
 		"message": "Dutch",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 514]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 518]],
 		"translation": "Hollanti"
 	},
 	"eidCard.requestAttributesTitle": {
@@ -1125,7 +1123,7 @@
 		"message": "English",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 526]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 530]],
 		"translation": "Englanti"
 	},
 	"common.enterPinToShareData": {
@@ -1238,7 +1236,7 @@
 		"message": "Expires at",
 		"placeholders": {},
 		"comments": ["The time at which a credential expires"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 421]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 425]],
 		"translation": "Vanhenee"
 	},
 	"cardLifecycle.limitedByDate.willExpire.description": {
@@ -1295,7 +1293,7 @@
 		"message": "Family name",
 		"placeholders": {},
 		"comments": ["The family name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 386]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 390]],
 		"translation": "Sukunimi"
 	},
 	"menu.item.feedback": {
@@ -1316,7 +1314,7 @@
 		"message": "Finnish",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 518]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 522]],
 		"translation": "Suomi"
 	},
 	"verifyPartySlide.hasNoPreviousInteractionsTitle": {
@@ -1337,7 +1335,7 @@
 		"message": "German",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 530]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 534]],
 		"translation": "Saksa"
 	},
 	"onboardingWelcome.getStarted": {
@@ -1388,7 +1386,7 @@
 		"message": "Given name",
 		"placeholders": {},
 		"comments": ["The given name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 391]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 395]],
 		"translation": "Etunimi"
 	},
 	"noContentInbox.goBack": {
@@ -1490,7 +1488,7 @@
 		"comments": [
 			"The holder identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 436]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 440]],
 		"translation": "Haltija"
 	},
 	"home.howDoesItWork": {
@@ -1544,7 +1542,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 547]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 550]
 		],
 		"translation": "Jos lopetat, korttitarjous peruutetaan."
 	},
@@ -1708,7 +1706,7 @@
 		"message": "Issued at",
 		"placeholders": {},
 		"comments": ["The time at which a credential is issued"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 411]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 415]],
 		"translation": "Myönnetty"
 	},
 	"common.issuedBy": {
@@ -1749,7 +1747,7 @@
 		"comments": [
 			"The issuer identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 431]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 435]],
 		"translation": "Myöntäjä"
 	},
 	"credentialCard.issuerLabel": {
@@ -1763,14 +1761,14 @@
 		"message": "Issuing authority",
 		"placeholders": {},
 		"comments": ["The issuing authority of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 401]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 405]],
 		"translation": "Myöntävä viranomainen"
 	},
 	"common.fields.issuingCountry": {
 		"message": "Issuing country",
 		"placeholders": {},
 		"comments": ["The issuing country of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 406]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 410]],
 		"translation": "Myöntävä maa"
 	},
 	"selectLanguage.label": {
@@ -1827,7 +1825,7 @@
 		"message": "Locality",
 		"placeholders": {},
 		"comments": ["The locality of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 441]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 445]],
 		"translation": "Paikkakunta"
 	},
 	"inbox.menuLabel": {
@@ -1866,14 +1864,14 @@
 		"message": "Nationalities",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 343]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 347]],
 		"translation": "Kansalaisuudet"
 	},
 	"common.fields.nationality": {
 		"message": "Nationality",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 347]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 351]],
 		"translation": "Kansalaisuus"
 	},
 	"activity.latest.newCardFallback": {
@@ -2055,7 +2053,7 @@
 		"message": "Open settings",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 326]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 330]],
 		"translation": "Avaa asetukset"
 	},
 	"funkeAboutScreen.privacyPolicyDescription": {
@@ -2142,7 +2140,7 @@
 		"message": "Place of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 331]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 335]],
 		"translation": "Syntymäpaikka"
 	},
 	"pidSetup.idCardScan.subtitle": {
@@ -2207,21 +2205,21 @@
 		"message": "Portrait",
 		"placeholders": {},
 		"comments": ["The portrait of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 396]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 400]],
 		"translation": "Kuva"
 	},
 	"language.pt": {
 		"message": "Portuguese",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 538]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 542]],
 		"translation": "Portugali"
 	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
 		"placeholders": {},
 		"comments": ["The postal code where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 366]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 370]],
 		"translation": "Postinumero"
 	},
 	"home.presentInPersonButton": {
@@ -2385,7 +2383,7 @@
 		"message": "Region",
 		"placeholders": {},
 		"comments": ["The region of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 446]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 450]],
 		"translation": "Alue"
 	},
 	"onboarding.pinReenter.title": {
@@ -2721,7 +2719,7 @@
 		"message": "Sign",
 		"placeholders": {},
 		"comments": ["The sign of a driving privilege in an mDL (e.g. >=)"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 484]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 488]],
 		"translation": "Merkki"
 	},
 	"signShare.accept": {
@@ -2735,7 +2733,7 @@
 		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 504]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 508]],
 		"translation": "Allekirjoituksen merkki"
 	},
 	"activity.latest.signedDocument": {
@@ -2893,7 +2891,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 543]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 546]
 		],
 		"translation": "Lopeta korttitarjous?"
 	},
@@ -2931,7 +2929,7 @@
 		"message": "Street",
 		"placeholders": {},
 		"comments": ["The street where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 351]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 355]],
 		"translation": "Katu"
 	},
 	"pidSetup.idCardComplete.title": {
@@ -2961,7 +2959,7 @@
 		"message": "Swedish",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 522]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 526]],
 		"translation": "Ruotsi"
 	},
 	"common.tapToView": {
@@ -3400,7 +3398,7 @@
 		"message": "To receive this card, you need to authorize with your account. You will now be redirected to the issuer's website.",
 		"placeholders": {},
 		"comments": ["Explanation for why user is redirected to external site"],
-		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 105]],
+		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 140]],
 		"translation": "Vastaanottaaksesi tämän kortin sinun tulee krjautua. Sinut ohjataan nyt myöntäjän verkkosivulle."
 	},
 	"dateFormatting.today": {
@@ -3450,7 +3448,7 @@
 		"message": "UN sign",
 		"placeholders": {},
 		"comments": ["The United Nations distinguishing sign of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 499]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 503]],
 		"translation": "YK-tunnus"
 	},
 	"common.unableToRetrieveInvitation": {
@@ -3542,21 +3540,21 @@
 		"message": "Valid from",
 		"placeholders": {},
 		"comments": ["The time ƒrom which a credential is valid"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 416]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 420]],
 		"translation": "Voimassa alkaen"
 	},
 	"common.credentials.mdl.value": {
 		"message": "Value",
 		"placeholders": {},
 		"comments": ["The value of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 479]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 483]],
 		"translation": "Arvo"
 	},
 	"common.credentials.mdl.vehicleCategoryCode": {
 		"message": "Vehicle category code",
 		"placeholders": {},
 		"comments": ["The vehicle category code of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 494]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 498]],
 		"translation": "Ajoneuvoluokka"
 	},
 	"cardLifecycle.batch.description": {
@@ -3570,7 +3568,7 @@
 		"message": "Verify your account",
 		"placeholders": {},
 		"comments": ["Heading shown when user is about to authenticate"],
-		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 100]],
+		"origin": [["src/features/receive/slides/AuthCodeFlowSlide.tsx", 135]],
 		"translation": "Vahvista tilisi"
 	},
 	"credentials.cardAttributesDescription": {

@@ -1,5 +1,6 @@
+import { useDevelopmentMode } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { CredentialDisplay } from '@package/agent'
+import { type CredentialDisplay, logger } from '@package/agent'
 import { useWizard } from '@package/app'
 import { DualResponseButtons } from '@package/app/components/DualResponseButtons'
 import { commonMessages } from '@package/translations'
@@ -19,8 +20,8 @@ interface AuthCodeFlowSlideProps {
   display: CredentialDisplay
   authCodeFlowDetails: AuthCodeFlowDetails
   onAuthFlowCallback: (authorizationCode: string) => void
-  onCancel: () => void
-  onError: () => void
+  onCancel: (errorMessage?: string) => void
+  onError: (errorMessage?: string) => void
 }
 
 export const AuthCodeFlowSlide = ({
@@ -31,6 +32,7 @@ export const AuthCodeFlowSlide = ({
   display,
 }: AuthCodeFlowSlideProps) => {
   const toast = useToastController()
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const { t } = useLingui()
   const { onNext, onCancel: wizardOnCancel } = useWizard()
   const { credentialAuthorizationCode } = useGlobalSearchParams<{
@@ -45,7 +47,7 @@ export const AuthCodeFlowSlide = ({
     // NOTE: credentialAuthorizationCode is set in +native-intent
     // after an external browser or app redirects back to us. In some
     // cases the in-app browser is exited (e.g. when authenticating from
-    // a native app) and thus we need to manually dimiss the auth session
+    // a native app) and thus we need to manually dismiss the auth session
     // and instead use the auth code from there.
     if (credentialAuthorizationCode) {
       // Not available on Android
@@ -58,16 +60,44 @@ export const AuthCodeFlowSlide = ({
       onAuthFlowCallback(credentialAuthorizationCode)
     } else if (browserResult) {
       if (browserResult.type !== 'success') {
-        toast.show(t(commonMessages.authorizationFailed), { customData: { preset: 'warning' } })
+        logger.warn('Browser authorization failed. Browser result did not return a success status', {
+          browserResult,
+        })
+        toast.show(t(commonMessages.authorizationFailed), {
+          customData: {
+            preset: 'warning',
+          },
+        })
 
-        browserResult.type === 'cancel' || browserResult.type === 'dismiss' ? onCancel() : onError()
+        const developmentMessage = isDevelopmentModeEnabled
+          ? `\n\nDevelopment mode error:\nBrowser result returned '${browserResult.type}' result.`
+          : ''
+        browserResult.type === 'cancel' || browserResult.type === 'dismiss'
+          ? onCancel(t(commonMessages.authorizationCancelled) + developmentMessage)
+          : onError(t(commonMessages.authorizationFailed) + developmentMessage)
+
         return
       }
 
       const authorizationCode = new URL(browserResult.url).searchParams.get('code')
       if (!authorizationCode) {
-        toast.show(t(commonMessages.authorizationFailed), { customData: { preset: 'warning' } })
-        onError()
+        logger.warn('Browser authorization failed. Missing authorization code in url', {
+          browserResult,
+          isDevelopmentModeEnabled,
+        })
+
+        toast.show(t(commonMessages.authorizationFailed), {
+          customData: {
+            preset: 'warning',
+          },
+        })
+
+        onError(
+          t(commonMessages.authorizationFailed) +
+            (isDevelopmentModeEnabled
+              ? `\n\nDevelopment mode error:\nMissing authorization code in url ${browserResult.url}`
+              : '')
+        )
         return
       }
 
@@ -76,6 +106,7 @@ export const AuthCodeFlowSlide = ({
       onAuthFlowCallback(authorizationCode)
     }
   }, [
+    isDevelopmentModeEnabled,
     browserResult,
     hasHandledResult,
     credentialAuthorizationCode,
