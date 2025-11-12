@@ -46,13 +46,17 @@ export enum InvitationQrTypes {
   DIDCOMM = 'didcomm://',
   HTTPS = 'https://',
   HAIP = 'haip://',
+  HAIP_VCI = 'haip-vci://',
+  HAIP_VP = 'haip-vp://',
   EASY_PID = 'id.animo.ausweis:',
+  PARADYM = 'id.animo.paradym:',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {
   if (
     url.startsWith(InvitationQrTypes.OPENID_INITIATE_ISSUANCE) ||
-    url.startsWith(InvitationQrTypes.OPENID_CREDENTIAL_OFFER)
+    url.startsWith(InvitationQrTypes.OPENID_CREDENTIAL_OFFER) ||
+    url.startsWith(InvitationQrTypes.HAIP_VCI)
   ) {
     return true
   }
@@ -70,7 +74,8 @@ export const isOpenIdPresentationRequest = (url: string) => {
     url.startsWith(InvitationQrTypes.OPENID_VC) ||
     url.startsWith(InvitationQrTypes.OPENID4VP) ||
     url.startsWith(InvitationQrTypes.EUDI_OPENID4VP) ||
-    url.startsWith(InvitationQrTypes.MDOC_OPENID4VP)
+    url.startsWith(InvitationQrTypes.MDOC_OPENID4VP) ||
+    url.startsWith(InvitationQrTypes.HAIP_VP)
   ) {
     return true
   }
