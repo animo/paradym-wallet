@@ -238,7 +238,7 @@ catalogs:
 overrides:
   '@animo-id/mdoc': 0.5.2
   '@openid4vc/oauth2': 0.3.0-alpha-20251001121503
-  '@openid4vc/openid4vp': 0.3.0-alpha-20251001121503
+  '@openid4vc/openid4vp': 0.3.0-alpha-20251113095648
   '@openid4vc/openid4vci': 0.3.0-alpha-20251001121503
   '@openid4vc/utils': 0.3.0-alpha-20251001121503
   '@unimodules/react-native-adapter': ./noop
@@ -2065,8 +2065,8 @@ packages:
   '@openid4vc/openid4vci@0.3.0-alpha-20251001121503':
     resolution: {integrity: sha512-e+6CXKTUZG6+J5V31N7hiqJOaHnQt1EYTOvz9Kqhtqazd4ikcN2CeK/ksuBbYnH6qk7yMdwQOGoCXiMYhv3h3A==}
 
-  '@openid4vc/openid4vp@0.3.0-alpha-20251001121503':
-    resolution: {integrity: sha512-FZ7fn27Tev2DT6p/QYJiVjvZCR3ug/sVM5MlVhQ8wZpCxREDhXuSUGoOW4byxAyfNbeXjye+DXXaEVfZbXnFUg==}
+  '@openid4vc/openid4vp@0.3.0-alpha-20251113095648':
+    resolution: {integrity: sha512-i3013KPhBBLf690jVeih6D+B1l2jfOwbjzISXpx4+mMxgNMyU8Hi5+pWzBoucvt9viWAGFo6kXhBiw2RxWqLWw==}
 
   '@openid4vc/utils@0.3.0-alpha-20251001121503':
     resolution: {integrity: sha512-KViYaEFtkeMVTmq+PB8RyU1m4x9WARtIQ/jtSFS1K4A54AmyNHA6MxQ1ei+aSzD0tnOaGgCtn6VzCDHkQA+lew==}
@@ -6500,6 +6500,9 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
+  zod@4.1.12:
+    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
+
 snapshots:
 
   '@0no-co/graphql.web@1.2.0': {}
@@ -6629,7 +6632,7 @@ snapshots:
       '@openid-federation/core': 0.1.1-alpha.17
       '@openid4vc/oauth2': 0.3.0-alpha-20251001121503
       '@openid4vc/openid4vci': 0.3.0-alpha-20251001121503
-      '@openid4vc/openid4vp': 0.3.0-alpha-20251001121503
+      '@openid4vc/openid4vp': 0.3.0-alpha-20251113095648
       '@openid4vc/utils': 0.3.0-alpha-20251001121503
       '@types/express': 5.0.3
       class-transformer: 0.5.1
@@ -9016,11 +9019,11 @@ snapshots:
       '@openid4vc/utils': 0.3.0-alpha-20251001121503
       zod: 3.25.76
 
-  '@openid4vc/openid4vp@0.3.0-alpha-20251001121503':
+  '@openid4vc/openid4vp@0.3.0-alpha-20251113095648':
     dependencies:
       '@openid4vc/oauth2': 0.3.0-alpha-20251001121503
       '@openid4vc/utils': 0.3.0-alpha-20251001121503
-      zod: 3.25.76
+      zod: 4.1.12
 
   '@openid4vc/utils@0.3.0-alpha-20251001121503':
     dependencies:
@@ -14985,3 +14988,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@3.25.76: {}
+
+  zod@4.1.12: {}
