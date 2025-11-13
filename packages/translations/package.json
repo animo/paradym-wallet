@@ -8,8 +8,8 @@
 		"extract-missing-translations": "node ./scripts/extract-missing-translations"
 	},
 	"dependencies": {
-		"@formatjs/intl-locale": "^4.2.11",
-		"@formatjs/intl-pluralrules": "^5.4.4",
+		"@formatjs/intl-locale": "^4.2.13",
+		"@formatjs/intl-pluralrules": "^5.4.6",
 		"@lingui/core": "^5.5.0",
 		"@lingui/react": "^5.5.0",
 		"expo-localization": "catalog:"
