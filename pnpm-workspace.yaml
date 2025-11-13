@@ -92,7 +92,7 @@ catalog:
   expo-router: ~5.1.2
   expo-secure-store: ~14.2.3
   expo-splash-screen: ~0.30.9
-  expo-system-ui: ~5.0.9
+  expo-system-ui: ~6.0.8
   expo-updates: ~0.28.15
   expo-web-browser: ~14.2.0
   expo-build-properties: ~0.14.8
