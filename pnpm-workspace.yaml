@@ -84,7 +84,7 @@ catalog:
   expo-dev-client: ~5.2.2
   expo-device: ~7.1.4
   expo-font: ~13.3.2
-  expo-haptics: ~14.1.4
+  expo-haptics: ~15.0.7
   expo-image: ~2.3.1
   expo-image-manipulator: ~13.1.7
   expo-linear-gradient: ~14.1.5
