@@ -74,7 +74,7 @@ export const ProofExchangeProvider: React.FC<PropsWithChildren<Props>> = ({ agen
   })
 
   useEffect(() => {
-    agent.modules.proofs.getAll().then((records) => setState({ records, loading: false }))
+    agent.didcomm.proofs.getAll().then((records) => setState({ records, loading: false }))
   }, [agent])
 
   useEffect(() => {

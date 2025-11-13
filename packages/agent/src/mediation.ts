@@ -8,7 +8,7 @@ import { useEffect } from 'react'
  * Check whether a default mediator is configued
  */
 export async function hasMediationConfigured(agent: ParadymAppAgent) {
-  const mediationRecord = await agent.modules.mediationRecipient.findDefaultMediator()
+  const mediationRecord = await agent.didcomm.mediationRecipient.findDefaultMediator()
 
   return mediationRecord !== null
 }
@@ -20,16 +20,16 @@ export async function hasMediationConfigured(agent: ParadymAppAgent) {
  */
 export async function setupMediationWithDid(agent: ParadymAppAgent, mediatorDid: string) {
   // If the invitation is a did, the invitation id is the did
-  const outOfBandRecord = await agent.modules.outOfBand.findByReceivedInvitationId(mediatorDid)
-  let [connection] = outOfBandRecord ? await agent.modules.connections.findAllByOutOfBandId(outOfBandRecord.id) : []
+  const outOfBandRecord = await agent.didcomm.oob.findByReceivedInvitationId(mediatorDid)
+  let [connection] = outOfBandRecord ? await agent.didcomm.connections.findAllByOutOfBandId(outOfBandRecord.id) : []
 
   if (!connection) {
     agent.config.logger.debug('Mediation connection does not exist, creating connection')
     // We don't want to use the current default mediator when connecting to another mediator
-    const routing = await agent.modules.mediationRecipient.getRouting({ useDefaultMediator: false })
+    const routing = await agent.didcomm.mediationRecipient.getRouting({ useDefaultMediator: false })
 
     agent.config.logger.debug('Routing created', routing)
-    const { connectionRecord: newConnection } = await agent.modules.outOfBand.receiveImplicitInvitation({
+    const { connectionRecord: newConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
       did: mediatorDid,
       routing,
       label: '',
@@ -45,9 +45,9 @@ export async function setupMediationWithDid(agent: ParadymAppAgent, mediatorDid:
 
   const readyConnection = connection.isReady
     ? connection
-    : await agent.modules.connections.returnWhenIsConnected(connection.id)
+    : await agent.didcomm.connections.returnWhenIsConnected(connection.id)
 
-  return agent.modules.mediationRecipient.provision(readyConnection)
+  return agent.didcomm.mediationRecipient.provision(readyConnection)
 }
 
 /**
@@ -57,7 +57,7 @@ async function initiateMessagePickup(agent: ParadymAppAgent) {
   agent.config.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
-  await agent.modules.mediationRecipient.initiateMessagePickup(undefined, DidCommMediatorPickupStrategy.Implicit)
+  await agent.didcomm.mediationRecipient.initiateMessagePickup(undefined, DidCommMediatorPickupStrategy.Implicit)
 }
 
 /**
@@ -67,7 +67,7 @@ async function stopMessagePickup(agent: ParadymAppAgent) {
   agent.config.logger.info('Stopping message pickup from mediator')
 
   // Stop message pickup. Will stopp all message pickup, not just from the mediator
-  await agent.modules.mediationRecipient.stopMessagePickup()
+  await agent.didcomm.mediationRecipient.stopMessagePickup()
 }
 
 /**

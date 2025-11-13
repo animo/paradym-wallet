@@ -59,11 +59,11 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   const { data } = useQuery({
     queryKey: ['didCommPresentationSubmission', proofExchangeId],
     queryFn: async () => {
-      const formatData = await agent.modules.proofs.getFormatData(proofExchangeId)
+      const formatData = await agent.didcomm.proofs.getFormatData(proofExchangeId)
 
       const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
 
-      const credentialsForRequest = await agent.modules.proofs.getCredentialsForRequest({
+      const credentialsForRequest = await agent.didcomm.proofs.getCredentialsForRequest({
         proofExchangeRecordId: proofExchangeId,
       })
 
@@ -203,7 +203,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
           }
         })
       )
-      const requestMessage = await agent.modules.proofs.findRequestMessage(proofExchangeId)
+      const requestMessage = await agent.didcomm.proofs.findRequestMessage(proofExchangeId)
       const purpose =
         requestMessage?.comment ??
         (requestMessage instanceof DidCommRequestPresentationV2Message ? requestMessage.goal : undefined)
@@ -271,7 +271,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         )
 
       const presentationDonePromise = firstValueFrom(presentationDone$)
-      await agent.modules.proofs.acceptRequest({
+      await agent.didcomm.proofs.acceptRequest({
         proofExchangeRecordId: proofExchangeId,
         proofFormats: formatInput,
       })
@@ -297,7 +297,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         )
 
       const presentationDeclinePromise = firstValueFrom(presentationDeclined$)
-      await agent.modules.proofs.declineRequest({ proofExchangeRecordId: proofExchangeId, sendProblemReport: true })
+      await agent.didcomm.proofs.declineRequest({ proofExchangeRecordId: proofExchangeId, sendProblemReport: true })
       await presentationDeclinePromise
     },
   })

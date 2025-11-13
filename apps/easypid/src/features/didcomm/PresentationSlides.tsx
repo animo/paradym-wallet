@@ -8,6 +8,7 @@ import {
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { getFlowConfirmationText } from './utils'
@@ -56,7 +57,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           'failed'
         )
 
-        if (proofExchange) agent.modules.proofs.deleteById(proofExchange.id)
+        if (proofExchange) agent.didcomm.proofs.deleteById(proofExchange.id)
 
         onCancel()
       })
@@ -79,7 +80,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
     }
 
     declinePresentation().finally(() => {
-      void agent.modules.proofs.deleteById(proofExchange.id)
+      void agent.didcomm.proofs.deleteById(proofExchange.id)
     })
 
     toast.show(t(commonMessages.informationRequestDeclined))
@@ -91,6 +92,11 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
     <SlideWizard
       resumeFrom={isExisting ? undefined : 50}
       steps={[
+        {
+          step: 'loading-request',
+          progress: 75,
+          screen: <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
+        },
         {
           step: 'retrieve-presentation',
           progress: 75,
@@ -113,7 +119,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           screen: <PresentationSuccessSlide showReturnToApp verifierName={verifierName} onComplete={onComplete} />,
         },
       ]}
-      onCancel={onProofDecline}
+      onCancel={onCancel}
       confirmation={getFlowConfirmationText(t, 'verify')}
     />
   )

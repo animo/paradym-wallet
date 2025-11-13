@@ -192,7 +192,7 @@ const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntities
   const logoUri = clientMetadata?.logo_uri
 
   const resolvedChains = entityId
-    ? await options.agent.modules.openid4vc.holder.resolveOpenIdFederationChains({
+    ? await options.agent.openid4vc.holder.resolveOpenIdFederationChains({
         entityId,
         trustAnchorEntityIds: TRUSTED_ENTITIES,
       })

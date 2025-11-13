@@ -31,7 +31,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
         }),
         { customData: { preset: 'danger' } }
       )
-      if (credentialExchange) agent.modules.credentials.deleteById(credentialExchange.id)
+      if (credentialExchange) agent.didcomm.credentials.deleteById(credentialExchange.id)
       onCancel()
     })
 
@@ -50,7 +50,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   const onCredentialDecline = () => {
     if (credentialExchange) {
       declineCredential().finally(() => {
-        void agent.modules.credentials.deleteById(credentialExchange.id)
+        void agent.didcomm.credentials.deleteById(credentialExchange.id)
       })
     }
 
