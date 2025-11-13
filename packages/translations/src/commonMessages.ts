@@ -81,6 +81,10 @@ export const commonMessages = {
     message: 'Enter PIN to share data',
     comment: 'Heading prompting the user to enter their PIN code before sharing data',
   }),
+  pinRequiredToAcceptPresentation: defineMessage({
+    id: 'common.pinRequiredToAcceptPresentation',
+    message: 'PIN is required to accept the presentation.',
+  }),
   confirmResetWallet: defineMessage({
     id: 'common.confirmResetWallet',
     message: 'Are you sure you want to reset the wallet?',
@@ -322,6 +326,10 @@ export const commonMessages = {
   authorizationFailed: defineMessage({
     id: 'common.authorizationFailed',
     message: 'Authorization failed',
+  }),
+  authorizationCancelled: defineMessage({
+    id: 'common.authorizationCancelled',
+    message: 'Authorization cancelled',
   }),
   openSettingsButton: defineMessage({
     id: 'common.openSettingsButton',
