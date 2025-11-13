@@ -36,7 +36,7 @@ jobs:
       APP_PROFILE: ${{ github.event.inputs.app }}
     steps:
       - name: 🏗 Setup repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🏗 Setup Node
         uses: actions/setup-node@v4
