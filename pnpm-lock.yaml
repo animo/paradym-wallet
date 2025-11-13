@@ -103,8 +103,8 @@ catalogs:
       specifier: 53.0.13
       version: 53.0.13
     expo-application:
-      specifier: ~6.1.5
-      version: 6.1.5
+      specifier: ~7.0.7
+      version: 7.0.7
     expo-asset:
       specifier: ~11.1.6
       version: 11.1.6
@@ -379,7 +379,7 @@ importers:
         version: 53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       expo-application:
         specifier: 'catalog:'
-        version: 6.1.5(expo@53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))
+        version: 7.0.7(expo@53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))
       expo-asset:
         specifier: 'catalog:'
         version: 11.1.6(expo@53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -3953,8 +3953,8 @@ packages:
   exec-async@2.2.0:
     resolution: {integrity: sha512-87OpwcEiMia/DeiKFzaQNBNFeN3XkkpYIh9FyOqq5mS2oKv3CBE67PXoEKcr6nodWdXNogTiQ0jE2NGuoffXPw==}
 
-  expo-application@6.1.5:
-    resolution: {integrity: sha512-ToImFmzw8luY043pWFJhh2ZMm4IwxXoHXxNoGdlhD4Ym6+CCmkAvCglg0FK8dMLzAb+/XabmOE7Rbm8KZb6NZg==}
+  expo-application@7.0.7:
+    resolution: {integrity: sha512-Jt1/qqnoDUbZ+bK91+dHaZ1vrPDtRBOltRa681EeedkisqguuEeUx4UHqwVyDK2oHWsK6lO3ojetoA4h8OmNcg==}
     peerDependencies:
       expo: '*'
 
@@ -11966,7 +11966,7 @@ snapshots:
 
   exec-async@2.2.0: {}
 
-  expo-application@6.1.5(expo@53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)):
+  expo-application@7.0.7(expo@53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)):
     dependencies:
       expo: 53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
 
