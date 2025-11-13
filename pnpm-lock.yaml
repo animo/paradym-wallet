@@ -639,7 +639,7 @@ importers:
         version: 7.1.6(expo@53.0.16(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       expo-router:
         specifier: 'catalog:'
-        version: 5.1.2(iucccyq4atxltpq442tdjzia2e)
+        version: 5.1.2(vwcdtwkx5vdsanix3wgg3ogbci)
       fast-text-encoding:
         specifier: 'catalog:'
         version: 1.0.6
@@ -10851,7 +10851,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.5.2
 
   '@types/hammerjs@2.0.46': {}
 
@@ -12273,7 +12273,7 @@ snapshots:
       - react-native
       - supports-color
 
-  expo-router@5.1.2(iucccyq4atxltpq442tdjzia2e):
+  expo-router@5.1.2(vwcdtwkx5vdsanix3wgg3ogbci):
     dependencies:
       '@expo/metro-runtime': 5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))
       '@expo/server': 0.6.3
