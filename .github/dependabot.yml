@@ -9,6 +9,16 @@ updates:
       time: "09:00"
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 10
+    ignore:
+       - dependency-name: "react-native-*"
+       - dependency-name: react-native
+       - dependency-name: react
+       - dependency-name: "react*"
+       - dependency-name: "expo*"
+       - dependency-name: "*expo"
+       - dependency-name: expo
+       - dependency-name: "@react-native*"
+       - dependency-name: "@expo*"
     # Group updates
     groups:
       # Group patch updates together
@@ -23,7 +33,6 @@ updates:
           - "*"
         update-types:
           - "minor"
-      # Major updates will be created individually by default
 
     # Enable version updates for all severity levels
     allow:
