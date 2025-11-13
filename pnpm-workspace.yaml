@@ -46,8 +46,8 @@ catalog:
   "@openid-federation/core": 0.1.1-alpha.17
   "@hyperledger/anoncreds-react-native": 0.3.3
   "@hyperledger/anoncreds-shared": 0.3.3
-  "@openwallet-foundation/askar-react-native": 0.3.2
-  "@openwallet-foundation/askar-shared": 0.3.2
+  "@openwallet-foundation/askar-react-native": 0.4.3
+  "@openwallet-foundation/askar-shared": 0.4.3
   buffer: 6.0.3
   "@astronautlabs/jsonpath": ^1.1.2
   
