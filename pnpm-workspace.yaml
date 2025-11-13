@@ -12,7 +12,7 @@ catalog:
   "@tanstack/react-query": ^5.81.5
 
   # Babel
-  "@babel/core": ^7.24.4
+  "@babel/core": ^7.28.5
   babel-plugin-syntax-hermes-parser: ^0.29.1
   babel-plugin-module-resolver: ^5.0.2
 
@@ -22,7 +22,7 @@ catalog:
   query-string: ^8.1.0
   "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250917090914
   "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
-  "@animo-id/expo-secure-environment": 0.1.4
+  "@animo-id/expo-secure-environment": 0.1.5
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.1.4-alpha.3
   "@animo-id/mdoc": 0.5.2
@@ -44,8 +44,8 @@ catalog:
   "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20251016134257
   "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20251016134257
   "@openid-federation/core": 0.1.1-alpha.17
-  "@hyperledger/anoncreds-react-native": 0.3.1
-  "@hyperledger/anoncreds-shared": 0.3.1
+  "@hyperledger/anoncreds-react-native": 0.3.3
+  "@hyperledger/anoncreds-shared": 0.3.3
   "@openwallet-foundation/askar-react-native": 0.3.2
   "@openwallet-foundation/askar-shared": 0.3.2
   buffer: 6.0.3
@@ -63,16 +63,16 @@ catalog:
   react-native-safe-area-context: 5.4.0
   react-native-screens: ~4.11.1
   react-native-svg: 15.11.2
-  "@react-navigation/native": ^7.1.14
+  "@react-navigation/native": ^7.1.19
   react-native-fs: ^2.20.0
   react-native-mmkv: ^3.3.0
-  react-native-qrcode-svg: ^6.3.12
-  react-native-reanimated-carousel: ^4.0.2
+  react-native-qrcode-svg: ^6.3.20
+  react-native-reanimated-carousel: ^4.0.3
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.3.2
   "@gorhom/bottom-sheet": ^5
   react-native-edge-to-edge: ^1.6.0
-  react-native-vision-camera: ^4.7.2
+  react-native-vision-camera: ^4.7.3
 
   # Expo
   expo-crypto: ^15.0.7
@@ -97,8 +97,8 @@ catalog:
   expo-web-browser: ~14.2.0
   expo-build-properties: ~0.14.8
   expo-localization: ~16.1.6
-  "@expo-google-fonts/open-sans": ^0.4.1
-  "@expo-google-fonts/raleway": ^0.4.1
+  "@expo-google-fonts/open-sans": ^0.4.2
+  "@expo-google-fonts/raleway": ^0.4.2
   "@expo/config-plugins": 10.1.2
 
   # Tamagui
