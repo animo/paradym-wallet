@@ -82,7 +82,7 @@ catalog:
   expo-blur: ~14.1.5
   expo-constants: ~17.1.6
   expo-dev-client: ~5.2.2
-  expo-device: ~7.1.4
+  expo-device: ~8.0.9
   expo-font: ~13.3.2
   expo-haptics: ~14.1.4
   expo-image: ~2.3.1
