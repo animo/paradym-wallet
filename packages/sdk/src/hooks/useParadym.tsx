@@ -7,7 +7,6 @@ import {
   useSecureUnlock,
 } from '../ParadymWalletSdk'
 import { registerCredentialsForDcApi } from '../openid4vc/dcApi'
-import { useDidCommMediatorSetup } from './useDidCommMediatorSetup'
 
 type ParadymLoadingState = SecureUnlockReturnInitializing /*{
   state: 'loading'
