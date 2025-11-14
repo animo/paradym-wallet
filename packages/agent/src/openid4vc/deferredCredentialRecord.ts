@@ -42,7 +42,7 @@ export async function fetchAndProcessDeferredCredential(agent: Agent, deferredCr
         deferredCredentialId: deferredCredential.id,
       })
 
-      accessToken = await agent.modules.openid4vc.holder.refreshToken({
+      accessToken = await agent.openid4vc.holder.refreshToken({
         issuerMetadata,
         clientId,
         refreshToken: accessToken.refreshToken,

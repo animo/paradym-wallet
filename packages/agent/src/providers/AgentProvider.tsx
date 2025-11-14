@@ -35,16 +35,16 @@ export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProvid
   // Use useMemo to prevent recreation of the providers array on each render
   const DynamicProviders = useMemo(() => {
     return [
-      agent.modules.proofs || agent.modules.credentials
+      agent.didcomm.proofs || agent.didcomm.credentials
         ? ({ children }: PropsWithChildren<{ agent: EitherAgent }>) => (
             <ExchangeRecordDisplayMetadataProvider agent={agent as ParadymAppAgent}>
               {children}
             </ExchangeRecordDisplayMetadataProvider>
           )
         : undefined,
-      agent.modules.credentials ? CredentialExchangeProvider : undefined,
-      agent.modules.proofs ? ProofExchangeProvider : undefined,
-      agent.modules.connections ? ConnectionProvider : undefined,
+      agent.didcomm.credentials ? CredentialExchangeProvider : undefined,
+      agent.didcomm.proofs ? ProofExchangeProvider : undefined,
+      agent.didcomm.connections ? ConnectionProvider : undefined,
     ].filter((p): p is Exclude<typeof p, undefined> => p !== undefined)
   }, [agent])
 

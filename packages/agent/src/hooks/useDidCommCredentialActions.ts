@@ -22,7 +22,7 @@ function useOfferAttributes(credentialExchangeId: string) {
   const { data, status } = useQuery({
     queryKey: ['didCommCredentialOfferAttributes', credentialExchangeId],
     queryFn: async () => {
-      const formatData = await agent.modules.credentials.getFormatData(credentialExchangeId)
+      const formatData = await agent.didcomm.credentials.getFormatData(credentialExchangeId)
       const offer = formatData.offer?.anoncreds ?? formatData.offer?.indy
       const offerAttributes = formatData.offerAttributes
 
@@ -70,7 +70,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.modules.credentials.acceptOffer({ credentialExchangeRecordId: credentialExchangeId })
+      await agent.didcomm.credentials.acceptOffer({ credentialExchangeRecordId: credentialExchangeId })
       const doneEvent = await credentialDonePromise
 
       const w3cCredentialRecordId = doneEvent.payload.credentialExchangeRecord.credentials.find(
@@ -124,7 +124,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
 
       const credentialDonePromise = firstValueFrom(credentialDone$)
 
-      await agent.modules.credentials.declineOffer({
+      await agent.didcomm.credentials.declineOffer({
         credentialExchangeRecordId: credentialExchangeId,
         sendProblemReport: true,
       })

@@ -1,0 +1,41 @@
+diff --git a/build/dids/didCheqdUtil.js b/build/dids/didCheqdUtil.js
+index b3ce2fc1dbc6b176b8910f755eb54e901fb7d965..11ad071f2eecc05d80961132e3f23391dce9726a 100644
+--- a/build/dids/didCheqdUtil.js
++++ b/build/dids/didCheqdUtil.js
+@@ -88,8 +88,13 @@ function getClosestResourceVersion(resources, date) {
+ 	let closest;
+ 	for (const resource of resources) {
+ 		if (!resource.created) throw new __credo_ts_core.CredoError("Missing required property 'created' on resource");
+-		if (resource.created.getTime() < date.getTime()) {
+-			const diff = date.getTime() - resource.created.getTime();
++		
++		// NOTE: The date passed in is based on seconds, while we compare with milliseconds
++		// this results in invalid results due to the precision being lost. So we floor the result
++		// allowing for some leeway in time differences
++		const resourceCreatedAt = new Date(Math.floor(resource.created.getTime() / 1000) * 1000)
++		if (resourceCreatedAt.getTime() < date.getTime()) {
++			const diff = date.getTime() - resourceCreatedAt.getTime();
+ 			if (diff < minDiff) {
+ 				closest = resource;
+ 				minDiff = diff;
+diff --git a/build/dids/didCheqdUtil.mjs b/build/dids/didCheqdUtil.mjs
+index 7672eb4f78d7063b8aae66e849ec3c822e750cbe..583a18de270d80d32da832c1232f6e299a7abbd1 100644
+--- a/build/dids/didCheqdUtil.mjs
++++ b/build/dids/didCheqdUtil.mjs
+@@ -82,8 +82,14 @@ function getClosestResourceVersion(resources, date) {
+ 	let closest;
+ 	for (const resource of resources) {
+ 		if (!resource.created) throw new CredoError("Missing required property 'created' on resource");
+-		if (resource.created.getTime() < date.getTime()) {
+-			const diff = date.getTime() - resource.created.getTime();
++
++		// NOTE: The date passed in is based on seconds, while we compare with milliseconds
++		// this results in invalid results due to the precision being lost. So we floor the result
++		// allowing for some leeway in time differences
++		const resourceCreatedAt = new Date(Math.floor(resource.created.getTime() / 1000) * 1000)
++
++		if (resourceCreatedAt.getTime() <= date.getTime()) {
++			const diff = date.getTime() - resourceCreatedAt.getTime();
+ 			if (diff < minDiff) {
+ 				closest = resource;
+ 				minDiff = diff;

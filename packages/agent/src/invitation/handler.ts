@@ -87,7 +87,7 @@ export async function resolveOpenId4VciOffer({
       uri: offer.uri,
     })
 
-    const resolvedCredentialOffer = await agent.modules.openid4vc.holder.resolveCredentialOffer(offer.uri)
+    const resolvedCredentialOffer = await agent.openid4vc.holder.resolveCredentialOffer(offer.uri)
     let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
 
     // NOTE: we always assume scopes are used at the moment
@@ -101,7 +101,7 @@ export async function resolveOpenId4VciOffer({
 
       // TODO: authorization should only be initiated after we know which credentials we're going to request
       if (authorization) {
-        resolvedAuthorizationRequest = await agent.modules.openid4vc.holder.resolveOpenId4VciAuthorizationRequest(
+        resolvedAuthorizationRequest = await agent.openid4vc.holder.resolveOpenId4VciAuthorizationRequest(
           resolvedCredentialOffer,
           {
             redirectUri: authorization.redirectUri,
@@ -137,7 +137,7 @@ export async function acquirePreAuthorizedAccessToken({
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   txCode?: string
 }) {
-  return await agent.modules.openid4vc.holder.requestToken({
+  return await agent.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     txCode,
   })
@@ -156,7 +156,7 @@ export async function acquireAuthorizationCodeUsingPresentation({
   authSession: string
   presentationDuringIssuanceSession?: string
 }) {
-  return await agent.modules.openid4vc.holder.retrieveAuthorizationCodeUsingPresentation({
+  return await agent.openid4vc.holder.retrieveAuthorizationCodeUsingPresentation({
     authSession,
     dpop: dPopKeyJwk
       ? {
@@ -240,7 +240,7 @@ export async function acquireAuthorizationCodeAccessToken({
   redirectUri?: string
   dPopKeyJwk?: Kms.PublicJwk
 }) {
-  return await agent.modules.openid4vc.holder.requestToken({
+  return await agent.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     code: authorizationCode,
     codeVerifier,
@@ -315,7 +315,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   }
 
   try {
-    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestCredentials({
+    const { credentials, deferredCredentials } = await agent.openid4vc.holder.requestCredentials({
       resolvedCredentialOffer,
       ...accessToken,
       clientId,
@@ -356,7 +356,7 @@ export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
   accessToken: OpenId4VciRequestTokenResponse
 }) => {
   try {
-    const { credentials, deferredCredentials } = await agent.modules.openid4vc.holder.requestDeferredCredentials({
+    const { credentials, deferredCredentials } = await agent.openid4vc.holder.requestDeferredCredentials({
       ...deferredCredentialResponse,
       ...accessToken,
       issuerMetadata,
@@ -495,7 +495,7 @@ export const getCredentialsForProofRequest = async ({
     request,
   })
 
-  const resolved = await agent.modules.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
+  const resolved = await agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
     origin,
     trustedFederationEntityIds: entityId ? [entityId] : undefined,
   })
@@ -562,7 +562,7 @@ async function findExistingDidcommConnectionForInvitation(
   outOfBandInvitation: DidCommOutOfBandInvitation
 ): Promise<DidCommConnectionRecord | null> {
   for (const invitationDid of outOfBandInvitation.invitationDids) {
-    const [connection] = await agent.modules.connections.findByInvitationDid(invitationDid)
+    const [connection] = await agent.didcomm.connections.findByInvitationDid(invitationDid)
     if (connection) return connection
   }
 
@@ -666,7 +666,7 @@ export async function resolveOutOfBandInvitation(
 
   try {
     // Check if invitation already exists
-    const receivedInvite = await agent.modules.outOfBand.findByReceivedInvitationId(invitation.id)
+    const receivedInvite = await agent.didcomm.oob.findByReceivedInvitationId(invitation.id)
     if (receivedInvite) {
       return {
         success: false,
@@ -746,7 +746,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   let outOfBandRecord: DidCommOutOfBandRecord
 
   try {
-    const receiveInvitationResult = await agent.modules.outOfBand.receiveInvitation(invitation, {
+    const receiveInvitationResult = await agent.didcomm.oob.receiveInvitation(invitation, {
       reuseConnection: true,
       label: '',
     })
@@ -805,7 +805,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
     // Delete connection record
     // TODO: delete did and mediation stuff
     if (connectionRecord) {
-      await agent.modules.connections.deleteById(connectionRecord.id)
+      await agent.didcomm.connections.deleteById(connectionRecord.id)
     }
 
     return {

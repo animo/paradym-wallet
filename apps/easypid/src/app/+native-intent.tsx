@@ -55,7 +55,7 @@ export function redirectSystemPath({
 
     const parseResult = parseInvitationUrlSync(path)
     if (!parseResult.success) {
-      logger.error('Error parsing invitation. Routing to home screen', {
+      logger.info('Deeplink is not a valid invitation. Routing to home screen', {
         error: parseResult.error,
         message: parseResult.message,
       })

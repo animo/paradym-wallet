@@ -72,7 +72,7 @@ export const ConnectionProvider: React.FC<PropsWithChildren<Props>> = ({ agent, 
   })
 
   useEffect(() => {
-    agent.modules.connections.getAll().then((records) => setState({ records, loading: false }))
+    agent.didcomm.connections.getAll().then((records) => setState({ records, loading: false }))
   }, [agent])
 
   useEffect(() => {

@@ -110,7 +110,7 @@ export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation:
       // So we use the parseMessage from AFJ and see if this returns a valid message.
       // Parse invitation supports legacy connection invitations, oob invitations, and
       // legacy connectionless invitations, and will all transform them into an OOB invitation.
-      const parsedInvitation = await agent.modules.outOfBand.parseInvitation(updatedInvitationUrl)
+      const parsedInvitation = await agent.didcomm.oob.parseInvitation(updatedInvitationUrl)
 
       agent.config.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
       return {

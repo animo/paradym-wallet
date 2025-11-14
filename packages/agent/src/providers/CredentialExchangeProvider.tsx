@@ -74,7 +74,7 @@ export const CredentialExchangeProvider: React.FC<PropsWithChildren<Props>> = ({
   })
 
   useEffect(() => {
-    agent.modules.credentials.getAll().then((records) => setState({ records, loading: false }))
+    agent.didcomm.credentials.getAll().then((records) => setState({ records, loading: false }))
   }, [agent])
 
   useEffect(() => {
