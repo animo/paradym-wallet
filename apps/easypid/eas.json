@@ -40,6 +40,12 @@
 				"EXPO_PUBLIC_APP_TYPE": "FUNKE_WALLET"
 			}
 		},
+		"funke-preview-simulator": {
+			"extends": "funke-preview",
+			"ios": {
+				"simulator": true
+			}
+		},
 		"funke-production": {
 			"extends": "base",
 			"autoIncrement": true,
@@ -61,6 +67,12 @@
 			"env": {
 				"APP_VARIANT": "preview",
 				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET"
+			}
+		},
+		"paradym-preview-simulator": {
+			"extends": "paradym-preview",
+			"ios": {
+				"simulator": true
 			}
 		},
 		"paradym-production": {
