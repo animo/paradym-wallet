@@ -9,6 +9,7 @@ on:
         required: true
         options:
           - 'preview'
+          - 'preview-simulator'
           - 'production'
         default: 'preview'
       platform:
@@ -61,6 +62,11 @@ jobs:
         if: ${{ github.event.inputs.channel == 'preview' }}
         working-directory: apps/easypid
         run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-preview --no-wait
+
+      - name: 🚀 Build internal preview for simulator
+        if: ${{ github.event.inputs.channel == 'preview-simulator' }}
+        working-directory: apps/easypid
+        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-preview-simulator --no-wait
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
         if: ${{ github.event.inputs.channel == 'production' }}
