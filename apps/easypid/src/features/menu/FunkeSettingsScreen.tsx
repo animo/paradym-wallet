@@ -1,8 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError, logger } from '@package/agent'
-import { TextBackButton } from '@package/app'
-import { useScrollViewPosition } from '@package/app/hooks'
-import { useCanUseBiometryBackedWalletKey, useIsBiometricsEnabled } from '@package/secure-store/secureUnlock'
+import { TextBackButton, useScrollViewPosition } from '@package/app'
+import { ParadymWalletSdkConsoleLogger } from '@package/sdk'
 import {
   commonMessages,
   type SupportedLocale,
@@ -16,18 +14,25 @@ import {
   FlexPage,
   HeaderContainer,
   HeroIcons,
-  ScrollView,
   SettingsButton,
   Switch,
   useToastController,
   XStack,
   YStack,
 } from '@package/ui'
+import {
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
+} from '@paradym/wallet-sdk/error'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import {
+  useCanUseBiometryBackedWalletKey,
+  useIsBiometricsEnabled,
+} from '@paradym/wallet-sdk/secure/secure-wallet-key/secureWalletKey'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
-import { Share } from 'react-native'
+import { ScrollView, Share } from 'react-native'
 import { Label } from 'tamagui'
-import { useSecureUnlock } from '../../agent'
 import { useBiometricsType } from '../../hooks/useBiometricsType'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
@@ -81,20 +86,17 @@ export function LocaleSelect() {
 }
 
 export function FunkeSettingsScreen() {
+  const { enableBiometricUnlock, disableBiometricUnlock, paradym } = useParadym('unlocked')
   const { t } = useLingui()
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
-  const secureUnlock = useSecureUnlock()
-  if (secureUnlock.state !== 'unlocked') return
 
   const [isBiometricsEnabled] = useIsBiometricsEnabled()
 
   async function enableBiometrics() {
-    if (secureUnlock.state !== 'unlocked') return
-
     try {
-      await secureUnlock.enableBiometricUnlock()
+      await enableBiometricUnlock()
       toast.show(
         t({
           id: 'biometrics.enabled',
@@ -104,13 +106,13 @@ export function FunkeSettingsScreen() {
         { customData: { preset: 'success' } }
       )
     } catch (error) {
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
         toast.show(t(commonMessages.biometricAuthenticationMustBeEnabledInSettings), {
           customData: {
             preset: 'danger',
           },
         })
-      } else if (error instanceof BiometricAuthenticationCancelledError) {
+      } else if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         toast.show(t(commonMessages.biometricAuthenticationCancelled), {
           customData: { preset: 'danger' },
         })
@@ -125,10 +127,8 @@ export function FunkeSettingsScreen() {
   }
 
   async function disableBiometrics() {
-    if (secureUnlock.state !== 'unlocked') return
-
     try {
-      await secureUnlock.disableBiometricUnlock()
+      await disableBiometricUnlock()
       toast.show(
         t({
           id: 'biometrics.disabled',
@@ -199,7 +199,7 @@ export function FunkeSettingsScreen() {
               onChange={setIsDevelopmentModeEnabled}
             />
             <LocaleSelect />
-            {isDevelopmentModeEnabled && (
+            {isDevelopmentModeEnabled && paradym.logger instanceof ParadymWalletSdkConsoleLogger && (
               <SettingsButton
                 label={t({
                   id: 'settings.exportDebugLogs',
@@ -207,7 +207,9 @@ export function FunkeSettingsScreen() {
                   comment: 'Label for the button to export debug logs',
                 })}
                 beta
-                onPress={() => Share.share({ message: logger.loggedMessageContents })}
+                onPress={() =>
+                  Share.share({ message: (paradym.logger as ParadymWalletSdkConsoleLogger).loggedMessageContents })
+                }
                 description={t({
                   id: 'settings.exportDebugLogsDescription',
                   message:

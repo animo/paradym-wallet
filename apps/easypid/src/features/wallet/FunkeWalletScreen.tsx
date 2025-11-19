@@ -1,8 +1,7 @@
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { useRefreshedDeferredCredentials } from '@package/agent'
-import { useHaptics } from '@package/app/hooks'
+import { useHaptics } from '@package/app'
 import {
   AnimatedStack,
   Blob,
@@ -20,6 +19,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'
@@ -28,6 +28,7 @@ import { InboxIcon } from './components/InboxIcon'
 import { LatestActivityCard } from './components/LatestActivityCard'
 
 export function FunkeWalletScreen() {
+  const { paradym } = useParadym('unlocked')
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
   const { userName, isLoading } = useFirstNameFromPidCredential()
@@ -42,7 +43,7 @@ export function FunkeWalletScreen() {
   }
   const { t } = useLingui()
 
-  useRefreshedDeferredCredentials()
+  paradym.hooks.useRefreshedDeferredCredentials()
 
   return (
     <YStack pos="relative" fg={1} bg="$background">

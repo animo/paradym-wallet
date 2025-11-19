@@ -1,8 +1,9 @@
 import 'fast-text-encoding'
 
 import { isGetCredentialActivity } from '@animo-id/expo-digital-credentials-api'
+import { paradymWalletSdkOptions } from '@easypid/config/paradym'
 import { BackgroundLockProvider, NoInternetToastProvider, Provider } from '@package/app'
-import { SecureUnlockProvider } from '@package/secure-store/secureUnlock'
+import { ParadymWalletSdk } from '@package/sdk'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Slot } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -35,23 +36,23 @@ function RootLayout() {
   return (
     <Provider config={tamaguiConfig} customLocale={storedLocale}>
       <SystemBars style="dark" />
-      <SecureUnlockProvider>
-        <ThemeProvider
-          value={{
-            ...DefaultTheme,
-            colors: {
-              ...DefaultTheme.colors,
-              background: 'white',
-            },
-          }}
-        >
-          <BackgroundLockProvider>
-            <NoInternetToastProvider>
+      <ThemeProvider
+        value={{
+          ...DefaultTheme,
+          colors: {
+            ...DefaultTheme.colors,
+            background: 'white',
+          },
+        }}
+      >
+        <BackgroundLockProvider>
+          <NoInternetToastProvider>
+            <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
               <Slot />
-            </NoInternetToastProvider>
-          </BackgroundLockProvider>
-        </ThemeProvider>
-      </SecureUnlockProvider>
+            </ParadymWalletSdk.UnlockProvider>
+          </NoInternetToastProvider>
+        </BackgroundLockProvider>
+      </ThemeProvider>
     </Provider>
   )
 }

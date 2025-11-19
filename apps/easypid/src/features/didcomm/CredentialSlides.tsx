@@ -1,9 +1,9 @@
-import { useParadymAgent } from '@easypid/agent'
 import { useLingui } from '@lingui/react/macro'
-import { storeReceivedActivity, useDidCommCredentialActions } from '@package/agent'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import { useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk/hooks'
+import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useCallback, useState } from 'react'
 import { useDevelopmentMode } from '../../hooks'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
@@ -18,7 +18,7 @@ type CredentialSlidesProps = {
 }
 
 export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, onComplete }: CredentialSlidesProps) {
-  const { agent } = useParadymAgent()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const [errorReason, setErrorReason] = useState<string>()
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
@@ -40,17 +40,17 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
 
   const onCredentialAccept = async () => {
     const w3cRecord = await acceptCredential().catch(async (error) => {
-      agent.config.logger.error('Error accepting credential over DIDComm', {
+      paradym.logger.error('Error accepting credential over DIDComm', {
         error,
       })
 
-      if (credentialExchange) await agent.didcomm.credentials.deleteById(credentialExchange.id)
+      if (credentialExchange) await paradym.agent.didcomm.credentials.deleteById(credentialExchange.id)
       setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
       return undefined
     })
 
     if (w3cRecord) {
-      await storeReceivedActivity(agent, {
+      await storeReceivedActivity(paradym, {
         entityId: credentialExchange?.connectionId,
         name: display.issuer.name,
         logo: display.issuer.logo,
@@ -64,7 +64,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   const onCredentialDecline = () => {
     if (credentialExchange) {
       declineCredential().finally(() => {
-        void agent.didcomm.credentials.deleteById(credentialExchange.id)
+        void paradym.agent.didcomm.credentials.deleteById(credentialExchange.id)
       })
     }
 

@@ -3,21 +3,22 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
 		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
-		"deps:check": "check-dependency-version-consistency .",
 		"deps:fix": "pnpm deps:check --fix",
-		"types:check": "tsc --noEmit",
+		"types:check": "node --stack-size=4096 ./node_modules/typescript/lib/tsc.js --noEmit",
 		"style:check": "biome check --unsafe",
-		"style:fix": "biome check --write --unsafe"
+		"style:fix": "biome check --write --unsafe",
+		"release:sdk": "pnpm build && pnpm changeset publish --no-git-tag",
+		"changeset-version:sdk": "pnpm changeset version && pnpm style:fix"
 	},
 	"engines": {
 		"node": ">=22.21.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.10",
+		"@changesets/cli": "^2.29.4",
 		"check-dependency-version-consistency": "^5.0.1",
 		"typescript": "catalog:"
 	},

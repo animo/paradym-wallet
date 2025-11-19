@@ -1,5 +1,5 @@
-import { InvitationQrTypes } from '@package/agent'
 import { useToastController } from '@package/ui'
+import { InvitationQrTypes } from '@paradym/wallet-sdk/invitation/parser'
 import { CommonActions } from '@react-navigation/native'
 import * as Linking from 'expo-linking'
 import { useNavigation } from 'expo-router'

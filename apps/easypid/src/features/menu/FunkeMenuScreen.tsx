@@ -1,7 +1,6 @@
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useWalletReset } from '@easypid/hooks/useWalletReset'
 import { useLingui } from '@lingui/react/macro'
-import { useCredentialByCategory } from '@package/agent/hooks/useCredentialByCategory'
 import { TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
@@ -20,6 +19,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import { useCredentialByCategory } from '@paradym/wallet-sdk/hooks'
 import { router } from 'expo-router'
 import { Linking } from 'react-native'
 

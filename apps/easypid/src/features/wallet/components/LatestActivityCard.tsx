@@ -1,9 +1,9 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { useActivities, useCredentialsForDisplay } from '@package/agent'
-import { useHaptics } from '@package/app/hooks'
+import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import { useActivities, useCredentials } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 
@@ -61,7 +61,7 @@ export function LatestActivityCard() {
   const { activities } = useActivities()
   const { t } = useLingui()
   const latestActivity = activities[0]
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
 
   const pushToActivity = withHaptics(() => push('/activity'))
 

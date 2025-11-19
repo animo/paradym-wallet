@@ -1,15 +1,15 @@
 import { useLingui } from '@lingui/react/macro'
-import { useCredentialsForDisplay } from '@package/agent'
 import { useHaptics } from '@package/app'
 import { InfoButton } from '@package/ui'
+import { useCredentials } from '@paradym/wallet-sdk/hooks/useCredentials'
 import { useRouter } from 'expo-router'
 
 export function AllCardsCard() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
   const { t } = useLingui()
-  const { credentials } = useCredentialsForDisplay()
 
+  const { credentials } = useCredentials()
   const pushToCards = withHaptics(() => push('/credentials'))
 
   const title = t({

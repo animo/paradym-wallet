@@ -1,6 +1,5 @@
 import type { MessageDescriptor } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
-import type { Activity, ActivityType } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   CustomIcons,
@@ -15,6 +14,7 @@ import {
   YStack,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import type { Activity, ActivityType } from '@paradym/wallet-sdk/storage/activityStore'
 import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'

@@ -1,9 +1,8 @@
-import { useAppAgent } from '@easypid/agent'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { fetchAndProcessDeferredCredentials } from '@package/agent'
-import { useInboxNotifications } from '@package/agent/hooks'
 import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
+import { useInboxNotifications, useParadym } from '@paradym/wallet-sdk/hooks'
+import { fetchAndProcessDeferredCredentials } from '@paradym/wallet-sdk/openid4vc/deferredCredentialRecord'
 import { useRouter } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { RefreshControl } from 'react-native'
@@ -11,7 +10,7 @@ import { FadeInDown } from 'react-native-reanimated'
 
 export function InboxScreen() {
   const inboxNotifications = useInboxNotifications()
-  const { agent } = useAppAgent()
+  const { paradym } = useParadym('unlocked')
   const [refreshing, setRefreshing] = useState(false)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(0)
   const { push } = useRouter()
@@ -24,10 +23,10 @@ export function InboxScreen() {
       .filter((n) => n.type === 'DeferredCredentialRecord')
       .map((n) => n.deferredCredentialRecord)
 
-    fetchAndProcessDeferredCredentials(agent, deferredCredentialRecords).finally(() => {
+    fetchAndProcessDeferredCredentials(paradym, deferredCredentialRecords).finally(() => {
       setRefreshing(false)
     })
-  }, [inboxNotifications, agent])
+  }, [inboxNotifications, paradym])
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">

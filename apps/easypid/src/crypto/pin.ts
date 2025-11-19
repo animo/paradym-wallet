@@ -1,6 +1,6 @@
 import { transformPrivateKeyToPrivateJwk } from '@credo-ts/askar'
 import { type AgentContext, Kms, TypedArrayEncoder } from '@credo-ts/core'
-import { kdf } from '@package/secure-store/kdf'
+import { kdf } from '@paradym/wallet-sdk/secure/kdf'
 import { easyPidAes256Gcm } from './aes'
 
 /**

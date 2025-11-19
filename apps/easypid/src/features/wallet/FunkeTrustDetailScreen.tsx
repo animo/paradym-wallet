@@ -1,6 +1,5 @@
 import { useDevelopmentMode } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { TrustedEntity, TrustMechanism } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
@@ -18,6 +17,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import type { TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk/trust/trustMechanism'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -45,13 +45,11 @@ export function FunkeTrustDetailScreen({
   const trustMechanismName =
     trustMechanism === 'eudi_rp_authentication'
       ? 'EU Trusted List'
-      : trustMechanism === 'openid_federation'
-        ? 'OpenID Federation'
-        : trustMechanism === 'did'
-          ? 'Decentralized Identifier'
-          : trustMechanism === 'x509'
-            ? 'X.509 Certificate'
-            : 'No signature'
+      : trustMechanism === 'did'
+        ? 'Decentralized Identifier'
+        : trustMechanism === 'x509'
+          ? 'X.509 Certificate'
+          : 'No signature'
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">

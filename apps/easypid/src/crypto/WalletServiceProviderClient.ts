@@ -10,10 +10,9 @@ import {
   TypedArrayEncoder,
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
-import { askar } from '@openwallet-foundation/askar-react-native'
-import type { EasyPIDAppAgent } from '@package/agent'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import { getWalletId } from '../agent/walletId'
+import { NativeAskar } from '@openwallet-foundation/askar-react-native'
+import type { BaseAgent } from '@paradym/wallet-sdk/agent'
+import { secureWalletKey } from '@paradym/wallet-sdk/secure'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -24,15 +23,14 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
   if (validatePin) {
     const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
-    const walletId = getWalletId(walletKeyVersion)
 
     const agent = new Agent({
       config: {},
       modules: {
         askar: new AskarModule({
-          askar,
+          askar: NativeAskar.instance,
           store: {
-            id: walletId,
+            id: `paradym-wallet-${walletKeyVersion}`,
             key: walletKey,
             keyDerivationMethod: 'raw',
           },
@@ -66,7 +64,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
 
   public constructor(
     private hsmUrl: string,
-    private agent: EasyPIDAppAgent
+    private agent: BaseAgent
   ) {}
 
   private async post<T>(path: string, claims: Record<string, unknown>): Promise<T> {
