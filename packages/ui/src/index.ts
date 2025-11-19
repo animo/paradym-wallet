@@ -6,7 +6,7 @@ export {
   Select,
   Spacer,
   TamaguiProvider,
-  TamaguiProviderProps,
+  type TamaguiProviderProps,
   useMedia,
   VisuallyHidden,
 } from 'tamagui'

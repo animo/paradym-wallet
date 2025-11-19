@@ -1,10 +1,10 @@
 import { useDevelopmentMode } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { type CredentialDisplay, logger } from '@package/agent'
-import { useWizard } from '@package/app'
-import { DualResponseButtons } from '@package/app/components/DualResponseButtons'
+import { DualResponseButtons, useWizard } from '@package/app'
+import { useParadym } from '@package/sdk'
 import { commonMessages } from '@package/translations'
 import { Heading, MiniCardRowItem, Paragraph, useToastController, YStack } from '@package/ui'
+import type { CredentialDisplay } from '@paradym/wallet-sdk/display/credential'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useEffect, useState } from 'react'
@@ -31,6 +31,7 @@ export const AuthCodeFlowSlide = ({
   onError,
   display,
 }: AuthCodeFlowSlideProps) => {
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const { t } = useLingui()
@@ -60,7 +61,7 @@ export const AuthCodeFlowSlide = ({
       onAuthFlowCallback(credentialAuthorizationCode)
     } else if (browserResult) {
       if (browserResult.type !== 'success') {
-        logger.warn('Browser authorization failed. Browser result did not return a success status', {
+        paradym.logger.warn('Browser authorization failed. Browser result did not return a success status', {
           browserResult,
         })
         toast.show(t(commonMessages.authorizationFailed), {
@@ -81,7 +82,7 @@ export const AuthCodeFlowSlide = ({
 
       const authorizationCode = new URL(browserResult.url).searchParams.get('code')
       if (!authorizationCode) {
-        logger.warn('Browser authorization failed. Missing authorization code in url', {
+        paradym.logger.warn('Browser authorization failed. Missing authorization code in url', {
           browserResult,
           isDevelopmentModeEnabled,
         })
@@ -111,6 +112,7 @@ export const AuthCodeFlowSlide = ({
     hasHandledResult,
     credentialAuthorizationCode,
     onAuthFlowCallback,
+    paradym.logger.warn,
     toast.show,
     onCancel,
     onError,

@@ -1,7 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { type DisplayImage, useCredentialsForDisplay } from '@package/agent'
-import { TextBackButton } from '@package/app'
-import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
+import { TextBackButton, useHaptics, useScrollViewPosition } from '@package/app'
 import {
   AnimatedStack,
   FlexPage,
@@ -22,12 +20,14 @@ import {
   YStack,
 } from '@package/ui'
 import { formatDate } from '@package/utils'
+import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
+import { useCredentials } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function FunkeCredentialsScreen() {
-  const { credentials, isLoading: isLoadingCredentials } = useCredentialsForDisplay()
+  const { credentials, isLoading: isLoadingCredentials } = useCredentials()
 
   const [searchQuery, setSearchQuery] = useState('')
   const filteredCredentials = useMemo(() => {

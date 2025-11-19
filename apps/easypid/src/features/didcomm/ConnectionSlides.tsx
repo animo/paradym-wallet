@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { SlideWizard } from '@package/app/components/SlideWizard'
+import { SlideWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,

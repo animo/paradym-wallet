@@ -1,5 +1,4 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { CredentialDisplay } from '@package/agent'
 import {
   CredentialAttributes,
   DualResponseButtons,
@@ -21,6 +20,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import type { CredentialDisplay } from '@paradym/wallet-sdk/display/credential'
 import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
 import {
