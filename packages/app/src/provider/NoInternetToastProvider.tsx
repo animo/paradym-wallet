@@ -11,7 +11,7 @@ export function NoInternetToastProvider({ children }: PropsWithChildren) {
   const { isConnected, isInternetReachable } = useNetworkState()
   const [hasBeenOffline, setHasBeenOffline] = useState(false)
   const [debouncedHasInternet, setDebouncedHasInternet] = useState<boolean | null>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
+  const timeoutRef = useRef<number>(undefined)
   const isInitialMount = useRef(true)
 
   const hasInternet =
@@ -37,7 +37,7 @@ export function NoInternetToastProvider({ children }: PropsWithChildren) {
         // Start the debounce timer even on initial mount if connection is false
         timeoutRef.current = setTimeout(() => {
           setDebouncedHasInternet(false)
-        }, 5000)
+        }, 5000) as unknown as number
       }
       return
     }
@@ -50,7 +50,7 @@ export function NoInternetToastProvider({ children }: PropsWithChildren) {
     else if (hasInternet === false) {
       timeoutRef.current = setTimeout(() => {
         setDebouncedHasInternet(false)
-      }, 5000)
+      }, 5000) as unknown as number
     }
 
     return () => {

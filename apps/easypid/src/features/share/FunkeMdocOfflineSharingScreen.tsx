@@ -1,19 +1,19 @@
-import { useAppAgent } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
 import { useLingui } from '@lingui/react/macro'
-import {
-  type ActivityStatus,
-  BiometricAuthenticationCancelledError,
-  type FormattedSubmission,
-  getSubmissionForMdocDocumentRequest,
-  storeSharedActivityForCredentialsForRequest,
-} from '@package/agent'
 import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
+import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import {
+  type ActivityStatus,
+  storeSharedActivityForCredentialsForRequest,
+} from '@paradym/wallet-sdk/storage/activityStore'
 import { useCallback, useEffect, useState } from 'react'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
@@ -29,9 +29,9 @@ export function FunkeMdocOfflineSharingScreen({
   sessionTranscript,
   deviceRequest,
 }: FunkeMdocOfflineSharingScreenProps) {
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
-  const { agent } = useAppAgent()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [submission, setSubmission] = useState<FormattedSubmission>()
@@ -40,7 +40,7 @@ export function FunkeMdocOfflineSharingScreen({
   const { t } = useLingui()
 
   useEffect(() => {
-    getSubmissionForMdocDocumentRequest(agent, deviceRequest)
+    getSubmissionForMdocDocumentRequest(paradym, deviceRequest)
       .then(setSubmission)
       .catch((error) => {
         toast.show(t(commonMessages.presentationInformationCouldNotBeExtracted), {
@@ -48,13 +48,13 @@ export function FunkeMdocOfflineSharingScreen({
             error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
           customData: { preset: 'danger' },
         })
-        agent.config.logger.error('Error getting credentials for mdoc device request', {
+        paradym.logger.error('Error getting credentials for mdoc device request', {
           error,
         })
 
         pushToWallet()
       })
-  }, [agent, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled, t])
+  }, [paradym, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled, t])
 
   const handleError = useCallback(
     ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
@@ -105,13 +105,13 @@ export function FunkeMdocOfflineSharingScreen({
     // Once this returns we just assume it's successful
     try {
       await shareDeviceResponse({
-        agent,
+        paradym,
         deviceRequest,
         sessionTranscript,
         submission,
       })
-    } catch (e) {
-      if (e instanceof BiometricAuthenticationCancelledError) {
+    } catch (error) {
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
         // Triggers the pin animation
         onPinError?.()
         return handleError({
@@ -129,7 +129,7 @@ export function FunkeMdocOfflineSharingScreen({
         }),
         redirect: true,
         description:
-          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
       })
     }
 
@@ -165,7 +165,7 @@ export function FunkeMdocOfflineSharingScreen({
   const addActivity = async (status: Exclude<ActivityStatus, 'pending'>) => {
     if (!submission) return
     await storeSharedActivityForCredentialsForRequest(
-      agent,
+      paradym,
       {
         formattedSubmission: submission,
         verifier: {

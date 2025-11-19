@@ -5,19 +5,19 @@ import {
   initializeSdk,
   sendCommand,
 } from '@animo-id/expo-ausweis-sdk'
-import type { MdocRecord } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
 import type {
+  MdocRecord,
   OpenId4VciRequestTokenResponse,
   OpenId4VciResolvedCredentialOffer,
   OpenId4VciResolvedOauth2RedirectAuthorizationRequest,
+  ParadymWalletSdk,
   SdJwtVcRecord,
-} from '@package/agent'
-import { acquireAuthorizationCodeAccessToken } from '@package/agent/invitation/handler'
+} from '@paradym/wallet-sdk'
+import { acquireAuthorizationCodeAccessToken } from '@paradym/wallet-sdk/openid4vc/func/acquireAuthorizationCodeAccessToken'
 
 export interface ReceivePidUseCaseFlowOptions
   extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {
-  agent: AppAgent
+  paradym: ParadymWalletSdk
   onStateChange?: (newState: ReceivePidUseCaseState) => void
   onEnterPin: (
     options: Parameters<AusweisAuthFlowOptions['onEnterPin']>[0] & {
@@ -131,7 +131,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
     return this.authenticationPromise
   }
 
-  public async acquireAccessToken() {
+  public async acquireAccessToken(paradym: ParadymWalletSdk) {
     this.assertState({ expectedState: 'acquire-access-token' })
 
     try {
@@ -152,14 +152,16 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
         return
       }
 
+      // TODO(sdk): add to SDK
       this.accessToken = await acquireAuthorizationCodeAccessToken({
+        paradym,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         authorizationCode,
-        codeVerifier: this.resolvedAuthorizationRequest.codeVerifier,
-        clientId: ReceivePidUseCaseFlow.CLIENT_ID,
-        redirectUri: ReceivePidUseCaseFlow.REDIRECT_URI,
-        agent: this.options.agent,
-        dPopKeyJwk: this.resolvedAuthorizationRequest.dpop?.jwk,
+        authorization: {
+          clientId: ReceivePidUseCaseFlow.CLIENT_ID,
+          redirectUri: ReceivePidUseCaseFlow.REDIRECT_URI,
+        },
+        resolvedAuthorizationRequest: this.resolvedAuthorizationRequest,
       })
 
       this.assertState({

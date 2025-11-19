@@ -1,7 +1,10 @@
 import { useLingui } from '@lingui/react/macro'
-import { type CredentialIssuerDisplay, deleteDeferredCredential, storeReceivedActivity, useAgent } from '@package/agent'
+import { useParadym } from '@package/sdk'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import type { CredentialIssuerDisplay } from '@paradym/wallet-sdk/display/credential'
+import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
+import { deleteDeferredCredential } from '@paradym/wallet-sdk/storage/deferredCredentialStore'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
@@ -25,8 +28,9 @@ export function DeleteDeferredCredentialSheet({
   issuerId,
   issuerDisplay,
 }: DeleteCredentialSheetProps) {
+  const { paradym } = useParadym('unlocked')
+
   const toast = useToastController()
-  const { agent } = useAgent()
   const navigation = useNavigation()
   const { withHaptics, successHaptic, errorHaptic } = useHaptics()
   const { t } = useLingui()
@@ -37,9 +41,9 @@ export function DeleteDeferredCredentialSheet({
       navigation.goBack()
       setIsSheetOpen(false)
 
-      await deleteDeferredCredential(agent, id)
+      await deleteDeferredCredential(paradym, id)
 
-      await storeReceivedActivity(agent, {
+      await storeReceivedActivity(paradym, {
         entityId: issuerId,
         host: issuerDisplay.domain,
         name: issuerDisplay.name,

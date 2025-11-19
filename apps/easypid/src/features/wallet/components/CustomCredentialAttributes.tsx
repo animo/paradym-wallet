@@ -9,10 +9,10 @@ import {
   type PidSdJwtVcAttributes,
 } from '@easypid/utils/pidCustomMetadata'
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk/display/credential'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay

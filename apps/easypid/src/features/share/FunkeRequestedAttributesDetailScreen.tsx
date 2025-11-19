@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro'
-import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 import {
@@ -17,13 +16,15 @@ import {
   useToastController,
   YStack,
 } from '@package/ui'
+import { metadataForDisplay } from '@paradym/wallet-sdk/display/common'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/hooks/useCredentialById'
 import { useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface FunkeRequestedAttributesDetailScreenProps {
-  id: CredentialForDisplayId
+  id: CredentialId
   disclosedPayload: Record<string, unknown>
   disclosedAttributeLength: number
 }
@@ -36,7 +37,7 @@ export function FunkeRequestedAttributesDetailScreen({
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
-  const { credential: activeCredential, isLoading } = useCredentialForDisplayById(id)
+  const { credential: activeCredential, isLoading } = useCredentialById(id)
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { withHaptics } = useHaptics()

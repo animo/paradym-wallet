@@ -1,0 +1,64 @@
+{
+	"name": "@paradym/wallet-sdk",
+	"version": "0.0.0",
+	"main": "src/index.ts",
+	"license": "Apache-2.0",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public",
+		"main": "./dist/index.js",
+		"module": "./dist/index.mjs",
+		"types": "./dist/index.d.ts",
+		"exports": {
+			".": {
+				"import": "./dist/index.mjs",
+				"require": "./dist/index.js",
+				"types": "./dist/index.d.ts"
+			},
+			"./package.json": "./package.json"
+		}
+	},
+	"scripts": {
+		"build": "tsdown"
+	},
+	"dependencies": {
+		"@animo-id/eudi-wallet-functionality": "catalog:",
+		"@animo-id/expo-digital-credentials-api": "catalog:",
+		"@astronautlabs/jsonpath": "catalog:",
+		"@credo-ts/anoncreds": "catalog:",
+		"@credo-ts/askar": "catalog:",
+		"@credo-ts/cheqd": "catalog:",
+		"@credo-ts/core": "catalog:",
+		"@credo-ts/didcomm": "catalog:",
+		"@credo-ts/openid4vc": "catalog:",
+		"@credo-ts/react-native": "catalog:",
+		"@hyperledger/anoncreds-react-native": "catalog:",
+		"@openid4vc/oauth2": "catalog:",
+		"@openid4vc/openid4vp": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:",
+		"@tanstack/react-query": "catalog:",
+		"credo-ts-didweb-anoncreds": "catalog:",
+		"react-native-keychain": "catalog:",
+		"react-native-mmkv": "catalog:"
+	},
+	"peerDependencies": {
+		"react": "*",
+		"react-native": "*",
+		"react-native-fs": "*",
+		"@animo-id/expo-digital-credentials-api": "catalog:",
+		"@hyperledger/anoncreds-react-native": "catalog:",
+		"@openwallet-foundation/askar-react-native": "catalog:",
+		"@tanstack/react-query": "*",
+		"expo-file-system": "*",
+		"expo-image": "*",
+		"expo-image-manipulator": "*",
+		"expo-secure-store": "*",
+		"react-native-get-random-values": "catalog:",
+		"react-native-keychain": "*"
+	},
+	"devDependencies": {
+		"tsdown": "^0.15.6"
+	}
+}

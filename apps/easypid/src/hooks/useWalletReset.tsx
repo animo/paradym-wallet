@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro'
-import { useHaptics } from '@package/app/hooks'
+import { useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useRouter } from 'expo-router'
 import { useCallback } from 'react'
