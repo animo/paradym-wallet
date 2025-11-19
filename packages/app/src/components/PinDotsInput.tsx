@@ -1,3 +1,4 @@
+import { PinPad, PinValues, XStack, YStack } from '@package/ui'
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 import Animated, {
@@ -9,8 +10,6 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Circle, Input } from 'tamagui'
-import { XStack, YStack } from '../../../ui/src/base'
-import { PinPad, PinValues } from '../../../ui/src/components/PinPad'
 import { useHaptics } from '../hooks'
 
 interface PinDotsInputProps {

@@ -18,9 +18,8 @@ catalog:
 
   # Credo / Agent / SSI
   credo-ts-didweb-anoncreds: 0.0.1-alpha.14
-  rxjs: ^7.8.1
-  query-string: ^8.1.0
   "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250917090914
+  "@astronautlabs/jsonpath": ^1.1.2
   "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
   "@animo-id/expo-secure-environment": 0.1.5
   "@animo-id/expo-digital-credentials-api": 0.4.0
@@ -49,7 +48,8 @@ catalog:
   "@openwallet-foundation/askar-react-native": 0.4.3
   "@openwallet-foundation/askar-shared": 0.4.3
   buffer: 6.0.3
-  "@astronautlabs/jsonpath": ^1.1.2
+  rxjs: ^7.8.1
+  query-string: ^8.1.0
   
   # React Native
   "@react-native-community/netinfo": ~11.4.1
@@ -89,6 +89,7 @@ catalog:
   expo-image-manipulator: ~13.1.7
   expo-linear-gradient: ~14.1.5
   expo-linking: ~7.1.6
+  expo-modules-autolinking: ~2.1.13
   expo-router: ~5.1.2
   expo-secure-store: ~14.2.3
   expo-splash-screen: ~0.30.9

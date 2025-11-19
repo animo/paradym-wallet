@@ -1,14 +1,9 @@
-import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import {
-  type ResolveOutOfBandInvitationResultSuccess,
-  parseDidCommInvitation,
-  resolveOutOfBandInvitation,
-  useDidCommConnectionActions,
-} from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
+import { useDidCommConnectionActions, useParadym } from '@paradym/wallet-sdk/hooks'
+import type { ResolveOutOfBandInvitationResult } from '@paradym/wallet-sdk/invitation/resolver'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
@@ -40,7 +35,7 @@ const messages = {
 }
 
 export function DidCommNotificationScreen() {
-  const { agent } = useParadymAgent()
+  const { paradym } = useParadym('unlocked')
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
@@ -48,7 +43,7 @@ export function DidCommNotificationScreen() {
   const [errorReason, setErrorReason] = useState<string>()
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
   const [readyToNavigate, setReadyToNavigate] = useState(false)
-  const [resolvedInvitation, setResolvedInvitation] = useState<ResolveOutOfBandInvitationResultSuccess | undefined>()
+  const [resolvedInvitation, setResolvedInvitation] = useState<ResolveOutOfBandInvitationResult | undefined>()
   const [flow, setFlow] = useState<{
     type: 'issue' | 'verify' | 'connect'
     id: string
@@ -68,8 +63,8 @@ export function DidCommNotificationScreen() {
   const onComplete = () => handleNavigation('replace')
 
   const onConnectionAccept = async () => {
-    const result = await acceptConnection()
-    if (result.success) {
+    try {
+      const result = await acceptConnection()
       setFlow({
         id:
           result.flowType === 'issue'
@@ -79,12 +74,13 @@ export function DidCommNotificationScreen() {
               : result.connectionId,
         type: result.flowType,
       })
-    } else {
-      setErrorReason(result.error)
+    } catch (e) {
+      setErrorReason((e as Error).message)
       throw new Error('Error accepting connection')
     }
   }
 
+  // TODO(sdk): we can probably abstract a bit more from this
   useEffect(() => {
     async function handleInvitation() {
       if (hasHandledNotificationLoading) return
@@ -100,23 +96,13 @@ export function DidCommNotificationScreen() {
           return
         }
 
-        const parseResult = await parseDidCommInvitation(agent, invitation)
-        if (!parseResult.success) {
-          setErrorReason(parseResult.error)
-          return
+        const resolvedInvite = await paradym.resolveDidCommInvitation(invitation)
+        if (resolvedInvite.success) {
+          setResolvedInvitation(resolvedInvite)
+        } else {
+          setErrorReason(resolvedInvite.message)
         }
-
-        const resolveResult = await resolveOutOfBandInvitation(agent, parseResult.result)
-        if (!resolveResult.success) {
-          setErrorReason(resolveResult.error)
-          return
-        }
-
-        setResolvedInvitation(resolveResult)
-      } catch (error: unknown) {
-        agent.config.logger.error('Error parsing invitation', {
-          error,
-        })
+      } catch (error) {
         if (isDevelopmentModeEnabled && error instanceof Error) {
           setErrorReason(`${t(messages.errorParsingInvitation)}\n\nDevelopment mode error:\n${error.message}`)
         } else {
@@ -128,7 +114,14 @@ export function DidCommNotificationScreen() {
     if (params.invitation || params.invitationUrl) {
       void handleInvitation()
     }
-  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled, t])
+  }, [
+    params.invitation,
+    params.invitationUrl,
+    hasHandledNotificationLoading,
+    isDevelopmentModeEnabled,
+    t,
+    paradym.resolveDidCommInvitation,
+  ])
 
   // Delay the navigation to hide the fact we're loading in the new slides based on the flow type
   useEffect(() => {

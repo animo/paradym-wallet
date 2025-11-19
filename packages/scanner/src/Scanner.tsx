@@ -14,12 +14,13 @@ interface BarcodeScannerProps {
 }
 
 export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) => {
+  const { t } = useLingui()
+
   const [requestPermissionResult, setRequestPermissionResult] = useState<null | 'pending' | boolean>(null)
   const { hasPermission, requestPermission } = useCameraPermission()
 
-  const { t } = useLingui()
-
   const device = useCameraDevice('back')
+
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: (codes) => {

@@ -1,9 +1,8 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { useActivities } from '@package/agent'
 import { ActivityRowItem } from '@package/app'
 import { TextBackButton } from '@package/app'
-import { useScrollViewPosition } from '@package/app/hooks'
+import { useScrollViewPosition } from '@package/app'
 import {
   AnimatedStack,
   FlexPage,
@@ -16,6 +15,7 @@ import {
   Stack,
   YStack,
 } from '@package/ui'
+import { useActivities } from '@paradym/wallet-sdk/hooks/useActivities'
 import React, { useMemo } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 

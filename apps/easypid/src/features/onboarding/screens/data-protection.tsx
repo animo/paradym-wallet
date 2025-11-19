@@ -1,7 +1,7 @@
 import { isLocalSecureEnvironmentSupported } from '@animo-id/expo-secure-environment'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useLingui } from '@lingui/react/macro'
-import { useImageScaler } from '@package/app/hooks'
+import { useImageScaler } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, HeroIcons, Spinner, XStack, YStack, useToastController } from '@package/ui'
 import { useState } from 'react'
