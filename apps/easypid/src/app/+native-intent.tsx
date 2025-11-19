@@ -2,8 +2,9 @@ import 'fast-text-encoding'
 
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { appScheme } from '@easypid/constants'
-import { logger, parseInvitationUrlSync } from '@package/agent'
+import { parseInvitationUrlSync } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
+import { LogLevel, ParadymWalletSdkConsoleLogger } from '@paradym/wallet-sdk'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
 import { credentialDataHandlerOptions } from './(app)/_layout'
@@ -18,6 +19,7 @@ export function redirectSystemPath({
   path: string
   initial: boolean
 }) {
+  const logger = new ParadymWalletSdkConsoleLogger(LogLevel.trace)
   logger.debug(`Handling deeplink for path ${path}.`, {
     initial,
   })

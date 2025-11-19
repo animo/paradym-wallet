@@ -1,7 +1,7 @@
 export { tokens, config, absoluteFill } from './config/tamagui.config'
 export * from './constants'
 export {
-  TamaguiProviderProps,
+  type TamaguiProviderProps,
   TamaguiProvider,
   Spacer,
   Input,

@@ -1,7 +1,6 @@
-import type { PropsWithChildren } from 'react'
-
-import { useSecureUnlock } from '@package/secure-store/secure-wallet-key/SecureUnlockProvider'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
 import { useRouter } from 'expo-router'
+import type { PropsWithChildren } from 'react'
 import { useEffect, useRef } from 'react'
 import { AppState, type AppStateStatus } from 'react-native'
 
@@ -9,7 +8,7 @@ const BACKGROUND_TIME_THRESHOLD = 60000 // 60 seconds
 
 export function BackgroundLockProvider({ children }: PropsWithChildren) {
   const router = useRouter()
-  const secureUnlock = useSecureUnlock()
+  const paradym = useParadym()
   const backgroundTimeRef = useRef<Date | null>(null)
 
   useEffect(() => {
@@ -20,9 +19,9 @@ export function BackgroundLockProvider({ children }: PropsWithChildren) {
         if (backgroundTimeRef.current) {
           const timeInBackground = new Date().getTime() - backgroundTimeRef.current.getTime()
 
-          if (timeInBackground > BACKGROUND_TIME_THRESHOLD && secureUnlock.state === 'unlocked') {
+          if (timeInBackground > BACKGROUND_TIME_THRESHOLD && paradym.state === 'unlocked') {
             console.log('App was in background for more than 30 seconds, locking')
-            secureUnlock.lock()
+            paradym.lock()
             router.replace('/authenticate')
           }
           backgroundTimeRef.current = null
@@ -35,7 +34,7 @@ export function BackgroundLockProvider({ children }: PropsWithChildren) {
     return () => {
       subscription.remove()
     }
-  }, [secureUnlock, router])
+  }, [paradym, router])
 
   return <>{children}</>
 }

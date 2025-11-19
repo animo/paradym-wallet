@@ -1,6 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
-import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
@@ -13,17 +12,18 @@ import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import {
-  BiometricAuthenticationCancelledError,
-  BiometricAuthenticationNotEnabledError,
-  getCredentialForDisplay,
-  getCredentialForDisplayId,
-  storeReceivedActivity,
-} from '@package/agent'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
+import { capitalizeFirstLetter, sleep } from '@package/utils'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import {
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
+} from '@paradym/wallet-sdk/error'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
+import { getHostNameFromUrl } from '@paradym/wallet-sdk/utils/url'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -43,9 +43,10 @@ const notReadyToReceivePidMessage = defineMessage({
 })
 
 export function FunkePidSetupScreen() {
+  const paradym = useParadym('unlocked')
+
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
-  const secureUnlock = useSecureUnlock()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const [idCardPin, setIdCardPin] = useState<string>()
@@ -73,7 +74,7 @@ export function FunkePidSetupScreen() {
   }
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    async (options) => {
+    async (_options) => {
       // If we have a PIN, use it once and clear it
       if (idCardPin) {
         const pin = idCardPin
@@ -141,7 +142,7 @@ export function FunkePidSetupScreen() {
     walletPin,
     allowSimulatorCard,
   }: { walletPin: string; allowSimulatorCard: boolean }) => {
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       toast.show(t(walletNotLockedMessage), {
         customData: { preset: 'danger' },
       })
@@ -158,7 +159,7 @@ export function FunkePidSetupScreen() {
     }
 
     const baseOptions = {
-      agent: secureUnlock.context.agent,
+      paradym: paradym.paradym,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({
@@ -239,7 +240,7 @@ export function FunkePidSetupScreen() {
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       toast.show(t(walletNotLockedMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
@@ -323,7 +324,7 @@ export function FunkePidSetupScreen() {
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       toast.show(t(walletNotLockedMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
@@ -335,7 +336,7 @@ export function FunkePidSetupScreen() {
 
       for (const credential of credentials) {
         if (credential instanceof SdJwtVcRecord) {
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
+          const parsed = paradym.paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
             credential.compactSdJwtVc
           )
           setUserName(
@@ -345,7 +346,8 @@ export function FunkePidSetupScreen() {
           )
 
           const { display } = getCredentialForDisplay(credential)
-          await storeReceivedActivity(secureUnlock.context.agent, {
+
+          await storeReceivedActivity(paradym.paradym, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
@@ -358,18 +360,14 @@ export function FunkePidSetupScreen() {
         }
       }
     } catch (error) {
-      if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
-          customData: { preset: 'danger' },
-        })
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {})
         return
       }
 
-      // What if not supported?!?
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
-        toast.show(t(commonMessages.biometricAuthenticationNotEnabled), {
-          customData: { preset: 'danger' },
-        })
+      // TODO: What if not supported?
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+        toast.show(t(commonMessages.biometricAuthenticationNotEnabled), {})
         pushToWallet()
         return
       }

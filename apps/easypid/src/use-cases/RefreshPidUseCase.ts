@@ -1,21 +1,52 @@
 import { ClaimFormat, Kms, MdocRecord } from '@credo-ts/core'
 import { SdJwtVcRecord } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
-import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@package/agent'
 import {
   acquireRefreshTokenAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-} from '@package/agent/invitation/handler'
-import { getBatchCredentialMetadata, setBatchCredentialMetadata } from '@package/agent/openid4vc/batchMetadata'
-import { getRefreshCredentialMetadata, setRefreshCredentialMetadata } from '@package/agent/openid4vc/refreshMetadata'
-import { updateCredential } from '@package/agent/storage/credential'
+} from '@package/agent'
+import type {
+  OpenId4VciRequestTokenResponse,
+  OpenId4VciResolvedCredentialOffer,
+  ParadymWalletSdk,
+} from '@paradym/wallet-sdk'
+import type { OpenId4VcAgent } from '@paradym/wallet-sdk/agent'
+import {
+  getBatchCredentialMetadata,
+  getCredentialCategoryMetadata,
+  getRefreshCredentialMetadata,
+  setBatchCredentialMetadata,
+  setRefreshCredentialMetadata,
+} from '@paradym/wallet-sdk/metadata/credentials'
+import type { FetchBatchCredentialOptions } from '@paradym/wallet-sdk/openid4vc/batch'
+import { updateCredential } from '@paradym/wallet-sdk/storage/credentials'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 
+export async function refreshPid(options: FetchBatchCredentialOptions) {
+  const batchMetadata = getBatchCredentialMetadata(options.credentialRecord)
+  const categoryMetadata = getCredentialCategoryMetadata(options.credentialRecord)
+
+  if (categoryMetadata?.credentialCategory === 'DE-PID' && batchMetadata?.additionalCredentials.length === 0) {
+    const useCase = await RefreshPidUseCase.initialize({
+      paradym: options.paradym,
+    })
+
+    const credentials = await useCase.retrieveCredentialsUsingExistingRecords({
+      sdJwt: options.credentialRecord as SdJwtVcRecord,
+      mdoc: options.credentialRecord as MdocRecord,
+      batchSize: 2,
+    })
+
+    return credentials[0]
+  }
+
+  return options.credentialRecord
+}
+
 export interface RefreshPidUseCaseOptions {
-  agent: AppAgent
+  paradym: ParadymWalletSdk
 }
 
 export class RefreshPidUseCase {
@@ -29,7 +60,7 @@ export class RefreshPidUseCase {
 
   public static async initialize(options: RefreshPidUseCaseOptions) {
     const resolved = await resolveOpenId4VciOffer({
-      agent: options.agent,
+      agent: options.paradym.agent as unknown as OpenId4VcAgent,
       offer: { uri: C_PRIME_SD_JWT_MDOC_OFFER },
       fetchAuthorization: false,
     })
@@ -68,7 +99,7 @@ export class RefreshPidUseCase {
     }
 
     const accessToken = await acquireRefreshTokenAccessToken({
-      agent: this.options.agent,
+      agent: this.options.paradym.agent as unknown as OpenId4VcAgent,
       clientId: ReceivePidUseCaseFlow.CLIENT_ID,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       authorizationServer: this.resolvedCredentialOffer.metadata.authorizationServers[0].issuer,
@@ -90,7 +121,7 @@ export class RefreshPidUseCase {
       .map(([id]) => id)
 
     const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
-      agent: this.options.agent,
+      paradym: this.options.paradym,
       accessToken,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       credentialConfigurationIdsToRequest,
@@ -123,7 +154,7 @@ export class RefreshPidUseCase {
         sdJwt.compactSdJwtVc = credentialRecord.compactSdJwtVc
 
         // Should we update the type metadata as well? For now we use hardcoded anyway
-        await updateCredential(this.options.agent, sdJwt)
+        await updateCredential(this.options.paradym, sdJwt)
       } else if (credentialRecord instanceof MdocRecord && mdoc) {
         credentialRecords.push(mdoc)
 
@@ -132,7 +163,7 @@ export class RefreshPidUseCase {
         if (batchMetadata) setBatchCredentialMetadata(mdoc, batchMetadata)
         mdoc.base64Url = credentialRecord.base64Url
 
-        await updateCredential(this.options.agent, mdoc)
+        await updateCredential(this.options.paradym, mdoc)
       }
     }
 

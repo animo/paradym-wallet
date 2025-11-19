@@ -2,22 +2,23 @@
 	"name": "wallets",
 	"private": true,
 	"scripts": {
-		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
 		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
-		"deps:check": "check-dependency-version-consistency .",
 		"deps:fix": "pnpm deps:check --fix",
 		"types:check": "tsc --noEmit",
 		"style:check": "biome check --unsafe",
-		"style:fix": "biome check --write --unsafe"
+		"style:fix": "biome check --write --unsafe",
+		"release:sdk": "pnpm build && pnpm changeset publish --no-git-tag",
+		"changeset-version:sdk": "pnpm changeset version && pnpm style:fix"
 	},
 	"engines": {
 		"node": ">=20.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.1",
-		"check-dependency-version-consistency": "^5.0.1",
+		"@changesets/cli": "^2.29.4",
+		"tsup": "^8.5.0",
 		"typescript": "catalog:"
 	},
 	"pnpm": {
@@ -52,9 +53,10 @@
 			"@cosmjs/stargate": "^0.36.2"
 		},
 		"patchedDependencies": {
-			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",
 			"@animo-id/credo-ts-askar": "patches/@animo-id__credo-ts-askar.patch",
-			"@animo-id/credo-ts-cheqd": "patches/@animo-id__credo-ts-cheqd.patch"
+			"@animo-id/credo-ts-cheqd": "patches/@animo-id__credo-ts-cheqd.patch",
+			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",
+			"@react-native-masked-view/masked-view": "patches/@react-native-masked-view__masked-view.patch"
 		}
 	},
 	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"

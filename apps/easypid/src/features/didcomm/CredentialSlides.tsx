@@ -1,8 +1,8 @@
-import { useParadymAgent } from '@easypid/agent'
 import { useLingui } from '@lingui/react/macro'
-import { storeReceivedActivity, useDidCommCredentialActions } from '@package/agent'
-import { SlideWizard } from '@package/app/components/SlideWizard'
+import { SlideWizard } from '@package/app'
 import { useToastController } from '@package/ui'
+import { useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk/hooks'
+import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
 import { getFlowConfirmationText } from './utils'
 
@@ -14,7 +14,7 @@ type CredentialSlidesProps = {
 }
 
 export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, onComplete }: CredentialSlidesProps) {
-  const { agent } = useParadymAgent()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
@@ -31,12 +31,14 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
         }),
         { customData: { preset: 'danger' } }
       )
-      if (credentialExchange) agent.didcomm.credentials.deleteById(credentialExchange.id)
+      if (credentialExchange) {
+        paradym.agent.didcomm.credentials.deleteById(credentialExchange.id)
+      }
       onCancel()
     })
 
     if (w3cRecord) {
-      await storeReceivedActivity(agent, {
+      await storeReceivedActivity(paradym, {
         entityId: credentialExchange?.connectionId,
         name: display.issuer.name,
         logo: display.issuer.logo,
@@ -50,7 +52,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   const onCredentialDecline = () => {
     if (credentialExchange) {
       declineCredential().finally(() => {
-        void agent.didcomm.credentials.deleteById(credentialExchange.id)
+        void paradym.agent.didcomm.credentials.deleteById(credentialExchange.id)
       })
     }
 
