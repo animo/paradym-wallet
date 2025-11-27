@@ -76,8 +76,8 @@ catalogs:
       specifier: 1.132.18
       version: 1.132.18
     '@tanstack/react-query':
-      specifier: ^5.81.5
-      version: 5.81.5
+      specifier: ^5.90.10
+      version: 5.90.10
     '@types/fast-text-encoding':
       specifier: ^1.0.3
       version: 1.0.3
@@ -565,7 +565,7 @@ importers:
         version: link:../utils
       '@tanstack/react-query':
         specifier: 'catalog:'
-        version: 5.81.5(react@19.0.0)
+        version: 5.90.10(react@19.0.0)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
         version: 0.0.1-alpha.14(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.3)(typescript@5.8.3))(@animo-id/credo-ts-core@0.5.14-alpha-20251016134257(typescript@5.8.3))(@hyperledger/anoncreds-shared@0.3.3)
@@ -626,7 +626,7 @@ importers:
         version: 1.132.18(react-dom@19.1.0(react@19.0.0))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@tanstack/react-query':
         specifier: 'catalog:'
-        version: 5.81.5(react@19.0.0)
+        version: 5.90.10(react@19.0.0)
       expo:
         specifier: 'catalog:'
         version: 53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -688,7 +688,7 @@ importers:
         version: 0.4.3(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
       '@tanstack/react-query':
         specifier: 'catalog:'
-        version: 5.81.5(react@19.0.0)
+        version: 5.90.10(react@19.0.0)
       expo-secure-store:
         specifier: 'catalog:'
         version: 14.2.3(expo@53.0.16(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))
@@ -2911,11 +2911,11 @@ packages:
     peerDependencies:
       react: '*'
 
-  '@tanstack/query-core@5.81.5':
-    resolution: {integrity: sha512-ZJOgCy/z2qpZXWaj/oxvodDx07XcQa9BF92c0oINjHkoqUPsmm3uG08HpTaviviZ/N9eP1f9CM7mKSEkIo7O1Q==}
+  '@tanstack/query-core@5.90.10':
+    resolution: {integrity: sha512-EhZVFu9rl7GfRNuJLJ3Y7wtbTnENsvzp+YpcAV7kCYiXni1v8qZh++lpw4ch4rrwC0u/EZRnBHIehzCGzwXDSQ==}
 
-  '@tanstack/react-query@5.81.5':
-    resolution: {integrity: sha512-lOf2KqRRiYWpQT86eeeftAGnjuTR35myTP8MXyvHa81VlomoAWNEd8x5vkcAfQefu0qtYCvyqLropFZqgI2EQw==}
+  '@tanstack/react-query@5.90.10':
+    resolution: {integrity: sha512-BKLss9Y8PQ9IUjPYQiv3/Zmlx92uxffUOX8ZZNoQlCIZBJPT5M+GOMQj7xislvVQ6l1BstBjcX0XB/aHfFYVNw==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -9801,11 +9801,11 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  '@tanstack/query-core@5.81.5': {}
+  '@tanstack/query-core@5.90.10': {}
 
-  '@tanstack/react-query@5.81.5(react@19.0.0)':
+  '@tanstack/react-query@5.90.10(react@19.0.0)':
     dependencies:
-      '@tanstack/query-core': 5.81.5
+      '@tanstack/query-core': 5.90.10
       react: 19.0.0
 
   '@tokenizer/inflate@0.3.1':
