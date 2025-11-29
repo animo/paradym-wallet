@@ -1,7 +1,7 @@
 import 'fast-text-encoding'
 
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { appScheme } from '@easypid/constants'
+import { appScheme, redirectBaseUrl } from '@easypid/constants'
 import { logger, parseInvitationUrlSync } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
 import * as Haptics from 'expo-haptics'
@@ -36,13 +36,24 @@ export function redirectSystemPath({
     // back to the easypid wallet.
     const parsedPath = new URL(path)
     const credentialAuthorizationCode = parsedPath.searchParams.get('code')
-    if (
-      parsedPath.protocol === `${appScheme}:` &&
-      parsedPath.pathname === '/wallet/redirect' &&
-      credentialAuthorizationCode
-    ) {
+
+    const parsedRedirectBaseUrl = redirectBaseUrl ? new URL(redirectBaseUrl) : undefined
+
+    const isUniversalRedirect =
+      parsedRedirectBaseUrl &&
+      parsedRedirectBaseUrl.host === parsedPath.host &&
+      parsedRedirectBaseUrl.pathname === parsedPath.pathname &&
+      parsedRedirectBaseUrl.host === parsedPath.host
+
+    const isDeeplinkRedirect = parsedPath.protocol === `${appScheme}:` && parsedPath.pathname === '/wallet/redirect'
+
+    // TODO: we should handle if no `credentialAuthorizationCode` is present
+    // but an `error` and `error_description` and set these so we can show the
+    // error on the authorization screen. Or at least handle the flow correctly
+    // currently it will just redirect as if there's an invitation to be processed.
+    if ((isUniversalRedirect || isDeeplinkRedirect) && credentialAuthorizationCode) {
       logger.debug(
-        'Deeplink is redirect after authorization code flow. Setting credentialAuthorizationCode search param, but not routing to any screen',
+        'Link is redirect after authorization code flow. Setting credentialAuthorizationCode search param, but not routing to any screen',
         {
           credentialAuthorizationCode,
         }

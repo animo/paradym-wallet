@@ -29,7 +29,7 @@ import {
 } from '@package/agent'
 
 import type { W3cV2CredentialRecord } from '@credo-ts/core'
-import { appScheme } from '@easypid/constants'
+import { walletClient } from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { SlideWizard, usePushToWallet } from '@package/app'
@@ -50,12 +50,6 @@ import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
 type Query = { uri: string }
-
-// TODO: clientId
-const authorization = {
-  clientId: 'wallet',
-  redirectUri: `${appScheme}:///wallet/redirect`,
-}
 
 export function FunkeCredentialNotificationScreen() {
   const { agent } = useAppAgent()
@@ -128,7 +122,7 @@ export function FunkeCredentialNotificationScreen() {
       offer: {
         uri: params.uri,
       },
-      authorization,
+      authorization: walletClient,
     })
       .then(({ resolvedAuthorizationRequest, resolvedCredentialOffer }) => {
         setResolvedCredentialOffer(resolvedCredentialOffer)
@@ -154,7 +148,7 @@ export function FunkeCredentialNotificationScreen() {
         resolvedCredentialOffer,
         credentialConfigurationIdsToRequest: [configurationId],
         accessToken: tokenResponse,
-        clientId: resolvedAuthorizationRequest ? authorization.clientId : undefined,
+        clientId: resolvedAuthorizationRequest ? walletClient.clientId : undefined,
         // Always request batch for non pid credentials
         requestBatch: true,
       })
@@ -176,7 +170,7 @@ export function FunkeCredentialNotificationScreen() {
           },
           response: deferredCredentials[0],
           issuerMetadata: resolvedCredentialOffer.metadata,
-          clientId: resolvedAuthorizationRequest ? authorization.clientId : undefined,
+          clientId: resolvedAuthorizationRequest ? walletClient.clientId : undefined,
         })
       }
 
@@ -234,9 +228,9 @@ export function FunkeCredentialNotificationScreen() {
         const tokenResponse = await acquireAuthorizationCodeAccessToken({
           agent,
           resolvedCredentialOffer,
-          redirectUri: authorization.redirectUri,
+          redirectUri: walletClient.redirectUri,
           authorizationCode,
-          clientId: authorization.clientId,
+          clientId: walletClient.clientId,
           dPopKeyJwk: resolvedAuthorizationRequest.dpop?.jwk,
           codeVerifier:
             'codeVerifier' in resolvedAuthorizationRequest ? resolvedAuthorizationRequest.codeVerifier : undefined,
@@ -465,7 +459,7 @@ export function FunkeCredentialNotificationScreen() {
                   display={credentialDisplay}
                   authCodeFlowDetails={{
                     openUrl: resolvedAuthorizationRequest.authorizationRequestUrl,
-                    redirectUri: authorization.redirectUri,
+                    redirectUri: walletClient.redirectUri,
                     domain: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
                   }}
                   onAuthFlowCallback={acquireCredentialsAuth}
