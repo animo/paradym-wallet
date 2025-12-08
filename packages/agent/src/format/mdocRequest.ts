@@ -20,14 +20,15 @@ export async function getSubmissionForMdocDocumentRequest(
     })),
   })
 
-  const mdocs = matchingDocTypeRecords.map((record) => ({
-    credential: getCredentialForDisplay(record),
-    mdoc: record.credential,
-    issuerSignedDocument: parseIssuerSigned(
-      TypedArrayEncoder.fromBase64(record.credential.base64Url),
-      record.credential.docType
-    ),
-  }))
+  const mdocs = matchingDocTypeRecords.map((record) => {
+    const firstMdoc = record.firstCredential
+
+    return {
+      credential: getCredentialForDisplay(record),
+      mdoc: firstMdoc,
+      issuerSignedDocument: parseIssuerSigned(TypedArrayEncoder.fromBase64(firstMdoc.base64Url), firstMdoc.docType),
+    }
+  })
 
   const entries: FormattedSubmissionEntry[] = deviceRequest.docRequests.map((docRequest): FormattedSubmissionEntry => {
     const matchingMdocs = mdocs

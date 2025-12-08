@@ -84,7 +84,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
       if (w3cCredentialRecordId && didCommDisplayMetadata) {
         // NOTE: we store the metadata also in openid4vc format, just because it's simple. In the future
         // we may want to have our own display format we use for all credential types
-        const w3cRecord = await agent.w3cCredentials.getCredentialRecordById(w3cCredentialRecordId)
+        const w3cRecord = await agent.w3cCredentials.getById(w3cCredentialRecordId)
 
         // TODO: we must somehow link the w3c credential record to a DIDComm connection
         // first in Paradym Wallet, but would alos be nice to do this within Credo

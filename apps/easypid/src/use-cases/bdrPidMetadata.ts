@@ -46,8 +46,7 @@ export const bdrPidOpenId4VcMetadata = (credentialIssuer: string): OpenId4VcCred
 }
 
 export const bdrPidSdJwtTypeMetadata: SdJwtVcTypeMetadata = {
-  // TODO: add vct to type interface in Credo
-  // vct: 'https://metadata-8c062a.usercontent.opencode.de/pid.json',
+  vct: 'https://demo.pid-issuer.bundesdruckerei.de/credentials/pid/1.0',
   name: 'German Person Identification Data Credential - First Version',
   description:
     'The definition of the core identification credential for all natural persons in Germany - first revision',

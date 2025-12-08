@@ -28,24 +28,23 @@ catalog:
   "@animo-id/mdoc": 0.5.2
   "@unimodules/react-native-adapter": ./noop
   "@unimodules/core": ./noop
-  "@openid4vc/oauth2": 0.3.0-alpha-20251001121503
-  "@openid4vc/openid4vp": 0.3.0-alpha-20251001121503
-  "@openid4vc/openid4vci": 0.3.0-alpha-20251001121503
-  "@openid4vc/utils": 0.3.0-alpha-20251001121503
+  "@openid4vc/oauth2": ^0.4.0
+  "@openid4vc/openid4vp": ^0.4.0
+  "@openid4vc/openid4vci": ^0.4.0
+  "@openid4vc/utils": ^0.4.0
   isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
   fast-text-encoding: ^1.0.6
   "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257
-  "@credo-ts/askar": npm:@animo-id/credo-ts-askar@0.5.14-alpha-20251016134257
-  "@credo-ts/cheqd": npm:@animo-id/credo-ts-cheqd@0.5.14-alpha-20251016134257
-  "@credo-ts/core": npm:@animo-id/credo-ts-core@0.5.14-alpha-20251016134257
-  "@credo-ts/openid4vc": npm:@animo-id/credo-ts-openid4vc@0.5.14-alpha-20251016134257
-  "@credo-ts/question-answer": npm:@animo-id/credo-ts-question-answer@0.5.14-alpha-20251016134257
-  "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20251016134257
-  "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20251016134257
-  "@openid-federation/core": 0.1.1-alpha.17
-  "@hyperledger/anoncreds-react-native": 0.3.3
-  "@hyperledger/anoncreds-shared": 0.3.3
+  "@credo-ts/anoncreds": 0.6.1-alpha-20251205132807
+  "@credo-ts/askar": 0.6.1-alpha-20251205132807
+  "@credo-ts/cheqd": 0.6.1-alpha-20251205132807
+  "@credo-ts/core": 0.6.1-alpha-20251205132807
+  "@credo-ts/openid4vc": 0.6.1-alpha-20251205132807
+  "@credo-ts/question-answer": 0.6.1-alpha-20251205132807
+  "@credo-ts/react-native": 0.6.1-alpha-20251205132807
+  "@credo-ts/didcomm": 0.6.1-alpha-20251205132807
+  "@hyperledger/anoncreds-react-native": 0.3.4
+  "@hyperledger/anoncreds-shared": 0.3.4
   "@openwallet-foundation/askar-react-native": 0.4.3
   "@openwallet-foundation/askar-shared": 0.4.3
   buffer: 6.0.3

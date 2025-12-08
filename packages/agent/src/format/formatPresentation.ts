@@ -119,7 +119,7 @@ export function formatDifPexCredentialsForRequest(
                 disclosed = {
                   ...getAttributesAndMetadataForMdocPayload(
                     verifiableCredential.disclosedPayload,
-                    verifiableCredential.credentialRecord.credential
+                    verifiableCredential.credentialRecord.firstCredential
                   ),
                   paths: getDisclosedAttributePathArrays(verifiableCredential.disclosedPayload, 2),
                 }
@@ -223,12 +223,9 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
             paths: getDisclosedAttributePathArrays(attributes, 2),
           }
         } else if (validMatch.record.type === 'MdocRecord') {
-          // TODO: check if fixed now
-          // FIXME: the disclosed payload here doesn't have the correct encoding anymore
-          // once we serialize input??
           const namespaces = validMatch.claims.valid_claim_sets[0].output as MdocNameSpaces
           disclosed = {
-            ...getAttributesAndMetadataForMdocPayload(namespaces, validMatch.record.credential),
+            ...getAttributesAndMetadataForMdocPayload(namespaces, validMatch.record.firstCredential),
             paths: getDisclosedAttributePathArrays(namespaces, 2),
           }
         } else {

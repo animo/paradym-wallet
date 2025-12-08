@@ -69,7 +69,7 @@ export const W3cV2CredentialRecordProvider: React.FC<PropsWithChildren<Props>> =
 
   useEffect(() => {
     void agent.w3cV2Credentials
-      .getAllCredentialRecords()
+      .getAll()
       .then((w3cV2CredentialRecords) => setState({ w3cV2CredentialRecords, isLoading: false }))
   }, [agent])
 

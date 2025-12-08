@@ -47,13 +47,11 @@ import q from 'query-string'
 import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
 import type { ParadymAppAgent } from '../agent'
 import type { EitherAgent } from '../agent'
-import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
 import {
   type FormattedSubmission,
   formatDcqlCredentialsForRequest,
   formatDifPexCredentialsForRequest,
 } from '../format/formatPresentation'
-import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { getTrustedEntities } from '../utils/trust'
@@ -256,25 +254,13 @@ export async function acquireAuthorizationCodeAccessToken({
 }
 
 const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], issuerMetadata: OpenId4VciMetadata) =>
-  credentials.map(({ credentials, ...credentialResponse }) => {
-    const firstCredential = credentials[0]
-    const record = credentialRecordFromCredential(firstCredential)
-
+  credentials.map(({ record, ...credentialResponse }) => {
     // OpenID4VC metadata
     const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
       id: issuerMetadata.credentialIssuer.credential_issuer,
       display: issuerMetadata.credentialIssuer.display,
     })
     setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-    // Match metadata
-    if (credentials.length > 1) {
-      setBatchCredentialMetadata(record, {
-        additionalCredentials: credentials.slice(1).map(encodeCredential) as
-          | Array<string>
-          | Array<Record<string, unknown>>,
-      })
-    }
 
     return {
       ...credentialResponse,
@@ -497,7 +483,8 @@ export const getCredentialsForProofRequest = async ({
 
   const resolved = await agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
     origin,
-    trustedFederationEntityIds: entityId ? [entityId] : undefined,
+    // NOTE: add back when enabling federation support
+    // trustedFederationEntityIds: entityId ? [entityId] : undefined,
   })
 
   const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agent.context, {

@@ -1,11 +1,8 @@
-import { Mdoc, MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '@credo-ts/core'
 import { RefreshPidUseCase } from '../../../apps/easypid/src/use-cases/RefreshPidUseCase'
 import type { EitherAgent } from './agent'
 import { getCredentialCategoryMetadata } from './credentialCategoryMetadata'
-import { decodeW3cCredential, decodeW3cV2Credential } from './format/credentialEncoding'
-import { getBatchCredentialMetadata } from './openid4vc/batchMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
-import { updateCredential } from './storage'
 
 export async function refreshPid({
   agent,
@@ -13,7 +10,7 @@ export async function refreshPid({
   mdoc,
   batchSize,
 }: { agent: EitherAgent; sdJwt?: SdJwtVcRecord; mdoc?: MdocRecord; batchSize?: number }) {
-  console.log('refreshing PID')
+  agent.config.logger.info('refreshing PID')
   const useCase = await RefreshPidUseCase.initialize({
     agent,
   })
@@ -28,22 +25,13 @@ export async function refreshPid({
 /**
  * If available, takes a credential from the batch.
  *
- * @todo: what if batch is gone?
+ * @todo this should be refactored since it only refreshes when
+ * you use the cred, but this should actually happen continuously
+ * so that also if it expires it is refreshed
  */
-export async function handleBatchCredential<
+export async function refreshPidIfNeeded<
   CredentialRecord extends W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord,
->(agent: EitherAgent, credentialRecord: CredentialRecord): Promise<CredentialRecord> {
-  const batchMetadata = getBatchCredentialMetadata(credentialRecord)
-  if (!batchMetadata) return credentialRecord
-
-  // TODO: maybe we should also store the main credential in the additional credentials (and rename it)
-  // As right now the main one is mostly for display
-  const batchCredential = batchMetadata.additionalCredentials.pop()
-
-  // Store the record with the used credential removed. Even if the presentation fails we remove it, as we want to be careful
-  // if the presentation was shared
-  if (batchCredential) await updateCredential(agent, credentialRecord)
-
+>(agent: EitherAgent, credentialRecord: CredentialRecord) {
   // Try to refresh the pid when we run out
   // TODO: we should probably move this somewhere else at some point
   const categoryMetadata = getCredentialCategoryMetadata(credentialRecord)
@@ -51,7 +39,7 @@ export async function handleBatchCredential<
   if (
     categoryMetadata?.credentialCategory === 'DE-PID' &&
     refreshMetadata &&
-    batchMetadata.additionalCredentials.length === 0
+    credentialRecord.credentialInstances.length === 1
   ) {
     refreshPid({
       agent,
@@ -70,30 +58,4 @@ export async function handleBatchCredential<
         agent.config.logger.debug('Successfully refreshed PID')
       })
   }
-
-  if (batchCredential) {
-    if (credentialRecord instanceof MdocRecord) {
-      return new MdocRecord({
-        mdoc: Mdoc.fromBase64Url(batchCredential as string),
-      }) as CredentialRecord
-    }
-    if (credentialRecord instanceof SdJwtVcRecord) {
-      return new SdJwtVcRecord({
-        compactSdJwtVc: batchCredential as string,
-      }) as CredentialRecord
-    }
-    if (credentialRecord instanceof W3cCredentialRecord) {
-      return new W3cCredentialRecord({
-        tags: { expandedTypes: [] },
-        credential: decodeW3cCredential(batchCredential),
-      }) as CredentialRecord
-    }
-    if (credentialRecord instanceof W3cV2CredentialRecord) {
-      return new W3cV2CredentialRecord({
-        credential: decodeW3cV2Credential(batchCredential as string),
-      }) as CredentialRecord
-    }
-  }
-
-  return credentialRecord
 }

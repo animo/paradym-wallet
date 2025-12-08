@@ -1,14 +1,18 @@
 import { ClaimFormat, Kms, MdocRecord } from '@credo-ts/core'
 import { SdJwtVcRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
-import type { OpenId4VciRequestTokenResponse, OpenId4VciResolvedCredentialOffer } from '@package/agent'
+import {
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedCredentialOffer,
+  getOpenId4VcCredentialMetadata,
+  setOpenId4VcCredentialMetadata,
+} from '@package/agent'
 import {
   acquireRefreshTokenAccessToken,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
 } from '@package/agent/invitation/handler'
-import { getBatchCredentialMetadata, setBatchCredentialMetadata } from '@package/agent/openid4vc/batchMetadata'
-import { getRefreshCredentialMetadata, setRefreshCredentialMetadata } from '@package/agent/openid4vc/refreshMetadata'
+import { getRefreshCredentialMetadata } from '@package/agent/openid4vc/refreshMetadata'
 import { updateCredential } from '@package/agent/storage/credential'
 import { pidSchemes } from '../constants'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
@@ -111,26 +115,26 @@ export class RefreshPidUseCase {
         throw new Error(`Unexpected record type ${credentialRecord.type}`)
       }
 
-      // No refresh token is issued for the refresh access token so we take the existing refresh metadata
-      setRefreshCredentialMetadata(credentialRecord, existingRefreshMetadata)
-
+      const newOpenId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
       if (credentialRecord instanceof SdJwtVcRecord && sdJwt) {
         credentialRecords.push(sdJwt)
 
-        // Update existing record based on new credentials
-        const batchMetadata = getBatchCredentialMetadata(credentialRecord)
-        if (batchMetadata) setBatchCredentialMetadata(sdJwt, batchMetadata)
-        sdJwt.compactSdJwtVc = credentialRecord.compactSdJwtVc
+        sdJwt.credentialInstances = credentialRecord.credentialInstances
+        sdJwt.typeMetadata = credentialRecord.typeMetadata
+
+        if (newOpenId4VcMetadata) {
+          setOpenId4VcCredentialMetadata(sdJwt, newOpenId4VcMetadata)
+        }
 
         // Should we update the type metadata as well? For now we use hardcoded anyway
         await updateCredential(this.options.agent, sdJwt)
       } else if (credentialRecord instanceof MdocRecord && mdoc) {
         credentialRecords.push(mdoc)
 
-        // Update existing record based on new credentials
-        const batchMetadata = getBatchCredentialMetadata(credentialRecord)
-        if (batchMetadata) setBatchCredentialMetadata(mdoc, batchMetadata)
-        mdoc.base64Url = credentialRecord.base64Url
+        mdoc.credentialInstances = credentialRecord.credentialInstances
+        if (newOpenId4VcMetadata) {
+          setOpenId4VcCredentialMetadata(mdoc, newOpenId4VcMetadata)
+        }
 
         await updateCredential(this.options.agent, mdoc)
       }

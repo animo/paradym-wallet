@@ -1,5 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
+import { type SdJwtVc, type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
@@ -331,20 +331,18 @@ export function FunkePidSetupScreen() {
 
     try {
       // Retrieve Credential
-      const credentials = await receivePidUseCase.retrieveCredentials()
+      const credentialRecords = await receivePidUseCase.retrieveCredentials()
 
-      for (const credential of credentials) {
-        if (credential instanceof SdJwtVcRecord) {
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
-            credential.compactSdJwtVc
-          )
+      for (const credentialRecord of credentialRecords) {
+        if (credentialRecords instanceof SdJwtVcRecord) {
+          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()
             )}`
           )
 
-          const { display } = getCredentialForDisplay(credential)
+          const { display } = getCredentialForDisplay(credentialRecord)
           await storeReceivedActivity(secureUnlock.context.agent, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
@@ -353,7 +351,7 @@ export function FunkePidSetupScreen() {
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
             deferredCredentials: [],
-            credentialIds: [getCredentialForDisplayId(credential)],
+            credentialIds: [getCredentialForDisplayId(credentialRecord)],
           })
         }
       }
