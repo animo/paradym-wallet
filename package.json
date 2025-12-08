@@ -21,5 +21,13 @@
 		"check-dependency-version-consistency": "^5.0.1",
 		"typescript": "catalog:"
 	},
+	"pnpm": {
+		"overrides": {
+			"react-native-fs": "catalog:"
+		},
+		"patchedDependencies": {
+			"@dr.pogodin/react-native-fs": "patches/@dr.pogodin__react-native-fs.patch"
+		}
+	},
 	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
 }

@@ -3,7 +3,7 @@ import path from 'node:path'
 export default {
   presets: ['babel-preset-expo'],
   plugins: [
-    'babel-plugin-syntax-hermes-parser',
+    // 'babel-plugin-syntax-hermes-parser',
     [
       'module-resolver',
       {

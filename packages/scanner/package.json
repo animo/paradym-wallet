@@ -10,13 +10,13 @@
 	"devDependencies": {
 		"@react-native-masked-view/masked-view": "catalog:",
 		"@types/react": "catalog:",
-		"react-native-vision-camera": "catalog:",
+		"expo-camera": "catalog:",
 		"react-native": "catalog:"
 	},
 	"peerDependencies": {
 		"@react-native-masked-view/masked-view": "catalog:",
 		"expo": "catalog:",
-		"react-native-vision-camera": "catalog:",
+		"expo-camera": "catalog:",
 		"react-native": "catalog:"
 	}
 }

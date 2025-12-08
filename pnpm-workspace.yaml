@@ -50,7 +50,6 @@ catalog:
   react-native-heroicons: ^4.0.0
   "@react-native-masked-view/masked-view": 0.3.2
   "@react-native-picker/picker": ^2.11.1
-  react-native-argon2: ^4.0.0
   react-native-keychain: ^10.0.0
   react-native-get-random-values: ^2.0.0
   react-native-gesture-handler: ^2.29.1
@@ -59,7 +58,10 @@ catalog:
   react-native-screens: ^4.18.0
   react-native-svg: ^15.15.1
   "@react-navigation/native": ^7.1.25
-  react-native-fs: ^2.20.0
+  # React Native FS is not maintained, and doesn't support new Arch
+  # this seems to be the best maintained fork. We might want to switch
+  # to Expo FileSystem, but Credo depends on react-native-fs
+  "react-native-fs": "npm:@dr.pogodin/react-native-fs@^2.36.1"
   react-native-mmkv: ^4.1.0
   react-native-qrcode-svg: ^6.3.21
   react-native-reanimated-carousel: ^4.0.3
@@ -67,10 +69,10 @@ catalog:
   "@react-native-community/blur": ^4.3.2
   "@gorhom/bottom-sheet": ^5.2.8
   react-native-edge-to-edge: ^1.7.0
-  react-native-vision-camera: ^4.7.3
 
   # Expo
   expo-crypto: ^15.0.8
+  expo-camera: ^16.1.10
   expo-network: ~8.0.8
   expo-application: ^7.0.8
   expo-asset: ^12.0.11
