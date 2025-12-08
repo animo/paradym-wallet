@@ -3,6 +3,7 @@
 	"version": "1.17.0",
 	"main": "index.ts",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"start": "APP_VARIANT=development expo start -c --dev-client",
 		"android": "APP_VARIANT=development expo run:android",

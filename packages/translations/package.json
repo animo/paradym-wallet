@@ -2,6 +2,7 @@
 	"name": "@package/translations",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"main": "src/index.ts",
 	"scripts": {
 		"merge-missing-translations": "node ./scripts/merge-missing-translations",

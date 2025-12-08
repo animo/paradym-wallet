@@ -3,6 +3,7 @@
 	"name": "@package/app",
 	"main": "src/index.ts",
 	"private": true,
+	"type": "module",
 	"dependencies": {
 		"@package/agent": "workspace:*",
 		"@package/scanner": "workspace:*",

@@ -2,6 +2,7 @@
 	"name": "@package/secure-store",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"peerDependencies": {
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"expo-secure-store": "catalog:",

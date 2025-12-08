@@ -1,5 +1,5 @@
-const { version } = require('./package.json')
-const { createBaseConfig } = require('./base.app.config')
+import { version } from './package.json'
+import { createBaseConfig } from './base.app.config'
 
 const mediatorDids = {
   development: 'did:web:mediator.dev.paradym.id',
@@ -54,7 +54,7 @@ APP_CONFIGS.FUNKE_WALLET.android.config = {
   largeHeap: true,
 }
 
-module.exports = () => {
+export default () => {
   const appType = process.env.EXPO_PUBLIC_APP_TYPE ?? 'PARADYM_WALLET'
   if (!appType || !APP_CONFIGS[appType]) {
     throw new Error(`Invalid App Type: ${appType}. Must be one of: ${Object.keys(APP_CONFIGS).join(', ')}`)

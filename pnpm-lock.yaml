@@ -272,10 +272,7 @@ catalogs:
       version: 5.8.3
 
 overrides:
-  '@unimodules/react-native-adapter': ./noop
-  '@unimodules/core': ./noop
   react-docgen-typescript: 2.2.2
-  isomorphic-webcrypto: npm:@sphereon/isomorphic-webcrypto
   '@expo/config-plugins': 10.1.2
 
 patchedDependencies:

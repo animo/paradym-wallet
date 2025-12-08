@@ -1,6 +1,7 @@
 {
 	"name": "wallets",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
@@ -22,10 +23,7 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"@unimodules/react-native-adapter": "catalog:",
-			"@unimodules/core": "catalog:",
 			"react-docgen-typescript": "catalog:",
-			"isomorphic-webcrypto": "catalog:",
 			"@expo/config-plugins": "catalog:"
 		},
 		"patchedDependencies": {
