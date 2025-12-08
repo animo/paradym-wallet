@@ -1,5 +1,5 @@
-import { version } from './package.json'
 import { createBaseConfig } from './base.app.config'
+import { version } from './package.json'
 
 const mediatorDids = {
   development: 'did:web:mediator.dev.paradym.id',

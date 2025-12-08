@@ -1,5 +1,5 @@
-import { getDefaultConfig } from '@expo/metro-config'
 import path from 'node:path'
+import { getDefaultConfig } from '@expo/metro-config'
 
 const projectRoot = import.meta.dirname
 const workspaceRoot = path.resolve(projectRoot, '../..')
