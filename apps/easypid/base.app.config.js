@@ -143,7 +143,7 @@ const createBaseConfig = (appSpecific) => {
         {
           android: {
             minSdkVersion: 26,
-            compileSdkVersion: 35,
+            compileSdkVersion: 36,
             useLegacyPackaging: true,
             extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
           },

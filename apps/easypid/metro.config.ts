@@ -16,7 +16,7 @@ export default {
     sourceExts: [...(config.resolver?.sourceExts ?? []), 'js', 'json', 'ts', 'tsx', 'cjs', 'mjs'],
     extraNodeModules: {
       // Needed for cosmjs trying to import node crypto
-      crypto: require.resolve('./src/polyfills/crypto.ts'),
+      crypto: import.meta.resolve('./src/polyfills/crypto.ts'),
     },
 
     // Needed to import cheqd

@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro'
 import { useToastController } from '@package/ui'
-import { useNetInfo } from '@react-native-community/netinfo'
+import { useNetworkState } from 'expo-network'
 import type { PropsWithChildren } from 'react'
 import { useEffect, useState } from 'react'
 import { useDebounce } from '../hooks'
@@ -9,7 +9,7 @@ export function NoInternetToastProvider({ children }: PropsWithChildren) {
   const toast = useToastController()
   const { t } = useLingui()
 
-  const { isConnected, isInternetReachable } = useNetInfo()
+  const { isConnected, isInternetReachable } = useNetworkState()
   const [hasBeenOffline, setHasBeenOffline] = useState(false)
 
   const hasInternet =
