@@ -10,9 +10,9 @@ import {
   Image,
   Paragraph,
   Stack,
+  useScaleAnimation,
   XStack,
   YStack,
-  useScaleAnimation,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'

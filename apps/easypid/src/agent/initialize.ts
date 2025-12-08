@@ -15,7 +15,11 @@ export async function initializeAppAgent({
   walletKey,
   walletKeyVersion,
   registerWallet,
-}: { walletKey: string; walletKeyVersion: number; registerWallet?: boolean }) {
+}: {
+  walletKey: string
+  walletKeyVersion: number
+  registerWallet?: boolean
+}) {
   const agent = isFunkeWallet()
     ? await initializeEasyPIDAgent({
         keyDerivation: 'raw',

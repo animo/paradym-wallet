@@ -5,7 +5,7 @@ export function useHasFinishedOnboarding() {
   return useMMKVBoolean('hasFinishedOnboarding', mmkv)
 }
 export function removeHasFinishedOnboarding() {
-  mmkv.delete('hasFinishedOnboarding')
+  mmkv.remove('hasFinishedOnboarding')
 }
 
 export function useHasSeenIntroTooltip() {
@@ -13,5 +13,5 @@ export function useHasSeenIntroTooltip() {
 }
 
 export function removeHasSeenIntroTooltip() {
-  mmkv.delete('hasSeenIntroTooltip')
+  mmkv.remove('hasSeenIntroTooltip')
 }

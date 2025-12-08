@@ -1,4 +1,9 @@
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { logger } from '@package/agent'
 import { TextBackButton } from '@package/app'
+import { useScrollViewPosition } from '@package/app/hooks'
+import { type SupportedLocale, supportedLanguageMessages, supportedLocales, useLocale } from '@package/translations'
 import {
   BetaTag,
   FlexPage,
@@ -10,17 +15,10 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { Label } from 'tamagui'
-
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useLingui } from '@lingui/react/macro'
-import { Trans } from '@lingui/react/macro'
-import { logger } from '@package/agent'
-import { useScrollViewPosition } from '@package/app/hooks'
-import { type SupportedLocale, supportedLanguageMessages, supportedLocales, useLocale } from '@package/translations'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
 import { Share } from 'react-native'
+import { Label } from 'tamagui'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
 
@@ -77,7 +75,7 @@ export function FunkeSettingsScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
 
-  const isOverAskingAiEnabled = useFeatureFlag('AI_ANALYSIS')
+  const _isOverAskingAiEnabled = useFeatureFlag('AI_ANALYSIS')
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">

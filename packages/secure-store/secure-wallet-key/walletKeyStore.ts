@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import * as Keychain from 'react-native-keychain'
-import { type KeychainOptions, getKeychainItemById, removeKeychainItemById, storeKeychainItem } from '../keychain'
+import { getKeychainItemById, type KeychainOptions, removeKeychainItemById, storeKeychainItem } from '../keychain'
 
 const walletKeyStoreBaseOptions: KeychainOptions = {
   /* Only allow the current set of enrolled biometrics to access the wallet key */

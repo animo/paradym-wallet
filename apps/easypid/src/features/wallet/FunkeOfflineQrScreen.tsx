@@ -1,16 +1,15 @@
+import { useAppIcon } from '@easypid/config/copy'
 import { mmkv } from '@easypid/storage/mmkv'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { isIos, useHaptics } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { AnimatedStack, Button, Heading, Loader, Page, Paragraph, Spacer, Stack, XStack, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Linking, useWindowDimensions } from 'react-native'
+import { SystemBars } from 'react-native-edge-to-edge'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import QRCode from 'react-native-qrcode-svg'
-
-import { useAppIcon } from '@easypid/config/copy'
-import { Trans, useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
-import { SystemBars } from 'react-native-edge-to-edge'
 import {
   checkMdocPermissions,
   getMdocQrCode,

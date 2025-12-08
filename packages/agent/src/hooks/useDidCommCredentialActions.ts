@@ -1,20 +1,18 @@
-import type { DidCommCredentialStateChangedEvent } from '@credo-ts/didcomm'
-
 import { W3cCredentialRepository } from '@credo-ts/core'
+import type { DidCommCredentialStateChangedEvent } from '@credo-ts/didcomm'
 import { DidCommCredentialEventTypes, DidCommCredentialState } from '@credo-ts/didcomm'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
-import { useCredentialById } from '../providers'
-
 import { useAgent } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
 } from '../didcomm/metadata'
 import { setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
+import { useCredentialById } from '../providers'
 
 function useOfferAttributes(credentialExchangeId: string) {
   const { agent } = useAgent()

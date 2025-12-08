@@ -1,7 +1,6 @@
 import { X509Certificate, X509ModuleConfig } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
-import type { EitherAgent } from '@package/agent'
+import type { EitherAgent, TrustedEntity, TrustedX509Entity } from '@package/agent'
 
 export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did' | 'none'
 
@@ -80,7 +79,7 @@ export const getTrustedEntities = async (
 }> => {
   const trustMechanism = detectTrustMechanism(options)
 
-  // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+  // biome-ignore lint/suspicious/noImplicitAnyLet: no explanation
   let trustedEntities
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
@@ -292,7 +291,7 @@ const getTrustedEntitiesForX509Certificate = async ({
         logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // no-op
   }
 

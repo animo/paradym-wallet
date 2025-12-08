@@ -1,13 +1,12 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
-import { type DifPresentationExchangeDefinitionV2, Kms } from '@credo-ts/core'
-import { Jwt } from '@credo-ts/core'
-import type { DidCommPlaintextMessage } from '@credo-ts/didcomm'
+import { type DifPresentationExchangeDefinitionV2, Jwt, Kms } from '@credo-ts/core'
 import type {
   DidCommConnectionRecord,
   DidCommCredentialStateChangedEvent,
   DidCommOutOfBandInvitation,
   DidCommOutOfBandRecord,
+  DidCommPlaintextMessage,
   DidCommProofStateChangedEvent,
 } from '@credo-ts/didcomm'
 import {
@@ -40,13 +39,12 @@ import {
 import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { t } from '@lingui/core/macro'
-import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
+import { clientAuthenticationNone, getAuthorizationServerMetadataFromList, Oauth2Client } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import { commonMessages } from '@package/translations'
 import q from 'query-string'
-import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
-import type { ParadymAppAgent } from '../agent'
-import type { EitherAgent } from '../agent'
+import { filter, first, firstValueFrom, type Observable, timeout } from 'rxjs'
+import type { EitherAgent, ParadymAppAgent } from '../agent'
 import {
   type FormattedSubmission,
   formatDcqlCredentialsForRequest,
@@ -86,7 +84,7 @@ export async function resolveOpenId4VciOffer({
     })
 
     const resolvedCredentialOffer = await agent.openid4vc.holder.resolveCredentialOffer(offer.uri)
-    let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
+    let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined
 
     // NOTE: we always assume scopes are used at the moment
     if (fetchAuthorization && resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
@@ -108,7 +106,7 @@ export async function resolveOpenId4VciOffer({
               resolvedCredentialOffer.offeredCredentialConfigurations
             ),
             // Added in patch but not in types
-            // @ts-ignore
+            // @ts-expect-error
             customHeaders,
           }
         )
@@ -386,7 +384,11 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   uri,
   requestPayload,
   origin,
-}: { uri?: string; requestPayload?: Record<string, unknown>; origin?: string }): Promise<{
+}: {
+  uri?: string
+  requestPayload?: Record<string, unknown>
+  origin?: string
+}): Promise<{
   data: string | null
   entityId: string | null
 }> => {
@@ -454,7 +456,7 @@ export const getCredentialsForProofRequest = async ({
   origin,
   trustedX509Entities = [],
 }: GetCredentialsForProofRequestOptions) => {
-  const { entityId = undefined, data: fromFederationData = null } = allowUntrusted
+  const { data: fromFederationData = null } = allowUntrusted
     ? await extractEntityIdFromAuthorizationRequest({ uri, requestPayload, origin })
     : {}
 
@@ -666,7 +668,7 @@ export async function resolveOutOfBandInvitation(
     return {
       success: true,
       outOfBandInvitation: invitation,
-      // biome-ignore lint/complexity/noUselessTernary: <explanation>
+      // biome-ignore lint/complexity/noUselessTernary: no explanation
       createConnection: existingConnection ? false : invitation.handshakeProtocols?.length ? true : false,
       existingConnection,
       flowType,
@@ -703,7 +705,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   // The value is reassigned, but eslint doesn't know this.
   let connectionId: string | undefined
 
-  let observable: Observable<DidCommCredentialStateChangedEvent | DidCommProofStateChangedEvent> | undefined = undefined
+  let observable: Observable<DidCommCredentialStateChangedEvent | DidCommProofStateChangedEvent> | undefined
 
   if (flowType === 'issue') {
     observable = agent.events
@@ -760,7 +762,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         success: true,
         connectionId: connectionId as string,
         flowType: 'connect',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
       } as unknown as any
     }
 
@@ -770,7 +772,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         credentialExchangeId: event.payload.credentialExchangeRecord.id,
         connectionId,
         flowType: 'issue',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
       } as unknown as any
     }
     if (event.type === DidCommProofEventTypes.ProofStateChanged) {
@@ -779,10 +781,10 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         proofExchangeId: event.payload.proofRecord.id,
         connectionId,
         flowType: 'verify',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
       } as unknown as any
     }
-  } catch (error) {
+  } catch (_error) {
     agent.config.logger.error('Error while accepting out of band invitation.')
 
     // Delete OOB record

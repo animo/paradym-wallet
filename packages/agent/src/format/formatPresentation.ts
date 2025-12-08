@@ -1,3 +1,4 @@
+import { JSONPath } from '@astronautlabs/jsonpath'
 import {
   ClaimFormat,
   type DcqlQueryResult,
@@ -5,8 +6,6 @@ import {
   type DifPresentationExchangeDefinitionV2,
   type MdocNameSpaces,
 } from '@credo-ts/core'
-
-import { JSONPath } from '@astronautlabs/jsonpath'
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
 import type { NonEmptyArray } from '@package/utils'
@@ -351,7 +350,7 @@ function simplifyJsonPath(path: string, format?: ClaimFormat, filterKeys: string
     }
 
     return simplified
-  } catch (error) {
+  } catch (_error) {
     return null
   }
 }

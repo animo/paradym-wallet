@@ -8,9 +8,9 @@ import {
   Loader,
   Paragraph,
   Stack,
-  YStack,
   useMinimumLoadingTime,
   useSpringify,
+  YStack,
 } from '@package/ui'
 import { useEffect } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'

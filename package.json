@@ -17,18 +17,9 @@
 		"node": ">=20.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.8.1",
+		"@biomejs/biome": "^2.3.8",
 		"check-dependency-version-consistency": "^5.0.1",
 		"typescript": "catalog:"
-	},
-	"pnpm": {
-		"overrides": {
-			"react-docgen-typescript": "catalog:",
-			"@expo/config-plugins": "catalog:"
-		},
-		"patchedDependencies": {
-			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch"
-		}
 	},
 	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
 }

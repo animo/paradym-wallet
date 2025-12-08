@@ -10,7 +10,7 @@ import type {
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
-import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
+import { type CardScanningState, getPidSetupSlideContent, SIMULATOR_PIN } from '@easypid/utils/sharedPidSetup'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import {
@@ -73,7 +73,7 @@ export function FunkePidSetupScreen() {
   }
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    async (options) => {
+    async (_options) => {
       // If we have a PIN, use it once and clear it
       if (idCardPin) {
         const pin = idCardPin
@@ -140,7 +140,10 @@ export function FunkePidSetupScreen() {
   const onIdCardStart = async ({
     walletPin,
     allowSimulatorCard,
-  }: { walletPin: string; allowSimulatorCard: boolean }) => {
+  }: {
+    walletPin: string
+    allowSimulatorCard: boolean
+  }) => {
     if (secureUnlock.state !== 'unlocked') {
       toast.show(t(walletNotLockedMessage), {
         customData: { preset: 'danger' },
@@ -306,7 +309,7 @@ export function FunkePidSetupScreen() {
       if (shouldUseCloudHsm) {
         await retrieveCredential()
       }
-    } catch (error) {
+    } catch (_error) {
       toast.show(t(commonMessages.somethingWentWrong), {
         customData: {
           preset: 'danger',
@@ -436,7 +439,7 @@ export function FunkePidSetupScreen() {
                 receivePidUseCase?.cancelIdCardScanning()
                 setIsScanning(false)
               }}
-              showScanModal={!isScanning ? false : idCardScanningState.showScanModal ?? true}
+              showScanModal={!isScanning ? false : (idCardScanningState.showScanModal ?? true)}
               onStartScanning={!isScanning ? onStartScanning : undefined}
             />
           ),

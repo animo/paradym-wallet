@@ -1,10 +1,9 @@
-import { ClaimFormat, Kms, MdocRecord } from '@credo-ts/core'
-import { SdJwtVcRecord } from '@credo-ts/core'
+import { ClaimFormat, Kms, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import {
+  getOpenId4VcCredentialMetadata,
   type OpenId4VciRequestTokenResponse,
   type OpenId4VciResolvedCredentialOffer,
-  getOpenId4VcCredentialMetadata,
   setOpenId4VcCredentialMetadata,
 } from '@package/agent'
 import {
@@ -15,8 +14,8 @@ import {
 import { getRefreshCredentialMetadata } from '@package/agent/openid4vc/refreshMetadata'
 import { updateCredential } from '@package/agent/storage/credential'
 import { pidSchemes } from '../constants'
-import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
+import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 
 export interface RefreshPidUseCaseOptions {
   agent: AppAgent

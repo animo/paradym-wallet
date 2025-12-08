@@ -105,7 +105,6 @@ export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled, biometric
 
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (
     <XStack
-      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
       key={rowIndex}
       borderTopWidth="$0.5"
       borderBottomWidth={rowIndex === pinValues.length - 1 ? '$0.5' : 0}
@@ -116,10 +115,7 @@ export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled, biometric
     >
       {rowItems.map((value, columnIndex) => (
         <PinNumber
-          key={`${value}:${columnIndex}:${
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            rowIndex
-          }`}
+          key={`${value}:${columnIndex}:${rowIndex}`}
           character={value}
           onPressPinNumber={onPressPinNumber}
           disabled={disabled}

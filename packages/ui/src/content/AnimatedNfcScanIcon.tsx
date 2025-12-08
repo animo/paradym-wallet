@@ -1,22 +1,19 @@
 import { useEffect } from 'react'
 import Reanimated, {
-  useSharedValue,
-  withSequence,
-  withRepeat,
-  withTiming,
-  withDelay,
   Easing,
-  useAnimatedStyle,
-  FadeOut,
   FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
 } from 'react-native-reanimated'
 import { Stack } from '../base'
 import { HeroIcons } from '../content/Icon'
 
-export function AnimatedNfcScanIcon({
-  icon,
-  scanAnimated = true,
-}: { icon: 'complete' | 'error' | 'scan'; scanAnimated?: boolean }) {
+export function AnimatedNfcScanIcon({ icon }: { icon: 'complete' | 'error' | 'scan' }) {
   const rotation = useSharedValue(0)
 
   const animatedStyle = useAnimatedStyle(() => {

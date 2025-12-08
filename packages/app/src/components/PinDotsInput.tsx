@@ -1,12 +1,12 @@
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
 import Animated, {
+  Easing,
   useSharedValue,
+  withDelay,
   withRepeat,
   withSequence,
   withTiming,
-  withDelay,
-  Easing,
 } from 'react-native-reanimated'
 import { Circle, Input } from 'tamagui'
 import { XStack, YStack } from '../../../ui/src/base'
@@ -140,7 +140,6 @@ export const PinDotsInput = forwardRef(
         <Animated.View style={{ left: shakeAnimation }}>
           <XStack justifyContent="center" gap="$2">
             {pinDots.map((filled, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               <Animated.View key={i} style={{ transform: [{ translateY: translationAnimations[i] }] }}>
                 <Circle
                   size="$1.5"

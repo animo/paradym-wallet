@@ -1,31 +1,30 @@
 import 'react-native-get-random-values'
 
 import { Buffer } from '@credo-ts/core'
+
 export {
-  setRefreshCredentialMetadata,
-  RefreshCredentialMetadata,
   getRefreshCredentialMetadata,
+  RefreshCredentialMetadata,
+  setRefreshCredentialMetadata,
 } from './openid4vc/refreshMetadata'
 
-// @ts-ignore
+// @ts-expect-error
 global.Buffer = Buffer
 
-export { logger } from './logger'
-export type { OpenId4VciTxCode, OpenId4VciDpopRequestOptions } from '@credo-ts/openid4vc'
+export type { OpenId4VciDpopRequestOptions, OpenId4VciTxCode } from '@credo-ts/openid4vc'
 export {
-  initializeParadymAgent,
-  initializeEasyPIDAgent,
-  useAgent,
-  ParadymAppAgent,
   EasyPIDAppAgent,
   EitherAgent,
+  initializeEasyPIDAgent,
+  initializeParadymAgent,
   isEasyPIDAgent,
   isParadymAgent,
+  ParadymAppAgent,
+  useAgent,
 } from './agent'
-export * from './providers'
-export * from './invitation'
+export * from './credentialCategoryMetadata'
+export * from './crypto'
 export * from './display'
-export * from './hooks'
 export {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -35,20 +34,19 @@ export {
   formatDifPexCredentialsForRequest,
 } from './format/formatPresentation'
 export { getSubmissionForMdocDocumentRequest } from './format/mdocRequest'
+export * from './hooks'
+export * from './invitation'
+export { logger } from './logger'
 export * from './mediation'
-export * from './crypto'
-export * from './storage'
-export * from './openid4vc/displayMetadata'
-export * from './openid4vc/deferredCredentialRecord'
-
-export * from './credentialCategoryMetadata'
 export { migrateLegacyParadymWallet } from './migrateLegacyParadymWallet'
-
-export * from './utils/trust'
-
 export {
   resolveRequestForDcApi,
-  sendResponseForDcApi,
   sendErrorResponseForDcApi,
+  sendResponseForDcApi,
 } from './openid4vc/dcApi'
+export * from './openid4vc/deferredCredentialRecord'
+export * from './openid4vc/displayMetadata'
 export { registerCredentialsForDcApi } from './openid4vc/registerDcApi'
+export * from './providers'
+export * from './storage'
+export * from './utils/trust'

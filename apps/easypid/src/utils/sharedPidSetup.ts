@@ -185,7 +185,7 @@ export type OnboardingStep = {
   page: OnboardingPage
   // if true will not be navigated to by goToNextStep
   alternativeFlow: boolean
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: no explanation
   Screen: React.FunctionComponent<any>
 }
 

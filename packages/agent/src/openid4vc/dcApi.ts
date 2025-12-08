@@ -6,7 +6,10 @@ import { type CredentialsForProofRequest, getCredentialsForProofRequest, sharePr
 export async function resolveRequestForDcApi({
   agent,
   request,
-}: { agent: EitherAgent; request: DigitalCredentialsRequest }) {
+}: {
+  agent: EitherAgent
+  request: DigitalCredentialsRequest
+}) {
   const providerRequest = request.request.requests
     ? request.request.requests[request.selectedEntry.providerIndex].data
     : request.request.providers[request.selectedEntry.providerIndex].request
@@ -54,7 +57,11 @@ export async function sendResponseForDcApi({
   agent,
   resolvedRequest,
   dcRequest,
-}: { agent: EitherAgent; resolvedRequest: CredentialsForProofRequest; dcRequest: DigitalCredentialsRequest }) {
+}: {
+  agent: EitherAgent
+  resolvedRequest: CredentialsForProofRequest
+  dcRequest: DigitalCredentialsRequest
+}) {
   const firstEntry = resolvedRequest.formattedSubmission.entries[0]
   if (!firstEntry.isSatisfied) {
     agent.config.logger.debug('Expected one entry for DC API response', {

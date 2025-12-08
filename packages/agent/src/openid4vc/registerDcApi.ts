@@ -189,7 +189,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
       credential: {
         vct: record.getTags().vct,
         format: 'dc+sd-jwt',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
         claims: sdJwtVc.prettyClaims as any,
       },
       display: {

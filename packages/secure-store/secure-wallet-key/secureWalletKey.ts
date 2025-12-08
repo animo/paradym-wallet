@@ -1,12 +1,12 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { askar } from '@openwallet-foundation/askar-react-native'
-import { MMKV, useMMKVNumber } from 'react-native-mmkv'
+import { createMMKV, useMMKVNumber } from 'react-native-mmkv'
 import { WalletUnlockError } from '../error/WalletUnlockError'
 import { kdf } from '../kdf'
 import { walletKeySaltStore } from './walletKeySaltStore'
 import { walletKeyStore } from './walletKeyStore'
 
-const mmkv = new MMKV()
+const mmkv = createMMKV()
 
 async function getWalletKeyUsingPin(pin: string, version: number) {
   const salt = await walletKeySaltStore.getSalt(version)

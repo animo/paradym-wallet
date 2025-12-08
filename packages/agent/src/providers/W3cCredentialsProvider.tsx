@@ -1,9 +1,8 @@
-import type { PropsWithChildren } from 'react'
-import type { EitherAgent } from '../agent'
-
 import { W3cCredentialRecord } from '@credo-ts/core'
-import { createContext, useContext, useEffect, useState } from 'react'
 import type * as React from 'react'
+import type { PropsWithChildren } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import type { EitherAgent } from '../agent'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from './recordUtils'
 
 export { W3cCredentialRecord, W3cVerifiableCredential } from '@credo-ts/core'

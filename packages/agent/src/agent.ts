@@ -32,8 +32,10 @@ import {
   DidCommWsOutboundTransport,
 } from '@credo-ts/didcomm'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
+
 export { useAgent } from './providers'
-import { SecureEnvironmentKeyManagementService, agentDependencies } from '@credo-ts/react-native'
+
+import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
@@ -75,7 +77,7 @@ export const initializeEasyPIDAgent = async ({
       }),
       openid4vc: new OpenId4VcModule({}),
       x509: new X509Module({
-        getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
+        getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {
           if (verification.type === 'credential') {
             // Temprorary allow any certificates, also for PID
             // Only allow BDR certificate for PID credentials for now

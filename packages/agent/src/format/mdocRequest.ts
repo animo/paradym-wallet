@@ -45,7 +45,7 @@ export async function getSubmissionForMdocDocumentRequest(
             ...mdoc,
             disclosedNameSpaces: disclosedNamespaces,
           }
-        } catch (error) {
+        } catch (_error) {
           return undefined
         }
       })

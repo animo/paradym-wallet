@@ -1,5 +1,5 @@
 import type { Agent } from '@credo-ts/core'
-import { type PropsWithChildren, createContext, useContext, useMemo } from 'react'
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react'
 
 import type { EitherAgent, ParadymAppAgent } from '../agent'
 import { ConnectionProvider } from './ConnectionProvider'
@@ -17,7 +17,7 @@ export interface AgentProviderProps {
   agent: Agent
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: no explanation
 export const useAgent = <AppAgent extends Agent<any> = ParadymAppAgent>() => {
   const agentContext = useContext(AgentContext)
   if (!agentContext) {
@@ -52,7 +52,6 @@ export const AgentProvider = ({ agent, children }: PropsWithChildren<AgentProvid
   const providers = useMemo(() => {
     return DynamicProviders.reduce(
       (accChildren, Provider, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
         <Provider key={index} agent={agent}>
           {accChildren}
         </Provider>

@@ -1,22 +1,20 @@
 import {
+  ClaimFormat,
   DateOnly,
+  Hasher,
+  JsonTransformer,
   type Kms,
+  type Mdoc,
   type MdocNameSpaces,
+  MdocRecord,
+  SdJwtVcRecord,
   type SdJwtVcTypeMetadata,
   type SingleOrArray,
+  TypedArrayEncoder,
   W3cCredentialRecord,
   type W3cJsonCredential,
   W3cV2CredentialRecord,
   type W3cV2JsonCredential,
-} from '@credo-ts/core'
-import {
-  ClaimFormat,
-  Hasher,
-  JsonTransformer,
-  type Mdoc,
-  MdocRecord,
-  SdJwtVcRecord,
-  TypedArrayEncoder,
 } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
@@ -430,7 +428,7 @@ function safeCalculateJwkThumbprint(jwk: Kms.Jwk): string | undefined {
       )
     )
     return `urn:ietf:params:oauth:jwk-thumbprint:sha-256:${thumbprint}`
-  } catch (e) {
+  } catch (_e) {
     return undefined
   }
 }
@@ -479,7 +477,7 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, status, ...visibleProperties } =
     sdJwtVcPayload as SdJwtVcPayload
 
-  const holder = cnf ? (cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
+  const holder = cnf ? ((cnf.kid ?? cnf.jwk) ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
     issuer: iss,
@@ -642,7 +640,7 @@ export function getCredentialForDisplay(
       firstCredential.claimFormat === ClaimFormat.JwtVc ? firstCredential.credential : firstCredential.toJson()
     ) as W3cJsonCredential | W3cV2JsonCredential
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: no explanation
     const proof = (credential as any).proof as SingleOrArray<{
       type: string
       cryptosuite?: string
@@ -662,7 +660,7 @@ export function getCredentialForDisplay(
 
     // FIXME: support credential with multiple subjects
     const credentialAttributes = Array.isArray(credential.credentialSubject)
-      ? credential.credentialSubject[0] ?? {}
+      ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
     return {
@@ -699,7 +697,7 @@ export function getCredentialForDisplay(
 
     // FIXME: support credential with multiple subjects
     const credentialAttributes = Array.isArray(credential.credentialSubject)
-      ? credential.credentialSubject[0] ?? {}
+      ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
     return {

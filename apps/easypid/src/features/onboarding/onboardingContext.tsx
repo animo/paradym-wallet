@@ -21,10 +21,10 @@ import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
-  SdJwtVcRecord,
   getCredentialForDisplay,
   getCredentialForDisplayId,
   migrateLegacyParadymWallet,
+  SdJwtVcRecord,
   storeReceivedActivity,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
@@ -35,7 +35,7 @@ import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
-import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
@@ -280,7 +280,7 @@ export function OnboardingContextProvider({
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    (options) => {
+    (_options) => {
       if (!idCardPin) {
         // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
         if (Platform.OS === 'ios') sendCommand({ cmd: 'INTERRUPT' })
@@ -693,7 +693,7 @@ export function OnboardingContextProvider({
         onCancel={() => {
           receivePidUseCase?.cancelIdCardScanning()
         }}
-        showScanModal={currentStep.step !== 'id-card-scan' ? false : idCardScanningState.showScanModal ?? true}
+        showScanModal={currentStep.step !== 'id-card-scan' ? false : (idCardScanningState.showScanModal ?? true)}
         onStartScanning={currentStep.step === 'id-card-start-scan' ? onStartScanning : undefined}
       />
     )

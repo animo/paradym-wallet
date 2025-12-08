@@ -9,7 +9,12 @@ export async function refreshPid({
   sdJwt,
   mdoc,
   batchSize,
-}: { agent: EitherAgent; sdJwt?: SdJwtVcRecord; mdoc?: MdocRecord; batchSize?: number }) {
+}: {
+  agent: EitherAgent
+  sdJwt?: SdJwtVcRecord
+  mdoc?: MdocRecord
+  batchSize?: number
+}) {
   agent.config.logger.info('refreshing PID')
   const useCase = await RefreshPidUseCase.initialize({
     agent,

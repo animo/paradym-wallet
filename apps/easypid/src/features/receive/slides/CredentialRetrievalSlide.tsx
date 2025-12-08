@@ -17,10 +17,10 @@ import {
   Paragraph,
   ScrollView,
   Spacer,
-  XStack,
-  YStack,
   useInitialRender,
   useSpringify,
+  XStack,
+  YStack,
 } from '@package/ui'
 import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
@@ -28,11 +28,11 @@ import {
   FadeIn,
   FadeOut,
   LinearTransition,
-  ZoomIn,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
+  ZoomIn,
 } from 'react-native-reanimated'
 
 interface CredentialRetrievalSlideProps {

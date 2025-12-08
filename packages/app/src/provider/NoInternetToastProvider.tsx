@@ -1,8 +1,7 @@
-import type { PropsWithChildren } from 'react'
-
 import { useLingui } from '@lingui/react/macro'
 import { useToastController } from '@package/ui'
 import { useNetInfo } from '@react-native-community/netinfo'
+import type { PropsWithChildren } from 'react'
 import { useEffect, useState } from 'react'
 import { useDebounce } from '../hooks'
 

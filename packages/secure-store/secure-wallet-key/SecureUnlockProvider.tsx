@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { type PropsWithChildren, createContext, useContext, useState } from 'react'
+import { createContext, type PropsWithChildren, useContext, useState } from 'react'
 
 import { KeychainError } from '../error/KeychainError'
 import { secureWalletKey } from './secureWalletKey'

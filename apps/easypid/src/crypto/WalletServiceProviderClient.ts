@@ -1,6 +1,5 @@
 import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
-import { AskarModule } from '@credo-ts/askar'
-import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
+import { AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import {
   Agent,
   CredoWebCrypto,
@@ -124,7 +123,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
 
   public async sign(keyId: string, message: Uint8Array): Promise<Uint8Array> {
     const { signature } = await this.post<{ signature: Array<number> }>('sign', {
-      data: new Array(...message),
+      data: [...message],
       keyId,
     })
 

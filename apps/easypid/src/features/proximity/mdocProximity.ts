@@ -1,5 +1,5 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
-import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
+import { cborDecode, cborEncode, DataItem, DeviceRequest } from '@animo-id/mdoc'
 import { CredentialMultiInstanceUseMode, type Mdoc, MdocService, useInstanceFromCredentialRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'

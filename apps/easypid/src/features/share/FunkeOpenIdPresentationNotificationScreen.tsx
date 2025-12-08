@@ -1,3 +1,7 @@
+import { useAppAgent } from '@easypid/agent'
+import { InvalidPinError } from '@easypid/crypto/error'
+import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
+import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   type CredentialsForProofRequest,
@@ -9,23 +13,16 @@ import {
   shareProof,
   storeSharedActivityForCredentialsForRequest,
 } from '@package/agent'
+import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
+import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-
-import { useAppAgent } from '@easypid/agent'
-import { InvalidPinError } from '@easypid/crypto/error'
-import { useOverAskingAi } from '@easypid/hooks'
-import { useDevelopmentMode } from '@easypid/hooks'
-import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
 import type { onPinSubmitProps } from './slides/PinSlide'
-
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 type Query = { uri: string }
 

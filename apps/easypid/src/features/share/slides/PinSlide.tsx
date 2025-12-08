@@ -1,8 +1,7 @@
+import { Trans } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
-
-import { Trans } from '@lingui/react/macro'
 
 export interface onPinSubmitProps {
   pin?: string
