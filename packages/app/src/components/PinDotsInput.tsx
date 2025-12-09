@@ -140,7 +140,7 @@ export const PinDotsInput = forwardRef(
         <Animated.View style={{ left: shakeAnimation }}>
           <XStack justifyContent="center" gap="$2">
             {pinDots.map((filled, i) => (
-              <Animated.View key={i} style={{ transform: [{ translateY: translationAnimations[i] }] }}>
+              <Animated.View key={i} style={{ translateY: translationAnimations[i] }}>
                 <Circle
                   size="$1.5"
                   backgroundColor={filled ? '$primary-500' : '$background'}
