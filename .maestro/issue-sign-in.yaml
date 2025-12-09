@@ -1,0 +1,51 @@
+appId: id.paradym.wallet.preview
+---
+# - runFlow: onboarding.yaml
+- runScript:
+    file: request.js
+    env:
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"login", "credential": "mobile-drivers-license-mdoc"}'
+
+- openLink:
+    link: ${output.deeplink}
+
+- repeat:
+    while:
+      visible: "Enter your app PIN code"
+    commands:
+      - tapOn: "Pin number 1"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- tapOn: "Yes, continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: Verify your account
+- tapOn: "Authenticate"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: “ParadymWalletPreview” Wants to Use “animo.id” to Sign In
+- tapOn: Continue
+
+- inputText: "username"
+- tapOn:
+    point: 50%,40%
+- inputText: "password"
+- tapOn:
+    point: 50%,45%
+- tapOn:
+    point: 50%,40%
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: Is the information correct?
+- tapOn: Accept
+- assertVisible: Success!
+- tapOn: "Go to wallet  "
+- assertVisible: Hello!

@@ -1,0 +1,27 @@
+appId: id.paradym.wallet.preview
+---
+- launchApp:
+    clearState: true
+
+- assertVisible: Paradym Wallet
+- tapOn: Get Started
+
+- assertVisible: Choose a 6-digit PIN
+- repeat:
+    while:
+      visible: Choose a 6-digit PIN
+    commands:
+      - tapOn: "Pin number 1"
+
+- assertVisible: Repeat your PIN
+- repeat:
+    while:
+      visible: Repeat your PIN
+    commands:
+      - tapOn: "Pin number 1"
+
+- assertVisible: Set up biometrics
+- tapOn: Activate Biometrics
+
+- assertVisible: Protect your data
+- tapOn: "Go to wallet"

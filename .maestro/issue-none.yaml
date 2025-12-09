@@ -1,0 +1,50 @@
+appId: id.paradym.wallet.preview
+tags: "didcomm"
+//config per back-end 
+---
+# - runFlow: onboarding.yaml
+- runScript:
+    file: scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"none", "credential": "arf-18-pid", "flow":"didcomm"}'
+
+- openLink:
+    link: ${output.deeplink}
+
+- repeat:
+    while:
+      visible: "Enter your app PIN code"
+    commands:
+      - tapOn: "Pin number 1"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- tapOn: "Yes, continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- tapOn: "Continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Is the information correct?"
+- assertVisible: "Credential"
+- assertVisible: "Decline"
+- tapOn: "Accept"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Success!"
+- assertVisible: "Card successfully added to your wallet!"
+- assertVisible: "Credential"
+- tapOn: "Go to wallet  "
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Hello!"
+- assertVisible: "Receive or share from your wallet "

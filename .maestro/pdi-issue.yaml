@@ -1,0 +1,54 @@
+appId: id.paradym.wallet.preview
+---
+- runFlow: issue-none.yaml
+- runScript:
+    file: scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"presentation", "credential": "certificate-of-residence-sd-jwt"}'
+
+- openLink:
+    link: ${output.deeplink}
+
+- repeat:
+    while:
+      visible: "Enter your app PIN code"
+    commands:
+      - tapOn: "Pin number 1"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- tapOn: "Yes, continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Card offered"
+- tapOn: "Continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: Review the request
+- tapOn: Share
+
+- repeat:
+    while:
+      visible: "Send data with your PIN code"
+    commands:
+      - tapOn: "Pin number 1"
+
+- assertVisible: Is the information correct?
+- tapOn: Accept
+
+
+- assertVisible: "Success!"
+- assertVisible: "Card successfully added to your wallet!"
+- assertVisible: "Credential"
+- tapOn: "Go to wallet  "
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Hello!"
+- assertVisible: "Receive or share from your wallet "
