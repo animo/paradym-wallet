@@ -85,8 +85,6 @@ export const CredentialRetrievalSlide = ({
         damping: 4,
         stiffness: 80,
         mass: 0.3,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
       })
     }
   }, [isStoring, isCompleteAndAllowed, scale])
