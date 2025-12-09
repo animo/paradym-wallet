@@ -123,9 +123,6 @@ catalogs:
     expo-dev-client:
       specifier: ~5.2.2
       version: 5.2.3
-    expo-device:
-      specifier: ~7.1.4
-      version: 7.1.4
     expo-font:
       specifier: ~13.3.2
       version: 13.3.2
@@ -398,7 +395,7 @@ importers:
         specifier: 'catalog:'
         version: 5.2.3(expo@53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))
       expo-device:
-        specifier: 'catalog:'
+        specifier: ^7.1.4
         version: 7.1.4(expo@53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0))
       expo-font:
         specifier: 'catalog:'

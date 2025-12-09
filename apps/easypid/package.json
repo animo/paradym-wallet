@@ -42,14 +42,13 @@
 		"buffer": "catalog:",
 		"burnt": "catalog:",
 		"expo": "catalog:",
-		"expo-crypto": "catalog:",
 		"expo-application": "catalog:",
 		"expo-asset": "catalog:",
 		"expo-blur": "catalog:",
-		"react-native-vision-camera": "catalog:",
 		"expo-constants": "catalog:",
+		"expo-crypto": "catalog:",
 		"expo-dev-client": "catalog:",
-		"expo-device": "catalog:",
+		"expo-device": "^7.1.4",
 		"expo-font": "catalog:",
 		"expo-haptics": "catalog:",
 		"expo-image": "catalog:",
@@ -79,7 +78,8 @@
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
 		"react-native-screens": "catalog:",
-		"react-native-svg": "catalog:"
+		"react-native-svg": "catalog:",
+		"react-native-vision-camera": "catalog:"
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",
