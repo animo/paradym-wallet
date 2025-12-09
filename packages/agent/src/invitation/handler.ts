@@ -69,7 +69,6 @@ export async function resolveOpenId4VciOffer({
   agent,
   offer,
   authorization,
-  customHeaders,
   fetchAuthorization = true,
 }: {
   agent: EitherAgent
@@ -105,9 +104,6 @@ export async function resolveOpenId4VciOffer({
             scope: getScopesFromCredentialConfigurationsSupported(
               resolvedCredentialOffer.offeredCredentialConfigurations
             ),
-            // Added in patch but not in types
-            // @ts-expect-error
-            customHeaders,
           }
         )
       }
