@@ -1,0 +1,43 @@
+# https://expo.dev/blog/how-to-integrate-eas-workflows-with-github-actions#fast-e2e-testing-with-fingerprint-and-repack
+# https://docs.expo.dev/eas/workflows/pre-packaged-jobs/#examples-13
+name: Build or repack, then Maestro tests
+
+jobs:
+  fingerprint:
+    id: fingerprint
+    environment: preview
+    type: fingerprint
+
+  android_get_build:
+    needs: [fingerprint]
+    id: android_get_build
+    type: get-build
+    params:
+      fingerprint_hash: ${{ needs.fingerprint.outputs.android_fingerprint_hash }}
+      platform: android
+
+  android_repack:
+    needs: [android_get_build]
+    id: android_repack
+    if: ${{ needs.android_get_build.outputs.build_id }}
+    type: repack
+    params:
+      build_id: ${{ needs.android_get_build.outputs.build_id }}
+
+  android_build:
+    needs: [android_get_build]
+    id: android_build
+    if: ${{ !needs.android_get_build.outputs.build_id }}
+    type: build
+    params:
+      platform: android
+      profile: preview-simulator
+
+  android_maestro:
+    after: [android_repack, android_build]
+    id: android_maestro
+    type: maestro
+    image: latest
+    params:
+      build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
+      flow_path: ['.maestro/get-started.yaml']

@@ -1,0 +1,19 @@
+name: e2e-test-android
+
+on:
+  pull_request:
+    branches: ['*']
+
+jobs:
+  build_android_for_e2e:
+    type: build
+    params:
+      platform: android
+      profile: e2e-test
+
+  maestro_test:
+    needs: [build_android_for_e2e]
+    type: maestro
+    params:
+      build_id: ${{ needs.build_android_for_e2e.outputs.build_id }}
+      flow_path: ['.maestro/get-started.yaml']

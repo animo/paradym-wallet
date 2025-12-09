@@ -1,0 +1,43 @@
+# https://expo.dev/blog/how-to-integrate-eas-workflows-with-github-actions#fast-e2e-testing-with-fingerprint-and-repack
+# https://docs.expo.dev/eas/workflows/pre-packaged-jobs/#examples-13
+name: Build or repack, then Maestro tests
+
+jobs:
+  fingerprint:
+    id: fingerprint
+    environment: preview
+    type: fingerprint
+
+  ios_get_build:
+    needs: [fingerprint]
+    id: ios_get_build
+    type: get-build
+    params:
+      fingerprint_hash: ${{ needs.fingerprint.outputs.ios_fingerprint_hash }}
+      platform: ios
+
+  ios_repack:
+    needs: [ios_get_build]
+    id: ios_repack
+    if: ${{ needs.ios_get_build.outputs.build_id }}
+    type: repack
+    params:
+      build_id: ${{ needs.ios_get_build.outputs.build_id }}
+
+  ios_build:
+    needs: [ios_get_build]
+    id: ios_build
+    if: ${{ !needs.ios_get_build.outputs.build_id }}
+    type: build
+    params:
+      platform: ios
+      profile: preview-simulator
+
+  ios_maestro:
+    after: [ios_repack, ios_build]
+    id: ios_maestro
+    type: maestro
+    image: latest
+    params:
+      build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
+      flow_path: ['.maestro/get-started.yaml']

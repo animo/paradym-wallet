@@ -1,6 +1,6 @@
 appId: id.paradym.wallet.preview
-tags: "didcomm"
-//config per back-end 
+tags:
+  - didcomm
 ---
 # - runFlow: onboarding.yaml
 - runScript:
