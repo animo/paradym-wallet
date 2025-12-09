@@ -140,7 +140,8 @@ export const PinDotsInput = forwardRef(
         <Animated.View style={{ left: shakeAnimation }}>
           <XStack justifyContent="center" gap="$2">
             {pinDots.map((filled, i) => (
-              <Animated.View key={i} style={{ translateY: translationAnimations[i] }}>
+              // NOTE: somehow this gives a warning, but we're not directly accessing the values?!?
+              <Animated.View key={i} style={{ transform: [{ translateY: translationAnimations[i] }] }}>
                 <Circle
                   size="$1.5"
                   backgroundColor={filled ? '$primary-500' : '$background'}
