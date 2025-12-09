@@ -1,0 +1,28 @@
+appId: id.paradym.wallet.preview
+---
+# - runFlow: issue-code.yaml
+- runScript:
+    file: scripts/request.js
+    env:
+      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType": "" }'
+
+- openLink:
+    link: ${output.deeplink}
+
+- repeat:
+    while:
+      visible: "Enter your app PIN code"
+    commands:
+      - tapOn: "Pin number 1"
+
+- tapOn: Yes, continue
+- assertVisible: Review the request
+- tapOn: Share
+
+- repeat:
+    while:
+      visible: "Send data with your PIN code"
+    commands:
+      - tapOn: "Pin number 1"
+- assertVisible: Success!
+- tapOn: "Go to wallet  "
