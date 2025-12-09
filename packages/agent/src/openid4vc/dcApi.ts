@@ -1,7 +1,8 @@
 import { type DigitalCredentialsRequest, sendErrorResponse, sendResponse } from '@animo-id/expo-digital-credentials-api'
 import { getHostNameFromUrl } from '@package/utils'
 import type { EitherAgent } from '../agent'
-import { type CredentialsForProofRequest, getCredentialsForProofRequest, shareProof } from '../invitation'
+import { type CredentialsForProofRequest, getCredentialsForProofRequest } from '../invitation'
+import { shareProof } from '../invitation/shareProof'
 
 export async function resolveRequestForDcApi({
   agent,

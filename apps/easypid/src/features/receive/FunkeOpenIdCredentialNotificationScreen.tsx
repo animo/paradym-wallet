@@ -25,12 +25,12 @@ import {
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   type SdJwtVcRecord,
-  shareProof,
   storeCredential,
   storeDeferredCredential,
   storeReceivedActivity,
   type W3cCredentialRecord,
 } from '@package/agent'
+import { shareProof } from '@package/agent/invitation/shareProof'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'

@@ -1,8 +1,8 @@
 import * as Keychain from 'react-native-keychain'
 import { kdf } from '../kdf'
-import { getKeychainItemById, type KeychainOptions, removeKeychainItemById, storeKeychainItem } from '../keychain'
+import { getKeychainItemById, type KeychainSetOptions, removeKeychainItemById, storeKeychainItem } from '../keychain'
 
-const saltStoreBaseOptions: KeychainOptions = {
+const saltStoreBaseOptions: KeychainSetOptions = {
   /* Salt can be accessed on this device */
   accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
 }

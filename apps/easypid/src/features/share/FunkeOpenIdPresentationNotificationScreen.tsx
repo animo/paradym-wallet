@@ -10,9 +10,9 @@ import {
   getCredentialsForProofRequest,
   getDisclosedAttributeNamesForDisplay,
   getFormattedTransactionData,
-  shareProof,
   storeSharedActivityForCredentialsForRequest,
 } from '@package/agent'
+import { shareProof } from '@package/agent/invitation/shareProof'
 import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'

@@ -45,6 +45,5 @@ export {
   parseInvitationUrl,
   parseInvitationUrlSync,
 } from './parsers'
-export { shareProof } from './shareProof'
 export * from './transactions'
 export type { TrustedEntity } from './trustedEntities'
