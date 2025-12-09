@@ -1,5 +1,5 @@
 import { ClaimFormat } from '@credo-ts/core'
-import { mapAttributeName } from '@package/app/utils/formatSubject'
+import { mapAttributeName } from '@package/agent'
 import { commonMessages, i18n } from '@package/translations'
 
 export type PidAttributes = PidMdocAttributes | PidSdJwtVcAttributes

@@ -1,4 +1,4 @@
-import { mapAttributeName } from '@package/app/utils/formatSubject'
+import { mapAttributeName } from '@package/agent/display'
 import { commonMessages, i18n } from '@package/translations'
 import mdlCodeA from '../../assets/mdl/code_a.png'
 import mdlCodeA1 from '../../assets/mdl/code_a1.png'
