@@ -4,7 +4,7 @@ appId: id.paradym.wallet.preview
 - runScript:
     file: scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"presentation", "credential": "certificate-of-residence-sd-jwt"}'
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"presentation", "requestType": "certificate-of-residence"}'
 
 - openLink:
     link: ${output.deeplink}
