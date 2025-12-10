@@ -4,7 +4,7 @@ appId: id.paradym.wallet.preview
 - runScript:
     file: scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"pin", "credential": "government-arf-18-pid-mdoc", "flow": "openid4vc"}'
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"pin", "requestType": "arf-18-pid", "flow": "openid4vc"}'
 
 - openLink:
     link: ${output.deeplink}
