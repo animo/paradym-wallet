@@ -1,13 +1,7 @@
 appId: id.paradym.wallet.preview
 ---
-# - runFlow: onboarding.yaml
-- runScript:
-    file: scripts/request.js
-    env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"none", "requestType": "arf-18-pid", "flow":"openid4vc"}'
-
 - openLink:
-    link: ${output.deeplink}
+    link: ${deeplink}
 
 - repeat:
     while:
@@ -39,10 +33,21 @@ appId: id.paradym.wallet.preview
 - assertVisible: "Success!"
 - assertVisible: "Card successfully added to your wallet!"
 - assertVisible: "Credential"
-- tapOn: "Go to wallet  "
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet  "
+
 
 - waitForAnimationToEnd:
     timeout: 5000
 
 - assertVisible: "Hello!"
 - assertVisible: "Receive or share from your wallet "
+

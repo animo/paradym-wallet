@@ -38,11 +38,19 @@ appId: id.paradym.wallet.preview
 - assertVisible: Is the information correct?
 - tapOn: Accept
 
-
 - assertVisible: "Success!"
 - assertVisible: "Card successfully added to your wallet!"
 - assertVisible: "Credential"
-- tapOn: "Go to wallet  "
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet  "
 
 - waitForAnimationToEnd:
     timeout: 5000

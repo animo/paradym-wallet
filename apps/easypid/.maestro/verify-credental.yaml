@@ -24,4 +24,13 @@ appId: id.paradym.wallet.preview
     commands:
       - tapOn: "Pin number 1"
 - assertVisible: Success!
-- tapOn: "Go to wallet  "
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet  "

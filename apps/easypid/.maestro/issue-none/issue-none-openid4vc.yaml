@@ -1,0 +1,14 @@
+appId: id.paradym.wallet.preview
+tags:
+  - openid4vc
+---
+# - runFlow: onboarding.yaml
+- runScript:
+    file: scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "format":"sd-jwt", "authorization":"none", "credential": "arf-18-pid", "flow":"openid4vc"}'
+
+- runFlow: 
+    file: issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}

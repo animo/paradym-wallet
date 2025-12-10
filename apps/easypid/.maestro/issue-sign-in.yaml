@@ -29,17 +29,41 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
-- assertVisible: “ParadymWalletPreview” Wants to Use “animo.id” to Sign In
-- tapOn: Continue
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - assertVisible: “ParadymWalletPreview” Wants to Use “animo.id” to Sign In
+      - tapOn: Continue
 
-- inputText: "username"
-- tapOn:
-    point: 50%,40%
-- inputText: "password"
-- tapOn:
-    point: 50%,45%
-- tapOn:
-    point: 50%,40%
+      - inputText: "username"
+      - tapOn:
+          point: 50%,40%
+      - inputText: "password"
+      - tapOn:
+          point: 50%,45%
+      - tapOn:
+          point: 50%,40%
+
+- runFlow:
+    when:
+      platform: Android
+    commands:
+    - tapOn: Use without an account
+
+    - waitForAnimationToEnd:
+        timeout: 5000
+
+    - tapOn: Enter any login
+    - inputText: test
+    - tapOn: and password
+    - inputText: test
+
+    - tapOn:
+        text: Sign-in
+        index: 1
+
+    - tapOn: Continue
 
 - waitForAnimationToEnd:
     timeout: 5000
@@ -47,5 +71,14 @@ appId: id.paradym.wallet.preview
 - assertVisible: Is the information correct?
 - tapOn: Accept
 - assertVisible: Success!
-- tapOn: "Go to wallet  "
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet  "
 - assertVisible: Hello!

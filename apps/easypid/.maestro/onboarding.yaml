@@ -21,7 +21,16 @@ appId: id.paradym.wallet.preview
       - tapOn: "Pin number 1"
 
 - assertVisible: Protect your data
-- tapOn: Go to wallet
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet  "
 
 - waitForAnimationToEnd:
     timeout: 5000
