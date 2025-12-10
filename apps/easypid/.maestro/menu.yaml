@@ -1,0 +1,31 @@
+appId: id.paradym.wallet.preview
+
+---
+# Run deze flow wel als je de arf-18-pid card hebt!!
+- runFlow: issue-none.yaml
+
+- tapOn: Recent activity
+- assertVisible: Activity
+- tapOn: Card added activity from Utopia Government
+- assertVisible: Card added
+- tapOn: ARF 1.8 PID
+- assertVisible: Card details
+- tapOn: Card is active. No actions required
+- assertVisible: Bottom Sheet
+- tapOn:
+    point: 50%,90%
+
+- tapOn: Card attributes. View attributes of the card
+- assertVisible: Card attributes
+
+- tapOn: "  Back"
+- assertVisible: Card details
+- tapOn: "  Back"
+- assertVisible: Card added
+- tapOn: "  Back"
+- assertVisible: Activity
+- tapOn: "  Back"
+- assertVisible: Hello!
+
+
+
