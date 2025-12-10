@@ -16,4 +16,4 @@ jobs:
     type: maestro
     params:
       build_id: ${{ needs.build_ios_for_e2e.outputs.build_id }}
-      flow_path: ['.maestro/get-started.yaml']
+      flow_path: ['.maestro/onboarding.yaml']

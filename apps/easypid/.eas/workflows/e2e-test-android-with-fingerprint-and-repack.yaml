@@ -40,4 +40,4 @@ jobs:
     image: latest
     params:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
-      flow_path: ['.maestro/get-started.yaml']
+      flow_path: ['.maestro/onboarding.yaml']
