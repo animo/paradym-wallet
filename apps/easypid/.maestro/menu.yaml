@@ -1,8 +1,7 @@
 appId: id.paradym.wallet.preview
-
 ---
-# Run deze flow wel als je de arf-18-pid card hebt!!
-- runFlow: issue-none.yaml
+# Run this flow only if you need the arf-18-pid card!
+- runFlow: issue-code.yaml
 
 - tapOn: Recent activity
 - assertVisible: Activity
@@ -37,7 +36,6 @@ appId: id.paradym.wallet.preview
     point: 75%,90%
 - assertVisible: Cards
 - tapOn: "  Back"
-
 
 - waitForAnimationToEnd:
     timeout: 5000

@@ -1,5 +1,7 @@
 appId: id.paradym.wallet.preview
 ---
+# If you are not onboarded yet, enable this to ensure the flow works.
+# If you are running the flows manually (while already onboarded), keep this commented out.
 # - runFlow: onboarding.yaml
 - runScript:
     file: scripts/request.js
@@ -26,9 +28,6 @@ appId: id.paradym.wallet.preview
 - assertVisible: Verify your account
 - tapOn: "Authenticate"
 
-- waitForAnimationToEnd:
-    timeout: 5000
-
 - runFlow:
     when:
       platform: iOS
@@ -51,8 +50,15 @@ appId: id.paradym.wallet.preview
     commands:
     - tapOn: Use without an account
 
-    - waitForAnimationToEnd:
+    - extendedWaitUntil:
+        visible: "Sign-in"
         timeout: 5000
+
+    - runFlow:
+        when:
+          visible: Try out your stylus
+        commands:
+        - tapOn: Cancel
 
     - tapOn: Enter any login
     - inputText: test
@@ -65,12 +71,14 @@ appId: id.paradym.wallet.preview
 
     - tapOn: Continue
 
-- waitForAnimationToEnd:
+- extendedWaitUntil:
+    visible: "Is the information correct?"
     timeout: 5000
 
-- assertVisible: Is the information correct?
 - tapOn: Accept
 - assertVisible: Success!
+
+# On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
 - runFlow:
     when:
       platform: Android

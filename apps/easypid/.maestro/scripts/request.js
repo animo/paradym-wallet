@@ -136,8 +136,6 @@ const PLAYGROUND_CONFIG = {
   }
 };
 
-
-
 function request() {
   const actionRaw = ACTION;
 
@@ -148,9 +146,9 @@ function request() {
     throw new Error("Invalid ACTION JSON: " + actionRaw);
   }
 
-  const scriptPath = WALLET_RELYING_PARTY_SCRIPT;
+  const scriptPath = ISSUER_BACKEND;
   if (!scriptPath) {
-    throw new Error("WALLET_RELYING_PARTY_SCRIPT not set");
+    throw new Error("ISSUER_BACKEND not set");
   }
 
   let result;
@@ -158,10 +156,9 @@ function request() {
   if (scriptPath.includes("paradym")) {
     result = callParadymBackend(action);
   } else if (scriptPath.includes("playground")) {
-    console.log("playground called")
     result = callPlaygroundBackend(action);
   } else {
-    throw new Error("Unknown WALLET_RELYING_PARTY_SCRIPT: " + scriptPath);
+    throw new Error("Unknown ISSUER_BACKEND: " + scriptPath);
   }
 
   if (!result || !result.deeplink) {
@@ -196,8 +193,6 @@ function callParadymBackend(action) {
 
     const templateId = issuanceConfig.templateId;
     const attributes = issuanceConfig.attributes;
-
-    
 
     url = `${baseUrl}/v1/projects/${projectId}/${flow}/issuance/offer`;
 
@@ -275,13 +270,11 @@ function callParadymBackend(action) {
     body
   });
 
-
   if (response.status < 200 || response.status >= 300) {
     throw new Error(`Paradym error: ${response.status} ${response.body || ""}`);
   }
 
   const data = json(response.body);
-console.log("ATTRIBUTES:", JSON.stringify(data, null, 2));
 
   if (!data) {
     throw new Error("Empty response from Paradym backend");
@@ -289,7 +282,6 @@ console.log("ATTRIBUTES:", JSON.stringify(data, null, 2));
 
   return parser(data);
 }
-
 
 function parseParadymOpenid4vcOfferResponse(data) {
   const offerUri = data.offerUri;
@@ -339,8 +331,6 @@ function parseParadymDidcommOfferResponse(data) {
   const deeplink =
     "didcomm://?oobUrl=" + encodeURIComponent(invitationUrl);
   
-  console.log(deeplink)
-
   return {
     type: "offer",
     exchange: "didcomm",
@@ -428,7 +418,6 @@ function callPlaygroundBackend(action) {
   } else {
     throw new Error("Unsupported action: " + action.action);
   }
-  console.log(request.body)
 
   const response = http.post(request.url, {
     headers: { "Content-Type": "application/json" },
@@ -436,7 +425,6 @@ function callPlaygroundBackend(action) {
   });
 
   const data = json(response.body);
-  console.log(data)
 
   if (action.action === "createOffer") {
     return parseOfferResponse(data);
@@ -444,8 +432,6 @@ function callPlaygroundBackend(action) {
 
   return parseVerificationResponse(data);
 }
-
-
 
 function buildOfferRequest(baseUrl, action) {
   const { requestType, authorization } = action;
@@ -469,7 +455,6 @@ function buildOfferRequest(baseUrl, action) {
     }),
   };
 }
-
 
 function buildVerificationRequest(baseUrl, action) {
   const { requestType, requestSignerType } = action;

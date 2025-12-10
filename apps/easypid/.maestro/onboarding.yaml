@@ -23,11 +23,9 @@ appId: id.paradym.wallet.preview
 - assertVisible: Protect your data
 - tapOn: "Go to wallet"
 
-- waitForAnimationToEnd:
-    timeout: 5000
-
+# Due to animations, it can take some time before the home screen becomes visible.
 - extendedWaitUntil:
     visible: "Hello!"
-    timeout: 10000
+    timeout: 5000
 
 - assertVisible: "Hello!"

@@ -1,6 +1,7 @@
 appId: id.paradym.wallet.preview
 ---
-- runFlow: issue-none.yaml
+# The issue-none must be a government-arf-18-pid-mdoc. If the 'none' value is changed, this test flow may fail.
+- runFlow: ./issue-none/issue-none-openid4vc.yaml
 - runScript:
     file: scripts/request.js
     env:
@@ -45,6 +46,8 @@ appId: id.paradym.wallet.preview
 - assertVisible: "Success!"
 - assertVisible: "Card successfully added to your wallet!"
 - assertVisible: "Credential"
+
+# On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
 - runFlow:
     when:
       platform: Android

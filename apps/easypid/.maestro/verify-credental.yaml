@@ -1,6 +1,8 @@
 appId: id.paradym.wallet.preview
 ---
-# - runFlow: issue-code.yaml
+# If you are not onboarded yet, enable this to ensure the flow works.
+# If you are running the flows manually (while already onboarded), keep this commented out.
+# - runFlow: onboarding.yaml
 - runScript:
     file: scripts/request.js
     env:
@@ -24,6 +26,8 @@ appId: id.paradym.wallet.preview
     commands:
       - tapOn: "Pin number 1"
 - assertVisible: Success!
+
+# On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
 - runFlow:
     when:
       platform: Android

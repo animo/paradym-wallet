@@ -1,5 +1,6 @@
 appId: id.paradym.wallet.preview
 ---
+# Deeplink is passed via the env variable in the runFlow call from the parent flow (either issue-none-didcomm.yaml or issue-none-openid4vc.yaml).
 - openLink:
     link: ${deeplink}
 
@@ -33,6 +34,8 @@ appId: id.paradym.wallet.preview
 - assertVisible: "Success!"
 - assertVisible: "Card successfully added to your wallet!"
 - assertVisible: "Credential"
+
+# On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
 - runFlow:
     when:
       platform: Android
@@ -43,7 +46,6 @@ appId: id.paradym.wallet.preview
       platform: iOS
     commands:
       - tapOn: "Go to wallet  "
-
 
 - waitForAnimationToEnd:
     timeout: 5000

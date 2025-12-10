@@ -2,7 +2,8 @@ appId: id.paradym.wallet.preview
 tags:
   - openid4vc
 ---
-# - runFlow: onboarding.yaml
+# If you are not onboarded yet, enable this to ensure the flow works.
+# If you are running the flows manually (while already onboarded), keep this commented out.
 - runScript:
     file: scripts/request.js
     env:
