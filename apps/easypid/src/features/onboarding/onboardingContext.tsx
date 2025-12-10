@@ -223,7 +223,7 @@ export function OnboardingContextProvider({
     return Linking.openSettings().then(() => setCurrentStepName('biometrics'))
   }
 
-  const onEnableBiometrics = async () => {
+  const onEnableBiometrics = async (enableBiometrics: boolean) => {
     if (!agent || (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')) {
       await reset({
         resetToStep: 'pin',
@@ -233,12 +233,14 @@ export function OnboardingContextProvider({
 
     try {
       if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true })
+        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics })
       }
 
       // Directly try getting the wallet key so the user can enable biometrics
       // and we can check if biometrics works
-      const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+      const walletKey = enableBiometrics
+        ? await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+        : undefined
 
       if (!walletKey) {
         const walletKey =
@@ -251,7 +253,7 @@ export function OnboardingContextProvider({
         }
 
         await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+        if (enableBiometrics) await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
       }
 
       goToNextStep()
@@ -659,6 +661,7 @@ export function OnboardingContextProvider({
           id: 'biometrics.activateBiometricsButton',
           message: 'Activate Biometrics',
         })}
+        skipText={t(commonMessages.setUpLater)}
       />
     )
   } else if (currentStep.step === 'biometrics-disabled') {

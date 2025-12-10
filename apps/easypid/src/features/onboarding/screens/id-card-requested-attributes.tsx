@@ -34,12 +34,6 @@ export function OnboardingIdCardRequestedAttributes({
     comment: 'Text explaining how many attributes will be read from the eID card',
   })
 
-  const setUpLaterLabel = t({
-    id: 'onboardingIdCardRequestedAttributes.setupLater',
-    message: 'Set up later',
-    comment: 'Button label to allow skipping card setup during onboarding',
-  })
-
   const continueLabel = t(commonMessages.continue)
 
   return (
@@ -64,7 +58,7 @@ export function OnboardingIdCardRequestedAttributes({
       <YStack gap="$4" alignItems="center">
         {onSkipCardSetup && (
           <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
-            {setUpLaterLabel}
+            {t(commonMessages.setUpLater)}
           </Button.Text>
         )}
         <Button.Solid scaleOnPress onPress={goToNextStep}>
