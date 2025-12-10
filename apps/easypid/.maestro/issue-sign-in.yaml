@@ -2,9 +2,9 @@ appId: id.paradym.wallet.preview
 ---
 # - runFlow: onboarding.yaml
 - runScript:
-    file: request.js
+    file: scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"login", "credential": "mobile-drivers-license-mdoc"}'
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"browser", "requestType": "arf-18-pid"}'
 
 - openLink:
     link: ${output.deeplink}
