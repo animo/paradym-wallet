@@ -4,8 +4,7 @@ appId: id.paradym.wallet.preview
 - runScript:
     file: scripts/request.js
     env:
-      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType": "" }'
-
+      ACTION: '{"action":"createVerification","requestSignerType":"x5c","flow":"openid4vc","requestType":"arf-18-pid"}'
 - openLink:
     link: ${output.deeplink}
 
