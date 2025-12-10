@@ -1,4 +1,142 @@
-// Generiek in de action en ddan per back-end mappen naar of de template id of de naam die in de playground wotdt gebruikt.
+const PARADYM_CONFIG = {
+  projectId: "cmipr5x5x00l6s6018op8cbci",
+  issuance: {
+    "mobile-driver-license": {
+      templateId: "cmiyfjvp50031s601ihl1epyf",
+      attributes: {
+        "org.iso.18013.5.1": {
+          "sex": 123,
+          "height": 123,
+          "weight": 123,
+          "portrait": "Base64 encoded string",
+          "birth_date": "2025-12-09",
+          "eye_colour": "String value",
+          "given_name": "String value",
+          "issue_date": "2025-12-09",
+          "age_over_16": true,
+          "age_over_18": true,
+          "age_over_21": true,
+          "age_over_25": true,
+          "age_over_65": true,
+          "birth_place": "String value",
+          "expiry_date": "2025-12-09",
+          "family_name": "String value",
+          "hair_colour": "String value",
+          "nationality": "String value",
+          "age_in_years": 123,
+          "resident_city": "String value",
+          "age_birth_year": 123,
+          "resident_state": "String value",
+          "document_number": "String value",
+          "issuing_country": "String value",
+          "resident_address": "String value",
+          "resident_country": "String value",
+          "issuing_authority": "String value",
+          "driving_privileges": [
+            {
+              "codes": [
+                {
+                  "code": "String value",
+                  "sign": "String value",
+                  "value": "String value"
+                }
+              ],
+              "issue_date": "2025-12-09",
+              "expiry_date": "2025-12-09",
+              "vehicle_category_code": "String value"
+            }
+          ],
+          "issuing_jurisdiction": "String value",
+          "resident_postal_code": "String value",
+          "signature_usual_mark": "Base64 encoded string",
+          "administrative_number": "String value",
+          "portrait_capture_date": "2025-12-09",
+          "un_distinguishing_sign": "String value",
+          "biometric_template_face": "Base64 encoded string",
+          "biometric_template_iris": "Base64 encoded string",
+          "biometric_template_finger": "Base64 encoded string",
+          "given_name_national_character": "String value",
+          "family_name_national_character": "String value",
+          "biometric_template_signature_sign": "Base64 encoded string"
+        
+        }}
+      },
+
+    // ACTION.requestType === "arf-18-pid"
+    "arf-18-pid": {
+      templateId: "cmiyewqbz0030s601doszw1f3",
+      attributes: {
+        sex: 2,
+        email: "emma.vandenberg@gmail.com",
+        address: {
+          region: "Noord-Holland",
+          country: "NL",
+          locality: "Amsterdam",
+          formatted: "Prinsengracht 263, 1016 GV Amsterdam, Noord-Holland, NL",
+          postal_code: "1016 GV",
+          house_number: "263",
+          street_address: "Prinsengracht"
+        },
+        picture: "",
+        birthdate: "1995-03-15",
+        given_name: "Emma Charlotte",
+        family_name: "van der Berg",
+        age_in_years: 30,
+        phone_number: "0031612345678",
+        trust_anchor: "NL_GOV",
+        nationalities: ["NL"],
+        age_birth_year: 1995,
+        date_of_expiry: "2033-08-20",
+        place_of_birth: {
+          region: "Noord-Holland",
+          country: "NL",
+          locality: "Amsterdam"
+        },
+        document_number: "NL987654321",
+        issuing_country: "NL",
+        birth_given_name: "Emma Charlotte",
+        date_of_issuance: "2023-08-20",
+        age_equal_or_over: {
+          "12": true,
+          "14": true,
+          "16": true,
+          "18": true,
+          "21": true,
+          "65": false
+        },
+        birth_family_name: "van der Berg",
+        issuing_authority: "NL",
+        issuing_jurisdiction: "NL",
+        personal_administrative_number: "ADM2023080012345"
+      }
+    }
+  },
+  verification: { "mobile-driver-license": { presentationTemplateId: "cmiyfo40z0032s601thh9lqju" }, "arf-18-pid": { presentationTemplateId: "cmiyfopx40033s601guy5q89e" } }
+};
+
+const PLAYGROUND_CONFIG = {
+  issuance: {
+    "mobile-driver-license": {
+      credentialSupportedId: "mdl-mdoc"
+    },
+    "arf-18-pid": {
+      credentialSupportedId: "government-arf-18-pid-mdoc"
+    },
+    "certificate-of-residence": {
+      credentialSupportedId: "certificate-of-residence-sd-jwt"
+    }
+  },
+  verification: {
+    "mobile-driver-license": {
+      presentationDefinitionId: "019368ed-3787-7669-b7f4-8c012238e90d__0"
+    },
+    "arf-18-pid": {
+      presentationDefinitionId: "019368ed-3787-7669-b7f4-8c012238e90d__0"
+    }
+  }
+};
+
+
 
 function request() {
   const actionRaw = ACTION;
@@ -41,26 +179,38 @@ output.request = request();
 
 function callParadymBackend(action) {
   const baseUrl = PARADYM_REQUEST_URL || "https://api.paradym.id";
-  const projectId = "cmipr5x5x00l6s6018op8cbci";
-  const flow = action.flow;
+  const projectId = PARADYM_CONFIG.projectId;
+  const { flow, requestType } = action;
 
   let url;
   let body;
-  let parser
+  let parser;
 
+  // ---------- ISSUANCE / createOffer ----------
   if (action.action === "createOffer") {
+    const issuanceConfig = PARADYM_CONFIG.issuance[requestType];
+
+    if (!issuanceConfig) {
+      throw new Error(`No Paradym issuance config found for requestType: ${requestType}`);
+    }
+
+    const templateId = issuanceConfig.templateId;
+    const attributes = issuanceConfig.attributes;
+
+    
+
     url = `${baseUrl}/v1/projects/${projectId}/${flow}/issuance/offer`;
 
     if (flow === "didcomm") {
       body = JSON.stringify({
         didcommInvitation: {
           createConnection: true,
-          did: "did:web",
+          did: "did:web"
         },
         credential: {
-          credentialTemplateId: "cmiwwctqy00bos601zfwzl8lp",
-          attributes: { name: "Niels" },
-        },
+          credentialTemplateId: templateId,
+          attributes
+        }
       });
 
       parser = parseParadymDidcommOfferResponse;
@@ -68,37 +218,45 @@ function callParadymBackend(action) {
       body = JSON.stringify({
         credentials: [
           {
-            credentialTemplateId: "cmiripaap0026s601f95yqz79",
-            attributes: { name: "Niels" },
-          },
-        ],
+            credentialTemplateId: templateId,
+            attributes
+          }
+        ]
       });
 
-      parser = parseParadymOfferResponse;
+      parser = parseParadymOpenid4vcOfferResponse;
     } else {
       throw new Error(`Unsupported flow for createOffer: ${flow}`);
     }
   }
 
-
+  // ---------- VERIFICATION / createVerification ----------
   if (action.action === "createVerification") {
+    const verificationConfig = PARADYM_CONFIG.verification[requestType];
+
+    if (!verificationConfig) {
+      throw new Error(`No Paradym verification config found for requestType: ${requestType}`);
+    }
+
+    const presentationTemplateId = verificationConfig.presentationTemplateId;
+
     if (flow === "didcomm") {
-      url = `${baseUrl}/v1/projects/${projectId}/didcomm/verification/request`;
-      console.log(url)
+      url = `${baseUrl}/v1/projects/${projectId}/${flow}/verification/request`;
 
       body = JSON.stringify({
         didcommInvitation: {
           createConnection: true,
-          did: "did:web",
+          did: "did:web"
         },
-        presentationTemplateId: "cmiu7ae2j009es601f9bxw7xk", // hardcoded
+        presentationTemplateId
       });
 
       parser = parseParadymDidcommVerificationResponse;
-    } else {      url = `${baseUrl}/v1/projects/${projectId}/${flow}/verification/request`;
+    } else {
+      url = `${baseUrl}/v1/projects/${projectId}/${flow}/verification/request`;
 
       body = JSON.stringify({
-        presentationTemplateId: "cmiropet7005os601nhd8w0ur",
+        presentationTemplateId
       });
 
       parser = parseParadymVerificationResponse;
@@ -112,16 +270,18 @@ function callParadymBackend(action) {
   const response = http.post(url, {
     headers: {
       "Content-Type": "application/json",
-      "x-access-token": PARADYM_API_KEY,
+      "x-access-token": PARADYM_API_KEY
     },
-    body,
+    body
   });
+
 
   if (response.status < 200 || response.status >= 300) {
     throw new Error(`Paradym error: ${response.status} ${response.body || ""}`);
   }
 
   const data = json(response.body);
+console.log("ATTRIBUTES:", JSON.stringify(data, null, 2));
 
   if (!data) {
     throw new Error("Empty response from Paradym backend");
@@ -131,21 +291,20 @@ function callParadymBackend(action) {
 }
 
 
-
 function parseParadymOpenid4vcOfferResponse(data) {
-  const offerQrUri = data.offerUri
-  if (!offerQrUri) {
-    throw new Error("offerQrUri missing in Paradym response");
+  const offerUri = data.offerUri;
+  if (!offerUri) {
+    throw new Error("offerUri missing in Paradym response");
   }
 
   let credentialOfferUri = null;
   let openidDeeplink = null;
 
   try {
-    const match = offerQrUri.match(/[?&]credential_offer_uri=([^&]+)/);
+    const match = offerUri.match(/[?&]credential_offer_uri=([^&]+)/);
 
     if (!match || !match[1]) {
-      throw new Error("credential_offer_uri missing in offerQrUri");
+      throw new Error("credential_offer_uri missing in offerUri");
     }
 
     credentialOfferUri = decodeURIComponent(match[1]);
@@ -153,14 +312,11 @@ function parseParadymOpenid4vcOfferResponse(data) {
     openidDeeplink =
       "openid-credential-offer://?credential_offer_uri=" +
       encodeURIComponent(credentialOfferUri);
-
   } catch (e) {
     throw new Error("Could not create the deeplink: " + e.message);
   }
 
-
-  const deeplink = openidDeeplink
-  console.log("deeplink", deeplink)
+  const deeplink = openidDeeplink;
 
   return {
     type: "offer",
@@ -175,7 +331,6 @@ function parseParadymDidcommOfferResponse(data) {
   }
 
   const invitationUrl = data.didcommInvitation.invitationUri;
-  console.log(invitationUrl)
 
   if (!invitationUrl) {
     throw new Error("invitationUri missing in didcommInvitation");
@@ -273,6 +428,7 @@ function callPlaygroundBackend(action) {
   } else {
     throw new Error("Unsupported action: " + action.action);
   }
+  console.log(request.body)
 
   const response = http.post(request.url, {
     headers: { "Content-Type": "application/json" },
@@ -290,26 +446,50 @@ function callPlaygroundBackend(action) {
 }
 
 
+
 function buildOfferRequest(baseUrl, action) {
+  const { requestType, authorization } = action;
+
+  const issuanceConfig = PLAYGROUND_CONFIG.issuance[requestType];
+  if (!issuanceConfig) {
+    throw new Error(`No Playground issuance config found for requestType: ${requestType}`);
+  }
+
+  const credentialSupportedId = issuanceConfig.credentialSupportedId;
+
   return {
     url: baseUrl + "offers/create",
     body: JSON.stringify({
-      credentialSupportedIds: [action.credential],
-      authorization: action.authorization,
+      credentialSupportedIds: [credentialSupportedId],
+      authorization: authorization,
+      deferBy:"none",
+      requireDpop:false,
+      requireWalletAttestation:false,
+      requireKeyAttestation:false
     }),
   };
 }
 
-function buildVerificationRequest(baseUrl) {
+
+function buildVerificationRequest(baseUrl, action) {
+  const { requestType, requestSignerType } = action;
+
+  const verificationConfig = PLAYGROUND_CONFIG.verification[requestType];
+  if (!verificationConfig) {
+    throw new Error(`No Playground verification config found for requestType: ${requestType}`);
+  }
+
+  const presentationDefinitionId = verificationConfig.presentationDefinitionId;
+
   return {
     url: baseUrl + "requests/create",
     body: JSON.stringify({
-      presentationDefinitionId: "019368ed-3787-7669-b7f4-8c012238e90d__0",
+      presentationDefinitionId,
       requestScheme: "openid4vp://",
       responseMode: "direct_post.jwt",
-      requestSignerType: action.requestSignerType,
+      requestSignerType: requestSignerType,
       transactionAuthorizationType: "none",
-      version: action.version,
+      version: "v1",
       queryLanguage: "dcql",
     }),
   };
