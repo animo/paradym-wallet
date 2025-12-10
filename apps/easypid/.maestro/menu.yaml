@@ -6,7 +6,7 @@ appId: id.paradym.wallet.preview
 
 - tapOn: Recent activity
 - assertVisible: Activity
-- tapOn: Card added activity from Utopia Government
+- tapOn: .*Card added.*
 - assertVisible: Card added
 - tapOn: ARF 1.8 PID
 - assertVisible: Card details
@@ -26,6 +26,28 @@ appId: id.paradym.wallet.preview
 - assertVisible: Activity
 - tapOn: "  Back"
 - assertVisible: Hello!
+- tapOn: .*All cards.*
+- assertVisible: Cards
+- tapOn: ARF 1.8 PID
+- assertVisible: Card details
+- tapOn:
+    point: 87%,7%
+- assertVisible: Bottom Sheet
+- tapOn:
+    point: 75%,90%
+- assertVisible: Cards
+- tapOn: "  Back"
 
 
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    text: Menu
+    index: -1
+- assertVisible: Inbox
+- tapOn: "  Back"
 
+- tapOn: Menu
+- assertVisible: Menu
+- assertVisible: WALLET Cards Activity APP Settings Feedback About this wallet Reset Wallet
+- tapOn: "  Back"
