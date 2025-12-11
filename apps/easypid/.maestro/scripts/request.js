@@ -149,16 +149,16 @@ function request() {
     throw new Error(`Invalid ACTION JSON: ${actionRaw}`)
   }
 
-  const scriptPath = ISSUER_BACKEND
-  if (!scriptPath) {
+  const issuerBackend = ISSUER_BACKEND
+  if (!issuerBackend) {
     throw new Error('ISSUER_BACKEND not set')
   }
 
   let result
 
-  if (scriptPath.includes('paradym')) {
+  if (issuerBackend === 'paradym') {
     result = callParadymBackend(action)
-  } else if (scriptPath.includes('playground')) {
+  } else if (issuerBackend === 'playground') {
     result = callPlaygroundBackend(action)
   } else {
     throw new Error(`Unknown ISSUER_BACKEND: ${scriptPath}`)
