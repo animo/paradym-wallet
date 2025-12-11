@@ -184,10 +184,10 @@ export function FunkeCredentialNotificationScreen() {
     [agent, setErrorReasonWithError, t]
   )
 
-  // TODO: Should we add this to the activitiy? We also don't do it for issuance
+  // TODO: Should we add this to the activity? We also don't do it for issuance
   const onProofDecline = async () => {
     toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
-    pushToWallet('back')
+    pushToWallet()
   }
 
   const onCompleteCredentialRetrieval = async () => {
@@ -398,8 +398,8 @@ export function FunkeCredentialNotificationScreen() {
     ]
   )
 
-  const onCancel = () => pushToWallet('back')
-  const onGoToWallet = () => pushToWallet('replace')
+  const onCancel = () => pushToWallet()
+  const onGoToWallet = () => pushToWallet()
 
   const isAuthFlow =
     !preAuthGrant &&

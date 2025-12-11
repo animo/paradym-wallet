@@ -159,7 +159,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   const onProofComplete = () => {
     shutdownDataTransfer()
-    pushToWallet('replace')
+    pushToWallet()
   }
 
   const addActivity = async (status: Exclude<ActivityStatus, 'pending'>) => {
