@@ -97,8 +97,8 @@ catalogs:
       specifier: ^0.13.0
       version: 0.13.0
     credo-ts-didweb-anoncreds:
-      specifier: 0.0.1-alpha.14
-      version: 0.0.1-alpha.14
+      specifier: 0.0.2-alpha.2
+      version: 0.0.2-alpha.2
     expo:
       specifier: 53.0.13
       version: 53.0.13
@@ -568,7 +568,7 @@ importers:
         version: 5.90.10(react@19.0.0)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
-        version: 0.0.1-alpha.14(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.3)(typescript@5.8.3))(@animo-id/credo-ts-core@0.5.14-alpha-20251016134257(typescript@5.8.3))(@hyperledger/anoncreds-shared@0.3.3)
+        version: 0.0.2-alpha.2(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.3)(typescript@5.8.3))(@animo-id/credo-ts-core@0.5.14-alpha-20251016134257(typescript@5.8.3))
       expo:
         specifier: 'catalog:'
         version: 53.0.13(@babel/core@7.28.5)(@expo/metro-runtime@5.0.4(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0)))(react-native@0.79.4(@babel/core@7.28.5)(@types/react@19.1.8)(react@19.0.0))(react@19.0.0)
@@ -3559,12 +3559,11 @@ packages:
   credentials-context@2.0.0:
     resolution: {integrity: sha512-/mFKax6FK26KjgV2KW2D4YqKgoJ5DVJpNt87X2Jc9IxT2HBMy7nEIlc+n7pEi+YFFe721XqrvZPd+jbyyBjsvQ==}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.14:
-    resolution: {integrity: sha512-NLC2UzPKApw6wPE8o3ux/eVnxcOmQqA2AC+2ugTnM48Q+O9RxIZZFVBC90VfhvimV7TvpNdM+MyczEQfvAu09w==}
+  credo-ts-didweb-anoncreds@0.0.2-alpha.2:
+    resolution: {integrity: sha512-5fh8vZ4CCjW9YICH0NTNMpgRMh8Hy5DSaz0G6jJyEZweJwmywXC/TqW+DwsvveyJJWmsYl7iTnp2MfY0OMDgxQ==}
     peerDependencies:
       '@credo-ts/anoncreds': npm:@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257
       '@credo-ts/core': npm:@animo-id/credo-ts-core@0.5.14-alpha-20251016134257
-      '@hyperledger/anoncreds-shared': 0.3.3
 
   cross-fetch@3.2.0:
     resolution: {integrity: sha512-Q+xVJLoGOeIMXZmbUK4HYk+69cQH6LudR0Vu/pRm2YlU/hDV9CiS0gKUMaWY5f2NeUH9C1nV3bsTlCo0FsTV1Q==}
@@ -10554,13 +10553,12 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.14(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.3)(typescript@5.8.3))(@animo-id/credo-ts-core@0.5.14-alpha-20251016134257(typescript@5.8.3))(@hyperledger/anoncreds-shared@0.3.3):
+  credo-ts-didweb-anoncreds@0.0.2-alpha.2(@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.3)(typescript@5.8.3))(@animo-id/credo-ts-core@0.5.14-alpha-20251016134257(typescript@5.8.3)):
     dependencies:
       '@credo-ts/anoncreds': '@animo-id/credo-ts-anoncreds@0.5.14-alpha-20251016134257(@hyperledger/anoncreds-shared@0.3.3)(typescript@5.8.3)'
       '@credo-ts/core': '@animo-id/credo-ts-core@0.5.14-alpha-20251016134257(typescript@5.8.3)'
-      '@hyperledger/anoncreds-shared': 0.3.3
-      canonicalize: 1.0.8
-      query-string: 7.1.3
+      canonicalize: 2.1.0
+      query-string: 9.3.1
 
   cross-fetch@3.2.0:
     dependencies:
