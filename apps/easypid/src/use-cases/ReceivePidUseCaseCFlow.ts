@@ -3,18 +3,18 @@ import { pidSchemes } from '@easypid/constants'
 import {
   BiometricAuthenticationError,
   OpenId4VciAuthorizationFlow,
-  type SdJwtVcRecord,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
+  type SdJwtVcRecord,
   setCredentialCategoryMetadata,
   setOpenId4VcCredentialMetadata,
   setRefreshCredentialMetadata,
   storeCredential,
 } from '@package/agent'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
-import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 import { bdrPidOpenId4VcMetadata, bdrPidSdJwtTypeMetadata } from './bdrPidMetadata'
+import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {

@@ -13,9 +13,9 @@ import {
   MessageBox,
   Spinner,
   Stack,
+  useScaleAnimation,
   XStack,
   YStack,
-  useScaleAnimation,
 } from '@package/ui'
 import { useState } from 'react'
 import { FadeIn, ZoomIn } from 'react-native-reanimated'

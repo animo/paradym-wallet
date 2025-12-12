@@ -149,7 +149,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
   const mdocRecords = await agent.mdoc.getAll()
   const sdJwtVcRecords = await agent.sdJwtVc.getAll()
   const mdocCredentials = mdocRecords.map(async (record): Promise<CredentialItem> => {
-    const mdoc = record.credential
+    const mdoc = record.firstCredential
     const { display } = getCredentialForDisplay(record)
 
     const iconDataUrl = display.backgroundImage?.url
@@ -175,7 +175,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
   })
 
   const sdJwtCredentials = sdJwtVcRecords.map(async (record): Promise<CredentialItem> => {
-    const sdJwtVc = record.credential
+    const sdJwtVc = record.firstCredential
     const { display } = getCredentialForDisplay(record)
 
     const iconDataUrl = display.backgroundImage?.url
@@ -189,7 +189,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
       credential: {
         vct: record.getTags().vct,
         format: 'dc+sd-jwt',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
         claims: sdJwtVc.prettyClaims as any,
       },
       display: {

@@ -30,7 +30,7 @@ const iconMapping = {
 const enteringAnimation: EntryExitAnimationFunction = () => {
   'worklet'
   const animations = {
-    originY: withSpring(0, { damping: 50, mass: 0.2, stiffness: 100, restSpeedThreshold: 0.05 }),
+    originY: withSpring(0, { damping: 50, mass: 0.2, stiffness: 100 }),
     opacity: withTiming(1, { duration: 200 }),
   }
   const initialValues = {
@@ -46,7 +46,7 @@ const enteringAnimation: EntryExitAnimationFunction = () => {
 const exitingAnimation: EntryExitAnimationFunction = () => {
   'worklet'
   const animations = {
-    originY: withSpring(-20, { damping: 50, mass: 0.2, stiffness: 100, restSpeedThreshold: 0.05 }),
+    originY: withSpring(-20, { damping: 50, mass: 0.2, stiffness: 100 }),
     opacity: withTiming(0, { duration: 200 }),
   }
   const initialValues = {

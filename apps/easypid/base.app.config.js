@@ -89,6 +89,7 @@ const createBaseConfig = (appSpecific) => {
       fallbackToCacheTimeout: 0,
     },
     plugins: [
+      'expo-web-browser',
       'expo-localization',
       [
         'react-native-edge-to-edge',
@@ -115,11 +116,10 @@ const createBaseConfig = (appSpecific) => {
       'expo-secure-store',
       'expo-router',
       [
-        'react-native-vision-camera',
+        'expo-camera',
         {
-          cameraPermissionText:
+          cameraPermission:
             '$(PRODUCT_NAME) uses the camera to scan invitation QR-codes, allowing you to receive or share cards from your wallet.',
-          enableCodeScanner: true,
         },
       ],
       [
@@ -142,7 +142,7 @@ const createBaseConfig = (appSpecific) => {
         {
           android: {
             minSdkVersion: 26,
-            compileSdkVersion: 35,
+            compileSdkVersion: 36,
             useLegacyPackaging: true,
             extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
           },
@@ -229,4 +229,4 @@ const createBaseConfig = (appSpecific) => {
   }
 }
 
-module.exports = { createBaseConfig, variant }
+export { createBaseConfig, variant }

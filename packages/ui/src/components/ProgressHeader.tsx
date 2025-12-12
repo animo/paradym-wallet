@@ -2,8 +2,8 @@ import { type ComponentProps, useEffect } from 'react'
 import {
   Easing,
   FadeIn,
-  LinearTransition,
   interpolateColor,
+  LinearTransition,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -39,7 +39,6 @@ export function ProgressHeader({
     return { backgroundColor: backgroundColor }
   })
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Only change when color changes
   useEffect(() => {
     colorValue.value = withTiming(color === 'primary' ? 0 : 1, { duration: 1000 })
   }, [color])

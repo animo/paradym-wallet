@@ -1,14 +1,15 @@
 import { useImageScaler } from '@package/app/hooks'
-import { Button, Spinner, YStack } from '@package/ui'
+import { Button, HeroIcons, Spinner, YStack } from '@package/ui'
 import { useState } from 'react'
 import { SetUpBiometrics } from './assets/SetUpBiometrics'
 
 interface OnboardingBiometricsProps {
-  goToNextStep: () => Promise<void>
+  goToNextStep: (enableBiometrics: boolean) => Promise<void>
   actionText: string
+  skipText?: string
 }
 
-export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBiometricsProps) {
+export function OnboardingBiometrics({ goToNextStep, actionText, skipText }: OnboardingBiometricsProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { height, onLayout } = useImageScaler({ scaleFactor: 0.6 })
 
@@ -16,7 +17,17 @@ export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBio
     if (isLoading) return
 
     setIsLoading(true)
-    goToNextStep()
+    goToNextStep(true)
+      // It's ok to not handle this
+      .catch(() => {})
+      .finally(() => setIsLoading(false))
+  }
+
+  const onSkipBiometrics = () => {
+    if (isLoading) return
+
+    setIsLoading(true)
+    goToNextStep(false)
       // It's ok to not handle this
       .catch(() => {})
       .finally(() => setIsLoading(false))
@@ -29,9 +40,17 @@ export function OnboardingBiometrics({ goToNextStep, actionText }: OnboardingBio
           <SetUpBiometrics />
         </YStack>
       </YStack>
-      <Button.Solid fg={1} scaleOnPress disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
-        {isLoading ? <Spinner variant="dark" /> : actionText}
-      </Button.Solid>
+      <YStack>
+        <Button.Solid fg={1} scaleOnPress disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
+          {isLoading ? <Spinner variant="dark" /> : actionText}
+        </Button.Solid>
+
+        {skipText && (
+          <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSkipBiometrics}>
+            {skipText}
+          </Button.Text>
+        )}
+      </YStack>
     </YStack>
   )
 }

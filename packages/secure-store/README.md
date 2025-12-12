@@ -8,7 +8,7 @@ This package contains methods to securely store, derive and retrieve the wallet 
 
 ## Using React Native Keychain
 
-Using `react-native-keychain` is the recommended approach and provides the best security. If you want to use this in an app, you need to make sure `react-native-keychain` and `react-native-argon2` are installed in the app.
+Using `react-native-keychain` is the recommended approach and provides the best security. If you want to use this in an app, you need to make sure `react-native-keychain` are installed in the app.
 
 You should import from `@package/secure-store/secureUnlock`.
 

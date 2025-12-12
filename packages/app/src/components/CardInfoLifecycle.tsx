@@ -5,8 +5,7 @@ import { Button, HeroIcons, InfoButton, InfoSheet, Stack } from '@package/ui'
 import type { StatusVariant } from '@package/ui/utils/variants'
 import { formatDate, formatDaysString, getDaysUntil } from '@package/utils'
 import { useRouter } from 'expo-router'
-import { useEffect } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHaptics } from '../hooks/useHaptics'
 
 // Expired requires a different flow (see component below)
@@ -113,7 +112,11 @@ function CardInfoLimitedByDate({
   validUntil,
   validFrom,
   hasRefreshToken,
-}: { validUntil?: Date; validFrom?: Date; hasRefreshToken?: boolean }) {
+}: {
+  validUntil?: Date
+  validFrom?: Date
+  hasRefreshToken?: boolean
+}) {
   const [state, setState] = useState<CardInfoLimitedByDateState>('active')
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
@@ -197,8 +200,7 @@ function getCardInfoLimitedByDateVariant(
     })
 
   // Check if card expires in more than 2 weeks (14 days)
-  const hasMoreThanTwoWeeksUntilExpiry =
-    validUntil && validUntil.getTime() - new Date().getTime() > 14 * 24 * 60 * 60 * 1000
+  const hasMoreThanTwoWeeksUntilExpiry = validUntil && validUntil.getTime() - Date.now() > 14 * 24 * 60 * 60 * 1000
 
   return {
     active: {

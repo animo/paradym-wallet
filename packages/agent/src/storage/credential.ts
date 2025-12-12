@@ -20,12 +20,12 @@ export async function getCredential(
 ): Promise<CredentialRecord> {
   if (credentialId.startsWith('w3c-credential-')) {
     const w3cCredentialId = credentialId.replace('w3c-credential-', '')
-    return agent.w3cCredentials.getCredentialRecordById(w3cCredentialId)
+    return agent.w3cCredentials.getById(w3cCredentialId)
   }
 
   if (credentialId.startsWith('w3c-v2-credential-')) {
     const w3cV2CredentialId = credentialId.replace('w3c-v2-credential-', '')
-    return agent.w3cV2Credentials.getCredentialRecordById(w3cV2CredentialId)
+    return agent.w3cV2Credentials.getById(w3cV2CredentialId)
   }
 
   if (credentialId.startsWith('sd-jwt-vc')) {
@@ -74,10 +74,10 @@ export async function storeCredential(agent: EitherAgent, credentialRecord: Cred
 export async function deleteCredential(agent: EitherAgent, credentialId: CredentialForDisplayId) {
   if (credentialId.startsWith('w3c-credential-')) {
     const w3cCredentialId = credentialId.replace('w3c-credential-', '')
-    await agent.w3cCredentials.removeCredentialRecord(w3cCredentialId)
+    await agent.w3cCredentials.deleteById(w3cCredentialId)
   } else if (credentialId.startsWith('w3c-v2-credential-')) {
     const w3cV2CredentialId = credentialId.replace('w3c-v2-credential-', '')
-    await agent.w3cV2Credentials.removeCredentialRecord(w3cV2CredentialId)
+    await agent.w3cV2Credentials.deleteById(w3cV2CredentialId)
   } else if (credentialId.startsWith('sd-jwt-vc')) {
     const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
     await agent.sdJwtVc.deleteById(sdJwtVcId)

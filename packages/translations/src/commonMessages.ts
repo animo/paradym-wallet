@@ -14,6 +14,10 @@ export const commonMessages = {
     message: 'Close',
     comment: 'Label for closing a screen or modal',
   }),
+  setUpLater: defineMessage({
+    id: 'common.setUpLater',
+    message: 'Set up later',
+  }),
   continue: defineMessage({
     id: 'common.continue',
     message: 'Continue',
@@ -120,9 +124,27 @@ export const commonMessages = {
     message: 'Biometric authentication cancelled',
     comment: 'Shown when the user cancels biometric authentication',
   }),
+  biometricAuthenticationDisabled: defineMessage({
+    id: 'common.biometricDisabled',
+    message: 'Biometric authentication disabled',
+    comment: 'Shown as toast when the user disabled biometric authentication',
+  }),
   biometricAuthenticationNotEnabled: defineMessage({
     id: 'common.biometricNotEnabled',
     message: 'Biometric authentication not enabled',
+  }),
+  biometricAuthenticationEnabled: defineMessage({
+    id: 'common.biometricEnabled',
+    message: 'Biometric authentication enabled',
+    comment: 'Shown as toast when the user enabled biometric authentication',
+  }),
+  biometricAuthenticationMustBeEnabledInSettings: defineMessage({
+    id: 'common.biometricAuthenticationMustBeEnabledInSettings',
+    message: 'Biometric authentication not configured, enable biometrics in the settings of your device',
+  }),
+  errorChangingBiometrics: defineMessage({
+    id: 'common.errorEnablingBiometrics',
+    message: 'An unknown error occurred while changing the biometric authentication settings.',
   }),
   simulatorEidCardActivated: defineMessage({
     id: 'common.simulatorEidCardActivated',

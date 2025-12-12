@@ -1,4 +1,4 @@
-import { Trans, type _t, useLingui } from '@lingui/react/macro'
+import { type _t, Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import {
   FloatingSheet,
@@ -79,13 +79,7 @@ const valueToPrimitive = (t: typeof _t, value: string | number | boolean) =>
       ? value.toString()
       : value
 
-const AnyRow = ({
-  item,
-  parentName,
-}: {
-  item: FormattedCredentialValue
-  parentName?: string | number
-}) => {
+const AnyRow = ({ item, parentName }: { item: FormattedCredentialValue; parentName?: string | number }) => {
   const { t } = useLingui()
   if (item.type === 'object' || item.type === 'array') {
     return <NestedRow parentName={parentName} item={item} />
@@ -147,13 +141,7 @@ const NestedRow = ({
   )
 }
 
-const ImageRow = ({
-  name,
-  value,
-}: {
-  name: string | number
-  value: string
-}) => {
+const ImageRow = ({ name, value }: { name: string | number; value: string }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
 

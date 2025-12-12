@@ -1,5 +1,5 @@
 import { View } from 'react-native'
-import Svg, { Path, G, type SvgProps, Defs, LinearGradient, Stop } from 'react-native-svg'
+import Svg, { Defs, G, LinearGradient, Path, Stop, type SvgProps } from 'react-native-svg'
 
 export function Blob({ color = 'black', ...props }: SvgProps) {
   return (

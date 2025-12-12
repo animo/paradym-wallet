@@ -4,27 +4,25 @@ import type {
   AnonCredsRequestedPredicateMatch,
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
+import { CredoError } from '@credo-ts/core'
 import type { DidCommProofStateChangedEvent } from '@credo-ts/didcomm'
+import { DidCommProofEventTypes, DidCommProofState, DidCommRequestPresentationV2Message } from '@credo-ts/didcomm'
+import { defineMessage } from '@lingui/core/macro'
 import type { _t } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
+import { capitalizeFirstLetter, type NonEmptyArray } from '@package/utils'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { firstValueFrom } from 'rxjs'
+import { filter, first, timeout } from 'rxjs/operators'
+import { useAgent } from '../agent'
+import { getCredentialForDisplay } from '../display'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
   FormattedSubmissionEntrySatisfiedCredential,
 } from '../format/formatPresentation'
-
-import { CredoError } from '@credo-ts/core'
-import { DidCommProofEventTypes, DidCommProofState, DidCommRequestPresentationV2Message } from '@credo-ts/didcomm'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { firstValueFrom } from 'rxjs'
-import { filter, first, timeout } from 'rxjs/operators'
 import { useConnectionById, useProofById } from '../providers'
-
-import { defineMessage } from '@lingui/core/macro'
-import { useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
-import { type NonEmptyArray, capitalizeFirstLetter } from '@package/utils'
-import { useAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
 import { getCredential } from '../storage'
 
 export const predicateMessages = {
@@ -222,8 +220,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
   const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
     mutationFn: async (selectedCredentials?: { [inputDescriptorId: string]: string }) => {
-      let formatInput: { indy?: AnonCredsSelectedCredentials; anoncreds?: AnonCredsSelectedCredentials } | undefined =
-        undefined
+      let formatInput: { indy?: AnonCredsSelectedCredentials; anoncreds?: AnonCredsSelectedCredentials } | undefined
 
       if (selectedCredentials && Object.keys(selectedCredentials).length > 0) {
         if (!data?.formatKey || !data.entries) throw new Error('Unable to accept presentation without credentials')

@@ -1,22 +1,20 @@
 import {
+  ClaimFormat,
   DateOnly,
+  Hasher,
+  JsonTransformer,
   type Kms,
+  type Mdoc,
   type MdocNameSpaces,
+  MdocRecord,
+  SdJwtVcRecord,
   type SdJwtVcTypeMetadata,
   type SingleOrArray,
+  TypedArrayEncoder,
   W3cCredentialRecord,
   type W3cJsonCredential,
   W3cV2CredentialRecord,
   type W3cV2JsonCredential,
-} from '@credo-ts/core'
-import {
-  ClaimFormat,
-  Hasher,
-  JsonTransformer,
-  type Mdoc,
-  MdocRecord,
-  SdJwtVcRecord,
-  TypedArrayEncoder,
 } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
@@ -430,7 +428,7 @@ function safeCalculateJwkThumbprint(jwk: Kms.Jwk): string | undefined {
       )
     )
     return `urn:ietf:params:oauth:jwk-thumbprint:sha-256:${thumbprint}`
-  } catch (e) {
+  } catch (_e) {
     return undefined
   }
 }
@@ -479,7 +477,7 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, status, ...visibleProperties } =
     sdJwtVcPayload as SdJwtVcPayload
 
-  const holder = cnf ? (cnf.kid ?? cnf.jwk ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
+  const holder = cnf ? ((cnf.kid ?? cnf.jwk) ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
     issuer: iss,
@@ -552,7 +550,7 @@ export function getCredentialForDisplay(
   const hasRefreshToken = getRefreshCredentialMetadata(credentialRecord) !== null
 
   if (credentialRecord instanceof SdJwtVcRecord) {
-    const sdJwtVc = credentialRecord.credential
+    const sdJwtVc = credentialRecord.firstCredential
 
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const sdJwtTypeMetadata = credentialRecord.typeMetadata
@@ -598,7 +596,7 @@ export function getCredentialForDisplay(
     }
   }
   if (credentialRecord instanceof MdocRecord) {
-    const mdocInstance = credentialRecord.credential
+    const mdocInstance = credentialRecord.firstCredential
 
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const credentialDisplay = getMdocCredentialDisplay(mdocInstance, openId4VcMetadata)
@@ -636,13 +634,13 @@ export function getCredentialForDisplay(
     }
   }
   if (credentialRecord instanceof W3cCredentialRecord) {
+    const firstCredential = credentialRecord.firstCredential
+
     const credential = JsonTransformer.toJSON(
-      credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
-        ? credentialRecord.credential.credential
-        : credentialRecord.credential.toJson()
+      firstCredential.claimFormat === ClaimFormat.JwtVc ? firstCredential.credential : firstCredential.toJson()
     ) as W3cJsonCredential | W3cV2JsonCredential
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: no explanation
     const proof = (credential as any).proof as SingleOrArray<{
       type: string
       cryptosuite?: string
@@ -651,7 +649,7 @@ export function getCredentialForDisplay(
     const firstProof = Array.isArray(proof) ? proof[0] : proof
     const isAnonCreds = firstProof.cryptosuite === 'anoncreds-2023'
 
-    let type = credentialRecord.credential.type[credentialRecord.credential.type.length - 1]
+    let type = firstCredential.type[firstCredential.type.length - 1]
     if (isAnonCreds) {
       type = firstProof.verificationMethod ?? type
     }
@@ -662,7 +660,7 @@ export function getCredentialForDisplay(
 
     // FIXME: support credential with multiple subjects
     const credentialAttributes = Array.isArray(credential.credentialSubject)
-      ? credential.credentialSubject[0] ?? {}
+      ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
     return {
@@ -675,16 +673,14 @@ export function getCredentialForDisplay(
       attributes: credentialAttributes,
       rawAttributes: credentialAttributes,
       metadata: {
-        holder: credentialRecord.credential.credentialSubjectIds[0],
-        issuer: credentialRecord.credential.issuerId,
+        holder: firstCredential.credentialSubjectIds[0],
+        issuer: firstCredential.issuerId,
         type,
-        issuedAt: new Date(credentialRecord.credential.issuanceDate).toISOString(),
-        validUntil: credentialRecord.credential.expirationDate
-          ? new Date(credentialRecord.credential.expirationDate).toISOString()
-          : undefined,
-        validFrom: new Date(credentialRecord.credential.issuanceDate).toISOString(),
+        issuedAt: new Date(firstCredential.issuanceDate).toISOString(),
+        validUntil: firstCredential.expirationDate ? new Date(firstCredential.expirationDate).toISOString() : undefined,
+        validFrom: new Date(firstCredential.issuanceDate).toISOString(),
       },
-      claimFormat: credentialRecord.credential.claimFormat,
+      claimFormat: firstCredential.claimFormat,
       record: credentialRecord,
       category: credentialCategoryMetadata,
       hasRefreshToken,
@@ -692,7 +688,7 @@ export function getCredentialForDisplay(
   }
 
   if (credentialRecord instanceof W3cV2CredentialRecord) {
-    const resolvedCredential = credentialRecord.credential.resolvedCredential
+    const resolvedCredential = credentialRecord.firstCredential.resolvedCredential
     const credential = resolvedCredential.toJSON()
 
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
@@ -701,7 +697,7 @@ export function getCredentialForDisplay(
 
     // FIXME: support credential with multiple subjects
     const credentialAttributes = Array.isArray(credential.credentialSubject)
-      ? credential.credentialSubject[0] ?? {}
+      ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
     return {
@@ -723,7 +719,7 @@ export function getCredentialForDisplay(
         validUntil: resolvedCredential.validUntil ? new Date(resolvedCredential.validUntil).toISOString() : undefined,
         validFrom: resolvedCredential.validFrom ? new Date(resolvedCredential.validFrom).toISOString() : undefined,
       },
-      claimFormat: credentialRecord.credential.claimFormat,
+      claimFormat: credentialRecord.firstCredential.claimFormat,
       record: credentialRecord,
       category: credentialCategoryMetadata,
       hasRefreshToken,

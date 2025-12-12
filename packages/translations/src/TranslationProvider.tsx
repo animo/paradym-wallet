@@ -1,7 +1,6 @@
-import type { PropsWithChildren } from 'react'
-
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
+import type { PropsWithChildren } from 'react'
 import type { SupportedLocale } from './i18n'
 import { useSyncLocale } from './useSyncLocale'
 

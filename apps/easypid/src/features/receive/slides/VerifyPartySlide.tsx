@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { type DisplayImage, type TrustMechanism, type TrustedEntity, useActivities } from '@package/agent'
+import { type DisplayImage, type TrustedEntity, type TrustMechanism, useActivities } from '@package/agent'
 import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
@@ -11,9 +11,9 @@ import {
   Paragraph,
   ScrollView,
   Stack,
+  useMedia,
   XStack,
   YStack,
-  useMedia,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import { useRouter } from 'expo-router'

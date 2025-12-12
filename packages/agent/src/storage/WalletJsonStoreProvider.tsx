@@ -1,3 +1,4 @@
+import type { GenericRecord } from '@credo-ts/core'
 import {
   type Agent,
   type RecordDeletedEvent,
@@ -5,7 +6,6 @@ import {
   type RecordUpdatedEvent,
   RepositoryEventTypes,
 } from '@credo-ts/core'
-import type { GenericRecord } from '@credo-ts/core'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type WalletJsonStoreState = {

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, Easing } from 'react-native-reanimated'
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 import { Circle, type StackProps } from 'tamagui'
 
 interface LoaderProps extends StackProps {
@@ -9,7 +9,7 @@ interface LoaderProps extends StackProps {
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 
-export function Loader({ size = 'small', variant = 'light', ...props }: LoaderProps) {
+export function Loader({ size = 'small', variant = 'light' }: LoaderProps) {
   const rotation = useSharedValue(0)
 
   const circleSize = size === 'small' ? 21 : 48
@@ -18,7 +18,6 @@ export function Loader({ size = 'small', variant = 'light', ...props }: LoaderPr
   const trackColor = variant === 'light' ? '$grey-300' : '#00000026'
   const spinnerColor = variant === 'light' ? '$primary-500' : 'white'
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     rotation.value = withRepeat(
       withTiming(360, {

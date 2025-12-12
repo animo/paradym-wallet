@@ -1,6 +1,5 @@
-import { useCallback } from 'react'
-
 import * as Haptics from 'expo-haptics'
+import { useCallback } from 'react'
 
 type HapticType = 'light' | 'heavy' | 'success' | 'error'
 

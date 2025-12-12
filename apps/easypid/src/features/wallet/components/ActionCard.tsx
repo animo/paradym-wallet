@@ -1,4 +1,4 @@
-import { AnimatedStack, Heading, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
+import { AnimatedStack, Heading, Stack, useScaleAnimation, XStack, YStack } from '@package/ui'
 import type { ReactNode } from 'react'
 
 interface ActionCardProps {

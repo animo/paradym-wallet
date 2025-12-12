@@ -16,9 +16,9 @@ import {
   MessageBox,
   ScrollView,
   Stack,
+  useScaleAnimation,
   XStack,
   YStack,
-  useScaleAnimation,
 } from '@package/ui'
 import { router } from 'expo-router'
 import { Linking } from 'react-native'

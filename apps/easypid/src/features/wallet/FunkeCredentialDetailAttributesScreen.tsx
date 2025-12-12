@@ -1,3 +1,8 @@
+import { useLingui } from '@lingui/react/macro'
+import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
+
+import { CredentialAttributes, TextBackButton } from '@package/app/components'
+import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 import {
   AnimatedStack,
   FlexPage,
@@ -6,21 +11,14 @@ import {
   OptionSheet,
   ScrollView,
   type ScrollViewRefType,
-  YStack,
   useScrollToggle,
   useSpringify,
   useToastController,
+  YStack,
 } from '@package/ui'
-import { useRef, useState } from 'react'
-
-import { CredentialAttributes, TextBackButton } from '@package/app/components'
-import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
-
-import { useLingui } from '@lingui/react/macro'
-import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { FadeOutUp } from 'react-native-reanimated'
-import { FadeInUp } from 'react-native-reanimated'
+import { useRef, useState } from 'react'
+import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CustomCredentialAttributes, hasCustomCredentialDisplay } from './components/CustomCredentialAttributes'
 

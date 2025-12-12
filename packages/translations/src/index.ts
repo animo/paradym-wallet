@@ -2,13 +2,13 @@
 import '@formatjs/intl-locale/polyfill-force'
 import '@formatjs/intl-pluralrules/polyfill-force'
 
+export { commonMessages, supportedLanguageMessages } from './commonMessages'
 export {
-  i18n,
   activateLocale,
+  i18n,
   registerLocales,
-  supportedLocales,
   type SupportedLocale,
+  supportedLocales,
 } from './i18n'
 export { TranslationProvider } from './TranslationProvider'
 export { useLocale } from './useLocale'
-export { commonMessages, supportedLanguageMessages } from './commonMessages'

@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import Animated, {
-  withRepeat,
-  withTiming,
-  withSequence,
-  useSharedValue,
   Easing,
   useAnimatedStyle,
+  useSharedValue,
   withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
 } from 'react-native-reanimated'
 import { Circle } from 'tamagui'
 import { AnimatedStack, Paragraph, Stack, XStack, YStack } from '../base'
@@ -80,7 +80,7 @@ export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
               PERSONALAUSWEIS
             </Paragraph>
             <Paragraph color="$grey-900" size="$6" fontWeight="$semiBold">
-              {hideUserName && !icon ? '********' : userName ?? ''}
+              {hideUserName && !icon ? '********' : (userName ?? '')}
             </Paragraph>
           </YStack>
           <Stack>

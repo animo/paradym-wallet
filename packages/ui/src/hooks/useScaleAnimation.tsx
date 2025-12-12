@@ -3,7 +3,10 @@ import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reani
 export function useScaleAnimation({
   scaleInValue = 0.98,
   duration = 100,
-}: { scaleInValue?: number; duration?: number } = {}) {
+}: {
+  scaleInValue?: number
+  duration?: number
+} = {}) {
   const scale = useSharedValue(1)
 
   const pressStyle = useAnimatedStyle(() => {

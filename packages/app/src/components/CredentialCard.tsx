@@ -2,14 +2,14 @@ import { Trans } from '@lingui/react/macro'
 import type { DisplayImage } from '@package/agent'
 import {
   Card,
+  darken,
+  getTextColorBasedOnBg,
   Heading,
   Image,
   LucideIcons,
   Paragraph,
   XStack,
   YStack,
-  darken,
-  getTextColorBasedOnBg,
 } from '@package/ui'
 
 type CredentialCardProps = {
@@ -51,7 +51,7 @@ export function CredentialCard({
     return { backgroundColor: darken(bgColor ?? '$grey-900', 0.1) }
   }
 
-  const bgColorValue = backgroundImage?.url ? '$transparent' : bgColor ?? '$grey-900'
+  const bgColorValue = backgroundImage?.url ? '$transparent' : (bgColor ?? '$grey-900')
 
   return (
     <XStack

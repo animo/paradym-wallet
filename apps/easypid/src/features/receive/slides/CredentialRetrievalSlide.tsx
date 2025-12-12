@@ -17,10 +17,10 @@ import {
   Paragraph,
   ScrollView,
   Spacer,
-  XStack,
-  YStack,
   useInitialRender,
   useSpringify,
+  XStack,
+  YStack,
 } from '@package/ui'
 import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
@@ -28,11 +28,11 @@ import {
   FadeIn,
   FadeOut,
   LinearTransition,
-  ZoomIn,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
+  ZoomIn,
 } from 'react-native-reanimated'
 
 interface CredentialRetrievalSlideProps {
@@ -85,8 +85,6 @@ export const CredentialRetrievalSlide = ({
         damping: 4,
         stiffness: 80,
         mass: 0.3,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
       })
     }
   }, [isStoring, isCompleteAndAllowed, scale])

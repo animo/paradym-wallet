@@ -2,14 +2,17 @@ import * as Keychain from 'react-native-keychain'
 import { BiometricAuthenticationError } from '../agent/src'
 import { KeychainError } from './error/KeychainError'
 
-export type KeychainOptions = Omit<Keychain.Options, 'service'>
+export type KeychainAuthenticationTypeOptions = Keychain.AuthenticationTypeOption
+export type KeychainSetOptions = Omit<Keychain.SetOptions, 'service'>
+export type KeychainGetOptions = Omit<Keychain.GetOptions, 'service'>
+export type KeychainBaseOptions = Omit<Keychain.BaseOptions, 'service'>
 
 /**
  * Store the value with id in the keychain.
  *
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function storeKeychainItem(id: string, value: string, options: KeychainOptions): Promise<void> {
+export async function storeKeychainItem(id: string, value: string, options: KeychainSetOptions): Promise<void> {
   const result = await Keychain.setGenericPassword(id, value, {
     ...options,
     service: id,
@@ -34,7 +37,7 @@ export async function storeKeychainItem(id: string, value: string, options: Keyc
  * @throws {KeychainError} if an unexpected error occurs
  * @throws {BiometricAuthenticationError} if biometric authentication failed
  */
-export async function getKeychainItemById(id: string, options: KeychainOptions): Promise<string | null> {
+export async function getKeychainItemById(id: string, options: KeychainGetOptions): Promise<string | null> {
   const result = await Keychain.getGenericPassword({
     ...options,
     service: id,
@@ -61,7 +64,7 @@ export async function getKeychainItemById(id: string, options: KeychainOptions):
  * @returns {boolean} Whether the keychain item was removed
  * @throws {KeychainError} if an unexpected error occurs
  */
-export async function removeKeychainItemById(id: string, options: KeychainOptions): Promise<boolean> {
+export async function removeKeychainItemById(id: string, options: KeychainBaseOptions): Promise<boolean> {
   const result = await Keychain.resetGenericPassword({
     ...options,
     service: id,

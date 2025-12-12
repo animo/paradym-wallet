@@ -1,5 +1,5 @@
-const { readFileSync, writeFileSync, unlinkSync } = require('node:fs')
-const path = require('node:path')
+import { readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
 
 const translationPath = process.argv[2]
 

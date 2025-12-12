@@ -4,6 +4,7 @@ import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Card,
+  getTextColorBasedOnBg,
   HeroIcons,
   IconContainer,
   Image,
@@ -12,14 +13,14 @@ import {
   Paragraph,
   Spacer,
   Stack,
+  useScaleAnimation,
   XStack,
   YStack,
-  getTextColorBasedOnBg,
-  useScaleAnimation,
 } from '@package/ui'
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 import { BlurBadge } from './BlurBadge'
+
 type FunkeCredentialCardProps = {
   onPress?(): void
   name: string

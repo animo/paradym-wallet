@@ -1,4 +1,3 @@
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class BiometricAuthenticationError extends Error {
   public static tryParseFromError(error: unknown): BiometricAuthenticationError | null {
     if (BiometricAuthenticationCancelledError.isBiometricAuthenticationCancelledError(error)) {
@@ -30,7 +29,6 @@ const cancelMessages = [
   ...androidErrorCodes([10, 13, -1, 16, 3, 2, 8]),
 ]
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class BiometricAuthenticationCancelledError extends BiometricAuthenticationError {
   public static isBiometricAuthenticationCancelledError(error: unknown) {
     return error instanceof Error && cancelMessages.some((m) => error.message.toLowerCase().includes(m))
@@ -53,7 +51,6 @@ const notEnabledMessages = [
   'at least one biometric must be enrolled to create keys requiring user authentication for every use',
 ]
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class BiometricAuthenticationNotEnabledError extends BiometricAuthenticationError {
   public static isBiometricAuthenticationNotEnabledError(error: unknown) {
     return error instanceof Error && notEnabledMessages.some((m) => error.message.toLowerCase().includes(m))

@@ -1,4 +1,4 @@
-import { AnimatedStack, Heading, Image, Paragraph, Stack, XStack, YStack, useScaleAnimation } from '@package/ui'
+import { AnimatedStack, Heading, Image, Paragraph, Stack, useScaleAnimation, XStack, YStack } from '@package/ui'
 
 interface InboxNotificationRowCardProps {
   title: string

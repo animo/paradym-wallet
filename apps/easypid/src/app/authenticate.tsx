@@ -1,13 +1,16 @@
-import { Redirect, useLocalSearchParams } from 'expo-router'
-
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
 import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import {
+  secureWalletKey,
+  useCanUseBiometryBackedWalletKey,
+  useIsBiometricsEnabled,
+} from '@package/secure-store/secureUnlock'
 import { commonMessages } from '@package/translations'
-import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
+import { FlexPage, Heading, HeroIcons, IconContainer, useDeviceMedia, useToastController, YStack } from '@package/ui'
+import { Redirect, useLocalSearchParams } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
 import { InvalidPinError } from '../crypto/error'
@@ -28,11 +31,12 @@ export default function Authenticate() {
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
   const { t } = useLingui()
+  const [isBiometricsEnabled] = useIsBiometricsEnabled()
+  const canUseBiometryBackedWalletKey = useCanUseBiometryBackedWalletKey()
 
   const isLoading =
     secureUnlock.state === 'acquired-wallet-key' || (secureUnlock.state === 'locked' && secureUnlock.isUnlocking)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: no recheck required, only on mount
   useEffect(() => {
     if (secureUnlock.state === 'unlocked' && redirectAfterUnlock) {
       secureUnlock.lock()
@@ -47,7 +51,6 @@ export default function Authenticate() {
     return () => clearTimeout(timer)
   }, [])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: canTryUnlockingUsingBiometrics not needed
   useEffect(() => {
     if (secureUnlock.state === 'locked' && secureUnlock.canTryUnlockingUsingBiometrics && isAllowedToUnlockWithFaceId) {
       secureUnlock.tryUnlockingUsingBiometrics()
@@ -63,7 +66,7 @@ export default function Authenticate() {
       walletKey: secureUnlock.walletKey,
       walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
     })
-      .then((agent) => secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true }))
+      .then((agent) => secureUnlock.setWalletKeyValid({ agent }))
       .catch((error) => {
         if (error instanceof InvalidPinError) {
           secureUnlock.setWalletKeyInvalid()
@@ -125,7 +128,7 @@ export default function Authenticate() {
           ref={pinInputRef}
           pinLength={6}
           onPinComplete={unlockUsingPin}
-          onBiometricsTap={unlockUsingBiometrics}
+          onBiometricsTap={isBiometricsEnabled && canUseBiometryBackedWalletKey ? unlockUsingBiometrics : undefined}
           useNativeKeyboard={false}
           biometricsType={biometricsType ?? 'fingerprint'}
         />

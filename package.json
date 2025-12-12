@@ -1,6 +1,7 @@
 {
 	"name": "wallets",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"postinstall": "pnpm deps:check",
 		"build": "pnpm -r build",
@@ -16,45 +17,16 @@
 		"node": ">=20.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.8.1",
+		"@biomejs/biome": "^2.3.8",
 		"check-dependency-version-consistency": "^5.0.1",
 		"typescript": "catalog:"
 	},
 	"pnpm": {
 		"overrides": {
-			"@animo-id/mdoc": "catalog:",
-			"@openid4vc/oauth2": "catalog:",
-			"@openid4vc/openid4vp": "catalog:",
-			"@openid4vc/openid4vci": "catalog:",
-			"@openid4vc/utils": "catalog:",
-			"@unimodules/react-native-adapter": "catalog:",
-			"@unimodules/core": "catalog:",
-			"react-docgen-typescript": "catalog:",
-			"@credo-ts/anoncreds": "catalog:",
-			"@credo-ts/askar": "catalog:",
-			"@credo-ts/cheqd": "catalog:",
-			"@credo-ts/core": "catalog:",
-			"@credo-ts/openid4vc": "catalog:",
-			"@credo-ts/question-answer": "catalog:",
-			"@credo-ts/react-native": "catalog:",
-			"@credo-ts/didcomm": "catalog:",
-			"@openid-federation/core": "catalog:",
-			"isomorphic-webcrypto": "catalog:",
-			"@hyperledger/anoncreds-react-native": "catalog:",
-			"@hyperledger/anoncreds-shared": "catalog:",
-			"@openwallet-foundation/askar-react-native": "catalog:",
-			"@openwallet-foundation/askar-shared": "catalog:",
-			"@expo/config-plugins": "catalog:",
-			"@cheqd/sdk": "npm:@cheqd/sdk-esm@^5.3.7-develop.1",
-			"@cheqd/ts-proto": "^4.1.1",
-			"@cosmjs/crypto": "^0.36.2",
-			"@cosmjs/proto-signing": "^0.36.2",
-			"@cosmjs/stargate": "^0.36.2"
+			"react-native-fs": "catalog:"
 		},
 		"patchedDependencies": {
-			"@tamagui/lucide-icons": "patches/@tamagui__lucide-icons.patch",
-			"@animo-id/credo-ts-askar": "patches/@animo-id__credo-ts-askar.patch",
-			"@animo-id/credo-ts-cheqd": "patches/@animo-id__credo-ts-cheqd.patch"
+			"@dr.pogodin/react-native-fs": "patches/@dr.pogodin__react-native-fs.patch"
 		}
 	},
 	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"

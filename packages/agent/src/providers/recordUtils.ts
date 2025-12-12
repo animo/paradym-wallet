@@ -2,11 +2,11 @@ import type {
   Agent,
   BaseEvent,
   BaseRecord,
+  Constructor,
   RecordDeletedEvent,
   RecordSavedEvent,
   RecordUpdatedEvent,
 } from '@credo-ts/core'
-import type { Constructor } from '@credo-ts/core'
 
 import { RepositoryEventTypes } from '@credo-ts/core'
 import { useMemo } from 'react'
@@ -16,7 +16,7 @@ import { filter, map, pipe } from 'rxjs'
 // properties of the BaseRecord. The default BaseRecord type uses Empty objects
 // which means if you have a ConnectionRecord and BaseRecord with default properties
 // their types are incompatible.
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: no explanation
 export type BaseRecordAny = BaseRecord<any, any, any>
 type RecordClass<R extends BaseRecordAny> = Constructor<R> & { type: string }
 export interface RecordsState<R extends BaseRecordAny> {

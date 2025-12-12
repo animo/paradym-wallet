@@ -12,14 +12,12 @@ import {
   X,
 } from '@tamagui/lucide-icons'
 import { forwardRef } from 'react'
-import type { NumberProp, SvgProps } from 'react-native-svg'
-
 import {
   ArrowLeftIcon,
   ArrowPathIcon,
   ArrowRightIcon,
-  ArrowUpOnSquareStackIcon,
   ArrowsRightLeftIcon,
+  ArrowUpOnSquareStackIcon,
   BackspaceIcon,
   Bars3Icon,
   BellIcon,
@@ -87,6 +85,7 @@ import {
   ShieldCheckIcon as ShieldCheckFilledIcon,
   TrashIcon as TrashFilledIcon,
 } from 'react-native-heroicons/solid'
+import type { NumberProp, SvgProps } from 'react-native-svg'
 
 import { styled } from 'tamagui'
 import { ConnectIcon } from '../assets/Connect'
@@ -115,7 +114,7 @@ export interface HeroIconProps extends SvgProps {
 
 function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
   return styled(
-    forwardRef((props: HeroIconProps, ref) => <Icon {...props} />),
+    forwardRef((props: HeroIconProps, _ref) => <Icon {...props} />),
     {},
     {
       accept: {
@@ -215,7 +214,7 @@ export type CustomIconProps = SvgProps & {
 
 function wrapLocalSvg(SvgComponent: React.ComponentType<CustomIconProps>) {
   return styled(
-    forwardRef((props: CustomIconProps, ref) => {
+    forwardRef((props: CustomIconProps, _ref) => {
       const { size, ...restProps } = props
       return <SvgComponent width={size} height={size} {...restProps} />
     }),

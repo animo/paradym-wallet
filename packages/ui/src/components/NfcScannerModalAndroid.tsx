@@ -89,7 +89,6 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
       <XStack backgroundColor="$primary-100" height={175} justifyContent="center" alignItems="center">
         <AnimatedNfcScanIcon
           icon={scanningState === 'readyToScan' || scanningState === 'scanning' ? 'scan' : scanningState}
-          scanAnimated={scanningState === 'readyToScan'}
         />
       </XStack>
 

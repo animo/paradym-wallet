@@ -31,7 +31,7 @@ export type ReceivePidUseCaseState = 'id-card-auth' | 'acquire-access-token' | '
 
 export type CardScanningErrorDetails = Parameters<AusweisAuthFlowOptions['onError']>[0]
 
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
+// biome-ignore lint/complexity/noBannedTypes: no explanation
 export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   protected options: ReceivePidUseCaseFlowOptions & ExtraOptions
 
@@ -181,7 +181,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
   private async cancelPotentiallyAbandonedAuthFlow() {
     await initializeSdk()
 
-    const cancelPromise = new Promise((resolve, reject) => {
+    const cancelPromise = new Promise((resolve, _reject) => {
       let hasCancelled = false
       const subscription = addMessageListener((message) => {
         // Auth flow is now cancelled
@@ -219,7 +219,7 @@ export abstract class ReceivePidUseCaseFlow<ExtraOptions = {}> {
 
     try {
       await this.cancelPotentiallyAbandonedAuthFlow()
-    } catch (error) {
+    } catch (_error) {
       return
     }
 

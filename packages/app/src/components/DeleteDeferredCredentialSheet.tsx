@@ -54,7 +54,7 @@ export function DeleteDeferredCredentialSheet({
         customData: { preset: 'success' },
       })
       successHaptic()
-    } catch (error) {
+    } catch (_error) {
       toast.show(t(commonMessages.toastDeferredCredentialDeleteError), {
         customData: { preset: 'danger' },
       })

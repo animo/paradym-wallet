@@ -1,14 +1,13 @@
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { DisplayImage, FormattedSubmission } from '@package/agent'
-import { DualResponseButtons, useScrollViewPosition } from '@package/app'
-import { useWizard } from '@package/app'
+import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
-import { RequestPurposeSection } from '../components/RequestPurposeSection'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
+import { RequestPurposeSection } from '../components/RequestPurposeSection'
 
 interface ShareCredentialsSlideProps {
   logo?: DisplayImage

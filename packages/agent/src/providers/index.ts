@@ -1,4 +1,21 @@
 export { AgentProvider, useAgent } from './AgentProvider'
+export { useConnectionById, useConnections } from './ConnectionProvider'
+export {
+  useCredentialById,
+  useCredentialByState,
+  useCredentialNotInState,
+  useCredentials,
+  useCredentialsByConnectionId,
+} from './CredentialExchangeProvider'
+export { Mdoc, MdocRecord, useMdocRecordById, useMdocRecords } from './MdocProvider'
+export {
+  useProofById,
+  useProofByState,
+  useProofNotInState,
+  useProofs,
+  useProofsByConnectionId,
+} from './ProofExchangeProvider'
+export { SdJwtVc, SdJwtVcRecord, useSdJwtVcRecordById, useSdJwtVcRecords } from './SdJwtVcsProvider'
 export {
   useW3cCredentialRecordById,
   useW3cCredentialRecords,
@@ -11,20 +28,3 @@ export {
   W3cV2CredentialRecord,
   W3cV2VerifiableCredential,
 } from './W3cV2CredentialsProvider'
-export { useSdJwtVcRecordById, useSdJwtVcRecords, SdJwtVcRecord, SdJwtVc } from './SdJwtVcsProvider'
-export { useMdocRecordById, useMdocRecords, Mdoc, MdocRecord } from './MdocProvider'
-export { useConnectionById, useConnections } from './ConnectionProvider'
-export {
-  useCredentialById,
-  useCredentialByState,
-  useCredentialNotInState,
-  useCredentials,
-  useCredentialsByConnectionId,
-} from './CredentialExchangeProvider'
-export {
-  useProofById,
-  useProofByState,
-  useProofNotInState,
-  useProofs,
-  useProofsByConnectionId,
-} from './ProofExchangeProvider'

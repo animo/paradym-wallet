@@ -11,13 +11,7 @@ import { credentialDataHandlerOptions } from './(app)/_layout'
 // NOTE: previously we had this method async, but somehow this prevent the
 // deeplink from working on a cold startup. We updated the invitation handler to
 // be fully sync.
-export function redirectSystemPath({
-  path,
-  initial,
-}: {
-  path: string
-  initial: boolean
-}) {
+export function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
   logger.debug(`Handling deeplink for path ${path}.`, {
     initial,
   })
@@ -76,7 +70,7 @@ export function redirectSystemPath({
 
     const invitationData = parseResult.result
 
-    let redirectPath: string | undefined = undefined
+    let redirectPath: string | undefined
 
     if (!credentialDataHandlerOptions.allowedInvitationTypes.includes(invitationData.type)) {
       logger.warn(`Invitation type ${invitationData.type} is not allowed. Routing to home screen`)
@@ -108,7 +102,7 @@ export function redirectSystemPath({
 
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
     return '/'
-  } catch (error) {
+  } catch (_error) {
     return '/'
   }
 }

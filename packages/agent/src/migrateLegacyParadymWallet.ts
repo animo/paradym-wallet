@@ -1,6 +1,6 @@
 import { agentDependencies } from '@credo-ts/react-native'
 import { KdfMethod, Store, StoreKeyMethod } from '@openwallet-foundation/askar-react-native'
-import RNFS from 'react-native-fs'
+import * as RNFS from 'react-native-fs'
 
 export async function migrateLegacyParadymWallet(options: {
   walletKeyVersion: number

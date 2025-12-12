@@ -17,9 +17,9 @@ import {
   ScrollView,
   Spacer,
   Stack,
+  useScaleAnimation,
   XStack,
   YStack,
-  useScaleAnimation,
 } from '@package/ui'
 import { formatDate } from '@package/utils'
 import { useRouter } from 'expo-router'

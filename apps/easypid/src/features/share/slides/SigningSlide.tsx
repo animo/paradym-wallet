@@ -1,17 +1,16 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { QtspInfo } from '@package/agent'
 import { DualResponseButtons, useImageScaler, useWizard } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { Defs, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
-
-import { Trans, useLingui } from '@lingui/react/macro'
-import { commonMessages } from '@package/translations'
 
 interface SigningSlideProps {
   documentName: string
   qtsp: QtspInfo
 }
 
-export function SigningSlide({ documentName, qtsp }: SigningSlideProps) {
+export function SigningSlide({ documentName }: SigningSlideProps) {
   const { onNext, onCancel } = useWizard()
   const { height, onLayout } = useImageScaler({ scaleFactor: 0.65 })
   const { t } = useLingui()

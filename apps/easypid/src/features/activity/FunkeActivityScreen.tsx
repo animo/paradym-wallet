@@ -1,8 +1,7 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { useActivities } from '@package/agent'
-import { ActivityRowItem } from '@package/app'
-import { TextBackButton } from '@package/app'
+import { ActivityRowItem, TextBackButton } from '@package/app'
 import { useScrollViewPosition } from '@package/app/hooks'
 import {
   AnimatedStack,
@@ -85,7 +84,7 @@ export function FunkeActivityScreen({ entityId }: { entityId?: string }) {
           <YStack fg={1} px="$4" gap="$4">
             {Object.entries(groupedActivities).map(([key, groupActivities]) => {
               const [year, month] = key.split('-')
-              const date = new Date(Number.parseInt(year), Number.parseInt(month))
+              const date = new Date(Number.parseInt(year, 10), Number.parseInt(month, 10))
               return (
                 <React.Fragment key={key}>
                   <Stack bbw={1} btw={1} borderColor="$grey-200" px="$4" py="$3" mx={-18}>

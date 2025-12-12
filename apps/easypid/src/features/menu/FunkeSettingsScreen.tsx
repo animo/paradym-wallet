@@ -1,26 +1,34 @@
+import { Trans, useLingui } from '@lingui/react/macro'
+import { BiometricAuthenticationCancelledError, BiometricAuthenticationNotEnabledError, logger } from '@package/agent'
 import { TextBackButton } from '@package/app'
+import { useScrollViewPosition } from '@package/app/hooks'
+import { useCanUseBiometryBackedWalletKey, useIsBiometricsEnabled } from '@package/secure-store/secureUnlock'
+import {
+  commonMessages,
+  type SupportedLocale,
+  supportedLanguageMessages,
+  supportedLocales,
+  useLocale,
+} from '@package/translations'
 import {
   BetaTag,
+  CustomIcons,
   FlexPage,
   HeaderContainer,
   HeroIcons,
   ScrollView,
   SettingsButton,
   Switch,
+  useToastController,
   XStack,
   YStack,
 } from '@package/ui'
-import { Label } from 'tamagui'
-
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
-import { useLingui } from '@lingui/react/macro'
-import { Trans } from '@lingui/react/macro'
-import { logger } from '@package/agent'
-import { useScrollViewPosition } from '@package/app/hooks'
-import { type SupportedLocale, supportedLanguageMessages, supportedLocales, useLocale } from '@package/translations'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
 import { Share } from 'react-native'
+import { Label } from 'tamagui'
+import { useSecureUnlock } from '../../agent'
+import { useBiometricsType } from '../../hooks/useBiometricsType'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
 
@@ -74,10 +82,72 @@ export function LocaleSelect() {
 
 export function FunkeSettingsScreen() {
   const { t } = useLingui()
+  const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
+  const secureUnlock = useSecureUnlock()
+  if (secureUnlock.state !== 'unlocked') return
 
-  const isOverAskingAiEnabled = useFeatureFlag('AI_ANALYSIS')
+  const [isBiometricsEnabled] = useIsBiometricsEnabled()
+
+  async function enableBiometrics() {
+    if (secureUnlock.state !== 'unlocked') return
+
+    try {
+      await secureUnlock.enableBiometricUnlock()
+      toast.show(
+        t({
+          id: 'biometrics.enabled',
+          message: 'Biometrics enabled',
+          comment: 'Toast shows when biometrics has successfully been enabled from settings.',
+        }),
+        { customData: { preset: 'success' } }
+      )
+    } catch (error) {
+      if (error instanceof BiometricAuthenticationNotEnabledError) {
+        toast.show(t(commonMessages.biometricAuthenticationMustBeEnabledInSettings), {
+          customData: {
+            preset: 'danger',
+          },
+        })
+      } else if (error instanceof BiometricAuthenticationCancelledError) {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
+          customData: { preset: 'danger' },
+        })
+      } else {
+        toast.show(t(commonMessages.errorChangingBiometrics), {
+          customData: { preset: 'danger' },
+          message:
+            error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
+        })
+      }
+    }
+  }
+
+  async function disableBiometrics() {
+    if (secureUnlock.state !== 'unlocked') return
+
+    try {
+      await secureUnlock.disableBiometricUnlock()
+      toast.show(
+        t({
+          id: 'biometrics.disabled',
+          message: 'Biometrics disabled',
+          comment: 'Toast shows when biometrics has successfully been disabled from settings.',
+        }),
+        { customData: { preset: 'success' } }
+      )
+    } catch (error) {
+      toast.show(t(commonMessages.errorChangingBiometrics), {
+        customData: { preset: 'danger' },
+        message:
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
+      })
+    }
+  }
+
+  const canUseBiometryBackedWalletKey = useCanUseBiometryBackedWalletKey()
+  const biometricsType = useBiometricsType()
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
@@ -96,6 +166,27 @@ export function FunkeSettingsScreen() {
       >
         <YStack fg={1} px="$4" jc="space-between">
           <YStack gap="$4" py="$2">
+            <Switch
+              id="biometrics-enabled"
+              label={t({
+                id: 'settings.biometricsToggle',
+                message: 'Biometric unlock',
+                comment: 'Label for the toggle to enable biometric unlock',
+              })}
+              icon={biometricsType === 'face' ? <CustomIcons.FaceId /> : <HeroIcons.FingerPrint />}
+              disabled={canUseBiometryBackedWalletKey === false}
+              description={
+                canUseBiometryBackedWalletKey === false
+                  ? t({
+                      id: 'settings.biometricsNotSupportedDescription',
+                      message: 'Biometric authentication is disabled or not supported on this device.',
+                      comment: 'Description that the biometric unlock feature is not supported on this device',
+                    })
+                  : undefined
+              }
+              value={isBiometricsEnabled}
+              onChange={isBiometricsEnabled ? disableBiometrics : enableBiometrics}
+            />
             <Switch
               id="development-mode"
               label={t({

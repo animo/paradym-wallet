@@ -3,7 +3,7 @@ import { commonMessages } from '@package/translations'
 import { useMutation } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useAgent } from '../agent'
-import { type ResolveOutOfBandInvitationResultSuccess, acceptOutOfBandInvitation } from '../invitation'
+import { acceptOutOfBandInvitation, type ResolveOutOfBandInvitationResultSuccess } from '../invitation'
 
 export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitationResultSuccess) {
   const { agent } = useAgent()
@@ -29,8 +29,8 @@ export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitatio
     display: {
       connection: {
         name: resolved?.existingConnection
-          ? resolved.existingConnection?.alias ?? resolved.existingConnection?.theirLabel ?? t(commonMessages.unknown)
-          : resolved?.outOfBandInvitation.label ?? t(commonMessages.unknown),
+          ? (resolved.existingConnection?.alias ?? resolved.existingConnection?.theirLabel ?? t(commonMessages.unknown))
+          : (resolved?.outOfBandInvitation.label ?? t(commonMessages.unknown)),
         logo: {
           url: resolved?.existingConnection
             ? resolved?.existingConnection.imageUrl

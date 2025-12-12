@@ -1,11 +1,11 @@
-import { askar } from '@openwallet-foundation/askar-react-native'
+import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import * as SecureStore from 'expo-secure-store'
 
 const STORE_KEY_LEGACY = 'wallet-key' as const
 const STORE_KEY_RAW = 'paradym-wallet-key-raw' as const
 
 function generateNewWalletKey(): string {
-  return askar.storeGenerateRawKey({})
+  return NativeAskar.instance.storeGenerateRawKey({})
 }
 
 export async function createLegacySecureWalletKey(): Promise<{
