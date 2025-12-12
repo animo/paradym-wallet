@@ -1,6 +1,10 @@
 # https://expo.dev/blog/how-to-integrate-eas-workflows-with-github-actions#fast-e2e-testing-with-fingerprint-and-repack
 # https://docs.expo.dev/eas/workflows/pre-packaged-jobs/#examples-13
 name: Build or repack, then Maestro tests
+defaults:
+  tools:
+    node: 20.11.1
+    pnpm: '9'
 
 on:
   workflow_dispatch:
