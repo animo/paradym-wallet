@@ -130,8 +130,8 @@ catalogs:
       specifier: ^0.13.0
       version: 0.13.0
     credo-ts-didweb-anoncreds:
-      specifier: 0.0.1-alpha.14
-      version: 0.0.1-alpha.14
+      specifier: 0.0.2-alpha.2
+      version: 0.0.2-alpha.2
     expo:
       specifier: ^54.0.27
       version: 54.0.27
@@ -520,13 +520,13 @@ importers:
         version: 1.1.2
       '@credo-ts/anoncreds':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20251211125344(typescript@5.9.3)
+        version: 0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
       '@credo-ts/askar':
         specifier: 'catalog:'
         version: 0.6.2-alpha-20251211125344(@openwallet-foundation/askar-shared@0.5.0-alpha-20251212085554)(typescript@5.9.3)
       '@credo-ts/cheqd':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20251211125344(typescript@5.9.3)
+        version: 0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
       '@credo-ts/core':
         specifier: 'catalog:'
         version: 0.6.2-alpha-20251211125344(typescript@5.9.3)
@@ -559,7 +559,7 @@ importers:
         version: 5.90.12(react@19.1.0)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
-        version: 0.0.1-alpha.14(@credo-ts/anoncreds@0.6.2-alpha-20251211125344(typescript@5.9.3))(@credo-ts/core@0.6.2-alpha-20251211125344(typescript@5.9.3))
+        version: 0.0.2-alpha.2(@credo-ts/anoncreds@0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3))(@credo-ts/core@0.6.2-alpha-20251211125344(typescript@5.9.3))
       expo:
         specifier: 'catalog:'
         version: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -3736,12 +3736,11 @@ packages:
   credentials-context@2.0.0:
     resolution: {integrity: sha512-/mFKax6FK26KjgV2KW2D4YqKgoJ5DVJpNt87X2Jc9IxT2HBMy7nEIlc+n7pEi+YFFe721XqrvZPd+jbyyBjsvQ==}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.14:
-    resolution: {integrity: sha512-NLC2UzPKApw6wPE8o3ux/eVnxcOmQqA2AC+2ugTnM48Q+O9RxIZZFVBC90VfhvimV7TvpNdM+MyczEQfvAu09w==}
+  credo-ts-didweb-anoncreds@0.0.2-alpha.2:
+    resolution: {integrity: sha512-5fh8vZ4CCjW9YICH0NTNMpgRMh8Hy5DSaz0G6jJyEZweJwmywXC/TqW+DwsvveyJJWmsYl7iTnp2MfY0OMDgxQ==}
     peerDependencies:
-      '@credo-ts/anoncreds': ^0.5.6
-      '@credo-ts/core': ^0.5.6
-      '@hyperledger/anoncreds-shared': ^0.2.1
+      '@credo-ts/anoncreds': ^0.6.0
+      '@credo-ts/core': ^0.6.0
 
   cross-fetch@3.2.0:
     resolution: {integrity: sha512-Q+xVJLoGOeIMXZmbUK4HYk+69cQH6LudR0Vu/pRm2YlU/hDV9CiS0gKUMaWY5f2NeUH9C1nV3bsTlCo0FsTV1Q==}
@@ -7463,11 +7462,12 @@ snapshots:
 
   '@cosmjs/utils@0.36.2': {}
 
-  '@credo-ts/anoncreds@0.6.2-alpha-20251211125344(typescript@5.9.3)':
+  '@credo-ts/anoncreds@0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@credo-ts/core': 0.6.2-alpha-20251211125344(typescript@5.9.3)
       '@credo-ts/didcomm': 0.6.2-alpha-20251211125344(typescript@5.9.3)
+      '@hyperledger/anoncreds-shared': 0.3.4
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
       class-validator: 0.14.3
@@ -7490,14 +7490,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/cheqd@0.6.2-alpha-20251211125344(typescript@5.9.3)':
+  '@credo-ts/cheqd@0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)':
     dependencies:
       '@cheqd/sdk': '@cheqd/sdk-esm@5.3.7'
       '@cheqd/ts-proto': 4.2.0
       '@cosmjs/crypto': 0.36.2
       '@cosmjs/proto-signing': 0.36.2
       '@cosmjs/stargate': 0.36.2
-      '@credo-ts/anoncreds': 0.6.2-alpha-20251211125344(typescript@5.9.3)
+      '@credo-ts/anoncreds': 0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
       '@credo-ts/core': 0.6.2-alpha-20251211125344(typescript@5.9.3)
       '@stablelib/ed25519': 2.0.2
       class-transformer: 0.5.1
@@ -10937,12 +10937,12 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.1-alpha.14(@credo-ts/anoncreds@0.6.2-alpha-20251211125344(typescript@5.9.3))(@credo-ts/core@0.6.2-alpha-20251211125344(typescript@5.9.3)):
+  credo-ts-didweb-anoncreds@0.0.2-alpha.2(@credo-ts/anoncreds@0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3))(@credo-ts/core@0.6.2-alpha-20251211125344(typescript@5.9.3)):
     dependencies:
-      '@credo-ts/anoncreds': 0.6.2-alpha-20251211125344(typescript@5.9.3)
+      '@credo-ts/anoncreds': 0.6.2-alpha-20251211125344(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
       '@credo-ts/core': 0.6.2-alpha-20251211125344(typescript@5.9.3)
-      canonicalize: 1.0.8
-      query-string: 7.1.3
+      canonicalize: 2.1.0
+      query-string: 9.3.1
 
   cross-fetch@3.2.0:
     dependencies:

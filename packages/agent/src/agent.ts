@@ -79,7 +79,7 @@ export const initializeEasyPIDAgent = async ({
       x509: new X509Module({
         getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {
           if (verification.type === 'credential') {
-            // Temprorary allow any certificates, also for PID
+            // Temporarily allow any certificates, also for PID
             // Only allow BDR certificate for PID credentials for now
             // if (
             //   verification.credential instanceof Mdoc &&

@@ -465,7 +465,7 @@ export function FunkePidSetupScreen() {
             <PidIdCardFetchSlide
               {...getPidSetupSlideContent(userName ? 'id-card-complete' : 'id-card-fetch', t)}
               userName={userName}
-              onComplete={() => pushToWallet('replace')}
+              onComplete={() => pushToWallet()}
             />
           ),
         },

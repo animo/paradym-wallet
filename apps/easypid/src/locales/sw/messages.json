@@ -885,7 +885,7 @@
 		"message": "Credential has been declined.",
 		"placeholders": {},
 		"comments": ["Shown in a toast when user declines the credential"],
-		"origin": [["src/features/didcomm/CredentialSlides.tsx", 58]],
+		"origin": [["src/features/didcomm/CredentialSlides.tsx", 72]],
 		"translation": "Kortet har avvisats."
 	},
 	"common.credentialInformationCouldNotBeExtracted": {
@@ -1312,18 +1312,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 560]],
 		"translation": "Tyska"
 	},
-	"onboardingWalletExplanation.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to finish onboarding explanation"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 71]],
-		"translation": "Kom igång"
-	},
 	"onboardingWelcome.getStarted": {
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to begin onboarding from the welcome screen"],
 		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
+		"translation": "Kom igång"
+	},
+	"onboardingWalletExplanation.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to finish onboarding explanation"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 71]],
 		"translation": "Kom igång"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
@@ -2360,18 +2360,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 53]],
 		"translation": "Återställ plånbok"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
-		"translation": "Granska förfrågan"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 72]],
+		"translation": "Granska förfrågan"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
 		"translation": "Granska förfrågan"
 	},
 	"common.revoked": {
@@ -2732,13 +2732,6 @@
 		"comments": ["General title/message shown when something went wrong"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 158]],
 		"translation": "Något gick fel"
-	},
-	"credential.accept.error": {
-		"message": "Something went wrong while storing the credential.",
-		"placeholders": {},
-		"comments": ["Shown in a toast when credential storage fails"],
-		"origin": [["src/features/didcomm/CredentialSlides.tsx", 27]],
-		"translation": "Något gick fel när kortet skulle sparas."
 	},
 	"onboardingIdCardScan.startScanning": {
 		"message": "Start scanning",
@@ -3614,18 +3607,18 @@
 		],
 		"translation": "Du har inte de begärda korten."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
-		"translation": "Du har inte de kort som krävs"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 180]],
+		"translation": "Du har inte de kort som krävs"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
 		"translation": "Du har inte de kort som krävs"
 	},
 	"pinLocked.description": {

@@ -885,7 +885,7 @@
 		"message": "Credential has been declined.",
 		"placeholders": {},
 		"comments": ["Shown in a toast when user declines the credential"],
-		"origin": [["src/features/didcomm/CredentialSlides.tsx", 58]],
+		"origin": [["src/features/didcomm/CredentialSlides.tsx", 72]],
 		"translation": "Kaart is geweigerd."
 	},
 	"common.credentialInformationCouldNotBeExtracted": {
@@ -1312,18 +1312,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 560]],
 		"translation": "Duits"
 	},
-	"onboardingWalletExplanation.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to finish onboarding explanation"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 71]],
-		"translation": "Aan de slag"
-	},
 	"onboardingWelcome.getStarted": {
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to begin onboarding from the welcome screen"],
 		"origin": [["src/features/onboarding/screens/welcome.tsx", 17]],
+		"translation": "Aan de slag"
+	},
+	"onboardingWalletExplanation.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to finish onboarding explanation"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 71]],
 		"translation": "Aan de slag"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
@@ -2360,18 +2360,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 53]],
 		"translation": "Wallet resetten"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
-		"translation": "Bekijk het verzoek"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 72]],
+		"translation": "Bekijk het verzoek"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
 		"translation": "Bekijk het verzoek"
 	},
 	"common.revoked": {
@@ -2732,13 +2732,6 @@
 		"comments": ["General title/message shown when something went wrong"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 158]],
 		"translation": "Er is iets misgegaan"
-	},
-	"credential.accept.error": {
-		"message": "Something went wrong while storing the credential.",
-		"placeholders": {},
-		"comments": ["Shown in a toast when credential storage fails"],
-		"origin": [["src/features/didcomm/CredentialSlides.tsx", 27]],
-		"translation": "Er is iets misgegaan bij het opslaan van de kaart."
 	},
 	"onboardingIdCardScan.startScanning": {
 		"message": "Start scanning",
@@ -3614,18 +3607,18 @@
 		],
 		"translation": "Je hebt de gevraagde kaart(en) niet."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
-		"translation": "Je hebt niet de vereiste kaarten"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 180]],
+		"translation": "Je hebt niet de vereiste kaarten"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
 		"translation": "Je hebt niet de vereiste kaarten"
 	},
 	"pinLocked.description": {
