@@ -9,7 +9,7 @@ tags:
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"anoncreds", "authorization":"presentation", "requestType": "certificate-of-residence", "flow": "didcomm"}'
+      ACTION: '{"action":"createOffer", "format":"anoncreds", "authorization":"presentation", "requestType": "membership-card", "flow": "didcomm"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 

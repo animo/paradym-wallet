@@ -110,10 +110,33 @@ const PARADYM_CONFIG = {
         personal_administrative_number: 'ADM2023080012345',
       },
     },
+        "membership-card": {
+      templateId: "cmj1our71002hs601mp97qnvf",
+      attributes: {
+        last_name: "String value",
+        first_name: "String value",
+        member_since: 123,
+        date_of_birth: 19990101
+      }
+    },
+
+    "birth-certificate": {
+      templateId: "cmj1oyjez002us601dzzi19s8",
+      attributes: {
+        last_name: "String value",
+        first_name: "String value",
+        nationality: "String value",
+        date_of_birth: 19990101,
+        place_of_birth: "String value"
+      }
+    },
   },
   verification: {
     'mobile-driver-license': { presentationTemplateId: 'cmiyfo40z0032s601thh9lqju' },
     'arf-18-pid': { presentationTemplateId: 'cmiyfopx40033s601guy5q89e' },
+    "birth-certificate-and-membership-card": {
+      presentationTemplateId: "cmj1p0eo7002ys601ro814a6t"
+    },
   },
 }
 

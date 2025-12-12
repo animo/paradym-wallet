@@ -6,11 +6,11 @@ tags:
   - x5c
   - anoncreds
 ---
-- runFlow: ../onboarding.yaml
+- runFlow: ../issue-none/issue-none-didcomm.yaml
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType":"arf-18-pid"}'
+      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType":"birth-certificate-and-membership-card"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 
