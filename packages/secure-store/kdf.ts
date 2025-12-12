@@ -23,7 +23,7 @@ const derive = (pin: string, salt: string): string => {
     TypedArrayEncoder.fromString(salt)
   )
 
-  return TypedArrayEncoder.toUtf8String(rawHash)
+  return TypedArrayEncoder.toHex(rawHash)
 }
 
 /**

@@ -13,6 +13,7 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import type { EasyPIDAppAgent } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { getWalletId } from '../agent/initialize'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -23,7 +24,8 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
   if (validatePin) {
     const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
-    const walletId = `easypid-wallet-${walletKeyVersion}`
+    const walletId = getWalletId(walletKeyVersion)
+
     const agent = new Agent({
       config: {},
       modules: {
