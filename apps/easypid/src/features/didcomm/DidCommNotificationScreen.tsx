@@ -55,17 +55,18 @@ export function DidCommNotificationScreen() {
   }>()
   const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
   const { t } = useLingui()
-  const handleNavigation = (type: 'replace' | 'back') => {
+
+  const handleNavigation = () => {
     // When starting from the inbox, we want to go back to the inbox on finish
     if (params.navigationType === 'inbox') {
       router.back()
     } else {
-      pushToWallet(type)
+      pushToWallet()
     }
   }
 
-  const onCancel = () => handleNavigation('back')
-  const onComplete = () => handleNavigation('replace')
+  const onCancel = () => handleNavigation()
+  const onComplete = () => handleNavigation()
 
   const onConnectionAccept = async () => {
     const result = await acceptConnection()

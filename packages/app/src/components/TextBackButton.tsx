@@ -13,7 +13,7 @@ export function TextBackButton() {
     if (router.canGoBack()) {
       router.back()
     } else {
-      router.replace('/')
+      router.dismissTo('/')
     }
   }
 

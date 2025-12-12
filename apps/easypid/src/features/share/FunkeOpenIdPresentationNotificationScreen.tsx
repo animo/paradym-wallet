@@ -244,7 +244,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     })
   }, [agent, credentialsForRequest, formattedTransactionData, pushToWallet, stopOverAsking, t, toast])
 
-  const replace = useCallback(() => pushToWallet('replace'), [pushToWallet])
+  const replace = useCallback(() => pushToWallet(), [pushToWallet])
 
   return (
     <FunkePresentationNotificationScreen
