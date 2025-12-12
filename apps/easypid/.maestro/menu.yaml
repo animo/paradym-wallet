@@ -2,7 +2,7 @@ appId: id.paradym.wallet.preview
 tags:
   - menu
 ---
-- runFlow: issue-code.yaml
+- runFlow: issue-code/issue-code.yaml
 
 - tapOn: Recent activity
 - assertVisible: Activity
