@@ -1,6 +1,4 @@
 appId: id.paradym.wallet.preview
-tags:
-  - presentation-during-issuance
 ---
 - openLink:
     link: ${deeplink}

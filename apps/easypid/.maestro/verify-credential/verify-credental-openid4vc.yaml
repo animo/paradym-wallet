@@ -1,6 +1,9 @@
 appId: id.paradym.wallet.preview
 tags:
-  - verification-openid4vc
+  - verification
+  - openid4vc
+  - sd-jwt
+  - x5c
 ---
 - runFlow: ../onboarding.yaml
 - runScript:

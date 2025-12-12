@@ -1,12 +1,15 @@
 appId: id.paradym.wallet.preview
 tags:
-  - presentation-during-issuance-didcomm
+  - presentation-during-issuance
+  - issue
+  - didcomm
+  - anoncreds
 ---
 - runFlow: ../issue-none/issue-none-didcomm.yaml
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"presentation", "requestType": "certificate-of-residence", "flow": "didcomm"}'
+      ACTION: '{"action":"createOffer", "format":"anoncreds", "authorization":"presentation", "requestType": "certificate-of-residence", "flow": "didcomm"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 

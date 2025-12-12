@@ -21,12 +21,20 @@ on:
         type: string
         required: false
         description: 'Paradym API Key for Maestro tests when using Paradym backend'
+      enable_recording:
+        type: boolean
+        required: false
+        description: 'Enable screen recording'
+        default: false
 
 jobs:
   fingerprint:
     id: fingerprint
     environment: preview
     type: fingerprint
+    env:
+      APP_VARIANT: preview
+      EXPO_PUBLIC_APP_TYPE: PARADYM_WALLET
 
   android_get_build:
     needs: [fingerprint]
@@ -58,6 +66,7 @@ jobs:
     id: android_maestro_paradym
     type: maestro
     image: latest
+    runs_on: linux-large-nested-virtualization
     if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
     env:
       MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
@@ -67,13 +76,15 @@ jobs:
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
       android_system_image_package: system-images;android-36;google_apis;x86_64
-      include_tags: 'authorization-none-didcomm,authorization-none-openid4vc'
+      include_tags: 'authorization-none'
+      record_screen: ${{ inputs.enable_recording }}
 
   android_maestro_playground:
     after: [android_repack, android_build]
     id: android_maestro_playground
     type: maestro
     image: latest
+    runs_on: linux-large-nested-virtualization
     if: ${{ inputs.issuer_backend == 'playground' || inputs.issuer_backend == 'both' }}
     env:
       MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
@@ -82,4 +93,5 @@ jobs:
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
       android_system_image_package: system-images;android-36;google_apis;x86_64
-      exclude_tags: 'authorization-none-didcomm'
+      exclude_tags: 'didcomm'
+      record_screen: ${{ inputs.enable_recording }}

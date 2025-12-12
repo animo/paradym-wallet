@@ -1,12 +1,15 @@
 appId: id.paradym.wallet.preview
 tags:
-  - authorization-code-flow-didcomm
+  - authorization-code-flow
+  - didcomm
+  - issue
+  - anoncreds
 ---
 - runFlow: ../onboarding.yaml
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"browser", "requestType": "arf-18-pid", "flow":"didcomm"}'
+      ACTION: '{"action":"createOffer", "format":"anoncreds", "authorization":"browser", "requestType": "arf-18-pid", "flow":"didcomm"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 

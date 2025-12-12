@@ -1,6 +1,9 @@
 appId: id.paradym.wallet.preview
 tags:
-  - authorization-none-openid4vc
+  - issue
+  - openid4vc
+  - sd-jwt
+  - authorization-none
 ---
 - runFlow: ../onboarding.yaml
 - runScript:

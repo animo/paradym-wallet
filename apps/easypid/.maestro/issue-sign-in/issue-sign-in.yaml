@@ -1,6 +1,4 @@
 appId: id.paradym.wallet.preview
-tags:
-  - authorization-code-flow
 ---
 - openLink:
     link: ${deeplink}

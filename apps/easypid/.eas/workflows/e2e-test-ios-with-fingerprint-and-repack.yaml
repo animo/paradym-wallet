@@ -21,12 +21,20 @@ on:
         type: string
         required: false
         description: 'Paradym API Key for Maestro tests when using Paradym backend'
+      enable_recording:
+        type: boolean
+        required: false
+        description: 'Enable screen recording'
+        default: false
 
 jobs:
   fingerprint:
     id: fingerprint
     environment: preview
     type: fingerprint
+    env:
+      APP_VARIANT: preview
+      EXPO_PUBLIC_APP_TYPE: PARADYM_WALLET
 
   ios_get_build:
     needs: [fingerprint]
@@ -58,6 +66,7 @@ jobs:
     id: ios_maestro_paradym
     type: maestro
     image: latest
+    runs_on: macos-large
     if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
     env:
       MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
@@ -65,17 +74,18 @@ jobs:
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
-      include_tags: 'authorization-none-didcomm,authorization-none-openid4vc'
+      include_tags: 'authorization-none'
 
   ios_maestro_playground:
     after: [ios_repack, ios_build]
     id: ios_maestro_playground
     type: maestro
     image: latest
+    runs_on: macos-large
     if: ${{ inputs.issuer_backend == 'playground' || inputs.issuer_backend == 'both' }}
     env:
       MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
-      exclude_tags: 'authorization-none-didcomm'
+      exclude_tags: 'didcomm'

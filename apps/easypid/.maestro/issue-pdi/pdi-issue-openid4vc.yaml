@@ -1,6 +1,9 @@
 appId: id.paradym.wallet.preview
 tags:
-  - presentation-during-issuance-openid4vc
+  - presentation-during-issuance
+  - issue
+  - openid4vc
+  - mdoc
 ---
 - runFlow: ../issue-none/issue-none-openid4vc.yaml
 - runScript:

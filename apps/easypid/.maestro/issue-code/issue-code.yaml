@@ -1,6 +1,4 @@
 appId: id.paradym.wallet.preview
-tags:
-  - transaction-code
 ---
 - openLink:
     link: ${deeplink}

@@ -1,6 +1,9 @@
 appId: id.paradym.wallet.preview
 tags:
-  - authorization-code-flow-openid4vc
+  - authorization-code-flow
+  - openid4vc
+  - issue
+  - mdoc
 ---
 - runFlow: ../onboarding.yaml
 - runScript:

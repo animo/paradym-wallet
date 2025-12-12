@@ -1,6 +1,10 @@
 appId: id.paradym.wallet.preview
 tags:
-  - verification-didcomm
+  - verification
+  - issue
+  - didcomm
+  - x5c
+  - anoncreds
 ---
 - runFlow: ../onboarding.yaml
 - runScript:
