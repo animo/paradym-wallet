@@ -48,7 +48,7 @@
 		"expo-constants": "catalog:",
 		"expo-crypto": "catalog:",
 		"expo-dev-client": "catalog:",
-		"expo-device": "^7.1.4",
+		"expo-device": "catalog:",
 		"expo-font": "catalog:",
 		"expo-haptics": "catalog:",
 		"expo-image": "catalog:",
