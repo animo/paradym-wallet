@@ -8,6 +8,9 @@ import {
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import { useCallback, useState } from 'react'
+import { useDevelopmentMode } from '../../hooks'
+import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { PresentationSuccessSlide } from '../share/slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
@@ -23,9 +26,23 @@ type PresentationSlidesProps = {
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
   const { agent } = useAgent()
   const toast = useToastController()
+  const [errorReason, setErrorReason] = useState<string>()
+
   const { t } = useLingui()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
     useDidCommPresentationActions(proofExchangeId)
+
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
+  const setErrorReasonWithError = useCallback(
+    (baseMessage: string, error: unknown) => {
+      if (isDevelopmentModeEnabled && error instanceof Error) {
+        setErrorReason(`${baseMessage}\n\nDevelopment mode error:\n${error.message}`)
+      } else {
+        setErrorReason(baseMessage)
+      }
+    },
+    [isDevelopmentModeEnabled]
+  )
 
   const onProofAccept = async () => {
     if (!submission) return
@@ -43,9 +60,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           'success'
         )
       })
-      .catch(async () => {
-        toast.show(t(commonMessages.presentationCouldNotBeShared), { customData: { preset: 'danger' } })
-
+      .catch(async (error) => {
         await storeSharedActivityForSubmission(
           agent,
           submission,
@@ -57,9 +72,9 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           'failed'
         )
 
-        if (proofExchange) agent.didcomm.proofs.deleteById(proofExchange.id)
+        if (proofExchange) await agent.didcomm.proofs.deleteById(proofExchange.id)
 
-        onCancel()
+        setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
       })
   }
 
@@ -120,6 +135,10 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
         },
       ]}
       onCancel={onCancel}
+      errorScreen={() => (
+        <InteractionErrorSlide key="presentation-error" flowType="verify" reason={errorReason} onCancel={onCancel} />
+      )}
+      isError={errorReason !== undefined}
       confirmation={getFlowConfirmationText(t, 'verify')}
     />
   )

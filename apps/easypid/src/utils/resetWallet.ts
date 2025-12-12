@@ -17,13 +17,13 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
   if (secureUnlock.state === 'unlocked') {
     const agent = secureUnlock.context.agent
     secureUnlock.lock()
-    await agent.dependencyManager.deleteAgentContext(agent.context)
     await agent.shutdown()
+    await agent.dependencyManager.deleteAgentContext(agent.context)
   }
 
   const fs = new agentDependencies.FileSystem()
 
-  // Clear cach and temp path
+  // Clear cache and temp path
   if (await fs.exists(fs.cachePath)) await fs.delete(fs.cachePath)
   if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
 

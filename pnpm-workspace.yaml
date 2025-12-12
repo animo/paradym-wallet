@@ -16,7 +16,7 @@ catalog:
   babel-plugin-module-resolver: ^5.0.2
 
   # Credo / Agent / SSI
-  credo-ts-didweb-anoncreds: 0.0.1-alpha.14
+  credo-ts-didweb-anoncreds: 0.0.2-alpha.2
   rxjs: ^7.8.1
   query-string: ^9.3.1
   "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250917090914
@@ -31,18 +31,18 @@ catalog:
   "@openid4vc/utils": ^0.4.0
   fast-text-encoding: ^1.0.6
   "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": 0.6.1-alpha-20251205132807
-  "@credo-ts/askar": 0.6.1-alpha-20251205132807
-  "@credo-ts/cheqd": 0.6.1-alpha-20251205132807
-  "@credo-ts/core": 0.6.1-alpha-20251205132807
-  "@credo-ts/openid4vc": 0.6.1-alpha-20251205132807
-  "@credo-ts/question-answer": 0.6.1-alpha-20251205132807
-  "@credo-ts/react-native": 0.6.1-alpha-20251205132807
-  "@credo-ts/didcomm": 0.6.1-alpha-20251205132807
+  "@credo-ts/anoncreds": 0.6.2-alpha-20251211125344
+  "@credo-ts/askar": 0.6.2-alpha-20251211125344
+  "@credo-ts/cheqd": 0.6.2-alpha-20251211125344
+  "@credo-ts/core": 0.6.2-alpha-20251211125344
+  "@credo-ts/openid4vc": 0.6.2-alpha-20251211125344
+  "@credo-ts/question-answer": 0.6.2-alpha-20251211125344
+  "@credo-ts/react-native": 0.6.2-alpha-20251211125344
+  "@credo-ts/didcomm": 0.6.2-alpha-20251211125344
   "@hyperledger/anoncreds-react-native": 0.3.4
   "@hyperledger/anoncreds-shared": 0.3.4
-  "@openwallet-foundation/askar-react-native": 0.4.3
-  "@openwallet-foundation/askar-shared": 0.4.3
+  "@openwallet-foundation/askar-react-native": 0.5.0-alpha-20251212085554
+  "@openwallet-foundation/askar-shared": 0.5.0-alpha-20251212085554
   buffer: 6.0.3
   "@astronautlabs/jsonpath": ^1.1.2
   

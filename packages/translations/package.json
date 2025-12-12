@@ -5,8 +5,8 @@
 	"type": "module",
 	"main": "src/index.ts",
 	"scripts": {
-		"merge-missing-translations": "node ./scripts/merge-missing-translations",
-		"extract-missing-translations": "node ./scripts/extract-missing-translations"
+		"merge-missing-translations": "node ./scripts/merge-missing-translations.js",
+		"extract-missing-translations": "node ./scripts/extract-missing-translations.js"
 	},
 	"dependencies": {
 		"@formatjs/intl-locale": "^4.2.13",

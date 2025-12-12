@@ -1,5 +1,6 @@
 import { setFallbackSecureEnvironment, shouldUseFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
+import { CredoError } from '@credo-ts/core'
 import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'
@@ -27,7 +28,7 @@ export async function initializeAppAgent({
         walletKey,
         trustedX509Certificates,
       }).catch((error) => {
-        if (error instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
+        if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
         throw error
       })
     : await initializeParadymAgent({
@@ -36,7 +37,7 @@ export async function initializeAppAgent({
         walletKey,
         trustedX509Certificates,
       }).catch((error) => {
-        if (error instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
+        if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
         throw error
       })
 

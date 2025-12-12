@@ -1,5 +1,5 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { askar } from '@openwallet-foundation/askar-react-native'
+import { Argon2, Argon2Algorithm, Argon2Version } from '@openwallet-foundation/askar-react-native'
 
 /**
  * Derive a hash from pin and salt. (which can be used to seed a key)
@@ -10,26 +10,20 @@ import { askar } from '@openwallet-foundation/askar-react-native'
  * returns a hex-encoded derived hash
  *
  */
-const derive = async (pin: string, salt: string): Promise<string> => {
-  // Takes about 1.5 second on iPhone 14 Pro
-  // Need to test on Android/different devices as well
-  // const { rawHash } = await argon2(pin, salt, {
-  //   hashLength: 32,
-  //   mode: 'argon2id',
-  //   parallelism: 4,
-  //   iterations: 8,
-  //   memory: 64 * 1024,
-  // })
+const derive = (pin: string, salt: string): string => {
+  const rawHash = Argon2.derivePassword(
+    {
+      algorithm: Argon2Algorithm.Argon2id,
+      version: Argon2Version.V0x13,
+      parallelism: 4,
+      memCost: 64 * 1024,
+      timeCost: 8,
+    },
+    TypedArrayEncoder.fromString(pin),
+    TypedArrayEncoder.fromString(salt)
+  )
 
-  // FIXME: these parameters don't match with the parameters exposed by askar
-  // thus it will not create the same result
-  const rawHash = askar.argon2DerivePassword({
-    parameters: 1,
-    password: TypedArrayEncoder.fromString(pin),
-    salt: TypedArrayEncoder.fromString(salt),
-  })
-
-  return TypedArrayEncoder.toUtf8String(rawHash)
+  return TypedArrayEncoder.toHex(rawHash)
 }
 
 /**
