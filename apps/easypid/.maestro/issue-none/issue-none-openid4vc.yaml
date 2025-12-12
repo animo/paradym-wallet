@@ -5,11 +5,11 @@ tags:
   - sd-jwt
   - authorization-none
 ---
-- runFlow: ../onboarding.yaml
+# - runFlow: ../onboarding.yaml
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"sd-jwt", "authorization":"none", "credential": "arf-18-pid", "flow":"openid4vc"}'
+      ACTION: '{"action":"createOffer", "format":"sd-jwt", "authorization":"none", "requestType": "arf-18-pid", "flow":"openid4vc"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 
