@@ -13,7 +13,7 @@ on:
           - 'playground'
           - 'paradym'
           - 'both'
-    paradym_api_key:
+      paradym_api_key:
         type: string
         required: false
         description: 'Paradym API Key for Maestro tests when using Paradym backend'

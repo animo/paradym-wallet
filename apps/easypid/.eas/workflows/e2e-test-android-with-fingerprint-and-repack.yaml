@@ -17,6 +17,10 @@ on:
           - 'playground'
           - 'paradym'
           - 'both'
+      paradym_api_key:
+        type: string
+        required: false
+        description: 'Paradym API Key for Maestro tests when using Paradym backend'
 
 jobs:
   fingerprint:
@@ -57,7 +61,7 @@ jobs:
     if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
     env:
       MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
-      MAESTRO_PARADYM_API_KEY: ${{ secrets.MAESTRO_PARADYM_API_KEY }}
+      MAESTRO_PARADYM_API_KEY: ${{ inputs.paradym_api_key }}
     params:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
       flow_path: '.maestro'
