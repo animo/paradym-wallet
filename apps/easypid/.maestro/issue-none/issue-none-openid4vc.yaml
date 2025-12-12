@@ -5,7 +5,7 @@ tags:
   - sd-jwt
   - authorization-none
 ---
-# - runFlow: ../onboarding.yaml
+- runFlow: ../onboarding.yaml
 - runScript:
     file: ../scripts/request.js
     env:
