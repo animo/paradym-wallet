@@ -65,6 +65,7 @@ jobs:
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
+      include_tags: 'authorization-none-didcomm,authorization-none-openid4vc'
 
   ios_maestro_playground:
     after: [ios_repack, ios_build]
@@ -77,3 +78,4 @@ jobs:
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
+      exclude_tags: 'authorization-none-didcomm'
