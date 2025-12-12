@@ -1,5 +1,5 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { askar } from '@openwallet-foundation/askar-react-native'
+import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import { useQuery } from '@tanstack/react-query'
 import { createMMKV, useMMKVBoolean, useMMKVNumber } from 'react-native-mmkv'
 import { WalletUnlockError } from '../error/WalletUnlockError'
@@ -15,11 +15,11 @@ async function getWalletKeyUsingPin(pin: string, version: number) {
     throw new WalletUnlockError('Error unlocking wallet. No salt configured')
   }
 
-  const walletKeySeed = await kdf.derive(pin, salt)
+  const walletKeySeed = kdf.derive(pin, salt)
 
   // The wallet key needs to be a xchaca key, so we use the derived key based on pin and salt as
   // the seed for the actual key
-  const walletKey = askar.storeGenerateRawKey({
+  const walletKey = NativeAskar.instance.storeGenerateRawKey({
     seed: TypedArrayEncoder.fromString(walletKeySeed),
   })
 
