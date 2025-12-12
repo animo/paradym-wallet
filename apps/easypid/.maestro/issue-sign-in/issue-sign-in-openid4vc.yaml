@@ -4,6 +4,7 @@ tags:
   - openid4vc
   - issue
   - mdoc
+  - didcomm
 ---
 - runFlow: ../onboarding.yaml
 - runScript:

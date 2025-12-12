@@ -3,11 +3,11 @@ appId: id.paradym.wallet.preview
 - openLink:
     link: ${deeplink}
 
-- runFlow:
-    when:
-      platform: ios
-    commands:
-      - tapOn: Open
+# - runFlow:
+#     when:
+#       platform: ios
+#     commands:
+#       - tapOn: Open
 
 - repeat:
     while:

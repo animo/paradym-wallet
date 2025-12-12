@@ -5,7 +5,7 @@ tags:
   - sd-jwt
   - x5c
 ---
-- runFlow: ../onboarding.yaml
+- runFlow: ../issue-code/issue-code-openid4vc.yaml
 - runScript:
     file: ../scripts/request.js
     env:
