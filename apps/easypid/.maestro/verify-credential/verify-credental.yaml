@@ -1,15 +1,9 @@
 appId: id.paradym.wallet.preview
 tags:
-  - verification-openid4vc
+  - verification
 ---
-- runFlow: onboarding.yaml
-- runScript:
-    file: scripts/request.js
-    env:
-      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"openid4vc", "requestType":"arf-18-pid"}'
-      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 - openLink:
-    link: ${output.deeplink}
+    link: ${deeplink}
 
 - repeat:
     while:

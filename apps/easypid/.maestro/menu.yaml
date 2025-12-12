@@ -1,4 +1,6 @@
 appId: id.paradym.wallet.preview
+tags:
+  - menu
 ---
 - runFlow: issue-code.yaml
 

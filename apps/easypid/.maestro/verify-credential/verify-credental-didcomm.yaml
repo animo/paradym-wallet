@@ -1,0 +1,15 @@
+appId: id.paradym.wallet.preview
+tags:
+  - verification-didcomm
+---
+- runFlow: ../onboarding.yaml
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType":"arf-18-pid"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow: 
+    file: verify-credential.yaml
+    env:
+      deeplink: ${output.deeplink}

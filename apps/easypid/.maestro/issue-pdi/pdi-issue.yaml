@@ -2,15 +2,8 @@ appId: id.paradym.wallet.preview
 tags:
   - presentation-during-issuance
 ---
-- runFlow: ./issue-none/issue-none-openid4vc.yaml
-- runScript:
-    file: scripts/request.js
-    env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"presentation", "requestType": "certificate-of-residence"}'
-      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
-
 - openLink:
-    link: ${output.deeplink}
+    link: ${deeplink}
 
 - repeat:
     while:

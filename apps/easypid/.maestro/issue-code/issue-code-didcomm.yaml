@@ -1,0 +1,15 @@
+appId: id.paradym.wallet.preview
+tags:
+  - transaction-code-didcomm
+---
+- runFlow: ../onboarding.yaml
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"pin", "requestType": "arf-18-pid", "flow": "didcomm"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow: 
+    file: issue-code.yaml
+    env:
+      deeplink: ${output.deeplink}
