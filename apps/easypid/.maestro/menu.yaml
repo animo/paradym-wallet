@@ -1,0 +1,51 @@
+appId: id.paradym.wallet.preview
+---
+# Run this flow only if you need the arf-18-pid card!
+- runFlow: issue-code.yaml
+
+- tapOn: Recent activity
+- assertVisible: Activity
+- tapOn: .*Card added.*
+- assertVisible: Card added
+- tapOn: ARF 1.8 PID
+- assertVisible: Card details
+- tapOn: Card is active. No actions required
+- assertVisible: Bottom Sheet
+- tapOn:
+    point: 50%,90%
+
+- tapOn: Card attributes. View attributes of the card
+- assertVisible: Card attributes
+
+- tapOn: "  Back"
+- assertVisible: Card details
+- tapOn: "  Back"
+- assertVisible: Card added
+- tapOn: "  Back"
+- assertVisible: Activity
+- tapOn: "  Back"
+- assertVisible: Hello!
+- tapOn: .*All cards.*
+- assertVisible: Cards
+- tapOn: ARF 1.8 PID
+- assertVisible: Card details
+- tapOn:
+    point: 87%,7%
+- assertVisible: Bottom Sheet
+- tapOn:
+    point: 75%,90%
+- assertVisible: Cards
+- tapOn: "  Back"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    text: Menu
+    index: -1
+- assertVisible: Inbox
+- tapOn: "  Back"
+
+- tapOn: Menu
+- assertVisible: Menu
+- assertVisible: WALLET Cards Activity APP Settings Feedback About this wallet Reset Wallet
+- tapOn: "  Back"

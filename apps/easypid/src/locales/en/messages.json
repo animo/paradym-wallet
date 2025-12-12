@@ -797,18 +797,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 369]],
 		"translation": "Country"
 	},
-	"informationType.credential": {
-		"message": "credential",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/GettingInformationScreen.tsx",
-				9
-			]
-		],
-		"translation": "credential"
-	},
 	"requestedAttributes.fallbackCardLabel": {
 		"message": "Credential",
 		"placeholders": {},
@@ -827,35 +815,11 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 170]],
 		"translation": "Credential"
 	},
-	"common.credentialAdded": {
-		"message": "Credential has been added to your wallet.",
-		"placeholders": {},
-		"comments": ["Toast message shown when credential is successfully added"],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/DidCommCredentialNotificationScreen.tsx",
-				14
-			]
-		],
-		"translation": "Credential has been added to your wallet."
-	},
 	"credential.declined": {
 		"message": "Credential has been declined.",
 		"placeholders": {},
 		"comments": ["Shown in a toast when user declines the credential"],
-		"origin": [["src/features/didcomm/CredentialSlides.tsx", 58]],
-		"translation": "Credential has been declined."
-	},
-	"common.credentialDeclined": {
-		"message": "Credential has been declined.",
-		"placeholders": {},
-		"comments": ["Toast message shown when credential is declined by the user"],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/DidCommCredentialNotificationScreen.tsx",
-				24
-			]
-		],
+		"origin": [["src/features/didcomm/CredentialSlides.tsx", 72]],
 		"translation": "Credential has been declined."
 	},
 	"common.credentialInformationCouldNotBeExtracted": {
@@ -1303,22 +1267,6 @@
 		"origin": [["src/utils/sharedPidSetup.ts", 32]],
 		"translation": "Get your national identity card"
 	},
-	"gettingInformation.message": {
-		"message": "Getting {0} information",
-		"placeholders": {
-			"0": ["t(informationTypeMessages[type])"]
-		},
-		"comments": [
-			"Status message when the app is fetching credential, presentation, or invitation information. The type is dynamically injected and translated separately"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/GettingInformationScreen.tsx",
-				38
-			]
-		],
-		"translation": "Getting {0} information"
-	},
 	"pidSetup.idCardFetch.title": {
 		"message": "Getting eID information",
 		"placeholders": {},
@@ -1486,7 +1434,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 550]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 544]
 		],
 		"translation": "If you stop, the card offer will be cancelled."
 	},
@@ -1579,18 +1527,6 @@
 		"comments": ["Shown when scanned QR code is invalid"],
 		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 22]],
 		"translation": "Invalid QR code. Try another."
-	},
-	"informationType.invitation": {
-		"message": "invitation",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/GettingInformationScreen.tsx",
-				17
-			]
-		],
-		"translation": "invitation"
 	},
 	"common.invitationAlreadyScanned": {
 		"message": "Invitation has already been scanned.",
@@ -2167,18 +2103,6 @@
 		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 91]],
 		"translation": "Present In-person"
 	},
-	"informationType.presentation": {
-		"message": "presentation",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/GettingInformationScreen.tsx",
-				13
-			]
-		],
-		"translation": "presentation"
-	},
 	"common.presentationCouldNotBeShared": {
 		"message": "Presentation could not be shared.",
 		"placeholders": {},
@@ -2379,18 +2303,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 49]],
 		"translation": "Reset Wallet"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
-		"translation": "Review the request"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
+		"translation": "Review the request"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
 		"translation": "Review the request"
 	},
 	"common.revoked": {
@@ -2482,20 +2406,6 @@
 		],
 		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 24]],
 		"translation": "Secure the wallet"
-	},
-	"presentationNotification.selectCredentialTitle": {
-		"message": "Select the credential you want to use",
-		"placeholders": {},
-		"comments": [
-			"Title prompting the user to select which credential to use for the information request"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				229
-			]
-		],
-		"translation": "Select the credential you want to use"
 	},
 	"pinSlide.title": {
 		"message": "Send data with your PIN code",
@@ -2768,27 +2678,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 136]],
 		"translation": "Something went wrong"
 	},
-	"credential.accept.error": {
-		"message": "Something went wrong while storing the credential.",
-		"placeholders": {},
-		"comments": ["Shown in a toast when credential storage fails"],
-		"origin": [["src/features/didcomm/CredentialSlides.tsx", 27]],
-		"translation": "Something went wrong while storing the credential."
-	},
-	"common.credentialStoreError": {
-		"message": "Something went wrong while storing the credential.",
-		"placeholders": {},
-		"comments": [
-			"Toast message shown when there is an error storing the credential"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/DidCommCredentialNotificationScreen.tsx",
-				19
-			]
-		],
-		"translation": "Something went wrong while storing the credential."
-	},
 	"onboardingIdCardScan.startScanning": {
 		"message": "Start scanning",
 		"placeholders": {},
@@ -2829,7 +2718,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 546]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 540]
 		],
 		"translation": "Stop card offer?"
 	},
@@ -2987,32 +2876,6 @@
 		"comments": ["Text above the document to be signed"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 106]],
 		"translation": "The following document will be signed."
-	},
-	"presentationNotification.requestedInformationPrefix": {
-		"message": "The following information is requested:",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				177
-			]
-		],
-		"translation": "The following information is requested:"
-	},
-	"presentationNotification.infoWillBePresented": {
-		"message": "The following information will be presented:",
-		"placeholders": {},
-		"comments": [
-			"Text shown before listing information that will be presented in response to an information request"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				149
-			]
-		],
-		"translation": "The following information will be presented:"
 	},
 	"signShare.cardIntro": {
 		"message": "The following personal information will be used to sign the document.",
@@ -3207,18 +3070,6 @@
 			["../../packages/app/src/components/CardInfoLifecycle.tsx", 188]
 		],
 		"translation": "This card will be active in {activeDaysString}, on {0}."
-	},
-	"presentationNotification.missingCredential": {
-		"message": "This credential is not present in your wallet.",
-		"placeholders": {},
-		"comments": ["Shown when a required credential is missing"],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				170
-			]
-		],
-		"translation": "This credential is not present in your wallet."
 	},
 	"qrScanner.noCameraDescription": {
 		"message": "This device does not have a camera. Unable to scan QR codes",
@@ -3708,13 +3559,6 @@
 		],
 		"translation": "You don't have the requested card(s)."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
-		"translation": "You don't have the required cards"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
@@ -3722,19 +3566,12 @@
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 181]],
 		"translation": "You don't have the required cards"
 	},
-	"presentationNotification.missingRequiredCredentials": {
-		"message": "You don't have the required credentials to satisfy this request.",
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
 		"placeholders": {},
-		"comments": [
-			"Shown when the user lacks the required credentials to satisfy an information request"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				208
-			]
-		],
-		"translation": "You don't have the required credentials to satisfy this request."
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 131]],
+		"translation": "You don't have the required cards"
 	},
 	"pinLocked.description": {
 		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
@@ -3744,66 +3581,6 @@
 		],
 		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 47]],
 		"translation": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue."
-	},
-	"credentialNotification.receivedCredential": {
-		"message": "You have received a credential",
-		"placeholders": {},
-		"comments": [
-			"Heading shown when user receives a credential when issuer name is not available"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/CredentialNotificationScreen.tsx",
-				46
-			]
-		],
-		"translation": "You have received a credential"
-	},
-	"credentialNotification.receivedCredentialWithIssuerName": {
-		"message": "You have received a credential from {0}",
-		"placeholders": {
-			"0": ["display.issuer.name"]
-		},
-		"comments": [
-			"Heading shown when user receives a credential, including issuer name"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/CredentialNotificationScreen.tsx",
-				39
-			]
-		],
-		"translation": "You have received a credential from {0}"
-	},
-	"presentationNotification.receivedRequestWithoutVerifier": {
-		"message": "You have received an information request",
-		"placeholders": {},
-		"comments": [
-			"Heading shown when the user receives an information request without the verifier's name"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				86
-			]
-		],
-		"translation": "You have received an information request"
-	},
-	"presentationNotification.receivedRequestWithVerifier": {
-		"message": "You have received an information request from {verifierName}",
-		"placeholders": {
-			"verifierName": ["verifierName"]
-		},
-		"comments": [
-			"Heading shown when the user receives an information request including the verifier's name"
-		],
-		"origin": [
-			[
-				"../../packages/app/src/features/notifications/components/PresentationNotificationScreen.tsx",
-				77
-			]
-		],
-		"translation": "You have received an information request from {verifierName}"
 	},
 	"activity.receivedSingle": {
 		"message": "You have received the following card from {0}.",

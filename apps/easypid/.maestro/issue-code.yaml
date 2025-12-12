@@ -1,0 +1,63 @@
+appId: id.paradym.wallet.preview
+---
+# If you are not onboarded yet, enable this to ensure the flow works.
+# If you are running the flows manually (while already onboarded), keep this commented out.
+# - runFlow: onboarding.yaml
+- runScript:
+    file: scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"pin", "requestType": "arf-18-pid", "flow": "openid4vc"}'
+
+- openLink:
+    link: ${output.deeplink}
+
+- repeat:
+    while:
+      visible: "Enter your app PIN code"
+    commands:
+      - tapOn: "Pin number 1"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- tapOn: "Yes, continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Card offered"
+- tapOn: "Continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: Enter transaction code
+- inputText: ${output.userPin}
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: Is the information correct?
+- tapOn: Accept
+
+- assertVisible: "Success!"
+- assertVisible: "Card successfully added to your wallet!"
+- assertVisible: "Credential"
+
+# On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet  "
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Hello!"
+- assertVisible: "Receive or share from your wallet "

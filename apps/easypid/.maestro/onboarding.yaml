@@ -1,0 +1,31 @@
+appId: id.paradym.wallet.preview
+---
+- launchApp:
+    clearState: true
+
+- assertVisible: Paradym Wallet
+- tapOn: Get Started
+
+- assertVisible: Choose a 6-digit PIN
+- repeat:
+    while:
+      visible: Choose a 6-digit PIN
+    commands:
+      - tapOn: "Pin number 1"
+
+- assertVisible: Repeat your PIN
+- repeat:
+    while:
+      visible: Repeat your PIN
+    commands:
+      - tapOn: "Pin number 1"
+
+- assertVisible: Protect your data
+- tapOn: "Go to wallet"
+
+# Due to animations, it can take some time before the home screen becomes visible.
+- extendedWaitUntil:
+    visible: "Hello!"
+    timeout: 5000
+
+- assertVisible: "Hello!"

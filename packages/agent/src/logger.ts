@@ -11,7 +11,7 @@ function replaceError(_: unknown, value: unknown) {
   /**
    * This special handling for error classes is mostly to not hide error messages in React Native.
    * The error serialization works differently from node, so a lot of times you get `error: {}`, which
-   * really compliactes debugging.
+   * really complicates debugging.
    */
   if (value instanceof Error) {
     return {
@@ -71,7 +71,11 @@ export class ParadymWalletLogger extends ConsoleLogger {
   }
   public error(message: string, data?: LogData): void {
     this.addToLoggedMessages(LogLevel.error, message, data)
-    super.error(message, data)
+
+    // FIXME: the error logger in React Native 0.81 changed, and it does not log the error correctly anymore
+    // We print the data as trace, and the message as error (to get nice stack)
+    super.trace('', data)
+    super.error(message)
   }
   public warn(message: string, data?: LogData): void {
     if (message.includes('module is experimental')) return
