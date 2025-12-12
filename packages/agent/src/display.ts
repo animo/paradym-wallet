@@ -16,15 +16,16 @@ import {
   W3cV2CredentialRecord,
   type W3cV2JsonCredential,
 } from '@credo-ts/core'
+import type { MessageDescriptor } from '@lingui/core'
 import { t } from '@lingui/core/macro'
-import { commonMessages } from '@package/translations'
+import { commonMessages, i18n } from '@package/translations'
 import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import { getAttributesForCategory } from './display/category'
 import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
 import type { CredentialForDisplayId } from './hooks'
-import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
+import type { OpenId4VcCredentialMetadata, OpenId4VciCredentialDisplayClaims } from './openid4vc/displayMetadata'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
 
@@ -33,18 +34,26 @@ import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
  * Maybe belongs in agent, but adding here because the `nonRenderedPaths` is
  * very intertwined with our rendering logic
  */
-export function getUnsatisfiedAttributePathsForDisplay(paths: Array<string | number | null>[]) {
+export function getUnsatisfiedAttributePathsForDisplay(
+  paths: Array<Array<string | number | null>>,
+  claims?: OpenId4VciCredentialDisplayClaims
+) {
   const nonRenderedPaths = ['iss', 'vct']
-  return Array.from(
-    new Set(
-      paths
-        .filter(
-          (path): path is [string] =>
-            typeof path[0] === 'string' && !path.some((p) => nonRenderedPaths.includes(p as string))
-        )
-        .map((path) => sanitizeString(path[0]))
-    )
-  )
+
+  const resolvedLabels = paths
+    .filter((path) => !path.some((p) => nonRenderedPaths.includes(p as string)))
+    .map((path) => {
+      // Try to resolve from claims metadata first
+      const label = resolveLabelFromClaimsPath(path, claims, i18n.locale)
+      if (label) return label
+
+      // Fallback to sanitizeString
+      // Use the first path element or the last non-null element
+      const relevantPathElement = path.find((p) => typeof p === 'string') ?? path[path.length - 1]
+      return sanitizeString(String(relevantPathElement))
+    })
+
+  return Array.from(new Set(resolvedLabels))
 }
 
 /**
@@ -54,25 +63,26 @@ export function getUnsatisfiedAttributePathsForDisplay(paths: Array<string | num
  *  - rendering how many attributes (count) will be shared
  */
 export function getDisclosedAttributeNamesForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
-  // FIXME: this implementation in still too naive
-  // TODO: use the credential claim metadata (sd-jwt / oid4vc) to get labels for attribute paths
-  // TODO: we miss e.g. showing age_equal_or_over.21 as Age Over 21, but with the display metadata
-  // from bdr we can at least show it as: Age verification. If there is a key for a nested path we can
-  // also decide to include it
+  const openId4VcMetadata = getOpenId4VcCredentialMetadata(credential.credential.record)
+  const claims = openId4VcMetadata?.credential.claims
 
-  // For mdoc we remove the namespaces
-  if (credential.credential.claimFormat === ClaimFormat.MsoMdoc) {
-    return Array.from(new Set(credential.disclosed.paths.map((path) => sanitizeString(path[1]))))
-  }
+  const resolvedLabels = credential.disclosed.paths.map((path) => {
+    // Try to resolve from claims metadata first
+    const label = resolveLabelFromClaimsPath(path, claims, i18n.locale)
+    if (label) return label
 
-  // Otherwise we take the top-level keys
-  return Array.from(
-    new Set(
-      credential.disclosed.paths
-        .filter((path): path is [string] => typeof path[0] === 'string')
-        .map((path) => sanitizeString(path[0]))
-    )
-  )
+    // Fallback to sanitizeString
+    // For mdoc we use the attribute name (second element in path)
+    if (credential.credential.claimFormat === ClaimFormat.MsoMdoc) {
+      return sanitizeString(String(path[1]))
+    }
+
+    // For other formats, use the first path element or the last non-null element
+    const relevantPathElement = path.find((p) => typeof p === 'string') ?? path[path.length - 1]
+    return sanitizeString(String(relevantPathElement))
+  })
+
+  return Array.from(new Set(resolvedLabels))
 }
 
 export interface DisplayImage {
@@ -156,14 +166,263 @@ export interface CredentialForDisplay {
   hasRefreshToken: boolean
 }
 
-function findDisplay<Display extends { locale?: string; lang?: string }>(display?: Display[]): Display | undefined {
-  if (!display) return undefined
+// TODO: move to a more common place, make it less brittle
+const attributeNameMapping: Record<string, MessageDescriptor> = {
+  age_equal_or_over: commonMessages.fields.age_over,
+  age_birth_year: commonMessages.fields.birth_year,
+  age_in_years: commonMessages.fields.age,
+  street_address: commonMessages.fields.street,
+  resident_street: commonMessages.fields.street,
+  resident_city: commonMessages.fields.city,
+  resident_country: commonMessages.fields.country,
+  resident_postal_code: commonMessages.fields.postal_code,
+  birth_date: commonMessages.fields.date_of_birth,
+  birthdate: commonMessages.fields.date_of_birth,
+  expiry_date: commonMessages.fields.expires_at,
+  issue_date: commonMessages.fields.issued_at,
+  issuance_date: commonMessages.fields.issued_at,
+  ...commonMessages.fields,
+  ...commonMessages.credentials.mdl,
+}
 
-  let item = display.find((d) => d.locale?.startsWith('en-') || d.lang?.startsWith('en-'))
-  if (!item) item = display.find((d) => !d.locale && !d.lang)
-  if (!item) item = display[0]
+export const mapAttributeName = (key: string) => {
+  const messageDescriptor = attributeNameMapping[key]
+  if (messageDescriptor) return i18n.t(messageDescriptor)
 
-  return item
+  if (key.startsWith('age_over_')) {
+    return `${i18n.t(commonMessages.fields.age_over)} ${key.replace('age_over_', '')}`
+  }
+
+  return sanitizeString(key)
+}
+
+/**
+ * Finds the best matching display value for the current locale from an array of display objects.
+ * Handles locale matching between IETF BCP 47 language tags (with region) and simple language codes (without region).
+ *
+ * @param display - Array of display objects with locale and name properties
+ * @param currentLocale - Current app locale (e.g., 'en', 'nl', 'de')
+ * @returns The best matching display object or undefined
+ */
+function findDisplayByLocale<Display extends { locale?: string; name?: string }>(
+  display?: Display[],
+  currentLocale?: string
+): Display | undefined {
+  if (!display || display.length === 0) return undefined
+
+  // If we have a current locale, try to match it (ignoring region codes)
+  if (currentLocale) {
+    // Try exact match first (e.g., 'en' matches 'en' or 'en-US' matches 'en-US')
+    const item = display.find((d) => d.locale === currentLocale || d.locale?.startsWith(`${currentLocale}-`))
+    if (item) return item
+  }
+
+  // Fallback to English
+  const englishItem = display.find((d) => d.locale?.startsWith('en-') || d.locale === 'en')
+  if (englishItem) return englishItem
+
+  // Fallback to first entry without locale
+  const noLocaleItem = display.find((d) => !d.locale)
+  if (noLocaleItem) return noLocaleItem
+
+  // Last resort: first entry
+  return display[0]
+}
+
+/**
+ * Resolves a claims path pointer to select value(s) from credential attributes.
+ * Follows the OpenID4VC specification for claims path pointers.
+ *
+ * @param data - The credential data to query
+ * @param path - Array of path components (strings for keys, numbers for array indices, null for all array elements)
+ * @returns Array of selected values, or empty array if path doesn't match
+ */
+function resolveClaimsPath(data: unknown, path: Array<string | number | null>): unknown[] {
+  if (path.length === 0) {
+    return [data]
+  }
+
+  const [currentComponent, ...remainingPath] = path
+  let selectedElements: unknown[] = []
+
+  // Handle string path component (object key)
+  if (typeof currentComponent === 'string') {
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      const value = (data as Record<string, unknown>)[currentComponent]
+      if (value !== undefined) {
+        selectedElements = [value]
+      }
+    }
+  }
+  // Handle null path component (select all array elements)
+  else if (currentComponent === null) {
+    if (Array.isArray(data)) {
+      selectedElements = data
+    }
+  }
+  // Handle number path component (array index)
+  else if (typeof currentComponent === 'number') {
+    if (currentComponent < 0) {
+      // Negative integers are not supported
+      return []
+    }
+    if (Array.isArray(data) && currentComponent < data.length) {
+      selectedElements = [data[currentComponent]]
+    }
+  }
+
+  // If no elements were selected, return empty array
+  if (selectedElements.length === 0) {
+    return []
+  }
+
+  // If this was the last path component, return the selected elements
+  if (remainingPath.length === 0) {
+    return selectedElements
+  }
+
+  // Recursively process remaining path components for each selected element
+  const results: unknown[] = []
+  for (const element of selectedElements) {
+    const nestedResults = resolveClaimsPath(element, remainingPath)
+    results.push(...nestedResults)
+  }
+
+  return results
+}
+
+/**
+ * Resolves a label for a given path using claims metadata.
+ * Tries to match the exact path first, then falls back to parent paths.
+ *
+ * @param path - The path to resolve (array of strings, numbers, or null)
+ * @param claims - The claims metadata from OpenID4VC credential metadata
+ * @param currentLocale - Current app locale (e.g., 'en', 'nl', 'de')
+ * @returns The localized label or null if no match found
+ */
+function resolveLabelFromClaimsPath(
+  path: Array<string | number | null>,
+  claims?: OpenId4VciCredentialDisplayClaims,
+  currentLocale?: string
+): string | null {
+  if (!claims || claims.length === 0) {
+    return null
+  }
+
+  // Helper to check if two paths match
+  const pathsMatch = (claimPath: Array<string | number | null>, targetPath: Array<string | number | null>): boolean => {
+    if (claimPath.length !== targetPath.length) return false
+    return claimPath.every((segment, i) => segment === targetPath[i])
+  }
+
+  // Try exact match first
+  for (const claim of claims) {
+    if (!claim.path || claim.path.length === 0) continue
+    if (pathsMatch(claim.path, path)) {
+      const displayItem = findDisplayByLocale(claim.display, currentLocale)
+      if (displayItem?.name) return displayItem.name
+    }
+  }
+
+  // Try to find parent path matches (from most specific to least specific)
+  // e.g., for path ['driving_privileges', 0], try ['driving_privileges']
+  for (let length = path.length - 1; length > 0; length--) {
+    const parentPath = path.slice(0, length)
+    for (const claim of claims) {
+      if (!claim.path || claim.path.length === 0) continue
+      if (pathsMatch(claim.path, parentPath)) {
+        const displayItem = findDisplayByLocale(claim.display, currentLocale)
+        if (displayItem?.name) return displayItem.name
+      }
+    }
+  }
+
+  return null
+}
+
+/**
+ * Applies claims metadata to credential attributes.
+ * Orders attributes according to the claims array and uses localized labels.
+ * Supports nested paths for objects and arrays following OpenID4VC specification.
+ *
+ * @param rawAttributes - The raw credential attributes as a flat key-value object
+ * @param claims - The claims metadata from OpenID4VC credential metadata
+ * @param currentLocale - Current app locale (e.g., 'en', 'nl', 'de')
+ * @returns Ordered attributes with localized labels, or null if no claims metadata is available
+ */
+export function applyClaimsMetadata(
+  rawAttributes: Record<string, unknown>,
+  claims?: OpenId4VciCredentialDisplayClaims,
+  currentLocale?: string
+): Record<string, unknown> | null {
+  if (!claims || claims.length === 0) {
+    return null
+  }
+
+  const orderedAttributes: Record<string, unknown> = {}
+
+  // Process claims in order
+  for (const claim of claims) {
+    if (!claim.path || claim.path.length === 0) continue
+
+    // Resolve the path to get the value(s)
+    const selectedValues = resolveClaimsPath(rawAttributes, claim.path)
+
+    // Skip if path didn't match anything
+    if (selectedValues.length === 0) continue
+
+    // Get the localized label for this claim
+    const displayItem = findDisplayByLocale(claim.display, currentLocale)
+    const label = displayItem?.name ?? sanitizeString(String(claim.path[claim.path.length - 1]))
+
+    // If we selected multiple values (e.g., from array), store as array
+    // If we selected a single value, store it directly
+    if (selectedValues.length === 1) {
+      orderedAttributes[label] = selectedValues[0]
+    } else {
+      orderedAttributes[label] = selectedValues
+    }
+  }
+
+  // If we didn't process any attributes, return null
+  if (Object.keys(orderedAttributes).length === 0) {
+    return null
+  }
+
+  return orderedAttributes
+}
+
+function _applyAttributeKeyDisplay(attribute: object): object {
+  if (Array.isArray(attribute)) {
+    return attribute.map((innerAttribute) =>
+      innerAttribute && typeof innerAttribute === 'object' ? _applyAttributeKeyDisplay(innerAttribute) : innerAttribute
+    )
+  }
+
+  if (typeof attribute === 'object') {
+    return Object.fromEntries(
+      Object.entries(attribute).map(([key, value]) => [
+        key,
+        value && typeof value === 'object' ? _applyAttributeKeyDisplay(value) : value,
+      ])
+    )
+  }
+
+  return attribute
+}
+
+export function applyAttributeKeyDisplay(attributes: Record<string, unknown>) {
+  const mapped: Record<string, unknown> = {}
+
+  for (const [key, value] of Object.entries(attributes)) {
+    if (value === undefined || value === null) continue
+    if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) continue
+
+    const name = mapAttributeName(key)
+    mapped[name] = typeof value === 'object' ? _applyAttributeKeyDisplay(value) : value
+  }
+
+  return mapped
 }
 
 function getW3cIssuerDisplay(
@@ -174,7 +433,7 @@ function getW3cIssuerDisplay(
 
   // Try to extract from openid metadata first
   if (openId4VcMetadata) {
-    const openidIssuerDisplay = findDisplay(openId4VcMetadata.issuer.display)
+    const openidIssuerDisplay = findDisplayByLocale(openId4VcMetadata.issuer.display, i18n.locale)
 
     if (openidIssuerDisplay) {
       issuerDisplay.name = openidIssuerDisplay.name
@@ -188,7 +447,7 @@ function getW3cIssuerDisplay(
     }
 
     // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+    const openidCredentialDisplay = findDisplayByLocale(openId4VcMetadata.credential.display, i18n.locale)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
       issuerDisplay.logo = {
         url: openidCredentialDisplay.logo?.uri,
@@ -243,7 +502,7 @@ export function getOpenId4VcIssuerDisplay(
 
   // Try to extract from openid metadata first
   if (openId4VcMetadata) {
-    const openidIssuerDisplay = findDisplay(openId4VcMetadata.issuer.display)
+    const openidIssuerDisplay = findDisplayByLocale(openId4VcMetadata.issuer.display, i18n.locale)
 
     if (openidIssuerDisplay) {
       issuerDisplay.name = openidIssuerDisplay.name
@@ -257,7 +516,7 @@ export function getOpenId4VcIssuerDisplay(
     }
 
     // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+    const openidCredentialDisplay = findDisplayByLocale(openId4VcMetadata.credential.display, i18n.locale)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
       issuerDisplay.logo = {
         url: openidCredentialDisplay.logo?.uri,
@@ -295,7 +554,7 @@ export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<Cre
 export function getSdJwtTypeMetadataCredentialDisplay(
   sdJwtTypeMetadata: SdJwtVcTypeMetadata
 ): Omit<CredentialDisplay, 'issuer' | 'name'> & { name?: string } {
-  const typeMetadataDisplay = findDisplay(sdJwtTypeMetadata.display)
+  const typeMetadataDisplay = findDisplayByLocale(sdJwtTypeMetadata.display, i18n.locale)
 
   // TODO: support SVG rendering method
 
@@ -316,7 +575,7 @@ export function getSdJwtTypeMetadataCredentialDisplay(
 }
 
 export function getOpenId4VcCredentialDisplay(openId4VcMetadata: OpenId4VcCredentialMetadata) {
-  const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+  const openidCredentialDisplay = findDisplayByLocale(openId4VcMetadata.credential.display, i18n.locale)
 
   const credentialDisplay: Omit<CredentialDisplay, 'name'> & { name?: string } = {
     name: openidCredentialDisplay?.name,
@@ -433,10 +692,11 @@ function safeCalculateJwkThumbprint(jwk: Kms.Jwk): string | undefined {
   }
 }
 export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpaces, mdocInstance: Mdoc) {
-  const attributes: CredentialForDisplay['attributes'] = Object.fromEntries(
-    Object.values(namespaces).flatMap((v) => {
-      return Object.entries(v).map(([key, value]) => [key, recursivelyMapAttributes(value)])
-    })
+  const attributes = Object.fromEntries(
+    Object.entries(namespaces).map(([namespace, v]) => [
+      namespace,
+      Object.entries(v).map(([key, value]) => [key, recursivelyMapAttributes(value)]),
+    ])
   )
 
   // FIXME: Date should be fixed in Mdoc library
@@ -459,7 +719,10 @@ export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpace
   }
 
   return {
-    attributes,
+    attributes: attributes as CredentialForDisplay['attributes'],
+    attributesWithoutNamespace: Object.fromEntries(
+      Object.values(attributes).flatMap((v) => Object.entries(v))
+    ) as CredentialForDisplay['attributes'],
     metadata: mdocMetadata,
   }
 }
@@ -559,13 +822,11 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
-    // FIXME: For now, we map attributes to our custom attributes for PID and MDL
-    // We should add support for attributes from Type Metadata and OID4VC Metadata
-
-    // Order of precedence should be:
+    // Order of precedence for attribute display:
     // 1. Custom attributes for PID and MDL using category
-    // 2. Attributes from SD JWT Type Metadata
-    // 3. Attributes from OID4VC Metadata
+    // 2. Attributes from OID4VC Metadata claims (with ordering and localized labels)
+    // 3. Attributes from SD JWT Type Metadata
+    // 4. Raw attributes
 
     const customAttributesForDisplay =
       getAttributesForCategory({
@@ -577,7 +838,8 @@ export function getCredentialForDisplay(
         type: sdJwtVc.payload.vct as string,
         attributes,
       }) ??
-      attributes
+      applyClaimsMetadata(attributes, openId4VcMetadata?.credential.claims, i18n.locale) ??
+      applyAttributeKeyDisplay(attributes)
 
     return {
       id: credentialForDisplayId,
@@ -601,7 +863,7 @@ export function getCredentialForDisplay(
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const credentialDisplay = getMdocCredentialDisplay(mdocInstance, openId4VcMetadata)
     const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
-    const { attributes, metadata } = getAttributesAndMetadataForMdocPayload(
+    const { attributes, attributesWithoutNamespace, metadata } = getAttributesAndMetadataForMdocPayload(
       mdocInstance.issuerSignedNamespaces,
       mdocInstance
     )
@@ -615,7 +877,8 @@ export function getCredentialForDisplay(
         type: mdocInstance.docType,
         attributes,
       }) ??
-      attributes
+      applyClaimsMetadata(attributes, openId4VcMetadata?.credential.claims, i18n.locale) ??
+      applyAttributeKeyDisplay(attributesWithoutNamespace)
 
     return {
       id: credentialForDisplayId,

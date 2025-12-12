@@ -19,7 +19,6 @@ export interface OpenId4VcCredentialMetadata {
   credential: {
     display?: OpenId4VciCredentialDisplay
     claims?: OpenId4VciCredentialDisplayClaims
-    order?: OpenId4VciCredentialConfigurationSupportedWithFormats['order']
   }
   issuer: {
     display?: OpenId4VciCredentialIssuerMetadataDisplay[]

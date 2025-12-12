@@ -1,10 +1,6 @@
 import { getMdlAttributesForDisplay } from '@easypid/utils/mdlCustomMetadata'
 
 const docTypeOrVctDisplay = {
-  'https://example.eudi.ec.europa.eu/mdl/1': (attributes: Record<string, unknown>) => {
-    return getMdlAttributesForDisplay(attributes)
-  },
-
   'org.iso.18013.5.1.mDL': (attributes: Record<string, unknown>) => {
     return getMdlAttributesForDisplay(attributes)
   },

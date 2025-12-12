@@ -86,12 +86,16 @@ export async function getSubmissionForMdocDocumentRequest(
             ),
           ])
         )
-        const { attributes, metadata } = getAttributesAndMetadataForMdocPayload(disclosedNamespaces, matchingMdoc.mdoc)
+        const { attributesWithoutNamespace, metadata } = getAttributesAndMetadataForMdocPayload(
+          disclosedNamespaces,
+          matchingMdoc.mdoc
+        )
 
         return {
           credential: matchingMdoc.credential,
           disclosed: {
-            attributes,
+            // TODO: should be updated to rely on the display metadata
+            attributes: attributesWithoutNamespace,
             metadata,
             paths: disclosedAttributePaths,
           },
