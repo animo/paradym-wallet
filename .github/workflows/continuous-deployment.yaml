@@ -11,7 +11,6 @@ on:
           - 'preview'
           - 'preview-simulator'
           - 'production'
-          - 'e2e-test'
         default: 'preview'
       platform:
         type: choice
@@ -30,15 +29,6 @@ on:
           - 'funke'
           - 'paradym'
         default: 'paradym'
-      issuer_backend:
-        type: choice
-        description: 'Issuer backend to use in tests'
-        required: true
-        options:
-          - 'playground'
-          - 'paradym'
-          - 'both'
-        default: 'playground'
 
 jobs:
   build:
@@ -82,13 +72,3 @@ jobs:
         if: ${{ github.event.inputs.channel == 'production' }}
         working-directory: apps/easypid
         run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-production --no-wait --auto-submit
-
-      - name: EAS Workflow Android
-        if: ${{ github.event.inputs.channel == 'e2e-test' && (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all') }}
-        working-directory: apps/easypid
-        run: eas workflow:run .eas/workflows/e2e-test-android-with-fingerprint-and-repack.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }}
-      
-      - name: EAS Workflow iOS
-        if: ${{ github.event.inputs.channel == 'e2e-test' && (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all') }}
-        working-directory: apps/easypid
-        run: eas workflow:run .eas/workflows/e2e-test-ios-with-fingerprint-and-repack.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }}

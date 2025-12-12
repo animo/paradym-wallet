@@ -1,0 +1,61 @@
+name: End-to-End Maestro Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        description: 'Platform to test on'
+        required: true
+        options:
+          - 'android'
+          - 'ios'
+          - 'all'
+        default: 'all'
+      issuer_backend:
+        type: choice
+        description: 'Backend issuer for the tests'
+        required: true
+        options:
+          - 'playground'
+          - 'paradym'
+          - 'both'
+        default: 'playground'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      APP_PROFILE: ${{ github.event.inputs.app }}
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v6
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20.x
+
+      - uses: pnpm/action-setup@v4
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_PUBLISHER_ACCESS_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      - name: 🚀 Build
+        run: pnpm build
+
+      - name: EAS Workflow Android
+        if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' }}
+        working-directory: apps/easypid
+        run: eas workflow:run .eas/workflows/e2e-test-android-with-fingerprint-and-repack.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }}
+      
+      - name: EAS Workflow iOS
+        if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' }}
+        working-directory: apps/easypid
+        run: eas workflow:run .eas/workflows/e2e-test-ios-with-fingerprint-and-repack.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }}
