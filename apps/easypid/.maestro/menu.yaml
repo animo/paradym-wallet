@@ -1,6 +1,5 @@
 appId: id.paradym.wallet.preview
 ---
-# Run this flow only if you need the arf-18-pid card!
 - runFlow: issue-code.yaml
 
 - tapOn: Recent activity

@@ -1,4 +1,6 @@
 appId: id.paradym.wallet.preview
+tags:
+  - onboarding
 ---
 - launchApp:
     clearState: true
@@ -20,7 +22,11 @@ appId: id.paradym.wallet.preview
     commands:
       - tapOn: "Pin number 1"
 
-- assertVisible: Protect your data
+# Due to animations, it can take some time before the home screen becomes visible.
+- extendedWaitUntil:
+    visible: "Protect your data"
+    timeout: 5000
+
 - tapOn: "Go to wallet"
 
 # Due to animations, it can take some time before the home screen becomes visible.

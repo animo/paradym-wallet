@@ -1,15 +1,22 @@
 appId: id.paradym.wallet.preview
+tags:
+  - transaction-code
 ---
-# If you are not onboarded yet, enable this to ensure the flow works.
-# If you are running the flows manually (while already onboarded), keep this commented out.
-# - runFlow: onboarding.yaml
+- runFlow: onboarding.yaml
 - runScript:
     file: scripts/request.js
     env:
       ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"pin", "requestType": "arf-18-pid", "flow": "openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - openLink:
     link: ${output.deeplink}
+
+- runFlow:
+    when:
+      platform: ios
+    commands:
+      - tapOn: Open
 
 - repeat:
     while:
@@ -40,7 +47,14 @@ appId: id.paradym.wallet.preview
 - assertVisible: Is the information correct?
 - tapOn: Accept
 
-- assertVisible: "Success!"
+# Due to animations, it can take some time before the home screen becomes visible.
+- extendedWaitUntil:
+    visible: "Success!"
+    timeout: 10000
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
 - assertVisible: "Card successfully added to your wallet!"
 - assertVisible: "Credential"
 

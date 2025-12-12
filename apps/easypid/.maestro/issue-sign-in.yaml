@@ -1,15 +1,22 @@
 appId: id.paradym.wallet.preview
+tags:
+  - authorization-code-flow
 ---
-# If you are not onboarded yet, enable this to ensure the flow works.
-# If you are running the flows manually (while already onboarded), keep this commented out.
-# - runFlow: onboarding.yaml
+- runFlow: onboarding.yaml
 - runScript:
     file: scripts/request.js
     env:
       ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"browser", "requestType": "arf-18-pid"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - openLink:
     link: ${output.deeplink}
+
+- runFlow:
+    when:
+      platform: ios
+    commands:
+      - tapOn: Open
 
 - repeat:
     while:
@@ -43,33 +50,52 @@ appId: id.paradym.wallet.preview
           point: 50%,45%
       - tapOn:
           point: 50%,40%
+      - tapOn:
+          point: 50%,60%
+      - tapOn:
+          point: 50%,40%
 
 - runFlow:
     when:
       platform: Android
     commands:
-    - tapOn: Use without an account
+      - waitForAnimationToEnd:
+          timeout: 15000
+      # Depending on the device running the tests, an initial Chrome setup screen may appear.
+      # If the screen does not appear, this step is skipped.
+      - runFlow:
+          when:
+            visible: Make Chrome your own
+          commands:
+            - tapOn: Use without an account
 
-    - extendedWaitUntil:
-        visible: "Sign-in"
-        timeout: 5000
+      - extendedWaitUntil:
+          visible: "Sign-in"
+          timeout: 5000
 
-    - runFlow:
-        when:
-          visible: Try out your stylus
-        commands:
-        - tapOn: Cancel
+      - runFlow:
+          when:
+            visible: Try out your stylus
+          commands:
+            - tapOn: Cancel
 
-    - tapOn: Enter any login
-    - inputText: test
-    - tapOn: and password
-    - inputText: test
+      - tapOn: Enter any login
+      - inputText: test
+      - tapOn: and password
+      - inputText: test
 
-    - tapOn:
-        text: Sign-in
-        index: 1
+      - tapOn:
+          text: Sign-in
+          index: 1
 
-    - tapOn: Continue
+      - runFlow:
+          when:
+            visible: Open with
+          commands:
+            - tapOn: Paradym Wallet (Preview)
+            - tapOn: Always
+
+      - tapOn: Continue
 
 - extendedWaitUntil:
     visible: "Is the information correct?"

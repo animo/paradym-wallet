@@ -2,6 +2,22 @@
 # https://docs.expo.dev/eas/workflows/pre-packaged-jobs/#examples-13
 name: Build or repack, then Maestro tests
 
+on:
+  workflow_dispatch:
+    inputs:
+      issuer_backend:
+        type: choice
+        required: true
+        description: 'Issuer backend to use in tests'
+        options:
+          - 'playground'
+          - 'paradym'
+          - 'both'
+    paradym_api_key:
+        type: string
+        required: false
+        description: 'Paradym API Key for Maestro tests when using Paradym backend'
+
 jobs:
   fingerprint:
     id: fingerprint
@@ -31,13 +47,29 @@ jobs:
     type: build
     params:
       platform: ios
-      profile: preview-simulator
+      profile: e2e-test
 
-  ios_maestro:
+  ios_maestro_paradym:
     after: [ios_repack, ios_build]
-    id: ios_maestro
+    id: ios_maestro_paradym
     type: maestro
     image: latest
+    if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
+    env:
+      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+      MAESTRO_PARADYM_API_KEY: ${{ inputs.paradym_api_key }}
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
-      flow_path: ['.maestro/onboarding.yaml']
+      flow_path: '.maestro'
+
+  ios_maestro_playground:
+    after: [ios_repack, ios_build]
+    id: ios_maestro_playground
+    type: maestro
+    image: latest
+    if: ${{ inputs.issuer_backend == 'playground' || inputs.issuer_backend == 'both' }}
+    env:
+      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+    params:
+      build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
+      flow_path: '.maestro'

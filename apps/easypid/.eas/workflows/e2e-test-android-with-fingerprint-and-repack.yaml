@@ -1,6 +1,22 @@
 # https://expo.dev/blog/how-to-integrate-eas-workflows-with-github-actions#fast-e2e-testing-with-fingerprint-and-repack
 # https://docs.expo.dev/eas/workflows/pre-packaged-jobs/#examples-13
 name: Build or repack, then Maestro tests
+defaults:
+  tools:
+    node: 20.11.1
+    pnpm: '9'
+
+on:
+  workflow_dispatch:
+    inputs:
+      issuer_backend:
+        type: choice
+        required: true
+        description: 'Issuer backend to use in tests'
+        options:
+          - 'playground'
+          - 'paradym'
+          - 'both'
 
 jobs:
   fingerprint:
@@ -31,13 +47,35 @@ jobs:
     type: build
     params:
       platform: android
-      profile: preview-simulator
+      profile: e2e-test
 
-  android_maestro:
+  android_maestro_paradym:
     after: [android_repack, android_build]
-    id: android_maestro
+    id: android_maestro_paradym
     type: maestro
     image: latest
+    if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
+    env:
+      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+      MAESTRO_PARADYM_API_KEY: ${{ secrets.MAESTRO_PARADYM_API_KEY }}
     params:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
-      flow_path: ['.maestro/onboarding.yaml']
+      flow_path: '.maestro'
+      device_identifier: 'pixel_9'
+      android_system_image_package: system-images;android-36;google_apis;x86_64
+      include_tags: 'authorization-none-didcomm,authorization-none-openid4vc'
+
+  android_maestro_playground:
+    after: [android_repack, android_build]
+    id: android_maestro_playground
+    type: maestro
+    image: latest
+    if: ${{ inputs.issuer_backend == 'playground' || inputs.issuer_backend == 'both' }}
+    env:
+      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+    params:
+      build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
+      flow_path: '.maestro'
+      device_identifier: 'pixel_9'
+      android_system_image_package: system-images;android-36;google_apis;x86_64
+      exclude_tags: 'authorization-none-didcomm'

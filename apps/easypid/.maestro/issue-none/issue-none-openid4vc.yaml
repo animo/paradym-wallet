@@ -1,13 +1,13 @@
 appId: id.paradym.wallet.preview
 tags:
-  - openid4vc
+  - authorization-none-openid4vc
 ---
-# If you are not onboarded yet, enable this to ensure the flow works.
-# If you are running the flows manually (while already onboarded), keep this commented out.
+- runFlow: ../onboarding.yaml
 - runScript:
-    file: scripts/request.js
+    file: ../scripts/request.js
     env:
       ACTION: '{"action":"createOffer", "format":"sd-jwt", "authorization":"none", "credential": "arf-18-pid", "flow":"openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 
     file: issue-none.yaml

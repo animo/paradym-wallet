@@ -1,0 +1,9 @@
+flows:
+  - "*"
+  - "issue-none/issue-none-didcomm.yaml"
+  - "issue-none/issue-none-openid4vc.yaml"
+
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - onboarding

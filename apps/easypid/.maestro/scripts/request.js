@@ -268,7 +268,7 @@ function callParadymBackend(action) {
   const response = http.post(url, {
     headers: {
       'Content-Type': 'application/json',
-      'x-access-token': PARADYM_API_KEY,
+      'x-access-token': MAESTRO_PARADYM_API_KEY,
     },
     body,
   })
