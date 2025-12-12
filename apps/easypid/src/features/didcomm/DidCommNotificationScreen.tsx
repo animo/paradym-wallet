@@ -91,6 +91,10 @@ export function DidCommNotificationScreen() {
       if (hasHandledNotificationLoading) return
       setHasHandledNotificationLoading(true)
       try {
+        agent.config.logger.debug('Loading DIDComm invitation from params', {
+          invitation: params.invitation,
+          invitationUrl: params.invitationUrl,
+        })
         const invitation = params.invitation
           ? (JSON.parse(decodeURIComponent(params.invitation)) as Record<string, unknown>)
           : params.invitationUrl
