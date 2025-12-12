@@ -18,7 +18,12 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
-- tapOn: "Continue"
+- runFlow:
+    when:
+      true: ${!output.deeplink.startsWith('didcomm')}
+    commands:
+      - assertVisible: "Card offered"
+      - tapOn: "Continue"
 
 - waitForAnimationToEnd:
     timeout: 5000
