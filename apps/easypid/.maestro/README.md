@@ -34,13 +34,13 @@ After installation, you can use the Maestro CLI to automatically run tests from 
 **Playground**
 
 ```bash
-maestro test --exclude-tags=authorization-none-didcomm,authorization-none-openid4vc -e MAESTRO_ISSUER_BACKEND=playground .
+maestro test --exclude-tags=authorization-none-didcomm -e MAESTRO_ISSUER_BACKEND=playground .
 ```
 
 **Paradym**
 
 ```bash
-maestro test --exclude-tags=authorization-none-didcomm,authorization-none-openid4vc -e MAESTRO_ISSUER_BACKEND=paradym -e MAESTRO_PARADYM_API_KEY=<api_key> .
+maestro test --include-tags=authorization-none-didcomm,authorization-none-openid4vc -e MAESTRO_ISSUER_BACKEND=paradym -e MAESTRO_PARADYM_API_KEY=<api_key> .
 ```
 
 ---
