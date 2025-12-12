@@ -91,7 +91,7 @@ export function redirectSystemPath({
       redirectPath = `/notifications/openIdPresentation?uri=${encodeURIComponent(invitationData.data)}`
     }
     if (invitationData.type === 'didcomm') {
-      redirectPath = `/notifications/didcomm?uri=${encodeURIComponent(invitationData.data)}`
+      redirectPath = `/notifications/didcomm?invitationUrl=${encodeURIComponent(invitationData.data)}`
     }
 
     if (redirectPath) {
