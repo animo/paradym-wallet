@@ -9,7 +9,7 @@ catalog:
   "@types/react": ~19.1.8
   react-docgen-typescript: 2.2.2
   typescript: ~5.8.3
-  "@tanstack/react-query": ^5.90.10
+  "@tanstack/react-query": ^5.90.12
 
   # Babel
   "@babel/core": ^7.28.5
@@ -44,8 +44,8 @@ catalog:
   "@credo-ts/react-native": npm:@animo-id/credo-ts-react-native@0.5.14-alpha-20251016134257
   "@credo-ts/didcomm": npm:@animo-id/credo-ts-didcomm@0.5.14-alpha-20251016134257
   "@openid-federation/core": 0.1.1-alpha.17
-  "@hyperledger/anoncreds-react-native": 0.3.3
-  "@hyperledger/anoncreds-shared": 0.3.3
+  "@hyperledger/anoncreds-react-native": 0.3.4
+  "@hyperledger/anoncreds-shared": 0.3.4
   "@openwallet-foundation/askar-react-native": 0.4.3
   "@openwallet-foundation/askar-shared": 0.4.3
   buffer: 6.0.3
@@ -63,7 +63,7 @@ catalog:
   react-native-safe-area-context: 5.4.0
   react-native-screens: ~4.11.1
   react-native-svg: 15.11.2
-  "@react-navigation/native": ^7.1.19
+  "@react-navigation/native": ^7.1.25
   react-native-fs: ^2.20.0
   react-native-mmkv: ^3.3.0
   react-native-qrcode-svg: ^6.3.20
