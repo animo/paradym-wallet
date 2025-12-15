@@ -1,6 +1,5 @@
-import { radius, size, space, zIndex } from '@tamagui/themes'
-
 import { configInput, fontOpenSans, fontRaleway, hexColors } from '@package/ui/config/tamagui.config'
+import { radius, size, space, zIndex } from '@tamagui/themes'
 import { createTamagui, createTokens } from 'tamagui'
 
 export const tokensInput = {

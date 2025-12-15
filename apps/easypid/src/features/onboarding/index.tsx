@@ -1,2 +1,2 @@
-export * from './onboardingContext'
 export * from './hasFinishedOnboarding'
+export * from './onboardingContext'

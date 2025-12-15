@@ -1,10 +1,11 @@
+import type { ReactElement } from 'react'
 import { Heading, Paragraph, Stack, XStack, YStack } from '../base'
 
 interface OnboardingStepItemProps {
   stepName: string
   description: string
   title: string
-  icon: Element
+  icon: ReactElement
 }
 
 export const OnboardingStepItem = ({ stepName, title, description, icon }: OnboardingStepItemProps) => {

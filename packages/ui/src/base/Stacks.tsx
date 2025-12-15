@@ -1,5 +1,5 @@
 import Animated from 'react-native-reanimated'
-import { ScrollView, type ScrollViewProps, type StackProps, Stack as TStack, styled } from 'tamagui'
+import { ScrollView, type ScrollViewProps, type StackProps, styled, Stack as TStack } from 'tamagui'
 
 export const Stack = styled(TStack, {
   name: 'Stack',

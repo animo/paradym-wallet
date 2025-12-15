@@ -1,6 +1,6 @@
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
-import type { ParseInvitationResult, ParseInvitationResultError, ParsedInvitationTypeData } from './parsers'
+import type { ParsedInvitationTypeData, ParseInvitationResult, ParseInvitationResultError } from './parsers'
 
 const errorResponse = (error: ParseInvitationResultError, message: string) => {
   return {
@@ -39,7 +39,7 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<FetchInvi
     }
     const text = await response.text()
     return handleTextResponse(text)
-  } catch (error) {
+  } catch (_error) {
     clearTimeout(timeout)
     return errorResponse('retrieve_invitation_error', t(commonMessages.unableToRetrieveInvitation))
   }
@@ -95,7 +95,7 @@ function handleTextResponse(text: string): FetchInvitationResult {
     return handleJsonResponse(json)
 
     // handel like above
-  } catch (error) {
+  } catch (_error) {
     return errorResponse('invitation_not_recognized', t(commonMessages.invitationNotRecognized))
   }
 }

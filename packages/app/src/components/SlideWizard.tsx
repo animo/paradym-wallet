@@ -90,7 +90,6 @@ export const SlideWizard = forwardRef(
 
     const [progress, setProgress] = useState(steps[currentStepIndex].progress)
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: Animate the first screen in if resuming
     useEffect(() => {
       if (resumeFrom) {
         // Make it start from the resumeFrom value

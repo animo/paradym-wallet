@@ -1,6 +1,3 @@
-import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
-import { useLocalSearchParams } from 'expo-router'
-
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import {
@@ -10,11 +7,12 @@ import {
   useActivities,
   useCredentialsForDisplay,
 } from '@package/agent'
-import { CardWithAttributes, MiniDocument, TextBackButton, getActivityInteraction } from '@package/app'
+import { CardWithAttributes, getActivityInteraction, MiniDocument, TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
+import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
@@ -284,48 +282,52 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
         </Stack>
 
         {activity.request.credentials && activity.request.credentials.length > 0 ? (
-          activity.request.credentials.map((activityCredential) => {
-            if ('id' in activityCredential) {
-              const credential = credentials.find((credential) => credential.id === activityCredential.id)
+          activity.request.credentials
+            .map((activityCredential) => {
+              if ('id' in activityCredential) {
+                const credential = credentials.find((credential) => credential.id === activityCredential.id)
 
-              if (!credential) {
+                if (!credential) {
+                  return (
+                    <CardWithAttributes
+                      id={activityCredential.id}
+                      name={t(activityMessages.deletedCredential)}
+                      textColor="$grey-100"
+                      backgroundColor="$primary-500"
+                      formattedDisclosedAttributes={activityCredential.attributeNames}
+                      disclosedPayload={activityCredential.attributes}
+                    />
+                  )
+                }
+
+                const isExpired = credential.metadata.validUntil
+                  ? new Date(credential.metadata.validUntil) < new Date()
+                  : false
+
+                const isNotYetActive = credential.metadata.validFrom
+                  ? new Date(credential.metadata.validFrom) > new Date()
+                  : false
+
                 return (
                   <CardWithAttributes
-                    id={activityCredential.id}
-                    name={t(activityMessages.deletedCredential)}
-                    textColor="$grey-100"
-                    backgroundColor="$primary-500"
+                    key={credential.id}
+                    id={credential.id}
+                    name={credential.display.name}
+                    issuerImage={credential.display.issuer.logo}
+                    textColor={credential.display.textColor}
+                    backgroundColor={credential.display.backgroundColor}
+                    backgroundImage={credential.display.backgroundImage}
                     formattedDisclosedAttributes={activityCredential.attributeNames}
                     disclosedPayload={activityCredential.attributes}
+                    isExpired={isExpired}
+                    isNotYetActive={isNotYetActive}
                   />
                 )
               }
 
-              const isExpired = credential.metadata.validUntil
-                ? new Date(credential.metadata.validUntil) < new Date()
-                : false
-
-              const isNotYetActive = credential.metadata.validFrom
-                ? new Date(credential.metadata.validFrom) > new Date()
-                : false
-
-              return (
-                <CardWithAttributes
-                  key={credential.id}
-                  id={credential.id}
-                  name={credential.display.name}
-                  issuerImage={credential.display.issuer.logo}
-                  textColor={credential.display.textColor}
-                  backgroundColor={credential.display.backgroundColor}
-                  backgroundImage={credential.display.backgroundImage}
-                  formattedDisclosedAttributes={activityCredential.attributeNames}
-                  disclosedPayload={activityCredential.attributes}
-                  isExpired={isExpired}
-                  isNotYetActive={isNotYetActive}
-                />
-              )
-            }
-          })
+              return undefined
+            })
+            .filter((v) => v !== undefined)
         ) : (
           <FailedReasonContainer reason={activity.request.failureReason ?? 'unknown'} />
         )}

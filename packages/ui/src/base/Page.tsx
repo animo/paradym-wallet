@@ -1,6 +1,5 @@
-import { styled } from 'tamagui'
-
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { styled } from 'tamagui'
 import { useDeviceMedia } from '../hooks/useDeviceMedia'
 import { Stack, YStack } from './Stacks'
 

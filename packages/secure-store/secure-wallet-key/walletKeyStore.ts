@@ -1,8 +1,14 @@
 import { Platform } from 'react-native'
 import * as Keychain from 'react-native-keychain'
-import { type KeychainOptions, getKeychainItemById, removeKeychainItemById, storeKeychainItem } from '../keychain'
+import {
+  getKeychainItemById,
+  type KeychainAuthenticationTypeOptions,
+  type KeychainSetOptions,
+  removeKeychainItemById,
+  storeKeychainItem,
+} from '../keychain'
 
-const walletKeyStoreBaseOptions: KeychainOptions = {
+const walletKeyStoreBaseOptions: KeychainSetOptions & KeychainAuthenticationTypeOptions = {
   /* Only allow the current set of enrolled biometrics to access the wallet key */
   accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
 
@@ -62,7 +68,7 @@ async function canUseBiometryBackedWalletKey(): Promise<boolean> {
     if (!canUseAuthentication) return false
   }
 
-  const supportedBiometryType = await Keychain.getSupportedBiometryType(walletKeyStoreBaseOptions)
+  const supportedBiometryType = await Keychain.getSupportedBiometryType()
 
   /**
    * We only support biometrics secured storage of the wallet key

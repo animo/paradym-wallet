@@ -3,12 +3,11 @@ import { useHasFinishedOnboarding, useOnboardingContext } from '@easypid/feature
 import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, YStack, useMedia } from '@package/ui'
+import { AnimatedStack, FlexPage, Heading, Paragraph, ProgressHeader, useMedia, YStack } from '@package/ui'
 import { router, useLocalSearchParams } from 'expo-router'
 import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { AccessibilityInfo, Alert } from 'react-native'
-import { findNodeHandle } from 'react-native'
+import { AccessibilityInfo, Alert, findNodeHandle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOut } from 'react-native-reanimated'
 import { resetWallet } from '../../utils/resetWallet'
 
@@ -22,7 +21,6 @@ export default function OnboardingScreens() {
   const reset = useLocalSearchParams<{ reset?: 'true' }>().reset === 'true'
   const [hasResetWallet, setHasResetWallet] = useState(false)
   const { t } = useLingui()
-  // biome-ignore lint/correctness/useExhaustiveDependencies: When the step changes, move accessibility focus to the header
   useEffect(() => {
     if (headerRef.current) {
       const handle = findNodeHandle(headerRef.current)

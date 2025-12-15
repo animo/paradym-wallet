@@ -1,7 +1,7 @@
 import { useLocales } from 'expo-localization'
 import { useEffect } from 'react'
 
-import { type SupportedLocale, activateLocale, i18n, supportedLocales } from './i18n'
+import { activateLocale, i18n, type SupportedLocale, supportedLocales } from './i18n'
 
 export function useSyncLocale(customLocale?: SupportedLocale) {
   const deviceLocales = useLocales()

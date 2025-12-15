@@ -3,8 +3,8 @@ import { useDevelopmentMode } from '@easypid/hooks'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import {
-  type ResolveOutOfBandInvitationResultSuccess,
   parseDidCommInvitation,
+  type ResolveOutOfBandInvitationResultSuccess,
   resolveOutOfBandInvitation,
   useDidCommConnectionActions,
 } from '@package/agent'

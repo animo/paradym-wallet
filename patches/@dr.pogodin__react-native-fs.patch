@@ -1,0 +1,14 @@
+diff --git a/ReactNativeFs.podspec b/ReactNativeFs.podspec
+index f091da7fd95d8f76c25e7f12b8b9ba69105fa335..e30b037a5ee48c749a8c7220caf4ec659e2cfc0d 100644
+--- a/ReactNativeFs.podspec
++++ b/ReactNativeFs.podspec
+@@ -14,7 +14,8 @@ Pod::Spec.new do |s|
+   s.source       = { :git => "https://github.com/birdofpreyru/react-native-fs.git", :tag => "#{s.version}" }
+ 
+   s.resource_bundles = { 'RNFS_PrivacyInfo' => 'ios/PrivacyInfo.xcprivacy' }
+-  s.frameworks = "AVFoundation", "Photos"
++  # NOTE: see https://github.com/birdofpreyru/react-native-fs/issues/130
++  s.frameworks = "AVFoundation", "Photos", "UniformTypeIdentifiers"
+   s.source_files = "ios/**/*.{h,m,mm,cpp}"
+ 
+   # Necessary for background downloads to work,

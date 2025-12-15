@@ -16,9 +16,9 @@ import {
   ScrollView,
   Spacer,
   Stack,
+  useSpringify,
   XStack,
   YStack,
-  useSpringify,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { FadeIn } from 'react-native-reanimated'

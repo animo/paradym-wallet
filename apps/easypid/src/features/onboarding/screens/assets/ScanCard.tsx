@@ -1,7 +1,11 @@
 import { useEffect } from 'react'
-import Animated, { useAnimatedProps, useSharedValue, withSequence } from 'react-native-reanimated'
-import { withTiming } from 'react-native-reanimated'
-import { withRepeat } from 'react-native-reanimated'
+import Animated, {
+  useAnimatedProps,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated'
 import { Defs, G, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
 // biome-ignore lint/suspicious/noExplicitAny: By default G does not allow style, but Animated.createAnimatedComponent does
@@ -10,7 +14,6 @@ const AnimatedG = Animated.createAnimatedComponent(G) as any
 export function ScanCard() {
   const xPosition = useSharedValue(0)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     xPosition.value = withRepeat(
       withSequence(

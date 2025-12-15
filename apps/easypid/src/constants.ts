@@ -1,5 +1,4 @@
-import type { TrustedX509Entity } from '@package/agent'
-import type { TrustList } from '@package/agent'
+import type { TrustedX509Entity, TrustList } from '@package/agent'
 import ExpoConstants from 'expo-constants'
 import { isParadymWallet } from './hooks/useFeatureFlag'
 

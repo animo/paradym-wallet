@@ -1,11 +1,9 @@
 import type { DidCommProofState } from '@credo-ts/didcomm'
-import type { PropsWithChildren } from 'react'
-import type { RecordsState } from './recordUtils'
-
 import { DidCommProofExchangeRecord } from '@credo-ts/didcomm'
+import type { PropsWithChildren } from 'react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-
 import type { ParadymAppAgent } from '../agent'
+import type { RecordsState } from './recordUtils'
 import {
   addRecord,
   recordsAddedByType,

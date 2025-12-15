@@ -18,7 +18,7 @@ export const deriveKeypairFromPin = async (agentContext: AgentContext, pin: Arra
     data: new Uint8Array(pin),
   })
 
-  const pinSeed = await kdf.derive(
+  const pinSeed = kdf.derive(
     TypedArrayEncoder.toUtf8String(new Uint8Array(pin)),
     salt ?? TypedArrayEncoder.toUtf8String(pinSecret)
   )
