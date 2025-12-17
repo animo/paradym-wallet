@@ -14,7 +14,7 @@
 		"style:fix": "biome check --write --unsafe"
 	},
 	"engines": {
-		"node": ">=20.0.0"
+		"node": ">=22.21.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.8",
