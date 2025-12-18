@@ -69,12 +69,13 @@ jobs:
     runs_on: macos-large
     if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
     env:
-      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+      MAESTRO_ISSUER_BACKEND: paradym
       MAESTRO_PARADYM_API_KEY: ${{ inputs.paradym_api_key }}
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
       include_tags: 'authorization-none'
+      record_screen: ${{ inputs.enable_recording }}
 
   ios_maestro_playground:
     after: [ios_repack, ios_build]
@@ -84,8 +85,9 @@ jobs:
     runs_on: macos-large
     if: ${{ inputs.issuer_backend == 'playground' || inputs.issuer_backend == 'both' }}
     env:
-      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+      MAESTRO_ISSUER_BACKEND: playground
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
       exclude_tags: 'didcomm'
+      record_screen: ${{ inputs.enable_recording }}

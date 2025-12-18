@@ -69,7 +69,7 @@ jobs:
     runs_on: linux-large-nested-virtualization
     if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
     env:
-      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+      MAESTRO_ISSUER_BACKEND: paradym
       MAESTRO_PARADYM_API_KEY: ${{ inputs.paradym_api_key }}
     params:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
@@ -87,7 +87,7 @@ jobs:
     runs_on: linux-large-nested-virtualization
     if: ${{ inputs.issuer_backend == 'playground' || inputs.issuer_backend == 'both' }}
     env:
-      MAESTRO_ISSUER_BACKEND: ${{ inputs.issuer_backend }}
+      MAESTRO_ISSUER_BACKEND: playground
     params:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
       flow_path: '.maestro'
