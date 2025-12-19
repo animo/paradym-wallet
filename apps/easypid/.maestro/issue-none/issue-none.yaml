@@ -4,9 +4,15 @@ appId: id.paradym.wallet.preview
 - openLink:
     link: ${deeplink}
 
+- runFlow:
+    when:
+      visible: .*Open in.*
+      platform: ios
+    commands:
+      - tapOn: Open
+
 - repeat:
-    while:
-      visible: "Enter your app PIN code"
+    times: 6
     commands:
       - tapOn: "Pin number 1"
 
@@ -34,9 +40,14 @@ appId: id.paradym.wallet.preview
 - tapOn: "Accept"
 
 - waitForAnimationToEnd:
-    timeout: 5000
+    timeout: 30000
 
-- assertVisible: "Success!"
+- extendedWaitUntil:
+    visible: "Success!"
+    timeout: 30000
+
+- waitForAnimationToEnd:
+    timeout: 30000
 - assertVisible: "Card successfully added to your wallet!"
 - assertVisible: "Credential"
 

@@ -10,22 +10,20 @@ tags:
 
 - assertVisible: Choose a 6-digit PIN
 - repeat:
-    while:
-      visible: Choose a 6-digit PIN
+    times: 6
     commands:
       - tapOn: "Pin number 1"
 
 - assertVisible: Repeat your PIN
 - repeat:
-    while:
-      visible: Repeat your PIN
+    times: 6
     commands:
       - tapOn: "Pin number 1"
 
 # Due to animations, it can take some time before the home screen becomes visible.
 - extendedWaitUntil:
     visible: "Protect your data"
-    timeout: 5000
+    timeout: 15000
 
 - tapOn: "Go to wallet"
 

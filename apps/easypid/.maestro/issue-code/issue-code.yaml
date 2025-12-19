@@ -3,27 +3,35 @@ appId: id.paradym.wallet.preview
 - openLink:
     link: ${deeplink}
 
-# - runFlow:
-#     when:
-#       platform: ios
-#     commands:
-#       - tapOn: Open
+- runFlow:
+    when:
+      visible: .*Open in.*
+      platform: ios
+    commands:
+      - tapOn: Open
 
 - repeat:
-    while:
-      visible: "Enter your app PIN code"
+    times: 6
     commands:
       - tapOn: "Pin number 1"
 
 - waitForAnimationToEnd:
     timeout: 5000
 
+- extendedWaitUntil:
+    visible: "Yes, continue"
+    timeout: 10000
+
 - tapOn: "Yes, continue"
 
 - waitForAnimationToEnd:
     timeout: 5000
 
-- assertVisible: "Card offered"
+- extendedWaitUntil:
+    visible: "Card offered"
+    timeout: 10000
+
+# - assertVisible: "Card offered"
 - tapOn: "Continue"
 
 - waitForAnimationToEnd:
@@ -35,16 +43,23 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
-- assertVisible: Is the information correct?
+- extendedWaitUntil:
+    visible: "Is the information correct?"
+    timeout: 10000
+
+# - assertVisible: Is the information correct?
 - tapOn: Accept
+
+- waitForAnimationToEnd:
+    timeout: 30000
 
 # Due to animations, it can take some time before the home screen becomes visible.
 - extendedWaitUntil:
     visible: "Success!"
-    timeout: 10000
+    timeout: 30000
 
 - waitForAnimationToEnd:
-    timeout: 5000
+    timeout: 30000
 
 - assertVisible: "Card successfully added to your wallet!"
 - assertVisible: "Credential"

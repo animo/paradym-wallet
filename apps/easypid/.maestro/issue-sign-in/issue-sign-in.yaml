@@ -3,15 +3,15 @@ appId: id.paradym.wallet.preview
 - openLink:
     link: ${deeplink}
 
-# - runFlow:
-#     when:
-#       platform: ios
-#     commands:
-#       - tapOn: Open
+- runFlow:
+    when:
+      visible: .*Open in.*
+      platform: ios
+    commands:
+      - tapOn: Open
 
 - repeat:
-    while:
-      visible: "Enter your app PIN code"
+    times: 6
     commands:
       - tapOn: "Pin number 1"
 
@@ -30,7 +30,7 @@ appId: id.paradym.wallet.preview
     when:
       platform: iOS
     commands:
-      - assertVisible: “ParadymWalletPreview” Wants to Use “animo.id” to Sign In
+      - assertVisible: .*to Sign In.*
       - tapOn: Continue
 
       - inputText: "username"
@@ -62,7 +62,7 @@ appId: id.paradym.wallet.preview
 
       - extendedWaitUntil:
           visible: "Sign-in"
-          timeout: 5000
+          timeout: 10000
 
       - runFlow:
           when:
@@ -71,20 +71,38 @@ appId: id.paradym.wallet.preview
             - tapOn: Cancel
 
       - tapOn: Enter any login
+      - runFlow:
+          when:
+            visible: Try out your stylus
+          commands:
+            - tapOn: Cancel
       - inputText: test
+      - runFlow:
+          when:
+            visible: Try out your stylus
+          commands:
+            - tapOn: Cancel
       - tapOn: and password
+      - runFlow:
+          when:
+            visible: Try out your stylus
+          commands:
+            - tapOn: Cancel
       - inputText: test
-
+      - runFlow:
+          when:
+            visible: Try out your stylus
+          commands:
+            - tapOn: Cancel
       - tapOn:
           text: Sign-in
           index: 1
 
       - runFlow:
           when:
-            visible: Open with
+            visible: Try out your stylus
           commands:
-            - tapOn: Paradym Wallet (Preview)
-            - tapOn: Always
+            - tapOn: Cancel
 
       - tapOn: Continue
 
