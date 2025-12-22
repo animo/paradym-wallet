@@ -12,7 +12,7 @@ tags:
       ACTION: '{"action":"createOffer", "format":"sd-jwt", "authorization":"none", "requestType": "arf-18-pid", "flow":"openid4vc"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
-- runFlow: 
+- runFlow:
     file: issue-none.yaml
     env:
       deeplink: ${output.deeplink}

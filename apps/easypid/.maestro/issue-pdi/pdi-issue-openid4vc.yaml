@@ -12,7 +12,7 @@ tags:
       ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"presentation", "requestType": "certificate-of-residence", "flow": "openid4vc"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
-- runFlow: 
+- runFlow:
     file: pdi-issue.yaml
     env:
       deeplink: ${output.deeplink}

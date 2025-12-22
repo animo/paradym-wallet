@@ -33,6 +33,18 @@ appId: id.paradym.wallet.preview
       - assertVisible: .*to Sign In.*
       - tapOn: Continue
 
+- runFlow:
+    when:
+      platform: iOS
+      visible: Continue
+    commands:
+      - tapOn: Continue
+
+- runFlow:
+    when:
+      platform: iOS
+      notVisible: Continue
+    commands:
       - inputText: "username"
       - tapOn:
           point: 50%,40%
@@ -106,6 +118,14 @@ appId: id.paradym.wallet.preview
 
       - tapOn: Continue
 
+- runFlow:
+    when:
+      visible: "Go back to Paradym Wallet"
+    commands:
+      - tapOn:
+          text: Go back to Paradym Wallet
+          index: 1
+
 - extendedWaitUntil:
     visible: "Is the information correct?"
     timeout: 5000
@@ -123,5 +143,5 @@ appId: id.paradym.wallet.preview
     when:
       platform: iOS
     commands:
-      - tapOn: "Go to wallet  "
+      - tapOn: "Go to wallet,  "
 - assertVisible: Hello!

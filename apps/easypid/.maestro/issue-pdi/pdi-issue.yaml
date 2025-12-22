@@ -66,7 +66,7 @@ appId: id.paradym.wallet.preview
     when:
       platform: iOS
     commands:
-      - tapOn: "Go to wallet  "
+      - tapOn: "Go to wallet,  "
 
 - waitForAnimationToEnd:
     timeout: 5000

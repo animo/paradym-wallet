@@ -12,7 +12,7 @@ tags:
       ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"pin", "requestType": "mobile-driver-license", "flow": "openid4vc"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
-- runFlow: 
+- runFlow:
     file: issue-code.yaml
     env:
       deeplink: ${output.deeplink}

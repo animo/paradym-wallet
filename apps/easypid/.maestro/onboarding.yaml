@@ -20,6 +20,9 @@ tags:
     commands:
       - tapOn: "Pin number 1"
 
+- assertVisible: Set up biometrics
+- tapOn: "Set up later"
+
 # Due to animations, it can take some time before the home screen becomes visible.
 - extendedWaitUntil:
     visible: "Protect your data"
