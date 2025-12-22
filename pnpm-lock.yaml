@@ -88,8 +88,8 @@ catalogs:
       specifier: 1.139.2
       version: 1.139.2
     '@tamagui/colors':
-      specifier: 1.139.2
-      version: 1.139.2
+      specifier: 1.141.5
+      version: 1.141.5
     '@tamagui/font-inter':
       specifier: 1.139.2
       version: 1.139.2
@@ -599,7 +599,7 @@ importers:
         version: 1.139.2(react-dom@19.2.1(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@tamagui/colors':
         specifier: 'catalog:'
-        version: 1.139.2
+        version: 1.141.5
       '@tamagui/font-inter':
         specifier: 'catalog:'
         version: 1.139.2(react-dom@19.2.1(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -2673,6 +2673,9 @@ packages:
 
   '@tamagui/colors@1.139.2':
     resolution: {integrity: sha512-dG1B9/lgwZEX8Gkormm9UP1AFv6ehreVxrdnmMXJa7QkVtGT3F91bOftQsq1RjCCUwIa2np4RuxohmeEEJpj+g==}
+
+  '@tamagui/colors@1.141.5':
+    resolution: {integrity: sha512-zM8saBOD5VAGjo8JhkBXiuguH6wJMIF5lStvSDVuXMx3+6QTYGaY0cLclqrYSoow82yXHAKM6EUyMztVfdG9bQ==}
 
   '@tamagui/compose-refs@1.139.2':
     resolution: {integrity: sha512-BPvzcg0TD3xABg8Z2+29cR8+SAWuE9WiOv0tNzkPCAIOvW5qDprPcVwJS4dNXR2rIZegsQhyvdEhvKjRfXDgDQ==}
@@ -9311,6 +9314,8 @@ snapshots:
       - react-native
 
   '@tamagui/colors@1.139.2': {}
+
+  '@tamagui/colors@1.141.5': {}
 
   '@tamagui/compose-refs@1.139.2(react@19.1.0)':
     dependencies:
