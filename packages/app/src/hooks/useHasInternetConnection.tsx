@@ -1,14 +1,12 @@
-import { useNetInfo } from '@react-native-community/netinfo'
-
-export { fetch as getNetInfo } from '@react-native-community/netinfo'
+import { NetworkStateType, useNetworkState } from 'expo-network'
 
 export const useHasInternetConnection = () => {
-  const { isConnected, isInternetReachable } = useNetInfo()
+  const { isConnected, isInternetReachable } = useNetworkState()
 
   return (isConnected && isInternetReachable) ?? false
 }
 
 export const useIsConnectedToWifi = () => {
-  const { type } = useNetInfo()
-  return type === 'wifi'
+  const { type } = useNetworkState()
+  return type === NetworkStateType.WIFI
 }

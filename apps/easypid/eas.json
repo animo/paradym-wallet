@@ -1,9 +1,9 @@
 {
 	"build": {
 		"base": {
-			"node": "20.11.1",
+			"node": "22.21.1",
 			"ios": {
-				"image": "macos-sonoma-14.6-xcode-16.1"
+				"image": "macos-sequoia-15.6-xcode-26.0"
 			}
 		},
 		"development": {

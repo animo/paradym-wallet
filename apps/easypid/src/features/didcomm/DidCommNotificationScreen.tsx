@@ -3,8 +3,8 @@ import { useDevelopmentMode } from '@easypid/hooks'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import {
-  type ResolveOutOfBandInvitationResultSuccess,
   parseDidCommInvitation,
+  type ResolveOutOfBandInvitationResultSuccess,
   resolveOutOfBandInvitation,
   useDidCommConnectionActions,
 } from '@package/agent'
@@ -55,17 +55,18 @@ export function DidCommNotificationScreen() {
   }>()
   const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
   const { t } = useLingui()
-  const handleNavigation = (type: 'replace' | 'back') => {
+
+  const handleNavigation = () => {
     // When starting from the inbox, we want to go back to the inbox on finish
     if (params.navigationType === 'inbox') {
       router.back()
     } else {
-      pushToWallet(type)
+      pushToWallet()
     }
   }
 
-  const onCancel = () => handleNavigation('back')
-  const onComplete = () => handleNavigation('replace')
+  const onCancel = () => handleNavigation()
+  const onComplete = () => handleNavigation()
 
   const onConnectionAccept = async () => {
     const result = await acceptConnection()
@@ -90,6 +91,10 @@ export function DidCommNotificationScreen() {
       if (hasHandledNotificationLoading) return
       setHasHandledNotificationLoading(true)
       try {
+        agent.config.logger.debug('Loading DIDComm invitation from params', {
+          invitation: params.invitation,
+          invitationUrl: params.invitationUrl,
+        })
         const invitation = params.invitation
           ? (JSON.parse(decodeURIComponent(params.invitation)) as Record<string, unknown>)
           : params.invitationUrl

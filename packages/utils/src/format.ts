@@ -91,7 +91,7 @@ export function formatDate(input: string | Date, options?: { includeTime?: boole
 
 export function getDaysUntil(date?: Date): number | undefined {
   if (!date) return undefined
-  return Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+  return Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
 }
 
 export function formatDaysString(days?: number): string | undefined {

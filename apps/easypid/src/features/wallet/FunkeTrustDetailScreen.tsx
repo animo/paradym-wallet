@@ -1,6 +1,6 @@
 import { useDevelopmentMode } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { TrustMechanism, TrustedEntity } from '@package/agent'
+import type { TrustedEntity, TrustMechanism } from '@package/agent'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
@@ -49,7 +49,9 @@ export function FunkeTrustDetailScreen({
         ? 'OpenID Federation'
         : trustMechanism === 'did'
           ? 'Decentralized Identifier'
-          : 'X.509 Certificate'
+          : trustMechanism === 'x509'
+            ? 'X.509 Certificate'
+            : 'No signature'
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">

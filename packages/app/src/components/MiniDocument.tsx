@@ -1,6 +1,5 @@
-import { Image } from '@package/ui/content/Image'
-
 import { Stack, YStack } from '@package/ui'
+import { Image } from '@package/ui/content/Image'
 
 interface MiniDocumentProps {
   logoUrl?: string

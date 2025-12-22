@@ -21,5 +21,5 @@ export function useShouldUseCloudHsm() {
   return [shouldUseCloudHsm, setShouldUseCloudHsm] as const
 }
 export function removeShouldUseCloudHsm() {
-  mmkv.delete('shouldUseCloudHsm')
+  mmkv.remove('shouldUseCloudHsm')
 }

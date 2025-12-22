@@ -1,9 +1,9 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
-import { DataItem, DeviceRequest, cborDecode, cborEncode } from '@animo-id/mdoc'
-import { Mdoc, MdocService } from '@credo-ts/core'
+import { cborDecode, cborEncode, DataItem, DeviceRequest } from '@animo-id/mdoc'
+import { CredentialMultiInstanceUseMode, type Mdoc, MdocService, useInstanceFromCredentialRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'
-import { handleBatchCredential } from '@package/agent/batch'
+import { refreshPidIfNeeded } from '@package/agent/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
@@ -80,12 +80,23 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     options.submission.entries.map(async (e) => {
       if (!e.isSatisfied) throw new Error(`Requirement for doctype ${e.inputDescriptorId} not satisfied`)
 
-      const credential = e.credentials[0].credential.record as MdocRecord
+      const credentialRecord = e.credentials[0].credential.record as MdocRecord
+
+      // FIXME: we should move this to the request screen. If there's no new credentials we should add a 'refresh' button?
+      // Or we should just do it in the background (but may not be possible)
+      // Refresh pid if needed
+      await refreshPidIfNeeded(options.agent, credentialRecord)
 
       // Optionally handle batch issuance
-      const credentialRecord = await handleBatchCredential(options.agent, credential)
+      const { credentialInstance } = await useInstanceFromCredentialRecord({
+        credentialRecord,
+        agentContext: options.agent.context,
+        // FIXME: we currently allow re-sharing if we don't have new instances anymore
+        // we should make this configurable maybe? Or dependant on credential type?
+        useMode: CredentialMultiInstanceUseMode.NewOrFirst,
+      })
 
-      return Mdoc.fromBase64Url(credentialRecord.base64Url, credential.getTags().docType)
+      return credentialInstance
     })
   )
 

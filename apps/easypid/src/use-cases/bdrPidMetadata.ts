@@ -22,8 +22,7 @@ export const bdrPidOpenId4VcMetadata = (credentialIssuer: string): OpenId4VcCred
           locale: 'en-US',
           name: bdrPidIssuerDisplay.name,
           logo: {
-            // FIXME
-            uri: bdrPidIssuerDisplay.logo as unknown as string,
+            uri: bdrPidIssuerDisplay.logo,
           },
         },
       ],
@@ -35,8 +34,7 @@ export const bdrPidOpenId4VcMetadata = (credentialIssuer: string): OpenId4VcCred
           background_color: bdrPidCredentialDisplay.backgroundColor,
           text_color: bdrPidCredentialDisplay.textColor,
           background_image: {
-            // FIXME
-            uri: bdrPidCredentialDisplay.backgroundImage as unknown as string,
+            uri: bdrPidCredentialDisplay.backgroundImage,
           },
           locale: 'en-US',
         },
@@ -46,8 +44,7 @@ export const bdrPidOpenId4VcMetadata = (credentialIssuer: string): OpenId4VcCred
 }
 
 export const bdrPidSdJwtTypeMetadata: SdJwtVcTypeMetadata = {
-  // TODO: add vct to type interface in Credo
-  // vct: 'https://metadata-8c062a.usercontent.opencode.de/pid.json',
+  vct: 'https://demo.pid-issuer.bundesdruckerei.de/credentials/pid/1.0',
   name: 'German Person Identification Data Credential - First Version',
   description:
     'The definition of the core identification credential for all natural persons in Germany - first revision',
@@ -486,118 +483,4 @@ export const bdrPidSdJwtTypeMetadata: SdJwtVcTypeMetadata = {
       sd: 'never',
     },
   ],
-  schema: {
-    $schema: 'https://json-schema.org/draft/2020-12/schema',
-    title: 'German Person Identification Data VCT Schema',
-    description: 'The JSON schema that defines the German Person Identification Data VCT',
-    type: 'object',
-    properties: {
-      vct: {
-        type: 'string',
-      },
-      'vct#integrity': {
-        type: 'string',
-      },
-      given_name: {
-        type: 'string',
-      },
-      family_name: {
-        type: 'string',
-      },
-      birthdate: {
-        type: 'string',
-        format: 'date',
-      },
-      source_document_type: {
-        type: 'string',
-      },
-      address: {
-        type: 'object',
-        properties: {
-          street_address: {
-            type: 'string',
-          },
-          locality: {
-            type: 'string',
-          },
-          postal_code: {
-            type: 'string',
-          },
-          country: {
-            type: 'string',
-          },
-        },
-        minProperties: 1,
-      },
-      nationalities: {
-        type: 'array',
-        items: {
-          type: 'string',
-        },
-        minItems: 1,
-        uniqueItems: true,
-      },
-      gender: {
-        type: 'string',
-      },
-      birth_family_name: {
-        type: 'string',
-      },
-      place_of_birth: {
-        type: 'object',
-        properties: {
-          locality: {
-            type: 'string',
-          },
-          country: {
-            type: 'string',
-          },
-        },
-        minProperties: 1,
-      },
-      also_known_as: {
-        type: 'string',
-      },
-      age_equal_or_over: {
-        type: 'object',
-        properties: {
-          '12': {
-            type: 'boolean',
-          },
-          '14': {
-            type: 'boolean',
-          },
-          '16': {
-            type: 'boolean',
-          },
-          '18': {
-            type: 'boolean',
-          },
-          '21': {
-            type: 'boolean',
-          },
-          '65': {
-            type: 'boolean',
-          },
-        },
-        minProperties: 1,
-      },
-      cnf: {
-        type: 'object',
-      },
-      iat: {
-        type: 'number',
-      },
-      exp: {
-        type: 'number',
-      },
-      issuing_authority: {
-        type: 'string',
-      },
-      issuing_country: {
-        type: 'string',
-      },
-    },
-    required: ['vct', 'source_document_type', 'cnf', 'iat', 'exp', 'issuing_authority', 'issuing_country'],
-  },
 }

@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro'
-import { PinDotsInput } from '@package/app'
 import type { PinDotsInputRef } from '@package/app'
+import { PinDotsInput } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { FlexPage, Heading, HeroIcons, YStack } from '@package/ui'
 import { forwardRef } from 'react'

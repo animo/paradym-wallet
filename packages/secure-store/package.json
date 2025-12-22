@@ -2,11 +2,11 @@
 	"name": "@package/secure-store",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"peerDependencies": {
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"expo-secure-store": "catalog:",
 		"react-native": "catalog:",
-		"react-native-argon2": "catalog:",
 		"react-native-get-random-values": "catalog:",
 		"react-native-keychain": "catalog:",
 		"@tanstack/react-query": "catalog:"
@@ -16,9 +16,6 @@
 			"optional": true
 		},
 		"react-native-keychain": {
-			"optional": true
-		},
-		"react-native-argon2": {
 			"optional": true
 		}
 	}

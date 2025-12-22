@@ -1,37 +1,36 @@
+import type { W3cV2CredentialRecord } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
+import { walletClient } from '@easypid/constants'
+import { InvalidPinError } from '@easypid/crypto/error'
+import { useDevelopmentMode } from '@easypid/hooks'
 import { useLingui } from '@lingui/react/macro'
 import {
-  BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
-  type DeferredCredential,
-  type MdocRecord,
-  OpenId4VciAuthorizationFlow,
-  type OpenId4VciRequestTokenResponse,
-  type OpenId4VciResolvedAuthorizationRequest,
-  type OpenId4VciResolvedCredentialOffer,
-  type SdJwtVcRecord,
-  type W3cCredentialRecord,
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
   acquirePreAuthorizedAccessToken,
+  BiometricAuthenticationCancelledError,
+  type CredentialsForProofRequest,
+  type DeferredCredential,
   extractOpenId4VcCredentialMetadata,
   getCredentialDisplayWithDefaults,
   getCredentialForDisplay,
   getCredentialForDisplayId,
   getCredentialsForProofRequest,
   getOpenId4VcCredentialDisplay,
+  type MdocRecord,
+  OpenId4VciAuthorizationFlow,
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedAuthorizationRequest,
+  type OpenId4VciResolvedCredentialOffer,
   receiveCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
-  shareProof,
+  type SdJwtVcRecord,
   storeCredential,
   storeDeferredCredential,
   storeReceivedActivity,
+  type W3cCredentialRecord,
 } from '@package/agent'
-
-import type { W3cV2CredentialRecord } from '@credo-ts/core'
-import { walletClient } from '@easypid/constants'
-import { InvalidPinError } from '@easypid/crypto/error'
-import { useDevelopmentMode } from '@easypid/hooks'
+import { shareProof } from '@package/agent/invitation/shareProof'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
@@ -39,7 +38,7 @@ import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { PinSlide, type onPinSubmitProps } from '../share/slides/PinSlide'
+import { type onPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
@@ -184,10 +183,10 @@ export function FunkeCredentialNotificationScreen() {
     [agent, setErrorReasonWithError, t]
   )
 
-  // TODO: Should we add this to the activitiy? We also don't do it for issuance
+  // TODO: Should we add this to the activity? We also don't do it for issuance
   const onProofDecline = async () => {
     toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
-    pushToWallet('back')
+    pushToWallet()
   }
 
   const onCompleteCredentialRetrieval = async () => {
@@ -398,8 +397,8 @@ export function FunkeCredentialNotificationScreen() {
     ]
   )
 
-  const onCancel = () => pushToWallet('back')
-  const onGoToWallet = () => pushToWallet('replace')
+  const onCancel = () => pushToWallet()
+  const onGoToWallet = () => pushToWallet()
 
   const isAuthFlow =
     !preAuthGrant &&

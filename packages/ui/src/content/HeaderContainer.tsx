@@ -1,5 +1,6 @@
 import { useMedia } from 'tamagui'
 import { Heading, Stack, YStack } from '../base'
+
 interface HeaderContainerProps {
   isScrolledByOffset?: boolean
   title?: string

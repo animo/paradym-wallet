@@ -1,10 +1,9 @@
-import type { ParadymAppAgent } from '../agent'
+import { JsonEncoder } from '@credo-ts/core'
 
 import { parseInvitationJson } from '@credo-ts/didcomm'
 import { commonMessages, i18n } from '@package/translations'
 import queryString from 'query-string'
-
-import { JsonEncoder } from '@credo-ts/core'
+import type { ParadymAppAgent } from '../agent'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
 export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
@@ -123,7 +122,7 @@ export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation:
       success: true,
       result: parseInvitationJson(invitation),
     } as const
-  } catch (error) {
+  } catch (_error) {
     return {
       success: false,
       error: 'parsing_failed',

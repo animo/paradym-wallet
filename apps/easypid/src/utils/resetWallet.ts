@@ -1,14 +1,13 @@
 import { agentDependencies } from '@credo-ts/react-native'
-import { type SecureUnlockReturn, secureWalletKey } from '@package/secure-store/secureUnlock'
-import { isDevelopmentBuild, registerDevMenuItems } from 'expo-dev-client'
-import { useEffect } from 'react'
-import { DevSettings } from 'react-native'
-import { type SecureUnlockContext, useSecureUnlock } from '../agent'
-
 import {
   removeHasFinishedOnboarding,
   removeHasSeenIntroTooltip,
 } from '@easypid/features/onboarding/hasFinishedOnboarding'
+import { type SecureUnlockReturn, secureWalletKey } from '@package/secure-store/secureUnlock'
+import { registerDevMenuItems } from 'expo-dev-client'
+import { useEffect } from 'react'
+import { DevSettings } from 'react-native'
+import { type SecureUnlockContext, useSecureUnlock } from '../agent'
 import { getWalletId } from '../agent/initialize'
 import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
@@ -24,7 +23,7 @@ export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockC
 
   const fs = new agentDependencies.FileSystem()
 
-  // Clear cach and temp path
+  // Clear cache and temp path
   if (await fs.exists(fs.cachePath)) await fs.delete(fs.cachePath)
   if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
 
@@ -57,7 +56,6 @@ export function useResetWalletDevMenu() {
   const secureUnlock = useSecureUnlock()
 
   useEffect(() => {
-    if (!isDevelopmentBuild()) return
     registerDevMenuItems([
       {
         name: 'Reset Wallet',
