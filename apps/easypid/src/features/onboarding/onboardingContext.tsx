@@ -252,8 +252,10 @@ export function OnboardingContextProvider({
           return
         }
 
-        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-        if (enableBiometrics) await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+        if (enableBiometrics) {
+          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
+          await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+        }
       }
 
       goToNextStep()
