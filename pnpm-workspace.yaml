@@ -103,7 +103,7 @@ catalog:
   "@tamagui/shorthands": 1.139.2
   "@tamagui/themes": 1.139.2
   "@tamagui/toast": 1.139.2
-  "@tamagui/react-native-media-driver": 1.139.2
+  "@tamagui/react-native-media-driver": 1.141.5
   "@tamagui/colors": 1.139.2
   "@tamagui/lucide-icons": 1.139.2
   "@tamagui/babel-plugin": 1.139.2
