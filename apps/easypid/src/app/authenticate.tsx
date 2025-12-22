@@ -1,3 +1,5 @@
+import { Redirect, useLocalSearchParams } from 'expo-router'
+
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
@@ -6,8 +8,6 @@ import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { commonMessages } from '@package/translations'
 import { FlexPage, Heading, HeroIcons, IconContainer, YStack, useDeviceMedia, useToastController } from '@package/ui'
-import { isDevice } from 'expo-device'
-import { Redirect, useLocalSearchParams } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
 import { InvalidPinError } from '../crypto/error'
@@ -49,12 +49,7 @@ export default function Authenticate() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: canTryUnlockingUsingBiometrics not needed
   useEffect(() => {
-    if (
-      secureUnlock.state === 'locked' &&
-      secureUnlock.canTryUnlockingUsingBiometrics &&
-      isAllowedToUnlockWithFaceId &&
-      isDevice
-    ) {
+    if (secureUnlock.state === 'locked' && secureUnlock.canTryUnlockingUsingBiometrics && isAllowedToUnlockWithFaceId) {
       secureUnlock.tryUnlockingUsingBiometrics()
     }
   }, [secureUnlock.state, isAllowedToUnlockWithFaceId])
@@ -100,7 +95,7 @@ export default function Authenticate() {
   void SplashScreen.hideAsync()
 
   const unlockUsingBiometrics = async () => {
-    if (secureUnlock.state === 'locked' && isDevice) {
+    if (secureUnlock.state === 'locked') {
       secureUnlock.tryUnlockingUsingBiometrics()
     } else {
       toast.show(t({ id: 'authenticate.pinRequiredToast', message: 'Your PIN is required to unlock the app' }), {

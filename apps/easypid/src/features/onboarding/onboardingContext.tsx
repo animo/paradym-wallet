@@ -33,7 +33,6 @@ import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
-import { isDevice } from 'expo-device'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
@@ -213,7 +212,7 @@ export function OnboardingContextProvider({
 
         await initializeAgent(walletKey)
       })
-      .then(() => (isDevice ? goToNextStep() : setCurrentStepName('data-protection')))
+      .then(goToNextStep)
       .catch((e) => {
         reset({ error: e, resetToStep: 'welcome' })
         throw e
@@ -234,7 +233,7 @@ export function OnboardingContextProvider({
 
     try {
       if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: isDevice })
+        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: true })
       }
 
       // Directly try getting the wallet key so the user can enable biometrics
