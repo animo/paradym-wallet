@@ -2360,13 +2360,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 53]],
 		"translation": "Wallet resetten"
 	},
-	"signShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the sign & share screen"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 72]],
-		"translation": "Bekijk het verzoek"
-	},
 	"submission.reviewTitle": {
 		"message": "Review the request",
 		"placeholders": {},
@@ -2374,11 +2367,11 @@
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
 		"translation": "Bekijk het verzoek"
 	},
-	"submission.reviewTitle": {
+	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 62]],
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 72]],
 		"translation": "Bekijk het verzoek"
 	},
 	"common.revoked": {
@@ -3614,18 +3607,18 @@
 		],
 		"translation": "Je hebt de gevraagde kaart(en) niet."
 	},
-	"signShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 180]],
-		"translation": "Je hebt niet de vereiste kaarten"
-	},
 	"submission.missingCardsWarning": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when user lacks required credentials"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
+		"translation": "Je hebt niet de vereiste kaarten"
+	},
+	"signShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 180]],
 		"translation": "Je hebt niet de vereiste kaarten"
 	},
 	"pinLocked.description": {
