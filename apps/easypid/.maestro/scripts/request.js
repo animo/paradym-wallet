@@ -546,7 +546,7 @@ function buildVerificationRequest(baseUrl, action) {
 }
 
 function parseOfferResponse(data) {
-  if (!data.issuanceSession) throw new Error('issuanceSession missing' + JSON.stringify(data))
+  if (!data.issuanceSession) throw new Error(`issuanceSession missing${JSON.stringify(data)}`)
 
   const session = data.issuanceSession
   const uri = session.credentialOfferUri || session.credential_offer_uri
