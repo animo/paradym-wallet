@@ -58,13 +58,13 @@ You can run the Expo workflows locally if you have the correct Expo token by usi
 **Android**
 
 ```bash
-npx eas-cli@latest workflow:run .eas/workflows/e2e-test-android-with-fingerprint-and-repack.yaml
+npx eas-cli@latest workflow:run .eas/workflows/e2e-test-android.yaml
 ```
 
 **iOS**
 
 ```bash
-npx eas-cli@latest workflow:run .eas/workflows/e2e-test-ios-with-fingerprint-and-repack.yaml
+npx eas-cli@latest workflow:run .eas/workflows/e2e-test-ios.yaml
 ```
 
 You can also run the workflows non-interactively by adding the `--non-interactive` flag and providing the inputs for the issuer backend (`playground`, `paradym`, or `both`).

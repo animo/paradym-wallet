@@ -1,18 +1,33 @@
 appId: id.paradym.wallet.preview
 tags:
   - verification
+  - authorization-none
   - openid4vc
   - sd-jwt
   - x5c
 ---
-- runFlow: ../issue-code/issue-code-openid4vc.yaml
+- runFlow: ../onboarding.yaml
+
+# Issue credential
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"openid4vc", "requestType":"arf-pid-sd-jwt"}'
+      ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "mdl-mdoc", "flow": "openid4vc"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
-- runFlow: 
+- runFlow:
+    file: ../issue-none/issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}
+
+# Create verification
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"openid4vc", "requestType":"mdl-mdoc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow:
     file: verify-credential.yaml
     env:
       deeplink: ${output.deeplink}

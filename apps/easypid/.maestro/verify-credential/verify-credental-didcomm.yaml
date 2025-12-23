@@ -13,8 +13,9 @@ tags:
     env:
       ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "birth-certificate-anoncreds", "flow":"didcomm"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
-- runFlow: 
-    file: issue-none.yaml
+
+- runFlow:
+    file: ../issue-none/issue-none.yaml
     env:
       deeplink: ${output.deeplink}
 
@@ -25,8 +26,8 @@ tags:
       ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "membership-card-anoncreds", "flow":"didcomm"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
-- runFlow: 
-    file: issue-none.yaml
+- runFlow:
+    file: ../issue-none/issue-none.yaml
     env:
       deeplink: ${output.deeplink}
 
@@ -36,7 +37,7 @@ tags:
       ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType":"birth-certificate-and-membership-card-anoncreds"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
-- runFlow: 
+- runFlow:
     file: verify-credential.yaml
     env:
       deeplink: ${output.deeplink}

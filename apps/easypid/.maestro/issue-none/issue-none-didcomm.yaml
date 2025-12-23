@@ -12,7 +12,7 @@ tags:
       ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "birth-certificate-anoncreds", "flow":"didcomm"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
-- runFlow: 
+- runFlow:
     file: issue-none.yaml
     env:
       deeplink: ${output.deeplink}

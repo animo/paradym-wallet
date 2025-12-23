@@ -2,7 +2,7 @@ const PARADYM_CONFIG = {
   projectId: 'cmipr5x5x00l6s6018op8cbci',
   issuance: {
     'mdl-mdoc': {
-      templateId: 'cmiyfjvp50031s601ihl1epyf',
+      templateId: 'cmjisf1zf00bhs601cwwsp3o6',
       attributes: {
         'org.iso.18013.5.1': {
           sex: 123,
@@ -28,7 +28,7 @@ const PARADYM_CONFIG = {
           age_birth_year: 123,
           resident_state: 'String value',
           document_number: 'String value',
-          issuing_country: 'String value',
+          issuing_country: 'NL',
           resident_address: 'String value',
           resident_country: 'String value',
           issuing_authority: 'String value',
@@ -46,7 +46,6 @@ const PARADYM_CONFIG = {
               vehicle_category_code: 'String value',
             },
           ],
-          issuing_jurisdiction: 'String value',
           resident_postal_code: 'String value',
           signature_usual_mark: 'Base64 encoded string',
           administrative_number: 'String value',
@@ -180,7 +179,6 @@ const PARADYM_CONFIG = {
   },
   verification: {
     'mdl-mdoc': { presentationTemplateId: 'cmiyfo40z0032s601thh9lqju' },
-    'arf-pid-sd-jwt': { presentationTemplateId: 'cmiyfopx40033s601guy5q89e' },
     'birth-certificate-and-membership-card-anoncreds': {
       presentationTemplateId: 'cmj1p0eo7002ys601ro814a6t',
     },

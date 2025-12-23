@@ -19,6 +19,9 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
+- extendedWaitUntil:
+    visible: "Yes, continue"
+    timeout: 100000
 - tapOn: "Yes, continue"
 
 - waitForAnimationToEnd:
