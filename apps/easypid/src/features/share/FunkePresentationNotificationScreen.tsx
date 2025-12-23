@@ -3,8 +3,8 @@ import type {
   DisplayImage,
   FormattedSubmission,
   FormattedTransactionData,
-  TrustMechanism,
   TrustedEntity,
+  TrustMechanism,
 } from '@package/agent'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'

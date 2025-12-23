@@ -1,12 +1,12 @@
 import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
-import { type MdlAttributes, getMdlCode } from '@easypid/utils/mdlCustomMetadata'
+import { getMdlCode, type MdlAttributes } from '@easypid/utils/mdlCustomMetadata'
 import {
   type Arf15PidSdJwtVcAttributes,
   type Arf18PidSdJwtVcAttributes,
+  formatArfPid18PlaceOfBirth,
   type PidMdocAttributes,
   type PidSdJwtVcAttributes,
-  formatArfPid18PlaceOfBirth,
 } from '@easypid/utils/pidCustomMetadata'
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialForDisplay } from '@package/agent'
@@ -80,7 +80,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     personalInfoCard.placeOfBirth = raw.birth_place ?? ''
     personalInfoCard.nationalities = Array.isArray(raw.nationality)
       ? raw.nationality?.join(', ')
-      : raw.nationality ?? ''
+      : (raw.nationality ?? '')
 
     addressTable = {
       street: raw.resident_street ?? '',
@@ -126,7 +126,9 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birth_date}`
     personalInfoCard.placeOfBirth = raw.birth_place ?? ''
-    personalInfoCard.nationalities = Array.isArray(raw.nationality) ? raw.nationality.join(',') : raw.nationality ?? ''
+    personalInfoCard.nationalities = Array.isArray(raw.nationality)
+      ? raw.nationality.join(',')
+      : (raw.nationality ?? '')
 
     addressTable = {
       street: raw.resident_street ?? '',

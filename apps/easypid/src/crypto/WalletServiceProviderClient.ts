@@ -1,8 +1,8 @@
 import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
-import { AskarModule } from '@credo-ts/askar'
-import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
+import { AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import {
   Agent,
+  CredoError,
   CredoWebCrypto,
   type JwsProtectedHeaderOptions,
   JwsService,
@@ -13,6 +13,7 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import type { EasyPIDAppAgent } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
+import { getWalletId } from '../agent/walletId'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -23,7 +24,8 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
   if (validatePin) {
     const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
-    const walletId = `easypid-wallet-${walletKeyVersion}`
+    const walletId = getWalletId(walletKeyVersion)
+
     const agent = new Agent({
       config: {},
       modules: {
@@ -41,11 +43,11 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
 
     try {
       await agent.initialize()
-    } catch (e) {
-      if (e instanceof AskarStoreInvalidKeyError) {
+    } catch (error) {
+      if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) {
         throw new InvalidPinError()
       }
-      throw e
+      throw error
     }
 
     await agent.shutdown()
@@ -111,20 +113,25 @@ export class WalletServiceProviderClient implements SecureEnvironment {
   }
 
   public async batchGenerateKeyPair(keyIds: string[]): Promise<Record<string, Uint8Array>> {
-    const { publicKeys } = await this.post<{ publicKeys: Record<string, Array<number>> }>('batch-create-key', {
+    const { publicKeys } = await this.post<{
+      publicKeys: Record<string, Array<number>>
+    }>('batch-create-key', {
       keyIds,
       keyType: 'P256',
     })
 
     return Object.entries(publicKeys).reduce(
-      (prev, [keyId, publicKey]) => ({ ...prev, [keyId]: new Uint8Array(publicKey) }),
+      (prev, [keyId, publicKey]) => ({
+        ...prev,
+        [keyId]: new Uint8Array(publicKey),
+      }),
       {}
     )
   }
 
   public async sign(keyId: string, message: Uint8Array): Promise<Uint8Array> {
     const { signature } = await this.post<{ signature: Array<number> }>('sign', {
-      data: new Array(...message),
+      data: [...message],
       keyId,
     })
 

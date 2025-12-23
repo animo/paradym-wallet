@@ -17,10 +17,10 @@ import {
   Paragraph,
   ScrollView,
   Spacer,
-  XStack,
-  YStack,
   useInitialRender,
   useSpringify,
+  XStack,
+  YStack,
 } from '@package/ui'
 import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
@@ -28,11 +28,11 @@ import {
   FadeIn,
   FadeOut,
   LinearTransition,
-  ZoomIn,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
+  ZoomIn,
 } from 'react-native-reanimated'
 
 interface CredentialRetrievalSlideProps {
@@ -57,6 +57,7 @@ export const CredentialRetrievalSlide = ({
   const { completeProgressBar, onCancel } = useWizard()
   const isInitialRender = useInitialRender()
   const scale = useSharedValue(1)
+  const textOpacity = useSharedValue(1)
   const [scrollViewHeight, setScrollViewHeight] = useState<number>()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { t } = useLingui()
@@ -79,21 +80,28 @@ export const CredentialRetrievalSlide = ({
   useEffect(() => {
     if (isStoring) {
       scale.value = withTiming(0.9, { duration: 2000 })
+      textOpacity.value = withTiming(0, { duration: 300 })
+    } else {
+      textOpacity.value = withTiming(1, { duration: 300 })
     }
     if (isCompleteAndAllowed) {
       scale.value = withSpring(1, {
         damping: 4,
         stiffness: 80,
         mass: 0.3,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
       })
     }
-  }, [isStoring, isCompleteAndAllowed, scale])
+  }, [isStoring, isCompleteAndAllowed, scale, textOpacity])
 
-  const animatedStyle = useAnimatedStyle(() => {
+  const animatedCardStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }],
+    }
+  }, [])
+
+  const animatedTextStyle = useAnimatedStyle(() => {
+    return {
+      opacity: textOpacity.value,
     }
   }, [])
 
@@ -148,7 +156,7 @@ export const CredentialRetrievalSlide = ({
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-title' : 'info-title'}
             entering={!isInitialRender ? FadeIn.duration(300) : undefined}
-            opacity={isStoring || (isCompleted && !isAllowedToComplete) ? 0 : 1}
+            style={animatedTextStyle}
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
             {isCompleted ? (
@@ -172,7 +180,7 @@ export const CredentialRetrievalSlide = ({
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-text' : 'info-text'}
             entering={!isInitialRender ? FadeIn.duration(300) : undefined}
-            opacity={isStoring ? 0 : 1}
+            style={animatedTextStyle}
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
             {isStoringOrCompleted ? (
@@ -189,7 +197,11 @@ export const CredentialRetrievalSlide = ({
           </AnimatedStack>
         </AnimatedStack>
         <AnimatedStack layout={useSpringify(LinearTransition)} fg={1}>
-          <AnimatedStack pb="$5" borderColor={isCompleteAndAllowed ? '$background' : '$grey-100'} style={animatedStyle}>
+          <AnimatedStack
+            pb="$5"
+            borderColor={isCompleteAndAllowed ? '$background' : '$grey-100'}
+            style={animatedCardStyle}
+          >
             <FunkeCredentialCard
               issuerImage={display.issuer.logo}
               textColor={display.textColor}

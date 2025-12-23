@@ -1,10 +1,6 @@
 import { X509Certificate, X509ModuleConfig } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import { t } from '@lingui/core/macro'
-import type { TrustedEntity, TrustedX509Entity } from '@package/agent'
-import type { EitherAgent } from '@package/agent'
-import { commonMessages } from '@package/translations'
-import { TRUSTED_ENTITIES } from '../invitation/trustedEntities'
+import type { EitherAgent, TrustedEntity, TrustedX509Entity } from '@package/agent'
 
 export type TrustMechanism = 'eudi_rp_authentication' | 'openid_federation' | 'x509' | 'did' | 'none'
 
@@ -83,15 +79,16 @@ export const getTrustedEntities = async (
 }> => {
   const trustMechanism = detectTrustMechanism(options)
 
-  // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+  // biome-ignore lint/suspicious/noImplicitAnyLet: no explanation
   let trustedEntities
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
       trustedEntities = await getTrustedEntitiesForEudiRpAuthentication({ ...options, walletTrustedEntity: undefined })
       break
-    case 'openid_federation':
-      trustedEntities = await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })
-      break
+    // NOTE: add back when enabling federation support
+    // case 'openid_federation':
+    //   trustedEntities = await getTrustedEntitiesForOpenIdFederation({ ...options, walletTrustedEntity: undefined })
+    //   break
     case 'x509':
       trustedEntities = await getTrustedEntitiesForX509Certificate(options)
       break
@@ -185,45 +182,46 @@ const getTrustedEntitiesForEudiRpAuthentication = async (options: GetTrustedEnti
   }
 }
 
-const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntitiesForOpenIdFederationOptions) => {
-  const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
-  const entityId = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id
-  const organizationName = clientMetadata?.client_name
-  const logoUri = clientMetadata?.logo_uri
+// NOTE: add back when enabling federation support
+// const getTrustedEntitiesForOpenIdFederation = async (options: GetTrustedEntitiesForOpenIdFederationOptions) => {
+//   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
+//   const entityId = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id
+//   const organizationName = clientMetadata?.client_name
+//   const logoUri = clientMetadata?.logo_uri
 
-  const resolvedChains = entityId
-    ? await options.agent.openid4vc.holder.resolveOpenIdFederationChains({
-        entityId,
-        trustAnchorEntityIds: TRUSTED_ENTITIES,
-      })
-    : undefined
+//   const resolvedChains = entityId
+//     ? await options.agent.openid4vc.holder.resolveOpenIdFederationChains({
+//         entityId,
+//         trustAnchorEntityIds: TRUSTED_ENTITIES,
+//       })
+//     : undefined
 
-  const uri =
-    typeof options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
-      ? new URL(options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
-      : undefined
+//   const uri =
+//     typeof options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
+//       ? new URL(options.resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
+//       : undefined
 
-  const trustedEntities =
-    resolvedChains
-      ?.map((chain) => ({
-        entityId: chain.trustAnchorEntityConfiguration.sub,
-        organizationName:
-          chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ??
-          t(commonMessages.unknownOrganization),
-        logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
-      }))
-      .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index) ?? []
+//   const trustedEntities =
+//     resolvedChains
+//       ?.map((chain) => ({
+//         entityId: chain.trustAnchorEntityConfiguration.sub,
+//         organizationName:
+//           chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.organization_name ??
+//           t(commonMessages.unknownOrganization),
+//         logoUri: chain.trustAnchorEntityConfiguration.metadata?.federation_entity?.logo_uri,
+//       }))
+//       .filter((entity, index, self) => self.findIndex((e) => e.entityId === entity.entityId) === index) ?? []
 
-  return {
-    relyingParty: {
-      organizationName,
-      logoUri,
-      entityId,
-      uri,
-    },
-    trustedEntities,
-  }
-}
+//   return {
+//     relyingParty: {
+//       organizationName,
+//       logoUri,
+//       entityId,
+//       uri,
+//     },
+//     trustedEntities,
+//   }
+// }
 
 const getTrustedEntitiesForDid = async (options: GetTrustedEntitiesForDidOptions) => {
   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
@@ -293,7 +291,7 @@ const getTrustedEntitiesForX509Certificate = async ({
         logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // no-op
   }
 

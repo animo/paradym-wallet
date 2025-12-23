@@ -10,8 +10,8 @@ import {
   Paragraph,
   Spacer,
   Stack,
-  YStack,
   useSpringify,
+  YStack,
 } from '@package/ui'
 import { ZoomIn } from 'react-native-reanimated'
 import { getFlowConfirmationText } from './utils'

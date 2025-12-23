@@ -1,3 +1,7 @@
+import { useLingui } from '@lingui/react/macro'
+import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
+import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/components'
+import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 import {
   AnimatedStack,
   Heading,
@@ -8,22 +12,15 @@ import {
   type ScrollViewRefType,
   Spacer,
   Stack,
-  YStack,
   useScrollToggle,
   useSpringify,
   useToastController,
+  YStack,
 } from '@package/ui'
 import { useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
-
-import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/components'
-import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
-
-import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-import { useLingui } from '@lingui/react/macro'
 
 interface FunkeRequestedAttributesDetailScreenProps {
   id: CredentialForDisplayId

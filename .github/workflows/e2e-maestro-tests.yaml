@@ -58,9 +58,9 @@ jobs:
       - name: EAS Workflow Android
         if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' }}
         working-directory: apps/easypid
-        run: eas workflow:run .eas/workflows/e2e-test-android-with-fingerprint-and-repack.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }} -F enable_recording=${{ github.event.inputs.enable_recording }}
+        run: eas workflow:run .eas/workflows/e2e-test-android.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }} -F enable_recording=${{ github.event.inputs.enable_recording }}
       
       - name: EAS Workflow iOS
         if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' }}
         working-directory: apps/easypid
-        run: eas workflow:run .eas/workflows/e2e-test-ios-with-fingerprint-and-repack.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }} -F enable_recording=${{ github.event.inputs.enable_recording }}
+        run: eas workflow:run .eas/workflows/e2e-test-ios.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }} -F enable_recording=${{ github.event.inputs.enable_recording }}

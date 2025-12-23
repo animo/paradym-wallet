@@ -1,6 +1,6 @@
 import { useAppAgent } from '@easypid/agent'
-import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { InvalidPinError } from '@easypid/crypto/error'
+import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
 import { useLingui } from '@lingui/react/macro'
@@ -159,7 +159,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   const onProofComplete = () => {
     shutdownDataTransfer()
-    pushToWallet('replace')
+    pushToWallet()
   }
 
   const addActivity = async (status: Exclude<ActivityStatus, 'pending'>) => {

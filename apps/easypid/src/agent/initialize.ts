@@ -1,21 +1,23 @@
 import { setFallbackSecureEnvironment, shouldUseFallbackSecureEnvironment } from '@animo-id/expo-secure-environment'
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
+import { CredoError } from '@credo-ts/core'
 import { trustedX509Certificates } from '@easypid/constants'
 import { WalletServiceProviderClient } from '@easypid/crypto/WalletServiceProviderClient'
 import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'
 import { initializeEasyPIDAgent, initializeParadymAgent, isEasyPIDAgent } from '@package/agent'
 import { InvalidPinError } from '../crypto/error'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
-
-export function getWalletId(walletKeyVersion: number) {
-  return isFunkeWallet() ? `easypid-wallet-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
-}
+import { getWalletId } from './walletId'
 
 export async function initializeAppAgent({
   walletKey,
   walletKeyVersion,
   registerWallet,
-}: { walletKey: string; walletKeyVersion: number; registerWallet?: boolean }) {
+}: {
+  walletKey: string
+  walletKeyVersion: number
+  registerWallet?: boolean
+}) {
   const agent = isFunkeWallet()
     ? await initializeEasyPIDAgent({
         keyDerivation: 'raw',
@@ -23,7 +25,7 @@ export async function initializeAppAgent({
         walletKey,
         trustedX509Certificates,
       }).catch((error) => {
-        if (error instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
+        if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
         throw error
       })
     : await initializeParadymAgent({
@@ -32,7 +34,7 @@ export async function initializeAppAgent({
         walletKey,
         trustedX509Certificates,
       }).catch((error) => {
-        if (error instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
+        if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) throw new InvalidPinError()
         throw error
       })
 

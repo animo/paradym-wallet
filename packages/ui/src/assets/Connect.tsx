@@ -1,4 +1,4 @@
-import Svg, { Path, G, Rect, type SvgProps } from 'react-native-svg'
+import Svg, { G, Path, Rect, type SvgProps } from 'react-native-svg'
 
 export function ConnectIcon({ width = 48, height = 48, color = 'black', ...props }: SvgProps) {
   return (

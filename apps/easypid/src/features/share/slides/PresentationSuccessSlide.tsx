@@ -1,6 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
-import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, Stack, YStack, useSpringify } from '@package/ui'
+import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, Stack, useSpringify, YStack } from '@package/ui'
 import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
 
 interface PresentationSuccessSlideProps {

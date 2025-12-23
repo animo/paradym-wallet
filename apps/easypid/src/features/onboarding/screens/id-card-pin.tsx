@@ -1,8 +1,7 @@
-import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, XStack, YStack, useDeviceMedia } from '@package/ui'
+import { useHaptics } from '@package/app/hooks/useHaptics'
+import { IdCard, Paragraph, PinPad, PinValues, ScrollView, Stack, useDeviceMedia, XStack, YStack } from '@package/ui'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { TextInput } from 'react-native'
-
-import { useHaptics } from '@package/app/hooks/useHaptics'
 
 export interface OnboardingIdCardPinEnterProps {
   goToNextStep: (idCardPin: string) => Promise<void>
@@ -66,7 +65,6 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
           <IdCard icon={isLoading ? 'loading' : 'locked'} hideUserName />
           <XStack pos="absolute" gap="$3" justifyContent="center" w="100%">
             {pinValues.map((digit, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: index is the correct key here
               <YStack key={index} maxWidth={24} flex-1 justifyContent="center" alignItems="center">
                 <Paragraph lineHeight={32} size="$6" color="$grey-900" fontWeight="$medium">
                   {digit ? '*' : ' '}

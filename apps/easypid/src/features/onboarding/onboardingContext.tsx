@@ -1,5 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import type { SdJwtVcHeader } from '@credo-ts/core'
+import type { SdJwtVc, SdJwtVcHeader } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
@@ -21,10 +21,10 @@ import { useLingui } from '@lingui/react/macro'
 import {
   BiometricAuthenticationCancelledError,
   BiometricAuthenticationNotEnabledError,
-  SdJwtVcRecord,
   getCredentialForDisplay,
   getCredentialForDisplayId,
   migrateLegacyParadymWallet,
+  SdJwtVcRecord,
   storeReceivedActivity,
 } from '@package/agent'
 import { useHaptics } from '@package/app'
@@ -33,10 +33,9 @@ import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
-import { isDevice } from 'expo-device'
 import { useRouter } from 'expo-router'
 import type React from 'react'
-import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking, Platform } from 'react-native'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
@@ -213,7 +212,7 @@ export function OnboardingContextProvider({
 
         await initializeAgent(walletKey)
       })
-      .then(() => (isDevice ? goToNextStep() : setCurrentStepName('data-protection')))
+      .then(goToNextStep)
       .catch((e) => {
         reset({ error: e, resetToStep: 'welcome' })
         throw e
@@ -224,7 +223,7 @@ export function OnboardingContextProvider({
     return Linking.openSettings().then(() => setCurrentStepName('biometrics'))
   }
 
-  const onEnableBiometrics = async () => {
+  const onEnableBiometrics = async (enableBiometrics: boolean) => {
     if (!agent || (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')) {
       await reset({
         resetToStep: 'pin',
@@ -234,12 +233,14 @@ export function OnboardingContextProvider({
 
     try {
       if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics: isDevice })
+        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics })
       }
 
       // Directly try getting the wallet key so the user can enable biometrics
       // and we can check if biometrics works
-      const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+      const walletKey = enableBiometrics
+        ? await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+        : undefined
 
       if (!walletKey) {
         const walletKey =
@@ -251,8 +252,10 @@ export function OnboardingContextProvider({
           return
         }
 
-        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+        if (enableBiometrics) {
+          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
+          await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
+        }
       }
 
       goToNextStep()
@@ -281,7 +284,7 @@ export function OnboardingContextProvider({
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    (options) => {
+    (_options) => {
       if (!idCardPin) {
         // We need to hide the NFC modal on iOS, as we first need to ask the user for the pin again
         if (Platform.OS === 'ios') sendCommand({ cmd: 'INTERRUPT' })
@@ -537,20 +540,18 @@ export function OnboardingContextProvider({
 
     try {
       // Retrieve Credential
-      const credentials = await receivePidUseCase.retrieveCredentials()
+      const credentialRecords = await receivePidUseCase.retrieveCredentials()
 
-      for (const credential of credentials) {
-        if (credential instanceof SdJwtVcRecord) {
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
-            credential.compactSdJwtVc
-          )
+      for (const credentialRecord of credentialRecords) {
+        if (credentialRecord instanceof SdJwtVcRecord) {
+          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()
             )}`
           )
 
-          const { display } = getCredentialForDisplay(credential)
+          const { display } = getCredentialForDisplay(credentialRecord)
           await storeReceivedActivity(secureUnlock.context.agent, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
@@ -558,7 +559,7 @@ export function OnboardingContextProvider({
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
             deferredCredentials: [],
-            credentialIds: [getCredentialForDisplayId(credential)],
+            credentialIds: [getCredentialForDisplayId(credentialRecord)],
           })
         }
       }
@@ -662,6 +663,7 @@ export function OnboardingContextProvider({
           id: 'biometrics.activateBiometricsButton',
           message: 'Activate Biometrics',
         })}
+        skipText={t(commonMessages.setUpLater)}
       />
     )
   } else if (currentStep.step === 'biometrics-disabled') {
@@ -696,7 +698,7 @@ export function OnboardingContextProvider({
         onCancel={() => {
           receivePidUseCase?.cancelIdCardScanning()
         }}
-        showScanModal={currentStep.step !== 'id-card-scan' ? false : idCardScanningState.showScanModal ?? true}
+        showScanModal={currentStep.step !== 'id-card-scan' ? false : (idCardScanningState.showScanModal ?? true)}
         onStartScanning={currentStep.step === 'id-card-start-scan' ? onStartScanning : undefined}
       />
     )

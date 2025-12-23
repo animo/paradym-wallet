@@ -1,8 +1,7 @@
-import type { ParadymAppAgent } from './agent'
-
 import { CredoError } from '@credo-ts/core'
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { useEffect } from 'react'
+import type { ParadymAppAgent } from './agent'
 
 /**
  * Check whether a default mediator is configued
@@ -76,13 +75,7 @@ async function stopMessagePickup(agent: ParadymAppAgent) {
  * You can use the `isEnabled` config property to enable/disable message pickup.
  * This is useful if e.g. there's no internet connection, or mediation has not been setup yet
  */
-export function useMessagePickup({
-  isEnabled = true,
-  agent,
-}: {
-  isEnabled?: boolean
-  agent?: ParadymAppAgent
-}) {
+export function useMessagePickup({ isEnabled = true, agent }: { isEnabled?: boolean; agent?: ParadymAppAgent }) {
   useEffect(() => {
     // If no agent, do nothing
     if (!agent) return

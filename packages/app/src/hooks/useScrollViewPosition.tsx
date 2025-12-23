@@ -1,6 +1,5 @@
-import { Dimensions, type LayoutChangeEvent, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native'
-
 import { useCallback, useState } from 'react'
+import { Dimensions, type LayoutChangeEvent, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native'
 
 export const useScrollViewPosition = (offset?: number) => {
   const height = Dimensions.get('window').height

@@ -1,13 +1,12 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
-import { type DifPresentationExchangeDefinitionV2, Kms } from '@credo-ts/core'
-import { Jwt } from '@credo-ts/core'
-import type { DidCommPlaintextMessage } from '@credo-ts/didcomm'
+import { type DifPresentationExchangeDefinitionV2, Jwt, Kms } from '@credo-ts/core'
 import type {
   DidCommConnectionRecord,
   DidCommCredentialStateChangedEvent,
   DidCommOutOfBandInvitation,
   DidCommOutOfBandRecord,
+  DidCommPlaintextMessage,
   DidCommProofStateChangedEvent,
 } from '@credo-ts/didcomm'
 import {
@@ -40,20 +39,17 @@ import {
 import { eudiTrustList } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { t } from '@lingui/core/macro'
-import { Oauth2Client, clientAuthenticationNone, getAuthorizationServerMetadataFromList } from '@openid4vc/oauth2'
+import { clientAuthenticationNone, getAuthorizationServerMetadataFromList, Oauth2Client } from '@openid4vc/oauth2'
 import { getOpenid4vpClientId } from '@openid4vc/openid4vp'
 import { commonMessages } from '@package/translations'
 import q from 'query-string'
-import { type Observable, filter, first, firstValueFrom, timeout } from 'rxjs'
-import type { ParadymAppAgent } from '../agent'
-import type { EitherAgent } from '../agent'
-import { credentialRecordFromCredential, encodeCredential } from '../format/credentialEncoding'
+import { filter, first, firstValueFrom, type Observable, timeout } from 'rxjs'
+import type { EitherAgent, ParadymAppAgent } from '../agent'
 import {
   type FormattedSubmission,
   formatDcqlCredentialsForRequest,
   formatDifPexCredentialsForRequest,
 } from '../format/formatPresentation'
-import { setBatchCredentialMetadata } from '../openid4vc/batchMetadata'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { getTrustedEntities } from '../utils/trust'
@@ -73,7 +69,6 @@ export async function resolveOpenId4VciOffer({
   agent,
   offer,
   authorization,
-  customHeaders,
   fetchAuthorization = true,
 }: {
   agent: EitherAgent
@@ -88,7 +83,7 @@ export async function resolveOpenId4VciOffer({
     })
 
     const resolvedCredentialOffer = await agent.openid4vc.holder.resolveCredentialOffer(offer.uri)
-    let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined = undefined
+    let resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest | undefined
 
     // NOTE: we always assume scopes are used at the moment
     if (fetchAuthorization && resolvedCredentialOffer.credentialOfferPayload.grants?.authorization_code) {
@@ -109,9 +104,6 @@ export async function resolveOpenId4VciOffer({
             scope: getScopesFromCredentialConfigurationsSupported(
               resolvedCredentialOffer.offeredCredentialConfigurations
             ),
-            // Added in patch but not in types
-            // @ts-ignore
-            customHeaders,
           }
         )
       }
@@ -256,25 +248,13 @@ export async function acquireAuthorizationCodeAccessToken({
 }
 
 const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], issuerMetadata: OpenId4VciMetadata) =>
-  credentials.map(({ credentials, ...credentialResponse }) => {
-    const firstCredential = credentials[0]
-    const record = credentialRecordFromCredential(firstCredential)
-
+  credentials.map(({ record, ...credentialResponse }) => {
     // OpenID4VC metadata
     const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
       id: issuerMetadata.credentialIssuer.credential_issuer,
       display: issuerMetadata.credentialIssuer.display,
     })
     setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-    // Match metadata
-    if (credentials.length > 1) {
-      setBatchCredentialMetadata(record, {
-        additionalCredentials: credentials.slice(1).map(encodeCredential) as
-          | Array<string>
-          | Array<Record<string, unknown>>,
-      })
-    }
 
     return {
       ...credentialResponse,
@@ -400,7 +380,11 @@ export const extractEntityIdFromAuthorizationRequest = async ({
   uri,
   requestPayload,
   origin,
-}: { uri?: string; requestPayload?: Record<string, unknown>; origin?: string }): Promise<{
+}: {
+  uri?: string
+  requestPayload?: Record<string, unknown>
+  origin?: string
+}): Promise<{
   data: string | null
   entityId: string | null
 }> => {
@@ -468,7 +452,7 @@ export const getCredentialsForProofRequest = async ({
   origin,
   trustedX509Entities = [],
 }: GetCredentialsForProofRequestOptions) => {
-  const { entityId = undefined, data: fromFederationData = null } = allowUntrusted
+  const { data: fromFederationData = null } = allowUntrusted
     ? await extractEntityIdFromAuthorizationRequest({ uri, requestPayload, origin })
     : {}
 
@@ -497,7 +481,8 @@ export const getCredentialsForProofRequest = async ({
 
   const resolved = await agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(request, {
     origin,
-    trustedFederationEntityIds: entityId ? [entityId] : undefined,
+    // NOTE: add back when enabling federation support
+    // trustedFederationEntityIds: entityId ? [entityId] : undefined,
   })
 
   const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agent.context, {
@@ -679,7 +664,7 @@ export async function resolveOutOfBandInvitation(
     return {
       success: true,
       outOfBandInvitation: invitation,
-      // biome-ignore lint/complexity/noUselessTernary: <explanation>
+      // biome-ignore lint/complexity/noUselessTernary: no explanation
       createConnection: existingConnection ? false : invitation.handshakeProtocols?.length ? true : false,
       existingConnection,
       flowType,
@@ -716,7 +701,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   // The value is reassigned, but eslint doesn't know this.
   let connectionId: string | undefined
 
-  let observable: Observable<DidCommCredentialStateChangedEvent | DidCommProofStateChangedEvent> | undefined = undefined
+  let observable: Observable<DidCommCredentialStateChangedEvent | DidCommProofStateChangedEvent> | undefined
 
   if (flowType === 'issue') {
     observable = agent.events
@@ -773,7 +758,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         success: true,
         connectionId: connectionId as string,
         flowType: 'connect',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
       } as unknown as any
     }
 
@@ -783,7 +768,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         credentialExchangeId: event.payload.credentialExchangeRecord.id,
         connectionId,
         flowType: 'issue',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
       } as unknown as any
     }
     if (event.type === DidCommProofEventTypes.ProofStateChanged) {
@@ -792,10 +777,10 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         proofExchangeId: event.payload.proofRecord.id,
         connectionId,
         flowType: 'verify',
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
       } as unknown as any
     }
-  } catch (error) {
+  } catch (_error) {
     agent.config.logger.error('Error while accepting out of band invitation.')
 
     // Delete OOB record

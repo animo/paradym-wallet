@@ -1,5 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import { type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
+import { type SdJwtVc, type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
@@ -10,7 +10,7 @@ import type {
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
-import { type CardScanningState, SIMULATOR_PIN, getPidSetupSlideContent } from '@easypid/utils/sharedPidSetup'
+import { type CardScanningState, getPidSetupSlideContent, SIMULATOR_PIN } from '@easypid/utils/sharedPidSetup'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import {
@@ -73,7 +73,7 @@ export function FunkePidSetupScreen() {
   }
 
   const onEnterPin: ReceivePidUseCaseFlowOptions['onEnterPin'] = useCallback(
-    async (options) => {
+    async (_options) => {
       // If we have a PIN, use it once and clear it
       if (idCardPin) {
         const pin = idCardPin
@@ -140,7 +140,10 @@ export function FunkePidSetupScreen() {
   const onIdCardStart = async ({
     walletPin,
     allowSimulatorCard,
-  }: { walletPin: string; allowSimulatorCard: boolean }) => {
+  }: {
+    walletPin: string
+    allowSimulatorCard: boolean
+  }) => {
     if (secureUnlock.state !== 'unlocked') {
       toast.show(t(walletNotLockedMessage), {
         customData: { preset: 'danger' },
@@ -306,7 +309,7 @@ export function FunkePidSetupScreen() {
       if (shouldUseCloudHsm) {
         await retrieveCredential()
       }
-    } catch (error) {
+    } catch (_error) {
       toast.show(t(commonMessages.somethingWentWrong), {
         customData: {
           preset: 'danger',
@@ -331,20 +334,18 @@ export function FunkePidSetupScreen() {
 
     try {
       // Retrieve Credential
-      const credentials = await receivePidUseCase.retrieveCredentials()
+      const credentialRecords = await receivePidUseCase.retrieveCredentials()
 
-      for (const credential of credentials) {
-        if (credential instanceof SdJwtVcRecord) {
-          const parsed = secureUnlock.context.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
-            credential.compactSdJwtVc
-          )
+      for (const credentialRecord of credentialRecords) {
+        if (credentialRecords instanceof SdJwtVcRecord) {
+          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()
             )}`
           )
 
-          const { display } = getCredentialForDisplay(credential)
+          const { display } = getCredentialForDisplay(credentialRecord)
           await storeReceivedActivity(secureUnlock.context.agent, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
@@ -353,7 +354,7 @@ export function FunkePidSetupScreen() {
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
             deferredCredentials: [],
-            credentialIds: [getCredentialForDisplayId(credential)],
+            credentialIds: [getCredentialForDisplayId(credentialRecord)],
           })
         }
       }
@@ -438,7 +439,7 @@ export function FunkePidSetupScreen() {
                 receivePidUseCase?.cancelIdCardScanning()
                 setIsScanning(false)
               }}
-              showScanModal={!isScanning ? false : idCardScanningState.showScanModal ?? true}
+              showScanModal={!isScanning ? false : (idCardScanningState.showScanModal ?? true)}
               onStartScanning={!isScanning ? onStartScanning : undefined}
             />
           ),
@@ -464,7 +465,7 @@ export function FunkePidSetupScreen() {
             <PidIdCardFetchSlide
               {...getPidSetupSlideContent(userName ? 'id-card-complete' : 'id-card-fetch', t)}
               userName={userName}
-              onComplete={() => pushToWallet('replace')}
+              onComplete={() => pushToWallet()}
             />
           ),
         },

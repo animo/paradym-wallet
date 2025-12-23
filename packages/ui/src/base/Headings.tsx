@@ -1,6 +1,6 @@
 import type { GetProps } from 'tamagui'
 
-import { Heading as THeading, styled } from 'tamagui'
+import { styled, Heading as THeading } from 'tamagui'
 
 export const Heading = styled(THeading, {
   name: 'Heading',

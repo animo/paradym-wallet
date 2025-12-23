@@ -1,5 +1,5 @@
 import { FunkeTrustDetailScreen } from '@easypid/features/wallet/FunkeTrustDetailScreen'
-import type { TrustMechanism, TrustedEntity } from '@package/agent'
+import type { TrustedEntity, TrustMechanism } from '@package/agent'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {

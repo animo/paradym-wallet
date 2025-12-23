@@ -1,5 +1,6 @@
 import {
   ClaimFormat,
+  CredentialMultiInstanceUseMode,
   type DcqlCredentialsForRequest,
   type DcqlQueryResult,
   type JsonObject,
@@ -11,7 +12,7 @@ import {
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
 import type { EitherAgent } from '../agent'
-import { handleBatchCredential } from '../batch'
+import { refreshPidIfNeeded } from '../batch'
 import { BiometricAuthenticationError } from './error'
 import type { CredentialsForProofRequest } from './handler'
 import { getFormattedTransactionData } from './transactions'
@@ -49,10 +50,8 @@ export const shareProof = async ({
                 entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
                 entry.verifiableCredentials[0]
 
-              // Optionally use a batch credential
-              const credentialRecord = await handleBatchCredential(agent, credential.credentialRecord)
-
-              return [entry.inputDescriptorId, [{ ...credential, credentialRecord }]]
+              // NOTE: we don't support single-use credentials for PEX
+              return [entry.inputDescriptorId, [credential]]
             })
           )
         )
@@ -64,18 +63,19 @@ export const shareProof = async ({
         await Promise.all(
           Object.entries(
             Object.keys(selectedCredentials).length > 0
-              ? getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
-              : agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult)
+              ? // FIXME: this method should take into account w3c credentials
+                getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
+              : agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult, {
+                  // FIXME: we currently allow re-sharing if we don't have new instances anymore
+                  // we should make this configurable maybe? Or dependant on credential type?
+                  useMode: CredentialMultiInstanceUseMode.NewOrFirst,
+                })
           ).map(async ([queryCredentialId, credentials]) => {
-            // Optionally use a batch credential
-            const updatedCredentials = await Promise.all(
-              credentials.map(async (credential) => ({
-                ...credential,
-                credentialRecord: await handleBatchCredential(agent, credential.credentialRecord),
-              }))
-            )
+            for (const credential of credentials) {
+              await refreshPidIfNeeded(agent, credential.credentialRecord)
+            }
 
-            return [queryCredentialId, updatedCredentials]
+            return [queryCredentialId, credentials]
           })
         )
       )
@@ -169,6 +169,9 @@ function getSelectedCredentialsForRequest(
             claimFormat: ClaimFormat.MsoMdoc,
             credentialRecord: matchWithRecord.record,
             disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as MdocNameSpaces,
+            // FIXME: we currently allow re-sharing if we don't have new instances anymore
+            // we should make this configurable maybe? Or dependant on credential type?
+            useMode: CredentialMultiInstanceUseMode.NewOrFirst,
           },
         ]
       } else if (matchWithRecord.record.type === 'SdJwtVcRecord') {
@@ -177,6 +180,9 @@ function getSelectedCredentialsForRequest(
             claimFormat: ClaimFormat.SdJwtDc,
             credentialRecord: matchWithRecord.record,
             disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as JsonObject,
+            // FIXME: we currently allow re-sharing if we don't have new instances anymore
+            // we should make this configurable maybe? Or dependant on credential type?
+            useMode: CredentialMultiInstanceUseMode.NewOrFirst,
           },
         ]
       }

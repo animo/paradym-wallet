@@ -46,7 +46,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
         customData: { preset: 'success' },
       })
       successHaptic()
-    } catch (error) {
+    } catch (_error) {
       toast.show(t(commonMessages.toastCardDeleteError), {
         customData: { preset: 'danger' },
       })

@@ -19,6 +19,9 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
+- extendedWaitUntil:
+    visible: "Yes, continue"
+    timeout: 100000
 - tapOn: "Yes, continue"
 
 - waitForAnimationToEnd:
@@ -61,11 +64,10 @@ appId: id.paradym.wallet.preview
     when:
       platform: iOS
     commands:
-      - tapOn: "Go to wallet  "
+      - tapOn: "Go to wallet,  "
 
 - waitForAnimationToEnd:
     timeout: 5000
 
 - assertVisible: "Hello!"
 - assertVisible: "Receive or share from your wallet "
-
