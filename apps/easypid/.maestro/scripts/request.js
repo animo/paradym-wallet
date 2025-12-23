@@ -1,7 +1,7 @@
 const PARADYM_CONFIG = {
   projectId: 'cmipr5x5x00l6s6018op8cbci',
   issuance: {
-    'mobile-driver-license': {
+    'mdl-mdoc': {
       templateId: 'cmiyfjvp50031s601ihl1epyf',
       attributes: {
         'org.iso.18013.5.1': {
@@ -61,9 +61,8 @@ const PARADYM_CONFIG = {
         },
       },
     },
-
-    // ACTION.requestType === "arf-18-pid"
-    'arf-18-pid': {
+    // NOTE: should be updated to actual msisdn
+    'msisdn-sd-jwt': {
       templateId: 'cmiyewqbz0030s601doszw1f3',
       attributes: {
         sex: 2,
@@ -110,7 +109,55 @@ const PARADYM_CONFIG = {
         personal_administrative_number: 'ADM2023080012345',
       },
     },
-    'membership-card': {
+
+    'arf-pid-sd-jwt': {
+      templateId: 'cmiyewqbz0030s601doszw1f3',
+      attributes: {
+        sex: 2,
+        email: 'emma.vandenberg@gmail.com',
+        address: {
+          region: 'Noord-Holland',
+          country: 'NL',
+          locality: 'Amsterdam',
+          formatted: 'Prinsengracht 263, 1016 GV Amsterdam, Noord-Holland, NL',
+          postal_code: '1016 GV',
+          house_number: '263',
+          street_address: 'Prinsengracht',
+        },
+        picture: '',
+        birthdate: '1995-03-15',
+        given_name: 'Emma Charlotte',
+        family_name: 'van der Berg',
+        age_in_years: 30,
+        phone_number: '0031612345678',
+        trust_anchor: 'NL_GOV',
+        nationalities: ['NL'],
+        age_birth_year: 1995,
+        date_of_expiry: '2033-08-20',
+        place_of_birth: {
+          region: 'Noord-Holland',
+          country: 'NL',
+          locality: 'Amsterdam',
+        },
+        document_number: 'NL987654321',
+        issuing_country: 'NL',
+        birth_given_name: 'Emma Charlotte',
+        date_of_issuance: '2023-08-20',
+        age_equal_or_over: {
+          12: true,
+          14: true,
+          16: true,
+          18: true,
+          21: true,
+          65: false,
+        },
+        birth_family_name: 'van der Berg',
+        issuing_authority: 'NL',
+        issuing_jurisdiction: 'NL',
+        personal_administrative_number: 'ADM2023080012345',
+      },
+    },
+    'membership-card-anoncreds': {
       templateId: 'cmj1our71002hs601mp97qnvf',
       attributes: {
         last_name: 'String value',
@@ -120,7 +167,7 @@ const PARADYM_CONFIG = {
       },
     },
 
-    'birth-certificate': {
+    'birth-certificate-anoncreds': {
       templateId: 'cmj1oyjez002us601dzzi19s8',
       attributes: {
         last_name: 'String value',
@@ -132,9 +179,9 @@ const PARADYM_CONFIG = {
     },
   },
   verification: {
-    'mobile-driver-license': { presentationTemplateId: 'cmiyfo40z0032s601thh9lqju' },
-    'arf-18-pid': { presentationTemplateId: 'cmiyfopx40033s601guy5q89e' },
-    'birth-certificate-and-membership-card': {
+    'mdl-mdoc': { presentationTemplateId: 'cmiyfo40z0032s601thh9lqju' },
+    'arf-pid-sd-jwt': { presentationTemplateId: 'cmiyfopx40033s601guy5q89e' },
+    'birth-certificate-and-membership-card-anoncreds': {
       presentationTemplateId: 'cmj1p0eo7002ys601ro814a6t',
     },
   },
@@ -142,22 +189,25 @@ const PARADYM_CONFIG = {
 
 const PLAYGROUND_CONFIG = {
   issuance: {
-    'mobile-driver-license': {
+    'mdl-mdoc': {
       credentialSupportedId: 'mdl-mdoc',
     },
-    'arf-18-pid': {
-      credentialSupportedId: 'government-arf-18-pid-mdoc',
+    'arf-pid-sd-jwt': {
+      credentialSupportedId: 'government-arf-18-pid-sd-jwt',
     },
-    'certificate-of-residence': {
+    'msisdn-sd-jwt': {
+      credentialSupportedId: 'msisdn-sd-jwt',
+    },
+    'certificate-of-residence-sd-jwt': {
       credentialSupportedId: 'certificate-of-residence-sd-jwt',
     },
   },
   verification: {
-    'mobile-driver-license': {
+    'mdl-mdoc': {
       presentationDefinitionId: '019368ed-3787-7669-b7f4-8c012238e90d__0',
     },
-    'arf-18-pid': {
-      presentationDefinitionId: '019368ed-3787-7669-b7f4-8c012238e90d__0',
+    'arf-pid-sd-jwt': {
+      presentationDefinitionId: '8caaebcc-d48c-471b-86b0-a534e15c4774__1',
     },
   },
 }
@@ -496,7 +546,7 @@ function buildVerificationRequest(baseUrl, action) {
 }
 
 function parseOfferResponse(data) {
-  if (!data.issuanceSession) throw new Error('issuanceSession missing')
+  if (!data.issuanceSession) throw new Error('issuanceSession missing' + JSON.stringify(data))
 
   const session = data.issuanceSession
   const uri = session.credentialOfferUri || session.credential_offer_uri

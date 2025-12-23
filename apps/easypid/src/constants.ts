@@ -4,7 +4,9 @@ import { isParadymWallet } from './hooks/useFeatureFlag'
 
 export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid
 export const appScheme = ExpoConstants.expoConfig?.scheme as string
-export const redirectBaseUrl = ExpoConstants.expoConfig?.extra?.redirectBaseUrl as string | undefined
+export const redirectBaseUrl =
+  'https://dev.paradym.id/invitation/redirect' ??
+  (ExpoConstants.expoConfig?.extra?.redirectBaseUrl as string | undefined)
 
 export const EASYPID_WALLET_PID_PIN_KEY_ID = 'EASYPID_WALLET_PID_PIN_KEY_ID_NO_BIOMETRICS'
 export const EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID'

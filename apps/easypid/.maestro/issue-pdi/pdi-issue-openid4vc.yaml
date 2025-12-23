@@ -3,13 +3,13 @@ tags:
   - presentation-during-issuance
   - issue
   - openid4vc
-  - mdoc
+  - sd-jwt
 ---
 - runFlow: ../issue-none/issue-none-openid4vc.yaml
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createOffer", "format":"mdoc", "authorization":"presentation", "requestType": "certificate-of-residence", "flow": "openid4vc"}'
+      ACTION: '{"action":"createOffer", "authorization":"presentation", "requestType": "certificate-of-residence-sd-jwt", "flow": "openid4vc"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow:

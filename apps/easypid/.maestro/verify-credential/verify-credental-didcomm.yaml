@@ -3,14 +3,37 @@ tags:
   - verification
   - issue
   - didcomm
-  - x5c
   - anoncreds
 ---
-- runFlow: ../issue-none/issue-none-didcomm.yaml
+- runFlow: ../onboarding.yaml
+
+# Issue birth certificate
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType":"birth-certificate-and-membership-card"}'
+      ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "birth-certificate-anoncreds", "flow":"didcomm"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+- runFlow: 
+    file: issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}
+
+# Issue membership card
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "membership-card-anoncreds", "flow":"didcomm"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow: 
+    file: issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}
+
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"didcomm", "requestType":"birth-certificate-and-membership-card-anoncreds"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 

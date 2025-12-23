@@ -18,6 +18,10 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
+- extendedWaitUntil:
+    visible: "Yes, continue"
+    timeout: 100000
+
 - tapOn: "Yes, continue"
 
 - waitForAnimationToEnd:
@@ -33,34 +37,35 @@ appId: id.paradym.wallet.preview
       - assertVisible: .*to Sign In.*
       - tapOn: Continue
 
+# If already signed-in previously
 - runFlow:
     when:
-      platform: iOS
-      visible: Continue
+      visible: the client is asking you to confirm previously given authorization
     commands:
       - tapOn: Continue
 
 - runFlow:
     when:
       platform: iOS
-      notVisible: Continue
+      visible: Sign-in
     commands:
       - inputText: "username"
-      - tapOn:
-          point: 50%,40%
+      - tapOn: and password
       - inputText: "password"
       - tapOn:
-          point: 50%,45%
-      - tapOn:
-          point: 50%,40%
-      - tapOn:
-          point: 50%,60%
-      - tapOn:
-          point: 50%,40%
+          text: Sign-in
+          index: 1
+      - runFlow:
+          when:
+            visible: Save Password?
+          commands:
+            - tapOn: Never for This Website
+      - tapOn: Continue
 
 - runFlow:
     when:
       platform: Android
+      visible: Sign-in
     commands:
       - waitForAnimationToEnd:
           timeout: 15000

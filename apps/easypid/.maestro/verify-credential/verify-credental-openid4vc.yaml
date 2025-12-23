@@ -9,7 +9,7 @@ tags:
 - runScript:
     file: ../scripts/request.js
     env:
-      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"openid4vc", "requestType":"arf-18-pid"}'
+      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"openid4vc", "requestType":"arf-pid-sd-jwt"}'
       ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
 
 - runFlow: 
