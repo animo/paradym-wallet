@@ -100,7 +100,7 @@ catalog:
   # Tamagui
   "@tamagui/animations-react-native": 1.139.2
   "@tamagui/font-inter": 1.139.2
-  "@tamagui/shorthands": 1.139.2
+  "@tamagui/shorthands": 1.140.4
   "@tamagui/themes": 1.139.2
   "@tamagui/toast": 1.139.2
   "@tamagui/react-native-media-driver": 1.139.2
