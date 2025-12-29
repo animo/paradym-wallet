@@ -106,5 +106,5 @@ catalog:
   "@tamagui/react-native-media-driver": 1.139.2
   "@tamagui/colors": 1.139.2
   "@tamagui/lucide-icons": 1.139.2
-  "@tamagui/babel-plugin": 1.139.2
+  "@tamagui/babel-plugin": 1.140.4
   tamagui: 1.139.2
