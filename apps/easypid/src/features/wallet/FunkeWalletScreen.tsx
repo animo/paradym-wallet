@@ -56,7 +56,7 @@ export function FunkeWalletScreen() {
           <InboxIcon />
         </XStack>
 
-        <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)} opacity={0}>
+        <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)}>
           <ScrollView scrollEnabled={false} contentContainerStyle={{ fg: 1 }}>
             <YStack fg={1} f={1} gap="$4">
               <YStack ai="center" jc="center" gap="$2">
