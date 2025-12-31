@@ -7,6 +7,12 @@ const mediatorDids = {
   production: 'did:web:mediator.paradym.id',
 }
 
+const redirectBaseUrls = {
+  development: 'https://dev.paradym.id/invitation/redirect',
+  preview: 'https://paradym.id/invitation/redirect',
+  production: 'https://paradym.id/invitation/redirect',
+}
+
 const APP_CONFIGS = {
   FUNKE_WALLET: createBaseConfig({
     name: 'Funke Wallet',
@@ -41,7 +47,7 @@ const APP_CONFIGS = {
     assets: ['./assets/paradym/icon.png'],
     extraConfig: {
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
-      redirectBaseUrl: 'https://paradym.id/invitation/redirect',
+      redirectBaseUrl: redirectBaseUrls[process.env.APP_VARIANT || 'production'],
     },
   }),
 }
