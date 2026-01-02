@@ -45,7 +45,6 @@ appId: id.paradym.wallet.preview
 - assertVisible: Is the information correct?
 - tapOn: Accept
 
-
 - waitForAnimationToEnd:
     timeout: 30000
 

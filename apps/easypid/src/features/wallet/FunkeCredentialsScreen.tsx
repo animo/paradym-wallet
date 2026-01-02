@@ -82,7 +82,7 @@ export function FunkeCredentialsScreen() {
           <Stack position="relative">
             <Input
               value={searchQuery}
-              onChangeText={(e) => setSearchQuery(e.nativeEvent.text)}
+              onChangeText={(e) => setSearchQuery(typeof e === 'string' ? e : e.nativeEvent.text)}
               pl="$7"
               mb="$4"
               bg="$grey-50"

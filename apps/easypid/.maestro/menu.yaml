@@ -8,7 +8,7 @@ tags:
 - assertVisible: Activity
 - tapOn: .*Card added.*
 - assertVisible: Card added
-- tapOn: EUDI PID
+- tapOn: .*Issued on.*
 - assertVisible: Card details
 - tapOn: Card is active. No actions required
 - assertVisible: Bottom Sheet

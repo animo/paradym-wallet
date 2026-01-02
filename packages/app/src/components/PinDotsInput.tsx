@@ -162,7 +162,7 @@ export const PinDotsInput = forwardRef(
             position="absolute"
             onBlur={() => inputRef.current?.focus()}
             maxLength={pinLength}
-            onChangeText={(e) => onChangePin(e.nativeEvent.text)}
+            onChangeText={(e) => onChangePin(typeof e === 'string' ? e : e.nativeEvent.text)}
             autoFocus
             flex={1}
             height={0}

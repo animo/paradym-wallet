@@ -37,6 +37,14 @@ appId: id.paradym.wallet.preview
       - assertVisible: .*to Sign In.*
       - tapOn: Continue
 
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Ensure text for conditional flow is visible
+- extendedWaitUntil:
+    visible: Enter any login|the client is asking you to confirm previously given authorization
+    timeout: 15000
+
 # If already signed-in previously
 - runFlow:
     when:
@@ -44,10 +52,12 @@ appId: id.paradym.wallet.preview
     commands:
       - tapOn: Continue
 
+# Has not signed in previously
 - runFlow:
     when:
       platform: iOS
-      visible: Sign-in
+      visible: Enter any login
+
     commands:
       - inputText: "username"
       - tapOn: and password

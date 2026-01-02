@@ -202,7 +202,7 @@ const PLAYGROUND_CONFIG = {
   },
   verification: {
     'mdl-mdoc': {
-      presentationDefinitionId: '019368ed-3787-7669-b7f4-8c012238e90d__0',
+      presentationDefinitionId: '8caaebcc-d48c-471b-86b0-a534e15c4774__0',
     },
     'eudi-pid-sd-jwt': {
       presentationDefinitionId: '8caaebcc-d48c-471b-86b0-a534e15c4774__1',
@@ -575,7 +575,9 @@ function parseVerificationResponse(data) {
   const aro = data.authorizationRequestObject || data.authorization_request_object
 
   if (!aro) {
-    throw new Error('authorizationRequestUri and authorizationRequestObject missing')
+    throw new Error(
+      `authorizationRequestUri and authorizationRequestObject missing. Data: ${JSON.stringify(data, null, 2)}`
+    )
   }
 
   const clientId = aro.client_id
