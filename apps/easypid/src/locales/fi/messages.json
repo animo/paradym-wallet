@@ -2360,19 +2360,19 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 53]],
 		"translation": "Nollaa lompakko"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
-		"translation": "Tarkasta pyyntö"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 72]],
 		"translation": "Tarkista pyyntö"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
+		"translation": "Tarkasta pyyntö"
 	},
 	"common.revoked": {
 		"message": "Revoked",
