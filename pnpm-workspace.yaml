@@ -98,13 +98,13 @@ catalog:
   "@expo-google-fonts/raleway": ^0.4.2
 
   # Tamagui
-  "@tamagui/animations-react-native": 1.139.2
-  "@tamagui/font-inter": 1.139.2
-  "@tamagui/shorthands": 1.139.2
-  "@tamagui/themes": 1.139.2
-  "@tamagui/toast": 1.139.2
-  "@tamagui/react-native-media-driver": 1.139.2
-  "@tamagui/colors": 1.139.2
-  "@tamagui/lucide-icons": 1.139.2
-  "@tamagui/babel-plugin": 1.139.2
-  tamagui: 1.139.2
+  "@tamagui/animations-react-native": 1.142.0
+  "@tamagui/font-inter": 1.142.0
+  "@tamagui/shorthands": 1.142.0
+  "@tamagui/themes": 1.142.0
+  "@tamagui/toast": 1.142.0
+  "@tamagui/react-native-media-driver": 1.142.0
+  "@tamagui/colors": 1.142.0
+  "@tamagui/lucide-icons": 1.142.0
+  "@tamagui/babel-plugin": 1.142.0
+  tamagui: 1.142.0
