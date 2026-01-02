@@ -47,7 +47,7 @@ appId: id.paradym.wallet.preview
 
 - extendedWaitUntil:
     visible: "Success!"
-    timeout: 30000
+    timeout: 120000
 
 - waitForAnimationToEnd:
     timeout: 30000

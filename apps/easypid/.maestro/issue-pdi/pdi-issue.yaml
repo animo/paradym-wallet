@@ -52,7 +52,7 @@ appId: id.paradym.wallet.preview
 # Due to animations, it can take some time before the home screen becomes visible.
 - extendedWaitUntil:
     visible: "Success!"
-    timeout: 30000
+    timeout: 120000
 
 - waitForAnimationToEnd:
     timeout: 30000

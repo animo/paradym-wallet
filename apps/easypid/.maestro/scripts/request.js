@@ -109,7 +109,7 @@ const PARADYM_CONFIG = {
       },
     },
 
-    'arf-pid-sd-jwt': {
+    'eudi-pid-sd-jwt': {
       templateId: 'cmiyewqbz0030s601doszw1f3',
       attributes: {
         sex: 2,
@@ -190,8 +190,8 @@ const PLAYGROUND_CONFIG = {
     'mdl-mdoc': {
       credentialSupportedId: 'mdl-mdoc',
     },
-    'arf-pid-sd-jwt': {
-      credentialSupportedId: 'government-arf-18-pid-sd-jwt',
+    'eudi-pid-sd-jwt': {
+      credentialSupportedId: 'eudi-pid-sd-jwt',
     },
     'msisdn-sd-jwt': {
       credentialSupportedId: 'msisdn-sd-jwt',
@@ -204,7 +204,7 @@ const PLAYGROUND_CONFIG = {
     'mdl-mdoc': {
       presentationDefinitionId: '019368ed-3787-7669-b7f4-8c012238e90d__0',
     },
-    'arf-pid-sd-jwt': {
+    'eudi-pid-sd-jwt': {
       presentationDefinitionId: '8caaebcc-d48c-471b-86b0-a534e15c4774__1',
     },
   },

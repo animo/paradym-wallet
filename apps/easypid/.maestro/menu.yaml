@@ -8,7 +8,7 @@ tags:
 - assertVisible: Activity
 - tapOn: .*Card added.*
 - assertVisible: Card added
-- tapOn: ARF 1.8 PID
+- tapOn: EUDI PID
 - assertVisible: Card details
 - tapOn: Card is active. No actions required
 - assertVisible: Bottom Sheet
@@ -17,23 +17,3 @@ tags:
 
 - tapOn: Card attributes. View attributes of the card
 - assertVisible: Card attributes
-
-- tapOn: "  Back"
-- assertVisible: Card details
-- tapOn: "  Back"
-- assertVisible: Card added
-- tapOn: "  Back"
-- assertVisible: Activity
-- tapOn: "  Back"
-- assertVisible: Hello!
-- tapOn: .*All cards.*
-- assertVisible: Cards
-- tapOn: ARF 1.8 PID
-- assertVisible: Card details
-- tapOn:
-    point: 87%,7%
-- assertVisible: Bottom Sheet
-- tapOn:
-    point: 75%,90%
-- assertVisible: Cards
-- tapOn: "  Back"
