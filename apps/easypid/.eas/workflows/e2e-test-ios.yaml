@@ -3,7 +3,7 @@
 name: Build or repack, then Maestro tests
 defaults:
   tools:
-    node: 20.11.1
+    node: 22.21.1
     pnpm: '9'
 
 on:
