@@ -1,6 +1,6 @@
 appId: id.paradym.wallet.preview
 tags:
-  - presentation-during-issuance
+  - authorization-presentation-during-issuance
   - issue
   - openid4vc
   - sd-jwt

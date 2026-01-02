@@ -74,7 +74,11 @@ jobs:
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
-      include_tags: 'authorization-none'
+      # Paradym only supports no authorization during issuance
+      exclude_tags:
+        - authorization-code-flow
+        - authorization-presentation-during-issuance
+        - authorization-tx-code
       record_screen: ${{ inputs.enable_recording }}
 
   ios_maestro_playground:
@@ -89,5 +93,6 @@ jobs:
     params:
       build_id: ${{ needs.ios_repack.outputs.build_id || needs.ios_build.outputs.build_id }}
       flow_path: '.maestro'
-      exclude_tags: 'didcomm'
+      exclude_tags:
+        - didcomm
       record_screen: ${{ inputs.enable_recording }}

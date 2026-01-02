@@ -76,7 +76,11 @@ jobs:
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
       android_system_image_package: system-images;android-36;google_apis;x86_64
-      include_tags: 'authorization-none'
+      # Paradym only supports no authorization during issuance
+      exclude_tags:
+        - authorization-code-flow
+        - authorization-presentation-during-issuance
+        - authorization-tx-code
       record_screen: ${{ inputs.enable_recording }}
 
   android_maestro_playground:
@@ -93,5 +97,6 @@ jobs:
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
       android_system_image_package: system-images;android-36;google_apis;x86_64
-      exclude_tags: 'didcomm'
+      exclude_tags:
+        - didcomm
       record_screen: ${{ inputs.enable_recording }}

@@ -1,7 +1,7 @@
 appId: id.paradym.wallet.preview
 tags:
   - verification
-  - issue
+  - authorization-none
   - didcomm
   - anoncreds
 ---

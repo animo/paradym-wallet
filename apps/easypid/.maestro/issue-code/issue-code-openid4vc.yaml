@@ -1,6 +1,6 @@
 appId: id.paradym.wallet.preview
 tags:
-  - transaction-code
+  - authorization-tx-code
   - openid4vc
   - issue
   - mdoc
