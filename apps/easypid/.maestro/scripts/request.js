@@ -336,13 +336,24 @@ function callParadymBackend(action) {
     throw new Error(`Unsupported action: ${action.action}`)
   }
 
-  const response = http.post(url, {
+  let response = http.post(url, {
     headers: {
       'Content-Type': 'application/json',
       'x-access-token': MAESTRO_PARADYM_API_KEY,
     },
     body,
   })
+
+  // If response is 500, we retry the request one time
+  if (response.status >= 500) {
+    response = http.post(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': MAESTRO_PARADYM_API_KEY,
+      },
+      body,
+    })
+  }
 
   if (response.status < 200 || response.status >= 300) {
     throw new Error(`Paradym error: ${response.status} ${response.body || ''}`)
