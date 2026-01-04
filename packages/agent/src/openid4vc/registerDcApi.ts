@@ -3,7 +3,9 @@ import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
 import { sanitizeString } from '@package/utils'
+import { ImageFormat, Skia } from '@shopify/react-native-skia'
 import * as ExpoAsset from 'expo-asset'
+import { File } from 'expo-file-system'
 import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
@@ -81,6 +83,28 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
 
     if (!asset.localUri) {
       return undefined
+    }
+
+    const file = new File(asset.localUri)
+    const handle = file.open()
+    let header: string = ''
+    try {
+      const first50Bytes = handle.readBytes(50) // Returns Uint8Array
+      header = new TextDecoder().decode(first50Bytes)
+    } finally {
+      handle.close()
+    }
+    if (header.startsWith('<?xml') || header.startsWith('<svg')) {
+      const svg = Skia.SVG.MakeFromString(await file.text())
+      if (!svg) return undefined
+
+      const scale = Math.min(20 / svg.width(), 20 / svg.height()) // Fit inside 20x20
+      const surface = Skia.Surface.Make(Math.round(svg.width() * scale), Math.round(svg.height() * scale))
+      if (!surface) {
+        throw new Error('Unable to rasterize SVG')
+      }
+      surface.getCanvas().drawSvg(svg, surface.width(), surface.height())
+      return `data:image/png;base64,${surface.makeImageSnapshot().encodeToBase64(ImageFormat.PNG, 80)}` as const
     }
 
     const image = await Image.loadAsync(asset.localUri)

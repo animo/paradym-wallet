@@ -38,6 +38,7 @@
 		"@react-native-masked-view/masked-view": "catalog:",
 		"@react-native-picker/picker": "^2.11.4",
 		"@react-navigation/native": "catalog:",
+		"@shopify/react-native-skia": "catalog:",
 		"babel-plugin-module-resolver": "catalog:",
 		"buffer": "catalog:",
 		"burnt": "catalog:",
