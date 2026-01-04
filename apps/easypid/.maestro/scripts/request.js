@@ -216,7 +216,7 @@ function request() {
   let action
   try {
     action = JSON.parse(actionRaw)
-  } catch {
+  } catch (_e) {
     throw new Error(`Invalid ACTION JSON: ${actionRaw}`)
   }
 
@@ -336,24 +336,13 @@ function callParadymBackend(action) {
     throw new Error(`Unsupported action: ${action.action}`)
   }
 
-  let response = http.post(url, {
+  const response = http.post(url, {
     headers: {
       'Content-Type': 'application/json',
       'x-access-token': MAESTRO_PARADYM_API_KEY,
     },
     body,
   })
-
-  // If response is 500, we retry the request one time
-  if (response.status >= 500) {
-    response = http.post(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': MAESTRO_PARADYM_API_KEY,
-      },
-      body,
-    })
-  }
 
   if (response.status < 200 || response.status >= 300) {
     throw new Error(`Paradym error: ${response.status} ${response.body || ''}`)
@@ -586,9 +575,7 @@ function parseVerificationResponse(data) {
   const aro = data.authorizationRequestObject || data.authorization_request_object
 
   if (!aro) {
-    throw new Error(
-      `authorizationRequestUri and authorizationRequestObject missing. Data: ${JSON.stringify(data, null, 2)}`
-    )
+    throw new Error('authorizationRequestUri and authorizationRequestObject missing')
   }
 
   const clientId = aro.client_id
