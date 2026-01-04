@@ -30,7 +30,7 @@ export const TableRow = ({ attributes, values, isLastRow = false, onPress, image
       <XStack f={1} alignItems="center">
         {attributesArray.map((attr, index) => (
           <YStack
-            key={attr}
+            key={`attribute-${attr}-${index}`}
             borderRightWidth={2}
             borderRightColor={index === attributesArray.length - 1 ? 'transparent' : '$white'}
             my="$-2"

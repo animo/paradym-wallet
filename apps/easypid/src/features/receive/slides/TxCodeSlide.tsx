@@ -80,7 +80,7 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
             returnKeyType={txCode.length === undefined ? 'done' : 'none'}
             keyboardType={txCode.input_mode === 'text' ? 'ascii-capable' : 'numeric'}
             maxLength={txCode.length}
-            onChangeText={onChangeTxCodeEntry}
+            onChangeText={(e) => onChangeTxCodeEntry(typeof e === 'string' ? e : e.nativeEvent.text)}
             placeholderTextColor="$grey-500"
             borderColor="$grey-300"
             size="$4"

@@ -8,7 +8,7 @@ import { registerDevMenuItems } from 'expo-dev-client'
 import { useEffect } from 'react'
 import { DevSettings } from 'react-native'
 import { type SecureUnlockContext, useSecureUnlock } from '../agent'
-import { getWalletId } from '../agent/initialize'
+import { getWalletId } from '../agent/walletId'
 import { removeShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 
 export async function resetWallet(secureUnlock: SecureUnlockReturn<SecureUnlockContext>) {

@@ -1,0 +1,28 @@
+flows:
+  - "*"
+  - "issue-none/issue-none-didcomm.yaml"
+  - "issue-none/issue-none-openid4vc.yaml"
+  - "issue-code/issue-code-didcomm.yaml"
+  - "issue-code/issue-code-openid4vc.yaml"
+  - "issue-pdi/pdi-issue-didcomm.yaml"
+  - "issue-pdi/pdi-issue-openid4vc.yaml"
+  - "issue-sign-in/issue-sign-in-didcomm.yaml"
+  - "issue-sign-in/issue-sign-in-openid4vc.yaml"
+  - "verify-credential/verify-credental-didcomm.yaml"
+  - "verify-credential/verify-credental-openid4vc.yaml"
+
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - onboarding
+    - issue-none/issue-none-didcomm.yaml
+    - issue-none/issue-none-openid4vc.yaml
+    - issue-code/issue-code-didcomm.yaml
+    - issue-code/issue-code-openid4vc.yaml
+    - issue-pdi/pdi-issue-didcomm.yaml
+    - issue-pdi/pdi-issue-openid4vc.yaml
+    - issue-sign-in/issue-sign-in-didcomm.yaml
+    - issue-sign-in/issue-sign-in-openid4vc.yaml
+    - verify-credential/verify-credental-didcomm.yaml
+    - verify-credential/verify-credental-openid4vc.yaml
+    - menu.yaml

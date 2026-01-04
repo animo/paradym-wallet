@@ -85,6 +85,17 @@
 			"env": {
 				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET"
 			}
+		},
+		"e2e-test": {
+			"extends": "paradym-preview",
+			"withoutCredentials": true,
+			"ios": {
+				"simulator": true
+			},
+			"android": {
+				"image": "latest",
+				"buildType": "apk"
+			}
 		}
 	},
 	"cli": {

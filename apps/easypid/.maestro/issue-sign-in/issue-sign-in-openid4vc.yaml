@@ -1,0 +1,18 @@
+appId: id.paradym.wallet.preview
+tags:
+  - authorization-code-flow
+  - openid4vc
+  - issue
+  - sd-jwt
+---
+- runFlow: ../onboarding.yaml
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"browser", "requestType": "msisdn-sd-jwt", "flow":"openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow:
+    file: issue-sign-in.yaml
+    env:
+      deeplink: ${output.deeplink}

@@ -49,8 +49,8 @@ export function FormattedCredentialAttributes({ attributes, headerTitle }: Forma
           {headerTitle && <Heading heading="sub2">{headerTitle}</Heading>}
 
           <TableContainer>
-            {primitiveItems.map((item) => (
-              <AnyRow key={`row-${item.key}`} item={item} />
+            {primitiveItems.map((item, index) => (
+              <AnyRow key={`row-${index}-${item.key}`} item={item} />
             ))}
           </TableContainer>
         </YStack>
@@ -60,8 +60,8 @@ export function FormattedCredentialAttributes({ attributes, headerTitle }: Forma
         <YStack key={item.key} gap="$4">
           {typeof item.name === 'string' && <Heading heading="sub2">{item.name}</Heading>}
           <TableContainer>
-            {item.value.map((value) => (
-              <AnyRow key={value.key} item={value} parentName={item.name} />
+            {item.value.map((value, index) => (
+              <AnyRow key={`${index}-${value.key}`} item={value} parentName={item.name} />
             ))}
           </TableContainer>
         </YStack>
