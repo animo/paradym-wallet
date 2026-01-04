@@ -56,10 +56,7 @@ jobs:
     needs: [ios_get_build]
     id: ios_build
     if: ${{ !needs.ios_get_build.outputs.build_id }}
-    # NOTE: Maestro has a bug in iOS 26 making the webview uncontrollable
-    # Once the following PR has been merged release we can update to latest
-    # https://github.com/mobile-dev-inc/Maestro/pull/2872
-    image: macos-sequoia-15.6-xcode-16.4
+    image: latest
     type: build
     params:
       platform: ios
@@ -69,10 +66,7 @@ jobs:
     after: [ios_repack, ios_build]
     id: ios_maestro_paradym
     type: maestro
-    # NOTE: Maestro has a bug in iOS 26 making the webview uncontrollable
-    # Once the following PR has been merged release we can update to latest
-    # https://github.com/mobile-dev-inc/Maestro/pull/2872
-    image: macos-sequoia-15.6-xcode-16.4
+    image: latest
     runs_on: macos-large
     if: ${{ inputs.issuer_backend == 'paradym' || inputs.issuer_backend == 'both' }}
     env:
@@ -92,10 +86,7 @@ jobs:
     after: [ios_repack, ios_build]
     id: ios_maestro_playground
     type: maestro
-    # NOTE: Maestro has a bug in iOS 26 making the webview uncontrollable
-    # Once the following PR has been merged release we can update to latest
-    # https://github.com/mobile-dev-inc/Maestro/pull/2872
-    image: macos-sequoia-15.6-xcode-16.4
+    image: latest
     runs_on: macos-large
     if: ${{ inputs.issuer_backend == 'playground' || inputs.issuer_backend == 'both' }}
     env:
