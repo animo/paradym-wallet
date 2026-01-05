@@ -76,7 +76,6 @@ export const CredentialRetrievalSlide = ({
   }
 
   useEffect(() => {
-    console.log('isStoring', isStoring)
     if (isStoring) {
       scale.value = withTiming(0.9, { duration: 2000 })
       textOpacity.value = withTiming(0, { duration: 300 })
@@ -99,7 +98,6 @@ export const CredentialRetrievalSlide = ({
   }, [])
 
   const animatedTextStyle = useAnimatedStyle(() => {
-    console.log('opacity', textOpacity.value)
     return {
       opacity: textOpacity.value,
     }
