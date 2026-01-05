@@ -4,7 +4,7 @@ name: Build or repack, then Maestro tests
 defaults:
   tools:
     node: 22.21.1
-    pnpm: '9'
+    pnpm: 9.15.9
 
 on:
   workflow_dispatch:
@@ -75,12 +75,13 @@ jobs:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
-      android_system_image_package: system-images;android-36;google_apis;x86_64
+      android_system_image_package: system-images;android-36.1;google_apis_playstore;x86_64
       # Paradym only supports no authorization during issuance
       exclude_tags:
         - authorization-code-flow
         - authorization-presentation-during-issuance
         - authorization-tx-code
+         - digital-credentials-api
       record_screen: ${{ inputs.enable_recording }}
 
   android_maestro_playground:
@@ -96,7 +97,8 @@ jobs:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
-      android_system_image_package: system-images;android-36;google_apis;x86_64
+      android_system_image_package: system-images;android-36.1;google_apis_playstore;x86_64
       exclude_tags:
         - didcomm
+        - digital-credentials-api
       record_screen: ${{ inputs.enable_recording }}
