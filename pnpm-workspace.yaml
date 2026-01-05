@@ -69,6 +69,7 @@ catalog:
   "@react-native-community/blur": ^4.3.2
   "@gorhom/bottom-sheet": ^5.2.8
   react-native-edge-to-edge: ^1.7.0
+  '@shopify/react-native-skia': ^2.4.14
 
   # Expo
   expo-crypto: ^15.0.8
