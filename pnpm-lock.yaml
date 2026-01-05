@@ -121,8 +121,8 @@ catalogs:
       specifier: ^5.0.2
       version: 5.0.2
     babel-plugin-syntax-hermes-parser:
-      specifier: ^0.32.1
-      version: 0.32.1
+      specifier: ^0.33.2
+      version: 0.33.2
     buffer:
       specifier: 6.0.3
       version: 6.0.3
@@ -499,7 +499,7 @@ importers:
         version: 1.142.0(react-dom@19.2.1(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       babel-plugin-syntax-hermes-parser:
         specifier: 'catalog:'
-        version: 0.32.1
+        version: 0.33.2
       expo-build-properties:
         specifier: 'catalog:'
         version: 1.0.10(expo@54.0.27)
@@ -3400,8 +3400,8 @@ packages:
   babel-plugin-syntax-hermes-parser@0.29.1:
     resolution: {integrity: sha512-2WFYnoWGdmih1I1J5eIqxATOeycOqRwYxAQBu3cUu/rhwInwHUg7k60AFNbuGjSDL8tje5GDrAnxzRLcu2pYcA==}
 
-  babel-plugin-syntax-hermes-parser@0.32.1:
-    resolution: {integrity: sha512-HgErPZTghW76Rkq9uqn5ESeiD97FbqpZ1V170T1RG2RDp+7pJVQV2pQJs7y5YzN0/gcT6GM5ci9apRnIwuyPdQ==}
+  babel-plugin-syntax-hermes-parser@0.33.2:
+    resolution: {integrity: sha512-39g/b5BPIIi0vcYvsoc3OFBYucVkMdFogsOM4YhxIV8cRjQzdKmKYB5WuEiGq3AI+Rs3xV5j0MkANzxb9Rbx4A==}
 
   babel-plugin-transform-flow-enums@0.0.2:
     resolution: {integrity: sha512-g4aaCrDDOsWjbm0PUUeVnkcVd6AKJsVc/MbnPhEotEpkeJQP6b8nzewohQi7+QS8UyPehOhGWn0nOwjvWpmMvQ==}
@@ -4544,8 +4544,8 @@ packages:
   hermes-estree@0.32.0:
     resolution: {integrity: sha512-KWn3BqnlDOl97Xe1Yviur6NbgIZ+IP+UVSpshlZWkq+EtoHg6/cwiDj/osP9PCEgFE15KBm1O55JRwbMEm5ejQ==}
 
-  hermes-estree@0.32.1:
-    resolution: {integrity: sha512-ne5hkuDxheNBAikDjqvCZCwihnz0vVu9YsBzAEO1puiyFR4F1+PAz/SiPHSsNTuOveCYGRMX8Xbx4LOubeC0Qg==}
+  hermes-estree@0.33.2:
+    resolution: {integrity: sha512-9JDuZAY5jZwRvWjWdU23QytO8jxEIUBO1LNqfS2dSn/S6ck32tOd1EFL1TbWrXQZFDcxwCj1oaThA0QTXx8Khw==}
 
   hermes-parser@0.29.1:
     resolution: {integrity: sha512-xBHWmUtRC5e/UL0tI7Ivt2riA/YBq9+SiYFU7C1oBa/j2jYGlIF9043oak1F47ihuDIxQ5nbsKueYJDRY02UgA==}
@@ -4553,8 +4553,8 @@ packages:
   hermes-parser@0.32.0:
     resolution: {integrity: sha512-g4nBOWFpuiTqjR3LZdRxKUkij9iyveWeuks7INEsMX741f3r9xxrOe8TeQfUxtda0eXmiIFiMQzoeSQEno33Hw==}
 
-  hermes-parser@0.32.1:
-    resolution: {integrity: sha512-175dz634X/W5AiwrpLdoMl/MOb17poLHyIqgyExlE8D9zQ1OPnoORnGMB5ltRKnpvQzBjMYvT2rN/sHeIfZW5Q==}
+  hermes-parser@0.33.2:
+    resolution: {integrity: sha512-uVIopq693AlLMu+sJmuvfkVtv85pdekk0+nMFXAVwqMJpQabA9WVThZBSs+naL36pbEXObnoZXFq6rGzCiOVmQ==}
 
   hmac-drbg@1.0.1:
     resolution: {integrity: sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==}
@@ -10545,9 +10545,9 @@ snapshots:
     dependencies:
       hermes-parser: 0.29.1
 
-  babel-plugin-syntax-hermes-parser@0.32.1:
+  babel-plugin-syntax-hermes-parser@0.33.2:
     dependencies:
-      hermes-parser: 0.32.1
+      hermes-parser: 0.33.2
 
   babel-plugin-transform-flow-enums@0.0.2(@babel/core@7.28.5):
     dependencies:
@@ -11853,7 +11853,7 @@ snapshots:
 
   hermes-estree@0.32.0: {}
 
-  hermes-estree@0.32.1: {}
+  hermes-estree@0.33.2: {}
 
   hermes-parser@0.29.1:
     dependencies:
@@ -11863,9 +11863,9 @@ snapshots:
     dependencies:
       hermes-estree: 0.32.0
 
-  hermes-parser@0.32.1:
+  hermes-parser@0.33.2:
     dependencies:
-      hermes-estree: 0.32.1
+      hermes-estree: 0.33.2
 
   hmac-drbg@1.0.1:
     dependencies:
