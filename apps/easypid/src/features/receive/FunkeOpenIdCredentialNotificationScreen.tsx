@@ -194,27 +194,34 @@ export function FunkeCredentialNotificationScreen() {
 
     let deferredCredentialId: string | undefined
 
-    if (receivedRecord) {
-      await storeCredential(agent, receivedRecord)
-    } else if (deferredCredential) {
-      const { id } = await storeDeferredCredential(agent, deferredCredential)
-      deferredCredentialId = id
+    try {
+      if (receivedRecord) {
+        await storeCredential(agent, receivedRecord)
+      } else if (deferredCredential) {
+        const { id } = await storeDeferredCredential(agent, deferredCredential)
+        deferredCredentialId = id
+      }
+
+      await storeReceivedActivity(agent, {
+        // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
+        // the credential. Signed issuer metadata is the solution.
+        entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
+        host: credentialDisplay.issuer.domain,
+        name: credentialDisplay.issuer.name,
+        logo: credentialDisplay.issuer.logo,
+        backgroundColor: '#ffffff', // Default to a white background for now
+        status: deferredCredentialId ? 'pending' : 'success',
+        deferredCredentials: deferredCredentialId ? [credentialDisplay] : [],
+        credentialIds: receivedRecord ? [getCredentialForDisplayId(receivedRecord)] : [],
+      })
+
+      setIsCompleted(true)
+    } catch (error) {
+      agent.config.logger.error('Error storing credentials', {
+        error,
+      })
+      setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
     }
-
-    await storeReceivedActivity(agent, {
-      // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
-      // the credential. Signed issuer metadata is the solution.
-      entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
-      host: credentialDisplay.issuer.domain,
-      name: credentialDisplay.issuer.name,
-      logo: credentialDisplay.issuer.logo,
-      backgroundColor: '#ffffff', // Default to a white background for now
-      status: deferredCredentialId ? 'pending' : 'success',
-      deferredCredentials: deferredCredentialId ? [credentialDisplay] : [],
-      credentialIds: receivedRecord ? [getCredentialForDisplayId(receivedRecord)] : [],
-    })
-
-    setIsCompleted(true)
   }
 
   const acquireCredentialsAuth = useCallback(
@@ -522,8 +529,8 @@ export function FunkeCredentialNotificationScreen() {
               key="retrieve-credential"
               onGoToWallet={onGoToWallet}
               display={credentialDisplay}
-              attributes={credentialAttributes}
-              deferred={!!deferredCredential}
+              attributes={credentialAttributes ?? {}}
+              deferred={deferredCredential !== undefined}
               isCompleted={isCompleted}
               onAccept={onCompleteCredentialRetrieval}
             />

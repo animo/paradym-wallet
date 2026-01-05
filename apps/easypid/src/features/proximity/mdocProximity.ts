@@ -55,15 +55,11 @@ export const waitForDeviceRequest = async () => {
   const mdt = mdocDataTransfer.instance()
   const { deviceRequest, sessionTranscript } = await mdt.waitForDeviceRequest()
 
-  console.log({ deviceRequest, sessionTranscript })
-
   // current bug on android required re-encapsulation
   const encodedSessionTranscript =
     Platform.OS === 'android' ? cborEncode(DataItem.fromData(cborDecode(sessionTranscript))) : sessionTranscript
 
-  const y = { deviceRequest, sessionTranscript: encodedSessionTranscript }
-  console.log(y)
-  return y
+  return { deviceRequest, sessionTranscript: encodedSessionTranscript }
 }
 
 /**

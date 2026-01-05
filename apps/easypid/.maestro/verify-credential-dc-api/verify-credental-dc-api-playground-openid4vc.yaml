@@ -1,0 +1,86 @@
+appId: id.paradym.wallet.preview
+tags:
+  - verification
+  - authorization-none
+  - openid4vc
+  - sd-jwt
+  - x5c
+  - digital-credentials-api
+  - playground
+---
+- runFlow: ../onboarding.yaml
+
+# Issue credential
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "mdl-mdoc", "flow": "openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow:
+    file: ../issue-none/issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}
+
+- launchApp: com.android.chrome
+- runFlow:
+    when:
+      visible: Chrome notifications make things easier
+    commands:
+      - tapOn: No thanks
+
+# Enable Digital Credentials API
+- tapOn:
+    id: url_bar|search_box_text
+- inputText: chrome://flags
+- pressKey: Enter
+- inputText: Digital
+- runFlow:
+    when:
+      notVisible: Enabled without dialog
+    commands:
+      - tapOn: Default
+      - tapOn: Enabled without dialog
+      - tapOn: Relaunch
+
+# Initiate DC API Request
+- tapOn:
+    id: url_bar
+- inputText: "playground.animo.id"
+- pressKey: Enter
+- scrollUntilVisible:
+    element: "mDL (mdoc) - Names"
+- tapOn: "mDL (mdoc) - Names"
+- tapOn: "EUDI PID (sd-jwt-vc) - Names"
+- scrollUntilVisible:
+    element:
+      text: Digital Credentials API
+      index: 1
+- tapOn:
+    text: Digital Credentials API
+    index: 1
+- scrollUntilVisible:
+    element:
+      text: Verify Credential
+- tapOn: Verify Credential
+
+# Accept DC API Request
+- assertVisible: Share info with playground.animo.id?
+- assertVisible: EUDI PID
+- assertVisible: Issued by Bundesdruckerei
+- tapOn: Agree and continue
+
+# Enter PIN
+- tapOn: Enter PIN to share data
+- repeat:
+    times: 6
+    commands:
+      - tapOn: "Pin number 1"
+
+- waitForAnimationToEnd:
+    timeout: 10000
+
+# It's a bit slow when running witht Maestro
+- extendedWaitUntil:
+    visible: "Verification Successful"
+    timeout: 100000

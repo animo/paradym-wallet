@@ -17,7 +17,6 @@ import {
   Paragraph,
   ScrollView,
   Spacer,
-  useInitialRender,
   useSpringify,
   XStack,
   YStack,
@@ -55,9 +54,8 @@ export const CredentialRetrievalSlide = ({
   isAccepting,
 }: CredentialRetrievalSlideProps) => {
   const { completeProgressBar, onCancel } = useWizard()
-  const isInitialRender = useInitialRender()
   const scale = useSharedValue(1)
-  const textOpacity = useSharedValue(1)
+  const textOpacity = useSharedValue(0)
   const [scrollViewHeight, setScrollViewHeight] = useState<number>()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { t } = useLingui()
@@ -144,7 +142,9 @@ export const CredentialRetrievalSlide = ({
         {isStoringOrCompleted && (
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-icon' : 'info-icon'}
-            opacity={isCompleteAndAllowed ? 1 : 0}
+            style={{
+              opacity: isCompleteAndAllowed ? 1 : 0,
+            }}
             entering={useSpringify(ZoomIn)}
           >
             <XStack pt="$4" jc="center">
@@ -155,7 +155,7 @@ export const CredentialRetrievalSlide = ({
         <AnimatedStack layout={useSpringify(LinearTransition)}>
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-title' : 'info-title'}
-            entering={!isInitialRender ? FadeIn.duration(300) : undefined}
+            entering={FadeIn.duration(300)}
             style={animatedTextStyle}
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
@@ -164,7 +164,7 @@ export const CredentialRetrievalSlide = ({
                 <Trans id="receiveCredential.successHeader">Success!</Trans>
               </Heading>
             ) : isStoring ? (
-              <Heading> </Heading>
+              <Heading></Heading>
             ) : deferred ? (
               <Heading>
                 <Trans id="receiveCredential.deferredCredentialHeader">Card is not ready yet</Trans>
@@ -179,20 +179,20 @@ export const CredentialRetrievalSlide = ({
         <AnimatedStack layout={useSpringify(LinearTransition)}>
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-text' : 'info-text'}
-            entering={!isInitialRender ? FadeIn.duration(300) : undefined}
+            entering={FadeIn.duration(300)}
             style={animatedTextStyle}
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
-            {isStoringOrCompleted ? (
-              deferred ? (
-                <Paragraph ta="center" mt="$-2" mb="$6">
-                  <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
-                </Paragraph>
-              ) : (
-                <Paragraph ta="center" mt="$-2" mb="$6">
-                  <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
-                </Paragraph>
-              )
+            {isCompleted ? (
+              <Paragraph ta="center" mt="$-2" mb="$6">
+                <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
+              </Paragraph>
+            ) : isStoring ? (
+              <Paragraph ta="center" mt="$-2" mb="$6"></Paragraph>
+            ) : deferred ? (
+              <Paragraph ta="center" mt="$-2" mb="$6">
+                <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
+              </Paragraph>
             ) : null}
           </AnimatedStack>
         </AnimatedStack>

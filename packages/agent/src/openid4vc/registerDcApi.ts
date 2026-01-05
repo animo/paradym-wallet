@@ -170,66 +170,76 @@ async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
 
 export async function registerCredentialsForDcApi(agent: EitherAgent) {
   if (Platform.OS === 'ios') return
-  const mdocRecords = await agent.mdoc.getAll()
-  const sdJwtVcRecords = await agent.sdJwtVc.getAll()
-  const mdocCredentials = mdocRecords.map(async (record): Promise<CredentialItem> => {
-    const mdoc = record.firstCredential
-    const { display } = getCredentialForDisplay(record)
 
-    const iconDataUrl = display.backgroundImage?.url
-      ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
-      : display.issuer.logo?.url
-        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
-        : undefined
+  try {
+    const mdocRecords = await agent.mdoc.getAll()
+    const sdJwtVcRecords = await agent.sdJwtVc.getAll()
+    const mdocCredentials = mdocRecords.map(async (record): Promise<CredentialItem> => {
+      const mdoc = record.firstCredential
+      const { display } = getCredentialForDisplay(record)
 
-    return {
-      id: record.id,
-      credential: {
-        doctype: mdoc.docType,
-        format: 'mso_mdoc',
-        namespaces: mapMdocAttributes(mdoc.issuerSignedNamespaces),
-      },
-      display: {
-        title: display.name,
-        subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
-        claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces),
-        iconDataUrl,
-      },
-    } as const
-  })
+      const iconDataUrl = display.backgroundImage?.url
+        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
+        : display.issuer.logo?.url
+          ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
+          : undefined
 
-  const sdJwtCredentials = sdJwtVcRecords.map(async (record): Promise<CredentialItem> => {
-    const sdJwtVc = record.firstCredential
-    const { display } = getCredentialForDisplay(record)
+      return {
+        id: record.id,
+        credential: {
+          doctype: mdoc.docType,
+          format: 'mso_mdoc',
+          namespaces: mapMdocAttributes(mdoc.issuerSignedNamespaces),
+        },
+        display: {
+          title: display.name,
+          subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
+          claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces),
+          iconDataUrl,
+        },
+      } as const
+    })
 
-    const iconDataUrl = display.backgroundImage?.url
-      ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
-      : display.issuer.logo?.url
-        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
-        : undefined
+    const sdJwtCredentials = sdJwtVcRecords.map(async (record): Promise<CredentialItem> => {
+      const sdJwtVc = record.firstCredential
+      const { display } = getCredentialForDisplay(record)
 
-    return {
-      id: record.id,
-      credential: {
-        vct: record.getTags().vct,
-        format: 'dc+sd-jwt',
-        // biome-ignore lint/suspicious/noExplicitAny: no explanation
-        claims: sdJwtVc.prettyClaims as any,
-      },
-      display: {
-        title: display.name,
-        subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
-        claims: mapSdJwtAttributesToClaimDisplay(sdJwtVc.prettyClaims),
-        iconDataUrl,
-      },
-    } as const
-  })
+      const iconDataUrl = display.backgroundImage?.url
+        ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.backgroundImage?.url)
+        : display.issuer.logo?.url
+          ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
+          : undefined
 
-  const credentials = await Promise.all([...sdJwtCredentials, ...mdocCredentials])
-  agent.config.logger.trace('Registering credentials for Digital Credentials API')
+      return {
+        id: record.id,
+        credential: {
+          vct: record.getTags().vct,
+          format: 'dc+sd-jwt',
+          // biome-ignore lint/suspicious/noExplicitAny: no explanation
+          claims: sdJwtVc.prettyClaims as any,
+        },
+        display: {
+          title: display.name,
+          subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
+          claims: mapSdJwtAttributesToClaimDisplay(sdJwtVc.prettyClaims),
+          iconDataUrl,
+        },
+      } as const
+    })
 
-  await registerCredentials({
-    credentials,
-    matcher: 'ubique',
-  })
+    const credentials = await Promise.all([...sdJwtCredentials, ...mdocCredentials])
+    agent.config.logger.trace('Registering credentials for Digital Credentials API')
+
+    await registerCredentials({
+      credentials,
+      matcher: 'ubique',
+    })
+  } catch (error) {
+    // Since this is an experimental feature, and it doesn't work if you don't have the latest
+    // PlayStore services/Android it could error on some devices. It will only impact the usage
+    // of the DC API, so it's okay to swallow the error for now.
+    agent.config.logger.error('Error registering credentials for DigitalCredentialsAPI', {
+      error,
+    })
+  }
 }
