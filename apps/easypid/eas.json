@@ -80,7 +80,8 @@
 			"autoIncrement": true,
 			"distribution": "store",
 			"android": {
-				"buildType": "app-bundle"
+				"buildType": "app-bundle",
+				"resourceClass": "large"
 			},
 			"env": {
 				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET"
