@@ -1,0 +1,18 @@
+appId: id.paradym.wallet.preview
+tags:
+  - issue
+  - didcomm
+  - anoncreds
+  - authorization-none
+---
+- runFlow: ../onboarding.yaml
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "birth-certificate-anoncreds", "flow":"didcomm"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow:
+    file: issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}

@@ -1,0 +1,23 @@
+# NOTE: Maestro has a bug in iOS 26 making the webview shown in sign-in flow uncontrollable
+# This means this test currently fails on iOS.
+# Once the following PR has been merged release we can enable that test again
+# https://github.com/mobile-dev-inc/Maestro/pull/2872
+
+appId: id.paradym.wallet.preview
+tags:
+  - authorization-code-flow
+  - openid4vc
+  - issue
+  - sd-jwt
+---
+- runFlow: ../onboarding.yaml
+- runScript:
+    file: ../scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"browser", "requestType": "msisdn-sd-jwt", "flow":"openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+
+- runFlow:
+    file: issue-sign-in.yaml
+    env:
+      deeplink: ${output.deeplink}

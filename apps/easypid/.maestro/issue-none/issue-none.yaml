@@ -1,0 +1,73 @@
+appId: id.paradym.wallet.preview
+---
+# Deeplink is passed via the env variable in the runFlow call from the parent flow (either issue-none-didcomm.yaml or issue-none-openid4vc.yaml).
+- openLink:
+    link: ${deeplink}
+
+- runFlow:
+    when:
+      visible: .*Open in.*
+      platform: ios
+    commands:
+      - tapOn: Open
+
+- repeat:
+    times: 6
+    commands:
+      - tapOn: "Pin number 1"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- extendedWaitUntil:
+    visible: "Yes, continue"
+    timeout: 100000
+- tapOn: "Yes, continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- runFlow:
+    when:
+      true: ${!output.deeplink.startsWith('didcomm')}
+    commands:
+      - assertVisible: "Card offered"
+      - tapOn: "Continue"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Is the information correct?"
+- assertVisible: "Credential"
+- assertVisible: "Decline"
+- tapOn: "Accept"
+
+- waitForAnimationToEnd:
+    timeout: 30000
+
+- extendedWaitUntil:
+    visible: "Success!"
+    timeout: 120000
+
+- waitForAnimationToEnd:
+    timeout: 30000
+- assertVisible: "Card successfully added to your wallet!"
+- assertVisible: "Credential"
+
+# On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet,  "
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- assertVisible: "Hello!"
+- assertVisible: "Receive or share from your wallet "

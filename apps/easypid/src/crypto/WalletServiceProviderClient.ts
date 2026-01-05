@@ -13,7 +13,7 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import type { EasyPIDAppAgent } from '@package/agent'
 import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import { getWalletId } from '../agent/initialize'
+import { getWalletId } from '../agent/walletId'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -113,13 +113,18 @@ export class WalletServiceProviderClient implements SecureEnvironment {
   }
 
   public async batchGenerateKeyPair(keyIds: string[]): Promise<Record<string, Uint8Array>> {
-    const { publicKeys } = await this.post<{ publicKeys: Record<string, Array<number>> }>('batch-create-key', {
+    const { publicKeys } = await this.post<{
+      publicKeys: Record<string, Array<number>>
+    }>('batch-create-key', {
       keyIds,
       keyType: 'P256',
     })
 
     return Object.entries(publicKeys).reduce(
-      (prev, [keyId, publicKey]) => ({ ...prev, [keyId]: new Uint8Array(publicKey) }),
+      (prev, [keyId, publicKey]) => ({
+        ...prev,
+        [keyId]: new Uint8Array(publicKey),
+      }),
       {}
     )
   }

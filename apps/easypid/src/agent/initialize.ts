@@ -7,10 +7,7 @@ import { isFunkeWallet } from '@easypid/hooks/useFeatureFlag'
 import { initializeEasyPIDAgent, initializeParadymAgent, isEasyPIDAgent } from '@package/agent'
 import { InvalidPinError } from '../crypto/error'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
-
-export function getWalletId(walletKeyVersion: number) {
-  return isFunkeWallet() ? `easypid-wallet-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
-}
+import { getWalletId } from './walletId'
 
 export async function initializeAppAgent({
   walletKey,

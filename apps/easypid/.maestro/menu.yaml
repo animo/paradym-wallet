@@ -1,0 +1,19 @@
+appId: id.paradym.wallet.preview
+tags:
+  - menu
+---
+- runFlow: ./issue-none/issue-none-openid4vc.yaml
+
+- tapOn: Recent activity
+- assertVisible: Activity
+- tapOn: .*Card added.*
+- assertVisible: Card added
+- tapOn: .*Issued on.*
+- assertVisible: Card details
+- tapOn: Card is active. No actions required
+- assertVisible: Bottom Sheet
+- tapOn:
+    point: 50%,90%
+
+- tapOn: Card attributes. View attributes of the card
+- assertVisible: Card attributes

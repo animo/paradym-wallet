@@ -1,5 +1,5 @@
+import { PinPad, PinValues, XStack, YStack } from '@package/ui'
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import type { TextInput } from 'react-native'
 import Animated, {
   Easing,
   useSharedValue,
@@ -9,8 +9,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Circle, Input } from 'tamagui'
-import { XStack, YStack } from '../../../ui/src/base'
-import { PinPad, PinValues } from '../../../ui/src/components/PinPad'
 import { useHaptics } from '../hooks'
 
 interface PinDotsInputProps {
@@ -43,7 +41,7 @@ export const PinDotsInput = forwardRef(
   ) => {
     const { withHaptics, errorHaptic } = useHaptics()
     const [pin, setPin] = useState('')
-    const inputRef = useRef<TextInput>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     const isInLoadingState = isLoading
 
@@ -164,7 +162,7 @@ export const PinDotsInput = forwardRef(
             position="absolute"
             onBlur={() => inputRef.current?.focus()}
             maxLength={pinLength}
-            onChangeText={onChangePin}
+            onChangeText={(e) => onChangePin(typeof e === 'string' ? e : e.nativeEvent.text)}
             autoFocus
             flex={1}
             height={0}
