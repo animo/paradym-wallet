@@ -41,7 +41,7 @@ const APP_CONFIGS = {
     assets: ['./assets/paradym/icon.png'],
     extraConfig: {
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
-      redirectBaseUrl: redirectBaseUrls[process.env.APP_VARIANT || 'production'],
+      redirectBaseUrl: 'https://dev.paradym.id/invitation/redirect'
     },
   }),
 }
