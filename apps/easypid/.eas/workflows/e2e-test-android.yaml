@@ -81,7 +81,7 @@ jobs:
         - authorization-code-flow
         - authorization-presentation-during-issuance
         - authorization-tx-code
-         - digital-credentials-api
+        - digital-credentials-api
       record_screen: ${{ inputs.enable_recording }}
 
   android_maestro_playground:
