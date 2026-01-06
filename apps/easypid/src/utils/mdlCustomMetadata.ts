@@ -1,5 +1,3 @@
-import { mapAttributeName } from '@package/app/utils/formatSubject'
-import { commonMessages, i18n } from '@package/translations'
 import mdlCodeA from '../../assets/mdl/code_a.png'
 import mdlCodeA1 from '../../assets/mdl/code_a1.png'
 import mdlCodeA2 from '../../assets/mdl/code_a2.png'
@@ -39,34 +37,6 @@ export type MdlAttributes = {
 
   // There can be multiple and random age_over_XX attributes
   [key: string]: unknown
-}
-
-export function getMdlAttributesForDisplay(attributes: Partial<MdlAttributes>) {
-  const attributeGroups: Array<[string, unknown]> = []
-
-  const { driving_privileges, ...remainingAttributes } = attributes
-
-  const ageOverEntries = Object.entries(remainingAttributes).filter(([key]) => key.startsWith('age_over_'))
-
-  const remainingWithoutAgeEntries = Object.fromEntries(
-    Object.entries(remainingAttributes).filter(([key]) => !key.startsWith('age_over_'))
-  )
-
-  if (driving_privileges) {
-    attributeGroups.push([
-      i18n.t(commonMessages.credentials.mdl.driving_privileges),
-      Object.fromEntries(Object.entries(driving_privileges).map(([key, value]) => [mapAttributeName(key), value])),
-    ])
-  }
-
-  if (ageOverEntries.length > 0) {
-    attributeGroups.push([i18n.t(commonMessages.fields.age_over), Object.fromEntries(ageOverEntries)])
-  }
-
-  return Object.fromEntries([
-    ...Object.entries(remainingWithoutAgeEntries).map(([key, value]) => [mapAttributeName(key), value]),
-    ...attributeGroups,
-  ])
 }
 
 const drivingCodes = [

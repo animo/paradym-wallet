@@ -138,24 +138,15 @@ const sdJwtVcVcts = [
   'https://example.bmi.bund.de/credential/pid/1.0',
 ]
 
-const arfSdJwtVcVcts = ['eu.europa.ec.eudi.pid.1', 'urn:eu.europa.ec.eudi:pid:1', 'urn:eudi:pid:1']
-
 // https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
-const msoMdocDoctypes = ['eu.europa.ec.eudi.pid.1']
-
-const mdlSdJwtVcVcts = ['https://example.eudi.ec.europa.eu/mdl/1']
-
-const mdlMdocDoctypes = ['org.iso.18013.5.1.mDL']
-
 export const pidSchemes = {
-  arfSdJwtVcVcts,
+  arfSdJwtVcVcts: ['urn:eudi:pid:1'],
   sdJwtVcVcts,
-  msoMdocDoctypes,
+  msoMdocDoctypes: ['eu.europa.ec.eudi.pid.1'],
 }
 
 export const mdlSchemes = {
-  mdlSdJwtVcVcts,
-  mdlMdocDoctypes,
+  mdlMdocDoctypes: ['org.iso.18013.5.1.mDL'],
 }
 
 export const eudiTrustList: TrustList = {

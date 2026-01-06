@@ -4,8 +4,8 @@ import { useMemo } from 'react'
 import {
   type CredentialDisplay,
   type DisplayImage,
-  getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
+  getDisclosedAttributeLabelsForDisplay,
+  getUnsatisfiedAttributeLabelsForDisplay,
 } from '../display'
 import type { FormattedSubmission } from '../format/formatPresentation'
 import type { CredentialForDisplayId } from '../hooks'
@@ -246,7 +246,7 @@ export function getDisclosedCredentialForSubmission(
     if (!entry.isSatisfied) {
       return {
         name: entry.name,
-        attributeNames: getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths),
+        attributeNames: getUnsatisfiedAttributeLabelsForDisplay(entry.requestedAttributePaths),
       } satisfies PresentationActivityCredentialNotFound
     }
 
@@ -255,7 +255,10 @@ export function getDisclosedCredentialForSubmission(
 
     return {
       id: credential.credential.id,
-      attributeNames: getDisclosedAttributeNamesForDisplay(credential),
+      // FIXME: we should not store the attribute labels
+      // but instead the path, so we can still properly run translations
+      // on the paths.
+      attributeNames: getDisclosedAttributeLabelsForDisplay(credential),
       attributes: credential.disclosed.attributes,
       metadata: credential.disclosed.metadata as unknown as Record<string, unknown>,
     } satisfies PresentationActivityCredential

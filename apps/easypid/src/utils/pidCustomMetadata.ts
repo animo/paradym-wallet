@@ -1,55 +1,13 @@
-import { ClaimFormat } from '@credo-ts/core'
-import { mapAttributeName } from '@package/app/utils/formatSubject'
-import { commonMessages, i18n } from '@package/translations'
+// EU Digital Identity Wallet - Person Identification Data (PID) Attributes
+// Based on ARF Annex 3.01 - PID Rulebook v1.4 (20 Nov 2025)
+// References: CIR 2024/2977
 
 export type PidAttributes = PidMdocAttributes | PidSdJwtVcAttributes
 
-export type PidMdocAttributes = {
-  age_birth_year: number
-  age_in_years: number
-  age_over_12: boolean
-  age_over_14: boolean
-  age_over_16: boolean
-  age_over_18: boolean
-  age_over_21: boolean
-  age_over_65: boolean
-  birth_date: string
-  birth_place: string
-  expiry_date: string
-  family_name: string
-  family_name_birth: string
-  given_name: string
-  issuance_date: string
-  issuing_authority: string
-  issuing_country: string
-  nationality?: string | string[]
-  resident_city: string
-  resident_country: string
-  resident_postal_code: string
-  resident_street: string
-  portrait?: string
-}
-
-// NOTE: this is a subset
-export type Arf15PidSdJwtVcAttributes = {
-  given_name: string
-  family_name: string
-
-  birth_date: string
-  birth_place: string
-  resident_address: string
-  resident_country: string
-  resident_state: string
-  resident_city: string
-  resident_postal_code: string
-  resident_street: string
-  nationality: string[]
-  age_in_years: string
-  portrait?: string
-}
-
-// EU Digital Identity Wallet - Person Identification Data (PID) Interface
-// Based on ARF Annex 3.01 - PID Rulebook for SD-JWT VC encoding
+// =============================================================================
+// ISO/IEC 18013-5 compliant encoding (mDoc format)
+// Specification: ARF Annex 3.01 Chapter 3
+// =============================================================================
 
 interface PlaceOfBirth {
   country?: string // Alpha-2 country code as specified in ISO 3166-1
@@ -57,88 +15,202 @@ interface PlaceOfBirth {
   locality?: string // Municipality, city, town, or village
 }
 
-interface Address {
-  formatted?: string // Complete formatted address
-  street_address?: string // Street name where the user resides
-  house_number?: string // House number including any affix or suffix
-  locality?: string // Municipality, city, town, or village
-  region?: string // State, province, district, or local area
-  postal_code?: string // Postal code of residence
-  country?: string // Alpha-2 country code as specified in ISO 3166-1
-}
+export type PidMdocAttributes = {
+  // ============================================
+  // Mandatory attributes (CIR 2024/2977 Table 1)
+  // ============================================
 
-interface AgeEqualOrOver {
-  [key: number]: boolean | undefined // Generic age verification for any age
-  12?: boolean // Whether user is 12 years old or older
-  14?: boolean // Whether user is 14 years old or older
-  16?: boolean // Whether user is 16 years old or older
-  18?: boolean // Whether user is 18 years old or older (adult)
-  21?: boolean // Whether user is 21 years old or older
-  65?: boolean // Whether user is 65 years old or older
-}
+  family_name: string // Current last name(s) or surname(s) - tstr, max 150 chars
+  given_name: string // Current first name(s), including middle name(s) - tstr, max 150 chars
+  birth_date: string // Date of birth - full-date (CBOR tag 1004)
+  place_of_birth: PlaceOfBirth // Birth location - at least one property required
+  nationality: string[] // Array of alpha-2 country codes (ISO 3166-1) - nationalities type
 
-export interface Arf18PidSdJwtVcAttributes {
-  // Required mandatory attributes (CIR 2024/2977)
-  family_name: string // Current last name(s) or surname(s) of the user
-  given_name: string // Current first name(s), including middle name(s) where applicable
-  birthdate: string // Date of birth in ISO 8601-1 YYYY-MM-DD format
-  place_of_birth: PlaceOfBirth // Country, region, or locality where the user was born (at least one property required)
-  nationalities: string[] // One or more alpha-2 country codes representing nationality
+  // ============================================
+  // Mandatory metadata (CIR 2024/2977 Table 5)
+  // ============================================
 
-  // Required mandatory metadata (CIR 2024/2977)
-  date_of_expiry: string // Administrative expiry date in ISO 8601-1 YYYY-MM-DD format
-  issuing_authority: string // Name of the administrative authority that issued the PID
-  issuing_country: string // Alpha-2 country code of the issuing country
+  expiry_date: string // Administrative expiry date - tdate or full-date
+  issuing_authority: string // Issuing authority name or ISO 3166 alpha-2 code - tstr, max 150 chars
+  issuing_country: string // Alpha-2 country code (ISO 3166-1) - tstr, max 150 chars
 
-  // Optional attributes (CIR 2024/2977)
-  address?: Address // Address where the user currently resides
-  personal_administrative_number?: string // Unique administrative number assigned by the provider
-  picture?: string // Data URL containing base64-encoded portrait in JPEG format
-  birth_family_name?: string // Last name(s) at the time of birth
-  birth_given_name?: string // First name(s) at the time of birth
-  sex?: number // Sex classification (0=not known, 1=male, 2=female, 3=other, 4=inter, 5=diverse, 6=open, 9=not applicable)
-  email?: string // Electronic mail address in conformance with RFC 5322
-  phone_number?: string // Mobile telephone number starting with '+' and country code
+  // ============================================
+  // Optional attributes (CIR 2024/2977 Table 2)
+  // ============================================
 
+  resident_address?: string // Full address of residence - tstr, max 150 chars
+  resident_country?: string // Country of residence (alpha-2 code) - tstr, max 150 chars
+  resident_state?: string // State/province/district of residence - tstr, max 150 chars
+  resident_city?: string // Municipality/city/town/village of residence - tstr, max 150 chars
+  resident_postal_code?: string // Postal code of residence - tstr, max 150 chars
+  resident_street?: string // Street name of residence - tstr, max 150 chars
+  resident_house_number?: string // House number including affix/suffix - tstr, max 150 chars
+  personal_administrative_number?: string // Unique administrative number - tstr, max 150 chars
+  portrait?: string // Facial image (ISO 19794-5 or ISO 39794) - bstr (base64 encoded)
+  family_name_birth?: string // Last name(s) at birth - tstr, max 150 chars
+  given_name_birth?: string // First name(s) at birth - tstr, max 150 chars
+  sex?: number // Sex classification - uint (0=not known, 1=male, 2=female, 3=other, 4=inter, 5=diverse, 6=open, 9=not applicable)
+  email_address?: string // Email address (RFC 5322) - tstr, max 150 chars
+  mobile_phone_number?: string // Mobile phone with + and country code - tstr, max 150 chars
+
+  // ============================================
   // Optional metadata (CIR 2024/2977)
-  document_number?: string // Document number assigned by the provider
-  issuing_jurisdiction?: string // Country subdivision code as specified in ISO 3166-2:2020
+  // ============================================
 
-  // Additional optional attributes (PID Rulebook)
-  date_of_issuance?: string // Date when the PID was issued in ISO 8601-1 YYYY-MM-DD format
-  age_equal_or_over?: AgeEqualOrOver // Boolean indicators for age thresholds
-  age_in_years?: number // Current age in years
-  age_birth_year?: number // Year when the user was born
-  trust_anchor?: string // URL for machine-readable trust anchor information
+  document_number?: string // Document number - tstr, max 150 chars
+  issuing_jurisdiction?: string // Country subdivision code (ISO 3166-2:2020) - tstr, max 150 chars
+  // Note: location_status is absent in mDoc format - revocation info in MSO per ISO/IEC 18013-5
+
+  // ============================================
+  // Additional optional attributes (PID Rulebook Section 2.6)
+  // ============================================
+
+  issuance_date?: string // Date when PID was issued - tdate or full-date
+  trust_anchor?: string // URL for trust anchor lookup - tstr, max 150 chars
+  attestation_legal_category?: string // Attestation category (e.g., "PID") - tstr, max 150 chars
 }
 
+// =============================================================================
+// SD-JWT VC-based encoding
+// Specification: ARF Annex 3.01 Chapter 4
+// =============================================================================
+
+interface Address {
+  formatted?: string // Complete formatted address (OIDC 5.1)
+  street_address?: string // Street name (OIDC 5.1)
+  house_number?: string // House number including affix/suffix (OIDC 5.1)
+  locality?: string // Municipality/city/town/village (OIDC 5.1)
+  region?: string // State/province/district (OIDC 5.1)
+  postal_code?: string // Postal code (OIDC 5.1)
+  country?: string // Alpha-2 country code (OIDC 5.1)
+}
+
+export interface ArfPidSdJwtVcAttributes {
+  // ============================================
+  // VCT (Verifiable Credential Type)
+  // ============================================
+
+  vct: string // Type identifier - base type "urn:eudi:pid:1" or domestic type in "urn:eudi:pid:" namespace
+
+  // ============================================
+  // Mandatory attributes (CIR 2024/2977 Table 1)
+  // Using IANA registered claim names from OIDC 5.1 and EKYC 4.1
+  // ============================================
+
+  family_name: string // Current last name(s) or surname(s) - OIDC 5.1
+  given_name: string // Current first name(s), including middle name(s) - OIDC 5.1
+  birthdate: string // Date of birth in ISO 8601-1 YYYY-MM-DD format - OIDC 5.1
+  place_of_birth: PlaceOfBirth // Birth location (at least one property required) - EKYC 4.1
+  nationalities: string[] // Array of alpha-2 country codes - EKYC 4.1
+
+  // ============================================
+  // Mandatory metadata (CIR 2024/2977 Table 5)
+  // Using Private Names specific to attestation type
+  // ============================================
+
+  date_of_expiry: string // Administrative expiry date in ISO 8601-1 YYYY-MM-DD format
+  issuing_authority: string // Name of issuing authority or alpha-2 country code
+  issuing_country: string // Alpha-2 country code of issuing country
+
+  // ============================================
+  // Optional attributes (CIR 2024/2977 Table 2)
+  // ============================================
+
+  address?: Address // Address where user resides (OIDC 5.1 with hierarchical structure)
+  personal_administrative_number?: string // Unique administrative number
+  picture?: string // Data URL with base64-encoded JPEG portrait (OIDC 5.1)
+  birth_family_name?: string // Last name(s) at birth - EKYC 4.1
+  birth_given_name?: string // First name(s) at birth - EKYC 4.1
+  sex?: number // Sex classification (0-9, not using OIDC gender due to different value range)
+  email?: string // Email address (RFC 5322) - OIDC 5.1
+  phone_number?: string // Mobile phone with + and country code - OIDC 5.1
+
+  // ============================================
+  // Optional metadata (CIR 2024/2977)
+  // ============================================
+
+  document_number?: string // Document number
+  issuing_jurisdiction?: string // Country subdivision code (ISO 3166-2:2020)
+  // Note: location_status uses 'status' claim per SD-JWT VC 3.2.2.2 and HAIP 6.1
+
+  // ============================================
+  // Additional optional attributes (PID Rulebook Section 2.6)
+  // ============================================
+
+  date_of_issuance?: string // Date when PID was issued in ISO 8601-1 YYYY-MM-DD format
+  trust_anchor?: string // URL for machine-readable trust anchor
+  attestation_legal_category?: string // Attestation category indicator (e.g., "PID")
+
+  // ============================================
+  // Standard JWT claims for technical validity
+  // ============================================
+
+  iss?: string // Issuer identifier
+  iat?: number // Issued at timestamp
+  exp?: number // Expiration timestamp (technical validity)
+  nbf?: number // Not before timestamp (technical validity)
+
+  // ============================================
+  // Key binding (SD-JWT VC)
+  // ============================================
+
+  cnf?: {
+    jwk?: Record<string, unknown> // Public key in JWK format for key binding
+  }
+}
+
+// Simplified type for actual usage (matching your existing code structure)
 export type PidSdJwtVcAttributes = {
   issuing_country: string
   issuing_authority: string
   given_name: string
   family_name: string
-  birth_family_name: string
+  birth_family_name?: string
   place_of_birth: {
-    locality: string
+    locality?: string
+    region?: string
+    country?: string
   }
-  address: {
-    locality: string
-    street_address: string
-    country: string
-    postal_code: string
+  address?: {
+    locality?: string
+    street_address?: string
+    country?: string
+    postal_code?: string
+    house_number?: string
+    region?: string
+    formatted?: string
   }
-  age_equal_or_over: Record<string, boolean>
   birthdate: string
-  age_in_years: number
-  age_birth_year: number
   nationalities: string[]
-  iss: string
+  iss?: string
+  date_of_expiry?: string
+  date_of_issuance?: string
+  vct?: string
+  personal_administrative_number?: string
+  picture?: string
+  birth_given_name?: string
+  sex?: number
+  email?: string
+  phone_number?: string
+  document_number?: string
+  issuing_jurisdiction?: string
+  trust_anchor?: string
+  attestation_legal_category?: string
 }
 
-export function formatArfPid18PlaceOfBirth(place: PlaceOfBirth): string | null {
+// =============================================================================
+// Utility Functions
+// =============================================================================
+
+/**
+ * Formats place of birth for display
+ * @param place PlaceOfBirth object
+ * @returns Formatted string or null if empty
+ */
+export function formatArfPidPlaceOfBirth(place: PlaceOfBirth): string | null {
   const { country, region, locality } = place
 
-  // If nothing is provided, return empty string
+  // If nothing is provided, return null
   if (!country && !region && !locality) {
     return null
   }
@@ -169,110 +241,4 @@ export function formatArfPid18PlaceOfBirth(place: PlaceOfBirth): string | null {
 
   // If no country but we have region/locality
   return parts.join(', ')
-}
-
-export function getPidAttributesForDisplay(
-  attributes: Partial<PidMdocAttributes | PidSdJwtVcAttributes>,
-  claimFormat: ClaimFormat.SdJwtDc | ClaimFormat.MsoMdoc
-) {
-  if (claimFormat === ClaimFormat.SdJwtDc) {
-    return getSdJwtPidAttributesForDisplay(attributes)
-  }
-
-  return getMdocPidAttributesForDisplay(attributes)
-}
-
-export function getSdJwtPidAttributesForDisplay(attributes: Partial<PidSdJwtVcAttributes>) {
-  const attributeGroups: Array<[string, unknown]> = []
-
-  const { age_equal_or_over, nationalities, address, place_of_birth, ...remainingAttributes } = attributes
-
-  // Address
-  if (address) {
-    attributeGroups.push([
-      i18n.t(commonMessages.fields.address),
-      Object.fromEntries(Object.entries(address).map(([key, value]) => [mapAttributeName(key), value])),
-    ])
-  }
-
-  // Place of Birth
-  if (place_of_birth) {
-    attributeGroups.push([i18n.t(commonMessages.fields.place_of_birth), place_of_birth])
-  }
-
-  // Nationalities
-  if (nationalities) {
-    attributeGroups.push([i18n.t(commonMessages.fields.nationalities), nationalities])
-  }
-
-  // Age over
-  if (age_equal_or_over) {
-    attributeGroups.push([i18n.t(commonMessages.fields.age_over), age_equal_or_over])
-  }
-
-  return Object.fromEntries([
-    ...Object.entries(remainingAttributes).map(([key, value]) => [mapAttributeName(key), value]),
-    ...attributeGroups,
-  ])
-}
-
-export function getMdocPidAttributesForDisplay(attributes: Partial<PidMdocAttributes>) {
-  const attributeGroups: Array<[string, unknown]> = []
-
-  const {
-    age_over_12,
-    age_over_14,
-    age_over_16,
-    age_over_18,
-    age_over_21,
-    age_over_65,
-    birth_place,
-    resident_city,
-    resident_country,
-    resident_postal_code,
-    resident_street,
-    nationality,
-    ...remainingAttributes
-  } = attributes
-
-  // Address
-  const address = {
-    [i18n.t(commonMessages.fields.locality)]: resident_city,
-    [i18n.t(commonMessages.fields.street)]: resident_street,
-    [i18n.t(commonMessages.fields.country)]: resident_country,
-    [i18n.t(commonMessages.fields.postal_code)]: resident_postal_code,
-  }
-  if (Object.values(address).some(Boolean)) {
-    attributeGroups.push([
-      i18n.t(commonMessages.fields.address),
-      Object.fromEntries(Object.entries(address).filter(([_, value]) => value)),
-    ])
-  }
-
-  // Place of Birth
-  if (birth_place) {
-    attributeGroups.push([
-      i18n.t(commonMessages.fields.place_of_birth),
-      { [i18n.t(commonMessages.fields.locality)]: birth_place },
-    ])
-  }
-
-  // Nationality
-  if (nationality) {
-    attributeGroups.push([i18n.t(commonMessages.fields.nationalities), [nationality]])
-  }
-
-  // Age over
-  const ageOverAttributes = { age_over_12, age_over_14, age_over_16, age_over_18, age_over_21, age_over_65 }
-  const ageOver = Object.entries(ageOverAttributes)
-    .filter(([_, value]) => value)
-    .reduce((acc, [key, value]) => ({ ...acc, [key.split('_')[2]]: value }), {})
-  if (Object.keys(ageOver).length > 0) {
-    attributeGroups.push([i18n.t(commonMessages.fields.age_over), ageOver])
-  }
-
-  return Object.fromEntries([
-    ...Object.entries(remainingAttributes).map(([key, value]) => [mapAttributeName(key), value]),
-    ...attributeGroups,
-  ])
 }

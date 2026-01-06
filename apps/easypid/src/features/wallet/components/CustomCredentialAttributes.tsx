@@ -2,9 +2,8 @@ import { ClaimFormat } from '@credo-ts/core'
 import { mdlSchemes, pidSchemes } from '@easypid/constants'
 import { getMdlCode, type MdlAttributes } from '@easypid/utils/mdlCustomMetadata'
 import {
-  type Arf15PidSdJwtVcAttributes,
-  type Arf18PidSdJwtVcAttributes,
-  formatArfPid18PlaceOfBirth,
+  type ArfPidSdJwtVcAttributes,
+  formatArfPidPlaceOfBirth,
   type PidMdocAttributes,
   type PidSdJwtVcAttributes,
 } from '@easypid/utils/pidCustomMetadata'
@@ -22,7 +21,7 @@ export const hasCustomCredentialDisplay = (credentialType: string) => {
   return (
     [...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credentialType) ||
     [...pidSchemes.sdJwtVcVcts].includes(credentialType) ||
-    [...mdlSchemes.mdlSdJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(credentialType)
+    mdlSchemes.mdlMdocDoctypes.includes(credentialType)
   )
 }
 
@@ -33,7 +32,7 @@ export function CustomCredentialAttributes({ credential }: CustomCredentialAttri
   if (pidSchemes.sdJwtVcVcts.includes(credential.metadata.type)) {
     return <FunkeBdrPidCredentialAttributes credential={credential} />
   }
-  if ([...mdlSchemes.mdlSdJwtVcVcts, ...mdlSchemes.mdlMdocDoctypes].includes(credential.metadata.type)) {
+  if (mdlSchemes.mdlMdocDoctypes.includes(credential.metadata.type)) {
     return <FunkeMdlCredentialAttributes credential={credential} />
   }
 
@@ -42,12 +41,9 @@ export function CustomCredentialAttributes({ credential }: CustomCredentialAttri
 
 export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
   const { t } = useLingui()
-  // We don't pass attributes here as props because we need to use the specified displayPriority
-  // const { credential } = useCredentialByCategory('DE-PID')
 
   const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtDc
   const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
-  const isLegacySdJwtPid = isPidSdJwtVc && credential.metadata.type !== 'urn:eudi:pid:1'
 
   const personalInfoCard: {
     name: string | null
@@ -73,27 +69,11 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
 
   let headerImage = credential?.display.issuer.logo?.url ?? ''
 
-  if (isLegacySdJwtPid) {
-    const raw = credential?.rawAttributes as Arf15PidSdJwtVcAttributes
-    personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
-    personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birth_date} (${raw.age_in_years})`
-    personalInfoCard.placeOfBirth = raw.birth_place ?? ''
-    personalInfoCard.nationalities = Array.isArray(raw.nationality)
-      ? raw.nationality?.join(', ')
-      : (raw.nationality ?? '')
-
-    addressTable = {
-      street: raw.resident_street ?? '',
-      locality: `${raw.resident_city} (${raw.resident_country})`,
-      postalCode: raw.resident_postal_code ?? '',
-      country: null,
-    }
-    headerImage = raw.portrait ?? headerImage
-  } else if (isPidSdJwtVc) {
-    const raw = credential?.rawAttributes as unknown as Arf18PidSdJwtVcAttributes
+  if (isPidSdJwtVc) {
+    const raw = credential?.rawAttributes as unknown as ArfPidSdJwtVcAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birthdate}`
-    personalInfoCard.placeOfBirth = formatArfPid18PlaceOfBirth(raw.place_of_birth)
+    personalInfoCard.placeOfBirth = formatArfPidPlaceOfBirth(raw.place_of_birth)
     personalInfoCard.nationalities = raw.nationalities?.join(', ')
 
     if (raw.address?.formatted) {
@@ -125,13 +105,16 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     const raw = credential?.rawAttributes as PidMdocAttributes
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birth_date}`
-    personalInfoCard.placeOfBirth = raw.birth_place ?? ''
+    personalInfoCard.placeOfBirth = raw.place_of_birth ? formatArfPidPlaceOfBirth(raw.place_of_birth) : ''
     personalInfoCard.nationalities = Array.isArray(raw.nationality)
       ? raw.nationality.join(',')
       : (raw.nationality ?? '')
 
     addressTable = {
-      street: raw.resident_street ?? '',
+      street:
+        raw.resident_street && raw.resident_house_number
+          ? `${raw.resident_street} ${raw.resident_house_number}`
+          : (raw.resident_street ?? ''),
       locality: `${raw.resident_city} (${raw.resident_country})`,
       postalCode: raw.resident_postal_code ?? '',
       country: null,
@@ -239,7 +222,7 @@ export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredential
 
   const raw = credential?.rawAttributes as PidSdJwtVcAttributes
   personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
-  personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birthdate} (${raw.age_in_years})`
+  personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birthdate}`
   personalInfoCard.placeOfBirth = raw.place_of_birth?.locality ?? ''
   personalInfoCard.nationalities = raw.nationalities?.join(', ') ?? ''
 

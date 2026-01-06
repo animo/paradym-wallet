@@ -338,7 +338,10 @@ export function FunkePidSetupScreen() {
 
       for (const credentialRecord of credentialRecords) {
         if (credentialRecords instanceof SdJwtVcRecord) {
-          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
+          const parsed = credentialRecord.firstCredential as SdJwtVc<
+            SdJwtVcHeader,
+            PidSdJwtVcAttributes & { iss: string }
+          >
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()

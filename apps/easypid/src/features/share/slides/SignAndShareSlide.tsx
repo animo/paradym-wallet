@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { type FormattedSubmission, getDisclosedAttributeNamesForDisplay, type QtspInfo } from '@package/agent'
+import { type FormattedSubmission, getDisclosedAttributeLabelsForDisplay, type QtspInfo } from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
@@ -140,7 +140,7 @@ export const SignAndShareSlide = ({
                   backgroundColor={cardForSigning.credential.display.backgroundColor}
                   issuerImage={cardForSigning.credential.display.issuer.logo}
                   textColor={cardForSigning.credential.display.textColor}
-                  formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(cardForSigning)}
+                  formattedDisclosedAttributes={getDisclosedAttributeLabelsForDisplay(cardForSigning)}
                   disclosedPayload={cardForSigning.disclosed.attributes}
                   isExpired={
                     cardForSigning.credential.metadata?.validUntil
