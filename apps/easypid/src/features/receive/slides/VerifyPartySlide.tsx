@@ -53,6 +53,7 @@ export const VerifyPartySlide = ({
   const { activities } = useActivities({ filters: { entityId } })
   const lastInteractionDate = activities[0]?.date
   const { t } = useLingui()
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
@@ -101,7 +102,16 @@ export const VerifyPartySlide = ({
           <XStack ai="center" pt="$4" jc="center">
             <Circle size={88} bw="$0.5" borderColor="$grey-100" bg={backgroundColor ?? '$white'}>
               {logo?.url ? (
-                <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
+                <Image
+                  circle
+                  src={logo.url}
+                  alt={logo.altText}
+                  testID={isImageLoaded ? 'entity-image-loaded' : 'entity-image'}
+                  onLoad={() => setIsImageLoaded(true)}
+                  width="100%"
+                  height="100%"
+                  contentFit="contain"
+                />
               ) : (
                 <HeroIcons.BuildingOffice color="$grey-800" size={36} />
               )}

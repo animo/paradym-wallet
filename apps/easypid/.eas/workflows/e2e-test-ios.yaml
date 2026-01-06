@@ -81,6 +81,7 @@ jobs:
         - authorization-presentation-during-issuance
         - authorization-tx-code
         - digital-credentials-api
+        - screenshots
       record_screen: ${{ inputs.enable_recording }}
 
   ios_maestro_playground:
@@ -98,4 +99,5 @@ jobs:
       exclude_tags:
         - didcomm
         - digital-credentials-api
+        - screenshots
       record_screen: ${{ inputs.enable_recording }}
