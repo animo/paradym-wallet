@@ -9,7 +9,7 @@ import {
 } from '@easypid/utils/pidCustomMetadata'
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialForDisplay } from '@package/agent'
-import { CredentialAttributes } from '@package/app'
+import { CredentialAttributes, ErrorBoundary } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
 
@@ -25,18 +25,28 @@ export const hasCustomCredentialDisplay = (credentialType: string) => {
   )
 }
 
-export function CustomCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
-  if ([...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
-    return <FunkeArfPidCredentialAttributes credential={credential} />
-  }
-  if (pidSchemes.sdJwtVcVcts.includes(credential.metadata.type)) {
-    return <FunkeBdrPidCredentialAttributes credential={credential} />
-  }
-  if (mdlSchemes.mdlMdocDoctypes.includes(credential.metadata.type)) {
-    return <FunkeMdlCredentialAttributes credential={credential} />
-  }
+function CustomCredentialAttributesInner({ credential }: CustomCredentialAttributesProps) {
+  // if ([...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
+  //   return <FunkeArfPidCredentialAttributes credential={credential} />
+  // }
+  // if (pidSchemes.sdJwtVcVcts.includes(credential.metadata.type)) {
+  //   return <FunkeBdrPidCredentialAttributes credential={credential} />
+  // }
+  // if (mdlSchemes.mdlMdocDoctypes.includes(credential.metadata.type)) {
+  //   return <FunkeMdlCredentialAttributes credential={credential} />
+  // }
 
-  return <CredentialAttributes attributes={credential.attributes} />
+  return <CredentialAttributes attributes={credential.displayedAttributes} />
+}
+
+export function CustomCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  return (
+    // Error Boundary prevents an invalid credential structure from crashing the app
+    // it will then fallback to the standard rendering
+    <ErrorBoundary fallback={<CredentialAttributes attributes={credential.displayedAttributes} />}>
+      <CustomCredentialAttributesInner credential={credential} />
+    </ErrorBoundary>
+  )
 }
 
 export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {

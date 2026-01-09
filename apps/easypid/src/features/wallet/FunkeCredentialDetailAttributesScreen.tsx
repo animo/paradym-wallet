@@ -34,8 +34,10 @@ export function FunkeCredentialDetailAttributesScreen() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const scrollViewRef = useRef<ScrollViewRefType>(null)
   const { t } = useLingui()
-  const isCustomDisplayAvailable = credential?.metadata.type
-    ? hasCustomCredentialDisplay(credential?.metadata.type)
+
+  // Check if custom display is available: either has custom rendering or has different displayed vs all attributes
+  const isCustomDisplayAvailable = credential
+    ? hasCustomCredentialDisplay(credential.metadata.type) || credential.hasCustomDisplay
     : false
 
   const {
@@ -114,7 +116,7 @@ export function FunkeCredentialDetailAttributesScreen() {
                     message: 'Shareable attributes',
                     comment: 'Header for attributes that can be shared with a verifier',
                   })}
-                  attributes={credential.attributes}
+                  attributes={credential.allAttributes}
                 />
               )}
             </AnimatedStack>

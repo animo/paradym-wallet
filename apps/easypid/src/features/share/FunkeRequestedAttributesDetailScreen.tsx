@@ -1,5 +1,10 @@
 import { useLingui } from '@lingui/react/macro'
-import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
+import {
+  type CredentialForDisplayId,
+  formatAttributes,
+  metadataForDisplay,
+  useCredentialForDisplayById,
+} from '@package/agent'
 import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 import {
@@ -139,7 +144,7 @@ export function FunkeRequestedAttributesDetailScreen({
                     })}
                   </Paragraph>
                 </Stack>
-                <CredentialAttributes attributes={disclosedPayload} />
+                <CredentialAttributes attributes={formatAttributes(disclosedPayload)} />
                 <AnimatedStack
                   key={isMetadataVisible ? 'visible' : 'hidden'}
                   onLayout={(event) => setElementPosition(event.nativeEvent.layout.y)}

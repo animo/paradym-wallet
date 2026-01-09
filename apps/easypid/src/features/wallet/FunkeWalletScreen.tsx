@@ -62,8 +62,8 @@ export function FunkeWalletScreen() {
               <YStack ai="center" jc="center" gap="$2">
                 <Heading
                   heading="h1"
-                  fontSize={userName.length < 14 ? 38 : 26}
-                  lineHeight={userName.length < 14 ? 40 : 32}
+                  fontSize={!userName || userName.length < 14 ? 38 : 26}
+                  lineHeight={!userName || userName.length < 14 ? 40 : 32}
                   opacity={isLoading ? 0 : 1}
                   ta="center"
                   numberOfLines={2}

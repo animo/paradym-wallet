@@ -1,4 +1,5 @@
 import { type _t, Trans, useLingui } from '@lingui/react/macro'
+import type { FormattedAttribute } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   FloatingSheet,
@@ -15,29 +16,22 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useHaptics } from '../hooks/useHaptics'
-import {
-  type FormattedCredentialValue,
-  type FormattedCredentialValueArray,
-  type FormattedCredentialValueObject,
-  formatCredentialData,
-} from '../utils/formatSubject'
+
 export type CredentialAttributesProps = {
-  attributes: Record<string, unknown>
+  attributes: FormattedAttribute[]
   headerTitle?: string
 }
+
+const valueToPrimitive = (t: typeof _t, value: string | number | boolean) =>
+  typeof value === 'boolean'
+    ? value
+      ? t(commonMessages.yes)
+      : t(commonMessages.no)
+    : typeof value === 'number'
+      ? value.toString()
+      : value
 
 export function CredentialAttributes({ attributes, headerTitle }: CredentialAttributesProps) {
-  const formattedData = formatCredentialData(attributes)
-
-  return <FormattedCredentialAttributes attributes={formattedData} headerTitle={headerTitle} />
-}
-
-export type FormattedCredentialAttributesProps = {
-  attributes: FormattedCredentialValue[]
-  headerTitle?: string
-}
-
-export function FormattedCredentialAttributes({ attributes, headerTitle }: FormattedCredentialAttributesProps) {
   // Separate data into primitive values and objects at the parent level
   const primitiveItems = attributes.filter((item) => item.type !== 'object' && item.type !== 'array')
   const objectItems = attributes.filter((item) => item.type === 'object' || item.type === 'array')
@@ -50,18 +44,18 @@ export function FormattedCredentialAttributes({ attributes, headerTitle }: Forma
 
           <TableContainer>
             {primitiveItems.map((item, index) => (
-              <AnyRow key={`row-${index}-${item.key}`} item={item} />
+              <AnyRow key={`row-${index}-${item.path.join('.')}`} item={item} />
             ))}
           </TableContainer>
         </YStack>
       )}
 
-      {objectItems.map((item) => (
-        <YStack key={item.key} gap="$4">
-          {typeof item.name === 'string' && <Heading heading="sub2">{item.name}</Heading>}
+      {objectItems.map((item, index) => (
+        <YStack key={`object-${index}-${item.path.join('.')}`} gap="$4">
+          {item.label && <Heading heading="sub2">{item.label}</Heading>}
           <TableContainer>
-            {item.value.map((value, index) => (
-              <AnyRow key={`${index}-${value.key}`} item={value} parentName={item.name} />
+            {item.value.map((value, valueIndex) => (
+              <AnyRow key={`${index}-${valueIndex}-${value.path.join('.')}`} item={value} parentName={item.label} />
             ))}
           </TableContainer>
         </YStack>
@@ -70,39 +64,25 @@ export function FormattedCredentialAttributes({ attributes, headerTitle }: Forma
   )
 }
 
-const valueToPrimitive = (t: typeof _t, value: string | number | boolean) =>
-  typeof value === 'boolean'
-    ? value
-      ? t(commonMessages.yes)
-      : t(commonMessages.no)
-    : typeof value === 'number'
-      ? value.toString()
-      : value
-
-const AnyRow = ({ item, parentName }: { item: FormattedCredentialValue; parentName?: string | number }) => {
+const AnyRow = ({ item, parentName }: { item: FormattedAttribute; parentName?: string }) => {
   const { t } = useLingui()
   if (item.type === 'object' || item.type === 'array') {
     return <NestedRow parentName={parentName} item={item} />
   }
 
   if (item.type === 'image') {
-    return <ImageRow name={item.name} value={item.value} />
+    return <ImageRow label={item.label} value={item.value} />
   }
 
-  if (typeof item.name === 'number' || !Number.isNaN(Number(item.name))) {
+  // Check if label is a number or numeric string
+  if (!item.label || !Number.isNaN(Number(item.label))) {
     return <NamelessValueRow value={valueToPrimitive(t, item.value)} />
   }
 
-  return <ValueRow name={item.name} value={valueToPrimitive(t, item.value)} />
+  return <ValueRow label={item.label} value={valueToPrimitive(t, item.value)} description={item.description} />
 }
 
-const NestedRow = ({
-  item,
-  parentName,
-}: {
-  item: FormattedCredentialValueArray | FormattedCredentialValueObject
-  parentName?: string | number
-}) => {
+const NestedRow = ({ item, parentName }: { item: FormattedAttribute; parentName?: string }) => {
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
   const { withHaptics } = useHaptics()
@@ -119,7 +99,7 @@ const NestedRow = ({
 
   return (
     <XStack
-      key={`object-array-${item.key}`}
+      key={`object-array-${item.path.join('.')}`}
       borderTopWidth={1}
       borderTopColor="$tableBorderColor"
       backgroundColor="$tableBackgroundColor"
@@ -135,13 +115,13 @@ const NestedRow = ({
       }}
       onPress={onPress}
     >
-      <Paragraph color="$grey-900">{item.name}</Paragraph>
+      <Paragraph color="$grey-900">{item.label}</Paragraph>
       <IconContainer bg="$transparent" icon={<HeroIcons.ChevronRight size={20} />} />
     </XStack>
   )
 }
 
-const ImageRow = ({ name, value }: { name: string | number; value: string }) => {
+const ImageRow = ({ label, value }: { label?: string; value: string }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
 
@@ -165,9 +145,11 @@ const ImageRow = ({ name, value }: { name: string | number; value: string }) => 
         }}
       >
         <YStack>
-          <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
-            {name}
-          </Paragraph>
+          {label && (
+            <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
+              {label}
+            </Paragraph>
+          )}
           <Paragraph color="$grey-900">
             <Trans id="common.tapToView" comment="Label shown on image rows prompting user to tap to view image">
               Tap to view
@@ -175,14 +157,14 @@ const ImageRow = ({ name, value }: { name: string | number; value: string }) => 
           </Paragraph>
         </YStack>
         <YStack br="$2" overflow="hidden">
-          <Image height={36} width={36} src={value} alt={name.toString()} />
+          <Image height={36} width={36} src={value} alt={label} />
         </YStack>
       </XStack>
       <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
         <Stack p="$4" gap="$4">
           <XStack jc="space-between">
             <Heading color="$grey-900" heading="h2">
-              {name}
+              {label}
             </Heading>
             <Stack br="$12" p="$2" bg="$grey-50" onPress={() => setIsOpen(false)}>
               <HeroIcons.X size={16} strokeWidth={2.5} color="$grey-500" />
@@ -190,7 +172,7 @@ const ImageRow = ({ name, value }: { name: string | number; value: string }) => 
           </XStack>
           <Stack borderBottomWidth="$0.5" borderColor="$grey-100" />
           <Stack gap="$2" ai="center">
-            <Image height={150} width={150} src={value} alt={name.toString()} />
+            <Image height={150} width={150} src={value} alt={label} />
           </Stack>
         </Stack>
       </FloatingSheet>
@@ -214,7 +196,9 @@ const NamelessValueRow = ({ value }: { value: string }) => {
   )
 }
 
-const ValueRow = ({ name, value }: { name: string; value: string }) => {
+const ValueRow = ({ label, value, description }: { label: string; value: string; description?: string }) => {
+  // TODO: render description with an (i) or inline but not intrusive
+
   return (
     <YStack
       bg="$tableBackgroundColor"
@@ -225,7 +209,7 @@ const ValueRow = ({ name, value }: { name: string; value: string }) => {
       borderBottomColor="$tableBorderColor"
     >
       <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
-        {name}
+        {label}
       </Paragraph>
       <Paragraph color="$grey-900">{value}</Paragraph>
     </YStack>

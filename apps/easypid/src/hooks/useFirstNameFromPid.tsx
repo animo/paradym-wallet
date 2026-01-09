@@ -5,9 +5,9 @@ import { capitalizeFirstLetter } from '@package/utils'
 export function useFirstNameFromPidCredential() {
   const { credential, isLoading } = useCredentialByCategory('DE-PID')
 
-  if (!credential?.attributes || typeof credential.rawAttributes.given_name !== 'string') {
+  if (!credential?.rawAttributes || typeof credential.rawAttributes.given_name !== 'string') {
     return {
-      userName: '',
+      userName: undefined,
       isLoading,
     }
   }

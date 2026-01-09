@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { CredentialDisplay } from '@package/agent'
+import type { CredentialDisplay, FormattedAttribute } from '@package/agent'
 import {
   CredentialAttributes,
   DualResponseButtons,
@@ -35,7 +35,7 @@ import {
 } from 'react-native-reanimated'
 
 interface CredentialRetrievalSlideProps {
-  attributes?: Record<string, unknown>
+  attributes?: FormattedAttribute[]
   deferred?: boolean
   display: CredentialDisplay
   isCompleted: boolean
@@ -64,7 +64,7 @@ export const CredentialRetrievalSlide = ({
   const [isStoring, setIsStoring] = useState(isAccepting ?? false)
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
   const isStoringOrCompleted = isStoring || isCompleted
-  const isAllowedToAccept = (attributes && Object.keys(attributes).length > 0) || deferred
+  const isAllowedToAccept = (attributes && attributes.length > 0) || deferred
 
   const handleAccept = async () => {
     setIsStoring(true)
