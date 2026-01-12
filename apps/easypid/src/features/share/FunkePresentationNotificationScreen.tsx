@@ -3,8 +3,10 @@ import type {
   DisplayImage,
   FormattedSubmission,
   FormattedTransactionData,
+  QesTransactionDataEntry,
   TrustedEntity,
   TrustMechanism,
+  Ts12TransactionDataEntry,
 } from '@package/agent'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
@@ -15,6 +17,7 @@ import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 import { SignAndShareSlide } from './slides/SignAndShareSlide'
 import { SigningSlide } from './slides/SigningSlide'
+import { Ts12TransactionSlide } from './slides/Ts12TransactionSlide'
 
 interface FunkePresentationNotificationScreenProps {
   entityId?: string
@@ -27,11 +30,20 @@ interface FunkePresentationNotificationScreenProps {
   usePin: boolean
   isAccepting: boolean
   transaction?: FormattedTransactionData
+  selectedTransactionData?: {
+    credentialId?: string
+    additionalPayload?: object
+  }[]
   onAccept: () => Promise<void>
   onDecline: () => void
   onCancel: () => void
   onComplete: () => void
   errorReason?: string
+  onTransactionDataSelect: (
+    index: number,
+    data: { credentialId: string; additionalPayload: object | undefined }
+  ) => void
+  responseMode?: string
 }
 
 export function FunkePresentationNotificationScreen({
@@ -40,17 +52,68 @@ export function FunkePresentationNotificationScreen({
   logo,
   usePin,
   onAccept,
-  onCancel,
   onDecline,
+  onCancel,
+  onComplete,
   isAccepting,
   submission,
-  onComplete,
   overAskingResponse,
   trustedEntities,
   trustMechanism,
   transaction,
+  selectedTransactionData,
   errorReason,
+  onTransactionDataSelect,
+  responseMode,
 }: FunkePresentationNotificationScreenProps) {
+  const transactionData = transaction?.[0]
+
+  const transactionSlides: SlideStep[] =
+    transaction?.flatMap((entry, index) => {
+      const progress = 33 + ((index + 1) / (transaction.length + 1)) * 33
+
+      if (entry.type === 'qes_authorization') {
+        const qesEntry = entry as QesTransactionDataEntry
+        return [
+          {
+            step: `signing-${index}`,
+            progress,
+            screen: (
+              <SigningSlide
+                key={`signing-${index}`}
+                qtsp={qesEntry.qtsp}
+                documentNames={qesEntry.documentNames}
+                onCredentialSelect={(credentialId) =>
+                  onTransactionDataSelect(index, { credentialId, additionalPayload: undefined })
+                }
+                possibleCredentialIds={qesEntry.formattedSubmissions.flatMap((s) =>
+                  s.isSatisfied ? s.credentials.map((c) => c.credential.id) : []
+                )}
+              />
+            ),
+          },
+        ]
+      }
+
+      const ts12Entry = entry as Ts12TransactionDataEntry
+      return [
+        {
+          step: `ts12-${index}`,
+          progress,
+          screen: (
+            <Ts12TransactionSlide
+              key={`ts12-${index}`}
+              entry={ts12Entry}
+              onCredentialSelect={(credentialId, additionalPayload) =>
+                onTransactionDataSelect(index, { credentialId, additionalPayload })
+              }
+              responseMode={responseMode}
+            />
+          ),
+        },
+      ]
+    }) ?? []
+
   return (
     <SlideWizard
       steps={
@@ -67,7 +130,7 @@ export function FunkePresentationNotificationScreen({
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"
-                type={transaction?.type === 'qes_authorization' ? 'signing' : 'request'}
+                type={transactionData?.type === 'qes_authorization' ? 'signing' : 'request'}
                 entityId={entityId}
                 name={verifierName}
                 logo={logo}
@@ -77,13 +140,9 @@ export function FunkePresentationNotificationScreen({
             ),
           },
           ...(submission
-            ? transaction?.type === 'qes_authorization'
+            ? transaction
               ? [
-                  {
-                    step: 'signing',
-                    progress: 50,
-                    screen: <SigningSlide qtsp={transaction.qtsp} documentName={transaction.documentName} />,
-                  },
+                  ...transactionSlides,
                   {
                     step: 'share-credentials',
                     progress: 66,
@@ -93,10 +152,9 @@ export function FunkePresentationNotificationScreen({
                         onAccept={usePin ? undefined : onAccept}
                         onDecline={onDecline}
                         isAccepting={isAccepting}
-                        qtsp={transaction.qtsp}
-                        documentName={transaction.documentName}
-                        cardForSigningId={transaction.cardForSigningId}
                         submission={submission}
+                        formattedTransactionData={transaction}
+                        selectedTransactionData={selectedTransactionData}
                       />
                     ),
                   },
@@ -135,7 +193,7 @@ export function FunkePresentationNotificationScreen({
       errorScreen={() => (
         <InteractionErrorSlide
           key="presentation-error"
-          flowType={transaction?.type === 'qes_authorization' ? 'sign' : 'verify'}
+          flowType={transactionData?.type === 'qes_authorization' ? 'sign' : 'verify'}
           reason={errorReason}
           onCancel={onCancel}
         />

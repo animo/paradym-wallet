@@ -1,5 +1,11 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { type FormattedSubmission, getDisclosedAttributeNamesForDisplay, type QtspInfo } from '@package/agent'
+import {
+  type FormattedSubmission,
+  type FormattedTransactionData,
+  getDisclosedAttributeNamesForDisplay,
+  type QesTransactionDataEntry,
+  type QtspInfo,
+} from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
@@ -10,20 +16,21 @@ interface SignAndShareSlideProps {
   onAccept?: () => Promise<void>
   onDecline?: () => void
   isAccepting: boolean
-  qtsp: QtspInfo
-  documentName: string
-  cardForSigningId?: string
   submission?: FormattedSubmission
+  formattedTransactionData?: FormattedTransactionData
+  selectedTransactionData?: {
+    credentialId?: string
+    additionalPayload?: object
+  }[]
 }
 
 export const SignAndShareSlide = ({
   onAccept,
   onDecline,
   isAccepting,
-  qtsp,
-  documentName,
-  cardForSigningId,
   submission,
+  formattedTransactionData,
+  selectedTransactionData,
 }: SignAndShareSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -31,15 +38,39 @@ export const SignAndShareSlide = ({
   const [isProcessing, setIsProcessing] = useState(isAccepting)
   const { t } = useLingui()
 
-  const cardForSigning = submission?.entries.find(
-    (entry): entry is typeof entry & { isSatisfied: true } =>
-      entry.inputDescriptorId === cardForSigningId && entry.isSatisfied
-  )?.credentials[0]
+  const qesTransactions =
+    formattedTransactionData?.flatMap((entry, index) =>
+      entry.type === 'qes_authorization' ? [{ entry: entry as QesTransactionDataEntry, index }] : []
+    ) ?? []
+
+  const signingCards = qesTransactions
+    .map(({ entry, index }) => {
+      const selected = selectedTransactionData?.[index]
+      const submissions = entry.formattedSubmissions
+
+      if (selected) {
+        const cred = submissions
+          .flatMap((s) => (s.isSatisfied ? s.credentials : []))
+          .find((c) => c.credential.id === selected.credentialId)
+        if (cred) return cred
+      }
+      // Fallback to first credential of first submission if no selection matches or is provided
+      const firstSubmission = submissions[0]
+      return firstSubmission?.isSatisfied ? firstSubmission.credentials[0] : undefined
+    })
+    .filter((c): c is NonNullable<typeof c> => !!c)
+
+  // Deduplicate signing cards based on credential ID
+  const uniqueSigningCards = signingCards.filter(
+    (c, i, arr) => arr.findIndex((x) => x.credential.id === c.credential.id) === i
+  )
+
+  const usedInputDescriptorIds = qesTransactions.flatMap((t) =>
+    t.entry.formattedSubmissions.map((s) => s.inputDescriptorId)
+  )
 
   const remainingEntries =
-    (cardForSigning
-      ? submission?.entries.filter((entry) => entry.inputDescriptorId !== cardForSigningId)
-      : submission?.entries) ?? []
+    submission?.entries.filter((entry) => !usedInputDescriptorIds.includes(entry.inputDescriptorId)) ?? []
 
   const handleAccept = async () => {
     // Manually set to instantly show the loading state
@@ -53,11 +84,12 @@ export const SignAndShareSlide = ({
     onCancel()
   }
 
-  const signingWithLabel = t({
-    id: 'signShare.signingWith',
-    message: `Signing with ${qtsp.name}`,
-    comment: 'Shown under the document name to indicate which QTSP is used for signing',
-  })
+  const signingWithLabel = (qtsp: QtspInfo) =>
+    t({
+      id: 'signShare.signingWith',
+      message: `Signing with ${qtsp.name}`,
+      comment: 'Shown under the document name to indicate which QTSP is used for signing',
+    })
 
   const acceptLabel = t({
     id: 'signShare.accept',
@@ -94,31 +126,35 @@ export const SignAndShareSlide = ({
             maxHeight={scrollViewHeight}
             bg="$white"
           >
-            <YStack gap="$4">
-              <YStack gap="$2">
-                <Heading heading="sub2">
-                  <Trans id="signShare.documentHeading" comment="Heading above the document name">
-                    Document
-                  </Trans>
-                </Heading>
-                <Paragraph>
-                  <Trans id="signShare.documentIntro" comment="Text above the document to be signed">
-                    The following document will be signed.
-                  </Trans>
-                </Paragraph>
-              </YStack>
-              <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
-                <YStack f={1} gap="$2">
-                  <Heading heading="sub2" textTransform="none" color="$grey-800">
-                    {documentName}
+            {qesTransactions.length > 0 && (
+              <YStack gap="$4">
+                <YStack gap="$2">
+                  <Heading heading="sub2">
+                    <Trans id="signShare.documentHeading" comment="Heading above the document name">
+                      Documents
+                    </Trans>
                   </Heading>
-                  <Paragraph>{signingWithLabel}</Paragraph>
+                  <Paragraph>
+                    <Trans id="signShare.documentIntro" comment="Text above the document to be signed">
+                      The following documents will be signed.
+                    </Trans>
+                  </Paragraph>
                 </YStack>
-                <MiniDocument logoUrl={qtsp.logo?.url} />
-              </XStack>
-            </YStack>
+                {qesTransactions.map(({ entry }, index) => (
+                  <XStack key={index} br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
+                    <YStack f={1} gap="$2">
+                      <Heading heading="sub2" textTransform="none" color="$grey-800">
+                        {entry.documentNames.join(', ')}
+                      </Heading>
+                      <Paragraph>{signingWithLabel(entry.qtsp)}</Paragraph>
+                    </YStack>
+                    <MiniDocument logoUrl={entry.qtsp.logo?.url} />
+                  </XStack>
+                ))}
+              </YStack>
+            )}
 
-            {cardForSigning && (
+            {uniqueSigningCards.length > 0 && (
               <YStack gap="$4">
                 <YStack gap="$2">
                   <Heading heading="sub2">
@@ -133,26 +169,29 @@ export const SignAndShareSlide = ({
                   </Paragraph>
                 </YStack>
 
-                <CardWithAttributes
-                  id={cardForSigning.credential.id}
-                  name={cardForSigning.credential.display.name}
-                  backgroundImage={cardForSigning.credential.display.backgroundImage}
-                  backgroundColor={cardForSigning.credential.display.backgroundColor}
-                  issuerImage={cardForSigning.credential.display.issuer.logo}
-                  textColor={cardForSigning.credential.display.textColor}
-                  formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(cardForSigning)}
-                  disclosedPayload={cardForSigning.disclosed.attributes}
-                  isExpired={
-                    cardForSigning.credential.metadata?.validUntil
-                      ? new Date(cardForSigning.credential.metadata.validUntil) < new Date()
-                      : false
-                  }
-                  isNotYetActive={
-                    cardForSigning.credential.metadata?.validFrom
-                      ? new Date(cardForSigning.credential.metadata.validFrom) > new Date()
-                      : false
-                  }
-                />
+                {uniqueSigningCards.map((card) => (
+                  <CardWithAttributes
+                    key={card.credential.id}
+                    id={card.credential.id}
+                    name={card.credential.display.name}
+                    backgroundImage={card.credential.display.backgroundImage}
+                    backgroundColor={card.credential.display.backgroundColor}
+                    issuerImage={card.credential.display.issuer.logo}
+                    textColor={card.credential.display.textColor}
+                    formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(card)}
+                    disclosedPayload={card.disclosed.attributes}
+                    isExpired={
+                      card.credential.metadata?.validUntil
+                        ? new Date(card.credential.metadata.validUntil) < new Date()
+                        : false
+                    }
+                    isNotYetActive={
+                      card.credential.metadata?.validFrom
+                        ? new Date(card.credential.metadata.validFrom) > new Date()
+                        : false
+                    }
+                  />
+                ))}
               </YStack>
             )}
 
