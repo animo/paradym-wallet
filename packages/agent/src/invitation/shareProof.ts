@@ -25,7 +25,7 @@ export const shareProof = async ({
   agent: EitherAgent
   resolvedRequest: CredentialsForProofRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
-  acceptTransactionData?: { credentialId: string; additionalPayload?: object }[]
+  acceptTransactionData?: Array<{ credentialId: string; additionalPayload?: object }>
 }) => {
   const { authorizationRequest } = resolvedRequest
   if (
