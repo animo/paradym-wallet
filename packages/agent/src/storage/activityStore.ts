@@ -9,7 +9,7 @@ import {
 } from '../display'
 import type { FormattedSubmission } from '../format/formatPresentation'
 import type { CredentialForDisplayId } from '../hooks'
-import type { CredentialsForProofRequest, FormattedTransactionData } from '../invitation'
+import type { CredentialsForProofRequest, FormattedTransactionData, FormattedTransactionDataEntry } from '../invitation'
 import { useWalletJsonRecord } from './WalletJsonStoreProvider'
 import { getWalletJsonStore } from './walletJsonStore'
 
@@ -181,7 +181,7 @@ export function storeSharedActivityForCredentialsForRequest(
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
   status: Exclude<ActivityStatus, 'pending'>,
-  transaction?: FormattedTransactionData
+  transaction?: FormattedTransactionDataEntry
 ) {
   return storeSharedOrSignedActivity(agent, {
     status,
@@ -202,7 +202,7 @@ export function storeSharedActivityForCredentialsForRequest(
             : 'unknown'
           : undefined,
     },
-    transaction,
+    transaction: transaction ? [transaction] : undefined,
   })
 }
 

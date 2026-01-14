@@ -357,6 +357,16 @@ export const commonMessages = {
     id: 'common.openSettingsButton',
     message: 'Open settings',
   }),
+  retry: defineMessage({
+    id: 'common.retry',
+    message: 'Retry',
+    comment: 'Label for retry action',
+  }),
+  error: defineMessage({
+    id: 'common.error',
+    message: 'Error',
+    comment: 'Generic error label',
+  }),
   fields: {
     place_of_birth: defineMessage({
       id: 'common.fields.placeOfBirth',

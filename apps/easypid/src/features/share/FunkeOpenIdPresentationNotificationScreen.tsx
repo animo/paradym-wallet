@@ -37,6 +37,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
   const [formattedTransactionData, setFormattedTransactionData] = useState<FormattedTransactionData>()
+  const [selectedTransactionData, setSelectedTransactionData] = useState<
+    {
+      credentialId?: string
+      additionalPayload?: object
+    }[]
+  >([])
   const [isSharing, setIsSharing] = useState(false)
   const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
 
@@ -90,8 +96,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
         return
       })
-      .then((r) => {
-        if (r) setFormattedTransactionData(getFormattedTransactionData(r))
+      .then(async (r) => {
+        if (r) {
+          const formatted = await getFormattedTransactionData(r)
+          setFormattedTransactionData(formatted)
+          if (formatted) {
+            setSelectedTransactionData(formatted.map(() => ({})))
+          }
+        }
       })
       .catch((error) => {
         handleError({ reason: error.message })
@@ -166,11 +178,40 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       }
 
       try {
+        // FIXME: Hacky hacks
+        const selectedCredentials: Record<string, string> = {}
+        if (formattedTransactionData && selectedTransactionData.length > 0) {
+          formattedTransactionData.forEach((entry, index) => {
+            const selected = selectedTransactionData[index]?.credentialId
+            if (!selected) return
+
+            // Find which input descriptor this credential belongs to
+            const submission = entry.formattedSubmissions.find(
+              (s) => s.isSatisfied && s.credentials.some((c) => c.credential.id === selected)
+            )
+
+            if (submission) {
+              const trueSelectedId = selected?.replace('sd-jwt-vc-', '')
+              if (
+                Object.hasOwn(selectedCredentials, submission.inputDescriptorId) &&
+                selectedCredentials[submission.inputDescriptorId] !== trueSelectedId
+              )
+                throw Error(`Cannot select distinct credential ids for inputDescriptor ids`)
+              selectedCredentials[submission.inputDescriptorId] = trueSelectedId
+              selectedTransactionData[index].credentialId = submission.inputDescriptorId
+            } else {
+              throw Error(`Selected credential ids should always have a submission`)
+            }
+          })
+        }
+
         await shareProof({
           agent,
           resolvedRequest: credentialsForRequest,
-          selectedCredentials: {},
-          acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
+          selectedCredentials,
+          acceptTransactionData: selectedTransactionData as ((typeof selectedTransactionData)[number] & {
+            credentialId: string
+          })[],
         })
 
         onPinComplete?.()
@@ -178,7 +219,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           agent,
           credentialsForRequest,
           'success',
-          formattedTransactionData
+          formattedTransactionData?.[0]
         ).catch(console.error)
       } catch (error) {
         setIsSharing(false)
@@ -193,7 +234,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
             agent,
             credentialsForRequest,
             'failed',
-            formattedTransactionData
+            formattedTransactionData?.[0]
           ).catch(console.error)
         }
 
@@ -221,6 +262,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       reasonPinAuthFailed,
       t,
       reasonAuthFailed,
+      selectedTransactionData,
     ]
   )
 
@@ -231,7 +273,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         agent,
         credentialsForRequest,
         credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed',
-        formattedTransactionData
+        formattedTransactionData?.[0]
       ).catch(console.error)
     }
 
@@ -242,6 +284,17 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   }, [agent, credentialsForRequest, formattedTransactionData, pushToWallet, stopOverAsking, t, toast])
 
   const replace = useCallback(() => pushToWallet(), [pushToWallet])
+
+  const onTransactionDataSelect = useCallback(
+    (index: number, data: { credentialId: string; additionalPayload: object | undefined }) => {
+      setSelectedTransactionData((prev) => {
+        const next = [...prev]
+        next[index] = data
+        return next
+      })
+    },
+    []
+  )
 
   return (
     <FunkePresentationNotificationScreen
@@ -260,7 +313,10 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       onCancel={replace}
       overAskingResponse={overAskingResponse}
       transaction={formattedTransactionData}
+      selectedTransactionData={selectedTransactionData}
       errorReason={errorReason}
+      onTransactionDataSelect={onTransactionDataSelect}
+      responseMode={credentialsForRequest?.authorizationRequest.response_mode}
     />
   )
 }

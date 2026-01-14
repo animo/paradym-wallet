@@ -15,7 +15,6 @@ import type { EitherAgent } from '../agent'
 import { refreshPidIfNeeded } from '../batch'
 import { BiometricAuthenticationError } from './error'
 import type { CredentialsForProofRequest } from './handler'
-import { getFormattedTransactionData } from './transactions'
 
 export const shareProof = async ({
   agent,
@@ -26,8 +25,7 @@ export const shareProof = async ({
   agent: EitherAgent
   resolvedRequest: CredentialsForProofRequest
   selectedCredentials: { [inputDescriptorId: string]: string }
-  // FIXME: Should be a more complex structure allowing which credential to use for which entry
-  acceptTransactionData?: boolean
+  acceptTransactionData?: Array<{ credentialId: string; additionalPayload?: object }>
 }) => {
   const { authorizationRequest } = resolvedRequest
   if (
@@ -71,8 +69,20 @@ export const shareProof = async ({
                   useMode: CredentialMultiInstanceUseMode.NewOrFirst,
                 })
           ).map(async ([queryCredentialId, credentials]) => {
+            const transactionDataRequiredAdditionalPayload =
+              acceptTransactionData
+                ?.filter((c) => c.credentialId === queryCredentialId)
+                ?.map((c) => c.additionalPayload)
+                ?.reduce((acc, curr) => ({ ...acc, ...curr }), {}) ?? {}
+
             for (const credential of credentials) {
               await refreshPidIfNeeded(agent, credential.credentialRecord)
+              if ('claimFormat' in credential && credential.claimFormat === ClaimFormat.SdJwtDc) {
+                credential.additionalPayload = {
+                  ...credential.additionalPayload,
+                  ...transactionDataRequiredAdditionalPayload,
+                }
+              }
             }
 
             return [queryCredentialId, credentials]
@@ -80,8 +90,6 @@ export const shareProof = async ({
         )
       )
     : undefined
-
-  const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
 
   try {
     const result = await agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
@@ -96,10 +104,7 @@ export const shareProof = async ({
             credentials: dcqlCredentials,
           }
         : undefined,
-      transactionData:
-        resolvedRequest.transactionData && acceptTransactionData && cardForSigningId
-          ? [{ credentialId: cardForSigningId }]
-          : undefined,
+      transactionData: acceptTransactionData?.map(({ credentialId }) => ({ credentialId })),
       origin: resolvedRequest.origin,
     })
 
@@ -145,12 +150,14 @@ function getSelectedCredentialsForRequest(
     record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord | W3cV2CredentialRecord
   }
 
-  for (const [credentialQueryId, credentialRecordId] of Object.entries(selectedCredentials)) {
-    const matchesForCredentialQuery = dcqlQueryResult.credential_matches[credentialQueryId]
+  for (const [credentialQueryId, matchesForCredentialQuery] of Object.entries(dcqlQueryResult.credential_matches)) {
     if (matchesForCredentialQuery.success) {
-      const validCredentialMatch = matchesForCredentialQuery.valid_credentials.find(
-        (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId
-      )
+      const credentialRecordId = selectedCredentials[credentialQueryId]
+      const validCredentialMatch = credentialRecordId
+        ? matchesForCredentialQuery.valid_credentials.find(
+            (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId
+          )
+        : matchesForCredentialQuery.valid_credentials[0]
 
       if (!validCredentialMatch) {
         throw new Error(

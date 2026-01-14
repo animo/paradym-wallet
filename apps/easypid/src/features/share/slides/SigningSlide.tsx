@@ -3,17 +3,26 @@ import type { QtspInfo } from '@package/agent'
 import { DualResponseButtons, useImageScaler, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Heading, Paragraph, YStack } from '@package/ui'
+import { useEffect } from 'react'
 import { Defs, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
 interface SigningSlideProps {
-  documentName: string
+  documentNames: string[]
   qtsp: QtspInfo
+  possibleCredentialIds: string[]
+  onCredentialSelect?: (credentialId: string) => void
 }
 
-export function SigningSlide({ documentName }: SigningSlideProps) {
+export function SigningSlide({ documentNames, possibleCredentialIds, onCredentialSelect }: SigningSlideProps) {
   const { onNext, onCancel } = useWizard()
   const { height, onLayout } = useImageScaler({ scaleFactor: 0.65 })
   const { t } = useLingui()
+
+  useEffect(() => {
+    if (possibleCredentialIds.length > 0) {
+      onCredentialSelect?.(possibleCredentialIds[0])
+    }
+  }, [possibleCredentialIds, onCredentialSelect])
 
   return (
     <YStack fg={1} jc="space-between">
@@ -25,7 +34,7 @@ export function SigningSlide({ documentName }: SigningSlideProps) {
         </Heading>
         <Paragraph>
           <Trans id="signing.description" comment="Explanation that the user is about to sign a document">
-            You are about to sign <Paragraph emphasis>{documentName}</Paragraph>.
+            You are about to sign <Paragraph emphasis>{documentNames.join(', ')}</Paragraph>.
           </Trans>
         </Paragraph>
       </YStack>
