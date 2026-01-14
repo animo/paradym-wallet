@@ -1,10 +1,9 @@
 import {
-  type FunkeQesTransactionDataEntry,
   type ResolvedTs12Metadata,
   resolveTs12TransactionDisplayMetadata,
   ts12BuiltinSchemaValidators,
   type ZScaAttestationExt,
-  zTransactionDataEntry,
+  zFunkeQesTransaction,
 } from '@animo-id/eudi-wallet-functionality'
 import { SdJwtVcRecord } from '@credo-ts/core'
 import type { FormattedSubmissionEntry, FormattedSubmissionEntrySatisfied } from '@package/agent'
@@ -97,14 +96,11 @@ export const getFormattedTransactionData = async (
   const ts12Data = await getTs12TransactionDataTypes(records)
 
   return transactionData.map((transactionDataEntry) => {
-    const parsed = zTransactionDataEntry.safeParse(transactionDataEntry.entry.transactionData)
-    if (!parsed.success)
-      throw new Error(`Malformed or unknown Transaction Data: ${transactionDataEntry.entry.transactionData}`)
-    const data = parsed.data
+    const data = transactionDataEntry.entry.transactionData
     const type = data.type
 
     if (type === 'qes_authorization') {
-      const signingData = data as FunkeQesTransactionDataEntry
+      const signingData = zFunkeQesTransaction.parse(data)
       const formattedSubmissions = transactionDataEntry.matchedCredentialIds
         .map((id) => credentialsForRequest.formattedSubmission.entries.find((a) => a.inputDescriptorId === id))
         .filter((x): x is FormattedSubmissionEntrySatisfied => x?.isSatisfied === true)

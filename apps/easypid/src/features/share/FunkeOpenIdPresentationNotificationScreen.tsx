@@ -106,6 +106,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
       })
       .catch((error) => {
+        console.error(error)
         handleError({ reason: error.message })
       })
   }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError, t])
