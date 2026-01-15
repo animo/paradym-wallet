@@ -8,13 +8,52 @@ interface TableRowProps {
   isLastRow?: boolean
   centred?: boolean
   onPress?(): void
+  variant?: 'vertical' | 'horizontal'
 }
 
 // FIXME: Use combined values so you have one array with objects where the keys are key and value for example.
-export const TableRow = ({ attributes, values, isLastRow = false, onPress, image, centred = false }: TableRowProps) => {
+export const TableRow = ({
+  attributes,
+  values,
+  isLastRow = false,
+  onPress,
+  image,
+  centred = false,
+  variant = 'vertical',
+}: TableRowProps) => {
   const renderedImage = image ? <Image src={image} width={50} height={50} /> : undefined
   const attributesArray = Array.isArray(attributes) ? attributes : [attributes]
   const valuesArray = Array.isArray(values) ? values : [values]
+
+  if (variant === 'horizontal') {
+    return (
+      <YStack
+        py="$3"
+        px="$4"
+        borderBottomWidth={isLastRow ? 0 : 1}
+        borderBottomColor="$tableBorderColor"
+        backgroundColor="$tableBackgroundColor"
+        onPress={onPress}
+        pressStyle={{
+          opacity: onPress ? 0.8 : 1,
+        }}
+      >
+        <XStack f={1} alignItems="center" justifyContent="space-between" gap="$2">
+          <Paragraph variant="sub" color="$grey-600" fontWeight="$medium" flexShrink={1}>
+            {attributesArray[0]}
+          </Paragraph>
+          <XStack alignItems="center" gap="$2" flexShrink={0}>
+            {valuesArray[0] && (
+              <Paragraph color="$grey-900" fontWeight="$semiBold" textAlign="right">
+                {valuesArray[0]}
+              </Paragraph>
+            )}
+            {renderedImage}
+          </XStack>
+        </XStack>
+      </YStack>
+    )
+  }
 
   return (
     <YStack

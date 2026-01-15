@@ -9,14 +9,15 @@ import type {
   Ts12TransactionDataEntry,
 } from '@package/agent'
 import { type SlideStep, SlideWizard } from '@package/app'
+import { useMemo } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
 import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
-import { SignAndShareSlide } from './slides/SignAndShareSlide'
 import { SigningSlide } from './slides/SigningSlide'
+import { Ts12PaymentSlide } from './slides/Ts12PaymentSlide'
 import { Ts12TransactionSlide } from './slides/Ts12TransactionSlide'
 
 interface FunkePresentationNotificationScreenProps {
@@ -68,51 +69,77 @@ export function FunkePresentationNotificationScreen({
 }: FunkePresentationNotificationScreenProps) {
   const transactionData = transaction?.[0]
 
-  const transactionSlides: SlideStep[] =
-    transaction?.flatMap((entry, index) => {
-      const progress = 33 + ((index + 1) / (transaction.length + 1)) * 33
+  const transactionSlides: SlideStep[] = useMemo(
+    () =>
+      transaction?.flatMap((entry, index) => {
+        const progress = 33 + ((index + 1) / (transaction.length + 1)) * 33
 
-      if (entry.type === 'qes_authorization') {
-        const qesEntry = entry as QesTransactionDataEntry
+        if (entry.type === 'qes_authorization') {
+          const qesEntry = entry as QesTransactionDataEntry
+          return [
+            {
+              step: `signing-${index}`,
+              progress,
+              screen: (
+                <SigningSlide
+                  key={`signing-${index}`}
+                  qtsp={qesEntry.qtsp}
+                  documentNames={qesEntry.documentNames}
+                  onCredentialSelect={(credentialId) =>
+                    onTransactionDataSelect(index, { credentialId, additionalPayload: undefined })
+                  }
+                  selectedCredentialId={selectedTransactionData?.[index]?.credentialId}
+                  possibleCredentialIds={qesEntry.formattedSubmissions.flatMap((s) =>
+                    s.isSatisfied ? s.credentials.map((c) => c.credential.id) : []
+                  )}
+                />
+              ),
+            },
+          ]
+        }
+
+        const ts12Entry = entry as Ts12TransactionDataEntry
+
+        if (ts12Entry.type === 'urn:eudi:sca:payment:1') {
+          return [
+            {
+              step: `ts12-payment-${index}`,
+              progress,
+              screen: (
+                <Ts12PaymentSlide
+                  key={`ts12-payment-${index}`}
+                  entry={ts12Entry}
+                  onCredentialSelect={(credentialId, additionalPayload) =>
+                    onTransactionDataSelect(index, { credentialId, additionalPayload })
+                  }
+                  selectedCredentialId={selectedTransactionData?.[index]?.credentialId}
+                  responseMode={responseMode}
+                />
+              ),
+            },
+          ]
+        }
+
         return [
           {
-            step: `signing-${index}`,
+            step: `ts12-${index}`,
             progress,
             screen: (
-              <SigningSlide
-                key={`signing-${index}`}
-                qtsp={qesEntry.qtsp}
-                documentNames={qesEntry.documentNames}
-                onCredentialSelect={(credentialId) =>
-                  onTransactionDataSelect(index, { credentialId, additionalPayload: undefined })
+              <Ts12TransactionSlide
+                key={`ts12-${index}`}
+                entry={ts12Entry}
+                onCredentialSelect={(credentialId, additionalPayload) =>
+                  onTransactionDataSelect(index, { credentialId, additionalPayload })
                 }
-                possibleCredentialIds={qesEntry.formattedSubmissions.flatMap((s) =>
-                  s.isSatisfied ? s.credentials.map((c) => c.credential.id) : []
-                )}
+                selectedCredentialId={selectedTransactionData?.[index]?.credentialId}
+                responseMode={responseMode}
               />
             ),
           },
         ]
-      }
-
-      const ts12Entry = entry as Ts12TransactionDataEntry
-      return [
-        {
-          step: `ts12-${index}`,
-          progress,
-          screen: (
-            <Ts12TransactionSlide
-              key={`ts12-${index}`}
-              entry={ts12Entry}
-              onCredentialSelect={(credentialId, additionalPayload) =>
-                onTransactionDataSelect(index, { credentialId, additionalPayload })
-              }
-              responseMode={responseMode}
-            />
-          ),
-        },
-      ]
-    }) ?? []
+      }) ?? [],
+    [transaction, onTransactionDataSelect, responseMode, selectedTransactionData]
+  )
 
   return (
     <SlideWizard
@@ -140,42 +167,26 @@ export function FunkePresentationNotificationScreen({
             ),
           },
           ...(submission
-            ? transaction
-              ? [
-                  ...transactionSlides,
-                  {
-                    step: 'share-credentials',
-                    progress: 66,
-                    screen: (
-                      <SignAndShareSlide
-                        key="sign-and-share-credentials"
-                        onAccept={usePin ? undefined : onAccept}
-                        onDecline={onDecline}
-                        isAccepting={isAccepting}
-                        submission={submission}
-                        formattedTransactionData={transaction}
-                        selectedTransactionData={selectedTransactionData}
-                      />
-                    ),
-                  },
-                ]
-              : [
-                  {
-                    step: 'share-credentials',
-                    progress: 66,
-                    screen: (
-                      <ShareCredentialsSlide
-                        key="share-credentials"
-                        onAccept={usePin ? undefined : onAccept}
-                        logo={logo}
-                        submission={submission}
-                        onDecline={onDecline}
-                        isAccepting={isAccepting}
-                        overAskingResponse={overAskingResponse}
-                      />
-                    ),
-                  },
-                ]
+            ? [
+                ...transactionSlides,
+                {
+                  step: 'share-credentials',
+                  progress: 66,
+                  screen: (
+                    <ShareCredentialsSlide
+                      key="share-credentials"
+                      onAccept={usePin ? undefined : onAccept}
+                      logo={logo}
+                      submission={submission}
+                      onDecline={onDecline}
+                      isAccepting={isAccepting}
+                      overAskingResponse={overAskingResponse}
+                      formattedTransactionData={transaction}
+                      selectedTransactionData={selectedTransactionData}
+                    />
+                  ),
+                },
+              ]
             : []),
           usePin && {
             step: 'pin-enter',

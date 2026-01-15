@@ -289,6 +289,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const onTransactionDataSelect = useCallback(
     (index: number, data: { credentialId: string; additionalPayload: object | undefined }) => {
       setSelectedTransactionData((prev) => {
+        if (prev[index]?.credentialId === data.credentialId) return prev
         const next = [...prev]
         next[index] = data
         return next

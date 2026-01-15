@@ -10,19 +10,27 @@ interface SigningSlideProps {
   documentNames: string[]
   qtsp: QtspInfo
   possibleCredentialIds: string[]
+  selectedCredentialId?: string
   onCredentialSelect?: (credentialId: string) => void
 }
 
-export function SigningSlide({ documentNames, possibleCredentialIds, onCredentialSelect }: SigningSlideProps) {
+export function SigningSlide({
+  documentNames,
+  possibleCredentialIds,
+  selectedCredentialId,
+  onCredentialSelect,
+}: SigningSlideProps) {
   const { onNext, onCancel } = useWizard()
   const { height, onLayout } = useImageScaler({ scaleFactor: 0.65 })
   const { t } = useLingui()
 
   useEffect(() => {
-    if (possibleCredentialIds.length > 0) {
+    if (possibleCredentialIds.length > 0 && selectedCredentialId !== possibleCredentialIds[0]) {
       onCredentialSelect?.(possibleCredentialIds[0])
     }
-  }, [possibleCredentialIds, onCredentialSelect])
+  }, [possibleCredentialIds, onCredentialSelect, selectedCredentialId])
+
+  const documentName = documentNames.join(', ')
 
   return (
     <YStack fg={1} jc="space-between">
@@ -34,7 +42,7 @@ export function SigningSlide({ documentNames, possibleCredentialIds, onCredentia
         </Heading>
         <Paragraph>
           <Trans id="signing.description" comment="Explanation that the user is about to sign a document">
-            You are about to sign <Paragraph emphasis>{documentNames.join(', ')}</Paragraph>.
+            You are about to sign <Paragraph emphasis>{documentName}</Paragraph>.
           </Trans>
         </Paragraph>
       </YStack>
@@ -166,7 +174,7 @@ export function SigningSvg() {
         fill="url(#paint2_linear_2616_8734)"
       />
       <Path
-        d="M163.882 190.007C161.508 193.398 156.934 194.372 153.017 193.882L153.763 193.305L153.769 196.199C154.006 200.804 154.998 205.74 158.201 209.202C159.393 210.463 160.878 211.543 162.558 212.029L162.251 212.009C162.407 211.981 162.651 211.955 162.824 211.901C169.169 210.269 172.025 203.417 173.08 197.495L173.473 194.628L174.136 195.3C170.191 195.262 165.781 193.685 163.885 190.011L163.882 190.007ZM163.89 189.892C166.06 193.312 170.212 194.667 174.095 194.593C174.137 194.588 174.173 194.622 174.174 194.664C174.182 194.672 173.866 197.598 173.869 197.605C173.641 199.006 173.363 200.56 172.937 201.924C172.663 202.964 172.12 204.408 171.64 205.372C169.854 209.118 166.579 212.514 162.313 213.151C158.192 211.913 155.409 208.149 154.144 204.198C153.947 203.742 153.704 202.553 153.572 202.059C153.434 201.585 153.394 201.093 153.319 200.607C153.079 199.195 153.012 197.621 152.972 196.203L153.062 193.258C153.065 193.216 153.098 193.184 153.14 193.187C156.978 193.783 161.285 192.995 163.897 189.893L163.89 189.892Z"
+        d="M163.882 190.007C161.508 193.398 156.934 194.372 153.017 193.882L153.763 193.305L153.769 196.199C154.006 200.804 154.998 205.74 158.201 209.202C159.393 210.463 160.878 211.543 162.558 212.029L162.251 212.009C162.407 211.981 162.651 211.955 162.824 211.901C169.169 210.269 172.025 203.417 173.08 197.495L173.473 194.628L174.136 195.3C170.191 195.262 165.781 193.685 163.885 190.011L163.882 190.007ZM163.89 189.892C166.06 193.312 170.212 194.667 174.095 194.593C174.137 194.588 174.173 194.622 174.174 194.664C174.182 194.672 173.866 197.598 173.869 197.605C173.641 199.006 173.363 200.56 172.937 201.924C172.663 202.964 172.12 204.408 171.64 205.372C169.854 209.118 166.579 212.514 162.313 213.151C158.192 211.913 155.409 208.149 154.144 204.198C153.947 203.742 155.409 208.149 154.144 204.198C153.947 203.742 153.704 202.553 153.572 202.059C153.434 201.585 153.394 201.093 153.319 200.607C153.079 199.195 153.012 197.621 152.972 196.203L153.062 193.258C153.065 193.216 153.098 193.184 153.14 193.187C156.978 193.783 161.285 192.995 163.897 189.893L163.89 189.892Z"
         fill="#2A337E"
       />
       <Defs>
