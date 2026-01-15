@@ -10,8 +10,8 @@ catalogs:
       specifier: 0.0.0-alpha-20250917090914
       version: 0.0.0-alpha-20250917090914
     '@animo-id/expo-ausweis-sdk':
-      specifier: 0.0.1-alpha.14
-      version: 0.0.1-alpha.14
+      specifier: 0.0.1
+      version: 0.0.1
     '@animo-id/expo-digital-credentials-api':
       specifier: 0.4.0
       version: 0.4.0
@@ -294,7 +294,7 @@ importers:
         version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.2-alpha-20251211125344(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-alpha-20251211125344(typescript@5.9.3))
       '@animo-id/expo-ausweis-sdk':
         specifier: 'catalog:'
-        version: 0.0.1-alpha.14(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        version: 0.0.1(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
         version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -768,8 +768,8 @@ packages:
       '@credo-ts/core': '*'
       '@credo-ts/openid4vc': '*'
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.14':
-    resolution: {integrity: sha512-LJJyuVvljHqrzEjm0MtVx/SgH4Q+dWilzI1cxb1QqsMUWJgDfB9on3+/hJKSnleeaTR5VcByEudWcgR45424wQ==}
+  '@animo-id/expo-ausweis-sdk@0.0.1':
+    resolution: {integrity: sha512-coqwkiGHCo8zxzORsi1h9o5rAwXnXK/l7bewGN4xxxVpGLIEM/7K0VoATsmVf+6tH23CnRN1zTEaFV0EhLI2gg==}
     peerDependencies:
       expo: '*'
       react: '*'
@@ -6645,7 +6645,7 @@ snapshots:
       '@credo-ts/openid4vc': 0.6.2-alpha-20251211125344(typescript@5.9.3)
       zod: 3.25.76
 
-  '@animo-id/expo-ausweis-sdk@0.0.1-alpha.14(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+  '@animo-id/expo-ausweis-sdk@0.0.1(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@expo/config-plugins': 8.0.11
       expo: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
