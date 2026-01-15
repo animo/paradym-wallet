@@ -20,7 +20,7 @@ catalog:
   rxjs: ^7.8.1
   query-string: ^9.3.1
   "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250917090914
-  "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
+  "@animo-id/expo-ausweis-sdk": 0.0.1
   "@animo-id/expo-secure-environment": 0.1.5
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.1.4-alpha.3
