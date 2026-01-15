@@ -67,11 +67,7 @@ export function Ts12TransactionSlide({
             <YStack gap="$4" mt="$2">
               {claimsToDisplay.map((claim, idx) => (
                 <YStack key={idx} gap="$1">
-                  <Paragraph
-                    variant={claim.visualisation === 1 ? 'normal' : 'sub'}
-                    fontWeight="bold"
-                    color="$grey-700"
-                  >
+                  <Paragraph variant={claim.visualisation === 1 ? 'normal' : 'sub'} fontWeight="bold" color="$grey-700">
                     {claim.label}
                   </Paragraph>
                   <Paragraph

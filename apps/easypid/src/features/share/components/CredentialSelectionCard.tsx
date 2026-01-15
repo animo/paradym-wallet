@@ -55,13 +55,7 @@ export function CredentialSelectionCard({ credentials, selectedCredentialId, onS
           </Stack>
 
           <YStack gap="$4">
-            <Heading
-              textAlign="left"
-              fontSize={24}
-              fontWeight="600"
-              lineHeight={36}
-              textTransform="none"
-            >
+            <Heading textAlign="left" fontSize={24} fontWeight="600" lineHeight={36} textTransform="none">
               <Trans id="credentialSelection.sheetTitle" comment="Title for the credential selection sheet">
                 Select Credential
               </Trans>

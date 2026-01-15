@@ -49,7 +49,7 @@ export function Ts12PaymentSlide({
         .trim()
 
       return { currencySymbol: symbol, formattedAmount: amount }
-    } catch (e) {
+    } catch (_e) {
       return {
         currencySymbol: paymentData.currency,
         formattedAmount: paymentData.amount.toFixed(2),
