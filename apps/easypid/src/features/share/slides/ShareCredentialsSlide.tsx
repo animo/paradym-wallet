@@ -1,24 +1,27 @@
+import {
+  GenericTransactionSummaryCard,
+  PaymentSummaryCard,
+  QesSummaryCard,
+} from '@easypid/features/share/components/TransactionSummaryCards'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import {
+  getAcceptLabel,
+  getRemainingEntries,
+  getTransactionCards,
+  getUniqueTransactionCards,
+} from '@easypid/utils/transactionUtils'
 import { Trans, useLingui } from '@lingui/react/macro'
 import {
   type DisplayImage,
   type FormattedSubmission,
-  type FormattedSubmissionEntrySatisfied,
   type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
   type QesTransactionDataEntry,
   type Ts12TransactionDataEntry,
 } from '@package/agent'
-import {
-  CardWithAttributes,
-  DualResponseButtons,
-  MiniDocument,
-  useScrollViewPosition,
-  useWizard,
-} from '@package/app'
+import { CardWithAttributes, DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, XStack, YStack } from '@package/ui'
-import { Image } from 'expo-image'
+import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
@@ -54,7 +57,7 @@ export const ShareCredentialsSlide = ({
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
-  const { t, i18n } = useLingui()
+  const { t } = useLingui()
 
   const handleAccept = async () => {
     setIsProcessing(true)
@@ -67,48 +70,10 @@ export const ShareCredentialsSlide = ({
     onCancel()
   }
 
-  const transactionInputDescriptorIds =
-    formattedTransactionData?.flatMap((entry) => entry.formattedSubmissions.map((s) => s.inputDescriptorId)) ?? []
-
-  const remainingEntries =
-    submission?.entries.filter((entry) => !transactionInputDescriptorIds.includes(entry.inputDescriptorId)) ?? []
-
-  const transactionCards =
-    formattedTransactionData
-      ?.map((entry, index) => {
-        const selected = selectedTransactionData?.[index]
-        const submissions = entry.formattedSubmissions
-
-        if (selected) {
-          const cred = submissions
-            .flatMap((s) => (s.isSatisfied ? s.credentials : []))
-            .find((c) => c.credential.id === selected.credentialId)
-          if (cred) return cred
-        }
-        const firstSubmission = submissions[0]
-        return firstSubmission?.isSatisfied ? firstSubmission.credentials[0] : undefined
-      })
-      .filter((c): c is NonNullable<typeof c> => !!c) ?? []
-
-  const uniqueTransactionCards = transactionCards.filter(
-    (c, i, arr) => arr.findIndex((x) => x.credential.id === c.credential.id) === i
-  )
-
-  const hasQes = formattedTransactionData?.some((t) => t.type === 'qes_authorization')
-  const hasPayment = formattedTransactionData?.some((t) => t.type === 'urn:eudi:sca:payment:1')
-
-  let acceptLabel = t({
-    id: 'submission.share',
-    message: 'Share',
-  })
-
-  if (hasQes && hasPayment) {
-    acceptLabel = t({ id: 'signPayShare.accept', message: 'Sign, pay & share' })
-  } else if (hasQes) {
-    acceptLabel = t({ id: 'signShare.accept', message: 'Sign & share' })
-  } else if (hasPayment) {
-    acceptLabel = t({ id: 'payShare.accept', message: 'Pay & share' })
-  }
+  const remainingEntries = getRemainingEntries(submission, formattedTransactionData)
+  const transactionCards = getTransactionCards(formattedTransactionData, selectedTransactionData)
+  const uniqueTransactionCards = getUniqueTransactionCards(transactionCards)
+  const acceptLabel = getAcceptLabel(formattedTransactionData, t)
 
   const fallbackPurpose = t({
     id: 'submission.fallbackPurpose',
@@ -171,129 +136,27 @@ export const ShareCredentialsSlide = ({
 
             {formattedTransactionData?.map((entry, index) => {
               if (entry.type === 'qes_authorization') {
-                const qesEntry = entry as QesTransactionDataEntry
-                return (
-                  <YStack key={index} gap="$4">
-                    <YStack gap="$2">
-                      <Heading heading="sub2">
-                        <Trans id="signShare.documentHeading">Documents</Trans>
-                      </Heading>
-                      <Paragraph>
-                        <Trans id="signShare.documentIntro">The following documents will be signed.</Trans>
-                      </Paragraph>
-                    </YStack>
-                    <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
-                      <YStack f={1} gap="$2">
-                        <Heading heading="sub2" textTransform="none" color="$grey-800">
-                          {qesEntry.documentNames.join(', ')}
-                        </Heading>
-                        <Paragraph>
-                          <Trans id="signShare.signingWith">Signing with {qesEntry.qtsp.name}</Trans>
-                        </Paragraph>
-                      </YStack>
-                      <MiniDocument logoUrl={qesEntry.qtsp.logo?.url} />
-                    </XStack>
-                  </YStack>
-                )
+                return <QesSummaryCard key={index} entry={entry as QesTransactionDataEntry} />
               }
 
               if (entry.type === 'urn:eudi:sca:payment:1') {
-                const ts12Entry = entry as Ts12TransactionDataEntry
-                // biome-ignore lint/suspicious/noExplicitAny: payload is unknown
-                const payload = ts12Entry.payload as any
-                const formattedAmount = new Intl.NumberFormat(i18n.locale, {
-                  style: 'currency',
-                  currency: payload.currency,
-                }).format(Number(payload.amount))
-
-                const selected = selectedTransactionData?.[index]
-                const submissions = ts12Entry.formattedSubmissions
-                let credential: FormattedSubmissionEntrySatisfied['credentials'][0] | undefined
-                if (selected) {
-                  credential = submissions
-                    .flatMap((s) => (s.isSatisfied ? s.credentials : []))
-                    .find((c) => c.credential.id === selected.credentialId)
-                }
-                if (!credential) {
-                  const firstSubmission = submissions[0]
-                  credential = firstSubmission?.isSatisfied ? firstSubmission.credentials[0] : undefined
-                }
-
-                const cardIcon =
-                  credential?.credential.display.backgroundImage?.url ?? credential?.credential.display.issuer.logo?.url
-
                 return (
-                  <YStack key={index} gap="$4">
-                    <YStack gap="$2">
-                      <Heading heading="sub2">
-                        <Trans id="payment.summaryHeading">Payment</Trans>
-                      </Heading>
-                      <Paragraph>
-                        <Trans id="payment.summaryIntro">The following payment will be authorized.</Trans>
-                      </Paragraph>
-                    </YStack>
-                    <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4" ai="center">
-                      <YStack f={1} gap="$1">
-                        <Heading heading="sub2" textTransform="none" color="$grey-800">
-                          {payload.payee?.name ?? <Trans id="payment.unknownPayee">Unknown Payee</Trans>}
-                        </Heading>
-                        <Paragraph fontWeight="bold">{formattedAmount}</Paragraph>
-                      </YStack>
-                      {cardIcon ? (
-                        <Image
-                          source={cardIcon}
-                          style={{ width: 40, height: 40, borderRadius: 20 }}
-                          contentFit="contain"
-                        />
-                      ) : (
-                        <HeroIcons.CreditCard size={24} color="$grey-600" />
-                      )}
-                    </XStack>
-                  </YStack>
+                  <PaymentSummaryCard
+                    key={index}
+                    entry={entry as Ts12TransactionDataEntry}
+                    index={index}
+                    selectedTransactionData={selectedTransactionData}
+                  />
                 )
               }
 
-              const ts12Entry = entry as Ts12TransactionDataEntry
-              const selected = selectedTransactionData?.[index]
-              let selectedCredentialId = selected?.credentialId
-
-              if (!selectedCredentialId) {
-                const submissions = ts12Entry.formattedSubmissions
-                const firstSubmission = submissions[0]
-                if (firstSubmission?.isSatisfied) {
-                  selectedCredentialId = firstSubmission.credentials[0].credential.id
-                }
-              }
-
-              const meta = selectedCredentialId
-                ? ts12Entry.metaForIds[selectedCredentialId]
-                : Object.values(ts12Entry.metaForIds)[0]
-
-              const title =
-                meta?.ui_labels.transaction_title?.find((l) => l.lang === i18n.locale)?.value ??
-                meta?.ui_labels.transaction_title?.find((l) => l.lang.startsWith(i18n.locale.split('-')[0]))?.value ??
-                meta?.ui_labels.transaction_title?.[0]?.value ??
-                ts12Entry.type
-
               return (
-                <YStack key={index} gap="$4">
-                  <YStack gap="$2">
-                    <Heading heading="sub2">
-                      <Trans id="transaction.summaryHeading">Transaction</Trans>
-                    </Heading>
-                    <Paragraph>
-                      <Trans id="transaction.summaryIntro">The following transaction will be authorized.</Trans>
-                    </Paragraph>
-                  </YStack>
-                  <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4" ai="center">
-                    <YStack f={1} gap="$1">
-                      <Heading heading="sub2" textTransform="none" color="$grey-800">
-                        {title}
-                      </Heading>
-                    </YStack>
-                    <HeroIcons.QueueList size={24} color="$grey-600" />
-                  </XStack>
-                </YStack>
+                <GenericTransactionSummaryCard
+                  key={index}
+                  entry={entry as Ts12TransactionDataEntry}
+                  index={index}
+                  selectedTransactionData={selectedTransactionData}
+                />
               )
             })}
 
