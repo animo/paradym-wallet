@@ -38,7 +38,7 @@ catalog:
   "@credo-ts/openid4vc": 0.6.2-alpha-20260116085518
   "@credo-ts/question-answer": 0.6.2-alpha-20260116085518
   "@credo-ts/react-native": 0.6.2-alpha-20260116085518
-  "@credo-ts/didcomm": 0.6.2-alpha-20260116085518
+  "@credo-ts/didcomm": 0.6.2-pr-2617-20260113005939
   "@hyperledger/anoncreds-react-native": 0.3.4
   "@hyperledger/anoncreds-shared": 0.3.4
   "@openwallet-foundation/askar-react-native": 0.5.0-alpha-20251222150428
