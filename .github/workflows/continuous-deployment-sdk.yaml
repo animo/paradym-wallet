@@ -1,0 +1,86 @@
+name: Continous Deployment (Paradym Wallet Sdk)
+
+on:
+  push:
+    branches:
+      # - main
+      - wallet-sdk
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  # release-stable:
+  #   runs-on: ubuntu-latest
+  #   name: Release Stable
+  #   outputs:
+  #     published: ${{ steps.changesets.outputs.published }}
+  #   steps:
+  #     - name: Checkout Repo
+  #       uses: actions/checkout@v4
+
+  #     - uses: pnpm/action-setup@v4
+  #     - name: Setup NodeJS
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: "pnpm"
+
+  #     - name: Install Dependencies
+  #       run: pnpm install --frozen-lockfile
+
+  #     - name: Create Release Pull Request or Publish to npm
+  #       id: changesets
+  #       uses: changesets/action@v1
+  #       with:
+  #         title: "chore(release): new version"
+  #         commit: "chore(release): new version"
+  #         publish: pnpm release:sdk
+  #         version: pnpm changeset-version:sdk
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release-unstable:
+    runs-on: ubuntu-latest
+    name: Release Unstable
+    if: always() && github.event_name == 'push'
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > ".npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_ANIMO_ID_TOKEN_UNTIL_3_16_26 }}
+
+      - name: Create unstable release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # this ensures there's always a patch release created
+          cat << 'EOF' > .changeset/snapshot-template-changeset.md
+          ---
+          '@paradym/wallet-sdk': patch
+          ---
+
+          snapshot release
+          EOF
+
+          pnpm changeset version --snapshot alpha
+          pnpm style:fix
+          pnpm build
+          pnpm changeset publish --tag alpha

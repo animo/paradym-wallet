@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro'
-import type { DisplayImage } from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
@@ -17,13 +16,14 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 import { BlurBadge } from './BlurBadge'
 
 type FunkeCredentialCardProps = {
   onPress?(): void
-  name: string
+  name?: string
   bgColor?: string
   textColor?: string
   issuerImage?: DisplayImage
@@ -88,7 +88,7 @@ export function FunkeCredentialCard({
           <XStack jc="space-between">
             <YStack f={1}>
               <Paragraph fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
-                {name.toLocaleUpperCase()}
+                {(name ?? 'TODO name').toLocaleUpperCase()}
               </Paragraph>
             </YStack>
             <XStack>{icon}</XStack>

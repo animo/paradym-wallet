@@ -1,17 +1,12 @@
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import {
-  type IssuanceActivity,
-  type PresentationActivity,
-  type SignedActivity,
-  useActivities,
-  useCredentialsForDisplay,
-} from '@package/agent'
 import { CardWithAttributes, getActivityInteraction, MiniDocument, TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import { useActivities, useCredentials } from '@paradym/wallet-sdk/hooks'
+import type { IssuanceActivity, PresentationActivity, SignedActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
@@ -107,7 +102,7 @@ const activityMessages = {
 }
 
 export function ReceivedActivityDetailSection({ activity }: { activity: IssuanceActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
   const { withHaptics } = useHaptics()
   const { push } = useRouter()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
@@ -205,7 +200,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
 }
 
 export function SharedActivityDetailSection({ activity }: { activity: PresentationActivity | SignedActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
 
   const amountShared = activity.request.credentials?.length ?? 0
   const { t } = useLingui()

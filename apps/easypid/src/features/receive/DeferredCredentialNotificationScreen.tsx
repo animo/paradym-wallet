@@ -1,12 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import {
-  extractOpenId4VcCredentialMetadata,
-  getCredentialDisplayWithDefaults,
-  getDeferredCredentialNextCheckAt,
-  getOpenId4VcCredentialDisplay,
-  useDeferredCredentials,
-} from '@package/agent'
-import {
   DeleteDeferredCredentialSheet,
   FunkeCredentialCard,
   TextBackButton,
@@ -26,6 +19,13 @@ import {
   Stack,
   YStack,
 } from '@package/ui'
+import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
+import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
+import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/metadata/credentials'
+import {
+  getDeferredCredentialNextCheckAt,
+  useDeferredCredentials,
+} from '@paradym/wallet-sdk/storage/deferredCredentialStore'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

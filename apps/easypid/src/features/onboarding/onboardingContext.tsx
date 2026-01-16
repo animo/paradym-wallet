@@ -1,8 +1,8 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import type { SdJwtVc, SdJwtVcHeader } from '@credo-ts/core'
-import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
+import type { SdJwtVcHeader } from '@credo-ts/core'
+import { SdJwtVcRecord } from '@credo-ts/core'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
-import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
+import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
   CardScanningErrorDetails,
@@ -10,7 +10,6 @@ import type {
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
-import { resetWallet } from '@easypid/utils/resetWallet'
 import {
   type CardScanningState,
   type OnboardingPage,
@@ -18,21 +17,17 @@ import {
   SIMULATOR_PIN,
 } from '@easypid/utils/sharedPidSetup'
 import { useLingui } from '@lingui/react/macro'
-import {
-  BiometricAuthenticationCancelledError,
-  BiometricAuthenticationNotEnabledError,
-  getCredentialForDisplay,
-  getCredentialForDisplayId,
-  migrateLegacyParadymWallet,
-  SdJwtVcRecord,
-  storeReceivedActivity,
-} from '@package/agent'
 import { useHaptics } from '@package/app'
-import { getLegacySecureWalletKey, removeLegacySecureWalletKey } from '@package/secure-store/legacyUnlock'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
+import {
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
+} from '@paradym/wallet-sdk/error'
+import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
@@ -57,9 +52,10 @@ export function OnboardingContextProvider({
 }: PropsWithChildren<{
   initialStep?: OnboardingStep['step']
 }>) {
+  const paradym = useParadym()
+
   const { successHaptic, lightHaptic } = useHaptics()
   const toast = useToastController()
-  const secureUnlock = useSecureUnlock()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
   const router = useRouter()
   const [, setHasFinishedOnboarding] = useHasFinishedOnboarding()
@@ -78,7 +74,6 @@ export function OnboardingContextProvider({
   const [walletPin, setWalletPin] = useState<string>()
   const [idCardPin, setIdCardPin] = useState<string>()
   const [userName, setUserName] = useState<string>()
-  const [agent, setAgent] = useState<AppAgent>()
   const [idCardScanningState, setIdCardScanningState] = useState<CardScanningState>({
     isCardAttached: undefined,
     progress: 0,
@@ -87,6 +82,12 @@ export function OnboardingContextProvider({
   })
   const [eidCardRequestedAccessRights, setEidCardRequestedAccessRights] = useState<string[]>()
   const [progressBar, setProgressBar] = useState(currentStep.progress)
+
+  useEffect(() => {
+    if (currentStepName === 'welcome' && paradym.state === 'locked') {
+      paradym.reset().then(paradym.reinitialize)
+    }
+  }, [currentStepName, paradym])
 
   useEffect(() => {
     if (currentStepName && currentStepName !== 'welcome' && currentStepName !== 'pin-reenter') {
@@ -133,26 +134,86 @@ export function OnboardingContextProvider({
     }, 500)
   }, [router, setHasFinishedOnboarding, receivePidUseCase, successHaptic])
 
+  const reset = async ({
+    resetToStep = 'welcome',
+    error,
+    showToast = true,
+    toastMessage = t(commonMessages.pleaseTryAgain),
+  }: {
+    error?: unknown
+    resetToStep: OnboardingStep['step']
+    showToast?: boolean
+    toastMessage?: string
+  }) => {
+    if (error) console.error(error)
+
+    const stepsToCompleteAfterReset = onboardingSteps
+      .slice(onboardingSteps.findIndex((step) => step.step === resetToStep))
+      .map((step) => step.step)
+
+    if (stepsToCompleteAfterReset.includes('pin')) {
+      // Reset PIN state
+      setWalletPin(undefined)
+      setAllowSimulatorCard(false)
+      // TODO(sdk): is paradym shutdown required here?
+    }
+
+    if (stepsToCompleteAfterReset.includes('id-card-requested-attributes')) {
+      // We don't need to handle error
+      await receivePidUseCase?.cancelIdCardScanning().catch(() => {})
+      setReceivePidUseCaseState(undefined)
+      setReceivePidUseCase(undefined)
+      setEidCardRequestedAccessRights(undefined)
+    }
+
+    // Reset eID Card state
+    if (stepsToCompleteAfterReset.includes('id-card-pin')) {
+      setIdCardPin(undefined)
+      setIdCardScanningState({
+        progress: 0,
+        state: 'readyToScan',
+        isCardAttached: undefined,
+        showScanModal: true,
+      })
+      // setOnIdCardPinReEnter(undefined)
+    }
+    if (stepsToCompleteAfterReset.includes('id-card-fetch')) {
+      setUserName(undefined)
+    }
+
+    if (stepsToCompleteAfterReset.includes('pin')) {
+      if (paradym.state === 'unlocked') {
+        paradym.reset()
+      }
+      if (paradym.state !== 'initializing') {
+        paradym.reinitialize()
+      }
+    }
+
+    // TODO: if we already have the agent, we should either remove the wallet and start again,
+    // or we need to start from the id card flow
+    setCurrentStepName(resetToStep)
+
+    if (showToast) {
+      toast.show(
+        t({
+          id: 'onboarding.errorOccurred',
+          message: 'Error occurred during onboarding',
+        }),
+        {
+          message: toastMessage,
+          customData: {
+            preset: 'danger',
+          },
+        }
+      )
+    }
+  }
+
   const onPinEnter = async (pin: string) => {
     setWalletPin(pin)
     goToNextStep()
   }
-
-  // Bit sad but if we try to call this in the initializeAgent callback sometimes the state hasn't updated
-  // in the secure unlock yet, which means that it will throw an error, so we use an effect. Probably need
-  // to do a refactor on this and move more logic outside of the react world, as it's a bit weird with state
-  useEffect(() => {
-    if (secureUnlock.state !== 'acquired-wallet-key' || !agent) return
-  }, [secureUnlock, agent])
-
-  const initializeAgent = useCallback(async (walletKey: string) => {
-    const agent = await initializeAppAgent({
-      walletKey,
-      walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
-      registerWallet: true,
-    })
-    setAgent(agent)
-  }, [])
 
   const onPinReEnter = async (pin: string) => {
     // Spells BROKEN on the pin pad (with letters)
@@ -181,50 +242,35 @@ export function OnboardingContextProvider({
       throw new Error('Pin entries do not match')
     }
 
-    if (secureUnlock.state !== 'not-configured') {
-      router.replace('/')
+    // When the onboarding is cancelled between the pin slide and the biometrics slide, a state occurs where the wallet is `locked`, but biometrics is not setup.
+    if (paradym.state !== 'not-configured') {
+      if (paradym.state === 'unlocked') {
+        paradym.reset()
+      }
+      if (paradym.state !== 'initializing') {
+        paradym.reinitialize()
+      }
+      // resetAppState()
+      await reset({ resetToStep: 'welcome' })
       return
     }
 
-    return secureUnlock
-      .setup(walletPin as string)
-      .then(async ({ walletKey }) => {
-        await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
-
-        if (isParadymWallet()) {
-          const legacyWalletKey = await getLegacySecureWalletKey().catch(() => null)
-
-          if (legacyWalletKey) {
-            await migrateLegacyParadymWallet({
-              legacyWalletKey,
-              newWalletKey: walletKey,
-              walletKeyVersion: secureWalletKey.getWalletKeyVersion(),
-            })
-              .catch((e) => {
-                // We ignore this, it's unfortunate but the wallet migration failed
-                console.error('error migrating wallet', e)
-              })
-              .finally(async () => {
-                await removeLegacySecureWalletKey()
-              })
-          }
-        }
-
-        await initializeAgent(walletKey)
-      })
-      .then(goToNextStep)
-      .catch((e) => {
-        reset({ error: e, resetToStep: 'welcome' })
-        throw e
-      })
+    try {
+      await paradym.setPin(walletPin as string)
+      await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
+      goToNextStep()
+    } catch (e) {
+      reset({ error: e, resetToStep: 'welcome' })
+      throw e
+    }
   }
 
   const onEnableBiometricsDisabled = async () => {
     return Linking.openSettings().then(() => setCurrentStepName('biometrics'))
   }
 
-  const onEnableBiometrics = async (enableBiometrics: boolean) => {
-    if (!agent || (secureUnlock.state !== 'acquired-wallet-key' && secureUnlock.state !== 'unlocked')) {
+  const onEnableBiometrics = async () => {
+    if (paradym.state !== 'acquired-wallet-key' && paradym.state !== 'unlocked') {
       await reset({
         resetToStep: 'pin',
       })
@@ -232,43 +278,19 @@ export function OnboardingContextProvider({
     }
 
     try {
-      if (secureUnlock.state === 'acquired-wallet-key') {
-        await secureUnlock.setWalletKeyValid({ agent }, { enableBiometrics })
-      }
-
-      // Directly try getting the wallet key so the user can enable biometrics
-      // and we can check if biometrics works
-      const walletKey = enableBiometrics
-        ? await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-        : undefined
-
-      if (!walletKey) {
-        const walletKey =
-          secureUnlock.state === 'acquired-wallet-key'
-            ? secureUnlock.walletKey
-            : secureUnlock.context.agent.modules.askar.config.store.key
-        if (!walletKey) {
-          await reset({ resetToStep: 'pin' })
-          return
-        }
-
-        if (enableBiometrics) {
-          await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-          await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-        }
+      if (paradym.state === 'acquired-wallet-key') {
+        await paradym.unlock({ enableBiometrics: true })
       }
 
       goToNextStep()
     } catch (error) {
       // We can recover from this, and will show an error on the screen
-      if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
-          customData: { preset: 'danger' },
-        })
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {})
         throw error
       }
 
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
         setCurrentStepName('biometrics-disabled')
         throw error
       }
@@ -349,7 +371,7 @@ export function OnboardingContextProvider({
       setIdCardPin(undefined)
       return idCardPin
     },
-    [idCardPin, toast.show, t]
+    [toast.show, t, idCardPin]
   )
 
   // Bit unfortunate, but we need to keep it as ref, as otherwise the value passed to ReceivePidUseCase.initialize will not get updated and we
@@ -364,77 +386,6 @@ export function OnboardingContextProvider({
     goToNextStep()
   }
 
-  const reset = async ({
-    resetToStep = 'welcome',
-    error,
-    showToast = true,
-    toastMessage = t(commonMessages.pleaseTryAgain),
-  }: {
-    error?: unknown
-    resetToStep: OnboardingStep['step']
-    showToast?: boolean
-    toastMessage?: string
-  }) => {
-    if (error) console.error(error)
-
-    const stepsToCompleteAfterReset = onboardingSteps
-      .slice(onboardingSteps.findIndex((step) => step.step === resetToStep))
-      .map((step) => step.step)
-
-    if (stepsToCompleteAfterReset.includes('pin')) {
-      // Reset PIN state
-      setWalletPin(undefined)
-      setAllowSimulatorCard(false)
-      setAgent(undefined)
-    }
-
-    if (stepsToCompleteAfterReset.includes('id-card-requested-attributes')) {
-      // We don't need to handle error
-      await receivePidUseCase?.cancelIdCardScanning().catch(() => {})
-      setReceivePidUseCaseState(undefined)
-      setReceivePidUseCase(undefined)
-      setEidCardRequestedAccessRights(undefined)
-    }
-
-    // Reset eID Card state
-    if (stepsToCompleteAfterReset.includes('id-card-pin')) {
-      setIdCardPin(undefined)
-      setIdCardScanningState({
-        progress: 0,
-        state: 'readyToScan',
-        isCardAttached: undefined,
-        showScanModal: true,
-      })
-      setOnIdCardPinReEnter(undefined)
-    }
-    if (stepsToCompleteAfterReset.includes('id-card-fetch')) {
-      setUserName(undefined)
-    }
-
-    if (stepsToCompleteAfterReset.includes('pin')) {
-      await resetWallet(secureUnlock)
-    }
-
-    // TODO: if we already have the agent, we should either remove the wallet and start again,
-    // or we need to start from the id card flow
-    setCurrentStepName(resetToStep)
-
-    if (showToast) {
-      toast.show(
-        t({
-          id: 'onboarding.errorOccurred',
-          message: 'Error occurred during onboarding',
-        }),
-        {
-          message: toastMessage,
-          customData: {
-            preset: 'danger',
-          },
-        }
-      )
-    }
-  }
-
   const onStartScanning = async () => {
     if (receivePidUseCase?.state !== 'id-card-auth') {
       await reset({
@@ -444,10 +395,10 @@ export function OnboardingContextProvider({
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       await reset({
         resetToStep: 'welcome',
-        error: 'onStartScanning: secureUnlock.state is not unlocked',
+        error: 'onStartScanning: paradym.state is not initialized',
       })
       return
     }
@@ -511,7 +462,7 @@ export function OnboardingContextProvider({
       setCurrentStepName(shouldUseCloudHsm ? 'id-card-fetch' : 'id-card-verify')
 
       // Acquire access token
-      await receivePidUseCase.acquireAccessToken()
+      await receivePidUseCase.acquireAccessToken(paradym.paradym)
 
       if (shouldUseCloudHsm) {
         await retrieveCredential()
@@ -530,10 +481,10 @@ export function OnboardingContextProvider({
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       await reset({
         resetToStep: 'welcome',
-        error: 'retrieveCredential: secureUnlock.state is not unlocked',
+        error: 'retrieveCredential: paradym.state is not initialized',
       })
       return
     }
@@ -544,7 +495,10 @@ export function OnboardingContextProvider({
 
       for (const credentialRecord of credentialRecords) {
         if (credentialRecord instanceof SdJwtVcRecord) {
-          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
+          const parsed = paradym.paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
+            // @ts-expect-error: why is compactSdJwtVc not available anymore?
+            credentialRecord.compactSdJwtVc
+          )
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()
@@ -552,7 +506,7 @@ export function OnboardingContextProvider({
           )
 
           const { display } = getCredentialForDisplay(credentialRecord)
-          await storeReceivedActivity(secureUnlock.context.agent, {
+          await storeReceivedActivity(paradym.paradym, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
             name: display.issuer.name,
@@ -566,15 +520,13 @@ export function OnboardingContextProvider({
 
       setCurrentStepName('id-card-complete')
     } catch (error) {
-      if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
-          customData: { preset: 'danger' },
-        })
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), {})
         return
       }
 
       // What if not supported?!?
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
         setCurrentStepName('id-card-biometrics-disabled')
         return
       }
@@ -598,7 +550,7 @@ export function OnboardingContextProvider({
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       await reset({
         error: 'onIdCardStart: Secure unlock state is not unlocked',
         resetToStep: 'welcome',
@@ -615,7 +567,7 @@ export function OnboardingContextProvider({
     }
 
     const baseOptions = {
-      agent: secureUnlock.context.agent,
+      paradym: paradym.paradym,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({

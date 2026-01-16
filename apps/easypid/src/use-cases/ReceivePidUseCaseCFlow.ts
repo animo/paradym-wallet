@@ -1,26 +1,23 @@
-import type { MdocRecord } from '@credo-ts/core'
+import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
+import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
+import { receiveCredentialFromOpenId4VciOffer } from '@paradym/wallet-sdk/invitation/resolver'
 import {
-  BiometricAuthenticationError,
-  OpenId4VciAuthorizationFlow,
-  receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
-  type SdJwtVcRecord,
   setCredentialCategoryMetadata,
   setOpenId4VcCredentialMetadata,
   setRefreshCredentialMetadata,
-  storeCredential,
-} from '@package/agent'
+} from '@paradym/wallet-sdk/metadata/credentials'
+import { storeCredential } from '@paradym/wallet-sdk/storage/credentials'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 import { bdrPidOpenId4VcMetadata, bdrPidSdJwtTypeMetadata } from './bdrPidMetadata'
 import { ReceivePidUseCaseFlow, type ReceivePidUseCaseFlowOptions } from './ReceivePidUseCaseFlow'
 
 export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
+  // TODO(sdk): not tested
   public static async initialize(options: ReceivePidUseCaseFlowOptions) {
-    const resolved = await resolveOpenId4VciOffer({
-      agent: options.agent,
-      offer: { uri: C_PRIME_SD_JWT_MDOC_OFFER },
+    const resolved = await options.paradym.openid4vc.resolveCredentialOffer({
+      offerUri: C_PRIME_SD_JWT_MDOC_OFFER,
       authorization: {
         clientId: ReceivePidUseCaseCFlow.CLIENT_ID,
         redirectUri: ReceivePidUseCaseCFlow.REDIRECT_URI,
@@ -35,10 +32,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       }
     }
 
-    if (
-      !resolved.resolvedAuthorizationRequest ||
-      resolved.resolvedAuthorizationRequest.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
-    ) {
+    if (resolved.flow !== 'auth') {
       throw new Error('Expected authorization_code grant, but not found')
     }
 
@@ -65,8 +59,10 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       const credentialConfigurationIdsToRequest = Object.keys(
         this.resolvedCredentialOffer.offeredCredentialConfigurations
       )
+
+      // TODO(sdk): create sdk functionality
       const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
-        agent: this.options.agent,
+        paradym: this.options.paradym,
         accessToken: this.accessToken,
         resolvedCredentialOffer: this.resolvedCredentialOffer,
         credentialConfigurationIdsToRequest,
@@ -117,13 +113,13 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         }
 
         credentialRecords.push(credentialRecord)
-        await storeCredential(this.options.agent, credentialRecord)
+        await storeCredential(this.options.paradym, credentialRecord)
       }
 
       return credentialRecords
     } catch (error) {
       // We can recover from this error, so we shouldn't set the state to error
-      if (error instanceof BiometricAuthenticationError) {
+      if (error instanceof ParadymWalletBiometricAuthenticationError) {
         throw error
       }
 
