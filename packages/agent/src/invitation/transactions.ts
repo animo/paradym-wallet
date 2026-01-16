@@ -23,6 +23,7 @@ export type QesTransactionDataEntry = {
 
 export type Ts12TransactionDataEntry = {
   type: string
+  subtype?: string
   metaForIds: Record<string, ResolvedTs12Metadata>
   payload: unknown
   formattedSubmissions: FormattedSubmissionEntry[]
@@ -54,21 +55,27 @@ export async function getTs12TransactionDataTypes(records: Record<string, SdJwtV
 
   const resolved = await Promise.all(
     metadata.flatMap(([recId, metadata]) => {
-      if (metadata && 'transaction_data_types' in metadata) {
-        return Object.keys(metadata.transaction_data_types).map(
-          async (key) =>
-            [key, recId, await resolveTs12TransactionDisplayMetadata(metadata, key).catch((_) => undefined)] as const
+      if (metadata && 'transaction_data_types' in metadata && Array.isArray(metadata.transaction_data_types)) {
+        return metadata.transaction_data_types.map(
+          async ({ type, subtype }) =>
+            [
+              type,
+              subtype,
+              recId,
+              await resolveTs12TransactionDisplayMetadata(metadata, type, subtype).catch((_) => undefined),
+            ] as const
         )
       }
       return []
     })
   )
 
-  const types = {} as Record<string, Record<string, ResolvedTs12Metadata>>
-  for (const [type, id, meta] of resolved) {
+  const types = {} as Record<string, Record<string, Record<string, ResolvedTs12Metadata>>>
+  for (const [type, subtype, id, meta] of resolved) {
     if (!meta) continue
     types[type] ??= {}
-    types[type][id] = meta
+    types[type][subtype ?? ''] ??= {}
+    types[type][subtype ?? ''][id] = meta
   }
   return types
 }
@@ -113,9 +120,12 @@ export const getFormattedTransactionData = async (
       } satisfies QesTransactionDataEntry
     }
 
-    const metas = ts12Data[type]
+    const subtype = 'subtype' in data && typeof data.subtype === 'string' ? data.subtype : ''
+    const metas = ts12Data[type]?.[subtype]
     if (!('payload' in data) || !metas)
-      throw new Error(`Transaction Data of type ${type} is not supported: ${JSON.stringify(data)}`)
+      throw new Error(
+        `Transaction Data of type ${type} and subtype ${subtype} is not supported: ${JSON.stringify(data)}`
+      )
 
     const payload = data.payload
     const metaForIds: Record<string, ResolvedTs12Metadata> = {}
@@ -149,6 +159,7 @@ export const getFormattedTransactionData = async (
 
     return {
       type,
+      subtype: subtype || undefined,
       metaForIds,
       payload,
       formattedSubmissions,

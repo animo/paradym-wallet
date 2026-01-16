@@ -96,8 +96,8 @@ export const GenericTransactionSummaryCard = ({
   const meta = selectedCredentialId ? entry.metaForIds[selectedCredentialId] : Object.values(entry.metaForIds)[0]
 
   const title =
-    meta?.ui_labels.transaction_title?.find((l) => l.lang === i18n.locale)?.value ??
-    meta?.ui_labels.transaction_title?.find((l) => l.lang.startsWith(i18n.locale.split('-')[0]))?.value ??
+    meta?.ui_labels.transaction_title?.find((l) => l.locale === i18n.locale)?.value ??
+    meta?.ui_labels.transaction_title?.find((l) => l.locale.startsWith(i18n.locale.split('-')[0]))?.value ??
     meta?.ui_labels.transaction_title?.[0]?.value ??
     entry.type
 

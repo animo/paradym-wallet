@@ -162,11 +162,11 @@ export function Ts12BaseSlide({
 
   const uiLabels = useMemo(() => {
     if (!displayMetadata) return null
-    const getLabel = (labels?: Array<{ lang: string; value: string }>) => {
+    const getLabel = (labels?: Array<{ locale: string; value: string }>) => {
       if (!labels) return undefined
       return (
-        labels.find((l) => l.lang === currentLocale)?.value ??
-        labels.find((l) => l.lang.startsWith(currentLocale.split('-')[0]))?.value ??
+        labels.find((l) => l.locale === currentLocale)?.value ??
+        labels.find((l) => l.locale.startsWith(currentLocale.split('-')[0]))?.value ??
         labels[0]?.value
       )
     }
