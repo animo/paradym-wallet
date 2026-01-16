@@ -33,7 +33,7 @@ catalog:
   "@types/fast-text-encoding": ^1.0.3
   "@credo-ts/anoncreds": 0.6.2-alpha-20260116085518
   "@credo-ts/askar": 0.6.2-alpha-20260116085518
-  "@credo-ts/cheqd": 0.6.2-alpha-20260116085518
+  "@credo-ts/cheqd": 0.6.2-pr-2617-20260113005939
   "@credo-ts/core": 0.6.2-alpha-20260116085518
   "@credo-ts/openid4vc": 0.6.2-alpha-20260116085518
   "@credo-ts/question-answer": 0.6.2-alpha-20260116085518
