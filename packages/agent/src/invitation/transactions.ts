@@ -5,12 +5,13 @@ import {
   type ZScaAttestationExt,
   zFunkeQesTransaction,
 } from '@animo-id/eudi-wallet-functionality'
-import { SdJwtVcRecord } from '@credo-ts/core'
+import { ConsoleLogger, LogLevel, SdJwtVcRecord } from '@credo-ts/core'
 import type { FormattedSubmissionEntry, FormattedSubmissionEntrySatisfied } from '@package/agent'
 import Ajv from 'ajv'
 import type { CredentialsForProofRequest } from './handler'
 
 const ajv = new Ajv()
+const logger = new ConsoleLogger(LogLevel.warn)
 
 export type QtspInfo = CredentialsForProofRequest['verifier']
 
@@ -38,16 +39,6 @@ export async function getTs12TransactionDataTypes(records: Record<string, SdJwtV
       Object.entries(records).map(async ([id, rec]) => {
         const metadata = rec.typeMetadata as ZScaAttestationExt | undefined
         if (metadata) return [id, metadata]
-        // FIXME: this is a hack, we should probably have a better way to get the vct
-        // const vct = rec.firstCredential.payload.vct as string
-        // if (!getHostNameFromUrl(vct)) return undefined
-        // try {
-        //   const response = await fetch(encodeURI(vct))
-        //   const text = await response.text()
-        //   return [id, JSON.parse(text) as ZScaAttestationExt]
-        // } catch (e) {
-        //   console.error(`failed to query vct metadata for ${vct}`, e)
-        // }
         return undefined
       })
     )
@@ -124,22 +115,59 @@ export const getFormattedTransactionData = async (
     const metas = ts12Data[type]?.[subtype]
     if (!('payload' in data) || !metas)
       throw new Error(
-        `Transaction Data of type ${type} and subtype ${subtype} is not supported: ${JSON.stringify(data)}`
+        `Transaction Data of type ${type}${subtype ? ` and subtype ${subtype}` : ''} is not supported: ${JSON.stringify(data)}`
       )
 
     const payload = data.payload
     const metaForIds: Record<string, ResolvedTs12Metadata> = {}
+    const validationErrors: string[] = []
 
     for (const [id, meta] of Object.entries(metas)) {
-      if (
-        (typeof meta.schema === 'string' &&
-          ts12BuiltinSchemaValidators[meta.schema as keyof typeof ts12BuiltinSchemaValidators]?.safeParse(payload)
-            ?.success) ||
-        (meta.schema && typeof meta.schema === 'object' && ajv.compile(meta.schema)(payload))
-      ) {
+      let success = false
+      if (typeof meta.schema === 'string') {
+        const validator = ts12BuiltinSchemaValidators[meta.schema as keyof typeof ts12BuiltinSchemaValidators]
+        if (validator) {
+          const result = validator.safeParse(payload)
+          if (result.success) {
+            success = true
+          } else {
+            validationErrors.push(`Validation for ${id} failed: ${result.error.message}`)
+          }
+        } else {
+          validationErrors.push(`Validation for ${id} failed: Schema ${meta.schema} not found`)
+        }
+      } else if (meta.schema && typeof meta.schema === 'object') {
+        try {
+          const validate = ajv.compile(meta.schema)
+          if (validate(payload)) {
+            success = true
+          } else {
+            validationErrors.push(`Validation for ${id} failed: ${ajv.errorsText(validate.errors)}`)
+          }
+        } catch (e) {
+          validationErrors.push(`Validation for ${id} failed: Error compiling schema: ${e}`)
+        }
+      } else {
+        validationErrors.push(`Validation for ${id} failed: Invalid or missing schema`)
+      }
+
+      if (success) {
         metaForIds[id] = meta
       }
     }
+
+    if (validationErrors.length > 0) {
+      logger.warn(
+        `Transaction Data validation errors for type ${type}${subtype ? ` and subtype ${subtype}` : ''}: ${validationErrors.join('\n')}`
+      )
+    }
+
+    if (Object.keys(metaForIds).length === 0) {
+      throw new Error(
+        `Transaction Data validation failed for type ${type}${subtype ? ` and subtype ${subtype}` : ''}. Errors: ${validationErrors.join('\n')}`
+      )
+    }
+
     // FIXME: this is certainly buggy, this should be able to apply constraints on the matched credentials for the inputDescriptorId that applied to the transaction data, but it is unclear how it would work with OR relationships, or if the objects are cloned at any point
     const formattedSubmissions = transactionDataEntry.matchedCredentialIds
       .map((id) => credentialsForRequest.formattedSubmission.entries.find((a) => a.inputDescriptorId === id))
@@ -154,7 +182,7 @@ export const getFormattedTransactionData = async (
       })
 
     if (formattedSubmissions.length === 0) {
-      throw new Error(`No credentials for Transaction Data ${type} could be found`)
+      throw new Error(`No credentials for Transaction Data ${type} could be found.`)
     }
 
     return {

@@ -44,6 +44,20 @@ export const getUniqueTransactionCards = (cards: FormattedSubmissionEntrySatisfi
   return cards.filter((c, i, arr) => arr.findIndex((x) => x.credential.id === c.credential.id) === i)
 }
 
+export const getAllTransactionCredentialIds = (formattedTransactionData?: FormattedTransactionData) => {
+  const ids = new Set<string>()
+  formattedTransactionData?.forEach((entry) => {
+    entry.formattedSubmissions.forEach((submission) => {
+      if (submission.isSatisfied) {
+        submission.credentials.forEach((cred) => {
+          ids.add(cred.credential.id)
+        })
+      }
+    })
+  })
+  return ids
+}
+
 // biome-ignore lint/suspicious/noExplicitAny: t is a macro
 export const getAcceptLabel = (formattedTransactionData: FormattedTransactionData | undefined, t: any) => {
   const hasQes = formattedTransactionData?.some((t) => t.type === 'qes_authorization')

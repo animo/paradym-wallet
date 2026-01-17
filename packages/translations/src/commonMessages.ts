@@ -283,6 +283,36 @@ export const commonMessages = {
     message: 'Sharing failed',
     comment: 'Shown when data sharing failed',
   }),
+  paymentApproved: defineMessage({
+    id: 'common.paymentApproved',
+    message: 'Payment approved',
+    comment: 'Shown when a payment was successfully approved',
+  }),
+  paymentStopped: defineMessage({
+    id: 'common.paymentStopped',
+    message: 'Payment stopped',
+    comment: 'Shown when the payment process was stopped',
+  }),
+  paymentFailed: defineMessage({
+    id: 'common.paymentFailed',
+    message: 'Payment failed',
+    comment: 'Shown when the payment process failed',
+  }),
+  transactionApproved: defineMessage({
+    id: 'common.transactionApproved',
+    message: 'Transaction approved',
+    comment: 'Shown when a generic transaction was successfully approved',
+  }),
+  transactionStopped: defineMessage({
+    id: 'common.transactionStopped',
+    message: 'Transaction stopped',
+    comment: 'Shown when the generic transaction process was stopped',
+  }),
+  transactionFailed: defineMessage({
+    id: 'common.transactionFailed',
+    message: 'Transaction failed',
+    comment: 'Shown when the generic transaction process failed',
+  }),
   archiveCardTitle: defineMessage({
     id: 'common.archiveCardTitle',
     message: 'Archive card?',

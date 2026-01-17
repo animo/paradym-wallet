@@ -1,5 +1,11 @@
+import { SdJwtVcRecord } from '@credo-ts/core'
 import { useLingui } from '@lingui/react/macro'
-import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
+import {
+  type CredentialForDisplayId,
+  getTs12TransactionDataTypes,
+  metadataForDisplay,
+  useCredentialForDisplayById,
+} from '@package/agent'
 
 import { CredentialAttributes, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
@@ -17,10 +23,11 @@ import {
   YStack,
 } from '@package/ui'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CustomCredentialAttributes, hasCustomCredentialDisplay } from './components/CustomCredentialAttributes'
+import { TransactionDataTypesSheet } from './components/TransactionDataTypesSheet'
 
 export function FunkeCredentialDetailAttributesScreen() {
   const { id } = useLocalSearchParams<{ id: CredentialForDisplayId }>()
@@ -32,6 +39,10 @@ export function FunkeCredentialDetailAttributesScreen() {
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [_isTransactionTypesSheetOpen, _setIsTransactionTypesSheetOpen] = useState(false)
+  const [transactionDataTypes, setTransactionDataTypes] = useState<
+    Awaited<ReturnType<typeof getTs12TransactionDataTypes>>
+  >({})
   const scrollViewRef = useRef<ScrollViewRefType>(null)
   const { t } = useLingui()
   const isCustomDisplayAvailable = credential?.metadata.type
@@ -54,6 +65,20 @@ export function FunkeCredentialDetailAttributesScreen() {
     scrollRef: scrollViewRef,
   })
 
+  const {
+    isVisible: isTransactionTypesVisible,
+    setElementPosition: setTransactionTypesElementPosition,
+    toggle: toggleTransactionTypes,
+  } = useScrollToggle({
+    scrollRef: scrollViewRef,
+  })
+
+  useEffect(() => {
+    if (credential?.record instanceof SdJwtVcRecord) {
+      getTs12TransactionDataTypes({ [credential.id]: credential.record }).then(setTransactionDataTypes)
+    }
+  }, [credential])
+
   useHeaderRightAction({
     icon: <HeroIcons.EllipsisHorizontal />,
     onPress: withHaptics(() => setIsSheetOpen(true)),
@@ -67,6 +92,11 @@ export function FunkeCredentialDetailAttributesScreen() {
   const handleToggleShareableAttributes = withHaptics(() => {
     setIsSheetOpen(false)
     toggleShareableAttributes()
+  })
+
+  const handleToggleTransactionTypes = withHaptics(() => {
+    setIsSheetOpen(false)
+    toggleTransactionTypes()
   })
 
   if (!credential) {
@@ -85,6 +115,8 @@ export function FunkeCredentialDetailAttributesScreen() {
     router.back()
     return
   }
+
+  const hasTransactionDataTypes = Object.keys(transactionDataTypes).length > 0
 
   return (
     <>
@@ -136,6 +168,22 @@ export function FunkeCredentialDetailAttributesScreen() {
                 />
               )}
             </AnimatedStack>
+            <AnimatedStack
+              key={isTransactionTypesVisible ? 'visible-transaction-types' : 'hidden-transaction-types'}
+              onLayout={(event) => setTransactionTypesElementPosition(event.nativeEvent.layout.y)}
+              exiting={useSpringify(FadeOutUp)}
+              entering={useSpringify(FadeInUp)}
+            >
+              {isTransactionTypesVisible && (
+                <TransactionDataTypesSheet
+                  isOpen={true} // Always open when visible in this context, but we are reusing the component logic
+                  setIsOpen={() => {}} // No-op
+                  transactionDataTypes={transactionDataTypes}
+                  credentialId={credential.id}
+                  embedded // New prop to render inline
+                />
+              )}
+            </AnimatedStack>
           </YStack>
         </ScrollView>
         <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
@@ -184,6 +232,25 @@ export function FunkeCredentialDetailAttributesScreen() {
                 }),
             onPress: handleToggleMetadata,
           },
+          ...(hasTransactionDataTypes
+            ? [
+                {
+                  icon: <HeroIcons.QueueList color="$grey-500" />,
+                  title: isTransactionTypesVisible
+                    ? t({
+                        id: 'credentials.hideTransactionTypes',
+                        message: 'Hide transaction types',
+                        comment: 'Button label: hides supported transaction types',
+                      })
+                    : t({
+                        id: 'credentials.showTransactionTypes',
+                        message: 'Show transaction types',
+                        comment: 'Button label: shows supported transaction types',
+                      }),
+                  onPress: handleToggleTransactionTypes,
+                },
+              ]
+            : []),
         ]}
       />
     </>

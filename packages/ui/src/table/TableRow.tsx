@@ -39,12 +39,12 @@ export const TableRow = ({
         }}
       >
         <XStack f={1} alignItems="center" justifyContent="space-between" gap="$2">
-          <Paragraph variant="sub" color="$grey-600" fontWeight="$medium" flexShrink={1}>
+          <Paragraph variant="sub" color="$grey-600" fontWeight="$medium" flexShrink={1} flexWrap="wrap">
             {attributesArray[0]}
           </Paragraph>
-          <XStack alignItems="center" gap="$2" flexShrink={0}>
+          <XStack alignItems="center" gap="$2" flexShrink={1} justifyContent="flex-end">
             {valuesArray[0] && (
-              <Paragraph color="$grey-900" fontWeight="$semiBold" textAlign="right">
+              <Paragraph color="$grey-900" fontWeight="$semiBold" textAlign="right" flexWrap="wrap">
                 {valuesArray[0]}
               </Paragraph>
             )}

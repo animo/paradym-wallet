@@ -9,7 +9,7 @@ import {
 } from '../display'
 import type { FormattedSubmission } from '../format/formatPresentation'
 import type { CredentialForDisplayId } from '../hooks'
-import type { CredentialsForProofRequest, FormattedTransactionData, FormattedTransactionDataEntry } from '../invitation'
+import type { CredentialsForProofRequest, FormattedTransactionData } from '../invitation'
 import { useWalletJsonRecord } from './WalletJsonStoreProvider'
 import { getWalletJsonStore } from './walletJsonStore'
 
@@ -70,7 +70,7 @@ export interface IssuanceActivity extends BaseActivity {
 export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
   type: 'signed'
   status: Exclude<ActivityStatus, 'pending'>
-  transaction: FormattedTransactionData
+  transactions: FormattedTransactionData
 }
 
 export type Activity = PresentationActivity | IssuanceActivity | SignedActivity
@@ -116,6 +116,23 @@ export const useActivities = ({ filters }: { filters?: { entityId?: string } } =
     return [...record.activities]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .filter((activity) => !filters?.entityId || activity.entity.id === filters?.entityId)
+      .map((activity) => {
+        // Migration for old SignedActivity format where transaction was a single entry
+        if (activity.type === 'signed' && 'transaction' in activity && !Array.isArray(activity.transaction)) {
+          return {
+            ...activity,
+            transactions: [activity.transaction] as FormattedTransactionData,
+          } as SignedActivity
+        }
+        // Migration for old SignedActivity format where transaction was an array but named transaction
+        if (activity.type === 'signed' && 'transaction' in activity && Array.isArray(activity.transaction)) {
+          return {
+            ...activity,
+            transactions: activity.transaction as FormattedTransactionData,
+          } as SignedActivity
+        }
+        return activity
+      })
   }, [record?.activities, filters?.entityId])
 
   return {
@@ -158,7 +175,7 @@ export const storeSharedOrSignedActivity = async (
   agent: Agent,
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
-  if ('transaction' in input && input.transaction) {
+  if ('transactions' in input && input.transactions) {
     await activityStorage.addActivity(agent, {
       ...input,
       id: utils.uuid(),
@@ -181,7 +198,7 @@ export function storeSharedActivityForCredentialsForRequest(
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
   status: Exclude<ActivityStatus, 'pending'>,
-  transaction?: FormattedTransactionDataEntry
+  transactions?: FormattedTransactionData
 ) {
   return storeSharedOrSignedActivity(agent, {
     status,
@@ -202,7 +219,7 @@ export function storeSharedActivityForCredentialsForRequest(
             : 'unknown'
           : undefined,
     },
-    transaction: transaction ? [transaction] : undefined,
+    transactions,
   })
 }
 

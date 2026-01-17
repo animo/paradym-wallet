@@ -1,6 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { Ts12TransactionDataEntry } from '@package/agent'
-import { Heading, Paragraph, YStack } from '@package/ui'
+import { Heading, HeroIcons, MessageBox, TableContainer, TableRow, YStack } from '@package/ui'
 import { getValueFromPath, Ts12BaseSlide } from './Ts12BaseSlide'
 
 interface Ts12TransactionSlideProps {
@@ -27,8 +27,6 @@ export function Ts12TransactionSlide({
       selectedCredentialId={selectedCredentialId}
       renderContent={({ displayMetadata, uiLabels }) => {
         const claimsToDisplay = displayMetadata.claims
-          .filter((c) => c.visualisation !== 4)
-          .sort((a, b) => a.visualisation - b.visualisation)
           .map((claimDef) => {
             const label =
               claimDef.display.find((d) => d.locale === currentLocale)?.name ??
@@ -41,7 +39,6 @@ export function Ts12TransactionSlide({
               return {
                 label,
                 value: String(value),
-                visualisation: claimDef.visualisation,
               }
             }
             return null
@@ -50,34 +47,37 @@ export function Ts12TransactionSlide({
 
         return (
           <YStack gap="$4">
-            <Heading>
-              {uiLabels?.title ?? (
-                <Trans id="ts12.defaultTitle" comment="Default title for TS12 transaction">
-                  Review Transaction
-                </Trans>
+            <YStack px="$4" gap="$4">
+              <Heading>
+                {uiLabels?.title ?? (
+                  <Trans id="ts12.defaultTitle" comment="Default title for TS12 transaction">
+                    Review Transaction
+                  </Trans>
+                )}
+              </Heading>
+
+              {uiLabels?.securityHint && (
+                <MessageBox
+                  variant="light"
+                  icon={<HeroIcons.InformationCircleFilled />}
+                  message={uiLabels.securityHint}
+                  collapsible
+                />
               )}
-            </Heading>
+            </YStack>
 
-            {uiLabels?.securityHint && (
-              <Paragraph variant="sub" color="$grey-600">
-                {uiLabels.securityHint}
-              </Paragraph>
-            )}
-
-            <YStack gap="$4" mt="$2">
-              {claimsToDisplay.map((claim, idx) => (
-                <YStack key={idx} gap="$1">
-                  <Paragraph variant={claim.visualisation === 1 ? 'normal' : 'sub'} fontWeight="bold" color="$grey-700">
-                    {claim.label}
-                  </Paragraph>
-                  <Paragraph
-                    variant={claim.visualisation === 1 ? 'normal' : 'normal'}
-                    fontWeight={claim.visualisation === 1 ? 'bold' : 'regular'}
-                  >
-                    {claim.value}
-                  </Paragraph>
-                </YStack>
-              ))}
+            <YStack mt="$2" px="$4">
+              <TableContainer>
+                {claimsToDisplay.map((claim, idx) => (
+                  <TableRow
+                    key={idx}
+                    variant="horizontal"
+                    attributes={claim.label}
+                    values={claim.value}
+                    isLastRow={idx === claimsToDisplay.length - 1}
+                  />
+                ))}
+              </TableContainer>
             </YStack>
           </YStack>
         )

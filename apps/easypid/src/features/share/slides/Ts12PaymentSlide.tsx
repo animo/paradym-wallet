@@ -1,6 +1,6 @@
-import { useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import type { Ts12TransactionDataEntry } from '@package/agent'
-import { Heading, Paragraph, TableContainer, TableRow, XStack, YStack } from '@package/ui'
+import { Heading, HeroIcons, MessageBox, Paragraph, TableContainer, TableRow, XStack, YStack } from '@package/ui'
 import { useMemo } from 'react'
 import { getValueFromPath, Ts12BaseSlide } from './Ts12BaseSlide'
 
@@ -63,7 +63,7 @@ export function Ts12PaymentSlide({
       onCredentialSelect={onCredentialSelect}
       responseMode={responseMode}
       selectedCredentialId={selectedCredentialId}
-      renderContent={({ displayMetadata }) => {
+      renderContent={({ displayMetadata, uiLabels }) => {
         const claimsToDisplay = displayMetadata.claims
           .map((claimDef) => {
             const label =
@@ -85,7 +85,24 @@ export function Ts12PaymentSlide({
 
         return (
           <YStack gap="$4" f={1}>
-            <YStack ai="center" mt="$8">
+            <YStack ai="center" mt="$4" gap="$4">
+              <Heading>
+                {uiLabels?.title ?? (
+                  <Trans id="ts12.paymentDefaultTitle" comment="Default title for TS12 payment">
+                    Review Payment
+                  </Trans>
+                )}
+              </Heading>
+
+              {uiLabels?.securityHint && (
+                <MessageBox
+                  variant="light"
+                  icon={<HeroIcons.InformationCircleFilled />}
+                  message={uiLabels.securityHint}
+                  collapsible
+                />
+              )}
+
               <XStack ai="flex-start" gap="$2">
                 <Heading fontSize={24} fontWeight="600" lineHeight={70} fontFamily="$heading">
                   {currencySymbol}

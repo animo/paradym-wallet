@@ -1,8 +1,4 @@
-import {
-  GenericTransactionSummaryCard,
-  PaymentSummaryCard,
-  QesSummaryCard,
-} from '@easypid/features/share/components/TransactionSummaryCards'
+import { TransactionList } from '@easypid/features/share/components/TransactionSummaryCards'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import {
   getAcceptLabel,
@@ -16,8 +12,6 @@ import {
   type FormattedSubmission,
   type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
-  type QesTransactionDataEntry,
-  type Ts12TransactionDataEntry,
 } from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -134,31 +128,10 @@ export const ShareCredentialsSlide = ({
               />
             )}
 
-            {formattedTransactionData?.map((entry, index) => {
-              if (entry.type === 'qes_authorization') {
-                return <QesSummaryCard key={index} entry={entry as QesTransactionDataEntry} />
-              }
-
-              if (entry.type === 'urn:eudi:sca:payment:1') {
-                return (
-                  <PaymentSummaryCard
-                    key={index}
-                    entry={entry as Ts12TransactionDataEntry}
-                    index={index}
-                    selectedTransactionData={selectedTransactionData}
-                  />
-                )
-              }
-
-              return (
-                <GenericTransactionSummaryCard
-                  key={index}
-                  entry={entry as Ts12TransactionDataEntry}
-                  index={index}
-                  selectedTransactionData={selectedTransactionData}
-                />
-              )
-            })}
+            <TransactionList
+              formattedTransactionData={formattedTransactionData}
+              selectedTransactionData={selectedTransactionData}
+            />
 
             {uniqueTransactionCards.length > 0 && (
               <YStack gap="$4">
