@@ -31,14 +31,14 @@ catalog:
   "@openid4vc/utils": ^0.4.0
   fast-text-encoding: ^1.0.6
   "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": 0.6.2-alpha-20251211125344
-  "@credo-ts/askar": 0.6.2-alpha-20251211125344
-  "@credo-ts/cheqd": 0.6.2-alpha-20251211125344
-  "@credo-ts/core": 0.6.2-alpha-20251211125344
-  "@credo-ts/openid4vc": 0.6.2-alpha-20251211125344
-  "@credo-ts/question-answer": 0.6.2-alpha-20251211125344
-  "@credo-ts/react-native": 0.6.2-alpha-20251211125344
-  "@credo-ts/didcomm": 0.6.2-alpha-20251211125344
+  "@credo-ts/anoncreds": 0.6.2-alpha-20260116085518
+  "@credo-ts/askar": 0.6.2-alpha-20260116085518
+  "@credo-ts/cheqd": 0.6.2-alpha-20260116085518
+  "@credo-ts/core": 0.6.2-alpha-20260116085518
+  "@credo-ts/openid4vc": 0.6.2-alpha-20260116085518
+  "@credo-ts/question-answer": 0.6.2-alpha-20260116085518
+  "@credo-ts/react-native": 0.6.2-alpha-20260116085518
+  "@credo-ts/didcomm": 0.6.2-alpha-20260116085518
   "@hyperledger/anoncreds-react-native": 0.3.4
   "@hyperledger/anoncreds-shared": 0.3.4
   "@openwallet-foundation/askar-react-native": 0.5.0-alpha-20251222150428
