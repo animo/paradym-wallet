@@ -1,3 +1,5 @@
+import { TransactionList } from '@easypid/features/share/components/TransactionSummaryCards'
+import { getAllTransactionCredentialIds } from '@easypid/utils/transactionUtils'
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import {
@@ -7,12 +9,13 @@ import {
   useActivities,
   useCredentialsForDisplay,
 } from '@package/agent'
-import { CardWithAttributes, getActivityInteraction, MiniDocument, TextBackButton } from '@package/app'
+import { CardWithAttributes, getActivityInteraction, TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
-import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
@@ -26,16 +29,20 @@ export function FunkeActivityDetailScreen() {
 
   const { activities } = useActivities()
   const activity = activities.find((activity) => activity.id === id)
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
+  useEffect(() => {
+    if (!activity) {
+      router.back()
+    }
+  }, [activity, router])
 
   if (!activity) {
-    router.back()
-    return
+    return null
   }
 
-  const Icon = getActivityInteraction(activity)
-  const Title = t(Icon.text)
-
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+  const interaction = getActivityInteraction(activity)
+  const Title = t(interaction.text)
 
   return (
     <FlexPage p={0} gap={0}>
@@ -43,11 +50,13 @@ export function FunkeActivityDetailScreen() {
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack gap="$4" marginBottom={bottom}>
           <Stack h="$8" jc="center" ai="center" pos="relative">
-            <Circle pos="absolute" size={72} bg={Icon.color} opacity={0.1} />
-            <Circle pos="absolute" size={58} bg={Icon.color} opacity={0.2} />
-            <Circle size="$4" bg={Icon.color}>
-              <Icon.icon strokeWidth={2} color="$white" />
-            </Circle>
+            <Circle pos="absolute" size={72} bg={interaction.color} opacity={0.1} />
+            <Circle pos="absolute" size={58} bg={interaction.color} opacity={0.2} />
+            <Stack flexDirection="row">
+              {interaction.icon.map((Icon, index) => (
+                <Icon strokeWidth={2} color="$white" key={index} />
+              ))}
+            </Stack>
           </Stack>
           <YStack gap="$4" px="$4">
             <Stack gap="$2" ai="center">
@@ -206,10 +215,30 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
 
 export function SharedActivityDetailSection({ activity }: { activity: PresentationActivity | SignedActivity }) {
   const { credentials } = useCredentialsForDisplay()
-
-  const amountShared = activity.request.credentials?.length ?? 0
   const { t } = useLingui()
 
+  const formattedTransactionData =
+    activity.type === 'signed' && activity.transactions ? activity.transactions : undefined
+
+  const activityCredentials = activity.request.credentials ?? []
+
+  // Identify credentials used in transactions
+  const transactionCredentialIds = getAllTransactionCredentialIds(formattedTransactionData)
+
+  const transactionCredentials = activityCredentials.filter(
+    (c) => 'id' in c && transactionCredentialIds.has(c.id as string)
+  )
+
+  // Deduplicate transaction credentials
+  const uniqueTransactionCredentials = transactionCredentials.filter(
+    (c, index, self) => index === self.findIndex((t) => 'id' in t && 'id' in c && t.id === c.id)
+  )
+
+  const otherCredentials = activityCredentials.filter(
+    (c) => !('id' in c) || !transactionCredentialIds.has(c.id as string)
+  )
+
+  const amountShared = activityCredentials.length
   const description =
     activity.status === 'success'
       ? amountShared > 1
@@ -229,6 +258,57 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
           comment: 'Shown when sharing failed and no credentials were shared',
         })
 
+  const renderCredentialCard = (activityCredential: (typeof activityCredentials)[number]) => {
+    if (!('id' in activityCredential)) {
+      // Not satisfied credential
+      return (
+        <CardWithAttributes
+          key={activityCredential.name} // Fallback key
+          name={activityCredential.name ?? t(activityMessages.deletedCredential)}
+          textColor="$white"
+          backgroundColor="$grey-800"
+          formattedDisclosedAttributes={activityCredential.attributeNames}
+        />
+      )
+    }
+
+    const credential = credentials.find((credential) => credential.id === activityCredential.id)
+
+    if (!credential) {
+      return (
+        <CardWithAttributes
+          key={activityCredential.id}
+          id={activityCredential.id}
+          name={t(activityMessages.deletedCredential)}
+          textColor="$grey-100"
+          backgroundColor="$primary-500"
+          formattedDisclosedAttributes={activityCredential.attributeNames}
+          disclosedPayload={activityCredential.attributes}
+        />
+      )
+    }
+
+    const isExpired = credential.metadata.validUntil ? new Date(credential.metadata.validUntil) < new Date() : false
+
+    const isNotYetActive = credential.metadata.validFrom ? new Date(credential.metadata.validFrom) > new Date() : false
+
+    return (
+      <CardWithAttributes
+        key={credential.id}
+        id={credential.id}
+        name={credential.display.name}
+        issuerImage={credential.display.issuer.logo}
+        textColor={credential.display.textColor}
+        backgroundColor={credential.display.backgroundColor}
+        backgroundImage={credential.display.backgroundImage}
+        formattedDisclosedAttributes={activityCredential.attributeNames}
+        disclosedPayload={activityCredential.attributes}
+        isExpired={isExpired}
+        isNotYetActive={isNotYetActive}
+      />
+    )
+  }
+
   return (
     <Stack gap="$6">
       <RequestPurposeSection
@@ -236,102 +316,48 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
         logo={activity.entity.logo}
         overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
       />
-      {activity && activity.type === 'signed' && (
+
+      <TransactionList
+        formattedTransactionData={formattedTransactionData}
+        selectedTransactionData={activityCredentials
+          .map((c) => ('id' in c ? { credentialId: c.id as string } : undefined))
+          .filter((c): c is { credentialId: string } => c !== undefined)}
+        status={activity.status}
+      />
+
+      {uniqueTransactionCredentials.length > 0 && (
         <YStack gap="$4">
           <YStack gap="$2">
             <Heading heading="sub2">
-              <Trans
-                id="activity.documentHeading"
-                comment="Section heading shown when a document was signed or attempted to be signed"
-              >
-                Document
-              </Trans>
+              <Trans id="activity.transactionCardsHeading">Transaction cards</Trans>
             </Heading>
             <Paragraph>
-              {activity.status === 'success'
-                ? t(activityMessages.documentSigned)
-                : t(activityMessages.documentNotSigned)}
+              <Trans id="activity.transactionCardsIntro">
+                The following personal information was used for the transactions.
+              </Trans>
             </Paragraph>
           </YStack>
-          <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
-            <YStack f={1} gap="$2">
-              <Heading heading="sub2" textTransform="none" color="$grey-800">
-                {activity.transaction?.documentName}
-              </Heading>
-              <Paragraph>
-                <Trans
-                  id="activity.signedWithQTSP"
-                  comment="Shown below a document name to indicate the user signed it with a specific QTSP"
-                >
-                  Signing with {activity.transaction?.qtsp.name}
-                </Trans>
-              </Paragraph>
-            </YStack>
-            <MiniDocument logoUrl={activity.transaction?.qtsp.logo?.url} />
-          </XStack>
+          {uniqueTransactionCredentials.map(renderCredentialCard)}
         </YStack>
       )}
-      <Stack gap="$3">
-        <Stack gap="$2">
-          <Heading heading="sub2">
-            {activity.status === 'success'
-              ? t(activityMessages.sharedAttributes)
-              : t(activityMessages.requestedInformation)}
-          </Heading>
-          <Paragraph>{description}</Paragraph>
+
+      {otherCredentials.length > 0 && (
+        <Stack gap="$3">
+          <Stack gap="$2">
+            <Heading heading="sub2">
+              {activity.status === 'success'
+                ? t(activityMessages.sharedAttributes)
+                : t(activityMessages.requestedInformation)}
+            </Heading>
+            <Paragraph>{description}</Paragraph>
+          </Stack>
+          {otherCredentials.map(renderCredentialCard)}
         </Stack>
+      )}
 
-        {activity.request.credentials && activity.request.credentials.length > 0 ? (
-          activity.request.credentials
-            .map((activityCredential) => {
-              if ('id' in activityCredential) {
-                const credential = credentials.find((credential) => credential.id === activityCredential.id)
-
-                if (!credential) {
-                  return (
-                    <CardWithAttributes
-                      id={activityCredential.id}
-                      name={t(activityMessages.deletedCredential)}
-                      textColor="$grey-100"
-                      backgroundColor="$primary-500"
-                      formattedDisclosedAttributes={activityCredential.attributeNames}
-                      disclosedPayload={activityCredential.attributes}
-                    />
-                  )
-                }
-
-                const isExpired = credential.metadata.validUntil
-                  ? new Date(credential.metadata.validUntil) < new Date()
-                  : false
-
-                const isNotYetActive = credential.metadata.validFrom
-                  ? new Date(credential.metadata.validFrom) > new Date()
-                  : false
-
-                return (
-                  <CardWithAttributes
-                    key={credential.id}
-                    id={credential.id}
-                    name={credential.display.name}
-                    issuerImage={credential.display.issuer.logo}
-                    textColor={credential.display.textColor}
-                    backgroundColor={credential.display.backgroundColor}
-                    backgroundImage={credential.display.backgroundImage}
-                    formattedDisclosedAttributes={activityCredential.attributeNames}
-                    disclosedPayload={activityCredential.attributes}
-                    isExpired={isExpired}
-                    isNotYetActive={isNotYetActive}
-                  />
-                )
-              }
-
-              return undefined
-            })
-            .filter((v) => v !== undefined)
-        ) : (
-          <FailedReasonContainer reason={activity.request.failureReason ?? 'unknown'} />
-        )}
-      </Stack>
+      {activityCredentials.length === 0 && (
+        <FailedReasonContainer reason={activity.request.failureReason ?? 'unknown'} />
+      )}
     </Stack>
   )
 }

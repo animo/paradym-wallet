@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/react/macro'
 import type { DisplayImage } from '@package/agent'
 import {
   AnimatedStack,
@@ -105,24 +106,32 @@ export function CardWithAttributes({
         </XStack>
       </Stack>
       <YStack px="$4" pt="$3" pb="$4" gap="$4" bg="$white">
-        <YStack gap="$2" fg={1} pr="$4">
-          {groupedAttributes.map(([first, second], index) => (
-            <XStack key={first + second} gap="$4" minHeight="$3.5">
-              <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph fontSize={15}>{sanitizeString(first)}</Paragraph>
-              </Stack>
-              <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph
-                  fontSize={15}
-                  numberOfLines={index === groupedAttributes.length - 1 ? 1 : undefined}
-                  ellipsizeMode={index === groupedAttributes.length - 1 ? 'tail' : undefined}
-                  pr={index === groupedAttributes.length - 1 ? '$5' : undefined}
-                >
-                  {second ? sanitizeString(second) : ''}
-                </Paragraph>
-              </Stack>
-            </XStack>
-          ))}
+        <YStack gap="$2" fg={1} pr={disabledNav ? 0 : '$4'}>
+          {groupedAttributes.length === 0 ? (
+            <Stack minHeight={44} jc="center">
+              <Paragraph fontSize={15} color="$grey-600">
+                <Trans id="card.noAttributesShared">No personal information will be shared</Trans>
+              </Paragraph>
+            </Stack>
+          ) : (
+            groupedAttributes.map(([first, second], index) => (
+              <XStack key={first + second} gap="$4" minHeight="$3.5">
+                <Stack flexGrow={1} flexBasis={0}>
+                  <Paragraph fontSize={15}>{sanitizeString(first)}</Paragraph>
+                </Stack>
+                <Stack flexGrow={1} flexBasis={0}>
+                  <Paragraph
+                    fontSize={15}
+                    numberOfLines={index === groupedAttributes.length - 1 ? 1 : undefined}
+                    ellipsizeMode={index === groupedAttributes.length - 1 ? 'tail' : undefined}
+                    pr={index === groupedAttributes.length - 1 ? '$5' : undefined}
+                  >
+                    {second ? sanitizeString(second) : ''}
+                  </Paragraph>
+                </Stack>
+              </XStack>
+            ))
+          )}
           {!disabledNav && (
             <Stack pos="absolute" bottom="$0" right="$0">
               <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />

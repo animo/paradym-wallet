@@ -1,6 +1,6 @@
-import { cloneElement } from 'react'
+import { cloneElement, useState } from 'react'
 import { AnimatedStack, Heading, Paragraph, Stack, XStack, YStack } from '../base'
-import type { IconContainerProps } from '../content'
+import { HeroIcons, type IconContainerProps } from '../content'
 import { useScaleAnimation } from '../hooks/useScaleAnimation'
 
 const messageBoxVariants = {
@@ -37,6 +37,7 @@ interface MessageBoxProps {
   textVariant?: 'normal' | 'sub'
   icon?: IconContainerProps['icon']
   onPress?: () => void
+  collapsible?: boolean
 }
 
 export function MessageBox({
@@ -46,8 +47,17 @@ export function MessageBox({
   icon,
   title,
   onPress,
+  collapsible = false,
 }: MessageBoxProps) {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
+  const [isCollapsed, setIsCollapsed] = useState(collapsible)
+
+  const handlePress = () => {
+    if (collapsible) {
+      setIsCollapsed(!isCollapsed)
+    }
+    onPress?.()
+  }
 
   const container = (
     <XStack gap="$2" p="$3.5" bg={messageBoxVariants[variant].bg} borderRadius="$8">
@@ -57,11 +67,26 @@ export function MessageBox({
             {title}
           </Heading>
         )}
-        <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
+        <Paragraph
+          f={1}
+          color={messageBoxVariants[variant].color}
+          variant={textVariant}
+          numberOfLines={isCollapsed ? 3 : undefined}
+          ellipsizeMode="tail"
+        >
           {message}
         </Paragraph>
       </YStack>
-      {icon && (
+      {collapsible && (
+        <Stack ai="center" jc="center">
+          {isCollapsed ? (
+            <HeroIcons.ChevronDown color={messageBoxVariants[variant].color} size={20} />
+          ) : (
+            <HeroIcons.ChevronUp color={messageBoxVariants[variant].color} size={20} />
+          )}
+        </Stack>
+      )}
+      {!collapsible && icon && (
         <Stack ai="center" jc="center">
           {cloneElement(icon, { color: messageBoxVariants[variant].color })}
         </Stack>
@@ -69,9 +94,9 @@ export function MessageBox({
     </XStack>
   )
 
-  if (onPress) {
+  if (onPress || collapsible) {
     return (
-      <AnimatedStack onPress={onPress} style={pressStyle} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+      <AnimatedStack onPress={handlePress} style={pressStyle} onPressIn={handlePressIn} onPressOut={handlePressOut}>
         {container}
       </AnimatedStack>
     )

@@ -1,5 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import { type SdJwtVc, type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
+import { type SdJwtVc, type SdJwtVcHeader, type SdJwtVcPayload, SdJwtVcRecord } from '@credo-ts/core'
 import { useSecureUnlock } from '@easypid/agent'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
@@ -338,7 +338,10 @@ export function FunkePidSetupScreen() {
 
       for (const credentialRecord of credentialRecords) {
         if (credentialRecords instanceof SdJwtVcRecord) {
-          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
+          const parsed = credentialRecord.firstCredential as SdJwtVc<
+            SdJwtVcHeader,
+            PidSdJwtVcAttributes & SdJwtVcPayload
+          >
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()

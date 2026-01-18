@@ -19,8 +19,8 @@ catalog:
   credo-ts-didweb-anoncreds: 0.0.2-alpha.2
   rxjs: ^7.8.1
   query-string: ^9.3.1
-  "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20260108162340
-  "@animo-id/expo-ausweis-sdk": 0.0.1-alpha.14
+  "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20260118230323
+  "@animo-id/expo-ausweis-sdk": 0.0.1
   "@animo-id/expo-secure-environment": 0.1.5
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.1.4-alpha.3
@@ -31,14 +31,14 @@ catalog:
   "@openid4vc/utils": ^0.4.0
   fast-text-encoding: ^1.0.6
   "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": 0.6.2-alpha-20251211125344
-  "@credo-ts/askar": 0.6.2-alpha-20251211125344
-  "@credo-ts/cheqd": 0.6.2-alpha-20251211125344
-  "@credo-ts/core": 0.6.2-alpha-20251211125344
-  "@credo-ts/openid4vc": 0.6.2-alpha-20251211125344
-  "@credo-ts/question-answer": 0.6.2-alpha-20251211125344
-  "@credo-ts/react-native": 0.6.2-alpha-20251211125344
-  "@credo-ts/didcomm": 0.6.2-alpha-20251211125344
+  "@credo-ts/anoncreds": 0.6.2-pr-2626-20260118221136
+  "@credo-ts/askar": 0.6.2-pr-2626-20260118221136
+  "@credo-ts/cheqd": 0.6.2-pr-2626-20260118221136
+  "@credo-ts/core": 0.6.2-pr-2626-20260118221136
+  "@credo-ts/openid4vc": 0.6.2-pr-2626-20260118221136
+  "@credo-ts/question-answer": 0.6.2-pr-2626-20260118221136
+  "@credo-ts/react-native": 0.6.2-pr-2626-20260118221136
+  "@credo-ts/didcomm": 0.6.2-pr-2626-20260118221136
   "@hyperledger/anoncreds-react-native": 0.3.4
   "@hyperledger/anoncreds-shared": 0.3.4
   "@openwallet-foundation/askar-react-native": 0.5.0-alpha-20251222150428

@@ -299,20 +299,19 @@ export function getSdJwtTypeMetadataCredentialDisplay(
 
   // TODO: support SVG rendering method
 
-  const credentialDisplay = {
+  return {
     name: typeMetadataDisplay?.name,
     description: typeMetadataDisplay?.description,
     textColor: typeMetadataDisplay?.rendering?.simple?.text_color,
     backgroundColor: typeMetadataDisplay?.rendering?.simple?.background_color,
-    backgroundImage: typeMetadataDisplay?.rendering?.simple?.logo
+    // FIXME: will be resolved once https://github.com/openwallet-foundation/sd-jwt-js/pull/359 is merged/released
+    // @ts-expect-error
+    backgroundImage: typeMetadataDisplay?.rendering?.simple?.background_image
       ? {
-          url: typeMetadataDisplay?.rendering?.simple?.logo.uri,
-          altText: typeMetadataDisplay?.rendering?.simple?.logo.alt_text,
+          url: typeMetadataDisplay?.rendering?.simple?.background_image,
         }
       : undefined,
   }
-
-  return credentialDisplay
 }
 
 export function getOpenId4VcCredentialDisplay(openId4VcMetadata: OpenId4VcCredentialMetadata) {

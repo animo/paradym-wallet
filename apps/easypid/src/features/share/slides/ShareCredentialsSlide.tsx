@@ -1,7 +1,19 @@
+import { TransactionList } from '@easypid/features/share/components/TransactionSummaryCards'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
+import {
+  getAcceptLabel,
+  getRemainingEntries,
+  getTransactionCards,
+  getUniqueTransactionCards,
+} from '@easypid/utils/transactionUtils'
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { DisplayImage, FormattedSubmission } from '@package/agent'
-import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
+import {
+  type DisplayImage,
+  type FormattedSubmission,
+  type FormattedTransactionData,
+  getDisclosedAttributeNamesForDisplay,
+} from '@package/agent'
+import { CardWithAttributes, DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
 import { useState } from 'react'
@@ -17,6 +29,11 @@ interface ShareCredentialsSlideProps {
   isAccepting: boolean
   isOffline?: boolean
   overAskingResponse?: OverAskingResponse
+  formattedTransactionData?: FormattedTransactionData
+  selectedTransactionData?: {
+    credentialId?: string
+    additionalPayload?: object
+  }[]
 }
 
 export const ShareCredentialsSlide = ({
@@ -27,6 +44,8 @@ export const ShareCredentialsSlide = ({
   isAccepting,
   isOffline,
   overAskingResponse,
+  formattedTransactionData,
+  selectedTransactionData,
 }: ShareCredentialsSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -35,23 +54,25 @@ export const ShareCredentialsSlide = ({
   const { t } = useLingui()
 
   const handleAccept = async () => {
-    // Manually set to instantly show the loading state
     setIsProcessing(true)
-
     await onAccept?.()
     onNext()
   }
+
+  const handleDecline = () => {
+    onDecline?.()
+    onCancel()
+  }
+
+  const remainingEntries = getRemainingEntries(submission, formattedTransactionData)
+  const transactionCards = getTransactionCards(formattedTransactionData, selectedTransactionData)
+  const uniqueTransactionCards = getUniqueTransactionCards(transactionCards)
+  const acceptLabel = getAcceptLabel(formattedTransactionData, t)
 
   const fallbackPurpose = t({
     id: 'submission.fallbackPurpose',
     message: 'No information was provided on the purpose of the data request. Be cautious',
     comment: 'Shown when a submission has no stated purpose',
-  })
-
-  const shareLabel = t({
-    id: 'submission.share',
-    message: 'Share',
-    comment: 'Button label to accept and share credentials',
   })
 
   return (
@@ -89,13 +110,11 @@ export const ShareCredentialsSlide = ({
                 title={t({
                   id: 'submission.offlineRequestTitle',
                   message: 'This is an offline request',
-                  comment: 'Title shown for offline message',
                 })}
                 message={t({
                   id: 'submission.offlineRequestDescription',
                   message:
                     'Information about the verifier could not be shown. Carefully consider if you trust this organization.',
-                  comment: 'Message shown when the request is offline and verifier is unknown',
                 })}
                 icon={<HeroIcons.ExclamationTriangleFilled />}
               />
@@ -108,7 +127,54 @@ export const ShareCredentialsSlide = ({
                 logo={logo}
               />
             )}
-            <RequestedAttributesSection submission={submission} />
+
+            <TransactionList
+              formattedTransactionData={formattedTransactionData}
+              selectedTransactionData={selectedTransactionData}
+            />
+
+            {uniqueTransactionCards.length > 0 && (
+              <YStack gap="$4">
+                <YStack gap="$2">
+                  <Heading heading="sub2">
+                    <Trans id="submission.transactionCardsHeading">Transaction cards</Trans>
+                  </Heading>
+                  <Paragraph>
+                    <Trans id="submission.transactionCardsIntro">
+                      The following personal information will be used for the transactions.
+                    </Trans>
+                  </Paragraph>
+                </YStack>
+
+                {uniqueTransactionCards.map((card) => (
+                  <CardWithAttributes
+                    key={card.credential.id}
+                    id={card.credential.id}
+                    name={card.credential.display.name}
+                    backgroundImage={card.credential.display.backgroundImage}
+                    backgroundColor={card.credential.display.backgroundColor}
+                    issuerImage={card.credential.display.issuer.logo}
+                    textColor={card.credential.display.textColor}
+                    formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(card)}
+                    disclosedPayload={card.disclosed.attributes}
+                    isExpired={
+                      card.credential.metadata?.validUntil
+                        ? new Date(card.credential.metadata.validUntil) < new Date()
+                        : false
+                    }
+                    isNotYetActive={
+                      card.credential.metadata?.validFrom
+                        ? new Date(card.credential.metadata.validFrom) > new Date()
+                        : false
+                    }
+                  />
+                ))}
+              </YStack>
+            )}
+
+            {remainingEntries.length > 0 && submission && (
+              <RequestedAttributesSection submission={{ ...submission, entries: remainingEntries }} />
+            )}
             <Spacer />
           </ScrollView>
         </YStack>
@@ -118,20 +184,18 @@ export const ShareCredentialsSlide = ({
         {submission.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
-            acceptText={shareLabel}
+            acceptText={acceptLabel}
             declineText={t(commonMessages.stop)}
             onAccept={handleAccept}
-            onDecline={onCancel}
+            onDecline={handleDecline}
             isLoading={isProcessing}
           />
         ) : (
           <YStack gap="$3">
             <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
-              <Trans id="submission.missingCardsWarning" comment="Shown when user lacks required credentials">
-                You don't have the required cards
-              </Trans>
+              <Trans id="submission.missingCardsWarning">You don't have the required cards</Trans>
             </Paragraph>
-            <Button.Solid onPress={onDecline}>{t(commonMessages.close)}</Button.Solid>
+            <Button.Solid onPress={handleDecline}>{t(commonMessages.close)}</Button.Solid>
           </YStack>
         )}
       </YStack>
