@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@animo-id/eudi-wallet-functionality':
-      specifier: 0.0.0-alpha-20260116114641
-      version: 0.0.0-alpha-20260116114641
+      specifier: 0.0.0-alpha-20260118230323
+      version: 0.0.0-alpha-20260118230323
     '@animo-id/expo-ausweis-sdk':
       specifier: 0.0.1
       version: 0.0.1
@@ -298,7 +298,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20260116114641(@credo-ts/core@0.6.2-pr-2626-20260118221136(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-pr-2626-20260118221136(typescript@5.9.3))
+        version: 0.0.0-alpha-20260118230323(@credo-ts/core@0.6.2-pr-2626-20260118221136(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-pr-2626-20260118221136(typescript@5.9.3))
       '@animo-id/expo-ausweis-sdk':
         specifier: 'catalog:'
         version: 0.0.1(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -524,7 +524,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20260116114641(@credo-ts/core@0.6.2-pr-2626-20260118221136(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-pr-2626-20260118221136(typescript@5.9.3))
+        version: 0.0.0-alpha-20260118230323(@credo-ts/core@0.6.2-pr-2626-20260118221136(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-pr-2626-20260118221136(typescript@5.9.3))
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
         version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -769,8 +769,8 @@ packages:
       graphql:
         optional: true
 
-  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20260116114641':
-    resolution: {integrity: sha512-k9vImTAgG0NqEOUH5Hmt9PeBTqOyV9bxDCf1W7qzpZRyImPvJjxZH9QXUk/Ya0O9XyG60HlRCrQU7YfRaacoKg==}
+  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20260118230323':
+    resolution: {integrity: sha512-qlLDEC3McHr61BiTCSzCJbMJsXJ8asNT7sZMSWNvkFv0wgo267khmPPSU15QTLiFZtf1EpjIJGtQQ3UQ5M4y8A==}
     engines: {node: '>=22'}
     peerDependencies:
       '@credo-ts/core': '*'
@@ -6659,7 +6659,7 @@ snapshots:
 
   '@0no-co/graphql.web@1.2.0': {}
 
-  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20260116114641(@credo-ts/core@0.6.2-pr-2626-20260118221136(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-pr-2626-20260118221136(typescript@5.9.3))':
+  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20260118230323(@credo-ts/core@0.6.2-pr-2626-20260118221136(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-pr-2626-20260118221136(typescript@5.9.3))':
     dependencies:
       '@credo-ts/core': 0.6.2-pr-2626-20260118221136(typescript@5.9.3)
       '@credo-ts/openid4vc': 0.6.2-pr-2626-20260118221136(typescript@5.9.3)
