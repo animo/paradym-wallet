@@ -261,13 +261,12 @@ const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], i
     // FIXME: we should run extra validation with `zScaAttestationExt`, but it REQUIRES
     // transaction_data_types to be defined, so it's not easy to check "if defined make sure it's valid"
     if (record.type === 'SdJwtVcRecord' && record.typeMetadataChain && record.typeMetadataChain.length > 1) {
-      const lowestToHighest = [...record.typeMetadataChain].reverse()
-      const lowest = lowestToHighest.pop()
-
-      const mergedTypeMetadata = lowestToHighest.reduce(
-        (merged, current) => mergeJson(merged, current, ts12MergeConfig),
-        lowest
-      )
+      const mergedTypeMetadata = record.typeMetadataChain
+        .slice(1)
+        .reduce(
+          (mergedChildren, parent) => mergeJson(parent, mergedChildren, ts12MergeConfig),
+          record.typeMetadataChain[0]
+        )
       record.typeMetadata = mergedTypeMetadata
     }
 
