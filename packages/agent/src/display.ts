@@ -304,6 +304,8 @@ export function getSdJwtTypeMetadataCredentialDisplay(
     description: typeMetadataDisplay?.description,
     textColor: typeMetadataDisplay?.rendering?.simple?.text_color,
     backgroundColor: typeMetadataDisplay?.rendering?.simple?.background_color,
+    // FIXME: will be resolved once https://github.com/openwallet-foundation/sd-jwt-js/pull/359 is merged/released
+    // @ts-expect-error
     backgroundImage: typeMetadataDisplay?.rendering?.simple?.background_image
       ? {
           url: typeMetadataDisplay?.rendering?.simple?.background_image,

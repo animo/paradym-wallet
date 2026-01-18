@@ -2,11 +2,15 @@ import {
   type ResolvedTs12Metadata,
   resolveTs12TransactionDisplayMetadata,
   ts12BuiltinSchemaValidators,
-  type ZScaAttestationExt,
   zFunkeQesTransaction,
+  zScaAttestationExt,
 } from '@animo-id/eudi-wallet-functionality'
 import { ConsoleLogger, LogLevel, SdJwtVcRecord } from '@credo-ts/core'
-import type { FormattedSubmissionEntry, FormattedSubmissionEntrySatisfied } from '@package/agent'
+import type {
+  CredentialForDisplayId,
+  FormattedSubmissionEntry,
+  FormattedSubmissionEntrySatisfied,
+} from '@package/agent'
 import Ajv from 'ajv'
 import type { CredentialsForProofRequest } from './handler'
 
@@ -33,33 +37,36 @@ export type Ts12TransactionDataEntry = {
 export type FormattedTransactionDataEntry = QesTransactionDataEntry | Ts12TransactionDataEntry
 export type FormattedTransactionData = FormattedTransactionDataEntry[]
 
-export async function getTs12TransactionDataTypes(records: Record<string, SdJwtVcRecord>) {
-  const metadata = (
+export async function getTs12TransactionDataTypes(records: Record<CredentialForDisplayId, SdJwtVcRecord>) {
+  const resolved = (
     await Promise.all(
-      Object.entries(records).map(async ([id, rec]) => {
-        const metadata = rec.typeMetadata as ZScaAttestationExt | undefined
-        if (metadata) return [id, metadata]
-        return undefined
+      Object.entries(records).map(async ([id, record]) => {
+        if (!record.typeMetadata) return undefined
+
+        // Check if payment metadata included
+        const parsedTypeMetadata = zScaAttestationExt.safeParse(record.typeMetadata)
+        if (!parsedTypeMetadata.success) return undefined
+
+        return await Promise.all(
+          parsedTypeMetadata.data.transaction_data_types.map(
+            async ({ type, subtype }) =>
+              [
+                type,
+                subtype,
+                id,
+                await resolveTs12TransactionDisplayMetadata(
+                  parsedTypeMetadata.data,
+                  type,
+                  subtype /* todo: integrity verifier */
+                ).catch((_) => undefined),
+              ] as const
+          )
+        )
       })
     )
-  ).filter((x): x is [string, ZScaAttestationExt] => !!x)
-
-  const resolved = await Promise.all(
-    metadata.flatMap(([recId, metadata]) => {
-      if (metadata && 'transaction_data_types' in metadata && Array.isArray(metadata.transaction_data_types)) {
-        return metadata.transaction_data_types.map(
-          async ({ type, subtype }) =>
-            [
-              type,
-              subtype,
-              recId,
-              await resolveTs12TransactionDisplayMetadata(metadata, type, subtype).catch((_) => undefined),
-            ] as const
-        )
-      }
-      return []
-    })
   )
+    .filter((x): x is Exclude<typeof x, undefined> => x !== undefined)
+    .flat()
 
   const types = {} as Record<string, Record<string, Record<string, ResolvedTs12Metadata>>>
   for (const [type, subtype, id, meta] of resolved) {

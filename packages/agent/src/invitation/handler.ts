@@ -1,4 +1,4 @@
-import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
+import { mergeJson, ts12MergeConfig, verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
 import { type DifPresentationExchangeDefinitionV2, Jwt, Kms } from '@credo-ts/core'
 import type {
@@ -255,6 +255,21 @@ const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], i
       display: issuerMetadata.credentialIssuer.display,
     })
     setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+    // If type metadata chain is longer than we want to run additional merging logic
+    // For payments type metadata extensions.
+    // FIXME: we should run extra validation with `zScaAttestationExt`, but it REQUIRES
+    // transaction_data_types to be defined, so it's not easy to check "if defined make sure it's valid"
+    if (record.type === 'SdJwtVcRecord' && record.typeMetadataChain && record.typeMetadataChain.length > 1) {
+      const lowestToHighest = [...record.typeMetadataChain].reverse()
+      const lowest = lowestToHighest.pop()
+
+      const mergedTypeMetadata = lowestToHighest.reduce(
+        (merged, current) => mergeJson(merged, current, ts12MergeConfig),
+        lowest
+      )
+      record.typeMetadata = mergedTypeMetadata
+    }
 
     return {
       ...credentialResponse,
