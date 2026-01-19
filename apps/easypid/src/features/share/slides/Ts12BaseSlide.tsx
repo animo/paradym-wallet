@@ -141,13 +141,22 @@ export function Ts12BaseSlide({
   const { t, i18n } = useLingui()
   const [selectedCredentialId, setSelectedCredentialId] = useState<string | null>(initialSelectedCredentialId ?? null)
 
-  const possibleCredentialIds = useMemo(
-    () =>
-      entry.formattedSubmissions.flatMap((s) =>
-        s.isSatisfied ? (s as FormattedSubmissionEntrySatisfied).credentials.map((c) => c.credential.id) : []
-      ),
-    [entry]
-  )
+  const possibleCredentialIds = useMemo(() => {
+    const allCredentials = entry.formattedSubmissions.flatMap((s) =>
+      s.isSatisfied ? (s as FormattedSubmissionEntrySatisfied).credentials : []
+    )
+
+    allCredentials.sort((a, b) => b.credential.createdAt.getTime() - a.credential.createdAt.getTime())
+
+    const seen = new Set<string>()
+    return allCredentials.reduce<string[]>((acc, c) => {
+      if (!seen.has(c.credential.id)) {
+        seen.add(c.credential.id)
+        acc.push(c.credential.id)
+      }
+      return acc
+    }, [])
+  }, [entry])
 
   const { loadedCredentials, isLoading, error, displayMetadata, setDisplayMetadata } = useTs12CredentialLoading(
     possibleCredentialIds,
