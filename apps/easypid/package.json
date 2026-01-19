@@ -26,6 +26,7 @@
 		"@gorhom/bottom-sheet": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@lingui/babel-plugin-lingui-macro": "^5.7.0",
+		"@lingui/react": "^5.7.0",
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@package/agent": "workspace:*",
 		"@package/app": "workspace:*",
@@ -46,6 +47,7 @@
 		"expo-application": "catalog:",
 		"expo-asset": "catalog:",
 		"expo-blur": "catalog:",
+		"expo-camera": "catalog:",
 		"expo-constants": "catalog:",
 		"expo-crypto": "catalog:",
 		"expo-dev-client": "catalog:",
@@ -79,8 +81,7 @@
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
 		"react-native-screens": "catalog:",
-		"react-native-svg": "catalog:",
-		"expo-camera": "catalog:"
+		"react-native-svg": "catalog:"
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",

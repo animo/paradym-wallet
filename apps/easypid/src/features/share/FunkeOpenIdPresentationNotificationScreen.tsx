@@ -220,7 +220,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           agent,
           credentialsForRequest,
           'success',
-          formattedTransactionData?.[0]
+          formattedTransactionData
         ).catch(console.error)
       } catch (error) {
         setIsSharing(false)
@@ -235,7 +235,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
             agent,
             credentialsForRequest,
             'failed',
-            formattedTransactionData?.[0]
+            formattedTransactionData
           ).catch(console.error)
         }
 
@@ -274,7 +274,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         agent,
         credentialsForRequest,
         credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed',
-        formattedTransactionData?.[0]
+        formattedTransactionData
       ).catch(console.error)
     }
 

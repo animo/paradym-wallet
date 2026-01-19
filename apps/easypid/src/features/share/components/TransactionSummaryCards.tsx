@@ -1,5 +1,5 @@
 import { formatCurrencyAmount, getSelectedCredentialForEntry } from '@easypid/utils/transactionUtils'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import type { FormattedTransactionData, QesTransactionDataEntry, Ts12TransactionDataEntry } from '@package/agent'
 import { MiniDocument } from '@package/app'
 import { Heading, HeroIcons, Paragraph, XStack, YStack } from '@package/ui'
@@ -107,33 +107,37 @@ const QesSection = ({
     <YStack gap="$4">
       <YStack gap="$2">
         <Heading heading="sub2">
-          {count > 1 ? (
-            <Trans id="signShare.documentsHeading">Documents</Trans>
-          ) : status === 'pending' ? (
-            <Trans id="signShare.documentHeading">Document</Trans>
+          {status === 'pending' ? (
+            <Plural id="signShare.documentHeading" value={count} one="Document" other="Documents" />
           ) : (
-            <Trans id="activity.documentHeading">Document</Trans>
+            <Plural id="activity.documentHeading" value={count} one="Document" other="Documents" />
           )}
         </Heading>
         <Paragraph>
-          {status === 'pending' &&
-            (count > 1 ? (
-              <Trans id="signShare.documentsIntro">The following documents will be signed.</Trans>
-            ) : (
-              <Trans id="signShare.documentIntro">The following document will be signed.</Trans>
-            ))}
-          {status === 'success' &&
-            (count > 1 ? (
-              <Trans id="activity.documentsSigned">The documents were signed.</Trans>
-            ) : (
-              <Trans id="activity.documentSigned">The document was signed.</Trans>
-            ))}
-          {(status === 'failed' || status === 'stopped') &&
-            (count > 1 ? (
-              <Trans id="activity.documentsNotSigned">The documents were not signed.</Trans>
-            ) : (
-              <Trans id="activity.documentNotSigned">The document was not signed.</Trans>
-            ))}
+          {status === 'pending' && (
+            <Plural
+              id="signShare.documentIntro"
+              value={count}
+              one="The following document will be signed."
+              other="The following documents will be signed."
+            />
+          )}
+          {status === 'success' && (
+            <Plural
+              id="activity.documentSigned"
+              value={count}
+              one="The document was signed."
+              other="The documents were signed."
+            />
+          )}
+          {(status === 'failed' || status === 'stopped') && (
+            <Plural
+              id="activity.documentNotSigned"
+              value={count}
+              one="The document was not signed."
+              other="The documents were not signed."
+            />
+          )}
         </Paragraph>
       </YStack>
       {items.map(({ entry, index }) => (
@@ -157,33 +161,37 @@ const PaymentSection = ({
     <YStack gap="$4">
       <YStack gap="$2">
         <Heading heading="sub2">
-          {count > 1 ? (
-            <Trans id="payment.paymentsHeading">Payments</Trans>
-          ) : status === 'pending' ? (
-            <Trans id="payment.summaryHeading">Payment</Trans>
+          {status === 'pending' ? (
+            <Plural id="payment.summaryHeading" value={count} one="Payment" other="Payments" />
           ) : (
-            <Trans id="activity.paymentHeading">Payment</Trans>
+            <Plural id="activity.paymentHeading" value={count} one="Payment" other="Payments" />
           )}
         </Heading>
         <Paragraph>
-          {status === 'pending' &&
-            (count > 1 ? (
-              <Trans id="payment.paymentsIntro">The following payments will be authorized.</Trans>
-            ) : (
-              <Trans id="payment.summaryIntro">The following payment will be authorized.</Trans>
-            ))}
-          {status === 'success' &&
-            (count > 1 ? (
-              <Trans id="activity.paymentsApproved">The payments were approved.</Trans>
-            ) : (
-              <Trans id="activity.paymentApproved">The payment was approved.</Trans>
-            ))}
-          {(status === 'failed' || status === 'stopped') &&
-            (count > 1 ? (
-              <Trans id="activity.paymentsNotApproved">The payments were not approved.</Trans>
-            ) : (
-              <Trans id="activity.paymentNotApproved">The payment was not approved.</Trans>
-            ))}
+          {status === 'pending' && (
+            <Plural
+              id="payment.summaryIntro"
+              value={count}
+              one="The following payment will be authorized."
+              other="The following payments will be authorized."
+            />
+          )}
+          {status === 'success' && (
+            <Plural
+              id="activity.paymentApproved"
+              value={count}
+              one="The payment was approved."
+              other="The payments were approved."
+            />
+          )}
+          {(status === 'failed' || status === 'stopped') && (
+            <Plural
+              id="activity.paymentNotApproved"
+              value={count}
+              one="The payment was not approved."
+              other="The payments were not approved."
+            />
+          )}
         </Paragraph>
       </YStack>
       {items.map(({ entry, index }) => (
@@ -212,33 +220,37 @@ const GenericSection = ({
     <YStack gap="$4">
       <YStack gap="$2">
         <Heading heading="sub2">
-          {count > 1 ? (
-            <Trans id="transaction.transactionsHeading">Transactions</Trans>
-          ) : status === 'pending' ? (
-            <Trans id="transaction.summaryHeading">Transaction</Trans>
+          {status === 'pending' ? (
+            <Plural id="transaction.summaryHeading" value={count} one="Transaction" other="Transactions" />
           ) : (
-            <Trans id="activity.transactionHeading">Transaction</Trans>
+            <Plural id="activity.transactionHeading" value={count} one="Transaction" other="Transactions" />
           )}
         </Heading>
         <Paragraph>
-          {status === 'pending' &&
-            (count > 1 ? (
-              <Trans id="transaction.transactionsIntro">The following transactions will be authorized.</Trans>
-            ) : (
-              <Trans id="transaction.summaryIntro">The following transaction will be authorized.</Trans>
-            ))}
-          {status === 'success' &&
-            (count > 1 ? (
-              <Trans id="activity.transactionsApproved">The transactions were approved.</Trans>
-            ) : (
-              <Trans id="activity.transactionApproved">The transaction was approved.</Trans>
-            ))}
-          {(status === 'failed' || status === 'stopped') &&
-            (count > 1 ? (
-              <Trans id="activity.transactionsNotApproved">The transactions were not approved.</Trans>
-            ) : (
-              <Trans id="activity.transactionNotApproved">The transaction was not approved.</Trans>
-            ))}
+          {status === 'pending' && (
+            <Plural
+              id="transaction.summaryIntro"
+              value={count}
+              one="The following transaction will be authorized."
+              other="The following transactions will be authorized."
+            />
+          )}
+          {status === 'success' && (
+            <Plural
+              id="activity.transactionApproved"
+              value={count}
+              one="The transaction was approved."
+              other="The transactions were approved."
+            />
+          )}
+          {(status === 'failed' || status === 'stopped') && (
+            <Plural
+              id="activity.transactionNotApproved"
+              value={count}
+              one="The transaction was not approved."
+              other="The transactions were not approved."
+            />
+          )}
         </Paragraph>
       </YStack>
       {items.map(({ entry, index }) => (

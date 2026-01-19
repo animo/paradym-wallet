@@ -1,6 +1,6 @@
 import { TransactionList } from '@easypid/features/share/components/TransactionSummaryCards'
 import { getAllTransactionCredentialIds } from '@easypid/utils/transactionUtils'
-import { defineMessage } from '@lingui/core/macro'
+import { defineMessage, plural } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import {
   type IssuanceActivity,
@@ -93,16 +93,6 @@ const activityMessages = {
     comment:
       'Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish.',
   }),
-  documentSigned: defineMessage({
-    id: 'activity.documentSigned',
-    message: 'The document was signed.',
-    comment: 'Shown after a successful digital signature',
-  }),
-  documentNotSigned: defineMessage({
-    id: 'activity.documentNotSigned',
-    message: 'The document was not signed.',
-    comment: 'Shown after a failed digital signature',
-  }),
   sharedAttributes: defineMessage({
     id: 'activity.sharedAttributesHeading',
     message: 'Shared attributes',
@@ -146,19 +136,14 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
       })
       break
     default:
-      if (activity.credentialIds.length > 1) {
-        description = t({
-          id: 'activity.receivedMultiple',
-          message: `You have received the following cards from ${activity.entity.name}.`,
-          comment: 'Shown in activity detail when multiple credentials have been received',
-        })
-      } else {
-        description = t({
-          id: 'activity.receivedSingle',
-          message: `You have received the following card from ${activity.entity.name}.`,
-          comment: 'Shown in activity detail when one credential has been received',
-        })
-      }
+      description = t({
+        id: 'activity.receivedMultiple',
+        comment: 'Shown in activity detail when credentials have been received',
+        message: plural(activity.credentialIds.length, {
+          one: `You have received the following card from ${activity.entity.name}.`,
+          other: `You have received the following cards from ${activity.entity.name}.`,
+        }),
+      })
       break
   }
 
@@ -241,17 +226,14 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
   const amountShared = activityCredentials.length
   const description =
     activity.status === 'success'
-      ? amountShared > 1
-        ? t({
-            id: 'activity.sharedSummaryPlural',
-            message: `${amountShared} credentials were shared.`,
-            comment: 'Shown when multiple credentials were successfully shared',
-          })
-        : t({
-            id: 'activity.sharedSummarySingle',
-            message: '1 credential was shared.',
-            comment: 'Shown when one credential was successfully shared',
-          })
+      ? t({
+          id: 'activity.sharedSummary',
+          comment: 'Shown when credentials were successfully shared',
+          message: plural(amountShared, {
+            one: '1 credential was shared.',
+            other: '# credentials were shared.',
+          }),
+        })
       : t({
           id: 'activity.sharedSummaryNone',
           message: 'No credentials were shared.',

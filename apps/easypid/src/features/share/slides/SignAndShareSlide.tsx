@@ -1,4 +1,4 @@
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import {
   type FormattedSubmission,
   type FormattedTransactionData,
@@ -130,14 +130,22 @@ export const SignAndShareSlide = ({
               <YStack gap="$4">
                 <YStack gap="$2">
                   <Heading heading="sub2">
-                    <Trans id="signShare.documentHeading" comment="Heading above the document name">
-                      Documents
-                    </Trans>
+                    <Plural
+                      id="signShare.documentHeading"
+                      value={{ count: qesTransactions.length }}
+                      one="Document"
+                      other="Documents"
+                      comment="Heading above the document name"
+                    />
                   </Heading>
                   <Paragraph>
-                    <Trans id="signShare.documentIntro" comment="Text above the document to be signed">
-                      The following documents will be signed.
-                    </Trans>
+                    <Plural
+                      id="signShare.documentIntro"
+                      value={{ count: qesTransactions.length }}
+                      one="The following document will be signed."
+                      other="The following documents will be signed."
+                      comment="Text above the document to be signed"
+                    />
                   </Paragraph>
                 </YStack>
                 {qesTransactions.map(({ entry }, index) => (
@@ -216,9 +224,7 @@ export const SignAndShareSlide = ({
         ) : (
           <YStack gap="$3">
             <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
-              <Trans id="signShare.missingCards" comment="Shown when the user lacks the required credentials">
-                You don't have the required cards
-              </Trans>
+              <Trans id="submission.missingCardsWarning">You don't have the required cards</Trans>
             </Paragraph>
             <Button.Solid onPress={onDecline}>{t(commonMessages.close)}</Button.Solid>
           </YStack>
