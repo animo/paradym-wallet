@@ -1222,18 +1222,18 @@
 		],
 		"translation": "Henkilökortti"
 	},
-	"pidSetup.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 270]],
-		"translation": "Henkilökortin skannaus peruutettu"
-	},
 	"onboarding.eidScanningCancelled": {
 		"message": "eID card scanning cancelled",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/onboarding/onboardingContext.tsx", 480]],
+		"translation": "Henkilökortin skannaus peruutettu"
+	},
+	"pidSetup.eidScanningCancelled": {
+		"message": "eID card scanning cancelled",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 270]],
 		"translation": "Henkilökortin skannaus peruutettu"
 	},
 	"common.enterPinToShareData": {
@@ -2848,7 +2848,7 @@
 		"message": "Signing a document",
 		"placeholders": {},
 		"comments": ["Heading above the document signing screen"],
-		"origin": [["src/features/share/slides/SigningSlide.tsx", 40]],
+		"origin": [["src/features/share/slides/SigningSlide.tsx", 39]],
 		"translation": "Allekirjoitetaan asiakirja"
 	},
 	"signShare.cardHeading": {
@@ -3758,13 +3758,13 @@
 		"translation": "Eilen klo {0}"
 	},
 	"signing.description": {
-		"message": "You are about to sign <0>{documentNames}</0>.",
+		"message": "You are about to sign <0>{0}</0>.",
 		"placeholders": {
-			"documentNames": ["documentNames.join(', ')"]
+			"0": ["documentNames.join(', ')"]
 		},
 		"comments": ["Explanation that the user is about to sign a document"],
-		"origin": [["src/features/share/slides/SigningSlide.tsx", 45]],
-		"translation": "Olet allekirjoittamassa asiakirjaa <0>{documentName}</0>."
+		"origin": [["src/features/share/slides/SigningSlide.tsx", 44]],
+		"translation": "Olet allekirjoittamassa asiakirjaa <0>{0}</0>."
 	},
 	"connection.successParagraph": {
 		"message": "You can now receive notifications from \n<0>{name}</0>",

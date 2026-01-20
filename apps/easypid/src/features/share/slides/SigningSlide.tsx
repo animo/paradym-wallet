@@ -1,4 +1,3 @@
-import { Trans as DynTrans } from '@lingui/react'
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { QtspInfo } from '@package/agent'
 import { DualResponseButtons, useImageScaler, useWizard } from '@package/app'
@@ -42,13 +41,9 @@ export function SigningSlide({
           </Trans>
         </Heading>
         <Paragraph>
-          <DynTrans
-            id="signing.description"
-            message="You are about to sign <0>{documentNames}</0>."
-            values={{ documentNames: documentNames.join(', ') }}
-            components={{ 0: <Paragraph emphasis /> }}
-            comment="Explanation that the user is about to sign a document"
-          />
+          <Trans id="signing.description" comment="Explanation that the user is about to sign a document">
+            You are about to sign <Paragraph emphasis>{documentNames.join(', ')}</Paragraph>.
+          </Trans>
         </Paragraph>
       </YStack>
 
