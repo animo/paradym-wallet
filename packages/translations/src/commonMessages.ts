@@ -1,4 +1,3 @@
-import type { MessageDescriptor } from '@lingui/core'
 // src/i18n/messages.ts
 import { defineMessage } from '@lingui/core/macro'
 import type { SupportedLocale } from './i18n'
@@ -580,33 +579,14 @@ export const commonMessages = {
   },
 }
 
-export const supportedLanguageMessages: Record<SupportedLocale, MessageDescriptor> = {
-  nl: defineMessage({
-    id: 'language.nl',
-    message: 'Dutch',
-  }),
-  fi: defineMessage({
-    id: 'language.fi',
-    message: 'Finnish',
-  }),
-  sw: defineMessage({
-    id: 'language.sw',
-    message: 'Swedish',
-  }),
-  en: defineMessage({
-    id: 'language.en',
-    message: 'English',
-  }),
-  de: defineMessage({
-    id: 'language.de',
-    message: 'German',
-  }),
-  al: defineMessage({
-    id: 'language.al',
-    message: 'Albanian',
-  }),
-  pt: defineMessage({
-    id: 'language.pt',
-    message: 'Portuguese',
-  }),
+// We use the local definition for each language, so you can always detect it even
+// if the original language is not correct
+export const supportedLanguageMessages: Record<SupportedLocale, string> = {
+  nl: 'Nederlands',
+  fi: 'Suomi',
+  sv: 'Svenska',
+  en: 'English',
+  de: 'Deutsch',
+  sq: 'Shqip',
+  pt: 'Português',
 }

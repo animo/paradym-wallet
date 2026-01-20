@@ -231,7 +231,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
           comment: 'Shown when credentials were successfully shared',
           message: plural(amountShared, {
             one: '1 credential was shared.',
-            other: '# credentials were shared.',
+            other: `${amountShared} credentials were shared.`,
           }),
         })
       : t({

@@ -8,7 +8,10 @@ function getMissingTranslations() {
   const translations = JSON.parse(readFileSync(resolvedTranslationPath, { encoding: 'utf-8' }))
 
   const missingEntries = Object.fromEntries(
-    Object.entries(translations).filter(([, { translation }]) => translation === '')
+    Object.entries(translations).filter(
+      ([, { translation, message }]) =>
+        translation === '' || translation.includes('plural,') !== message.includes('plural,')
+    )
   )
 
   const missingEntriesPath = path.join(path.dirname(resolvedTranslationPath), 'missing.json')

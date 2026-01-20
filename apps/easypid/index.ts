@@ -4,23 +4,23 @@ import registerGetCredentialComponent from '@animo-id/expo-digital-credentials-a
 import { registerLocales } from '@package/translations'
 import { Platform } from 'react-native'
 import { DcApiSharingScreen } from './src/features/share/DcApiSharingScreen'
-import { messages as al } from './src/locales/al/messages'
 import { messages as de } from './src/locales/de/messages'
 import { messages as en } from './src/locales/en/messages'
 import { messages as fi } from './src/locales/fi/messages'
 import { messages as nl } from './src/locales/nl/messages'
 import { messages as pt } from './src/locales/pt/messages'
-import { messages as sw } from './src/locales/sw/messages'
+import { messages as sq } from './src/locales/sq/messages'
+import { messages as sv } from './src/locales/sv/messages'
 
 // Register translations
 registerLocales({
-  en,
-  nl,
-  fi,
-  sw,
-  de,
-  al,
-  pt,
+  en, // English
+  nl, // Dutch
+  fi, // Finnish
+  sv, // Swedish
+  de, // German
+  sq, // Albanian
+  pt, // Portuguese
 })
 
 // Always register the custom component for Android

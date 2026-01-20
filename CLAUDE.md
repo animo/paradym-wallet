@@ -27,6 +27,7 @@ When asked to update translations for a specific language, follow these steps:
 3. **Translate the content**:
    - Read the AI_INSTRUCTIONS.MD for the locale: `apps/easypid/src/locales/<lang>/AI_INSTRUCTIONS.MD`
    - Use the instructions to translate content from the `missing.json` file
+   - Note that `missing.json` will also include entries where there may be a translation, but it does not match the pluralization, these entries should also be fixed.
    - Also translate any changed translations identified in step 1 (changed English translations must be updated in other languages too)
    - Write the translations back into the same `missing.json` file
 

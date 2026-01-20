@@ -37,7 +37,6 @@ export function LocaleSelect() {
   const locale = useLocale()
   const [localeValue, setLocaleValue] = useState<SupportedLocale>(locale)
   const [, setStoredLocale] = useStoredLocale()
-  const { t } = useLingui()
 
   const updateLocale = (newLocale: SupportedLocale) => {
     setLocaleValue(newLocale)
@@ -71,7 +70,7 @@ export function LocaleSelect() {
         {supportedLocales.map((supportedLocale) => (
           <Picker.Item
             key={supportedLocale}
-            label={t(supportedLanguageMessages[supportedLocale])}
+            label={supportedLanguageMessages[supportedLocale]}
             value={supportedLocale}
           />
         ))}
