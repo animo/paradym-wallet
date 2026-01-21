@@ -10,11 +10,11 @@ import {
   type W3cCredentialRecord,
   type W3cV2CredentialRecord,
 } from '@credo-ts/core'
-import type { CredentialRecord } from '@package/sdk'
-import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
-import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
 import { Linking } from 'react-native'
-import type { CredentialsForProofRequest } from '../getCredentialsForProofRequest'
+import { ParadymWalletBiometricAuthenticationError } from '../../error'
+import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
+import type { CredentialRecord } from '../../storage/credentials'
+import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
 import { getFormattedTransactionData } from '../transaction'
 
 export type ShareCredentialsOptions = {

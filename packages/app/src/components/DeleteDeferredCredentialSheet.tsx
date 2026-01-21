@@ -1,10 +1,8 @@
 import { useLingui } from '@lingui/react/macro'
-import { useParadym } from '@package/sdk'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import type { CredentialIssuerDisplay } from '@paradym/wallet-sdk/display/credential'
-import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
-import { deleteDeferredCredential } from '@paradym/wallet-sdk/storage/deferredCredentialStore'
+import type { CredentialIssuerDisplay } from '@paradym/wallet-sdk'
+import { deleteDeferredCredential, storeReceivedActivity, useParadym } from '@paradym/wallet-sdk'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
@@ -46,7 +44,7 @@ export function DeleteDeferredCredentialSheet({
       await storeReceivedActivity(paradym, {
         entityId: issuerId,
         host: issuerDisplay.domain,
-        name: issuerDisplay.name,
+        name: issuerDisplay.name ?? t(commonMessages.unknown),
         logo: issuerDisplay.logo,
         backgroundColor: '#ffffff', // Default to a white background for now
         status: hasErrors ? 'failed' : 'stopped',

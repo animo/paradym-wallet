@@ -1,11 +1,11 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import type { DifPresentationExchangeDefinitionV2 } from '@credo-ts/core'
-import { ParadymWalletNoRequestToResolveError } from '@paradym/wallet-sdk/error'
-import { formatDcqlCredentialsForRequest } from '@paradym/wallet-sdk/format/dcqlRequest'
-import { formatDifPexCredentialsForRequest } from '@paradym/wallet-sdk/format/presentationExchangeRequest'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
-import { getTrustedEntities } from '@paradym/wallet-sdk/trust/trustMechanism'
+import { ParadymWalletNoRequestToResolveError } from '../../error'
+import { formatDcqlCredentialsForRequest } from '../../format/dcqlRequest'
+import { formatDifPexCredentialsForRequest } from '../../format/presentationExchangeRequest'
+import type { FormattedSubmission } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
+import { getTrustedEntities } from '../../trust/trustMechanism'
 
 export type ResolveCredentialRequestOptions = {
   paradym: ParadymWalletSdk
@@ -90,3 +90,5 @@ export const resolveCredentialRequest = async ({
     throw error
   }
 }
+
+export type CredentialsForProofRequest = Awaited<ReturnType<typeof resolveCredentialRequest>>

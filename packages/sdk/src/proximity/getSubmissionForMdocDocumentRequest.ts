@@ -2,20 +2,24 @@ import { DeviceRequest, limitDisclosureToDeviceRequestNameSpaces, parseIssuerSig
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { getCredentialForDisplay } from '../display/credential'
 import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
   FormattedSubmissionEntrySatisfiedCredential,
-} from './submission'
+} from '../format/submission'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+
+export type GetSubmissionForMdocDocumentRequestOptions = {
+  paradym: ParadymWalletSdk
+  encodedDeviceRequest: Uint8Array
+}
 
 export async function getSubmissionForMdocDocumentRequest(
-  paradym: ParadymWalletSdk,
-  encodedDeviceRequest: Uint8Array
+  options: GetSubmissionForMdocDocumentRequestOptions
 ): Promise<FormattedSubmission> {
-  const deviceRequest = DeviceRequest.parse(encodedDeviceRequest)
+  const deviceRequest = DeviceRequest.parse(options.encodedDeviceRequest)
 
-  const matchingDocTypeRecords = await paradym.agent.mdoc.findAllByQuery({
+  const matchingDocTypeRecords = await options.paradym.agent.mdoc.findAllByQuery({
     $or: deviceRequest.docRequests.map((request) => ({
       docType: request.itemsRequest.data.docType,
     })),

@@ -15,9 +15,8 @@ import {
   YStack,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
-import { useActivities } from '@paradym/wallet-sdk/hooks'
-import type { TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk/trust/trustMechanism'
+import type { DisplayImage, TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk'
+import { useActivities } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 

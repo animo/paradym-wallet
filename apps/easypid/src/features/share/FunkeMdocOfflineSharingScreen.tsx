@@ -6,14 +6,13 @@ import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
-import { getSubmissionForMdocDocumentRequest } from '@paradym/wallet-sdk/format/mdocDocumentRequest'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
+import type { FormattedSubmission } from '@paradym/wallet-sdk'
 import {
   type ActivityStatus,
+  ParadymWalletBiometricAuthenticationCancelledError,
   storeSharedActivityForCredentialsForRequest,
-} from '@paradym/wallet-sdk/storage/activityStore'
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useCallback, useEffect, useState } from 'react'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
@@ -40,7 +39,8 @@ export function FunkeMdocOfflineSharingScreen({
   const { t } = useLingui()
 
   useEffect(() => {
-    getSubmissionForMdocDocumentRequest(paradym, deviceRequest)
+    paradym.proximity
+      .getSubmissionForMdocDocumentRequest({ encodedDeviceRequest: deviceRequest })
       .then(setSubmission)
       .catch((error) => {
         toast.show(t(commonMessages.presentationInformationCouldNotBeExtracted), {

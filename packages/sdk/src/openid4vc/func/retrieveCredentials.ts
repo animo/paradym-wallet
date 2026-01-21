@@ -3,10 +3,10 @@ import type {
   OpenId4VciResolvedAuthorizationRequest,
   OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
-import { type CredentialForDisplay, getCredentialForDisplay } from '@paradym/wallet-sdk/display/credential'
-import { receiveCredentialFromOpenId4VciOffer } from '@paradym/wallet-sdk/invitation/resolver'
-import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
-import type { DeferredCredentialBefore } from '@paradym/wallet-sdk/storage/deferredCredentialStore'
+import { type CredentialForDisplay, getCredentialForDisplay } from '../../display/credential'
+import { receiveCredentialFromOpenId4VciOffer } from '../../invitation/resolver'
+import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
+import type { DeferredCredentialBefore } from '../../storage/deferredCredentialStore'
 
 export type RetrieveCredentialOptions = {
   paradym: ParadymWalletSdk

@@ -1,4 +1,4 @@
-import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import type { PropsWithChildren } from 'react'
 import { useEffect, useRef } from 'react'

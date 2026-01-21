@@ -16,7 +16,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
+import type { DisplayImage } from '@paradym/wallet-sdk'
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 import { BlurBadge } from './BlurBadge'

@@ -1,6 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { TextBackButton, useScrollViewPosition } from '@package/app'
-import { ParadymWalletSdkConsoleLogger } from '@package/sdk'
 import {
   commonMessages,
   type SupportedLocale,
@@ -23,12 +22,11 @@ import {
 import {
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
-} from '@paradym/wallet-sdk/error'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
-import {
+  ParadymWalletSdkConsoleLogger,
   useCanUseBiometryBackedWalletKey,
   useIsBiometricsEnabled,
-} from '@paradym/wallet-sdk/secure/secure-wallet-key/secureWalletKey'
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
 import { ScrollView, Share } from 'react-native'

@@ -1,7 +1,5 @@
-// translations not needed
-
 import { capitalizeFirstLetter } from '@package/utils'
-import { useCredentialByCategory } from '@paradym/wallet-sdk/hooks'
+import { useCredentialByCategory } from '@paradym/wallet-sdk'
 
 export function useFirstNameFromPidCredential() {
   const { credential, isLoading } = useCredentialByCategory('DE-PID')

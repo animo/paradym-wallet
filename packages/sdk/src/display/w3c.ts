@@ -251,7 +251,7 @@ function getW3cCredentialDisplay(
   if (!credentialDisplay.name && credential.type.length > 1) {
     const lastType = credential.type[credential.type.length - 1]
     if (lastType && !lastType.startsWith('http')) {
-      credentialDisplay.name = sanitizeString(lastType)
+      credentialDisplay.name = sanitizeString(lastType) as string
     }
   }
 

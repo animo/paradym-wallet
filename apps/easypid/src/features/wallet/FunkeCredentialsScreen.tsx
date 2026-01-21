@@ -1,5 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { TextBackButton, useHaptics, useScrollViewPosition } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -20,25 +21,27 @@ import {
   YStack,
 } from '@package/ui'
 import { formatDate } from '@package/utils'
-import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
-import { useCredentials } from '@paradym/wallet-sdk/hooks'
+import type { DisplayImage } from '@paradym/wallet-sdk'
+import { useCredentials } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function FunkeCredentialsScreen() {
   const { credentials, isLoading: isLoadingCredentials } = useCredentials()
+  const { t } = useLingui()
 
   const [searchQuery, setSearchQuery] = useState('')
   const filteredCredentials = useMemo(() => {
-    return credentials.filter((credential) => credential.display.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    return credentials.filter((credential) =>
+      (credential.display.name ?? t(commonMessages.unknown)).toLowerCase().includes(searchQuery.toLowerCase())
+    )
   }, [credentials, searchQuery])
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
 
-  const { t } = useLingui()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
 
   return (
@@ -108,10 +111,10 @@ export function FunkeCredentialsScreen() {
               filteredCredentials.map((credential) => (
                 <FunkeCredentialRowCard
                   key={credential.id}
-                  name={credential.display.name}
+                  name={credential.display.name ?? t(commonMessages.unknown)}
                   textColor={credential.display.textColor ?? '$grey-100'}
                   backgroundColor={credential.display.backgroundColor ?? '$grey-900'}
-                  issuer={credential.display.issuer.name}
+                  issuer={credential.display.issuer.name ?? t(commonMessages.unknown)}
                   logo={credential.display.issuer.logo}
                   // TODO: we should have RAW metadata (date instance) and human metadata (string)
                   issuedAt={credential.metadata.issuedAt ? new Date(credential.metadata.issuedAt) : undefined}

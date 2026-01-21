@@ -1,3 +1,4 @@
+import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
 import type { DifPresentationExchangeDefinitionV2 } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import type { CredentialForDisplay } from '../display/credential'
@@ -21,7 +22,7 @@ export interface FormattedSubmissionEntryNotSatisfied {
    */
   isSatisfied: false
 
-  requestedAttributePaths: Array<Array<string | number | null>>
+  requestedAttributePaths: Array<Array<string | number | null | AnonCredsRequestedPredicate>>
 }
 
 export interface FormattedSubmissionEntrySatisfied {
@@ -66,7 +67,7 @@ export interface FormattedSubmissionEntrySatisfiedCredential {
     attributes: CredentialForDisplay['attributes']
     metadata: CredentialForDisplay['metadata']
 
-    paths: string[][]
+    paths: Array<Array<string | AnonCredsRequestedPredicate>>
   }
 }
 

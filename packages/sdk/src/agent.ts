@@ -138,24 +138,8 @@ export const setupAgent = (options: SetupAgentOptions) => {
     ? new options.logging.customLogger(options.logging.level)
     : new ParadymWalletSdkConsoleLogger(options.logging?.level)
 
-  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-
   const modules = {
-    askar: new AskarModule({
-      enableKms: false,
-      askar,
-      store: {
-        id: `${options.id ?? 'paradym-wallet'}-${walletKeyVersion}`,
-        key: options.key,
-        keyDerivationMethod: 'raw',
-      },
-    }),
-    kms: new Kms.KeyManagementModule({
-      backends: [new AskarKeyManagementService(), new SecureEnvironmentKeyManagementService()],
-      defaultBackend: 'askar',
-    }),
-    dids: new DidsModule(),
-
+    ...getBaseModules(options),
     ...(openId4VcConfiguration ? getOpenid4VcModules(openId4VcConfiguration) : {}),
     ...(didcommConfiguration ? getDidCommModules(didcommConfiguration) : {}),
   }
@@ -179,6 +163,26 @@ export const setupAgent = (options: SetupAgentOptions) => {
   }
 
   return agent
+}
+
+const getBaseModules = (options: Pick<SetupAgentOptions, 'id' | 'key'>) => {
+  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+  return {
+    askar: new AskarModule({
+      enableKms: false,
+      askar,
+      store: {
+        id: `${options.id ?? 'paradym-wallet'}-${walletKeyVersion}`,
+        key: options.key,
+        keyDerivationMethod: 'raw',
+      },
+    }),
+    kms: new Kms.KeyManagementModule({
+      backends: [new AskarKeyManagementService(), new SecureEnvironmentKeyManagementService()],
+      defaultBackend: 'askar',
+    }),
+    dids: new DidsModule(),
+  }
 }
 
 const getOpenid4VcModules = (openId4VcConfiguration: Exclude<SetupAgentOptions['openId4VcConfiguration'], false>) => ({
@@ -253,10 +257,12 @@ const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['did
   ),
 })
 
-export type BaseAgent = Agent
-export type DidCommAgent = Agent<ReturnType<typeof getDidCommModules>>
+export type BaseAgent = Agent<ReturnType<typeof getBaseModules>>
+export type DidCommAgent = Agent<ReturnType<typeof getBaseModules> & ReturnType<typeof getDidCommModules>>
 export type OpenId4VcAgent = Agent<ReturnType<typeof getOpenid4VcModules>>
-export type FullAgent = Agent<ReturnType<typeof getDidCommModules> & ReturnType<typeof getOpenid4VcModules>>
+export type FullAgent = Agent<
+  ReturnType<typeof getDidCommModules> & ReturnType<typeof getOpenid4VcModules> & ReturnType<typeof getBaseModules>
+>
 
 export const isDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): boolean => 'didcomm' in agent
 export const assertDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): DidCommAgent => {

@@ -1,8 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
-import { useInboxNotifications, useParadym } from '@paradym/wallet-sdk/hooks'
-import { fetchAndProcessDeferredCredentials } from '@paradym/wallet-sdk/openid4vc/deferredCredentialRecord'
+import { fetchAndProcessDeferredCredentials, useInboxNotifications, useParadym } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { RefreshControl } from 'react-native'
@@ -97,7 +97,11 @@ export function InboxScreen() {
               return (
                 <InboxNotificationRowCard
                   key={notification.id}
-                  title={notification.notificationTitle}
+                  title={
+                    (notification.notificationTitle ?? notification.type === 'ProofRecord')
+                      ? t(commonMessages.dataRequest)
+                      : t(commonMessages.credential)
+                  }
                   description={description}
                   backgroundColor={notification.backgroundColor}
                   backgroundImageUrl={notification.backgroundImageUrl}

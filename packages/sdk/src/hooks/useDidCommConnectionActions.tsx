@@ -32,10 +32,8 @@ export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitatio
     display: {
       connection: {
         name: resolved?.existingConnection
-          ? (resolved.existingConnection?.alias ??
-            resolved.existingConnection?.theirLabel ??
-            't(commonMessages.unknown)')
-          : (resolved?.outOfBandInvitation.label ?? 't(commonMessages.unknown)'),
+          ? (resolved.existingConnection?.alias ?? resolved.existingConnection?.theirLabel)
+          : resolved?.outOfBandInvitation.label,
         logo: {
           url: resolved?.existingConnection
             ? resolved?.existingConnection.imageUrl

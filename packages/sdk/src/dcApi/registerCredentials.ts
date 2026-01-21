@@ -193,8 +193,8 @@ export async function dcApiRegisterCredentials(paradym: ParadymWalletSdk) {
           namespaces: mapMdocAttributes(mdoc.issuerSignedNamespaces),
         },
         display: {
-          title: display.name,
-          subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
+          title: display.name ?? t(commonMessages.unknown),
+          subtitle: t(commonMessages.issuedByWithName(display.issuer.name ?? t(commonMessages.unknown))),
           claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces),
           iconDataUrl,
         },
@@ -220,8 +220,8 @@ export async function dcApiRegisterCredentials(paradym: ParadymWalletSdk) {
           claims: sdJwtVc.prettyClaims as any,
         },
         display: {
-          title: display.name,
-          subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
+          title: display.name ?? t(commonMessages.unknown),
+          subtitle: t(commonMessages.issuedByWithName(display.issuer.name ?? t(commonMessages.unknown))),
           claims: mapSdJwtAttributesToClaimDisplay(sdJwtVc.prettyClaims),
           iconDataUrl,
         },

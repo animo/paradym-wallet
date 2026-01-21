@@ -1,6 +1,6 @@
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type { CredentialRecord } from '../../storage/credentials'
-import type { CredentialsForProofRequest } from '../getCredentialsForProofRequest'
+import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
 import { type AcquireCredentialsAuthOptions, acquireCredentialsAuth } from './acquireCredentialsAuth'
 import { shareCredentials } from './shareCredentials'
 

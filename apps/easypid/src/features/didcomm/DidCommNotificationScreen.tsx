@@ -2,8 +2,9 @@ import { useDevelopmentMode } from '@easypid/hooks'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { SlideWizard, usePushToWallet } from '@package/app'
-import { useDidCommConnectionActions, useParadym } from '@paradym/wallet-sdk/hooks'
-import type { ResolveOutOfBandInvitationResult } from '@paradym/wallet-sdk/invitation/resolver'
+import { commonMessages } from '@package/translations'
+import type { ResolveOutOfBandInvitationResult } from '@paradym/wallet-sdk'
+import { useDidCommConnectionActions, useParadym } from '@paradym/wallet-sdk'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
@@ -138,7 +139,13 @@ export function DidCommNotificationScreen() {
   }, [flow])
 
   if (flow?.type === 'connect' && readyToNavigate) {
-    return <ConnectionSlides name={display.connection.name} onCancel={onCancel} onComplete={onComplete} />
+    return (
+      <ConnectionSlides
+        name={display.connection.name ?? t(commonMessages.unknown)}
+        onCancel={onCancel}
+        onComplete={onComplete}
+      />
+    )
   }
 
   if ((flow?.type === 'issue' && readyToNavigate) || params.credentialExchangeId) {
@@ -190,7 +197,7 @@ export function DidCommNotificationScreen() {
                     ? 'request'
                     : 'connect'
               }
-              name={display.connection.name}
+              name={display.connection.name ?? t(commonMessages.unknown)}
               logo={display.connection.logo}
               entityId={resolvedInvitation?.existingConnection?.id}
               onContinue={onConnectionAccept}

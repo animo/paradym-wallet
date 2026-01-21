@@ -1,5 +1,5 @@
-import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
 import * as Keychain from 'react-native-keychain'
+import { ParadymWalletBiometricAuthenticationError } from '../error'
 import { KeychainError } from './error/KeychainError'
 
 export type KeychainAuthenticationTypeOptions = Keychain.AuthenticationTypeOption

@@ -17,7 +17,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import type { TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk/trust/trustMechanism'
+import type { TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

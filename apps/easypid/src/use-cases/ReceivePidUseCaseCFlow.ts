@@ -1,13 +1,13 @@
 import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
-import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
-import { receiveCredentialFromOpenId4VciOffer } from '@paradym/wallet-sdk/invitation/resolver'
 import {
+  ParadymWalletBiometricAuthenticationError,
+  receiveCredentialFromOpenId4VciOffer,
   setCredentialCategoryMetadata,
   setOpenId4VcCredentialMetadata,
   setRefreshCredentialMetadata,
-} from '@paradym/wallet-sdk/metadata/credentials'
-import { storeCredential } from '@paradym/wallet-sdk/storage/credentials'
+  storeCredential,
+} from '@paradym/wallet-sdk'
 import { getShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 import { bdrPidOpenId4VcMetadata, bdrPidSdJwtTypeMetadata } from './bdrPidMetadata'
@@ -124,6 +124,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
       }
 
       this.handleError(error)
+      console.error('CAUSE: ', (error as Error).cause)
       throw error
     }
   }

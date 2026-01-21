@@ -1,7 +1,7 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import type { SdJwtVcHeader } from '@credo-ts/core'
 import { SdJwtVcRecord } from '@credo-ts/core'
-import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import { setupWalletServiceProvider, setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
@@ -10,6 +10,7 @@ import type {
   ReceivePidUseCaseState,
 } from '@easypid/use-cases/ReceivePidUseCaseFlow'
 import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
+import { resetAppState } from '@easypid/utils/resetAppState'
 import {
   type CardScanningState,
   type OnboardingPage,
@@ -21,13 +22,15 @@ import { useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
 import {
+  getCredentialForDisplay,
+  getCredentialForDisplayId,
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
-} from '@paradym/wallet-sdk/error'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
-import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
+  type SdJwtVc,
+  storeReceivedActivity,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
@@ -85,7 +88,7 @@ export function OnboardingContextProvider({
 
   useEffect(() => {
     if (currentStepName === 'welcome' && paradym.state === 'locked') {
-      paradym.reset().then(paradym.reinitialize)
+      paradym.reset()
     }
   }, [currentStepName, paradym])
 
@@ -250,7 +253,7 @@ export function OnboardingContextProvider({
       if (paradym.state !== 'initializing') {
         paradym.reinitialize()
       }
-      // resetAppState()
+      resetAppState()
       await reset({ resetToStep: 'welcome' })
       return
     }
@@ -279,7 +282,8 @@ export function OnboardingContextProvider({
 
     try {
       if (paradym.state === 'acquired-wallet-key') {
-        await paradym.unlock({ enableBiometrics: true })
+        const sdk = await paradym.unlock({ enableBiometrics: true })
+        await setupWalletServiceProvider(sdk, true)
       }
 
       goToNextStep()
@@ -495,10 +499,7 @@ export function OnboardingContextProvider({
 
       for (const credentialRecord of credentialRecords) {
         if (credentialRecord instanceof SdJwtVcRecord) {
-          const parsed = paradym.paradym.agent.sdJwtVc.fromCompact<SdJwtVcHeader, PidSdJwtVcAttributes>(
-            // @ts-expect-error: why is compactSdJwtVc not available anymore?
-            credentialRecord.compactSdJwtVc
-          )
+          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()
@@ -509,7 +510,7 @@ export function OnboardingContextProvider({
           await storeReceivedActivity(paradym.paradym, {
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
-            name: display.issuer.name,
+            name: display.issuer.name ?? t(commonMessages.unknown),
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
             deferredCredentials: [],

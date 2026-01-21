@@ -1,4 +1,4 @@
-import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
+import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { type AcquireCredentialsAuthOptions, acquireCredentialsAuth } from './acquireCredentialsAuth'
 import {
   type AcquireCredentialsAuthPresentationDuringIssuanceOptions,

@@ -1,6 +1,4 @@
-// translations not needed
-
-import type { CredentialsForProofRequest } from '@paradym/wallet-sdk/openid4vc/getCredentialsForProofRequest'
+import type { CredentialsForProofRequest } from '@paradym/wallet-sdk'
 import { useMemo } from 'react'
 import { useShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 

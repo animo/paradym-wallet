@@ -1,5 +1,6 @@
 import type {
   AnonCredsRequestedAttributeMatch,
+  AnonCredsRequestedPredicate,
   AnonCredsRequestedPredicateMatch,
   AnonCredsSelectedCredentials,
 } from '@credo-ts/anoncreds'
@@ -53,14 +54,14 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
             predicates: string[]
           }
           matches: Array<AnonCredsRequestedPredicateMatch>
-          requestedAttributes: Set<string>
+          requestedAttributes: Set<AnonCredsRequestedPredicate | string>
         }
       >()
 
       const mergeOrSetEntry = (
         type: 'attribute' | 'predicate',
         groupName: string,
-        requestedAttributeNames: string[],
+        requestedAttributeNames: Array<AnonCredsRequestedPredicate | string>,
         matches: AnonCredsRequestedAttributeMatch[] | AnonCredsRequestedPredicateMatch[]
       ) => {
         // We create an entry hash. This way we can group all items that have the same credentials
@@ -117,7 +118,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         const requestedPredicate = proofRequest.requested_predicates[groupName]
         if (!requestedPredicate) throw new Error('Invalid presentation request')
 
-        mergeOrSetEntry('predicate', groupName, ['TODO'], predicateArray)
+        mergeOrSetEntry('predicate', groupName, [requestedPredicate], predicateArray)
       }
 
       const entriesArray = await Promise.all(
@@ -127,7 +128,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               inputDescriptorId: entryHash,
               isSatisfied: false,
               // TODO: we can fetch the schema name based on requirements
-              name: 't(commonMessages.credential)',
+              name: undefined,
               requestedAttributePaths: Array.from(entry.requestedAttributes).map((a) => [a]),
             }
           }
@@ -185,7 +186,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
       const submission: FormattedSubmission = {
         areAllSatisfied: entriesArray.every((entry) => entry.isSatisfied),
         entries: entriesArray,
-        name: proofRequest?.name ?? 't(commonMessages.unknown)',
+        name: proofRequest?.name,
         purpose,
       }
 

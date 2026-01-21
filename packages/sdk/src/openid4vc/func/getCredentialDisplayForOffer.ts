@@ -1,7 +1,7 @@
 import type { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
-import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
-import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
-import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/metadata/credentials'
+import { getCredentialDisplayWithDefaults } from '../../display/common'
+import { getOpenId4VcCredentialDisplay } from '../../display/openid4vc'
+import { extractOpenId4VcCredentialMetadata } from '../../metadata/credentials'
 
 export const getCredentialDisplayForOffer = (resolvedCredentialOffer?: OpenId4VciResolvedCredentialOffer) => {
   // TODO: where to transform?

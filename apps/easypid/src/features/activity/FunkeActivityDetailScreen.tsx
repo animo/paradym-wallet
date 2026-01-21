@@ -5,8 +5,8 @@ import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import { useActivities, useCredentials } from '@paradym/wallet-sdk/hooks'
-import type { IssuanceActivity, PresentationActivity, SignedActivity } from '@paradym/wallet-sdk/storage/activityStore'
+import type { IssuanceActivity, PresentationActivity, SignedActivity } from '@paradym/wallet-sdk'
+import { useActivities, useCredentials } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
@@ -182,10 +182,10 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
           return (
             <FunkeCredentialRowCard
               key={credential.id}
-              name={credential.display.name}
+              name={credential.display.name ?? t(commonMessages.unknown)}
               textColor={credential.display.textColor ?? '$grey-100'}
               backgroundColor={credential.display.backgroundColor ?? '$grey-900'}
-              issuer={credential.display.issuer.name}
+              issuer={credential.display.issuer.name ?? t(commonMessages.unknown)}
               logo={credential.display.issuer.logo}
               issuedAt={credential.metadata.issuedAt ? new Date(credential.metadata.issuedAt) : undefined}
               onPress={() => {
@@ -307,7 +307,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
                   <CardWithAttributes
                     key={credential.id}
                     id={credential.id}
-                    name={credential.display.name}
+                    name={credential.display.name ?? t(commonMessages.unknown)}
                     issuerImage={credential.display.issuer.logo}
                     textColor={credential.display.textColor}
                     backgroundColor={credential.display.backgroundColor}

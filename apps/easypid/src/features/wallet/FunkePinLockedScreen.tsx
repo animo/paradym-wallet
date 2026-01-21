@@ -2,7 +2,7 @@ import { resetAppState } from '@easypid/utils/resetAppState'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { Button, FlexPage, Heading, Paragraph, YStack } from '@package/ui'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
+import { useParadym } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { Alert } from 'react-native'
 

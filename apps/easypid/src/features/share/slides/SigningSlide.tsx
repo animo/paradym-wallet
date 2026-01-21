@@ -2,7 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useImageScaler, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Heading, Paragraph, YStack } from '@package/ui'
-import type { QtspInfo } from '@paradym/wallet-sdk/openid4vc/transaction'
+import type { QtspInfo } from '@paradym/wallet-sdk'
 import { Defs, LinearGradient, Path, Stop, Svg } from 'react-native-svg'
 
 interface SigningSlideProps {

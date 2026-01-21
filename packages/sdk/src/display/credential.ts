@@ -22,7 +22,7 @@ export interface DisplayImage {
 }
 
 export interface CredentialDisplay {
-  name: string
+  name?: string
   locale?: string
   description?: string
   textColor?: string
@@ -32,7 +32,7 @@ export interface CredentialDisplay {
 }
 
 export interface CredentialIssuerDisplay {
-  name: string
+  name?: string
   domain?: string
   locale?: string
   logo?: DisplayImage

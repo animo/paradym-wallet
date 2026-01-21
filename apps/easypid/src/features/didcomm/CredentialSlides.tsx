@@ -2,8 +2,7 @@ import { useLingui } from '@lingui/react/macro'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk/hooks'
-import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
+import { storeReceivedActivity, useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk'
 import { useCallback, useState } from 'react'
 import { useDevelopmentMode } from '../../hooks'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
@@ -52,7 +51,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
     if (w3cRecord) {
       await storeReceivedActivity(paradym, {
         entityId: credentialExchange?.connectionId,
-        name: display.issuer.name,
+        name: display.issuer.name ?? t(commonMessages.unknown),
         logo: display.issuer.logo,
         backgroundColor: '#ffffff', // Default to a white background for now
         deferredCredentials: [],

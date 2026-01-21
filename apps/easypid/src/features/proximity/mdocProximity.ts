@@ -8,8 +8,7 @@ import {
   useInstanceFromCredentialRecord,
 } from '@credo-ts/core'
 import { refreshPidIfNeeded } from '@easypid/use-cases/RefreshPidUseCase'
-import type { ParadymWalletSdk } from '@package/sdk'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
+import type { FormattedSubmission, ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {

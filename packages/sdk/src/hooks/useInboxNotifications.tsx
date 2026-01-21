@@ -61,7 +61,7 @@ export const useInboxNotifications = () => {
           type: record.type,
           createdAt: record.createdAt,
           contactLabel: metadata?.issuerName,
-          notificationTitle: metadata?.credentialName ?? 'Credential',
+          notificationTitle: metadata?.credentialName,
         } as const
       }
 
@@ -72,7 +72,7 @@ export const useInboxNotifications = () => {
         type: record.type,
         createdAt: record.createdAt,
         contactLabel: metadata?.verifierName,
-        notificationTitle: metadata?.proofName ?? 'Data request',
+        notificationTitle: metadata?.proofName,
       } as const
     })
   }, [proofExchangeRecords, credentialExchangeRecords, deferredCredentials])

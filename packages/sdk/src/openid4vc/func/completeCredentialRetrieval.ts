@@ -1,15 +1,12 @@
 import type { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
-import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
-import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/metadata/credentials'
-import {
-  type DeferredCredentialBefore,
-  storeDeferredCredential,
-} from '@paradym/wallet-sdk/storage/deferredCredentialStore'
 import { getCredentialDisplayWithDefaults } from '../../display/common'
 import { getCredentialForDisplayId } from '../../display/credential'
+import { getOpenId4VcCredentialDisplay } from '../../display/openid4vc'
+import { extractOpenId4VcCredentialMetadata } from '../../metadata/credentials'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { storeReceivedActivity } from '../../storage/activityStore'
 import { type CredentialRecord, storeCredential } from '../../storage/credentials'
+import { type DeferredCredentialBefore, storeDeferredCredential } from '../../storage/deferredCredentialStore'
 
 export type CompleteCredentialRetrievalOptions = {
   paradym: ParadymWalletSdk

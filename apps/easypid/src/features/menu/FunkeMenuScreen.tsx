@@ -19,7 +19,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { useCredentialByCategory } from '@paradym/wallet-sdk/hooks'
+import { useCredentialByCategory } from '@paradym/wallet-sdk'
 import { router } from 'expo-router'
 import { Linking } from 'react-native'
 

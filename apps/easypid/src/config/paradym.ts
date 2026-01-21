@@ -1,6 +1,6 @@
 import { eudiTrustList, trustedX509Certificates, trustedX509Entities } from '@easypid/constants'
+import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
 import { LogLevel } from '@paradym/wallet-sdk'
-import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk/ParadymWalletSdk'
 
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   id: 'easypid-wallet',
@@ -10,7 +10,6 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
     traceLimit: 1000,
   },
   openId4VcConfiguration: {
-    // TODO: maybe we can remove this because of the trustMechanisms?
     trustedCertificates: trustedX509Certificates as [string, ...string[]],
   },
   trustMechanisms: [

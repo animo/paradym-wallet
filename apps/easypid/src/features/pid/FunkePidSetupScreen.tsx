@@ -16,14 +16,15 @@ import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { sleep } from '@package/utils'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '@paradym/wallet-sdk/display/credential'
 import {
+  getCredentialForDisplay,
+  getCredentialForDisplayId,
+  getHostNameFromUrl,
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
-} from '@paradym/wallet-sdk/error'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
-import { storeReceivedActivity } from '@paradym/wallet-sdk/storage/activityStore'
-import { getHostNameFromUrl } from '@paradym/wallet-sdk/utils/url'
+  storeReceivedActivity,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -338,7 +339,7 @@ export function FunkePidSetupScreen() {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
-            name: display.issuer.name,
+            name: display.issuer.name ?? t(commonMessages.unknown),
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
             deferredCredentials: [],
@@ -348,13 +349,12 @@ export function FunkePidSetupScreen() {
       }
     } catch (error) {
       if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
-        toast.show(t(commonMessages.biometricAuthenticationCancelled), {})
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), { customData: { preset: 'danger' } })
         return
       }
 
-      // TODO: What if not supported?
       if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
-        toast.show(t(commonMessages.biometricAuthenticationNotEnabled), {})
+        toast.show(t(commonMessages.biometricAuthenticationNotEnabled), { customData: { preset: 'danger' } })
         pushToWallet()
         return
       }

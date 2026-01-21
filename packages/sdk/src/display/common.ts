@@ -1,3 +1,4 @@
+import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
 import { ClaimFormat } from '@credo-ts/core'
 import type { FormattedSubmissionEntrySatisfiedCredential } from '../format/submission'
 import { formatDate } from '../utils/date'
@@ -65,7 +66,9 @@ export function getDisclosedAttributeNamesForDisplay(credential: FormattedSubmis
   )
 }
 
-export function getUnsatisfiedAttributePathsForDisplay(paths: Array<string | number | null>[]) {
+export function getUnsatisfiedAttributePathsForDisplay(
+  paths: Array<string | number | null | AnonCredsRequestedPredicate>[]
+) {
   const nonRenderedPaths = ['iss', 'vct']
   return Array.from(
     new Set(

@@ -44,10 +44,7 @@ import {
 } from '../metadata/credentials'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
-import {
-  type CredentialsForProofRequest,
-  getCredentialsForProofRequest,
-} from '../openid4vc/getCredentialsForProofRequest'
+import { type CredentialsForProofRequest, resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
 export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
@@ -205,7 +202,7 @@ export async function resolveCredentialOffer({
     )
 
     if (resolvedAuthorizationRequest.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance) {
-      const credentialsForProofRequest = await getCredentialsForProofRequest({
+      const credentialsForProofRequest = await resolveCredentialRequest({
         paradym,
         uri: resolvedAuthorizationRequest.openid4vpRequestUrl,
       })
