@@ -1,6 +1,6 @@
 import { X509Certificate } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
+import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type {
   AuthorizationRequestVerificationResult,
   EudiRpAuthenticationTrustMechanismConfiguration,

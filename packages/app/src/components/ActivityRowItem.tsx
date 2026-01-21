@@ -14,7 +14,7 @@ import {
   YStack,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { Activity, ActivityType } from '@paradym/wallet-sdk/storage/activityStore'
+import type { Activity, ActivityType } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'

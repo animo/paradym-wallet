@@ -1,16 +1,19 @@
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
 import { refreshPidIfNeeded } from '@easypid/use-cases/RefreshPidUseCase'
+import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk/display/common'
-import { ParadymWalletBiometricAuthenticationCancelledError } from '@paradym/wallet-sdk/error'
-import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/format/submission'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
-import type { CredentialsForProofRequest } from '@paradym/wallet-sdk/openid4vc/getCredentialsForProofRequest'
-import { type FormattedTransactionData, getFormattedTransactionData } from '@paradym/wallet-sdk/openid4vc/transaction'
+import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk'
+import {
+  type FormattedTransactionData,
+  getDisclosedAttributeNamesForDisplay,
+  getFormattedTransactionData,
+  ParadymWalletBiometricAuthenticationCancelledError,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -114,7 +117,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       cards: requestedCards.map((credential) => ({
         name: credential.credential.display.name ?? 'Card name',
         subtitle: credential.credential.display.description ?? 'Card description',
-        requestedAttributes: getDisclosedAttributeNamesForDisplay(credential),
+        requestedAttributes: getDisclosedAttributeNamesForDisplay(credential).map((c) =>
+          typeof c === 'string' ? c : formatPredicate(c)
+        ),
       })),
     })
   }, [resolvedRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])

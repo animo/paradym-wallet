@@ -7,6 +7,7 @@ import {
   useHeaderRightAction,
   useScrollViewPosition,
 } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -19,13 +20,13 @@ import {
   Stack,
   YStack,
 } from '@package/ui'
-import { getCredentialDisplayWithDefaults } from '@paradym/wallet-sdk/display/common'
-import { getOpenId4VcCredentialDisplay } from '@paradym/wallet-sdk/display/openid4vc'
-import { extractOpenId4VcCredentialMetadata } from '@paradym/wallet-sdk/metadata/credentials'
 import {
+  extractOpenId4VcCredentialMetadata,
+  getCredentialDisplayWithDefaults,
   getDeferredCredentialNextCheckAt,
+  getOpenId4VcCredentialDisplay,
   useDeferredCredentials,
-} from '@paradym/wallet-sdk/storage/deferredCredentialStore'
+} from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -189,7 +190,7 @@ export function DeferredCredentialNotificationScreen() {
         isSheetOpen={isSheetOpen}
         setIsSheetOpen={setIsSheetOpen}
         id={deferredCredential.id}
-        name={credentialDisplay.name}
+        name={credentialDisplay.name ?? t(commonMessages.unknown)}
         hasErrors={!!deferredCredential.lastErroredAt}
         issuerDisplay={credentialDisplay.issuer}
         issuerId={deferredCredential.issuerMetadata?.credentialIssuer?.credential_issuer}

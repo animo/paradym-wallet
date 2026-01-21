@@ -4,13 +4,13 @@ import type {
   OpenId4VciMetadata,
   OpenId4VciRequestTokenResponse,
 } from '@credo-ts/openid4vc'
-import type { ParadymWalletSdk } from '@package/sdk'
-import { ParadymWalletBiometricAuthenticationError } from '@paradym/wallet-sdk/error'
+import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
   setOpenId4VcCredentialMetadata,
-} from '@paradym/wallet-sdk/metadata/credentials'
+} from '../../metadata/credentials'
+import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 
 export type ReceiveDeferredCredentialFromOpenId4VciOfferOptions = {
   paradym: ParadymWalletSdk

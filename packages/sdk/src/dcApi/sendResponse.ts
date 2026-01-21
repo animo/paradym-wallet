@@ -1,6 +1,6 @@
 import { type DigitalCredentialsRequest, sendResponse } from '@animo-id/expo-digital-credentials-api'
+import type { CredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
 import { shareCredentials } from '../openid4vc/func/shareCredentials'
-import type { CredentialsForProofRequest } from '../openid4vc/getCredentialsForProofRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type { CredentialRecord } from '../storage/credentials'
 

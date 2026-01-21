@@ -13,7 +13,7 @@ import type {
   ParadymWalletSdk,
   SdJwtVcRecord,
 } from '@paradym/wallet-sdk'
-import { acquireAuthorizationCodeAccessToken } from '@paradym/wallet-sdk/openid4vc/func/acquireAuthorizationCodeAccessToken'
+import { acquireAuthorizationCodeAccessToken } from '@paradym/wallet-sdk'
 
 export interface ReceivePidUseCaseFlowOptions
   extends Pick<AusweisAuthFlowOptions, 'onAttachCard' | 'onStatusProgress' | 'onCardAttachedChanged'> {

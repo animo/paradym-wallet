@@ -1,18 +1,17 @@
 import { ClaimFormat, Kms, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import type {
-  OpenId4VciRequestTokenResponse,
-  OpenId4VciResolvedCredentialOffer,
-  ParadymWalletSdk,
-} from '@paradym/wallet-sdk'
-import { receiveCredentialFromOpenId4VciOffer } from '@paradym/wallet-sdk/invitation/resolver'
 import {
+  acquireRefreshTokenAccessToken,
+  type CredentialRecord,
   getCredentialCategoryMetadata,
   getOpenId4VcCredentialMetadata,
   getRefreshCredentialMetadata,
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedCredentialOffer,
+  type ParadymWalletSdk,
+  receiveCredentialFromOpenId4VciOffer,
   setOpenId4VcCredentialMetadata,
-} from '@paradym/wallet-sdk/metadata/credentials'
-import { acquireRefreshTokenAccessToken } from '@paradym/wallet-sdk/openid4vc/func/acquireRefreshTokenAccessToken'
-import { type CredentialRecord, updateCredential } from '@paradym/wallet-sdk/storage/credentials'
+  updateCredential,
+} from '@paradym/wallet-sdk'
 import { pidSchemes } from '../constants'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'

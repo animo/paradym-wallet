@@ -70,8 +70,8 @@ catalogs:
       specifier: ^0.4.0
       version: 0.4.4
     '@openwallet-foundation/askar-react-native':
-      specifier: 0.5.0-alpha-20251222150428
-      version: 0.5.0-alpha-20251222150428
+      specifier: 0.5.0-alpha-20260121132554
+      version: 0.5.0-alpha-20260121132554
     '@react-native-community/blur':
       specifier: ^4.3.2
       version: 4.4.1
@@ -324,7 +324,7 @@ importers:
         version: 5.7.0(babel-plugin-macros@3.1.0)(typescript@5.9.3)
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.5.0-alpha-20251222150428(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        version: 0.5.0-alpha-20260121132554(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@package/app':
         specifier: workspace:*
         version: link:../../packages/app
@@ -618,7 +618,7 @@ importers:
         version: 0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
       '@credo-ts/askar':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428)(typescript@5.9.3)
+        version: 0.6.2-alpha-20260116085518(@openwallet-foundation/askar-shared@0.5.0-alpha-20260121132554)(typescript@5.9.3)
       '@credo-ts/cheqd':
         specifier: 'catalog:'
         version: 0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
@@ -645,7 +645,7 @@ importers:
         version: 0.4.4
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.5.0-alpha-20251222150428(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        version: 0.5.0-alpha-20260121132554(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.14(react@19.1.0)
@@ -2122,14 +2122,14 @@ packages:
   '@openid4vc/utils@0.4.4':
     resolution: {integrity: sha512-ctXOmvejB34C3ZcBbtU4N7ukpIzeVzxmNjlQ1Oxf03jKDn5pngq7h39HUg1ggjFJgTSn9jVlQUON/DG6oovh5w==}
 
-  '@openwallet-foundation/askar-react-native@0.5.0-alpha-20251222150428':
-    resolution: {integrity: sha512-YhLt31dpdjM5F3SoNfri/17Qn31TUgIoTp41Jm2ldURzaHxIedSNzn61+9QfFyP4vnwJ4aWRL2ANQj5yN5hSgw==}
+  '@openwallet-foundation/askar-react-native@0.5.0-alpha-20260121132554':
+    resolution: {integrity: sha512-WUN/1q1GnXpZ63M6sg1XFmEQZCQeYBn+850E0lUScRt+pJOLk/06HBKhsgWdwFxPuydw+2JS7Y0dZ0+c/VwRxA==}
     peerDependencies:
       react: '>= 16'
       react-native: '>= 0.71'
 
-  '@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428':
-    resolution: {integrity: sha512-YBPwXuAQiHu9EJk40V7JpFUexM5CwL/eE3Mm2ulFhhYq9wmbufv/xltmj62ppOpE6nbf2A/zQZPZY6SNh8ti7g==}
+  '@openwallet-foundation/askar-shared@0.5.0-alpha-20260121132554':
+    resolution: {integrity: sha512-oOFY/jhdRObRqXiM+LpHjLAC51ILGj72IFvx/zxRiBsJfY0fB6TtREWpBRRQlG/iT6NoDLR+KNvj5iMSfBOlOg==}
 
   '@oxc-project/types@0.95.0':
     resolution: {integrity: sha512-vACy7vhpMPhjEJhULNxrdR0D943TkA/MigMpJCHmBHvMXxRStRi/dPtTlfQ3uDwWSzRpT8z+7ImjZVf8JWBocQ==}
@@ -8070,10 +8070,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/askar@0.6.2-alpha-20260116085518(@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428)(typescript@5.9.3)':
+  '@credo-ts/askar@0.6.2-alpha-20260116085518(@openwallet-foundation/askar-shared@0.5.0-alpha-20260121132554)(typescript@5.9.3)':
     dependencies:
       '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
-      '@openwallet-foundation/askar-shared': 0.5.0-alpha-20251222150428
+      '@openwallet-foundation/askar-shared': 0.5.0-alpha-20260121132554
       class-transformer: 0.5.1
       class-validator: 0.14.3
       rxjs: 7.8.2
@@ -9069,13 +9069,13 @@ snapshots:
       zod: 4.3.5
       zod-validation-error: 5.0.0(zod@4.3.5)
 
-  '@openwallet-foundation/askar-react-native@0.5.0-alpha-20251222150428(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+  '@openwallet-foundation/askar-react-native@0.5.0-alpha-20260121132554(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@openwallet-foundation/askar-shared': 0.5.0-alpha-20251222150428
+      '@openwallet-foundation/askar-shared': 0.5.0-alpha-20260121132554
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
 
-  '@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428':
+  '@openwallet-foundation/askar-shared@0.5.0-alpha-20260121132554':
     dependencies:
       buffer: 6.0.3
       tar: 7.5.2

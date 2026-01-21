@@ -1,6 +1,6 @@
-import { storeSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activityStore'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
-import type { CredentialsForProofRequest } from '../getCredentialsForProofRequest'
+import { storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
+import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
 import { getFormattedTransactionData } from '../transaction'
 
 export type DeclineCredentialRequestOptions = {

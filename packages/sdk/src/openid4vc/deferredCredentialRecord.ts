@@ -1,5 +1,7 @@
 import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
+import { t } from '@lingui/core/macro'
+import { commonMessages } from '@package/translations'
 import { getCredentialDisplayWithDefaults } from '../display/common'
 import { getCredentialForDisplayId } from '../display/credential'
 import { getOpenId4VcCredentialDisplay } from '../display/openid4vc'
@@ -88,7 +90,7 @@ export async function fetchAndProcessDeferredCredential(
         // the credential. Signed issuer metadata is the solution.
         entityId: issuerMetadata?.credentialIssuer.credential_issuer,
         host: issuerDisplay.domain,
-        name: issuerDisplay.name,
+        name: issuerDisplay.name ?? t(commonMessages.unknown),
         logo: issuerDisplay.logo,
         backgroundColor: '#ffffff', // Default to a white background for now
         deferredCredentials: [],

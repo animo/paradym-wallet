@@ -1,10 +1,10 @@
 import { useDevelopmentMode } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useWizard } from '@package/app'
-import { useParadym } from '@package/sdk'
 import { commonMessages } from '@package/translations'
 import { Heading, MiniCardRowItem, Paragraph, useToastController, YStack } from '@package/ui'
-import type { CredentialDisplay } from '@paradym/wallet-sdk/display/credential'
+import type { CredentialDisplay } from '@paradym/wallet-sdk'
+import { useParadym } from '@paradym/wallet-sdk'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useEffect, useState } from 'react'
@@ -142,8 +142,8 @@ export const AuthCodeFlowSlide = ({
           </Paragraph>
         </YStack>
         <MiniCardRowItem
-          name={display.name}
-          subtitle={display.issuer.name}
+          name={display.name ?? t(commonMessages.unknown)}
+          subtitle={display.issuer.name ?? t(commonMessages.unknown)}
           issuerImageUri={display.issuer.logo?.url}
           backgroundImageUri={display.backgroundImage?.url}
           backgroundColor={display.backgroundColor ?? '$grey-900'}

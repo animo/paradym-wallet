@@ -1,5 +1,5 @@
 import { FunkeTrustDetailScreen } from '@easypid/features/wallet/FunkeTrustDetailScreen'
-import type { TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk/trust/trustMechanism'
+import type { TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {

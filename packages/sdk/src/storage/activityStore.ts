@@ -6,7 +6,7 @@ import { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDi
 import type { CredentialDisplay, CredentialForDisplayId, DisplayImage } from '../display/credential'
 import type { FormattedSubmission } from '../format/submission'
 import type { CredentialId } from '../hooks/useCredentialById'
-import type { CredentialsForProofRequest } from '../openid4vc/getCredentialsForProofRequest'
+import type { CredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { FormattedTransactionData } from '../openid4vc/transaction'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { useWalletJsonRecord } from '../providers/WalletJsonStoreProvider'
@@ -128,7 +128,7 @@ export const storeReceivedActivity = async (
   paradym: ParadymWalletSdk,
   input: {
     entityId?: string
-    name: string
+    name?: string
     host?: string
     logo?: DisplayImage
     backgroundColor?: string
@@ -137,7 +137,7 @@ export const storeReceivedActivity = async (
     credentialIds: CredentialForDisplayId[]
   }
 ) => {
-  await activityStorage.addActivity(paradym.agent, {
+  await activityStorage.addActivity(paradym.agent as unknown as BaseAgent, {
     id: utils.uuid(),
     date: new Date().toISOString(),
     type: 'received',
@@ -159,14 +159,14 @@ export const storeSharedOrSignedActivity = async (
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
   if ('transaction' in input && input.transaction) {
-    await activityStorage.addActivity(paradym.agent, {
+    await activityStorage.addActivity(paradym.agent as unknown as BaseAgent, {
       ...input,
       id: utils.uuid(),
       date: new Date().toISOString(),
       type: 'signed',
     })
   } else {
-    await activityStorage.addActivity(paradym.agent, {
+    await activityStorage.addActivity(paradym.agent as unknown as BaseAgent, {
       ...input,
       id: utils.uuid(),
       date: new Date().toISOString(),
@@ -240,7 +240,7 @@ export function getDisclosedCredentialForSubmission(
     if (!entry.isSatisfied) {
       return {
         name: entry.name,
-        attributeNames: getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths),
+        attributeNames: getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths) as Array<string>,
       } satisfies PresentationActivityCredentialNotFound
     }
 
@@ -249,7 +249,7 @@ export function getDisclosedCredentialForSubmission(
 
     return {
       id: credential.credential.id,
-      attributeNames: getDisclosedAttributeNamesForDisplay(credential),
+      attributeNames: getDisclosedAttributeNamesForDisplay(credential) as Array<string>,
       attributes: credential.disclosed.attributes,
       metadata: credential.disclosed.metadata as unknown as Record<string, unknown>,
     } satisfies PresentationActivityCredential

@@ -1,6 +1,6 @@
 import type { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
-import { acquirePreAuthorizedAccessToken } from '@paradym/wallet-sdk/invitation/resolver'
-import type { ParadymWalletSdk } from '@paradym/wallet-sdk/ParadymWalletSdk'
+import { acquirePreAuthorizedAccessToken } from '../../invitation/resolver'
+import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { retrieveCredentials } from './retrieveCredentials'
 
 export type AcquireCredentialsPreAuthWithTransactionCodeOptions = {

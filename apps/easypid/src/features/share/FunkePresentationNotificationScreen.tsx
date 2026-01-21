@@ -1,9 +1,12 @@
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
-import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
-import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
-import type { FormattedTransactionData } from '@paradym/wallet-sdk/openid4vc/transaction'
-import type { TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk/trust/trustMechanism'
+import type {
+  DisplayImage,
+  FormattedSubmission,
+  FormattedTransactionData,
+  TrustedEntity,
+  TrustMechanism,
+} from '@paradym/wallet-sdk'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'

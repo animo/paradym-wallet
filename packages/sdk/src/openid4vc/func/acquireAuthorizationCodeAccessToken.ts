@@ -1,8 +1,5 @@
-import type {
-  OpenId4VciResolvedAuthorizationRequest,
-  OpenId4VciResolvedCredentialOffer,
-  ParadymWalletSdk,
-} from '@package/sdk'
+import type { OpenId4VciResolvedAuthorizationRequest, OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
+import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 
 export type AcquireAuthorizationCodeAccessTokenOptions = {
   paradym: ParadymWalletSdk

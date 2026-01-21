@@ -1,10 +1,11 @@
+import { setupWalletServiceProvider } from '@easypid/crypto/WalletServiceProviderClient'
 import { refreshPidIfNeeded } from '@easypid/use-cases/RefreshPidUseCase'
 import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { commonMessages, TranslationProvider } from '@package/translations'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
+import type { DigitalCredentialsRequest } from '@paradym/wallet-sdk'
 import { useParadym } from '@paradym/wallet-sdk'
-import type { DigitalCredentialsRequest } from '@paradym/wallet-sdk/dcApi'
 import { useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
@@ -86,7 +87,8 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     }
 
     if (paradym.state === 'acquired-wallet-key') {
-      await paradym.unlock()
+      const sdk = await paradym.unlock()
+      await setupWalletServiceProvider(sdk)
     }
 
     if (paradym.state === 'unlocked') {

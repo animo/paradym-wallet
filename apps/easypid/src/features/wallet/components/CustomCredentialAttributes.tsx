@@ -12,7 +12,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { CredentialAttributes } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
-import type { CredentialForDisplay } from '@paradym/wallet-sdk/display/credential'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay

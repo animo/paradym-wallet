@@ -2,6 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { DeleteCredentialSheet, TextBackButton, useHaptics } from '@package/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from '@package/app/components'
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -14,8 +15,7 @@ import {
   useToastController,
   YStack,
 } from '@package/ui'
-import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/hooks/useCredentialById'
-
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -129,7 +129,7 @@ export function FunkeCredentialDetailScreen() {
         isSheetOpen={isSheetOpen}
         setIsSheetOpen={setIsSheetOpen}
         id={credential.id}
-        name={credential.display.name}
+        name={credential.display.name ?? t(commonMessages.unknown)}
       />
     </>
   )

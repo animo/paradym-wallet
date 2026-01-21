@@ -1,10 +1,13 @@
 import { useLingui } from '@lingui/react/macro'
-import { useParadym } from '@paradym/wallet-sdk'
-import type { ParadymWalletInvitationParseError } from '@paradym/wallet-sdk/error'
-import { type InvitationType, parseInvitationUrl } from '@paradym/wallet-sdk/invitation/parser'
+import { commonMessages } from '@package/translations'
+import {
+  type InvitationType,
+  type ParadymWalletInvitationParseError,
+  parseInvitationUrl,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'expo-router'
-import { commonMessages } from '../../../translations/src'
 
 export interface CredentialDataHandlerOptions {
   allowedInvitationTypes?: Array<InvitationType>

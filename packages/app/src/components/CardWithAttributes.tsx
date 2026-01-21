@@ -11,7 +11,7 @@ import {
   YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
-import type { DisplayImage } from '@paradym/wallet-sdk/display/credential'
+import type { DisplayImage } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'

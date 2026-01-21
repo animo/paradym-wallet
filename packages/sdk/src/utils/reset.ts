@@ -23,8 +23,9 @@ export const reset = async (paradym?: ParadymWalletSdk) => {
 
     const walletDirectoryExists = await fs.exists(walletDirectory)
     if (walletDirectoryExists) {
-      paradym.logger.debug('wallet directory exists, deleting')
+      paradym.logger.debug('wallet directory exists, deleting...')
       await fs.delete(walletDirectory)
+      paradym.logger.debug('wallet directory deleted')
     } else {
       paradym.logger.debug('wallet directory does not exist')
     }

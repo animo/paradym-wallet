@@ -1,4 +1,4 @@
-import { AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
+import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { createContext, type PropsWithChildren, useContext, useState } from 'react'
 import { type DidCommAgent, type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
@@ -8,16 +8,7 @@ import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
 import { type DcApiSendResponseOptions, dcApiSendResponse } from './dcApi/sendResponse'
 import type { CredentialForDisplayId } from './display/credential'
 import { ParadymWalletMustBeInitializedError } from './error'
-import { useActivities, useActivityById, useParadym } from './hooks'
-import { useCredentialByCategory } from './hooks/useCredentialByCategory'
-import { useCredentialById } from './hooks/useCredentialById'
-import { useCredentialRecordById } from './hooks/useCredentialRecordById'
-import { useCredentialRecords } from './hooks/useCredentialRecords'
-import { useCredentials } from './hooks/useCredentials'
-import { useDidCommConnectionActions } from './hooks/useDidCommConnectionActions'
-import { useDidCommCredentialActions } from './hooks/useDidCommCredentialActions'
-import { useDidCommPresentationActions } from './hooks/useDidCommPresentationActions'
-import { useRefreshedDeferredCredentials } from './hooks/useRefreshedDeferredCredentials'
+import { useParadym } from './hooks'
 import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
 import {
   type ResolveCredentialOfferOptions,
@@ -45,6 +36,10 @@ import {
 } from './openid4vc/func/resolveCredentialRequest'
 import { type ShareCredentialsOptions, shareCredentials } from './openid4vc/func/shareCredentials'
 import { RecordProvider } from './providers/AgentProvider'
+import {
+  type GetSubmissionForMdocDocumentRequestOptions,
+  getSubmissionForMdocDocumentRequest,
+} from './proximity/getSubmissionForMdocDocumentRequest'
 import { secureWalletKey, setIsBiometricsEnabled } from './secure'
 import { KeychainError } from './secure/error/KeychainError'
 import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
@@ -54,7 +49,7 @@ import { reset } from './utils/reset'
 
 export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<string, unknown>> =
   | ({ success: true } & T)
-  | { success: false; message: string }
+  | { success: false; message: string; cause?: string }
 
 export type ParadymWalletSdkOptions = SetupAgentOptions & {
   /**
@@ -95,8 +90,7 @@ export class ParadymWalletSdk {
   }
 
   public get walletId() {
-    const askar = this.agent.context.resolve(AskarModule)
-    return askar.config.store.id
+    return this.agent.modules.askar.config.store.id
   }
 
   public async reset() {
@@ -116,7 +110,7 @@ export class ParadymWalletSdk {
       if (e instanceof AskarStoreInvalidKeyError) {
         return { success: false, message: 'Invalid key' }
       }
-      return { success: false, message: (e as Error).message }
+      return { success: false, message: (e as Error).message, cause: (e as Error).cause as string }
     }
   }
 
@@ -138,48 +132,6 @@ export class ParadymWalletSdk {
    */
   public get logger() {
     return this.agent.config.logger as ParadymWalletSdkLogger
-  }
-
-  /**
-   *
-   * All available hooks provided by the wallet SDK
-   *
-   */
-  public get hooks() {
-    this.assertAgentIsInitialized()
-
-    return {
-      useCredentials,
-      useCredentialById,
-      useCredentialByCategory,
-
-      useActivities,
-      useActivityById,
-
-      // TODO: these are quite different than the openid4vc way
-      //       do we want to keep it like this or make them more consistent?
-      useDidCommConnectionActions,
-      useDidCommCredentialActions,
-      useDidCommPresentationActions,
-
-      useRefreshedDeferredCredentials,
-    }
-  }
-
-  /**
-   *
-   * Unstable hooks that can be used for more low-level functionality
-   *
-   * It is generally recommended to see if the desired output can be reached with `ParadymWalletSdk.hooks` first
-   *
-   */
-  public get internalHooks() {
-    this.assertAgentIsInitialized()
-
-    return {
-      useCredentialRecords,
-      useCredentialRecordById,
-    }
   }
 
   /**
@@ -321,6 +273,13 @@ export class ParadymWalletSdk {
       sendErrorResponse: dcApisendErrorResponse,
     }
   }
+
+  public get proximity() {
+    return {
+      getSubmissionForMdocDocumentRequest: (options: Omit<GetSubmissionForMdocDocumentRequestOptions, 'paradym'>) =>
+        getSubmissionForMdocDocumentRequest({ ...options, paradym: this }),
+    }
+  }
 }
 
 function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): SecureUnlockReturn {
@@ -413,14 +372,17 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             id,
             key,
           })
-          pws.initialize().then((result) => {
-            if (result.success) {
-              setState('unlocked')
-              setParadym(pws)
-            } else {
-              throw Error(result.message)
-            }
-          })
+          const result = await pws.initialize()
+          if (result.success) {
+            setState('unlocked')
+            setParadym(pws)
+          } else {
+            console.error(result)
+            console.error(result.cause)
+            console.error(result.message)
+            throw Error(result.message)
+          }
+          return pws
         } catch (error) {
           if (error instanceof AskarStoreInvalidKeyError) {
             if (unlockMethod === 'biometrics') {
@@ -443,7 +405,10 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       isUnlocking,
       canTryUnlockingUsingBiometrics,
       reinitialize,
-      reset,
+      reset: async () => {
+        await reset()
+        reinitialize()
+      },
       tryUnlockingUsingBiometrics: async () => {
         // TODO: need to somehow inform user that the unlocking went wrong
         if (!canTryUnlockingUsingBiometrics) return
@@ -494,7 +459,10 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       state,
       unlockMethod,
       paradym,
-      reset: paradym.reset,
+      reset: async () => {
+        await paradym.reset()
+        reinitialize()
+      },
       enableBiometricUnlock: async () => {
         await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
         await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
@@ -548,7 +516,7 @@ export type SecureUnlockReturnNotConfigured = {
 export type SecureUnlockReturnWalletKeyAcquired = {
   state: 'acquired-wallet-key'
   unlockMethod: UnlockMethod
-  unlock: (options?: UnlockOptions) => Promise<void>
+  unlock: (options?: UnlockOptions) => Promise<ParadymWalletSdk>
   reinitialize: () => void
 
   // TODO(sdk): can this just be removed and only be added when unlocked?

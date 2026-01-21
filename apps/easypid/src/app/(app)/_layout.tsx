@@ -3,18 +3,14 @@ import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/hooks/useResetWalletDevMenu'
 import { type CredentialDataHandlerOptions, useHaptics } from '@package/app'
-import { ParadymWalletSdk } from '@package/sdk'
 import { HeroIcons, IconContainer } from '@package/ui'
-import { useParadym } from '@paradym/wallet-sdk/hooks'
-import type { InvitationType } from '@paradym/wallet-sdk/invitation/parser'
-import { activityStorage } from '@paradym/wallet-sdk/storage/activityStore'
-import { deferredCredentialStorage } from '@paradym/wallet-sdk/storage/deferredCredentialStore'
+import type { InvitationType } from '@paradym/wallet-sdk'
+import { activityStorage, deferredCredentialStorage, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
-// TODO(sdk): add these again
 const jsonRecordIds = [activityStorage.recordId, deferredCredentialStorage.recordId]
 
 const isDIDCommEnabled = useFeatureFlag('DIDCOMM')

@@ -1,5 +1,4 @@
-import type { TrustList } from '@paradym/wallet-sdk/trust/handlers/eudiRpAuthentication'
-import type { TrustedX509Entity } from '@paradym/wallet-sdk/trust/handlers/x509'
+import type { TrustedX509Entity, TrustList } from '@paradym/wallet-sdk'
 import ExpoConstants from 'expo-constants'
 import { isParadymWallet } from './hooks/useFeatureFlag'
 

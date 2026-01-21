@@ -1,4 +1,4 @@
-import type { CredentialsForProofRequest } from './getCredentialsForProofRequest'
+import type { CredentialsForProofRequest } from './func/resolveCredentialRequest'
 
 export type FormattedTransactionData = ReturnType<typeof getFormattedTransactionData>
 export type QtspInfo = CredentialsForProofRequest['verifier']

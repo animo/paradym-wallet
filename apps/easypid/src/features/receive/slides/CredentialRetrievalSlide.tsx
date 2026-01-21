@@ -20,7 +20,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import type { CredentialDisplay } from '@paradym/wallet-sdk/display/credential'
+import type { CredentialDisplay } from '@paradym/wallet-sdk'
 import * as Haptics from 'expo-haptics'
 import { useEffect, useState } from 'react'
 import {
@@ -205,7 +205,7 @@ export const CredentialRetrievalSlide = ({
             <FunkeCredentialCard
               issuerImage={display.issuer.logo}
               textColor={display.textColor}
-              name={display.name}
+              name={display.name ?? t(commonMessages.unknown)}
               backgroundImage={display.backgroundImage}
               bgColor={display.backgroundColor}
               isLoading={isStoring && !isCompleteAndAllowed}

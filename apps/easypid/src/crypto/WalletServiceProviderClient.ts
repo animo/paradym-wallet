@@ -1,4 +1,8 @@
-import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
+import {
+  type SecureEnvironment,
+  setFallbackSecureEnvironment,
+  shouldUseFallbackSecureEnvironment,
+} from '@animo-id/expo-secure-environment'
 import { AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import {
   Agent,
@@ -10,9 +14,11 @@ import {
   TypedArrayEncoder,
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
+import { CURRENT_APP_TYPE } from '@easypid/config/appType'
+import { getShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
-import type { BaseAgent } from '@paradym/wallet-sdk/agent'
-import { secureWalletKey } from '@paradym/wallet-sdk/secure'
+import type { BaseAgent, ParadymWalletSdk } from '@paradym/wallet-sdk'
+import { secureWalletKey } from '@paradym/wallet-sdk'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -184,4 +190,26 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     const maybeSalt = await this.getSalt()
     return maybeSalt ?? (await this.createSalt())
   }
+}
+
+export const setupWalletServiceProvider = async (paradym: ParadymWalletSdk, registerWallet = false) => {
+  if (CURRENT_APP_TYPE === 'PARADYM_WALLET') return
+  const shouldUseCloudHsm = getShouldUseCloudHsm()
+
+  paradym.logger.debug(
+    `Enabling wallet service provider, ${registerWallet ? '' : 'not '}registering and ${shouldUseCloudHsm ? '' : 'not '}using the cloud HSM`
+  )
+
+  const wsp = new WalletServiceProviderClient(
+    process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL ?? 'https://wsp.funke.animo.id',
+    paradym.agent as unknown as BaseAgent
+  )
+
+  if (registerWallet) {
+    await wsp.createSalt()
+    await wsp.register()
+  }
+
+  if (shouldUseCloudHsm) shouldUseFallbackSecureEnvironment(true)
+  setFallbackSecureEnvironment(wsp)
 }

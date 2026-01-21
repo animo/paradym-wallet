@@ -14,8 +14,7 @@ import {
   useToastController,
   YStack,
 } from '@package/ui'
-import { metadataForDisplay } from '@paradym/wallet-sdk/display/common'
-import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk/hooks/useCredentialById'
+import { type CredentialId, metadataForDisplay, useCredentialById } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'

@@ -1,5 +1,5 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
-import { getCredentialsForProofRequest } from '../openid4vc/getCredentialsForProofRequest'
+import { resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { getHostNameFromUrl } from '../utils/url'
 
@@ -17,7 +17,7 @@ export async function dcApiResolveRequest({ paradym, request }: DcApiResolveRequ
     typeof providerRequest === 'string' ? JSON.parse(providerRequest) : providerRequest
 
   // TODO: should allow limiting it to a specific credential (as we already know the credential id)
-  const result = await getCredentialsForProofRequest({
+  const result = await resolveCredentialRequest({
     paradym,
     requestPayload: authorizationRequestPayload,
     origin: request.origin,

@@ -1,15 +1,16 @@
+import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { useLingui } from '@lingui/react/macro'
 import { CardWithAttributes } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import {
+  type FormattedSubmission,
+  type FormattedSubmissionEntryNotSatisfied,
+  type FormattedSubmissionEntrySatisfied,
+  type FormattedSubmissionEntrySatisfiedCredential,
   getDisclosedAttributeNamesForDisplay,
   getUnsatisfiedAttributePathsForDisplay,
-} from '@paradym/wallet-sdk/display/common'
-import type {
-  FormattedSubmission,
-  FormattedSubmissionEntryNotSatisfied,
-  FormattedSubmissionEntrySatisfied,
-} from '@paradym/wallet-sdk/format/submission'
+} from '@paradym/wallet-sdk'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission
@@ -57,6 +58,14 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
     comment: 'Fallback name shown when a credential does not have a display name',
   })
 
+  const formatDisclosedAttributes = (credential: FormattedSubmissionEntrySatisfiedCredential) =>
+    getDisclosedAttributeNamesForDisplay(credential).map((c) => (typeof c === 'string' ? c : formatPredicate(c)))
+
+  const formatDisclosedUnsatisfiedAttributes = (credential: FormattedSubmissionEntryNotSatisfied) =>
+    getUnsatisfiedAttributePathsForDisplay(credential.requestedAttributePaths).map((c) =>
+      typeof c === 'string' ? c : formatPredicate(c)
+    )
+
   return (
     <YStack gap="$4">
       <YStack gap="$2">
@@ -78,12 +87,12 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
           <CardWithAttributes
             key={entry.inputDescriptorId}
             id={credential.credential.id}
-            name={credential.credential.display.name}
+            name={credential.credential.display.name ?? t(commonMessages.unknown)}
             backgroundImage={credential.credential.display.backgroundImage}
             backgroundColor={credential.credential.display.backgroundColor}
             issuerImage={credential.credential.display.issuer.logo}
             textColor={credential.credential.display.textColor}
-            formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(credential)}
+            formattedDisclosedAttributes={formatDisclosedAttributes(credential)}
             disclosedPayload={credential.disclosed.attributes}
             isExpired={
               credential.credential.metadata?.validUntil
@@ -114,7 +123,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
               // TODO: we could look at the vct?
               // TODO: we should maybe support partial matches (i.e. vct matches), as then we can
               // show a much better UI (you have the cred, but age is not valid, or this param is missing)
-              formattedDisclosedAttributes={getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths)}
+              formattedDisclosedAttributes={formatDisclosedUnsatisfiedAttributes(entry)}
               backgroundColor="$grey-800"
               textColor="$white"
             />

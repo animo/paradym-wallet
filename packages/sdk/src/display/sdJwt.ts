@@ -99,7 +99,7 @@ function getSdJwtCredentialDisplay(
   // If there's no name for the credential, we extract it from the last type
   // and sanitize it. This is not optimal. But provides at least something.
   if (!credentialDisplay.name && typeof credentialPayload.vct === 'string') {
-    credentialDisplay.name = sanitizeString(credentialPayload.vct)
+    credentialDisplay.name = sanitizeString(credentialPayload.vct) as string
   }
 
   return {

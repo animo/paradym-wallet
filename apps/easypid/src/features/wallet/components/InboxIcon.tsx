@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
 import { AnimatedStack, Circle, HeroIcons, IconContainer, Stack } from '@package/ui'
-import { useHasInboxNotifications } from '@paradym/wallet-sdk/hooks'
+import { useHasInboxNotifications } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { ZoomIn, ZoomOut } from 'react-native-reanimated'
 
