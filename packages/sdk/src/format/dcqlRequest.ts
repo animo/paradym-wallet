@@ -18,7 +18,10 @@ function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryRe
     }
   }
 
-  if (credential.format === 'vc+sd-jwt' || credential.format === 'dc+sd-jwt') {
+  if (
+    (credential.format === 'vc+sd-jwt' && credential.meta && 'vct_values' in credential.meta) ||
+    credential.format === 'dc+sd-jwt'
+  ) {
     return {
       claimFormat: ClaimFormat.SdJwtDc,
       credentialName:
