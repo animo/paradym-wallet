@@ -1,7 +1,14 @@
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { createContext, type PropsWithChildren, useContext, useState } from 'react'
-import { type DidCommAgent, type FullAgent, type SetupAgentOptions, setupAgent } from './agent'
+import {
+  type AgentForAgentType,
+  type AgentType,
+  assertAgentType,
+  isDidcommAgent,
+  type SetupAgentOptions,
+  setupAgent,
+} from './agent'
 import { dcApiRegisterCredentials } from './dcApi/registerCredentials'
 import { type DcApiResolveRequestOptions, dcApiResolveRequest } from './dcApi/resolveRequest'
 import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
@@ -67,18 +74,25 @@ export type ParadymWalletSdkOptions = SetupAgentOptions & {
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
-export class ParadymWalletSdk {
+export function assertParadymSdkType<T extends AgentType>(
+  // biome-ignore lint/suspicious/noExplicitAny: no explanation
+  sdk: ParadymWalletSdk<any>,
+  agentType: T
+): asserts sdk is ParadymWalletSdk<T> {
+  assertAgentType(sdk.agent, agentType)
+}
+
+export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public trustMechanisms: TrustMechanismConfiguration[]
-  // TODO(sdk): fix this typing
-  public readonly agent: FullAgent
+  public readonly agent: AgentForAgentType<T>
 
   public constructor(options: ParadymWalletSdkOptions) {
-    this.agent = setupAgent(options) as unknown as FullAgent
+    this.agent = setupAgent(options) as unknown as AgentForAgentType<T>
     this.trustMechanisms = options.trustMechanisms
   }
 
   public get isDidCommEnabled() {
-    return !!this.agent.didcomm
+    return isDidcommAgent(this.agent)
   }
 
   public get isOpenId4VcEnabled() {
@@ -116,7 +130,7 @@ export class ParadymWalletSdk {
 
   /**
    *
-   * Shutsdown the agent and closes the wallet
+   * Shutdown the agent and closes the wallet
    *
    */
   public async shutdown() {
@@ -164,7 +178,7 @@ export class ParadymWalletSdk {
     const { paradym } = useParadym('unlocked')
 
     return (
-      <RecordProvider agent={paradym.agent as unknown as DidCommAgent} recordIds={recordIds}>
+      <RecordProvider agent={paradym.agent} recordIds={recordIds}>
         {children}
       </RecordProvider>
     )
@@ -223,10 +237,11 @@ export class ParadymWalletSdk {
     invitation: string | Record<string, unknown>
   ): Promise<ParadymWalletSdkResult<ResolveOutOfBandInvitationResult>> {
     try {
+      assertParadymSdkType(this, 'didcomm')
       const parsedInvitation = await parseDidCommInvitation(this, invitation)
       return {
         success: true,
-        ...(await resolveOutOfBandInvitation(this.agent as unknown as DidCommAgent, parsedInvitation)),
+        ...(await resolveOutOfBandInvitation(this.agent, parsedInvitation)),
       }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : `${error}` }
@@ -534,9 +549,9 @@ export type SecureUnlockReturnLocked = {
   reinitialize: () => void
 }
 
-export type SecureUnlockReturnUnlocked = {
+export type SecureUnlockReturnUnlocked<T extends AgentType = AgentType> = {
   state: 'unlocked'
-  paradym: ParadymWalletSdk
+  paradym: ParadymWalletSdk<T>
   unlockMethod: UnlockMethod
   lock: () => Promise<void>
   reset: () => Promise<void>

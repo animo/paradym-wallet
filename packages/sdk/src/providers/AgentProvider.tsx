@@ -1,5 +1,5 @@
 import { type PropsWithChildren, useMemo } from 'react'
-import type { BaseAgent, DidCommAgent } from '../agent'
+import type { AnyAgent, DidCommAgent } from '../agent'
 import { ConnectionProvider } from './ConnectionProvider'
 import { CredentialExchangeProvider } from './CredentialExchangeProvider'
 import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
@@ -14,18 +14,18 @@ export const RecordProvider = ({
   agent,
   children,
   recordIds,
-}: PropsWithChildren<{ agent: DidCommAgent; recordIds: string[] }>) => {
+}: PropsWithChildren<{ agent: AnyAgent; recordIds: string[] }>) => {
   // Use useMemo to prevent recreation of the providers array on each render
   const DynamicProviders = useMemo(() => {
     return [
-      agent.didcomm.proofs || agent.didcomm.credentials
-        ? ({ children }: PropsWithChildren<{ agent: DidCommAgent }>) => (
-            <ExchangeRecordDisplayMetadataProvider agent={agent}>{children}</ExchangeRecordDisplayMetadataProvider>
+      agent.didcomm?.proofs || agent.didcomm?.credentials
+        ? ({ children }: PropsWithChildren<{ agent: AnyAgent }>) => (
+            <ExchangeRecordDisplayMetadataProvider>{children}</ExchangeRecordDisplayMetadataProvider>
           )
         : undefined,
-      agent.didcomm.credentials ? CredentialExchangeProvider : undefined,
-      agent.didcomm.proofs ? ProofExchangeProvider : undefined,
-      agent.didcomm.connections ? ConnectionProvider : undefined,
+      agent.didcomm?.credentials ? CredentialExchangeProvider : undefined,
+      agent.didcomm?.proofs ? ProofExchangeProvider : undefined,
+      agent.didcomm?.connections ? ConnectionProvider : undefined,
     ].filter((p): p is Exclude<typeof p, undefined> => p !== undefined)
   }, [agent])
 
@@ -33,12 +33,12 @@ export const RecordProvider = ({
   return useMemo(() => {
     return DynamicProviders.reduce(
       (accChildren, Provider) => (
-        <Provider key={Provider.name} agent={agent}>
+        <Provider key={Provider.name} agent={agent as DidCommAgent}>
           {accChildren}
         </Provider>
       ),
       <WalletJsonStoreProvider agent={agent} recordIds={recordIds}>
-        <W3cV2CredentialRecordProvider agent={agent as unknown as BaseAgent}>
+        <W3cV2CredentialRecordProvider agent={agent}>
           <W3cCredentialRecordProvider agent={agent}>
             <SdJwtVcRecordProvider agent={agent}>
               <MdocRecordProvider>{children}</MdocRecordProvider>

@@ -1,7 +1,6 @@
 import type { Agent } from '@credo-ts/core'
 import { utils } from '@credo-ts/core'
 import { useMemo } from 'react'
-import type { BaseAgent } from '../agent'
 import { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay } from '../display/common'
 import type { CredentialDisplay, CredentialForDisplayId, DisplayImage } from '../display/credential'
 import type { FormattedSubmission } from '../format/submission'
@@ -82,7 +81,7 @@ const internalActivityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTI
 // const internalActivityStorage = getWalletJsonStore<ActivityRecord>('PARADYM_WALLET_SDK_ACTIVITY_RECORD')
 export const activityStorage = {
   recordId: internalActivityStorage.recordId,
-  addActivity: async (agent: BaseAgent, activity: Activity) => {
+  addActivity: async (agent: Agent, activity: Activity) => {
     // get activity and then add this activity
     const record = await internalActivityStorage.get(agent)
     if (!record) {
@@ -137,7 +136,7 @@ export const storeReceivedActivity = async (
     credentialIds: CredentialForDisplayId[]
   }
 ) => {
-  await activityStorage.addActivity(paradym.agent as unknown as BaseAgent, {
+  await activityStorage.addActivity(paradym.agent, {
     id: utils.uuid(),
     date: new Date().toISOString(),
     type: 'received',
@@ -159,14 +158,14 @@ export const storeSharedOrSignedActivity = async (
   input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
 ) => {
   if ('transaction' in input && input.transaction) {
-    await activityStorage.addActivity(paradym.agent as unknown as BaseAgent, {
+    await activityStorage.addActivity(paradym.agent, {
       ...input,
       id: utils.uuid(),
       date: new Date().toISOString(),
       type: 'signed',
     })
   } else {
-    await activityStorage.addActivity(paradym.agent as unknown as BaseAgent, {
+    await activityStorage.addActivity(paradym.agent, {
       ...input,
       id: utils.uuid(),
       date: new Date().toISOString(),

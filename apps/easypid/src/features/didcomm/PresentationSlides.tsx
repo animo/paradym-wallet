@@ -20,7 +20,7 @@ type PresentationSlidesProps = {
 }
 
 export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onComplete }: PresentationSlidesProps) {
-  const { paradym } = useParadym('unlocked')
+  const { paradym } = useParadym('unlocked', 'didcomm')
   const toast = useToastController()
   const [errorReason, setErrorReason] = useState<string>()
 

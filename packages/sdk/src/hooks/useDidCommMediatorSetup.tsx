@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { assertDidcommAgent, type DidCommAgent } from '../agent'
+import { assertDidcommAgent } from '../agent'
 import { hasMediationConfigured, setupMediationWithDid } from '../didcomm/mediation'
 import { ParadymWalletNoMediatorDidProvidedError } from '../error'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
@@ -27,7 +27,7 @@ export function useDidCommMediatorSetup({
     if (isMediationConfigured) return
     if (isSettingUpMediation) return
     try {
-      assertDidcommAgent(paradym.agent as unknown as DidCommAgent)
+      assertDidcommAgent(paradym.agent)
     } catch {
       return
     }

@@ -80,7 +80,10 @@ export const isDidCommInvitation = (url: string) => {
   return false
 }
 
-export async function parseDidCommInvitation(paradym: ParadymWalletSdk, invitation: string | Record<string, unknown>) {
+export async function parseDidCommInvitation(
+  paradym: ParadymWalletSdk<'didcomm'>,
+  invitation: string | Record<string, unknown>
+) {
   if (typeof invitation === 'string') {
     const parsedUrl = queryString.parseUrl(invitation)
     const updatedInvitationUrl = (parsedUrl.query.oobUrl as string | undefined) ?? invitation

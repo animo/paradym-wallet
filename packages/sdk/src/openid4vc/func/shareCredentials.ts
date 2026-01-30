@@ -11,6 +11,7 @@ import {
   type W3cV2CredentialRecord,
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
+import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type { CredentialRecord } from '../../storage/credentials'
@@ -36,6 +37,8 @@ export const shareCredentials = async ({
   acceptTransactionData,
   refreshCredentialsCallback,
 }: ShareCredentialsOptions) => {
+  assertAgentType(paradym.agent, 'openid4vc')
+
   const { authorizationRequest } = resolvedRequest
   if (
     !resolvedRequest.credentialsForRequest?.areRequirementsSatisfied &&

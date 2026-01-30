@@ -8,14 +8,14 @@
 	],
 	"publishConfig": {
 		"access": "public",
-		"main": "./dist/index.js",
+		"main": "./dist/index.mjs",
 		"module": "./dist/index.mjs",
-		"types": "./dist/index.d.ts",
+		"types": "./dist/index.d.mts",
 		"exports": {
 			".": {
 				"import": "./dist/index.mjs",
-				"require": "./dist/index.js",
-				"types": "./dist/index.d.ts"
+				"require": "./dist/index.mjs",
+				"types": "./dist/index.d.mts"
 			},
 			"./package.json": "./package.json"
 		}

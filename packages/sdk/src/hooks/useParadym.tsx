@@ -1,4 +1,4 @@
-import { assertDidcommAgent, assertOpenId4VcAgent, type DidCommAgent, type OpenId4VcAgent } from '../agent'
+import { type AgentType, assertDidcommAgent, assertFullAgent, assertOpenId4VcAgent } from '../agent'
 import {
   type SecureUnlockReturnInitializing,
   type SecureUnlockReturnLocked,
@@ -12,7 +12,7 @@ type ParadymLoadingState = SecureUnlockReturnInitializing
 type ParadymNotConfiguredState = SecureUnlockReturnNotConfigured
 type ParadymAcquiredWalletKeyState = SecureUnlockReturnWalletKeyAcquired
 type ParadymLockedState = SecureUnlockReturnLocked
-type ParadymUnlockedState = SecureUnlockReturnUnlocked
+type ParadymUnlockedState<T extends AgentType = AgentType> = SecureUnlockReturnUnlocked<T>
 
 export type ParadymState =
   | ParadymLoadingState
@@ -26,11 +26,15 @@ export function useParadym(assertState: 'initializing'): ParadymLoadingState
 export function useParadym(assertState: 'not-configured'): ParadymNotConfiguredState
 export function useParadym(assertState: 'acquired-wallet-key'): ParadymAcquiredWalletKeyState
 export function useParadym(assertState: 'locked'): ParadymLockedState
-export function useParadym(assertState: 'unlocked', agentType?: 'didcomm' | 'openid4vc'): ParadymUnlockedState
-export function useParadym(assertState?: ParadymState['state'], agentType?: 'didcomm' | 'openid4vc'): ParadymState {
+export function useParadym<T extends AgentType = AgentType>(
+  assertState: 'unlocked',
+  agentType?: T
+): ParadymUnlockedState<T>
+export function useParadym<T extends AgentType = AgentType>(
+  assertState?: ParadymState['state'],
+  agentType?: T
+): ParadymState {
   const unlock = useSecureUnlock()
-
-  // useDidCommMediatorSetup({ paradym: unlock.state === 'unlocked' ? unlock.paradym : undefined })
 
   if (assertState && unlock.state !== assertState) {
     throw new Error(`Unlock state '${unlock.state}' did not match the asserted state of '${assertState}'`)
@@ -53,12 +57,16 @@ export function useParadym(assertState?: ParadymState['state'], agentType?: 'did
   }
 
   if (unlock.state === 'unlocked') {
-    if (agentType && agentType === 'didcomm') {
-      assertDidcommAgent(unlock.paradym.agent as unknown as DidCommAgent)
+    if (agentType === 'didcomm') {
+      assertDidcommAgent(unlock.paradym.agent)
     }
 
-    if (agentType && agentType === 'openid4vc') {
-      assertOpenId4VcAgent(unlock.paradym.agent as unknown as OpenId4VcAgent)
+    if (agentType === 'openid4vc') {
+      assertOpenId4VcAgent(unlock.paradym.agent)
+    }
+
+    if (agentType === 'full') {
+      assertFullAgent(unlock.paradym.agent)
     }
 
     // When the state changes to unlocked, we register the credentials for the digital credentials API

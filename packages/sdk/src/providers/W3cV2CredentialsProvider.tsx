@@ -2,7 +2,7 @@ import { W3cV2CredentialRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
-import type { BaseAgent } from '../agent'
+import type { AnyAgent } from '../agent'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
 
 export { W3cV2CredentialRecord, W3cV2VerifiableCredential } from '@credo-ts/core'
@@ -58,7 +58,7 @@ export const useW3cV2CredentialRecordById = (id: string): W3cV2CredentialRecord 
 }
 
 interface W3cV2CredentialRecordProviderProps {
-  agent: BaseAgent
+  agent: AnyAgent
 }
 
 export const W3cV2CredentialRecordProvider: React.FC<PropsWithChildren<W3cV2CredentialRecordProviderProps>> = ({

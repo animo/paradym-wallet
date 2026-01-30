@@ -1,4 +1,5 @@
 import type { OpenId4VciResolvedAuthorizationRequest, OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
+import { assertAgentType } from '../../agent'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 
 export type AcquireAuthorizationCodeAccessTokenOptions = {
@@ -13,6 +14,7 @@ export type AcquireAuthorizationCodeAccessTokenOptions = {
 }
 
 export const acquireAuthorizationCodeAccessToken = async (options: AcquireAuthorizationCodeAccessTokenOptions) => {
+  assertAgentType(options.paradym.agent, 'openid4vc')
   const tokenResponse = await options.paradym.agent.openid4vc.holder.requestToken({
     resolvedCredentialOffer: options.resolvedCredentialOffer,
     redirectUri: options.authorization.redirectUri,

@@ -25,7 +25,7 @@ import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
-import { ParadymWalletMustBeDidCommAgentError, ParadymWalletMustBeOpenId4VcAgentError } from './error'
+import { ParadymWalletMustBeAgentTypeError } from './error'
 import { type LogLevel, ParadymWalletSdkConsoleLogger, type ParadymWalletSdkLogger } from './logging'
 import { secureWalletKey } from './secure'
 
@@ -259,25 +259,49 @@ const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['did
 
 export type BaseAgent = Agent<ReturnType<typeof getBaseModules>>
 export type DidCommAgent = Agent<ReturnType<typeof getBaseModules> & ReturnType<typeof getDidCommModules>>
-export type OpenId4VcAgent = Agent<ReturnType<typeof getOpenid4VcModules>>
+export type OpenId4VcAgent = Agent<ReturnType<typeof getBaseModules> & ReturnType<typeof getOpenid4VcModules>>
 export type FullAgent = Agent<
   ReturnType<typeof getDidCommModules> & ReturnType<typeof getOpenid4VcModules> & ReturnType<typeof getBaseModules>
 >
 
-export const isDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): boolean => 'didcomm' in agent
-export const assertDidcommAgent = (agent: DidCommAgent | OpenId4VcAgent): DidCommAgent => {
-  if (!isDidcommAgent(agent)) {
-    throw new ParadymWalletMustBeDidCommAgentError()
-  }
+export type AnyAgent = DidCommAgent | OpenId4VcAgent | FullAgent
 
-  return agent as DidCommAgent
+export type AgentType = 'openid4vc' | 'didcomm' | 'full'
+
+export type AgentForAgentType<T extends AgentType> = T extends 'full'
+  ? FullAgent
+  : T extends 'didcomm'
+    ? DidCommAgent
+    : T extends 'openid4vc'
+      ? OpenId4VcAgent
+      : AnyAgent
+
+export const isDidcommAgent = (agent: AnyAgent): agent is DidCommAgent => 'didcomm' in agent
+export function assertDidcommAgent(agent: AnyAgent): asserts agent is DidCommAgent {
+  assertAgentType(agent, 'didcomm')
 }
 
-export const isOpenId4VcAgent = (agent: DidCommAgent | OpenId4VcAgent): boolean => 'openid4vc' in agent
-export const assertOpenId4VcAgent = (agent: DidCommAgent | OpenId4VcAgent): OpenId4VcAgent => {
-  if (!isOpenId4VcAgent(agent)) {
-    throw new ParadymWalletMustBeOpenId4VcAgentError()
-  }
+export const isFullAgent = (agent: AnyAgent): agent is FullAgent => isDidcommAgent(agent) && isOpenId4VcAgent(agent)
+export function assertFullAgent(agent: AnyAgent): asserts agent is FullAgent {
+  assertAgentType(agent, 'full')
+}
 
-  return agent as OpenId4VcAgent
+export const isOpenId4VcAgent = (agent: AnyAgent): agent is OpenId4VcAgent => 'openid4vc' in agent
+export function assertOpenId4VcAgent(agent: AnyAgent): asserts agent is OpenId4VcAgent {
+  assertAgentType(agent, 'openid4vc')
+}
+
+export function isAgentType<T extends AgentType>(agent: AnyAgent, agentType: T): agent is AgentForAgentType<T> {
+  if (agentType === 'didcomm') return isDidcommAgent(agent)
+  if (agentType === 'openid4vc') return isOpenId4VcAgent(agent)
+  return isFullAgent(agent)
+}
+
+export function assertAgentType<T extends AgentType>(
+  agent: AnyAgent,
+  agentType: T
+): asserts agent is AgentForAgentType<T> {
+  if (!isAgentType(agent, agentType)) {
+    throw new ParadymWalletMustBeAgentTypeError(agentType)
+  }
 }

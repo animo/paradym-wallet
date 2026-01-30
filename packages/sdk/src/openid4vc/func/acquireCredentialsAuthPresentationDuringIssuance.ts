@@ -1,3 +1,4 @@
+import { assertAgentType } from '../../agent'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
@@ -15,6 +16,7 @@ export type AcquireCredentialsAuthPresentationDuringIssuanceOptions = Omit<
 export const acquireCredentialsAuthPresentationDuringIssuance = async (
   options: AcquireCredentialsAuthPresentationDuringIssuanceOptions
 ) => {
+  assertAgentType(options.paradym.agent, 'openid4vc')
   const { presentationDuringIssuanceSession } = await shareCredentials({
     paradym: options.paradym,
     resolvedRequest: options.credentialsForRequest,

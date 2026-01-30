@@ -17,8 +17,9 @@ import { agentDependencies } from '@credo-ts/react-native'
 import { CURRENT_APP_TYPE } from '@easypid/config/appType'
 import { getShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
-import type { BaseAgent, ParadymWalletSdk } from '@paradym/wallet-sdk'
+import type { ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { secureWalletKey } from '@paradym/wallet-sdk'
+import type { AnyAgent } from '@paradym/wallet-sdk/agent'
 import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
@@ -70,7 +71,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
 
   public constructor(
     private hsmUrl: string,
-    private agent: BaseAgent
+    private agent: AnyAgent
   ) {}
 
   private async post<T>(path: string, claims: Record<string, unknown>): Promise<T> {
@@ -202,7 +203,7 @@ export const setupWalletServiceProvider = async (paradym: ParadymWalletSdk, regi
 
   const wsp = new WalletServiceProviderClient(
     process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL ?? 'https://wsp.funke.animo.id',
-    paradym.agent as unknown as BaseAgent
+    paradym.agent
   )
 
   if (registerWallet) {

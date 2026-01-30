@@ -1,5 +1,6 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import type { DifPresentationExchangeDefinitionV2 } from '@credo-ts/core'
+import { assertAgentType } from '../../agent'
 import { ParadymWalletNoRequestToResolveError } from '../../error'
 import { formatDcqlCredentialsForRequest } from '../../format/dcqlRequest'
 import { formatDifPexCredentialsForRequest } from '../../format/presentationExchangeRequest'
@@ -22,6 +23,7 @@ export const resolveCredentialRequest = async ({
   origin,
   allowUntrusted,
 }: ResolveCredentialRequestOptions) => {
+  assertAgentType(paradym.agent, 'openid4vc')
   try {
     const requestToResolve = uri ?? requestPayload
 

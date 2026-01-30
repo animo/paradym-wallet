@@ -2,6 +2,7 @@ import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
+import { assertAgentType } from '../agent'
 import { getCredentialDisplayWithDefaults } from '../display/common'
 import { getCredentialForDisplayId } from '../display/credential'
 import { getOpenId4VcCredentialDisplay } from '../display/openid4vc'
@@ -28,6 +29,7 @@ export async function fetchAndProcessDeferredCredential(
   paradym: ParadymWalletSdk,
   deferredCredential: DeferredCredential
 ) {
+  assertAgentType(paradym.agent, 'openid4vc')
   const { issuerMetadata, clientId, response: deferredCredentialResponse } = deferredCredential
 
   try {

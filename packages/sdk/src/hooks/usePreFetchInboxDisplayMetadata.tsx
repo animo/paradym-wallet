@@ -1,5 +1,6 @@
 import { DidCommCredentialState, DidCommProofState } from '@credo-ts/didcomm'
 import { useEffect } from 'react'
+import { assertAgentType } from '../agent'
 import {
   getDidCommCredentialExchangeDisplayMetadata,
   getDidCommProofExchangeDisplayMetadata,
@@ -22,6 +23,10 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
   const credentialExchangeRecords = useCredentialByState([DidCommCredentialState.OfferReceived])
   const proofExchangeRecords = useProofByState([DidCommProofState.RequestReceived])
   const { records: connections } = useConnections()
+
+  const agent = paradym.agent
+  assertAgentType(agent, 'didcomm')
+
   // Fetch associated metadata for each record
   useEffect(() => {
     credentialExchangeRecords.map(async (record) => {
@@ -35,10 +40,10 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
       // Extract label from out-of-band invitation if no connection associated
       const outOfBandRecord =
         !connection && record.parentThreadId
-          ? await paradym.agent.didcomm.oob.findByReceivedInvitationId(record.parentThreadId)
+          ? await agent.didcomm.oob.findByReceivedInvitationId(record.parentThreadId)
           : undefined
 
-      const formatData = await paradym.agent.didcomm.credentials.getFormatData(record.id)
+      const formatData = await agent.didcomm.credentials.getFormatData(record.id)
       const offer = formatData.offer?.anoncreds ?? formatData.offer?.indy
       // We just return here, so the rest can still continue
       if (!offer) return
@@ -46,7 +51,7 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
       const schemaId = offer.schema_id
 
       const issuerName = connection?.theirLabel ?? outOfBandRecord?.outOfBandInvitation.label
-      const schemaResult = await paradym.agent.modules.anoncreds.getSchema(schemaId)
+      const schemaResult = await agent.modules.anoncreds.getSchema(schemaId)
       const schemaName = schemaResult.schema?.name
 
       // Update the metadata on the record for future use
@@ -56,10 +61,10 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
           issuerLogoUri: connection?.imageUrl ?? outOfBandRecord?.outOfBandInvitation.imageUrl,
           credentialName: schemaName,
         })
-        await paradym.agent.didcomm.credentials.update(record)
+        await agent.didcomm.credentials.update(record)
       }
     })
-  }, [credentialExchangeRecords, paradym, connections])
+  }, [credentialExchangeRecords, agent, connections])
 
   // Fetch associated metadata for each record
   useEffect(() => {
@@ -74,10 +79,10 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
       // Extract label from out-of-band invitation if no connection associated
       const outOfBandRecord =
         !connection && record.parentThreadId
-          ? await paradym.agent.didcomm.oob.findByReceivedInvitationId(record.parentThreadId)
+          ? await agent.didcomm.oob.findByReceivedInvitationId(record.parentThreadId)
           : undefined
 
-      const formatData = await paradym.agent.didcomm.proofs.getFormatData(record.id)
+      const formatData = await agent.didcomm.proofs.getFormatData(record.id)
       const request = formatData.request?.anoncreds ?? formatData.request?.indy
 
       // We just return here, so the rest can still continue
@@ -93,8 +98,8 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
           verifierLogoUri: connection?.imageUrl ?? outOfBandRecord?.outOfBandInvitation.imageUrl,
           verifierName,
         })
-        await paradym.agent.didcomm.proofs.update(record)
+        await agent.didcomm.proofs.update(record)
       }
     })
-  }, [proofExchangeRecords, paradym, connections])
+  }, [proofExchangeRecords, agent, connections])
 }

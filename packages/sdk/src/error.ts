@@ -1,3 +1,4 @@
+import type { AgentType } from './agent'
 import { cancelMessages, notEnabledMessages } from './error/biometrics'
 
 export class ParadymWalletSdkError extends Error {
@@ -6,8 +7,11 @@ export class ParadymWalletSdkError extends Error {
   }
 }
 
-export class ParadymWalletMustBeDidCommAgentError extends ParadymWalletSdkError {}
-export class ParadymWalletMustBeOpenId4VcAgentError extends ParadymWalletSdkError {}
+export class ParadymWalletMustBeAgentTypeError extends ParadymWalletSdkError {
+  public constructor(public agentType: AgentType) {
+    super(`Expected paradym wallet to be of type ${agentType}`)
+  }
+}
 export class ParadymWalletMustBeInitializedError extends ParadymWalletSdkError {}
 
 export class ParadymWalletUnsupportedCredentialRecordTypeError extends ParadymWalletSdkError {}

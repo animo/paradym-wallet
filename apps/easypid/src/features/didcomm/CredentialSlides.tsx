@@ -3,6 +3,7 @@ import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { storeReceivedActivity, useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk'
+import { assertAgentType } from '@paradym/wallet-sdk/agent'
 import { useCallback, useState } from 'react'
 import { useDevelopmentMode } from '../../hooks'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
@@ -38,12 +39,15 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   )
 
   const onCredentialAccept = async () => {
+    const agent = paradym.agent
+    assertAgentType(agent, 'didcomm')
+
     const w3cRecord = await acceptCredential().catch(async (error) => {
       paradym.logger.error('Error accepting credential over DIDComm', {
         error,
       })
 
-      if (credentialExchange) await paradym.agent.didcomm.credentials.deleteById(credentialExchange.id)
+      if (credentialExchange) await agent.didcomm.credentials.deleteById(credentialExchange.id)
       setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
       return undefined
     })
@@ -61,9 +65,12 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   }
 
   const onCredentialDecline = () => {
+    const agent = paradym.agent
+    assertAgentType(agent, 'didcomm')
+
     if (credentialExchange) {
       declineCredential().finally(() => {
-        void paradym.agent.didcomm.credentials.deleteById(credentialExchange.id)
+        void agent.didcomm.credentials.deleteById(credentialExchange.id)
       })
     }
 

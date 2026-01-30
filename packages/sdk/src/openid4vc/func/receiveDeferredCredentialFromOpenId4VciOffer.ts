@@ -4,6 +4,7 @@ import type {
   OpenId4VciMetadata,
   OpenId4VciRequestTokenResponse,
 } from '@credo-ts/openid4vc'
+import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import {
   extractOpenId4VcCredentialMetadata,
@@ -26,6 +27,7 @@ export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
   issuerMetadata,
   accessToken,
 }: ReceiveDeferredCredentialFromOpenId4VciOfferOptions) => {
+  assertAgentType(paradym.agent, 'openid4vc')
   try {
     const { credentials, deferredCredentials } = await paradym.agent.openid4vc.holder.requestDeferredCredentials({
       ...deferredCredentialResponse,

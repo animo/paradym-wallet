@@ -1,11 +1,13 @@
 import { CredoError } from '@credo-ts/core'
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
+import { assertAgentType } from '../agent'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
 /**
  * Check whether a default mediator is configued
  */
 export async function hasMediationConfigured(paradym: ParadymWalletSdk) {
+  assertAgentType(paradym.agent, 'didcomm')
   const mediationRecord = await paradym.agent.didcomm.mediationRecipient.findDefaultMediator()
 
   return mediationRecord !== null
@@ -17,6 +19,7 @@ export async function hasMediationConfigured(paradym: ParadymWalletSdk) {
  * This connects based on a did
  */
 export async function setupMediationWithDid(paradym: ParadymWalletSdk, mediatorDid: string) {
+  assertAgentType(paradym.agent, 'didcomm')
   // If the invitation is a did, the invitation id is the did
   const outOfBandRecord = await paradym.agent.didcomm.oob.findByReceivedInvitationId(mediatorDid)
   let [connection] = outOfBandRecord
@@ -54,6 +57,7 @@ export async function setupMediationWithDid(paradym: ParadymWalletSdk, mediatorD
  * Initiate message pickup from the mediator.
  */
 export async function initiateMessagePickup(paradym: ParadymWalletSdk) {
+  assertAgentType(paradym.agent, 'didcomm')
   paradym.logger.info('Initiating message pickup from mediator')
 
   // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
@@ -67,6 +71,7 @@ export async function initiateMessagePickup(paradym: ParadymWalletSdk) {
  * Stop message pickup from the mediator.
  */
 export async function stopMessagePickup(paradym: ParadymWalletSdk) {
+  assertAgentType(paradym.agent, 'didcomm')
   paradym.logger.info('Stopping message pickup from mediator')
 
   // Stop message pickup. Will stopp all message pickup, not just from the mediator

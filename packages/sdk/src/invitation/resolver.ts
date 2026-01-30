@@ -27,7 +27,7 @@ import {
   type OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
 import { filter, first, firstValueFrom, type Observable, timeout } from 'rxjs'
-import type { DidCommAgent } from '../agent'
+import { assertAgentType, type DidCommAgent } from '../agent'
 import type { CredentialDisplay } from '../display/credential'
 import {
   ParadymWalletInvitationAlreadyUsedError,
@@ -154,6 +154,7 @@ export async function resolveCredentialOffer({
   authorization,
   fetchAuthorization = true,
 }: ResolveCredentialOfferOptions): Promise<ResolveCredentialOfferReturn> {
+  assertAgentType(paradym.agent, 'openid4vc')
   paradym.logger.info(`Receiving openid uri '${offerUri}'`)
 
   const resolvedCredentialOffer = await paradym.agent.openid4vc.holder.resolveCredentialOffer(offerUri)
@@ -238,6 +239,7 @@ export async function acquirePreAuthorizedAccessToken({
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   txCode?: string
 }) {
+  assertAgentType(paradym.agent, 'openid4vc')
   return await paradym.agent.openid4vc.holder.requestToken({
     resolvedCredentialOffer,
     txCode,
@@ -268,6 +270,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
   accessToken: OpenId4VciRequestTokenResponse
 }) => {
+  assertAgentType(paradym.agent, 'openid4vc')
   const offeredCredentialsToRequest = getOfferedCredentials(
     credentialConfigurationIdsToRequest ?? [
       resolvedCredentialOffer.credentialOfferPayload.credential_configuration_ids[0],
