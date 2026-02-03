@@ -1,6 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVc, type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
-import { InvalidPinError } from '@easypid/crypto/error'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
@@ -20,6 +19,7 @@ import {
   getCredentialForDisplay,
   getCredentialForDisplayId,
   getHostNameFromUrl,
+  ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
   storeReceivedActivity,
@@ -206,7 +206,7 @@ export function FunkePidSetupScreen() {
       try {
         await setWalletServiceProviderPin(pin.split('').map(Number))
       } catch (e) {
-        if (e instanceof InvalidPinError) {
+        if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
           toast.show(e.message, {
             customData: {
               preset: 'danger',

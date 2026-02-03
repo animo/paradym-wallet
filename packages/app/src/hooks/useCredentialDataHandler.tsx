@@ -76,12 +76,12 @@ export const useCredentialDataHandler = () => {
         error: 'invitation_type_not_allowed',
         message: `Could not find handler for type: '${invitationData.type}'`,
       }
-    } catch (e) {
+    } catch (_e) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       return {
         success: false,
         error: 'invitation_not_found',
-        message: (e as Error).message,
+        message: t(commonMessages.unableToRetrieveInvitation),
       }
     }
   }

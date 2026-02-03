@@ -1,5 +1,4 @@
 import { walletClient } from '@easypid/constants'
-import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPidIfNeeded } from '@easypid/use-cases/RefreshPidUseCase'
 import { useLingui } from '@lingui/react/macro'
@@ -7,7 +6,11 @@ import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import type { CredentialForDisplay, DeferredCredentialBefore, ResolveCredentialOfferReturn } from '@paradym/wallet-sdk'
-import { ParadymWalletBiometricAuthenticationCancelledError, useParadym } from '@paradym/wallet-sdk'
+import {
+  ParadymWalletAuthenticationInvalidPinError,
+  ParadymWalletBiometricAuthenticationCancelledError,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -102,7 +105,7 @@ export function FunkeCredentialNotificationScreen() {
         try {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (error) {
-          if (error instanceof InvalidPinError) {
+          if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
             onPinError?.()
             setIsSharingPresentation(false)
             toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
@@ -131,7 +134,7 @@ export function FunkeCredentialNotificationScreen() {
           setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
           return
         }
-        if (error instanceof InvalidPinError) {
+        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
           onPinError?.()
           toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
           return

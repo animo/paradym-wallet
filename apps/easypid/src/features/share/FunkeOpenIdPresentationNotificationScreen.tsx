@@ -1,4 +1,3 @@
-import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
 import { refreshPidIfNeeded } from '@easypid/use-cases/RefreshPidUseCase'
 import { formatPredicate } from '@easypid/utils/formatePredicate'
@@ -11,6 +10,7 @@ import {
   type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
   getFormattedTransactionData,
+  ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
   useParadym,
 } from '@paradym/wallet-sdk'
@@ -141,7 +141,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (e) {
           setIsSharing(false)
-          if (e instanceof InvalidPinError) {
+          if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
             onPinError?.()
             toast.show(t(commonMessages.invalidPinEntered), {
               customData: {

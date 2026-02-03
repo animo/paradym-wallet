@@ -213,6 +213,10 @@ export const commonMessages = {
     id: 'common.invitationParsingFailed',
     message: 'Failed to parse invitation.',
   }),
+  invitationResolvedParameterMissing: defineMessage({
+    id: 'common.invitationResolvedParameterMissing',
+    message: 'Resolved parameter is missing, but required for accepting an invitation.',
+  }),
   invitationNotSupported: defineMessage({
     id: 'common.invitationNotSupported',
     message: 'Invitation not supported.',

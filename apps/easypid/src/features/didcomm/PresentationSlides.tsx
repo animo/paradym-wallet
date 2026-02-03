@@ -40,11 +40,12 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
     [isDevelopmentModeEnabled]
   )
 
-  const _onProofAccept = async () => {
+  const onProofAccept = async () => {
     if (!submission) return
 
     await acceptPresentation({})
       .then(async () => {
+        // TODO(sdk): store in acceptPresentation
         await storeSharedActivityForSubmission(
           paradym,
           submission,
@@ -57,6 +58,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
         )
       })
       .catch(async (error) => {
+        // TODO(sdk): store in acceptPresentation
         await storeSharedActivityForSubmission(
           paradym,
           submission,
@@ -117,7 +119,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
           screen: (
             <ShareCredentialsSlide
               key="share-credentials"
-              onAccept={_onProofAccept}
+              onAccept={onProofAccept}
               onDecline={onProofDecline}
               submission={submission as FormattedSubmission}
               isAccepting={acceptStatus !== 'idle'}

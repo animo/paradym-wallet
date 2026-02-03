@@ -1,5 +1,5 @@
 import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
-import { Kms } from '@credo-ts/core'
+import { CredoError, Kms } from '@credo-ts/core'
 import {
   type DidCommConnectionRecord,
   DidCommCredentialEventTypes,
@@ -27,7 +27,7 @@ import {
   type OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
 import { filter, first, firstValueFrom, type Observable, timeout } from 'rxjs'
-import { assertAgentType, type DidCommAgent } from '../agent'
+import { assertAgentType, assertDidcommAgent } from '../agent'
 import type { CredentialDisplay } from '../display/credential'
 import {
   ParadymWalletInvitationAlreadyUsedError,
@@ -335,16 +335,17 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 }
 
 export async function resolveOutOfBandInvitation(
-  agent: DidCommAgent,
+  paradym: ParadymWalletSdk,
   invitation: DidCommOutOfBandInvitation
 ): Promise<ResolveOutOfBandInvitationResult> {
+  assertDidcommAgent(paradym.agent)
   const requestMessages = invitation.getRequests() ?? []
 
   let flowType: 'issue' | 'verify' | 'connect'
 
   if (requestMessages.length > 1) {
     const message = 'Message contains multiple requests. Invitation should only contain a single request.'
-    agent.config.logger.error(message)
+    paradym.logger.error(message)
     throw new ParadymWalletInvitationMultipleRequestsError(message)
   }
 
@@ -353,7 +354,7 @@ export async function resolveOutOfBandInvitation(
   if (requestMessages.length === 0) {
     if (!invitation.handshakeProtocols || invitation.handshakeProtocols.length === 0) {
       const message = 'No requests and no handshake protocols found in invitation.'
-      agent.config.logger.error(message)
+      paradym.logger.error(message)
       throw new ParadymWalletInvitationParseError(message)
     }
 
@@ -388,12 +389,12 @@ export async function resolveOutOfBandInvitation(
 
   try {
     // Check if invitation already exists
-    const receivedInvite = await agent.didcomm.oob.findByReceivedInvitationId(invitation.id)
+    const receivedInvite = await paradym.agent.didcomm.oob.findByReceivedInvitationId(invitation.id)
     if (receivedInvite) {
       throw new ParadymWalletInvitationAlreadyUsedError()
     }
 
-    const existingConnection = (await findExistingDidcommConnectionForInvitation(agent, invitation)) ?? undefined
+    const existingConnection = (await findExistingDidcommConnectionForInvitation(paradym, invitation)) ?? undefined
 
     return {
       outOfBandInvitation: invitation,
@@ -402,17 +403,18 @@ export async function resolveOutOfBandInvitation(
       flowType,
     }
   } catch (error) {
-    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
+    paradym.logger.error(`Error while receiving invitation: ${error as string}`)
     throw new ParadymWalletInvitationError(error as string)
   }
 }
 
 async function findExistingDidcommConnectionForInvitation(
-  agent: DidCommAgent,
+  paradym: ParadymWalletSdk,
   outOfBandInvitation: DidCommOutOfBandInvitation
 ): Promise<DidCommConnectionRecord | null> {
+  assertDidcommAgent(paradym.agent)
   for (const invitationDid of outOfBandInvitation.invitationDids) {
-    const [connection] = await agent.didcomm.connections.findByInvitationDid(invitationDid)
+    const [connection] = await paradym.agent.didcomm.connections.findByInvitationDid(invitationDid)
     if (connection) return connection
   }
 
@@ -423,27 +425,30 @@ async function findExistingDidcommConnectionForInvitation(
  * NOTE: this method assumes `resolveOutOfBandInvitation` was called previously and thus no additional checks are performed.
  */
 export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'verify' | 'connect'>(
-  agent: DidCommAgent,
+  paradym: ParadymWalletSdk,
   invitation: DidCommOutOfBandInvitation,
   flowType: FlowType
 ): AcceptOutOfBandInvitationResult<FlowType> {
+  assertDidcommAgent(paradym.agent)
   // The value is reassigned, but eslint doesn't know this.
   let connectionId: string | undefined
 
   let observable: Observable<DidCommCredentialStateChangedEvent | DidCommProofStateChangedEvent> | undefined
 
   if (flowType === 'issue') {
-    observable = agent.events
+    observable = paradym.agent.events
       .observable<DidCommCredentialStateChangedEvent>(DidCommCredentialEventTypes.DidCommCredentialStateChanged)
       .pipe(
         filter((event) => event.payload.credentialExchangeRecord.state === DidCommCredentialState.OfferReceived),
         filter((event) => event.payload.credentialExchangeRecord.connectionId === connectionId)
       )
   } else if (flowType === 'verify') {
-    observable = agent.events.observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged).pipe(
-      filter((event) => event.payload.proofRecord.state === DidCommProofState.RequestReceived),
-      filter((event) => event.payload.proofRecord.connectionId === connectionId)
-    )
+    observable = paradym.agent.events
+      .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
+      .pipe(
+        filter((event) => event.payload.proofRecord.state === DidCommProofState.RequestReceived),
+        filter((event) => event.payload.proofRecord.connectionId === connectionId)
+      )
   }
 
   const eventPromise = observable
@@ -460,7 +465,7 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
   let outOfBandRecord: DidCommOutOfBandRecord
 
   try {
-    const receiveInvitationResult = await agent.didcomm.oob.receiveInvitation(invitation, {
+    const receiveInvitationResult = await paradym.agent.didcomm.oob.receiveInvitation(invitation, {
       label: '',
       reuseConnection: true,
     })
@@ -470,20 +475,22 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
     // Assign connectionId so it can be used in the observables.
     connectionId = connectionRecord?.id
   } catch (error) {
-    agent.config.logger.error(`Error while receiving invitation: ${error as string}`)
-    throw new ParadymWalletInvitationReceiveError((error as Error).message)
+    paradym.logger.error(`Error while receiving invitation.`, { error })
+    if (error instanceof CredoError && error.message.includes('has already been received')) {
+      throw new ParadymWalletInvitationAlreadyUsedError()
+    }
+    throw new ParadymWalletInvitationReceiveError()
   }
 
   try {
     const event = await eventPromise
-    agent.config.logger.debug(`Received event ${event?.type}`)
+    paradym.logger.debug(`Received event ${event?.type}`)
 
     if (!event) {
       return {
         connectionId: connectionId as string,
         flowType: 'connect',
-        // biome-ignore lint/suspicious/noExplicitAny: no explanation
-      } as any
+      } as unknown as AcceptOutOfBandInvitationResult<FlowType>
     }
 
     if (event.type === DidCommCredentialEventTypes.DidCommCredentialStateChanged) {
@@ -491,31 +498,30 @@ export async function acceptOutOfBandInvitation<FlowType extends 'issue' | 'veri
         credentialExchangeId: event.payload.credentialExchangeRecord.id,
         connectionId,
         flowType: 'issue',
-        // biome-ignore lint/suspicious/noExplicitAny: No explanation
-      } as any
+      } as unknown as AcceptOutOfBandInvitationResult<FlowType>
     }
     if (event.type === DidCommProofEventTypes.ProofStateChanged) {
       return {
         proofExchangeId: event.payload.proofRecord.id,
         connectionId,
         flowType: 'verify',
-        // biome-ignore lint/suspicious/noExplicitAny: No explanation
-      } as any
+      } as unknown as AcceptOutOfBandInvitationResult<FlowType>
     }
   } catch (error) {
-    agent.config.logger.error('Error while accepting out of band invitation.')
+    paradym.logger.error('Error while accepting out of band invitation.', { error })
 
     // Delete OOB record
-    const outOfBandRepository = agent.dependencyManager.resolve<DidCommOutOfBandRepository>(DidCommOutOfBandRepository)
-    await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
+    const outOfBandRepository =
+      paradym.agent.dependencyManager.resolve<DidCommOutOfBandRepository>(DidCommOutOfBandRepository)
+    await outOfBandRepository.deleteById(paradym.agent.context, outOfBandRecord.id)
 
     // Delete connection record
     // TODO: delete did and mediation stuff
     if (connectionRecord) {
-      await agent.didcomm.connections.deleteById(connectionRecord.id)
+      await paradym.agent.didcomm.connections.deleteById(connectionRecord.id)
     }
 
-    throw new ParadymWalletInvitationError((error as Error).message)
+    throw new ParadymWalletInvitationError()
   }
 
   throw new ParadymWalletInvitationError()

@@ -1,4 +1,3 @@
-import { InvalidPinError } from '@easypid/crypto/error'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
@@ -9,6 +8,7 @@ import { useToastController } from '@package/ui'
 import type { FormattedSubmission } from '@paradym/wallet-sdk'
 import {
   type ActivityStatus,
+  ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
   storeSharedActivityForCredentialsForRequest,
   useParadym,
@@ -81,7 +81,7 @@ export function FunkeMdocOfflineSharingScreen({
         await setWalletServiceProviderPin(pin.split('').map(Number))
       } catch (e) {
         setIsProcessing(false)
-        if (e instanceof InvalidPinError) {
+        if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
           onPinError?.()
           return handleError({
             reason: t(commonMessages.invalidPinEntered),

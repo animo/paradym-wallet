@@ -1,4 +1,5 @@
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
+import { CredoError } from '@credo-ts/core'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { createContext, type PropsWithChildren, useContext, useState } from 'react'
 import {
@@ -14,6 +15,7 @@ import { type DcApiResolveRequestOptions, dcApiResolveRequest } from './dcApi/re
 import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
 import { type DcApiSendResponseOptions, dcApiSendResponse } from './dcApi/sendResponse'
 import type { CredentialForDisplayId } from './display/credential'
+import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletBiometricAuthenticationError } from './error'
 import { useParadym } from './hooks'
 import { parseDidCommInvitation } from './invitation/parser'
 import {
@@ -111,16 +113,8 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
    * Initialized the wallet sdk and sets everything up for usage
    *
    */
-  public async initialize(): Promise<ParadymWalletSdkResult> {
-    try {
-      await this.agent.initialize()
-      return { success: true }
-    } catch (e) {
-      if (e instanceof AskarStoreInvalidKeyError) {
-        return { success: false, message: 'Invalid key' }
-      }
-      return { success: false, message: (e as Error).message, cause: (e as Error).cause as string }
-    }
+  public async initialize(): Promise<void> {
+    await this.agent.initialize()
   }
 
   /**
@@ -182,7 +176,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
       const parsedInvitation = await parseDidCommInvitation(this, invitation)
       return {
         success: true,
-        ...(await resolveOutOfBandInvitation(this.agent, parsedInvitation)),
+        ...(await resolveOutOfBandInvitation(this, parsedInvitation)),
       }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : `${error}` }
@@ -253,7 +247,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): SecureUnlockReturn {
   const [state, setState] = useState<SecureUnlockState>('initializing')
   const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
-  const [canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
+  const [_canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
   const [biometricsUnlockAttempts, setBiometricsUnlockAttempts] = useState(0)
   const [unlockMethod, setUnlockMethod] = useState<UnlockMethod>()
   const [isUnlocking, setIsUnlocking] = useState(false)
@@ -312,25 +306,9 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       state,
       unlockMethod,
       reinitialize,
-      enableBiometricUnlock: async () => {
-        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-        setIsBiometricsEnabled(true)
-      },
-      disableBiometricUnlock: async () => {
-        await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
-        setIsBiometricsEnabled(false)
-      },
-      unlock: async (options) => {
+      unlock: async (_options) => {
         try {
           const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-          // TODO: need extra option to know whether user wants to use biometrics?
-          // TODO: do we need to check whether already stored?
-          if (canUseBiometrics && options?.enableBiometrics) {
-            await secureWalletKey.storeWalletKey(walletKey, walletKeyVersion)
-            await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-          }
-
           const id = `paradym-wallet-${walletKeyVersion}`
           const key = walletKey
 
@@ -340,26 +318,21 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             id,
             key,
           })
-          const result = await pws.initialize()
-          if (result.success) {
-            setState('unlocked')
-            setParadym(pws)
-          } else {
-            console.error(result)
-            console.error(result.cause)
-            console.error(result.message)
-            throw Error(result.message)
-          }
+          await pws.agent.initialize()
+          setState('unlocked')
+          setParadym(pws)
           return pws
         } catch (error) {
-          if (error instanceof AskarStoreInvalidKeyError) {
-            if (unlockMethod === 'biometrics') {
-              setCanTryUnlockingUsingBiometrics(false)
-            }
-
+          if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) {
             setState('locked')
             setWalletKey(undefined)
             setUnlockMethod(undefined)
+
+            if (unlockMethod === 'biometrics') {
+              setCanTryUnlockingUsingBiometrics(false)
+              throw new ParadymWalletBiometricAuthenticationError()
+            }
+            throw new ParadymWalletAuthenticationInvalidPinError()
           }
           throw error
         }
@@ -486,10 +459,6 @@ export type SecureUnlockReturnWalletKeyAcquired = {
   unlockMethod: UnlockMethod
   unlock: (options?: UnlockOptions) => Promise<ParadymWalletSdk>
   reinitialize: () => void
-
-  // TODO(sdk): can this just be removed and only be added when unlocked?
-  enableBiometricUnlock: () => Promise<void>
-  disableBiometricUnlock: () => Promise<void>
 }
 
 export type SecureUnlockReturnLocked = {

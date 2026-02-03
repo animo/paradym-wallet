@@ -42,25 +42,26 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
     const agent = paradym.agent
     assertAgentType(agent, 'didcomm')
 
-    const w3cRecord = await acceptCredential().catch(async (error) => {
+    try {
+      const w3cRecord = await acceptCredential()
+      if (w3cRecord) {
+        // TODO(sdk): add to acceptCredential method in SDK
+        await storeReceivedActivity(paradym, {
+          entityId: credentialExchange?.connectionId,
+          name: display.issuer.name ?? t(commonMessages.unknown),
+          logo: display.issuer.logo,
+          backgroundColor: '#ffffff', // Default to a white background for now
+          deferredCredentials: [],
+          credentialIds: [`w3c-credential-${w3cRecord?.id}`],
+        })
+      }
+    } catch (error) {
       paradym.logger.error('Error accepting credential over DIDComm', {
         error,
       })
 
       if (credentialExchange) await agent.didcomm.credentials.deleteById(credentialExchange.id)
       setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
-      return undefined
-    })
-
-    if (w3cRecord) {
-      await storeReceivedActivity(paradym, {
-        entityId: credentialExchange?.connectionId,
-        name: display.issuer.name ?? t(commonMessages.unknown),
-        logo: display.issuer.logo,
-        backgroundColor: '#ffffff', // Default to a white background for now
-        deferredCredentials: [],
-        credentialIds: [`w3c-credential-${w3cRecord?.id}`],
-      })
     }
   }
 

@@ -4,9 +4,15 @@ import { useLingui } from '@lingui/react/macro'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import type { ResolveOutOfBandInvitationResult } from '@paradym/wallet-sdk'
-import { useDidCommConnectionActions, useParadym } from '@paradym/wallet-sdk'
+import {
+  ParadymWalletDidCommMissingResolvedParameter,
+  ParadymWalletInvitationAlreadyUsedError,
+  ParadymWalletInvitationReceiveError,
+  useDidCommConnectionActions,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
@@ -52,6 +58,17 @@ export function DidCommNotificationScreen() {
   const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
   const { t } = useLingui()
 
+  const setErrorReasonWithError = useCallback(
+    (baseMessage: string, error: unknown) => {
+      if (isDevelopmentModeEnabled && error instanceof Error) {
+        setErrorReason(`${baseMessage}\n\nDevelopment mode error:\n${error.message}`)
+      } else {
+        setErrorReason(baseMessage)
+      }
+    },
+    [isDevelopmentModeEnabled]
+  )
+
   const handleNavigation = () => {
     // When starting from the inbox, we want to go back to the inbox on finish
     if (params.navigationType === 'inbox') {
@@ -77,8 +94,13 @@ export function DidCommNotificationScreen() {
         type: result.flowType,
       })
     } catch (e) {
-      setErrorReason((e as Error).message)
-      throw new Error('Error accepting connection')
+      if (e instanceof ParadymWalletDidCommMissingResolvedParameter) {
+        setErrorReasonWithError(t(commonMessages.invitationResolvedParameterMissing), e)
+      } else if (e instanceof ParadymWalletInvitationReceiveError) {
+        setErrorReasonWithError(t(commonMessages.unableToRetrieveInvitation), e)
+      } else if (e instanceof ParadymWalletInvitationAlreadyUsedError) {
+        setErrorReasonWithError(t(commonMessages.invitationAlreadyScanned), e)
+      }
     }
   }
 
@@ -109,11 +131,7 @@ export function DidCommNotificationScreen() {
           setErrorReason(resolvedInvite.message)
         }
       } catch (error) {
-        if (isDevelopmentModeEnabled && error instanceof Error) {
-          setErrorReason(`${t(messages.errorParsingInvitation)}\n\nDevelopment mode error:\n${error.message}`)
-        } else {
-          setErrorReason(t(messages.errorParsingInvitation))
-        }
+        setErrorReasonWithError(t(messages.errorParsingInvitation), error)
       }
     }
 

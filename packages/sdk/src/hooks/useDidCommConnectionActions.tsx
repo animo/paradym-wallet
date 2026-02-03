@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useCallback } from 'react'
+import { ParadymWalletDidCommMissingResolvedParameter } from '../error'
 import { acceptOutOfBandInvitation, type ResolveOutOfBandInvitationResult } from '../invitation/resolver'
 import { useParadym } from './useParadym'
 
@@ -9,9 +10,9 @@ export function useDidCommConnectionActions(resolved?: ResolveOutOfBandInvitatio
   const { mutateAsync: acceptConnectionMutation, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommConnection', resolved?.outOfBandInvitation.id],
     mutationFn: async () => {
-      if (!resolved) throw new Error("Missing 'resolved' parameter")
+      if (!resolved) throw new ParadymWalletDidCommMissingResolvedParameter()
 
-      const result = await acceptOutOfBandInvitation(paradym.agent, resolved.outOfBandInvitation, resolved.flowType)
+      const result = await acceptOutOfBandInvitation(paradym, resolved.outOfBandInvitation, resolved.flowType)
       return result
     },
   })

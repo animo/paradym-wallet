@@ -4,11 +4,16 @@ import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { FlexPage, Heading, HeroIcons, IconContainer, useDeviceMedia, useToastController, YStack } from '@package/ui'
-import { useCanUseBiometryBackedWalletKey, useIsBiometricsEnabled, useParadym } from '@paradym/wallet-sdk'
+import {
+  ParadymWalletAuthenticationInvalidPinError,
+  ParadymWalletBiometricAuthenticationError,
+  useCanUseBiometryBackedWalletKey,
+  useIsBiometricsEnabled,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { Redirect, useLocalSearchParams } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
-import { InvalidPinError } from '../crypto/error'
 import { useResetWalletDevMenu } from '../hooks/useResetWalletDevMenu'
 
 /**
@@ -29,6 +34,7 @@ export default function Authenticate() {
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
   const [isBiometricsEnabled] = useIsBiometricsEnabled()
   const canUseBiometryBackedWalletKey = useCanUseBiometryBackedWalletKey()
+  const [shouldPromptBiometrics, setShouldPromptBiometrics] = useState(true)
 
   const isLoading = paradym.state === 'locked' && paradym.isUnlocking
 
@@ -47,7 +53,12 @@ export default function Authenticate() {
   }, [])
 
   useEffect(() => {
-    if (paradym.state === 'locked' && paradym.canTryUnlockingUsingBiometrics && isAllowedToUnlockWithFaceId) {
+    if (
+      paradym.state === 'locked' &&
+      paradym.canTryUnlockingUsingBiometrics &&
+      isAllowedToUnlockWithFaceId &&
+      shouldPromptBiometrics
+    ) {
       paradym.tryUnlockingUsingBiometrics()
     }
   }, [paradym.state, isAllowedToUnlockWithFaceId])
@@ -59,10 +70,16 @@ export default function Authenticate() {
     paradym
       .unlock()
       .catch((error) => {
-        // TODO(sdk): choose correct error
-        if (error instanceof InvalidPinError) {
+        if (
+          error instanceof ParadymWalletAuthenticationInvalidPinError ||
+          error instanceof ParadymWalletBiometricAuthenticationError
+        ) {
           pinInputRef.current?.clear()
           pinInputRef.current?.shake()
+        }
+        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
+          // We do not want to prompt biometrics directly after an incorrect pin input
+          setShouldPromptBiometrics(false)
         }
       })
       .finally(() => setIsInitializingAgent(false))

@@ -18,9 +18,8 @@ import { CURRENT_APP_TYPE } from '@easypid/config/appType'
 import { getShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import type { ParadymWalletSdk } from '@paradym/wallet-sdk'
-import { secureWalletKey } from '@paradym/wallet-sdk'
+import { ParadymWalletAuthenticationInvalidPinError, secureWalletKey } from '@paradym/wallet-sdk'
 import type { AnyAgent } from '@paradym/wallet-sdk/agent'
-import { InvalidPinError } from './error'
 import { deriveKeypairFromPin } from './pin'
 
 // TODO: should auto reset after X seconds
@@ -50,7 +49,7 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
       await agent.initialize()
     } catch (error) {
       if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) {
-        throw new InvalidPinError()
+        throw new ParadymWalletAuthenticationInvalidPinError()
       }
       throw error
     }

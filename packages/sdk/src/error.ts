@@ -30,9 +30,13 @@ export class ParadymWalletInvitationDidcommUnsupportedProtocolError extends Para
 export class ParadymWalletInvitationOpenIdCredentialHandlerMustBeDefinedError extends ParadymWalletInvitationError {}
 export class ParadymWalletInvitationOpenIdAuthorizationRequestHandlerMustBeDefinedError extends ParadymWalletInvitationError {}
 
+export class ParadymWalletDidCommMissingResolvedParameter extends ParadymWalletInvitationError {}
+
 export class ParadymWalletNoRequestToResolveError extends ParadymWalletInvitationError {}
 
 export class ParadymWalletInvalidTrustMechnismError extends ParadymWalletSdkError {}
+
+export class ParadymWalletAuthenticationInvalidPinError extends ParadymWalletSdkError {}
 
 export class ParadymWalletBiometricAuthenticationError extends ParadymWalletSdkError {
   public static tryParseFromError(error: unknown): ParadymWalletBiometricAuthenticationError | null {
