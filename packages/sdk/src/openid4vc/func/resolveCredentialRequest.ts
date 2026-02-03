@@ -40,7 +40,6 @@ export const resolveCredentialRequest = async ({
       // ?.trustedEntityIds,
     })
 
-    // TODO(sdk): will this still work if no eudi is used?
     const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(paradym.agent.context, {
       resolvedAuthorizationRequest: resolved,
       allowUntrustedSigned: allowUntrusted,

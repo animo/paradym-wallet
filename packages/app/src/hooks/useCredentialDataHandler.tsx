@@ -1,11 +1,6 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
-import {
-  type InvitationType,
-  type ParadymWalletInvitationParseError,
-  parseInvitationUrl,
-  useParadym,
-} from '@paradym/wallet-sdk'
+import { type InvitationType, parseInvitationUrl } from '@paradym/wallet-sdk'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'expo-router'
 
@@ -17,7 +12,6 @@ export interface CredentialDataHandlerOptions {
 export const useCredentialDataHandler = () => {
   const { push, replace } = useRouter()
   const { t } = useLingui()
-  const { paradym } = useParadym('unlocked')
 
   const handleCredentialData = async (
     dataUrl: string,
@@ -26,12 +20,12 @@ export const useCredentialDataHandler = () => {
     | { success: true }
     | {
         success: false
-        error: ParadymWalletInvitationParseError | 'invitation_type_not_allowed'
+        error: 'invitation_type_not_allowed' | 'invitation_not_found'
         message: string
       }
   > => {
     try {
-      const invitationData = await parseInvitationUrl(paradym, dataUrl)
+      const invitationData = await parseInvitationUrl(dataUrl)
       const routeMethodName = options?.routeMethod ?? 'push'
       const routeMethod = routeMethodName === 'push' ? push : replace
 
@@ -53,6 +47,7 @@ export const useCredentialDataHandler = () => {
         })
         return { success: true } as const
       }
+
       if (invitationData.type === 'openid-authorization-request') {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         routeMethod({
@@ -63,6 +58,7 @@ export const useCredentialDataHandler = () => {
         })
         return { success: true } as const
       }
+
       if (invitationData.type === 'didcomm') {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         routeMethod({
@@ -73,6 +69,7 @@ export const useCredentialDataHandler = () => {
         })
         return { success: true } as const
       }
+
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       return {
         success: false,
@@ -83,7 +80,7 @@ export const useCredentialDataHandler = () => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       return {
         success: false,
-        error: 'invitation_type_not_allowed',
+        error: 'invitation_not_found',
         message: (e as Error).message,
       }
     }

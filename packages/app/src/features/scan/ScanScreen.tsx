@@ -44,13 +44,7 @@ export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScree
     if (!result.success) {
       const isUnsupportedUrl =
         unsupportedUrlPrefixes.find((x) => scannedData.includes(x)) || result.error === 'invitation_type_not_allowed'
-      setHelpText(
-        isUnsupportedUrl
-          ? t(qrMessages.unsupportedQrCode)
-          : result.message
-            ? result.message
-            : t(qrMessages.invalidQrCode)
-      )
+      setHelpText(isUnsupportedUrl ? t(qrMessages.unsupportedQrCode) : t(qrMessages.invalidQrCode))
       setIsLoading(false)
     }
 

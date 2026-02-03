@@ -100,10 +100,7 @@ export async function parseDidCommInvitation(
   return parseInvitationJson(invitation)
 }
 
-export async function parseInvitationUrl(
-  _paradym: ParadymWalletSdk,
-  invitationUrl: string
-): Promise<InvitationUrlResult> {
+export async function parseInvitationUrl(invitationUrl: string): Promise<InvitationUrlResult> {
   if (isOpenIdCredentialOffer(invitationUrl)) {
     return {
       format: 'url',

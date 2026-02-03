@@ -75,6 +75,9 @@ export function FunkeCredentialNotificationScreen() {
         setResolvedOffer(result)
       })
       .catch((error) => {
+        console.error('REACHED')
+        console.error(typeof error)
+        console.error(error)
         setErrorReasonWithError(t(commonMessages.credentialInformationCouldNotBeExtracted), error)
         paradym.logger.error(`Couldn't resolve OpenID4VCI offer`, {
           error,
@@ -262,6 +265,20 @@ export function FunkeCredentialNotificationScreen() {
           },
         ]}
         onCancel={onCancel}
+        errorScreen={() => (
+          <InteractionErrorSlide key="credential-error" flowType="issue" reason={errorReason} onCancel={onCancel} />
+        )}
+        isError={errorReason !== undefined}
+        confirmation={{
+          title: t({
+            id: 'receiveCredential.stopTitle',
+            message: 'Stop card offer?',
+          }),
+          description: t({
+            id: 'receiveCredential.stopDescription',
+            message: 'If you stop, the card offer will be cancelled.',
+          }),
+        }}
       />
     )
   }

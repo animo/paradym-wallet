@@ -14,9 +14,8 @@ import { type DcApiResolveRequestOptions, dcApiResolveRequest } from './dcApi/re
 import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
 import { type DcApiSendResponseOptions, dcApiSendResponse } from './dcApi/sendResponse'
 import type { CredentialForDisplayId } from './display/credential'
-import { ParadymWalletMustBeInitializedError } from './error'
 import { useParadym } from './hooks'
-import { type InvitationResult, parseDidCommInvitation, parseInvitationUrl } from './invitation/parser'
+import { parseDidCommInvitation } from './invitation/parser'
 import {
   type ResolveCredentialOfferOptions,
   type ResolveOutOfBandInvitationResult,
@@ -49,7 +48,7 @@ import {
 } from './proximity/getSubmissionForMdocDocumentRequest'
 import { secureWalletKey, setIsBiometricsEnabled } from './secure'
 import { KeychainError } from './secure/error/KeychainError'
-import { type CredentialRecord, deleteCredential, storeCredential } from './storage/credentials'
+import { deleteCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
 import { reset } from './utils/reset'
@@ -97,10 +96,6 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
   public get isOpenId4VcEnabled() {
     return !!this.agent.openid4vc
-  }
-
-  private assertAgentIsInitialized() {
-    if (!this.agent.isInitialized) throw new ParadymWalletMustBeInitializedError()
   }
 
   public get walletId() {
@@ -169,11 +164,6 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
     )
   }
 
-  /**
-   *
-   * @todo(sdk) New name for this provider
-   *
-   */
   public static AppProvider({ children, recordIds }: PropsWithChildren<{ recordIds: string[] }>) {
     const { paradym } = useParadym('unlocked')
 
@@ -182,55 +172,6 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
         {children}
       </RecordProvider>
     )
-  }
-
-  public async receiveInvitation(
-    invitationUrl: string
-  ): Promise<ParadymWalletSdkResult<Omit<InvitationResult, '__internal'>>> {
-    this.assertAgentIsInitialized()
-
-    try {
-      const invitationResult = await parseInvitationUrl(this, invitationUrl)
-      return { success: true, ...invitationResult }
-    } catch (error) {
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : (error as string),
-      }
-    }
-  }
-
-  /**
-   *
-   * @todo how do we want to deal with didcomm proofs and credentials?
-   *
-   */
-  public get credentials() {
-    return {
-      delete: this.deleteCredentials,
-      store: this.storeCredential,
-    }
-  }
-
-  private async deleteCredentials(
-    ids: CredentialForDisplayId | Array<CredentialForDisplayId>
-  ): Promise<ParadymWalletSdkResult> {
-    try {
-      const deleteCredentials = (Array.isArray(ids) ? ids : [ids]).map((id) => deleteCredential(this, id))
-      await Promise.all(deleteCredentials)
-      return { success: true }
-    } catch (error) {
-      return { success: false, message: error instanceof Error ? error.message : (error as string) }
-    }
-  }
-
-  private async storeCredential(record: CredentialRecord): Promise<ParadymWalletSdkResult> {
-    try {
-      await storeCredential(this, record)
-      return { success: true }
-    } catch (error) {
-      return { success: false, message: error instanceof Error ? error.message : (error as string) }
-    }
   }
 
   public async resolveDidCommInvitation(
@@ -245,6 +186,18 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
       }
     } catch (error) {
       return { success: false, message: error instanceof Error ? error.message : `${error}` }
+    }
+  }
+
+  public async deleteCredentials(
+    ids: CredentialForDisplayId | Array<CredentialForDisplayId>
+  ): Promise<ParadymWalletSdkResult> {
+    try {
+      const deleteCredentials = (Array.isArray(ids) ? ids : [ids]).map((id) => deleteCredential(this, id))
+      await Promise.all(deleteCredentials)
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : (error as string) }
     }
   }
 

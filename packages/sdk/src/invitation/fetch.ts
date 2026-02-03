@@ -38,7 +38,6 @@ export async function fetchInvitationDataUrl(dataUrl: string): Promise<FetchInvi
   }
 }
 
-// TODO: what is the structure for didcomm?
 function handleJsonResponse(json: unknown): FetchInvitationResult {
   // We expect a JSON object
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
@@ -46,11 +45,19 @@ function handleJsonResponse(json: unknown): FetchInvitationResult {
   }
 
   if ('@type' in json) {
-    throw new ParadymWalletInvitationNotRecognizedError('not yet supported')
+    return {
+      format: 'parsed',
+      type: 'didcomm',
+      data: json,
+    }
   }
 
   if ('credential_issuer' in json) {
-    throw new ParadymWalletInvitationNotRecognizedError('not yet supported')
+    return {
+      format: 'parsed',
+      type: 'openid-credential-offer',
+      data: json,
+    }
   }
 
   throw new ParadymWalletInvitationNotRecognizedError()
