@@ -292,13 +292,3 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     },
   }
 }
-
-/**
- * Format requested predicate into string
- * @example `age greater than 18`
- *
- * @todo we could improve on this rendering, by e.g. recognizing dates in predicates (e.g. 20200101)
- */
-// function formatPredicate(t: typeof _t, requestedPredicate: AnonCredsRequestedPredicate) {
-//   return `${requestedPredicate.name} ${t(predicateMessages[requestedPredicate.p_type])} ${requestedPredicate.p_value}`
-// }

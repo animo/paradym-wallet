@@ -312,10 +312,9 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       unlock: async (_options) => {
         try {
           const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-          const id = `paradym-wallet-${walletKeyVersion}`
+          const id = configuration.id ? `${configuration.id}-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
           const key = walletKey
 
-          // TODO(sdk): let the user provide an id? Or should we create one by default
           const pws = new ParadymWalletSdk({
             ...configuration,
             id,

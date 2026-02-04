@@ -47,7 +47,6 @@ export const retrieveCredentials = async (
     },
     response: dc,
     issuerMetadata: options.resolvedCredentialOffer.metadata,
-    // TODO(sdk): client id
     clientId: options.authorization?.clientId,
   }))
 
