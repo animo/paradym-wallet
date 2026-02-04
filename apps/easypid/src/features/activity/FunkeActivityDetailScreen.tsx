@@ -1,17 +1,12 @@
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import {
-  type IssuanceActivity,
-  type PresentationActivity,
-  type SignedActivity,
-  useActivities,
-  useCredentialsForDisplay,
-} from '@package/agent'
 import { CardWithAttributes, getActivityInteraction, MiniDocument, TextBackButton } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
+import type { IssuanceActivity, PresentationActivity, SignedActivity } from '@paradym/wallet-sdk'
+import { useActivities, useCredentials } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
@@ -107,7 +102,7 @@ const activityMessages = {
 }
 
 export function ReceivedActivityDetailSection({ activity }: { activity: IssuanceActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
   const { withHaptics } = useHaptics()
   const { push } = useRouter()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
@@ -187,10 +182,10 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
           return (
             <FunkeCredentialRowCard
               key={credential.id}
-              name={credential.display.name}
+              name={credential.display.name ?? t(commonMessages.unknown)}
               textColor={credential.display.textColor ?? '$grey-100'}
               backgroundColor={credential.display.backgroundColor ?? '$grey-900'}
-              issuer={credential.display.issuer.name}
+              issuer={credential.display.issuer.name ?? t(commonMessages.unknown)}
               logo={credential.display.issuer.logo}
               issuedAt={credential.metadata.issuedAt ? new Date(credential.metadata.issuedAt) : undefined}
               onPress={() => {
@@ -205,7 +200,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
 }
 
 export function SharedActivityDetailSection({ activity }: { activity: PresentationActivity | SignedActivity }) {
-  const { credentials } = useCredentialsForDisplay()
+  const { credentials } = useCredentials()
 
   const amountShared = activity.request.credentials?.length ?? 0
   const { t } = useLingui()
@@ -312,7 +307,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
                   <CardWithAttributes
                     key={credential.id}
                     id={credential.id}
-                    name={credential.display.name}
+                    name={credential.display.name ?? t(commonMessages.unknown)}
                     issuerImage={credential.display.issuer.logo}
                     textColor={credential.display.textColor}
                     backgroundColor={credential.display.backgroundColor}

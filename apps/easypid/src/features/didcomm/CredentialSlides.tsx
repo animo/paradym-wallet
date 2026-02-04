@@ -1,9 +1,9 @@
-import { useParadymAgent } from '@easypid/agent'
 import { useLingui } from '@lingui/react/macro'
-import { storeReceivedActivity, useDidCommCredentialActions } from '@package/agent'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import { storeReceivedActivity, useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk'
+import { assertAgentType } from '@paradym/wallet-sdk/agent'
 import { useCallback, useState } from 'react'
 import { useDevelopmentMode } from '../../hooks'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
@@ -18,7 +18,7 @@ type CredentialSlidesProps = {
 }
 
 export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, onComplete }: CredentialSlidesProps) {
-  const { agent } = useParadymAgent()
+  const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const [errorReason, setErrorReason] = useState<string>()
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
@@ -39,29 +39,36 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   )
 
   const onCredentialAccept = async () => {
-    const w3cRecord = await acceptCredential().catch(async (error) => {
-      agent.config.logger.error('Error accepting credential over DIDComm', {
+    const agent = paradym.agent
+    assertAgentType(agent, 'didcomm')
+
+    try {
+      const w3cRecord = await acceptCredential()
+      if (w3cRecord) {
+        // TODO(sdk): add to acceptCredential method in SDK
+        await storeReceivedActivity(paradym, {
+          entityId: credentialExchange?.connectionId,
+          name: display.issuer.name ?? t(commonMessages.unknown),
+          logo: display.issuer.logo,
+          backgroundColor: '#ffffff', // Default to a white background for now
+          deferredCredentials: [],
+          credentialIds: [`w3c-credential-${w3cRecord?.id}`],
+        })
+      }
+    } catch (error) {
+      paradym.logger.error('Error accepting credential over DIDComm', {
         error,
       })
 
       if (credentialExchange) await agent.didcomm.credentials.deleteById(credentialExchange.id)
       setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
-      return undefined
-    })
-
-    if (w3cRecord) {
-      await storeReceivedActivity(agent, {
-        entityId: credentialExchange?.connectionId,
-        name: display.issuer.name,
-        logo: display.issuer.logo,
-        backgroundColor: '#ffffff', // Default to a white background for now
-        deferredCredentials: [],
-        credentialIds: [`w3c-credential-${w3cRecord?.id}`],
-      })
     }
   }
 
   const onCredentialDecline = () => {
+    const agent = paradym.agent
+    assertAgentType(agent, 'didcomm')
+
     if (credentialExchange) {
       declineCredential().finally(() => {
         void agent.didcomm.credentials.deleteById(credentialExchange.id)

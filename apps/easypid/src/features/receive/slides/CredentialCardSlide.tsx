@@ -1,9 +1,9 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import type { CredentialDisplay } from '@package/agent'
 import { DualResponseButtons, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Heading, MiniCardRowItem, Paragraph, Stack, YStack } from '@package/ui'
+import type { CredentialDisplay } from '@paradym/wallet-sdk'
 
 interface CredentialCardSlideProps {
   type: 'presentation' | 'pin' | 'noAuth'
@@ -54,7 +54,7 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
   const { t } = useLingui()
   const { onNext, onCancel } = useWizard()
 
-  const content = useContentType(type, display.issuer.name)
+  const content = useContentType(type, display.issuer.name ?? t(commonMessages.unknown))
 
   const goToNextSlide = () => {
     onNext()
@@ -68,8 +68,8 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
           <Paragraph>{content.subtitle}</Paragraph>
         </YStack>
         <MiniCardRowItem
-          name={display.name}
-          subtitle={display.issuer.name}
+          name={display.name ?? t(commonMessages.unknown)}
+          subtitle={display.issuer.name ?? t(commonMessages.unknown)}
           issuerImageUri={display.issuer.logo?.url}
           backgroundImageUri={display.backgroundImage?.url}
           backgroundColor={display.backgroundColor ?? '$grey-900'}

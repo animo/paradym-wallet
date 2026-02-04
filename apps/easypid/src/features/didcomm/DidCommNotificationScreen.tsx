@@ -1,16 +1,18 @@
-import { useParadymAgent } from '@easypid/agent'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import {
-  parseDidCommInvitation,
-  type ResolveOutOfBandInvitationResultSuccess,
-  resolveOutOfBandInvitation,
-  useDidCommConnectionActions,
-} from '@package/agent'
 import { SlideWizard, usePushToWallet } from '@package/app'
+import { commonMessages } from '@package/translations'
+import type { ResolveOutOfBandInvitationResult } from '@paradym/wallet-sdk'
+import {
+  ParadymWalletDidCommMissingResolvedParameter,
+  ParadymWalletInvitationAlreadyUsedError,
+  ParadymWalletInvitationReceiveError,
+  useDidCommConnectionActions,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
@@ -40,7 +42,7 @@ const messages = {
 }
 
 export function DidCommNotificationScreen() {
-  const { agent } = useParadymAgent()
+  const { paradym } = useParadym('unlocked')
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
@@ -48,13 +50,24 @@ export function DidCommNotificationScreen() {
   const [errorReason, setErrorReason] = useState<string>()
   const [hasHandledNotificationLoading, setHasHandledNotificationLoading] = useState(false)
   const [readyToNavigate, setReadyToNavigate] = useState(false)
-  const [resolvedInvitation, setResolvedInvitation] = useState<ResolveOutOfBandInvitationResultSuccess | undefined>()
+  const [resolvedInvitation, setResolvedInvitation] = useState<ResolveOutOfBandInvitationResult | undefined>()
   const [flow, setFlow] = useState<{
     type: 'issue' | 'verify' | 'connect'
     id: string
   }>()
   const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
   const { t } = useLingui()
+
+  const setErrorReasonWithError = useCallback(
+    (baseMessage: string, error: unknown) => {
+      if (isDevelopmentModeEnabled && error instanceof Error) {
+        setErrorReason(`${baseMessage}\n\nDevelopment mode error:\n${error.message}`)
+      } else {
+        setErrorReason(baseMessage)
+      }
+    },
+    [isDevelopmentModeEnabled]
+  )
 
   const handleNavigation = () => {
     // When starting from the inbox, we want to go back to the inbox on finish
@@ -69,8 +82,8 @@ export function DidCommNotificationScreen() {
   const onComplete = () => handleNavigation()
 
   const onConnectionAccept = async () => {
-    const result = await acceptConnection()
-    if (result.success) {
+    try {
+      const result = await acceptConnection()
       setFlow({
         id:
           result.flowType === 'issue'
@@ -80,18 +93,24 @@ export function DidCommNotificationScreen() {
               : result.connectionId,
         type: result.flowType,
       })
-    } else {
-      setErrorReason(result.error)
-      throw new Error('Error accepting connection')
+    } catch (e) {
+      if (e instanceof ParadymWalletDidCommMissingResolvedParameter) {
+        setErrorReasonWithError(t(commonMessages.invitationResolvedParameterMissing), e)
+      } else if (e instanceof ParadymWalletInvitationReceiveError) {
+        setErrorReasonWithError(t(commonMessages.unableToRetrieveInvitation), e)
+      } else if (e instanceof ParadymWalletInvitationAlreadyUsedError) {
+        setErrorReasonWithError(t(commonMessages.invitationAlreadyScanned), e)
+      }
     }
   }
 
+  // TODO(sdk): we can probably abstract a bit more from this
   useEffect(() => {
     async function handleInvitation() {
       if (hasHandledNotificationLoading) return
       setHasHandledNotificationLoading(true)
       try {
-        agent.config.logger.debug('Loading DIDComm invitation from params', {
+        paradym.logger.debug('Loading DIDComm invitation from params', {
           invitation: params.invitation,
           invitationUrl: params.invitationUrl,
         })
@@ -105,35 +124,28 @@ export function DidCommNotificationScreen() {
           return
         }
 
-        const parseResult = await parseDidCommInvitation(agent, invitation)
-        if (!parseResult.success) {
-          setErrorReason(parseResult.error)
-          return
-        }
-
-        const resolveResult = await resolveOutOfBandInvitation(agent, parseResult.result)
-        if (!resolveResult.success) {
-          setErrorReason(resolveResult.error)
-          return
-        }
-
-        setResolvedInvitation(resolveResult)
-      } catch (error: unknown) {
-        agent.config.logger.error('Error parsing invitation', {
-          error,
-        })
-        if (isDevelopmentModeEnabled && error instanceof Error) {
-          setErrorReason(`${t(messages.errorParsingInvitation)}\n\nDevelopment mode error:\n${error.message}`)
+        const resolvedInvite = await paradym.resolveDidCommInvitation(invitation)
+        if (resolvedInvite.success) {
+          setResolvedInvitation(resolvedInvite)
         } else {
-          setErrorReason(t(messages.errorParsingInvitation))
+          setErrorReason(resolvedInvite.message)
         }
+      } catch (error) {
+        setErrorReasonWithError(t(messages.errorParsingInvitation), error)
       }
     }
 
     if (params.invitation || params.invitationUrl) {
       void handleInvitation()
     }
-  }, [params.invitation, params.invitationUrl, hasHandledNotificationLoading, agent, isDevelopmentModeEnabled, t])
+  }, [
+    params.invitation,
+    params.invitationUrl,
+    hasHandledNotificationLoading,
+    isDevelopmentModeEnabled,
+    t,
+    paradym.resolveDidCommInvitation,
+  ])
 
   // Delay the navigation to hide the fact we're loading in the new slides based on the flow type
   useEffect(() => {
@@ -145,7 +157,13 @@ export function DidCommNotificationScreen() {
   }, [flow])
 
   if (flow?.type === 'connect' && readyToNavigate) {
-    return <ConnectionSlides name={display.connection.name} onCancel={onCancel} onComplete={onComplete} />
+    return (
+      <ConnectionSlides
+        name={display.connection.name ?? t(commonMessages.unknown)}
+        onCancel={onCancel}
+        onComplete={onComplete}
+      />
+    )
   }
 
   if ((flow?.type === 'issue' && readyToNavigate) || params.credentialExchangeId) {
@@ -197,7 +215,7 @@ export function DidCommNotificationScreen() {
                     ? 'request'
                     : 'connect'
               }
-              name={display.connection.name}
+              name={display.connection.name ?? t(commonMessages.unknown)}
               logo={display.connection.logo}
               entityId={resolvedInvitation?.existingConnection?.id}
               onContinue={onConnectionAccept}

@@ -1,24 +1,24 @@
 import { ClaimFormat, Kms, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
-import {
-  getOpenId4VcCredentialMetadata,
-  type OpenId4VciRequestTokenResponse,
-  type OpenId4VciResolvedCredentialOffer,
-  setOpenId4VcCredentialMetadata,
-} from '@package/agent'
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import {
   acquireRefreshTokenAccessToken,
+  type CredentialRecord,
+  getCredentialCategoryMetadata,
+  getOpenId4VcCredentialMetadata,
+  getRefreshCredentialMetadata,
+  type OpenId4VciRequestTokenResponse,
+  type OpenId4VciResolvedCredentialOffer,
+  type ParadymWalletSdk,
   receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
-} from '@package/agent/invitation/handler'
-import { getRefreshCredentialMetadata } from '@package/agent/openid4vc/refreshMetadata'
-import { updateCredential } from '@package/agent/storage/credential'
+  setOpenId4VcCredentialMetadata,
+  updateCredential,
+} from '@paradym/wallet-sdk'
 import { pidSchemes } from '../constants'
 import { C_PRIME_SD_JWT_MDOC_OFFER } from './bdrPidIssuerOffers'
 import { ReceivePidUseCaseFlow } from './ReceivePidUseCaseFlow'
 
 export interface RefreshPidUseCaseOptions {
-  agent: AppAgent
+  paradym: ParadymWalletSdk
 }
 
 export class RefreshPidUseCase {
@@ -31,9 +31,8 @@ export class RefreshPidUseCase {
   static CLIENT_ID = ReceivePidUseCaseFlow.CLIENT_ID
 
   public static async initialize(options: RefreshPidUseCaseOptions) {
-    const resolved = await resolveOpenId4VciOffer({
-      agent: options.agent,
-      offer: { uri: C_PRIME_SD_JWT_MDOC_OFFER },
+    const resolved = await options.paradym.openid4vc.resolveCredentialOffer({
+      offerUri: C_PRIME_SD_JWT_MDOC_OFFER,
       fetchAuthorization: false,
     })
 
@@ -71,7 +70,7 @@ export class RefreshPidUseCase {
     }
 
     const accessToken = await acquireRefreshTokenAccessToken({
-      agent: this.options.agent,
+      paradym: this.options.paradym,
       clientId: ReceivePidUseCaseFlow.CLIENT_ID,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       authorizationServer: this.resolvedCredentialOffer.metadata.authorizationServers[0].issuer,
@@ -93,7 +92,7 @@ export class RefreshPidUseCase {
       .map(([id]) => id)
 
     const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
-      agent: this.options.agent,
+      paradym: this.options.paradym,
       accessToken,
       resolvedCredentialOffer: this.resolvedCredentialOffer,
       credentialConfigurationIdsToRequest,
@@ -126,7 +125,7 @@ export class RefreshPidUseCase {
         }
 
         // Should we update the type metadata as well? For now we use hardcoded anyway
-        await updateCredential(this.options.agent, sdJwt)
+        await updateCredential(dcApiRegisterOptions({ paradym: this.options.paradym, credentialRecord: sdJwt }))
       } else if (credentialRecord instanceof MdocRecord && mdoc) {
         credentialRecords.push(mdoc)
 
@@ -135,10 +134,69 @@ export class RefreshPidUseCase {
           setOpenId4VcCredentialMetadata(mdoc, newOpenId4VcMetadata)
         }
 
-        await updateCredential(this.options.agent, mdoc)
+        await updateCredential(dcApiRegisterOptions({ paradym: this.options.paradym, credentialRecord: mdoc }))
       }
     }
 
     return credentialRecords
+  }
+}
+
+export async function refreshPid({
+  paradym,
+  sdJwt,
+  mdoc,
+  batchSize,
+}: {
+  paradym: ParadymWalletSdk
+  sdJwt?: SdJwtVcRecord
+  mdoc?: MdocRecord
+  batchSize?: number
+}) {
+  paradym.logger.info('refreshing PID')
+  const useCase = await RefreshPidUseCase.initialize({
+    paradym,
+  })
+
+  await useCase.retrieveCredentialsUsingExistingRecords({
+    sdJwt,
+    mdoc,
+    batchSize,
+  })
+}
+
+/**
+ * If available, takes a credential from the batch.
+ *
+ * @todo this should be refactored since it only refreshes when
+ * you use the cred, but this should actually happen continuously
+ * so that also if it expires it is refreshed
+ */
+export async function refreshPidIfNeeded(paradym: ParadymWalletSdk, credentialRecord: CredentialRecord) {
+  // Try to refresh the pid when we run out
+  // TODO: we should probably move this somewhere else at some point
+  const categoryMetadata = getCredentialCategoryMetadata(credentialRecord)
+  const refreshMetadata = getRefreshCredentialMetadata(credentialRecord)
+  if (
+    categoryMetadata?.credentialCategory === 'DE-PID' &&
+    refreshMetadata &&
+    credentialRecord.credentialInstances.length === 1
+  ) {
+    refreshPid({
+      paradym,
+      sdJwt: credentialRecord.type === 'SdJwtVcRecord' ? credentialRecord : undefined,
+      mdoc: credentialRecord.type === 'MdocRecord' ? credentialRecord : undefined,
+      // Get a batch of 5 for a single record type
+      batchSize: 5,
+    })
+      .catch((error) => {
+        // TODO: we should handle the case where the refresh token is expired
+        paradym.logger.error('Error refreshing pid', {
+          error,
+        })
+      })
+      .then(() => {
+        paradym.logger.debug('Successfully refreshed PID')
+      })
   }
 }

@@ -1,1 +1,1 @@
-export { Card, CardProps } from 'tamagui'
+export { Card, type CardProps } from 'tamagui'

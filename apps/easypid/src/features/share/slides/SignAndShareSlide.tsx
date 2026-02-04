@@ -1,8 +1,10 @@
+import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { type FormattedSubmission, getDisclosedAttributeNamesForDisplay, type QtspInfo } from '@package/agent'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
+import type { FormattedSubmission, QtspInfo } from '@paradym/wallet-sdk'
+import { getDisclosedAttributeNamesForDisplay } from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
@@ -135,12 +137,14 @@ export const SignAndShareSlide = ({
 
                 <CardWithAttributes
                   id={cardForSigning.credential.id}
-                  name={cardForSigning.credential.display.name}
+                  name={cardForSigning.credential.display.name ?? t(commonMessages.unknown)}
                   backgroundImage={cardForSigning.credential.display.backgroundImage}
                   backgroundColor={cardForSigning.credential.display.backgroundColor}
                   issuerImage={cardForSigning.credential.display.issuer.logo}
                   textColor={cardForSigning.credential.display.textColor}
-                  formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(cardForSigning)}
+                  formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(cardForSigning).map((c) =>
+                    typeof c === 'string' ? c : formatPredicate(c)
+                  )}
                   disclosedPayload={cardForSigning.disclosed.attributes}
                   isExpired={
                     cardForSigning.credential.metadata?.validUntil

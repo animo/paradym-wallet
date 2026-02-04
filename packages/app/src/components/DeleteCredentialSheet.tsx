@@ -1,14 +1,9 @@
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import { useLingui } from '@lingui/react/macro'
-import {
-  type CredentialCategoryMetadata,
-  type CredentialForDisplayId,
-  deleteCredential,
-  useAgent,
-  useCredentialByCategory,
-  useCredentialForDisplayById,
-} from '@package/agent'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import type { CredentialCategoryMetadata, CredentialId } from '@paradym/wallet-sdk'
+import { useCredentialByCategory, useCredentialById, useParadym } from '@paradym/wallet-sdk'
 import { useNavigation } from 'expo-router'
 import { useHaptics } from '../hooks'
 import { ConfirmationSheet } from './ConfirmationSheet'
@@ -16,19 +11,20 @@ import { ConfirmationSheet } from './ConfirmationSheet'
 interface DeleteCredentialSheetProps {
   isSheetOpen: boolean
   setIsSheetOpen: (isOpen: boolean) => void
-  id: CredentialForDisplayId
+  id: CredentialId
   category?: CredentialCategoryMetadata['credentialCategory']
   name: string
 }
 
 export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }: DeleteCredentialSheetProps) {
+  const { paradym } = useParadym('unlocked')
+
   const toast = useToastController()
-  const { agent } = useAgent()
   const navigation = useNavigation()
   const { withHaptics, successHaptic, errorHaptic } = useHaptics()
   const { t } = useLingui()
-  const { credential } = useCredentialForDisplayById(id)
-  const { credentials } = useCredentialByCategory(credential?.category?.credentialCategory)
+  const { credential } = useCredentialById(id)
+  const { credentials } = useCredentialByCategory(credential?.category?.credentialCategory ?? 'NO_CATEGORY')
 
   const onDeleteCredential = async () => {
     try {
@@ -36,11 +32,9 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
       navigation.goBack()
       setIsSheetOpen(false)
 
-      if (credentials?.length) {
-        await Promise.all(credentials.map((credential) => deleteCredential(agent, credential.id)))
-      } else {
-        await deleteCredential(agent, id)
-      }
+      await paradym.deleteCredentials(
+        dcApiRegisterOptions({ paradym, credentialIds: credentials?.map((c) => c.id) ?? id })
+      )
 
       toast.show(t(commonMessages.toastCardArchived), {
         customData: { preset: 'success' },

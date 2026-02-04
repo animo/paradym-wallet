@@ -1,8 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { type CredentialForDisplayId, useCredentialForDisplayById } from '@package/agent'
 import { DeleteCredentialSheet, TextBackButton, useHaptics } from '@package/app'
 import { CardInfoLifecycle, FunkeCredentialCard } from '@package/app/components'
 import { useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -15,20 +15,21 @@ import {
   useToastController,
   YStack,
 } from '@package/ui'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export function FunkeCredentialDetailScreen() {
   const toast = useToastController()
-  const { id } = useLocalSearchParams<{ id: CredentialForDisplayId }>()
+  const { id } = useLocalSearchParams<{ id: CredentialId }>()
   const router = useRouter()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { withHaptics } = useHaptics()
   const { t } = useLingui()
 
-  const { credential } = useCredentialForDisplayById(id)
+  const { credential } = useCredentialById(id)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   useHeaderRightAction({
@@ -128,7 +129,7 @@ export function FunkeCredentialDetailScreen() {
         isSheetOpen={isSheetOpen}
         setIsSheetOpen={setIsSheetOpen}
         id={credential.id}
-        name={credential.display.name}
+        name={credential.display.name ?? t(commonMessages.unknown)}
       />
     </>
   )

@@ -1,7 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
 import { type SdJwtVc, type SdJwtVcHeader, SdJwtVcRecord } from '@credo-ts/core'
-import { useSecureUnlock } from '@easypid/agent'
-import { InvalidPinError } from '@easypid/crypto/error'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { ReceivePidUseCaseCFlow } from '@easypid/use-cases/ReceivePidUseCaseCFlow'
 import type {
@@ -13,17 +11,20 @@ import type { PidSdJwtVcAttributes } from '@easypid/utils/pidCustomMetadata'
 import { type CardScanningState, getPidSetupSlideContent, SIMULATOR_PIN } from '@easypid/utils/sharedPidSetup'
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import {
-  BiometricAuthenticationCancelledError,
-  BiometricAuthenticationNotEnabledError,
-  getCredentialForDisplay,
-  getCredentialForDisplayId,
-  storeReceivedActivity,
-} from '@package/agent'
 import { SlideWizard, type SlideWizardRef, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { capitalizeFirstLetter, getHostNameFromUrl, sleep } from '@package/utils'
+import { sleep } from '@package/utils'
+import {
+  getCredentialForDisplay,
+  getCredentialForDisplayId,
+  getHostNameFromUrl,
+  ParadymWalletAuthenticationInvalidPinError,
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
+  storeReceivedActivity,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
@@ -43,9 +44,10 @@ const notReadyToReceivePidMessage = defineMessage({
 })
 
 export function FunkePidSetupScreen() {
+  const paradym = useParadym('unlocked')
+
   const toast = useToastController()
   const pushToWallet = usePushToWallet()
-  const secureUnlock = useSecureUnlock()
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const [idCardPin, setIdCardPin] = useState<string>()
@@ -60,7 +62,7 @@ export function FunkePidSetupScreen() {
   const { t } = useLingui()
   const [eidCardRequestedAccessRights, setEidCardRequestedAccessRights] = useState<string[]>([])
   const [onIdCardPinReEnter, setOnIdCardPinReEnter] = useState<(idCardPin: string) => Promise<void>>()
-  const [userName, setUserName] = useState<string>()
+  const [userName, _setUserName] = useState<string>()
   const [isScanning, setIsScanning] = useState(false)
   const [allowSimulatorCard, setAllowSimulatorCard] = useState(false)
   const [shouldUseCloudHsm, setShouldUseCloudHsm] = useShouldUseCloudHsm()
@@ -144,14 +146,6 @@ export function FunkePidSetupScreen() {
     walletPin: string
     allowSimulatorCard: boolean
   }) => {
-    if (secureUnlock.state !== 'unlocked') {
-      toast.show(t(walletNotLockedMessage), {
-        customData: { preset: 'danger' },
-      })
-      pushToWallet()
-      return
-    }
-
     if (!walletPin) {
       toast.show(t({ id: 'pidSetup.walletPinMissing', message: 'Wallet PIN is missing' }), {
         customData: { preset: 'danger' },
@@ -161,7 +155,7 @@ export function FunkePidSetupScreen() {
     }
 
     const baseOptions = {
-      agent: secureUnlock.context.agent,
+      paradym: paradym.paradym,
       onStateChange: setReceivePidUseCaseState,
       onCardAttachedChanged: ({ isCardAttached }) =>
         setIdCardScanningState((state) => ({
@@ -212,7 +206,7 @@ export function FunkePidSetupScreen() {
       try {
         await setWalletServiceProviderPin(pin.split('').map(Number))
       } catch (e) {
-        if (e instanceof InvalidPinError) {
+        if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
           toast.show(e.message, {
             customData: {
               preset: 'danger',
@@ -242,7 +236,7 @@ export function FunkePidSetupScreen() {
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       toast.show(t(walletNotLockedMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
@@ -302,7 +296,7 @@ export function FunkePidSetupScreen() {
       await new Promise((resolve) => setTimeout(resolve, Platform.OS === 'android' ? 500 : 1000))
 
       // Acquire access token
-      await receivePidUseCase.acquireAccessToken()
+      await receivePidUseCase.acquireAccessToken(paradym.paradym)
 
       slideWizardRef.current?.goToNextSlide()
       // If not using cloud hsm we first want approval from the user
@@ -326,7 +320,7 @@ export function FunkePidSetupScreen() {
       return
     }
 
-    if (secureUnlock.state !== 'unlocked') {
+    if (paradym.state !== 'unlocked') {
       toast.show(t(walletNotLockedMessage), { customData: { preset: 'danger' } })
       pushToWallet()
       return
@@ -339,18 +333,13 @@ export function FunkePidSetupScreen() {
       for (const credentialRecord of credentialRecords) {
         if (credentialRecords instanceof SdJwtVcRecord) {
           const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
-          setUserName(
-            `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
-              parsed.prettyClaims.family_name.toLowerCase()
-            )}`
-          )
-
           const { display } = getCredentialForDisplay(credentialRecord)
-          await storeReceivedActivity(secureUnlock.context.agent, {
+
+          await storeReceivedActivity(paradym.paradym, {
             // TODO: should host be entityId or the iss?
             entityId: receivePidUseCase.resolvedCredentialOffer.credentialOfferPayload.credential_issuer,
             host: getHostNameFromUrl(parsed.prettyClaims.iss) as string,
-            name: display.issuer.name,
+            name: display.issuer.name ?? t(commonMessages.unknown),
             logo: display.issuer.logo,
             backgroundColor: '#ffffff', // PID Logo needs white background
             deferredCredentials: [],
@@ -359,18 +348,13 @@ export function FunkePidSetupScreen() {
         }
       }
     } catch (error) {
-      if (error instanceof BiometricAuthenticationCancelledError) {
-        toast.show(t(commonMessages.biometricAuthenticationCancelled), {
-          customData: { preset: 'danger' },
-        })
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+        toast.show(t(commonMessages.biometricAuthenticationCancelled), { customData: { preset: 'danger' } })
         return
       }
 
-      // What if not supported?!?
-      if (error instanceof BiometricAuthenticationNotEnabledError) {
-        toast.show(t(commonMessages.biometricAuthenticationNotEnabled), {
-          customData: { preset: 'danger' },
-        })
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+        toast.show(t(commonMessages.biometricAuthenticationNotEnabled), { customData: { preset: 'danger' } })
         pushToWallet()
         return
       }

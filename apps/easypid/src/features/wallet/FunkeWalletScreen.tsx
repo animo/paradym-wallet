@@ -1,8 +1,7 @@
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { useRefreshedDeferredCredentials } from '@package/agent'
-import { useHaptics } from '@package/app/hooks'
+import { useHaptics } from '@package/app'
 import {
   AnimatedStack,
   Blob,
@@ -20,6 +19,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import { useRefreshedDeferredCredentials } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { FadeIn } from 'react-native-reanimated'
 import { ActionCard } from './components/ActionCard'

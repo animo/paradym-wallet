@@ -1,4 +1,5 @@
 export * from './DeeplinkHandler'
 export * from './formatCredentialSubject'
+export * from './formatSubject'
 export * from './platform'
 export * from './unmatched'

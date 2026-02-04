@@ -1,12 +1,12 @@
 import { FunkeRequestedAttributesDetailScreen } from '@easypid/features/share/FunkeRequestedAttributesDetailScreen'
-import type { CredentialForDisplayId } from '@package/agent'
+import type { CredentialId } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
   const { disclosedPayload, disclosedAttributeLength, id } = useLocalSearchParams<{
     disclosedPayload: string
     disclosedAttributeLength: string
-    id: CredentialForDisplayId
+    id: CredentialId
   }>()
 
   return (
