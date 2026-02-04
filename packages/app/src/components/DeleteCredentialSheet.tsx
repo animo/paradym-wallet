@@ -1,3 +1,4 @@
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
@@ -31,7 +32,9 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
       navigation.goBack()
       setIsSheetOpen(false)
 
-      await paradym.deleteCredentials(credentials?.map((c) => c.id) ?? id)
+      await paradym.deleteCredentials(
+        dcApiRegisterOptions({ paradym, credentialIds: credentials?.map((c) => c.id) ?? id })
+      )
 
       toast.show(t(commonMessages.toastCardArchived), {
         customData: { preset: 'success' },

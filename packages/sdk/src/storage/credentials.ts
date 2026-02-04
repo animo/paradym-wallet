@@ -8,6 +8,7 @@ import {
   W3cV2CredentialRecord,
   W3cV2CredentialRepository,
 } from '@credo-ts/core'
+import type { DcApiRegisterCredentialsOptions } from '../dcApi/registerCredentials'
 import type { CredentialForDisplayId } from '../display/credential'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
@@ -41,57 +42,73 @@ export async function getCredential(
   throw new Error('Unsupported record type')
 }
 
-export async function updateCredential(paradym: ParadymWalletSdk, credentialRecord: CredentialRecord) {
-  if (credentialRecord instanceof W3cCredentialRecord) {
-    await paradym.agent.dependencyManager
+export async function updateCredential(
+  options: DcApiRegisterCredentialsOptions & { credentialRecord: CredentialRecord }
+) {
+  if (options.credentialRecord instanceof W3cCredentialRecord) {
+    await options.paradym.agent.dependencyManager
       .resolve(W3cCredentialRepository)
-      .update(paradym.agent.context, credentialRecord)
-  } else if (credentialRecord instanceof W3cV2CredentialRecord) {
-    await paradym.agent.dependencyManager
+      .update(options.paradym.agent.context, options.credentialRecord)
+  } else if (options.credentialRecord instanceof W3cV2CredentialRecord) {
+    await options.paradym.agent.dependencyManager
       .resolve(W3cV2CredentialRepository)
-      .update(paradym.agent.context, credentialRecord)
-  } else if (credentialRecord instanceof MdocRecord) {
-    await paradym.agent.dependencyManager.resolve(MdocRepository).update(paradym.agent.context, credentialRecord)
+      .update(options.paradym.agent.context, options.credentialRecord)
+  } else if (options.credentialRecord instanceof MdocRecord) {
+    await options.paradym.agent.dependencyManager
+      .resolve(MdocRepository)
+      .update(options.paradym.agent.context, options.credentialRecord)
   } else {
-    await paradym.agent.dependencyManager.resolve(SdJwtVcRepository).update(paradym.agent.context, credentialRecord)
+    await options.paradym.agent.dependencyManager
+      .resolve(SdJwtVcRepository)
+      .update(options.paradym.agent.context, options.credentialRecord)
   }
 
   // Update database when we update a credential
-  await paradym.dcApi.registerCredentials()
+  await options.paradym.dcApi.registerCredentials(options)
 }
 
-export async function storeCredential(paradym: ParadymWalletSdk, credentialRecord: CredentialRecord) {
-  if (credentialRecord instanceof W3cCredentialRecord) {
-    await paradym.agent.dependencyManager.resolve(W3cCredentialRepository).save(paradym.agent.context, credentialRecord)
-  } else if (credentialRecord instanceof W3cV2CredentialRecord) {
-    await paradym.agent.dependencyManager
+export async function storeCredential(
+  options: DcApiRegisterCredentialsOptions & { credentialRecord: CredentialRecord }
+) {
+  if (options.credentialRecord instanceof W3cCredentialRecord) {
+    await options.paradym.agent.dependencyManager
+      .resolve(W3cCredentialRepository)
+      .save(options.paradym.agent.context, options.credentialRecord)
+  } else if (options.credentialRecord instanceof W3cV2CredentialRecord) {
+    await options.paradym.agent.dependencyManager
       .resolve(W3cV2CredentialRepository)
-      .save(paradym.agent.context, credentialRecord)
-  } else if (credentialRecord instanceof MdocRecord) {
-    await paradym.agent.dependencyManager.resolve(MdocRepository).save(paradym.agent.context, credentialRecord)
+      .save(options.paradym.agent.context, options.credentialRecord)
+  } else if (options.credentialRecord instanceof MdocRecord) {
+    await options.paradym.agent.dependencyManager
+      .resolve(MdocRepository)
+      .save(options.paradym.agent.context, options.credentialRecord)
   } else {
-    await paradym.agent.dependencyManager.resolve(SdJwtVcRepository).save(paradym.agent.context, credentialRecord)
+    await options.paradym.agent.dependencyManager
+      .resolve(SdJwtVcRepository)
+      .save(options.paradym.agent.context, options.credentialRecord)
   }
 
   // Update database when we store a credential
-  await paradym.dcApi.registerCredentials()
+  await options.paradym.dcApi.registerCredentials(options)
 }
 
-export async function deleteCredential(paradym: ParadymWalletSdk, credentialId: CredentialForDisplayId) {
-  if (credentialId.startsWith('w3c-credential-')) {
-    const w3cCredentialId = credentialId.replace('w3c-credential-', '')
-    await paradym.agent.w3cCredentials.deleteById(w3cCredentialId)
-  } else if (credentialId.startsWith('w3c-v2-credential-')) {
-    const w3cV2CredentialId = credentialId.replace('w3c-v2-credential-', '')
-    await paradym.agent.w3cV2Credentials.deleteById(w3cV2CredentialId)
-  } else if (credentialId.startsWith('sd-jwt-vc')) {
-    const sdJwtVcId = credentialId.replace('sd-jwt-vc-', '')
-    await paradym.agent.sdJwtVc.deleteById(sdJwtVcId)
-  } else if (credentialId.startsWith('mdoc-')) {
-    const mdocId = credentialId.replace('mdoc-', '')
-    await paradym.agent.mdoc.deleteById(mdocId)
+export async function deleteCredential(
+  options: DcApiRegisterCredentialsOptions & { credentialId: CredentialForDisplayId }
+) {
+  if (options.credentialId.startsWith('w3c-credential-')) {
+    const w3cCredentialId = options.credentialId.replace('w3c-credential-', '')
+    await options.paradym.agent.w3cCredentials.deleteById(w3cCredentialId)
+  } else if (options.credentialId.startsWith('w3c-v2-credential-')) {
+    const w3cV2CredentialId = options.credentialId.replace('w3c-v2-credential-', '')
+    await options.paradym.agent.w3cV2Credentials.deleteById(w3cV2CredentialId)
+  } else if (options.credentialId.startsWith('sd-jwt-vc')) {
+    const sdJwtVcId = options.credentialId.replace('sd-jwt-vc-', '')
+    await options.paradym.agent.sdJwtVc.deleteById(sdJwtVcId)
+  } else if (options.credentialId.startsWith('mdoc-')) {
+    const mdocId = options.credentialId.replace('mdoc-', '')
+    await options.paradym.agent.mdoc.deleteById(mdocId)
   }
 
   // Update database when we delete a credential
-  await paradym.dcApi.registerCredentials()
+  await options.paradym.dcApi.registerCredentials(options)
 }

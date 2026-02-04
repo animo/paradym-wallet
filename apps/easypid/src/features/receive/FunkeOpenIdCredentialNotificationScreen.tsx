@@ -1,6 +1,7 @@
 import { walletClient } from '@easypid/constants'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { refreshPidIfNeeded } from '@easypid/use-cases/RefreshPidUseCase'
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import { useLingui } from '@lingui/react/macro'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -220,7 +221,9 @@ export function FunkeCredentialNotificationScreen() {
   const onCompleteCredentialRetrieval = async () => {
     await paradym.openid4vc.completeCredentialRetrieval({
       resolvedCredentialOffer: resolvedOffer?.resolvedCredentialOffer,
-      record: receivedCredential?.record,
+      recordToStore: receivedCredential
+        ? dcApiRegisterOptions({ paradym, credentialRecord: receivedCredential.record })
+        : undefined,
       deferredCredential,
     })
 

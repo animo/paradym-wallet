@@ -1,4 +1,5 @@
 import { ClaimFormat, Kms, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import {
   acquireRefreshTokenAccessToken,
   type CredentialRecord,
@@ -124,7 +125,7 @@ export class RefreshPidUseCase {
         }
 
         // Should we update the type metadata as well? For now we use hardcoded anyway
-        await updateCredential(this.options.paradym, sdJwt)
+        await updateCredential(dcApiRegisterOptions({ paradym: this.options.paradym, credentialRecord: sdJwt }))
       } else if (credentialRecord instanceof MdocRecord && mdoc) {
         credentialRecords.push(mdoc)
 
@@ -133,7 +134,7 @@ export class RefreshPidUseCase {
           setOpenId4VcCredentialMetadata(mdoc, newOpenId4VcMetadata)
         }
 
-        await updateCredential(this.options.paradym, mdoc)
+        await updateCredential(dcApiRegisterOptions({ paradym: this.options.paradym, credentialRecord: mdoc }))
       }
     }
 

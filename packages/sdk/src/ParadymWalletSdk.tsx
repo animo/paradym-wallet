@@ -10,7 +10,7 @@ import {
   type SetupAgentOptions,
   setupAgent,
 } from './agent'
-import { dcApiRegisterCredentials } from './dcApi/registerCredentials'
+import { type DcApiRegisterCredentialsOptions, dcApiRegisterCredentials } from './dcApi/registerCredentials'
 import { type DcApiResolveRequestOptions, dcApiResolveRequest } from './dcApi/resolveRequest'
 import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
 import { type DcApiSendResponseOptions, dcApiSendResponse } from './dcApi/sendResponse'
@@ -184,10 +184,12 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   }
 
   public async deleteCredentials(
-    ids: CredentialForDisplayId | Array<CredentialForDisplayId>
+    options: DcApiRegisterCredentialsOptions & { credentialIds: CredentialForDisplayId | Array<CredentialForDisplayId> }
   ): Promise<ParadymWalletSdkResult> {
     try {
-      const deleteCredentials = (Array.isArray(ids) ? ids : [ids]).map((id) => deleteCredential(this, id))
+      const deleteCredentials = (
+        Array.isArray(options.credentialIds) ? options.credentialIds : [options.credentialIds]
+      ).map((id) => deleteCredential({ ...options, credentialId: id }))
       await Promise.all(deleteCredentials)
       return { success: true }
     } catch (error) {
@@ -227,7 +229,8 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
   public get dcApi() {
     return {
-      registerCredentials: () => dcApiRegisterCredentials(this),
+      registerCredentials: (options: Omit<DcApiRegisterCredentialsOptions, 'paradym'>) =>
+        dcApiRegisterCredentials({ ...options, paradym: this }),
       resolveRequest: (options: Omit<DcApiResolveRequestOptions, 'paradym'>) =>
         dcApiResolveRequest({ ...options, paradym: this }),
       sendResponse: (options: Omit<DcApiSendResponseOptions, 'paradym'>) =>

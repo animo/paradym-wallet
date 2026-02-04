@@ -1,5 +1,6 @@
 import type { MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
 import { pidSchemes } from '@easypid/constants'
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import {
   ParadymWalletBiometricAuthenticationError,
   receiveCredentialFromOpenId4VciOffer,
@@ -113,7 +114,7 @@ export class ReceivePidUseCaseCFlow extends ReceivePidUseCaseFlow {
         }
 
         credentialRecords.push(credentialRecord)
-        await storeCredential(this.options.paradym, credentialRecord)
+        await storeCredential(dcApiRegisterOptions({ paradym: this.options.paradym, credentialRecord }))
       }
 
       return credentialRecords

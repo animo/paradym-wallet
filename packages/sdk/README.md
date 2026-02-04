@@ -83,7 +83,7 @@ This an example of a configuration which uses quite verbose logging and trusts t
 
 ```typescript
 import { ParadymWalletSdk, LogLevel } from '@paradym/wallet-sdk'
-import { ParadymWalletSdkCustomLogger } from '@packages/custom-logger'
+import { ParadymWalletSdkCustomLogger } from '@your-package/custom-logger'
 
 export default App() {
     const sdkConfiguration = { 
@@ -123,7 +123,7 @@ When you are developing with the SDK, you might want a custom logger to use a to
 
 ```typescript
 import { LogLevel, ParadymWalletSdkLogger, LogData } from '@paradym/wallet-sdk'
-import { loggingApi } from '@packages/api'
+import { loggingApi } from '@your-package/api'
 
 export class ParadymWalletSdkCustomLogger implements ParadymWalletSdkLogger {
   private sendDataToLoggingApi(message: string, data?: LogData) {
@@ -155,7 +155,7 @@ Or you can also include a console logger here by extending the `ParadymWalletSdk
 
 ```typescript
 import { LogLevel, ParadymWalletSdkConsoleLogger, LogData } from '@paradym/wallet-sdk'
-import { loggingApi } from '@packages/api'
+import { loggingApi } from '@your-package/api'
 
 export class ParadymWalletSdkCustomAndConsoleLogger extends ParadymWalletSdkConsoleLogger {
   private sendDataToLoggingApi(message: string, data?: LogData) {

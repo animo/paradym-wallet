@@ -2,6 +2,7 @@ import type { OpenId4VciAuthorizationFlow, OpenId4VciResolvedAuthorizationReques
 
 export { BaseAgent, DidCommAgent, OpenId4VcAgent } from './agent'
 export { DigitalCredentialsRequest } from './dcApi'
+export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
 export { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay } from './display/credential'
 export * from './error'
 export {

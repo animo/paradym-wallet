@@ -1,7 +1,5 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
 import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
-import { t } from '@lingui/core/macro'
-import { commonMessages } from '@package/translations'
 import { sanitizeString } from '@package/utils'
 import { ImageFormat, Skia } from '@shopify/react-native-skia'
 import * as ExpoAsset from 'expo-asset'
@@ -168,7 +166,19 @@ async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
   }
 }
 
-export async function dcApiRegisterCredentials(paradym: ParadymWalletSdk) {
+export type DcApiRegisterCredentialsOptions = {
+  paradym: ParadymWalletSdk
+  displayTitleFallback: string
+  displaySubtitle: (issuerName: string) => string | string
+  displaySubtitleFallback: string
+}
+
+export async function dcApiRegisterCredentials({
+  displayTitleFallback,
+  paradym,
+  displaySubtitleFallback,
+  displaySubtitle,
+}: DcApiRegisterCredentialsOptions) {
   if (Platform.OS === 'ios') return
 
   try {
@@ -193,8 +203,8 @@ export async function dcApiRegisterCredentials(paradym: ParadymWalletSdk) {
           namespaces: mapMdocAttributes(mdoc.issuerSignedNamespaces),
         },
         display: {
-          title: display.name ?? t(commonMessages.unknown),
-          subtitle: t(commonMessages.issuedByWithName(display.issuer.name ?? t(commonMessages.unknown))),
+          title: display.name ?? displayTitleFallback,
+          subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
           claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces),
           iconDataUrl,
         },
@@ -220,8 +230,8 @@ export async function dcApiRegisterCredentials(paradym: ParadymWalletSdk) {
           claims: sdJwtVc.prettyClaims as any,
         },
         display: {
-          title: display.name ?? t(commonMessages.unknown),
-          subtitle: t(commonMessages.issuedByWithName(display.issuer.name ?? t(commonMessages.unknown))),
+          title: display.name ?? displayTitleFallback,
+          subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
           claims: mapSdJwtAttributesToClaimDisplay(sdJwtVc.prettyClaims),
           iconDataUrl,
         },
@@ -236,7 +246,7 @@ export async function dcApiRegisterCredentials(paradym: ParadymWalletSdk) {
       matcher: 'ubique',
     })
   } catch (error) {
-    // Since this is an experimental feature, and it doesn't work if you don't have the latest
+    // Since this is an experimental feature, and it doedisplayTitleFallbacksn't work if you don't have the latest
     // PlayStore services/Android it could error on some devices. It will only impact the usage
     // of the DC API, so it's okay to swallow the error for now.
     paradym.logger.error('Error registering credentials for DigitalCredentialsAPI', {

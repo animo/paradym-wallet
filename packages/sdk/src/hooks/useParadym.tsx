@@ -69,8 +69,6 @@ export function useParadym<T extends AgentType = AgentType>(
       assertFullAgent(unlock.paradym.agent)
     }
 
-    // When the state changes to unlocked, we register the credentials for the digital credentials API
-    void unlock.paradym.dcApi.registerCredentials()
     return unlock
   }
 

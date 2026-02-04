@@ -1,4 +1,6 @@
 import type { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
+import type { DcApiRegisterCredentialsOptions } from '@paradym/wallet-sdk'
 import { getCredentialDisplayWithDefaults } from '../../display/common'
 import { getCredentialForDisplayId } from '../../display/credential'
 import { getOpenId4VcCredentialDisplay } from '../../display/openid4vc'
@@ -10,13 +12,13 @@ import { type DeferredCredentialBefore, storeDeferredCredential } from '../../st
 
 export type CompleteCredentialRetrievalOptions = {
   paradym: ParadymWalletSdk
-  record?: CredentialRecord
+  recordToStore?: DcApiRegisterCredentialsOptions & { credentialRecord: CredentialRecord }
   deferredCredential?: DeferredCredentialBefore
   resolvedCredentialOffer?: OpenId4VciResolvedCredentialOffer
 }
 
 export const completeCredentialRetrieval = async (options: CompleteCredentialRetrievalOptions) => {
-  if (!options.record && !options.deferredCredential) {
+  if (!options.recordToStore && !options.deferredCredential) {
     throw new Error('Either supply a credential record or deferred credential to complete the flow')
   }
 
@@ -46,8 +48,10 @@ export const completeCredentialRetrieval = async (options: CompleteCredentialRet
     await storeDeferredCredential(options.paradym, options.deferredCredential)
   }
 
-  if (options.record) {
-    await storeCredential(options.paradym, options.record)
+  if (options.recordToStore) {
+    await storeCredential(
+      dcApiRegisterOptions({ paradym: options.paradym, credentialRecord: options.recordToStore.credentialRecord })
+    )
   }
 
   await storeReceivedActivity(options.paradym, {
@@ -58,7 +62,7 @@ export const completeCredentialRetrieval = async (options: CompleteCredentialRet
     name: credentialDisplay.issuer.name,
     logo: credentialDisplay.issuer.logo,
     backgroundColor: '#ffffff', // Default to a white background for now
-    credentialIds: options.record ? [getCredentialForDisplayId(options.record)] : [],
+    credentialIds: options.recordToStore ? [getCredentialForDisplayId(options.recordToStore.credentialRecord)] : [],
     deferredCredentials: [credentialDisplay],
   })
 }
