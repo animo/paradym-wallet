@@ -1,5 +1,5 @@
-import { createBaseConfig } from './base.app.config'
-import { version } from './package.json'
+const { createBaseConfig } = require('./base.app.config.cjs')
+const { version } = require('./package.json')
 
 const mediatorDids = {
   development: 'did:web:mediator.dev.paradym.id',
@@ -25,6 +25,24 @@ const APP_CONFIGS = {
     assets: ['./assets/funke/icon.png'],
     enableAusweisSdkEntitlementsIos: true,
   }),
+
+  DIDX_WALLET: createBaseConfig({
+    name: 'DIDx Wallet',
+    scheme: 'id.didx.co.za',
+    icon: './assets/didx/icon.png',
+    // NOTE: android requires paths referenced directly in code
+    // to only contain _ a-Z 0-9, so we use _ for all files
+    adaptiveIcon: './assets/didx/adaptive_icon.png',
+    splash: './assets/didx/splash.png',
+    splashIcon: './assets/didx/splash_icon.png',
+    slug: 'ausweis-wallet',
+    version,
+    bundleId: 'id.didx.co.za',
+    associatedDomains: ['uat.didx.co.za'],
+    projectId: '28b058bb-3c4b-4347-8e72-41dfc1dd99eb',
+    assets: ['./assets/didx/icon.png'],
+    enableAusweisSdkEntitlementsIos: true,
+  }),  
 
   PARADYM_WALLET: createBaseConfig({
     name: 'Paradym Wallet',
@@ -56,7 +74,7 @@ APP_CONFIGS.FUNKE_WALLET.android.config = {
   largeHeap: true,
 }
 
-export default () => {
+module.exports = () => {
   const appType = process.env.EXPO_PUBLIC_APP_TYPE ?? 'PARADYM_WALLET'
   if (!appType || !APP_CONFIGS[appType]) {
     throw new Error(`Invalid App Type: ${appType}. Must be one of: ${Object.keys(APP_CONFIGS).join(', ')}`)

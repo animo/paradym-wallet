@@ -237,4 +237,4 @@ const createBaseConfig = (appSpecific) => {
   }
 }
 
-export { createBaseConfig, variant }
+module.exports = { createBaseConfig, variant }
