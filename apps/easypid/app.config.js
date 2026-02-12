@@ -27,26 +27,26 @@ const APP_CONFIGS = {
   }),
 
   DIDX_WALLET: createBaseConfig({
-    name: 'DIDx Wallet',
-    scheme: 'id.didx.co.za',
+    name: 'DIDx Me Wallet Edge',
+    scheme: 'didx-me-wallet-edge',
     icon: './assets/didx/icon.png',
     // NOTE: android requires paths referenced directly in code
     // to only contain _ a-Z 0-9, so we use _ for all files
     adaptiveIcon: './assets/didx/adaptive_icon.png',
     splash: './assets/didx/splash.png',
     splashIcon: './assets/didx/splash_icon.png',
-    slug: 'didx-wallet',
+    slug: 'didx-me-wallet-edge',
     version,
-    bundleId: 'id.didx.co.za',
+    bundleId: 'za.co.didx.edge.wallet',
     associatedDomains: ['uat.didx.co.za'],
     // NOTE: need to update the projectId
-    projectId: '28b058bb-3c4b-4347-8e72-41dfc1dd99eb',
+    projectId: '7799f9ca-792e-4a10-a206-cdd4b6583a75',
     assets: ['./assets/didx/icon.png'],
     enableAusweisSdkEntitlementsIos: false,
     extraConfig: {
       //NOTE: Update mediator details to DIDx
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
-      // NOTE: Update mediator URL to DIDx
+      // NOTE: Update URL to DIDx
       redirectBaseUrl: 'https://paradym.id/invitation/redirect',
     },    
   }),  
@@ -82,7 +82,7 @@ APP_CONFIGS.FUNKE_WALLET.android.config = {
 }
 
 module.exports = () => {
-  const appType = process.env.EXPO_PUBLIC_APP_TYPE ?? 'PARADYM_WALLET'
+  const appType = process.env.EXPO_PUBLIC_APP_TYPE ?? 'DIDX_WALLET'
   if (!appType || !APP_CONFIGS[appType]) {
     throw new Error(`Invalid App Type: ${appType}. Must be one of: ${Object.keys(APP_CONFIGS).join(', ')}`)
   }
