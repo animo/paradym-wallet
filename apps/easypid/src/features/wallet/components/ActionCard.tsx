@@ -25,7 +25,7 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
       onPressOut={qrHandlePressOut}
       onPress={onPress}
       jc="center"
-      bg={variant === 'primary' ? '$grey-900' : '$white'}
+      bg={variant === 'primary' ? '$grey-900' : '$didx-grey'}
       p="$3"
       fg={1}
       gap="$3"

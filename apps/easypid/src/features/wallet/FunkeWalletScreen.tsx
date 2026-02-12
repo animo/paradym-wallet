@@ -87,7 +87,7 @@ export function FunkeWalletScreen() {
                 />
                 <ActionCard
                   variant="secondary"
-                  icon={<CustomIcons.People size={26} />}
+                  icon={<CustomIcons.People size={26} color="$primary-500"/>}
                   title={t({ id: 'home.presentInPersonButton', message: 'Present In-person' })}
                   onPress={pushToOffline}
                 />
