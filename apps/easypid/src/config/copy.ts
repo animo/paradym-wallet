@@ -18,6 +18,21 @@ export const copy = {
       }),
     },
   },
+  DIDX_WALLET: {
+    about: {
+      description: defineMessage({
+        id: 'didxWallet.about.description',
+        message:
+          'This app was created by DIDx in the context of the DFID ‘Wallet Prototype’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.',
+        comment: 'About screen description text for the DIDx wallet',
+      }),
+      emailHeader: defineMessage({
+        id: 'didxWallet.about.emailHeader',
+        message: 'Reach out from DIDx DFID Wallet',
+        comment: 'Email subject when contacting support from DIDx DFID wallet',
+      }),
+    },
+  },  
   PARADYM_WALLET: {
     about: {
       description: defineMessage({
@@ -40,9 +55,12 @@ export function useAppCopy() {
 }
 
 export function useAppIcon() {
-  const [assets] = useAssets([require('../../assets/funke/icon.png'), require('../../assets/paradym/icon.png')])
+  const [assets] = useAssets([require('../../assets/funke/icon.png'), require('../../assets/didx/icon.png'), require('../../assets/paradym/icon.png')])
   if (CURRENT_APP_TYPE === 'FUNKE_WALLET') {
-    return assets?.[0]
+    return assets?.[0];
+  } else if (CURRENT_APP_TYPE === 'DIDX_WALLET') {
+    return assets?.[1];
+  } else if (CURRENT_APP_TYPE === 'PARADYM_WALLET') {
+    return assets?.[2];
   }
-  return assets?.[1]
 }

@@ -47,7 +47,24 @@ export function FunkeWalletScreen() {
   return (
     <YStack pos="relative" fg={1} bg="$background">
       <YStack pos="absolute" h="50%" w="100%">
-        <Blob />
+        <Blob
+          parts={{
+            // Mostly soft purples (calm, trustworthy)
+            leftOuter: { color: '#E7C2F9', opacity: 0.55 },
+            leftInner: { color: '#AC79C5', opacity: 0.22 },
+
+            rightOuter: { color: '#E7C2F9', opacity: 0.45 },
+            rightInner: { color: '#672A84', opacity: 0.10 },
+
+            // Tiny warm lift (barely there)
+            topLeftSweep: { color: '#FDDFD1', opacity: 0.20 },
+            topRightSweep: { color: '#FCC0A3', opacity: 0.12 },
+
+            // Deep anchors for structure (subtle)
+            topRightCore: { color: '#451B76', opacity: 0.08 },
+            topLeftCore: { color: '#2D0F65', opacity: 0.06 },
+          }}
+        />
       </YStack>
 
       <FlexPage fg={1} flex-1={false} bg="transparent">

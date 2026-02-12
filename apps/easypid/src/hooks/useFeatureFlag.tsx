@@ -11,6 +11,10 @@ export const isFunkeWallet = () => {
   return CURRENT_APP_TYPE === 'FUNKE_WALLET'
 }
 
+export const isDidxWallet = () => {
+  return CURRENT_APP_TYPE === 'DIDX_WALLET'
+}
+
 export const isParadymWallet = () => {
   return CURRENT_APP_TYPE === 'PARADYM_WALLET'
 }

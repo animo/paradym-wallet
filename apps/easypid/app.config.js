@@ -35,13 +35,20 @@ const APP_CONFIGS = {
     adaptiveIcon: './assets/didx/adaptive_icon.png',
     splash: './assets/didx/splash.png',
     splashIcon: './assets/didx/splash_icon.png',
-    slug: 'ausweis-wallet',
+    slug: 'didx-wallet',
     version,
     bundleId: 'id.didx.co.za',
     associatedDomains: ['uat.didx.co.za'],
+    // NOTE: need to update the projectId
     projectId: '28b058bb-3c4b-4347-8e72-41dfc1dd99eb',
     assets: ['./assets/didx/icon.png'],
-    enableAusweisSdkEntitlementsIos: true,
+    enableAusweisSdkEntitlementsIos: false,
+    extraConfig: {
+      //NOTE: Update mediator details to DIDx
+      mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
+      // NOTE: Update mediator URL to DIDx
+      redirectBaseUrl: 'https://paradym.id/invitation/redirect',
+    },    
   }),  
 
   PARADYM_WALLET: createBaseConfig({
