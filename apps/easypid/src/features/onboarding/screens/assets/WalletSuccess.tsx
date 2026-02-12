@@ -195,7 +195,7 @@ export function WalletSuccess() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#5A33F6" />
+          <Stop offset="1" stopColor="#6D328E" />
         </LinearGradient>
         <LinearGradient
           id="paint2_linear_3268_4458"
@@ -206,7 +206,7 @@ export function WalletSuccess() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#5A33F6" />
+          <Stop offset="1" stopColor="#6D328E" />
         </LinearGradient>
       </Defs>
     </Svg>

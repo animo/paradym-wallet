@@ -68,7 +68,7 @@ export function FunkeMenuScreen() {
   const { credential, isLoading } = useCredentialByCategory('DE-PID')
   const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
-  const handleFeedback = withHaptics(() => Linking.openURL('mailto:ana@animo.id?subject=Feedback on the Wallet'))
+  const handleFeedback = withHaptics(() => Linking.openURL('mailto:lohan.spies@didx.co.za?subject=Feedback on the DIDx Wallet'))
   const handlePush = (path: string) => withHaptics(() => router.push(path))
 
   return (

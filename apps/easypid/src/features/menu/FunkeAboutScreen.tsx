@@ -10,7 +10,7 @@ export function FunkeAboutScreen() {
   const { about } = useAppCopy()
 
   const openContact = () => {
-    Linking.openURL(`mailto:ana@animo.id?subject=${about.emailHeader}`)
+    Linking.openURL(`mailto:lohan.spies@didx.co.za?subject=${about.emailHeader}`)
   }
 
   const openPrivacyPolicy = () => {
@@ -36,7 +36,7 @@ export function FunkeAboutScreen() {
               comment: 'Intro sentence before showing support email address',
             })}{' '}
             <Paragraph fontWeight="$semiBold" color="$primary-500" onPress={openContact}>
-              ana@animo.id
+              lohan.spies@didx.co.za
             </Paragraph>
             .
           </Paragraph>

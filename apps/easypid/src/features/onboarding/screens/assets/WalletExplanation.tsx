@@ -327,7 +327,7 @@ export function WalletExplanation() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#5A33F6" />
+          <Stop offset="1" stopColor="#6D328E" />
         </LinearGradient>
         <LinearGradient
           id="paint3_linear_3268_4567"
@@ -338,7 +338,7 @@ export function WalletExplanation() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#5A33F6" />
+          <Stop offset="1" stopColor="#6D328E" />
         </LinearGradient>
         <LinearGradient
           id="paint4_linear_3268_4567"
@@ -349,7 +349,7 @@ export function WalletExplanation() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#5A33F6" />
+          <Stop offset="1" stopColor="#6D328E" />
         </LinearGradient>
         <LinearGradient
           id="paint5_linear_3268_4567"
@@ -360,7 +360,7 @@ export function WalletExplanation() {
           gradientUnits="userSpaceOnUse"
         >
           <Stop stopColor="#7A88FF" />
-          <Stop offset="1" stopColor="#5A33F6" />
+          <Stop offset="1" stopColor="#6D328E" />
         </LinearGradient>
       </Defs>
     </Svg>

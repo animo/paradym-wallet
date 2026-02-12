@@ -35,7 +35,7 @@ export function ProgressHeader({
 
   const colorValue = useSharedValue(color === 'primary' ? 0 : 1)
   const animatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(colorValue.value, [0, 1], ['#5A33F6', '#DC3130'])
+    const backgroundColor = interpolateColor(colorValue.value, [0, 1], ['#6D328E', '#DC3130'])
     return { backgroundColor: backgroundColor }
   })
 
