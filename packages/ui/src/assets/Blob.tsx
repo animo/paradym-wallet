@@ -16,12 +16,12 @@ import Animated, {
 import Svg, { Defs, LinearGradient, Path, Stop, type SvgProps } from 'react-native-svg'
 
 const COLOR_SCHEMES = [
-  { top: '#DFDDD9', bottom: '#6F60DF' }, // warm grey → purple
-  { top: '#D9DFE5', bottom: '#6098DF' }, // cool grey → blue
-  { top: '#D9E5DF', bottom: '#45C9A8' }, // sage → teal
-  { top: '#E5DDD9', bottom: '#DF8F60' }, // warm → amber
-  { top: '#DFD9E5', bottom: '#C060DF' }, // lavender → magenta
-  { top: '#DFDDD9', bottom: '#6F60DF' }, // back to start (seamless loop)
+  { top: '#DDD0E5', bottom: '#2D0F65' }, // lavender → deep purple
+  { top: '#E5D5CE', bottom: '#B92D0C' }, // warm peach → deep orange
+  { top: '#E0CCD5', bottom: '#6D1A4A' }, // rose → orange-purple blend
+  { top: '#D5D3D3', bottom: '#121111' }, // cool grey → charcoal
+  { top: '#DDD0CB', bottom: '#1F0303' }, // warm cream → brown
+  { top: '#DDD0E5', bottom: '#2D0F65' }, // back to start (seamless loop)
 ]
 
 const DURATION_PER_SCHEME = 4000
