@@ -23,25 +23,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
   return (
     <YStack fg={1} pos="relative">
       <YStack pos="absolute" h="50%" w="100%">
-        <Blob
-          parts={{
-            // Left cluster
-            leftOuter: { color: '#E7C2F9' }, // light purple
-            leftInner: { color: '#AC79C5', opacity: 0.95 },
-
-            // Right cluster
-            rightOuter: { color: '#FDDFD1' }, // soft orange base
-            rightInner: { color: '#F6724B', opacity: 0.9 },
-
-            // Top sweeps (energy layer)
-            topRightSweep: { color: '#F14C2E' },
-            topLeftSweep: { color: '#FCC0A3' },
-
-            // Core anchors (depth)
-            topRightCore: { color: '#451B76' },
-            topLeftCore: { color: '#2D0F65' },
-          }}
-        />
+        <Blob />
         <YStack
           transform={[{ translateX: -48 }]} // Half of the image width (96/2)
           pos="absolute"

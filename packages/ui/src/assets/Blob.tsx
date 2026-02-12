@@ -1,139 +1,88 @@
-import React from 'react'
-import { View } from 'react-native'
-import Svg, { G, Path, type SvgProps } from 'react-native-svg'
+import { useEffect } from 'react'
+import { StyleSheet, View } from 'react-native'
+import Animated, {
+  Easing,
+  Extrapolation,
+  type SharedValue,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated'
+import Svg, { Defs, LinearGradient, Path, Stop, type SvgProps } from 'react-native-svg'
 
-type PartStyle = {
-  color?: string
-  opacity?: number
-  /**
-   * Scale factor (1 = original)
-   */
-  scale?: number
-  /**
-   * Translate in SVG units (viewBox coordinates)
-   */
-  tx?: number
-  ty?: number
+const COLOR_SCHEMES = [
+  { top: '#DFDDD9', bottom: '#6F60DF' }, // warm grey → purple
+  { top: '#D9DFE5', bottom: '#6098DF' }, // cool grey → blue
+  { top: '#D9E5DF', bottom: '#45C9A8' }, // sage → teal
+  { top: '#E5DDD9', bottom: '#DF8F60' }, // warm → amber
+  { top: '#DFD9E5', bottom: '#C060DF' }, // lavender → magenta
+  { top: '#DFDDD9', bottom: '#6F60DF' }, // back to start (seamless loop)
+]
+
+const DURATION_PER_SCHEME = 4000
+
+const PATHS = {
+  bottomLeft:
+    'M49.012 181.762C49.012 184.551 46.751 186.811 43.963 186.811H5.401C2.613 186.811 0.35199 184.551 0.35199 181.762V143.2C0.35199 140.412 2.613 138.151 5.401 138.151H43.963C46.751 138.151 49.012 140.412 49.012 143.2V181.762Z',
+  topRight:
+    'M186.458 43.611C186.458 46.3995 184.197 48.66 181.409 48.66H142.846C140.058 48.66 137.798 46.3995 137.798 43.611V5.04895C137.798 2.26049 140.058 0 142.846 0H181.409C184.197 0 186.458 2.26049 186.458 5.04895V43.611Z',
+  steppedDiagonal:
+    'M143.199 186.456C140.411 186.456 138.15 184.195 138.15 181.407V144.979C138.15 142.19 135.89 139.93 133.101 139.93H96.133C93.345 139.93 91.084 137.669 91.084 134.881V99.0559C91.084 96.2674 88.824 94.0069 86.035 94.0069H49.696C46.908 94.0069 44.647 91.7464 44.647 88.958V54.059C44.647 51.2705 42.387 49.01 39.598 49.01H5.04901C2.26001 49.01 0 46.7495 0 43.9611V5.39902C0 2.61056 2.26001 0.350067 5.04901 0.350067L43.611 0.350068C46.399 0.350069 48.66 2.61056 48.66 5.39902V40.298C48.66 43.0865 50.92 45.3469 53.709 45.3469H88.258C91.047 45.3469 93.307 47.6074 93.307 50.3959V86.221C93.307 89.0095 95.568 91.27 98.356 91.27H134.695C137.484 91.27 139.744 93.5304 139.744 96.3189V132.747C139.744 135.535 142.005 137.796 144.793 137.796H181.761C184.55 137.796 186.81 140.056 186.81 142.845V181.407C186.81 184.195 184.55 186.456 181.761 186.456H143.199Z',
 }
 
-type BlobParts = {
-  leftOuter?: PartStyle
-  leftInner?: PartStyle
-  rightOuter?: PartStyle
-  rightInner?: PartStyle
-  topRightSweep?: PartStyle
-  topLeftSweep?: PartStyle
-  topRightCore?: PartStyle
-  topLeftCore?: PartStyle
-}
-
-function Part({
-  d,
-  color = '#F3F2F0',
-  opacity = 1,
-  scale = 1,
-  tx = 0,
-  ty = 0,
+function BlobLayer({
+  index,
+  scheme,
+  progress,
 }: {
-  d: string
-} & PartStyle) {
-  // Transform order: translate -> scale (so scaling occurs around origin)
-  // If you need scale-around-center, we can add cx/cy later.
-  const transform = scale !== 1 || tx !== 0 || ty !== 0 ? `translate(${tx} ${ty}) scale(${scale})` : undefined
+  index: number
+  scheme: { top: string; bottom: string }
+  progress: SharedValue<number>
+}) {
+  const gradId = `grad_${index}`
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [index - 1, index, index + 1], [0, 1, 0], Extrapolation.CLAMP),
+  }))
 
   return (
-    <G transform={transform} opacity={opacity}>
-      <Path d={d} fill={color} />
-    </G>
+    <Animated.View style={[StyleSheet.absoluteFill, animatedStyle]}>
+      <Svg width="100%" height="100%" viewBox="0 0 187 187" fill="none">
+        <Path d={PATHS.bottomLeft} fill={`url(#${gradId})`} />
+        <Path d={PATHS.topRight} fill={`url(#${gradId})`} />
+        <Path d={PATHS.steppedDiagonal} fill={`url(#${gradId})`} />
+        <Defs>
+          <LinearGradient id={gradId} x1="93.405" y1="0" x2="93.405" y2="186.811" gradientUnits="userSpaceOnUse">
+            <Stop offset="0.471775" stopColor={scheme.top} />
+            <Stop offset="1" stopColor={scheme.bottom} />
+          </LinearGradient>
+        </Defs>
+      </Svg>
+    </Animated.View>
   )
 }
 
-/** 1) Left outer / base */
-export function BlobLeftOuter(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M323.008 306.498C327.083 306.109 330.525 309.435 330.395 313.526C330.288 316.892 327.757 319.708 324.427 320.207C185.046 341.077 78.1583 461.305 78.1582 606.5C78.1582 607.993 76.9551 609.211 75.4619 609.211H26.1305C11.699 609.211 0 597.512 0 583.08V494.112C0 488.335 1.89509 482.705 5.51103 478.2C81.8257 383.12 194.809 318.735 323.008 306.498Z'
-  return <Part d={d} {...style} />
-}
+export function Blob(props: SvgProps) {
+  const progress = useSharedValue(0)
 
-/** 2) Left inner */
-export function BlobLeftInner(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M323.556 322.742C327.051 322.203 330.158 324.964 330.158 328.5C330.158 415.089 353.751 496.168 394.857 565.66C405.838 584.223 393.154 609.211 371.587 609.211H83.2588C81.7575 609.211 80.5342 608.001 80.5342 606.5C80.5343 462.922 185.919 343.96 323.556 322.742Z'
-  return <Part d={d} {...style} />
-}
+  useEffect(() => {
+    progress.value = withRepeat(
+      withTiming(COLOR_SCHEMES.length - 1, {
+        duration: (COLOR_SCHEMES.length - 1) * DURATION_PER_SCHEME,
+        easing: Easing.linear,
+      }),
+      -1,
+      false
+    )
+  }, [])
 
-/** 3) Right outer */
-export function BlobRightOuter(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M367.658 304.376C514.787 304.376 645.926 372.836 730.959 479.639C734.535 484.132 736.408 489.731 736.408 495.473V583.08C736.408 597.512 724.709 609.211 710.278 609.211H659.856C658.362 609.211 657.158 607.993 657.158 606.5C657.158 446.613 527.545 317 367.658 317C358.395 317 349.234 317.435 340.194 318.285C336.193 318.662 332.697 315.497 332.842 311.481C332.963 308.143 335.592 305.456 338.927 305.252C348.43 304.671 358.01 304.376 367.658 304.376Z'
-  return <Part d={d} {...style} />
-}
-
-/** 4) Right inner */
-export function BlobRightInner(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M367.658 319.376C526.233 319.376 654.783 447.925 654.783 606.5C654.783 608.001 653.56 609.211 652.059 609.211H439.973C431.81 609.211 424.078 605.424 419.319 598.792C364.696 522.67 332.534 429.341 332.534 328.5C332.534 324.487 335.556 321.122 339.55 320.734C348.798 319.835 358.174 319.376 367.658 319.376Z'
-  return <Part d={d} {...style} />
-}
-
-/** 5) Top-right sweep (big arc) */
-export function BlobTopRightSweep(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M736.408 406.438C736.408 431.332 703.194 443.454 684.949 426.518C601.703 349.247 490.198 302 367.658 302C356.986 302 346.398 302.36 335.905 303.066C334.475 303.162 333.278 301.987 333.363 300.557C333.444 299.2 334.649 298.195 336.001 298.338C346.403 299.436 356.965 300 367.658 300C532.239 300 665.658 166.581 665.658 1.99976C665.658 0.839292 666.595 -0.105713 667.756 -0.105713H710.278C724.709 -0.105713 736.408 11.5933 736.408 26.0248V406.438Z'
-  return <Part d={d} {...style} />
-}
-
-/** 6) Top-left sweep */
-export function BlobTopLeftSweep(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M67.5605 -0.105713C68.721 -0.105713 69.6582 0.839292 69.6582 1.99976C69.6582 153.215 182.288 278.123 328.234 297.413C329.867 297.629 331.071 299.068 330.974 300.713C330.883 302.269 329.655 303.524 328.101 303.655C221.665 312.592 125.394 357.264 51.3269 425.634C33.0711 442.485 0 430.353 0 405.509V26.0249C0 11.5934 11.699 -0.105713 26.1305 -0.105713H67.5605Z'
-  return <Part d={d} {...style} />
-}
-
-/** 7) Top-right core block */
-export function BlobTopRightCore(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M661.17 -0.105713C662.335 -0.105713 663.283 0.834559 663.283 1.99976C663.283 165.269 530.927 297.625 367.658 297.625C364.629 297.625 361.61 297.579 358.603 297.489C344.627 297.068 334.364 284.682 336.085 270.807C348.676 169.258 394.071 77.883 461.335 7.61211C466.119 2.6141 472.781 -0.105713 479.7 -0.105713H661.17Z'
-  return <Part d={d} {...style} />
-}
-
-/** 8) Top-left core block */
-export function BlobTopLeftCore(style: PartStyle & { dOverride?: string }) {
-  const d =
-    style.dOverride ??
-    'M402.792 -0.105713C426.025 -0.105713 438.464 28.7257 424.444 47.2508C376.748 110.274 344.689 185.787 334.043 268.018C332.122 282.859 318.804 293.991 304.184 290.792C171.42 261.745 72.0342 143.48 72.0342 1.99976C72.0342 0.834559 72.9823 -0.105713 74.1475 -0.105713H402.792Z'
-  return <Part d={d} {...style} />
-}
-
-/**
- * Parent component that composes all parts.
- * Control each part via `parts`.
- */
-export function Blob({
-  parts,
-  ...props
-}: SvgProps & {
-  parts?: BlobParts
-}) {
   return (
-    <View style={{ width: '100%', aspectRatio: 737 / 800 }}>
-      <Svg width="100%" height="100%" viewBox="0 0 737 609" preserveAspectRatio="xMidYMin slice" fill="none" {...props}>
-        <BlobLeftOuter {...(parts?.leftOuter ?? {})} />
-        <BlobLeftInner {...(parts?.leftInner ?? {})} />
-        <BlobRightOuter {...(parts?.rightOuter ?? {})} />
-        <BlobRightInner {...(parts?.rightInner ?? {})} />
-        <BlobTopRightSweep {...(parts?.topRightSweep ?? {})} />
-        <BlobTopLeftSweep {...(parts?.topLeftSweep ?? {})} />
-        <BlobTopRightCore {...(parts?.topRightCore ?? {})} />
-        <BlobTopLeftCore {...(parts?.topLeftCore ?? {})} />
-      </Svg>
+    <View style={{ width: '100%', aspectRatio: 1 }} {...props}>
+      {COLOR_SCHEMES.map((scheme, i) => (
+        <BlobLayer key={i} index={i} scheme={scheme} progress={progress} />
+      ))}
     </View>
   )
 }
