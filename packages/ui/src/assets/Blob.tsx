@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import Animated, {
   Easing,
   Extrapolation,
@@ -64,8 +64,18 @@ function BlobLayer({
   )
 }
 
+const ROTATION_DURATION = 30000
+const BREATHE_DURATION = 6000
+const DRIFT_X_DURATION = 8000
+const DRIFT_Y_DURATION = 10000
+const DRIFT_RANGE = 12
+
 export function Blob(props: SvgProps) {
   const progress = useSharedValue(0)
+  const rotation = useSharedValue(0)
+  const breathe = useSharedValue(0)
+  const driftX = useSharedValue(0)
+  const driftY = useSharedValue(0)
 
   useEffect(() => {
     progress.value = withRepeat(
@@ -76,13 +86,58 @@ export function Blob(props: SvgProps) {
       -1,
       false
     )
+
+    rotation.value = withRepeat(
+      withTiming(360, {
+        duration: ROTATION_DURATION,
+        easing: Easing.linear,
+      }),
+      -1,
+      false
+    )
+
+    breathe.value = withRepeat(
+      withTiming(1, {
+        duration: BREATHE_DURATION,
+        easing: Easing.inOut(Easing.ease),
+      }),
+      -1,
+      true
+    )
+
+    driftX.value = withRepeat(
+      withTiming(1, {
+        duration: DRIFT_X_DURATION,
+        easing: Easing.inOut(Easing.ease),
+      }),
+      -1,
+      true
+    )
+
+    driftY.value = withRepeat(
+      withTiming(1, {
+        duration: DRIFT_Y_DURATION,
+        easing: Easing.inOut(Easing.ease),
+      }),
+      -1,
+      true
+    )
   }, [])
 
+  const transformStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: interpolate(driftX.value, [0, 1], [-DRIFT_RANGE, DRIFT_RANGE]) },
+      { translateY: interpolate(driftY.value, [0, 1], [-DRIFT_RANGE * 0.7, DRIFT_RANGE * 0.7]) },
+      { rotate: `${rotation.value}deg` },
+      { scale: interpolate(breathe.value, [0, 1], [1, 1.06]) },
+    ],
+  }))
+
   return (
-    <View style={{ width: '100%', aspectRatio: 1 }} {...props}>
+    <Animated.View style={[{ width: '100%', aspectRatio: 1 }, transformStyle]} {...props}>
       {COLOR_SCHEMES.map((scheme, i) => (
         <BlobLayer key={i} index={i} scheme={scheme} progress={progress} />
       ))}
-    </View>
+    </Animated.View>
   )
 }
