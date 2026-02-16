@@ -141,20 +141,29 @@ eas build --profile <profile-name> --platform <ios|android|all>
 
 **Base** — Shared configuration inherited by all profiles. Sets Node version and Xcode image. Not directly buildable.
 
-##### Development Profile
+##### Development Profiles
 
 Creates a **dev client** build that includes the `expo-dev-client` runtime (dev menu, hot reload, inspector).
 
 ```bash
-eas build --profile development --platform ios    # iOS simulator build
-eas build --profile development --platform android # Android APK
+# Physical device (ad-hoc provisioned)
+eas build --profile development --platform ios
+eas build --profile development --platform android
+
+# Simulator only
+eas build --profile development-simulator --platform ios
 ```
 
-- iOS builds for **simulator only** (due to `simulator: true`)
-- Android produces a sideloadable `.apk`
+| Profile | iOS target | Android target |
+|---------|-----------|----------------|
+| `development` | **Physical device** (ad-hoc provisioned, requires registered UDID) | Sideloadable `.apk` |
+| `development-simulator` | **Simulator only** | _(inherits from development)_ |
+
 - Uses `APP_VARIANT=development`, appending `.dev` to the bundle ID
+- Builds the default app variant (currently DIDx) — set `EXPO_PUBLIC_APP_TYPE` to override
 - Once installed, connect via: `npx expo start --dev-client`
 - Available for download from the [expo.dev](https://expo.dev) build dashboard
+- For physical iOS devices, register your UDID first: `eas device:create`
 
 ##### Preview Profiles (Internal Testing / QA)
 

@@ -13,11 +13,14 @@
 			"android": {
 				"buildType": "apk"
 			},
-			"ios": {
-				"simulator": true
-			},
 			"env": {
 				"APP_VARIANT": "development"
+			}
+		},
+		"development-simulator": {
+			"extends": "development",
+			"ios": {
+				"simulator": true
 			}
 		},
 		"funke-production-local": {
