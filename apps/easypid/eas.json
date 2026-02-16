@@ -118,7 +118,7 @@
 			}
 		},
 		"e2e-test": {
-			"extends": "paradym-preview",
+			"extends": "didx-preview",
 			"withoutCredentials": true,
 			"ios": {
 				"simulator": true
@@ -150,6 +150,15 @@
 			"android": {
 				"track": "alpha"
 			}
-		}
+		},
+		"didx-production": {
+			"ios": {
+				"companyName": "DIDx",
+				"ascAppId": "6759250270"
+			},
+			"android": {
+				"track": "alpha"
+			}
+		}		
 	}
 }
