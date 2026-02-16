@@ -1,10 +1,11 @@
 const { createBaseConfig } = require('./base.app.config.cjs')
 const { version } = require('./package.json')
 
+//NOTE: Update mediator DIDs for DIDx stack
 const mediatorDids = {
-  development: 'did:web:mediator.dev.paradym.id',
-  preview: 'did:web:mediator.paradym.id',
-  production: 'did:web:mediator.paradym.id',
+  development: 'did:web:creds-mediator.uat.didx.co.za',
+  preview: 'did:web:creds-mediator.uat.didx.co.za',
+  production: 'did:web:creds-mediator.uat.didx.co.za',
 }
 
 const APP_CONFIGS = {
@@ -38,16 +39,13 @@ const APP_CONFIGS = {
     slug: 'didx-me-wallet-edge',
     version,
     bundleId: 'za.co.didx.edge.wallet',
-    associatedDomains: ['uat.didx.co.za'],
-    // NOTE: need to update the projectId
+    associatedDomains: ['didx.co.za','dev.didxtech.com', 'test.didxtech.com', 'stage.didx.co.za', 'uat.didx.co.za', 'hub.didx.co.za'],
     projectId: '7799f9ca-792e-4a10-a206-cdd4b6583a75',
     assets: ['./assets/didx/icon.png'],
     enableAusweisSdkEntitlementsIos: false,
     extraConfig: {
-      //NOTE: Update mediator details to DIDx
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
-      // NOTE: Update URL to DIDx
-      redirectBaseUrl: 'https://paradym.id/invitation/redirect',
+      redirectBaseUrl: 'https://creds-app.uat.didx.co.za/invitation/redirect',
     },    
   }),  
 
