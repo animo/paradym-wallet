@@ -214,16 +214,16 @@ After a production build completes, submit it to the stores:
 # Submit to App Store Connect and Google Play
 eas submit --profile funke-production --platform all
 eas submit --profile paradym-production --platform all
+eas submit --profile didx-production --platform all
 ```
 
 Submit profiles are configured in the `submit` section of `eas.json`:
 
 | Profile | iOS (App Store Connect) | Android (Google Play) |
 |---------|------------------------|----------------------|
-| `funke-production` | App ID `6636489314` | `internal` test track |
-| `paradym-production` | App ID `6449846111` | `alpha` track |
-
-> **Note:** There is no `submit` profile for DIDx yet. Add one to `eas.json` when ready to submit to stores.
+| `funke-production` | App ID `6636489314`, Company: Animo Solutions | `internal` test track |
+| `paradym-production` | App ID `6449846111`, Company: Animo Solutions | `alpha` track |
+| `didx-production` | App ID `6759250270`, Company: DIDx | `alpha` track |
 
 ### Build Workflow Summary
 
