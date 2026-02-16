@@ -204,7 +204,7 @@ eas build --profile didx-production --platform all
 | Profile | Description |
 |---------|-------------|
 | `funke-production-local` | Funke production config but as APK (for local device testing without store submission) |
-| `e2e-test` | Extends `paradym-preview` with `withoutCredentials: true` and simulator builds for CI/CD automated testing |
+| `e2e-test` | Extends `didx-preview` with `withoutCredentials: true` and simulator builds for CI/CD automated testing |
 
 #### Submitting to Stores
 
@@ -254,19 +254,45 @@ For EAS builds, the variant is automatically set by the profile's `EXPO_PUBLIC_A
 
 ## 📦 Releasing
 
-Uploading builds to Appstore Connect and the Google Play Console are automated using Github Actions and Expo Build. 
+Uploading builds to App Store Connect and the Google Play Console are automated using GitHub Actions and Expo Build.
 
 Before making a release, make sure to update the `version` in the `apps/easypid/package.json`. We generally follow semver, and so for fixes we update the patch version, for new features we update the minor version, and for large refactorings we can use the major version. However we often push user-facing changes as minor and not major, as the wallet is not interacted with by a machine, so "breaking change" is hard to define.
-To trigger a release of the Paradym Wallet, run the [Continuous Deployment](https://github.com/animo/paradym-wallet/actions/workflows/continuous-deployment.yaml) workflow. Make sure to:
+
+### Using GitHub Actions (CI/CD)
+
+To trigger a release, run the [Continuous Deployment](https://github.com/animo/paradym-wallet/actions/workflows/continuous-deployment.yaml) workflow. Make sure to:
 - Set the channel to `production`
 - The platform to `all` (unless you only want to release for iOS OR Android)
-- App to `paradym` (or to `funke` in case you want to deploy our EUDI Wallet Prototype).
+- App to `paradym`, `funke`, or `didx`
 
-This will trigger builds in Expo, and will then automatically upload the builds to Appstore Connect and Google Play. Build numbers are automatically incremented by Expo.
+This will trigger builds in Expo, and will then automatically upload the builds to App Store Connect and Google Play. Build numbers are automatically incremented by Expo.
 
-Releases are automatically published as internal release on Testflight and Google Play, allowing them to be tested.
+### Manual Release (EAS CLI)
 
-From there on you can manually create a release in the respective platforms (of which plentry documentation can be found online).
+You can also build and submit manually from the command line:
+
+```bash
+cd apps/easypid
+
+# Build production binaries
+eas build --profile didx-production --platform all
+eas build --profile paradym-production --platform all
+eas build --profile funke-production --platform all
+
+# Submit to stores (after build completes)
+eas submit --profile didx-production --platform all
+eas submit --profile paradym-production --platform all
+eas submit --profile funke-production --platform all
+```
+
+### After Submission
+
+| Platform | What happens | Next step |
+|----------|-------------|-----------|
+| **iOS** | Build appears in App Store Connect / TestFlight | Promote to external TestFlight testing or submit for App Review |
+| **Android** | Build appears on the configured Google Play test track | Promote from test track to production in Play Console |
+
+Releases are automatically published as internal releases on TestFlight and Google Play, allowing them to be tested before public release. From there you can manually create a release in the respective platforms.
 
 ## 🆕 Add new dependencies
 
