@@ -71,6 +71,18 @@ You only need to install the development build when **native** dependencies chan
 
 Once installed you can run `pnpm start` from the root of the project to start your development server.
 
+## 🏁 Build an Expo Go wallet
+
+To build a DIDx Me Wallet Edge Expo build
+
+```bash
+eas build --profile didx-preview --platform ios 
+```
+
+> ```bash npx expo run:ios --device```
+> npx expo start --dev-client
+npx expo start --clear -c --dev-client
+
 ## 📦 Releasing
 
 Uploading builds to Appstore Connect and the Google Play Console are automated using Github Actions and Expo Build. 
