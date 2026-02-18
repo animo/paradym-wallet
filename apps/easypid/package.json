@@ -17,7 +17,7 @@
 		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-ausweis-sdk": "catalog:",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
-		"@animo-id/expo-mdoc-data-transfer": "catalog:",
+		"@animo-id/expo-mdoc-data-transfer": "^0.1.6",
 		"@animo-id/expo-secure-environment": "catalog:",
 		"@animo-id/mdoc": "catalog:",
 		"@credo-ts/core": "catalog:",
@@ -46,6 +46,7 @@
 		"expo-application": "catalog:",
 		"expo-asset": "catalog:",
 		"expo-blur": "catalog:",
+		"expo-camera": "catalog:",
 		"expo-constants": "catalog:",
 		"expo-crypto": "catalog:",
 		"expo-dev-client": "catalog:",
@@ -79,8 +80,7 @@
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
 		"react-native-screens": "catalog:",
-		"react-native-svg": "catalog:",
-		"expo-camera": "catalog:"
+		"react-native-svg": "catalog:"
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",
