@@ -74,7 +74,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 163]],
 		"translation": "{name} wants to connect with you."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -83,7 +83,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 141]],
 		"translation": "{name} wants to interact to create a digital signature for a document."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -92,7 +92,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
 		"translation": "{name} wants to offer you a card."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -101,7 +101,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
 		"translation": "{name} wants to request information from you."
 	},
 	"credentials.totalLabel": {
@@ -195,7 +195,7 @@
 		"message": "Activate Biometrics",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 660]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 662]],
 		"translation": "Activate Biometrics"
 	},
 	"onboarding.biometrics.subtitle": {
@@ -360,28 +360,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 165]],
 		"translation": "An unknown organization wants to connect with you."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
 		"translation": "An unknown organization wants to interact to create a digital signature for a document."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
 		"translation": "An unknown organization wants to offer you a card."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
 		"translation": "An unknown organization wants to request information from you."
 	},
 	"menu.section.app": {
@@ -397,14 +397,14 @@
 			"0": ["trustedEntitiesWithoutSelf.length"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 174]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 184]],
 		"translation": "Trusted by {0} organizations"
 	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 179]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 189]],
 		"translation": "Trusted by one organization"
 	},
 	"common.archiveCardTitle": {
@@ -664,7 +664,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 160]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 170]
 		],
 		"translation": "Card is not ready yet"
 	},
@@ -739,7 +739,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 183]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 188]
 		],
 		"translation": "Card successfully added to your wallet!"
 	},
@@ -991,7 +991,7 @@
 		"message": "Demo organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 201]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 211]],
 		"translation": "Demo organization"
 	},
 	"settings.developmentMode": {
@@ -1014,8 +1014,26 @@
 		"message": "Do not share real data",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 205]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 215]],
 		"translation": "Do not share real data"
+	},
+	"verifyPartySlide.interactWithHeading": {
+		"message": "Do you trust {name}?",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
+		"translation": "Do you trust {name}?"
+	},
+	"receiveCredential.checkInformationHeader": {
+		"message": "Do you want to store this card?",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 174]
+		],
+		"translation": "Do you want to store this card?"
 	},
 	"signShare.documentHeading": {
 		"message": "Document",
@@ -1090,7 +1108,7 @@
 		"message": "eID card scanning cancelled",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 478]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 480]],
 		"translation": "eID card scanning cancelled"
 	},
 	"language.en": {
@@ -1178,7 +1196,7 @@
 		"message": "Error occurred during onboarding",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 422]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 424]],
 		"translation": "Error occurred during onboarding"
 	},
 	"notification.errorParsingInvitation": {
@@ -1295,7 +1313,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 219]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 229]],
 		"translation": "First time interaction"
 	},
 	"funkeAboutScreen.contactIntro": {
@@ -1411,21 +1429,21 @@
 		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 74]],
 		"translation": "Hello!"
 	},
-	"credentials.hideMetadata": {
-		"message": "Hide metadata attributes",
-		"placeholders": {},
-		"comments": ["Button label: toggles visibility of metadata attributes"],
-		"origin": [
-			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 175]
-		],
-		"translation": "Hide metadata attributes"
-	},
 	"optionSheet.hideMetadata": {
 		"message": "Hide metadata attributes",
 		"placeholders": {},
 		"comments": ["Option to hide metadata in option sheet"],
 		"origin": [
 			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 176]
+		],
+		"translation": "Hide metadata attributes"
+	},
+	"credentials.hideMetadata": {
+		"message": "Hide metadata attributes",
+		"placeholders": {},
+		"comments": ["Button label: toggles visibility of metadata attributes"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 175]
 		],
 		"translation": "Hide metadata attributes"
 	},
@@ -1500,7 +1518,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 543]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 565]
 		],
 		"translation": "If you stop, the card offer will be cancelled."
 	},
@@ -1550,15 +1568,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 271]],
 		"translation": "Information shared"
 	},
-	"verifyPartySlide.interactWithHeading": {
-		"message": "Do you trust {name}?",
-		"placeholders": {
-			"name": ["name"]
-		},
-		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
-		"translation": "Do you trust {name}?"
-	},
 	"pidSetup.invalidEidPin": {
 		"message": "Invalid eID card PIN entered",
 		"placeholders": {},
@@ -1584,7 +1593,7 @@
 		"message": "Invalid PIN entered for eID Card. Please try again",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 335]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 337]],
 		"translation": "Invalid PIN entered for eID Card. Please try again"
 	},
 	"qrScan.invalidQrCode": {
@@ -1625,15 +1634,6 @@
 		"comments": [],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 208]],
 		"translation": "Invitation type not allowed."
-	},
-	"receiveCredential.checkInformationHeader": {
-		"message": "Is the information correct?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 164]
-		],
-		"translation": "Is the information correct?"
 	},
 	"common.fields.issuedAt": {
 		"message": "Issued at",
@@ -1717,7 +1717,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 226]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 236]],
 		"translation": "Last interaction: {0}"
 	},
 	"predicate.lessThan": {
@@ -1775,21 +1775,21 @@
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 78]],
 		"translation": "Menu"
 	},
-	"credentials.metadataAttributes": {
-		"message": "Metadata",
-		"placeholders": {},
-		"comments": ["Header for metadata attributes of a credential"],
-		"origin": [
-			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 130]
-		],
-		"translation": "Metadata"
-	},
 	"requestedAttributes.metadataTitle": {
 		"message": "Metadata",
 		"placeholders": {},
 		"comments": ["Section header title for metadata attributes"],
 		"origin": [
 			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 152]
+		],
+		"translation": "Metadata"
+	},
+	"credentials.metadataAttributes": {
+		"message": "Metadata",
+		"placeholders": {},
+		"comments": ["Header for metadata attributes of a credential"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 130]
 		],
 		"translation": "Metadata"
 	},
@@ -1936,7 +1936,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 230]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 240]],
 		"translation": "No previous interactions found"
 	},
 	"pidSetup.notReadyToReceivePid": {
@@ -1991,14 +1991,14 @@
 		"message": "Organization is not verified",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 191]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 201]],
 		"translation": "Organization is not verified"
 	},
 	"verifyPartySlide.organizationNotVerifiedHeading": {
 		"message": "Organization not verified",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 115]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
 		"translation": "Organization not verified"
 	},
 	"requestPurpose.infoSheet.title": {
@@ -2182,7 +2182,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 215]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 225]],
 		"translation": "Previous interactions"
 	},
 	"funkeAboutScreen.privacyPolicyTitle": {
@@ -2288,7 +2288,7 @@
 		"message": "Recognized organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 178]],
 		"translation": "Trusted organization"
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2589,21 +2589,21 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 276]],
 		"translation": "Sharing stopped"
 	},
-	"credentials.showMetadata": {
-		"message": "Show metadata attributes",
-		"placeholders": {},
-		"comments": ["Button label: toggles visibility of metadata attributes"],
-		"origin": [
-			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 180]
-		],
-		"translation": "Show metadata attributes"
-	},
 	"optionSheet.showMetadata": {
 		"message": "Show metadata attributes",
 		"placeholders": {},
 		"comments": ["Option to show metadata in option sheet"],
 		"origin": [
 			["src/features/share/FunkeRequestedAttributesDetailScreen.tsx", 181]
+		],
+		"translation": "Show metadata attributes"
+	},
+	"credentials.showMetadata": {
+		"message": "Show metadata attributes",
+		"placeholders": {},
+		"comments": ["Button label: toggles visibility of metadata attributes"],
+		"origin": [
+			["src/features/wallet/FunkeCredentialDetailAttributesScreen.tsx", 180]
 		],
 		"translation": "Show metadata attributes"
 	},
@@ -2773,7 +2773,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 539]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 561]
 		],
 		"translation": "Stop card offer?"
 	},
@@ -2826,7 +2826,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 154]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 164]
 		],
 		"translation": "Success!"
 	},
@@ -2860,7 +2860,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 179]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 194]
 		],
 		"translation": "The card will be fetched once available."
 	},
@@ -3685,7 +3685,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 229]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 243]
 		],
 		"translation": "Your cards are not yet ready. We will check once in a while in the background and fetch the cards once they're ready."
 	},
