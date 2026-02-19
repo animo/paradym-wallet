@@ -1,6 +1,6 @@
 {
 	"name": "animo-easypid",
-	"version": "1.18.0",
+	"version": "1.18.2",
 	"main": "index.ts",
 	"private": true,
 	"type": "module",

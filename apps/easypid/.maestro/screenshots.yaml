@@ -1,0 +1,128 @@
+appId: id.paradym.wallet.preview
+tags:
+  - screenshots
+---
+- runFlow: ./onboarding.yaml
+
+# Issue pid (without screenshots)
+- runScript:
+    file: ./scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "eudi-pid-sd-jwt", "flow":"openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+- runFlow:
+    file: ./issue-none/issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}
+
+# Issue mDL with Presentation during issuance (with screenshots)
+- runScript:
+    file: ./scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"presentation", "requestType": "mdl-mdoc", "flow":"openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+- openLink:
+    link: ${output.deeplink}
+- repeat:
+    times: 6
+    commands:
+      - tapOn: "Pin number 1"
+- waitForAnimationToEnd:
+    timeout: 5000
+- extendedWaitUntil:
+    visible: "Yes, continue"
+    timeout: 100000
+- extendedWaitUntil:
+    visible:
+      id: entity-image-loaded
+    timeout: 100000
+- takeScreenshot: InteractWithScreen
+- tapOn: "Yes, continue"
+- waitForAnimationToEnd:
+    timeout: 5000
+- assertVisible: "Card offered"
+- tapOn: "Continue"
+- waitForAnimationToEnd:
+    timeout: 5000
+- assertVisible: Review the request
+- takeScreenshot: ReviewRequestScreen
+- tapOn: Share
+- repeat:
+    times: 6
+    commands:
+      - tapOn: "Pin number 1"
+- assertVisible: "Is the information correct?"
+- assertVisible: "Credential"
+- assertVisible: "Decline"
+- tapOn: "Accept"
+- extendedWaitUntil:
+    visible: "Success!"
+    timeout: 120000
+- takeScreenshot: IssuanceSuccessScreen
+
+# Issue Tax ID (without screenshots)
+- runScript:
+    file: ./scripts/request.js
+    env:
+      ACTION: '{"action":"createOffer", "authorization":"none", "requestType": "tax-id-sd-jwt", "flow":"openid4vc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+- runFlow:
+    file: ./issue-none/issue-none.yaml
+    env:
+      deeplink: ${output.deeplink}
+
+# Create verification (with screenshots)
+- runScript:
+    file: ./scripts/request.js
+    env:
+      ACTION: '{"action":"createVerification", "requestSignerType":"x5c", "flow":"openid4vc", "requestType":"mdl-mdoc"}'
+      ISSUER_BACKEND: ${MAESTRO_ISSUER_BACKEND}
+- openLink:
+    link: ${output.deeplink}
+- runFlow:
+    when:
+      visible: .*Open in.*
+      platform: ios
+    commands:
+      - tapOn: Open
+- repeat:
+    times: 6
+    commands:
+      - tapOn: "Pin number 1"
+- extendedWaitUntil:
+    visible: "Yes, continue"
+    timeout: 100000
+- tapOn: "Yes, continue"
+- assertVisible: Review the request
+- tapOn: Share
+- repeat:
+    times: 6
+    commands:
+      - tapOn: "Pin number 1"
+- assertVisible: Success!
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: VerificationSuccessScreen
+# On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Go to wallet"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Go to wallet,  "
+- assertVisible: "Hello!"
+
+- takeScreenshot: HomeScreen
+
+- tapOn: Recent activity
+- takeScreenshot: RecentActivity
+- tapOn: " , Back"
+- tapOn: .*All cards.*
+- tapOn: DRIVING LICENCE
+- tapOn: Card attributes. View attributes of the card
+- assertVisible: Card attributes
+- takeScreenshot: CredentialDetail

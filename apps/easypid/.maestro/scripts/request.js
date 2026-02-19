@@ -188,10 +188,13 @@ const PARADYM_CONFIG = {
 const PLAYGROUND_CONFIG = {
   issuance: {
     'mdl-mdoc': {
-      credentialSupportedId: 'mdl-mdoc',
+      credentialSupportedId: 'mdl-mdoc-utopia',
+    },
+    'tax-id-sd-jwt': {
+      credentialSupportedId: 'tax-id-sd-jwt',
     },
     'eudi-pid-sd-jwt': {
-      credentialSupportedId: 'eudi-pid-sd-jwt',
+      credentialSupportedId: 'eudi-pid-sd-jwt-bdr',
     },
     'msisdn-sd-jwt': {
       credentialSupportedId: 'msisdn-sd-jwt',

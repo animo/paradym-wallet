@@ -102,3 +102,5 @@ android
 # build output
 dist/
 packages/ui/types
+
+apps/easypid/.maestro/.maestro/screenshots
