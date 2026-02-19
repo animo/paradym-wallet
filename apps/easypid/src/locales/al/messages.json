@@ -1551,13 +1551,13 @@
 		"translation": "Informacioni u nda"
 	},
 	"verifyPartySlide.interactWithHeading": {
-		"message": "Interact with {name}?",
+		"message": "Do you trust {name}?",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
-		"translation": "Bashkëvepro me {name}?"
+		"translation": "A i besoni {name}?"
 	},
 	"pidSetup.invalidEidPin": {
 		"message": "Invalid eID card PIN entered",

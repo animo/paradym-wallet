@@ -1551,13 +1551,13 @@
 		"translation": "Informationen geteilt"
 	},
 	"verifyPartySlide.interactWithHeading": {
-		"message": "Interact with {name}?",
+		"message": "Do you trust {name}?",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
-		"translation": "Mit {name} interagieren?"
+		"translation": "Vertrauen Sie {name}?"
 	},
 	"pidSetup.invalidEidPin": {
 		"message": "Invalid eID card PIN entered",

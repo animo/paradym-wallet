@@ -1551,13 +1551,13 @@
 		"translation": "Tiedot jaettu"
 	},
 	"verifyPartySlide.interactWithHeading": {
-		"message": "Interact with {name}?",
+		"message": "Do you trust {name}?",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
-		"translation": "Jatka {name} kanssa?"
+		"translation": "Luotatko {name}?"
 	},
 	"pidSetup.invalidEidPin": {
 		"message": "Invalid eID card PIN entered",
