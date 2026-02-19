@@ -134,7 +134,7 @@
 			"A sentence that introduces a list of organizations that approved the current party"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 110]],
-		"translation": "Lista organisaatioista, jotka ovat hyväksyneet toimijan {name}."
+		"translation": "Lista organisaatioista, jotka luottavat toimijaan {name}."
 	},
 	"trust.approvedListWithoutOrganizationName": {
 		"message": "A list of organizations that have approved this unknown organization.",
@@ -143,7 +143,7 @@
 			"A sentence that introduces a list of organizations that approved the current party, but the organization name is not known"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 115]],
-		"translation": "Lista organisaatioista, jotka ovat hyväksyneet tämän toimijan."
+		"translation": "Lista organisaatioista, jotka luottavat tähän toimijaan."
 	},
 	"offlineQr.instruction": {
 		"message": "A verifier needs to scan your QR-Code.",
@@ -398,14 +398,14 @@
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 174]],
-		"translation": "{0} hyväksynyttä organisaatiota"
+		"translation": "{0} luottavaa organisaatiota"
 	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 179]],
-		"translation": "1 hyväksynyt organisaatio"
+		"translation": "1 luottava organisaatio"
 	},
 	"common.archiveCardTitle": {
 		"message": "Archive card?",
@@ -2289,7 +2289,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
-		"translation": "Tunnistettu toimija"
+		"translation": "Luotettu toimija"
 	},
 	"cardLifecycle.refreshCardButton": {
 		"message": "Refresh card",
@@ -3022,7 +3022,7 @@
 			"A message shown when there are no organizations that approved the current party"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 122]],
-		"translation": "Mikään organisaatio ei ole hyväksynyt toimijaa {name}."
+		"translation": "Mikään organisaatio ei luota toimijaan {name}."
 	},
 	"trust.noApprovalsWithoutOrganizationName": {
 		"message": "There are no organizations that have approved this unknown organization.",
@@ -3031,7 +3031,7 @@
 			"A message shown when there are no organizations that approved the current party, but the organization name is not known"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 127]],
-		"translation": "Mikään organisaatio ei ole hyväksynyt tätä toimijaa."
+		"translation": "Mikään organisaatio ei luota tähän toimijaan."
 	},
 	"credentials.emptyTitle": {
 		"message": "There's nothing here, yet",

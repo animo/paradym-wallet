@@ -35,6 +35,8 @@ export {
   receiveDeferredCredentialFromOpenId4VciOffer,
   resolveOpenId4VciOffer,
   resolveOutOfBandInvitation,
+  type TrustedDidEntity,
+  type TrustedOpenId4VciIssuerEntity,
   type TrustedX509Entity,
 } from './handler'
 export {

@@ -134,7 +134,7 @@
 			"A sentence that introduces a list of organizations that approved the current party"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 110]],
-		"translation": "Eine Liste von Organisationen, die {name} bestätigt haben."
+		"translation": "Eine Liste von Organisationen, die {name} vertrauen."
 	},
 	"trust.approvedListWithoutOrganizationName": {
 		"message": "A list of organizations that have approved this unknown organization.",
@@ -143,7 +143,7 @@
 			"A sentence that introduces a list of organizations that approved the current party, but the organization name is not known"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 115]],
-		"translation": "Eine Liste von Organisationen, die diese unbekannte Organisation bestätigt haben."
+		"translation": "Eine Liste von Organisationen, die dieser unbekannten Organisation vertrauen."
 	},
 	"offlineQr.instruction": {
 		"message": "A verifier needs to scan your QR-Code.",
@@ -398,14 +398,14 @@
 		},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 174]],
-		"translation": "Bestätigt von {0} Organisationen"
+		"translation": "Vertraut von {0} Organisationen"
 	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 179]],
-		"translation": "Bestätigt von einer Organisation"
+		"translation": "Vertraut von einer Organisation"
 	},
 	"common.archiveCardTitle": {
 		"message": "Archive card?",
@@ -2289,7 +2289,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
-		"translation": "Anerkannte Organisation"
+		"translation": "Vertrauenswürdige Organisation"
 	},
 	"cardLifecycle.refreshCardButton": {
 		"message": "Refresh card",
@@ -3022,7 +3022,7 @@
 			"A message shown when there are no organizations that approved the current party"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 122]],
-		"translation": "Es gibt keine Organisationen, die {name} bestätigt haben."
+		"translation": "Es gibt keine Organisationen, die {name} vertrauen."
 	},
 	"trust.noApprovalsWithoutOrganizationName": {
 		"message": "There are no organizations that have approved this unknown organization.",
@@ -3031,7 +3031,7 @@
 			"A message shown when there are no organizations that approved the current party, but the organization name is not known"
 		],
 		"origin": [["src/features/wallet/FunkeTrustDetailScreen.tsx", 127]],
-		"translation": "Es gibt keine Organisationen, die diese unbekannte Organisation bestätigt haben."
+		"translation": "Es gibt keine Organisationen, die dieser unbekannten Organisation vertrauen."
 	},
 	"credentials.emptyTitle": {
 		"message": "There's nothing here, yet",
