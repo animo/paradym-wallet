@@ -1,4 +1,4 @@
-import type { TrustedX509Entity, TrustList } from '@package/agent'
+import type { TrustedDidEntity, TrustedOpenId4VciIssuerEntity, TrustedX509Entity, TrustList } from '@package/agent'
 import ExpoConstants from 'expo-constants'
 import { isParadymWallet } from './hooks/useFeatureFlag'
 
@@ -50,6 +50,15 @@ pUGCFdfNLQIgHGSa5u5ZqUtCrnMiaEageO71rjzBlov0YUH4+6ELioY=
     name: 'Animo Playground',
     logoUri: 'https://funke.animo.id/assets/verifiers/animo/verifier.jpg',
     url: 'https://funke.animo.id',
+    demo: true,
+  },
+  {
+    entityId: 'playground.animo.id',
+    certificate:
+      'MIIB2zCCAYCgAwIBAgIRALanVqNUK4dgPlUmlAasZ24wCgYIKoZIzj0EAwIwHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMB4XDTI0MTEyODE2MjgzMFoXDTI4MTEyODE2MjgzMFowHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwDpb2uNodErbJfEWteLF6pGiqaxNfF9rFyttjJy+No0gmzn4wkgYqvGtcX5W4blXT1PQubGml5QUmpm5d41zd6OBoDCBnTAdBgNVHQ4EFgQUVC5XW1PTYNo6yWnkJGgvBVCtWZUwDgYDVR0PAQH/BAQDAgEGMCYGA1UdEgQfMB2GG2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZDASBgNVHRMBAf8ECDAGAQH/AgEAMDAGA1UdHwQpMCcwJaAjoCGGH2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZC9jcmwwCgYIKoZIzj0EAwIDSQAwRgIhAJvXTWWteCIeZPbzn+Y++Lpf4eFTmxP2M5o4phGsLuZcAiEAuiL89d9a2CQbQo8dzNpnV+P9JrUnKRQuP5ZZ9VJcoJI=',
+    name: 'Animo Playground',
+    logoUri: 'https://playground.animo.id/assets/verifiers/animo/verifier.jpg',
+    url: 'https://playground.animo.id',
     demo: true,
   },
   {
@@ -131,6 +140,60 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
 ] satisfies Array<TrustedX509Entity>
 
 export const trustedX509Certificates = trustedX509Entities.map((e) => e.certificate)
+
+export const trustedDidEntities = [
+  {
+    entityId: 'did:web:metadata.dev.paradym.id:41708c95-743b-48d1-b4d5-23547f67e192',
+    did: 'did:web:metadata.dev.paradym.id:41708c95-743b-48d1-b4d5-23547f67e192',
+    logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
+    name: 'Hogeschool van Amsterdam',
+    url: 'https://hva.nl',
+    demo: true,
+  },
+  {
+    entityId: 'did:web:metadata.paradym.id:f976c06e-da46-4b79-bc6e-bfda07c97f91',
+    did: 'did:web:metadata.paradym.id:f976c06e-da46-4b79-bc6e-bfda07c97f91',
+    logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
+    name: 'Hogeschool van Amsterdam',
+    url: 'https://hva.nl',
+    demo: false,
+  },
+] satisfies Array<TrustedDidEntity>
+
+export const trustedOpenId4VciIssuerEntities = [
+  {
+    entityId: 'https://agent.dev.paradym.id/oid4vci/43700792-bc9f-4b8c-be2f-59a227d7a6cb',
+    issuer: 'https://agent.dev.paradym.id/oid4vci/43700792-bc9f-4b8c-be2f-59a227d7a6cb',
+    logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
+    name: 'Hogeschool van Amsterdam',
+    url: 'https://hva.nl',
+    demo: true,
+  },
+  {
+    entityId: 'https://agent.paradym.id/oid4vci/655913d0-e655-4b3f-9335-a8af00922270',
+    issuer: 'https://agent.paradym.id/oid4vci/655913d0-e655-4b3f-9335-a8af00922270',
+    logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
+    name: 'Hogeschool van Amsterdam',
+    url: 'https://hva.nl',
+    demo: false,
+  },
+  {
+    entityId: 'https://issuer.dev.eduid.nl/eduid',
+    issuer: 'https://issuer.dev.eduid.nl/eduid',
+    logoUri: 'https://static.dev.eduid.nl/images/eduid_credential_logo.png',
+    name: 'eduID',
+    url: 'https://dev.eduid.nl',
+    demo: true,
+  },
+  {
+    entityId: 'https://issuer.eduid.nl/eduid',
+    issuer: 'https://issuer.eduid.nl/eduid',
+    logoUri: 'https://static.eduid.nl/images/eduid_credential_logo.png',
+    name: 'eduID',
+    url: 'https://eduid.nl',
+    demo: false,
+  },
+] satisfies Array<TrustedOpenId4VciIssuerEntity>
 
 // https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
 export const pidSchemes = {

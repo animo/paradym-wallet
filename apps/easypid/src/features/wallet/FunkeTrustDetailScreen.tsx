@@ -141,9 +141,9 @@ export function FunkeTrustDetailScreen({
                       <Image src={entity.logoUri} height="100%" width="100%" />
                     </Circle>
                   )}
-                  <XStack gap="$1" f={1} justifyContent="space-between" ai="center">
-                    <YStack>
-                      <Heading f={1} numberOfLines={2} heading="h3">
+                  <XStack gap="$2" display="flex" f={1} justifyContent="space-between" ai="center">
+                    <YStack flexShrink={1}>
+                      <Heading heading="h3" numberOfLines={3} textOverflow="ellipsis">
                         {entity.organizationName}
                       </Heading>
                       {entity.demo && (

@@ -52,7 +52,7 @@ import {
 } from '../format/formatPresentation'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { extractOpenId4VcCredentialMetadata, setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
-import { getTrustedEntities } from '../utils/trust'
+import { getTrustedEntities, getTrustedEntitiesForOid4vci } from '../utils/trust'
 import { BiometricAuthenticationError } from './error'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
@@ -65,17 +65,41 @@ export type TrustedX509Entity = {
   entityId: string
 }
 
+export type TrustedDidEntity = {
+  did: string
+  name: string
+  logoUri: string
+  url: string
+  demo?: boolean
+  entityId: string
+}
+
+export type TrustedOpenId4VciIssuerEntity = {
+  issuer: string
+  name: string
+  logoUri: string
+  url: string
+  demo?: boolean
+  entityId: string
+}
+
 export async function resolveOpenId4VciOffer({
   agent,
   offer,
   authorization,
   fetchAuthorization = true,
+  trustedX509Entities = [],
+  trustedDidEntities = [],
+  trustedOpenId4VciIssuerEntities = [],
 }: {
   agent: EitherAgent
   offer: { uri: string }
   authorization?: { clientId: string; redirectUri: string }
   customHeaders?: Record<string, unknown>
   fetchAuthorization?: boolean
+  trustedX509Entities?: TrustedX509Entity[]
+  trustedDidEntities?: TrustedDidEntity[]
+  trustedOpenId4VciIssuerEntities?: TrustedOpenId4VciIssuerEntity[]
 }) {
   try {
     agent.config.logger.info(`Receiving openid uri ${offer.uri}`, {
@@ -109,9 +133,25 @@ export async function resolveOpenId4VciOffer({
       }
     }
 
+    const issuerTrust = await getTrustedEntitiesForOid4vci({
+      signedCredentialIssuer: resolvedCredentialOffer.metadata.signedCredentialIssuer,
+      issuer: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+      agent,
+      trustedX509Entities,
+      trustedDidEntities,
+      trustedOpenId4VciIssuerEntities,
+      walletTrustedEntity: {
+        organizationName: isParadymWallet() ? 'Paradym Wallet' : 'Funke Wallet',
+        entityId: '__',
+        logoUri: require('../../../../apps/easypid/assets/paradym/icon.png'),
+        uri: isParadymWallet() ? 'https://paradym.id' : 'https://funke.animo.id',
+      },
+    })
+
     return {
       resolvedCredentialOffer,
       resolvedAuthorizationRequest,
+      issuerTrust,
     }
   } catch (error) {
     // NOTE: Error thrown by resolveCredentialOffer are not caught correctly on the app level
@@ -442,6 +482,7 @@ export type GetCredentialsForProofRequestOptions = {
   allowUntrusted?: boolean
   origin?: string
   trustedX509Entities?: TrustedX509Entity[]
+  trustedDidEntities?: TrustedDidEntity[]
 }
 
 export const getCredentialsForProofRequest = async ({
@@ -451,6 +492,7 @@ export const getCredentialsForProofRequest = async ({
   allowUntrusted = true,
   origin,
   trustedX509Entities = [],
+  trustedDidEntities = [],
 }: GetCredentialsForProofRequestOptions) => {
   const { data: fromFederationData = null } = allowUntrusted
     ? await extractEntityIdFromAuthorizationRequest({ uri, requestPayload, origin })
@@ -493,6 +535,7 @@ export const getCredentialsForProofRequest = async ({
   const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
     agent,
     trustedX509Entities,
+    trustedDidEntities,
     resolvedAuthorizationRequest: resolved,
     origin,
     authorizationRequestVerificationResult,

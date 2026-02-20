@@ -1,8 +1,14 @@
 import type { W3cV2CredentialRecord } from '@credo-ts/core'
 import { useAppAgent } from '@easypid/agent'
-import { walletClient } from '@easypid/constants'
+import {
+  trustedDidEntities,
+  trustedOpenId4VciIssuerEntities,
+  trustedX509Entities,
+  walletClient,
+} from '@easypid/constants'
 import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
+
 import { useLingui } from '@lingui/react/macro'
 import {
   acquireAuthorizationCodeAccessToken,
@@ -29,6 +35,8 @@ import {
   storeCredential,
   storeDeferredCredential,
   storeReceivedActivity,
+  type TrustedEntity,
+  type TrustMechanism,
   type W3cCredentialRecord,
 } from '@package/agent'
 import { shareProof } from '@package/agent/invitation/shareProof'
@@ -66,6 +74,7 @@ export function FunkeCredentialNotificationScreen() {
   const [resolvedCredentialOffer, setResolvedCredentialOffer] = useState<OpenId4VciResolvedCredentialOffer>()
   const [resolvedAuthorizationRequest, setResolvedAuthorizationRequest] =
     useState<OpenId4VciResolvedAuthorizationRequest>()
+  const [issuerTrust, setIssuerTrust] = useState<{ trustedEntities: TrustedEntity[]; trustMechanism: TrustMechanism }>()
 
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
@@ -123,10 +132,14 @@ export function FunkeCredentialNotificationScreen() {
         uri: params.uri,
       },
       authorization: walletClient,
+      trustedX509Entities,
+      trustedDidEntities,
+      trustedOpenId4VciIssuerEntities,
     })
-      .then(({ resolvedAuthorizationRequest, resolvedCredentialOffer }) => {
+      .then(({ resolvedAuthorizationRequest, resolvedCredentialOffer, issuerTrust }) => {
         setResolvedCredentialOffer(resolvedCredentialOffer)
         setResolvedAuthorizationRequest(resolvedAuthorizationRequest)
+        setIssuerTrust(issuerTrust)
       })
       .catch((error) => {
         setErrorReasonWithError(t(commonMessages.credentialInformationCouldNotBeExtracted), error)
@@ -453,6 +466,8 @@ export function FunkeCredentialNotificationScreen() {
               name={credentialDisplay.issuer.name}
               logo={credentialDisplay.issuer.logo}
               entityId={issuerMetadata?.credential_issuer}
+              trustedEntities={issuerTrust?.trustedEntities}
+              trustMechanism={issuerTrust?.trustMechanism}
               onContinue={onCheckCardContinue}
             />
           ),
