@@ -133,6 +133,11 @@ export interface CredentialMetadata {
   type: string
 
   /**
+   * E.g. vct extends values
+   */
+  additionalTypes?: string[]
+
+  /**
    * issuer identifier. did or https url
    */
   issuer?: string
@@ -550,7 +555,10 @@ export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpace
   }
 }
 
-export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<string, unknown>) {
+export function getAttributesAndMetadataForSdJwtPayload(
+  sdJwtVcPayload: Record<string, unknown>,
+  record?: SdJwtVcRecord
+) {
   type SdJwtVcPayload = {
     iss: string
     cnf: Record<string, unknown>
@@ -563,9 +571,12 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, status, ...visibleProperties } =
     sdJwtVcPayload as SdJwtVcPayload
 
+  const extraVcts = record?.typeMetadataChain?.slice(1).map((i) => i.vct)
+
   const holder = cnf ? ((cnf.kid ?? cnf.jwk) ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
+    additionalTypes: extraVcts?.length ? extraVcts : undefined,
     issuer: iss,
     holder,
     issuedAt: iat ? new Date(iat * 1000).toISOString() : undefined,

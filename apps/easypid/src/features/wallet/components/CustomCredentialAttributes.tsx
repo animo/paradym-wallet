@@ -5,7 +5,6 @@ import {
   type ArfPidSdJwtVcAttributes,
   formatArfPidPlaceOfBirth,
   type PidMdocAttributes,
-  type PidSdJwtVcAttributes,
 } from '@easypid/utils/pidCustomMetadata'
 import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialForDisplay } from '@package/agent'
@@ -30,23 +29,28 @@ type CustomCredentialAttributesProps = {
 }
 
 export const hasCustomCredentialDisplay = (credentialType: string) => {
-  return (
-    [...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credentialType) ||
-    [...pidSchemes.sdJwtVcVcts].includes(credentialType) ||
-    mdlSchemes.mdlMdocDoctypes.includes(credentialType)
+  return [...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes, ...mdlSchemes.mdlMdocDoctypes].includes(
+    credentialType
   )
 }
 
 function CustomCredentialAttributesInner({ credential, scrollRef }: CustomCredentialAttributesProps) {
-  // if ([...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
-  //   return <FunkeArfPidCredentialAttributes credential={credential} />
-  // }
-  // if (pidSchemes.sdJwtVcVcts.includes(credential.metadata.type)) {
-  //   return <FunkeBdrPidCredentialAttributes credential={credential} />
-  // }
-  // if (mdlSchemes.mdlMdocDoctypes.includes(credential.metadata.type)) {
-  //   return <FunkeMdlCredentialAttributes credential={credential} />
-  // }
+  if ([...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
+    return <FunkeArfPidCredentialAttributes credential={credential} />
+  }
+
+  // Support vct extends as well for custom rendering
+  if (
+    credential.metadata.additionalTypes &&
+    credential.record.type === 'SdJwtVcRecord' &&
+    pidSchemes.sdJwtVcVcts.some((vct) => credential.metadata.additionalTypes?.includes(vct))
+  ) {
+    return <FunkeArfPidCredentialAttributes credential={credential} />
+  }
+
+  if (mdlSchemes.mdlMdocDoctypes.includes(credential.metadata.type)) {
+    return <FunkeMdlCredentialAttributes credential={credential} />
+  }
 
   return <CredentialAttributes attributes={credential.attributes} scrollRef={scrollRef} />
 }
@@ -61,6 +65,9 @@ export function CustomCredentialAttributes({ credential, scrollRef }: CustomCred
   )
 }
 
+// TODO: we should simplify the custom rendering:
+// - use our own claim array for attribute display and translation
+// - define a few common layouts and then allow to fill in the common structures based on paths
 export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
   const { t } = useLingui()
 
@@ -124,7 +131,12 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
 
     headerImage = raw.picture ?? headerImage
   } else if (isPidMdoc) {
-    const raw = credential?.rawAttributes as PidMdocAttributes
+    const raw = (
+      credential?.rawAttributes as {
+        'eu.europa.ec.eudi.pid.1': PidMdocAttributes
+      }
+    )['eu.europa.ec.eudi.pid.1']
+
     personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
     personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birth_date}`
     personalInfoCard.placeOfBirth = raw.place_of_birth ? formatArfPidPlaceOfBirth(raw.place_of_birth) : ''
@@ -223,99 +235,13 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
   )
 }
 
-/**
- * Bdr
- */
-export function FunkeBdrPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
-  const { t } = useLingui()
-
-  const personalInfoCard = {
-    name: '',
-    born: '',
-    placeOfBirth: '',
-    nationalities: '',
-  }
-
-  const addressTable = {
-    street: '',
-    locality: '',
-    postalCode: '',
-  }
-
-  const raw = credential?.rawAttributes as PidSdJwtVcAttributes
-  personalInfoCard.name = `${raw.given_name} ${raw.family_name}`
-  personalInfoCard.born = `${t(commonMessages.fields.born)} ${raw.birthdate}`
-  personalInfoCard.placeOfBirth = raw.place_of_birth?.locality ?? ''
-  personalInfoCard.nationalities = raw.nationalities?.join(', ') ?? ''
-
-  addressTable.street = raw.address?.street_address ?? ''
-  addressTable.locality = `${raw.address?.locality} (${raw.address?.country})`
-  addressTable.postalCode = raw.address?.postal_code ?? ''
-
-  return (
-    <Stack gap="$4">
-      <YStack gap="$3" position="relative">
-        <Stack h="$1" />
-        <Stack pos="relative" ai="center">
-          <Circle
-            zi={5}
-            borderWidth={2}
-            borderColor="white"
-            pos="absolute"
-            top="$-5"
-            bg="$idCardBackground"
-            overflow="hidden"
-            size="$8"
-          >
-            {credential?.display.issuer.logo?.url && (
-              <Image width={56} height={56} src={credential.display.issuer.logo.url} />
-            )}
-          </Circle>
-          <TableContainer>
-            <YStack
-              bg="$tableBackgroundColor"
-              ai="center"
-              gap="$4"
-              px="$2.5"
-              py="$3"
-              borderBottomWidth={2}
-              borderBottomColor="$tableBorderColor"
-            >
-              <Stack h="$3" />
-              <YStack gap="$2" ai="center">
-                <Heading ta="center" heading="h3">
-                  {personalInfoCard.name}
-                </Heading>
-                <Paragraph>{personalInfoCard.born}</Paragraph>
-              </YStack>
-            </YStack>
-            <TableRow
-              centred
-              attributes={[t(commonMessages.fields.place_of_birth), t(commonMessages.fields.nationalities)]}
-              values={[personalInfoCard.placeOfBirth, personalInfoCard.nationalities]}
-            />
-          </TableContainer>
-        </Stack>
-      </YStack>
-      <YStack gap="$2">
-        <Heading heading="sub2" secondary>
-          Address
-        </Heading>
-        <TableContainer>
-          <TableRow attributes={[t(commonMessages.fields.street)]} values={[addressTable.street]} />
-          <TableRow
-            attributes={[t(commonMessages.fields.postal_code), t(commonMessages.fields.locality)]}
-            values={[addressTable.postalCode, addressTable.locality]}
-          />
-        </TableContainer>
-      </YStack>
-    </Stack>
-  )
-}
-
 export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
   const { t } = useLingui()
-  const raw = credential.rawAttributes as MdlAttributes
+  const raw = (
+    credential.rawAttributes as {
+      'org.iso.18013.5.1': MdlAttributes
+    }
+  )['org.iso.18013.5.1']
 
   const sortedPrivileges = raw.driving_privileges
     .map((privilege) => ({

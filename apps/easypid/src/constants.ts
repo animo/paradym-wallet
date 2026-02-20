@@ -132,16 +132,9 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
 
 export const trustedX509Certificates = trustedX509Entities.map((e) => e.certificate)
 
-// https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#pid-contents
-const sdJwtVcVcts = [
-  'https://demo.pid-issuer.bundesdruckerei.de/credentials/pid/1.0',
-  'https://example.bmi.bund.de/credential/pid/1.0',
-]
-
 // https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
 export const pidSchemes = {
-  arfSdJwtVcVcts: ['urn:eudi:pid:1'],
-  sdJwtVcVcts,
+  sdJwtVcVcts: ['urn:eudi:pid:1'],
   msoMdocDoctypes: ['eu.europa.ec.eudi.pid.1'],
 }
 
