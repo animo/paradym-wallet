@@ -42,6 +42,12 @@ export interface PresentationActivityCredentialNotFound {
 }
 
 export interface PresentationActivityCredential {
+  /**
+   * if not defined, it means it's 'v1'.
+   *
+   * Starting from v2 we store the full mdoc attributes structure
+   */
+  version?: 'v2'
   id: CredentialForDisplayId
   name?: string
   attributeNames: string[]
@@ -255,11 +261,13 @@ export function getDisclosedCredentialForSubmission(
 
     return {
       id: credential.credential.id,
+      version: 'v2',
+      name: credential.credential.display.name,
       // FIXME: we should not store the attribute labels
       // but instead the path, so we can still properly run translations
       // on the paths.
       attributeNames: getDisclosedAttributeLabelsForDisplay(credential),
-      attributes: credential.disclosed.attributes,
+      attributes: credential.disclosed.rawAttributes,
       metadata: credential.disclosed.metadata as unknown as Record<string, unknown>,
     } satisfies PresentationActivityCredential
   })

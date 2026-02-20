@@ -16,13 +16,14 @@ import {
   Loader,
   Paragraph,
   ScrollView,
+  type ScrollViewRefType,
   Spacer,
   useSpringify,
   XStack,
   YStack,
 } from '@package/ui'
 import * as Haptics from 'expo-haptics'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   FadeIn,
   FadeOut,
@@ -58,6 +59,7 @@ export const CredentialRetrievalSlide = ({
   const textOpacity = useSharedValue(0)
   const [scrollViewHeight, setScrollViewHeight] = useState<number>()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+  const scrollViewRef = useRef<ScrollViewRefType>(null)
   const { t } = useLingui()
 
   const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
@@ -226,6 +228,7 @@ export const CredentialRetrievalSlide = ({
           >
             {!isStoringOrCompleted ? (
               <ScrollView
+                ref={scrollViewRef}
                 onScroll={handleScroll}
                 scrollEventThrottle={scrollEventThrottle}
                 px="$4"
@@ -237,7 +240,7 @@ export const CredentialRetrievalSlide = ({
                 {scrollViewHeight && isAllowedToAccept ? (
                   <AnimatedStack key="credential-attributes" entering={FadeIn.duration(200)}>
                     {attributes ? (
-                      <CredentialAttributes attributes={attributes} />
+                      <CredentialAttributes attributes={attributes} scrollRef={scrollViewRef} />
                     ) : (
                       <Paragraph>
                         <Trans id="receiveCredential.deferredCredentialParagraph">

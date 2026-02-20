@@ -178,8 +178,8 @@ export function FunkeCredentialNotificationScreen() {
         const credentialRecord = credentials[0].credential
 
         // For the credential screen we want to show all attributes
-        const { allAttributes } = getCredentialForDisplay(credentialRecord)
-        setCredentialAttributes(allAttributes)
+        const { attributes } = getCredentialForDisplay(credentialRecord)
+        setCredentialAttributes(attributes)
         setReceivedRecord(credentialRecord)
       }
     },

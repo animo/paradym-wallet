@@ -7,18 +7,16 @@ import {
   type MdocNameSpaces,
 } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
-import { commonMessages, i18n } from '@package/translations'
+import { commonMessages } from '@package/translations'
 import type { NonEmptyArray } from '@package/utils'
 import {
-  applyAttributeKeyDisplay,
-  applyClaimsMetadata,
   type CredentialForDisplay,
+  formatAttributesWithRecordMetadata,
   getAttributesAndMetadataForMdocPayload,
   getAttributesAndMetadataForSdJwtPayload,
   getCredentialForDisplay,
   getDisclosedAttributePathArrays,
 } from '../display'
-import { getOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 
 export interface FormattedSubmission {
   name?: string
@@ -34,6 +32,7 @@ export interface FormattedSubmissionEntrySatisfiedCredential {
    * If not present the whole credential will be disclosed
    */
   disclosed: {
+    rawAttributes: CredentialForDisplay['rawAttributes']
     attributes: CredentialForDisplay['attributes']
     metadata: CredentialForDisplay['metadata']
 
@@ -113,55 +112,31 @@ export function formatDifPexCredentialsForRequest(
                   verifiableCredential.disclosedPayload
                 )
 
-                // TODO: we should clean this up, organize the logic, and make sure all display logic goes through
-                // the same pipeline
-                const customAttributesForDisplay =
-                  applyClaimsMetadata(
-                    attributes,
-                    getOpenId4VcCredentialMetadata(verifiableCredential.credentialRecord)?.credential.claims,
-                    i18n.locale
-                  ) ?? applyAttributeKeyDisplay(attributes)
-
                 disclosed = {
-                  attributes: customAttributesForDisplay,
+                  rawAttributes: attributes,
+                  attributes: formatAttributesWithRecordMetadata(attributes, verifiableCredential.credentialRecord),
                   metadata,
                   paths: getDisclosedAttributePathArrays(attributes, 2),
                 }
               } else if (verifiableCredential.claimFormat === ClaimFormat.MsoMdoc) {
-                // TODO: should be updated to rely on the display metadata
-                const { attributesWithoutNamespace, metadata, attributes } = getAttributesAndMetadataForMdocPayload(
+                const { attributes, attributesWithoutNamespace, metadata } = getAttributesAndMetadataForMdocPayload(
                   verifiableCredential.disclosedPayload,
                   verifiableCredential.credentialRecord.firstCredential
                 )
 
-                // TODO: we should clean this up, organize the logic, and make sure all display logic goes through
-                // the same pipeline
-                const customAttributesForDisplay =
-                  applyClaimsMetadata(
-                    attributes,
-                    getOpenId4VcCredentialMetadata(verifiableCredential.credentialRecord)?.credential.claims,
-                    i18n.locale
-                  ) ?? applyAttributeKeyDisplay(attributesWithoutNamespace)
-
                 disclosed = {
+                  rawAttributes: attributesWithoutNamespace,
                   metadata,
-                  attributes: customAttributesForDisplay,
+                  attributes: formatAttributesWithRecordMetadata(attributes, verifiableCredential.credentialRecord),
                   paths: getDisclosedAttributePathArrays(verifiableCredential.disclosedPayload, 2),
                 }
               } else {
-                // TODO: we should clean this up, organize the logic, and make sure all display logic goes through
-                // the same pipeline
-                const customAttributesForDisplay =
-                  applyClaimsMetadata(
-                    credentialForDisplay.attributes,
-                    getOpenId4VcCredentialMetadata(verifiableCredential.credentialRecord)?.credential.claims,
-                    i18n.locale
-                  ) ?? applyAttributeKeyDisplay(credentialForDisplay.attributes)
-
                 disclosed = {
-                  attributes: customAttributesForDisplay,
+                  rawAttributes: credentialForDisplay.rawAttributes,
+                  // All attributes  disclosed for W3C
+                  attributes: credentialForDisplay.attributes,
                   metadata: credentialForDisplay.metadata,
-                  paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
+                  paths: getDisclosedAttributePathArrays(credentialForDisplay.rawAttributes, 2),
                 }
               }
 
@@ -252,56 +227,32 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
             validMatch.claims.valid_claim_sets[0].output
           )
 
-          // TODO: we should clean this up, organize the logic, and make sure all display logic goes through
-          // the same pipeline
-          const customAttributesForDisplay =
-            applyClaimsMetadata(
-              attributes,
-              getOpenId4VcCredentialMetadata(validMatch.record)?.credential.claims,
-              i18n.locale
-            ) ?? applyAttributeKeyDisplay(attributes)
-
           disclosed = {
-            attributes: customAttributesForDisplay,
+            rawAttributes: attributes,
+            attributes: formatAttributesWithRecordMetadata(attributes, validMatch.record),
             metadata,
             paths: getDisclosedAttributePathArrays(attributes, 2),
           }
         } else if (validMatch.record.type === 'MdocRecord') {
           const namespaces = validMatch.claims.valid_claim_sets[0].output as MdocNameSpaces
-          const { attributesWithoutNamespace, metadata, attributes } = getAttributesAndMetadataForMdocPayload(
+          const { attributes, metadata } = getAttributesAndMetadataForMdocPayload(
             namespaces,
             validMatch.record.firstCredential
           )
 
-          // TODO: we should clean this up, organize the logic, and make sure all display logic goes through
-          // the same pipeline
-          const customAttributesForDisplay =
-            applyClaimsMetadata(
-              attributes,
-              getOpenId4VcCredentialMetadata(validMatch.record)?.credential.claims,
-              i18n.locale
-            ) ?? applyAttributeKeyDisplay(attributesWithoutNamespace)
-
           disclosed = {
             metadata,
-            attributes: customAttributesForDisplay,
+            rawAttributes: attributes,
+            attributes: formatAttributesWithRecordMetadata(attributes, validMatch.record),
             paths: getDisclosedAttributePathArrays(namespaces, 2),
           }
         } else {
-          // TODO: we should clean this up, organize the logic, and make sure all display logic goes through
-          // the same pipeline
-          const customAttributesForDisplay =
-            applyClaimsMetadata(
-              credentialForDisplay.attributes,
-              getOpenId4VcCredentialMetadata(validMatch.record)?.credential.claims,
-              i18n.locale
-            ) ?? applyAttributeKeyDisplay(credentialForDisplay.attributes)
-
           // All paths disclosed for W3C
           disclosed = {
-            attributes: customAttributesForDisplay,
+            rawAttributes: credentialForDisplay.rawAttributes,
+            attributes: credentialForDisplay.attributes,
             metadata: credentialForDisplay.metadata,
-            paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
+            paths: getDisclosedAttributePathArrays(credentialForDisplay.rawAttributes, 2),
           }
         }
 

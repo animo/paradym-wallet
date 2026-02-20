@@ -11,6 +11,8 @@ export type OpenId4VciCredentialDisplayClaims = NonNullable<
   })['credential_metadata']
 >['claims']
 
+export type OpenId4VciCredentialDisplayClaimsEntry = NonNullable<OpenId4VciCredentialDisplayClaims>[number]
+
 export type OpenId4VciCredentialDisplay = NonNullable<
   OpenId4VciCredentialConfigurationSupported['credential_metadata']
 >['display']

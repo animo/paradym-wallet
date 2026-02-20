@@ -9,7 +9,6 @@ import {
   MdocRecord,
   SdJwtVcRecord,
   type SdJwtVcTypeMetadata,
-  type SdJwtVcTypeMetadataClaim,
   type SingleOrArray,
   TypedArrayEncoder,
   W3cCredentialRecord,
@@ -17,16 +16,40 @@ import {
   W3cV2CredentialRecord,
   type W3cV2JsonCredential,
 } from '@credo-ts/core'
-import type { MessageDescriptor } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages, i18n } from '@package/translations'
 import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
+import type { FormattedAttribute, FormattedAttributeObject } from './formatAttributes'
+import {
+  findDisplayByLocale,
+  formatAllAttributes,
+  mapAttributeName,
+  resolveLabelFromClaimsPath,
+} from './formatAttributes'
 import type { CredentialForDisplayId } from './hooks'
 import type { OpenId4VcCredentialMetadata, OpenId4VciCredentialDisplayClaims } from './openid4vc/displayMetadata'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
+
+export type {
+  FormattedAttribute,
+  FormattedAttributeArray,
+  FormattedAttributeBoolean,
+  FormattedAttributeDate,
+  FormattedAttributeImage,
+  FormattedAttributeNumber,
+  FormattedAttributeObject,
+  FormattedAttributePrimitive,
+  FormattedAttributeString,
+} from './formatAttributes'
+export {
+  findDisplayByLocale,
+  formatAllAttributes,
+  mapAttributeName,
+  resolveLabelFromClaimsPath,
+} from './formatAttributes'
 
 const sdJwtVcNonRenderedProperties = ['_sd_alg', '_sd_hash', 'iss', 'vct', 'cnf', 'iat', 'exp', 'nbf', 'status', '_sd']
 
@@ -59,11 +82,7 @@ export function getUnsatisfiedAttributeLabelsForDisplay(
  *  - rendering how many attributes (count) will be shared
  */
 export function getDisclosedAttributeLabelsForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
-  const openId4VcMetadata = getOpenId4VcCredentialMetadata(credential.credential.record)
-  const sdJwtVcTypeMetadata =
-    credential.credential.record instanceof SdJwtVcRecord ? credential.credential.record.typeMetadata : undefined
-
-  const claims = sdJwtVcTypeMetadata?.claims ?? openId4VcMetadata?.credential.claims
+  const claims = resolveClaimsWithRecordMetadata(credential.credential.record)
 
   const resolvedLabels = credential.disclosed.paths.map((path) => {
     // Try to resolve from claims metadata first
@@ -201,90 +220,20 @@ export function metadataForDisplay(metadata: CredentialMetadata): FormattedAttri
   return attributes
 }
 
-/**
- * Base interface for all formatted credential attribute types
- */
-interface BaseFormattedAttribute {
-  /** Translated label (from claim metadata or mapAttributeName) */
-  label?: string
-  /** Description from claim metadata if present */
-  description?: string
-  /** The raw value before any formatting */
-  rawValue: unknown
-  /** The path to this attribute in the credential */
-  path: Array<string | number | null>
-}
-
-export type FormattedAttributeString = BaseFormattedAttribute & {
-  type: 'string'
-  value: string
-}
-
-export type FormattedAttributeNumber = BaseFormattedAttribute & {
-  type: 'number'
-  value: number
-}
-
-export type FormattedAttributeBoolean = BaseFormattedAttribute & {
-  type: 'boolean'
-  value: boolean
-}
-
-export type FormattedAttributeDate = BaseFormattedAttribute & {
-  type: 'date'
-  value: string
-}
-
-export type FormattedAttributeImage = BaseFormattedAttribute & {
-  type: 'image'
-  value: string
-}
-
-export type FormattedAttributeArray = BaseFormattedAttribute & {
-  type: 'array'
-  value: FormattedAttribute[]
-}
-
-export type FormattedAttributeObject = BaseFormattedAttribute & {
-  type: 'object'
-  value: FormattedAttribute[]
-}
-
-export type FormattedAttribute =
-  | FormattedAttributeString
-  | FormattedAttributeNumber
-  | FormattedAttributeBoolean
-  | FormattedAttributeDate
-  | FormattedAttributeImage
-  | FormattedAttributeArray
-  | FormattedAttributeObject
-
 export interface CredentialForDisplay {
   id: CredentialForDisplayId
   createdAt: Date
   display: CredentialDisplay
   /**
-   * Displayed attributes based on claim metadata.
-   * If claim metadata exists, only includes attributes listed in the metadata.
-   * If no claim metadata, includes all attributes (same as allAttributes).
-   */
-  displayedAttributes: FormattedAttribute[]
-  /**
    * All attributes with claim path ordering applied.
    * Attributes with claim paths are prioritized but all attributes are included.
    */
-  allAttributes: FormattedAttribute[]
+  attributes: FormattedAttribute[]
   /**
    * Raw attributes exactly as they appear in the credential.
    * Can be used to directly access data from the credential.
    */
   rawAttributes: Record<string, unknown>
-  /**
-   * Indicates whether displayedAttributes and allAttributes are different.
-   * If true, there is custom display logic (claim metadata or custom rendering).
-   * Used to determine if "Show all attributes" option should be shown.
-   */
-  hasCustomDisplay: boolean
   metadata: CredentialMetadata
   claimFormat:
     | ClaimFormat.SdJwtDc
@@ -297,719 +246,6 @@ export interface CredentialForDisplay {
 
   category: CredentialCategoryMetadata | null
   hasRefreshToken: boolean
-}
-
-const attributeNameMapping: Record<string, MessageDescriptor> = {
-  age_equal_or_over: commonMessages.fields.age_over,
-  age_birth_year: commonMessages.fields.birth_year,
-  age_in_years: commonMessages.fields.age,
-  street_address: commonMessages.fields.street,
-  resident_street: commonMessages.fields.street,
-  resident_city: commonMessages.fields.city,
-  resident_country: commonMessages.fields.country,
-  resident_postal_code: commonMessages.fields.postal_code,
-  birth_date: commonMessages.fields.date_of_birth,
-  birthdate: commonMessages.fields.date_of_birth,
-  expiry_date: commonMessages.fields.expires_at,
-  issue_date: commonMessages.fields.issued_at,
-  issuance_date: commonMessages.fields.issued_at,
-  ...commonMessages.fields,
-  ...commonMessages.credentials.mdl,
-}
-
-export const mapAttributeName = (key: string) => {
-  const messageDescriptor = attributeNameMapping[key]
-  if (messageDescriptor) return i18n.t(messageDescriptor)
-
-  if (key.startsWith('age_over_')) {
-    return `${i18n.t(commonMessages.fields.age_over)} ${key.replace('age_over_', '')}`
-  }
-
-  return sanitizeString(key)
-}
-
-type SdJwtVcTypeMetadataClaimDisplayEntry = NonNullable<SdJwtVcTypeMetadataClaim['display']>[number]
-type OpenId4VciCredentialClaimDisplayEntry = NonNullable<
-  NonNullable<OpenId4VciCredentialDisplayClaims>[number]['display']
->[number]
-
-/**
- * Finds the best matching display value for the current locale from an array of display objects.
- * Handles locale matching between IETF BCP 47 language tags (with region) and simple language codes (without region).
- *
- * @param display - Array of display objects with locale and name properties
- * @param currentLocale - Current app locale (e.g., 'en', 'nl', 'de')
- * @returns The best matching display object or undefined
- */
-function findDisplayByLocale<Display extends { locale?: string }[]>(
-  display?: Display,
-  currentLocale?: string
-): Display[number] | undefined {
-  if (!display || display.length === 0) return undefined
-
-  // If we have a current locale, try to match it (ignoring region codes)
-  if (currentLocale) {
-    // Try exact match first (e.g., 'en' matches 'en' or 'en-US' matches 'en-US')
-    const item = display.find((d) => d.locale === currentLocale || d.locale?.startsWith(`${currentLocale}-`))
-    if (item) return item
-  }
-
-  // Fallback to English
-  const englishItem = display.find((d) => d.locale?.startsWith('en-') || d.locale === 'en')
-  if (englishItem) return englishItem
-
-  // Fallback to first entry without locale
-  const noLocaleItem = display.find((d) => !d.locale)
-  if (noLocaleItem) return noLocaleItem
-
-  // Last resort: first entry
-  return display[0]
-}
-
-function extractLabelFromDisplay(
-  display?: SdJwtVcTypeMetadataClaimDisplayEntry | OpenId4VciCredentialClaimDisplayEntry
-) {
-  if (!display) return null
-
-  // OpenID4VCI
-  if ('name' in display && typeof display.name === 'string') return display.name
-
-  // SD-JWT VC Type Metadata
-  if ('label' in display && typeof display.label === 'string') return display.label
-
-  return null
-}
-
-/**
- * Resolves a claims path pointer to select value(s) from credential attributes.
- * Follows the OpenID4VC specification for claims path pointers.
- *
- * @param data - The credential data to query
- * @param path - Array of path components (strings for keys, numbers for array indices, null for all array elements)
- * @returns Array of selected values, or empty array if path doesn't match
- */
-function resolveClaimsPath(data: unknown, path: Array<string | number | null>): unknown[] {
-  if (path.length === 0) {
-    return [data]
-  }
-
-  const [currentComponent, ...remainingPath] = path
-  let selectedElements: unknown[] = []
-
-  // Handle string path component (object key)
-  if (typeof currentComponent === 'string') {
-    if (data && typeof data === 'object' && !Array.isArray(data)) {
-      const value = (data as Record<string, unknown>)[currentComponent]
-      if (value !== undefined) {
-        selectedElements = [value]
-      }
-    }
-  }
-  // Handle null path component (select all array elements)
-  else if (currentComponent === null) {
-    if (Array.isArray(data)) {
-      selectedElements = data
-    }
-  }
-  // Handle number path component (array index)
-  else if (typeof currentComponent === 'number') {
-    if (currentComponent < 0) {
-      // Negative integers are not supported
-      return []
-    }
-    if (Array.isArray(data) && currentComponent < data.length) {
-      selectedElements = [data[currentComponent]]
-    }
-  }
-
-  // If no elements were selected, return empty array
-  if (selectedElements.length === 0) {
-    return []
-  }
-
-  // If this was the last path component, return the selected elements
-  if (remainingPath.length === 0) {
-    return selectedElements
-  }
-
-  // Recursively process remaining path components for each selected element
-  const results: unknown[] = []
-  for (const element of selectedElements) {
-    const nestedResults = resolveClaimsPath(element, remainingPath)
-    results.push(...nestedResults)
-  }
-
-  return results
-}
-
-/**
- * Resolves a label for a given path using claims metadata.
- * Tries to match the exact path first, then falls back to parent paths.
- *
- * The claims metadata can be either OpenID4VCI or SD-JWT VC claims metadata.
- *
- * @param path - The path to resolve (array of strings, numbers, or null)
- * @param claims - The claims metadata from OpenID4VC credential metadata
- * @param currentLocale - Current app locale (e.g., 'en', 'nl', 'de')
- * @returns The localized label or null if no match found
- */
-function resolveLabelFromClaimsPath(
-  path: Array<string | number | null>,
-  claims?: OpenId4VciCredentialDisplayClaims | SdJwtVcTypeMetadataClaim[],
-  currentLocale?: string
-): string | null {
-  if (!claims || claims.length === 0) {
-    return null
-  }
-
-  // Helper to check if two paths match exactly (no wildcards)
-  const pathsMatchExact = (
-    claimPath: Array<string | number | null>,
-    targetPath: Array<string | number | null>
-  ): boolean => {
-    if (claimPath.length !== targetPath.length) return false
-    return claimPath.every((segment, i) => segment === targetPath[i])
-  }
-
-  // Helper to check if two paths match with wildcard support
-  // null in claimPath acts as a wildcard that matches any value in targetPath
-  const pathsMatchWithWildcard = (
-    claimPath: Array<string | number | null>,
-    targetPath: Array<string | number | null>
-  ): boolean => {
-    if (claimPath.length !== targetPath.length) return false
-    return claimPath.every((segment, i) => segment === null || segment === targetPath[i])
-  }
-
-  // Try to find exact match first, but store wildcard match as fallback
-  let wildcardMatch: string | null = null
-  for (const claim of claims) {
-    if (!claim.path || claim.path.length === 0) continue
-
-    // Check for exact match first
-    if (pathsMatchExact(claim.path, path)) {
-      const displayItem = findDisplayByLocale(claim.display, currentLocale)
-
-      const label = extractLabelFromDisplay(displayItem)
-      if (label) return label
-    }
-
-    // Store wildcard match as fallback (only if we haven't found one yet)
-    if (!wildcardMatch && pathsMatchWithWildcard(claim.path, path)) {
-      const displayItem = findDisplayByLocale(claim.display, currentLocale)
-      wildcardMatch = extractLabelFromDisplay(displayItem)
-    }
-  }
-
-  // If we found a wildcard match but no exact match, return the wildcard match
-  if (wildcardMatch) {
-    return wildcardMatch
-  }
-
-  // Try to find parent path matches (from most specific to least specific)
-  // e.g., for path ['driving_privileges', 0], try ['driving_privileges']
-  for (let length = path.length - 1; length > 0; length--) {
-    const parentPath = path.slice(0, length)
-    for (const claim of claims) {
-      if (!claim.path || claim.path.length === 0) continue
-      if (pathsMatchWithWildcard(claim.path, parentPath)) {
-        const displayItem = findDisplayByLocale(claim.display, currentLocale)
-
-        const label = extractLabelFromDisplay(displayItem)
-        if (label) return label
-      }
-    }
-  }
-
-  return null
-}
-
-/**
- * Checks if a string is likely to be a date
- */
-function isLikelyDate(value: string): boolean {
-  // Check for common date patterns
-  const datePatterns = [
-    // Match "Month Day, Year" format
-    /^(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}/i,
-    // Match "Month Day, Year at HH:MM" format
-    /^(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}/i,
-    // ISO date format
-    /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/,
-    // MM/DD/YYYY
-    /^\d{1,2}\/\d{1,2}\/\d{4}$/,
-    // DD/MM/YYYY
-    /^\d{1,2}-\d{1,2}-\d{4}$/,
-  ]
-
-  return datePatterns.some((pattern) => pattern.test(value))
-}
-
-/**
- * Formats a single value into a FormattedAttribute with type detection
- */
-export function formatAttributeValue(
-  key: string | number,
-  value: unknown,
-  path: Array<string | number | null>,
-  label: string,
-  description?: string
-): FormattedAttribute {
-  const rawValue = value
-
-  // Handle Uint8Array (images)
-  if (value instanceof Uint8Array) {
-    const imageMimeType = detectImageMimeType(value)
-    if (imageMimeType) {
-      return {
-        type: 'image',
-        label,
-        description,
-        rawValue,
-        path,
-        value: `data:${imageMimeType};base64,${TypedArrayEncoder.toBase64(value)}`,
-      }
-    }
-    // Non-image buffer becomes string
-    return {
-      type: 'string',
-      label,
-      description,
-      rawValue,
-      path,
-      value: TypedArrayEncoder.toUtf8String(value),
-    }
-  }
-
-  // Handle dates
-  if (value instanceof Date || value instanceof DateOnly || (typeof value === 'string' && isDateString(value))) {
-    return {
-      type: 'date',
-      label,
-      description,
-      rawValue,
-      path,
-      value: formatDate(value instanceof DateOnly ? value.toISOString() : value),
-    }
-  }
-
-  // Handle primitives
-  if (typeof value === 'string') {
-    // Check if it's an image data URL
-    if (value.startsWith('data:image/')) {
-      return {
-        type: 'image',
-        label,
-        description,
-        rawValue,
-        path,
-        value,
-      }
-    }
-
-    // Check if it's a date string
-    if (isLikelyDate(value)) {
-      return {
-        type: 'date',
-        label,
-        description,
-        rawValue,
-        path,
-        value,
-      }
-    }
-
-    return {
-      type: 'string',
-      label,
-      description,
-      rawValue,
-      path,
-      value,
-    }
-  }
-
-  if (typeof value === 'number') {
-    return {
-      type: 'number',
-      label,
-      description,
-      rawValue,
-      path,
-      value,
-    }
-  }
-
-  if (typeof value === 'boolean') {
-    return {
-      type: 'boolean',
-      label,
-      description,
-      rawValue,
-      path,
-      value,
-    }
-  }
-
-  if (value === null || value === undefined) {
-    return {
-      type: 'string',
-      label,
-      description,
-      rawValue,
-      path,
-      value: '',
-    }
-  }
-
-  // Handle arrays
-  if (Array.isArray(value)) {
-    // If array has only one item, process it directly
-    if (value.length === 1) {
-      return formatAttributeValue(key, value[0], path, `${label} → 1`, description)
-    }
-
-    const formattedArray = value.map((item, index) => {
-      const itemPath = [...path, index]
-      const itemLabel = mapAttributeName(String(index))
-      const formatted = formatAttributeValue(index, item, itemPath, itemLabel)
-
-      // Use arrow syntax instead of bracket notation
-      return {
-        ...formatted,
-        // Empty as it will shown as a separate page
-        label: '',
-      }
-    })
-
-    return {
-      type: 'array',
-      label,
-      description,
-      rawValue,
-      path,
-      value: formattedArray,
-    }
-  }
-
-  // Handle Maps
-  if (value instanceof Map) {
-    const obj = Object.fromEntries(value)
-    return formatAttributeValue(key, obj, path, label, description)
-  }
-
-  // Handle objects
-  if (typeof value === 'object') {
-    // Special case for image objects
-    if ('type' in value && value.type === 'Image' && 'id' in value && typeof value.id === 'string') {
-      return { type: 'image', value: value.id as string, label, rawValue: value, path, description }
-    }
-
-    const formattedEntries: FormattedAttribute[] = []
-    const objectEntries = Object.entries(value)
-
-    // If object has only one entry, shortcut with arrow syntax
-    if (objectEntries.length === 1) {
-      const [objKey, objValue] = objectEntries[0]
-      if (objValue !== undefined && objValue !== null) {
-        const objPath = [...path, objKey]
-        const objLabel = mapAttributeName(objKey)
-        const formatted = formatAttributeValue(objKey, objValue, objPath, objLabel)
-
-        return {
-          ...formatted,
-          label: typeof key === 'number' ? formatted.label : `${label} → ${formatted.label}`,
-        }
-      }
-    }
-
-    for (const [objKey, objValue] of objectEntries) {
-      if (objValue === undefined || objValue === null) continue
-      if (typeof objValue === 'object' && objValue !== null && Object.keys(objValue).length === 0) continue
-
-      const objPath = [...path, objKey]
-      const objLabel = mapAttributeName(objKey)
-      formattedEntries.push(formatAttributeValue(objKey, objValue, objPath, objLabel))
-    }
-
-    return {
-      type: 'object',
-      label,
-      description,
-      rawValue,
-      path,
-      value: formattedEntries,
-    }
-  }
-
-  // Fallback
-  return {
-    type: 'string',
-    label,
-    description,
-    rawValue,
-    path,
-    value: String(value),
-  }
-}
-
-/**
- * Converts a Record<string, unknown> to FormattedAttribute[]
- * Useful for converting disclosed payloads or raw attributes to the new format
- */
-export function formatAttributes(attributes: Record<string, unknown>): FormattedAttribute[] {
-  const formatted: FormattedAttribute[] = []
-  for (const [key, value] of Object.entries(attributes)) {
-    if (value === undefined || value === null) continue
-    if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) continue
-
-    const label = mapAttributeName(key)
-    const path = [key]
-    formatted.push(formatAttributeValue(key, value, path, label))
-  }
-  return formatted
-}
-
-/**
- * Extracts description from claim metadata display
- */
-function extractDescriptionFromDisplay(
-  display?: SdJwtVcTypeMetadataClaimDisplayEntry | OpenId4VciCredentialClaimDisplayEntry
-): string | undefined {
-  if (!display) return undefined
-
-  // OpenID4VCI doesn't have description in display, only SD-JWT VC has it
-  // SD-JWT VC Type Metadata
-  if ('description' in display && typeof display.description === 'string') return display.description
-
-  return undefined
-}
-
-/**
- * Formats attributes according to claim metadata paths.
- * Returns only attributes that are specified in the claims metadata.
- *
- * @param rawAttributes - The raw credential attributes
- * @param claims - The claims metadata from OpenID4VC credential metadata
- * @param currentLocale - Current app locale (e.g., 'en', 'nl', 'de')
- * @returns Array of formatted attributes matching claim paths, or null if no claims metadata
- */
-function formatDisplayedAttributes(
-  rawAttributes: Record<string, unknown>,
-  claims?: OpenId4VciCredentialDisplayClaims | SdJwtVcTypeMetadataClaim[],
-  currentLocale?: string
-): FormattedAttribute[] | null {
-  if (!claims || claims.length === 0) {
-    return null
-  }
-
-  const formattedAttributes: FormattedAttribute[] = []
-
-  // Process claims in order
-  for (const claim of claims) {
-    if (!claim.path || claim.path.length === 0) continue
-
-    // Resolve the path to get the value(s)
-    const selectedValues = resolveClaimsPath(rawAttributes, claim.path)
-
-    // Skip if path didn't match anything
-    if (selectedValues.length === 0) continue
-
-    // Get the localized label and description for this claim
-    const displayItem = findDisplayByLocale(claim.display, currentLocale)
-
-    let label = sanitizeString(String(claim.path[claim.path.length - 1]))
-    // OID4VC-TS
-    if (displayItem && 'name' in displayItem && typeof displayItem.name === 'string') label = displayItem.name
-    // SD-JWT VC
-    if (displayItem && 'label' in displayItem && typeof displayItem.label === 'string') label = displayItem.label
-
-    const description = extractDescriptionFromDisplay(displayItem)
-
-    // If we selected multiple values (e.g., from array with null in path), create array attribute
-    if (selectedValues.length > 1) {
-      const formattedArray = selectedValues.map((val, index) => {
-        // Replace null with the actual index to create the real path
-        const pathArray: Array<string | number> = claim.path.map((p) => (p === null ? index : (p as string | number)))
-        const itemLabel = mapAttributeName(String(index))
-        return formatAttributeValue(index, val, pathArray, itemLabel)
-      })
-
-      // Create base path without the null (for the array container)
-      const basePath: Array<string | number> = []
-      for (let i = 0; i < claim.path.length; i++) {
-        if (claim.path[i] === null) break
-        basePath.push(claim.path[i] as string | number)
-      }
-
-      formattedAttributes.push({
-        type: 'array',
-        label,
-        description,
-        rawValue: selectedValues,
-        path: basePath,
-        value: formattedArray,
-      })
-    } else {
-      // Single value - convert path by removing null (shouldn't happen if length is 1, but handle it)
-      const pathArray = claim.path.filter((p): p is string | number => p !== null)
-      const key = claim.path[claim.path.length - 1]
-      const formatted = formatAttributeValue(key ?? 0, selectedValues[0], pathArray, label, description)
-      formattedAttributes.push(formatted)
-    }
-  }
-
-  if (formattedAttributes.length === 0) {
-    return null
-  }
-
-  return formattedAttributes
-}
-
-/**
- * Formats all attributes with claim path ordering applied.
- * Attributes with claim paths are prioritized but all attributes are included.
- *
- * @param rawAttributes - The raw credential attributes
- * @param claims - The claims metadata from OpenID4VC credential metadata
- * @param currentLocale - Current app locale (e.g., 'en', 'nl', 'de')
- * @returns Array of all formatted attributes with ordering
- */
-function formatAllAttributes(
-  rawAttributes: Record<string, unknown>,
-  claims?: OpenId4VciCredentialDisplayClaims | SdJwtVcTypeMetadataClaim[],
-  currentLocale?: string
-): FormattedAttribute[] {
-  const formattedAttributes: FormattedAttribute[] = []
-  const processedPaths = new Set<string>()
-
-  // First, process attributes that have claim metadata (to establish ordering)
-  if (claims && claims.length > 0) {
-    for (const claim of claims) {
-      if (!claim.path || claim.path.length === 0) continue
-
-      // Resolve the path to get the value(s)
-      const selectedValues = resolveClaimsPath(rawAttributes, claim.path)
-
-      // Skip if path didn't match anything
-      if (selectedValues.length === 0) continue
-
-      // Get the localized label and description for this claim
-      const displayItem = findDisplayByLocale(claim.display, currentLocale)
-
-      const label = extractLabelFromDisplay(displayItem) ?? mapAttributeName(String(claim.path[claim.path.length - 1]))
-      const description = extractDescriptionFromDisplay(displayItem)
-
-      // If we selected multiple values (e.g., from array with null in path), create array attribute
-      if (selectedValues.length > 1) {
-        // Mark each actual path as processed (with null replaced by actual index)
-        for (let index = 0; index < selectedValues.length; index++) {
-          const actualPath: Array<string | number> = claim.path.map((p) =>
-            p === null ? index : (p as string | number)
-          )
-          processedPaths.add(actualPath.join('.'))
-        }
-
-        const formattedArray = selectedValues.map((val, index) => {
-          // Replace null with the actual index to create the real path
-          const pathArray: Array<string | number> = claim.path.map((p) => (p === null ? index : (p as string | number)))
-          const itemLabel = mapAttributeName(String(index))
-          return formatAttributeValue(index, val, pathArray, itemLabel)
-        })
-
-        // Create base path without the null (for the array container)
-        const basePath: Array<string | number> = []
-        for (let i = 0; i < claim.path.length; i++) {
-          if (claim.path[i] === null) break
-          basePath.push(claim.path[i] as string | number)
-        }
-
-        formattedAttributes.push({
-          type: 'array',
-          label,
-          description,
-          rawValue: selectedValues,
-          path: basePath,
-          value: formattedArray,
-        })
-      } else {
-        // Single value - convert path by removing null (shouldn't happen if length is 1, but handle it)
-        const pathArray = claim.path.filter((p): p is string | number => p !== null) as Array<string | number>
-
-        // Mark this path as processed
-        processedPaths.add(pathArray.join('.'))
-
-        const key = claim.path[claim.path.length - 1]
-        const formatted = formatAttributeValue(key ?? 0, selectedValues[0], pathArray, label, description)
-        formattedAttributes.push(formatted)
-      }
-    }
-  }
-
-  // Helper function to recursively process remaining attributes
-  function processRemainingAttributes(
-    obj: Record<string, unknown>,
-    basePath: Array<string | number> = []
-  ): FormattedAttribute[] {
-    const attributes: FormattedAttribute[] = []
-
-    for (const [key, value] of Object.entries(obj)) {
-      if (value === undefined || value === null) continue
-      if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) continue
-
-      const currentPath = [...basePath, key]
-      const pathKey = currentPath.join('.')
-
-      // Skip if already processed
-      if (processedPaths.has(pathKey)) continue
-
-      const label = mapAttributeName(key)
-      const formatted = formatAttributeValue(key, value, currentPath, label)
-
-      attributes.push(formatted)
-    }
-
-    return attributes
-  }
-
-  // Add remaining attributes that weren't in claim metadata
-  const remainingAttributes = processRemainingAttributes(rawAttributes)
-  formattedAttributes.push(...remainingAttributes)
-
-  return formattedAttributes
-}
-
-function _applyAttributeKeyDisplay(attribute: object): object {
-  if (Array.isArray(attribute)) {
-    return attribute.map((innerAttribute) =>
-      innerAttribute && typeof innerAttribute === 'object' ? _applyAttributeKeyDisplay(innerAttribute) : innerAttribute
-    )
-  }
-
-  if (typeof attribute === 'object') {
-    return Object.fromEntries(
-      Object.entries(attribute).map(([key, value]) => [
-        key,
-        value && typeof value === 'object' ? _applyAttributeKeyDisplay(value) : value,
-      ])
-    )
-  }
-
-  return attribute
-}
-
-export function applyAttributeKeyDisplay(attributes: Record<string, unknown>) {
-  const mapped: Record<string, unknown> = {}
-
-  for (const [key, value] of Object.entries(attributes)) {
-    if (value === undefined || value === null) continue
-    if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) continue
-
-    const name = mapAttributeName(key)
-    mapped[name] = typeof value === 'object' ? _applyAttributeKeyDisplay(value) : value
-  }
-
-  return mapped
 }
 
 function getW3cIssuerDisplay(
@@ -1373,6 +609,39 @@ export function getDisclosedAttributePathArrays(
   return attributePaths
 }
 
+export function resolveClaimsWithRecordMetadata(
+  record: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
+) {
+  const openId4VcMetadata = getOpenId4VcCredentialMetadata(record)
+
+  const claims =
+    record instanceof SdJwtVcRecord
+      ? (record.typeMetadata?.claims ?? openId4VcMetadata?.credential.claims)
+      : openId4VcMetadata?.credential.claims
+
+  return claims
+}
+
+/**
+ * Formats disclosed attributes for display using claims metadata from the credential record.
+ * Extracts claims from SD-JWT type metadata or OID4VCI credential metadata.
+ */
+export function formatAttributesWithRecordMetadata(
+  payload: Record<string, unknown>,
+  record: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
+): FormattedAttribute[] {
+  const claims = resolveClaimsWithRecordMetadata(record)
+
+  const formattedAttributes = formatAllAttributes(payload, claims, i18n.locale)
+
+  // Mdoc has top-level namespaces, we don't want to render these as attributes
+  if (record instanceof MdocRecord) {
+    return formattedAttributes.flatMap((item) => (item as FormattedAttributeObject).value)
+  }
+
+  return formattedAttributes
+}
+
 export function getCredentialForDisplayId(
   credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 ): CredentialForDisplayId {
@@ -1409,18 +678,8 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
-    // Extract claims metadata
-    const claims = sdJwtTypeMetadata?.claims ?? openId4VcMetadata?.credential.claims
-
     // Format displayed attributes (only those in claim metadata)
-    const displayedAttributes =
-      formatDisplayedAttributes(attributes, claims, i18n.locale) ?? formatAllAttributes(attributes, claims, i18n.locale)
-
-    // Format all attributes (prioritize claim paths but include everything)
-    const allAttributes = formatAllAttributes(attributes, claims, i18n.locale)
-
-    // Check if displayed attributes are different from all attributes
-    const hasCustomDisplay = displayedAttributes.length !== allAttributes.length
+    const formattedAttributes = formatAttributesWithRecordMetadata(attributes, credentialRecord)
 
     return {
       id: credentialForDisplayId,
@@ -1429,10 +688,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      displayedAttributes,
-      allAttributes,
+      attributes: formattedAttributes,
       rawAttributes: attributes,
-      hasCustomDisplay,
       metadata,
       claimFormat: ClaimFormat.SdJwtDc,
       record: credentialRecord,
@@ -1447,38 +704,14 @@ export function getCredentialForDisplay(
     const credentialDisplay = getMdocCredentialDisplay(mdocInstance, openId4VcMetadata)
     const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
 
-    const { attributes, attributesWithoutNamespace, metadata } = getAttributesAndMetadataForMdocPayload(
+    const { attributes, metadata } = getAttributesAndMetadataForMdocPayload(
       mdocInstance.issuerSignedNamespaces,
       mdocInstance
     )
 
-    // Extract claims metadata
-    const claims = openId4VcMetadata?.credential.claims
-
-    console.log(
-      mdocInstance.docType,
-      JSON.stringify(
-        {
-          issuerSignedNamespaces: mdocInstance.issuerSignedNamespaces,
-          claims,
-          attributes,
-          attributesWithoutNamespace,
-        },
-        null,
-        2
-      )
-    )
-    // Format displayed attributes (only those in claim metadata)
-    // For mdoc, we use attributes (with namespace) for claim resolution, but fallback to attributesWithoutNamespace
-    const displayedAttributes =
-      formatDisplayedAttributes(attributes, claims, i18n.locale) ??
-      formatAllAttributes(attributesWithoutNamespace, claims, i18n.locale)
-
-    // Format all attributes (prioritize claim paths but include everything)
-    const allAttributes = formatAllAttributes(attributesWithoutNamespace, claims, i18n.locale)
-
-    // Check if displayed attributes are different from all attributes
-    const hasCustomDisplay = displayedAttributes.length !== allAttributes.length
+    // Format attributes
+    // And then remove the top-layer, as that is the namespace
+    const formattedAttributes = formatAttributesWithRecordMetadata(attributes, credentialRecord)
 
     return {
       id: credentialForDisplayId,
@@ -1487,10 +720,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      displayedAttributes,
-      allAttributes,
+      attributes: formattedAttributes,
       rawAttributes: attributes,
-      hasCustomDisplay,
       metadata,
       claimFormat: ClaimFormat.MsoMdoc,
       record: credentialRecord,
@@ -1528,19 +759,8 @@ export function getCredentialForDisplay(
       ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
-    // Extract claims metadata
-    const claims = openId4VcMetadata?.credential.claims
-
-    // Format displayed attributes (only those in claim metadata)
-    const displayedAttributes =
-      formatDisplayedAttributes(credentialAttributes, claims, i18n.locale) ??
-      formatAllAttributes(credentialAttributes, claims, i18n.locale)
-
-    // Format all attributes (prioritize claim paths but include everything)
-    const allAttributes = formatAllAttributes(credentialAttributes, claims, i18n.locale)
-
-    // Check if displayed attributes are different from all attributes
-    const hasCustomDisplay = displayedAttributes.length !== allAttributes.length
+    // Format attributes
+    const formattedAttributes = formatAttributesWithRecordMetadata(credentialAttributes, credentialRecord)
 
     return {
       id: credentialForDisplayId,
@@ -1549,10 +769,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      displayedAttributes,
-      allAttributes,
+      attributes: formattedAttributes,
       rawAttributes: credentialAttributes,
-      hasCustomDisplay,
       metadata: {
         holder: firstCredential.credentialSubjectIds[0],
         issuer: firstCredential.issuerId,
@@ -1581,19 +799,8 @@ export function getCredentialForDisplay(
       ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
-    // Extract claims metadata
-    const claims = openId4VcMetadata?.credential.claims
-
-    // Format displayed attributes (only those in claim metadata)
-    const displayedAttributes =
-      formatDisplayedAttributes(credentialAttributes, claims, i18n.locale) ??
-      formatAllAttributes(credentialAttributes, claims, i18n.locale)
-
-    // Format all attributes (prioritize claim paths but include everything)
-    const allAttributes = formatAllAttributes(credentialAttributes, claims, i18n.locale)
-
-    // Check if displayed attributes are different from all attributes
-    const hasCustomDisplay = displayedAttributes.length !== allAttributes.length
+    // Format attributes
+    const formattedAttributes = formatAttributesWithRecordMetadata(credentialAttributes, credentialRecord)
 
     return {
       id: credentialForDisplayId,
@@ -1602,10 +809,9 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      displayedAttributes,
-      allAttributes,
+      attributes: formattedAttributes,
+
       rawAttributes: credentialAttributes,
-      hasCustomDisplay,
       metadata: {
         holder: resolvedCredential.credentialSubjectIds[0],
         issuer: resolvedCredential.issuerId,

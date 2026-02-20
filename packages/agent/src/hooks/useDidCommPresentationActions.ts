@@ -11,12 +11,12 @@ import { defineMessage } from '@lingui/core/macro'
 import type { _t } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
-import { capitalizeFirstLetter, type NonEmptyArray } from '@package/utils'
+import { capitalizeFirstLetter, type NonEmptyArray, sanitizeString } from '@package/utils'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 import { useAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
+import { type FormattedAttributeString, getCredentialForDisplay } from '../display'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -164,28 +164,37 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               const credential = await getCredential(agent, `w3c-credential-${match.credentialId}`)
               const credentialForDisplay = getCredentialForDisplay(credential)
 
-              const disclosedAttributesWithValues = Object.entries(credentialForDisplay.attributes)
-                .filter(([key]) => entry.requestedAttributes.has(key))
-                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
-
-              const disclosedPredicatesWithValues = Object.entries(anonCredsCredentials.predicates).reduce(
-                (acc, [groupName]) => {
-                  const requestedPredicate = proofRequest.requested_predicates[groupName]
-                  return {
-                    ...acc,
-                    [requestedPredicate.name]: `${capitalizeFirstLetter(t(predicateMessages[requestedPredicate.p_type]))} ${requestedPredicate.p_value}`,
-                  }
-                },
-                {}
+              const disclosedAttributesWithValues: FormattedAttributeString[] = Object.entries(
+                credentialForDisplay.attributes
               )
+                .filter(([key]) => entry.requestedAttributes.has(key))
+                .map(([, value]) => value as FormattedAttributeString)
+
+              const disclosedPredicatesWithValues: FormattedAttributeString[] = Object.entries(
+                anonCredsCredentials.predicates
+              ).map(([groupName]): FormattedAttributeString => {
+                const requestedPredicate = proofRequest.requested_predicates[groupName]
+
+                const value = `${capitalizeFirstLetter(t(predicateMessages[requestedPredicate.p_type]))} ${requestedPredicate.p_value}`
+                return {
+                  path: [requestedPredicate.name],
+                  type: 'string',
+                  value,
+                  rawValue: value,
+                  label: sanitizeString(requestedPredicate.name),
+                }
+              })
 
               return {
                 credential: credentialForDisplay,
                 disclosed: {
-                  attributes: {
-                    ...disclosedAttributesWithValues,
-                    ...disclosedPredicatesWithValues,
-                  },
+                  rawAttributes: Object.fromEntries(
+                    [...disclosedAttributesWithValues, ...disclosedPredicatesWithValues].map((item) => [
+                      item.path[0],
+                      item.value,
+                    ])
+                  ),
+                  attributes: [...disclosedAttributesWithValues, ...disclosedPredicatesWithValues],
                   metadata: credentialForDisplay.metadata,
                   paths: Array.from(entry.requestedAttributes).map((a) => [a]),
                 },

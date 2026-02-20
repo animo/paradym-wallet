@@ -215,7 +215,7 @@ const createBaseConfig = (appSpecific) => {
           },
         })),
         ...associatedDomains.flatMap((host) =>
-          ['/invitation', '/wallet/redirect'].map((path) => ({
+          ['/invitation', '/wallet/redirect', '/oauth2/redirect'].map((path) => ({
             action: 'VIEW',
             category: ['DEFAULT', 'BROWSABLE'],
             autoVerify: true,

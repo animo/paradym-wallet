@@ -37,13 +37,13 @@ const APP_CONFIGS = {
     version,
     bundleId: 'id.paradym.wallet',
     additionalInvitationSchemes: ['didcomm'],
-    associatedDomains: ['paradym.id', 'dev.paradym.id'],
+    associatedDomains: ['paradym.id', 'dev.paradym.id', 'paradymwallet.app'],
     projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
     assets: ['./assets/paradym/icon.png'],
     enableAusweisSdkEntitlementsIos: false,
     extraConfig: {
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
-      redirectBaseUrl: 'https://paradym.id/invitation/redirect',
+      redirectBaseUrl: 'https://paradymwallet.app/oauth2/redirect',
     },
   }),
 }

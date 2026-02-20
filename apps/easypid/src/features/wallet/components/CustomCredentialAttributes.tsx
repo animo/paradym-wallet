@@ -11,10 +11,22 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes, ErrorBoundary } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { Circle, Heading, Image, Paragraph, Stack, TableContainer, TableRow, XStack, YStack } from '@package/ui'
+import {
+  Circle,
+  Heading,
+  Image,
+  Paragraph,
+  type ScrollViewRefType,
+  Stack,
+  TableContainer,
+  TableRow,
+  XStack,
+  YStack,
+} from '@package/ui'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
+  scrollRef?: React.RefObject<ScrollViewRefType | null>
 }
 
 export const hasCustomCredentialDisplay = (credentialType: string) => {
@@ -25,7 +37,7 @@ export const hasCustomCredentialDisplay = (credentialType: string) => {
   )
 }
 
-function CustomCredentialAttributesInner({ credential }: CustomCredentialAttributesProps) {
+function CustomCredentialAttributesInner({ credential, scrollRef }: CustomCredentialAttributesProps) {
   // if ([...pidSchemes.arfSdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
   //   return <FunkeArfPidCredentialAttributes credential={credential} />
   // }
@@ -36,15 +48,15 @@ function CustomCredentialAttributesInner({ credential }: CustomCredentialAttribu
   //   return <FunkeMdlCredentialAttributes credential={credential} />
   // }
 
-  return <CredentialAttributes attributes={credential.displayedAttributes} />
+  return <CredentialAttributes attributes={credential.attributes} scrollRef={scrollRef} />
 }
 
-export function CustomCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+export function CustomCredentialAttributes({ credential, scrollRef }: CustomCredentialAttributesProps) {
   return (
     // Error Boundary prevents an invalid credential structure from crashing the app
     // it will then fallback to the standard rendering
-    <ErrorBoundary fallback={<CredentialAttributes attributes={credential.displayedAttributes} />}>
-      <CustomCredentialAttributesInner credential={credential} />
+    <ErrorBoundary fallback={<CredentialAttributes attributes={credential.attributes} scrollRef={scrollRef} />}>
+      <CustomCredentialAttributesInner credential={credential} scrollRef={scrollRef} />
     </ErrorBoundary>
   )
 }

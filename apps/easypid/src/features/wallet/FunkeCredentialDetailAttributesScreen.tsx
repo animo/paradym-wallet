@@ -36,9 +36,7 @@ export function FunkeCredentialDetailAttributesScreen() {
   const { t } = useLingui()
 
   // Check if custom display is available: either has custom rendering or has different displayed vs all attributes
-  const isCustomDisplayAvailable = credential
-    ? hasCustomCredentialDisplay(credential.metadata.type) || credential.hasCustomDisplay
-    : false
+  const isCustomDisplayAvailable = credential ? hasCustomCredentialDisplay(credential.metadata.type) : false
 
   const {
     isVisible: isMetadataVisible,
@@ -101,7 +99,7 @@ export function FunkeCredentialDetailAttributesScreen() {
         />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack px="$4" gap="$4" marginBottom={bottom}>
-            <CustomCredentialAttributes credential={credential} />
+            <CustomCredentialAttributes credential={credential} scrollRef={scrollViewRef} />
             <AnimatedStack
               key={isShareableAttributesVisible ? 'visible-shareable-attributes' : 'hidden-shareable-attributes'}
               onLayout={(event) => setShareableAttributesElementPosition(event.nativeEvent.layout.y)}
@@ -116,7 +114,8 @@ export function FunkeCredentialDetailAttributesScreen() {
                     message: 'Shareable attributes',
                     comment: 'Header for attributes that can be shared with a verifier',
                   })}
-                  attributes={credential.allAttributes}
+                  attributes={credential.attributes}
+                  scrollRef={scrollViewRef}
                 />
               )}
             </AnimatedStack>
@@ -135,6 +134,7 @@ export function FunkeCredentialDetailAttributesScreen() {
                     comment: 'Header for metadata attributes of a credential',
                   })}
                   attributes={metadataForDisplay(credential.metadata)}
+                  scrollRef={scrollViewRef}
                 />
               )}
             </AnimatedStack>

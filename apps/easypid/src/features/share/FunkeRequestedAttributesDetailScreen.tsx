@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro'
 import {
   type CredentialForDisplayId,
-  formatAttributes,
+  type FormattedAttribute,
   metadataForDisplay,
   useCredentialForDisplayById,
 } from '@package/agent'
@@ -29,7 +29,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface FunkeRequestedAttributesDetailScreenProps {
   id: CredentialForDisplayId
-  disclosedPayload: Record<string, unknown>
+  disclosedPayload: FormattedAttribute[]
   disclosedAttributeLength: number
 }
 
@@ -144,7 +144,7 @@ export function FunkeRequestedAttributesDetailScreen({
                     })}
                   </Paragraph>
                 </Stack>
-                <CredentialAttributes attributes={formatAttributes(disclosedPayload)} />
+                <CredentialAttributes attributes={disclosedPayload} />
                 <AnimatedStack
                   key={isMetadataVisible ? 'visible' : 'hidden'}
                   onLayout={(event) => setElementPosition(event.nativeEvent.layout.y)}
