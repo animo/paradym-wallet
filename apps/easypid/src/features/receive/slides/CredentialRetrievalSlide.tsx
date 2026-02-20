@@ -171,7 +171,7 @@ export const CredentialRetrievalSlide = ({
               </Heading>
             ) : (
               <Heading>
-                <Trans id="receiveCredential.checkInformationHeader">Is the information correct?</Trans>
+                <Trans id="receiveCredential.checkInformationHeader">Do you want to store this card?</Trans>
               </Heading>
             )}
           </AnimatedStack>

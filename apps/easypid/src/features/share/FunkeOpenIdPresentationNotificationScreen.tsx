@@ -18,7 +18,7 @@ import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { trustedX509Entities } from '../../constants'
+import { trustedDidEntities, trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
@@ -71,6 +71,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       agent,
       uri: params.uri,
       trustedX509Entities,
+      trustedDidEntities,
     })
       .then((r) => {
         setCredentialsForRequest(r)

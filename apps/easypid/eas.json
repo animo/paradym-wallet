@@ -62,12 +62,12 @@
 			"extends": "base",
 			"distribution": "internal",
 			"android": {
-				"buildType": "apk"
+				"buildType": "apk",
+				"resourceClass": "large"
 			},
 			"env": {
 				"APP_VARIANT": "preview",
-				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET",
-				"resourceClass": "large"
+				"EXPO_PUBLIC_APP_TYPE": "PARADYM_WALLET"
 			}
 		},
 		"paradym-preview-simulator": {
