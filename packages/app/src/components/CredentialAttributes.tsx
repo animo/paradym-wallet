@@ -115,6 +115,25 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
     (item): item is FormattedAttributeArray | FormattedAttributeObject => !isPrimitiveRow(item)
   )
 
+  if (!headerTitle && attributes.length === 1 && (attributes[0].type === 'object' || attributes[0].type === 'array')) {
+    return (
+      <YStack gap="$4">
+        {attributes[0].label && <Heading heading="sub2">{attributes[0].label}</Heading>}
+
+        <TableContainer>
+          {attributes[0].value.map((item, index) => (
+            <AnyRow
+              key={`row-${index}-${item.path.join('.')}`}
+              item={item}
+              parentName={attributes[0].label}
+              scrollRef={scrollRef}
+            />
+          ))}
+        </TableContainer>
+      </YStack>
+    )
+  }
+
   return (
     <YStack gap="$6">
       {primitiveItems.length > 0 && (
