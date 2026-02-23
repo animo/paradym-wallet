@@ -23,7 +23,7 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"@animo-id/expo-digital-credentials-api": "file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0.tgz",
+			"@animo-id/expo-digital-credentials-api": "file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz",
 			"react-native-fs": "catalog:",
 			"@credo-ts/core>@sd-jwt/core": "0.18.2-next.0",
 			"@credo-ts/core>@sd-jwt/types": "0.18.2-next.0",

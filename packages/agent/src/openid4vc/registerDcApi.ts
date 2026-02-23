@@ -18,7 +18,7 @@ import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
 import type { EitherAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '../display'
 import { resolveTs12TransactionDisplayMetadata, zScaAttestationExt } from '@animo-id/eudi-wallet-functionality'
 
 type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[number]
@@ -294,7 +294,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
           : undefined
 
       return {
-        id: record.id,
+        id: getCredentialForDisplayId(record),
         format: 'mso_mdoc',
         title: display.name,
         subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
@@ -318,7 +318,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
       const transactionDataTypes = await getSdJwtTransactionDataTypes(agent.config.logger, record.typeMetadata)
 
       return {
-        id: record.id,
+        id: getCredentialForDisplayId(record),
         format: 'dc+sd-jwt',
         title: display.name,
         subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
@@ -344,7 +344,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
       },
       log_level: __DEV__ ? 'debug' : undefined,
       dcql: {
-        credential_set_option_mode: 'first_satisfiable_only',
+        credential_set_option_mode: 'all_satisfiable',
         optional_credential_sets_mode: 'prefer_present',
       },
       credentials,

@@ -1,4 +1,5 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
+import { getAptitudeSelection } from '@animo-id/expo-digital-credentials-api-aptitude-consortium'
 import { initializeAppAgent } from '@easypid/agent'
 import { useLingui } from '@lingui/react/macro'
 import {
@@ -108,7 +109,31 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         setResolvedRequest(resolved)
         setFormattedTransactionData(formatted)
         if (formatted) {
-          setSelectedTransactionData(formatted.map(() => ({})))
+          const defaults = formatted.map(() => ({} as TransactionSelection))
+          const selectionCreds = getAptitudeSelection(request)?.creds ?? []
+
+          if (selectionCreds.length > 0) {
+            selectionCreds.forEach((cred) => {
+              const indices = (cred.metadata as { transaction_data_indices?: number[] } | undefined)
+                ?.transaction_data_indices
+              if (!Array.isArray(indices)) return
+
+              indices.forEach((index) => {
+                const entry = formatted[index]
+                if (!entry) return
+
+                const selected = entry.formattedSubmissions
+                  .flatMap((submission) => (submission.isSatisfied ? submission.credentials : []))
+                  .find((c) => c.credential.id === cred.entryId)?.credential.id
+
+                if (selected) {
+                  defaults[index] = { credentialId: selected }
+                }
+              })
+            })
+          }
+
+          setSelectedTransactionData(defaults)
         }
       })
       .catch((error) => {
@@ -141,6 +166,9 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const onProofAccept = useCallback(async () => {
     if (!agent || !resolvedRequest) return
 
+    const selectionCreds = getAptitudeSelection(request)?.creds ?? []
+    const hasDcApiSelection = selectionCreds.length > 0
+
     if (shouldUsePin) {
       if (!unlockPin) {
         return
@@ -167,13 +195,29 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     }
 
     try {
-      const selectedCredentials = Object.fromEntries(
-        resolvedRequest.formattedSubmission.entries
-          .filter((entry): entry is typeof entry & { isSatisfied: true } => entry.isSatisfied)
-          .map((entry) => [entry.inputDescriptorId, entry.credentials[0].credential.record.id])
-      )
-
+      const selectedCredentials: Record<string, string> = {}
       let acceptTransactionData: Array<{ credentialId: string; additionalPayload?: object }> | undefined
+
+      if (hasDcApiSelection) {
+        for (const credential of selectionCreds) {
+          let queryId = (credential.metadata as { dcql_id?: string } | undefined)?.dcql_id
+          if (!queryId) {
+            const entry = resolvedRequest.formattedSubmission.entries.find(
+              (candidate) =>
+                candidate.isSatisfied &&
+                candidate.credentials.some((candidateCredential) => candidateCredential.credential.id === credential.entryId)
+            )
+            if (entry) queryId = entry.inputDescriptorId
+          }
+          if (!queryId) continue
+
+          if (credential.entryId.startsWith('__none__')) {
+            selectedCredentials[queryId] = credential.entryId
+          } else {
+            selectedCredentials[queryId] = stripCredentialPrefix(credential.entryId)
+          }
+        }
+      }
 
       if (formattedTransactionData && formattedTransactionData.length > 0) {
         const responseMode = resolvedRequest.authorizationRequest.response_mode
@@ -181,22 +225,6 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
 
         formattedTransactionData.forEach((entry, index) => {
           let selected = transactionSelections[index]?.credentialId
-          if (!selected) {
-            const firstCredential = entry.formattedSubmissions
-              .find((s) => s.isSatisfied && s.credentials.length > 0)
-              ?.credentials[0]?.credential?.id
-
-            if (firstCredential) {
-              selected = firstCredential
-              transactionSelections[index] = {
-                credentialId: firstCredential,
-                additionalPayload:
-                  entry.type === 'qes_authorization'
-                    ? undefined
-                    : getAdditionalPayload(responseMode),
-              }
-            }
-          }
 
           if (!selected) return
 
