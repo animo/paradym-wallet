@@ -12,7 +12,10 @@ interface DeeplinkHandlerProps {
   credentialDataHandlerOptions?: CredentialDataHandlerOptions
 }
 
-export const deeplinkSchemes = Object.values(InvitationQrTypes)
+const baseDeeplinkSchemes = Object.values(InvitationQrTypes)
+export const deeplinkSchemes = baseDeeplinkSchemes.flatMap((scheme) =>
+  scheme.endsWith('://') ? [scheme, scheme.slice(0, -2)] : [scheme]
+)
 
 // TODO: use https://docs.expo.dev/router/advanced/native-intent/
 export const DeeplinkHandler = ({ children, credentialDataHandlerOptions }: DeeplinkHandlerProps) => {

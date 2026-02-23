@@ -91,6 +91,11 @@ export const shareProof = async ({
       )
     : undefined
 
+  const transactionDataSelection = acceptTransactionData?.map(({ credentialId }) => ({ credentialId }))
+  const hasTransactionDataField = Array.isArray(
+    (authorizationRequest as typeof authorizationRequest & { transaction_data?: unknown }).transaction_data
+  )
+
   try {
     const result = await agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
@@ -104,7 +109,9 @@ export const shareProof = async ({
             credentials: dcqlCredentials,
           }
         : undefined,
-      transactionData: acceptTransactionData?.map(({ credentialId }) => ({ credentialId })),
+      // Some verifiers include an empty `transaction_data` array. Credo treats the presence
+      // of the field as requiring a transactionData parameter, so pass an empty array.
+      transactionData: transactionDataSelection ?? (hasTransactionDataField ? [] : undefined),
       origin: resolvedRequest.origin,
     })
 
@@ -145,7 +152,6 @@ function getSelectedCredentialsForRequest(
   }
 
   const credentials: DcqlCredentialsForRequest = {}
-
   type WithRecord<T> = T & {
     record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord | W3cV2CredentialRecord
   }
@@ -153,6 +159,9 @@ function getSelectedCredentialsForRequest(
   for (const [credentialQueryId, matchesForCredentialQuery] of Object.entries(dcqlQueryResult.credential_matches)) {
     if (matchesForCredentialQuery.success) {
       const credentialRecordId = selectedCredentials[credentialQueryId]
+      if (credentialRecordId?.startsWith('__none__')) {
+        continue
+      }
       const validCredentialMatch = credentialRecordId
         ? matchesForCredentialQuery.valid_credentials.find(
             (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId

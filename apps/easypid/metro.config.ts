@@ -14,6 +14,10 @@ export default {
 
     nodeModulesPaths: [path.resolve(projectRoot, 'node_modules'), path.resolve(workspaceRoot, 'node_modules')],
     sourceExts: [...(config.resolver?.sourceExts ?? []), 'js', 'json', 'ts', 'tsx', 'cjs', 'mjs'],
+    assetExts: [
+      ...(config.resolver?.assetExts ?? []),
+      ...(config.resolver?.assetExts?.includes('wasm') ? [] : ['wasm']),
+    ],
     extraNodeModules: {
       // Needed for cosmjs trying to import node crypto
       crypto: import.meta.resolve('./src/polyfills/crypto.ts'),

@@ -5,7 +5,7 @@ import {
   zFunkeQesTransaction,
   zScaAttestationExt,
 } from '@animo-id/eudi-wallet-functionality'
-import { ConsoleLogger, LogLevel, SdJwtVcRecord } from '@credo-ts/core'
+import { ConsoleLogger, IntegrityVerifier, LogLevel, SdJwtVcRecord } from '@credo-ts/core'
 import type {
   CredentialForDisplayId,
   FormattedSubmissionEntry,
@@ -57,7 +57,8 @@ export async function getTs12TransactionDataTypes(records: Record<CredentialForD
                 await resolveTs12TransactionDisplayMetadata(
                   parsedTypeMetadata.data,
                   type,
-                  subtype /* todo: integrity verifier */
+                  subtype,
+                  (buf, integrity) => IntegrityVerifier.verifyIntegrity(new Uint8Array(buf), integrity)
                 ).catch((_) => undefined),
               ] as const
           )

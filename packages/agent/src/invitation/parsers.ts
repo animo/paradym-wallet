@@ -6,6 +6,9 @@ import queryString from 'query-string'
 import type { ParadymAppAgent } from '../agent'
 import { fetchInvitationDataUrl } from './fetchInvitation'
 
+const normalizeInvitationUrl = (url: string) =>
+  url.replace(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(?!\/)/, '$1://')
+
 export type InvitationType = 'didcomm' | 'openid-credential-offer' | 'openid-authorization-request'
 export type ParseInvitationResultError = 'invitation_not_recognized' | 'parse_error' | 'retrieve_invitation_error'
 export type ParseInvitationResult =
@@ -132,44 +135,46 @@ export async function parseDidCommInvitation(agent: ParadymAppAgent, invitation:
 }
 
 export function parseInvitationUrlSync(invitationUrl: string): ParseInvitationResult {
-  if (isOpenIdCredentialOffer(invitationUrl)) {
+  const normalizedUrl = normalizeInvitationUrl(invitationUrl)
+
+  if (isOpenIdCredentialOffer(normalizedUrl)) {
     return {
       success: true,
       result: {
         format: 'url',
         type: 'openid-credential-offer',
-        data: invitationUrl,
+        data: normalizedUrl,
       },
     }
   }
 
-  if (isOpenIdPresentationRequest(invitationUrl)) {
+  if (isOpenIdPresentationRequest(normalizedUrl)) {
     return {
       success: true,
       result: {
         format: 'url',
         type: 'openid-authorization-request',
-        data: invitationUrl,
+        data: normalizedUrl,
       },
     }
   }
 
-  if (isDidCommInvitation(invitationUrl)) {
+  if (isDidCommInvitation(normalizedUrl)) {
     return {
       success: true,
       result: {
         format: 'url',
         type: 'didcomm',
-        data: invitationUrl,
+        data: normalizedUrl,
       },
     }
   }
 
-  if (invitationUrl.startsWith('https://')) {
+  if (normalizedUrl.startsWith('https://')) {
     return {
       success: true,
       result: {
-        data: invitationUrl,
+        data: normalizedUrl,
         format: 'url',
         type: 'didcomm',
       },
@@ -184,35 +189,37 @@ export function parseInvitationUrlSync(invitationUrl: string): ParseInvitationRe
 }
 
 export async function parseInvitationUrl(invitationUrl: string): Promise<ParseInvitationResult> {
-  if (isOpenIdCredentialOffer(invitationUrl)) {
+  const normalizedUrl = normalizeInvitationUrl(invitationUrl)
+
+  if (isOpenIdCredentialOffer(normalizedUrl)) {
     return {
       success: true,
       result: {
         format: 'url',
         type: 'openid-credential-offer',
-        data: invitationUrl,
+        data: normalizedUrl,
       },
     }
   }
 
-  if (isOpenIdPresentationRequest(invitationUrl)) {
+  if (isOpenIdPresentationRequest(normalizedUrl)) {
     return {
       success: true,
       result: {
         format: 'url',
         type: 'openid-authorization-request',
-        data: invitationUrl,
+        data: normalizedUrl,
       },
     }
   }
 
-  if (isDidCommInvitation(invitationUrl)) {
+  if (isDidCommInvitation(normalizedUrl)) {
     return {
       success: true,
       result: {
         format: 'url',
         type: 'didcomm',
-        data: invitationUrl,
+        data: normalizedUrl,
       },
     }
   }

@@ -35,7 +35,7 @@ export {
   RefreshCredentialMetadata,
   setRefreshCredentialMetadata,
 } from './openid4vc/refreshMetadata'
-export { registerCredentialsForDcApi } from './openid4vc/registerDcApi'
+export { registerCredentialsForDcApi, registerCreationOptionsForDcApi } from './openid4vc/registerDcApi'
 export * from './providers'
 export * from './storage'
 export * from './utils/trust'

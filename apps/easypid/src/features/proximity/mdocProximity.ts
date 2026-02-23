@@ -1,10 +1,13 @@
-import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
+// import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { cborDecode, cborEncode, DataItem, DeviceRequest } from '@animo-id/mdoc'
 import { CredentialMultiInstanceUseMode, type Mdoc, MdocService, useInstanceFromCredentialRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'
 import { refreshPidIfNeeded } from '@package/agent/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
+
+// biome-ignore lint/suspicious/noExplicitAny: temporary disable of mdoc proximity presentation
+const mdocDataTransfer = undefined as any
 
 type ShareDeviceResponseOptions = {
   sessionTranscript: Uint8Array

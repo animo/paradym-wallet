@@ -1,9 +1,12 @@
 import 'fast-text-encoding'
 import 'expo-router/entry'
-import registerGetCredentialComponent from '@animo-id/expo-digital-credentials-api/register'
+import registerGetCredentialComponent, {
+  registerCreateCredentialComponent,
+} from '@animo-id/expo-digital-credentials-api/register'
 import { registerLocales } from '@package/translations'
 import { Platform } from 'react-native'
 import { DcApiSharingScreen } from './src/features/share/DcApiSharingScreen'
+import { DcApiIssuanceScreen } from './src/features/receive/DcApiIssuanceScreen'
 import { messages as de } from './src/locales/de/messages'
 import { messages as en } from './src/locales/en/messages'
 import { messages as fi } from './src/locales/fi/messages'
@@ -26,4 +29,5 @@ registerLocales({
 // Always register the custom component for Android
 if (Platform.OS === 'android') {
   registerGetCredentialComponent(DcApiSharingScreen)
+  registerCreateCredentialComponent(DcApiIssuanceScreen)
 }
