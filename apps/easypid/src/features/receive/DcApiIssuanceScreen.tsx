@@ -8,8 +8,11 @@ import { useLingui } from '@lingui/react/macro'
 import {
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
+  AgentProvider,
+  activityStorage,
   acquirePreAuthorizedAccessToken,
   BiometricAuthenticationCancelledError,
+  deferredCredentialStorage,
   type CredentialsForProofRequest,
   type DeferredCredential,
   type EitherAgent,
@@ -32,6 +35,7 @@ import {
   storeReceivedActivity,
   type W3cCredentialRecord,
   type W3cV2CredentialRecord,
+  WalletJsonStoreProvider,
 } from '@package/agent'
 import { shareProof } from '@package/agent/invitation/shareProof'
 import { PinDotsInput, type PinDotsInputRef, Provider, SlideWizard } from '@package/app'
@@ -57,6 +61,8 @@ import { VerifyPartySlide } from './slides/VerifyPartySlide'
 type DcApiIssuanceScreenProps = {
   request: DigitalCredentialsCreateRequest
 }
+
+const jsonRecordIds = [activityStorage.recordId, deferredCredentialStorage.recordId]
 
 const tryParseJson = (value: string) => {
   try {
@@ -265,7 +271,12 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
   const txCode = preAuthGrant?.tx_code
 
   useEffect(() => {
-    if (!offerUri) return
+    if (!offerUri || !agent) return
+
+    setErrorReason(undefined)
+    setResolvedCredentialOffer(undefined)
+    setResolvedAuthorizationRequest(undefined)
+
     resolveOpenId4VciOffer({
       agent,
       offer: {
@@ -612,132 +623,141 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
   }
 
   return (
-    <SlideWizard
-      steps={[
-        {
-          step: 'loading-request',
-          progress: 16.5,
-          screen: (
-            <LoadingRequestSlide key="loading-request" isLoading={!resolvedCredentialOffer} isError={!!errorReason} />
-          ),
-        },
-        {
-          step: 'verify-issuer',
-          progress: 33,
-          backIsCancel: true,
-          screen: (
-            <VerifyPartySlide
-              key="verify-issuer"
-              type="offer"
-              name={credentialDisplay.issuer.name}
-              logo={credentialDisplay.issuer.logo}
-              entityId={issuerMetadata?.credential_issuer}
-              onContinue={onCheckCardContinue}
-            />
-          ),
-        },
-        isBrowserAuthFlow
-          ? {
-              step: 'auth-code-flow',
-              progress: 49.5,
-              backIsCancel: true,
+    <AgentProvider agent={agent}>
+      <WalletJsonStoreProvider agent={agent} recordIds={jsonRecordIds}>
+        <SlideWizard
+          steps={[
+            {
+              step: 'loading-request',
+              progress: 16.5,
               screen: (
-                <AuthCodeFlowSlide
-                  key="auth-code-flow"
-                  display={credentialDisplay}
-                  authCodeFlowDetails={{
-                    openUrl: resolvedAuthorizationRequest.authorizationRequestUrl,
-                    redirectUri: walletClient.redirectUri,
-                    domain: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
-                  }}
-                  onAuthFlowCallback={acquireCredentialsAuth}
-                  onCancel={onCancelAuthorization}
-                  onError={onErrorAuthorization}
-                />
-              ),
-            }
-          : {
-              step: 'check-card',
-              progress: 49.5,
-              screen: (
-                <CredentialCardSlide
-                  key="credential-card"
-                  type={isAuthFlow ? 'presentation' : isPreAuthWithTxFlow ? 'pin' : 'noAuth'}
-                  display={credentialDisplay}
+                <LoadingRequestSlide
+                  key="loading-request"
+                  isLoading={!resolvedCredentialOffer}
+                  isError={!!errorReason}
                 />
               ),
             },
-        isAuthFlow
-          ? {
-              step: 'presentation-during-issuance',
-              progress: 66,
+            {
+              step: 'verify-issuer',
+              progress: 33,
               backIsCancel: true,
               screen: (
-                <ShareCredentialsSlide
-                  key="share-credentials"
-                  onAccept={shouldUsePinForPresentation ? undefined : () => onPresentationAccept({})}
-                  logo={credentialsForRequest.verifier.logo}
-                  submission={credentialsForRequest.formattedSubmission}
-                  isAccepting={isSharingPresentation}
-                  onDecline={onProofDecline}
-                  overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
+                <VerifyPartySlide
+                  key="verify-issuer"
+                  type="offer"
+                  name={credentialDisplay.issuer.name}
+                  logo={credentialDisplay.issuer.logo}
+                  entityId={issuerMetadata?.credential_issuer}
+                  onContinue={onCheckCardContinue}
                 />
               ),
-            }
-          : undefined,
-        isAuthFlow && shouldUsePinForPresentation
-          ? {
-              step: 'pin-enter',
+            },
+            isBrowserAuthFlow
+              ? {
+                  step: 'auth-code-flow',
+                  progress: 49.5,
+                  backIsCancel: true,
+                  screen: (
+                    <AuthCodeFlowSlide
+                      key="auth-code-flow"
+                      display={credentialDisplay}
+                      authCodeFlowDetails={{
+                        openUrl: resolvedAuthorizationRequest.authorizationRequestUrl,
+                        redirectUri: walletClient.redirectUri,
+                        domain: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+                      }}
+                      onAuthFlowCallback={acquireCredentialsAuth}
+                      onCancel={onCancelAuthorization}
+                      onError={onErrorAuthorization}
+                    />
+                  ),
+                }
+              : {
+                  step: 'check-card',
+                  progress: 49.5,
+                  screen: (
+                    <CredentialCardSlide
+                      key="credential-card"
+                      type={isAuthFlow ? 'presentation' : isPreAuthWithTxFlow ? 'pin' : 'noAuth'}
+                      display={credentialDisplay}
+                    />
+                  ),
+                },
+            isAuthFlow
+              ? {
+                  step: 'presentation-during-issuance',
+                  progress: 66,
+                  backIsCancel: true,
+                  screen: (
+                    <ShareCredentialsSlide
+                      key="share-credentials"
+                      onAccept={shouldUsePinForPresentation ? undefined : () => onPresentationAccept({})}
+                      logo={credentialsForRequest.verifier.logo}
+                      submission={credentialsForRequest.formattedSubmission}
+                      isAccepting={isSharingPresentation}
+                      onDecline={onProofDecline}
+                      overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
+                    />
+                  ),
+                }
+              : undefined,
+            isAuthFlow && shouldUsePinForPresentation
+              ? {
+                  step: 'pin-enter',
+                  progress: 82.5,
+                  screen: (
+                    <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinSubmit={onPresentationAccept} />
+                  ),
+                }
+              : undefined,
+            isPreAuthWithTxFlow
+              ? {
+                  step: 'tx-code',
+                  progress: 66,
+                  backIsCancel: true,
+                  screen: <TxCodeSlide txCode={txCode} onTxCode={onSubmitTxCode} />,
+                }
+              : undefined,
+            {
+              step: 'retrieve-credential',
               progress: 82.5,
-              screen: <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinSubmit={onPresentationAccept} />,
-            }
-          : undefined,
-        isPreAuthWithTxFlow
-          ? {
-              step: 'tx-code',
-              progress: 66,
               backIsCancel: true,
-              screen: <TxCodeSlide txCode={txCode} onTxCode={onSubmitTxCode} />,
-            }
-          : undefined,
-
-        {
-          step: 'retrieve-credential',
-          progress: 82.5,
-          backIsCancel: true,
-          screen: (
-            <CredentialRetrievalSlide
-              key="retrieve-credential"
-              onGoToWallet={onGoToWallet}
-              display={credentialDisplay}
-              attributes={credentialAttributes ?? {}}
-              deferred={deferredCredential !== undefined}
-              isCompleted={isCompleted}
-              onAccept={onCompleteCredentialRetrieval}
+              screen: (
+                <CredentialRetrievalSlide
+                  key="retrieve-credential"
+                  onGoToWallet={onGoToWallet}
+                  display={credentialDisplay}
+                  attributes={credentialAttributes ?? {}}
+                  deferred={deferredCredential !== undefined}
+                  isCompleted={isCompleted}
+                  onAccept={onCompleteCredentialRetrieval}
+                />
+              ),
+            },
+          ].filter((v): v is Exclude<typeof v, undefined> => v !== undefined)}
+          errorScreen={() => (
+            <InteractionErrorSlide
+              key="credential-error"
+              flowType="issue"
+              reason={errorReason}
+              onCancel={() => sendCreateErrorResponseOnce(errorReason ?? 'Credential issuance failed')}
             />
-          ),
-        },
-      ].filter((v): v is Exclude<typeof v, undefined> => v !== undefined)}
-      errorScreen={() => (
-        <InteractionErrorSlide
-          key="credential-error"
-          flowType="issue"
-          reason={errorReason}
-          onCancel={() => sendCreateErrorResponseOnce(errorReason ?? 'Credential issuance failed')}
+          )}
+          isError={errorReason !== undefined}
+          onCancel={onProofDecline}
+          confirmation={{
+            title: t({
+              id: 'receiveCredential.stopTitle',
+              message: 'Stop card offer?',
+            }),
+            description: t({
+              id: 'receiveCredential.stopDescription',
+              message: 'If you stop, the card offer will be cancelled.',
+            }),
+          }}
         />
-      )}
-      isError={errorReason !== undefined}
-      onCancel={onProofDecline}
-      confirmation={{
-        title: t({
-          id: 'receiveCredential.stopTitle',
-          message: 'Stop card offer?',
-        }),
-        description: t({
-          id: 'receiveCredential.stopDescription',
-          message: 'If you stop, the card offer will be cancelled.',
-        }),
-      }}
-    />
+      </WalletJsonStoreProvider>
+    </AgentProvider>
   )
 }
