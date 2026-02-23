@@ -152,7 +152,6 @@ function getSelectedCredentialsForRequest(
   }
 
   const credentials: DcqlCredentialsForRequest = {}
-
   type WithRecord<T> = T & {
     record: MdocRecord | SdJwtVcRecord | W3cCredentialRecord | W3cV2CredentialRecord
   }
@@ -160,6 +159,9 @@ function getSelectedCredentialsForRequest(
   for (const [credentialQueryId, matchesForCredentialQuery] of Object.entries(dcqlQueryResult.credential_matches)) {
     if (matchesForCredentialQuery.success) {
       const credentialRecordId = selectedCredentials[credentialQueryId]
+      if (credentialRecordId?.startsWith('__none__')) {
+        continue
+      }
       const validCredentialMatch = credentialRecordId
         ? matchesForCredentialQuery.valid_credentials.find(
             (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId

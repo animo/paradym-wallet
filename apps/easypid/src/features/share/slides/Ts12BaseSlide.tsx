@@ -146,17 +146,25 @@ export function Ts12BaseSlide({
       s.isSatisfied ? (s as FormattedSubmissionEntrySatisfied).credentials : []
     )
 
-    allCredentials.sort((a, b) => b.credential.createdAt.getTime() - a.credential.createdAt.getTime())
-
     const seen = new Set<string>()
-    return allCredentials.reduce<string[]>((acc, c) => {
+    const ordered = allCredentials.reduce<string[]>((acc, c) => {
       if (!seen.has(c.credential.id)) {
         seen.add(c.credential.id)
         acc.push(c.credential.id)
       }
       return acc
     }, [])
-  }, [entry])
+
+    if (initialSelectedCredentialId) {
+      const idx = ordered.indexOf(initialSelectedCredentialId)
+      if (idx > 0) {
+        ordered.splice(idx, 1)
+        ordered.unshift(initialSelectedCredentialId)
+      }
+    }
+
+    return ordered
+  }, [entry, initialSelectedCredentialId])
 
   const { loadedCredentials, isLoading, error, displayMetadata, setDisplayMetadata } = useTs12CredentialLoading(
     possibleCredentialIds,
