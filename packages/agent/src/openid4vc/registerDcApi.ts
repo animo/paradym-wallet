@@ -6,7 +6,7 @@ import {
   encodeIssuanceCreationOptions,
   registerCreationOptions,
 } from '@animo-id/expo-digital-credentials-api-cmwallet-issuance'
-import { DateOnly, IntegrityVerifier, type Logger, type MdocNameSpaces } from '@credo-ts/core'
+import { DateOnly, IntegrityVerifier, type Logger, type MdocNameSpaces, type SdJwtVcRecord } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { commonMessages } from '@package/translations'
@@ -141,6 +141,20 @@ function normalizeAptitudeIcon(iconDataUrl?: string) {
 
   const commaIndex = iconDataUrl.indexOf(',')
   return commaIndex >= 0 ? iconDataUrl.slice(commaIndex + 1) : iconDataUrl
+}
+
+function getSdJwtVctValues(record: SdJwtVcRecord) {
+  const vctValuesFromChain = record.typeMetadataChain
+    ?.map((entry) => entry.vct)
+    .filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
+
+  const tagVct = record.getTags().vct
+  const values =
+    vctValuesFromChain && vctValuesFromChain.length > 0 ? vctValuesFromChain : tagVct ? [tagVct] : []
+
+  if (values.length === 0) return undefined
+
+  return Array.from(new Set(values))
 }
 
 /**
@@ -310,7 +324,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
         subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
         fields: mapSdJwtAttributesToFieldConfig(sdJwtVc.prettyClaims),
         icon: normalizeAptitudeIcon(iconDataUrl),
-        vcts: record.getTags().vct ? [record.getTags().vct] : undefined,
+        vcts: getSdJwtVctValues(record),
         transaction_data_types: transactionDataTypes,
         // biome-ignore lint/suspicious/noExplicitAny: no explanation
         claims: sdJwtVc.prettyClaims as any,
