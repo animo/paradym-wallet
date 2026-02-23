@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-ausweis-sdk": "catalog:",
-		"@animo-id/expo-digital-credentials-api": "file:../../dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz",
+		"@animo-id/expo-digital-credentials-api": "link:../../../expo-digital-credentials-api",
 		"@animo-id/expo-secure-environment": "catalog:",
 		"@animo-id/mdoc": "catalog:",
 		"@credo-ts/core": "catalog:",

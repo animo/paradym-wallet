@@ -17,77 +17,20 @@ export async function resolveRequestForDcApi({
   agent: EitherAgent
   request: DigitalCredentialsRequest
 }) {
-  type DigitalCredentialsSelectionCredMetadata = {
-    credential_id?: string
-    dcql_id?: string
-    transaction_data_indices?: number[]
-    [key: string]: unknown
-  }
   type DigitalCredentialsSelection = {
     requestIdx: number
     creds: Array<{
       entryId: string
+      dcqlId?: string
       matchedClaimPaths?: Array<Array<string | number | null>>
-      metadata?: DigitalCredentialsSelectionCredMetadata
     }>
   }
-  type SelectedEntry = {
-    credentialId?: string
-    providerIndex?: number
-  }
-  const dcRequest = request as DigitalCredentialsRequest & {
-    selection?: DigitalCredentialsSelection
-    selectedEntry?: SelectedEntry
-    sourceBundle?: unknown
-  }
+  const dcRequest = request as DigitalCredentialsRequest & { selection?: DigitalCredentialsSelection }
   const requestIndex = dcRequest.selection?.requestIdx ?? dcRequest.selectedEntry?.providerIndex ?? 0
-  const sourceBundle = (dcRequest.sourceBundle ?? dcRequest) as Record<string, unknown>
-  const origin =
-    typeof request.origin === 'string'
-      ? request.origin
-      : typeof sourceBundle?.['androidx.credentials.provider.extra.CREDENTIAL_REQUEST_ORIGIN'] === 'string'
-        ? (sourceBundle['androidx.credentials.provider.extra.CREDENTIAL_REQUEST_ORIGIN'] as string)
-        : undefined
-  const requestPayload = (() => {
-    if (dcRequest.request) {
-      return typeof dcRequest.request === 'string' ? JSON.parse(dcRequest.request) : dcRequest.request
-    }
-
-    const bundle = sourceBundle
-    if (!bundle || typeof bundle !== 'object') return undefined
-
-    const direct = bundle['androidx.credentials.BUNDLE_KEY_REQUEST_JSON']
-    if (typeof direct === 'string') {
-      try {
-        return JSON.parse(direct)
-      } catch {
-        return undefined
-      }
-    }
-
-    const retrievalKey = Object.keys(bundle).find((key) =>
-      key.startsWith('androidx.credentials.provider.extra.CREDENTIAL_OPTION_CREDENTIAL_RETRIEVAL_DATA_')
-    )
-    if (!retrievalKey) return undefined
-    const retrievalData = bundle[retrievalKey]
-    if (!retrievalData || typeof retrievalData !== 'object') return undefined
-    const rawRequest = (retrievalData as Record<string, unknown>)['androidx.credentials.BUNDLE_KEY_REQUEST_JSON']
-    if (typeof rawRequest !== 'string') return undefined
-    try {
-      return JSON.parse(rawRequest)
-    } catch {
-      return undefined
-    }
-  })()
-  if (!requestPayload || typeof requestPayload !== 'object') {
-    throw new Error('Invalid Digital Credentials API request payload')
-  }
-  agent.config.logger.trace('DC API parsed request payload', dcRequest)
-
   const providerRequest =
-    'requests' in requestPayload && Array.isArray(requestPayload.requests)
-      ? (requestPayload.requests[requestIndex]?.data ?? requestPayload.requests[requestIndex]?.request)
-      : (requestPayload.providers?.[requestIndex]?.request ?? requestPayload.providers?.[requestIndex]?.data)
+    'requests' in dcRequest.request && dcRequest.request.requests
+      ? dcRequest.request.requests[requestIndex]?.data
+      : dcRequest.request.providers?.[requestIndex]?.request
 
   if (!providerRequest) {
     throw new Error('Missing provider request for Digital Credentials API request')
@@ -99,50 +42,32 @@ export async function resolveRequestForDcApi({
   const result = await getCredentialsForProofRequest({
     agent,
     requestPayload: authorizationRequestPayload,
-    origin,
+    origin: request.origin,
   })
 
-  const selectionCreds =
-    dcRequest.selection?.creds ??
-    (dcRequest.selectedEntry?.credentialId ? [{ entryId: dcRequest.selectedEntry.credentialId }] : [])
-  const selectedEntryIds = selectionCreds.map((credential) => credential.entryId)
+  const selectedEntryIds =
+    dcRequest.selection?.creds?.map((credential) => credential.entryId) ??
+    (dcRequest.selectedEntry?.credentialId ? [dcRequest.selectedEntry.credentialId] : [])
 
-  const getDisplayId = (credential: { credential: { id: string } }) => credential.credential.id
-
-  const selectedByQueryId = new Map<string, { displayId: string; metadata?: DigitalCredentialsSelectionCredMetadata }>()
-  for (const credential of selectionCreds) {
-    let queryId = credential.metadata?.dcql_id
-    if (!queryId) {
-      const entry = result.formattedSubmission.entries.find(
-        (candidate) =>
-          candidate.isSatisfied &&
-          candidate.credentials.some((candidateCredential) => getDisplayId(candidateCredential) === credential.entryId)
-      )
-      if (entry) queryId = entry.inputDescriptorId
-    }
-    if (queryId) {
-      selectedByQueryId.set(queryId, { displayId: credential.entryId, metadata: credential.metadata })
-    }
-  }
-
+  agent.config.logger.debug('Resolved request', {
+    result,
+  })
   const formattedSubmission =
-    selectionCreds.length > 0
+    selectedEntryIds.length > 0
       ? (() => {
           const selectedSet = new Set(selectedEntryIds)
           const filteredEntries = result.formattedSubmission.entries
             .map((entry) => {
               if (!entry.isSatisfied) return entry
-              const selectedForQuery = selectedByQueryId.get(entry.inputDescriptorId)
-              const credentials = entry.credentials.filter((credential) => {
-                const displayId = getDisplayId(credential)
-                if (selectedForQuery) return displayId === selectedForQuery.displayId
-                return selectedSet.has(displayId)
-              })
+              const credentials = entry.credentials.filter((credential) =>
+                selectedSet.has(credential.credential.record.id)
+              )
               if (credentials.length === 0) return undefined
 
               return {
                 ...entry,
-                credentials: credentials as [(typeof credentials)[number], ...Array<(typeof credentials)[number]>],
+                credentials:
+                  credentials as [typeof credentials[number], ...Array<typeof credentials[number]>],
               }
             })
             .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
@@ -158,46 +83,12 @@ export async function resolveRequestForDcApi({
         })()
       : result.formattedSubmission
 
-  let transactionData = result.transactionData
-  if (selectionCreds.length > 0 && Array.isArray(transactionData) && transactionData.length > 0) {
-    const indexToQueryIds = new Map<number, string[]>()
-    for (const credential of selectionCreds) {
-      const indices = credential.metadata?.transaction_data_indices
-      if (!Array.isArray(indices) || indices.length === 0) continue
-
-      const queryId = credential.metadata?.dcql_id
-      if (!queryId) continue
-
-      for (const index of indices) {
-        const existing = indexToQueryIds.get(index)
-        if (existing) {
-          if (!existing.includes(queryId)) existing.push(queryId)
-        } else {
-          indexToQueryIds.set(index, [queryId])
-        }
-      }
-    }
-
-    if (indexToQueryIds.size > 0) {
-      type TransactionDataEntry = NonNullable<typeof transactionData>[number]
-      transactionData = transactionData.map((entry, index) => {
-        const selectedIds = indexToQueryIds.get(index)
-        if (!selectedIds || selectedIds.length === 0) return entry
-        return {
-          ...(entry as TransactionDataEntry),
-          matchedCredentialIds: selectedIds,
-        }
-      }) as TransactionDataEntry[]
-    }
-  }
-
   return {
     ...result,
     formattedSubmission,
-    transactionData,
     verifier: {
       ...result.verifier,
-      hostName: origin ? getHostNameFromUrl(origin) : undefined,
+      hostName: getHostNameFromUrl(request.origin),
     },
   }
 }

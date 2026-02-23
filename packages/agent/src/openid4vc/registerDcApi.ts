@@ -6,7 +6,7 @@ import {
   encodeIssuanceCreationOptions,
   registerCreationOptions,
 } from '@animo-id/expo-digital-credentials-api-cmwallet-issuance'
-import { DateOnly, IntegrityVerifier, type Logger, type MdocNameSpaces, type SdJwtVcRecord } from '@credo-ts/core'
+import { DateOnly, IntegrityVerifier, type Logger, type MdocNameSpaces } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { commonMessages } from '@package/translations'
@@ -18,7 +18,7 @@ import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
 import type { EitherAgent } from '../agent'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '../display'
+import { getCredentialForDisplay } from '../display'
 import { resolveTs12TransactionDisplayMetadata, zScaAttestationExt } from '@animo-id/eudi-wallet-functionality'
 
 type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[number]
@@ -141,20 +141,6 @@ function normalizeAptitudeIcon(iconDataUrl?: string) {
 
   const commaIndex = iconDataUrl.indexOf(',')
   return commaIndex >= 0 ? iconDataUrl.slice(commaIndex + 1) : iconDataUrl
-}
-
-function getSdJwtVctValues(record: SdJwtVcRecord) {
-  const vctValuesFromChain = record.typeMetadataChain
-    ?.map((entry) => entry.vct)
-    .filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
-
-  const tagVct = record.getTags().vct
-  const values =
-    vctValuesFromChain && vctValuesFromChain.length > 0 ? vctValuesFromChain : tagVct ? [tagVct] : []
-
-  if (values.length === 0) return undefined
-
-  return Array.from(new Set(values))
 }
 
 /**
@@ -294,7 +280,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
           : undefined
 
       return {
-        id: getCredentialForDisplayId(record),
+        id: record.id,
         format: 'mso_mdoc',
         title: display.name,
         subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
@@ -318,13 +304,13 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
       const transactionDataTypes = await getSdJwtTransactionDataTypes(agent.config.logger, record.typeMetadata)
 
       return {
-        id: getCredentialForDisplayId(record),
+        id: record.id,
         format: 'dc+sd-jwt',
         title: display.name,
         subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
         fields: mapSdJwtAttributesToFieldConfig(sdJwtVc.prettyClaims),
         icon: normalizeAptitudeIcon(iconDataUrl),
-        vcts: getSdJwtVctValues(record),
+        vcts: record.getTags().vct ? [record.getTags().vct] : undefined,
         transaction_data_types: transactionDataTypes,
         // biome-ignore lint/suspicious/noExplicitAny: no explanation
         claims: sdJwtVc.prettyClaims as any,
@@ -342,9 +328,8 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
         allow_signed_requests: true,
         allow_response_mode_jwt: true,
       },
-      log_level: __DEV__ ? 'debug' : undefined,
       dcql: {
-        credential_set_option_mode: 'all_satisfiable',
+        credential_set_option_mode: 'first_satisfiable_only',
         optional_credential_sets_mode: 'prefer_present',
       },
       credentials,

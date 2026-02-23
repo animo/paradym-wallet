@@ -3,12 +3,13 @@ import { getDefaultConfig } from '@expo/metro-config'
 
 const projectRoot = import.meta.dirname
 const workspaceRoot = path.resolve(projectRoot, '../..')
+const dcApiRoot = path.resolve(projectRoot, '../../../expo-digital-credentials-api')
 
 const config = getDefaultConfig(projectRoot)
 
 export default {
   ...config,
-  watchFolders: [workspaceRoot],
+  watchFolders: [workspaceRoot, dcApiRoot],
   resolver: {
     ...config.resolver,
 
