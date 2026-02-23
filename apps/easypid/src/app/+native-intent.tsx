@@ -8,6 +8,8 @@ import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
 import { credentialDataHandlerOptions } from './(app)/_layout'
 
+const normalizeDeeplinkUrl = (url: string) => url.replace(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(?!\/)/, '$1://')
+
 // NOTE: previously we had this method async, but somehow this prevent the
 // deeplink from working on a cold startup. We updated the invitation handler to
 // be fully sync.
@@ -16,7 +18,8 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
     initial,
   })
 
-  const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))
+  const normalizedPath = normalizeDeeplinkUrl(path)
+  const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => normalizedPath.startsWith(scheme))
   if (!isRecognizedDeeplink) {
     logger.debug(
       'Deeplink is not a recognized deeplink scheme, routing to deeplink directly instead of parsing as invitation.'
@@ -28,7 +31,7 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
     // For the bdr mDL issuer we use authorized code flow, but they also
     // redirect to the ausweis app. From the ausweis app we are then redirected
     // back to the easypid wallet.
-    const parsedPath = new URL(path)
+    const parsedPath = new URL(normalizedPath)
     const credentialAuthorizationCode = parsedPath.searchParams.get('code')
 
     const parsedRedirectBaseUrl = redirectBaseUrl ? new URL(redirectBaseUrl) : undefined
@@ -58,7 +61,7 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
       return null
     }
 
-    const parseResult = parseInvitationUrlSync(path)
+    const parseResult = parseInvitationUrlSync(normalizedPath)
     if (!parseResult.success) {
       logger.info('Deeplink is not a valid invitation. Routing to home screen', {
         error: parseResult.error,

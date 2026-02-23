@@ -6,7 +6,9 @@
 	"main": "src/index.ts",
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
-		"@animo-id/expo-digital-credentials-api": "catalog:",
+		"@animo-id/expo-digital-credentials-api": "link:../../../expo-digital-credentials-api",
+		"@animo-id/expo-digital-credentials-api-aptitude-consortium": "link:../../../expo-digital-credentials-api/packages/matcher-aptitude-consortium",
+		"@animo-id/expo-digital-credentials-api-cmwallet-issuance": "link:../../../expo-digital-credentials-api/packages/matcher-cmwallet-issuance",
 		"@astronautlabs/jsonpath": "catalog:",
 		"@credo-ts/anoncreds": "catalog:",
 		"@credo-ts/askar": "catalog:",

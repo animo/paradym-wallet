@@ -137,14 +137,14 @@ const createBaseConfig = (appSpecific) => {
           },
         },
       ],
-      [
-        '@animo-id/expo-mdoc-data-transfer',
-        {
-          ios: {
-            buildStatic: ['RNReanimated', 'RNScreens', 'askar', 'anoncreds'],
-          },
-        },
-      ],
+      // [
+      //   '@animo-id/expo-mdoc-data-transfer',
+      //   {
+      //     ios: {
+      //       buildStatic: ['RNReanimated', 'RNScreens', 'askar', 'anoncreds'],
+      //     },
+      //   },
+      // ],
       [
         'expo-build-properties',
         {

@@ -3,17 +3,22 @@ import { getDefaultConfig } from '@expo/metro-config'
 
 const projectRoot = import.meta.dirname
 const workspaceRoot = path.resolve(projectRoot, '../..')
+const dcApiRoot = path.resolve(projectRoot, '../../../expo-digital-credentials-api')
 
 const config = getDefaultConfig(projectRoot)
 
 export default {
   ...config,
-  watchFolders: [workspaceRoot],
+  watchFolders: [workspaceRoot, dcApiRoot],
   resolver: {
     ...config.resolver,
 
     nodeModulesPaths: [path.resolve(projectRoot, 'node_modules'), path.resolve(workspaceRoot, 'node_modules')],
     sourceExts: [...(config.resolver?.sourceExts ?? []), 'js', 'json', 'ts', 'tsx', 'cjs', 'mjs'],
+    assetExts: [
+      ...(config.resolver?.assetExts ?? []),
+      ...(config.resolver?.assetExts?.includes('wasm') ? [] : ['wasm']),
+    ],
     extraNodeModules: {
       // Needed for cosmjs trying to import node crypto
       crypto: import.meta.resolve('./src/polyfills/crypto.ts'),

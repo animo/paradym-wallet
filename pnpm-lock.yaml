@@ -12,12 +12,6 @@ catalogs:
     '@animo-id/expo-ausweis-sdk':
       specifier: 0.0.1
       version: 0.0.1
-    '@animo-id/expo-digital-credentials-api':
-      specifier: 0.4.0
-      version: 0.4.0
-    '@animo-id/expo-mdoc-data-transfer':
-      specifier: 0.1.4-alpha.3
-      version: 0.1.4-alpha.3
     '@animo-id/expo-secure-environment':
       specifier: 0.1.5
       version: 0.1.5
@@ -303,11 +297,8 @@ importers:
         specifier: 'catalog:'
         version: 0.0.1(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@animo-id/expo-digital-credentials-api':
-        specifier: 'catalog:'
-        version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
-      '@animo-id/expo-mdoc-data-transfer':
-        specifier: 'catalog:'
-        version: 0.1.4-alpha.3(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        specifier: link:../../../expo-digital-credentials-api
+        version: link:../../../expo-digital-credentials-api
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
         version: 0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -529,8 +520,14 @@ importers:
         specifier: 'catalog:'
         version: 0.0.0-alpha-20260118230323(@credo-ts/core@0.6.2-pr-2626-20260118221136(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-pr-2626-20260118221136(typescript@5.9.3))
       '@animo-id/expo-digital-credentials-api':
-        specifier: 'catalog:'
-        version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        specifier: link:../../../expo-digital-credentials-api
+        version: link:../../../expo-digital-credentials-api
+      '@animo-id/expo-digital-credentials-api-aptitude-consortium':
+        specifier: link:../../../expo-digital-credentials-api/packages/matcher-aptitude-consortium
+        version: link:../../../expo-digital-credentials-api/packages/matcher-aptitude-consortium
+      '@animo-id/expo-digital-credentials-api-cmwallet-issuance':
+        specifier: link:../../../expo-digital-credentials-api/packages/matcher-cmwallet-issuance
+        version: link:../../../expo-digital-credentials-api/packages/matcher-cmwallet-issuance
       '@astronautlabs/jsonpath':
         specifier: 'catalog:'
         version: 1.1.2
@@ -785,20 +782,6 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
-
-  '@animo-id/expo-digital-credentials-api@0.4.0':
-    resolution: {integrity: sha512-VIHt0g8K9Dby79Z7AkExkXI8hGY0Nweil450Ky1/5MSPwaN23GhL0fi6mPBDOs2HkUVEUxYXZrSHoNuSw/4gNg==}
-    peerDependencies:
-      expo: '*'
-      react: '*'
-      react-native: '*'
-
-  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.3':
-    resolution: {integrity: sha512-0k7siBV5OPWtL7M3TJE12hyAlSSy8FXG6NHqZ2lWRawkbOxAs8p4TkDxMoLYXFwyqRYkQBlS/x7J39oWAOlJpw==}
-    peerDependencies:
-      expo: '>= 51'
-      react: '*'
-      react-native: '>= 0.75'
 
   '@animo-id/expo-secure-environment@0.1.5':
     resolution: {integrity: sha512-fqAU+/4gekexE5z2i1v2WQ4uNHtk8b+3OXfRxxib2pKHi2MomZIUiCiPLX88Q5+5IN6eavTnGTCLLGe8Nwh9Ww==}
@@ -6749,22 +6732,6 @@ snapshots:
   '@animo-id/expo-ausweis-sdk@0.0.1(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@expo/config-plugins': 8.0.11
-      expo: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
-      react: 19.1.0
-      react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@animo-id/expo-digital-credentials-api@0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
-    dependencies:
-      expo: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
-      react: 19.1.0
-      react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
-
-  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.3(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
-    dependencies:
-      '@expo/config-plugins': 8.0.11
-      buffer: 6.0.3
       expo: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)

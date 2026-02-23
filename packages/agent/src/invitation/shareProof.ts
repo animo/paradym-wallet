@@ -91,6 +91,11 @@ export const shareProof = async ({
       )
     : undefined
 
+  const transactionDataSelection = acceptTransactionData?.map(({ credentialId }) => ({ credentialId }))
+  const hasTransactionDataField = Array.isArray(
+    (authorizationRequest as typeof authorizationRequest & { transaction_data?: unknown }).transaction_data
+  )
+
   try {
     const result = await agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
       authorizationRequestPayload: authorizationRequest,
@@ -104,7 +109,9 @@ export const shareProof = async ({
             credentials: dcqlCredentials,
           }
         : undefined,
-      transactionData: acceptTransactionData?.map(({ credentialId }) => ({ credentialId })),
+      // Some verifiers include an empty `transaction_data` array. Credo treats the presence
+      // of the field as requiring a transactionData parameter, so pass an empty array.
+      transactionData: transactionDataSelection ?? (hasTransactionDataField ? [] : undefined),
       origin: resolvedRequest.origin,
     })
 
