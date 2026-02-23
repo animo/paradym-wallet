@@ -342,6 +342,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
         allow_signed_requests: true,
         allow_response_mode_jwt: true,
       },
+      log_level: __DEV__ ? 'debug' : undefined,
       dcql: {
         credential_set_option_mode: 'first_satisfiable_only',
         optional_credential_sets_mode: 'prefer_present',
