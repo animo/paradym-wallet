@@ -89,6 +89,17 @@ export function formatDate(input: string | Date, options?: { includeTime?: boole
   })
 }
 
+export function isLikelyDate(value: string): boolean {
+  const datePatterns = [
+    /^(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}/i,
+    /^(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}/i,
+    /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/,
+    /^\d{1,2}\/\d{1,2}\/\d{4}$/,
+    /^\d{1,2}-\d{1,2}-\d{4}$/,
+  ]
+  return datePatterns.some((pattern) => pattern.test(value))
+}
+
 export function getDaysUntil(date?: Date): number | undefined {
   if (!date) return undefined
   return Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24))

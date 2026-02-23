@@ -11,6 +11,7 @@ import { commonMessages } from '@package/translations'
 import type { NonEmptyArray } from '@package/utils'
 import {
   type CredentialForDisplay,
+  formatAttributesWithRecordMetadata,
   getAttributesAndMetadataForMdocPayload,
   getAttributesAndMetadataForSdJwtPayload,
   getCredentialForDisplay,
@@ -31,6 +32,7 @@ export interface FormattedSubmissionEntrySatisfiedCredential {
    * If not present the whole credential will be disclosed
    */
   disclosed: {
+    rawAttributes: CredentialForDisplay['rawAttributes']
     attributes: CredentialForDisplay['attributes']
     metadata: CredentialForDisplay['metadata']
 
@@ -109,24 +111,32 @@ export function formatDifPexCredentialsForRequest(
                 const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
                   verifiableCredential.disclosedPayload
                 )
+
                 disclosed = {
-                  attributes,
+                  rawAttributes: attributes,
+                  attributes: formatAttributesWithRecordMetadata(attributes, verifiableCredential.credentialRecord),
                   metadata,
                   paths: getDisclosedAttributePathArrays(attributes, 2),
                 }
               } else if (verifiableCredential.claimFormat === ClaimFormat.MsoMdoc) {
+                const { attributes, attributesWithoutNamespace, metadata } = getAttributesAndMetadataForMdocPayload(
+                  verifiableCredential.disclosedPayload,
+                  verifiableCredential.credentialRecord.firstCredential
+                )
+
                 disclosed = {
-                  ...getAttributesAndMetadataForMdocPayload(
-                    verifiableCredential.disclosedPayload,
-                    verifiableCredential.credentialRecord.firstCredential
-                  ),
+                  rawAttributes: attributesWithoutNamespace,
+                  metadata,
+                  attributes: formatAttributesWithRecordMetadata(attributes, verifiableCredential.credentialRecord),
                   paths: getDisclosedAttributePathArrays(verifiableCredential.disclosedPayload, 2),
                 }
               } else {
                 disclosed = {
+                  rawAttributes: credentialForDisplay.rawAttributes,
+                  // All attributes  disclosed for W3C
                   attributes: credentialForDisplay.attributes,
                   metadata: credentialForDisplay.metadata,
-                  paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
+                  paths: getDisclosedAttributePathArrays(credentialForDisplay.rawAttributes, 2),
                 }
               }
 
@@ -216,23 +226,33 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
           const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
             validMatch.claims.valid_claim_sets[0].output
           )
+
           disclosed = {
-            attributes,
+            rawAttributes: attributes,
+            attributes: formatAttributesWithRecordMetadata(attributes, validMatch.record),
             metadata,
             paths: getDisclosedAttributePathArrays(attributes, 2),
           }
         } else if (validMatch.record.type === 'MdocRecord') {
           const namespaces = validMatch.claims.valid_claim_sets[0].output as MdocNameSpaces
+          const { attributes, metadata } = getAttributesAndMetadataForMdocPayload(
+            namespaces,
+            validMatch.record.firstCredential
+          )
+
           disclosed = {
-            ...getAttributesAndMetadataForMdocPayload(namespaces, validMatch.record.firstCredential),
+            metadata,
+            rawAttributes: attributes,
+            attributes: formatAttributesWithRecordMetadata(attributes, validMatch.record),
             paths: getDisclosedAttributePathArrays(namespaces, 2),
           }
         } else {
           // All paths disclosed for W3C
           disclosed = {
+            rawAttributes: credentialForDisplay.rawAttributes,
             attributes: credentialForDisplay.attributes,
             metadata: credentialForDisplay.metadata,
-            paths: getDisclosedAttributePathArrays(credentialForDisplay.attributes, 2),
+            paths: getDisclosedAttributePathArrays(credentialForDisplay.rawAttributes, 2),
           }
         }
 

@@ -17,34 +17,62 @@ import {
   type W3cV2JsonCredential,
 } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
-import { commonMessages } from '@package/translations'
+import { commonMessages, i18n } from '@package/translations'
 import { detectImageMimeType, formatDate, getHostNameFromUrl, isDateString, sanitizeString } from '@package/utils'
 import { type CredentialCategoryMetadata, getCredentialCategoryMetadata } from './credentialCategoryMetadata'
-import { getAttributesForCategory } from './display/category'
-import { getAttributesForDocTypeOrVct } from './display/docTypeOrVct'
 import type { FormattedSubmissionEntrySatisfiedCredential } from './format/formatPresentation'
+import type { FormattedAttribute, FormattedAttributeObject } from './formatAttributes'
+import {
+  findDisplayByLocale,
+  formatAllAttributes,
+  mapAttributeName,
+  resolveLabelFromClaimsPath,
+} from './formatAttributes'
 import type { CredentialForDisplayId } from './hooks'
-import type { OpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
+import type { OpenId4VcCredentialMetadata, OpenId4VciCredentialDisplayClaims } from './openid4vc/displayMetadata'
 import { getOpenId4VcCredentialMetadata } from './openid4vc/displayMetadata'
 import { getRefreshCredentialMetadata } from './openid4vc/refreshMetadata'
 
+export type {
+  FormattedAttribute,
+  FormattedAttributeArray,
+  FormattedAttributeBoolean,
+  FormattedAttributeDate,
+  FormattedAttributeImage,
+  FormattedAttributeNumber,
+  FormattedAttributeObject,
+  FormattedAttributePrimitive,
+  FormattedAttributeString,
+} from './formatAttributes'
+export {
+  findDisplayByLocale,
+  formatAllAttributes,
+  mapAttributeName,
+  resolveLabelFromClaimsPath,
+} from './formatAttributes'
+
+const sdJwtVcNonRenderedProperties = ['_sd_alg', '_sd_hash', 'iss', 'vct', 'cnf', 'iat', 'exp', 'nbf', 'status', '_sd']
+
 /**
  * Paths that were requested but couldn't be satisfied.
- * Maybe belongs in agent, but adding here because the `nonRenderedPaths` is
- * very intertwined with our rendering logic
  */
-export function getUnsatisfiedAttributePathsForDisplay(paths: Array<string | number | null>[]) {
-  const nonRenderedPaths = ['iss', 'vct']
-  return Array.from(
-    new Set(
-      paths
-        .filter(
-          (path): path is [string] =>
-            typeof path[0] === 'string' && !path.some((p) => nonRenderedPaths.includes(p as string))
-        )
-        .map((path) => sanitizeString(path[0]))
-    )
-  )
+export function getUnsatisfiedAttributeLabelsForDisplay(
+  paths: Array<Array<string | number | null>>,
+  claims?: OpenId4VciCredentialDisplayClaims
+) {
+  const resolvedLabels = paths
+    .filter((path) => path.length !== 1 || !sdJwtVcNonRenderedProperties.includes(path[0] as string))
+    .map((path) => {
+      // Try to resolve from claims metadata first
+      const label = resolveLabelFromClaimsPath(path, claims, i18n.locale)
+      if (label) return label
+
+      // Fallback to using path
+      const relevantPathElement = path.find((p) => typeof p === 'string') ?? path[path.length - 1]
+      return mapAttributeName(String(relevantPathElement))
+    })
+
+  return Array.from(new Set(resolvedLabels))
 }
 
 /**
@@ -53,26 +81,27 @@ export function getUnsatisfiedAttributePathsForDisplay(paths: Array<string | num
  *  - rendering attribute names in card preview
  *  - rendering how many attributes (count) will be shared
  */
-export function getDisclosedAttributeNamesForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
-  // FIXME: this implementation in still too naive
-  // TODO: use the credential claim metadata (sd-jwt / oid4vc) to get labels for attribute paths
-  // TODO: we miss e.g. showing age_equal_or_over.21 as Age Over 21, but with the display metadata
-  // from bdr we can at least show it as: Age verification. If there is a key for a nested path we can
-  // also decide to include it
+export function getDisclosedAttributeLabelsForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
+  const claims = resolveClaimsWithRecordMetadata(credential.credential.record)
 
-  // For mdoc we remove the namespaces
-  if (credential.credential.claimFormat === ClaimFormat.MsoMdoc) {
-    return Array.from(new Set(credential.disclosed.paths.map((path) => sanitizeString(path[1]))))
-  }
+  const resolvedLabels = credential.disclosed.paths.map((path) => {
+    // Try to resolve from claims metadata first
+    const label = resolveLabelFromClaimsPath(path, claims, i18n.locale)
+    if (label) return label
 
-  // Otherwise we take the top-level keys
-  return Array.from(
-    new Set(
-      credential.disclosed.paths
-        .filter((path): path is [string] => typeof path[0] === 'string')
-        .map((path) => sanitizeString(path[0]))
-    )
-  )
+    // Fallback to sanitizeString
+    // For mdoc we use the attribute name (second element in path)
+    if (credential.credential.claimFormat === ClaimFormat.MsoMdoc) {
+      return mapAttributeName(String(path[1]))
+    }
+
+    // For other formats, use the first path element or the last non-null element
+    // const lastPathElement = path[path.length - 1]
+    const relevantPathElement = [...path].reverse().find((e) => typeof e === 'string')
+    return mapAttributeName(String(relevantPathElement))
+  })
+
+  return Array.from(new Set(resolvedLabels))
 }
 
 export interface DisplayImage {
@@ -104,6 +133,11 @@ export interface CredentialMetadata {
   type: string
 
   /**
+   * E.g. vct extends values
+   */
+  additionalTypes?: string[]
+
+  /**
    * issuer identifier. did or https url
    */
   issuer?: string
@@ -123,24 +157,87 @@ export interface CredentialMetadata {
   status?: unknown
 }
 
-export function metadataForDisplay(metadata: CredentialMetadata) {
+export function metadataForDisplay(metadata: CredentialMetadata): FormattedAttribute[] {
   const { type, holder, issuedAt, issuer, validFrom, validUntil } = metadata
 
-  return {
-    [t(commonMessages.fields.credentialType)]: type,
-    [t(commonMessages.fields.issuer)]: issuer,
-    [t(commonMessages.fields.holder)]: holder,
-    [t(commonMessages.fields.issued_at)]: issuedAt ? formatDate(new Date(issuedAt)) : undefined,
-    [t(commonMessages.fields.validFrom)]: validFrom ? formatDate(new Date(validFrom)) : undefined,
-    [t(commonMessages.fields.expires_at)]: validUntil ? formatDate(new Date(validUntil)) : undefined,
+  const attributes: FormattedAttribute[] = []
+
+  if (type) {
+    attributes.push({
+      type: 'string',
+      label: t(commonMessages.fields.credentialType),
+      rawValue: type,
+      path: ['type'],
+      value: type,
+    })
   }
+
+  if (issuer) {
+    attributes.push({
+      type: 'string',
+      label: t(commonMessages.fields.issuer),
+      rawValue: issuer,
+      path: ['issuer'],
+      value: issuer,
+    })
+  }
+
+  if (holder) {
+    attributes.push({
+      type: 'string',
+      label: t(commonMessages.fields.holder),
+      rawValue: holder,
+      path: ['holder'],
+      value: holder,
+    })
+  }
+
+  if (issuedAt) {
+    attributes.push({
+      type: 'date',
+      label: t(commonMessages.fields.issued_at),
+      rawValue: issuedAt,
+      path: ['issuedAt'],
+      value: formatDate(new Date(issuedAt)),
+    })
+  }
+
+  if (validFrom) {
+    attributes.push({
+      type: 'date',
+      label: t(commonMessages.fields.validFrom),
+      rawValue: validFrom,
+      path: ['validFrom'],
+      value: formatDate(new Date(validFrom)),
+    })
+  }
+
+  if (validUntil) {
+    attributes.push({
+      type: 'date',
+      label: t(commonMessages.fields.expires_at),
+      rawValue: validUntil,
+      path: ['validUntil'],
+      value: formatDate(new Date(validUntil)),
+    })
+  }
+
+  return attributes
 }
 
 export interface CredentialForDisplay {
   id: CredentialForDisplayId
   createdAt: Date
   display: CredentialDisplay
-  attributes: Record<string, unknown>
+  /**
+   * All attributes with claim path ordering applied.
+   * Attributes with claim paths are prioritized but all attributes are included.
+   */
+  attributes: FormattedAttribute[]
+  /**
+   * Raw attributes exactly as they appear in the credential.
+   * Can be used to directly access data from the credential.
+   */
   rawAttributes: Record<string, unknown>
   metadata: CredentialMetadata
   claimFormat:
@@ -156,16 +253,6 @@ export interface CredentialForDisplay {
   hasRefreshToken: boolean
 }
 
-function findDisplay<Display extends { locale?: string; lang?: string }>(display?: Display[]): Display | undefined {
-  if (!display) return undefined
-
-  let item = display.find((d) => d.locale?.startsWith('en-') || d.lang?.startsWith('en-'))
-  if (!item) item = display.find((d) => !d.locale && !d.lang)
-  if (!item) item = display[0]
-
-  return item
-}
-
 function getW3cIssuerDisplay(
   credential: W3cJsonCredential | W3cV2JsonCredential,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null
@@ -174,7 +261,7 @@ function getW3cIssuerDisplay(
 
   // Try to extract from openid metadata first
   if (openId4VcMetadata) {
-    const openidIssuerDisplay = findDisplay(openId4VcMetadata.issuer.display)
+    const openidIssuerDisplay = findDisplayByLocale(openId4VcMetadata.issuer.display, i18n.locale)
 
     if (openidIssuerDisplay) {
       issuerDisplay.name = openidIssuerDisplay.name
@@ -188,7 +275,7 @@ function getW3cIssuerDisplay(
     }
 
     // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+    const openidCredentialDisplay = findDisplayByLocale(openId4VcMetadata.credential.display, i18n.locale)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
       issuerDisplay.logo = {
         url: openidCredentialDisplay.logo?.uri,
@@ -243,7 +330,7 @@ export function getOpenId4VcIssuerDisplay(
 
   // Try to extract from openid metadata first
   if (openId4VcMetadata) {
-    const openidIssuerDisplay = findDisplay(openId4VcMetadata.issuer.display)
+    const openidIssuerDisplay = findDisplayByLocale(openId4VcMetadata.issuer.display, i18n.locale)
 
     if (openidIssuerDisplay) {
       issuerDisplay.name = openidIssuerDisplay.name
@@ -257,7 +344,7 @@ export function getOpenId4VcIssuerDisplay(
     }
 
     // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+    const openidCredentialDisplay = findDisplayByLocale(openId4VcMetadata.credential.display, i18n.locale)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
       issuerDisplay.logo = {
         url: openidCredentialDisplay.logo?.uri,
@@ -295,7 +382,7 @@ export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<Cre
 export function getSdJwtTypeMetadataCredentialDisplay(
   sdJwtTypeMetadata: SdJwtVcTypeMetadata
 ): Omit<CredentialDisplay, 'issuer' | 'name'> & { name?: string } {
-  const typeMetadataDisplay = findDisplay(sdJwtTypeMetadata.display)
+  const typeMetadataDisplay = findDisplayByLocale(sdJwtTypeMetadata.display, i18n.locale)
 
   // TODO: support SVG rendering method
 
@@ -316,7 +403,7 @@ export function getSdJwtTypeMetadataCredentialDisplay(
 }
 
 export function getOpenId4VcCredentialDisplay(openId4VcMetadata: OpenId4VcCredentialMetadata) {
-  const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
+  const openidCredentialDisplay = findDisplayByLocale(openId4VcMetadata.credential.display, i18n.locale)
 
   const credentialDisplay: Omit<CredentialDisplay, 'name'> & { name?: string } = {
     name: openidCredentialDisplay?.name,
@@ -398,7 +485,7 @@ function getSdJwtCredentialDisplay(
   let credentialDisplay: Partial<CredentialDisplay> = {}
 
   // TODO: should we combine them? I think not really needed if you have one of them
-  // Type metadata takes precendence.
+  // Type metadata takes precedence.
   if (typeMetadata) {
     credentialDisplay = getSdJwtTypeMetadataCredentialDisplay(typeMetadata)
   } else if (openId4VcMetadata) {
@@ -433,10 +520,11 @@ function safeCalculateJwkThumbprint(jwk: Kms.Jwk): string | undefined {
   }
 }
 export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpaces, mdocInstance: Mdoc) {
-  const attributes: CredentialForDisplay['attributes'] = Object.fromEntries(
-    Object.values(namespaces).flatMap((v) => {
-      return Object.entries(v).map(([key, value]) => [key, recursivelyMapAttributes(value)])
-    })
+  const attributes = Object.fromEntries(
+    Object.entries(namespaces).map(([namespace, v]) => [
+      namespace,
+      Object.fromEntries(Object.entries(v).map(([key, value]) => [key, recursivelyMapAttributes(value)])),
+    ])
   )
 
   // FIXME: Date should be fixed in Mdoc library
@@ -459,12 +547,18 @@ export function getAttributesAndMetadataForMdocPayload(namespaces: MdocNameSpace
   }
 
   return {
-    attributes,
+    attributes: attributes as CredentialForDisplay['rawAttributes'],
+    attributesWithoutNamespace: Object.fromEntries(
+      Object.values(attributes).flatMap((v) => Object.entries(v))
+    ) as CredentialForDisplay['rawAttributes'],
     metadata: mdocMetadata,
   }
 }
 
-export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<string, unknown>) {
+export function getAttributesAndMetadataForSdJwtPayload(
+  sdJwtVcPayload: Record<string, unknown>,
+  record?: SdJwtVcRecord
+) {
   type SdJwtVcPayload = {
     iss: string
     cnf: Record<string, unknown>
@@ -477,9 +571,12 @@ export function getAttributesAndMetadataForSdJwtPayload(sdJwtVcPayload: Record<s
   const { _sd_alg, _sd_hash, iss, vct, cnf, iat, exp, nbf, status, ...visibleProperties } =
     sdJwtVcPayload as SdJwtVcPayload
 
+  const extraVcts = record?.typeMetadataChain?.slice(1).map((i) => i.vct)
+
   const holder = cnf ? ((cnf.kid ?? cnf.jwk) ? safeCalculateJwkThumbprint(cnf.jwk as Kms.Jwk) : undefined) : undefined
   const credentialMetadata: CredentialMetadata = {
     type: vct,
+    additionalTypes: extraVcts?.length ? extraVcts : undefined,
     issuer: iss,
     holder,
     issuedAt: iat ? new Date(iat * 1000).toISOString() : undefined,
@@ -523,6 +620,39 @@ export function getDisclosedAttributePathArrays(
   return attributePaths
 }
 
+export function resolveClaimsWithRecordMetadata(
+  record: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
+) {
+  const openId4VcMetadata = getOpenId4VcCredentialMetadata(record)
+
+  const claims =
+    record instanceof SdJwtVcRecord
+      ? (record.typeMetadata?.claims ?? openId4VcMetadata?.credential.claims)
+      : openId4VcMetadata?.credential.claims
+
+  return claims
+}
+
+/**
+ * Formats disclosed attributes for display using claims metadata from the credential record.
+ * Extracts claims from SD-JWT type metadata or OID4VCI credential metadata.
+ */
+export function formatAttributesWithRecordMetadata(
+  payload: Record<string, unknown>,
+  record: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
+): FormattedAttribute[] {
+  const claims = resolveClaimsWithRecordMetadata(record)
+
+  const formattedAttributes = formatAllAttributes(payload, claims, i18n.locale)
+
+  // Mdoc has top-level namespaces, we don't want to render these as attributes
+  if (record instanceof MdocRecord) {
+    return formattedAttributes.flatMap((item) => (item as FormattedAttributeObject).value)
+  }
+
+  return formattedAttributes
+}
+
 export function getCredentialForDisplayId(
   credentialRecord: W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 ): CredentialForDisplayId {
@@ -559,25 +689,8 @@ export function getCredentialForDisplay(
     const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
     const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
 
-    // FIXME: For now, we map attributes to our custom attributes for PID and MDL
-    // We should add support for attributes from Type Metadata and OID4VC Metadata
-
-    // Order of precedence should be:
-    // 1. Custom attributes for PID and MDL using category
-    // 2. Attributes from SD JWT Type Metadata
-    // 3. Attributes from OID4VC Metadata
-
-    const customAttributesForDisplay =
-      getAttributesForCategory({
-        format: ClaimFormat.SdJwtDc,
-        credentialCategory: credentialCategoryMetadata?.credentialCategory,
-        attributes,
-      }) ??
-      getAttributesForDocTypeOrVct({
-        type: sdJwtVc.payload.vct as string,
-        attributes,
-      }) ??
-      attributes
+    // Format displayed attributes (only those in claim metadata)
+    const formattedAttributes = formatAttributesWithRecordMetadata(attributes, credentialRecord)
 
     return {
       id: credentialForDisplayId,
@@ -586,7 +699,7 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes: customAttributesForDisplay,
+      attributes: formattedAttributes,
       rawAttributes: attributes,
       metadata,
       claimFormat: ClaimFormat.SdJwtDc,
@@ -601,21 +714,15 @@ export function getCredentialForDisplay(
     const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
     const credentialDisplay = getMdocCredentialDisplay(mdocInstance, openId4VcMetadata)
     const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
+
     const { attributes, metadata } = getAttributesAndMetadataForMdocPayload(
       mdocInstance.issuerSignedNamespaces,
       mdocInstance
     )
-    const customAttributesForDisplay =
-      getAttributesForCategory({
-        format: ClaimFormat.MsoMdoc,
-        credentialCategory: credentialCategoryMetadata?.credentialCategory,
-        attributes,
-      }) ??
-      getAttributesForDocTypeOrVct({
-        type: mdocInstance.docType,
-        attributes,
-      }) ??
-      attributes
+
+    // Format attributes
+    // And then remove the top-layer, as that is the namespace
+    const formattedAttributes = formatAttributesWithRecordMetadata(attributes, credentialRecord)
 
     return {
       id: credentialForDisplayId,
@@ -624,7 +731,7 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes: customAttributesForDisplay,
+      attributes: formattedAttributes,
       rawAttributes: attributes,
       metadata,
       claimFormat: ClaimFormat.MsoMdoc,
@@ -663,6 +770,9 @@ export function getCredentialForDisplay(
       ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
+    // Format attributes
+    const formattedAttributes = formatAttributesWithRecordMetadata(credentialAttributes, credentialRecord)
+
     return {
       id: credentialForDisplayId,
       createdAt: credentialRecord.createdAt,
@@ -670,7 +780,7 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes: credentialAttributes,
+      attributes: formattedAttributes,
       rawAttributes: credentialAttributes,
       metadata: {
         holder: firstCredential.credentialSubjectIds[0],
@@ -700,6 +810,9 @@ export function getCredentialForDisplay(
       ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
 
+    // Format attributes
+    const formattedAttributes = formatAttributesWithRecordMetadata(credentialAttributes, credentialRecord)
+
     return {
       id: credentialForDisplayId,
       createdAt: credentialRecord.createdAt,
@@ -707,7 +820,8 @@ export function getCredentialForDisplay(
         ...credentialDisplay,
         issuer: issuerDisplay,
       },
-      attributes: credentialAttributes,
+      attributes: formattedAttributes,
+
       rawAttributes: credentialAttributes,
       metadata: {
         holder: resolvedCredential.credentialSubjectIds[0],

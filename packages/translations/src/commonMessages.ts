@@ -4,6 +4,14 @@ import { defineMessage } from '@lingui/core/macro'
 import type { SupportedLocale } from './i18n'
 
 export const commonMessages = {
+  showLess: defineMessage({
+    id: 'common.showLess',
+    message: 'Show less',
+  }),
+  showMore: defineMessage({
+    id: 'common.showMore',
+    message: 'Show more',
+  }),
   stop: defineMessage({
     id: 'common.stop',
     message: 'Stop',

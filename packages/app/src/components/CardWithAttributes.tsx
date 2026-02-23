@@ -1,4 +1,4 @@
-import type { DisplayImage } from '@package/agent'
+import type { DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@package/agent'
 import {
   AnimatedStack,
   Heading,
@@ -24,7 +24,7 @@ interface CardWithAttributesProps {
   issuerImage?: DisplayImage
   backgroundImage?: DisplayImage
   formattedDisclosedAttributes: string[]
-  disclosedPayload?: Record<string, unknown>
+  disclosedPayload?: FormattedAttribute[]
   isExpired?: boolean
   isRevoked?: boolean
   isNotYetActive?: boolean
@@ -55,15 +55,30 @@ export function CardWithAttributes({
   }, [formattedDisclosedAttributes])
 
   const onPress = () => {
-    router.push(
-      `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
-        JSON.stringify(disclosedPayload ?? {})
-      )}&disclosedAttributeLength=${formattedDisclosedAttributes?.length}`
-    )
+    if (id) {
+      router.push(
+        `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
+          JSON.stringify(disclosedPayload ?? [])
+        )}&disclosedAttributeLength=${formattedDisclosedAttributes?.length}`
+      )
+    } else {
+      const params = new URLSearchParams({
+        item: JSON.stringify({
+          path: [],
+          type: 'array',
+          rawValue: [],
+          value: disclosedPayload ?? [],
+        } satisfies FormattedAttributeArray),
+      })
+
+      if (name) params.set('parentName', name)
+
+      router.push(`/credentials/id/nested?${params.toString()}`)
+    }
   }
 
   const isRevokedOrExpired = isRevoked || isExpired
-  const disabledNav = !id || !disclosedPayload || isRevokedOrExpired
+  const disabledNav = !disclosedPayload
 
   return (
     <AnimatedStack

@@ -66,7 +66,7 @@ export class ParadymWalletLogger extends ConsoleLogger {
   }
   public debug(message: string, data?: LogData): void {
     this.addToLoggedMessages(LogLevel.debug, message, data)
-    super.debug(message, data)
+    super.debug(message)
   }
   public trace(message: string, data?: LogData): void {
     this.addToLoggedMessages(LogLevel.trace, message, data)

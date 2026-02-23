@@ -91,7 +91,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
               key="retrieve-credential"
               onGoToWallet={onComplete}
               display={display}
-              attributes={attributes ?? {}}
+              attributes={attributes}
               isCompleted={acceptStatus === 'success'}
               onAccept={onCredentialAccept}
               // If state is not idle, it means we have pressed accept

@@ -3,8 +3,8 @@ import {
   type FormattedSubmission,
   type FormattedSubmissionEntryNotSatisfied,
   type FormattedSubmissionEntrySatisfied,
-  getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
+  getDisclosedAttributeLabelsForDisplay,
+  getUnsatisfiedAttributeLabelsForDisplay,
 } from '@package/agent'
 import { CardWithAttributes } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
@@ -81,7 +81,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
             backgroundColor={credential.credential.display.backgroundColor}
             issuerImage={credential.credential.display.issuer.logo}
             textColor={credential.credential.display.textColor}
-            formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(credential)}
+            formattedDisclosedAttributes={getDisclosedAttributeLabelsForDisplay(credential)}
             disclosedPayload={credential.disclosed.attributes}
             isExpired={
               credential.credential.metadata?.validUntil
@@ -112,7 +112,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
               // TODO: we could look at the vct?
               // TODO: we should maybe support partial matches (i.e. vct matches), as then we can
               // show a much better UI (you have the cred, but age is not valid, or this param is missing)
-              formattedDisclosedAttributes={getUnsatisfiedAttributePathsForDisplay(entry.requestedAttributePaths)}
+              formattedDisclosedAttributes={getUnsatisfiedAttributeLabelsForDisplay(entry.requestedAttributePaths)}
               backgroundColor="$grey-800"
               textColor="$white"
             />

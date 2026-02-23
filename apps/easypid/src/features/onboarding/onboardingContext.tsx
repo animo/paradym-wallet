@@ -1,5 +1,5 @@
 import { sendCommand } from '@animo-id/expo-ausweis-sdk'
-import type { SdJwtVc, SdJwtVcHeader } from '@credo-ts/core'
+import type { SdJwtVc, SdJwtVcHeader, SdJwtVcPayload } from '@credo-ts/core'
 import { type AppAgent, initializeAppAgent, useSecureUnlock } from '@easypid/agent'
 import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { isParadymWallet, useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
@@ -544,7 +544,10 @@ export function OnboardingContextProvider({
 
       for (const credentialRecord of credentialRecords) {
         if (credentialRecord instanceof SdJwtVcRecord) {
-          const parsed = credentialRecord.firstCredential as SdJwtVc<SdJwtVcHeader, PidSdJwtVcAttributes>
+          const parsed = credentialRecord.firstCredential as SdJwtVc<
+            SdJwtVcHeader,
+            SdJwtVcPayload & PidSdJwtVcAttributes & { iss: string }
+          >
           setUserName(
             `${capitalizeFirstLetter(parsed.prettyClaims.given_name.toLowerCase())} ${capitalizeFirstLetter(
               parsed.prettyClaims.family_name.toLowerCase()

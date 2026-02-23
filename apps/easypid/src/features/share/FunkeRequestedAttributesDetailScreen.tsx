@@ -1,5 +1,10 @@
 import { useLingui } from '@lingui/react/macro'
-import { type CredentialForDisplayId, metadataForDisplay, useCredentialForDisplayById } from '@package/agent'
+import {
+  type CredentialForDisplayId,
+  type FormattedAttribute,
+  metadataForDisplay,
+  useCredentialForDisplayById,
+} from '@package/agent'
 import { CredentialAttributes, FunkeCredentialCard, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 import {
@@ -24,7 +29,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface FunkeRequestedAttributesDetailScreenProps {
   id: CredentialForDisplayId
-  disclosedPayload: Record<string, unknown>
+  disclosedPayload: FormattedAttribute[]
   disclosedAttributeLength: number
 }
 

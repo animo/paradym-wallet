@@ -8,7 +8,7 @@ import {
   type FormattedSubmissionEntrySatisfied,
   type FormattedTransactionData,
   getCredentialsForProofRequest,
-  getDisclosedAttributeNamesForDisplay,
+  getDisclosedAttributeLabelsForDisplay,
   getFormattedTransactionData,
   storeSharedActivityForCredentialsForRequest,
 } from '@package/agent'
@@ -126,7 +126,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       cards: requestedCards.map((credential) => ({
         name: credential.credential.display.name ?? 'Card name',
         subtitle: credential.credential.display.description ?? 'Card description',
-        requestedAttributes: getDisclosedAttributeNamesForDisplay(credential),
+        requestedAttributes: getDisclosedAttributeLabelsForDisplay(credential),
       })),
     })
   }, [credentialsForRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])

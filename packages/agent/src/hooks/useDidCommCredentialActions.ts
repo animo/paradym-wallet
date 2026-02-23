@@ -11,6 +11,7 @@ import {
   getDidCommCredentialExchangeDisplayMetadata,
   openIdCredentialMetadataFromDidCommCredentialExchangeMetadata,
 } from '../didcomm/metadata'
+import { type FormattedAttributeString, mapAttributeName } from '../display'
 import { setOpenId4VcCredentialMetadata } from '../openid4vc/displayMetadata'
 import { useCredentialById } from '../providers'
 
@@ -29,7 +30,16 @@ function useOfferAttributes(credentialExchangeId: string) {
       }
 
       return {
-        attributes: Object.fromEntries(offerAttributes.map(({ name, value }) => [name, value])),
+        attributes: offerAttributes.map(
+          ({ name, value }) =>
+            ({
+              type: 'string',
+              label: mapAttributeName(name),
+              value,
+              path: [name],
+              rawValue: value,
+            }) satisfies FormattedAttributeString
+        ),
         schemaId: offer.schema_id,
       }
     },

@@ -31,29 +31,29 @@ catalogs:
       specifier: ^7.28.5
       version: 7.28.5
     '@credo-ts/anoncreds':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@credo-ts/askar':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@credo-ts/cheqd':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@credo-ts/core':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@credo-ts/didcomm':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@credo-ts/openid4vc':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@credo-ts/question-answer':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@credo-ts/react-native':
-      specifier: 0.6.2-alpha-20260116085518
-      version: 0.6.2-alpha-20260116085518
+      specifier: 0.6.2
+      version: 0.6.2
     '@expo-google-fonts/open-sans':
       specifier: ^0.4.2
       version: 0.4.2
@@ -70,8 +70,8 @@ catalogs:
       specifier: ^0.4.0
       version: 0.4.3
     '@openwallet-foundation/askar-react-native':
-      specifier: 0.5.0-alpha-20251222150428
-      version: 0.5.0-alpha-20251222150428
+      specifier: 0.6.0
+      version: 0.6.0
     '@react-native-community/blur':
       specifier: ^4.3.2
       version: 4.4.1
@@ -291,7 +291,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.2-alpha-20260116085518(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-alpha-20260116085518(typescript@5.9.3))
+        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.2(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2(typescript@5.9.3))
       '@animo-id/expo-ausweis-sdk':
         specifier: 'catalog:'
         version: 0.0.1(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -309,7 +309,7 @@ importers:
         version: 0.5.2
       '@credo-ts/core':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(typescript@5.9.3)
+        version: 0.6.2(typescript@5.9.3)
       '@expo-google-fonts/open-sans':
         specifier: 'catalog:'
         version: 0.4.2
@@ -327,7 +327,7 @@ importers:
         version: 5.7.0(typescript@5.9.3)
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.5.0-alpha-20251222150428(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        version: 0.6.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@package/agent':
         specifier: workspace:*
         version: link:../../packages/agent
@@ -517,7 +517,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.2-alpha-20260116085518(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-alpha-20260116085518(typescript@5.9.3))
+        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.2(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2(typescript@5.9.3))
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
         version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -526,28 +526,28 @@ importers:
         version: 1.1.2
       '@credo-ts/anoncreds':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
+        version: 0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
       '@credo-ts/askar':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428)(typescript@5.9.3)
+        version: 0.6.2(@openwallet-foundation/askar-shared@0.6.0)(typescript@5.9.3)
       '@credo-ts/cheqd':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
+        version: 0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
       '@credo-ts/core':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(typescript@5.9.3)
+        version: 0.6.2(typescript@5.9.3)
       '@credo-ts/didcomm':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(typescript@5.9.3)
+        version: 0.6.2(typescript@5.9.3)
       '@credo-ts/openid4vc':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(typescript@5.9.3)
+        version: 0.6.2(typescript@5.9.3)
       '@credo-ts/question-answer':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(typescript@5.9.3)
+        version: 0.6.2(typescript@5.9.3)
       '@credo-ts/react-native':
         specifier: 'catalog:'
-        version: 0.6.2-alpha-20260116085518(@animo-id/expo-secure-environment@0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(expo-crypto@15.0.8(expo@54.0.27))(react-native-get-random-values@2.0.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(typescript@5.9.3)
+        version: 0.6.2(@animo-id/expo-secure-environment@0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(expo-crypto@15.0.8(expo@54.0.27))(react-native-get-random-values@2.0.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(typescript@5.9.3)
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
         version: 0.3.4(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -556,7 +556,7 @@ importers:
         version: 0.4.3
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.5.0-alpha-20251222150428(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        version: 0.6.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
@@ -565,7 +565,7 @@ importers:
         version: 5.90.14(react@19.1.0)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
-        version: 0.0.2-alpha.2(@credo-ts/anoncreds@0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3))(@credo-ts/core@0.6.2-alpha-20260116085518(typescript@5.9.3))
+        version: 0.0.2-alpha.2(@credo-ts/anoncreds@0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3))(@credo-ts/core@0.6.2(typescript@5.9.3))
       expo:
         specifier: 'catalog:'
         version: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -682,7 +682,7 @@ importers:
     dependencies:
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.5.0-alpha-20251222150428(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        version: 0.6.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.14(react@19.1.0)
@@ -1380,8 +1380,8 @@ packages:
   '@bufbuild/protobuf@2.10.1':
     resolution: {integrity: sha512-ckS3+vyJb5qGpEYv/s1OebUHDi/xSNtfgw1wqKZo7MR9F2z+qXr0q5XagafAG/9O0QPVIUfST0smluYSTpYFkg==}
 
-  '@cheqd/sdk-esm@5.3.7':
-    resolution: {integrity: sha512-3fBMXrQ0EdKRj/G6xsMhp2nvPf9go/C9pwtzwPiZbKjno73Z+6/MpSAk1uMutCAtJvsKCzKP7RrioK8N81g8ew==}
+  '@cheqd/sdk-esm@5.4.9':
+    resolution: {integrity: sha512-MC4WdWImXT56TZJeRzCEet5NAqE388Y0VlkeZ4dQEp8l0UppC6GQ7hPrv0HXGvw9bw3b/OROYH58l0bBwWyung==}
     engines: {node: '>=22.0.0'}
 
   '@cheqd/ts-proto@4.2.0':
@@ -1421,33 +1421,33 @@ packages:
   '@cosmjs/utils@0.36.2':
     resolution: {integrity: sha512-OOr2HU/Ph+/GI1Fx2UCf3LOyX9YTCP51d2HitTOjjEJRYnkfKXP3lMBl1FZo5QaFWxnfuBc+Cj+cSoiQUJRyzQ==}
 
-  '@credo-ts/anoncreds@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-wa4pzCYSxA/N9mRkTTToCsj4E6Jz9M7GrY807/R9/4/JVzIqOtO3QFbivqF6o1O1SQY1In8mxa9bPtt2/khKVA==}
+  '@credo-ts/anoncreds@0.6.2':
+    resolution: {integrity: sha512-9LwcnkpX4OpuHjFbB3C1NPA1yY6oHhPt7jiYu6mOBaAMCo5qbdam+xMijR0vC1+cnmS5Kf/c14medYlqI03Zxw==}
     peerDependencies:
       '@hyperledger/anoncreds-shared': ^0.3.4
 
-  '@credo-ts/askar@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-FMkdFppvE69eBCJ/MIv2YHy6o1xMMCaLCZTtX19e0Y8I/VVvYC34ko7KPofW/p+89GaD2W0RhvPg5tj9d8llNQ==}
+  '@credo-ts/askar@0.6.2':
+    resolution: {integrity: sha512-SeAjHBuk+2l5For/0v8vzQuDbBB6TbLRg8AfChKV2phGsKKoIGXtDwZZLicvB+bgtRrR221keL8LrHp9kN3o7Q==}
     peerDependencies:
       '@openwallet-foundation/askar-shared': ^0.4.3
 
-  '@credo-ts/cheqd@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-Y3QbzX/0wtTH5jaVangulr+yWo1XVKtyfJP2dk3a8szWIQve92xs4kbaBYDs6hoSp3zKN22/fK75i7VZesFYiw==}
+  '@credo-ts/cheqd@0.6.2':
+    resolution: {integrity: sha512-n5OfSKh6R9WaHGIa2HoKAxmAqFYDMhZmeTypNS2gO9T7hbm+9ezIO4JCIxZc4s08tfsNK9PDO26p2lLHnskPWg==}
 
-  '@credo-ts/core@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-sehQ/kyyswIj97eKIhX/49hgAwyhOsNXDQCD+JPZihDeXyIL21uyVElx9lIL2USpnc/L0X65cfBXYqIJUvRpKA==}
+  '@credo-ts/core@0.6.2':
+    resolution: {integrity: sha512-A7yXs6y/73wIvgEHpfriVZW1osuASYhrO/TQIFlwSK/cRTjaXWFgBapzYaJh09O1PuEJ4v1A1mt72uardqCj8g==}
 
-  '@credo-ts/didcomm@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-CKl3Y6QMWTQQOE/PO/RbNVzTlyMeEMpT6I3afQ30FQ9pnEYEaQpjwAyhCUSiK2wdejU2TrEmBbFyMO4FfPjX4A==}
+  '@credo-ts/didcomm@0.6.2':
+    resolution: {integrity: sha512-0cZP753sxzcw11Y3/3B3GY3qYPfw+r/TwqzpOvwiUHDMMdvQOP4yrfqTvI2Ae0fwzfz69ePoMo52tlXYbgAadw==}
 
-  '@credo-ts/openid4vc@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-uHiiIjEX6o4HlEzqCvSTogly61LLTddc3uZj8IBhrOYJEiOGdFDFfouP9E9b2ZQiryNIDR3SAYumvcf7rKDrhg==}
+  '@credo-ts/openid4vc@0.6.2':
+    resolution: {integrity: sha512-3LAVCdEM3wAMTJmmDi2D5liJTkvhK+rt2kp+Im8zQ0Zn6tcbcSAaPJHZ00+wa8w1oMb2AYFTqAKDZwzw0RfGUQ==}
 
-  '@credo-ts/question-answer@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-T3B39QWdjCG5x0mSzRdPXSyL4mrfyaoxet61xLIIEd2m09yohl6DfkMWFvgyNG3ikKoJLUtym4KL8txMAMC7zA==}
+  '@credo-ts/question-answer@0.6.2':
+    resolution: {integrity: sha512-Vq2+9Mj3DNirkgvujAQXJBdjrNI6/PDii97DE1KTgGfriuzKTcVBV8zTRbxvykYU0460ab/FE3zkhJr1zGz6Og==}
 
-  '@credo-ts/react-native@0.6.2-alpha-20260116085518':
-    resolution: {integrity: sha512-YnUMe+1wwGIOLJKb0MkoDOzU0f2q68FLnhSOT5nDZ4CcjvLn9cBVhhhcsBtjSA2qxyVsdH5vNL/dWGGN9BAe7w==}
+  '@credo-ts/react-native@0.6.2':
+    resolution: {integrity: sha512-jlxmPCCTfMOP+L8FmAwOEqbvSF5PMqLJ4ujTUQckHjsQWK0C7DaBp6kCiix+NeHvWl7QpQrpSbfL3YqKGaBZ5g==}
     peerDependencies:
       '@animo-id/expo-secure-environment': ^0.1.1
       expo-crypto: ^15.0.7
@@ -2045,29 +2045,29 @@ packages:
   '@openid4vc/oauth2@0.4.3':
     resolution: {integrity: sha512-XIcb6TayV7TJkkpUvEVdY1rqtz6etXje0pRcJqV0H2FdXlU/TfMkcrZOniS9lmjUBQXDShHerMgVHxLREIiYrA==}
 
-  '@openid4vc/oauth2@0.4.4':
-    resolution: {integrity: sha512-MsZnIU8RWCNYgmdGH9uelFOh7ZzE38B0FZA2wsGeOf6XW2bHATi+1nVOLkEgMDCT5KFEGohGlCl0OKYtPUSnzA==}
+  '@openid4vc/oauth2@0.4.6':
+    resolution: {integrity: sha512-PVa+N9UHt4KhHh02KHUHqS64vdnoaktNSVr7VUgeaB1NS0c3+7UIa2A/TnsyZqUAy9TxGltAflxsaWO+HtWPQQ==}
 
-  '@openid4vc/openid4vci@0.4.4':
-    resolution: {integrity: sha512-BLa5A5F/IwgZax1cnxhLrg2YxxqkMhJMeUe1N+H8TyQBFJLBD7WpPoE7omdCKzSkHYH1rNInsbYMMFpPQuowfg==}
+  '@openid4vc/openid4vci@0.4.6':
+    resolution: {integrity: sha512-qjxLeE6K285r+lyy+4jJFS+M70+dyImVGvqo97BO+JxL4059jMb/FwJIXjnp2Ygl8+FuaEgFxhGpFdnaNwj30w==}
 
-  '@openid4vc/openid4vp@0.4.4':
-    resolution: {integrity: sha512-29kFNc6QIkdOYZz83y+M+XgvqsDGHcJr194IPLzoVrH9sgh8rIft9Jrf2aU+MZSTYwvc5ftm9ukxlvl2ccMIZg==}
+  '@openid4vc/openid4vp@0.4.6':
+    resolution: {integrity: sha512-d7H8SuFlHZS30OC1U8vsezGHuXkOTp97rrHbsxrge7AQaHHi8BZXAwUGdujbXdkkU7zulXx9yk2+J+ZTb/GE3A==}
 
   '@openid4vc/utils@0.4.3':
     resolution: {integrity: sha512-5HVZ30yWvZJk6k7cmIGuXlqdwzyVb23wosjLa7PDbjg3cU917zgAxgr/5ksiA3ny3huy3TEF3dTrfyTC5sjvYg==}
 
-  '@openid4vc/utils@0.4.4':
-    resolution: {integrity: sha512-ctXOmvejB34C3ZcBbtU4N7ukpIzeVzxmNjlQ1Oxf03jKDn5pngq7h39HUg1ggjFJgTSn9jVlQUON/DG6oovh5w==}
+  '@openid4vc/utils@0.4.6':
+    resolution: {integrity: sha512-qpZ40ccnYTMdmW5zzIiN5SvNBzWHu0cUz97Itw+YMC8obosQ62c4Tg9LpwWwVirouN9oOQZ7IuF1EDakiB8w3w==}
 
-  '@openwallet-foundation/askar-react-native@0.5.0-alpha-20251222150428':
-    resolution: {integrity: sha512-YhLt31dpdjM5F3SoNfri/17Qn31TUgIoTp41Jm2ldURzaHxIedSNzn61+9QfFyP4vnwJ4aWRL2ANQj5yN5hSgw==}
+  '@openwallet-foundation/askar-react-native@0.6.0':
+    resolution: {integrity: sha512-cXyRuWKtslUEPx3LCUYTWox7xs8eomhLTkuvq4TAPXxxXzoZHZWuljXfMCKKCbmiaGEuxOeyYiNuDkIsFzGFOg==}
     peerDependencies:
       react: '>= 16'
       react-native: '>= 0.71'
 
-  '@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428':
-    resolution: {integrity: sha512-YBPwXuAQiHu9EJk40V7JpFUexM5CwL/eE3Mm2ulFhhYq9wmbufv/xltmj62ppOpE6nbf2A/zQZPZY6SNh8ti7g==}
+  '@openwallet-foundation/askar-shared@0.6.0':
+    resolution: {integrity: sha512-O9aaQCZ2BkQ5Z8jqshhqhxbS/rT2nTfN90iW32WKQEh9YUwWERFQcnqKR+XszGhV95jqwZagcwhDb72hFH3VaQ==}
 
   '@peculiar/asn1-cms@2.6.0':
     resolution: {integrity: sha512-2uZqP+ggSncESeUF/9Su8rWqGclEfEiz1SyU02WX5fUONFfkjzS2Z/F1Li0ofSmf4JqYXIOdCAZqIXAIBAT1OA==}
@@ -2103,9 +2103,9 @@ packages:
     resolution: {integrity: sha512-coUfuoMeIB7B8/NMekxaDzLhaYmp0HZNPEjYRm9goRou8UZIC3z21s0sL9AWoCw4EG876QyO3kYrc61WNF9B/w==}
     engines: {node: '>=8.0.0'}
 
-  '@peculiar/x509@1.14.2':
-    resolution: {integrity: sha512-r2w1Hg6pODDs0zfAKHkSS5HLkOLSeburtcgwvlLLWWCixw+MmW3U6kD5ddyvc2Y2YdbGuVwCF2S2ASoU1cFAag==}
-    engines: {node: '>=22.0.0'}
+  '@peculiar/x509@1.14.3':
+    resolution: {integrity: sha512-C2Xj8FZ0uHWeCXXqX5B4/gVFQmtSkiuOolzAgutjTfseNOHT3pUjljDZsTSxXFGgio54bCzVFqmEOUrIVk8RDA==}
+    engines: {node: '>=20.0.0'}
 
   '@pkgr/core@0.1.2':
     resolution: {integrity: sha512-fdDH1LSGfZdTH2sxdpVMw31BanV28K/Gry0cVFxaNP77neJSkd82mM8ErPNYs9e+0O7SdHBLTDzDgwUuy18RnQ==}
@@ -2502,12 +2502,12 @@ packages:
   '@scure/base@2.0.0':
     resolution: {integrity: sha512-3E1kpuZginKkek01ovG8krQ0Z44E3DHPjc5S2rjJw9lZn3KSQOs8S7wqikF/AH7iRanHypj85uGyxk0XAyC37w==}
 
-  '@sd-jwt/core@0.18.1':
-    resolution: {integrity: sha512-Efpko+1N9bGO+r/cn0f21mgS/FdP6kTApqz7De1BJz8KX3W81JB0Hg2EzvRtaJ+tfKsbG5n0JdlXAEw5OEXRjw==}
+  '@sd-jwt/core@0.19.0':
+    resolution: {integrity: sha512-/FeuQjzQFtnxDsHF64Bw+3uixVogNkXlMGBo1CKWrxB/OLNqtGXQZplKBRZMJWgnOJEqDwD6750wrOxsVly6mg==}
     engines: {node: '>=20'}
 
-  '@sd-jwt/decode@0.18.1':
-    resolution: {integrity: sha512-HLHP8zVL/NmAS2Ljvk8bUs4hGyerpPRF+RMCL4MFYV6gF4VIVkYViPWJZkvR2tdo7F0mWTkSLl/OtSo0cd/lOQ==}
+  '@sd-jwt/decode@0.19.0':
+    resolution: {integrity: sha512-gRfpJseFRy3bFMdlmJjVjuEcLNuekpiZJD2F2luJIKVlk26AEjZSJf6377vwNySa8hb+i4MZDwdy14lcTTmqtA==}
     engines: {node: '>=20'}
 
   '@sd-jwt/decode@0.7.2':
@@ -2518,24 +2518,24 @@ packages:
     resolution: {integrity: sha512-jHY7hqk7EMkp6E2cB13QmXvRZN7njvAveVh+zKKy0kxpAM7DmcR4TqcDA4mc5y4lP8zWFUgbk7oGLCx2wiBq+w==}
     engines: {node: '>=18'}
 
-  '@sd-jwt/jwt-status-list@0.18.1':
-    resolution: {integrity: sha512-WbrUORY+8sZz13B7m+nFrIRn5PraBw8VL9cMGRPxxXv7+ZxmEqgGkC/EWtkPPCvla5M/8FOtMDa6H8Kr+yiAEw==}
+  '@sd-jwt/jwt-status-list@0.19.0':
+    resolution: {integrity: sha512-Xhh0n0DKe3paEtNNQSScy4dtA0ZVKF2OrmDcIB2jm77Doh4xsSs1pOseGEWBs9fmAe5Y0m082wgkmQnWEV53IQ==}
     engines: {node: '>=20'}
 
-  '@sd-jwt/present@0.18.1':
-    resolution: {integrity: sha512-jiddudfO3qbOcRpNzBMTSR18/F3Cgrv1nZPJ7t6vAvQ8eHMAUBuLiBbrUk3co8n/k1QR8J0AXUUmtdheFNXgmQ==}
+  '@sd-jwt/present@0.19.0':
+    resolution: {integrity: sha512-WXDwqwUXmtyj7YZ5c+wb26ZBeVOsKXCbCI7s1pRH9ngIjFNDGgAZoVCOmLq8pPgWSJzOTgJe3ErO2k63ZwhyeQ==}
     engines: {node: '>=20'}
 
   '@sd-jwt/present@0.7.2':
     resolution: {integrity: sha512-mQV85u2+mLLy2VZ9Wx2zpaB6yTDnbhCfWkP7eeCrzJQHBKAAHko8GrylEFmLKewFIcajS/r4lT/zHOsCkp5pZw==}
     engines: {node: '>=18'}
 
-  '@sd-jwt/sd-jwt-vc@0.18.1':
-    resolution: {integrity: sha512-urR7BD0Ij2y+d6P2rg3x56ecGwCOnugeXyCg0KCX2eyM2sy4+UAC/WM7T3Ws5FMuCIzxbnONp9qmdBMwN8YrgQ==}
+  '@sd-jwt/sd-jwt-vc@0.19.0':
+    resolution: {integrity: sha512-sjX9/E32X0HNpOM5b9np2fHSS9CJu72JDkGEuaHTfZTLTmgh1Cj6KhP7kwI1Bxhw0CCt7tjhrAmMvEEIbgIwVg==}
     engines: {node: '>=20'}
 
-  '@sd-jwt/types@0.18.1':
-    resolution: {integrity: sha512-LSUY2vtmJg9naZspH3Xw9ZU8uufPdpuhhmko3Z3Ki/aafQqvFVxhhD2bhqYNrSBY9469qjSQk62rO2/4rHN2+g==}
+  '@sd-jwt/types@0.19.0':
+    resolution: {integrity: sha512-nfuC9zRLKe7o4HSvc+N4ojWRAxo4JGfgcNWpR7bJloLUlnE9eQuu9h9pEaJZht7KRwMpGorNTIdYpoi1btuiew==}
     engines: {node: '>=20'}
 
   '@sd-jwt/types@0.7.2':
@@ -2546,8 +2546,8 @@ packages:
     resolution: {integrity: sha512-eV/MY80ekeTrqaohzPpkrgwPki6Igx69D6RniduV1Ehv6o/zaJQ2F0hY/RqBAkJhQtBQoOzouwKYHme40k1Dlw==}
     engines: {node: '>=18'}
 
-  '@sd-jwt/utils@0.18.1':
-    resolution: {integrity: sha512-SFSWuNVxyp/xI0bAcrq/oV/s+l3oLL4qFZ+VPdXmipq1oQPOwJYNmTUy0PQnBiMlEyWZ7c9iHIGe5zIUZarr1A==}
+  '@sd-jwt/utils@0.19.0':
+    resolution: {integrity: sha512-bDwDRjfxMBNOsAXY8q8hnxQq7jdOWxrdqTK926Mxt8DN+ttXbXbZIPLwSh84M90WP0V7+WdkXlZD31iISzUR3w==}
     engines: {node: '>=20'}
 
   '@sd-jwt/utils@0.7.2':
@@ -4503,6 +4503,7 @@ packages:
   glob@11.1.0:
     resolution: {integrity: sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==}
     engines: {node: 20 || >=22}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@13.0.0:
@@ -4511,15 +4512,16 @@ packages:
 
   glob@7.1.6:
     resolution: {integrity: sha512-LwaxwyZ72Lk7vZINtNNrywX0ZuLyStrdDtabefZKAY5ZGJhVtgdznluResxNmPitE0SAO+O26sWTHeKSI2wMBA==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
     engines: {node: '>=16 || 14 >=14.17'}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-dirs@0.1.1:
     resolution: {integrity: sha512-NknMLn7F2J7aflwFOlGdNIuCDpN3VGoSoB+aap3KABFWbHVn1TCgFC+np23J8W2BiZbjfEw3BFBycSMv1AFblg==}
@@ -6214,6 +6216,7 @@ packages:
   tar@7.5.2:
     resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -6647,17 +6650,17 @@ packages:
   zod@4.1.13:
     resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
 
-  zod@4.3.5:
-    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
 snapshots:
 
   '@0no-co/graphql.web@1.2.0': {}
 
-  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250917090914(@credo-ts/core@0.6.2-alpha-20260116085518(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2-alpha-20260116085518(typescript@5.9.3))':
+  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250917090914(@credo-ts/core@0.6.2(typescript@5.9.3))(@credo-ts/openid4vc@0.6.2(typescript@5.9.3))':
     dependencies:
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
-      '@credo-ts/openid4vc': 0.6.2-alpha-20260116085518(typescript@5.9.3)
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
+      '@credo-ts/openid4vc': 0.6.2(typescript@5.9.3)
       zod: 3.25.76
 
   '@animo-id/expo-ausweis-sdk@0.0.1(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
@@ -7387,7 +7390,7 @@ snapshots:
 
   '@bufbuild/protobuf@2.10.1': {}
 
-  '@cheqd/sdk-esm@5.3.7':
+  '@cheqd/sdk-esm@5.4.9':
     dependencies:
       '@cheqd/ts-proto': 4.2.0
       '@cosmjs/amino': 0.36.2
@@ -7504,11 +7507,11 @@ snapshots:
 
   '@cosmjs/utils@0.36.2': {}
 
-  '@credo-ts/anoncreds@0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)':
+  '@credo-ts/anoncreds@0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
-      '@credo-ts/didcomm': 0.6.2-alpha-20260116085518(typescript@5.9.3)
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
+      '@credo-ts/didcomm': 0.6.2(typescript@5.9.3)
       '@hyperledger/anoncreds-shared': 0.3.4
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
@@ -7519,10 +7522,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/askar@0.6.2-alpha-20260116085518(@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428)(typescript@5.9.3)':
+  '@credo-ts/askar@0.6.2(@openwallet-foundation/askar-shared@0.6.0)(typescript@5.9.3)':
     dependencies:
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
-      '@openwallet-foundation/askar-shared': 0.5.0-alpha-20251222150428
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
+      '@openwallet-foundation/askar-shared': 0.6.0
       class-transformer: 0.5.1
       class-validator: 0.14.3
       rxjs: 7.8.2
@@ -7532,15 +7535,15 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/cheqd@0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)':
+  '@credo-ts/cheqd@0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)':
     dependencies:
-      '@cheqd/sdk': '@cheqd/sdk-esm@5.3.7'
+      '@cheqd/sdk': '@cheqd/sdk-esm@5.4.9'
       '@cheqd/ts-proto': 4.2.0
       '@cosmjs/crypto': 0.36.2
       '@cosmjs/proto-signing': 0.36.2
       '@cosmjs/stargate': 0.36.2
-      '@credo-ts/anoncreds': 0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
+      '@credo-ts/anoncreds': 0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
       '@stablelib/ed25519': 2.0.2
       class-transformer: 0.5.1
       class-validator: 0.14.3
@@ -7554,7 +7557,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@credo-ts/core@0.6.2-alpha-20260116085518(typescript@5.9.3)':
+  '@credo-ts/core@0.6.2(typescript@5.9.3)':
     dependencies:
       '@animo-id/mdoc': 0.5.2
       '@animo-id/pex': 6.1.1
@@ -7569,14 +7572,14 @@ snapshots:
       '@peculiar/asn1-rsa': 2.6.0
       '@peculiar/asn1-schema': 2.6.0
       '@peculiar/asn1-x509': 2.6.0
-      '@peculiar/x509': 1.14.2
-      '@sd-jwt/core': 0.18.1
-      '@sd-jwt/decode': 0.18.1
-      '@sd-jwt/jwt-status-list': 0.18.1
-      '@sd-jwt/present': 0.18.1
-      '@sd-jwt/sd-jwt-vc': 0.18.1
-      '@sd-jwt/types': 0.18.1
-      '@sd-jwt/utils': 0.18.1
+      '@peculiar/x509': 1.14.3
+      '@sd-jwt/core': 0.19.0
+      '@sd-jwt/decode': 0.19.0
+      '@sd-jwt/jwt-status-list': 0.19.0
+      '@sd-jwt/present': 0.19.0
+      '@sd-jwt/sd-jwt-vc': 0.19.0
+      '@sd-jwt/types': 0.19.0
+      '@sd-jwt/utils': 0.19.0
       '@sphereon/pex-models': 2.3.2
       '@sphereon/ssi-types': 0.33.0
       '@stablelib/ed25519': 2.0.2
@@ -7597,15 +7600,15 @@ snapshots:
       varint: 6.0.0
       web-did-resolver: 2.0.32
       webcrypto-core: 1.8.1
-      zod: 4.1.13
+      zod: 4.3.6
     transitivePeerDependencies:
       - encoding
       - supports-color
       - typescript
 
-  '@credo-ts/didcomm@0.6.2-alpha-20260116085518(typescript@5.9.3)':
+  '@credo-ts/didcomm@0.6.2(typescript@5.9.3)':
     dependencies:
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
       class-transformer: 0.5.1
       class-validator: 0.14.3
       luxon: 3.7.2
@@ -7616,27 +7619,27 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/openid4vc@0.6.2-alpha-20260116085518(typescript@5.9.3)':
+  '@credo-ts/openid4vc@0.6.2(typescript@5.9.3)':
     dependencies:
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
-      '@openid4vc/oauth2': 0.4.4
-      '@openid4vc/openid4vci': 0.4.4
-      '@openid4vc/openid4vp': 0.4.4
-      '@openid4vc/utils': 0.4.4
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
+      '@openid4vc/oauth2': 0.4.6
+      '@openid4vc/openid4vci': 0.4.6
+      '@openid4vc/openid4vp': 0.4.6
+      '@openid4vc/utils': 0.4.6
       '@types/express': 5.0.6
       class-transformer: 0.5.1
       express: 5.2.1
       rxjs: 7.8.2
-      zod: 4.1.13
+      zod: 4.3.6
     transitivePeerDependencies:
       - encoding
       - supports-color
       - typescript
 
-  '@credo-ts/question-answer@0.6.2-alpha-20260116085518(typescript@5.9.3)':
+  '@credo-ts/question-answer@0.6.2(typescript@5.9.3)':
     dependencies:
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
-      '@credo-ts/didcomm': 0.6.2-alpha-20260116085518(typescript@5.9.3)
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
+      '@credo-ts/didcomm': 0.6.2(typescript@5.9.3)
       class-transformer: 0.5.1
       class-validator: 0.14.3
       rxjs: 7.8.2
@@ -7645,9 +7648,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/react-native@0.6.2-alpha-20260116085518(@animo-id/expo-secure-environment@0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(expo-crypto@15.0.8(expo@54.0.27))(react-native-get-random-values@2.0.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(typescript@5.9.3)':
+  '@credo-ts/react-native@0.6.2(@animo-id/expo-secure-environment@0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(expo-crypto@15.0.8(expo@54.0.27))(react-native-get-random-values@2.0.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(typescript@5.9.3)':
     dependencies:
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
       events: 3.3.0
       expo-crypto: 15.0.8(expo@54.0.27)
       react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
@@ -8461,41 +8464,41 @@ snapshots:
       '@openid4vc/utils': 0.4.3
       zod: 4.1.13
 
-  '@openid4vc/oauth2@0.4.4':
+  '@openid4vc/oauth2@0.4.6':
     dependencies:
-      '@openid4vc/utils': 0.4.4
-      zod: 4.3.5
+      '@openid4vc/utils': 0.4.6
+      zod: 4.3.6
 
-  '@openid4vc/openid4vci@0.4.4':
+  '@openid4vc/openid4vci@0.4.6':
     dependencies:
-      '@openid4vc/oauth2': 0.4.4
-      '@openid4vc/utils': 0.4.4
-      zod: 4.3.5
+      '@openid4vc/oauth2': 0.4.6
+      '@openid4vc/utils': 0.4.6
+      zod: 4.3.6
 
-  '@openid4vc/openid4vp@0.4.4':
+  '@openid4vc/openid4vp@0.4.6':
     dependencies:
-      '@openid4vc/oauth2': 0.4.4
-      '@openid4vc/utils': 0.4.4
-      zod: 4.3.5
+      '@openid4vc/oauth2': 0.4.6
+      '@openid4vc/utils': 0.4.6
+      zod: 4.3.6
 
   '@openid4vc/utils@0.4.3':
     dependencies:
       buffer: 6.0.3
       zod: 4.1.13
 
-  '@openid4vc/utils@0.4.4':
+  '@openid4vc/utils@0.4.6':
     dependencies:
       buffer: 6.0.3
-      zod: 4.3.5
-      zod-validation-error: 5.0.0(zod@4.3.5)
+      zod: 4.3.6
+      zod-validation-error: 5.0.0(zod@4.3.6)
 
-  '@openwallet-foundation/askar-react-native@0.5.0-alpha-20251222150428(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+  '@openwallet-foundation/askar-react-native@0.6.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@openwallet-foundation/askar-shared': 0.5.0-alpha-20251222150428
+      '@openwallet-foundation/askar-shared': 0.6.0
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
 
-  '@openwallet-foundation/askar-shared@0.5.0-alpha-20251222150428':
+  '@openwallet-foundation/askar-shared@0.6.0':
     dependencies:
       buffer: 6.0.3
       tar: 7.5.2
@@ -8580,7 +8583,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@peculiar/x509@1.14.2':
+  '@peculiar/x509@1.14.3':
     dependencies:
       '@peculiar/asn1-cms': 2.6.0
       '@peculiar/asn1-csr': 2.6.0
@@ -9016,17 +9019,17 @@ snapshots:
 
   '@scure/base@2.0.0': {}
 
-  '@sd-jwt/core@0.18.1':
+  '@sd-jwt/core@0.19.0':
     dependencies:
-      '@sd-jwt/decode': 0.18.1
-      '@sd-jwt/present': 0.18.1
-      '@sd-jwt/types': 0.18.1
-      '@sd-jwt/utils': 0.18.1
+      '@sd-jwt/decode': 0.19.0
+      '@sd-jwt/present': 0.19.0
+      '@sd-jwt/types': 0.19.0
+      '@sd-jwt/utils': 0.19.0
 
-  '@sd-jwt/decode@0.18.1':
+  '@sd-jwt/decode@0.19.0':
     dependencies:
-      '@sd-jwt/types': 0.18.1
-      '@sd-jwt/utils': 0.18.1
+      '@sd-jwt/types': 0.19.0
+      '@sd-jwt/utils': 0.19.0
 
   '@sd-jwt/decode@0.7.2':
     dependencies:
@@ -9038,17 +9041,17 @@ snapshots:
       '@sd-jwt/types': 0.9.2
       '@sd-jwt/utils': 0.9.2
 
-  '@sd-jwt/jwt-status-list@0.18.1':
+  '@sd-jwt/jwt-status-list@0.19.0':
     dependencies:
-      '@sd-jwt/types': 0.18.1
-      '@sd-jwt/utils': 0.18.1
+      '@sd-jwt/types': 0.19.0
+      '@sd-jwt/utils': 0.19.0
       pako: 2.1.0
 
-  '@sd-jwt/present@0.18.1':
+  '@sd-jwt/present@0.19.0':
     dependencies:
-      '@sd-jwt/decode': 0.18.1
-      '@sd-jwt/types': 0.18.1
-      '@sd-jwt/utils': 0.18.1
+      '@sd-jwt/decode': 0.19.0
+      '@sd-jwt/types': 0.19.0
+      '@sd-jwt/utils': 0.19.0
 
   '@sd-jwt/present@0.7.2':
     dependencies:
@@ -9056,22 +9059,22 @@ snapshots:
       '@sd-jwt/types': 0.7.2
       '@sd-jwt/utils': 0.7.2
 
-  '@sd-jwt/sd-jwt-vc@0.18.1':
+  '@sd-jwt/sd-jwt-vc@0.19.0':
     dependencies:
-      '@sd-jwt/core': 0.18.1
-      '@sd-jwt/jwt-status-list': 0.18.1
-      '@sd-jwt/utils': 0.18.1
-      zod: 4.3.5
+      '@sd-jwt/core': 0.19.0
+      '@sd-jwt/jwt-status-list': 0.19.0
+      '@sd-jwt/utils': 0.19.0
+      zod: 4.3.6
 
-  '@sd-jwt/types@0.18.1': {}
+  '@sd-jwt/types@0.19.0': {}
 
   '@sd-jwt/types@0.7.2': {}
 
   '@sd-jwt/types@0.9.2': {}
 
-  '@sd-jwt/utils@0.18.1':
+  '@sd-jwt/utils@0.19.0':
     dependencies:
-      '@sd-jwt/types': 0.18.1
+      '@sd-jwt/types': 0.19.0
       js-base64: 3.7.8
 
   '@sd-jwt/utils@0.7.2':
@@ -11024,10 +11027,10 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.2-alpha.2(@credo-ts/anoncreds@0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3))(@credo-ts/core@0.6.2-alpha-20260116085518(typescript@5.9.3)):
+  credo-ts-didweb-anoncreds@0.0.2-alpha.2(@credo-ts/anoncreds@0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3))(@credo-ts/core@0.6.2(typescript@5.9.3)):
     dependencies:
-      '@credo-ts/anoncreds': 0.6.2-alpha-20260116085518(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
-      '@credo-ts/core': 0.6.2-alpha-20260116085518(typescript@5.9.3)
+      '@credo-ts/anoncreds': 0.6.2(@hyperledger/anoncreds-shared@0.3.4)(typescript@5.9.3)
+      '@credo-ts/core': 0.6.2(typescript@5.9.3)
       canonicalize: 2.1.0
       query-string: 9.3.1
 
@@ -14207,12 +14210,12 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-validation-error@5.0.0(zod@4.3.5):
+  zod-validation-error@5.0.0(zod@4.3.6):
     dependencies:
-      zod: 4.3.5
+      zod: 4.3.6
 
   zod@3.25.76: {}
 
   zod@4.1.13: {}
 
-  zod@4.3.5: {}
+  zod@4.3.6: {}

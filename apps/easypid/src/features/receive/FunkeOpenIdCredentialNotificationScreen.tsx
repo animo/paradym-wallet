@@ -18,6 +18,7 @@ import {
   type CredentialsForProofRequest,
   type DeferredCredential,
   extractOpenId4VcCredentialMetadata,
+  type FormattedAttribute,
   getCredentialDisplayWithDefaults,
   getCredentialForDisplay,
   getCredentialForDisplayId,
@@ -77,7 +78,7 @@ export function FunkeCredentialNotificationScreen() {
 
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
   const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
-  const [credentialAttributes, setCredentialAttributes] = useState<Record<string, unknown>>()
+  const [credentialAttributes, setCredentialAttributes] = useState<FormattedAttribute[]>()
   const [receivedRecord, setReceivedRecord] = useState<
     SdJwtVcRecord | MdocRecord | W3cCredentialRecord | W3cV2CredentialRecord
   >()
@@ -188,6 +189,8 @@ export function FunkeCredentialNotificationScreen() {
 
       if (credentials.length) {
         const credentialRecord = credentials[0].credential
+
+        // For the credential screen we want to show all attributes
         const { attributes } = getCredentialForDisplay(credentialRecord)
         setCredentialAttributes(attributes)
         setReceivedRecord(credentialRecord)
@@ -544,7 +547,7 @@ export function FunkeCredentialNotificationScreen() {
               key="retrieve-credential"
               onGoToWallet={onGoToWallet}
               display={credentialDisplay}
-              attributes={credentialAttributes ?? {}}
+              attributes={credentialAttributes ?? []}
               deferred={deferredCredential !== undefined}
               isCompleted={isCompleted}
               onAccept={onCompleteCredentialRetrieval}

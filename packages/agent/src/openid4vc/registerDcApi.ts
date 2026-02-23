@@ -1,8 +1,7 @@
 import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
-import { DateOnly, type Logger, type MdocNameSpaces } from '@credo-ts/core'
+import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
-import { commonMessages } from '@package/translations'
-import { sanitizeString } from '@package/utils'
+import { commonMessages, i18n } from '@package/translations'
 import { ImageFormat, Skia } from '@shopify/react-native-skia'
 import * as ExpoAsset from 'expo-asset'
 import { File } from 'expo-file-system'
@@ -10,7 +9,8 @@ import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
 import type { EitherAgent } from '../agent'
-import { getCredentialForDisplay } from '../display'
+import { getCredentialForDisplay, resolveClaimsWithRecordMetadata } from '../display'
+import { resolveLabelFromClaimsPath } from '../formatAttributes'
 
 type CredentialItem = RegisterCredentialsOptions['credentials'][number]
 type CredentialDisplayClaim = NonNullable<CredentialItem['display']['claims']>[number]
@@ -37,34 +37,32 @@ function mapMdocAttributes(namespaces: MdocNameSpaces) {
   )
 }
 
-function mapMdocAttributesToClaimDisplay(namespaces: MdocNameSpaces) {
+function mapMdocAttributesToClaimDisplay(namespaces: MdocNameSpaces, record: MdocRecord) {
+  const claims = resolveClaimsWithRecordMetadata(record)
+
   return Object.entries(namespaces).flatMap(([namespace, values]) =>
     Object.keys(values).map((key) => ({
       path: [namespace, key],
-      // FIXME: we need to integrate with claim based mapping of names.
-      // For that we first need to:
-      //  - use the claims arrays with path syntax in our Wallet instead of the custom mappings
-      //  - support oid4vci draft 15 claim syntax
-      displayName: sanitizeString(key),
+      displayName: resolveLabelFromClaimsPath([namespace, key], claims, i18n.locale) ?? t(commonMessages.unknown),
     }))
   )
 }
 
-function mapSdJwtAttributesToClaimDisplay(claims: object, path: string[] = []): CredentialDisplayClaim[] {
-  return Object.entries(claims).flatMap(([claimName, value]) => {
+function mapSdJwtAttributesToClaimDisplay(
+  claims: ReturnType<typeof resolveClaimsWithRecordMetadata>,
+  attributes: object,
+  path: string[] = []
+): CredentialDisplayClaim[] {
+  return Object.entries(attributes).flatMap(([claimName, value]) => {
     const nestedClaims =
       value && typeof value === 'object' && !Array.isArray(value)
-        ? mapSdJwtAttributesToClaimDisplay(value, [...path, claimName])
+        ? mapSdJwtAttributesToClaimDisplay(claims, value, [...path, claimName])
         : []
 
     return [
       {
         path: [...path, claimName],
-        // FIXME: we need to integrate with claim based mapping of names.
-        // For that we first need to:
-        //  - use the claims arrays with path syntax in our Wallet instead of the custom mappings
-        //  - support oid4vci draft 15 claim syntax
-        displayName: sanitizeString(claimName),
+        displayName: resolveLabelFromClaimsPath([...path, claimName], claims, i18n.locale) ?? t(commonMessages.unknown),
       },
       ...nestedClaims,
     ]
@@ -174,6 +172,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
   try {
     const mdocRecords = await agent.mdoc.getAll()
     const sdJwtVcRecords = await agent.sdJwtVc.getAll()
+
     const mdocCredentials = mdocRecords.map(async (record): Promise<CredentialItem> => {
       const mdoc = record.firstCredential
       const { display } = getCredentialForDisplay(record)
@@ -194,7 +193,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
         display: {
           title: display.name,
           subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
-          claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces),
+          claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces, record),
           iconDataUrl,
         },
       } as const
@@ -210,6 +209,8 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
           ? await loadCachedImageAsBase64DataUrl(agent.config.logger, display.issuer.logo.url)
           : undefined
 
+      const claims = resolveClaimsWithRecordMetadata(record)
+
       return {
         id: record.id,
         credential: {
@@ -221,7 +222,7 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
         display: {
           title: display.name,
           subtitle: t(commonMessages.issuedByWithName(display.issuer.name)),
-          claims: mapSdJwtAttributesToClaimDisplay(sdJwtVc.prettyClaims),
+          claims: mapSdJwtAttributesToClaimDisplay(claims, sdJwtVc.prettyClaims),
           iconDataUrl,
         },
       } as const

@@ -1,7 +1,11 @@
 import { DeviceRequest, limitDisclosureToDeviceRequestNameSpaces, parseIssuerSigned } from '@animo-id/mdoc'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import type { EitherAgent } from '../agent'
-import { getAttributesAndMetadataForMdocPayload, getCredentialForDisplay } from '../display'
+import {
+  formatAttributesWithRecordMetadata,
+  getAttributesAndMetadataForMdocPayload,
+  getCredentialForDisplay,
+} from '../display'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -86,12 +90,13 @@ export async function getSubmissionForMdocDocumentRequest(
             ),
           ])
         )
-        const { attributes, metadata } = getAttributesAndMetadataForMdocPayload(disclosedNamespaces, matchingMdoc.mdoc)
+        const { metadata } = getAttributesAndMetadataForMdocPayload(disclosedNamespaces, matchingMdoc.mdoc)
 
         return {
           credential: matchingMdoc.credential,
           disclosed: {
-            attributes,
+            attributes: formatAttributesWithRecordMetadata(disclosedNamespaces, matchingMdoc.credential.record),
+            rawAttributes: disclosedNamespaces,
             metadata,
             paths: disclosedAttributePaths,
           },

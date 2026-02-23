@@ -1,6 +1,9 @@
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import {
+  type FormattedAttributeObject,
+  formatAllAttributes,
+  formatAttributesWithRecordMetadata,
   type IssuanceActivity,
   type PresentationActivity,
   type SignedActivity,
@@ -287,15 +290,21 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
               if ('id' in activityCredential) {
                 const credential = credentials.find((credential) => credential.id === activityCredential.id)
 
+                // Credential has been deleted
                 if (!credential) {
                   return (
                     <CardWithAttributes
-                      id={activityCredential.id}
-                      name={t(activityMessages.deletedCredential)}
+                      name={activityCredential.name ?? t(activityMessages.deletedCredential)}
                       textColor="$grey-100"
                       backgroundColor="$primary-500"
                       formattedDisclosedAttributes={activityCredential.attributeNames}
-                      disclosedPayload={activityCredential.attributes}
+                      disclosedPayload={
+                        activityCredential.version === 'v2' && activityCredential.id.startsWith('mdoc-')
+                          ? formatAllAttributes(activityCredential.attributes).flatMap(
+                              (item) => (item as FormattedAttributeObject).value
+                            )
+                          : formatAllAttributes(activityCredential.attributes)
+                      }
                     />
                   )
                 }
@@ -317,8 +326,13 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
                     textColor={credential.display.textColor}
                     backgroundColor={credential.display.backgroundColor}
                     backgroundImage={credential.display.backgroundImage}
+                    // FIXME should store the paths as well, so we can dynamically resolve
+                    // the claim labels
                     formattedDisclosedAttributes={activityCredential.attributeNames}
-                    disclosedPayload={activityCredential.attributes}
+                    disclosedPayload={formatAttributesWithRecordMetadata(
+                      activityCredential.attributes,
+                      credential.record
+                    )}
                     isExpired={isExpired}
                     isNotYetActive={isNotYetActive}
                   />

@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { CredentialDisplay } from '@package/agent'
+import type { CredentialDisplay, FormattedAttribute } from '@package/agent'
 import {
   CredentialAttributes,
   DualResponseButtons,
@@ -16,13 +16,14 @@ import {
   Loader,
   Paragraph,
   ScrollView,
+  type ScrollViewRefType,
   Spacer,
   useSpringify,
   XStack,
   YStack,
 } from '@package/ui'
 import * as Haptics from 'expo-haptics'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   FadeIn,
   FadeOut,
@@ -35,7 +36,7 @@ import {
 } from 'react-native-reanimated'
 
 interface CredentialRetrievalSlideProps {
-  attributes?: Record<string, unknown>
+  attributes?: FormattedAttribute[]
   deferred?: boolean
   display: CredentialDisplay
   isCompleted: boolean
@@ -58,13 +59,14 @@ export const CredentialRetrievalSlide = ({
   const textOpacity = useSharedValue(0)
   const [scrollViewHeight, setScrollViewHeight] = useState<number>()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+  const scrollViewRef = useRef<ScrollViewRefType>(null)
   const { t } = useLingui()
 
   const [isAllowedToComplete, setIsAllowedToComplete] = useState(false)
   const [isStoring, setIsStoring] = useState(isAccepting ?? false)
   const isCompleteAndAllowed = isAllowedToComplete && isCompleted
   const isStoringOrCompleted = isStoring || isCompleted
-  const isAllowedToAccept = (attributes && Object.keys(attributes).length > 0) || deferred
+  const isAllowedToAccept = (attributes && attributes.length > 0) || deferred
 
   const handleAccept = async () => {
     setIsStoring(true)
@@ -226,6 +228,7 @@ export const CredentialRetrievalSlide = ({
           >
             {!isStoringOrCompleted ? (
               <ScrollView
+                ref={scrollViewRef}
                 onScroll={handleScroll}
                 scrollEventThrottle={scrollEventThrottle}
                 px="$4"
@@ -237,7 +240,7 @@ export const CredentialRetrievalSlide = ({
                 {scrollViewHeight && isAllowedToAccept ? (
                   <AnimatedStack key="credential-attributes" entering={FadeIn.duration(200)}>
                     {attributes ? (
-                      <CredentialAttributes attributes={attributes} />
+                      <CredentialAttributes attributes={attributes} scrollRef={scrollViewRef} />
                     ) : (
                       <Paragraph>
                         <Trans id="receiveCredential.deferredCredentialParagraph">
