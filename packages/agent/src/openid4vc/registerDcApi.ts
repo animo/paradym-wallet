@@ -11,9 +11,8 @@ import { t } from '@lingui/core/macro'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { commonMessages } from '@package/translations'
 import { sanitizeString } from '@package/utils'
-import { ImageFormat, Skia } from '@shopify/react-native-skia'
 import * as ExpoAsset from 'expo-asset'
-import { File } from 'expo-file-system'
+import * as FileSystem from 'expo-file-system'
 import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
@@ -171,29 +170,6 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
       return undefined
     }
 
-    const file = new File(asset.localUri)
-    const handle = file.open()
-    let header: string = ''
-    try {
-      const first50Bytes = handle.readBytes(50) // Returns Uint8Array
-      header = new TextDecoder().decode(first50Bytes)
-    } finally {
-      handle.close()
-    }
-    if (header.startsWith('<?xml') || header.startsWith('<svg')) {
-      const svg = Skia.SVG.MakeFromString(await file.text())
-      if (!svg) return undefined
-
-      const targetSize = 120
-      const scale = Math.min(targetSize / svg.width(), targetSize / svg.height()) // Fit inside 120x120
-      const surface = Skia.Surface.Make(Math.round(svg.width() * scale), Math.round(svg.height() * scale))
-      if (!surface) {
-        throw new Error('Unable to rasterize SVG')
-      }
-      surface.getCanvas().drawSvg(svg, surface.width(), surface.height())
-      return `data:image/png;base64,${surface.makeImageSnapshot().encodeToBase64(ImageFormat.PNG, 80)}` as ImageDataUrl
-    }
-
     const image = await Image.loadAsync(asset.localUri)
 
     // Calculate new dimensions maintaining aspect ratio
@@ -232,11 +208,33 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
   }
 }
 
+function getImageMimeFromUri(uri?: string): 'png' | 'jpg' {
+  if (!uri) return 'png'
+  const lower = uri.toLowerCase().split('?')[0].split('#')[0]
+  if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'jpg'
+  return 'png'
+}
+
+async function readAssetAsBase64(logger: Logger, asset: ExpoAsset.Asset): Promise<ImageDataUrl | undefined> {
+  if (!asset.localUri) return undefined
+  try {
+    const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
+      encoding: FileSystem.EncodingType.Base64,
+    })
+    if (!base64) return undefined
+    const mime = getImageMimeFromUri(asset.localUri)
+    return `data:image/${mime};base64,${base64}` as ImageDataUrl
+  } catch (error) {
+    logger.error('Error reading asset as base64.', { error })
+    return undefined
+  }
+}
+
 async function loadCachedImageAsBase64DataUrl(
   logger: Logger,
   url: string | number
 ): Promise<ImageDataUrl | undefined> {
-  let asset: ExpoAsset.Asset
+  let asset: ExpoAsset.Asset | undefined
 
   try {
     if (typeof url === 'string') {
@@ -268,12 +266,19 @@ async function loadCachedImageAsBase64DataUrl(
 
     // In case of local image
     asset = ExpoAsset.Asset.fromModule(url)
-    return await resizeImageWithAspectRatio(logger, asset)
+    try {
+      return await resizeImageWithAspectRatio(logger, asset)
+    } catch {
+      return await readAssetAsBase64(logger, asset)
+    }
   } catch (error) {
     // just ignore it, we don't want to cause issues with registering crednetials
     logger.error('Error resizing and retrieving cached image for DC API', {
       error,
     })
+    if (asset) {
+      return await readAssetAsBase64(logger, asset)
+    }
   }
 }
 
@@ -381,7 +386,11 @@ export async function registerCreationOptionsForDcApi(agent?: EitherAgent) {
       ? require('../../../../apps/easypid/assets/paradym/icon.png')
       : require('../../../../apps/easypid/assets/funke/icon.png')
 
-    const iconDataUrl = await loadCachedImageAsBase64DataUrl(logger, iconAsset)
+    const asset = ExpoAsset.Asset.fromModule(iconAsset)
+    if (!asset.localUri) {
+      await asset.downloadAsync()
+    }
+    const iconDataUrl = await readAssetAsBase64(logger, asset)
 
     const creationOptions = encodeIssuanceCreationOptions({
       display: {
