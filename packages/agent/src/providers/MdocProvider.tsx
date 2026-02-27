@@ -1,7 +1,8 @@
 import { MdocRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { AppState, type AppStateStatus } from 'react-native'
 import type { EitherAgent } from '../agent'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from './recordUtils'
 
@@ -67,9 +68,25 @@ export const MdocRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agent, 
     isLoading: true,
   })
 
+  const fetchRecords = useCallback(async () => {
+    const mdocRecords = await agent.mdoc.getAll()
+    setState({ mdocRecords, isLoading: false })
+  }, [agent])
+
   useEffect(() => {
-    void agent.mdoc.getAll().then((mdocRecords) => setState({ mdocRecords, isLoading: false }))
-  }, [agent.mdoc.getAll])
+    void fetchRecords()
+  }, [fetchRecords])
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        void fetchRecords()
+      }
+    }
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange)
+    return () => subscription.remove()
+  }, [fetchRecords])
 
   useEffect(() => {
     if (!state.isLoading && agent) {
