@@ -12,7 +12,7 @@ import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
 import { commonMessages } from '@package/translations'
 import { sanitizeString } from '@package/utils'
 import * as ExpoAsset from 'expo-asset'
-import * as FileSystem from 'expo-file-system'
+import { File } from 'expo-file-system'
 import { Image } from 'expo-image'
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
@@ -218,9 +218,7 @@ function getImageMimeFromUri(uri?: string): 'png' | 'jpg' {
 async function readAssetAsBase64(logger: Logger, asset: ExpoAsset.Asset): Promise<ImageDataUrl | undefined> {
   if (!asset.localUri) return undefined
   try {
-    const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    })
+    const base64 = await new File(asset.localUri).base64()
     if (!base64) return undefined
     const mime = getImageMimeFromUri(asset.localUri)
     return `data:image/${mime};base64,${base64}` as ImageDataUrl
