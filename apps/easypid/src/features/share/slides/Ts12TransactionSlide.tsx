@@ -10,6 +10,15 @@ interface Ts12TransactionSlideProps {
   selectedCredentialId?: string
 }
 
+const TS12_TABLE_TEST_ROWS: Array<{ label: string; value: string }> = [
+  { label: 'S', value: '1' },
+  { label: 'One-line key', value: 'One-line value for dense test' },
+  {
+    label: 'Very long key that should wrap into multiple lines on smaller widths',
+    value: 'Very long value that should also wrap into multiple lines and trigger the non-dense fallback behavior',
+  },
+]
+
 export function Ts12TransactionSlide({
   entry,
   onCredentialSelect,
@@ -45,6 +54,8 @@ export function Ts12TransactionSlide({
           })
           .filter((item): item is NonNullable<typeof item> => item !== null)
 
+        const rowsToDisplay = __DEV__ ? [...TS12_TABLE_TEST_ROWS, ...claimsToDisplay] : claimsToDisplay
+
         return (
           <YStack gap="$4">
             <YStack px="$4" gap="$4">
@@ -68,13 +79,13 @@ export function Ts12TransactionSlide({
 
             <YStack mt="$2" px="$4">
               <TableContainer>
-                {claimsToDisplay.map((claim, idx) => (
+                {rowsToDisplay.map((claim, idx) => (
                   <TableRow
                     key={idx}
                     variant="horizontal"
                     attributes={claim.label}
                     values={claim.value}
-                    isLastRow={idx === claimsToDisplay.length - 1}
+                    isLastRow={idx === rowsToDisplay.length - 1}
                   />
                 ))}
               </TableContainer>

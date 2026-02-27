@@ -11,6 +11,15 @@ interface Ts12PaymentSlideProps {
   selectedCredentialId?: string
 }
 
+const TS12_TABLE_TEST_ROWS: Array<{ label: string; value: string }> = [
+  { label: 'S', value: '1' },
+  { label: 'One-line key', value: 'One-line value for dense test' },
+  {
+    label: 'Very long key that should wrap into multiple lines on smaller widths',
+    value: 'Very long value that should also wrap into multiple lines and trigger the non-dense fallback behavior',
+  },
+]
+
 export function Ts12PaymentSlide({
   entry,
   onCredentialSelect,
@@ -83,8 +92,10 @@ export function Ts12PaymentSlide({
           })
           .filter((item): item is { label: string; value: string } => item !== null)
 
+        const rowsToDisplay = __DEV__ ? [...TS12_TABLE_TEST_ROWS, ...claimsToDisplay] : claimsToDisplay
+
         return (
-          <YStack gap="$4" f={1}>
+          <YStack gap="$4">
             <YStack ai="center" mt="$4" gap="$4">
               <Heading>
                 {uiLabels?.title ?? (
@@ -103,7 +114,7 @@ export function Ts12PaymentSlide({
                 />
               )}
 
-              <XStack ai="flex-start" gap="$2">
+              <XStack ai="flex-start" jc="center" gap="$2" flexWrap="wrap">
                 <Heading fontSize={24} fontWeight="600" lineHeight={70} fontFamily="$heading">
                   {currencySymbol}
                 </Heading>
@@ -112,7 +123,7 @@ export function Ts12PaymentSlide({
                 </Heading>
               </XStack>
 
-              <YStack ai="center" gap={0} mt="$1">
+              <YStack ai="center" gap={0} mt="$1" w="100%" px="$4">
                 {paymentData.payeeName && (
                   <Heading fontSize={18} fontWeight="600" lineHeight={24} fontFamily="$heading" textAlign="center">
                     {paymentData.payeeName}
@@ -136,13 +147,13 @@ export function Ts12PaymentSlide({
 
             <YStack mt="$4" px="$4">
               <TableContainer>
-                {claimsToDisplay.map((claim, idx) => (
+                {rowsToDisplay.map((claim, idx) => (
                   <TableRow
                     key={idx}
                     variant="horizontal"
                     attributes={claim.label}
                     values={claim.value}
-                    isLastRow={idx === claimsToDisplay.length - 1}
+                    isLastRow={idx === rowsToDisplay.length - 1}
                   />
                 ))}
               </TableContainer>
