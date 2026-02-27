@@ -11,15 +11,6 @@ interface Ts12PaymentSlideProps {
   selectedCredentialId?: string
 }
 
-const TS12_TABLE_TEST_ROWS: Array<{ label: string; value: string }> = [
-  { label: 'S', value: '1' },
-  { label: 'One-line key', value: 'One-line value for dense test' },
-  {
-    label: 'Very long key that should wrap into multiple lines on smaller widths',
-    value: 'Very long value that should also wrap into multiple lines and trigger the non-dense fallback behavior',
-  },
-]
-
 export function Ts12PaymentSlide({
   entry,
   onCredentialSelect,
@@ -92,8 +83,6 @@ export function Ts12PaymentSlide({
           })
           .filter((item): item is { label: string; value: string } => item !== null)
 
-        const rowsToDisplay = __DEV__ ? [...TS12_TABLE_TEST_ROWS, ...claimsToDisplay] : claimsToDisplay
-
         return (
           <YStack gap="$4">
             <YStack ai="center" mt="$4" gap="$4">
@@ -147,13 +136,13 @@ export function Ts12PaymentSlide({
 
             <YStack mt="$4" px="$4">
               <TableContainer>
-                {rowsToDisplay.map((claim, idx) => (
+                {claimsToDisplay.map((claim, idx) => (
                   <TableRow
                     key={idx}
                     variant="horizontal"
                     attributes={claim.label}
                     values={claim.value}
-                    isLastRow={idx === rowsToDisplay.length - 1}
+                    isLastRow={idx === claimsToDisplay.length - 1}
                   />
                 ))}
               </TableContainer>
