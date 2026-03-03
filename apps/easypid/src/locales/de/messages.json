@@ -181,7 +181,7 @@
 		"message": "About this wallet",
 		"placeholders": {},
 		"comments": ["Label for about screen menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 169]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 143]],
 		"translation": "Über diese Wallet"
 	},
 	"common.acceptButton": {
@@ -195,21 +195,21 @@
 		"message": "Activate Biometrics",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 665]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 296]],
 		"translation": "Biometrie aktivieren"
 	},
 	"onboarding.biometrics.subtitle": {
 		"message": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
 		"placeholders": {},
 		"comments": ["Subtitle explaining purpose of biometrics"],
-		"origin": [["src/features/onboarding/steps.ts", 36]],
+		"origin": [["src/features/onboarding/steps.ts", 33]],
 		"translation": "Aktiviere die Biometrie-Funktion deines Handys, damit nur du auf deine Wallet zugreifen und Daten teilen kannst."
 	},
 	"menu.item.activity": {
 		"message": "Activity",
 		"placeholders": {},
 		"comments": ["Label for activity log"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 129]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 103]],
 		"translation": "Aktivitäten"
 	},
 	"activity.title": {
@@ -388,7 +388,7 @@
 		"message": "APP",
 		"placeholders": {},
 		"comments": ["Heading above the app section"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 140]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 114]],
 		"translation": "APP"
 	},
 	"verifyPartySlide.approvedByMultipleOrganizations": {
@@ -489,13 +489,6 @@
 		"comments": [],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 188]],
 		"translation": "Zurück"
-	},
-	"onboarding.intro.subtitle": {
-		"message": "Before you can use the app, we will guide you through these steps.",
-		"placeholders": {},
-		"comments": ["Subtitle for the introduction steps slide in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 49]],
-		"translation": "Bevor du die App nutzen kannst, führen wir dich durch diese Schritte."
 	},
 	"betaTag": {
 		"message": "BETA",
@@ -648,7 +641,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 220]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 216]
 		],
 		"translation": "Karte abgelaufen"
 	},
@@ -656,7 +649,7 @@
 		"message": "Card is active",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 24]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 23]],
 		"translation": "Karte ist aktiv"
 	},
 	"receiveCredential.deferredCredentialHeader": {
@@ -673,7 +666,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 232]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 228]
 		],
 		"translation": "Karte nicht aktiv"
 	},
@@ -703,7 +696,7 @@
 		"message": "Card not usable anymore",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 34]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 33]],
 		"translation": "Karte nicht mehr verwendbar"
 	},
 	"credentialCardSlide.cardOfferedTitle": {
@@ -731,7 +724,7 @@
 		"message": "Card revoked",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 33]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 32]],
 		"translation": "Karte widerrufen"
 	},
 	"retrieveCredential.cardSuccessfully added": {
@@ -755,7 +748,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 243]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 239]
 		],
 		"translation": "Karte läuft ab"
 	},
@@ -770,7 +763,7 @@
 		"message": "Cards",
 		"placeholders": {},
 		"comments": ["Label for the credentials menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 120]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 94]],
 		"translation": "Karten"
 	},
 	"activity.cardsHeading": {
@@ -786,7 +779,7 @@
 		"message": "Choose a 6-digit PIN",
 		"placeholders": {},
 		"comments": ["Heading when user chooses a PIN"],
-		"origin": [["src/features/onboarding/steps.ts", 12]],
+		"origin": [["src/features/onboarding/steps.ts", 9]],
 		"translation": "Wähle eine 6-stellige PIN"
 	},
 	"onboardingIntroduction.step1.description": {
@@ -1097,20 +1090,6 @@
 		],
 		"translation": "eID-Karte"
 	},
-	"pidSetup.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 270]],
-		"translation": "eID-Karten-Scan abgebrochen"
-	},
-	"onboarding.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 480]],
-		"translation": "eID-Karten-Scan abgebrochen"
-	},
 	"language.en": {
 		"message": "English",
 		"placeholders": {},
@@ -1126,13 +1105,6 @@
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 91]],
 		"translation": "PIN eingeben, um Daten zu teilen"
-	},
-	"pidSetup.enterPinSubtitle": {
-		"message": "Enter the PIN code you use to unlock your wallet.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 401]],
-		"translation": "Gib den PIN-Code ein, den du zum Entsperren deiner Wallet verwendest."
 	},
 	"txCodeSlide.title": {
 		"message": "Enter transaction code",
@@ -1154,13 +1126,6 @@
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 38]],
 		"translation": "Gib deine eID-Karten-PIN ein"
-	},
-	"simulatorEidCard.enterRealPin": {
-		"message": "Enter your real PIN to continue",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 199]],
-		"translation": "Gib deine echte PIN ein, um fortzufahren"
 	},
 	"common.toastCardDeleteError": {
 		"message": "Error deleting card",
@@ -1196,7 +1161,7 @@
 		"message": "Error occurred during onboarding",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 424]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 268]],
 		"translation": "Fehler während des Onboardings aufgetreten"
 	},
 	"notification.errorParsingInvitation": {
@@ -1238,7 +1203,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 246]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 242]
 		],
 		"translation": "Läuft in {expiryDaysString} ab"
 	},
@@ -1292,7 +1257,7 @@
 		"message": "Feedback",
 		"placeholders": {},
 		"comments": ["Label for feedback menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 159]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 133]],
 		"translation": "Feedback"
 	},
 	"loadingRequestSlide.description": {
@@ -1419,14 +1384,14 @@
 			"userName": ["userName"]
 		},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 72]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 67]],
 		"translation": "Hallo, {userName}!"
 	},
 	"home.helloWithoutName": {
 		"message": "Hello!",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 74]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 69]],
 		"translation": "Hallo!"
 	},
 	"credentials.hideMetadata": {
@@ -1466,13 +1431,6 @@
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 474]],
 		"translation": "Inhaber"
-	},
-	"home.howDoesItWork": {
-		"message": "How does it work?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 100]],
-		"translation": "Wie funktioniert es?"
 	},
 	"onboardingWalletExplanation.slide3.title": {
 		"message": "How does it work?",
@@ -1522,13 +1480,6 @@
 		],
 		"translation": "Wenn du aufhörst, wird das Kartenangebot abgebrochen."
 	},
-	"pidSetup.stopDescription": {
-		"message": "If you stop, you can still do the setup later.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 481]],
-		"translation": "Wenn du aufhörst, kannst du die Einrichtung später nachholen."
-	},
 	"inbox.header": {
 		"message": "Inbox",
 		"placeholders": {},
@@ -1568,13 +1519,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 279]],
 		"translation": "Informationen geteilt"
 	},
-	"pidSetup.invalidEidPin": {
-		"message": "Invalid eID card PIN entered",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 113]],
-		"translation": "Ungültige eID-Karten-PIN eingegeben"
-	},
 	"common.invalidInvitation": {
 		"message": "Invalid invitation.",
 		"placeholders": {},
@@ -1588,13 +1532,6 @@
 		"comments": ["Shown when invalid PIN is entered"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 86]],
 		"translation": "Ungültige PIN eingegeben"
-	},
-	"onboarding.invalidEidPinEntered": {
-		"message": "Invalid PIN entered for eID Card. Please try again",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 337]],
-		"translation": "Ungültige PIN für eID-Karte eingegeben. Bitte versuche es erneut"
 	},
 	"qrScan.invalidQrCode": {
 		"message": "Invalid QR code. Try another.",
@@ -1744,7 +1681,7 @@
 		"message": "Limited card usage",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 44]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 43]],
 		"translation": "Begrenzte Kartennutzung"
 	},
 	"qrScanScreen.loadingInvitation": {
@@ -1772,7 +1709,7 @@
 		"message": "Menu",
 		"placeholders": {},
 		"comments": ["Title of the menu screen"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 78]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 73]],
 		"translation": "Menü"
 	},
 	"credentials.metadataAttributes": {
@@ -1825,7 +1762,7 @@
 		"message": "No actions required",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 25]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 24]],
 		"translation": "Keine Aktion erforderlich"
 	},
 	"cardLifecycle.limitedByDate.active.description": {
@@ -1833,7 +1770,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 209]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 205]
 		],
 		"translation": "Keine Aktion erforderlich"
 	},
@@ -1938,13 +1875,6 @@
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 240]],
 		"translation": "Keine vorherigen Interaktionen gefunden"
-	},
-	"pidSetup.notReadyToReceivePid": {
-		"message": "Not ready to receive PID",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 40]],
-		"translation": "Nicht bereit, PID zu empfangen"
 	},
 	"onboardingDataProtection.toast.secureDevice": {
 		"message": "Now using {0} for PID cryptographic keys.",
@@ -2057,7 +1987,7 @@
 		"message": "Pin entries do not match",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 171]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 122]],
 		"translation": "PIN-Eingaben stimmen nicht überein"
 	},
 	"common.pinRequiredToAcceptPresentation": {
@@ -2157,7 +2087,7 @@
 		"message": "Present In-person",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 91]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 86]],
 		"translation": "Persönlich vorzeigen"
 	},
 	"common.presentationCouldNotBeShared": {
@@ -2254,7 +2184,7 @@
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 78]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 73]],
 		"translation": "Empfange oder teile aus deiner Wallet"
 	},
 	"activity.receivedFailed": {
@@ -2295,7 +2225,7 @@
 		"message": "Refresh card",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 85]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 81]],
 		"translation": "Karte aktualisieren"
 	},
 	"common.fields.region": {
@@ -2309,7 +2239,7 @@
 		"message": "Repeat your PIN",
 		"placeholders": {},
 		"comments": ["Heading when user repeats their PIN"],
-		"origin": [["src/features/onboarding/steps.ts", 24]],
+		"origin": [["src/features/onboarding/steps.ts", 21]],
 		"translation": "PIN wiederholen"
 	},
 	"inbox.notificationType.request": {
@@ -2360,18 +2290,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 61]],
 		"translation": "Wallet zurücksetzen"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
-		"translation": "Anfrage überprüfen"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 72]],
+		"translation": "Anfrage überprüfen"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
 		"translation": "Anfrage überprüfen"
 	},
 	"common.revoked": {
@@ -2408,7 +2338,7 @@
 		"message": "Scan QR-code",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 85]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 80]],
 		"translation": "QR-Code scannen"
 	},
 	"nfcScanner.complete.title": {
@@ -2477,7 +2407,7 @@
 		"message": "Set up biometrics",
 		"placeholders": {},
 		"comments": ["Heading when user sets up biometrics"],
-		"origin": [["src/features/onboarding/steps.ts", 30]],
+		"origin": [["src/features/onboarding/steps.ts", 27]],
 		"translation": "Biometrie einrichten"
 	},
 	"common.setUpLater": {
@@ -2486,13 +2416,6 @@
 		"comments": [],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 25]],
 		"translation": "Später einrichten"
-	},
-	"onboarding.intro.title": {
-		"message": "Set up your wallet",
-		"placeholders": {},
-		"comments": ["Title for the introduction steps slide in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 43]],
-		"translation": "Richte deine Wallet ein"
 	},
 	"settings.title": {
 		"message": "Settings",
@@ -2505,22 +2428,8 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Label for settings menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 150]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 124]],
 		"translation": "Einstellungen"
-	},
-	"menu.setupEid.title": {
-		"message": "Setup digital ID",
-		"placeholders": {},
-		"comments": ["Title for the eID setup prompt"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 91]],
-		"translation": "Digitale ID einrichten"
-	},
-	"home.setupYourId": {
-		"message": "Setup your ID",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 107]],
-		"translation": "ID einrichten"
 	},
 	"submission.share": {
 		"message": "Share",
@@ -2736,7 +2645,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 213]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 209]
 		],
 		"translation": "Einige Nachweise können ablaufen oder benötigen eine aktive Internetverbindung zur Validierung"
 	},
@@ -2790,13 +2699,6 @@
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 564]
 		],
 		"translation": "Kartenangebot stoppen?"
-	},
-	"pidSetup.stopTitle": {
-		"message": "Stop ID Setup?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 477]],
-		"translation": "ID-Einrichtung stoppen?"
 	},
 	"didcommCancelFlow.connect.title": {
 		"message": "Stop interaction?",
@@ -2865,7 +2767,7 @@
 			"Label shown on image rows prompting user to tap to view image"
 		],
 		"origin": [
-			["../../packages/app/src/components/CredentialAttributes.tsx", 297]
+			["../../packages/app/src/components/CredentialAttributes.tsx", 316]
 		],
 		"translation": "Antippen zum Anzeigen"
 	},
@@ -2915,7 +2817,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 221]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 217]
 		],
 		"translation": "Das Ablaufdatum dieser Karte ist überschritten"
 	},
@@ -2926,7 +2828,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 225]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 221]
 		],
 		"translation": "Das Ablaufdatum dieser Karte ist am {0} überschritten."
 	},
@@ -2966,7 +2868,7 @@
 		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 35]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 34]],
 		"translation": "Der Aussteller hat diese Karte widerrufen und sie kann nicht mehr verwendet werden. Kontaktiere den Aussteller für weitere Informationen."
 	},
 	"deferredCredentials.cardNotAvailableYetWithTimeDescription": {
@@ -3023,7 +2925,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 183]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 179]
 		],
 		"translation": "Die Gültigkeitsdauer dieser Karte ist vom {0} bis zum {1}."
 	},
@@ -3117,7 +3019,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 197]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 193]
 		],
 		"translation": "Diese Karte läuft in {expiryDaysString} ab, am {0}."
 	},
@@ -3125,7 +3027,7 @@
 		"message": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 46]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 45]],
 		"translation": "Diese Karte benötigt regelmäßige Validierung über eine Internetverbindung. Bei geringer Nutzung wirst du benachrichtigt."
 	},
 	"cardLifecycle.limitedByDate.activeIn": {
@@ -3136,7 +3038,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 191]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 187]
 		],
 		"translation": "Diese Karte wird in {activeDaysString} aktiv sein, am {0}."
 	},
@@ -3193,7 +3095,7 @@
 		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
 		"placeholders": {},
 		"comments": ["Explanation of the PIN purpose in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 18]],
+		"origin": [["src/features/onboarding/steps.ts", 15]],
 		"translation": "Diese PIN sichert deine Identitäts-Wallet. Du gibst sie jedes Mal ein, wenn du Daten teilst."
 	},
 	"common.archiveCardDescription": {
@@ -3371,13 +3273,6 @@
 		"origin": [["src/features/share/slides/PinSlide.tsx", 47]],
 		"translation": "Verwende deinen App-PIN-Code, um die Anfrage zu bestätigen."
 	},
-	"menu.setupEid.message": {
-		"message": "Use your eID card to set up your digital identity.",
-		"placeholders": {},
-		"comments": ["Explanation for setting up eID card"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 96]],
-		"translation": "Verwende deine eID-Karte, um deine digitale Identität einzurichten."
-	},
 	"onboardingIntroduction.step2.description": {
 		"message": "Use your ID card PIN to retrieve your identity information.",
 		"placeholders": {},
@@ -3412,7 +3307,7 @@
 		"message": "verifications left",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 45]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 44]],
 		"translation": "Verifikationen verbleibend"
 	},
 	"authCodeFlowSlide.heading": {
@@ -3433,22 +3328,8 @@
 		"message": "WALLET",
 		"placeholders": {},
 		"comments": ["Heading above the wallet section"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 110]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 84]],
 		"translation": "WALLET"
-	},
-	"pidSetup.walletNotUnlocked": {
-		"message": "Wallet not unlocked",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 39]],
-		"translation": "Wallet nicht entsperrt"
-	},
-	"pidSetup.walletPinMissing": {
-		"message": "Wallet PIN is missing",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 156]],
-		"translation": "Wallet-PIN fehlt"
 	},
 	"pidSetup.idCardVerify.Subtitle": {
 		"message": "We need your biometrics to verify your identity.",
@@ -3478,7 +3359,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 233]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 229]
 		],
 		"translation": "Wird in {activeDaysString} aktiv sein"
 	},
@@ -3621,18 +3502,18 @@
 		],
 		"translation": "Du hast die angeforderte(n) Karte(n) nicht."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
-		"translation": "Du hast nicht die erforderlichen Karten"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 180]],
+		"translation": "Du hast nicht die erforderlichen Karten"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
 		"translation": "Du hast nicht die erforderlichen Karten"
 	},
 	"pinLocked.description": {
@@ -3707,7 +3588,7 @@
 		"message": "Your credentials may expire or require an active internet connection to validate.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 26]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 25]],
 		"translation": "Deine Nachweise können ablaufen oder benötigen eine aktive Internetverbindung zur Validierung."
 	},
 	"pidSetup.dataProtection.subtitle": {

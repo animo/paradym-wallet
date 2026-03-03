@@ -1,5 +1,4 @@
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useRefreshedDeferredCredentials } from '@package/agent'
 import { useHaptics } from '@package/app/hooks'
@@ -30,11 +29,9 @@ export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
   const { userName, isLoading } = useFirstNameFromPidCredential()
-  const _hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
-  const _pushToAbout = withHaptics(() => push('/menu/about'))
   const pushToOffline = () => {
     withHaptics(() => push('/offline'))()
   }

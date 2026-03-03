@@ -181,7 +181,7 @@
 		"message": "About this wallet",
 		"placeholders": {},
 		"comments": ["Label for about screen menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 169]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 143]],
 		"translation": "Rreth këtij portofoli"
 	},
 	"common.acceptButton": {
@@ -195,21 +195,21 @@
 		"message": "Activate Biometrics",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 665]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 296]],
 		"translation": "Aktivizo biometrikën"
 	},
 	"onboarding.biometrics.subtitle": {
 		"message": "Activate the biometrics functionality of your phone to make sure only you can enter your wallet and share data.",
 		"placeholders": {},
 		"comments": ["Subtitle explaining purpose of biometrics"],
-		"origin": [["src/features/onboarding/steps.ts", 36]],
+		"origin": [["src/features/onboarding/steps.ts", 33]],
 		"translation": "Aktivizo funksionin biometrik të telefonit tënd për të siguruar që vetëm ti mund të hysh në portofol dhe të ndash të dhëna."
 	},
 	"menu.item.activity": {
 		"message": "Activity",
 		"placeholders": {},
 		"comments": ["Label for activity log"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 129]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 103]],
 		"translation": "Aktiviteti"
 	},
 	"activity.title": {
@@ -388,7 +388,7 @@
 		"message": "APP",
 		"placeholders": {},
 		"comments": ["Heading above the app section"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 140]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 114]],
 		"translation": "APLIKACIONI"
 	},
 	"verifyPartySlide.approvedByMultipleOrganizations": {
@@ -489,13 +489,6 @@
 		"comments": [],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 188]],
 		"translation": "Prapa"
-	},
-	"onboarding.intro.subtitle": {
-		"message": "Before you can use the app, we will guide you through these steps.",
-		"placeholders": {},
-		"comments": ["Subtitle for the introduction steps slide in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 49]],
-		"translation": "Para se të përdorësh aplikacionin, do të të udhëheqim nëpër këto hapa."
 	},
 	"betaTag": {
 		"message": "BETA",
@@ -648,7 +641,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 220]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 216]
 		],
 		"translation": "Karta ka skaduar"
 	},
@@ -656,7 +649,7 @@
 		"message": "Card is active",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 24]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 23]],
 		"translation": "Karta është aktive"
 	},
 	"receiveCredential.deferredCredentialHeader": {
@@ -673,7 +666,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 232]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 228]
 		],
 		"translation": "Karta nuk është aktive"
 	},
@@ -703,7 +696,7 @@
 		"message": "Card not usable anymore",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 34]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 33]],
 		"translation": "Karta nuk përdoret më"
 	},
 	"credentialCardSlide.cardOfferedTitle": {
@@ -731,7 +724,7 @@
 		"message": "Card revoked",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 33]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 32]],
 		"translation": "Karta u anulua"
 	},
 	"retrieveCredential.cardSuccessfully added": {
@@ -755,7 +748,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 243]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 239]
 		],
 		"translation": "Karta do të skadojë"
 	},
@@ -770,7 +763,7 @@
 		"message": "Cards",
 		"placeholders": {},
 		"comments": ["Label for the credentials menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 120]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 94]],
 		"translation": "Kartat"
 	},
 	"activity.cardsHeading": {
@@ -786,7 +779,7 @@
 		"message": "Choose a 6-digit PIN",
 		"placeholders": {},
 		"comments": ["Heading when user chooses a PIN"],
-		"origin": [["src/features/onboarding/steps.ts", 12]],
+		"origin": [["src/features/onboarding/steps.ts", 9]],
 		"translation": "Zgjedh një PIN me 6 shifra"
 	},
 	"onboardingIntroduction.step1.description": {
@@ -1097,20 +1090,6 @@
 		],
 		"translation": "Kartë eID"
 	},
-	"pidSetup.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 270]],
-		"translation": "Skanimi i kartës eID u anulua"
-	},
-	"onboarding.eidScanningCancelled": {
-		"message": "eID card scanning cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 480]],
-		"translation": "Skanimi i kartës eID u anulua"
-	},
 	"language.en": {
 		"message": "English",
 		"placeholders": {},
@@ -1126,13 +1105,6 @@
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 91]],
 		"translation": "Fut PIN-in për të ndarë të dhëna"
-	},
-	"pidSetup.enterPinSubtitle": {
-		"message": "Enter the PIN code you use to unlock your wallet.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 401]],
-		"translation": "Fut kodin PIN që përdor për të hapur portofolin tënd."
 	},
 	"txCodeSlide.title": {
 		"message": "Enter transaction code",
@@ -1154,13 +1126,6 @@
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 38]],
 		"translation": "Fut PIN-in e kartës eID"
-	},
-	"simulatorEidCard.enterRealPin": {
-		"message": "Enter your real PIN to continue",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 199]],
-		"translation": "Fut PIN-in tënd të vërtetë për të vazhduar"
 	},
 	"common.toastCardDeleteError": {
 		"message": "Error deleting card",
@@ -1196,7 +1161,7 @@
 		"message": "Error occurred during onboarding",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 424]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 268]],
 		"translation": "Ndodhi gabim gjatë regjistrimit"
 	},
 	"notification.errorParsingInvitation": {
@@ -1238,7 +1203,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 246]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 242]
 		],
 		"translation": "Skadon në {expiryDaysString}"
 	},
@@ -1292,7 +1257,7 @@
 		"message": "Feedback",
 		"placeholders": {},
 		"comments": ["Label for feedback menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 159]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 133]],
 		"translation": "Vlerësim"
 	},
 	"loadingRequestSlide.description": {
@@ -1419,14 +1384,14 @@
 			"userName": ["userName"]
 		},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 72]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 67]],
 		"translation": "Përshëndetje, {userName}!"
 	},
 	"home.helloWithoutName": {
 		"message": "Hello!",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 74]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 69]],
 		"translation": "Përshëndetje!"
 	},
 	"credentials.hideMetadata": {
@@ -1466,13 +1431,6 @@
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 474]],
 		"translation": "Mbajtësi"
-	},
-	"home.howDoesItWork": {
-		"message": "How does it work?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 100]],
-		"translation": "Si funksionon?"
 	},
 	"onboardingWalletExplanation.slide3.title": {
 		"message": "How does it work?",
@@ -1522,13 +1480,6 @@
 		],
 		"translation": "Nëse ndalon, oferta e kartës do të anulohet."
 	},
-	"pidSetup.stopDescription": {
-		"message": "If you stop, you can still do the setup later.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 481]],
-		"translation": "Nëse ndalon, mund ta bësh konfigurimin më vonë."
-	},
 	"inbox.header": {
 		"message": "Inbox",
 		"placeholders": {},
@@ -1568,13 +1519,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 279]],
 		"translation": "Informacioni u nda"
 	},
-	"pidSetup.invalidEidPin": {
-		"message": "Invalid eID card PIN entered",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 113]],
-		"translation": "PIN i kartës eID i pavlefshëm"
-	},
 	"common.invalidInvitation": {
 		"message": "Invalid invitation.",
 		"placeholders": {},
@@ -1588,13 +1532,6 @@
 		"comments": ["Shown when invalid PIN is entered"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 86]],
 		"translation": "PIN i pavlefshëm"
-	},
-	"onboarding.invalidEidPinEntered": {
-		"message": "Invalid PIN entered for eID Card. Please try again",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 337]],
-		"translation": "PIN i pavlefshëm për kartën eID. Provo përsëri"
 	},
 	"qrScan.invalidQrCode": {
 		"message": "Invalid QR code. Try another.",
@@ -1744,7 +1681,7 @@
 		"message": "Limited card usage",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 44]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 43]],
 		"translation": "Përdorim i kufizuar i kartës"
 	},
 	"qrScanScreen.loadingInvitation": {
@@ -1772,7 +1709,7 @@
 		"message": "Menu",
 		"placeholders": {},
 		"comments": ["Title of the menu screen"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 78]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 73]],
 		"translation": "Menu"
 	},
 	"credentials.metadataAttributes": {
@@ -1825,7 +1762,7 @@
 		"message": "No actions required",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 25]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 24]],
 		"translation": "Nuk kërkohen veprime"
 	},
 	"cardLifecycle.limitedByDate.active.description": {
@@ -1833,7 +1770,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 209]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 205]
 		],
 		"translation": "Nuk kërkohen veprime"
 	},
@@ -1938,13 +1875,6 @@
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 240]],
 		"translation": "Nuk u gjetën bashkëveprime të mëparshme"
-	},
-	"pidSetup.notReadyToReceivePid": {
-		"message": "Not ready to receive PID",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 40]],
-		"translation": "Nuk është gati për të marrë PID"
 	},
 	"onboardingDataProtection.toast.secureDevice": {
 		"message": "Now using {0} for PID cryptographic keys.",
@@ -2057,7 +1987,7 @@
 		"message": "Pin entries do not match",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 171]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 122]],
 		"translation": "Hyrjet e PIN-it nuk përputhen"
 	},
 	"common.pinRequiredToAcceptPresentation": {
@@ -2157,7 +2087,7 @@
 		"message": "Present In-person",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 91]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 86]],
 		"translation": "Paraqit personalisht"
 	},
 	"common.presentationCouldNotBeShared": {
@@ -2254,7 +2184,7 @@
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 78]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 73]],
 		"translation": "Merr ose nda nga portofoli yt"
 	},
 	"activity.receivedFailed": {
@@ -2295,7 +2225,7 @@
 		"message": "Refresh card",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 85]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 81]],
 		"translation": "Rifresko kartën"
 	},
 	"common.fields.region": {
@@ -2309,7 +2239,7 @@
 		"message": "Repeat your PIN",
 		"placeholders": {},
 		"comments": ["Heading when user repeats their PIN"],
-		"origin": [["src/features/onboarding/steps.ts", 24]],
+		"origin": [["src/features/onboarding/steps.ts", 21]],
 		"translation": "Përsërit PIN-in tënd"
 	},
 	"inbox.notificationType.request": {
@@ -2360,18 +2290,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 61]],
 		"translation": "Rivendos Portofolin"
 	},
-	"submission.reviewTitle": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Heading shown at the top of the share credentials screen"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
-		"translation": "Shiko kërkesën"
-	},
 	"signShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 72]],
+		"translation": "Shiko kërkesën"
+	},
+	"submission.reviewTitle": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Heading shown at the top of the share credentials screen"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
 		"translation": "Shiko kërkesën"
 	},
 	"common.revoked": {
@@ -2408,7 +2338,7 @@
 		"message": "Scan QR-code",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 85]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 80]],
 		"translation": "Skano kodin QR"
 	},
 	"nfcScanner.complete.title": {
@@ -2477,7 +2407,7 @@
 		"message": "Set up biometrics",
 		"placeholders": {},
 		"comments": ["Heading when user sets up biometrics"],
-		"origin": [["src/features/onboarding/steps.ts", 30]],
+		"origin": [["src/features/onboarding/steps.ts", 27]],
 		"translation": "Konfiguro biometrikën"
 	},
 	"common.setUpLater": {
@@ -2486,13 +2416,6 @@
 		"comments": [],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 25]],
 		"translation": "Konfiguro më vonë"
-	},
-	"onboarding.intro.title": {
-		"message": "Set up your wallet",
-		"placeholders": {},
-		"comments": ["Title for the introduction steps slide in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 43]],
-		"translation": "Konfiguro portofolin tënd"
 	},
 	"settings.title": {
 		"message": "Settings",
@@ -2505,22 +2428,8 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Label for settings menu item"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 150]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 124]],
 		"translation": "Cilësimet"
-	},
-	"menu.setupEid.title": {
-		"message": "Setup digital ID",
-		"placeholders": {},
-		"comments": ["Title for the eID setup prompt"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 91]],
-		"translation": "Konfiguro ID-në dixhitale"
-	},
-	"home.setupYourId": {
-		"message": "Setup your ID",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 107]],
-		"translation": "Konfiguro ID-në tënde"
 	},
 	"submission.share": {
 		"message": "Share",
@@ -2736,7 +2645,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 213]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 209]
 		],
 		"translation": "Disa kredenciale mund të skadojnë ose kërkojnë një lidhje interneti aktive për t'u vërtetuar"
 	},
@@ -2790,13 +2699,6 @@
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 564]
 		],
 		"translation": "Ndal ofertën e kartës?"
-	},
-	"pidSetup.stopTitle": {
-		"message": "Stop ID Setup?",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 477]],
-		"translation": "Ndal konfigurimin e ID-së?"
 	},
 	"didcommCancelFlow.connect.title": {
 		"message": "Stop interaction?",
@@ -2865,7 +2767,7 @@
 			"Label shown on image rows prompting user to tap to view image"
 		],
 		"origin": [
-			["../../packages/app/src/components/CredentialAttributes.tsx", 297]
+			["../../packages/app/src/components/CredentialAttributes.tsx", 316]
 		],
 		"translation": "Prek për të parë"
 	},
@@ -2915,7 +2817,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 221]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 217]
 		],
 		"translation": "Data e skadimit të kësaj karte ka kaluar"
 	},
@@ -2926,7 +2828,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 225]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 221]
 		],
 		"translation": "Data e skadimit të kësaj karte ka kaluar më {0}."
 	},
@@ -2966,7 +2868,7 @@
 		"message": "The issuer has revoked this card and it can not be used anymore. Contact the issuer for more information.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 35]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 34]],
 		"translation": "Lëshuesi e ka anuluar këtë kartë dhe nuk mund të përdoret më. Kontakto lëshuesin për më shumë informacion."
 	},
 	"deferredCredentials.cardNotAvailableYetWithTimeDescription": {
@@ -3023,7 +2925,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 183]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 179]
 		],
 		"translation": "Periudha e vlefshmërisë së kësaj karte është nga {0} deri më {1}."
 	},
@@ -3117,7 +3019,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 197]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 193]
 		],
 		"translation": "Kjo kartë skadon në {expiryDaysString}, më {0}."
 	},
@@ -3125,7 +3027,7 @@
 		"message": "This card requires periodic validation using an internet connection. When usage is low you will be notified.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 46]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 45]],
 		"translation": "Kjo kartë kërkon vërtetim periodik duke përdorur lidhjen e internetit. Kur përdorimi është i ulët, do të njoftohesh."
 	},
 	"cardLifecycle.limitedByDate.activeIn": {
@@ -3136,7 +3038,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 191]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 187]
 		],
 		"translation": "Kjo kartë do të jetë aktive në {activeDaysString}, më {0}."
 	},
@@ -3193,7 +3095,7 @@
 		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
 		"placeholders": {},
 		"comments": ["Explanation of the PIN purpose in onboarding"],
-		"origin": [["src/features/onboarding/steps.ts", 18]],
+		"origin": [["src/features/onboarding/steps.ts", 15]],
 		"translation": "Ky PIN siguron portofolin tënd të identitetit. E fut çdo herë që ndan të dhëna."
 	},
 	"common.archiveCardDescription": {
@@ -3371,13 +3273,6 @@
 		"origin": [["src/features/share/slides/PinSlide.tsx", 47]],
 		"translation": "Përdor kodin PIN të aplikacionit për të konfirmuar kërkesën."
 	},
-	"menu.setupEid.message": {
-		"message": "Use your eID card to set up your digital identity.",
-		"placeholders": {},
-		"comments": ["Explanation for setting up eID card"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 96]],
-		"translation": "Përdor kartën eID për të konfiguruar identitetin tënd dixhital."
-	},
 	"onboardingIntroduction.step2.description": {
 		"message": "Use your ID card PIN to retrieve your identity information.",
 		"placeholders": {},
@@ -3412,7 +3307,7 @@
 		"message": "verifications left",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 45]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 44]],
 		"translation": "verifikimet e mbetura"
 	},
 	"authCodeFlowSlide.heading": {
@@ -3433,22 +3328,8 @@
 		"message": "WALLET",
 		"placeholders": {},
 		"comments": ["Heading above the wallet section"],
-		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 110]],
+		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 84]],
 		"translation": "PORTOFOLI"
-	},
-	"pidSetup.walletNotUnlocked": {
-		"message": "Wallet not unlocked",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 39]],
-		"translation": "Portofoli nuk është i hapur"
-	},
-	"pidSetup.walletPinMissing": {
-		"message": "Wallet PIN is missing",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/features/pid/FunkePidSetupScreen.tsx", 156]],
-		"translation": "PIN-i i portofolit mungon"
 	},
 	"pidSetup.idCardVerify.Subtitle": {
 		"message": "We need your biometrics to verify your identity.",
@@ -3478,7 +3359,7 @@
 		},
 		"comments": [],
 		"origin": [
-			["../../packages/app/src/components/CardInfoLifecycle.tsx", 233]
+			["../../packages/app/src/components/CardInfoLifecycle.tsx", 229]
 		],
 		"translation": "Do të jetë aktive në {activeDaysString}"
 	},
@@ -3621,18 +3502,18 @@
 		],
 		"translation": "Nuk i ke kartën/kartat e kërkuara."
 	},
-	"submission.missingCardsWarning": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when user lacks required credentials"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
-		"translation": "Nuk i ke kartat e nevojshme"
-	},
 	"signShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 180]],
+		"translation": "Nuk i ke kartat e nevojshme"
+	},
+	"submission.missingCardsWarning": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when user lacks required credentials"],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
 		"translation": "Nuk i ke kartat e nevojshme"
 	},
 	"pinLocked.description": {
@@ -3707,7 +3588,7 @@
 		"message": "Your credentials may expire or require an active internet connection to validate.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 26]],
+		"origin": [["../../packages/app/src/components/CardInfoLifecycle.tsx", 25]],
 		"translation": "Kredencialet e tua mund të skadojnë ose kërkojnë një lidhje interneti aktive për t'u vërtetuar."
 	},
 	"pidSetup.dataProtection.subtitle": {
