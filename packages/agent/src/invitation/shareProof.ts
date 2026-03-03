@@ -12,7 +12,6 @@ import {
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
 import type { EitherAgent } from '../agent'
-import { refreshPidIfNeeded } from '../batch'
 import { BiometricAuthenticationError } from './error'
 import type { CredentialsForProofRequest } from './handler'
 import { getFormattedTransactionData } from './transactions'
@@ -70,13 +69,7 @@ export const shareProof = async ({
                   // we should make this configurable maybe? Or dependant on credential type?
                   useMode: CredentialMultiInstanceUseMode.NewOrFirst,
                 })
-          ).map(async ([queryCredentialId, credentials]) => {
-            for (const credential of credentials) {
-              await refreshPidIfNeeded(agent, credential.credentialRecord)
-            }
-
-            return [queryCredentialId, credentials]
-          })
+          ).map(async ([queryCredentialId, credentials]) => [queryCredentialId, credentials])
         )
       )
     : undefined

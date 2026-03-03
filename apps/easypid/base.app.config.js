@@ -71,7 +71,6 @@ const createBaseConfig = (appSpecific) => {
     associatedDomains = [],
     projectId,
     extraConfig = {},
-    enableAusweisSdkEntitlementsIos = true,
   } = appSpecific
 
   const invitationSchemes = [...baseInvitationSchemes, ...additionalInvitationSchemes, scheme]
@@ -127,14 +126,6 @@ const createBaseConfig = (appSpecific) => {
         'expo-asset',
         {
           assets: [...baseAssets, ...appSpecific.assets],
-        },
-      ],
-      [
-        '@animo-id/expo-ausweis-sdk',
-        {
-          ios: {
-            enableEntitlements: enableAusweisSdkEntitlementsIos,
-          },
         },
       ],
       [

@@ -1,12 +1,10 @@
 import { useFirstNameFromPidCredential } from '@easypid/hooks'
-import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useRefreshedDeferredCredentials } from '@package/agent'
 import { useHaptics } from '@package/app/hooks'
 import {
   AnimatedStack,
   Blob,
-  Button,
   CustomIcons,
   FlexPage,
   Heading,
@@ -31,12 +29,9 @@ export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
   const { userName, isLoading } = useFirstNameFromPidCredential()
-  const hasEidCardFeatureFlag = useFeatureFlag('EID_CARD')
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
-  const pushToPidSetup = withHaptics(() => push('/pidSetup'))
-  const pushToAbout = withHaptics(() => push('/menu/about'))
   const pushToOffline = () => {
     withHaptics(() => push('/offline'))()
   }
@@ -93,28 +88,7 @@ export function FunkeWalletScreen() {
                 />
               </XStack>
 
-              {hasEidCardFeatureFlag ? (
-                <XStack ai="center" opacity={isLoading ? 0 : 1}>
-                  {userName ? (
-                    <Button.Text scaleOnPress bg="transparent" onPress={pushToAbout}>
-                      {t({
-                        id: 'home.howDoesItWork',
-                        message: 'How does it work?',
-                      })}
-                    </Button.Text>
-                  ) : (
-                    <Button.Text scaleOnPress bg="transparent" onPress={pushToPidSetup}>
-                      {t({
-                        id: 'home.setupYourId',
-                        message: 'Setup your ID',
-                      })}{' '}
-                      <HeroIcons.ArrowRight ml="$-2.5" color="$primary-500" size={16} />
-                    </Button.Text>
-                  )}
-                </XStack>
-              ) : (
-                <Stack h="$4" />
-              )}
+              <Stack h="$4" />
             </YStack>
             <YStack gap="$4" jc="space-around" fg={1} f={1}>
               <YStack gap="$4">

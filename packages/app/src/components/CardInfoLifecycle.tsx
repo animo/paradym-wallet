@@ -4,7 +4,6 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { Button, HeroIcons, InfoButton, InfoSheet, Stack } from '@package/ui'
 import type { StatusVariant } from '@package/ui/utils/variants'
 import { formatDate, formatDaysString, getDaysUntil } from '@package/utils'
-import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useHaptics } from '../hooks/useHaptics'
 
@@ -59,7 +58,6 @@ interface CardInfoLifecycleProps {
 }
 
 export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefreshToken }: CardInfoLifecycleProps) {
-  const { push } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const { withHaptics } = useHaptics()
   const state = isRevoked ? 'revoked' : 'active'
@@ -69,9 +67,6 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
   // TODO: Check if refresh token is expired
   // Should also make sure that pid setup works when refresh token is expired
   const isRefreshTokenExpired = false
-  const onPressValidate = withHaptics(() => {
-    withHaptics(() => push('/pidSetup'))
-  })
 
   if (validUntil || validFrom) {
     return <CardInfoLimitedByDate validUntil={validUntil} validFrom={validFrom} hasRefreshToken={hasRefreshToken} />
@@ -81,7 +76,8 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
     <>
       {isRefreshTokenExpired && (
         <Stack pb="$4">
-          <Button.Solid bg="$grey-50" bw="$0.5" borderColor="$grey-200" color="$grey-900" onPress={onPressValidate}>
+          {/* TODO: what is this screen? the button press just redirects to the pid setup */}
+          <Button.Solid bg="$grey-50" bw="$0.5" borderColor="$grey-200" color="$grey-900" disabled>
             <Trans id="cardLifecycle.refreshCardButton">Refresh card</Trans>{' '}
             <HeroIcons.ArrowPath ml="$-2" size={20} color="$grey-700" />
           </Button.Solid>
