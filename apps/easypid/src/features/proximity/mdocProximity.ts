@@ -3,7 +3,6 @@ import { cborDecode, cborEncode, DataItem, DeviceRequest } from '@animo-id/mdoc'
 import { CredentialMultiInstanceUseMode, type Mdoc, MdocService, useInstanceFromCredentialRecord } from '@credo-ts/core'
 import type { AppAgent } from '@easypid/agent'
 import type { FormattedSubmission, MdocRecord } from '@package/agent'
-import { refreshPidIfNeeded } from '@package/agent/batch'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
@@ -77,11 +76,6 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
       if (!e.isSatisfied) throw new Error(`Requirement for doctype ${e.inputDescriptorId} not satisfied`)
 
       const credentialRecord = e.credentials[0].credential.record as MdocRecord
-
-      // FIXME: we should move this to the request screen. If there's no new credentials we should add a 'refresh' button?
-      // Or we should just do it in the background (but may not be possible)
-      // Refresh pid if needed
-      await refreshPidIfNeeded(options.agent, credentialRecord)
 
       // Optionally handle batch issuance
       const { credentialInstance } = await useInstanceFromCredentialRecord({

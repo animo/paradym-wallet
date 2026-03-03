@@ -23,7 +23,6 @@ const APP_CONFIGS = {
     associatedDomains: ['funke.animo.id'],
     projectId: '28b058bb-3c4b-4347-8e72-41dfc1dd99eb',
     assets: ['./assets/funke/icon.png'],
-    enableAusweisSdkEntitlementsIos: true,
   }),
 
   PARADYM_WALLET: createBaseConfig({
@@ -40,7 +39,6 @@ const APP_CONFIGS = {
     associatedDomains: ['paradym.id', 'dev.paradym.id', 'paradymwallet.app'],
     projectId: 'b5f457fa-bcab-4c6e-8092-8cdf1239027a',
     assets: ['./assets/paradym/icon.png'],
-    enableAusweisSdkEntitlementsIos: false,
     extraConfig: {
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
       redirectBaseUrl: 'https://paradymwallet.app/oauth2/redirect',

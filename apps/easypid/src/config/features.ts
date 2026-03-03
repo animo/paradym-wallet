@@ -1,6 +1,6 @@
 export const APP_CONFIGS = {
   FUNKE_WALLET: {
-    EID_CARD: true,
+    EID_CARD: false,
     AI_ANALYSIS: true,
     DIDCOMM: false,
     CLOUD_HSM: true,

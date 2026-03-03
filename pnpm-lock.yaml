@@ -16,8 +16,8 @@ catalogs:
       specifier: 0.4.0
       version: 0.4.0
     '@animo-id/expo-mdoc-data-transfer':
-      specifier: 0.1.4-alpha.3
-      version: 0.1.4-alpha.3
+      specifier: 0.2.0-alpha.4
+      version: 0.2.0-alpha.4
     '@animo-id/expo-secure-environment':
       specifier: 0.1.5
       version: 0.1.5
@@ -300,7 +300,7 @@ importers:
         version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
-        version: 0.1.4-alpha.3(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        version: 0.2.0-alpha.4(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
         version: 0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -782,8 +782,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.3':
-    resolution: {integrity: sha512-0k7siBV5OPWtL7M3TJE12hyAlSSy8FXG6NHqZ2lWRawkbOxAs8p4TkDxMoLYXFwyqRYkQBlS/x7J39oWAOlJpw==}
+  '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4':
+    resolution: {integrity: sha512-FCh38UNV6E8yi0QGhuOs4ECpWxeUfxcTLBy/lQkOjULRBp/X7/PCuPe+9L8IBSkelTFn93Tetxh/iM+pJ5tbEQ==}
     peerDependencies:
       expo: '>= 51'
       react: '*'
@@ -6678,15 +6678,12 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
 
-  '@animo-id/expo-mdoc-data-transfer@0.1.4-alpha.3(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+  '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@expo/config-plugins': 8.0.11
       buffer: 6.0.3
       expo: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
-    transitivePeerDependencies:
-      - supports-color
 
   '@animo-id/expo-secure-environment@0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:

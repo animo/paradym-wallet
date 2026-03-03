@@ -147,7 +147,6 @@ The following section lists the software components used to create the EasyPID w
 - [Expo Secure Environment](https://github.com/animo/expo-secure-environment)
 - [Expo Mdoc Data Transfer](https://github.com/animo/expo-mdoc-data-transfer)
   - Based on EUDI Reference Implementation
-- [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk)
 - [Wallet Service Provider Implementation](https://github.com/animo/funke-wallet-provider)
 - [Expo Digital Credentials API](https://github.com/animo/expo-digital-credentials-api)
 
