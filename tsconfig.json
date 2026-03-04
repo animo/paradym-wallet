@@ -9,13 +9,13 @@
 		"typeRoots": ["./types"],
 		"paths": {
 			"@package/*": ["./packages/*/src"],
-			"@package/agent/*": ["./packages/agent/src/*"],
 			"@package/ui/*": ["./packages/ui/src/*"],
 			"@package/app/*": ["./packages/app/src/*"],
 			"@package/scanner/*": ["./packages/scanner/src/*"],
-			"@package/secure-store/*": ["./packages/secure-store/*"],
 			"@package/utils/*": ["./packages/utils/src/*"],
-			"@easypid/*": ["./apps/easypid/src/*"]
+			"@easypid/*": ["./apps/easypid/src/*"],
+			"@paradym/wallet-sdk/*": ["./packages/sdk/src/*"],
+			"@paradym/wallet-sdk": ["./packages/sdk/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "build"]

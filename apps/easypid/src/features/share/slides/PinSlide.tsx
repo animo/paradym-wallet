@@ -3,14 +3,14 @@ import { PinDotsInput, type PinDotsInputRef, useWizard } from '@package/app'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import { useRef, useState } from 'react'
 
-export interface onPinSubmitProps {
+export interface OnPinSubmitProps {
   pin?: string
   onPinComplete?: () => void
   onPinError?: () => void
 }
 
 export interface PinSlideProps {
-  onPinSubmit: ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => Promise<void>
+  onPinSubmit: ({ pin, onPinComplete, onPinError }: OnPinSubmitProps) => Promise<void>
   isLoading: boolean
 }
 

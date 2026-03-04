@@ -1,53 +1,21 @@
-import type { W3cV2CredentialRecord } from '@credo-ts/core'
-import { useAppAgent } from '@easypid/agent'
-import {
-  trustedDidEntities,
-  trustedOpenId4VciIssuerEntities,
-  trustedX509Entities,
-  walletClient,
-} from '@easypid/constants'
-import { InvalidPinError } from '@easypid/crypto/error'
+import { walletClient } from '@easypid/constants'
 import { useDevelopmentMode } from '@easypid/hooks'
-
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import { useLingui } from '@lingui/react/macro'
-import {
-  acquireAuthorizationCodeAccessToken,
-  acquireAuthorizationCodeUsingPresentation,
-  acquirePreAuthorizedAccessToken,
-  BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
-  type DeferredCredential,
-  extractOpenId4VcCredentialMetadata,
-  type FormattedAttribute,
-  getCredentialDisplayWithDefaults,
-  getCredentialForDisplay,
-  getCredentialForDisplayId,
-  getCredentialsForProofRequest,
-  getOpenId4VcCredentialDisplay,
-  type MdocRecord,
-  OpenId4VciAuthorizationFlow,
-  type OpenId4VciRequestTokenResponse,
-  type OpenId4VciResolvedAuthorizationRequest,
-  type OpenId4VciResolvedCredentialOffer,
-  receiveCredentialFromOpenId4VciOffer,
-  resolveOpenId4VciOffer,
-  type SdJwtVcRecord,
-  storeCredential,
-  storeDeferredCredential,
-  storeReceivedActivity,
-  type TrustedEntity,
-  type TrustMechanism,
-  type W3cCredentialRecord,
-} from '@package/agent'
-import { shareProof } from '@package/agent/invitation/shareProof'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import type { CredentialForDisplay, DeferredCredentialBefore, ResolveCredentialOfferReturn } from '@paradym/wallet-sdk'
+import {
+  ParadymWalletAuthenticationInvalidPinError,
+  ParadymWalletBiometricAuthenticationCancelledError,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { type onPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
+import { type OnPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
@@ -60,54 +28,31 @@ import { VerifyPartySlide } from './slides/VerifyPartySlide'
 type Query = { uri: string }
 
 export function FunkeCredentialNotificationScreen() {
-  const { agent } = useAppAgent()
+  const { paradym } = useParadym('unlocked')
+
   const params = useLocalSearchParams<Query>()
   const toast = useToastController()
 
   const { t } = useLingui()
   const pushToWallet = usePushToWallet()
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [errorReason, setErrorReason] = useState<string>()
   const [isCompleted, setIsCompleted] = useState(false)
-  const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
-  const [resolvedCredentialOffer, setResolvedCredentialOffer] = useState<OpenId4VciResolvedCredentialOffer>()
-  const [resolvedAuthorizationRequest, setResolvedAuthorizationRequest] =
-    useState<OpenId4VciResolvedAuthorizationRequest>()
-  const [issuerTrust, setIssuerTrust] = useState<{ trustedEntities: TrustedEntity[]; trustMechanism: TrustMechanism }>()
-
+  const [resolvedCredentialOffer, setResolvedCredentialOffer] = useState<ResolveCredentialOfferReturn>()
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
-  const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
-  const [credentialAttributes, setCredentialAttributes] = useState<FormattedAttribute[]>()
-  const [receivedRecord, setReceivedRecord] = useState<
-    SdJwtVcRecord | MdocRecord | W3cCredentialRecord | W3cV2CredentialRecord
-  >()
+  const [deferredCredential, setDeferredCredential] = useState<DeferredCredentialBefore>()
+  const [receivedCredential, setReceivedCredential] = useState<CredentialForDisplay>()
 
-  const [deferredCredential, setDeferredCredential] =
-    useState<Omit<DeferredCredential, 'id' | 'createdAt' | 'lastCheckedAt' | 'activityId'>>()
-
-  // TODO: where to transform?
-  // Combine oid4vci issuer metadata and openid fed into one pipeline. If openid it's trusted
-  const issuerMetadata = resolvedCredentialOffer?.metadata.credentialIssuer
-  // We want the first supported configuration id
-  // TODO: handle empty configuration ids
-  const configurationId = resolvedCredentialOffer?.offeredCredentialConfigurations
-    ? Object.keys(resolvedCredentialOffer.offeredCredentialConfigurations)[0]
-    : undefined
-  const configuration = configurationId
-    ? resolvedCredentialOffer?.offeredCredentialConfigurations[configurationId]
-    : undefined
-
-  const credentialDisplay = getCredentialDisplayWithDefaults(
-    configuration && issuerMetadata
-      ? getOpenId4VcCredentialDisplay(
-          extractOpenId4VcCredentialMetadata(configuration, {
-            display: issuerMetadata?.display,
-            id: issuerMetadata?.credential_issuer,
-          })
-        )
-      : {}
+  const shouldUsePinForPresentation = useShouldUsePinForSubmission(
+    resolvedCredentialOffer?.flow === 'auth-presentation-during-issuance'
+      ? resolvedCredentialOffer.credentialsForProofRequest.formattedSubmission
+      : undefined
   )
+
+  const onCancel = () => pushToWallet()
+  const onGoToWallet = () => pushToWallet()
 
   const setErrorReasonWithError = useCallback(
     (baseMessage: string, error: unknown) => {
@@ -120,230 +65,26 @@ export function FunkeCredentialNotificationScreen() {
     [isDevelopmentModeEnabled]
   )
 
-  const shouldUsePinForPresentation = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
-  const preAuthGrant =
-    resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
-  const txCode = preAuthGrant?.tx_code
-
   useEffect(() => {
-    resolveOpenId4VciOffer({
-      agent,
-      offer: {
-        uri: params.uri,
-      },
-      authorization: walletClient,
-      trustedX509Entities,
-      trustedDidEntities,
-      trustedOpenId4VciIssuerEntities,
-    })
-      .then(({ resolvedAuthorizationRequest, resolvedCredentialOffer, issuerTrust }) => {
-        setResolvedCredentialOffer(resolvedCredentialOffer)
-        setResolvedAuthorizationRequest(resolvedAuthorizationRequest)
-        setIssuerTrust(issuerTrust)
+    paradym.openid4vc
+      .resolveCredentialOffer({
+        offerUri: params.uri,
+        authorization: walletClient,
+      })
+      .then((result) => {
+        setResolvedCredentialOffer(result)
       })
       .catch((error) => {
         setErrorReasonWithError(t(commonMessages.credentialInformationCouldNotBeExtracted), error)
-        agent.config.logger.error(`Couldn't resolve OpenID4VCI offer`, {
+        paradym.logger.error(`Couldn't resolve OpenID4VCI offer`, {
           error,
         })
       })
-  }, [params.uri, agent, setErrorReasonWithError, t])
-
-  const retrieveCredentials = useCallback(
-    async (
-      resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer,
-      tokenResponse: OpenId4VciRequestTokenResponse,
-      configurationId: string,
-      resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequest
-    ) => {
-      const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
-        agent,
-        resolvedCredentialOffer,
-        credentialConfigurationIdsToRequest: [configurationId],
-        accessToken: tokenResponse,
-        clientId: resolvedAuthorizationRequest ? walletClient.clientId : undefined,
-        // Always request batch for non pid credentials
-        requestBatch: true,
-      })
-
-      if (deferredCredentials.length && credentials.length) {
-        setErrorReasonWithError(
-          t(commonMessages.credentialInformationCouldNotBeExtracted),
-          new Error('Received both immediate and deferred credentials')
-        )
-        agent.config.logger.error('Received both immediate and deferred credentials in OpenID4VCI response')
-        return
-      }
-
-      if (deferredCredentials.length) {
-        setDeferredCredential({
-          accessToken: {
-            ...tokenResponse,
-            dpop: tokenResponse.dpop ? { ...tokenResponse.dpop, jwk: tokenResponse.dpop.jwk.toJson() } : undefined,
-          },
-          response: deferredCredentials[0],
-          issuerMetadata: resolvedCredentialOffer.metadata,
-          clientId: resolvedAuthorizationRequest ? walletClient.clientId : undefined,
-        })
-      }
-
-      if (credentials.length) {
-        const credentialRecord = credentials[0].credential
-
-        // For the credential screen we want to show all attributes
-        const { attributes } = getCredentialForDisplay(credentialRecord)
-        setCredentialAttributes(attributes)
-        setReceivedRecord(credentialRecord)
-      }
-    },
-    [agent, setErrorReasonWithError, t]
-  )
-
-  // TODO: Should we add this to the activity? We also don't do it for issuance
-  const onProofDecline = async () => {
-    toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
-    pushToWallet()
-  }
-
-  const onCompleteCredentialRetrieval = async () => {
-    if (!receivedRecord && !deferredCredential) return
-
-    let deferredCredentialId: string | undefined
-
-    try {
-      if (receivedRecord) {
-        await storeCredential(agent, receivedRecord)
-      } else if (deferredCredential) {
-        const { id } = await storeDeferredCredential(agent, deferredCredential)
-        deferredCredentialId = id
-      }
-
-      await storeReceivedActivity(agent, {
-        // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
-        // the credential. Signed issuer metadata is the solution.
-        entityId: resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
-        host: credentialDisplay.issuer.domain,
-        name: credentialDisplay.issuer.name,
-        logo: credentialDisplay.issuer.logo,
-        backgroundColor: '#ffffff', // Default to a white background for now
-        status: deferredCredentialId ? 'pending' : 'success',
-        deferredCredentials: deferredCredentialId ? [credentialDisplay] : [],
-        credentialIds: receivedRecord ? [getCredentialForDisplayId(receivedRecord)] : [],
-      })
-
-      setIsCompleted(true)
-    } catch (error) {
-      agent.config.logger.error('Error storing credentials', {
-        error,
-      })
-      setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
-    }
-  }
-
-  const acquireCredentialsAuth = useCallback(
-    async (authorizationCode: string) => {
-      if (!resolvedCredentialOffer || !resolvedAuthorizationRequest || !configurationId) {
-        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
-        return
-      }
-      try {
-        const tokenResponse = await acquireAuthorizationCodeAccessToken({
-          agent,
-          resolvedCredentialOffer,
-          redirectUri: walletClient.redirectUri,
-          authorizationCode,
-          clientId: walletClient.clientId,
-          dPopKeyJwk: resolvedAuthorizationRequest.dpop?.jwk,
-          codeVerifier:
-            'codeVerifier' in resolvedAuthorizationRequest ? resolvedAuthorizationRequest.codeVerifier : undefined,
-        })
-
-        await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId, resolvedAuthorizationRequest)
-      } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
-          error,
-        })
-        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
-      }
-    },
-    [
-      resolvedCredentialOffer,
-      resolvedAuthorizationRequest,
-      retrieveCredentials,
-      agent,
-      configurationId,
-      setErrorReasonWithError,
-      t,
-    ]
-  )
-
-  const acquireCredentialsPreAuth = useCallback(
-    async (txCode?: string) => {
-      if (!resolvedCredentialOffer || !configurationId) {
-        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
-        return
-      }
-
-      try {
-        const tokenResponse = await acquirePreAuthorizedAccessToken({
-          agent,
-          resolvedCredentialOffer,
-          txCode,
-        })
-        await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId)
-      } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
-          error,
-        })
-        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
-      }
-    },
-    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError, t]
-  )
-
-  const parsePresentationRequestUrl = useCallback(
-    (oid4vpRequestUrl: string) =>
-      getCredentialsForProofRequest({
-        agent,
-        uri: oid4vpRequestUrl,
-      })
-        .then(setCredentialsForRequest)
-        .catch((error) => {
-          setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
-          agent.config.logger.error('Error getting credentials for request', {
-            error,
-          })
-        }),
-    [agent, setErrorReasonWithError, t]
-  )
-
-  const onCheckCardContinue = useCallback(async () => {
-    if (preAuthGrant && !preAuthGrant.tx_code) {
-      await acquireCredentialsPreAuth()
-    }
-    if (
-      !preAuthGrant &&
-      resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance
-    ) {
-      await parsePresentationRequestUrl(resolvedAuthorizationRequest.openid4vpRequestUrl)
-    }
-  }, [acquireCredentialsPreAuth, parsePresentationRequestUrl, preAuthGrant, resolvedAuthorizationRequest])
-
-  const onSubmitTxCode = useCallback(
-    async (txCode: string) => {
-      await acquireCredentialsPreAuth(txCode)
-    },
-    [acquireCredentialsPreAuth]
-  )
+  }, [params.uri, paradym, setErrorReasonWithError, t])
 
   const onPresentationAccept = useCallback(
-    async ({ pin, onPinComplete, onPinError }: onPinSubmitProps) => {
-      if (
-        !credentialsForRequest ||
-        !resolvedCredentialOffer ||
-        !resolvedAuthorizationRequest ||
-        resolvedAuthorizationRequest.authorizationFlow !== OpenId4VciAuthorizationFlow.PresentationDuringIssuance
-      ) {
+    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+      if (resolvedCredentialOffer?.flow !== 'auth-presentation-during-issuance') {
         setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
         return
       }
@@ -352,14 +93,13 @@ export function FunkeCredentialNotificationScreen() {
 
       if (shouldUsePinForPresentation) {
         if (!pin) {
-          setErrorReason(t(commonMessages.pinRequiredToAcceptPresentation))
+          setErrorReason('PIN is required to accept the presentation.')
           return
         }
-        // TODO: maybe provide to shareProof method?
         try {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (error) {
-          if (error instanceof InvalidPinError) {
+          if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
             onPinError?.()
             setIsSharingPresentation(false)
             toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
@@ -372,78 +112,183 @@ export function FunkeCredentialNotificationScreen() {
       }
 
       try {
-        const { presentationDuringIssuanceSession } = await shareProof({
-          agent,
-          resolvedRequest: credentialsForRequest,
-          selectedCredentials: {},
+        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
+          authorization: walletClient,
+          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
+          resolvedAuthorizationRequest: resolvedCredentialOffer.resolvedAuthorizationRequest,
+          credentialsForRequest: resolvedCredentialOffer.credentialsForProofRequest,
         })
 
-        const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({
-          resolvedCredentialOffer,
-          authSession: resolvedAuthorizationRequest.authSession,
-          presentationDuringIssuanceSession,
-          agent,
-          dPopKeyJwk: resolvedAuthorizationRequest?.dpop?.jwk,
-        })
-
-        await acquireCredentialsAuth(authorizationCode)
         onPinComplete?.()
-        setIsSharingPresentation(false)
+
+        updateCredentials(acquiredCredentials)
       } catch (error) {
-        setIsSharingPresentation(false)
-        if (error instanceof BiometricAuthenticationCancelledError) {
+        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
           return
         }
-        if (error instanceof InvalidPinError) {
+        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
           onPinError?.()
           toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
           return
         }
 
-        agent.config.logger.error('Error accepting presentation', {
+        paradym.logger.error('Error accepting presentation', {
           error,
         })
         setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
+      } finally {
+        setIsSharingPresentation(false)
       }
     },
     [
-      credentialsForRequest,
-      agent,
       t,
-      acquireCredentialsAuth,
-      resolvedAuthorizationRequest,
-      resolvedCredentialOffer,
+      paradym,
       shouldUsePinForPresentation,
       toast.show,
       setErrorReasonWithError,
+      paradym.logger.error,
+      resolvedCredentialOffer,
     ]
   )
 
-  const onCancel = () => pushToWallet()
-  const onGoToWallet = () => pushToWallet()
-
-  const isAuthFlow =
-    !preAuthGrant &&
-    resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.PresentationDuringIssuance &&
-    credentialsForRequest
-
-  const isPreAuthWithTxFlow = preAuthGrant && txCode
-
-  const isBrowserAuthFlow =
-    !preAuthGrant &&
-    resolvedCredentialOffer &&
-    resolvedAuthorizationRequest?.authorizationFlow === OpenId4VciAuthorizationFlow.Oauth2Redirect
-
   // These are callbacks to not change on every render
   const onCancelAuthorization = useCallback(
-    (errorMessage?: string) => setErrorReason(errorMessage ?? t(commonMessages.authorizationCancelled)),
+    () => setErrorReason(t({ id: 'browserAuthFlow.authorizationCancelled', message: 'Authorization cancelled' })),
     [t]
   )
-  const onErrorAuthorization = useCallback(
-    (errorMessage?: string) => setErrorReason(errorMessage ?? t(commonMessages.authorizationFailed)),
-    [t]
+
+  const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
+
+  const acquireCredentialsAuth = useCallback(
+    async (authorizationCode: string) => {
+      if (
+        resolvedCredentialOffer?.flow !== 'auth' &&
+        resolvedCredentialOffer?.flow !== 'auth-presentation-during-issuance'
+      ) {
+        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
+        return
+      }
+
+      // Credentials will be acquired later when presentation is done
+      if (resolvedCredentialOffer?.flow === 'auth-presentation-during-issuance') return
+
+      try {
+        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
+          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
+          resolvedAuthorizationRequest: resolvedCredentialOffer.resolvedAuthorizationRequest,
+          authorizationCode,
+          authorization: walletClient,
+        })
+
+        updateCredentials(acquiredCredentials)
+      } catch (error) {
+        paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+          error,
+        })
+        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
+      }
+    },
+    [paradym, setErrorReasonWithError, t, resolvedCredentialOffer]
   )
+
+  const acquireCredentialsPreAuth = useCallback(
+    async (txCode?: string) => {
+      if (resolvedCredentialOffer?.flow !== 'pre-auth-with-tx-code' && resolvedCredentialOffer?.flow !== 'pre-auth') {
+        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
+        return
+      }
+
+      // Credentials will be acquired when the txCode is entered on the next screen
+      if (resolvedCredentialOffer.flow === 'pre-auth-with-tx-code' && !txCode) return
+
+      try {
+        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
+          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
+          transactionCode: txCode,
+        })
+
+        updateCredentials(acquiredCredentials)
+      } catch (error) {
+        paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+          error,
+        })
+        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
+      }
+    },
+    [paradym, setErrorReasonWithError, t, resolvedCredentialOffer]
+  )
+
+  const onCompleteCredentialRetrieval = async () => {
+    await paradym.openid4vc.completeCredentialRetrieval({
+      resolvedCredentialOffer: resolvedCredentialOffer?.resolvedCredentialOffer,
+      recordToStore: receivedCredential
+        ? dcApiRegisterOptions({ paradym, credentialRecord: receivedCredential.record })
+        : undefined,
+      deferredCredential,
+    })
+
+    setIsCompleted(true)
+  }
+
+  const updateCredentials = (options: {
+    deferredCredentials: DeferredCredentialBefore[]
+    credentials: CredentialForDisplay[]
+  }) => {
+    if (options.deferredCredentials.length > 0 && options.credentials.length > 0) {
+      setErrorReasonWithError(
+        t(commonMessages.credentialInformationCouldNotBeExtracted),
+        new Error('Received both immediate and deferred credentials')
+      )
+      paradym.logger.error('Received both immediate and deferred credentials in OpenID4VCI response')
+      return
+    }
+
+    if (options.deferredCredentials.length) {
+      setDeferredCredential(options.deferredCredentials[0])
+    }
+
+    if (options.credentials.length) {
+      setReceivedCredential(options.credentials[0])
+    }
+  }
+
+  const onProofDecline = async () => {
+    toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
+    pushToWallet()
+  }
+
+  // TODO: it is not the cleanest, but the UI shows it perfectly.
+  //       This is done to make sure we have a defined `resolvedOffer` in all the next steps
+  //       Do we want to keep it like this? Or is there a better way where the rest of slides has it defined
+  if (!resolvedCredentialOffer) {
+    return (
+      <SlideWizard
+        steps={[
+          {
+            step: 'loading-request',
+            progress: 16.5,
+            screen: <LoadingRequestSlide key="loading-request" isLoading={true} isError={!!errorReason} />,
+          },
+        ]}
+        onCancel={onCancel}
+        errorScreen={() => (
+          <InteractionErrorSlide key="credential-error" flowType="issue" reason={errorReason} onCancel={onCancel} />
+        )}
+        isError={errorReason !== undefined}
+        confirmation={{
+          title: t({
+            id: 'receiveCredential.stopTitle',
+            message: 'Stop card offer?',
+          }),
+          description: t({
+            id: 'receiveCredential.stopDescription',
+            message: 'If you stop, the card offer will be cancelled.',
+          }),
+        }}
+      />
+    )
+  }
 
   return (
     <SlideWizard
@@ -463,16 +308,18 @@ export function FunkeCredentialNotificationScreen() {
             <VerifyPartySlide
               key="verify-issuer"
               type="offer"
-              name={credentialDisplay.issuer.name}
-              logo={credentialDisplay.issuer.logo}
-              entityId={issuerMetadata?.credential_issuer}
-              trustedEntities={issuerTrust?.trustedEntities}
-              trustMechanism={issuerTrust?.trustMechanism}
-              onContinue={onCheckCardContinue}
+              name={resolvedCredentialOffer.credentialDisplay.issuer.name}
+              logo={resolvedCredentialOffer.credentialDisplay.issuer.logo}
+              entityId={resolvedCredentialOffer.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer}
+              onContinue={
+                resolvedCredentialOffer.flow === 'pre-auth' || resolvedCredentialOffer.flow === 'pre-auth-with-tx-code'
+                  ? acquireCredentialsPreAuth
+                  : undefined
+              }
             />
           ),
         },
-        isBrowserAuthFlow
+        resolvedCredentialOffer.flow === 'auth'
           ? {
               step: 'auth-code-flow',
               progress: 49.5,
@@ -480,11 +327,11 @@ export function FunkeCredentialNotificationScreen() {
               screen: (
                 <AuthCodeFlowSlide
                   key="auth-code-flow"
-                  display={credentialDisplay}
+                  display={resolvedCredentialOffer.credentialDisplay}
                   authCodeFlowDetails={{
-                    openUrl: resolvedAuthorizationRequest.authorizationRequestUrl,
+                    openUrl: resolvedCredentialOffer.resolvedAuthorizationRequest.authorizationRequestUrl,
                     redirectUri: walletClient.redirectUri,
-                    domain: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+                    domain: resolvedCredentialOffer.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
                   }}
                   onAuthFlowCallback={acquireCredentialsAuth}
                   onCancel={onCancelAuthorization}
@@ -492,18 +339,30 @@ export function FunkeCredentialNotificationScreen() {
                 />
               ),
             }
-          : {
-              step: 'check-card',
-              progress: 49.5,
-              screen: (
-                <CredentialCardSlide
-                  key="credential-card"
-                  type={isAuthFlow ? 'presentation' : isPreAuthWithTxFlow ? 'pin' : 'noAuth'}
-                  display={credentialDisplay}
-                />
-              ),
-            },
-        isAuthFlow
+          : resolvedCredentialOffer.flow === 'auth-presentation-during-issuance'
+            ? {
+                step: 'check-card',
+                progress: 49.5,
+                screen: (
+                  <CredentialCardSlide
+                    key="credential-card"
+                    type="presentation"
+                    display={resolvedCredentialOffer.credentialDisplay}
+                  />
+                ),
+              }
+            : {
+                step: 'check-card',
+                progress: 49.5,
+                screen: (
+                  <CredentialCardSlide
+                    key="credential-card"
+                    type={resolvedCredentialOffer.flow === 'pre-auth-with-tx-code' ? 'pin' : 'noAuth'}
+                    display={resolvedCredentialOffer.credentialDisplay}
+                  />
+                ),
+              },
+        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' && shouldUsePinForPresentation
           ? {
               step: 'presentation-during-issuance',
               progress: 66,
@@ -511,9 +370,9 @@ export function FunkeCredentialNotificationScreen() {
               screen: (
                 <ShareCredentialsSlide
                   key="share-credentials"
-                  onAccept={shouldUsePinForPresentation ? undefined : () => onPresentationAccept({})}
-                  logo={credentialsForRequest.verifier.logo}
-                  submission={credentialsForRequest.formattedSubmission}
+                  onAccept={shouldUsePinForPresentation ? undefined : onPresentationAccept}
+                  logo={resolvedCredentialOffer.credentialsForProofRequest.verifier.logo}
+                  submission={resolvedCredentialOffer.credentialsForProofRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
                   onDecline={onProofDecline}
                   // Not supported for this flow atm
@@ -522,19 +381,19 @@ export function FunkeCredentialNotificationScreen() {
               ),
             }
           : undefined,
-        isAuthFlow && shouldUsePinForPresentation
+        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance'
           ? {
               step: 'pin-enter',
               progress: 82.5,
               screen: <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinSubmit={onPresentationAccept} />,
             }
           : undefined,
-        isPreAuthWithTxFlow
+        resolvedCredentialOffer.flow === 'pre-auth-with-tx-code'
           ? {
               step: 'tx-code',
               progress: 66,
               backIsCancel: true,
-              screen: <TxCodeSlide txCode={txCode} onTxCode={onSubmitTxCode} />,
+              screen: <TxCodeSlide txCode={resolvedCredentialOffer.txCodeInfo} onTxCode={acquireCredentialsPreAuth} />,
             }
           : undefined,
 
@@ -546,8 +405,8 @@ export function FunkeCredentialNotificationScreen() {
             <CredentialRetrievalSlide
               key="retrieve-credential"
               onGoToWallet={onGoToWallet}
-              display={credentialDisplay}
-              attributes={credentialAttributes ?? []}
+              display={resolvedCredentialOffer.credentialDisplay}
+              attributes={receivedCredential?.attributes ?? []}
               deferred={deferredCredential !== undefined}
               isCompleted={isCompleted}
               onAccept={onCompleteCredentialRetrieval}

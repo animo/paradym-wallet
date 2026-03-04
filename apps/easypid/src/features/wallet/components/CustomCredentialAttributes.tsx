@@ -7,7 +7,6 @@ import {
   type PidMdocAttributes,
 } from '@easypid/utils/pidCustomMetadata'
 import { Trans, useLingui } from '@lingui/react/macro'
-import type { CredentialForDisplay } from '@package/agent'
 import { CredentialAttributes, ErrorBoundary } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
@@ -22,6 +21,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
