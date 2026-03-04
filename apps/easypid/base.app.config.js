@@ -146,7 +146,7 @@ const createBaseConfig = (appSpecific) => {
             extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
           },
           ios: {
-            deploymentTarget: '15.1',
+            deploymentTarget: '16.0',
             useFrameworks: 'dynamic',
           },
         },
