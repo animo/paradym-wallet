@@ -1,13 +1,4 @@
 import { type _t, Trans, useLingui } from '@lingui/react/macro'
-import type {
-  FormattedAttribute,
-  FormattedAttributeArray,
-  FormattedAttributeDate,
-  FormattedAttributeNumber,
-  FormattedAttributeObject,
-  FormattedAttributePrimitive,
-  FormattedAttributeString,
-} from '@package/agent'
 import { commonMessages } from '@package/translations'
 import {
   FloatingSheet,
@@ -23,6 +14,15 @@ import {
   YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
+import type {
+  FormattedAttribute,
+  FormattedAttributeArray,
+  FormattedAttributeDate,
+  FormattedAttributeNumber,
+  FormattedAttributeObject,
+  FormattedAttributePrimitive,
+  FormattedAttributeString,
+} from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import type { View } from 'react-native'

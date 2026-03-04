@@ -1,4 +1,8 @@
-import type { SecureEnvironment } from '@animo-id/expo-secure-environment'
+import {
+  type SecureEnvironment,
+  setFallbackSecureEnvironment,
+  shouldUseFallbackSecureEnvironment,
+} from '@animo-id/expo-secure-environment'
 import { AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import {
   Agent,
@@ -10,11 +14,12 @@ import {
   TypedArrayEncoder,
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
-import { askar } from '@openwallet-foundation/askar-react-native'
-import type { EasyPIDAppAgent } from '@package/agent'
-import { secureWalletKey } from '@package/secure-store/secureUnlock'
-import { getWalletId } from '../agent/walletId'
-import { InvalidPinError } from './error'
+import { CURRENT_APP_TYPE } from '@easypid/config/appType'
+import { getShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
+import { NativeAskar } from '@openwallet-foundation/askar-react-native'
+import type { ParadymWalletSdk } from '@paradym/wallet-sdk'
+import { ParadymWalletAuthenticationInvalidPinError, secureWalletKey } from '@paradym/wallet-sdk'
+import type { AnyAgent } from '@paradym/wallet-sdk/agent'
 import { deriveKeypairFromPin } from './pin'
 
 // TODO: should auto reset after X seconds
@@ -24,15 +29,14 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
   if (validatePin) {
     const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
-    const walletId = getWalletId(walletKeyVersion)
 
     const agent = new Agent({
       config: {},
       modules: {
         askar: new AskarModule({
-          askar,
+          askar: NativeAskar.instance,
           store: {
-            id: walletId,
+            id: `paradym-wallet-${walletKeyVersion}`,
             key: walletKey,
             keyDerivationMethod: 'raw',
           },
@@ -45,7 +49,7 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
       await agent.initialize()
     } catch (error) {
       if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) {
-        throw new InvalidPinError()
+        throw new ParadymWalletAuthenticationInvalidPinError()
       }
       throw error
     }
@@ -66,7 +70,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
 
   public constructor(
     private hsmUrl: string,
-    private agent: EasyPIDAppAgent
+    private agent: AnyAgent
   ) {}
 
   private async post<T>(path: string, claims: Record<string, unknown>): Promise<T> {
@@ -186,4 +190,26 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     const maybeSalt = await this.getSalt()
     return maybeSalt ?? (await this.createSalt())
   }
+}
+
+export const setupWalletServiceProvider = async (paradym: ParadymWalletSdk, registerWallet = false) => {
+  if (CURRENT_APP_TYPE === 'PARADYM_WALLET') return
+  const shouldUseCloudHsm = getShouldUseCloudHsm()
+
+  paradym.logger.debug(
+    `Enabling wallet service provider, ${registerWallet ? '' : 'not '}registering and ${shouldUseCloudHsm ? '' : 'not '}using the cloud HSM`
+  )
+
+  const wsp = new WalletServiceProviderClient(
+    process.env.EXPO_PUBLIC_WALLET_SERVICE_PROVIDER_URL ?? 'https://wsp.funke.animo.id',
+    paradym.agent
+  )
+
+  if (registerWallet) {
+    await wsp.createSalt()
+    await wsp.register()
+  }
+
+  if (shouldUseCloudHsm) shouldUseFallbackSecureEnvironment(true)
+  setFallbackSecureEnvironment(wsp)
 }

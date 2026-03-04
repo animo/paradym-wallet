@@ -1,5 +1,5 @@
 import { FunkeNestedAttributeScreen } from '@easypid/features/wallet/FunkeNestedAttributeScreen'
-import type { FormattedAttributeArray, FormattedAttributeObject } from '@package/agent'
+import type { FormattedAttributeArray, FormattedAttributeObject } from '@package/sdk'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {

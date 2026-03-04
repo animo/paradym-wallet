@@ -5,11 +5,11 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"@package/agent": "workspace:*",
 		"@package/scanner": "workspace:*",
 		"@package/ui": "workspace:*",
 		"@package/utils": "workspace:*",
 		"@package/translations": "workspace:*",
+		"@paradym/wallet-sdk": "workspace:*",
 		"@tamagui/animations-react-native": "catalog:",
 		"@tamagui/colors": "catalog:",
 		"@tamagui/font-inter": "catalog:",

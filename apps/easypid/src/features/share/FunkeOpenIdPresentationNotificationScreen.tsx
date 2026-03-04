@@ -1,44 +1,40 @@
-import { useAppAgent } from '@easypid/agent'
-import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
+import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { useLingui } from '@lingui/react/macro'
-import {
-  BiometricAuthenticationCancelledError,
-  type CredentialsForProofRequest,
-  type FormattedSubmissionEntrySatisfied,
-  type FormattedTransactionData,
-  getCredentialsForProofRequest,
-  getDisclosedAttributeLabelsForDisplay,
-  getFormattedTransactionData,
-  storeSharedActivityForCredentialsForRequest,
-} from '@package/agent'
-import { shareProof } from '@package/agent/invitation/shareProof'
-import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
+import { usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
+import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk'
+import {
+  type FormattedTransactionData,
+  getDisclosedAttributeNamesForDisplay,
+  ParadymWalletAuthenticationInvalidPinError,
+  ParadymWalletBiometricAuthenticationCancelledError,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { trustedDidEntities, trustedX509Entities } from '../../constants'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
-import type { onPinSubmitProps } from './slides/PinSlide'
+import type { OnPinSubmitProps } from './slides/PinSlide'
 
 type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
   const { t } = useLingui()
+  const { paradym } = useParadym('unlocked')
+
   const toast = useToastController()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
-  const { agent } = useAppAgent()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [errorReason, setErrorReason] = useState<string>()
 
-  const [credentialsForRequest, setCredentialsForRequest] = useState<CredentialsForProofRequest>()
-  const [formattedTransactionData, setFormattedTransactionData] = useState<FormattedTransactionData>()
+  const [resolvedRequest, setResolvedRequest] = useState<CredentialsForProofRequest>()
+  const [formattedTransactionData, _setFormattedTransactionData] = useState<FormattedTransactionData>()
   const [isSharing, setIsSharing] = useState(false)
-  const shouldUsePin = useShouldUsePinForSubmission(credentialsForRequest?.formattedSubmission)
+  const shouldUsePin = useShouldUsePinForSubmission(resolvedRequest?.formattedSubmission)
 
   const handleError = useCallback(({ reason, description }: { reason: string; description?: string }) => {
     setIsSharing(false)
@@ -65,18 +61,13 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   })
 
   useEffect(() => {
-    if (credentialsForRequest) return
+    if (resolvedRequest) return
 
-    getCredentialsForProofRequest({
-      agent,
-      uri: params.uri,
-      trustedX509Entities,
-      trustedDidEntities,
-    })
-      .then((r) => {
-        setCredentialsForRequest(r)
-        return r
+    paradym.openid4vc
+      .resolveCredentialRequest({
+        uri: params.uri,
       })
+      .then((r) => setResolvedRequest(r))
       .catch((error) => {
         const errorMessage =
           error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
@@ -85,24 +76,13 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
           description: errorMessage,
         })
-
-        agent.config.logger.error('Error getting credentials for request', {
-          error,
-        })
-        return
       })
-      .then((r) => {
-        if (r) setFormattedTransactionData(getFormattedTransactionData(r))
-      })
-      .catch((error) => {
-        handleError({ reason: error.message })
-      })
-  }, [credentialsForRequest, params.uri, agent, isDevelopmentModeEnabled, handleError, t])
+  }, [resolvedRequest, params.uri, paradym.openid4vc, isDevelopmentModeEnabled, handleError, t])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
   useEffect(() => {
-    if (!credentialsForRequest?.formattedSubmission || !credentialsForRequest?.formattedSubmission.areAllSatisfied) {
+    if (!resolvedRequest?.formattedSubmission || !resolvedRequest?.formattedSubmission.areAllSatisfied) {
       return
     }
 
@@ -111,30 +91,32 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       return
     }
 
-    const submission = credentialsForRequest.formattedSubmission
+    const submission = resolvedRequest.formattedSubmission
     const requestedCards = submission.entries
       .filter((entry): entry is FormattedSubmissionEntrySatisfied => entry.isSatisfied)
       .flatMap((entry) => entry.credentials)
 
     void checkForOverAsking({
       verifier: {
-        name: credentialsForRequest.verifier.name ?? 'No name provided',
-        domain: credentialsForRequest.verifier.hostName ?? 'No domain provided',
+        name: resolvedRequest.verifier.name ?? 'No name provided',
+        domain: resolvedRequest.verifier.hostName ?? 'No domain provided',
       },
       name: submission.name ?? 'No name provided',
       purpose: submission.purpose ?? 'No purpose provided',
       cards: requestedCards.map((credential) => ({
         name: credential.credential.display.name ?? 'Card name',
         subtitle: credential.credential.display.description ?? 'Card description',
-        requestedAttributes: getDisclosedAttributeLabelsForDisplay(credential),
+        requestedAttributes: getDisclosedAttributeNamesForDisplay(credential).map((c) =>
+          typeof c === 'string' ? c : formatPredicate(c)
+        ),
       })),
     })
-  }, [credentialsForRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
+  }, [resolvedRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
 
   const onProofAccept = useCallback(
-    async ({ pin, onPinComplete, onPinError }: onPinSubmitProps = {}) => {
+    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
       stopOverAsking()
-      if (!credentialsForRequest) return handleError({ reason: reasonNoCredentials })
+      if (!resolvedRequest) return handleError({ reason: reasonNoCredentials })
 
       setIsSharing(true)
 
@@ -148,7 +130,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           await setWalletServiceProviderPin(pin.split('').map(Number))
         } catch (e) {
           setIsSharing(false)
-          if (e instanceof InvalidPinError) {
+          if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
             onPinError?.()
             toast.show(t(commonMessages.invalidPinEntered), {
               customData: {
@@ -167,38 +149,22 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       }
 
       try {
-        await shareProof({
-          agent,
-          resolvedRequest: credentialsForRequest,
+        await paradym.openid4vc.shareCredentials({
+          resolvedRequest,
           selectedCredentials: {},
           acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
         })
 
         onPinComplete?.()
-        await storeSharedActivityForCredentialsForRequest(
-          agent,
-          credentialsForRequest,
-          'success',
-          formattedTransactionData
-        ).catch(console.error)
       } catch (error) {
         setIsSharing(false)
-        if (error instanceof BiometricAuthenticationCancelledError) {
+        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           return handleError({
             reason: t(commonMessages.biometricAuthenticationCancelled),
           })
         }
 
-        if (credentialsForRequest) {
-          await storeSharedActivityForCredentialsForRequest(
-            agent,
-            credentialsForRequest,
-            'failed',
-            formattedTransactionData
-          ).catch(console.error)
-        }
-
-        agent.config.logger.error('Error accepting presentation', {
+        paradym.logger.error('Error accepting presentation', {
           error,
         })
 
@@ -210,8 +176,8 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       }
     },
     [
-      credentialsForRequest,
-      agent,
+      resolvedRequest,
+      paradym,
       shouldUsePin,
       stopOverAsking,
       toast,
@@ -227,20 +193,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   const onProofDecline = useCallback(async () => {
     stopOverAsking()
-    if (credentialsForRequest) {
-      await storeSharedActivityForCredentialsForRequest(
-        agent,
-        credentialsForRequest,
-        credentialsForRequest.formattedSubmission.areAllSatisfied ? 'stopped' : 'failed',
-        formattedTransactionData
-      ).catch(console.error)
+    if (resolvedRequest) {
+      await paradym.openid4vc.declineCredentialRequest({ resolvedRequest })
     }
 
     pushToWallet()
     toast.show(t(commonMessages.informationRequestDeclined), {
       customData: { preset: 'danger' },
     })
-  }, [agent, credentialsForRequest, formattedTransactionData, pushToWallet, stopOverAsking, t, toast])
+  }, [resolvedRequest, pushToWallet, stopOverAsking, t, toast, paradym])
 
   const replace = useCallback(() => pushToWallet(), [pushToWallet])
 
@@ -250,13 +211,13 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       usePin={shouldUsePin ?? false}
       onAccept={onProofAccept}
       onDecline={onProofDecline}
-      submission={credentialsForRequest?.formattedSubmission}
+      submission={resolvedRequest?.formattedSubmission}
       isAccepting={isSharing}
-      entityId={credentialsForRequest?.verifier.entityId}
-      verifierName={credentialsForRequest?.verifier.name}
-      logo={credentialsForRequest?.verifier.logo}
-      trustedEntities={credentialsForRequest?.verifier.trustedEntities}
-      trustMechanism={credentialsForRequest?.trustMechanism}
+      entityId={resolvedRequest?.verifier.entityId}
+      verifierName={resolvedRequest?.verifier.name}
+      logo={resolvedRequest?.verifier.logo}
+      trustedEntities={resolvedRequest?.verifier.trustedEntities}
+      trustMechanism={resolvedRequest?.trustMechanism}
       onComplete={replace}
       onCancel={replace}
       overAskingResponse={overAskingResponse}

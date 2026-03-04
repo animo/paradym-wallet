@@ -1,4 +1,3 @@
-import type { DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@package/agent'
 import {
   AnimatedStack,
   Heading,
@@ -12,6 +11,7 @@ import {
   YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
+import type { DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'
@@ -90,7 +90,7 @@ export function CardWithAttributes({
       onPressOut={handlePressOut}
       style={disabledNav ? undefined : pressStyle}
       onPress={disabledNav ? undefined : onPress}
-      accessible={true}
+      tabIndex={0}
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >

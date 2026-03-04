@@ -1,8 +1,8 @@
 import { useLingui } from '@lingui/react/macro'
-import { type InvitationType, type ParseInvitationResultError, parseInvitationUrl } from '@package/agent'
+import { commonMessages } from '@package/translations'
+import { type InvitationType, parseInvitationUrl } from '@paradym/wallet-sdk'
 import * as Haptics from 'expo-haptics'
 import { useRouter } from 'expo-router'
-import { commonMessages } from '../../../translations/src'
 
 export interface CredentialDataHandlerOptions {
   allowedInvitationTypes?: Array<InvitationType>
@@ -20,65 +20,70 @@ export const useCredentialDataHandler = () => {
     | { success: true }
     | {
         success: false
-        error: ParseInvitationResultError | 'invitation_type_not_allowed'
+        error: 'invitation_type_not_allowed' | 'invitation_not_found'
         message: string
       }
   > => {
-    const parseResult = await parseInvitationUrl(dataUrl)
-    const routeMethodName = options?.routeMethod ?? 'push'
-    const routeMethod = routeMethodName === 'push' ? push : replace
+    try {
+      const invitationData = await parseInvitationUrl(dataUrl)
+      const routeMethodName = options?.routeMethod ?? 'push'
+      const routeMethod = routeMethodName === 'push' ? push : replace
 
-    if (!parseResult.success) {
+      if (options?.allowedInvitationTypes && !options.allowedInvitationTypes.includes(invitationData.type)) {
+        return {
+          success: false,
+          error: 'invitation_type_not_allowed',
+          message: t(commonMessages.invitationTypeNotAllowed),
+        } as const
+      }
+
+      if (invitationData.type === 'openid-credential-offer') {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        routeMethod({
+          pathname: '/notifications/openIdCredential',
+          params: {
+            uri: encodeURIComponent(invitationData.data),
+          },
+        })
+        return { success: true } as const
+      }
+
+      if (invitationData.type === 'openid-authorization-request') {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        routeMethod({
+          pathname: '/notifications/openIdPresentation',
+          params: {
+            uri: encodeURIComponent(invitationData.data),
+          },
+        })
+        return { success: true } as const
+      }
+
+      if (invitationData.type === 'didcomm') {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        routeMethod({
+          pathname: '/notifications/didcomm',
+          params: {
+            invitationUrl: encodeURIComponent(invitationData.data),
+          },
+        })
+        return { success: true } as const
+      }
+
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-      return parseResult
-    }
-
-    const invitationData = parseResult.result
-    if (options?.allowedInvitationTypes && !options.allowedInvitationTypes.includes(invitationData.type)) {
       return {
         success: false,
         error: 'invitation_type_not_allowed',
-        message: t(commonMessages.invitationTypeNotAllowed),
-      } as const
+        message: `Could not find handler for type: '${invitationData.type}'`,
+      }
+    } catch (_e) {
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+      return {
+        success: false,
+        error: 'invitation_not_found',
+        message: t(commonMessages.unableToRetrieveInvitation),
+      }
     }
-
-    if (invitationData.type === 'openid-credential-offer') {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      routeMethod({
-        pathname: '/notifications/openIdCredential',
-        params: {
-          uri: encodeURIComponent(invitationData.data),
-        },
-      })
-      return { success: true } as const
-    }
-    if (invitationData.type === 'openid-authorization-request') {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      routeMethod({
-        pathname: '/notifications/openIdPresentation',
-        params: {
-          uri: encodeURIComponent(invitationData.data),
-        },
-      })
-      return { success: true } as const
-    }
-    if (invitationData.type === 'didcomm') {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      routeMethod({
-        pathname: '/notifications/didcomm',
-        params: {
-          invitationUrl: encodeURIComponent(invitationData.data),
-        },
-      })
-      return { success: true } as const
-    }
-
-    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-    return {
-      success: false,
-      error: 'invitation_not_recognized',
-      message: t(commonMessages.invitationNotRecognized),
-    } as const
   }
 
   return {
