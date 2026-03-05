@@ -4,7 +4,7 @@ import { isParadymWallet } from './hooks/useFeatureFlag'
 
 export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid
 export const appScheme = ExpoConstants.expoConfig?.scheme as string
-export const redirectBaseUrl = ExpoConstants.expoConfig?.extra?.redirectBaseUrl as string | undefined
+export const allowedRedirectBaseUrls = ExpoConstants.expoConfig?.extra?.allowedRedirectBaseUrls as string[] | undefined
 
 export const EASYPID_WALLET_PID_PIN_KEY_ID = 'EASYPID_WALLET_PID_PIN_KEY_ID_NO_BIOMETRICS'
 export const EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID'
@@ -12,7 +12,8 @@ export const EASYPID_WALLET_INSTANCE_LONG_TERM_AES_KEY_ID = 'EASYPID_WALLET_INST
 export const walletClient = {
   // For easypid we don't want to update yet, as it will break integration with the playground
   clientId: isParadymWallet() ? appScheme : 'wallet',
-  redirectUri: redirectBaseUrl ?? `${appScheme}:///wallet/redirect`,
+  // Take first redirect if available
+  redirectUri: allowedRedirectBaseUrls?.[0] ?? `${appScheme}:///wallet/redirect`,
 }
 
 export const trustedX509Entities = [

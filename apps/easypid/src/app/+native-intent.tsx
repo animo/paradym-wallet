@@ -1,7 +1,7 @@
 import 'fast-text-encoding'
 
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { appScheme, redirectBaseUrl } from '@easypid/constants'
+import { allowedRedirectBaseUrls, appScheme } from '@easypid/constants'
 import { logger, parseInvitationUrlSync } from '@package/agent'
 import { deeplinkSchemes } from '@package/app'
 import * as Haptics from 'expo-haptics'
@@ -31,13 +31,15 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
     const parsedPath = new URL(path)
     const credentialAuthorizationCode = parsedPath.searchParams.get('code')
 
-    const parsedRedirectBaseUrl = redirectBaseUrl ? new URL(redirectBaseUrl) : undefined
-
     const isUniversalRedirect =
-      parsedRedirectBaseUrl &&
-      parsedRedirectBaseUrl.host === parsedPath.host &&
-      parsedRedirectBaseUrl.pathname === parsedPath.pathname &&
-      parsedRedirectBaseUrl.host === parsedPath.host
+      allowedRedirectBaseUrls?.some((redirectBaseUrl) => {
+        const parsedRedirectBaseUrl = new URL(redirectBaseUrl)
+        return (
+          parsedRedirectBaseUrl.host === parsedPath.host &&
+          parsedRedirectBaseUrl.pathname === parsedPath.pathname &&
+          parsedRedirectBaseUrl.host === parsedPath.host
+        )
+      }) ?? false
 
     const isDeeplinkRedirect = parsedPath.protocol === `${appScheme}:` && parsedPath.pathname === '/wallet/redirect'
 

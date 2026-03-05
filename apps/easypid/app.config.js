@@ -43,7 +43,7 @@ const APP_CONFIGS = {
     enableAusweisSdkEntitlementsIos: false,
     extraConfig: {
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
-      redirectBaseUrl: 'https://paradymwallet.app/oauth2/redirect',
+      allowedRedirectBaseUrls: ['https://paradymwallet.app/oauth2/redirect', 'https://paradym.id/invitation/redirect'],
     },
   }),
 }
