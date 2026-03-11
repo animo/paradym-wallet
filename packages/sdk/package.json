@@ -50,6 +50,7 @@
 		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
+		"@shopify/react-native-skia": "catalog:",
 		"@tanstack/react-query": "*",
 		"expo-file-system": "*",
 		"expo-image": "*",
