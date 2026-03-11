@@ -1,25 +1,25 @@
 import type { OpenId4VciAuthorizationFlow, OpenId4VciResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 
-export {CredentialForDisplayId} from './display/credential' 
-export { BaseAgent, DidCommAgent, OpenId4VcAgent } from './agent'
+export type { CredentialForDisplayId} from './display/credential' 
+export type { BaseAgent, DidCommAgent, OpenId4VcAgent } from './agent'
 export { DigitalCredentialsRequest } from './dcApi'
 export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
-export { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay } from './display/credential'
+export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay } from './display/credential'
 export * from './error'
-export {
+export type {
   FormattedSubmission,
   FormattedSubmissionEntryNotSatisfied,
   FormattedSubmissionEntrySatisfied,
   FormattedSubmissionEntrySatisfiedCredential
 } from './format/submission'
-export { useCredentialByCategory, useDidCommCredentialActions, useParadym,CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
-export { InvitationQrTypes, InvitationType } from './invitation/parser'
-export {ResolveOutOfBandInvitationResult } from './invitation/resolver'
+export { useCredentialByCategory, useDidCommCredentialActions, useParadym,type CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
+export { InvitationQrTypes, type InvitationType } from './invitation/parser'
+export type { ResolveOutOfBandInvitationResult } from './invitation/resolver'
 export { LogLevel, ParadymWalletSdkConsoleLogger, ParadymWalletSdkLogger } from './logging'
-export { OpenId4VcCredentialMetadata } from './metadata/credentials'
+export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
-export { FormattedTransactionData, QtspInfo } from './openid4vc/transaction'
-export { ParadymWalletSdk, SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
+export type { FormattedTransactionData, QtspInfo } from './openid4vc/transaction'
+export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
 export type {
   CredentialRecord,
   MdocRecord,
@@ -28,14 +28,14 @@ export type {
   W3cV2CredentialRecord,
 } from './storage/credentials'
 export type { Activity, ActivityType } from './storage/activityStore'
-export { TrustList } from './trust/handlers/eudiRpAuthentication'
-export { TrustedX509Entity } from './trust/handlers/x509'
-export { TrustedDidEntity } from './trust/handlers/did'
-export { TrustedOpenId4VciIssuerEntity } from './trust/handlers/openId4VciIssuer'
-export { TrustedEntity, TrustMechanism } from './trust/trustMechanism'
-export {CredentialCategoryMetadata} from './metadata/credentials'
-export { IssuanceActivity, PresentationActivity, SignedActivity,SharingFailureReason  } from './storage/activityStore'
-export {FormattedAttribute,FormattedAttributeArray, FormattedAttributeObject, FormattedAttributeDate, FormattedAttributeNumber, FormattedAttributePrimitive, FormattedAttributeString, formatAllAttributes,formatAttributesWithRecordMetadata  } from './format/attributes'
+export { type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesWithRecordMetadata  } from './format/attributes'
+export type { TrustedDidEntity } from './trust/handlers/did'
+export type { TrustedOpenId4VciIssuerEntity } from './trust/handlers/openId4VciIssuer'
+export type { TrustList } from './trust/handlers/eudiRpAuthentication'
+export type { TrustedX509Entity } from './trust/handlers/x509'
+export type { TrustedEntity, TrustMechanism } from './trust/trustMechanism'
+export type { CredentialCategoryMetadata } from './metadata/credentials'
+export type { IssuanceActivity, PresentationActivity, SignedActivity, SharingFailureReason  } from './storage/activityStore'
 
 /**
  *
@@ -69,7 +69,7 @@ export { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDi
 export {getCredentialForDisplay,getCredentialForDisplayId } from './display/credential'
 export {getOpenId4VcCredentialDisplay } from './display/openid4vc'
 export { parseInvitationUrl,parseInvitationUrlSync } from './invitation/parser'
-export { ResolveCredentialOfferReturn, receiveCredentialFromOpenId4VciOffer } from './invitation/resolver'
+export { type ResolveCredentialOfferReturn, receiveCredentialFromOpenId4VciOffer } from './invitation/resolver'
 export {
   getCredentialCategoryMetadata,
   getOpenId4VcCredentialMetadata,
@@ -83,9 +83,9 @@ export { acquireAuthorizationCodeAccessToken } from './openid4vc/func/acquireAut
 export { acquireRefreshTokenAccessToken } from './openid4vc/func/acquireRefreshTokenAccessToken'
 export { secureWalletKey, useCanUseBiometryBackedWalletKey, useIsBiometricsEnabled } from './secure'
 export { kdf } from './secure/kdf'
-export { activityStorage, ActivityStatus, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
+export { activityStorage, type ActivityStatus, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
 export { storeCredential, updateCredential } from './storage/credentials'
-export { DeferredCredentialBefore } from './storage/deferredCredentialStore'
+export { type DeferredCredentialBefore } from './storage/deferredCredentialStore'
 export { getHostNameFromUrl} from './utils/url'
 export { getFormattedTransactionData } from './openid4vc/transaction'
 export {deferredCredentialStorage, getDeferredCredentialNextCheckAt, useDeferredCredentials, deleteDeferredCredential } from './storage/deferredCredentialStore'
