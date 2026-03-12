@@ -17,6 +17,56 @@ export const walletClient = {
 
 export const trustedX509Entities = [
   {
+    entityId: 'za.pid-issuer.gov.za',
+    name: 'ZA Root CA Interim',
+    certificate: `-----BEGIN CERTIFICATE-----
+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
+XHnG6mbbwOJSV4dWvIIcfFDFzk7q
+-----END CERTIFICATE-----`,
+    url: 'https://za.pid-issuer.gov.za',
+    logoUri: 'https://creds-app.didx.co.za/assets/issuers/bdr/issuer.png',
+    demo: true,
+  },
+  {
     entityId: 'demo.pid-issuer.bundesdruckerei.de',
     name: 'Bundesdruckerei',
     certificate: `-----BEGIN CERTIFICATE-----
@@ -25,7 +75,7 @@ MIICeTCCAiCgAwIBAgIUB5E9QVZtmUYcDtCjKB/H3VQv72gwCgYIKoZIzj0EAwIwgYgxCzAJBgNVBAYT
     url: 'https://demo.pid-issuer.bundesdruckerei.de',
     logoUri: 'https://funke.animo.id/assets/issuers/bdr/issuer.png',
     demo: true,
-  },
+  },  
   {
     entityId: 'funke-wallet.de',
     name: 'German Registrar',
