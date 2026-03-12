@@ -14,7 +14,7 @@ export function FunkeAboutScreen() {
   }
 
   const openPrivacyPolicy = () => {
-    Linking.openURL('https://paradym.id/wallet-privacy-policy')
+    Linking.openURL('https://www.didx.co.za/DIDx%20Privacy%20Policy.pdf')
   }
 
   return (
