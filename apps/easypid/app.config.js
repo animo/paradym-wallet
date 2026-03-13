@@ -41,7 +41,8 @@ const APP_CONFIGS = {
     assets: ['./assets/paradym/icon.png'],
     extraConfig: {
       mediatorDid: mediatorDids[process.env.APP_VARIANT || 'production'],
-      allowedRedirectBaseUrls: ['https://paradymwallet.app/oauth2/redirect', 'https://paradym.id/invitation/redirect'],
+      // paradymwallet.app is fallback domain, to allow for better universal linking if both Paradym and Paradym Wallet are used (both on paradym.id)
+      allowedRedirectBaseUrls: ['https://paradym.id/invitation/redirect', 'https://paradymwallet.app/oauth2/redirect'],
     },
   }),
 }
