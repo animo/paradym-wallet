@@ -1,5 +1,4 @@
-// translations not needed
-import type { CredentialsForProofRequest } from '@package/agent'
+import type { CredentialsForProofRequest } from '@paradym/wallet-sdk'
 import { useMemo } from 'react'
 import { useShouldUseCloudHsm } from '../features/onboarding/useShouldUseCloudHsm'
 

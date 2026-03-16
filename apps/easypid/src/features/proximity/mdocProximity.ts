@@ -1,14 +1,19 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import { cborDecode, cborEncode, DataItem, DeviceRequest } from '@animo-id/mdoc'
-import { CredentialMultiInstanceUseMode, type Mdoc, MdocService, useInstanceFromCredentialRecord } from '@credo-ts/core'
-import type { AppAgent } from '@easypid/agent'
-import type { FormattedSubmission, MdocRecord } from '@package/agent'
+import {
+  CredentialMultiInstanceUseMode,
+  type Mdoc,
+  type MdocRecord,
+  MdocService,
+  useInstanceFromCredentialRecord,
+} from '@credo-ts/core'
+import type { FormattedSubmission, ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {
+  paradym: ParadymWalletSdk
   sessionTranscript: Uint8Array
   deviceRequest: Uint8Array
-  agent: AppAgent
   submission: FormattedSubmission
 }
 
@@ -80,7 +85,7 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
       // Optionally handle batch issuance
       const { credentialInstance } = await useInstanceFromCredentialRecord({
         credentialRecord,
-        agentContext: options.agent.context,
+        agentContext: options.paradym.agent.context,
         // FIXME: we currently allow re-sharing if we don't have new instances anymore
         // we should make this configurable maybe? Or dependant on credential type?
         useMode: CredentialMultiInstanceUseMode.NewOrFirst,
@@ -90,9 +95,9 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     })
   )
 
-  const mdocService = options.agent.dependencyManager.resolve(MdocService)
+  const mdocService = options.paradym.agent.dependencyManager.resolve(MdocService)
 
-  const deviceResponse = await mdocService.createDeviceResponse(options.agent.context, {
+  const deviceResponse = await mdocService.createDeviceResponse(options.paradym.agent.context, {
     documentRequests: DeviceRequest.parse(options.deviceRequest).docRequests.map((d) => ({
       docType: d.itemsRequest.data.docType,
       nameSpaces: Object.fromEntries(

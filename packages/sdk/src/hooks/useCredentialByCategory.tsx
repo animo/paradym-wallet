@@ -1,0 +1,33 @@
+import { type ClaimFormat, MdocRecord, SdJwtVcRecord } from '@credo-ts/core'
+import type { CredentialForDisplay } from '../display/credential'
+import { useCredentials } from './useCredentials'
+
+export function useCredentialByCategory(credentialCategory?: string) {
+  const { isLoading, credentials } = useCredentials({
+    removeCanonicalRecords: false,
+    credentialCategory,
+  })
+
+  if (isLoading) {
+    return {
+      credentials: undefined,
+      isLoading: true,
+    } as const
+  }
+
+  const credential =
+    credentials.find((c) => c.category?.displayPriority) ?? (credentials[0] as CredentialForDisplay | undefined)
+
+  return {
+    isLoading: false,
+    credential,
+    credentials,
+    mdoc: credentials.find(
+      (c): c is typeof c & { record: MdocRecord; claimFormat: ClaimFormat.MsoMdoc } => c.record instanceof MdocRecord
+    ),
+    sdJwt: credentials.find(
+      (c): c is typeof c & { record: SdJwtVcRecord; claimFormat: ClaimFormat.SdJwtDc } =>
+        c.record instanceof SdJwtVcRecord
+    ),
+  } as const
+}

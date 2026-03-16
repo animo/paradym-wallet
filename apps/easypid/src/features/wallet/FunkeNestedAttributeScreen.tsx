@@ -1,7 +1,7 @@
-import type { FormattedAttributeArray, FormattedAttributeObject } from '@package/agent'
 import { CredentialAttributes, TextBackButton, useScrollViewPosition } from '@package/app'
 import { FlexPage, ScrollView, type ScrollViewRefType, YStack } from '@package/ui'
 import { HeaderContainer } from '@package/ui/content/HeaderContainer'
+import type { FormattedAttributeArray, FormattedAttributeObject } from '@paradym/wallet-sdk'
 import { useRef } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

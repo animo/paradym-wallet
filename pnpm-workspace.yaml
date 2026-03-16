@@ -9,6 +9,7 @@ catalog:
   "@types/react": ~19.1.0
   typescript: ~5.9.3
   "@tanstack/react-query": ^5.90.14
+  tsdown: ^0.15.6
 
   # Babel
   "@babel/core": ^7.28.5
