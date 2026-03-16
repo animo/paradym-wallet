@@ -7,7 +7,7 @@ export function useResetWalletDevMenu() {
   const paradym = useParadym()
 
   const reset = useCallback(() => {
-    if (paradym.state === 'unlocked' || paradym.state === 'locked') {
+    if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
       paradym.reset()
     }
     if (paradym.state !== 'initializing') {

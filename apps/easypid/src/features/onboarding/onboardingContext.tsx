@@ -114,8 +114,8 @@ export function OnboardingContextProvider({
 
     // When the onboarding is cancelled between the pin slide and the biometrics slide, a state occurs where the wallet is `locked`, but biometrics is not setup.
     if (paradym.state !== 'not-configured') {
-      if (paradym.state === 'unlocked') {
-        paradym.reset()
+      if (paradym.state === 'unlocked' || paradym.state === 'locked') {
+        await paradym.reset()
       }
       if (paradym.state !== 'initializing') {
         paradym.reinitialize()
@@ -197,8 +197,8 @@ export function OnboardingContextProvider({
     }
 
     if (stepsToCompleteAfterReset.includes('pin')) {
-      if (paradym.state === 'unlocked') {
-        paradym.reset()
+      if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
+        await paradym.reset()
       }
 
       if (paradym.state !== 'initializing') {
