@@ -8,7 +8,7 @@ catalog:
   react: 19.1.0
   "@types/react": ~19.1.0
   typescript: ~5.9.3
-  "@tanstack/react-query": ^5.90.14
+  "@tanstack/react-query": ^5.90.21
 
   # Babel
   "@babel/core": ^7.28.5
@@ -24,20 +24,20 @@ catalog:
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.2.0-alpha.4
   "@animo-id/mdoc": 0.5.2
-  "@openid4vc/oauth2": ^0.4.0
+  "@openid4vc/oauth2": ^0.4.6
   "@openid4vc/openid4vp": ^0.4.0
   "@openid4vc/openid4vci": ^0.4.0
   "@openid4vc/utils": ^0.4.0
   fast-text-encoding: ^1.0.6
   "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": 0.6.2
-  "@credo-ts/askar": 0.6.2
-  "@credo-ts/cheqd": 0.6.2
-  "@credo-ts/core": 0.6.2
-  "@credo-ts/openid4vc": 0.6.2
-  "@credo-ts/question-answer": 0.6.2
-  "@credo-ts/react-native": 0.6.2
-  "@credo-ts/didcomm": 0.6.2
+  "@credo-ts/anoncreds": 0.6.3
+  "@credo-ts/askar": 0.6.3
+  "@credo-ts/cheqd": 0.6.3
+  "@credo-ts/core": 0.6.3
+  "@credo-ts/openid4vc": 0.6.3
+  "@credo-ts/question-answer": 0.6.3
+  "@credo-ts/react-native": 0.6.3
+  "@credo-ts/didcomm": 0.6.3
   "@hyperledger/anoncreds-react-native": 0.3.4
   "@hyperledger/anoncreds-shared": 0.3.4
   "@openwallet-foundation/askar-react-native": 0.6.0
@@ -56,7 +56,7 @@ catalog:
   react-native-safe-area-context: ^5.6.2
   react-native-screens: ^4.18.0
   react-native-svg: ^15.15.1
-  "@react-navigation/native": ^7.1.26
+  "@react-navigation/native": ^7.1.33
   # React Native FS is not maintained, and doesn't support new Arch
   # this seems to be the best maintained fork. We might want to switch
   # to Expo FileSystem, but Credo depends on react-native-fs
