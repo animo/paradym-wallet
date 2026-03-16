@@ -252,6 +252,9 @@ catalogs:
     tamagui:
       specifier: 1.142.0
       version: 1.142.0
+    tsdown:
+      specifier: ^0.15.6
+      version: 0.15.12
     typescript:
       specifier: ~5.9.3
       version: 5.9.3
@@ -662,16 +665,16 @@ importers:
         specifier: '*'
         version: 15.0.8(expo@54.0.27)
       react:
-        specifier: '*'
+        specifier: '>= 18'
         version: 19.1.0
       react-native:
-        specifier: '*'
+        specifier: '>= 0.76'
         version: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
       react-native-fs:
         specifier: npm:@dr.pogodin/react-native-fs@^2.36.1
         version: '@dr.pogodin/react-native-fs@2.36.1(patch_hash=iqdjw3isfoxwjv6twnaqhdr3eq)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)'
       react-native-get-random-values:
-        specifier: 'catalog:'
+        specifier: '>=1 <=2'
         version: 2.0.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))
       react-native-keychain:
         specifier: 'catalog:'
@@ -681,7 +684,7 @@ importers:
         version: 4.1.0(react-native-nitro-modules@0.31.10(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
     devDependencies:
       tsdown:
-        specifier: ^0.15.6
+        specifier: 'catalog:'
         version: 0.15.12(typescript@5.9.3)
 
   packages/translations:
