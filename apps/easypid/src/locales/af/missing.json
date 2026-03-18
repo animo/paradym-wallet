@@ -1,0 +1,24 @@
+{
+  "didxWallet.about.emailHeader": {
+    "message": "Reach out from DIDx DFID Wallet",
+    "placeholders": {},
+    "comments": [
+      "Email subject when contacting support from DIDx DFID wallet"
+    ],
+    "origin": [
+      [
+        "src/config/copy.ts",
+        29
+      ]
+    "translation": "Neem kontak op vanuit DIDx DFID Beursie"
+    "message": "This app was created by DIDx in the context of the DFID ‘Wallet Prototype’. It serves as a prototype for future wallet providers. All code is available under Apache 2.0.",
+    "placeholders": {},
+    "comments": [
+      "About screen description text for the DIDx wallet"
+    ],
+    "origin": [
+      [
+        "src/config/copy.ts",
+        23
+      ]
+    "translation": "Hierdie program is deur DIDx geskep in die konteks van die DFID 'Beursie-prototipe'. Dit dien as 'n prototipe vir toekomstige beursie-verskaffers. Al die kode is beskikbaar onder Apache 2.0."
