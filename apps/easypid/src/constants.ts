@@ -168,6 +168,14 @@ export const trustedDidEntities = [
     url: 'https://hva.nl',
     demo: false,
   },
+  {
+    entityId: 'did:web:metadata.paradym.id:2ea1c471-af99-4d3a-b07c-57e29abf8cea',
+    did: 'did:web:metadata.paradym.id:2ea1c471-af99-4d3a-b07c-57e29abf8cea',
+    logoUri: 'https://legoland.animo.id/images/university-logo.png',
+    name: 'Legoland University',
+    url: 'https://legoland.animo.id',
+    demo: true,
+  },
 ] satisfies Array<TrustedDidEntity>
 
 export const trustedOpenId4VciIssuerEntities = [
