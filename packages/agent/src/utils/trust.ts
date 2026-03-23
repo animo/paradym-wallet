@@ -118,7 +118,7 @@ export const getTrustedEntities = async (
   let entityId = trustedEntities.relyingParty.entityId
   if (!entityId) {
     if (options.origin) entityId = `web-origin:${options.origin}`
-    throw new Error('Missing required client_id in authorization request')
+    else throw new Error('Missing required client_id in authorization request')
   }
 
   return {

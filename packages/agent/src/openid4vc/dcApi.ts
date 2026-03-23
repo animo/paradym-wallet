@@ -96,6 +96,35 @@ export async function resolveRequestForDcApi({
   const authorizationRequestPayload =
     typeof providerRequest === 'string' ? JSON.parse(providerRequest) : providerRequest
 
+  // Strip credential formats not supported by credo-ts/dcql to avoid hard errors.
+  // The matcher already handled fallback via credential_sets options.
+  const supportedFormats = new Set(['mso_mdoc', 'dc+sd-jwt', 'vc+sd-jwt', 'ldp_vc', 'jwt_vc_json'])
+  const dcqlQuery = authorizationRequestPayload.dcql_query
+  if (dcqlQuery?.credentials) {
+    const unsupportedIds = new Set(
+      dcqlQuery.credentials
+        .filter((c: { format?: string }) => c.format && !supportedFormats.has(c.format))
+        .map((c: { id?: string }) => c.id)
+    )
+    if (unsupportedIds.size > 0) {
+      dcqlQuery.credentials = dcqlQuery.credentials.filter(
+        (c: { format?: string }) => !c.format || supportedFormats.has(c.format)
+      )
+      if (dcqlQuery.credential_sets) {
+        for (const set of dcqlQuery.credential_sets) {
+          if (Array.isArray(set.options)) {
+            set.options = set.options.filter(
+              (option: string[]) => !option.some((id: string) => unsupportedIds.has(id))
+            )
+          }
+        }
+        dcqlQuery.credential_sets = dcqlQuery.credential_sets.filter(
+          (set: { options?: unknown[] }) => Array.isArray(set.options) && set.options.length > 0
+        )
+      }
+    }
+  }
+
   const result = await getCredentialsForProofRequest({
     agent,
     requestPayload: authorizationRequestPayload,

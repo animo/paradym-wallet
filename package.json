@@ -1,41 +1,49 @@
 {
-	"name": "wallets",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"postinstall": "pnpm deps:check",
-		"build": "pnpm -r build",
-		"upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
-		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
-		"deps:check": "check-dependency-version-consistency .",
-		"deps:fix": "pnpm deps:check --fix",
-		"types:check": "tsc --noEmit",
-		"style:check": "biome check --unsafe",
-		"style:fix": "biome check --write --unsafe"
-	},
-	"engines": {
-		"node": ">=22.21.1"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.3.10",
-		"check-dependency-version-consistency": "^5.0.1",
-		"typescript": "catalog:"
-	},
-	"pnpm": {
-		"overrides": {
-			"@animo-id/expo-digital-credentials-api": "file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz",
-			"react-native-fs": "catalog:",
-			"@credo-ts/core>@sd-jwt/core": "0.18.2-next.0",
-			"@credo-ts/core>@sd-jwt/types": "0.18.2-next.0",
-			"@credo-ts/core>@sd-jwt/utils": "0.18.2-next.0",
-			"@credo-ts/core>@sd-jwt/sd-jwt-vc": "0.18.2-next.0",
-			"@credo-ts/core>@sd-jwt/decode": "0.18.2-next.0",
-			"@credo-ts/core>@sd-jwt/present": "0.18.2-next.0",
-			"@credo-ts/core>@sd-jwt/jwt-status-list": "0.18.2-next.0"
-		},
-		"patchedDependencies": {
-			"@dr.pogodin/react-native-fs": "patches/@dr.pogodin__react-native-fs.patch"
-		}
-	},
-	"packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271"
+  "name": "wallets",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "pnpm deps:check",
+    "build": "pnpm -r build",
+    "upgrade:tamagui": "pnpm up '*tamagui*'@latest '@tamagui/*'@latest",
+    "upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
+    "deps:check": "check-dependency-version-consistency .",
+    "deps:fix": "pnpm deps:check --fix",
+    "types:check": "tsc --noEmit",
+    "style:check": "biome check --unsafe",
+    "style:fix": "biome check --write --unsafe",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
+  },
+  "engines": {
+    "node": ">=22.21.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.10",
+    "check-dependency-version-consistency": "^5.0.1",
+    "typescript": "catalog:"
+  },
+  "pnpm": {
+    "overrides": {
+      "@animo-id/expo-digital-credentials-api": "file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz",
+      "react-native-fs": "catalog:",
+      "@credo-ts/core>@sd-jwt/core": "0.18.2-next.0",
+      "@credo-ts/core>@sd-jwt/types": "0.18.2-next.0",
+      "@credo-ts/core>@sd-jwt/utils": "0.18.2-next.0",
+      "@credo-ts/core>@sd-jwt/sd-jwt-vc": "0.18.2-next.0",
+      "@credo-ts/core>@sd-jwt/decode": "0.18.2-next.0",
+      "@credo-ts/core>@sd-jwt/present": "0.18.2-next.0",
+      "@credo-ts/core>@sd-jwt/jwt-status-list": "0.18.2-next.0"
+    },
+    "patchedDependencies": {
+      "@dr.pogodin/react-native-fs": "patches/@dr.pogodin__react-native-fs.patch"
+    }
+  },
+  "packageManager": "pnpm@9.14.2+sha256.06e65a4965baff6d6097f9c8f75c35f6d420974dbc03d775009056a69edfd271",
+  "version": "1.0.0",
+  "dependencies": {
+    "expo": "~54.0.27",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  }
 }
