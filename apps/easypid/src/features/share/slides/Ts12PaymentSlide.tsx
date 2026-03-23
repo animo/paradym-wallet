@@ -84,7 +84,7 @@ export function Ts12PaymentSlide({
           .filter((item): item is { label: string; value: string } => item !== null)
 
         return (
-          <YStack gap="$4" f={1}>
+          <YStack gap="$4">
             <YStack ai="center" mt="$4" gap="$4">
               <Heading>
                 {uiLabels?.title ?? (
@@ -103,7 +103,7 @@ export function Ts12PaymentSlide({
                 />
               )}
 
-              <XStack ai="flex-start" gap="$2">
+              <XStack ai="flex-start" jc="center" gap="$2" flexWrap="wrap">
                 <Heading fontSize={24} fontWeight="600" lineHeight={70} fontFamily="$heading">
                   {currencySymbol}
                 </Heading>
@@ -112,7 +112,7 @@ export function Ts12PaymentSlide({
                 </Heading>
               </XStack>
 
-              <YStack ai="center" gap={0} mt="$1">
+              <YStack ai="center" gap={0} mt="$1" w="100%" px="$4">
                 {paymentData.payeeName && (
                   <Heading fontSize={18} fontWeight="600" lineHeight={24} fontFamily="$heading" textAlign="center">
                     {paymentData.payeeName}

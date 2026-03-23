@@ -24,7 +24,6 @@ import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPres
 import { useStoredLocale } from '../../hooks/useStoredLocale'
 import { SigningSlide } from './slides/SigningSlide'
 import { getAdditionalPayload } from './slides/Ts12BaseSlide'
-import { Ts12PaymentSlide } from './slides/Ts12PaymentSlide'
 import { Ts12TransactionSlide } from './slides/Ts12TransactionSlide'
 
 type DcApiSharingScreenProps = {
@@ -132,6 +131,20 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
               })
             })
           }
+
+          // Payment transaction data is auto-approved: preselect first available credential.
+          formatted.forEach((entry, index) => {
+            if (entry.type !== 'urn:eudi:sca:payment:1') return
+            if (defaults[index]?.credentialId) return
+
+            const selected = entry.formattedSubmissions
+              .flatMap((submission) => (submission.isSatisfied ? submission.credentials : []))
+              .map((credential) => credential.credential.id)[0]
+
+            if (selected) {
+              defaults[index] = { credentialId: selected }
+            }
+          })
 
           setSelectedTransactionData(defaults)
         }
@@ -321,25 +334,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       ]
     }
 
-    if (entry.type === 'urn:eudi:sca:payment:1') {
-      return [
-        {
-          step: `ts12-payment-${index}`,
-          progress,
-          screen: (
-            <Ts12PaymentSlide
-              key={`ts12-payment-${index}`}
-              entry={entry}
-              onCredentialSelect={(credentialId, additionalPayload) =>
-                onTransactionDataSelect(index, { credentialId, additionalPayload })
-              }
-              selectedCredentialId={selectedTransactionData?.[index]?.credentialId}
-              responseMode={resolvedRequest?.authorizationRequest.response_mode}
-            />
-          ),
-        },
-      ]
-    }
+    if (entry.type === 'urn:eudi:sca:payment:1') return []
 
     return [
       {

@@ -9,9 +9,9 @@ import {
   getCredentialForDisplay,
   type Ts12TransactionDataEntry,
 } from '@package/agent'
-import { DualResponseButtons, useWizard } from '@package/app'
+import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { Heading, Paragraph, Spinner, YStack } from '@package/ui'
+import { Heading, Paragraph, ScrollView, Spinner, YStack } from '@package/ui'
 import { useEffect, useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CredentialSelectionCard } from '../components/CredentialSelectionCard'
@@ -140,6 +140,8 @@ export function Ts12BaseSlide({
   const { onNext, onCancel } = useWizard()
   const { t, i18n } = useLingui()
   const [selectedCredentialId, setSelectedCredentialId] = useState<string | null>(initialSelectedCredentialId ?? null)
+  const [scrollViewHeight, setScrollViewHeight] = useState(0)
+  const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
 
   const possibleCredentialIds = useMemo(() => {
     const allCredentials = entry.formattedSubmissions.flatMap((s) =>
@@ -227,28 +229,48 @@ export function Ts12BaseSlide({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack fg={1}>
-        {renderContent({
-          loadedCredentials,
-          selectedCredentialId,
-          displayMetadata,
-          onCredentialSelect: handleCredentialSelect,
-          uiLabels,
-        })}
+      <YStack
+        fg={1}
+        px="$4"
+        mx="$-4"
+        onLayout={(event) => {
+          if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
+        }}
+        btw="$0.5"
+        borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+      >
+        <ScrollView
+          onScroll={handleScroll}
+          scrollEventThrottle={scrollEventThrottle}
+          contentContainerStyle={{ gap: '$4' }}
+          px="$4"
+          mx="$-4"
+          pt="$4"
+          maxHeight={scrollViewHeight}
+          bg="$white"
+        >
+          {renderContent({
+            loadedCredentials,
+            selectedCredentialId,
+            displayMetadata,
+            onCredentialSelect: handleCredentialSelect,
+            uiLabels,
+          })}
 
-        <YStack gap="$2" mt="$4">
-          <Heading heading="sub2">
-            <Trans id="ts12.selectedCredential" comment="Label above the selected credential in TS12 slides">
-              Selected Credential
-            </Trans>
-          </Heading>
-          <CredentialSelectionCard
-            credentials={loadedCredentials}
-            selectedCredentialId={selectedCredentialId}
-            onSelect={handleCredentialSelect}
-          />
-        </YStack>
-        <YStack h="$4" />
+          <YStack gap="$2">
+            <Heading heading="sub2">
+              <Trans id="ts12.selectedCredential" comment="Label above the selected credential in TS12 slides">
+                Selected Credential
+              </Trans>
+            </Heading>
+            <CredentialSelectionCard
+              credentials={loadedCredentials}
+              selectedCredentialId={selectedCredentialId}
+              onSelect={handleCredentialSelect}
+            />
+          </YStack>
+          <YStack h="$4" />
+        </ScrollView>
       </YStack>
 
       <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">

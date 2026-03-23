@@ -1,7 +1,8 @@
 import { SdJwtVcRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { AppState, type AppStateStatus } from 'react-native'
 import type { EitherAgent } from '../agent'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from './recordUtils'
 
@@ -67,9 +68,25 @@ export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agen
     isLoading: true,
   })
 
+  const fetchRecords = useCallback(async () => {
+    const sdJwtVcRecords = await agent.sdJwtVc.getAll()
+    setState({ sdJwtVcRecords, isLoading: false })
+  }, [agent])
+
   useEffect(() => {
-    void agent.sdJwtVc.getAll().then((sdJwtVcRecords) => setState({ sdJwtVcRecords, isLoading: false }))
-  }, [agent.sdJwtVc.getAll])
+    void fetchRecords()
+  }, [fetchRecords])
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        void fetchRecords()
+      }
+    }
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange)
+    return () => subscription.remove()
+  }, [fetchRecords])
 
   useEffect(() => {
     if (!state.isLoading && agent) {

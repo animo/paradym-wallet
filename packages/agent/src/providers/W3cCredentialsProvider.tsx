@@ -1,7 +1,8 @@
 import { W3cCredentialRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { AppState, type AppStateStatus } from 'react-native'
 import type { EitherAgent } from '../agent'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from './recordUtils'
 
@@ -67,11 +68,25 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
     isLoading: true,
   })
 
-  useEffect(() => {
-    void agent.w3cCredentials
-      .getAll()
-      .then((w3cCredentialRecords) => setState({ w3cCredentialRecords, isLoading: false }))
+  const fetchRecords = useCallback(async () => {
+    const w3cCredentialRecords = await agent.w3cCredentials.getAll()
+    setState({ w3cCredentialRecords, isLoading: false })
   }, [agent])
+
+  useEffect(() => {
+    void fetchRecords()
+  }, [fetchRecords])
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        void fetchRecords()
+      }
+    }
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange)
+    return () => subscription.remove()
+  }, [fetchRecords])
 
   useEffect(() => {
     if (!state.isLoading && agent) {
