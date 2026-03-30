@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: '22.x'
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
 
       - name: 🏗 Setup EAS
         uses: expo/expo-github-action@v8
