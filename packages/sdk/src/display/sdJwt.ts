@@ -70,10 +70,9 @@ function getSdJwtTypeMetadataCredentialDisplay(
     description: typeMetadataDisplay?.description,
     textColor: typeMetadataDisplay?.rendering?.simple?.text_color,
     backgroundColor: typeMetadataDisplay?.rendering?.simple?.background_color,
-    backgroundImage: typeMetadataDisplay?.rendering?.simple?.logo
+    backgroundImage: typeMetadataDisplay?.rendering?.simple?.background_image
       ? {
-          url: typeMetadataDisplay?.rendering?.simple?.logo.uri,
-          altText: typeMetadataDisplay?.rendering?.simple?.logo.alt_text,
+          url: typeMetadataDisplay?.rendering?.simple?.background_image.uri,
         }
       : undefined,
   }

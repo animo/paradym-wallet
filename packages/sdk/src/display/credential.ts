@@ -3,16 +3,14 @@ import {
   JsonTransformer,
   MdocRecord,
   SdJwtVcRecord,
-  type SdJwtVcTypeMetadata,
   type SingleOrArray,
   W3cCredentialRecord,
   type W3cJsonCredential,
   W3cV2CredentialRecord,
   type W3cV2JsonCredential,
 } from '@credo-ts/core'
-import { i18n } from '@package/translations'
 import { ParadymWalletUnsupportedCredentialRecordTypeError } from '../error'
-import { type FormattedAttribute, findDisplayByLocale, formatAttributesWithRecordMetadata } from '../format/attributes'
+import { type FormattedAttribute, formatAttributesWithRecordMetadata } from '../format/attributes'
 import {
   type CredentialCategoryMetadata,
   getCredentialCategoryMetadata,
@@ -127,29 +125,6 @@ export function getCredentialForDisplayId(credentialRecord: CredentialRecord): C
   }
 
   throw new ParadymWalletUnsupportedCredentialRecordTypeError()
-}
-
-function _getSdJwtTypeMetadataCredentialDisplay(
-  sdJwtTypeMetadata: SdJwtVcTypeMetadata
-): Omit<CredentialDisplay, 'issuer' | 'name'> & { name?: string } {
-  const typeMetadataDisplay = findDisplayByLocale(sdJwtTypeMetadata.display, i18n.locale)
-
-  // TODO: support SVG rendering method
-
-  const credentialDisplay = {
-    name: typeMetadataDisplay?.name,
-    description: typeMetadataDisplay?.description,
-    textColor: typeMetadataDisplay?.rendering?.simple?.text_color,
-    backgroundColor: typeMetadataDisplay?.rendering?.simple?.background_color,
-    backgroundImage: typeMetadataDisplay?.rendering?.simple?.logo
-      ? {
-          url: typeMetadataDisplay?.rendering?.simple?.logo.uri,
-          altText: typeMetadataDisplay?.rendering?.simple?.logo.alt_text,
-        }
-      : undefined,
-  }
-
-  return credentialDisplay
 }
 
 export function getCredentialForDisplay(credentialRecord: CredentialRecord): CredentialForDisplay {
