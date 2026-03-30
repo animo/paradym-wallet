@@ -15,7 +15,7 @@ jobs:
       published: ${{ steps.changesets.outputs.published }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
       - name: Setup NodeJS
@@ -44,7 +44,7 @@ jobs:
     name: Release Unstable
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
       - name: Setup NodeJS
