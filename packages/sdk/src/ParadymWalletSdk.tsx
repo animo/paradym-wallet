@@ -70,7 +70,7 @@ export type ParadymWalletSdkOptions = SetupAgentOptions & {
    *
    */
   // TODO(sdk): this will get more complex, as eudi_rp_auth needs more configuration
-  trustMechanisms: TrustMechanismConfiguration[]
+  trustMechanisms?: TrustMechanismConfiguration[]
 }
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
@@ -89,7 +89,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
   public constructor(options: ParadymWalletSdkOptions) {
     this.agent = setupAgent(options) as unknown as AgentForAgentType<T>
-    this.trustMechanisms = options.trustMechanisms
+    this.trustMechanisms = options.trustMechanisms ?? []
   }
 
   public get isDidCommEnabled() {
@@ -141,9 +141,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
    *
    * Provider for the WalletSdk
    *
-   * Wrap your application in this, if you want to leverage the provided `this.hooks`
-   *
-   * @todo(sdk) New name for this provider
+   * This provider is required for the wallet sdk to work correctly. It adds a query client and ways to unlock the wallet
    *
    */
   public static UnlockProvider({
@@ -158,6 +156,15 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
     )
   }
 
+  /**
+   *
+   * Provider for the paradym instance
+   *
+   * Make sure to add this to a stage in the application where the state of paradym is `unlocked`
+   *
+   * This provider gives access to all the records using the provided hooks
+   *
+   */
   public static AppProvider({ children, recordIds }: PropsWithChildren<{ recordIds: string[] }>) {
     const { paradym } = useParadym('unlocked')
 
@@ -168,6 +175,11 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
     )
   }
 
+  /**
+   *
+   * DIDComm utility method to resolve a DIDComm invitation to be used later to start a connection, and optionally also present a proof or receive a credential
+   *
+   */
   public async resolveDidCommInvitation(
     invitation: string | Record<string, unknown>
   ): Promise<ParadymWalletSdkResult<ResolveOutOfBandInvitationResult>> {
@@ -199,7 +211,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
   /**
    *
-   * @todo should we scope this in proof/issuance?
+   * Openid4vc functionality, for receiving a credential and presenting a proof
    *
    */
   public get openid4vc() {
@@ -227,6 +239,11 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
     }
   }
 
+  /**
+   *
+   * Digital credentials API functionality for presentating a proof
+   *
+   */
   public get dcApi() {
     return {
       registerCredentials: (options: Omit<DcApiRegisterCredentialsOptions, 'paradym'>) =>
@@ -239,6 +256,11 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
     }
   }
 
+  /**
+   *
+   * ISO/IEC 18013:5 mDoc/mDl proximity flow utilites
+   *
+   */
   public get proximity() {
     return {
       getSubmissionForMdocDocumentRequest: (options: Omit<GetSubmissionForMdocDocumentRequestOptions, 'paradym'>) =>

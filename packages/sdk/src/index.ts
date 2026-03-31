@@ -27,7 +27,16 @@ export type {
   W3cCredentialRecord,
   W3cV2CredentialRecord,
 } from './storage/credentials'
-export type { Activity, ActivityType } from './storage/activityStore'
+export type {
+  Activity,
+  ActivityType,
+  IssuanceActivity,
+  PresentationActivity,
+  PresentationActivityCredential,
+  PresentationActivityCredentialNotFound,
+  SignedActivity,
+  SharingFailureReason,
+} from './storage/activityStore'
 export { type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesWithRecordMetadata  } from './format/attributes'
 export type { TrustedDidEntity } from './trust/handlers/did'
 export type { TrustedOpenId4VciIssuerEntity } from './trust/handlers/openId4VciIssuer'
@@ -35,7 +44,6 @@ export type { TrustList } from './trust/handlers/eudiRpAuthentication'
 export type { TrustedX509Entity } from './trust/handlers/x509'
 export type { TrustedEntity, TrustMechanism } from './trust/trustMechanism'
 export type { CredentialCategoryMetadata } from './metadata/credentials'
-export type { IssuanceActivity, PresentationActivity, SignedActivity, SharingFailureReason  } from './storage/activityStore'
 
 /**
  *
