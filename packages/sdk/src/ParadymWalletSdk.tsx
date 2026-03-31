@@ -158,7 +158,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
   /**
    *
-   * Provier for the paradym instance
+   * Provider for the paradym instance
    *
    * Make sure to add this to a stage in the application where the state of paradym is `unlocked`
    *
