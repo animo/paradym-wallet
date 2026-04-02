@@ -1,6 +1,11 @@
 import { configInput, fontOpenSans, fontRaleway, hexColors } from '@package/ui/config/tamagui.config'
 import { radius, size, space, zIndex } from '@tamagui/themes'
 import { createTamagui, createTokens } from 'tamagui'
+import { APP_THEME } from './src/config/themes'
+
+const appType = (process.env.EXPO_PUBLIC_APP_TYPE ?? 'PARADYM_WALLET') as keyof typeof APP_THEME
+
+const themeColors = APP_THEME[appType]
 
 export const tokensInput = {
   color: hexColors,
@@ -32,21 +37,7 @@ const tokens = createTokens({
     'grey-700': '#656974',
     'grey-800': '#464B56',
     'grey-900': '#222222',
-    'primary-50': '#F7F7FF',
-    'primary-100': '#EEF0FE',
-    'primary-200': '#DADEFF',
-    'primary-300': '#ACB4FB',
-    'primary-400': '#7A88FF',
-    'primary-500': '#5A33F6',
-    'primary-600': '#2233C9',
-    'primary-700': '#202EA7',
-    'primary-800': '#141E80',
-    'primary-900': '#131C66',
-    'feature-300': '#DFA6FF',
-    'feature-400': '#CA79FF',
-    'feature-500': '#A000F8',
-    'feature-600': '#8600D1',
-    'feature-700': '#7E00CC',
+    ...themeColors,
   },
 })
 
