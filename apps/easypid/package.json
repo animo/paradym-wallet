@@ -82,7 +82,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",
-		"@lingui/cli": "^5.7.0",
+		"@lingui/cli": "^5.9.4",
 		"@lingui/format-json": "^5.7.0",
 		"@tamagui/babel-plugin": "catalog:",
 		"babel-plugin-syntax-hermes-parser": "catalog:",
