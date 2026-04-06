@@ -24,7 +24,7 @@
 		"@expo-google-fonts/raleway": "catalog:",
 		"@gorhom/bottom-sheet": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
-		"@lingui/babel-plugin-lingui-macro": "^5.7.0",
+		"@lingui/babel-plugin-lingui-macro": "^5.9.4",
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@package/app": "workspace:*",
 		"@package/scanner": "workspace:*",
