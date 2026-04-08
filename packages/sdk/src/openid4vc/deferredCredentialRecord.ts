@@ -103,6 +103,7 @@ export async function fetchAndProcessDeferredCredential(
       await updateDeferredCredential(paradym, {
         id: deferredCredential.id,
         lastCheckedAt: new Date().toISOString(),
+        lastErroredAt: undefined,
         // Update access token with a new one if we got a new refresh token.
         // Otherwise, keep the existing one.
         accessToken: accessToken.refreshToken
