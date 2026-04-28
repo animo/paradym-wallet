@@ -30,7 +30,7 @@ import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
 import { ScrollView, Share } from 'react-native'
 import { Label } from 'tamagui'
-import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
+import { useDevelopmentMode, useDisableRelyingPartyVerification } from '../../hooks/useDevelopmentMode'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
 import { getBiometricsType } from '../../utils/biometrics'
 
@@ -88,6 +88,8 @@ export function FunkeSettingsScreen() {
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
+  const [isRelyingPartyVerificationDisabled, setIsRelyingPartyVerificationDisabled] =
+    useDisableRelyingPartyVerification()
   const biometricUnlockState = useBiometricUnlockState()
   const isBiometricsConfigured = biometricUnlockState.data?.configured ?? false
   const isBiometricsCapable = biometricUnlockState.data?.capable ?? false
@@ -207,6 +209,22 @@ export function FunkeSettingsScreen() {
               onChange={setIsDevelopmentModeEnabled}
             />
             <LocaleSelect />
+            {isDevelopmentModeEnabled && (
+              <Switch
+                id="disable-relying-party-verification"
+                label={t({
+                  id: 'settings.disableRelyingPartyVerification',
+                  message: 'Disable relying party verification',
+                })}
+                description={t({
+                  id: 'settings.disableRelyingPartyVerificationDescription',
+                  message: 'Dangerous. Allow unknown or untrusted issuers and verifiers. Development mode only.',
+                })}
+                icon={<HeroIcons.ExclamationTriangleFilled />}
+                value={isRelyingPartyVerificationDisabled}
+                onChange={setIsRelyingPartyVerificationDisabled}
+              />
+            )}
             {isDevelopmentModeEnabled && paradym.logger instanceof ParadymWalletSdkConsoleLogger && (
               <SettingsButton
                 label={t({

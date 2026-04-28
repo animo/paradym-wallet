@@ -1,5 +1,6 @@
 import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
-import type { DifPresentationExchangeDefinitionV2 } from '@credo-ts/core'
+import { type DifPresentationExchangeDefinitionV2, Jwt, X509Certificate, X509ModuleConfig } from '@credo-ts/core'
+import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletNoRequestToResolveError } from '../../error'
 import { formatDcqlCredentialsForRequest } from '../../format/dcqlRequest'
@@ -12,8 +13,34 @@ export type ResolveCredentialRequestOptions = {
   paradym: ParadymWalletSdk
   requestPayload?: Record<string, unknown>
   uri?: string
-  allowUntrusted?: boolean
   origin?: string
+}
+
+const shouldBypassVerifierAttestationVerification = async ({
+  paradym,
+  resolvedAuthorizationRequest,
+}: {
+  paradym: ParadymWalletSdk
+  resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
+}) => {
+  const [verifierAttestation] = resolvedAuthorizationRequest.authorizationRequestPayload.verifier_attestations ?? []
+  if (verifierAttestation?.format !== 'jwt' || typeof verifierAttestation.data !== 'string') return undefined
+
+  const jwt = Jwt.fromSerializedJwt(verifierAttestation.data)
+  if (!jwt.header.x5c?.length) return undefined
+
+  return !!(await paradym.agent.dependencyManager
+    .resolve(X509ModuleConfig)
+    .getTrustedCertificatesForVerification?.(paradym.agent.context, {
+      certificateChain: jwt.header.x5c.map((certificate) => X509Certificate.fromEncodedCertificate(certificate)),
+      verification: {
+        type: 'oauth2SecuredAuthorizationRequest',
+        authorizationRequest: {
+          jwt: verifierAttestation.data,
+          payload: jwt.payload,
+        },
+      },
+    }))
 }
 
 export const resolveCredentialRequest = async ({
@@ -21,9 +48,9 @@ export const resolveCredentialRequest = async ({
   uri,
   requestPayload,
   origin,
-  allowUntrusted,
 }: ResolveCredentialRequestOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')
+
   try {
     const requestToResolve = uri ?? requestPayload
 
@@ -42,7 +69,10 @@ export const resolveCredentialRequest = async ({
 
     const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(paradym.agent.context, {
       resolvedAuthorizationRequest: resolved,
-      allowUntrustedSigned: allowUntrusted,
+      allowUntrustedSigned: await shouldBypassVerifierAttestationVerification({
+        paradym,
+        resolvedAuthorizationRequest: resolved,
+      }),
     })
 
     const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
