@@ -1,20 +1,24 @@
+import { sendErrorResponse } from '@animo-id/expo-digital-credentials-api'
 import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
 import { paradymWalletSdkOptions } from '@easypid/config/paradym'
 import { setupWalletServiceProvider, setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
 import { useShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
+import { useDevelopmentMode } from '@easypid/hooks'
 import type { SubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
 import {
   authorizeWalletFlow,
   clearWalletFlowAuthorization,
   isWalletAuthPromptError,
 } from '@easypid/utils/authorizeWalletFlow'
-import { TranslationProvider } from '@package/translations'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages, TranslationProvider } from '@package/translations'
 import { Stack, TamaguiProvider, YStack } from '@package/ui'
 import { type DigitalCredentialsRequest, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
 import { useEffect, useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
+import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 
 type DcApiSharingScreenProps = {
   request: DigitalCredentialsRequest
@@ -39,11 +43,15 @@ export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
 }
 
 export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenProps) {
+  const { t } = useLingui()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [errorReason, setErrorReason] = useState<string>()
   const cloudHsmPinRef = useRef<string | undefined>(undefined)
   const onAuthorizationErrorRef = useRef<(() => void) | undefined>(undefined)
+  const errorResponseMessageRef = useRef('Unable to share credentials')
   const insets = useSafeAreaInsets()
   const paradym = useParadym()
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [shouldUseCloudHsmValue] = useShouldUseCloudHsm()
   const shouldUseCloudHsm = shouldUseCloudHsmValue === true
   const authorizationMode: Exclude<SubmissionAuthorizationMode, 'none'> = shouldUseCloudHsm
@@ -52,27 +60,44 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const isAuthorizing =
     isProcessing || paradym.state === 'acquired-wallet-key' || (paradym.state === 'locked' && paradym.isUnlocking)
 
+  const setFlowError = ({
+    reason,
+    error,
+    responseMessage,
+  }: {
+    reason: string
+    error: unknown
+    responseMessage: string
+  }) => {
+    errorResponseMessageRef.current = responseMessage
+    const errorMessage =
+      error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
+
+    setErrorReason(errorMessage ? `${reason}\n${errorMessage}` : reason)
+  }
+
   const onShareResponse = async (sdk: ParadymWalletSdk) => {
-    const resolvedRequest = await sdk.dcApi
-      .resolveRequest({ request })
-      .then((resolvedRequest) => {
-        // We can't share multiple documents at the moment
-        if (resolvedRequest.formattedSubmission.entries.length > 1) {
-          throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
-        }
+    let resolvedRequest: Awaited<ReturnType<typeof sdk.dcApi.resolveRequest>>
 
-        return resolvedRequest
-      })
-      .catch((error) => {
-        sdk.logger.error('Error getting credentials for dc api request', {
-          error,
-        })
+    try {
+      resolvedRequest = await sdk.dcApi.resolveRequest({ request })
 
-        // Not shown to the user
-        sdk.dcApi.sendErrorResponse('Presentation information could not be extracted')
+      // We can't share multiple documents at the moment
+      if (resolvedRequest.formattedSubmission.entries.length > 1) {
+        throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
+      }
+    } catch (error) {
+      sdk.logger.error('Error getting credentials for dc api request', {
+        error,
       })
 
-    if (!resolvedRequest) return
+      setFlowError({
+        reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
+        error,
+        responseMessage: 'Presentation information could not be extracted',
+      })
+      return false
+    }
 
     // Once this returns we just assume it's successful
     try {
@@ -80,12 +105,17 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         dcRequest: request,
         resolvedRequest,
       })
+
+      return true
     } catch (error) {
       sdk.logger.error('Could not share response', { error })
 
-      // Not shown to the user
-      sdk.dcApi.sendErrorResponse('Unable to share credentials')
-      return
+      setFlowError({
+        reason: t(commonMessages.presentationCouldNotBeShared),
+        error,
+        responseMessage: 'Unable to share credentials',
+      })
+      return false
     }
   }
 
@@ -110,7 +140,11 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           return
         }
 
-        throw error
+        setFlowError({
+          reason: t(commonMessages.presentationCouldNotBeShared),
+          error,
+          responseMessage: 'Unable to share credentials',
+        })
       })
       .finally(() => {
         cloudHsmPinRef.current = undefined
@@ -123,25 +157,25 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const onAuthorize = async ({ pin, onAuthorized, onAuthorizationError }: OnWalletAuthSubmitProps = {}) => {
     onAuthorizationErrorRef.current = onAuthorizationError
 
-    if (paradym.state === 'locked') {
-      if (shouldUseCloudHsm) {
-        if (!pin) throw new Error('PIN is required to use Cloud HSM')
-        cloudHsmPinRef.current = pin
+    try {
+      if (paradym.state === 'locked') {
+        if (shouldUseCloudHsm) {
+          if (!pin) throw new Error('PIN is required to use Cloud HSM')
+          cloudHsmPinRef.current = pin
+        }
+
+        if (pin) {
+          await paradym.unlockUsingPin(pin)
+        } else {
+          await paradym.tryUnlockingUsingBiometrics()
+        }
+
+        onAuthorized?.()
+        return
       }
 
-      if (pin) {
-        await paradym.unlockUsingPin(pin)
-      } else {
-        await paradym.tryUnlockingUsingBiometrics()
-      }
-
-      onAuthorized?.()
-      return
-    }
-
-    if (paradym.state === 'unlocked') {
-      setIsProcessing(true)
-      try {
+      if (paradym.state === 'unlocked') {
+        setIsProcessing(true)
         await authorizeWalletFlow({
           mode: authorizationMode,
           pin,
@@ -151,23 +185,27 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           await setupWalletServiceProvider(paradym.paradym)
         }
 
-        await onShareResponse(paradym.paradym)
-        onAuthorized?.()
-      } catch (error) {
-        if (isWalletAuthPromptError(error)) {
-          onAuthorizationError?.()
-          return
-        }
-
-        throw error
-      } finally {
-        clearWalletFlowAuthorization()
-        setIsProcessing(false)
+        const didShare = await onShareResponse(paradym.paradym)
+        if (didShare) onAuthorized?.()
+        return
       }
-      return
-    }
 
-    throw new Error(`Invalid state. Received: '${paradym.state}'`)
+      throw new Error(`Invalid state. Received: '${paradym.state}'`)
+    } catch (error) {
+      if (isWalletAuthPromptError(error)) {
+        onAuthorizationError?.()
+        return
+      }
+
+      setFlowError({
+        reason: t(commonMessages.presentationCouldNotBeShared),
+        error,
+        responseMessage: 'Unable to share credentials',
+      })
+    } finally {
+      clearWalletFlowAuthorization()
+      setIsProcessing(false)
+    }
   }
 
   return (
@@ -179,14 +217,24 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       p="$4"
       paddingBottom={insets.bottom ?? '$6'}
     >
-      <Stack pt="$5">
-        <WalletFlowAuthPrompt
-          authMode={authorizationMode}
-          onSubmit={onAuthorize}
-          isLoading={isAuthorizing}
-          annotation={request.origin}
+      {errorReason ? (
+        <InteractionErrorSlide
+          flowType="verify"
+          reason={errorReason}
+          layout="content"
+          buttonLabel={t(commonMessages.close)}
+          onCancel={() => sendErrorResponse({ errorMessage: errorResponseMessageRef.current })}
         />
-      </Stack>
+      ) : (
+        <Stack pt="$5">
+          <WalletFlowAuthPrompt
+            authMode={authorizationMode}
+            onSubmit={onAuthorize}
+            isLoading={isAuthorizing}
+            annotation={request.origin}
+          />
+        </Stack>
+      )}
     </YStack>
   )
 }

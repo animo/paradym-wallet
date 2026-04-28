@@ -1,17 +1,29 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, HeroIcons, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
+import type { ReactNode } from 'react'
 import { useState } from 'react'
+import { useWindowDimensions } from 'react-native'
 
 interface InteractionErrorSlideProps {
   reason?: string
   flowType: 'issue' | 'verify' | 'connect' | 'sign'
   onCancel: () => void
+  layout?: 'full-screen' | 'content'
+  buttonLabel?: ReactNode
 }
 
-export const InteractionErrorSlide = ({ reason, onCancel, flowType }: InteractionErrorSlideProps) => {
+export const InteractionErrorSlide = ({
+  reason,
+  onCancel,
+  flowType,
+  layout = 'full-screen',
+  buttonLabel,
+}: InteractionErrorSlideProps) => {
   const { t } = useLingui()
+  const { height } = useWindowDimensions()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
+  const isContentLayout = layout === 'content'
 
   const message =
     flowType === 'connect'
@@ -42,9 +54,21 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType }: Interactio
             })
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="$6" fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
-        <ScrollView fg={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '$4' }}>
+    <YStack
+      fg={isContentLayout ? undefined : 1}
+      jc={isContentLayout ? undefined : 'space-between'}
+      gap={isContentLayout ? '$6' : undefined}
+    >
+      <YStack
+        gap="$6"
+        fg={isContentLayout ? undefined : 1}
+        onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}
+      >
+        <ScrollView
+          fg={isContentLayout ? undefined : 1}
+          maxHeight={isContentLayout ? height * 0.55 : scrollViewHeight}
+          contentContainerStyle={{ gap: '$4' }}
+        >
           <YStack gap="$4">
             <Heading>{t(commonMessages.somethingWentWrong)}</Heading>
             <Stack alignSelf="flex-start">
@@ -55,7 +79,7 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType }: Interactio
             <Paragraph>{message}</Paragraph>
           </YStack>
 
-          {reason && scrollViewHeight !== 0 && (
+          {reason && (scrollViewHeight !== 0 || isContentLayout) && (
             <YStack>
               <Paragraph variant="sub">
                 <Paragraph variant="caption">
@@ -74,7 +98,7 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType }: Interactio
 
       <Stack borderTopWidth="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4">
         <Button.Solid scaleOnPress onPress={onCancel}>
-          {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
+          {buttonLabel ?? t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
         </Button.Solid>
       </Stack>
     </YStack>
