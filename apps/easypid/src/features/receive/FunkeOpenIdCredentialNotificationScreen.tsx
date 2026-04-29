@@ -28,10 +28,21 @@ import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
 type Query = { uri: string }
 
-export function FunkeCredentialNotificationScreen() {
+type FunkeCredentialNotificationScreenProps = {
+  uri?: string
+  onCancel?: (reason?: string) => void
+  onComplete?: (newEntryId?: string) => void
+}
+
+export function FunkeCredentialNotificationScreen({
+  uri,
+  onCancel: onCancelOverride,
+  onComplete,
+}: FunkeCredentialNotificationScreenProps = {}) {
   const { paradym } = useParadym('unlocked')
 
   const params = useLocalSearchParams<Query>()
+  const offerUri = uri ?? params.uri
   const toast = useToastController()
 
   const { t } = useLingui()
@@ -54,9 +65,13 @@ export function FunkeCredentialNotificationScreen() {
 
   const onCancel = () => {
     clearWalletFlowAuthorization()
-    pushToWallet()
+    onCancelOverride?.(errorReason)
+    if (!onCancelOverride) pushToWallet()
   }
-  const onGoToWallet = () => pushToWallet()
+  const onGoToWallet = () => {
+    onComplete?.(receivedCredential?.id)
+    if (!onComplete) pushToWallet()
+  }
 
   const setErrorReasonWithError = useCallback(
     (baseMessage: string, error: unknown) => {
@@ -72,7 +87,7 @@ export function FunkeCredentialNotificationScreen() {
   useEffect(() => {
     paradym.openid4vc
       .resolveCredentialOffer({
-        offerUri: params.uri,
+        offerUri,
         authorization: walletClient,
       })
       .then((result) => {
@@ -84,7 +99,7 @@ export function FunkeCredentialNotificationScreen() {
           error,
         })
       })
-  }, [params.uri, paradym, setErrorReasonWithError, t])
+  }, [offerUri, paradym, setErrorReasonWithError, t])
 
   const onPresentationAccept = useCallback(
     async ({ pin, onAuthorized, onAuthorizationError }: OnWalletAuthSubmitProps = {}) => {
@@ -240,6 +255,7 @@ export function FunkeCredentialNotificationScreen() {
     })
 
     setIsCompleted(true)
+    onComplete?.(receivedCredential?.id)
   }
 
   const updateCredentials = (options: {
@@ -267,7 +283,8 @@ export function FunkeCredentialNotificationScreen() {
   const onProofDecline = async () => {
     clearWalletFlowAuthorization()
     toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
-    pushToWallet()
+    onCancelOverride?.(t(commonMessages.informationRequestDeclined))
+    if (!onCancelOverride) pushToWallet()
   }
 
   // TODO: it is not the cleanest, but the UI shows it perfectly.

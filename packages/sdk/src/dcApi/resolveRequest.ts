@@ -1,4 +1,5 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
+import { getAptitudeSelection } from '@animo-id/expo-digital-credentials-api-aptitude-consortium'
 import { resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { getHostNameFromUrl } from '../utils/url'
@@ -62,9 +63,14 @@ function getDcApiOrigin(request: RuntimeDigitalCredentialsRequest) {
   return normalizeDcApiOrigin(typeof request.origin === 'string' ? request.origin : sourceBundleOrigin)
 }
 
+function credentialMatchesId(credential: { credential: { id: string; record: { id: string } } }, credentialId: string) {
+  return credential.credential.id === credentialId || credential.credential.record.id === credentialId
+}
+
 export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
   const dcRequest = request as RuntimeDigitalCredentialsRequest
-  const requestIndex = dcRequest.selection?.requestIdx ?? dcRequest.selectedEntry?.providerIndex ?? 0
+  const aptitudeSelection = getAptitudeSelection(request)
+  const requestIndex = aptitudeSelection?.requestIdx ?? dcRequest.selection?.requestIdx ?? dcRequest.selectedEntry?.providerIndex ?? 0
   const requestPayload = getDcApiRequestPayload(dcRequest)
 
   if (!isRecord(requestPayload)) {
@@ -90,7 +96,7 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
     throw new Error('Missing provider request for Digital Credentials API request')
   }
 
-  if (typeof selectedCredentialId !== 'string' || selectedCredentialId.length === 0) {
+  if (!aptitudeSelection && (typeof selectedCredentialId !== 'string' || selectedCredentialId.length === 0)) {
     throw new Error('Missing selected credential for Digital Credentials API request')
   }
 
@@ -111,28 +117,30 @@ export async function dcApiResolveRequest({ paradym, request }: DcApiResolveRequ
     throw new Error('Invalid Digital Credentials API request payload')
   }
 
-  // TODO: should allow limiting it to a specific credential (as we already know the credential id)
   const result = await resolveCredentialRequest({
     paradym,
     requestPayload: authorizationRequestPayload,
     origin,
   })
 
-  if (result.formattedSubmission.entries.length !== 1) {
-    throw new Error('Only requests for a single credential supported for digital credentials api')
-  }
-
   paradym.logger.debug('Resolved request', {
     result,
   })
-  const [entry] = result.formattedSubmission.entries
-  if (entry.isSatisfied) {
-    const credential = entry.credentials.find((c) => c.credential.record.id === selectedCredentialId)
-    if (!credential)
-      throw new Error(`Could not find selected credential with id '${selectedCredentialId}' in formatted submission`)
 
-    // Update to only contain the already selected credential
-    entry.credentials = [credential]
+  if (selectedCredentialId) {
+    const [entry] = result.formattedSubmission.entries
+    if (result.formattedSubmission.entries.length !== 1) {
+      throw new Error('Only requests for a single credential supported for digital credentials api')
+    }
+
+    if (entry.isSatisfied) {
+      const credential = entry.credentials.find((candidate) => credentialMatchesId(candidate, selectedCredentialId))
+      if (!credential) {
+        throw new Error(`Could not find selected credential with id '${selectedCredentialId}' in formatted submission`)
+      }
+
+      entry.credentials = [credential]
+    }
   }
 
   return {

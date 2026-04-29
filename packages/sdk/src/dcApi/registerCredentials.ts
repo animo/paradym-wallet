@@ -1,5 +1,16 @@
-import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
-import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord } from '@credo-ts/core'
+import { resolveTs12TransactionDisplayMetadata, zScaAttestationExt } from '@animo-id/eudi-wallet-functionality'
+import {
+  type AptitudeConsortiumConfig,
+  registerCredentials,
+} from '@animo-id/expo-digital-credentials-api-aptitude-consortium'
+import {
+  DateOnly,
+  IntegrityVerifier,
+  type Logger,
+  type MdocNameSpaces,
+  type MdocRecord,
+  type SdJwtVcRecord,
+} from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages, i18n } from '@package/translations'
 import { ImageFormat, Skia } from '@shopify/react-native-skia'
@@ -12,8 +23,10 @@ import { getCredentialForDisplay } from '../display/credential'
 import { resolveClaimsWithRecordMetadata, resolveLabelFromClaimsPath } from '../format/attributes'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
-type CredentialItem = RegisterCredentialsOptions['credentials'][number]
-type CredentialDisplayClaim = NonNullable<CredentialItem['display']['claims']>[number]
+type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[number]
+type CredentialDisplayClaim = NonNullable<CredentialItem['fields']>[number]
+type TransactionDataTypes = NonNullable<CredentialItem['transaction_data_types']>
+type TransactionDataType = Omit<TransactionDataTypes[number], 'schema'>
 
 function mapMdocAttributes(namespaces: MdocNameSpaces) {
   return Object.fromEntries(
@@ -43,7 +56,7 @@ function mapMdocAttributesToClaimDisplay(namespaces: MdocNameSpaces, record: Mdo
   return Object.entries(namespaces).flatMap(([namespace, values]) =>
     Object.keys(values).map((key) => ({
       path: [namespace, key],
-      displayName: resolveLabelFromClaimsPath([namespace, key], claims, i18n.locale) ?? t(commonMessages.unknown),
+      display_name: resolveLabelFromClaimsPath([namespace, key], claims, i18n.locale) ?? t(commonMessages.unknown),
     }))
   )
 }
@@ -62,11 +75,87 @@ function mapSdJwtAttributesToClaimDisplay(
     return [
       {
         path: [...path, claimName],
-        displayName: resolveLabelFromClaimsPath([...path, claimName], claims, i18n.locale) ?? t(commonMessages.unknown),
+        display_name:
+          resolveLabelFromClaimsPath([...path, claimName], claims, i18n.locale) ?? t(commonMessages.unknown),
       },
       ...nestedClaims,
     ]
   })
+}
+
+function normalizeAptitudeIcon(iconDataUrl?: string) {
+  if (!iconDataUrl) return undefined
+
+  const commaIndex = iconDataUrl.indexOf(',')
+  return commaIndex >= 0 ? iconDataUrl.slice(commaIndex + 1) : iconDataUrl
+}
+
+async function getSdJwtTransactionDataTypes(
+  logger: Logger,
+  typeMetadata?: unknown
+): Promise<TransactionDataTypes | undefined> {
+  if (!typeMetadata) return undefined
+
+  const parsed = zScaAttestationExt.safeParse(typeMetadata)
+  if (!parsed.success) return undefined
+
+  const resolvedEntries = await Promise.all(
+    parsed.data.transaction_data_types.map(async (entry) => {
+      try {
+        const resolved = await resolveTs12TransactionDisplayMetadata(
+          parsed.data,
+          entry.type,
+          entry.subtype,
+          (buf, integrity) => {
+            IntegrityVerifier.verifyIntegrity(new Uint8Array(buf), integrity)
+            return true
+          }
+        )
+        if (!resolved) return undefined
+
+        const transactionDataType: TransactionDataType = {
+          type: entry.type,
+          claims: resolved.claims.map((claim) => ({
+            path: claim.path,
+            display: claim.display.map((label) => ({
+              locale: label.locale ?? 'und',
+              label: label.name,
+              description: undefined,
+            })),
+          })),
+          ui_labels: Object.entries(resolved.ui_labels).map(([key, values]) => ({
+            key,
+            values: values.map((value) => ({
+              locale: value.locale,
+              value: value.value,
+            })),
+          })),
+        }
+
+        if (entry.subtype) transactionDataType.subtype = entry.subtype
+
+        return transactionDataType
+      } catch (error) {
+        logger.warn('Error resolving TS12 transaction metadata for DC API registration', { error })
+        return undefined
+      }
+    })
+  )
+
+  const transactionDataTypes = resolvedEntries.filter((entry): entry is TransactionDataType => entry !== undefined)
+
+  return transactionDataTypes.length > 0 ? transactionDataTypes : undefined
+}
+
+function getSdJwtVcts(record: SdJwtVcRecord) {
+  const chainVcts = record.typeMetadataChain
+    ?.map((entry) => entry.vct)
+    .filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
+
+  const tagVct = record.getTags().vct
+  const vcts = chainVcts && chainVcts.length > 0 ? chainVcts : tagVct ? [tagVct] : []
+
+  return vcts.length > 0 ? Array.from(new Set(vcts)) : undefined
 }
 
 /**
@@ -196,18 +285,14 @@ export async function dcApiRegisterCredentials({
           : undefined
 
       return {
-        id: record.id,
-        credential: {
-          doctype: mdoc.docType,
-          format: 'mso_mdoc',
-          namespaces: mapMdocAttributes(mdoc.issuerSignedNamespaces),
-        },
-        display: {
-          title: display.name ?? displayTitleFallback,
-          subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
-          claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces, record),
-          iconDataUrl,
-        },
+        id: getCredentialForDisplay(record).id,
+        format: 'mso_mdoc',
+        title: display.name ?? displayTitleFallback,
+        subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
+        fields: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces, record),
+        icon: normalizeAptitudeIcon(iconDataUrl),
+        doctype: mdoc.docType,
+        claims: mapMdocAttributes(mdoc.issuerSignedNamespaces),
       } as const
     })
 
@@ -222,21 +307,19 @@ export async function dcApiRegisterCredentials({
           : undefined
 
       const claims = resolveClaimsWithRecordMetadata(record)
+      const transactionDataTypes = await getSdJwtTransactionDataTypes(paradym.logger, record.typeMetadata)
 
       return {
-        id: record.id,
-        credential: {
-          vct: record.getTags().vct,
-          format: 'dc+sd-jwt',
-          // biome-ignore lint/suspicious/noExplicitAny: no explanation
-          claims: sdJwtVc.prettyClaims as any,
-        },
-        display: {
-          title: display.name ?? displayTitleFallback,
-          subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
-          claims: mapSdJwtAttributesToClaimDisplay(claims, record),
-          iconDataUrl,
-        },
+        id: getCredentialForDisplay(record).id,
+        format: 'dc+sd-jwt',
+        title: display.name ?? displayTitleFallback,
+        subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
+        fields: mapSdJwtAttributesToClaimDisplay(claims, sdJwtVc.prettyClaims),
+        icon: normalizeAptitudeIcon(iconDataUrl),
+        vcts: getSdJwtVcts(record),
+        transaction_data_types: transactionDataTypes,
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
+        claims: sdJwtVc.prettyClaims as any,
       } as const
     })
 
@@ -244,8 +327,21 @@ export async function dcApiRegisterCredentials({
     paradym.logger.trace('Registering credentials for Digital Credentials API')
 
     await registerCredentials({
-      credentials,
-      matcher: 'ubique',
+      aptitudeConsortiumConfig: {
+        openid4vp: {
+          enabled: true,
+          allow_dcql: true,
+          allow_transaction_data: true,
+          allow_signed_requests: true,
+          allow_response_mode_jwt: true,
+        },
+        log_level: __DEV__ ? 'debug' : undefined,
+        dcql: {
+          credential_set_option_mode: 'all_satisfiable',
+          optional_credential_sets_mode: 'prefer_present',
+        },
+        credentials,
+      },
     })
   } catch (error) {
     // Since this is an experimental feature, and it doedisplayTitleFallbacksn't work if you don't have the latest
