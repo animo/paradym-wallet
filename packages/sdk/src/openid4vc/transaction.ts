@@ -10,14 +10,13 @@ export const getFormattedTransactionData = (credentialsForRequest?: CredentialsF
 
   if (!transactionData || transactionData.length === 0) return undefined
 
-  // Only allow one transaction data entry
-  if (transactionData.length > 1) throw new Error('Multiple transactions are not supported yet.')
+  // This legacy formatter only supports the QES signing summary. Generic TS12/SCA
+  // transaction data is rendered through formattedSubmission credential sets.
+  if (transactionData.length > 1) return undefined
 
   const transactionDataEntry = transactionData[0]
 
-  // Only allow qes_authorization is supported at this time
-  if (transactionDataEntry.entry.transactionData.type !== 'qes_authorization')
-    throw new Error('Only document signing is supported at this time.')
+  if (transactionDataEntry.entry.transactionData.type !== 'qes_authorization') return undefined
 
   // TODO: this needs to be updated when we support credential selection
   const cardForSigningId = transactionDataEntry.matchedCredentialIds.find((id) =>

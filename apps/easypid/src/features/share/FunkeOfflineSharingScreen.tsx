@@ -1,11 +1,28 @@
-import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
-import { type SlideStep, SlideWizard } from '@package/app'
+import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
+import { type SlideStep, SlideWizard, useWizard } from '@package/app'
 import type { FormattedSubmission } from '@paradym/wallet-sdk'
 import type { SubmissionAuthorizationMode } from '../../hooks/useSubmissionAuthorizationMode'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
-import { WalletAuthSlide } from './slides/WalletAuthSlide'
+
+type OfflineWalletAuthStepProps = {
+  authMode: Exclude<SubmissionAuthorizationMode, 'none'>
+  isLoading: boolean
+  onSubmit: (props: OnWalletAuthSubmitProps) => Promise<void>
+}
+
+function OfflineWalletAuthStep({ authMode, onSubmit, isLoading }: OfflineWalletAuthStepProps) {
+  const { onNext } = useWizard()
+
+  return (
+    <WalletFlowAuthPrompt
+      authMode={authMode}
+      isLoading={isLoading}
+      onSubmit={(props) => onSubmit({ ...props, onAuthorized: onNext })}
+    />
+  )
+}
 
 interface FunkeOfflineSharingScreenProps {
   submission?: FormattedSubmission
@@ -52,7 +69,7 @@ export function FunkeOfflineSharingScreen({
             step: 'pin-enter',
             progress: 80,
             screen: (
-              <WalletAuthSlide
+              <OfflineWalletAuthStep
                 key="pin-enter"
                 authMode={authorizationMode}
                 isLoading={isAccepting}

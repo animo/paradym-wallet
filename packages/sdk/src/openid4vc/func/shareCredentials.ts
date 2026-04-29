@@ -12,21 +12,17 @@ import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
-import { getFormattedTransactionData } from '../transaction'
 
 export type ShareCredentialsOptions = {
   paradym: ParadymWalletSdk
   resolvedRequest: CredentialsForProofRequest
-  selectedCredentials: { [inputDescriptorId: string]: string }
-  // FIXME: Should be a more complex structure allowing which credential to use for which entry
-  acceptTransactionData?: boolean
+  selectedCredentials?: { [inputDescriptorId: string]: string }
 }
 
 export const shareCredentials = async ({
   paradym,
   resolvedRequest,
-  selectedCredentials,
-  acceptTransactionData,
+  selectedCredentials = {},
 }: ShareCredentialsOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')
 
@@ -76,15 +72,24 @@ export const shareCredentials = async ({
       )
     : undefined
 
-  const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
   const transactionDataEntries = resolvedRequest.authorizationRequest.transaction_data
+  const transactionDataCredentials = resolvedRequest.transactionData?.map(({ matchedCredentialIds }) => {
+    const credentialId =
+      matchedCredentialIds.find((id) => selectedCredentials[id]) ??
+      matchedCredentialIds.find((id) => dcqlCredentials?.[id] || presentationExchangeCredentials?.[id]) ??
+      matchedCredentialIds[0]
+
+    if (!credentialId) throw new Error('No credential selected for transaction data')
+
+    return { credentialId }
+  })
   const transactionData =
     transactionDataEntries === undefined
       ? undefined
       : transactionDataEntries.length === 0
         ? []
-        : resolvedRequest.transactionData && acceptTransactionData && cardForSigningId
-          ? [{ credentialId: cardForSigningId }]
+        : transactionDataCredentials && transactionDataCredentials.length > 0
+          ? transactionDataCredentials
           : undefined
 
   try {

@@ -13,12 +13,24 @@ type RuntimeDigitalCredentialsRequest = DigitalCredentialsRequest & {
   request?: unknown
   selection?: {
     requestIdx?: number
+    creds?: Array<{
+      entryId?: string
+      metadata?: {
+        dcql_id?: string
+        credential_id?: string
+      }
+    }>
   }
   selectedEntry?: {
     credentialId?: string
     providerIndex?: number
   }
   sourceBundle?: unknown
+}
+
+export type DcApiSelectedCredential = {
+  inputDescriptorId?: string
+  credentialRecordId: string
 }
 
 function getBundleRequestPayload(sourceBundle: unknown) {
@@ -71,7 +83,12 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
     throw new Error('Invalid Digital Credentials API request payload')
   }
 
-  const requestEntries = Array.isArray(requestPayload.requests) ? requestPayload.requests : requestPayload.providers
+  const requestEntries =
+    'requests' in requestPayload && Array.isArray(requestPayload.requests)
+      ? requestPayload.requests
+      : 'providers' in requestPayload && Array.isArray(requestPayload.providers)
+        ? requestPayload.providers
+        : undefined
   const requestEntry = Array.isArray(requestEntries) ? requestEntries[requestIndex] : undefined
 
   if (!isRecord(requestEntry)) {
@@ -80,7 +97,24 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
 
   const { protocol } = requestEntry
   const providerRequest = requestEntry.data ?? requestEntry.request
-  const selectedCredentialId = dcRequest.selectedEntry?.credentialId
+  const selectedCredentials =
+    dcRequest.selection?.creds
+      ?.map((credential): DcApiSelectedCredential | undefined => {
+        if (typeof credential.entryId !== 'string' || credential.entryId.length === 0) return undefined
+        return {
+          credentialRecordId: credential.entryId,
+          inputDescriptorId:
+            typeof credential.metadata?.credential_id === 'string' && credential.metadata.credential_id.length > 0
+              ? credential.metadata.credential_id
+              : typeof credential.metadata?.dcql_id === 'string' && credential.metadata.dcql_id.length > 0
+                ? credential.metadata.dcql_id
+                : undefined,
+        }
+      })
+      .filter((credential): credential is DcApiSelectedCredential => credential !== undefined) ??
+    (typeof dcRequest.selectedEntry?.credentialId === 'string' && dcRequest.selectedEntry.credentialId.length > 0
+      ? [{ credentialRecordId: dcRequest.selectedEntry.credentialId }]
+      : [])
 
   if (typeof protocol !== 'string' || protocol.length === 0) {
     throw new Error('Missing Digital Credentials API protocol in request')
@@ -90,7 +124,7 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
     throw new Error('Missing provider request for Digital Credentials API request')
   }
 
-  if (typeof selectedCredentialId !== 'string' || selectedCredentialId.length === 0) {
+  if (selectedCredentials.length === 0) {
     throw new Error('Missing selected credential for Digital Credentials API request')
   }
 
@@ -98,12 +132,12 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
     origin: getDcApiOrigin(dcRequest),
     protocol,
     providerRequest,
-    selectedCredentialId,
+    selectedCredentials,
   }
 }
 
 export async function dcApiResolveRequest({ paradym, request }: DcApiResolveRequestOptions) {
-  const { origin, providerRequest, selectedCredentialId } = getDcApiRequestContext(request)
+  const { origin, providerRequest, selectedCredentials } = getDcApiRequestContext(request)
   const authorizationRequestPayload =
     typeof providerRequest === 'string' ? parseJsonObject(providerRequest) : providerRequest
 
@@ -118,20 +152,36 @@ export async function dcApiResolveRequest({ paradym, request }: DcApiResolveRequ
     origin,
   })
 
-  if (result.formattedSubmission.entries.length !== 1) {
-    throw new Error('Only requests for a single credential supported for digital credentials api')
-  }
-
   paradym.logger.debug('Resolved request', {
     result,
   })
-  const [entry] = result.formattedSubmission.entries
-  if (entry.isSatisfied) {
-    const credential = entry.credentials.find((c) => c.credential.record.id === selectedCredentialId)
-    if (!credential)
-      throw new Error(`Could not find selected credential with id '${selectedCredentialId}' in formatted submission`)
 
-    // Update to only contain the already selected credential
+  for (const selectedCredential of selectedCredentials) {
+    const entry = selectedCredential.inputDescriptorId
+      ? result.formattedSubmission.entries.find(
+          (entry) => entry.inputDescriptorId === selectedCredential.inputDescriptorId
+        )
+      : result.formattedSubmission.entries.find(
+          (entry) =>
+            entry.isSatisfied &&
+            entry.credentials.some(
+              (credential) => credential.credential.record.id === selectedCredential.credentialRecordId
+            )
+        )
+
+    if (!entry?.isSatisfied) {
+      throw new Error(`Could not find selected entry for credential '${selectedCredential.credentialRecordId}'`)
+    }
+
+    const credential = entry.credentials.find(
+      (credential) => credential.credential.record.id === selectedCredential.credentialRecordId
+    )
+    if (!credential) {
+      throw new Error(
+        `Could not find selected credential with id '${selectedCredential.credentialRecordId}' in formatted submission`
+      )
+    }
+
     entry.credentials = [credential]
   }
 

@@ -1,4 +1,3 @@
-import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
 import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
 import { useSubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
 import { authorizeWalletFlowIfNeeded, clearWalletFlowAuthorization } from '@easypid/utils/authorizeWalletFlow'
@@ -9,32 +8,67 @@ import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk'
 import {
-  type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
+  getFormattedTransactionData,
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
+import type { WalletFlowSource } from '../flow/WalletFlowShell'
+import {
+  FunkePresentationNotificationScreen,
+  type PresentationAcceptProps,
+} from './FunkePresentationNotificationScreen'
 
 type Query = { uri: string }
 
-export function FunkeOpenIdPresentationNotificationScreen() {
+type OpenIdPresentationNotificationScreenProps = {
+  source?: WalletFlowSource
+  routeParams?: Query
+  onExit?: () => void
+}
+
+type OpenIdPresentationNotificationFlowProps = {
+  source?: WalletFlowSource
+  routeParams: Query
+  onExit: () => void
+}
+
+export function FunkeOpenIdPresentationNotificationScreen({
+  source = 'in-app',
+  routeParams,
+  onExit,
+}: OpenIdPresentationNotificationScreenProps = {}) {
+  const params = useLocalSearchParams<Query>()
+  const pushToWallet = usePushToWallet()
+
+  return (
+    <FunkeOpenIdPresentationNotificationFlow
+      source={source}
+      routeParams={routeParams ?? params}
+      onExit={onExit ?? pushToWallet}
+    />
+  )
+}
+
+export function FunkeOpenIdPresentationNotificationFlow({
+  source = 'in-app',
+  routeParams: params,
+  onExit,
+}: OpenIdPresentationNotificationFlowProps) {
   const { t } = useLingui()
   const { paradym } = useParadym('unlocked')
 
   const toast = useToastController()
-  const params = useLocalSearchParams<Query>()
-  const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [errorReason, setErrorReason] = useState<string>()
 
   const [resolvedRequest, setResolvedRequest] = useState<CredentialsForProofRequest>()
-  const [formattedTransactionData, _setFormattedTransactionData] = useState<FormattedTransactionData>()
   const [isSharing, setIsSharing] = useState(false)
   const authorizationMode = useSubmissionAuthorizationMode(resolvedRequest?.formattedSubmission)
+  const formattedTransactionData = getFormattedTransactionData(resolvedRequest)
 
   const handleError = useCallback(({ reason, description }: { reason: string; description?: string }) => {
     setIsSharing(false)
@@ -114,7 +148,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   }, [resolvedRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
 
   const onProofAccept = useCallback(
-    async ({ pin, onAuthorized, onAuthorizationError }: OnWalletAuthSubmitProps = {}) => {
+    async ({ pin, onAuthorized, onAuthorizationError, selectedCredentials }: PresentationAcceptProps = {}) => {
       stopOverAsking()
       if (!resolvedRequest) return handleError({ reason: reasonNoCredentials })
 
@@ -140,9 +174,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         }
 
         if (e instanceof ParadymWalletBiometricAuthenticationCancelledError) {
-          return handleError({
-            reason: t(commonMessages.biometricAuthenticationCancelled),
-          })
+          return
         }
 
         return handleError({
@@ -155,17 +187,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       try {
         await paradym.openid4vc.shareCredentials({
           resolvedRequest,
-          selectedCredentials: {},
-          acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
+          selectedCredentials,
         })
 
         onAuthorized?.()
       } catch (error) {
         setIsSharing(false)
         if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
-          return handleError({
-            reason: t(commonMessages.biometricAuthenticationCancelled),
-          })
+          return
         }
 
         paradym.logger.error('Error accepting presentation', {
@@ -189,7 +218,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       toast,
       isDevelopmentModeEnabled,
       handleError,
-      formattedTransactionData,
       reasonNoCredentials,
       reasonPinAuthFailed,
       t,
@@ -204,20 +232,21 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       await paradym.openid4vc.declineCredentialRequest({ resolvedRequest })
     }
 
-    pushToWallet()
+    onExit()
     toast.show(t(commonMessages.informationRequestDeclined), {
       customData: { preset: 'danger' },
     })
-  }, [resolvedRequest, pushToWallet, stopOverAsking, t, toast, paradym])
+  }, [resolvedRequest, onExit, stopOverAsking, t, toast, paradym])
 
   const replace = useCallback(() => {
     clearWalletFlowAuthorization()
-    pushToWallet()
-  }, [pushToWallet])
+    onExit()
+  }, [onExit])
 
   return (
     <FunkePresentationNotificationScreen
       key="presentation"
+      source={source}
       authorizationMode={authorizationMode ?? 'none'}
       onAccept={onProofAccept}
       onDecline={onProofDecline}
@@ -226,8 +255,6 @@ export function FunkeOpenIdPresentationNotificationScreen() {
       entityId={resolvedRequest?.verifier.entityId}
       verifierName={resolvedRequest?.verifier.name}
       logo={resolvedRequest?.verifier.logo}
-      trustedEntities={resolvedRequest?.verifier.trustedEntities}
-      trustMechanism={resolvedRequest?.trustMechanism}
       onComplete={replace}
       onCancel={replace}
       overAskingResponse={overAskingResponse}

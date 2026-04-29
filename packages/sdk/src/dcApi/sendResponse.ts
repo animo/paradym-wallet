@@ -33,8 +33,15 @@ function getDcApiResponseData(responseMode: unknown, authorizationResponse: unkn
 }
 
 export async function dcApiSendResponse({ paradym, resolvedRequest, dcRequest }: DcApiSendResponseOptions) {
-  const firstEntry = resolvedRequest.formattedSubmission.entries[0]
-  if (!firstEntry?.isSatisfied) {
+  const selectedCredentials = Object.fromEntries(
+    resolvedRequest.formattedSubmission.entries.flatMap((entry) =>
+      entry.isSatisfied && entry.credentials[0]
+        ? [[entry.inputDescriptorId, entry.credentials[0].credential.record.id] as const]
+        : []
+    )
+  )
+
+  if (Object.keys(selectedCredentials).length === 0) {
     paradym.logger.debug('Expected one entry for DC API response', {
       resolvedRequest,
       dcRequest,
@@ -42,13 +49,11 @@ export async function dcApiSendResponse({ paradym, resolvedRequest, dcRequest }:
     throw new Error('Expected one entry for DC API response')
   }
 
-  const { protocol, selectedCredentialId } = getDcApiRequestContext(dcRequest)
+  const { protocol } = getDcApiRequestContext(dcRequest)
   const result = await shareCredentials({
     paradym,
     resolvedRequest,
-    selectedCredentials: {
-      [firstEntry.inputDescriptorId]: selectedCredentialId,
-    },
+    selectedCredentials,
   })
 
   paradym.logger.debug('Sending response for Digital Credentials API', {

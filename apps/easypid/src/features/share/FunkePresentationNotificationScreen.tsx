@@ -1,39 +1,39 @@
-import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
+import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
+import { type FlowSelectedCredentials, SubmissionCredentialSets } from '@easypid/features/flow/SubmissionCredentialSets'
+import type { WalletFlowSource } from '@easypid/features/flow/WalletFlowShell'
+import {
+  getWalletFlowSurface,
+  WalletFlowActionButton,
+  WalletFlowErrorContent,
+  WalletFlowShell,
+} from '@easypid/features/flow/WalletFlowShell'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
-import { type SlideStep, SlideWizard } from '@package/app'
-import type {
-  DisplayImage,
-  FormattedSubmission,
-  FormattedTransactionData,
-  TrustedEntity,
-  TrustMechanism,
-} from '@paradym/wallet-sdk'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
+import { Button, Heading, Paragraph, YStack } from '@package/ui'
+import type { DisplayImage, FormattedSubmission, FormattedTransactionData } from '@paradym/wallet-sdk'
+import { useState } from 'react'
 import type { SubmissionAuthorizationMode } from '../../hooks/useSubmissionAuthorizationMode'
-import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
-import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
-import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
-import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
-import { SignAndShareSlide } from './slides/SignAndShareSlide'
-import { SigningSlide } from './slides/SigningSlide'
-import { WalletAuthSlide } from './slides/WalletAuthSlide'
+
+export type PresentationAcceptProps = OnWalletAuthSubmitProps & {
+  selectedCredentials?: FlowSelectedCredentials
+}
 
 interface FunkePresentationNotificationScreenProps {
   entityId?: string
   verifierName?: string
   logo?: DisplayImage
   overAskingResponse?: OverAskingResponse
-  trustedEntities?: Array<TrustedEntity>
-  trustMechanism?: TrustMechanism
   submission?: FormattedSubmission
   authorizationMode: SubmissionAuthorizationMode
   isAccepting: boolean
   transaction?: FormattedTransactionData
-  onAccept: (props?: OnWalletAuthSubmitProps) => Promise<void>
+  onAccept: (props?: PresentationAcceptProps) => Promise<void>
   onDecline: () => void
   onCancel: () => void
   onComplete: () => void
   errorReason?: string
+  source?: WalletFlowSource
 }
 
 export function FunkePresentationNotificationScreen({
@@ -48,109 +48,148 @@ export function FunkePresentationNotificationScreen({
   submission,
   onComplete,
   overAskingResponse,
-  trustedEntities,
-  trustMechanism,
   transaction,
   errorReason,
+  source = 'in-app',
 }: FunkePresentationNotificationScreenProps) {
+  const { t } = useLingui()
+  const [selectedCredentials, setSelectedCredentials] = useState<FlowSelectedCredentials>({})
+  const [isAuthenticating, setIsAuthenticating] = useState(false)
+  const [isComplete, setIsComplete] = useState(false)
+  const [isSubmitLocked, setIsSubmitLocked] = useState(false)
+  const surface = getWalletFlowSurface(source)
+  const endButtonLabel =
+    surface === 'overlay'
+      ? t(commonMessages.close)
+      : t({
+          id: 'presentation.onePage.done',
+          message: 'Return to wallet',
+          comment: 'Button label after a presentation is shared',
+        })
+  const isSigning = transaction?.type === 'qes_authorization'
+  const isSubmitting = isAccepting || isSubmitLocked
+  const title = isSigning
+    ? t({
+        id: 'presentation.onePage.signTitle',
+        message: 'Review signature request',
+        comment: 'Title for one page signature review',
+      })
+    : t({
+        id: 'presentation.onePage.title',
+        message: 'Review data request',
+        comment: 'Title for one page presentation review',
+      })
+
+  const complete = () => {
+    setIsComplete(true)
+    setIsAuthenticating(false)
+  }
+
+  const accept = async (props: PresentationAcceptProps = {}) => {
+    if (isSubmitting) return
+
+    setIsSubmitLocked(true)
+    try {
+      await onAccept({
+        ...props,
+        selectedCredentials,
+        onAuthorized: () => {
+          props.onAuthorized?.()
+          complete()
+        },
+      })
+    } finally {
+      setIsSubmitLocked(false)
+    }
+  }
+
+  const authPrompt =
+    isAuthenticating && authorizationMode !== 'none' ? (
+      <WalletFlowAuthPrompt authMode={authorizationMode} isLoading={isSubmitting} onSubmit={accept} />
+    ) : null
+
+  const footer = isComplete ? (
+    <WalletFlowActionButton onPress={onComplete}>{endButtonLabel}</WalletFlowActionButton>
+  ) : authPrompt && surface === 'fullscreen' ? (
+    authPrompt
+  ) : authPrompt ? undefined : (
+    <YStack gap="$2">
+      <WalletFlowActionButton
+        disabled={!submission?.areAllSatisfied}
+        isLoading={isSubmitting}
+        onPress={() => {
+          if (isSubmitting) return
+
+          if (authorizationMode === 'none') {
+            void accept()
+          } else {
+            setIsAuthenticating(true)
+          }
+        }}
+      >
+        {isSigning
+          ? t({
+              id: 'presentation.onePage.sign',
+              message: 'Sign and share',
+              comment: 'Button label to accept a signing request',
+            })
+          : t({
+              id: 'presentation.onePage.share',
+              message: 'Share data',
+              comment: 'Button label to accept a presentation request',
+            })}
+      </WalletFlowActionButton>
+      <Button.Text scaleOnPress disabled={isSubmitting} onPress={onDecline}>
+        {t({
+          id: 'common.declineButton',
+          message: 'Decline',
+          comment: 'Decline button label',
+        })}
+      </Button.Text>
+    </YStack>
+  )
+
   return (
-    <SlideWizard
-      steps={
-        [
-          {
-            step: 'loading-request',
-            progress: 16.5,
-            screen: <LoadingRequestSlide key="loading-request" isLoading={!submission} isError={false} />,
-          },
-          {
-            step: 'verify-issuer',
-            progress: 33,
-            backIsCancel: true,
-            screen: (
-              <VerifyPartySlide
-                key="verify-issuer"
-                type={transaction?.type === 'qes_authorization' ? 'signing' : 'request'}
-                entityId={entityId}
-                name={verifierName}
-                logo={logo}
-                trustedEntities={trustedEntities}
-                trustMechanism={trustMechanism}
-              />
-            ),
-          },
-          ...(submission
-            ? transaction?.type === 'qes_authorization'
-              ? [
-                  {
-                    step: 'signing',
-                    progress: 50,
-                    screen: <SigningSlide qtsp={transaction.qtsp} documentName={transaction.documentName} />,
-                  },
-                  {
-                    step: 'share-credentials',
-                    progress: 66,
-                    screen: (
-                      <SignAndShareSlide
-                        key="sign-and-share-credentials"
-                        onAccept={authorizationMode === 'none' ? onAccept : undefined}
-                        onDecline={onDecline}
-                        isAccepting={isAccepting}
-                        qtsp={transaction.qtsp}
-                        documentName={transaction.documentName}
-                        cardForSigningId={transaction.cardForSigningId}
-                        submission={submission}
-                      />
-                    ),
-                  },
-                ]
-              : [
-                  {
-                    step: 'share-credentials',
-                    progress: 66,
-                    screen: (
-                      <ShareCredentialsSlide
-                        key="share-credentials"
-                        onAccept={authorizationMode === 'none' ? onAccept : undefined}
-                        logo={logo}
-                        submission={submission}
-                        onDecline={onDecline}
-                        isAccepting={isAccepting}
-                        overAskingResponse={overAskingResponse}
-                      />
-                    ),
-                  },
-                ]
-            : []),
-          authorizationMode !== 'none' && {
-            step: 'pin-enter',
-            progress: 82.5,
-            screen: (
-              <WalletAuthSlide
-                key="pin-enter"
-                authMode={authorizationMode}
-                isLoading={isAccepting}
-                onSubmit={onAccept}
-              />
-            ),
-          },
-          {
-            step: 'success',
-            progress: 100,
-            backIsCancel: true,
-            screen: <PresentationSuccessSlide showReturnToApp verifierName={verifierName} onComplete={onComplete} />,
-          },
-        ].filter(Boolean) as SlideStep[]
-      }
-      errorScreen={() => (
-        <InteractionErrorSlide
-          key="presentation-error"
-          flowType={transaction?.type === 'qes_authorization' ? 'sign' : 'verify'}
-          reason={errorReason}
-          onCancel={onCancel}
-        />
-      )}
-      isError={!!errorReason}
-      onCancel={onDecline}
-    />
+    <WalletFlowShell
+      surface={surface}
+      title={isComplete ? t(commonMessages.success) : title}
+      subtitle={isComplete ? verifierName : (verifierName ?? entityId)}
+      logo={logo}
+      logoFallback={verifierName ?? entityId}
+      isLoading={!submission && !errorReason}
+      footer={footer}
+      onCancel={onCancel}
+    >
+      {errorReason ? (
+        <WalletFlowErrorContent message={errorReason} onClose={onCancel} />
+      ) : isComplete ? (
+        <Paragraph>
+          {t({
+            id: 'presentation.onePage.completeDescription',
+            message: 'The information was shared successfully.',
+            comment: 'Shown after a presentation has been shared',
+          })}
+        </Paragraph>
+      ) : submission ? (
+        <YStack gap="$5">
+          {overAskingResponse?.validRequest === 'no' ? (
+            <YStack p="$3" br="$5" bg="$warning-300">
+              <Paragraph>{overAskingResponse.reason}</Paragraph>
+            </YStack>
+          ) : null}
+
+          {transaction?.type === 'qes_authorization' ? (
+            <YStack p="$3" br="$5" bg="$grey-100" gap="$1">
+              <Heading heading="h4">{transaction.documentName}</Heading>
+              <Paragraph variant="annotation">{transaction.qtsp.name ?? transaction.qtsp.hostName}</Paragraph>
+            </YStack>
+          ) : null}
+
+          <SubmissionCredentialSets submission={submission} onSelectionChange={setSelectedCredentials} />
+
+          {surface === 'overlay' ? authPrompt : null}
+        </YStack>
+      ) : null}
+    </WalletFlowShell>
   )
 }

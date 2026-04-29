@@ -2,6 +2,8 @@ import { sendErrorResponse } from '@animo-id/expo-digital-credentials-api'
 import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
 import { paradymWalletSdkOptions } from '@easypid/config/paradym'
 import { setupWalletServiceProvider, setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import { getOriginLabel, useOriginLogo } from '@easypid/features/flow/useOriginLogo'
+import { WalletFlowErrorContent, WalletFlowShell } from '@easypid/features/flow/WalletFlowShell'
 import { useShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
 import { useDevelopmentMode } from '@easypid/hooks'
 import type { SubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
@@ -11,45 +13,43 @@ import {
   isWalletAuthPromptError,
 } from '@easypid/utils/authorizeWalletFlow'
 import { useLingui } from '@lingui/react/macro'
-import { commonMessages, TranslationProvider } from '@package/translations'
-import { Stack, TamaguiProvider, YStack } from '@package/ui'
+import { Provider } from '@package/app'
+import { commonMessages } from '@package/translations'
+import { Stack } from '@package/ui'
 import { type DigitalCredentialsRequest, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
 import { useEffect, useRef, useState } from 'react'
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
-import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 
 type DcApiSharingScreenProps = {
   request: DigitalCredentialsRequest
+}
+
+type FlowError = {
+  message: string
+  responseMessage: string
 }
 
 export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
   const [storedLocale] = useStoredLocale()
 
   return (
-    <TranslationProvider customLocale={storedLocale}>
-      <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
-        <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
-          <SafeAreaProvider>
-            <Stack flex-1 justifyContent="flex-end">
-              <DcApiSharingScreenWithContext request={request} />
-            </Stack>
-          </SafeAreaProvider>
-        </ParadymWalletSdk.UnlockProvider>
-      </TamaguiProvider>
-    </TranslationProvider>
+    <Provider config={tamaguiConfig} customLocale={storedLocale} rootBackgroundColor="transparent">
+      <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
+        <Stack flex-1 justifyContent="flex-end" backgroundColor="transparent">
+          <DcApiSharingScreenWithContext request={request} />
+        </Stack>
+      </ParadymWalletSdk.UnlockProvider>
+    </Provider>
   )
 }
 
 export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenProps) {
   const { t } = useLingui()
   const [isProcessing, setIsProcessing] = useState(false)
-  const [errorReason, setErrorReason] = useState<string>()
+  const [flowError, setFlowError] = useState<FlowError>()
   const cloudHsmPinRef = useRef<string | undefined>(undefined)
   const onAuthorizationErrorRef = useRef<(() => void) | undefined>(undefined)
-  const errorResponseMessageRef = useRef('Unable to share credentials')
-  const insets = useSafeAreaInsets()
   const paradym = useParadym()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [shouldUseCloudHsmValue] = useShouldUseCloudHsm()
@@ -57,10 +57,15 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const authorizationMode: Exclude<SubmissionAuthorizationMode, 'none'> = shouldUseCloudHsm
     ? 'pin-only'
     : 'pin-or-biometrics'
+  const requestOrigin = request.origin ?? request.packageName
+  const requestOriginLabel = getOriginLabel(requestOrigin)
+  const requestOriginLogo = useOriginLogo(requestOrigin)
   const isAuthorizing =
     isProcessing || paradym.state === 'acquired-wallet-key' || (paradym.state === 'locked' && paradym.isUnlocking)
 
-  const setFlowError = ({
+  const rejectRequest = (errorMessage: string) => sendErrorResponse({ errorMessage })
+
+  const setFlowErrorFromError = ({
     reason,
     error,
     responseMessage,
@@ -69,37 +74,35 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     error: unknown
     responseMessage: string
   }) => {
-    errorResponseMessageRef.current = responseMessage
     const errorMessage =
       error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
 
-    setErrorReason(errorMessage ? `${reason}\n${errorMessage}` : reason)
+    setFlowError({
+      message: errorMessage ? `${reason}\n${errorMessage}` : reason,
+      responseMessage,
+    })
   }
 
   const onShareResponse = async (sdk: ParadymWalletSdk) => {
-    let resolvedRequest: Awaited<ReturnType<typeof sdk.dcApi.resolveRequest>>
+    const resolveErrorMessage = t(commonMessages.presentationInformationCouldNotBeExtracted)
+    const shareErrorMessage = t(commonMessages.presentationCouldNotBeShared)
+    let resolvedRequest: Awaited<ReturnType<ParadymWalletSdk['dcApi']['resolveRequest']>>
 
     try {
       resolvedRequest = await sdk.dcApi.resolveRequest({ request })
-
-      // We can't share multiple documents at the moment
-      if (resolvedRequest.formattedSubmission.entries.length > 1) {
-        throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
-      }
     } catch (error) {
       sdk.logger.error('Error getting credentials for dc api request', {
         error,
       })
 
-      setFlowError({
-        reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
+      setFlowErrorFromError({
+        reason: resolveErrorMessage,
         error,
-        responseMessage: 'Presentation information could not be extracted',
+        responseMessage: resolveErrorMessage,
       })
       return false
     }
 
-    // Once this returns we just assume it's successful
     try {
       await sdk.dcApi.sendResponse({
         dcRequest: request,
@@ -110,10 +113,10 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     } catch (error) {
       sdk.logger.error('Could not share response', { error })
 
-      setFlowError({
-        reason: t(commonMessages.presentationCouldNotBeShared),
+      setFlowErrorFromError({
+        reason: shareErrorMessage,
         error,
-        responseMessage: 'Unable to share credentials',
+        responseMessage: shareErrorMessage,
       })
       return false
     }
@@ -140,10 +143,10 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           return
         }
 
-        setFlowError({
+        setFlowErrorFromError({
           reason: t(commonMessages.presentationCouldNotBeShared),
           error,
-          responseMessage: 'Unable to share credentials',
+          responseMessage: t(commonMessages.presentationCouldNotBeShared),
         })
       })
       .finally(() => {
@@ -197,10 +200,10 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         return
       }
 
-      setFlowError({
+      setFlowErrorFromError({
         reason: t(commonMessages.presentationCouldNotBeShared),
         error,
-        responseMessage: 'Unable to share credentials',
+        responseMessage: t(commonMessages.presentationCouldNotBeShared),
       })
     } finally {
       clearWalletFlowAuthorization()
@@ -209,32 +212,23 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   }
 
   return (
-    <YStack
-      borderTopLeftRadius="$8"
-      borderTopRightRadius="$8"
-      backgroundColor="white"
-      gap="$5"
-      p="$4"
-      paddingBottom={insets.bottom ?? '$6'}
+    <WalletFlowShell
+      surface="overlay"
+      title={t({
+        id: 'dcApi.share.title',
+        message: 'Share from wallet',
+        comment: 'Title for the Digital Credentials API wallet auth prompt',
+      })}
+      subtitle={requestOriginLabel}
+      logo={requestOriginLogo}
+      logoFallback={requestOriginLabel}
+      onCancel={() => rejectRequest(flowError?.responseMessage ?? 'Information request declined')}
     >
-      {errorReason ? (
-        <InteractionErrorSlide
-          flowType="verify"
-          reason={errorReason}
-          layout="content"
-          buttonLabel={t(commonMessages.close)}
-          onCancel={() => sendErrorResponse({ errorMessage: errorResponseMessageRef.current })}
-        />
+      {flowError ? (
+        <WalletFlowErrorContent message={flowError.message} onClose={() => rejectRequest(flowError.responseMessage)} />
       ) : (
-        <Stack pt="$5">
-          <WalletFlowAuthPrompt
-            authMode={authorizationMode}
-            onSubmit={onAuthorize}
-            isLoading={isAuthorizing}
-            annotation={request.origin}
-          />
-        </Stack>
+        <WalletFlowAuthPrompt authMode={authorizationMode} onSubmit={onAuthorize} isLoading={isAuthorizing} />
       )}
-    </YStack>
+    </WalletFlowShell>
   )
 }
