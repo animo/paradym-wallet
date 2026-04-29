@@ -81,7 +81,8 @@ function getDcApiOrigin(request: RuntimeDigitalCredentialsRequest) {
 export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
   const dcRequest = request as RuntimeDigitalCredentialsRequest
   const aptitudeSelection = getAptitudeSelection(request)
-  const requestIndex = aptitudeSelection?.requestIdx ?? dcRequest.selection?.requestIdx ?? dcRequest.selectedEntry?.providerIndex ?? 0
+  const requestIndex =
+    aptitudeSelection?.requestIdx ?? dcRequest.selection?.requestIdx ?? dcRequest.selectedEntry?.providerIndex ?? 0
   const requestPayload = getDcApiRequestPayload(dcRequest)
 
   if (!isRecord(requestPayload)) {
