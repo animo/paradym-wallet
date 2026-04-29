@@ -1,8 +1,9 @@
 import { MdocRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { useParadym } from '../hooks'
+import { subscribeToCredentialStoreChanges } from '../storage/credentials'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
 
 export { Mdoc, MdocRecord } from '@credo-ts/core'
@@ -13,6 +14,8 @@ type MdocRecordState = {
 }
 
 const addRecord = (record: MdocRecord, state: MdocRecordState): MdocRecordState => {
+  if (state.mdocRecords.some((r) => r.id === record.id)) return updateRecord(record, state)
+
   const newRecordsState = [...state.mdocRecords]
   newRecordsState.unshift(record)
   return {
@@ -65,33 +68,42 @@ export const MdocRecordProvider: React.FC<PropsWithChildren> = ({ children }) =>
     isLoading: true,
   })
 
-  useEffect(() => {
+  const loadRecords = useCallback(() => {
     if (paradym.state !== 'unlocked') return
 
     void paradym.paradym.agent.mdoc.getAll().then((mdocRecords) => setState({ mdocRecords, isLoading: false }))
   }, [paradym])
 
   useEffect(() => {
-    if (!state.isLoading && paradym.state === 'unlocked') {
+    loadRecords()
+  }, [loadRecords])
+
+  useEffect(() => {
+    if (paradym.state === 'unlocked') {
+      const unsubscribeCredentialStore = subscribeToCredentialStoreChanges(loadRecords)
+
+      if (state.isLoading) return unsubscribeCredentialStore
+
       const credentialAdded$ = recordsAddedByType(paradym.paradym.agent, MdocRecord).subscribe((record) =>
-        setState(addRecord(record, state))
+        setState((currentState) => addRecord(record, currentState))
       )
 
       const credentialUpdate$ = recordsUpdatedByType(paradym.paradym.agent, MdocRecord).subscribe((record) =>
-        setState(updateRecord(record, state))
+        setState((currentState) => updateRecord(record, currentState))
       )
 
       const credentialRemove$ = recordsRemovedByType(paradym.paradym.agent, MdocRecord).subscribe((record) =>
-        setState(removeRecord(record, state))
+        setState((currentState) => removeRecord(record, currentState))
       )
 
       return () => {
+        unsubscribeCredentialStore()
         credentialAdded$.unsubscribe()
         credentialUpdate$.unsubscribe()
         credentialRemove$.unsubscribe()
       }
     }
-  }, [state, paradym])
+  }, [state.isLoading, paradym, loadRecords])
 
   return <MdocRecordContext.Provider value={state}>{children}</MdocRecordContext.Provider>
 }

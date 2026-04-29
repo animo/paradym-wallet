@@ -17,7 +17,7 @@ import {
 } from '@package/ui'
 import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export function FunkeCredentialDetailScreen() {
@@ -31,6 +31,8 @@ export function FunkeCredentialDetailScreen() {
 
   const { credential } = useCredentialById(id)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [isArchivingCredential, setIsArchivingCredential] = useState(false)
+  const hasHandledMissingCredential = useRef(false)
 
   useHeaderRightAction({
     icon: <HeroIcons.Trash />,
@@ -38,7 +40,10 @@ export function FunkeCredentialDetailScreen() {
     renderCondition: credential?.category?.canDeleteCredential ?? true,
   })
 
-  if (!credential) {
+  useEffect(() => {
+    if (credential || isArchivingCredential || hasHandledMissingCredential.current) return
+
+    hasHandledMissingCredential.current = true
     toast.show(
       t({
         id: 'credentials.notFound',
@@ -52,7 +57,10 @@ export function FunkeCredentialDetailScreen() {
       }
     )
     router.back()
-    return
+  }, [credential, isArchivingCredential, router, t, toast])
+
+  if (!credential) {
+    return null
   }
 
   const onCardAttributesPress = withHaptics(() => {
@@ -130,6 +138,7 @@ export function FunkeCredentialDetailScreen() {
         setIsSheetOpen={setIsSheetOpen}
         id={credential.id}
         name={credential.display.name ?? t(commonMessages.unknown)}
+        onDeletingChange={setIsArchivingCredential}
       />
     </>
   )

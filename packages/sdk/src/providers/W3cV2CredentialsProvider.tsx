@@ -1,8 +1,9 @@
 import { W3cV2CredentialRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { AnyAgent } from '../agent'
+import { subscribeToCredentialStoreChanges } from '../storage/credentials'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
 
 export { W3cV2CredentialRecord, W3cV2VerifiableCredential } from '@credo-ts/core'
@@ -13,6 +14,8 @@ type W3cV2CredentialRecordState = {
 }
 
 const addRecord = (record: W3cV2CredentialRecord, state: W3cV2CredentialRecordState): W3cV2CredentialRecordState => {
+  if (state.w3cV2CredentialRecords.some((r) => r.id === record.id)) return updateRecord(record, state)
+
   const newRecordsState = [...state.w3cV2CredentialRecords]
   newRecordsState.unshift(record)
   return {
@@ -70,33 +73,42 @@ export const W3cV2CredentialRecordProvider: React.FC<PropsWithChildren<W3cV2Cred
     isLoading: true,
   })
 
-  useEffect(() => {
+  const loadRecords = useCallback(() => {
     void agent.w3cV2Credentials
       .getAll()
       .then((w3cV2CredentialRecords) => setState({ w3cV2CredentialRecords, isLoading: false }))
   }, [agent])
 
   useEffect(() => {
-    if (!state.isLoading && agent) {
+    loadRecords()
+  }, [loadRecords])
+
+  useEffect(() => {
+    if (agent) {
+      const unsubscribeCredentialStore = subscribeToCredentialStoreChanges(loadRecords)
+
+      if (state.isLoading) return unsubscribeCredentialStore
+
       const credentialAdded$ = recordsAddedByType(agent, W3cV2CredentialRecord).subscribe((record) =>
-        setState(addRecord(record, state))
+        setState((currentState) => addRecord(record, currentState))
       )
 
       const credentialUpdate$ = recordsUpdatedByType(agent, W3cV2CredentialRecord).subscribe((record) =>
-        setState(updateRecord(record, state))
+        setState((currentState) => updateRecord(record, currentState))
       )
 
       const credentialRemove$ = recordsRemovedByType(agent, W3cV2CredentialRecord).subscribe((record) =>
-        setState(removeRecord(record, state))
+        setState((currentState) => removeRecord(record, currentState))
       )
 
       return () => {
+        unsubscribeCredentialStore()
         credentialAdded$.unsubscribe()
         credentialUpdate$.unsubscribe()
         credentialRemove$.unsubscribe()
       }
     }
-  }, [state, agent])
+  }, [state.isLoading, agent, loadRecords])
 
   return <W3cV2CredentialRecordContext.Provider value={state}>{children}</W3cV2CredentialRecordContext.Provider>
 }

@@ -9,7 +9,7 @@ export function AllCardsCard() {
   const { withHaptics } = useHaptics()
   const { t } = useLingui()
 
-  const { credentials } = useCredentials()
+  const { credentials } = useCredentials({ removeCanonicalRecords: false })
   const pushToCards = withHaptics(() => push('/credentials'))
 
   const title = t({

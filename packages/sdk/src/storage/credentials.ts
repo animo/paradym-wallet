@@ -15,6 +15,22 @@ import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 export type { W3cCredentialRecord, W3cV2CredentialRecord, SdJwtVcRecord, MdocRecord }
 export type CredentialRecord = W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 
+const credentialStoreChangeListeners = new Set<() => void>()
+
+export function subscribeToCredentialStoreChanges(listener: () => void) {
+  credentialStoreChangeListeners.add(listener)
+
+  return () => {
+    credentialStoreChangeListeners.delete(listener)
+  }
+}
+
+function emitCredentialStoreChanged() {
+  for (const listener of Array.from(credentialStoreChangeListeners)) {
+    listener()
+  }
+}
+
 export async function getCredential(
   paradym: ParadymWalletSdk,
   credentialId: CredentialForDisplayId
@@ -65,6 +81,7 @@ export async function updateCredential(
 
   // Update database when we update a credential
   await options.paradym.dcApi.registerCredentials(options)
+  emitCredentialStoreChanged()
 }
 
 export async function storeCredential(
@@ -90,6 +107,7 @@ export async function storeCredential(
 
   // Update database when we store a credential
   await options.paradym.dcApi.registerCredentials(options)
+  emitCredentialStoreChanged()
 }
 
 export async function deleteCredential(
@@ -111,4 +129,5 @@ export async function deleteCredential(
 
   // Update database when we delete a credential
   await options.paradym.dcApi.registerCredentials(options)
+  emitCredentialStoreChanged()
 }

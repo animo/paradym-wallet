@@ -7,7 +7,7 @@ import {
   type PidMdocAttributes,
 } from '@easypid/utils/pidCustomMetadata'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { CredentialAttributes, ErrorBoundary } from '@package/app'
+import { CredentialAttributes, type CredentialAttributesProps, ErrorBoundary, useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   Circle,
@@ -21,12 +21,17 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import type { CredentialForDisplay } from '@paradym/wallet-sdk'
+import type { CredentialForDisplay, FormattedAttributeArray } from '@paradym/wallet-sdk'
+import { useRouter } from 'expo-router'
+import { Fragment } from 'react'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
   scrollRef?: React.RefObject<ScrollViewRefType | null>
+  onOpenNestedAttribute?: CredentialAttributesProps['onOpenNestedAttribute']
 }
+
+type DrivingPrivilege = MdlAttributes['driving_privileges'][number]
 
 export const hasCustomCredentialDisplay = (credentialType: string) => {
   return [...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes, ...mdlSchemes.mdlMdocDoctypes].includes(
@@ -34,7 +39,11 @@ export const hasCustomCredentialDisplay = (credentialType: string) => {
   )
 }
 
-function CustomCredentialAttributesInner({ credential, scrollRef }: CustomCredentialAttributesProps) {
+function CustomCredentialAttributesInner({
+  credential,
+  scrollRef,
+  onOpenNestedAttribute,
+}: CustomCredentialAttributesProps) {
   if ([...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
     return <FunkeArfPidCredentialAttributes credential={credential} />
   }
@@ -49,18 +58,40 @@ function CustomCredentialAttributesInner({ credential, scrollRef }: CustomCreden
   }
 
   if (mdlSchemes.mdlMdocDoctypes.includes(credential.metadata.type)) {
-    return <FunkeMdlCredentialAttributes credential={credential} />
+    return <FunkeMdlCredentialAttributes credential={credential} onOpenNestedAttribute={onOpenNestedAttribute} />
   }
 
-  return <CredentialAttributes attributes={credential.attributes} scrollRef={scrollRef} />
+  return (
+    <CredentialAttributes
+      attributes={credential.attributes}
+      scrollRef={scrollRef}
+      onOpenNestedAttribute={onOpenNestedAttribute}
+    />
+  )
 }
 
-export function CustomCredentialAttributes({ credential, scrollRef }: CustomCredentialAttributesProps) {
+export function CustomCredentialAttributes({
+  credential,
+  scrollRef,
+  onOpenNestedAttribute,
+}: CustomCredentialAttributesProps) {
+  const fallback = (
+    <CredentialAttributes
+      attributes={credential.attributes}
+      scrollRef={scrollRef}
+      onOpenNestedAttribute={onOpenNestedAttribute}
+    />
+  )
+
   return (
     // Error Boundary prevents an invalid credential structure from crashing the app
     // it will then fallback to the standard rendering
-    <ErrorBoundary fallback={<CredentialAttributes attributes={credential.attributes} scrollRef={scrollRef} />}>
-      <CustomCredentialAttributesInner credential={credential} scrollRef={scrollRef} />
+    <ErrorBoundary fallback={fallback}>
+      <CustomCredentialAttributesInner
+        credential={credential}
+        scrollRef={scrollRef}
+        onOpenNestedAttribute={onOpenNestedAttribute}
+      />
     </ErrorBoundary>
   )
 }
@@ -235,7 +266,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
   )
 }
 
-export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+export function FunkeMdlCredentialAttributes({ credential, onOpenNestedAttribute }: CustomCredentialAttributesProps) {
   const { t } = useLingui()
   const raw = (
     credential.rawAttributes as {
@@ -329,24 +360,30 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
         <TableContainer>
           {sortedPrivileges.map(({ privilege, code }) => {
             return (
-              <TableRow
-                key={`${privilege.vehicle_category_code}-${privilege.expiry_date}`}
-                attributes={[
-                  t(commonMessages.credentials.mdl.code),
-                  ...(privilege.expiry_date ? [t(commonMessages.fields.expires_at)] : []),
-                ]}
-                values={[
-                  <XStack key={privilege.vehicle_category_code} ai="center" gap="$3">
-                    <Paragraph color="$grey-900" fontWeight="$semiBold" fontSize={18}>
-                      {privilege.vehicle_category_code}
-                    </Paragraph>
-                    {code.icon && (
-                      <Image key={privilege.vehicle_category_code} src={code.icon} width={36} height={28} />
-                    )}
-                  </XStack>,
-                  ...(privilege.expiry_date ? [privilege.expiry_date] : []),
-                ]}
-              />
+              <Fragment key={`${privilege.vehicle_category_code}-${privilege.expiry_date}`}>
+                <TableRow
+                  attributes={[
+                    t(commonMessages.credentials.mdl.code),
+                    ...(privilege.expiry_date ? [t(commonMessages.fields.expires_at)] : []),
+                  ]}
+                  values={[
+                    <XStack key={privilege.vehicle_category_code} ai="center" gap="$3">
+                      <Paragraph color="$grey-900" fontWeight="$semiBold" fontSize={18}>
+                        {privilege.vehicle_category_code}
+                      </Paragraph>
+                      {code.icon && (
+                        <Image key={privilege.vehicle_category_code} src={code.icon} width={36} height={28} />
+                      )}
+                    </XStack>,
+                    ...(privilege.expiry_date ? [privilege.expiry_date] : []),
+                  ]}
+                />
+                <MdlRestrictionCodesRow
+                  credentialId={credential.id}
+                  privilege={privilege}
+                  onOpenNestedAttribute={onOpenNestedAttribute}
+                />
+              </Fragment>
             )
           })}
         </TableContainer>
@@ -371,5 +408,56 @@ export function FunkeMdlCredentialAttributes({ credential }: CustomCredentialAtt
         </TableContainer>
       </YStack>
     </Stack>
+  )
+}
+
+function MdlRestrictionCodesRow({
+  credentialId,
+  privilege,
+  onOpenNestedAttribute,
+}: {
+  credentialId: string
+  privilege: DrivingPrivilege
+  onOpenNestedAttribute?: CredentialAttributesProps['onOpenNestedAttribute']
+}) {
+  const { t } = useLingui()
+  const router = useRouter()
+  const { withHaptics } = useHaptics()
+
+  if (privilege.codes.length === 0) return null
+
+  const item: FormattedAttributeArray = {
+    type: 'array',
+    label: t(commonMessages.credentials.mdl.codes),
+    path: ['org.iso.18013.5.1', 'driving_privileges', privilege.vehicle_category_code, 'codes'],
+    rawValue: privilege.codes,
+    value: privilege.codes.map((code, index) => ({
+      type: 'string',
+      path: ['org.iso.18013.5.1', 'driving_privileges', privilege.vehicle_category_code, 'codes', index],
+      rawValue: code,
+      value: code,
+    })),
+  }
+
+  const onPress = withHaptics(() => {
+    if (onOpenNestedAttribute) {
+      onOpenNestedAttribute(item, privilege.vehicle_category_code)
+      return
+    }
+
+    const params = new URLSearchParams({
+      item: JSON.stringify(item),
+      parentName: privilege.vehicle_category_code,
+    })
+
+    router.push(`/credentials/${credentialId}/nested?${params.toString()}`)
+  })
+
+  return (
+    <TableRow
+      attributes={t(commonMessages.credentials.mdl.codes)}
+      values={privilege.codes.join(', ')}
+      onPress={onPress}
+    />
   )
 }

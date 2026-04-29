@@ -112,7 +112,7 @@ const activityMessages = {
 }
 
 export function ReceivedActivityDetailSection({ activity }: { activity: IssuanceActivity }) {
-  const { credentials } = useCredentials()
+  const { credentials } = useCredentials({ removeCanonicalRecords: false })
   const { withHaptics } = useHaptics()
   const { push } = useRouter()
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
@@ -210,7 +210,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
 }
 
 export function SharedActivityDetailSection({ activity }: { activity: PresentationActivity | SignedActivity }) {
-  const { credentials } = useCredentials()
+  const { credentials } = useCredentials({ removeCanonicalRecords: false })
 
   const amountShared = activity.request.credentials?.length ?? 0
   const { t } = useLingui()

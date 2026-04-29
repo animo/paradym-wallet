@@ -28,7 +28,7 @@ import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
 
 export function FunkeCredentialsScreen() {
-  const { credentials, isLoading: isLoadingCredentials } = useCredentials()
+  const { credentials, isLoading: isLoadingCredentials } = useCredentials({ removeCanonicalRecords: false })
   const { t } = useLingui()
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -55,7 +55,12 @@ export function FunkeCredentialsScreen() {
         isScrolledByOffset={isScrolledByOffset}
       />
 
-      {credentials.length === 0 ? (
+      {isLoadingCredentials ? (
+        <YStack fg={1} ai="center" jc="center">
+          <Loader />
+          <Spacer size="$12" />
+        </YStack>
+      ) : credentials.length === 0 ? (
         <AnimatedStack
           flexDirection="column"
           entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
@@ -75,11 +80,6 @@ export function FunkeCredentialsScreen() {
             </Trans>
           </Paragraph>
         </AnimatedStack>
-      ) : isLoadingCredentials ? (
-        <YStack fg={1} ai="center" jc="center">
-          <Loader />
-          <Spacer size="$12" />
-        </YStack>
       ) : (
         <ScrollView px="$4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <Stack position="relative">

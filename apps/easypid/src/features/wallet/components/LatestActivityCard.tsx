@@ -61,7 +61,7 @@ export function LatestActivityCard() {
   const { activities } = useActivities()
   const { t } = useLingui()
   const latestActivity = activities[0]
-  const { credentials } = useCredentials()
+  const { credentials } = useCredentials({ removeCanonicalRecords: false })
 
   const pushToActivity = withHaptics(() => push('/activity'))
 

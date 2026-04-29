@@ -1,7 +1,8 @@
 import { type Agent, SdJwtVcRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { subscribeToCredentialStoreChanges } from '../storage/credentials'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
 
 export { SdJwtVc, SdJwtVcRecord } from '@credo-ts/core'
@@ -12,6 +13,8 @@ type SdJwtVcRecordState = {
 }
 
 const addRecord = (record: SdJwtVcRecord, state: SdJwtVcRecordState): SdJwtVcRecordState => {
+  if (state.sdJwtVcRecords.some((r) => r.id === record.id)) return updateRecord(record, state)
+
   const newRecordsState = [...state.sdJwtVcRecords]
   newRecordsState.unshift(record)
   return {
@@ -66,31 +69,40 @@ export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agen
     isLoading: true,
   })
 
-  useEffect(() => {
+  const loadRecords = useCallback(() => {
     void agent.sdJwtVc.getAll().then((sdJwtVcRecords) => setState({ sdJwtVcRecords, isLoading: false }))
-  }, [agent.sdJwtVc.getAll])
+  }, [agent])
 
   useEffect(() => {
-    if (!state.isLoading && agent) {
+    loadRecords()
+  }, [loadRecords])
+
+  useEffect(() => {
+    if (agent) {
+      const unsubscribeCredentialStore = subscribeToCredentialStoreChanges(loadRecords)
+
+      if (state.isLoading) return unsubscribeCredentialStore
+
       const credentialAdded$ = recordsAddedByType(agent, SdJwtVcRecord).subscribe((record) =>
-        setState(addRecord(record, state))
+        setState((currentState) => addRecord(record, currentState))
       )
 
       const credentialUpdate$ = recordsUpdatedByType(agent, SdJwtVcRecord).subscribe((record) =>
-        setState(updateRecord(record, state))
+        setState((currentState) => updateRecord(record, currentState))
       )
 
       const credentialRemove$ = recordsRemovedByType(agent, SdJwtVcRecord).subscribe((record) =>
-        setState(removeRecord(record, state))
+        setState((currentState) => removeRecord(record, currentState))
       )
 
       return () => {
+        unsubscribeCredentialStore()
         credentialAdded$.unsubscribe()
         credentialUpdate$.unsubscribe()
         credentialRemove$.unsubscribe()
       }
     }
-  }, [state, agent])
+  }, [state.isLoading, agent, loadRecords])
 
   return <SdJwtVcRecordContext.Provider value={state}>{children}</SdJwtVcRecordContext.Provider>
 }
