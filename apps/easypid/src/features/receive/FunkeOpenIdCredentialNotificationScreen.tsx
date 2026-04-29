@@ -41,12 +41,16 @@ type CredentialNotificationScreenProps = {
   source?: WalletFlowSource
   routeParams?: Query
   onExit?: () => void
+  uri?: string
+  onCancel?: (reason?: string) => void
+  onComplete?: (newEntryId?: string) => void
 }
 
 type CredentialNotificationFlowProps = {
   source?: WalletFlowSource
   routeParams: Query
-  onExit: () => void
+  onExit: (reason?: string) => void
+  onComplete?: (newEntryId?: string) => void
 }
 
 type NestedAttributeDetails = {
@@ -213,15 +217,21 @@ export function FunkeCredentialNotificationScreen({
   source = 'in-app',
   routeParams,
   onExit,
+  uri,
+  onCancel: onCancelOverride,
+  onComplete,
 }: CredentialNotificationScreenProps = {}) {
   const localParams = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
+  const resolvedRouteParams = uri ? { uri } : (routeParams ?? localParams)
+  const resolvedOnExit = onCancelOverride ?? onExit ?? pushToWallet
 
   return (
     <FunkeCredentialNotificationFlow
       source={source}
-      routeParams={routeParams ?? localParams}
-      onExit={onExit ?? pushToWallet}
+      routeParams={resolvedRouteParams}
+      onExit={resolvedOnExit}
+      onComplete={onComplete}
     />
   )
 }
@@ -230,9 +240,10 @@ export function FunkeCredentialNotificationFlow({
   source = 'in-app',
   routeParams: params,
   onExit,
+  onComplete,
 }: CredentialNotificationFlowProps) {
   const { paradym } = useParadym('unlocked')
-
+  const offerUri = params.uri
   const toast = useToastController()
 
   const { t } = useLingui()
@@ -259,7 +270,7 @@ export function FunkeCredentialNotificationFlow({
 
   const onCancel = () => {
     clearWalletFlowAuthorization()
-    onExit()
+    onExit(errorReason)
   }
 
   const setErrorReasonWithError = useCallback(
@@ -276,7 +287,7 @@ export function FunkeCredentialNotificationFlow({
   useEffect(() => {
     paradym.openid4vc
       .resolveCredentialOffer({
-        offerUri: params.uri,
+        offerUri,
         authorization: walletClient,
       })
       .then((result) => {
@@ -288,7 +299,7 @@ export function FunkeCredentialNotificationFlow({
           error,
         })
       })
-  }, [params.uri, paradym, setErrorReasonWithError, t])
+  }, [offerUri, paradym, setErrorReasonWithError, t])
 
   const onPresentationAccept = useCallback(
     async ({
@@ -464,6 +475,7 @@ export function FunkeCredentialNotificationFlow({
       })
 
       setIsCompleted(true)
+      onComplete?.(receivedCredential?.id)
     } catch (error) {
       paradym.logger.error(`Couldn't complete OpenID4VCI credential retrieval`, {
         error,
@@ -499,7 +511,7 @@ export function FunkeCredentialNotificationFlow({
   const onProofDecline = async () => {
     clearWalletFlowAuthorization()
     toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
-    onExit()
+    onExit(t(commonMessages.informationRequestDeclined))
   }
 
   const onOpenNestedAttribute = useCallback((item: NestedAttributeDetails['item'], parentName?: string) => {

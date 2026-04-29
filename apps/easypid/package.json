@@ -16,6 +16,7 @@
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
+		"@animo-id/expo-digital-credentials-api-cmwallet-issuance": "file:../../dep_packages/animo-id-expo-digital-credentials-api-cmwallet-issuance-0.0.0-20260223190806.tgz",
 		"@animo-id/expo-mdoc-data-transfer": "catalog:",
 		"@animo-id/expo-secure-environment": "catalog:",
 		"@animo-id/mdoc": "catalog:",

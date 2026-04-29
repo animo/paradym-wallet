@@ -55,7 +55,7 @@ function getBundleRequestPayload(sourceBundle: unknown) {
   return typeof requestJson === 'string' ? parseJsonObject(requestJson) : undefined
 }
 
-function getDcApiRequestPayload(request: RuntimeDigitalCredentialsRequest) {
+function getDcApiRequestPayload(request: RuntimeDigitalCredentialsRequest): Record<string, unknown> | undefined {
   if (typeof request.request === 'string') {
     return parseJsonObject(request.request)
   }
@@ -161,7 +161,6 @@ export async function dcApiResolveRequest({ paradym, request }: DcApiResolveRequ
     throw new Error('Invalid Digital Credentials API request payload')
   }
 
-  // TODO: should allow limiting it to a specific credential (as we already know the credential id)
   const result = await resolveCredentialRequest({
     paradym,
     requestPayload: authorizationRequestPayload,

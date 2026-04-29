@@ -1,11 +1,14 @@
 import 'fast-text-encoding'
-import registerGetCredentialComponent from '@animo-id/expo-digital-credentials-api/register'
+import registerGetCredentialComponent, {
+  registerCreateCredentialComponent,
+} from '@animo-id/expo-digital-credentials-api/register'
 import { DcApiSharingScreen } from '@easypid/features/share/DcApiSharingScreen'
 import { registerLocales } from '@package/translations'
 import { App as ExpoRouterApp } from 'expo-router/build/qualified-entry'
 import { renderRootComponent } from 'expo-router/build/renderRootComponent'
 import { createElement, type FC } from 'react'
 import { AppRegistry, Platform } from 'react-native'
+import { DcApiIssuanceScreen } from './src/features/receive/DcApiIssuanceScreen'
 import { DeepLinkOverlayRoot } from './src/features/native-activity/DeepLinkOverlayRoot'
 import { messages as al } from './src/locales/al/messages'
 import { messages as de } from './src/locales/de/messages'
@@ -36,6 +39,7 @@ registerLocales({
 // Always register the custom component for Android
 if (Platform.OS === 'android') {
   registerGetCredentialComponent(DcApiSharingScreen)
+  registerCreateCredentialComponent(DcApiIssuanceScreen)
   AppRegistry.registerComponent('DeepLinkOverlayActivity', () => DeepLinkOverlayApp)
 }
 
