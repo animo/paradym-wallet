@@ -88,7 +88,10 @@ export const resolveCredentialRequest = async ({
         resolved.presentationExchange.definition as DifPresentationExchangeDefinitionV2
       )
     } else if (resolved.dcql) {
-      formattedSubmission = formatDcqlCredentialsForRequest(resolved.dcql.queryResult)
+      formattedSubmission = formatDcqlCredentialsForRequest(resolved.dcql.queryResult, {
+        dcqlQuery: resolved.authorizationRequestPayload.dcql_query,
+        transactionData: resolved.authorizationRequestPayload.transaction_data,
+      })
     } else {
       throw new Error('No presentation exchange or dcql found in authorization request.')
     }

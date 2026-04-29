@@ -116,7 +116,10 @@ export function getFormattedSubmission(resolvedAuthorizationRequest: OpenId4VpRe
   }
 
   if (resolvedAuthorizationRequest.dcql) {
-    return formatDcqlCredentialsForRequest(resolvedAuthorizationRequest.dcql.queryResult)
+    return formatDcqlCredentialsForRequest(resolvedAuthorizationRequest.dcql.queryResult, {
+      dcqlQuery: resolvedAuthorizationRequest.authorizationRequestPayload.dcql_query,
+      transactionData: resolvedAuthorizationRequest.authorizationRequestPayload.transaction_data,
+    })
   }
 
   throw new Error('No presentation exchange or dcql found in authorization request.')

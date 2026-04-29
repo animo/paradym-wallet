@@ -25,6 +25,9 @@
 	},
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
+		"@animo-id/eudi-wallet-ts12-dcql": "file:../../dep_packages/animo-id-eudi-wallet-ts12-dcql-0.1.0.tgz",
+		"@animo-id/eudi-wallet-ts12-resolver": "file:../../dep_packages/animo-id-eudi-wallet-ts12-resolver-0.1.0.tgz",
+		"@animo-id/eudi-wallet-ts12-validation": "file:../../dep_packages/animo-id-eudi-wallet-ts12-validation-0.1.0.tgz",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@astronautlabs/jsonpath": "catalog:",
 		"@credo-ts/anoncreds": "catalog:",

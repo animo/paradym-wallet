@@ -24,6 +24,8 @@
 	},
 	"pnpm": {
 		"overrides": {
+			"@animo-id/eudi-wallet-ts12-resolver": "file:dep_packages/animo-id-eudi-wallet-ts12-resolver-0.1.0.tgz",
+			"@animo-id/eudi-wallet-ts12-validation": "file:dep_packages/animo-id-eudi-wallet-ts12-validation-0.1.0.tgz",
 			"react-native-fs": "catalog:"
 		},
 		"patchedDependencies": {
