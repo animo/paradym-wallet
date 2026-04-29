@@ -8,6 +8,7 @@ export type AcquireCredentialsAuthPresentationDuringIssuanceOptions = Omit<
   'authorizationCode'
 > & {
   credentialsForRequest: CredentialsForProofRequest
+  selectedCredentials?: { [inputDescriptorId: string]: string }
 }
 
 export const acquireCredentialsAuthPresentationDuringIssuance = async (
@@ -17,7 +18,7 @@ export const acquireCredentialsAuthPresentationDuringIssuance = async (
   const { presentationDuringIssuanceSession } = await shareCredentials({
     paradym: options.paradym,
     resolvedRequest: options.credentialsForRequest,
-    selectedCredentials: {},
+    selectedCredentials: options.selectedCredentials ?? {},
   })
 
   if (!('authSession' in options.resolvedAuthorizationRequest)) {
