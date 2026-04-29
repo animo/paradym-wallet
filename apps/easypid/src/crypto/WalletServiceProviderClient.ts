@@ -20,46 +20,51 @@ import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import type { ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { ParadymWalletAuthenticationInvalidPinError, secureWalletKey } from '@paradym/wallet-sdk'
 import type { AnyAgent } from '@paradym/wallet-sdk/agent'
-import { deriveKeypairFromPin } from './pin'
+import { deriveKeypairFromPin, pinStringToDigits } from './pin'
 
 // TODO: should auto reset after X seconds
 let __pin: Array<number> | undefined
-export const setWalletServiceProviderPin = async (pin: Array<number>, validatePin = true) => {
-  const pinString = pin.join('')
-  if (validatePin) {
-    const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-    const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
+async function assertWalletPinIsValid(pinString: string) {
+  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+  const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
 
-    const agent = new Agent({
-      config: {},
-      modules: {
-        askar: new AskarModule({
-          askar: NativeAskar.instance,
-          store: {
-            id: `paradym-wallet-${walletKeyVersion}`,
-            key: walletKey,
-            keyDerivationMethod: 'raw',
-          },
-        }),
-      },
-      dependencies: agentDependencies,
-    })
+  const agent = new Agent({
+    config: {},
+    modules: {
+      askar: new AskarModule({
+        askar: NativeAskar.instance,
+        store: {
+          id: `paradym-wallet-${walletKeyVersion}`,
+          key: walletKey,
+          keyDerivationMethod: 'raw',
+        },
+      }),
+    },
+    dependencies: agentDependencies,
+  })
 
-    try {
-      await agent.initialize()
-    } catch (error) {
-      if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) {
-        throw new ParadymWalletAuthenticationInvalidPinError()
-      }
-      throw error
+  try {
+    await agent.initialize()
+  } catch (error) {
+    if (error instanceof CredoError && error.cause instanceof AskarStoreInvalidKeyError) {
+      throw new ParadymWalletAuthenticationInvalidPinError()
     }
-
-    await agent.shutdown()
+    throw error
   }
-  __pin = pin
+
+  await agent.shutdown()
 }
 
-export const getWalletServiceProviderPin = () => __pin
+export const validateWalletPin = assertWalletPinIsValid
+
+export const setWalletServiceProviderPin = async (pin: string, validatePin = true) => {
+  if (validatePin) await validateWalletPin(pin)
+  __pin = pinStringToDigits(pin)
+}
+
+export const clearWalletServiceProviderPin = () => {
+  __pin = undefined
+}
 
 const GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID = 'GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID'
 
@@ -74,7 +79,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
   ) {}
 
   private async post<T>(path: string, claims: Record<string, unknown>): Promise<T> {
-    const pin = getWalletServiceProviderPin()
+    const pin = __pin
     if (!pin)
       throw new Error(
         'Pin not set! call `setWalletServiceProviderPin(pin)` before calling a method on the WalletServiceProvider'
@@ -98,18 +103,13 @@ export class WalletServiceProviderClient implements SecureEnvironment {
       protectedHeaderOptions,
     })
 
-    const body = {
-      jwt: compactJws,
-    }
-
     const response = await fetch(`${this.hsmUrl}/${path}`, {
       method: 'POST',
       headers: this.headers,
-      body: JSON.stringify(body),
+      body: JSON.stringify({ jwt: compactJws }),
     })
 
-    const parsedData = await response.json()
-    return parsedData as T
+    return (await response.json()) as T
   }
 
   public async register() {
@@ -124,12 +124,8 @@ export class WalletServiceProviderClient implements SecureEnvironment {
       keyType: 'P256',
     })
 
-    return Object.entries(publicKeys).reduce(
-      (prev, [keyId, publicKey]) => ({
-        ...prev,
-        [keyId]: new Uint8Array(publicKey),
-      }),
-      {}
+    return Object.fromEntries(
+      Object.entries(publicKeys).map(([keyId, publicKey]) => [keyId, new Uint8Array(publicKey)])
     )
   }
 

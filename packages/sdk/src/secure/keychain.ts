@@ -59,6 +59,24 @@ export async function getKeychainItemById(id: string, options: KeychainGetOption
 }
 
 /**
+ * Check whether a value with id exists in the keychain.
+ *
+ * @returns {boolean} Whether the value exists
+ * @throws {KeychainError} if an unexpected error occurs
+ */
+export async function hasKeychainItemById(id: string): Promise<boolean> {
+  const result = await Keychain.hasGenericPassword({
+    service: id,
+  }).catch((error) => {
+    throw new KeychainError(`Error checking value with id '${id}' in keychain`, {
+      cause: error,
+    })
+  })
+
+  return result
+}
+
+/**
  * Remove a value by id from the keychain
  *
  * @returns {boolean} Whether the keychain item was removed

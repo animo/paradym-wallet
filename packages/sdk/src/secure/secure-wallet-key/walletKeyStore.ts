@@ -2,6 +2,7 @@ import { Platform } from 'react-native'
 import * as Keychain from 'react-native-keychain'
 import {
   getKeychainItemById,
+  hasKeychainItemById,
   type KeychainAuthenticationTypeOptions,
   type KeychainSetOptions,
   removeKeychainItemById,
@@ -35,45 +36,49 @@ const walletKeyStoreBaseOptions: KeychainSetOptions & KeychainAuthenticationType
 
 const WALLET_KEY_ID = (version: number) => `PARADYM_WALLET_KEY_${version}`
 
-/**
- * Returns whether biometry backed wallet key can be used. Can be called before trying to access
- * or store the wallet key in the keychain.
- */
-async function canUseBiometryBackedWalletKey(): Promise<boolean> {
+export type WalletBiometricCapability = {
+  capable: boolean
+  biometryType: Keychain.BIOMETRY_TYPE | null
+}
+
+async function getWalletBiometricCapability(): Promise<WalletBiometricCapability> {
+  const biometryType = await Keychain.getSupportedBiometryType()
+
   if (Platform.OS === 'android') {
     /**
      * `setUserAuthenticationParameters` is only available on Android API 30+, and is needed to ensure
-     * the key can only be accessed using biometry. React Native Keychain will fallback to allowing keys
-     * to be accessed by the device passcode. For this reason we only allow biometry to be used on devices
-     * running Android API 30 or higher.
+     * the key can only be accessed using biometry. `getSupportedBiometryType()` only returns a value on
+     * Android when a strong biometric is available, so this keeps wallet unlock on Class 3 only.
      */
-    if (Platform.Version < 30) {
-      return false
-    }
-
-    /**
-     * Android Only API. We only allow hardware secured key storage for unlocking with biometrics
-     */
-    const securityLevel = await Keychain.getSecurityLevel(walletKeyStoreBaseOptions)
-    if (!securityLevel || securityLevel !== Keychain.SECURITY_LEVEL.SECURE_HARDWARE) {
-      return false
+    return {
+      capable: Platform.Version >= 30 && biometryType !== null,
+      biometryType,
     }
   }
 
   if (Platform.OS === 'ios') {
+    if (!biometryType) {
+      return {
+        capable: false,
+        biometryType,
+      }
+    }
+
     /**
      * Checks whether the key can be authenticated using only biometrics (no passcode fallback)
      */
     const canUseAuthentication = await Keychain.canImplyAuthentication(walletKeyStoreBaseOptions)
-    if (!canUseAuthentication) return false
+
+    return {
+      capable: canUseAuthentication,
+      biometryType,
+    }
   }
 
-  const supportedBiometryType = await Keychain.getSupportedBiometryType()
-
-  /**
-   * We only support biometrics secured storage of the wallet key
-   */
-  return supportedBiometryType !== null
+  return {
+    capable: false,
+    biometryType,
+  }
 }
 
 /**
@@ -101,6 +106,17 @@ async function getWalletKeyUsingBiometrics(version: number): Promise<string | nu
 }
 
 /**
+ * Check whether a biometric protected wallet key exists in the keychain.
+ *
+ * @returns {boolean} whether the wallet key exists
+ * @throws {KeychainError} if an unexpected error occurs
+ */
+async function hasWalletKey(version: number): Promise<boolean> {
+  const walletKeyId = WALLET_KEY_ID(version)
+  return await hasKeychainItemById(walletKeyId)
+}
+
+/**
  * Delete the wallet key from hardware backed, biometric protected storage.
  *
  * @returns {boolean} whether the wallet key was removed (false if the wallet key wasn't stored)
@@ -114,6 +130,7 @@ async function removeWalletKey(version: number): Promise<boolean> {
 export const walletKeyStore = {
   removeWalletKey,
   getWalletKeyUsingBiometrics,
+  getWalletBiometricCapability,
+  hasWalletKey,
   storeWalletKey,
-  canUseBiometryBackedWalletKey,
 }

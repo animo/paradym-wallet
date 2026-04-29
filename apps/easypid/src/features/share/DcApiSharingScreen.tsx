@@ -1,11 +1,17 @@
-import { setupWalletServiceProvider } from '@easypid/crypto/WalletServiceProviderClient'
-import { useLingui } from '@lingui/react/macro'
-import { PinDotsInput, type PinDotsInputRef } from '@package/app'
-import { commonMessages, TranslationProvider } from '@package/translations'
-import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
-import type { DigitalCredentialsRequest } from '@paradym/wallet-sdk'
-import { useParadym } from '@paradym/wallet-sdk'
-import { useRef, useState } from 'react'
+import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
+import { paradymWalletSdkOptions } from '@easypid/config/paradym'
+import { setupWalletServiceProvider, setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import { useShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
+import type { SubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
+import {
+  authorizeWalletFlow,
+  clearWalletFlowAuthorization,
+  isWalletAuthPromptError,
+} from '@easypid/utils/authorizeWalletFlow'
+import { TranslationProvider } from '@package/translations'
+import { Stack, TamaguiProvider, YStack } from '@package/ui'
+import { type DigitalCredentialsRequest, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
+import { useEffect, useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
@@ -20,11 +26,13 @@ export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
   return (
     <TranslationProvider customLocale={storedLocale}>
       <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
-        <SafeAreaProvider>
-          <Stack flex-1 justifyContent="flex-end">
-            <DcApiSharingScreenWithContext request={request} />
-          </Stack>
-        </SafeAreaProvider>
+        <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
+          <SafeAreaProvider>
+            <Stack flex-1 justifyContent="flex-end">
+              <DcApiSharingScreenWithContext request={request} />
+            </Stack>
+          </SafeAreaProvider>
+        </ParadymWalletSdk.UnlockProvider>
       </TamaguiProvider>
     </TranslationProvider>
   )
@@ -32,17 +40,20 @@ export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
 
 export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenProps) {
   const [isProcessing, setIsProcessing] = useState(false)
-  const pinRef = useRef<PinDotsInputRef>(null)
+  const cloudHsmPinRef = useRef<string | undefined>(undefined)
+  const onAuthorizationErrorRef = useRef<(() => void) | undefined>(undefined)
   const insets = useSafeAreaInsets()
-  const { t } = useLingui()
   const paradym = useParadym()
+  const [shouldUseCloudHsmValue] = useShouldUseCloudHsm()
+  const shouldUseCloudHsm = shouldUseCloudHsmValue === true
+  const authorizationMode: Exclude<SubmissionAuthorizationMode, 'none'> = shouldUseCloudHsm
+    ? 'pin-only'
+    : 'pin-or-biometrics'
+  const isAuthorizing =
+    isProcessing || paradym.state === 'acquired-wallet-key' || (paradym.state === 'locked' && paradym.isUnlocking)
 
-  const onShareResponse = async () => {
-    if (paradym.state !== 'unlocked') {
-      throw new Error(`Invalid state for paradym wallet sdk. Expected 'unlocked', received '${paradym.state}'`)
-    }
-
-    const resolvedRequest = await paradym.paradym.dcApi
+  const onShareResponse = async (sdk: ParadymWalletSdk) => {
+    const resolvedRequest = await sdk.dcApi
       .resolveRequest({ request })
       .then((resolvedRequest) => {
         // We can't share multiple documents at the moment
@@ -53,44 +64,107 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         return resolvedRequest
       })
       .catch((error) => {
-        paradym.paradym.logger.error('Error getting credentials for dc api request', {
+        sdk.logger.error('Error getting credentials for dc api request', {
           error,
         })
 
         // Not shown to the user
-        paradym.paradym.dcApi.sendErrorResponse('Presentation information could not be extracted')
+        sdk.dcApi.sendErrorResponse('Presentation information could not be extracted')
       })
 
     if (!resolvedRequest) return
 
     // Once this returns we just assume it's successful
     try {
-      await paradym.paradym.dcApi.sendResponse({
+      await sdk.dcApi.sendResponse({
         dcRequest: request,
         resolvedRequest,
       })
     } catch (error) {
-      paradym.paradym.logger.error('Could not share response', { error })
+      sdk.logger.error('Could not share response', { error })
 
       // Not shown to the user
-      paradym.paradym.dcApi.sendErrorResponse('Unable to share credentials')
+      sdk.dcApi.sendErrorResponse('Unable to share credentials')
       return
     }
   }
 
-  const onUnlockSdk = async (pin: string) => {
-    setIsProcessing(true)
-    if (paradym.state === 'locked') {
-      await paradym.unlockUsingPin(pin)
-    }
+  useEffect(() => {
+    if (isProcessing || paradym.state !== 'acquired-wallet-key') return
 
-    if (paradym.state === 'acquired-wallet-key') {
-      const sdk = await paradym.unlock()
-      await setupWalletServiceProvider(sdk)
+    setIsProcessing(true)
+    paradym
+      .unlock()
+      .then(async (sdk) => {
+        if (shouldUseCloudHsm) {
+          if (!cloudHsmPinRef.current) throw new Error('PIN is required to use Cloud HSM')
+          await setWalletServiceProviderPin(cloudHsmPinRef.current, false)
+        }
+
+        await setupWalletServiceProvider(sdk)
+        await onShareResponse(sdk)
+      })
+      .catch((error) => {
+        if (isWalletAuthPromptError(error)) {
+          onAuthorizationErrorRef.current?.()
+          return
+        }
+
+        throw error
+      })
+      .finally(() => {
+        cloudHsmPinRef.current = undefined
+        onAuthorizationErrorRef.current = undefined
+        clearWalletFlowAuthorization()
+        setIsProcessing(false)
+      })
+  }, [isProcessing, onShareResponse, paradym, shouldUseCloudHsm])
+
+  const onAuthorize = async ({ pin, onAuthorized, onAuthorizationError }: OnWalletAuthSubmitProps = {}) => {
+    onAuthorizationErrorRef.current = onAuthorizationError
+
+    if (paradym.state === 'locked') {
+      if (shouldUseCloudHsm) {
+        if (!pin) throw new Error('PIN is required to use Cloud HSM')
+        cloudHsmPinRef.current = pin
+      }
+
+      if (pin) {
+        await paradym.unlockUsingPin(pin)
+      } else {
+        await paradym.tryUnlockingUsingBiometrics()
+      }
+
+      onAuthorized?.()
+      return
     }
 
     if (paradym.state === 'unlocked') {
-      await onShareResponse()
+      setIsProcessing(true)
+      try {
+        await authorizeWalletFlow({
+          mode: authorizationMode,
+          pin,
+        })
+
+        if (shouldUseCloudHsm) {
+          await setupWalletServiceProvider(paradym.paradym)
+        }
+
+        await onShareResponse(paradym.paradym)
+        onAuthorized?.()
+      } catch (error) {
+        if (isWalletAuthPromptError(error)) {
+          onAuthorizationError?.()
+          return
+        }
+
+        throw error
+      } finally {
+        clearWalletFlowAuthorization()
+        setIsProcessing(false)
+      }
+      return
     }
 
     throw new Error(`Invalid state. Received: '${paradym.state}'`)
@@ -105,18 +179,12 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       p="$4"
       paddingBottom={insets.bottom ?? '$6'}
     >
-      <YStack>
-        <Heading>{t(commonMessages.enterPinToShareData)}</Heading>
-        <Paragraph variant="annotation">{request.origin}</Paragraph>
-      </YStack>
-
       <Stack pt="$5">
-        <PinDotsInput
-          onPinComplete={onUnlockSdk}
-          isLoading={isProcessing}
-          pinLength={6}
-          ref={pinRef}
-          useNativeKeyboard={false}
+        <WalletFlowAuthPrompt
+          authMode={authorizationMode}
+          onSubmit={onAuthorize}
+          isLoading={isAuthorizing}
+          annotation={request.origin}
         />
       </Stack>
     </YStack>

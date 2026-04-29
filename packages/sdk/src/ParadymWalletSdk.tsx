@@ -1,6 +1,6 @@
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import { CredoError } from '@credo-ts/core'
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createContext, type PropsWithChildren, useContext, useState } from 'react'
 import {
   type AgentForAgentType,
@@ -15,7 +15,12 @@ import { type DcApiResolveRequestOptions, dcApiResolveRequest } from './dcApi/re
 import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
 import { type DcApiSendResponseOptions, dcApiSendResponse } from './dcApi/sendResponse'
 import type { CredentialForDisplayId } from './display/credential'
-import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletBiometricAuthenticationError } from './error'
+import {
+  ParadymWalletAuthenticationInvalidPinError,
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
+} from './error'
 import { useParadym } from './hooks'
 import { parseDidCommInvitation } from './invitation/parser'
 import {
@@ -48,7 +53,7 @@ import {
   type GetSubmissionForMdocDocumentRequestOptions,
   getSubmissionForMdocDocumentRequest,
 } from './proximity/getSubmissionForMdocDocumentRequest'
-import { secureWalletKey, setIsBiometricsEnabled } from './secure'
+import { getBiometricUnlockStateQueryKey, secureWalletKey } from './secure'
 import { KeychainError } from './secure/error/KeychainError'
 import { deleteCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
@@ -270,26 +275,54 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 }
 
 function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): SecureUnlockReturn {
+  const queryClient = useQueryClient()
   const [state, setState] = useState<SecureUnlockState>('initializing')
   const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
-  const [_canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
   const [biometricsUnlockAttempts, setBiometricsUnlockAttempts] = useState(0)
   const [unlockMethod, setUnlockMethod] = useState<UnlockMethod>()
   const [isUnlocking, setIsUnlocking] = useState(false)
   const [paradym, setParadym] = useState<ParadymWalletSdk>()
   const [walletKey, setWalletKey] = useState<string>()
 
+  const syncBiometricUnlockState = async () => {
+    const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+    const biometricUnlockState = await secureWalletKey.getBiometricUnlockState(walletKeyVersion)
+
+    queryClient.setQueryData(getBiometricUnlockStateQueryKey(walletKeyVersion), biometricUnlockState)
+    setCanTryUnlockingUsingBiometrics(biometricUnlockState.canUnlockNow)
+
+    return biometricUnlockState
+  }
+
+  const enableBiometricUnlock = async (walletKeyToStore: string) => {
+    const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+
+    try {
+      await secureWalletKey.storeWalletKey(walletKeyToStore, walletKeyVersion)
+      const storedWalletKey = await secureWalletKey.getWalletKeyUsingBiometrics(walletKeyVersion)
+
+      if (!storedWalletKey || storedWalletKey !== walletKeyToStore) {
+        throw new Error('Stored wallet key could not be verified after enabling biometric unlock')
+      }
+    } catch (error) {
+      await secureWalletKey.removeWalletKey(walletKeyVersion).catch(() => undefined)
+      throw error
+    } finally {
+      await syncBiometricUnlockState()
+    }
+  }
+
+  const disableBiometricUnlock = async () => {
+    const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+
+    await secureWalletKey.removeWalletKey(walletKeyVersion)
+    await syncBiometricUnlockState()
+  }
+
   useQuery({
     queryFn: async () => {
       const salt = await secureWalletKey.getSalt(secureWalletKey.getWalletKeyVersion())
-      // TODO: is salt the best way to test this?
-
-      // We have two params. If e.g. unlocking using biometrics failed, we will
-      // set setCanTryUnlockingUsingBiometrics to false, but `setCanUseBiometrics`
-      // will still be true (so we can store it)
-      const cub = await secureWalletKey.canUseBiometryBackedWalletKey()
-      setCanUseBiometrics(cub)
-      setCanTryUnlockingUsingBiometrics(cub)
+      await syncBiometricUnlockState()
 
       setState(salt ? 'locked' : 'not-configured')
       return salt
@@ -300,11 +333,12 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
 
   const reinitialize = () => {
     setState('initializing')
+    setWalletKey(undefined)
     setCanTryUnlockingUsingBiometrics(true)
     setBiometricsUnlockAttempts(0)
     setUnlockMethod(undefined)
-    setCanUseBiometrics(undefined)
     setIsUnlocking(false)
+    setParadym(undefined)
   }
 
   if (state === 'not-configured') {
@@ -344,6 +378,9 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             key,
           })
           await pws.agent.initialize()
+          if (_options?.enableBiometrics) {
+            await enableBiometricUnlock(walletKey)
+          }
           setState('unlocked')
           setParadym(pws)
           return pws
@@ -354,6 +391,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             setUnlockMethod(undefined)
 
             if (unlockMethod === 'biometrics') {
+              await disableBiometricUnlock()
               setCanTryUnlockingUsingBiometrics(false)
               throw new ParadymWalletBiometricAuthenticationError()
             }
@@ -377,24 +415,40 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       },
       tryUnlockingUsingBiometrics: async () => {
         // TODO: need to somehow inform user that the unlocking went wrong
-        if (!canTryUnlockingUsingBiometrics) return
+        const biometricUnlockState = await syncBiometricUnlockState()
+        const nextBiometricUnlockAttempts = biometricsUnlockAttempts + 1
+
+        if (!biometricUnlockState.canUnlockNow) return
 
         setIsUnlocking(true)
-        setBiometricsUnlockAttempts((attempts) => attempts + 1)
+        setBiometricsUnlockAttempts(nextBiometricUnlockAttempts)
         try {
           const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
           if (walletKey) {
             setWalletKey(walletKey)
             setUnlockMethod('biometrics')
             setState('acquired-wallet-key')
+          } else {
+            await disableBiometricUnlock()
           }
         } catch (error) {
           // If use cancelled we won't allow trying using biometrics again
-          if (error instanceof KeychainError && error.reason === 'userCancelled') {
+          if (
+            error instanceof ParadymWalletBiometricAuthenticationCancelledError ||
+            (error instanceof KeychainError && error.reason === 'userCancelled')
+          ) {
             setCanTryUnlockingUsingBiometrics(false)
           }
+          // If biometrics are no longer configured for device/app, remove stale key and sync derived state
+          else if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+            await disableBiometricUnlock()
+          }
+          // If another parsed biometric error happened, re-sync derived state
+          else if (error instanceof ParadymWalletBiometricAuthenticationError) {
+            await syncBiometricUnlockState()
+          }
           // If other error, we will allow up to three attempts
-          else if (biometricsUnlockAttempts > 3) {
+          else if (nextBiometricUnlockAttempts >= 3) {
             setCanTryUnlockingUsingBiometrics(false)
           }
         } finally {
@@ -429,19 +483,13 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
         await paradym.reset()
         reinitialize()
       },
-      enableBiometricUnlock: async () => {
-        await secureWalletKey.storeWalletKey(walletKey, secureWalletKey.getWalletKeyVersion())
-        await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
-        setIsBiometricsEnabled(true)
-      },
-      disableBiometricUnlock: async () => {
-        await secureWalletKey.removeWalletKey(secureWalletKey.getWalletKeyVersion())
-        setIsBiometricsEnabled(false)
-      },
+      enableBiometricUnlock: async () => enableBiometricUnlock(walletKey),
+      disableBiometricUnlock,
       reinitialize,
       lock: async () => {
         await paradym.shutdown()
         setParadym(undefined)
+        setWalletKey(undefined)
         setState('locked')
         setUnlockMethod(undefined)
       },

@@ -1,5 +1,8 @@
+import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
 import { walletClient } from '@easypid/constants'
 import { useDevelopmentMode } from '@easypid/hooks'
+import { useSubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
+import { authorizeWalletFlowIfNeeded, clearWalletFlowAuthorization } from '@easypid/utils/authorizeWalletFlow'
 import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import { useLingui } from '@lingui/react/macro'
 import { SlideWizard, usePushToWallet } from '@package/app'
@@ -13,10 +16,8 @@ import {
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
-import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { type OnPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
+import { WalletAuthSlide } from '../share/slides/WalletAuthSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
 import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
@@ -45,13 +46,16 @@ export function FunkeCredentialNotificationScreen() {
   const [deferredCredential, setDeferredCredential] = useState<DeferredCredentialBefore>()
   const [receivedCredential, setReceivedCredential] = useState<CredentialForDisplay>()
 
-  const shouldUsePinForPresentation = useShouldUsePinForSubmission(
+  const presentationAuthorizationMode = useSubmissionAuthorizationMode(
     resolvedCredentialOffer?.flow === 'auth-presentation-during-issuance'
       ? resolvedCredentialOffer.credentialsForProofRequest.formattedSubmission
       : undefined
   )
 
-  const onCancel = () => pushToWallet()
+  const onCancel = () => {
+    clearWalletFlowAuthorization()
+    pushToWallet()
+  }
   const onGoToWallet = () => pushToWallet()
 
   const setErrorReasonWithError = useCallback(
@@ -83,7 +87,7 @@ export function FunkeCredentialNotificationScreen() {
   }, [params.uri, paradym, setErrorReasonWithError, t])
 
   const onPresentationAccept = useCallback(
-    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+    async ({ pin, onAuthorized, onAuthorizationError }: OnWalletAuthSubmitProps = {}) => {
       if (resolvedCredentialOffer?.flow !== 'auth-presentation-during-issuance') {
         setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
         return
@@ -91,24 +95,30 @@ export function FunkeCredentialNotificationScreen() {
 
       setIsSharingPresentation(true)
 
-      if (shouldUsePinForPresentation) {
-        if (!pin) {
-          setErrorReason('PIN is required to accept the presentation.')
+      try {
+        await authorizeWalletFlowIfNeeded({
+          mode: presentationAuthorizationMode,
+          pin,
+          route: '/notifications/openIdCredential',
+        })
+      } catch (error) {
+        clearWalletFlowAuthorization()
+        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
+          onAuthorizationError?.()
+          setIsSharingPresentation(false)
+          toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
           return
         }
-        try {
-          await setWalletServiceProviderPin(pin.split('').map(Number))
-        } catch (error) {
-          if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
-            onPinError?.()
-            setIsSharingPresentation(false)
-            toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
-            return
-          }
 
-          setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
+        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+          setIsSharingPresentation(false)
+          setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
           return
         }
+
+        setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
+        setIsSharingPresentation(false)
+        return
       }
 
       try {
@@ -119,7 +129,7 @@ export function FunkeCredentialNotificationScreen() {
           credentialsForRequest: resolvedCredentialOffer.credentialsForProofRequest,
         })
 
-        onPinComplete?.()
+        onAuthorized?.()
 
         updateCredentials(acquiredCredentials)
       } catch (error) {
@@ -128,7 +138,7 @@ export function FunkeCredentialNotificationScreen() {
           return
         }
         if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
-          onPinError?.()
+          onAuthorizationError?.()
           toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
           return
         }
@@ -138,13 +148,14 @@ export function FunkeCredentialNotificationScreen() {
         })
         setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
       } finally {
+        clearWalletFlowAuthorization()
         setIsSharingPresentation(false)
       }
     },
     [
       t,
       paradym,
-      shouldUsePinForPresentation,
+      presentationAuthorizationMode,
       toast.show,
       setErrorReasonWithError,
       paradym.logger.error,
@@ -254,6 +265,7 @@ export function FunkeCredentialNotificationScreen() {
   }
 
   const onProofDecline = async () => {
+    clearWalletFlowAuthorization()
     toast.show(t(commonMessages.informationRequestDeclined), { customData: { preset: 'danger' } })
     pushToWallet()
   }
@@ -362,7 +374,7 @@ export function FunkeCredentialNotificationScreen() {
                   />
                 ),
               },
-        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' && shouldUsePinForPresentation
+        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance'
           ? {
               step: 'presentation-during-issuance',
               progress: 66,
@@ -370,7 +382,7 @@ export function FunkeCredentialNotificationScreen() {
               screen: (
                 <ShareCredentialsSlide
                   key="share-credentials"
-                  onAccept={shouldUsePinForPresentation ? undefined : onPresentationAccept}
+                  onAccept={presentationAuthorizationMode === 'none' ? onPresentationAccept : undefined}
                   logo={resolvedCredentialOffer.credentialsForProofRequest.verifier.logo}
                   submission={resolvedCredentialOffer.credentialsForProofRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
@@ -381,11 +393,20 @@ export function FunkeCredentialNotificationScreen() {
               ),
             }
           : undefined,
-        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance'
+        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' &&
+        presentationAuthorizationMode !== undefined &&
+        presentationAuthorizationMode !== 'none'
           ? {
               step: 'pin-enter',
               progress: 82.5,
-              screen: <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinSubmit={onPresentationAccept} />,
+              screen: (
+                <WalletAuthSlide
+                  key="pin-enter"
+                  authMode={presentationAuthorizationMode}
+                  isLoading={isSharingPresentation}
+                  onSubmit={onPresentationAccept}
+                />
+              ),
             }
           : undefined,
         resolvedCredentialOffer.flow === 'pre-auth-with-tx-code'

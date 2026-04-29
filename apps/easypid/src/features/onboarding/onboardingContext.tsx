@@ -1,4 +1,8 @@
-import { setupWalletServiceProvider, setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import {
+  clearWalletServiceProviderPin,
+  setupWalletServiceProvider,
+  setWalletServiceProviderPin,
+} from '@easypid/crypto/WalletServiceProviderClient'
 import { resetAppState } from '@easypid/utils/resetAppState'
 import type { OnboardingPage, OnboardingStep } from '@easypid/utils/sharedPidSetup'
 import { useLingui } from '@lingui/react/macro'
@@ -6,6 +10,7 @@ import { useHaptics } from '@package/app'
 import {
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
+  secureWalletKey,
   useParadym,
 } from '@package/sdk'
 import { commonMessages } from '@package/translations'
@@ -93,7 +98,7 @@ export function OnboardingContextProvider({
 
   const onPinEnter = async (pin: string) => {
     setWalletPin(pin)
-    goToNextStep()
+    await goToNextStep()
   }
 
   const onPinReEnter = async (pin: string) => {
@@ -126,34 +131,61 @@ export function OnboardingContextProvider({
     }
 
     try {
-      await paradym.setPin(walletPin as string)
-      await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
-      goToNextStep()
+      await paradym.setPin(walletPin)
+      await setWalletServiceProviderPin(walletPin, false)
+      const biometricUnlockState = await secureWalletKey.getBiometricUnlockState(secureWalletKey.getWalletKeyVersion())
+
+      if (biometricUnlockState.capable) {
+        await goToNextStep()
+      } else {
+        setCurrentStepName('data-protection')
+      }
     } catch (e) {
       reset({ error: e, resetToStep: 'welcome' })
       throw e
     }
   }
 
-  const onEnableBiometricsDisabled = async () => {
-    return Linking.openSettings().then(() => setCurrentStepName('biometrics'))
-  }
+  const onEnableBiometricsDisabled = () => Linking.openSettings().then(() => setCurrentStepName('biometrics'))
 
-  const onEnableBiometrics = async () => {
-    if (paradym.state !== 'acquired-wallet-key' && paradym.state !== 'unlocked') {
-      await reset({
-        resetToStep: 'pin',
-      })
+  const onEnableBiometrics = async (enableBiometrics: boolean) => {
+    if (!enableBiometrics) {
+      clearWalletServiceProviderPin()
+      await goToNextStep()
       return
     }
 
     try {
-      if (paradym.state === 'acquired-wallet-key') {
-        const sdk = await paradym.unlock({ enableBiometrics: true })
-        await setupWalletServiceProvider(sdk, true)
+      if (paradym.state !== 'acquired-wallet-key' && paradym.state !== 'unlocked') {
+        await reset({
+          resetToStep: 'pin',
+        })
+        return
       }
 
-      goToNextStep()
+      let sdk = paradym.state === 'unlocked' ? paradym.paradym : undefined
+
+      if (paradym.state === 'acquired-wallet-key') {
+        sdk = await paradym.unlock({ enableBiometrics: true })
+      }
+
+      if (paradym.state === 'unlocked') {
+        const biometricUnlockState = await secureWalletKey.getBiometricUnlockState(
+          secureWalletKey.getWalletKeyVersion()
+        )
+
+        if (!biometricUnlockState.configured) {
+          await paradym.enableBiometricUnlock()
+        }
+      }
+
+      if (!sdk) {
+        throw new Error('Wallet SDK is not available during onboarding biometric setup')
+      }
+
+      await setupWalletServiceProvider(sdk, true)
+
+      await goToNextStep()
     } catch (error) {
       // We can recover from this, and will show an error on the screen
       if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
@@ -166,11 +198,14 @@ export function OnboardingContextProvider({
         throw error
       }
 
-      await reset({
-        resetToStep: 'pin',
-        error,
+      toast.show(t(commonMessages.errorChangingBiometrics), {
+        customData: {
+          preset: 'danger',
+        },
       })
       throw error
+    } finally {
+      clearWalletServiceProviderPin()
     }
   }
 
@@ -192,11 +227,8 @@ export function OnboardingContextProvider({
       .map((step) => step.step)
 
     if (stepsToCompleteAfterReset.includes('pin')) {
-      // Reset PIN state
       setWalletPin(undefined)
-    }
 
-    if (stepsToCompleteAfterReset.includes('pin')) {
       if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
         await paradym.reset()
       }

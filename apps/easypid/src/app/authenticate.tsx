@@ -1,16 +1,22 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { useBiometricsType } from '@easypid/hooks/useBiometricsType'
-import { useLingui } from '@lingui/react/macro'
-import { PinDotsInput, type PinDotsInputRef } from '@package/app'
-import { commonMessages } from '@package/translations'
-import { FlexPage, Heading, HeroIcons, IconContainer, useDeviceMedia, useToastController, YStack } from '@package/ui'
 import {
-  ParadymWalletAuthenticationInvalidPinError,
-  ParadymWalletBiometricAuthenticationError,
-  useCanUseBiometryBackedWalletKey,
-  useIsBiometricsEnabled,
-  useParadym,
-} from '@paradym/wallet-sdk'
+  WalletPinPromptHeader,
+  WalletPinPromptInput,
+  WalletUnlockPromptInput,
+} from '@easypid/components/WalletPinPrompt'
+import { setupWalletServiceProvider, setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import { useShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
+import {
+  clearWalletFlowAuthorization,
+  getRedirectedWalletFlowAuthorizationRoute,
+  isWalletAuthPromptError,
+  setWalletFlowAuthorizationSession,
+} from '@easypid/utils/authorizeWalletFlow'
+import { useLingui } from '@lingui/react/macro'
+import type { PinDotsInputRef } from '@package/app'
+import { commonMessages } from '@package/translations'
+import { FlexPage, HeroIcons, IconContainer, useDeviceMedia, useToastController, YStack } from '@package/ui'
+import { useBiometricUnlockState, useParadym } from '@paradym/wallet-sdk'
 import { Redirect, useLocalSearchParams } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useRef, useState } from 'react'
@@ -27,16 +33,29 @@ export default function Authenticate() {
 
   const { redirectAfterUnlock } = useLocalSearchParams<{ redirectAfterUnlock?: string }>()
   const toast = useToastController()
-  const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
+  const redirectedFlowPinRef = useRef<string | undefined>(undefined)
   const { additionalPadding, noBottomSafeArea } = useDeviceMedia()
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
-  const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
-  const [isBiometricsEnabled] = useIsBiometricsEnabled()
-  const canUseBiometryBackedWalletKey = useCanUseBiometryBackedWalletKey()
-  const [shouldPromptBiometrics, setShouldPromptBiometrics] = useState(true)
+  const [shouldUseCloudHsmValue] = useShouldUseCloudHsm()
+  const biometricUnlockState = useBiometricUnlockState()
+  const redirectAfterUnlockUrl = redirectAfterUnlock
+    ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(redirectAfterUnlock))
+    : undefined
+  const redirectedFlowAuthorizationRoute = getRedirectedWalletFlowAuthorizationRoute(
+    redirectAfterUnlockUrl,
+    shouldUseCloudHsmValue === true
+  )
+  const shouldUsePinOnlyRedirectedFlowAuth = redirectedFlowAuthorizationRoute !== undefined
+  const showBiometricUnlockAction =
+    !shouldUsePinOnlyRedirectedFlowAuth &&
+    biometricUnlockState.data?.canUnlockNow === true &&
+    (paradym.state === 'locked' || (paradym.state === 'acquired-wallet-key' && paradym.unlockMethod === 'biometrics'))
 
-  const isLoading = paradym.state === 'locked' && paradym.isUnlocking
+  const isLoading =
+    paradym.state === 'acquired-wallet-key' ||
+    (paradym.state === 'locked' && paradym.isUnlocking) ||
+    isInitializingAgent
 
   useEffect(() => {
     if (paradym.state === 'unlocked' && redirectAfterUnlock) {
@@ -44,52 +63,37 @@ export default function Authenticate() {
     }
   }, [])
 
-  // After resetting the wallet, we want to avoid prompting for face id immediately
-  // So we add an artificial delay
-  useEffect(() => {
-    const timer = setTimeout(() => setIsAllowedToUnlockWithFaceId(true), 500)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    if (
-      paradym.state === 'locked' &&
-      paradym.canTryUnlockingUsingBiometrics &&
-      isAllowedToUnlockWithFaceId &&
-      shouldPromptBiometrics
-    ) {
-      paradym.tryUnlockingUsingBiometrics()
-    }
-  }, [paradym.state, isAllowedToUnlockWithFaceId])
-
   useEffect(() => {
     if (isInitializingAgent || paradym.state !== 'acquired-wallet-key') return
 
     setIsInitializingAgent(true)
     paradym
       .unlock()
+      .then(async (sdk) => {
+        await setupWalletServiceProvider(sdk)
+
+        if (!redirectedFlowAuthorizationRoute || !redirectedFlowPinRef.current) {
+          return
+        }
+
+        await setWalletServiceProviderPin(redirectedFlowPinRef.current, false)
+        setWalletFlowAuthorizationSession(redirectedFlowAuthorizationRoute)
+      })
       .catch((error) => {
-        if (
-          error instanceof ParadymWalletAuthenticationInvalidPinError ||
-          error instanceof ParadymWalletBiometricAuthenticationError
-        ) {
+        redirectedFlowPinRef.current = undefined
+        clearWalletFlowAuthorization()
+
+        if (isWalletAuthPromptError(error)) {
           pinInputRef.current?.clear()
           pinInputRef.current?.shake()
         }
-        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
-          // We do not want to prompt biometrics directly after an incorrect pin input
-          setShouldPromptBiometrics(false)
-        }
       })
       .finally(() => setIsInitializingAgent(false))
-  }, [paradym, isInitializingAgent])
+  }, [paradym, isInitializingAgent, redirectedFlowAuthorizationRoute])
 
   if (paradym.state === 'unlocked') {
     // Expo and urls as query params don't go well together, so we encoded the url as base64
-    const redirect = redirectAfterUnlock
-      ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(redirectAfterUnlock))
-      : '/'
+    const redirect = redirectAfterUnlockUrl ?? '/'
 
     return <Redirect href={redirect} />
   }
@@ -114,27 +118,40 @@ export default function Authenticate() {
 
   const unlockUsingPin = async (pin: string) => {
     if (paradym.state !== 'locked') return
-    await paradym.unlockUsingPin(pin)
+
+    try {
+      if (shouldUsePinOnlyRedirectedFlowAuth) redirectedFlowPinRef.current = pin
+      await paradym.unlockUsingPin(pin)
+    } catch (error) {
+      redirectedFlowPinRef.current = undefined
+      throw error
+    }
   }
 
   return (
     <FlexPage flex-1 alignItems="center">
       <YStack fg={1} gap="$6" mb={noBottomSafeArea ? -additionalPadding : undefined}>
         <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
-          <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
-          <Heading heading="h2" fontWeight="$semiBold">
-            {t(commonMessages.enterPin)}
-          </Heading>
+          <WalletPinPromptHeader
+            title={t(commonMessages.enterPin)}
+            centerHeader
+            headerIcon={<IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />}
+            titleHeading="h2"
+            titleFontWeight="$semiBold"
+          />
         </YStack>
-        <PinDotsInput
-          isLoading={isLoading}
-          ref={pinInputRef}
-          pinLength={6}
-          onPinComplete={unlockUsingPin}
-          onBiometricsTap={isBiometricsEnabled && canUseBiometryBackedWalletKey ? unlockUsingBiometrics : undefined}
-          useNativeKeyboard={false}
-          biometricsType={biometricsType ?? 'fingerprint'}
-        />
+        {shouldUsePinOnlyRedirectedFlowAuth ? (
+          <WalletPinPromptInput isLoading={isLoading} inputRef={pinInputRef} onPinComplete={unlockUsingPin} />
+        ) : (
+          <WalletUnlockPromptInput
+            isLoading={isLoading}
+            inputRef={pinInputRef}
+            onPinComplete={unlockUsingPin}
+            onBiometricsTap={unlockUsingBiometrics}
+            showBiometricUnlockAction={showBiometricUnlockAction}
+            autoPromptBiometrics={paradym.state === 'locked' && paradym.canTryUnlockingUsingBiometrics}
+          />
+        )}
       </YStack>
     </FlexPage>
   )

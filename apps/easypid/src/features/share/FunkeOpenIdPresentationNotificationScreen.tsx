@@ -1,4 +1,7 @@
+import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
 import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
+import { useSubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
+import { authorizeWalletFlowIfNeeded, clearWalletFlowAuthorization } from '@easypid/utils/authorizeWalletFlow'
 import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app'
@@ -14,10 +17,7 @@ import {
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
-import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
-import type { OnPinSubmitProps } from './slides/PinSlide'
 
 type Query = { uri: string }
 
@@ -34,7 +34,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const [resolvedRequest, setResolvedRequest] = useState<CredentialsForProofRequest>()
   const [formattedTransactionData, _setFormattedTransactionData] = useState<FormattedTransactionData>()
   const [isSharing, setIsSharing] = useState(false)
-  const shouldUsePin = useShouldUsePinForSubmission(resolvedRequest?.formattedSubmission)
+  const authorizationMode = useSubmissionAuthorizationMode(resolvedRequest?.formattedSubmission)
 
   const handleError = useCallback(({ reason, description }: { reason: string; description?: string }) => {
     setIsSharing(false)
@@ -114,38 +114,42 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   }, [resolvedRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
 
   const onProofAccept = useCallback(
-    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+    async ({ pin, onAuthorized, onAuthorizationError }: OnWalletAuthSubmitProps = {}) => {
       stopOverAsking()
       if (!resolvedRequest) return handleError({ reason: reasonNoCredentials })
 
       setIsSharing(true)
 
-      if (shouldUsePin) {
-        if (!pin) {
-          setIsSharing(false)
-          return handleError({ reason: reasonPinAuthFailed })
+      try {
+        await authorizeWalletFlowIfNeeded({
+          mode: authorizationMode,
+          pin,
+          route: '/notifications/openIdPresentation',
+        })
+      } catch (e) {
+        setIsSharing(false)
+        clearWalletFlowAuthorization()
+        if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
+          onAuthorizationError?.()
+          toast.show(t(commonMessages.invalidPinEntered), {
+            customData: {
+              preset: 'danger',
+            },
+          })
+          return
         }
 
-        try {
-          await setWalletServiceProviderPin(pin.split('').map(Number))
-        } catch (e) {
-          setIsSharing(false)
-          if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
-            onPinError?.()
-            toast.show(t(commonMessages.invalidPinEntered), {
-              customData: {
-                preset: 'danger',
-              },
-            })
-            return
-          }
-
+        if (e instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           return handleError({
-            reason: reasonAuthFailed,
-            description:
-              e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+            reason: t(commonMessages.biometricAuthenticationCancelled),
           })
         }
+
+        return handleError({
+          reason: authorizationMode === 'pin-only' && !pin ? reasonPinAuthFailed : reasonAuthFailed,
+          description:
+            e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+        })
       }
 
       try {
@@ -155,7 +159,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
         })
 
-        onPinComplete?.()
+        onAuthorized?.()
       } catch (error) {
         setIsSharing(false)
         if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
@@ -173,12 +177,14 @@ export function FunkeOpenIdPresentationNotificationScreen() {
           description:
             error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
         })
+      } finally {
+        clearWalletFlowAuthorization()
       }
     },
     [
       resolvedRequest,
       paradym,
-      shouldUsePin,
+      authorizationMode,
       stopOverAsking,
       toast,
       isDevelopmentModeEnabled,
@@ -193,6 +199,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   const onProofDecline = useCallback(async () => {
     stopOverAsking()
+    clearWalletFlowAuthorization()
     if (resolvedRequest) {
       await paradym.openid4vc.declineCredentialRequest({ resolvedRequest })
     }
@@ -203,12 +210,15 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     })
   }, [resolvedRequest, pushToWallet, stopOverAsking, t, toast, paradym])
 
-  const replace = useCallback(() => pushToWallet(), [pushToWallet])
+  const replace = useCallback(() => {
+    clearWalletFlowAuthorization()
+    pushToWallet()
+  }, [pushToWallet])
 
   return (
     <FunkePresentationNotificationScreen
       key="presentation"
-      usePin={shouldUsePin ?? false}
+      authorizationMode={authorizationMode ?? 'none'}
       onAccept={onProofAccept}
       onDecline={onProofDecline}
       submission={resolvedRequest?.formattedSubmission}

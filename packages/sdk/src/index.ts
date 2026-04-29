@@ -89,7 +89,7 @@ export {
 } from './metadata/credentials'
 export { acquireAuthorizationCodeAccessToken } from './openid4vc/func/acquireAuthorizationCodeAccessToken'
 export { acquireRefreshTokenAccessToken } from './openid4vc/func/acquireRefreshTokenAccessToken'
-export { secureWalletKey, useCanUseBiometryBackedWalletKey, useIsBiometricsEnabled } from './secure'
+export { secureWalletKey, useBiometricUnlockState } from './secure'
 export { kdf } from './secure/kdf'
 export { activityStorage, type ActivityStatus, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
 export { storeCredential, updateCredential } from './storage/credentials'

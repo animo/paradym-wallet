@@ -27,6 +27,79 @@ export interface PinDotsInputRef {
   shake: () => void
 }
 
+function usePinDotsAnimationState({
+  pinLength,
+  pin,
+  isLoading,
+}: {
+  pinLength: number
+  pin: string
+  isLoading: boolean | undefined
+}) {
+  const { errorHaptic } = useHaptics()
+  const filledDots = new Array(pinLength).fill(0).map((_, i) => isLoading || pin[i] !== undefined)
+  const translationAnimations = filledDots.map(() => useSharedValue(0))
+  const shakeAnimation = useSharedValue(0)
+
+  const shake = useCallback(() => {
+    errorHaptic()
+    shakeAnimation.value = withRepeat(
+      withSequence(...[10, -7.5, 5, -2.5, 0].map((toValue) => withTiming(toValue, { duration: 75 }))),
+      1,
+      true
+    )
+  }, [errorHaptic, shakeAnimation])
+
+  useEffect(() => {
+    translationAnimations.forEach((animation, index) => {
+      if (!isLoading) {
+        animation.value = withTiming(0, { duration: 75 })
+        return
+      }
+
+      const delay = index * (500 / translationAnimations.length)
+      animation.value = withDelay(
+        delay,
+        withRepeat(
+          withSequence(
+            withTiming(-10, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
+            withTiming(0, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
+            withDelay(500, withTiming(0, { duration: 0 }))
+          ),
+          -1,
+          false
+        )
+      )
+    })
+  }, [isLoading, ...translationAnimations])
+
+  return {
+    filledDots,
+    translationAnimations,
+    shakeAnimation,
+    shake,
+  }
+}
+
+function PinDotsDisplay({ state }: { state: ReturnType<typeof usePinDotsAnimationState> }) {
+  return (
+    <Animated.View style={{ left: state.shakeAnimation }}>
+      <XStack justifyContent="center" gap="$2">
+        {state.filledDots.map((filled, i) => (
+          <Animated.View key={i} style={{ transform: [{ translateY: state.translationAnimations[i] }] }}>
+            <Circle
+              size="$1.5"
+              backgroundColor={filled ? '$primary-500' : '$background'}
+              borderColor="$primary-500"
+              borderWidth="$1"
+            />
+          </Animated.View>
+        ))}
+      </XStack>
+    </Animated.View>
+  )
+}
+
 export const PinDotsInput = forwardRef(
   (
     {
@@ -39,60 +112,31 @@ export const PinDotsInput = forwardRef(
     }: PinDotsInputProps,
     ref: ForwardedRef<PinDotsInputRef>
   ) => {
-    const { withHaptics, errorHaptic } = useHaptics()
+    const { withHaptics } = useHaptics()
     const [pin, setPin] = useState('')
     const inputRef = useRef<HTMLInputElement>(null)
-
     const isInLoadingState = isLoading
+    const dotsState = usePinDotsAnimationState({
+      pin,
+      pinLength,
+      isLoading,
+    })
 
-    const pinDots = new Array(pinLength).fill(0).map((_, i) => isInLoadingState || pin[i] !== undefined)
-
-    const translationAnimations = pinDots.map(() => useSharedValue(0))
-    const shakeAnimation = useSharedValue(0)
-
-    // Shake animation
-    const startShakeAnimation = useCallback(() => {
-      errorHaptic()
-      shakeAnimation.value = withRepeat(
-        withSequence(...[10, -7.5, 5, -2.5, 0].map((toValue) => withTiming(toValue, { duration: 75 }))),
-        1,
-        true
-      )
-    }, [shakeAnimation, errorHaptic])
-
-    useEffect(() => {
-      translationAnimations.forEach((animation, index) => {
-        // Go back down in 75 milliseconds
-        if (!isInLoadingState) {
-          animation.value = withTiming(0, { duration: 75 })
-          return
-        }
-
-        // Loading animation
-        const delay = index * (500 / translationAnimations.length)
-        animation.value = withDelay(
-          delay,
-          withRepeat(
-            withSequence(
-              withTiming(-10, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
-              withTiming(0, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
-              withDelay(500, withTiming(0, { duration: 0 }))
-            ),
-            -1,
-            false
-          )
-        )
-      })
-    }, [...translationAnimations, translationAnimations.forEach, translationAnimations.length, isInLoadingState])
+    const schedulePinComplete = useCallback(
+      (completedPin: string) => {
+        setTimeout(() => onPinComplete(completedPin), 100)
+      },
+      [onPinComplete]
+    )
 
     useImperativeHandle(
       ref,
       () => ({
         focus: () => inputRef.current?.focus(),
         clear: () => setPin(''),
-        shake: () => startShakeAnimation(),
+        shake: () => dotsState.shake(),
       }),
-      [startShakeAnimation]
+      [dotsState.shake]
     )
 
     const onPressPinNumber = withHaptics((character: PinValues) => {
@@ -114,8 +158,7 @@ export const PinDotsInput = forwardRef(
         const newPin = currentPin + character
 
         if (newPin.length === pinLength) {
-          // If we don't do this the 6th dot will never be rendered and that looks weird
-          setTimeout(() => onPinComplete(newPin), 100)
+          schedulePinComplete(newPin)
         }
 
         return newPin
@@ -128,28 +171,13 @@ export const PinDotsInput = forwardRef(
       setPin(sanitized)
 
       if (sanitized.length === pinLength) {
-        // If we don't do this the 6th dot will never be rendered and that looks weird
-        setTimeout(() => onPinComplete(newPin), 100)
+        schedulePinComplete(sanitized)
       }
     }
 
     return (
       <YStack flexGrow={1} gap="$8" jc="space-between" onPress={() => inputRef.current?.focus()}>
-        <Animated.View style={{ left: shakeAnimation }}>
-          <XStack justifyContent="center" gap="$2">
-            {pinDots.map((filled, i) => (
-              // NOTE: somehow this gives a warning, but we're not directly accessing the values?!?
-              <Animated.View key={i} style={{ transform: [{ translateY: translationAnimations[i] }] }}>
-                <Circle
-                  size="$1.5"
-                  backgroundColor={filled ? '$primary-500' : '$background'}
-                  borderColor="$primary-500"
-                  borderWidth="$1"
-                />
-              </Animated.View>
-            ))}
-          </XStack>
-        </Animated.View>
+        <PinDotsDisplay state={dotsState} />
         {useNativeKeyboard ? (
           <Input
             ref={inputRef}

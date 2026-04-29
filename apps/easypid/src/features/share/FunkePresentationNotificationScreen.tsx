@@ -1,3 +1,4 @@
+import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { type SlideStep, SlideWizard } from '@package/app'
 import type {
@@ -7,14 +8,15 @@ import type {
   TrustedEntity,
   TrustMechanism,
 } from '@paradym/wallet-sdk'
+import type { SubmissionAuthorizationMode } from '../../hooks/useSubmissionAuthorizationMode'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
-import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
 import { SignAndShareSlide } from './slides/SignAndShareSlide'
 import { SigningSlide } from './slides/SigningSlide'
+import { WalletAuthSlide } from './slides/WalletAuthSlide'
 
 interface FunkePresentationNotificationScreenProps {
   entityId?: string
@@ -24,10 +26,10 @@ interface FunkePresentationNotificationScreenProps {
   trustedEntities?: Array<TrustedEntity>
   trustMechanism?: TrustMechanism
   submission?: FormattedSubmission
-  usePin: boolean
+  authorizationMode: SubmissionAuthorizationMode
   isAccepting: boolean
   transaction?: FormattedTransactionData
-  onAccept: () => Promise<void>
+  onAccept: (props?: OnWalletAuthSubmitProps) => Promise<void>
   onDecline: () => void
   onCancel: () => void
   onComplete: () => void
@@ -38,7 +40,7 @@ export function FunkePresentationNotificationScreen({
   entityId,
   verifierName,
   logo,
-  usePin,
+  authorizationMode,
   onAccept,
   onCancel,
   onDecline,
@@ -90,7 +92,7 @@ export function FunkePresentationNotificationScreen({
                     screen: (
                       <SignAndShareSlide
                         key="sign-and-share-credentials"
-                        onAccept={usePin ? undefined : onAccept}
+                        onAccept={authorizationMode === 'none' ? onAccept : undefined}
                         onDecline={onDecline}
                         isAccepting={isAccepting}
                         qtsp={transaction.qtsp}
@@ -108,7 +110,7 @@ export function FunkePresentationNotificationScreen({
                     screen: (
                       <ShareCredentialsSlide
                         key="share-credentials"
-                        onAccept={usePin ? undefined : onAccept}
+                        onAccept={authorizationMode === 'none' ? onAccept : undefined}
                         logo={logo}
                         submission={submission}
                         onDecline={onDecline}
@@ -119,10 +121,17 @@ export function FunkePresentationNotificationScreen({
                   },
                 ]
             : []),
-          usePin && {
+          authorizationMode !== 'none' && {
             step: 'pin-enter',
             progress: 82.5,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinSubmit={onAccept} />,
+            screen: (
+              <WalletAuthSlide
+                key="pin-enter"
+                authMode={authorizationMode}
+                isLoading={isAccepting}
+                onSubmit={onAccept}
+              />
+            ),
           },
           {
             step: 'success',

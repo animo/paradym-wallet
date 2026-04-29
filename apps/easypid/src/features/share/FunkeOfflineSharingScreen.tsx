@@ -1,22 +1,24 @@
+import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
 import { type SlideStep, SlideWizard } from '@package/app'
 import type { FormattedSubmission } from '@paradym/wallet-sdk'
+import type { SubmissionAuthorizationMode } from '../../hooks/useSubmissionAuthorizationMode'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
-import { PinSlide } from './slides/PinSlide'
 import { PresentationSuccessSlide } from './slides/PresentationSuccessSlide'
 import { ShareCredentialsSlide } from './slides/ShareCredentialsSlide'
+import { WalletAuthSlide } from './slides/WalletAuthSlide'
 
 interface FunkeOfflineSharingScreenProps {
   submission?: FormattedSubmission
-  usePin: boolean
+  authorizationMode: SubmissionAuthorizationMode
   isAccepting: boolean
-  onAccept: () => Promise<void>
+  onAccept: (props?: OnWalletAuthSubmitProps) => Promise<void>
   onDecline: () => void
   onComplete: () => void
 }
 
 export function FunkeOfflineSharingScreen({
   submission,
-  usePin,
+  authorizationMode,
   isAccepting,
   onAccept,
   onDecline,
@@ -38,7 +40,7 @@ export function FunkeOfflineSharingScreen({
             screen: (
               <ShareCredentialsSlide
                 key="share-credentials"
-                onAccept={usePin ? undefined : onAccept}
+                onAccept={authorizationMode === 'none' ? onAccept : undefined}
                 submission={submission as FormattedSubmission}
                 onDecline={onDecline}
                 isAccepting={isAccepting}
@@ -46,10 +48,17 @@ export function FunkeOfflineSharingScreen({
               />
             ),
           },
-          usePin && {
+          authorizationMode !== 'none' && {
             step: 'pin-enter',
             progress: 80,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinSubmit={onAccept} />,
+            screen: (
+              <WalletAuthSlide
+                key="pin-enter"
+                authMode={authorizationMode}
+                isLoading={isAccepting}
+                onSubmit={onAccept}
+              />
+            ),
           },
           {
             step: 'success',

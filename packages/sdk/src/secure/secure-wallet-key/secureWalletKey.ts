@@ -1,11 +1,11 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import { useQuery } from '@tanstack/react-query'
-import { createMMKV, useMMKVBoolean, useMMKVNumber } from 'react-native-mmkv'
+import { createMMKV, useMMKVNumber } from 'react-native-mmkv'
 import { WalletUnlockError } from '../error/WalletUnlockError'
 import { kdf } from '../kdf'
 import { walletKeySaltStore } from './walletKeySaltStore'
-import { walletKeyStore } from './walletKeyStore'
+import { type WalletBiometricCapability, walletKeyStore } from './walletKeyStore'
 
 const mmkv = createMMKV()
 
@@ -26,30 +26,34 @@ async function getWalletKeyUsingPin(pin: string, version: number) {
   return walletKey
 }
 
-export function useCanUseBiometryBackedWalletKey() {
+export type BiometricUnlockState = WalletBiometricCapability & {
+  configured: boolean
+  canUnlockNow: boolean
+}
+
+export const getBiometricUnlockStateQueryKey = (version: number) => ['biometricUnlockState', version] as const
+
+async function getBiometricUnlockState(version: number): Promise<BiometricUnlockState> {
+  const [walletBiometricCapability, configured] = await Promise.all([
+    walletKeyStore.getWalletBiometricCapability(),
+    walletKeyStore.hasWalletKey(version),
+  ])
+
+  return {
+    ...walletBiometricCapability,
+    configured,
+    canUnlockNow: configured && walletBiometricCapability.capable,
+  }
+}
+
+export function useBiometricUnlockState() {
+  const [walletKeyVersion] = useWalletKeyVersion()
+  const resolvedWalletKeyVersion = walletKeyVersion ?? getWalletKeyVersion()
+
   return useQuery({
-    queryKey: ['canUseBiometryBackedWalletKey'],
-    queryFn: () => secureWalletKey.canUseBiometryBackedWalletKey(),
-  }).data
-}
-
-/**
- * NOTE: this just stores whether we think it's enabled. There's external reasons why
- * this can be out of sync with the actual configuration.
- *
- * We return true by default, since before we required biometrics
- */
-export function useIsBiometricsEnabled() {
-  const [isBiometricsEnabled, setIsBiometricsEnabled] = useMMKVBoolean('biometricsEnabled', mmkv)
-  return [isBiometricsEnabled ?? true, setIsBiometricsEnabled] as const
-}
-
-export function setIsBiometricsEnabled(isBiometricsEnabled: boolean) {
-  mmkv.set('biometricsEnabled', isBiometricsEnabled)
-}
-
-export function getIsBiometricsEnabled() {
-  return mmkv.getBoolean('biometricsEnabled') ?? true
+    queryKey: getBiometricUnlockStateQueryKey(resolvedWalletKeyVersion),
+    queryFn: () => secureWalletKey.getBiometricUnlockState(resolvedWalletKeyVersion),
+  })
 }
 
 export function useWalletKeyVersion() {
@@ -68,6 +72,7 @@ export const secureWalletKey = {
   getWalletKeyUsingPin,
   ...walletKeyStore,
   ...walletKeySaltStore,
+  getBiometricUnlockState,
 
   getWalletKeyVersion,
   setWalletKeyVersion,

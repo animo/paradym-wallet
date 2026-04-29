@@ -3,6 +3,8 @@ import { type AgentContext, Kms, TypedArrayEncoder } from '@credo-ts/core'
 import { kdf } from '@paradym/wallet-sdk'
 import { easyPidAes256Gcm } from './aes'
 
+export const pinStringToDigits = (pin: string) => pin.split('').map(Number)
+
 /**
  *
  * Derive a key pair based on a numeric pin according to the steps in B'

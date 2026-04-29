@@ -1,6 +1,7 @@
-import { setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import type { OnWalletAuthSubmitProps } from '@easypid/components/WalletFlowAuthPrompt'
 import { useDevelopmentMode } from '@easypid/hooks'
-import { useShouldUsePinForSubmission } from '@easypid/hooks/useShouldUsePinForPresentation'
+import { useSubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
+import { authorizeWalletFlowIfNeeded, clearWalletFlowAuthorization } from '@easypid/utils/authorizeWalletFlow'
 import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app/hooks/usePushToWallet'
 import { commonMessages } from '@package/translations'
@@ -16,7 +17,6 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { shareDeviceResponse, shutdownDataTransfer } from '../proximity'
 import { FunkeOfflineSharingScreen } from './FunkeOfflineSharingScreen'
-import type { OnPinSubmitProps } from './slides/PinSlide'
 
 type FunkeMdocOfflineSharingScreenProps = {
   sessionTranscript: Uint8Array
@@ -35,7 +35,7 @@ export function FunkeMdocOfflineSharingScreen({
 
   const [submission, setSubmission] = useState<FormattedSubmission>()
   const [isProcessing, setIsProcessing] = useState(false)
-  const shouldUsePin = useShouldUsePinForSubmission(submission)
+  const authorizationMode = useSubmissionAuthorizationMode(submission)
   const { t } = useLingui()
 
   useEffect(() => {
@@ -65,41 +65,45 @@ export function FunkeMdocOfflineSharingScreen({
     [toast, pushToWallet]
   )
 
-  const onProofAccept = async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+  const onProofAccept = async ({ pin, onAuthorized, onAuthorizationError }: OnWalletAuthSubmitProps = {}) => {
     // Already checked for submission in the useEffect
     if (!submission) return
 
-    if (shouldUsePin) {
-      if (!pin) {
-        onPinError?.()
-        return
-      }
+    setIsProcessing(true)
 
-      setIsProcessing(true)
-
-      try {
-        await setWalletServiceProviderPin(pin.split('').map(Number))
-      } catch (e) {
-        setIsProcessing(false)
-        if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
-          onPinError?.()
-          return handleError({
-            reason: t(commonMessages.invalidPinEntered),
-            redirect: false,
-          })
-        }
-
+    try {
+      await authorizeWalletFlowIfNeeded({
+        mode: authorizationMode,
+        pin,
+      })
+    } catch (e) {
+      setIsProcessing(false)
+      clearWalletFlowAuthorization()
+      if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
+        onAuthorizationError?.()
         return handleError({
-          reason: t({
-            id: 'funkeMdoc.error.auth',
-            message: 'Authentication Error',
-            comment: 'Shown when there is a general auth error during offline flow',
-          }),
-          redirect: true,
-          description:
-            e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+          reason: t(commonMessages.invalidPinEntered),
+          redirect: false,
         })
       }
+
+      if (e instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+        return handleError({
+          reason: t(commonMessages.biometricAuthenticationCancelled),
+          redirect: false,
+        })
+      }
+
+      return handleError({
+        reason: t({
+          id: 'funkeMdoc.error.auth',
+          message: 'Authentication Error',
+          comment: 'Shown when there is a general auth error during offline flow',
+        }),
+        redirect: true,
+        description:
+          e instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${e.message}` : undefined,
+      })
     }
 
     // Once this returns we just assume it's successful
@@ -112,8 +116,6 @@ export function FunkeMdocOfflineSharingScreen({
       })
     } catch (error) {
       if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
-        // Triggers the pin animation
-        onPinError?.()
         return handleError({
           reason: t(commonMessages.biometricAuthenticationCancelled),
           redirect: false,
@@ -131,16 +133,19 @@ export function FunkeMdocOfflineSharingScreen({
         description:
           error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined,
       })
+    } finally {
+      clearWalletFlowAuthorization()
+      setIsProcessing(false)
     }
 
     await addActivity('success')
 
-    onPinComplete?.()
-    setIsProcessing(false)
+    onAuthorized?.()
   }
 
   const onProofDecline = async () => {
     setIsProcessing(true)
+    clearWalletFlowAuthorization()
 
     await addActivity('stopped')
 
@@ -187,7 +192,7 @@ export function FunkeMdocOfflineSharingScreen({
       onAccept={onProofAccept}
       onDecline={onProofDecline}
       onComplete={onProofComplete}
-      usePin={shouldUsePin ?? false}
+      authorizationMode={authorizationMode ?? 'none'}
     />
   )
 }

@@ -23,17 +23,16 @@ import {
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletSdkConsoleLogger,
-  useCanUseBiometryBackedWalletKey,
-  useIsBiometricsEnabled,
+  useBiometricUnlockState,
   useParadym,
 } from '@paradym/wallet-sdk'
 import { Picker } from '@react-native-picker/picker'
 import { useState } from 'react'
 import { ScrollView, Share } from 'react-native'
 import { Label } from 'tamagui'
-import { useBiometricsType } from '../../hooks/useBiometricsType'
 import { useDevelopmentMode } from '../../hooks/useDevelopmentMode'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
+import { getBiometricsType } from '../../utils/biometrics'
 
 export function LocaleSelect() {
   // We use a state value, to not make the ui flicker because it takes a bit to change the lang
@@ -89,8 +88,30 @@ export function FunkeSettingsScreen() {
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const [isDevelopmentModeEnabled, setIsDevelopmentModeEnabled] = useDevelopmentMode()
-
-  const [isBiometricsEnabled] = useIsBiometricsEnabled()
+  const biometricUnlockState = useBiometricUnlockState()
+  const isBiometricsConfigured = biometricUnlockState.data?.configured ?? false
+  const isBiometricsCapable = biometricUnlockState.data?.capable ?? false
+  const isBiometricsUnavailable = isBiometricsConfigured && !isBiometricsCapable
+  const isBiometricsUnsupported = !isBiometricsConfigured && !isBiometricsCapable
+  const biometricsType = getBiometricsType(biometricUnlockState.data?.biometryType)
+  const biometricsDescription =
+    biometricUnlockState.data == null
+      ? undefined
+      : isBiometricsUnsupported
+        ? t({
+            id: 'settings.biometricsNotSupportedDescription',
+            message: 'Biometric authentication is disabled or not supported on this device.',
+            comment: 'Description that the biometric unlock feature is not supported on this device',
+          })
+        : isBiometricsUnavailable
+          ? t({
+              id: 'settings.biometricsCurrentlyUnavailableDescription',
+              message:
+                'Biometric unlock is configured for this wallet, but currently unavailable on this device. You can turn it off here and set it up again later.',
+              comment:
+                'Description shown when biometric unlock is configured, but the device can no longer use it right now.',
+            })
+          : undefined
 
   async function enableBiometrics() {
     try {
@@ -144,9 +165,6 @@ export function FunkeSettingsScreen() {
     }
   }
 
-  const canUseBiometryBackedWalletKey = useCanUseBiometryBackedWalletKey()
-  const biometricsType = useBiometricsType()
-
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
       <HeaderContainer
@@ -172,18 +190,10 @@ export function FunkeSettingsScreen() {
                 comment: 'Label for the toggle to enable biometric unlock',
               })}
               icon={biometricsType === 'face' ? <CustomIcons.FaceId /> : <HeroIcons.FingerPrint />}
-              disabled={canUseBiometryBackedWalletKey === false}
-              description={
-                canUseBiometryBackedWalletKey === false
-                  ? t({
-                      id: 'settings.biometricsNotSupportedDescription',
-                      message: 'Biometric authentication is disabled or not supported on this device.',
-                      comment: 'Description that the biometric unlock feature is not supported on this device',
-                    })
-                  : undefined
-              }
-              value={isBiometricsEnabled}
-              onChange={isBiometricsEnabled ? disableBiometrics : enableBiometrics}
+              disabled={biometricUnlockState.data == null || isBiometricsUnsupported}
+              description={biometricsDescription}
+              value={isBiometricsConfigured}
+              onChange={isBiometricsConfigured ? disableBiometrics : enableBiometrics}
             />
             <Switch
               id="development-mode"
