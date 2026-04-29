@@ -55,6 +55,41 @@ export interface FormattedSubmission {
   purpose?: string
   areAllSatisfied: boolean
   entries: FormattedSubmissionEntry[]
+  credentialSets?: FormattedSubmissionCredentialSet[]
+}
+
+export interface FormattedSubmissionCredentialSet {
+  id: string
+  description?: string
+  required: boolean
+  slots: FormattedSubmissionCredentialSlot[]
+}
+
+export interface FormattedSubmissionCredentialSlot {
+  id: string
+  optional: boolean
+  alternatives: FormattedSubmissionCredentialAlternative[]
+}
+
+export interface FormattedSubmissionCredentialAlternative {
+  inputDescriptorId: string
+  name?: string
+  credentials: FormattedSubmissionEntrySatisfiedCredential[]
+  transactionData?: FormattedSubmissionTransactionData
+  transactionDataByCredentialId?: Record<string, FormattedSubmissionTransactionData>
+}
+
+export interface FormattedSubmissionTransactionData {
+  index: number
+  type: string
+  title?: string
+  securityHint?: string
+  affirmativeActionLabel?: string
+  denialActionLabel?: string
+  claims: Array<{
+    label: string
+    value: string
+  }>
 }
 
 export interface FormattedSubmissionEntrySatisfiedCredential {

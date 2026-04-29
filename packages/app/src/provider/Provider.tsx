@@ -11,17 +11,20 @@ import { ToastViewport } from './ToastViewport'
 export function Provider({
   children,
   customLocale,
+  rootBackgroundColor = 'white',
   ...rest
-}: PropsWithChildren<TamaguiProviderProps & { customLocale?: SupportedLocale }>) {
+}: PropsWithChildren<TamaguiProviderProps & { customLocale?: SupportedLocale; rootBackgroundColor?: string }>) {
   return (
     <TranslationProvider customLocale={customLocale}>
       <TamaguiProvider disableInjectCSS defaultTheme="light" {...rest}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <BottomSheetModalProvider>
             <ToastProvider swipeDirection="up" duration={6000}>
-              <SafeAreaProvider style={{ backgroundColor: 'white' }}>{children}</SafeAreaProvider>
-              <CustomToast />
-              <ToastViewport />
+              <SafeAreaProvider style={{ backgroundColor: rootBackgroundColor }}>
+                {children}
+                <CustomToast />
+                <ToastViewport />
+              </SafeAreaProvider>
             </ToastProvider>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>

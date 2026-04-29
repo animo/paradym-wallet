@@ -1,6 +1,6 @@
 import type { OpenId4VcCredentialMetadata } from '../metadata/credentials'
 import { getHostNameFromUrl } from '../utils/url'
-import { findDisplay } from './common'
+import { findDisplay, getDisplayImage } from './common'
 import type { CredentialDisplay, CredentialIssuerDisplay } from './credential'
 
 export function getOpenId4VcIssuerDisplay(
@@ -16,20 +16,14 @@ export function getOpenId4VcIssuerDisplay(
       issuerDisplay.name = openidIssuerDisplay.name
 
       if (openidIssuerDisplay.logo) {
-        issuerDisplay.logo = {
-          url: openidIssuerDisplay.logo?.uri,
-          altText: openidIssuerDisplay.logo?.alt_text,
-        }
+        issuerDisplay.logo = getDisplayImage(openidIssuerDisplay.logo)
       }
     }
 
     // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
     const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
     if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
-      issuerDisplay.logo = {
-        url: openidCredentialDisplay.logo?.uri,
-        altText: openidCredentialDisplay.logo?.alt_text,
-      }
+      issuerDisplay.logo = getDisplayImage(openidCredentialDisplay.logo)
     }
   }
 
@@ -56,11 +50,7 @@ export function getOpenId4VcCredentialDisplay(openId4VcMetadata: OpenId4VcCreden
     description: openidCredentialDisplay?.description,
     textColor: openidCredentialDisplay?.text_color,
     backgroundColor: openidCredentialDisplay?.background_color,
-    backgroundImage: openidCredentialDisplay?.background_image
-      ? {
-          url: openidCredentialDisplay.background_image.uri,
-        }
-      : undefined,
+    backgroundImage: getDisplayImage(openidCredentialDisplay?.background_image),
     issuer: getOpenId4VcIssuerDisplay(openId4VcMetadata),
   }
 

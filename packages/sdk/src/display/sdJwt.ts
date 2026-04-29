@@ -5,7 +5,7 @@ import {
   type OpenId4VcCredentialMetadata,
 } from '../metadata/credentials'
 import { safeCalculateJwkThumbprint } from '../utils/jwkThumbprint'
-import { findDisplay } from './common'
+import { findDisplay, getDisplayImage } from './common'
 import type { CredentialDisplay, CredentialForDisplay, CredentialForDisplayId, CredentialMetadata } from './credential'
 import { getAttributesForDocTypeOrVct } from './docTypeOfVct'
 import { recursivelyMapAttributes } from './mdoc'
@@ -70,11 +70,7 @@ function getSdJwtTypeMetadataCredentialDisplay(
     description: typeMetadataDisplay?.description,
     textColor: typeMetadataDisplay?.rendering?.simple?.text_color,
     backgroundColor: typeMetadataDisplay?.rendering?.simple?.background_color,
-    backgroundImage: typeMetadataDisplay?.rendering?.simple?.background_image
-      ? {
-          url: typeMetadataDisplay?.rendering?.simple?.background_image.uri,
-        }
-      : undefined,
+    backgroundImage: getDisplayImage(typeMetadataDisplay?.rendering?.simple?.background_image),
   }
 
   return credentialDisplay

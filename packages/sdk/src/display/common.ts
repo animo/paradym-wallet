@@ -9,12 +9,32 @@ import { formatDate } from '../utils/date'
 import type { CredentialDisplay, CredentialMetadata } from './credential'
 import { sanitizeString } from './strings'
 
+type DisplayImageMetadata = {
+  uri?: string
+  url?: string
+  alt_text?: string
+}
+
+export function getDisplayImage(image?: DisplayImageMetadata) {
+  const url = image?.uri ?? image?.url
+
+  return url
+    ? {
+        url,
+        altText: image?.alt_text,
+      }
+    : undefined
+}
+
 export function findDisplay<Display extends { locale?: string; lang?: string }>(
   display?: Display[]
 ): Display | undefined {
   if (!display) return undefined
 
-  let item = display.find((d) => d.locale?.startsWith('en-') || d.lang?.startsWith('en-'))
+  let item = display.find((d) => {
+    const locale = d.locale ?? d.lang
+    return locale === 'en' || locale?.startsWith('en-')
+  })
   if (!item) item = display.find((d) => !d.locale && !d.lang)
   if (!item) item = display[0]
 

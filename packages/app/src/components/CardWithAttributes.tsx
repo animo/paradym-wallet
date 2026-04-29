@@ -13,21 +13,71 @@ import {
 import { sanitizeString } from '@package/utils'
 import type { DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
-import { useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'
 
-interface CardWithAttributesProps {
-  id?: string
+export interface CredentialAttributesCardHeaderProps {
   name: string
   backgroundColor?: string
   textColor?: string
   issuerImage?: DisplayImage
   backgroundImage?: DisplayImage
+  rightElement?: ReactNode
+}
+
+interface CardWithAttributesProps extends CredentialAttributesCardHeaderProps {
+  id?: string
   formattedDisclosedAttributes: string[]
   disclosedPayload?: FormattedAttribute[]
   isExpired?: boolean
   isRevoked?: boolean
   isNotYetActive?: boolean
+  onPress?: () => void
+}
+
+export function CredentialAttributesCardHeader({
+  name,
+  backgroundColor,
+  issuerImage,
+  textColor,
+  backgroundImage,
+  rightElement,
+}: CredentialAttributesCardHeaderProps) {
+  return (
+    <Stack
+      px="$4"
+      py="$3"
+      pos="relative"
+      overflow="hidden"
+      bg={backgroundImage?.url ? '$transparent' : (backgroundColor ?? '$grey-900')}
+    >
+      {backgroundImage?.url && (
+        <Stack pos="absolute" top={0} left={0} right={0} bottom={0} bg={backgroundColor ?? '$grey-900'}>
+          <Image
+            src={backgroundImage.url}
+            alt={backgroundImage.altText}
+            contentFit="cover"
+            height="100%"
+            width="100%"
+            backgroundColor={backgroundColor ?? '$grey-900'}
+          />
+        </Stack>
+      )}
+      <XStack ai="center" jc="space-between" zi={1}>
+        <YStack f={1}>
+          <Heading heading="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-200'}>
+            {name.toLocaleUpperCase()}
+          </Heading>
+        </YStack>
+        <XStack h="$3" ai="center" gap="$2">
+          {issuerImage?.url ? (
+            <Image circle src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />
+          ) : null}
+          {rightElement}
+        </XStack>
+      </XStack>
+    </Stack>
+  )
 }
 
 export function CardWithAttributes({
@@ -42,6 +92,7 @@ export function CardWithAttributes({
   isNotYetActive = false,
   isExpired = false,
   isRevoked = false,
+  onPress: onPressOverride,
 }: CardWithAttributesProps) {
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const router = useRouter()
@@ -54,31 +105,33 @@ export function CardWithAttributes({
     return result
   }, [formattedDisclosedAttributes])
 
-  const onPress = () => {
-    if (id) {
-      router.push(
-        `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
-          JSON.stringify(disclosedPayload ?? [])
-        )}&disclosedAttributeLength=${formattedDisclosedAttributes?.length}`
-      )
-    } else {
-      const params = new URLSearchParams({
-        item: JSON.stringify({
-          path: [],
-          type: 'array',
-          rawValue: [],
-          value: disclosedPayload ?? [],
-        } satisfies FormattedAttributeArray),
-      })
+  const onPress =
+    onPressOverride ??
+    (() => {
+      if (id) {
+        router.push(
+          `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
+            JSON.stringify(disclosedPayload ?? [])
+          )}&disclosedAttributeLength=${formattedDisclosedAttributes?.length}`
+        )
+      } else {
+        const params = new URLSearchParams({
+          item: JSON.stringify({
+            path: [],
+            type: 'array',
+            rawValue: [],
+            value: disclosedPayload ?? [],
+          } satisfies FormattedAttributeArray),
+        })
 
-      if (name) params.set('parentName', name)
+        if (name) params.set('parentName', name)
 
-      router.push(`/credentials/id/nested?${params.toString()}`)
-    }
-  }
+        router.push(`/credentials/id/nested?${params.toString()}`)
+      }
+    })
 
   const isRevokedOrExpired = isRevoked || isExpired
-  const disabledNav = !disclosedPayload
+  const disabledNav = !disclosedPayload && !onPressOverride
 
   return (
     <AnimatedStack
@@ -94,31 +147,13 @@ export function CardWithAttributes({
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
-        {backgroundImage?.url && (
-          <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
-            <Image
-              src={backgroundImage.url}
-              alt={backgroundImage.altText}
-              contentFit="cover"
-              height="100%"
-              width="100%"
-            />
-          </Stack>
-        )}
-        <XStack ai="center" jc="space-between">
-          <YStack f={1}>
-            <Heading heading="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-200'}>
-              {name.toLocaleUpperCase()}
-            </Heading>
-          </YStack>
-          <XStack h="$3">
-            {issuerImage?.url && !isRevokedOrExpired && (
-              <Image circle src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />
-            )}
-          </XStack>
-        </XStack>
-      </Stack>
+      <CredentialAttributesCardHeader
+        name={name}
+        backgroundColor={backgroundColor}
+        textColor={textColor}
+        issuerImage={!isRevokedOrExpired ? issuerImage : undefined}
+        backgroundImage={backgroundImage}
+      />
       <YStack px="$4" pt="$3" pb="$4" gap="$4" bg="$white">
         <YStack gap="$2" fg={1} pr="$4">
           {groupedAttributes.map(([first, second], index) => (

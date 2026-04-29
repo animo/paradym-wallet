@@ -32,6 +32,7 @@ export type CredentialAttributesProps = {
   attributes: FormattedAttribute[]
   headerTitle?: string
   scrollRef?: React.RefObject<ScrollViewRefType | null>
+  onOpenNestedAttribute?: (item: FormattedAttributeArray | FormattedAttributeObject, parentName?: string) => void
 }
 
 const valueToPrimitive = (t: typeof _t, value: string | number | boolean) =>
@@ -108,7 +109,12 @@ function isPrimitiveRow(item: FormattedAttribute): item is FormattedAttributePri
   )
 }
 
-export function CredentialAttributes({ attributes, headerTitle, scrollRef }: CredentialAttributesProps) {
+export function CredentialAttributes({
+  attributes,
+  headerTitle,
+  scrollRef,
+  onOpenNestedAttribute,
+}: CredentialAttributesProps) {
   // Separate data into primitive values and objects at the parent level
   const primitiveItems = attributes.filter(isPrimitiveRow)
   const objectItems = attributes.filter(
@@ -127,6 +133,7 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
               item={item}
               parentName={attributes[0].label}
               scrollRef={scrollRef}
+              onOpenNestedAttribute={onOpenNestedAttribute}
             />
           ))}
         </TableContainer>
@@ -142,7 +149,12 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
 
           <TableContainer>
             {primitiveItems.map((item, index) => (
-              <AnyRow key={`row-${index}-${item.path.join('.')}`} item={item} scrollRef={scrollRef} />
+              <AnyRow
+                key={`row-${index}-${item.path.join('.')}`}
+                item={item}
+                scrollRef={scrollRef}
+                onOpenNestedAttribute={onOpenNestedAttribute}
+              />
             ))}
           </TableContainer>
         </YStack>
@@ -163,6 +175,7 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
                 item={value}
                 parentName={item.label}
                 scrollRef={scrollRef}
+                onOpenNestedAttribute={onOpenNestedAttribute}
               />
             ))}
           </TableContainer>
@@ -176,10 +189,12 @@ const AnyRow = ({
   item,
   parentName,
   scrollRef,
+  onOpenNestedAttribute,
 }: {
   item: FormattedAttribute
   parentName?: string
   scrollRef?: React.RefObject<ScrollViewRefType | null>
+  onOpenNestedAttribute?: CredentialAttributesProps['onOpenNestedAttribute']
 }) => {
   const { t } = useLingui()
 
@@ -192,6 +207,7 @@ const AnyRow = ({
         }}
         scrollRef={scrollRef}
         parentName={parentName}
+        onOpenNestedAttribute={onOpenNestedAttribute}
       />
     )
   }
@@ -215,7 +231,7 @@ const AnyRow = ({
   }
 
   if (item.type === 'object' || item.type === 'array') {
-    return <NestedRow parentName={parentName} item={item} />
+    return <NestedRow parentName={parentName} item={item} onOpenNestedAttribute={onOpenNestedAttribute} />
   }
 
   if (item.type === 'image') {
@@ -237,7 +253,15 @@ const AnyRow = ({
   )
 }
 
-const NestedRow = ({ item, parentName }: { item: FormattedAttribute; parentName?: string }) => {
+const NestedRow = ({
+  item,
+  parentName,
+  onOpenNestedAttribute,
+}: {
+  item: FormattedAttributeArray | FormattedAttributeObject
+  parentName?: string
+  onOpenNestedAttribute?: CredentialAttributesProps['onOpenNestedAttribute']
+}) => {
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
   const { withHaptics } = useHaptics()
@@ -248,6 +272,11 @@ const NestedRow = ({ item, parentName }: { item: FormattedAttribute; parentName?
     item.label ?? (typeof lastPathItem === 'string' ? sanitizeString(lastPathItem) : String(lastPathItem + 1))
 
   const onPress = withHaptics(() => {
+    if (onOpenNestedAttribute) {
+      onOpenNestedAttribute(item, parentName)
+      return
+    }
+
     const params = new URLSearchParams({
       item: JSON.stringify(item),
     })

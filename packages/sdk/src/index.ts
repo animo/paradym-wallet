@@ -8,9 +8,13 @@ export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, Crede
 export * from './error'
 export type {
   FormattedSubmission,
+  FormattedSubmissionCredentialAlternative,
+  FormattedSubmissionCredentialSet,
+  FormattedSubmissionCredentialSlot,
   FormattedSubmissionEntryNotSatisfied,
   FormattedSubmissionEntrySatisfied,
-  FormattedSubmissionEntrySatisfiedCredential
+  FormattedSubmissionEntrySatisfiedCredential,
+  FormattedSubmissionTransactionData,
 } from './format/submission'
 export { useCredentialByCategory, useDidCommCredentialActions, useParadym,type CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
 export { InvitationQrTypes, type InvitationType } from './invitation/parser'
