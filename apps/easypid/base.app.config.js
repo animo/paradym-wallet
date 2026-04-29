@@ -136,6 +136,7 @@ const createBaseConfig = (appSpecific) => {
           },
         },
       ],
+      './plugins/withTransparentOverlayBackground.cjs',
       [
         'expo-build-properties',
         {
