@@ -6,7 +6,8 @@ import {
   type RecordUpdatedEvent,
   RepositoryEventTypes,
 } from '@credo-ts/core'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { useReloadOnAppActive } from './useReloadOnAppActive'
 
 type WalletJsonStoreState = {
   jsonRecords: GenericRecord[]
@@ -40,14 +41,14 @@ export const WalletJsonStoreProvider: React.FC<Props> = ({ agent, children, reco
     isLoading: true,
   })
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      const records = await Promise.all(recordIds.map((id) => agent.genericRecords.findById(id)))
-      const validRecords = records.filter((record): record is GenericRecord => record !== null)
-      setState({ jsonRecords: validRecords, isLoading: false })
-    }
-    void fetchRecords()
+  const reload = useCallback(async () => {
+    const records = await Promise.all(recordIds.map((id) => agent.genericRecords.findById(id)))
+    const validRecords = records.filter((record): record is GenericRecord => record !== null)
+    setState({ jsonRecords: validRecords, isLoading: false })
   }, [agent, recordIds])
+
+  useEffect(() => void reload(), [reload])
+  useReloadOnAppActive(reload)
 
   useEffect(() => {
     if (!state.isLoading) {

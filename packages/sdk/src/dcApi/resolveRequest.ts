@@ -40,7 +40,7 @@ function getBundleRequestPayload(sourceBundle: unknown) {
   return typeof requestJson === 'string' ? parseJsonObject(requestJson) : undefined
 }
 
-function getDcApiRequestPayload(request: RuntimeDigitalCredentialsRequest) {
+function getDcApiRequestPayload(request: RuntimeDigitalCredentialsRequest): Record<string, unknown> | undefined {
   if (typeof request.request === 'string') {
     return parseJsonObject(request.request)
   }

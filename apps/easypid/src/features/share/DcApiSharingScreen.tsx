@@ -231,7 +231,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
             authMode={authorizationMode}
             onSubmit={onAuthorize}
             isLoading={isAuthorizing}
-            annotation={request.origin}
+            annotation={request.origin ?? undefined}
           />
         </Stack>
       )}

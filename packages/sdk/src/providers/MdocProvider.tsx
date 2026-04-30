@@ -1,9 +1,10 @@
 import { MdocRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { useParadym } from '../hooks'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
+import { useReloadOnAppActive } from './useReloadOnAppActive'
 
 export { Mdoc, MdocRecord } from '@credo-ts/core'
 
@@ -65,11 +66,14 @@ export const MdocRecordProvider: React.FC<PropsWithChildren> = ({ children }) =>
     isLoading: true,
   })
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     if (paradym.state !== 'unlocked') return
 
     void paradym.paradym.agent.mdoc.getAll().then((mdocRecords) => setState({ mdocRecords, isLoading: false }))
   }, [paradym])
+
+  useEffect(() => reload(), [reload])
+  useReloadOnAppActive(reload)
 
   useEffect(() => {
     if (!state.isLoading && paradym.state === 'unlocked') {

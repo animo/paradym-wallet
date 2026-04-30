@@ -1,8 +1,9 @@
 import { type Agent, W3cCredentialRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
+import { useReloadOnAppActive } from './useReloadOnAppActive'
 
 export { W3cCredentialRecord, W3cVerifiableCredential } from '@credo-ts/core'
 
@@ -66,11 +67,14 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
     isLoading: true,
   })
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     void agent.w3cCredentials
       .getAll()
       .then((w3cCredentialRecords) => setState({ w3cCredentialRecords, isLoading: false }))
   }, [agent])
+
+  useEffect(() => reload(), [reload])
+  useReloadOnAppActive(reload)
 
   useEffect(() => {
     if (!state.isLoading && agent) {

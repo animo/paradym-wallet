@@ -1,8 +1,9 @@
 import { type Agent, SdJwtVcRecord } from '@credo-ts/core'
 import type * as React from 'react'
 import type { PropsWithChildren } from 'react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
+import { useReloadOnAppActive } from './useReloadOnAppActive'
 
 export { SdJwtVc, SdJwtVcRecord } from '@credo-ts/core'
 
@@ -66,9 +67,12 @@ export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agen
     isLoading: true,
   })
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     void agent.sdJwtVc.getAll().then((sdJwtVcRecords) => setState({ sdJwtVcRecords, isLoading: false }))
-  }, [agent.sdJwtVc.getAll])
+  }, [agent])
+
+  useEffect(() => reload(), [reload])
+  useReloadOnAppActive(reload)
 
   useEffect(() => {
     if (!state.isLoading && agent) {
