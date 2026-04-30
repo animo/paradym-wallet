@@ -1,3 +1,4 @@
+import { useDevelopmentMode } from '@easypid/hooks'
 import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { useLingui } from '@lingui/react/macro'
 import {
@@ -6,7 +7,7 @@ import {
   type CredentialAttributesCardHeaderProps,
 } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { Button, Circle, FloatingSheet, Heading, HeroIcons, Paragraph, Stack, XStack, YStack } from '@package/ui'
+import { Button, Circle, FloatingSheet, Heading, HeroIcons, Paragraph, Stack, YStack } from '@package/ui'
 import {
   type FormattedSubmission,
   type FormattedSubmissionCredentialAlternative,
@@ -15,6 +16,7 @@ import {
   getDisclosedAttributeNamesForDisplay,
 } from '@paradym/wallet-sdk'
 import { useEffect, useMemo, useState } from 'react'
+import { TransactionDataErrorWidget, TransactionDataWidget } from './TransactionDataRegistry'
 
 export type FlowSelectedCredentials = Record<string, string>
 
@@ -74,15 +76,20 @@ function getDefaultSelection(credentialSets: FormattedSubmissionCredentialSet[])
 
   for (const credentialSet of credentialSets) {
     for (const slot of credentialSet.slots) {
-      const credential = slot.alternatives[0]?.credentials[0]
-      selection[slot.id] = {
-        inputDescriptorId: slot.alternatives[0]?.inputDescriptorId,
-        credentialRecordId: credential?.credential.record.id,
-      }
+      selection[slot.id] = getDefaultSlotSelection(slot)
     }
   }
 
   return selection
+}
+
+function getDefaultSlotSelection(slot: Slot): SlotSelection {
+  const credential = slot.alternatives[0]?.credentials[0]
+
+  return {
+    inputDescriptorId: slot.alternatives[0]?.inputDescriptorId,
+    credentialRecordId: credential?.credential.record.id,
+  }
 }
 
 function getSelectedCredentials(selection: Record<string, SlotSelection>): FlowSelectedCredentials {
@@ -115,6 +122,30 @@ function getCredentialAttributes(credential: FormattedSubmissionEntrySatisfiedCr
   return getDisclosedAttributeNamesForDisplay(credential).map((attribute) =>
     typeof attribute === 'string' ? attribute : formatPredicate(attribute)
   )
+}
+
+function getSlotError(slot: Slot, selectedChoice: SlotChoice | undefined, canSelectNone: boolean) {
+  if (selectedChoice) return selectedChoice.alternative.error
+  if (canSelectNone) return undefined
+
+  return slot.alternatives.find((alternative) => alternative.error)?.error
+}
+
+function getSlotTransactionDataError(slot: Slot, selectedChoice: SlotChoice | undefined, canSelectNone: boolean) {
+  if (selectedChoice) return selectedChoice.alternative.transactionDataError
+  if (canSelectNone) return undefined
+
+  return slot.alternatives.find((alternative) => alternative.transactionDataError)?.transactionDataError
+}
+
+function getErrorMessage(
+  error: NonNullable<
+    FormattedSubmissionCredentialAlternative['error'] | FormattedSubmissionCredentialAlternative['transactionDataError']
+  >,
+  isDevelopmentModeEnabled: boolean | undefined,
+  message = error.message
+) {
+  return isDevelopmentModeEnabled && error.debugMessage ? `${message}\n\n${error.debugMessage}` : message
 }
 
 function SelectionCircle({ selected }: { selected: boolean }) {
@@ -156,14 +187,14 @@ function CredentialChoiceHeader({
 function CredentialChoiceSheet({
   isOpen,
   setIsOpen,
-  slot,
+  canSelectNone,
   choices,
   selection,
   onSelect,
 }: {
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
-  slot: Slot
+  canSelectNone: boolean
   choices: SlotChoice[]
   selection?: SlotSelection
   onSelect: (choice?: SlotChoice) => void
@@ -191,7 +222,7 @@ function CredentialChoiceSheet({
           </Heading>
 
           <YStack gap="$3">
-            {slot.optional ? (
+            {canSelectNone ? (
               <CredentialChoiceHeader
                 name={t({
                   id: 'flow.credentialSlot.noneSelected',
@@ -234,6 +265,7 @@ function CredentialChoiceSheet({
 
 export function SubmissionCredentialSets({ submission, onSelectionChange }: SubmissionCredentialSetsProps) {
   const { t } = useLingui()
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const credentialSets = useMemo(() => getSubmissionCredentialSets(submission), [submission])
   const [selection, setSelection] = useState(() => getDefaultSelection(credentialSets))
   const [activeSlotId, setActiveSlotId] = useState<string>()
@@ -247,16 +279,28 @@ export function SubmissionCredentialSets({ submission, onSelectionChange }: Subm
     onSelectionChange?.(selectedCredentials)
   }, [onSelectionChange, selectedCredentials])
 
-  const selectSlotChoice = (slotId: string, choice?: SlotChoice) => {
-    setSelection((currentSelection) => ({
-      ...currentSelection,
-      [slotId]: choice
-        ? {
-            inputDescriptorId: choice.alternative.inputDescriptorId,
-            credentialRecordId: choice.credential.credential.record.id,
-          }
-        : {},
-    }))
+  const selectSlotChoice = (credentialSet: FormattedSubmissionCredentialSet, slot: Slot, choice?: SlotChoice) => {
+    setSelection((currentSelection) => {
+      const setSlotSelections = credentialSet.required
+        ? {}
+        : Object.fromEntries(
+            credentialSet.slots.map((setSlot) => [
+              setSlot.id,
+              choice ? (currentSelection[setSlot.id] ?? getDefaultSlotSelection(setSlot)) : {},
+            ])
+          )
+
+      return {
+        ...currentSelection,
+        ...setSlotSelections,
+        [slot.id]: choice
+          ? {
+              inputDescriptorId: choice.alternative.inputDescriptorId,
+              credentialRecordId: choice.credential.credential.record.id,
+            }
+          : {},
+      }
+    })
   }
 
   return (
@@ -279,9 +323,26 @@ export function SubmissionCredentialSets({ submission, onSelectionChange }: Subm
                 selectedCredential?.credential.record.id ?? ''
               ] ?? selectedChoice?.alternative.transactionData
             const isSheetOpen = activeSlotId === slot.id
-
+            const canSelectNone = slot.optional || !credentialSet.required
+            const slotError = getSlotError(slot, selectedChoice, canSelectNone)
+            const transactionDataError = getSlotTransactionDataError(slot, selectedChoice, canSelectNone)
+            const missingCredentialMessage = t({
+              id: 'flow.credentialSlot.missingCredential',
+              message: 'Required credential missing',
+              comment: 'Shown when a required credential slot cannot be satisfied',
+            })
+            const slotErrorMessage = slotError
+              ? getErrorMessage(slotError, isDevelopmentModeEnabled, missingCredentialMessage)
+              : undefined
             return (
               <YStack key={slot.id} gap="$3">
+                {transactionDataError ? (
+                  <TransactionDataErrorWidget
+                    error={transactionDataError}
+                    isDevelopmentModeEnabled={isDevelopmentModeEnabled}
+                  />
+                ) : null}
+
                 {selectedCredential ? (
                   <>
                     <CardWithAttributes
@@ -306,47 +367,28 @@ export function SubmissionCredentialSets({ submission, onSelectionChange }: Subm
                       onPress={() => setActiveSlotId(slot.id)}
                     />
 
-                    {selectedTransaction ? (
-                      <YStack gap="$2" p="$3" br="$5" bg="$grey-50">
-                        <Heading heading="h4">
-                          {selectedTransaction.title ??
-                            t({
-                              id: 'flow.transaction.titleFallback',
-                              message: 'Transaction',
-                              comment: 'Fallback title for transaction details',
-                            })}
-                        </Heading>
-                        {selectedTransaction.claims.map((claim, index) => (
-                          <XStack key={`${claim.label}-${index}`} jc="space-between" gap="$4">
-                            <Paragraph variant="caption">{claim.label}</Paragraph>
-                            <Paragraph flexShrink={1} textAlign="right" emphasis>
-                              {claim.value}
-                            </Paragraph>
-                          </XStack>
-                        ))}
-                        {selectedTransaction.securityHint ? (
-                          <Paragraph variant="annotation">{selectedTransaction.securityHint}</Paragraph>
-                        ) : null}
-                      </YStack>
-                    ) : null}
+                    {selectedTransaction ? <TransactionDataWidget transactionData={selectedTransaction} /> : null}
                   </>
                 ) : (
                   <YStack
-                    h={96}
+                    minHeight={96}
                     ai="center"
                     jc="center"
+                    p="$3"
                     br="$5"
                     bg="$grey-50"
                     borderWidth={1}
-                    borderColor="$grey-200"
+                    borderColor={slotError ? '$danger-500' : '$grey-200'}
                     onPress={() => setActiveSlotId(slot.id)}
                   >
-                    <Paragraph>
-                      {t({
-                        id: 'flow.credentialSlot.noneSelected',
-                        message: 'No credential selected',
-                        comment: 'Shown when an optional credential slot has no selected credential',
-                      })}
+                    <Paragraph color={slotError ? '$danger-500' : '$grey-900'}>
+                      {slotError
+                        ? (slotErrorMessage ?? slotError.message)
+                        : t({
+                            id: 'flow.credentialSlot.noneSelected',
+                            message: 'No credential selected',
+                            comment: 'Shown when an optional credential slot has no selected credential',
+                          })}
                     </Paragraph>
                   </YStack>
                 )}
@@ -354,10 +396,10 @@ export function SubmissionCredentialSets({ submission, onSelectionChange }: Subm
                 <CredentialChoiceSheet
                   isOpen={isSheetOpen}
                   setIsOpen={(open) => setActiveSlotId(open ? slot.id : undefined)}
-                  slot={slot}
+                  canSelectNone={canSelectNone}
                   choices={choices}
                   selection={current}
-                  onSelect={(choice) => selectSlotChoice(slot.id, choice)}
+                  onSelect={(choice) => selectSlotChoice(credentialSet, slot, choice)}
                 />
               </YStack>
             )

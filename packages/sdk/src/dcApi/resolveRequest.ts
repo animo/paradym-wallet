@@ -34,8 +34,23 @@ export type DcApiSelectedCredential = {
   credentialRecordId: string
 }
 
+export function getDcApiDisplayedTransactionDataIndexes(request: DigitalCredentialsRequest) {
+  return Array.from(
+    new Set(
+      (getAptitudeSelection(request)?.slots ?? []).flatMap((slot) =>
+        slot.transaction_data?.displayed === true ? [slot.transaction_data.index] : []
+      )
+    )
+  )
+}
+
 const stripCredentialPrefix = (credentialId: string) =>
   credentialId.replace(/^(sd-jwt-vc-|mdoc-|w3c-credential-|w3c-v2-credential-)/, '')
+
+const getSelectedCredentialRecordId = (credentialId?: string) => {
+  if (!credentialId || credentialId.startsWith('__none__')) return undefined
+  return stripCredentialPrefix(credentialId)
+}
 
 function getBundleRequestPayload(sourceBundle: unknown) {
   if (!isRecord(sourceBundle)) return undefined
@@ -105,10 +120,11 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
   const providerRequest = requestEntry.data ?? requestEntry.request
   const aptitudeSelectedCredentials = aptitudeSelection?.slots
     .map((slot): DcApiSelectedCredential | undefined => {
-      if (slot.entryId.startsWith('__none__')) return undefined
+      const credentialRecordId = getSelectedCredentialRecordId(slot.credential_id ?? slot.entryId)
+      if (!credentialRecordId) return undefined
 
       return {
-        credentialRecordId: stripCredentialPrefix(slot.credential_id),
+        credentialRecordId,
         inputDescriptorId: slot.dcql_id,
       }
     })
@@ -117,20 +133,22 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
     aptitudeSelectedCredentials ??
     dcRequest.selection?.creds
       ?.map((credential): DcApiSelectedCredential | undefined => {
-        if (typeof credential.entryId !== 'string' || credential.entryId.length === 0) return undefined
+        const credentialRecordId = getSelectedCredentialRecordId(credential.entryId)
+        if (!credentialRecordId) return undefined
+
         return {
-          credentialRecordId: credential.entryId,
+          credentialRecordId,
           inputDescriptorId:
-            typeof credential.metadata?.credential_id === 'string' && credential.metadata.credential_id.length > 0
-              ? credential.metadata.credential_id
-              : typeof credential.metadata?.dcql_id === 'string' && credential.metadata.dcql_id.length > 0
-                ? credential.metadata.dcql_id
+            typeof credential.metadata?.dcql_id === 'string' && credential.metadata.dcql_id.length > 0
+              ? credential.metadata.dcql_id
+              : typeof credential.metadata?.credential_id === 'string' && credential.metadata.credential_id.length > 0
+                ? credential.metadata.credential_id
                 : undefined,
         }
       })
       .filter((credential): credential is DcApiSelectedCredential => credential !== undefined) ??
     (typeof dcRequest.selectedEntry?.credentialId === 'string' && dcRequest.selectedEntry.credentialId.length > 0
-      ? [{ credentialRecordId: dcRequest.selectedEntry.credentialId }]
+      ? [{ credentialRecordId: stripCredentialPrefix(dcRequest.selectedEntry.credentialId) }]
       : [])
 
   if (typeof protocol !== 'string' || protocol.length === 0) {

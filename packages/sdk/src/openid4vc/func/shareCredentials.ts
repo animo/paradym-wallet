@@ -1,17 +1,10 @@
-import {
-  ClaimFormat,
-  CredentialMultiInstanceUseMode,
-  type DcqlCredentialsForRequest,
-  type DcqlQueryResult,
-  type JsonObject,
-  type MdocNameSpaces,
-} from '@credo-ts/core'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
-import type { CredentialRecord } from '../../storage/credentials'
+import { selectEudiDcqlCredentialsForRequest } from '../dcql/eudiDcql'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
+import { getOpenId4VpTransactionDataResponse } from '../transactionDataRegistry'
 
 export type ShareCredentialsOptions = {
   paradym: ParadymWalletSdk
@@ -27,9 +20,10 @@ export const shareCredentials = async ({
   assertAgentType(paradym.agent, 'openid4vc')
 
   const { authorizationRequest } = resolvedRequest
+  const eudiDcql = 'eudiDcql' in resolvedRequest ? resolvedRequest.eudiDcql : undefined
   if (
     !resolvedRequest.credentialsForRequest?.areRequirementsSatisfied &&
-    !resolvedRequest.queryResult?.can_be_satisfied
+    !(eudiDcql && resolvedRequest.formattedSubmission.areAllSatisfied)
   ) {
     throw new Error('Requirements from proof request are not satisfied')
   }
@@ -55,42 +49,14 @@ export const shareCredentials = async ({
       )
     : undefined
 
-  const dcqlCredentials = resolvedRequest.queryResult
-    ? Object.fromEntries(
-        await Promise.all(
-          Object.entries(
-            Object.keys(selectedCredentials).length > 0
-              ? // FIXME: this method should take into account w3c credentials
-                getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
-              : paradym.agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult, {
-                  // FIXME: we currently allow re-sharing if we don't have new instances anymore
-                  // we should make this configurable maybe? Or dependant on credential type?
-                  useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-                })
-          )
-        )
-      )
-    : undefined
+  const dcqlCredentials = eudiDcql ? selectEudiDcqlCredentialsForRequest(eudiDcql, selectedCredentials) : undefined
 
-  const transactionDataEntries = resolvedRequest.authorizationRequest.transaction_data
-  const transactionDataCredentials = resolvedRequest.transactionData?.map(({ matchedCredentialIds }) => {
-    const credentialId =
-      matchedCredentialIds.find((id) => selectedCredentials[id]) ??
-      matchedCredentialIds.find((id) => dcqlCredentials?.[id] || presentationExchangeCredentials?.[id]) ??
-      matchedCredentialIds[0]
-
-    if (!credentialId) throw new Error('No credential selected for transaction data')
-
-    return { credentialId }
+  const transactionData = getOpenId4VpTransactionDataResponse({
+    authorizationRequest: resolvedRequest.authorizationRequest,
+    transactionData: resolvedRequest.transactionData,
+    selectedCredentials,
+    hasCredentialForInputDescriptor: (id) => !!(dcqlCredentials?.[id] || presentationExchangeCredentials?.[id]),
   })
-  const transactionData =
-    transactionDataEntries === undefined
-      ? undefined
-      : transactionDataEntries.length === 0
-        ? []
-        : transactionDataCredentials && transactionDataCredentials.length > 0
-          ? transactionDataCredentials
-          : undefined
 
   try {
     const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
@@ -131,69 +97,4 @@ export const shareCredentials = async ({
     // Handle biometric authentication errors
     throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
   }
-}
-
-/**
- * Selects the credentials to use based on the output from `getCredentialsForRequest`
- * Use this method if you don't want to manually select the credentials yourself.
- */
-function getSelectedCredentialsForRequest(
-  dcqlQueryResult: DcqlQueryResult,
-  selectedCredentials: { [credentialQueryId: string]: string }
-): DcqlCredentialsForRequest {
-  if (!dcqlQueryResult.can_be_satisfied) {
-    throw new Error('Cannot select the credentials for the dcql query presentation if the request cannot be satisfied')
-  }
-
-  const credentials: DcqlCredentialsForRequest = {}
-
-  type WithRecord<T> = T & {
-    record: CredentialRecord
-  }
-
-  for (const [credentialQueryId, credentialRecordId] of Object.entries(selectedCredentials)) {
-    const matchesForCredentialQuery = dcqlQueryResult.credential_matches[credentialQueryId]
-    if (matchesForCredentialQuery.success) {
-      const validCredentialMatch = matchesForCredentialQuery.valid_credentials.find(
-        (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId
-      )
-
-      if (!validCredentialMatch) {
-        throw new Error(
-          `Could not find credential record ${credentialRecordId} in valid credential matches for credentialQueryId ${credentialQueryId}`
-        )
-      }
-
-      // TODO: fix the typing, make selection in Credo easier
-      const matchWithRecord = validCredentialMatch as typeof validCredentialMatch & {
-        record: CredentialRecord
-      }
-
-      if (matchWithRecord.record.type === 'MdocRecord') {
-        credentials[credentialQueryId] = [
-          {
-            claimFormat: ClaimFormat.MsoMdoc,
-            credentialRecord: matchWithRecord.record,
-            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as MdocNameSpaces,
-            // FIXME: we currently allow re-sharing if we don't have new instances anymore
-            // we should make this configurable maybe? Or dependant on credential type?
-            useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-          },
-        ]
-      } else if (matchWithRecord.record.type === 'SdJwtVcRecord') {
-        credentials[credentialQueryId] = [
-          {
-            claimFormat: ClaimFormat.SdJwtDc,
-            credentialRecord: matchWithRecord.record,
-            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as JsonObject,
-            // FIXME: we currently allow re-sharing if we don't have new instances anymore
-            // we should make this configurable maybe? Or dependant on credential type?
-            useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-          },
-        ]
-      }
-    }
-  }
-
-  return credentials
 }

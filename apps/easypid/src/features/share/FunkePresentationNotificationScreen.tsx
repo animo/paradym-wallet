@@ -1,5 +1,9 @@
 import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
 import { type FlowSelectedCredentials, SubmissionCredentialSets } from '@easypid/features/flow/SubmissionCredentialSets'
+import {
+  TransactionDataWidget,
+  useTransactionDataPresentationLabels,
+} from '@easypid/features/flow/TransactionDataRegistry'
 import type { WalletFlowSource } from '@easypid/features/flow/WalletFlowShell'
 import {
   getWalletFlowSurface,
@@ -10,7 +14,7 @@ import {
 import type { OverAskingResponse } from '@easypid/use-cases/OverAskingApi'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
-import { Button, Heading, Paragraph, YStack } from '@package/ui'
+import { Button, Paragraph, YStack } from '@package/ui'
 import type { DisplayImage, FormattedSubmission, FormattedTransactionData } from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import type { SubmissionAuthorizationMode } from '../../hooks/useSubmissionAuthorizationMode'
@@ -66,19 +70,8 @@ export function FunkePresentationNotificationScreen({
           message: 'Return to wallet',
           comment: 'Button label after a presentation is shared',
         })
-  const isSigning = transaction?.type === 'qes_authorization'
   const isSubmitting = isAccepting || isSubmitLocked
-  const title = isSigning
-    ? t({
-        id: 'presentation.onePage.signTitle',
-        message: 'Review signature request',
-        comment: 'Title for one page signature review',
-      })
-    : t({
-        id: 'presentation.onePage.title',
-        message: 'Review data request',
-        comment: 'Title for one page presentation review',
-      })
+  const transactionDataPresentation = useTransactionDataPresentationLabels(transaction ?? undefined)
 
   const complete = () => {
     setIsComplete(true)
@@ -112,39 +105,32 @@ export function FunkePresentationNotificationScreen({
     <WalletFlowActionButton onPress={onComplete}>{endButtonLabel}</WalletFlowActionButton>
   ) : authPrompt && surface === 'fullscreen' ? (
     authPrompt
-  ) : authPrompt ? undefined : (
+  ) : authPrompt || !submission ? undefined : (
     <YStack gap="$2">
-      <WalletFlowActionButton
-        disabled={!submission?.areAllSatisfied}
-        isLoading={isSubmitting}
-        onPress={() => {
-          if (isSubmitting) return
+      {submission.areAllSatisfied ? (
+        <WalletFlowActionButton
+          isLoading={isSubmitting}
+          onPress={() => {
+            if (isSubmitting) return
 
-          if (authorizationMode === 'none') {
-            void accept()
-          } else {
-            setIsAuthenticating(true)
-          }
-        }}
-      >
-        {isSigning
-          ? t({
-              id: 'presentation.onePage.sign',
-              message: 'Sign and share',
-              comment: 'Button label to accept a signing request',
-            })
-          : t({
-              id: 'presentation.onePage.share',
-              message: 'Share data',
-              comment: 'Button label to accept a presentation request',
-            })}
-      </WalletFlowActionButton>
+            if (authorizationMode === 'none') {
+              void accept()
+            } else {
+              setIsAuthenticating(true)
+            }
+          }}
+        >
+          {transactionDataPresentation.acceptLabel}
+        </WalletFlowActionButton>
+      ) : null}
       <Button.Text scaleOnPress disabled={isSubmitting} onPress={onDecline}>
-        {t({
-          id: 'common.declineButton',
-          message: 'Decline',
-          comment: 'Decline button label',
-        })}
+        {submission.areAllSatisfied
+          ? t({
+              id: 'common.declineButton',
+              message: 'Decline',
+              comment: 'Decline button label',
+            })
+          : t(commonMessages.close)}
       </Button.Text>
     </YStack>
   )
@@ -152,7 +138,7 @@ export function FunkePresentationNotificationScreen({
   return (
     <WalletFlowShell
       surface={surface}
-      title={isComplete ? t(commonMessages.success) : title}
+      title={isComplete ? t(commonMessages.success) : transactionDataPresentation.title}
       subtitle={isComplete ? verifierName : (verifierName ?? entityId)}
       logo={logo}
       logoFallback={verifierName ?? entityId}
@@ -178,12 +164,7 @@ export function FunkePresentationNotificationScreen({
             </YStack>
           ) : null}
 
-          {transaction?.type === 'qes_authorization' ? (
-            <YStack p="$3" br="$5" bg="$grey-100" gap="$1">
-              <Heading heading="h4">{transaction.documentName}</Heading>
-              <Paragraph variant="annotation">{transaction.qtsp.name ?? transaction.qtsp.hostName}</Paragraph>
-            </YStack>
-          ) : null}
+          {transaction ? <TransactionDataWidget transactionData={transaction} /> : null}
 
           <SubmissionCredentialSets submission={submission} onSelectionChange={setSelectedCredentials} />
 

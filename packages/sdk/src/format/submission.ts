@@ -2,7 +2,6 @@ import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
 import type { DifPresentationExchangeDefinitionV2 } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import type { CredentialForDisplay } from '../display/credential'
-import { formatDcqlCredentialsForRequest } from './dcqlRequest'
 import { formatDifPexCredentialsForRequest } from './presentationExchangeRequest'
 
 export interface FormattedSubmissionEntryNotSatisfied {
@@ -75,8 +74,25 @@ export interface FormattedSubmissionCredentialAlternative {
   inputDescriptorId: string
   name?: string
   credentials: FormattedSubmissionEntrySatisfiedCredential[]
+  error?: FormattedSubmissionCredentialError
+  transactionDataError?: FormattedSubmissionTransactionDataError
   transactionData?: FormattedSubmissionTransactionData
   transactionDataByCredentialId?: Record<string, FormattedSubmissionTransactionData>
+}
+
+export interface FormattedSubmissionCredentialError {
+  type: 'missing_credential'
+  message: string
+  debugMessage?: string
+}
+
+export interface FormattedSubmissionTransactionDataError {
+  type: 'unsupported_transaction_data'
+  message: string
+  transactionDataType?: string
+  requiredCredential?: string
+  credentialQueryId?: string
+  debugMessage?: string
 }
 
 export interface FormattedSubmissionTransactionData {
@@ -115,12 +131,5 @@ export function getFormattedSubmission(resolvedAuthorizationRequest: OpenId4VpRe
     )
   }
 
-  if (resolvedAuthorizationRequest.dcql) {
-    return formatDcqlCredentialsForRequest(resolvedAuthorizationRequest.dcql.queryResult, {
-      dcqlQuery: resolvedAuthorizationRequest.authorizationRequestPayload.dcql_query,
-      transactionData: resolvedAuthorizationRequest.authorizationRequestPayload.transaction_data,
-    })
-  }
-
-  throw new Error('No presentation exchange or dcql found in authorization request.')
+  throw new Error('No presentation exchange found in authorization request.')
 }

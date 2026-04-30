@@ -2,19 +2,21 @@ import type { OpenId4VciAuthorizationFlow, OpenId4VciResolvedAuthorizationReques
 
 export type { CredentialForDisplayId} from './display/credential' 
 export type { BaseAgent, DidCommAgent, OpenId4VcAgent } from './agent'
-export { DigitalCredentialsRequest } from './dcApi'
+export { DigitalCredentialsRequest, getDcApiDisplayedTransactionDataIndexes } from './dcApi'
 export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
 export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay } from './display/credential'
 export * from './error'
 export type {
   FormattedSubmission,
   FormattedSubmissionCredentialAlternative,
+  FormattedSubmissionCredentialError,
   FormattedSubmissionCredentialSet,
   FormattedSubmissionCredentialSlot,
   FormattedSubmissionEntryNotSatisfied,
   FormattedSubmissionEntrySatisfied,
   FormattedSubmissionEntrySatisfiedCredential,
   FormattedSubmissionTransactionData,
+  FormattedSubmissionTransactionDataError,
 } from './format/submission'
 export { useCredentialByCategory, useDidCommCredentialActions, useParadym,type CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
 export { InvitationQrTypes, type InvitationType } from './invitation/parser'
@@ -23,6 +25,14 @@ export { LogLevel, ParadymWalletSdkConsoleLogger, ParadymWalletSdkLogger } from 
 export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
 export type { FormattedTransactionData, QtspInfo } from './openid4vc/transaction'
+export {
+  FUNKE_QES_AUTHORIZATION_TRANSACTION_DATA_TYPE,
+  getOpenId4VpTransactionDataForConsent,
+  getFormattedTransactionDataFormatter,
+  getOpenId4VpTransactionDataResponse,
+  getOpenId4VpTransactionDataType,
+  type OpenId4VpTransactionDataForConsent,
+} from './openid4vc/transactionDataRegistry'
 export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
 export type {
   CredentialRecord,
