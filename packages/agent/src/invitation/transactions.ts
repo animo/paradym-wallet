@@ -58,7 +58,10 @@ export async function getTs12TransactionDataTypes(records: Record<CredentialForD
                   parsedTypeMetadata.data,
                   type,
                   subtype,
-                  (buf, integrity) => IntegrityVerifier.verifyIntegrity(new Uint8Array(buf), integrity)
+                  (buf, integrity) => {
+                    IntegrityVerifier.verifyIntegrity(new Uint8Array(buf), integrity)
+                    return true
+                  }
                 ).catch((_) => undefined),
               ] as const
           )

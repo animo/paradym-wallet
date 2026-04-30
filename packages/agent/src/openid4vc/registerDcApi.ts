@@ -1,3 +1,4 @@
+import { resolveTs12TransactionDisplayMetadata, zScaAttestationExt } from '@animo-id/eudi-wallet-functionality'
 import {
   type AptitudeConsortiumConfig,
   registerCredentials as registerAptitudeCredentials,
@@ -6,9 +7,16 @@ import {
   encodeIssuanceCreationOptions,
   registerCreationOptions,
 } from '@animo-id/expo-digital-credentials-api-cmwallet-issuance'
-import { DateOnly, IntegrityVerifier, type Logger, type MdocNameSpaces, type SdJwtVcRecord } from '@credo-ts/core'
-import { t } from '@lingui/core/macro'
+import {
+  DateOnly,
+  IntegrityVerifier,
+  type Logger,
+  LogLevel,
+  type MdocNameSpaces,
+  type SdJwtVcRecord,
+} from '@credo-ts/core'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
+import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
 import { sanitizeString } from '@package/utils'
 import * as ExpoAsset from 'expo-asset'
@@ -18,7 +26,6 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
 import type { EitherAgent } from '../agent'
 import { getCredentialForDisplay, getCredentialForDisplayId } from '../display'
-import { resolveTs12TransactionDisplayMetadata, zScaAttestationExt } from '@animo-id/eudi-wallet-functionality'
 
 type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[number]
 type CredentialField = NonNullable<CredentialItem['fields']>[number]
@@ -95,10 +102,16 @@ async function getSdJwtTransactionDataTypes(
   if (!parsed.success) return undefined
 
   const resolvedEntries = await Promise.all(
-    parsed.data.transaction_data_types.map(async (entry) => {
+    parsed.data.transaction_data_types.map(async (entry): Promise<AptitudeTransactionDataTypeConfig | undefined> => {
       try {
-        const resolved = await resolveTs12TransactionDisplayMetadata(parsed.data, entry.type, entry.subtype, (buf, integrity) =>
-          IntegrityVerifier.verifyIntegrity(new Uint8Array(buf), integrity)
+        const resolved = await resolveTs12TransactionDisplayMetadata(
+          parsed.data,
+          entry.type,
+          entry.subtype,
+          (buf, integrity) => {
+            IntegrityVerifier.verifyIntegrity(new Uint8Array(buf), integrity)
+            return true
+          }
         )
         if (!resolved) return undefined
 
@@ -128,9 +141,7 @@ async function getSdJwtTransactionDataTypes(
     })
   )
 
-  const filtered = resolvedEntries.filter(
-    (entry): entry is AptitudeTransactionDataTypeConfig => entry !== undefined
-  )
+  const filtered = resolvedEntries.filter((entry): entry is AptitudeTransactionDataTypeConfig => entry !== undefined)
 
   return filtered.length > 0 ? (filtered as unknown as AptitudeTransactionDataTypes) : undefined
 }
@@ -148,8 +159,7 @@ function getSdJwtVctValues(record: SdJwtVcRecord) {
     .filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
 
   const tagVct = record.getTags().vct
-  const values =
-    vctValuesFromChain && vctValuesFromChain.length > 0 ? vctValuesFromChain : tagVct ? [tagVct] : []
+  const values = vctValuesFromChain && vctValuesFromChain.length > 0 ? vctValuesFromChain : tagVct ? [tagVct] : []
 
   if (values.length === 0) return undefined
 
@@ -228,10 +238,7 @@ async function readAssetAsBase64(logger: Logger, asset: ExpoAsset.Asset): Promis
   }
 }
 
-async function loadCachedImageAsBase64DataUrl(
-  logger: Logger,
-  url: string | number
-): Promise<ImageDataUrl | undefined> {
+async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string | number): Promise<ImageDataUrl | undefined> {
   let asset: ExpoAsset.Asset | undefined
 
   try {
@@ -338,13 +345,6 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
     agent.config.logger.trace('Registering credentials for Digital Credentials API')
 
     const aptitudeConfig: AptitudeConsortiumConfig = {
-      openid4vp: {
-        enabled: true,
-        allow_dcql: true,
-        allow_transaction_data: true,
-        allow_signed_requests: true,
-        allow_response_mode_jwt: true,
-      },
       log_level: __DEV__ ? 'debug' : undefined,
       dcql: {
         credential_set_option_mode: 'all_satisfiable',
@@ -367,6 +367,8 @@ export async function registerCredentialsForDcApi(agent: EitherAgent) {
 }
 
 const fallbackLogger: Logger = {
+  logLevel: LogLevel.info,
+  test: console.debug,
   trace: console.debug,
   debug: console.debug,
   info: console.info,

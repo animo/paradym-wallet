@@ -7,16 +7,17 @@ import { InvalidPinError } from '@easypid/crypto/error'
 import { useDevelopmentMode } from '@easypid/hooks'
 import { useLingui } from '@lingui/react/macro'
 import {
+  AgentProvider,
   acquireAuthorizationCodeAccessToken,
   acquireAuthorizationCodeUsingPresentation,
-  AgentProvider,
-  activityStorage,
   acquirePreAuthorizedAccessToken,
-  BiometricAuthenticationError,
+  activityStorage,
   BiometricAuthenticationCancelledError,
-  deferredCredentialStorage,
+  BiometricAuthenticationError,
+  BiometricAuthenticationNotEnabledError,
   type CredentialsForProofRequest,
   type DeferredCredential,
+  deferredCredentialStorage,
   type EitherAgent,
   extractOpenId4VcCredentialMetadata,
   getCredentialDisplayWithDefaults,
@@ -38,7 +39,6 @@ import {
   type W3cCredentialRecord,
   type W3cV2CredentialRecord,
   WalletJsonStoreProvider,
-  BiometricAuthenticationNotEnabledError,
 } from '@package/agent'
 import { shareProof } from '@package/agent/invitation/shareProof'
 import { type PinDotsInputRef, Provider, SlideWizard } from '@package/app'
@@ -87,7 +87,7 @@ const getCredentialOfferRequestData = (request: DigitalCredentialsCreateRequest)
   if ('providers' in requestPayload && Array.isArray(requestPayload.providers)) {
     return requestPayload.providers[0]?.request
   }
-  return requestPayload.data
+  return 'data' in requestPayload ? requestPayload.data : undefined
 }
 
 const getCredentialOfferUri = (request: DigitalCredentialsCreateRequest) => {
@@ -188,22 +188,16 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
   const showBiometricUnlockAction = biometricUnlockState.data?.canUnlockNow === true
 
   const hasSentResponse = useRef(false)
-  const sendCreateResponseOnce = useCallback(
-    (options: { response: string; type?: string; newEntryId?: string }) => {
-      if (hasSentResponse.current) return
-      hasSentResponse.current = true
-      sendCreateResponse(options)
-    },
-    []
-  )
-  const sendCreateErrorResponseOnce = useCallback(
-    (message: string) => {
-      if (hasSentResponse.current) return
-      hasSentResponse.current = true
-      sendCreateErrorResponse({ errorMessage: message })
-    },
-    []
-  )
+  const sendCreateResponseOnce = useCallback((options: { response: string; type?: string; newEntryId?: string }) => {
+    if (hasSentResponse.current) return
+    hasSentResponse.current = true
+    sendCreateResponse(options)
+  }, [])
+  const sendCreateErrorResponseOnce = useCallback((message: string) => {
+    if (hasSentResponse.current) return
+    hasSentResponse.current = true
+    sendCreateErrorResponse({ errorMessage: message })
+  }, [])
 
   useEffect(() => {
     if (agent) return
@@ -333,6 +327,11 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
     [isDevelopmentModeEnabled]
   )
 
+  const getActiveAgent = useCallback(() => {
+    if (!agent) throw new Error('Wallet is locked')
+    return agent
+  }, [agent])
+
   const preAuthGrant =
     resolvedCredentialOffer?.credentialOfferPayload.grants?.['urn:ietf:params:oauth:grant-type:pre-authorized_code']
   const txCode = preAuthGrant?.tx_code
@@ -370,8 +369,10 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
       configurationId: string,
       resolvedAuthorizationRequest?: OpenId4VciResolvedAuthorizationRequest
     ) => {
+      const activeAgent = getActiveAgent()
+
       const { credentials, deferredCredentials } = await receiveCredentialFromOpenId4VciOffer({
-        agent,
+        agent: activeAgent,
         resolvedCredentialOffer,
         credentialConfigurationIdsToRequest: [configurationId],
         accessToken: tokenResponse,
@@ -384,7 +385,7 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
           t(commonMessages.credentialInformationCouldNotBeExtracted),
           new Error('Received both immediate and deferred credentials')
         )
-        agent.config.logger.error('Received both immediate and deferred credentials in OpenID4VCI response')
+        activeAgent.config.logger.error('Received both immediate and deferred credentials in OpenID4VCI response')
         return
       }
 
@@ -407,7 +408,7 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
         setReceivedRecord(credentialRecord)
       }
     },
-    [agent, setErrorReasonWithError, t]
+    [getActiveAgent, setErrorReasonWithError, t]
   )
 
   const onProofDecline = async () => {
@@ -415,7 +416,7 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
   }
 
   const onCompleteCredentialRetrieval = async () => {
-    if (!receivedRecord && !deferredCredential) return
+    if (!agent || (!receivedRecord && !deferredCredential)) return
 
     let deferredCredentialId: string | undefined
 
@@ -458,9 +459,10 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
         setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
         return
       }
+      const activeAgent = getActiveAgent()
       try {
         const tokenResponse = await acquireAuthorizationCodeAccessToken({
-          agent,
+          agent: activeAgent,
           resolvedCredentialOffer,
           redirectUri: walletClient.redirectUri,
           authorizationCode,
@@ -472,7 +474,7 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
 
         await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId, resolvedAuthorizationRequest)
       } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+        activeAgent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
         setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
@@ -482,7 +484,7 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
       resolvedCredentialOffer,
       resolvedAuthorizationRequest,
       retrieveCredentials,
-      agent,
+      getActiveAgent,
       configurationId,
       setErrorReasonWithError,
       t,
@@ -496,37 +498,41 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
         return
       }
 
+      const activeAgent = getActiveAgent()
       try {
         const tokenResponse = await acquirePreAuthorizedAccessToken({
-          agent,
+          agent: activeAgent,
           resolvedCredentialOffer,
           txCode,
         })
         await retrieveCredentials(resolvedCredentialOffer, tokenResponse, configurationId)
       } catch (error) {
-        agent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+        activeAgent.config.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
         setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
       }
     },
-    [resolvedCredentialOffer, agent, retrieveCredentials, configurationId, setErrorReasonWithError, t]
+    [resolvedCredentialOffer, getActiveAgent, retrieveCredentials, configurationId, setErrorReasonWithError, t]
   )
 
   const parsePresentationRequestUrl = useCallback(
-    (oid4vpRequestUrl: string) =>
-      getCredentialsForProofRequest({
-        agent,
+    (oid4vpRequestUrl: string) => {
+      const activeAgent = getActiveAgent()
+
+      return getCredentialsForProofRequest({
+        agent: activeAgent,
         uri: oid4vpRequestUrl,
       })
         .then(setCredentialsForRequest)
         .catch((error) => {
           setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
-          agent.config.logger.error('Error getting credentials for request', {
+          activeAgent.config.logger.error('Error getting credentials for request', {
             error,
           })
-        }),
-    [agent, setErrorReasonWithError, t]
+        })
+    },
+    [getActiveAgent, setErrorReasonWithError, t]
   )
 
   const onCheckCardContinue = useCallback(async () => {
@@ -548,64 +554,60 @@ export function DcApiIssuanceScreenWithContext({ request }: DcApiIssuanceScreenP
     [acquireCredentialsPreAuth]
   )
 
-  const onPresentationAccept = useCallback(
-    async () => {
-      if (
-        !credentialsForRequest ||
-        !resolvedCredentialOffer ||
-        !resolvedAuthorizationRequest ||
-        resolvedAuthorizationRequest.authorizationFlow !== OpenId4VciAuthorizationFlow.PresentationDuringIssuance
-      ) {
-        setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
+  const onPresentationAccept = useCallback(async () => {
+    if (
+      !credentialsForRequest ||
+      !resolvedCredentialOffer ||
+      !resolvedAuthorizationRequest ||
+      resolvedAuthorizationRequest.authorizationFlow !== OpenId4VciAuthorizationFlow.PresentationDuringIssuance
+    ) {
+      setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
+      return
+    }
+
+    const activeAgent = getActiveAgent()
+    setIsSharingPresentation(true)
+
+    try {
+      // DC API already performs user confirmation before calling into the wallet.
+      // Avoid a second in-app auth step during presentation during issuance.
+      const { presentationDuringIssuanceSession } = await shareProof({
+        agent: activeAgent,
+        resolvedRequest: credentialsForRequest,
+        selectedCredentials: {},
+      })
+
+      const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({
+        resolvedCredentialOffer,
+        authSession: resolvedAuthorizationRequest.authSession,
+        presentationDuringIssuanceSession,
+        agent: activeAgent,
+        dPopKeyJwk: resolvedAuthorizationRequest?.dpop?.jwk,
+      })
+
+      await acquireCredentialsAuth(authorizationCode)
+      setIsSharingPresentation(false)
+    } catch (error) {
+      setIsSharingPresentation(false)
+      if (error instanceof BiometricAuthenticationCancelledError) {
+        setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
         return
       }
 
-      setIsSharingPresentation(true)
-
-      try {
-        // DC API already performs user confirmation before calling into the wallet.
-        // Avoid a second in-app auth step during presentation during issuance.
-        const { presentationDuringIssuanceSession } = await shareProof({
-          agent,
-          resolvedRequest: credentialsForRequest,
-          selectedCredentials: {},
-        })
-
-        const { authorizationCode } = await acquireAuthorizationCodeUsingPresentation({
-          resolvedCredentialOffer,
-          authSession: resolvedAuthorizationRequest.authSession,
-          presentationDuringIssuanceSession,
-          agent,
-          dPopKeyJwk: resolvedAuthorizationRequest?.dpop?.jwk,
-        })
-
-        await acquireCredentialsAuth(authorizationCode)
-        setIsSharingPresentation(false)
-      } catch (error) {
-        setIsSharingPresentation(false)
-        if (error instanceof BiometricAuthenticationCancelledError) {
-          setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
-          return
-        }
-
-        agent.config.logger.error('Error accepting presentation', {
-          error,
-        })
-        setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
-      }
-    },
-    [
-      credentialsForRequest,
-      agent,
-      t,
-      acquireCredentialsAuth,
-      resolvedAuthorizationRequest,
-      resolvedCredentialOffer,
-      setErrorReasonWithError,
-    ]
-  )
-
-  const onCancel = () => sendCreateErrorResponseOnce(errorReason ?? t(commonMessages.error))
+      activeAgent.config.logger.error('Error accepting presentation', {
+        error,
+      })
+      setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
+    }
+  }, [
+    credentialsForRequest,
+    getActiveAgent,
+    t,
+    acquireCredentialsAuth,
+    resolvedAuthorizationRequest,
+    resolvedCredentialOffer,
+    setErrorReasonWithError,
+  ])
 
   const onGoToWallet = () =>
     sendCreateResponseOnce({
