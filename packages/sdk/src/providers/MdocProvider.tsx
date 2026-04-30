@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { useParadym } from '../hooks'
 import { subscribeToCredentialStoreChanges } from '../storage/credentials'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
+import { useReloadOnAppActive } from './useReloadOnAppActive'
 
 export { Mdoc, MdocRecord } from '@credo-ts/core'
 
@@ -77,6 +78,7 @@ export const MdocRecordProvider: React.FC<PropsWithChildren> = ({ children }) =>
   useEffect(() => {
     loadRecords()
   }, [loadRecords])
+  useReloadOnAppActive(loadRecords)
 
   useEffect(() => {
     if (paradym.state === 'unlocked') {

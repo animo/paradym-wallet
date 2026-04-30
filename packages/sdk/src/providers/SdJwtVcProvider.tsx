@@ -4,6 +4,7 @@ import type { PropsWithChildren } from 'react'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { subscribeToCredentialStoreChanges } from '../storage/credentials'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from '../utils/records'
+import { useReloadOnAppActive } from './useReloadOnAppActive'
 
 export { SdJwtVc, SdJwtVcRecord } from '@credo-ts/core'
 
@@ -76,6 +77,7 @@ export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agen
   useEffect(() => {
     loadRecords()
   }, [loadRecords])
+  useReloadOnAppActive(loadRecords)
 
   useEffect(() => {
     if (agent) {
