@@ -1,10 +1,17 @@
 import { eudiTrustList, trustedX509Certificates, trustedX509Entities } from '@easypid/constants'
 import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
 import { LogLevel } from '@paradym/wallet-sdk'
+import * as Application from 'expo-application'
+import { Platform } from 'react-native'
 import { getIsDevelopmentModeEnabled, getIsRelyingPartyVerificationDisabled } from '../hooks/useDevelopmentMode'
+
+const walletInstanceVersion = `${Platform.OS}:${Application.applicationId ?? 'unknown'}:${
+  Application.nativeApplicationVersion ?? Application.nativeBuildVersion ?? 'unknown'
+}`
 
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   id: 'easypid-wallet',
+  walletInstanceVersion,
   logging: {
     level: LogLevel.trace,
     trace: true,

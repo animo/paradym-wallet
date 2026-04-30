@@ -26,6 +26,9 @@ export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
 export type { FormattedTransactionData, QtspInfo } from './openid4vc/transaction'
 export {
+  EUDI_PAYMENTS_ANIMO_TRANSACTION_DATA_TYPE,
+  EUDI_PAYMENT_TRANSACTION_DATA_TYPES,
+  EUDI_PAYMENT_TRANSACTION_DATA_TYPE,
   FUNKE_QES_AUTHORIZATION_TRANSACTION_DATA_TYPE,
   getOpenId4VpTransactionDataForConsent,
   getFormattedTransactionDataFormatter,

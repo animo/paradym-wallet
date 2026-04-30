@@ -102,6 +102,13 @@ export interface FormattedSubmissionTransactionData {
   securityHint?: string
   affirmativeActionLabel?: string
   denialActionLabel?: string
+  payment?: {
+    amount?: string
+    payeeName?: string
+    payeeId?: string
+    payeeLogo?: string
+    transactionId?: string
+  }
   claims: Array<{
     label: string
     value: string

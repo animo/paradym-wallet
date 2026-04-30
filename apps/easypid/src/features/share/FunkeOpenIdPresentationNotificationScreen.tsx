@@ -1,6 +1,10 @@
 import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
 import { useSubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAuthorizationMode'
-import { authorizeWalletFlowIfNeeded, clearWalletFlowAuthorization } from '@easypid/utils/authorizeWalletFlow'
+import {
+  authorizeWalletFlowIfNeeded,
+  clearWalletFlowAuthorization,
+  getWalletFlowAuthenticationMethods,
+} from '@easypid/utils/authorizeWalletFlow'
 import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app'
@@ -153,9 +157,10 @@ export function FunkeOpenIdPresentationNotificationFlow({
       if (!resolvedRequest) return handleError({ reason: reasonNoCredentials })
 
       setIsSharing(true)
+      let authorizationMethod: Awaited<ReturnType<typeof authorizeWalletFlowIfNeeded>>
 
       try {
-        await authorizeWalletFlowIfNeeded({
+        authorizationMethod = await authorizeWalletFlowIfNeeded({
           mode: authorizationMode,
           pin,
           route: '/notifications/openIdPresentation',
@@ -186,6 +191,7 @@ export function FunkeOpenIdPresentationNotificationFlow({
 
       try {
         await paradym.openid4vc.shareCredentials({
+          authenticationMethods: getWalletFlowAuthenticationMethods(authorizationMethod),
           resolvedRequest,
           selectedCredentials,
         })

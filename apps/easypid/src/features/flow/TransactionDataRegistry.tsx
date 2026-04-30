@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { Heading, HeroIcons, Paragraph, XStack, YStack } from '@package/ui'
 import {
+  EUDI_PAYMENT_TRANSACTION_DATA_TYPES,
   type FormattedSubmissionTransactionData,
   type FormattedSubmissionTransactionDataError,
   type FormattedTransactionData,
@@ -111,8 +112,10 @@ export function TransactionDataErrorWidget({
 
 type TransactionDataUiDefinition = {
   Widget: ComponentType<TransactionDataWidgetProps>
-  getPresentationTitle?: (t: TranslationFunction) => string
-  getPresentationAcceptLabel?: (t: TranslationFunction) => string
+  getPresentationTitle?: (transactionData: TransactionData, t: TranslationFunction) => string
+  getPresentationAcceptLabel?: (transactionData: TransactionData, t: TranslationFunction) => string
+  getPresentationDeclineLabel?: (transactionData: TransactionData, t: TranslationFunction) => string
+  getConsentTitle?: (transactionData: TransactionData, t: TranslationFunction) => string
   getConsentAcceptLabel?: (transactionData: TransactionData, t: TranslationFunction) => string
   getConsentDeclineLabel?: (transactionData: TransactionData, t: TranslationFunction) => string
 }
@@ -151,16 +154,67 @@ function FunkeQesTransactionDataWidget({ transactionData }: TransactionDataWidge
   )
 }
 
+function EudiPaymentTransactionDataWidget({ transactionData }: TransactionDataWidgetProps) {
+  const { t } = useLingui()
+  const payment = 'payment' in transactionData ? transactionData.payment : undefined
+  const amountParts = payment?.amount?.split(/\s+/) ?? []
+  const currencySymbol = amountParts.length > 1 ? amountParts[0] : undefined
+  const formattedAmount = amountParts.length > 1 ? amountParts.slice(1).join(' ') : payment?.amount
+
+  return (
+    <YStack>
+      <YStack ai="center" gap="$1">
+        <XStack ai="flex-start" jc="center" gap="$2" flexWrap="wrap">
+          {currencySymbol ? (
+            <Heading fontSize={24} fontWeight="600" lineHeight={72} fontFamily="$heading">
+              {currencySymbol}
+            </Heading>
+          ) : null}
+          <Heading fontSize={100} fontWeight="600" lineHeight={104} fontFamily="$heading">
+            {formattedAmount ??
+              t({
+                id: 'flow.transaction.payment.amountFallback',
+                message: 'Payment amount',
+                comment: 'Fallback when payment amount could not be displayed',
+              })}
+          </Heading>
+        </XStack>
+
+        <YStack ai="center" gap={0} w="100%" px="$4">
+          {payment?.payeeName ? (
+            <Heading fontSize={18} fontWeight="600" lineHeight={24} fontFamily="$heading" textAlign="center">
+              {payment.payeeName}
+            </Heading>
+          ) : null}
+          {payment?.payeeId ? (
+            <Paragraph
+              fontSize={14}
+              fontWeight="400"
+              lineHeight={20}
+              color="#656974"
+              fontFamily="$body"
+              textAlign="center"
+              letterSpacing={0.15}
+            >
+              {payment.payeeId}
+            </Paragraph>
+          ) : null}
+        </YStack>
+      </YStack>
+    </YStack>
+  )
+}
+
 export const transactionDataUiDefinitions: Record<string, TransactionDataUiDefinition> = {
   [FUNKE_QES_AUTHORIZATION_TRANSACTION_DATA_TYPE]: {
     Widget: FunkeQesTransactionDataWidget,
-    getPresentationTitle: (t) =>
+    getPresentationTitle: (_transactionData, t) =>
       t({
         id: 'presentation.onePage.signTitle',
         message: 'Review signature request',
         comment: 'Title for one page signature review',
       }),
-    getPresentationAcceptLabel: (t) =>
+    getPresentationAcceptLabel: (_transactionData, t) =>
       t({
         id: 'presentation.onePage.sign',
         message: 'Sign and share',
@@ -179,6 +233,50 @@ export const transactionDataUiDefinitions: Record<string, TransactionDataUiDefin
         ? transactionData.denialActionLabel
         : t(commonMessages.declineButton),
   },
+  ...Object.fromEntries(
+    EUDI_PAYMENT_TRANSACTION_DATA_TYPES.map((type) => [
+      type,
+      {
+        Widget: EudiPaymentTransactionDataWidget,
+        getPresentationTitle: (transactionData: TransactionData, t: TranslationFunction) =>
+          ('title' in transactionData ? transactionData.title : undefined) ??
+          t({
+            id: 'presentation.onePage.paymentTitle',
+            message: 'Review payment',
+            comment: 'Title for one page payment review',
+          }),
+        getPresentationAcceptLabel: (transactionData: TransactionData, t: TranslationFunction) =>
+          ('affirmativeActionLabel' in transactionData ? transactionData.affirmativeActionLabel : undefined) ??
+          t({
+            id: 'presentation.onePage.payment',
+            message: 'Authorize payment',
+            comment: 'Button label to accept a payment request',
+          }),
+        getPresentationDeclineLabel: (transactionData: TransactionData, t: TranslationFunction) =>
+          ('denialActionLabel' in transactionData ? transactionData.denialActionLabel : undefined) ??
+          t(commonMessages.cancel),
+        getConsentTitle: (transactionData: TransactionData, t: TranslationFunction) =>
+          ('title' in transactionData ? transactionData.title : undefined) ??
+          t({
+            id: 'dcApi.transactionDataConsent.paymentTitle',
+            message: 'Review payment',
+            comment: 'Title shown when DC API did not display payment transaction data in the system selector',
+          }),
+        getConsentAcceptLabel: (transactionData: TransactionData, t: TranslationFunction) =>
+          'affirmativeActionLabel' in transactionData && transactionData.affirmativeActionLabel
+            ? transactionData.affirmativeActionLabel
+            : t({
+                id: 'dcApi.transactionDataConsent.authorizePayment',
+                message: 'Authorize payment',
+                comment: 'Button label to confirm undisplayed DC API payment transaction data',
+              }),
+        getConsentDeclineLabel: (transactionData: TransactionData, t: TranslationFunction) =>
+          'denialActionLabel' in transactionData && transactionData.denialActionLabel
+            ? transactionData.denialActionLabel
+            : t(commonMessages.declineButton),
+      },
+    ])
+  ),
 }
 
 function getTransactionDataUiDefinition(transactionData: TransactionData) {
@@ -194,19 +292,22 @@ export function useTransactionDataPresentationLabels(transactionData?: Transacti
 
   return {
     title:
-      definition?.getPresentationTitle?.(t) ??
+      (transactionData && definition?.getPresentationTitle?.(transactionData, t)) ??
       t({
         id: 'presentation.onePage.title',
         message: 'Review data request',
         comment: 'Title for one page presentation review',
       }),
     acceptLabel:
-      definition?.getPresentationAcceptLabel?.(t) ??
+      (transactionData && definition?.getPresentationAcceptLabel?.(transactionData, t)) ??
       t({
         id: 'presentation.onePage.share',
         message: 'Share data',
         comment: 'Button label to accept a presentation request',
       }),
+    declineLabel:
+      (transactionData && definition?.getPresentationDeclineLabel?.(transactionData, t)) ??
+      t(commonMessages.declineButton),
   }
 }
 
@@ -215,6 +316,13 @@ export function useTransactionDataConsentLabels(transactionData?: TransactionDat
   const definition = transactionData ? getTransactionDataUiDefinition(transactionData) : undefined
 
   return {
+    title:
+      (transactionData && definition?.getConsentTitle?.(transactionData, t)) ??
+      t({
+        id: 'dcApi.transactionDataConsent.title',
+        message: 'Review transaction',
+        comment: 'Title shown when DC API did not display transaction data in the system selector',
+      }),
     acceptLabel:
       (transactionData && definition?.getConsentAcceptLabel?.(transactionData, t)) ??
       t({

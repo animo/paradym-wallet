@@ -12,6 +12,7 @@ import {
 
 const walletFlowAuthorizationRoutes = ['/notifications/openIdPresentation', '/notifications/openIdCredential'] as const
 type WalletFlowAuthorizationRoute = (typeof walletFlowAuthorizationRoutes)[number]
+export type WalletFlowAuthorizationMethod = 'pin' | 'biometrics'
 
 let redirectedWalletFlowAuthorizationRoute: WalletFlowAuthorizationRoute | undefined
 
@@ -30,14 +31,14 @@ const consumeWalletFlowAuthorizationSession = (
   route: WalletFlowAuthorizationRoute,
   mode: SubmissionAuthorizationMode
 ) => {
-  if (!redirectedWalletFlowAuthorizationRoute) return false
+  if (!redirectedWalletFlowAuthorizationRoute) return undefined
 
   const isMatch = redirectedWalletFlowAuthorizationRoute === route && mode === 'pin-only'
   redirectedWalletFlowAuthorizationRoute = undefined
 
   if (!isMatch) clearWalletServiceProviderPin()
 
-  return isMatch
+  return isMatch ? 'pin' : undefined
 }
 
 export const clearWalletFlowAuthorization = () => {
@@ -55,17 +56,21 @@ export const authorizeWalletFlow = async ({
 }: {
   mode: Exclude<SubmissionAuthorizationMode, 'none'>
   pin?: string
-}) => {
+}): Promise<WalletFlowAuthorizationMethod> => {
   if (mode === 'pin-only') {
     if (!pin) throw new Error('PIN is required to authorize this flow')
     await setWalletServiceProviderPin(pin)
-    return
+    return 'pin'
   }
 
-  if (pin) return validateWalletPin(pin)
+  if (pin) {
+    await validateWalletPin(pin)
+    return 'pin'
+  }
 
   const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(secureWalletKey.getWalletKeyVersion())
   if (!walletKey) throw new Error('Biometric authentication failed')
+  return 'biometrics'
 }
 
 export const authorizeWalletFlowIfNeeded = async ({
@@ -76,9 +81,19 @@ export const authorizeWalletFlowIfNeeded = async ({
   mode?: SubmissionAuthorizationMode
   pin?: string
   route?: WalletFlowAuthorizationRoute
-}) => {
+}): Promise<WalletFlowAuthorizationMethod | undefined> => {
   if (!mode || mode === 'none') return
-  if (route && consumeWalletFlowAuthorizationSession(route, mode)) return
+  if (route) {
+    const authorizationMethod = consumeWalletFlowAuthorizationSession(route, mode)
+    if (authorizationMethod) return authorizationMethod
+  }
 
-  await authorizeWalletFlow({ mode, pin })
+  return authorizeWalletFlow({ mode, pin })
+}
+
+export function getWalletFlowAuthenticationMethods(method?: WalletFlowAuthorizationMethod) {
+  if (method === 'biometrics') return ['hwk', 'bio_strong']
+  if (method === 'pin') return ['pin', 'hwk']
+
+  return undefined
 }

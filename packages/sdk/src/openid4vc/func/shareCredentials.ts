@@ -1,18 +1,24 @@
+import { Kms, TypedArrayEncoder } from '@credo-ts/core'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { selectEudiDcqlCredentialsForRequest } from '../dcql/eudiDcql'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
-import { getOpenId4VpTransactionDataResponse } from '../transactionDataRegistry'
+import {
+  getOpenId4VpTransactionDataAdditionalPayloadByCredential,
+  getOpenId4VpTransactionDataResponse,
+} from '../transactionDataRegistry'
 
 export type ShareCredentialsOptions = {
   paradym: ParadymWalletSdk
   resolvedRequest: CredentialsForProofRequest
+  authenticationMethods?: string[]
   selectedCredentials?: { [inputDescriptorId: string]: string }
 }
 
 export const shareCredentials = async ({
+  authenticationMethods,
   paradym,
   resolvedRequest,
   selectedCredentials = {},
@@ -49,14 +55,25 @@ export const shareCredentials = async ({
       )
     : undefined
 
-  const dcqlCredentials = eudiDcql ? selectEudiDcqlCredentialsForRequest(eudiDcql, selectedCredentials) : undefined
+  const baseDcqlCredentials = eudiDcql ? selectEudiDcqlCredentialsForRequest(eudiDcql, selectedCredentials) : undefined
 
   const transactionData = getOpenId4VpTransactionDataResponse({
     authorizationRequest: resolvedRequest.authorizationRequest,
     transactionData: resolvedRequest.transactionData,
     selectedCredentials,
-    hasCredentialForInputDescriptor: (id) => !!(dcqlCredentials?.[id] || presentationExchangeCredentials?.[id]),
+    hasCredentialForInputDescriptor: (id) => !!(baseDcqlCredentials?.[id] || presentationExchangeCredentials?.[id]),
   })
+  const kms = paradym.agent.context.resolve(Kms.KeyManagementApi)
+  const additionalPayloadByCredentialQueryId = getOpenId4VpTransactionDataAdditionalPayloadByCredential({
+    authenticationMethods,
+    createJti: () => TypedArrayEncoder.toBase64URL(kms.randomBytes({ length: 32 })),
+    resolvedRequest,
+    transactionDataResponse: transactionData,
+    walletInstanceVersion: paradym.walletInstanceVersion,
+  })
+  const dcqlCredentials = eudiDcql
+    ? selectEudiDcqlCredentialsForRequest(eudiDcql, selectedCredentials, additionalPayloadByCredentialQueryId)
+    : undefined
 
   try {
     const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({

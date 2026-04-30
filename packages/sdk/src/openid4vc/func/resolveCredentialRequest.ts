@@ -105,6 +105,10 @@ export const resolveCredentialRequest = async ({
     return {
       ...resolved.presentationExchange,
       ...(eudiResolved ? { eudiDcql: eudiResolved.eudiDcql } : {}),
+      ...(eudiResolved?.authorizationRequestIntegrity
+        ? { authorizationRequestIntegrity: eudiResolved.authorizationRequestIntegrity }
+        : {}),
+      signedAuthorizationRequest: resolved.signedAuthorizationRequest,
       origin,
       authorizationRequest: resolved.authorizationRequestPayload,
       formattedSubmission,

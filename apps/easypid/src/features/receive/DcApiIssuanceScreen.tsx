@@ -3,23 +3,18 @@ import {
   sendCreateErrorResponse,
   sendCreateResponse,
 } from '@animo-id/expo-digital-credentials-api'
+import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
 import { paradymWalletSdkOptions } from '@easypid/config/paradym'
+import { WalletFlowErrorContent, WalletFlowShell } from '@easypid/features/flow/WalletFlowShell'
 import { useLingui } from '@lingui/react/macro'
-import { PinDotsInput, type PinDotsInputRef, Provider } from '@package/app'
+import { Provider } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { FlexPage, Heading, HeroIcons, IconContainer, YStack } from '@package/ui'
-import {
-  activityStorage,
-  deferredCredentialStorage,
-  ParadymWalletAuthenticationInvalidPinError,
-  ParadymWalletSdk,
-  useParadym,
-} from '@paradym/wallet-sdk'
+import { Stack, YStack } from '@package/ui'
+import { activityStorage, deferredCredentialStorage, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
-import { FunkeCredentialNotificationScreen } from './FunkeOpenIdCredentialNotificationScreen'
+import { FunkeCredentialNotificationFlow } from './FunkeOpenIdCredentialNotificationScreen'
 
 type DcApiIssuanceScreenProps = {
   request: DigitalCredentialsCreateRequest
@@ -101,13 +96,13 @@ export function DcApiIssuanceScreen({ request }: DcApiIssuanceScreenProps) {
   const offerUri = getCredentialOfferUri(request)
 
   return (
-    <SafeAreaProvider>
-      <Provider disableInjectCSS defaultTheme="light" config={tamaguiConfig} customLocale={storedLocale}>
-        <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
+    <Provider config={tamaguiConfig} customLocale={storedLocale} rootBackgroundColor="transparent">
+      <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
+        <Stack flex-1 justifyContent="flex-end" backgroundColor="transparent">
           <DcApiIssuanceScreenWithContext offerUri={offerUri} request={request} />
-        </ParadymWalletSdk.UnlockProvider>
-      </Provider>
-    </SafeAreaProvider>
+        </Stack>
+      </ParadymWalletSdk.UnlockProvider>
+    </Provider>
   )
 }
 
@@ -119,7 +114,6 @@ function DcApiIssuanceScreenWithContext({
   request: DigitalCredentialsCreateRequest
 }) {
   const paradym = useParadym()
-  const pinInputRef = useRef<PinDotsInputRef>(null)
   const hasSentResponse = useRef(false)
   const [isInitializingAgent, setIsInitializingAgent] = useState(false)
   const { t } = useLingui()
@@ -144,45 +138,56 @@ function DcApiIssuanceScreenWithContext({
   )
 
   useEffect(() => {
-    if (!offerUri) sendCreateErrorResponseOnce('Invalid credential offer')
-  }, [offerUri, sendCreateErrorResponseOnce])
-
-  useEffect(() => {
-    if (paradym.state === 'not-configured') sendCreateErrorResponseOnce('Wallet is not configured')
-  }, [paradym.state, sendCreateErrorResponseOnce])
-
-  useEffect(() => {
     if (isInitializingAgent || paradym.state !== 'acquired-wallet-key') return
 
     setIsInitializingAgent(true)
     paradym
       .unlock()
-      .catch((error) => {
-        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
-          pinInputRef.current?.clear()
-          pinInputRef.current?.shake()
-          return
-        }
-
-        sendCreateErrorResponseOnce('Error initializing wallet')
-      })
+      .catch(() => sendCreateErrorResponseOnce('Error initializing wallet'))
       .finally(() => setIsInitializingAgent(false))
   }, [paradym, isInitializingAgent, sendCreateErrorResponseOnce])
 
-  if (!offerUri) return null
+  const onUnlock = async ({ pin, onAuthorizationError, onAuthorized }: OnWalletAuthSubmitProps = {}) => {
+    setIsInitializingAgent(true)
+
+    try {
+      if (paradym.state === 'locked') {
+        if (pin) {
+          await paradym.unlockUsingPin(pin)
+        } else {
+          await paradym.tryUnlockingUsingBiometrics()
+        }
+      } else if (paradym.state === 'acquired-wallet-key') {
+        await paradym.unlock()
+      }
+
+      onAuthorized?.()
+    } catch {
+      onAuthorizationError?.()
+    } finally {
+      setIsInitializingAgent(false)
+    }
+  }
+
+  const renderError = (message: string) => (
+    <WalletFlowShell surface="overlay" title={t(commonMessages.somethingWentWrong)}>
+      <WalletFlowErrorContent message={message} onClose={() => sendCreateErrorResponseOnce(message)} />
+    </WalletFlowShell>
+  )
+
+  if (!offerUri) return renderError('Invalid credential offer')
 
   if (paradym.state === 'not-configured') {
-    return null
+    return renderError('Wallet is not configured')
   }
 
   if (paradym.state === 'unlocked') {
     return (
       <ParadymWalletSdk.AppProvider recordIds={jsonRecordIds}>
-        <FunkeCredentialNotificationScreen
-          uri={offerUri}
-          onCancel={(reason) =>
-            sendCreateErrorResponseOnce(reason ?? t(commonMessages.errorWhileRetrievingCredentials))
-          }
+        <FunkeCredentialNotificationFlow
+          source="external"
+          routeParams={{ uri: offerUri }}
+          onExit={(reason) => sendCreateErrorResponseOnce(reason ?? t(commonMessages.errorWhileRetrievingCredentials))}
           onComplete={sendCreateResponseOnce}
         />
       </ParadymWalletSdk.AppProvider>
@@ -193,27 +198,31 @@ function DcApiIssuanceScreenWithContext({
     const isLoading = (paradym.state === 'locked' && paradym.isUnlocking) || isInitializingAgent
 
     return (
-      <FlexPage flex-1 alignItems="center">
-        <YStack fg={1} gap="$6">
-          <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
-            <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
-            <Heading heading="h2" fontWeight="$semiBold">
-              {t(commonMessages.enterPin)}
-            </Heading>
-          </YStack>
-          <PinDotsInput
-            isLoading={isLoading}
-            ref={pinInputRef}
-            pinLength={6}
-            onPinComplete={(pin) => {
-              if (paradym.state === 'locked') void paradym.unlockUsingPin(pin)
-            }}
-            useNativeKeyboard={false}
-          />
-        </YStack>
-      </FlexPage>
+      <WalletFlowShell
+        surface="overlay"
+        title={t({
+          id: 'overlay.unlockTitle',
+          message: 'Unlock wallet',
+          comment: 'Title shown when an external overlay needs wallet unlock',
+        })}
+        onCancel={() => sendCreateErrorResponseOnce(t(commonMessages.authorizationCancelled))}
+      >
+        <WalletFlowAuthPrompt authMode="pin-or-biometrics" onSubmit={onUnlock} isLoading={isLoading} />
+      </WalletFlowShell>
     )
   }
 
-  return null
+  return (
+    <WalletFlowShell
+      surface="overlay"
+      title={t({
+        id: 'overlay.loadingTitle',
+        message: 'Preparing request',
+        comment: 'Title shown while the transparent overlay initializes the wallet',
+      })}
+      isLoading
+    >
+      <YStack />
+    </WalletFlowShell>
+  )
 }

@@ -9,6 +9,7 @@ export type DcApiSendResponseOptions = {
   paradym: ParadymWalletSdk
   resolvedRequest: CredentialsForProofRequest
   dcRequest: DigitalCredentialsRequest
+  authenticationMethods?: string[]
 }
 
 function getDcApiResponseData(responseMode: unknown, authorizationResponse: unknown) {
@@ -32,7 +33,12 @@ function getDcApiResponseData(responseMode: unknown, authorizationResponse: unkn
   return authorizationResponse
 }
 
-export async function dcApiSendResponse({ paradym, resolvedRequest, dcRequest }: DcApiSendResponseOptions) {
+export async function dcApiSendResponse({
+  authenticationMethods,
+  paradym,
+  resolvedRequest,
+  dcRequest,
+}: DcApiSendResponseOptions) {
   const selectedCredentials = Object.fromEntries(
     resolvedRequest.formattedSubmission.entries.flatMap((entry) =>
       entry.isSatisfied && entry.credentials[0]
@@ -51,6 +57,7 @@ export async function dcApiSendResponse({ paradym, resolvedRequest, dcRequest }:
 
   const { protocol } = getDcApiRequestContext(dcRequest)
   const result = await shareCredentials({
+    authenticationMethods,
     paradym,
     resolvedRequest,
     selectedCredentials,

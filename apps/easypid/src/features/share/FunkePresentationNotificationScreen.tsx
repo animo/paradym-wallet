@@ -1,6 +1,7 @@
 import { type OnWalletAuthSubmitProps, WalletFlowAuthPrompt } from '@easypid/components/WalletFlowAuthPrompt'
 import { type FlowSelectedCredentials, SubmissionCredentialSets } from '@easypid/features/flow/SubmissionCredentialSets'
 import {
+  type TransactionData,
   TransactionDataWidget,
   useTransactionDataPresentationLabels,
 } from '@easypid/features/flow/TransactionDataRegistry'
@@ -40,6 +41,17 @@ interface FunkePresentationNotificationScreenProps {
   source?: WalletFlowSource
 }
 
+function getFirstSubmissionTransactionData(submission?: FormattedSubmission): TransactionData | undefined {
+  return submission?.credentialSets
+    ?.flatMap((credentialSet) => credentialSet.slots)
+    .flatMap((slot) => slot.alternatives)
+    .flatMap((alternative) => [
+      alternative.transactionData,
+      ...Object.values(alternative.transactionDataByCredentialId ?? {}),
+    ])
+    .find((transactionData) => transactionData !== undefined)
+}
+
 export function FunkePresentationNotificationScreen({
   entityId,
   verifierName,
@@ -71,7 +83,9 @@ export function FunkePresentationNotificationScreen({
           comment: 'Button label after a presentation is shared',
         })
   const isSubmitting = isAccepting || isSubmitLocked
-  const transactionDataPresentation = useTransactionDataPresentationLabels(transaction ?? undefined)
+  const transactionDataPresentation = useTransactionDataPresentationLabels(
+    transaction ?? getFirstSubmissionTransactionData(submission)
+  )
 
   const complete = () => {
     setIsComplete(true)
@@ -124,13 +138,7 @@ export function FunkePresentationNotificationScreen({
         </WalletFlowActionButton>
       ) : null}
       <Button.Text scaleOnPress disabled={isSubmitting} onPress={onDecline}>
-        {submission.areAllSatisfied
-          ? t({
-              id: 'common.declineButton',
-              message: 'Decline',
-              comment: 'Decline button label',
-            })
-          : t(commonMessages.close)}
+        {submission.areAllSatisfied ? transactionDataPresentation.declineLabel : t(commonMessages.close)}
       </Button.Text>
     </YStack>
   )

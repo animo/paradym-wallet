@@ -1,6 +1,12 @@
-import type { ResolvedWalletCredential } from '@animo-id/eudi-wallet-ts12-dcql'
+import type { ResolvedWalletCredential, TransactionDataInput } from '@animo-id/eudi-wallet-ts12-dcql'
+import { Hasher, type JsonObject, TypedArrayEncoder } from '@credo-ts/core'
 import type { OpenId4VpAcceptAuthorizationRequestOptions } from '@credo-ts/openid4vc'
 import type { FormattedSubmission, FormattedSubmissionTransactionData } from '../format/submission'
+import {
+  EUDI_PAYMENT_TRANSACTION_DATA_TYPES,
+  isEudiPaymentCredentialVct,
+  isEudiPaymentTransactionDataType,
+} from './eudiPaymentTransactionData'
 import type { CredentialsForProofRequest } from './func/resolveCredentialRequest'
 
 export const FUNKE_QES_AUTHORIZATION_TRANSACTION_DATA_TYPE = 'qes_authorization'
@@ -13,8 +19,13 @@ export type OpenId4VpTransactionDataForConsent =
 export type QtspInfo = CredentialsForProofRequest['verifier']
 export type OpenId4VpTransactionDataResponse = OpenId4VpAcceptAuthorizationRequestOptions['transactionData']
 type OpenId4VpTransactionDataResponseEntry = NonNullable<OpenId4VpTransactionDataResponse>[number]
+type HashAlgorithm = 'sha-1' | 'sha-256'
+type TransactionDataCredential = {
+  vcts?: Iterable<string>
+}
 
 export type OpenId4VpTransactionDataType = {
+  credentialSupportsTransactionData?: (credential: TransactionDataCredential) => boolean
   getCredentialWhitelist: (transactionData: MatchedTransactionData) => string[]
   createResponseEntry: (
     transactionData: MatchedTransactionData,
@@ -47,6 +58,28 @@ function formatResolvedTransactionDataValue(value: unknown): string {
   if (value === undefined || value === null) return ''
 
   return JSON.stringify(value)
+}
+
+function formatOptionalResolvedTransactionDataValue(value: unknown) {
+  const formatted = formatResolvedTransactionDataValue(value)
+  return formatted.length > 0 ? formatted : undefined
+}
+
+function getResolvedUiLabel(
+  resolved: NonNullable<ResolvedWalletCredential['transactionData']>['resolved'],
+  id: string
+) {
+  return formatOptionalResolvedTransactionDataValue(resolved?.ui_labels?.[id]?.value)
+}
+
+function formatPaymentAmount(amount: unknown, currency: unknown) {
+  const formattedAmount = formatOptionalResolvedTransactionDataValue(amount)
+  const formattedCurrency = formatOptionalResolvedTransactionDataValue(currency)
+  if (!formattedAmount || !formattedCurrency) return formattedAmount
+
+  return formattedAmount.toLowerCase().includes(formattedCurrency.toLowerCase())
+    ? formattedAmount
+    : `${formattedCurrency} ${formattedAmount}`
 }
 
 function getFunkeQesDocumentName(transactionData: Record<string, unknown>) {
@@ -83,8 +116,39 @@ function formatFunkeQesTransactionData(
   }
 }
 
+function formatEudiPaymentTransactionData(
+  transactionData: NonNullable<ResolvedWalletCredential['transactionData']>
+): FormattedSubmissionTransactionData {
+  const payload = asRecord(transactionData.entry.payload) ?? {}
+  const payee = asRecord(payload.payee)
+  const amount = asRecord(payload.amount)
+  const amountValue = amount?.value ?? amount?.amount ?? payload.amount
+
+  return {
+    index: transactionData.index,
+    type: transactionData.entry.type,
+    title: getResolvedUiLabel(transactionData.resolved, 'transaction_title'),
+    securityHint: getResolvedUiLabel(transactionData.resolved, 'security_hint'),
+    affirmativeActionLabel: getResolvedUiLabel(transactionData.resolved, 'affirmative_action_label'),
+    denialActionLabel: getResolvedUiLabel(transactionData.resolved, 'denial_action_label'),
+    payment: {
+      amount: formatPaymentAmount(amountValue, amount?.currency ?? payload.currency),
+      payeeName: formatOptionalResolvedTransactionDataValue(payee?.name),
+      payeeId: formatOptionalResolvedTransactionDataValue(payee?.id),
+      payeeLogo: formatOptionalResolvedTransactionDataValue(payee?.logo),
+      transactionId: formatOptionalResolvedTransactionDataValue(payload.transaction_id),
+    },
+    claims:
+      transactionData.resolved?.claims.map((claim) => ({
+        label: formatResolvedTransactionDataValue(claim.label.value),
+        value: formatResolvedTransactionDataValue(claim.value.value),
+      })) ?? [],
+  }
+}
+
 export const formattedTransactionDataFormatters: Record<string, FormattedTransactionDataFormatter> = {
   [FUNKE_QES_AUTHORIZATION_TRANSACTION_DATA_TYPE]: formatFunkeQesTransactionData,
+  ...Object.fromEntries(EUDI_PAYMENT_TRANSACTION_DATA_TYPES.map((type) => [type, formatEudiPaymentTransactionData])),
 }
 
 export function getFormattedTransactionDataFormatter(type: string) {
@@ -144,6 +208,17 @@ export const openId4VpTransactionDataTypes: Record<string, OpenId4VpTransactionD
     getCredentialWhitelist: (transactionData) => transactionData.entry.transactionData.credential_ids,
     createResponseEntry: createCredentialBoundTransactionDataResponseEntry,
   },
+  ...Object.fromEntries(
+    EUDI_PAYMENT_TRANSACTION_DATA_TYPES.map((type) => [
+      type,
+      {
+        getCredentialWhitelist: (transactionData: MatchedTransactionData) =>
+          transactionData.entry.transactionData.credential_ids,
+        credentialSupportsTransactionData: ({ vcts }: TransactionDataCredential) => isEudiPaymentCredentialVct(vcts),
+        createResponseEntry: createCredentialBoundTransactionDataResponseEntry,
+      },
+    ])
+  ),
 }
 
 export function getOpenId4VpTransactionDataType(type: string) {
@@ -151,6 +226,32 @@ export function getOpenId4VpTransactionDataType(type: string) {
   if (!transactionDataType) throw new Error(`Unsupported transaction data type '${type}'`)
 
   return transactionDataType
+}
+
+export function isCredentialQueryTargetedByTransactionData(
+  credentialQueryId: string,
+  transactionData: TransactionDataInput[]
+) {
+  return transactionData.some((entry) => entry.credential_ids.includes(credentialQueryId))
+}
+
+export function credentialSupportsTransactionData({
+  credential,
+  credentialQueryId,
+  transactionData,
+}: {
+  credential: TransactionDataCredential
+  credentialQueryId: string
+  transactionData: TransactionDataInput[]
+}) {
+  const targetedTransactionData = transactionData.filter((entry) => entry.credential_ids.includes(credentialQueryId))
+  if (targetedTransactionData.length === 0) return true
+
+  return targetedTransactionData.some((entry) => {
+    const transactionDataType = openId4VpTransactionDataTypes[entry.type]
+
+    return transactionDataType?.credentialSupportsTransactionData?.(credential) === true
+  })
 }
 
 export const getFormattedTransactionData = (credentialsForRequest?: CredentialsForProofRequest) => {
@@ -252,3 +353,106 @@ export function getOpenId4VpTransactionDataResponse({
     getTransactionDataResponseEntry(entry, { selectedCredentials, hasCredentialForInputDescriptor })
   )
 }
+
+function getTransactionDataHashAlgorithm(transactionData: MatchedTransactionData): HashAlgorithm {
+  const allowedHashAlgorithms = transactionData.entry.transactionData.transaction_data_hashes_alg ?? ['sha-256']
+  const hashAlgorithm = (['sha-1', 'sha-256'] as const).find((algorithm) => allowedHashAlgorithms.includes(algorithm))
+
+  if (!hashAlgorithm) {
+    throw new Error(`No supported transaction data hash algorithm found. Supported algorithms are sha-1 and sha-256.`)
+  }
+
+  return hashAlgorithm
+}
+
+function createPaymentAdditionalPayload({
+  authenticationMethods,
+  createJti,
+  responseMode,
+  transactionData,
+  authorizationRequestIntegrity,
+  walletInstanceVersion,
+  locale,
+}: {
+  authenticationMethods?: string[]
+  createJti: () => string
+  responseMode?: string
+  transactionData: MatchedTransactionData
+  authorizationRequestIntegrity?: string
+  walletInstanceVersion?: string
+  locale: string
+}): JsonObject {
+  if (!authenticationMethods || authenticationMethods.length === 0) {
+    throw new Error('Payment transaction data requires authentication method references')
+  }
+  if (!authorizationRequestIntegrity) {
+    throw new Error('Payment transaction data requires a signed authorization request integrity value')
+  }
+  if (!walletInstanceVersion) {
+    throw new Error('Payment transaction data requires a wallet instance version')
+  }
+
+  const transactionDataHashAlgorithm = getTransactionDataHashAlgorithm(transactionData)
+
+  return {
+    jti: createJti(),
+    response_mode: responseMode ?? 'direct_post',
+    display_locale: locale,
+    amr: authenticationMethods,
+    transaction_data_hash: TypedArrayEncoder.toBase64URL(
+      Hasher.hash(transactionData.entry.encoded, transactionDataHashAlgorithm)
+    ),
+    transaction_data_hash_alg: transactionDataHashAlgorithm,
+    request_integrity: authorizationRequestIntegrity,
+    wallet_instance_version: walletInstanceVersion,
+  }
+}
+
+export function getOpenId4VpTransactionDataAdditionalPayloadByCredential({
+  authenticationMethods,
+  createJti,
+  resolvedRequest,
+  transactionDataResponse,
+  walletInstanceVersion,
+}: {
+  authenticationMethods?: string[]
+  createJti: () => string
+  resolvedRequest: CredentialsForProofRequest
+  transactionDataResponse: OpenId4VpTransactionDataResponse
+  walletInstanceVersion?: string
+}): Record<string, JsonObject> | undefined {
+  if (!transactionDataResponse || transactionDataResponse.length === 0) return undefined
+  if (!resolvedRequest.transactionData || resolvedRequest.transactionData.length === 0) return undefined
+
+  const eudiDcql = 'eudiDcql' in resolvedRequest ? resolvedRequest.eudiDcql : undefined
+  const locale = eudiDcql?.resolved.locale ?? 'en'
+  const authorizationRequestIntegrity =
+    'authorizationRequestIntegrity' in resolvedRequest ? resolvedRequest.authorizationRequestIntegrity : undefined
+  const additionalPayloadByCredential: Record<string, JsonObject> = {}
+
+  resolvedRequest.transactionData.forEach((transactionData, index) => {
+    if (!isEudiPaymentTransactionDataType(transactionData.entry.transactionData.type)) return
+
+    const responseEntry = transactionDataResponse[index]
+    if (!responseEntry) throw new Error('No credential selected for payment transaction data')
+
+    additionalPayloadByCredential[responseEntry.credentialId] = createPaymentAdditionalPayload({
+      authenticationMethods,
+      authorizationRequestIntegrity,
+      createJti,
+      locale,
+      responseMode: resolvedRequest.authorizationRequest.response_mode,
+      transactionData,
+      walletInstanceVersion,
+    })
+  })
+
+  return Object.keys(additionalPayloadByCredential).length > 0 ? additionalPayloadByCredential : undefined
+}
+
+export {
+  EUDI_PAYMENT_TRANSACTION_DATA_TYPE,
+  EUDI_PAYMENT_TRANSACTION_DATA_TYPES,
+  EUDI_PAYMENTS_ANIMO_TRANSACTION_DATA_TYPE,
+  eudiPaymentTransactionDataTypes,
+} from './eudiPaymentTransactionData'

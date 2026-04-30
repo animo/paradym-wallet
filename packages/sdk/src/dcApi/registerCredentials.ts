@@ -13,6 +13,11 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator'
 import { Platform } from 'react-native'
 import { getCredentialForDisplay } from '../display/credential'
 import { resolveClaimsWithRecordMetadata, resolveLabelFromClaimsPath } from '../format/attributes'
+import {
+  eudiPaymentScaMatcherConfig,
+  eudiPaymentTransactionDataTypes,
+  isEudiPaymentCredentialVct,
+} from '../openid4vc/eudiPaymentTransactionData'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
 type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[number]
@@ -82,12 +87,12 @@ function normalizeAptitudeIcon(iconDataUrl?: string) {
 }
 
 function getSdJwtVcts(record: SdJwtVcRecord) {
-  const chainVcts = record.typeMetadataChain
-    ?.map((entry) => entry.vct)
-    .filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
-
-  const tagVct = record.getTags().vct
-  const vcts = chainVcts && chainVcts.length > 0 ? chainVcts : tagVct ? [tagVct] : []
+  const payloadVct = record.firstCredential.payload.vct
+  const vcts = [
+    typeof payloadVct === 'string' ? payloadVct : undefined,
+    record.getTags().vct,
+    ...(record.typeMetadataChain?.map((entry) => entry.vct) ?? []),
+  ].filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
 
   return vcts.length > 0 ? Array.from(new Set(vcts)) : undefined
 }
@@ -242,6 +247,7 @@ export async function dcApiRegisterCredentials({
           : undefined
 
       const claims = resolveClaimsWithRecordMetadata(record)
+      const vcts = getSdJwtVcts(record)
 
       return {
         id: getCredentialForDisplay(record).id,
@@ -250,8 +256,10 @@ export async function dcApiRegisterCredentials({
         subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
         fields: mapSdJwtAttributesToClaimDisplay(claims, sdJwtVc.prettyClaims),
         icon: normalizeAptitudeIcon(iconDataUrl),
-        vcts: getSdJwtVcts(record),
-        transaction_data_types: noTransactionDataTypes,
+        vcts,
+        transaction_data_types: isEudiPaymentCredentialVct(vcts)
+          ? eudiPaymentTransactionDataTypes
+          : noTransactionDataTypes,
         // biome-ignore lint/suspicious/noExplicitAny: no explanation
         claims: sdJwtVc.prettyClaims as any,
       } as const
@@ -267,6 +275,7 @@ export async function dcApiRegisterCredentials({
           credential_set_option_mode: 'all_satisfiable',
           optional_credential_sets_mode: 'prefer_present',
         },
+        payment_sca: eudiPaymentScaMatcherConfig,
         credentials,
       },
     })

@@ -15,6 +15,7 @@ import type { SubmissionAuthorizationMode } from '@easypid/hooks/useSubmissionAu
 import {
   authorizeWalletFlow,
   clearWalletFlowAuthorization,
+  getWalletFlowAuthenticationMethods,
   isWalletAuthPromptError,
 } from '@easypid/utils/authorizeWalletFlow'
 import { useLingui } from '@lingui/react/macro'
@@ -46,6 +47,7 @@ type PendingTransactionDataConsent = {
   sdk: ParadymWalletSdk
   resolvedRequest: ResolvedDcApiRequest
   transactionData: TransactionData[]
+  authenticationMethods?: string[]
 }
 type ShareResponseResult = 'sent' | 'requires-consent' | 'failed'
 
@@ -119,6 +121,9 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const requestOrigin = request.origin ?? request.packageName
   const requestOriginLabel = getOriginLabel(requestOrigin)
   const requestOriginLogo = useOriginLogo(requestOrigin)
+  const transactionDataConsentLabels = useTransactionDataConsentLabels(
+    pendingTransactionDataConsent?.transactionData[0]
+  )
   const title = t({
     id: 'dcApi.share.title',
     message: 'Share from wallet',
@@ -161,14 +166,22 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     })
   }
 
-  const sendResolvedResponse = async (sdk: ParadymWalletSdk, resolvedRequest: ResolvedDcApiRequest) => {
+  const sendResolvedResponse = async (
+    sdk: ParadymWalletSdk,
+    resolvedRequest: ResolvedDcApiRequest,
+    authenticationMethods?: string[]
+  ) => {
     await sdk.dcApi.sendResponse({
+      authenticationMethods,
       dcRequest: request,
       resolvedRequest,
     })
   }
 
-  const onShareResponse = async (sdk: ParadymWalletSdk): Promise<ShareResponseResult> => {
+  const onShareResponse = async (
+    sdk: ParadymWalletSdk,
+    authenticationMethods?: string[]
+  ): Promise<ShareResponseResult> => {
     const resolveErrorMessage = t(commonMessages.presentationInformationCouldNotBeExtracted)
     const shareErrorMessage = t(commonMessages.presentationCouldNotBeShared)
     let resolvedRequest: ResolvedDcApiRequest
@@ -181,7 +194,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       })
 
       if (transactionData.length > 0) {
-        setPendingTransactionDataConsent({ sdk, resolvedRequest, transactionData })
+        setPendingTransactionDataConsent({ authenticationMethods, sdk, resolvedRequest, transactionData })
         return 'requires-consent'
       }
     } catch (error) {
@@ -198,7 +211,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     }
 
     try {
-      await sendResolvedResponse(sdk, resolvedRequest)
+      await sendResolvedResponse(sdk, resolvedRequest, authenticationMethods)
 
       return 'sent'
     } catch (error) {
@@ -227,7 +240,8 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
         }
 
         await setupWalletServiceProvider(sdk)
-        keepWalletFlowAuthorization = (await onShareResponse(sdk)) === 'requires-consent'
+        keepWalletFlowAuthorization =
+          (await onShareResponse(sdk, getWalletFlowAuthenticationMethods(paradym.unlockMethod))) === 'requires-consent'
       })
       .catch((error) => {
         if (isWalletAuthPromptError(error)) {
@@ -276,7 +290,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
 
       if (paradym.state === 'unlocked') {
         setIsProcessing(true)
-        await authorizeWalletFlow({
+        const authorizationMethod = await authorizeWalletFlow({
           mode: authorizationMode,
           pin,
         })
@@ -285,7 +299,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
           await setupWalletServiceProvider(paradym.paradym)
         }
 
-        const didShare = await onShareResponse(paradym.paradym)
+        const didShare = await onShareResponse(paradym.paradym, getWalletFlowAuthenticationMethods(authorizationMethod))
         keepWalletFlowAuthorization = didShare === 'requires-consent'
         if (didShare === 'sent') onAuthorized?.()
         return
@@ -317,7 +331,11 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
 
     setIsProcessing(true)
     try {
-      await sendResolvedResponse(pendingTransactionDataConsent.sdk, pendingTransactionDataConsent.resolvedRequest)
+      await sendResolvedResponse(
+        pendingTransactionDataConsent.sdk,
+        pendingTransactionDataConsent.resolvedRequest,
+        pendingTransactionDataConsent.authenticationMethods
+      )
     } catch (error) {
       pendingTransactionDataConsent.sdk.logger.error('Could not share response', { error })
 
@@ -372,11 +390,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
     return (
       <WalletFlowShell
         surface="overlay"
-        title={t({
-          id: 'dcApi.transactionDataConsent.title',
-          message: 'Review transaction',
-          comment: 'Title shown when DC API did not display transaction data in the system selector',
-        })}
+        title={transactionDataConsentLabels.title}
         subtitle={requestOriginLabel}
         logo={requestOriginLogo}
         logoFallback={requestOriginLabel}

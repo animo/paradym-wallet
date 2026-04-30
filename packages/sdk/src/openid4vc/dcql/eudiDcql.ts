@@ -24,10 +24,20 @@ import { type DcqlSubmissionCredential, formatResolvedDcqlCredentialsForRequest 
 import { getOpenId4VcCredentialMetadata } from '../../metadata/credentials'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type { CredentialRecord, W3cCredentialRecord, W3cV2CredentialRecord } from '../../storage/credentials'
+import {
+  computeEudiPaymentIntegrity,
+  eudiPaymentScaMetadata,
+  isEudiPaymentCredentialVct,
+} from '../eudiPaymentTransactionData'
+import {
+  credentialSupportsTransactionData,
+  isCredentialQueryTargetedByTransactionData,
+} from '../transactionDataRegistry'
 
 const supportedDcqlFormats = new Set(['mso_mdoc', 'vc+sd-jwt', 'dc+sd-jwt', 'jwt_vc_json', 'ldp_vc'])
 
 export type EudiDcqlResolution = OpenId4VpResolvedAuthorizationRequest & {
+  authorizationRequestIntegrity?: string
   eudiDcql: EudiDcqlRequest
   formattedSubmission: ReturnType<typeof formatResolvedDcqlCredentialsForRequest>
 }
@@ -130,12 +140,12 @@ function getValidClaimSetOutputs(query: DcqlCredentialQuery, source: Record<stri
 }
 
 function getSdJwtVcts(record: SdJwtVcRecord) {
-  const chainVcts = record.typeMetadataChain
-    ?.map((entry) => entry.vct)
-    .filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
-
-  const tagVct = record.getTags().vct
-  const vcts = chainVcts && chainVcts.length > 0 ? chainVcts : tagVct ? [tagVct] : []
+  const payloadVct = record.firstCredential.payload.vct
+  const vcts = [
+    typeof payloadVct === 'string' ? payloadVct : undefined,
+    record.getTags().vct,
+    ...(record.typeMetadataChain?.map((entry) => entry.vct) ?? []),
+  ].filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
 
   return new Set(vcts)
 }
@@ -147,8 +157,21 @@ function asArray<T>(value: T | T[]) {
 function getScaMetadata(record: EudiDcqlValidCredential['record']) {
   if (record.type !== 'SdJwtVcRecord') return undefined
 
+  const vcts = getSdJwtVcts(record)
   const parsed = zScaCredentialMetadata.safeParse(record.typeMetadata)
-  return parsed.success ? parsed.data : undefined
+  if (parsed.success) {
+    return isEudiPaymentCredentialVct(vcts)
+      ? {
+          ...parsed.data,
+          transaction_data_types: {
+            ...eudiPaymentScaMetadata.transaction_data_types,
+            ...parsed.data.transaction_data_types,
+          },
+        }
+      : parsed.data
+  }
+
+  return isEudiPaymentCredentialVct(vcts) ? eudiPaymentScaMetadata : undefined
 }
 
 function isSupportedDcqlQuery(query: DcqlCredentialQuery) {
@@ -187,7 +210,8 @@ function toValidCredential(query: DcqlCredentialQuery, record: CredentialRecord,
 
 async function getValidCredentials(
   paradym: ParadymWalletSdk,
-  query: DcqlCredentialQuery
+  query: DcqlCredentialQuery,
+  transactionData: TransactionDataInput[]
 ): Promise<EudiDcqlValidCredential[]> {
   if (!isSupportedDcqlQuery(query)) return []
 
@@ -214,12 +238,20 @@ async function getValidCredentials(
     (query.format === 'vc+sd-jwt' && isRecord(query.meta) && 'vct_values' in query.meta)
   ) {
     const vctValues = isRecord(query.meta) && Array.isArray(query.meta.vct_values) ? query.meta.vct_values : undefined
-    if (!vctValues) return []
+    const shouldMatchByTransactionData =
+      !vctValues && isCredentialQueryTargetedByTransactionData(query.id, transactionData)
+    if (!vctValues && !shouldMatchByTransactionData) return []
 
     const records = await paradym.agent.sdJwtVc.getAll()
     return records.flatMap((record) => {
       const vcts = getSdJwtVcts(record)
-      if (!vctValues.some((vct) => typeof vct === 'string' && vcts.has(vct))) return []
+      if (vctValues) {
+        if (!vctValues.some((vct) => typeof vct === 'string' && vcts.has(vct))) return []
+      } else if (
+        !credentialSupportsTransactionData({ credentialQueryId: query.id, transactionData, credential: { vcts } })
+      ) {
+        return []
+      }
 
       const validCredential = toValidCredential(query, record, record.firstCredential.prettyClaims)
       return validCredential ? [validCredential] : []
@@ -262,7 +294,8 @@ async function resolveEudiDcql(
   const validCredentialsByQuery = new Map(
     await Promise.all(
       dcqlQuery.credentials.map(
-        async (credentialQuery) => [credentialQuery.id, await getValidCredentials(paradym, credentialQuery)] as const
+        async (credentialQuery) =>
+          [credentialQuery.id, await getValidCredentials(paradym, credentialQuery, transactionData)] as const
       )
     )
   )
@@ -279,8 +312,13 @@ async function resolveEudiDcql(
       locales: ['en'],
       mode: 'light',
       valueTypeResolvers: {
+        image: (value) => value,
         iso_currency_amount: (value) => value,
+        iso_date: (value) => value,
+        iso_date_time: (value) => value,
+        label_only: (value) => value,
         string: (value) => value,
+        url: (value) => value,
       },
       checkNonScaTransactionDataSupport: () => false,
     }
@@ -397,6 +435,9 @@ export async function resolveEudiDcqlCredentialRequest({
 
   const resolution: EudiDcqlResolution = {
     authorizationRequestPayload: verifiedAuthorizationRequest.authorizationRequestPayload,
+    authorizationRequestIntegrity: verifiedAuthorizationRequest.jar
+      ? computeEudiPaymentIntegrity(verifiedAuthorizationRequest.jar.jwt.compact)
+      : undefined,
     origin,
     signedAuthorizationRequest: verifiedAuthorizationRequest.jar
       ? {
@@ -433,7 +474,8 @@ export function getEudiDcqlVerifierAttestationRequest(
 function getCredentialForRequest(
   credentialQueryId: string,
   credentialRecordId: string,
-  dcqlRequest: EudiDcqlRequest
+  dcqlRequest: EudiDcqlRequest,
+  additionalPayload?: JsonObject
 ): DcqlCredentialsForRequest[string] | undefined {
   if (!hasResolvedCredential(dcqlRequest, credentialQueryId, credentialRecordId)) return undefined
 
@@ -459,6 +501,7 @@ function getCredentialForRequest(
         claimFormat: ClaimFormat.SdJwtDc,
         credentialRecord: validCredentialMatch.record,
         disclosedPayload: validCredentialMatch.claims.valid_claim_sets[0].output as JsonObject,
+        additionalPayload,
         useMode: CredentialMultiInstanceUseMode.NewOrFirst,
       },
     ]
@@ -489,7 +532,8 @@ function getCredentialForRequest(
 
 export function selectEudiDcqlCredentialsForRequest(
   dcqlRequest: EudiDcqlRequest,
-  selectedCredentials: { [credentialQueryId: string]: string }
+  selectedCredentials: { [credentialQueryId: string]: string },
+  additionalPayloadByCredentialQueryId?: Record<string, JsonObject>
 ): DcqlCredentialsForRequest {
   const credentials: DcqlCredentialsForRequest = {}
   const selectedEntries =
@@ -509,7 +553,12 @@ export function selectEudiDcqlCredentialsForRequest(
 
   for (const selection of selectedEntries) {
     const [credentialQueryId, credentialRecordId] = selection
-    const credential = getCredentialForRequest(credentialQueryId, credentialRecordId, dcqlRequest)
+    const credential = getCredentialForRequest(
+      credentialQueryId,
+      credentialRecordId,
+      dcqlRequest,
+      additionalPayloadByCredentialQueryId?.[credentialQueryId]
+    )
     if (credential) credentials[credentialQueryId] = credential
   }
 

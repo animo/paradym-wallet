@@ -65,6 +65,8 @@ export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<st
   | { success: false; message: string; cause?: string }
 
 export type ParadymWalletSdkOptions = SetupAgentOptions & {
+  walletInstanceVersion?: string
+
   /**
    *
    * Trust mechanisms supported by the wallet
@@ -91,9 +93,11 @@ export function assertParadymSdkType<T extends AgentType>(
 export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public trustMechanisms: TrustMechanismConfiguration[]
   public readonly agent: AgentForAgentType<T>
+  public readonly walletInstanceVersion?: string
 
   public constructor(options: ParadymWalletSdkOptions) {
     this.agent = setupAgent(options) as unknown as AgentForAgentType<T>
+    this.walletInstanceVersion = options.walletInstanceVersion
     this.trustMechanisms = options.trustMechanisms ?? []
   }
 

@@ -345,6 +345,8 @@ export function SubmissionCredentialSets({ submission, onSelectionChange }: Subm
 
                 {selectedCredential ? (
                   <>
+                    {selectedTransaction ? <TransactionDataWidget transactionData={selectedTransaction} /> : null}
+
                     <CardWithAttributes
                       id={selectedCredential.credential.id}
                       name={selectedCredential.credential.display.name ?? t(commonMessages.unknown)}
@@ -366,8 +368,6 @@ export function SubmissionCredentialSets({ submission, onSelectionChange }: Subm
                       }
                       onPress={() => setActiveSlotId(slot.id)}
                     />
-
-                    {selectedTransaction ? <TransactionDataWidget transactionData={selectedTransaction} /> : null}
                   </>
                 ) : (
                   <YStack
