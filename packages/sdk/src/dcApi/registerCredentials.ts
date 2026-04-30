@@ -5,7 +5,6 @@ import {
 import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord, type SdJwtVcRecord } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages, i18n } from '@package/translations'
-import { ImageFormat, Skia } from '@shopify/react-native-skia'
 import * as ExpoAsset from 'expo-asset'
 import { File } from 'expo-file-system'
 import { Image } from 'expo-image'
@@ -22,6 +21,7 @@ import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
 type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[number]
 type CredentialDisplayClaim = NonNullable<CredentialItem['fields']>[number]
+type ImageDataUrl = `data:image/${'jpg' | 'png'};base64,${string}`
 const noTransactionDataTypes: NonNullable<CredentialItem['transaction_data_types']> = []
 
 function mapMdocAttributes(namespaces: MdocNameSpaces) {
@@ -100,7 +100,7 @@ function getSdJwtVcts(record: SdJwtVcRecord) {
 /**
  * Returns base64 data url
  */
-async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset) {
+async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset): Promise<ImageDataUrl | undefined> {
   try {
     // Make sure the asset is loaded
     if (!asset.localUri) {
@@ -111,41 +111,20 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
       return undefined
     }
 
-    const file = new File(asset.localUri)
-    const handle = file.open()
-    let header: string = ''
-    try {
-      const first50Bytes = handle.readBytes(50) // Returns Uint8Array
-      header = new TextDecoder().decode(first50Bytes)
-    } finally {
-      handle.close()
-    }
-    if (header.startsWith('<?xml') || header.startsWith('<svg')) {
-      const svg = Skia.SVG.MakeFromString(await file.text())
-      if (!svg) return undefined
-
-      const scale = Math.min(20 / svg.width(), 20 / svg.height()) // Fit inside 20x20
-      const surface = Skia.Surface.Make(Math.round(svg.width() * scale), Math.round(svg.height() * scale))
-      if (!surface) {
-        throw new Error('Unable to rasterize SVG')
-      }
-      surface.getCanvas().drawSvg(svg, surface.width(), surface.height())
-      return `data:image/png;base64,${surface.makeImageSnapshot().encodeToBase64(ImageFormat.PNG, 80)}` as const
-    }
-
     const image = await Image.loadAsync(asset.localUri)
 
     // Calculate new dimensions maintaining aspect ratio
+    const targetSize = 120
     let width: number
     let height: number
     if (image.width >= image.height) {
       // If width is the larger dimension
-      width = 20
-      height = Math.round((image.height / image.width) * 20)
+      width = targetSize
+      height = Math.round((image.height / image.width) * targetSize)
     } else {
       // If height is the larger dimension
-      height = 20
-      width = Math.round((image.width / image.height) * 20)
+      height = targetSize
+      width = Math.round((image.width / image.height) * targetSize)
     }
 
     // Use the new API to resize the image
@@ -160,7 +139,7 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
       return undefined
     }
 
-    return `data:image/png;base64,${savedImages.base64}` as const
+    return `data:image/png;base64,${savedImages.base64}` as ImageDataUrl
   } catch (error) {
     logger.error('Error resizing image.', {
       error,
@@ -169,28 +148,73 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
   }
 }
 
-async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
-  let asset: ExpoAsset.Asset
+function getImageMimeFromUri(uri?: string): 'png' | 'jpg' {
+  if (!uri) return 'png'
+  const lower = uri.toLowerCase().split('?')[0].split('#')[0]
+  if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'jpg'
+  return 'png'
+}
+
+async function readAssetAsBase64(logger: Logger, asset: ExpoAsset.Asset): Promise<ImageDataUrl | undefined> {
+  if (!asset.localUri) return undefined
 
   try {
-    // in case of external image
-    if (url.startsWith('data://') || url.startsWith('https://')) {
-      const cachePath = await Image.getCachePathAsync(url)
-      if (!cachePath) return undefined
+    const base64 = await new File(asset.localUri).base64()
+    if (!base64) return undefined
+    const mime = getImageMimeFromUri(asset.localUri)
+    return `data:image/${mime};base64,${base64}` as ImageDataUrl
+  } catch (error) {
+    logger.error('Error reading asset as base64.', { error })
+    return undefined
+  }
+}
 
-      asset = await ExpoAsset.Asset.fromURI(`file://${cachePath}`).downloadAsync()
+async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string | number): Promise<ImageDataUrl | undefined> {
+  let asset: ExpoAsset.Asset | undefined
+
+  try {
+    if (typeof url === 'string') {
+      if (url.startsWith('data:') || url.startsWith('data://')) {
+        const normalized = url.replace(/^data:\/\//, 'data:')
+        if (normalized.startsWith('data:image/jpeg;base64,')) {
+          return `data:image/jpg;base64,${normalized.slice('data:image/jpeg;base64,'.length)}` as ImageDataUrl
+        }
+        if (/^data:image\/(png|jpg);base64,/i.test(normalized)) {
+          return normalized as ImageDataUrl
+        }
+        return undefined
+      }
+
+      // in case of external image
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        const cachePath = await Image.getCachePathAsync(url)
+        if (!cachePath) return undefined
+
+        asset = await ExpoAsset.Asset.fromURI(`file://${cachePath}`).downloadAsync()
+        return await resizeImageWithAspectRatio(logger, asset)
+      }
+
+      if (url.startsWith('file://')) {
+        asset = await ExpoAsset.Asset.fromURI(url).downloadAsync()
+        return await resizeImageWithAspectRatio(logger, asset)
+      }
     }
+
     // In case of local image
-    else {
-      asset = ExpoAsset.Asset.fromModule(url)
+    asset = ExpoAsset.Asset.fromModule(url)
+    try {
+      return await resizeImageWithAspectRatio(logger, asset)
+    } catch {
+      return await readAssetAsBase64(logger, asset)
     }
-
-    return await resizeImageWithAspectRatio(logger, asset)
   } catch (error) {
     // just ignore it, we don't want to cause issues with registering crednetials
     logger.error('Error resizing and retrieving cached image for DC API', {
       error,
     })
+    if (asset) {
+      return await readAssetAsBase64(logger, asset)
+    }
   }
 }
 
