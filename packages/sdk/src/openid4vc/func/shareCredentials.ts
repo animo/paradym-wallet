@@ -77,6 +77,15 @@ export const shareCredentials = async ({
     : undefined
 
   const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
+  const transactionDataEntries = resolvedRequest.authorizationRequest.transaction_data
+  const transactionData =
+    transactionDataEntries === undefined
+      ? undefined
+      : transactionDataEntries.length === 0
+        ? []
+        : resolvedRequest.transactionData && acceptTransactionData && cardForSigningId
+          ? [{ credentialId: cardForSigningId }]
+          : undefined
 
   try {
     const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
@@ -91,10 +100,7 @@ export const shareCredentials = async ({
             credentials: dcqlCredentials,
           }
         : undefined,
-      transactionData:
-        resolvedRequest.transactionData && acceptTransactionData && cardForSigningId
-          ? [{ credentialId: cardForSigningId }]
-          : undefined,
+      transactionData,
       origin: resolvedRequest.origin,
     })
 

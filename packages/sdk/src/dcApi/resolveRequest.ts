@@ -1,4 +1,5 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
+import { getAptitudeSelection } from '@animo-id/expo-digital-credentials-api-aptitude-consortium'
 import { resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { getHostNameFromUrl } from '../utils/url'
@@ -9,9 +10,15 @@ export type DcApiResolveRequestOptions = {
 }
 
 export async function dcApiResolveRequest({ paradym, request }: DcApiResolveRequestOptions) {
-  const providerRequest = request.request.requests
-    ? request.request.requests[request.selectedEntry.providerIndex].data
-    : request.request.providers[request.selectedEntry.providerIndex].request
+  const requestIndex = getAptitudeSelection(request)?.requestIdx ?? request.selectedEntry?.providerIndex ?? 0
+  const providerRequest =
+    request.request && 'requests' in request.request
+      ? request.request.requests[requestIndex]?.data
+      : request.request?.providers?.[requestIndex]?.request
+
+  if (!providerRequest) {
+    throw new Error('Missing provider request for Digital Credentials API request')
+  }
 
   const authorizationRequestPayload =
     typeof providerRequest === 'string' ? JSON.parse(providerRequest) : providerRequest
@@ -20,34 +27,18 @@ export async function dcApiResolveRequest({ paradym, request }: DcApiResolveRequ
   const result = await resolveCredentialRequest({
     paradym,
     requestPayload: authorizationRequestPayload,
-    origin: request.origin,
+    origin: request.origin ?? undefined,
   })
-
-  if (result.formattedSubmission.entries.length !== 1) {
-    throw new Error('Only requests for a single credential supported for digital credentials api')
-  }
 
   paradym.logger.debug('Resolved request', {
     result,
   })
-  if (result.formattedSubmission.entries[0].isSatisfied) {
-    const credential = result.formattedSubmission.entries[0].credentials.find(
-      (c) => c.credential.record.id === request.selectedEntry.credentialId
-    )
-    if (!credential)
-      throw new Error(
-        `Could not find selected credential with id '${request.selectedEntry.credentialId}' in formatted submission`
-      )
-
-    // Update to only contain the already selected credential
-    result.formattedSubmission.entries[0].credentials = [credential]
-  }
 
   return {
     ...result,
     verifier: {
       ...result.verifier,
-      hostName: getHostNameFromUrl(request.origin),
+      hostName: request.origin ? getHostNameFromUrl(request.origin) : undefined,
     },
   }
 }

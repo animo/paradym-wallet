@@ -1,11 +1,12 @@
+import { paradymWalletSdkOptions } from '@easypid/config/paradym'
 import { setupWalletServiceProvider } from '@easypid/crypto/WalletServiceProviderClient'
 import { useLingui } from '@lingui/react/macro'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app'
 import { commonMessages, TranslationProvider } from '@package/translations'
 import { Heading, Paragraph, Stack, TamaguiProvider, YStack } from '@package/ui'
 import type { DigitalCredentialsRequest } from '@paradym/wallet-sdk'
-import { useParadym } from '@paradym/wallet-sdk'
-import { useRef, useState } from 'react'
+import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
+import { useEffect, useRef, useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import tamaguiConfig from '../../../tamagui.config'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
@@ -18,15 +19,17 @@ export function DcApiSharingScreen({ request }: DcApiSharingScreenProps) {
   const [storedLocale] = useStoredLocale()
 
   return (
-    <TranslationProvider customLocale={storedLocale}>
-      <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
-        <SafeAreaProvider>
-          <Stack flex-1 justifyContent="flex-end">
-            <DcApiSharingScreenWithContext request={request} />
-          </Stack>
-        </SafeAreaProvider>
-      </TamaguiProvider>
-    </TranslationProvider>
+    <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
+      <TranslationProvider customLocale={storedLocale}>
+        <TamaguiProvider disableInjectCSS defaultTheme="light" config={tamaguiConfig}>
+          <SafeAreaProvider>
+            <Stack flex-1 justifyContent="flex-end">
+              <DcApiSharingScreenWithContext request={request} />
+            </Stack>
+          </SafeAreaProvider>
+        </TamaguiProvider>
+      </TranslationProvider>
+    </ParadymWalletSdk.UnlockProvider>
   )
 }
 
@@ -37,63 +40,65 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
   const { t } = useLingui()
   const paradym = useParadym()
 
-  const onShareResponse = async () => {
-    if (paradym.state !== 'unlocked') {
-      throw new Error(`Invalid state for paradym wallet sdk. Expected 'unlocked', received '${paradym.state}'`)
-    }
-
-    const resolvedRequest = await paradym.paradym.dcApi
+  const onShareResponse = async (sdk: ParadymWalletSdk) => {
+    const resolvedRequest = await sdk.dcApi
       .resolveRequest({ request })
-      .then((resolvedRequest) => {
-        // We can't share multiple documents at the moment
-        if (resolvedRequest.formattedSubmission.entries.length > 1) {
-          throw new Error('Multiple cards requested, but only one card can be shared with the digital credentials api.')
-        }
-
-        return resolvedRequest
-      })
+      .then((resolvedRequest) => resolvedRequest)
       .catch((error) => {
-        paradym.paradym.logger.error('Error getting credentials for dc api request', {
+        sdk.logger.error('Error getting credentials for dc api request', {
           error,
         })
 
         // Not shown to the user
-        paradym.paradym.dcApi.sendErrorResponse('Presentation information could not be extracted')
+        sdk.dcApi.sendErrorResponse('Presentation information could not be extracted')
       })
 
     if (!resolvedRequest) return
 
     // Once this returns we just assume it's successful
     try {
-      await paradym.paradym.dcApi.sendResponse({
+      await sdk.dcApi.sendResponse({
         dcRequest: request,
         resolvedRequest,
       })
     } catch (error) {
-      paradym.paradym.logger.error('Could not share response', { error })
+      sdk.logger.error('Could not share response', { error })
 
       // Not shown to the user
-      paradym.paradym.dcApi.sendErrorResponse('Unable to share credentials')
+      sdk.dcApi.sendErrorResponse('Unable to share credentials')
       return
     }
   }
 
+  useEffect(() => {
+    if (!isProcessing || paradym.state !== 'acquired-wallet-key') return
+
+    paradym
+      .unlock()
+      .then(async (sdk) => {
+        await setupWalletServiceProvider(sdk)
+        await onShareResponse(sdk)
+      })
+      .catch((error) => {
+        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
+          pinRef.current?.clear()
+          pinRef.current?.shake()
+        }
+      })
+      .finally(() => setIsProcessing(false))
+  }, [paradym, isProcessing])
+
   const onUnlockSdk = async (pin: string) => {
+    if (paradym.state !== 'locked') return
+
     setIsProcessing(true)
-    if (paradym.state === 'locked') {
+    try {
       await paradym.unlockUsingPin(pin)
+    } catch (_error) {
+      pinRef.current?.clear()
+      pinRef.current?.shake()
+      setIsProcessing(false)
     }
-
-    if (paradym.state === 'acquired-wallet-key') {
-      const sdk = await paradym.unlock()
-      await setupWalletServiceProvider(sdk)
-    }
-
-    if (paradym.state === 'unlocked') {
-      await onShareResponse()
-    }
-
-    throw new Error(`Invalid state. Received: '${paradym.state}'`)
   }
 
   return (
@@ -113,7 +118,7 @@ export function DcApiSharingScreenWithContext({ request }: DcApiSharingScreenPro
       <Stack pt="$5">
         <PinDotsInput
           onPinComplete={onUnlockSdk}
-          isLoading={isProcessing}
+          isLoading={isProcessing || paradym.state === 'initializing'}
           pinLength={6}
           ref={pinRef}
           useNativeKeyboard={false}
