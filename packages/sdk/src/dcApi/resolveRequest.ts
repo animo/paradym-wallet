@@ -1,4 +1,5 @@
 import type { DigitalCredentialsRequest } from '@animo-id/expo-digital-credentials-api'
+import { getAptitudeSelection } from '@animo-id/expo-digital-credentials-api-aptitude-consortium'
 import { resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { getHostNameFromUrl } from '../utils/url'
@@ -32,6 +33,9 @@ export type DcApiSelectedCredential = {
   inputDescriptorId?: string
   credentialRecordId: string
 }
+
+const stripCredentialPrefix = (credentialId: string) =>
+  credentialId.replace(/^(sd-jwt-vc-|mdoc-|w3c-credential-|w3c-v2-credential-)/, '')
 
 function getBundleRequestPayload(sourceBundle: unknown) {
   if (!isRecord(sourceBundle)) return undefined
@@ -76,7 +80,8 @@ function getDcApiOrigin(request: RuntimeDigitalCredentialsRequest) {
 
 export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
   const dcRequest = request as RuntimeDigitalCredentialsRequest
-  const requestIndex = dcRequest.selection?.requestIdx ?? dcRequest.selectedEntry?.providerIndex ?? 0
+  const aptitudeSelection = getAptitudeSelection(request)
+  const requestIndex = aptitudeSelection?.requestIdx ?? dcRequest.selection?.requestIdx ?? dcRequest.selectedEntry?.providerIndex ?? 0
   const requestPayload = getDcApiRequestPayload(dcRequest)
 
   if (!isRecord(requestPayload)) {
@@ -97,7 +102,18 @@ export function getDcApiRequestContext(request: DigitalCredentialsRequest) {
 
   const { protocol } = requestEntry
   const providerRequest = requestEntry.data ?? requestEntry.request
+  const aptitudeSelectedCredentials = aptitudeSelection?.slots
+    .map((slot): DcApiSelectedCredential | undefined => {
+      if (slot.entryId.startsWith('__none__')) return undefined
+
+      return {
+        credentialRecordId: stripCredentialPrefix(slot.credential_id),
+        inputDescriptorId: slot.dcql_id,
+      }
+    })
+    .filter((credential): credential is DcApiSelectedCredential => credential !== undefined)
   const selectedCredentials =
+    aptitudeSelectedCredentials ??
     dcRequest.selection?.creds
       ?.map((credential): DcApiSelectedCredential | undefined => {
         if (typeof credential.entryId !== 'string' || credential.entryId.length === 0) return undefined

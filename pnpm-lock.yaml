@@ -9,9 +9,6 @@ catalogs:
     '@animo-id/eudi-wallet-functionality':
       specifier: 0.0.0-alpha-20250917090914
       version: 0.0.0-alpha-20250917090914
-    '@animo-id/expo-digital-credentials-api':
-      specifier: 0.4.0
-      version: 0.4.0
     '@animo-id/expo-mdoc-data-transfer':
       specifier: 0.2.0-alpha.4
       version: 0.2.0-alpha.4
@@ -262,6 +259,7 @@ catalogs:
 overrides:
   '@animo-id/eudi-wallet-ts12-resolver': file:dep_packages/animo-id-eudi-wallet-ts12-resolver-0.1.0.tgz
   '@animo-id/eudi-wallet-ts12-validation': file:dep_packages/animo-id-eudi-wallet-ts12-validation-0.1.0.tgz
+  '@animo-id/expo-digital-credentials-api': file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz
   react-native-fs: npm:@dr.pogodin/react-native-fs@^2.36.1
 
 patchedDependencies:
@@ -292,8 +290,8 @@ importers:
         specifier: 'catalog:'
         version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@5.9.3))(@credo-ts/openid4vc@0.6.3(typescript@5.9.3))
       '@animo-id/expo-digital-credentials-api':
-        specifier: 'catalog:'
-        version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        specifier: file:../../dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz
+        version: file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
         version: 0.2.0-alpha.4(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -616,8 +614,11 @@ importers:
         specifier: file:../../dep_packages/animo-id-eudi-wallet-ts12-validation-0.1.0.tgz
         version: file:dep_packages/animo-id-eudi-wallet-ts12-validation-0.1.0.tgz
       '@animo-id/expo-digital-credentials-api':
-        specifier: 'catalog:'
-        version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+        specifier: file:../../dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz
+        version: file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      '@animo-id/expo-digital-credentials-api-aptitude-consortium':
+        specifier: file:../../dep_packages/animo-id-expo-digital-credentials-api-aptitude-consortium-0.0.0-20260430150021.tgz
+        version: file:dep_packages/animo-id-expo-digital-credentials-api-aptitude-consortium-0.0.0-20260430150021.tgz(expo-asset@12.0.11(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       '@astronautlabs/jsonpath':
         specifier: 'catalog:'
         version: 1.1.2
@@ -782,8 +783,18 @@ packages:
     version: 0.1.0
     engines: {node: '>=22'}
 
-  '@animo-id/expo-digital-credentials-api@0.4.0':
-    resolution: {integrity: sha512-VIHt0g8K9Dby79Z7AkExkXI8hGY0Nweil450Ky1/5MSPwaN23GhL0fi6mPBDOs2HkUVEUxYXZrSHoNuSw/4gNg==}
+  '@animo-id/expo-digital-credentials-api-aptitude-consortium@file:dep_packages/animo-id-expo-digital-credentials-api-aptitude-consortium-0.0.0-20260430150021.tgz':
+    resolution: {integrity: sha512-edpALQAu1mMqrO3t/KTnIsNQgw3qPHtB3+nzfy8S8ZRyHXgCSxWVO+IxZhAfLM42HYbE7uNyJSpBJz+XJg6CQg==, tarball: file:dep_packages/animo-id-expo-digital-credentials-api-aptitude-consortium-0.0.0-20260430150021.tgz}
+    version: 0.0.0
+    peerDependencies:
+      expo: '*'
+      expo-asset: '*'
+      react: '*'
+      react-native: '*'
+
+  '@animo-id/expo-digital-credentials-api@file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz':
+    resolution: {integrity: sha512-Dckgi+3BcTf1KQDkLYE8w7f3hcI8S6a+pC3ZQTR7v+G4zjwtCIdckhYn+ckByohQfcPJQL7eKPu4AYXzjwEgbQ==, tarball: file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz}
+    version: 0.0.0
     peerDependencies:
       expo: '*'
       react: '*'
@@ -7179,7 +7190,15 @@ snapshots:
     dependencies:
       zod: 4.3.6
 
-  '@animo-id/expo-digital-credentials-api@0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+  '@animo-id/expo-digital-credentials-api-aptitude-consortium@file:dep_packages/animo-id-expo-digital-credentials-api-aptitude-consortium-0.0.0-20260430150021.tgz(expo-asset@12.0.11(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@animo-id/expo-digital-credentials-api': file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      expo: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      expo-asset: 12.0.11(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      react: 19.1.0
+      react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
+
+  '@animo-id/expo-digital-credentials-api@file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
     dependencies:
       expo: 54.0.27(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.17)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react: 19.1.0

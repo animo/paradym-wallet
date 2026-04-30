@@ -26,6 +26,7 @@
 		"overrides": {
 			"@animo-id/eudi-wallet-ts12-resolver": "file:dep_packages/animo-id-eudi-wallet-ts12-resolver-0.1.0.tgz",
 			"@animo-id/eudi-wallet-ts12-validation": "file:dep_packages/animo-id-eudi-wallet-ts12-validation-0.1.0.tgz",
+			"@animo-id/expo-digital-credentials-api": "file:dep_packages/animo-id-expo-digital-credentials-api-0.0.0-local-20260223190806.tgz",
 			"react-native-fs": "catalog:"
 		},
 		"patchedDependencies": {

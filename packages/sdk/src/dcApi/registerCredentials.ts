@@ -1,5 +1,8 @@
-import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
-import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord } from '@credo-ts/core'
+import {
+  type AptitudeConsortiumConfig,
+  registerCredentials,
+} from '@animo-id/expo-digital-credentials-api-aptitude-consortium'
+import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord, type SdJwtVcRecord } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages, i18n } from '@package/translations'
 import { ImageFormat, Skia } from '@shopify/react-native-skia'
@@ -12,8 +15,9 @@ import { getCredentialForDisplay } from '../display/credential'
 import { resolveClaimsWithRecordMetadata, resolveLabelFromClaimsPath } from '../format/attributes'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
-type CredentialItem = RegisterCredentialsOptions['credentials'][number]
-type CredentialDisplayClaim = NonNullable<CredentialItem['display']['claims']>[number]
+type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[number]
+type CredentialDisplayClaim = NonNullable<CredentialItem['fields']>[number]
+const noTransactionDataTypes: NonNullable<CredentialItem['transaction_data_types']> = []
 
 function mapMdocAttributes(namespaces: MdocNameSpaces) {
   return Object.fromEntries(
@@ -43,7 +47,7 @@ function mapMdocAttributesToClaimDisplay(namespaces: MdocNameSpaces, record: Mdo
   return Object.entries(namespaces).flatMap(([namespace, values]) =>
     Object.keys(values).map((key) => ({
       path: [namespace, key],
-      displayName: resolveLabelFromClaimsPath([namespace, key], claims, i18n.locale) ?? t(commonMessages.unknown),
+      display_name: resolveLabelFromClaimsPath([namespace, key], claims, i18n.locale) ?? t(commonMessages.unknown),
     }))
   )
 }
@@ -62,11 +66,30 @@ function mapSdJwtAttributesToClaimDisplay(
     return [
       {
         path: [...path, claimName],
-        displayName: resolveLabelFromClaimsPath([...path, claimName], claims, i18n.locale) ?? t(commonMessages.unknown),
+        display_name:
+          resolveLabelFromClaimsPath([...path, claimName], claims, i18n.locale) ?? t(commonMessages.unknown),
       },
       ...nestedClaims,
     ]
   })
+}
+
+function normalizeAptitudeIcon(iconDataUrl?: string) {
+  if (!iconDataUrl) return undefined
+
+  const commaIndex = iconDataUrl.indexOf(',')
+  return commaIndex >= 0 ? iconDataUrl.slice(commaIndex + 1) : iconDataUrl
+}
+
+function getSdJwtVcts(record: SdJwtVcRecord) {
+  const chainVcts = record.typeMetadataChain
+    ?.map((entry) => entry.vct)
+    .filter((vct): vct is string => typeof vct === 'string' && vct.length > 0)
+
+  const tagVct = record.getTags().vct
+  const vcts = chainVcts && chainVcts.length > 0 ? chainVcts : tagVct ? [tagVct] : []
+
+  return vcts.length > 0 ? Array.from(new Set(vcts)) : undefined
 }
 
 /**
@@ -196,18 +219,15 @@ export async function dcApiRegisterCredentials({
           : undefined
 
       return {
-        id: record.id,
-        credential: {
-          doctype: mdoc.docType,
-          format: 'mso_mdoc',
-          namespaces: mapMdocAttributes(mdoc.issuerSignedNamespaces),
-        },
-        display: {
-          title: display.name ?? displayTitleFallback,
-          subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
-          claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces, record),
-          iconDataUrl,
-        },
+        id: getCredentialForDisplay(record).id,
+        format: 'mso_mdoc',
+        title: display.name ?? displayTitleFallback,
+        subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
+        fields: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces, record),
+        icon: normalizeAptitudeIcon(iconDataUrl),
+        doctype: mdoc.docType,
+        transaction_data_types: noTransactionDataTypes,
+        claims: mapMdocAttributes(mdoc.issuerSignedNamespaces),
       } as const
     })
 
@@ -224,19 +244,16 @@ export async function dcApiRegisterCredentials({
       const claims = resolveClaimsWithRecordMetadata(record)
 
       return {
-        id: record.id,
-        credential: {
-          vct: record.getTags().vct,
-          format: 'dc+sd-jwt',
-          // biome-ignore lint/suspicious/noExplicitAny: no explanation
-          claims: sdJwtVc.prettyClaims as any,
-        },
-        display: {
-          title: display.name ?? displayTitleFallback,
-          subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
-          claims: mapSdJwtAttributesToClaimDisplay(claims, record),
-          iconDataUrl,
-        },
+        id: getCredentialForDisplay(record).id,
+        format: 'dc+sd-jwt',
+        title: display.name ?? displayTitleFallback,
+        subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
+        fields: mapSdJwtAttributesToClaimDisplay(claims, sdJwtVc.prettyClaims),
+        icon: normalizeAptitudeIcon(iconDataUrl),
+        vcts: getSdJwtVcts(record),
+        transaction_data_types: noTransactionDataTypes,
+        // biome-ignore lint/suspicious/noExplicitAny: no explanation
+        claims: sdJwtVc.prettyClaims as any,
       } as const
     })
 
@@ -244,8 +261,14 @@ export async function dcApiRegisterCredentials({
     paradym.logger.trace('Registering credentials for Digital Credentials API')
 
     await registerCredentials({
-      credentials,
-      matcher: 'ubique',
+      aptitudeConsortiumConfig: {
+        log_level: __DEV__ ? 'debug' : undefined,
+        dcql: {
+          credential_set_option_mode: 'all_satisfiable',
+          optional_credential_sets_mode: 'prefer_present',
+        },
+        credentials,
+      },
     })
   } catch (error) {
     // Since this is an experimental feature, and it doedisplayTitleFallbacksn't work if you don't have the latest

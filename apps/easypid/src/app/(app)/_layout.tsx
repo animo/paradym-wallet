@@ -2,12 +2,13 @@ import { TypedArrayEncoder } from '@credo-ts/core'
 import { useHasFinishedOnboarding } from '@easypid/features/onboarding'
 import { useFeatureFlag } from '@easypid/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@easypid/hooks/useResetWalletDevMenu'
+import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import { type CredentialDataHandlerOptions, useHaptics } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import type { InvitationType } from '@paradym/wallet-sdk'
 import { activityStorage, deferredCredentialStorage, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
@@ -34,8 +35,16 @@ export default function AppLayout() {
   const router = useRouter()
   const { withHaptics } = useHaptics()
   const [redirectAfterUnlocked, setRedirectAfterUnlocked] = useState<string>()
+  const registeredDcApiWalletId = useRef<string | undefined>(undefined)
   const pathname = usePathname()
   const params = useGlobalSearchParams()
+
+  useEffect(() => {
+    if (paradym.state !== 'unlocked' || registeredDcApiWalletId.current === paradym.paradym.walletId) return
+
+    registeredDcApiWalletId.current = paradym.paradym.walletId
+    void paradym.paradym.dcApi.registerCredentials(dcApiRegisterOptions({ paradym: paradym.paradym }))
+  }, [paradym])
 
   // It could be that the onboarding is cut of mid-process, and e.g. the user closes the app
   // if this is the case we will redo the onboarding
