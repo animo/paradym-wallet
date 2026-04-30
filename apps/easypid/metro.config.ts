@@ -13,6 +13,10 @@ export default {
     ...config.resolver,
 
     nodeModulesPaths: [path.resolve(projectRoot, 'node_modules'), path.resolve(workspaceRoot, 'node_modules')],
+    assetExts: [
+      ...(config.resolver?.assetExts ?? []),
+      ...(config.resolver?.assetExts?.includes('wasm') ? [] : ['wasm']),
+    ],
     sourceExts: [...(config.resolver?.sourceExts ?? []), 'js', 'json', 'ts', 'tsx', 'cjs', 'mjs'],
     extraNodeModules: {
       // Needed for cosmjs trying to import node crypto
