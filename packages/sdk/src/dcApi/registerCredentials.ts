@@ -5,6 +5,7 @@ import {
 import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord, type SdJwtVcRecord } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages, i18n } from '@package/translations'
+import { ImageFormat, Skia } from '@shopify/react-native-skia'
 import * as ExpoAsset from 'expo-asset'
 import { File } from 'expo-file-system'
 import { Image } from 'expo-image'
@@ -23,6 +24,7 @@ type CredentialItem = NonNullable<AptitudeConsortiumConfig['credentials']>[numbe
 type CredentialDisplayClaim = NonNullable<CredentialItem['fields']>[number]
 type ImageDataUrl = `data:image/${'jpg' | 'png'};base64,${string}`
 const noTransactionDataTypes: NonNullable<CredentialItem['transaction_data_types']> = []
+const dcApiIconTargetSize = 120
 
 function mapMdocAttributes(namespaces: MdocNameSpaces) {
   return Object.fromEntries(
@@ -97,6 +99,34 @@ function getSdJwtVcts(record: SdJwtVcRecord) {
   return vcts.length > 0 ? Array.from(new Set(vcts)) : undefined
 }
 
+async function getAssetHeader(asset: ExpoAsset.Asset) {
+  if (!asset.localUri) return undefined
+
+  const file = new File(asset.localUri)
+  const handle = file.open()
+  try {
+    return new TextDecoder().decode(handle.readBytes(50)).trimStart()
+  } finally {
+    handle.close()
+  }
+}
+
+async function resizeSvgWithAspectRatio(asset: ExpoAsset.Asset): Promise<ImageDataUrl | undefined> {
+  if (!asset.localUri) return undefined
+
+  const svg = Skia.SVG.MakeFromString(await new File(asset.localUri).text())
+  if (!svg) return undefined
+
+  const scale = Math.min(dcApiIconTargetSize / svg.width(), dcApiIconTargetSize / svg.height())
+  const surface = Skia.Surface.Make(Math.round(svg.width() * scale), Math.round(svg.height() * scale))
+  if (!surface) {
+    throw new Error('Unable to rasterize SVG')
+  }
+
+  surface.getCanvas().drawSvg(svg, surface.width(), surface.height())
+  return `data:image/png;base64,${surface.makeImageSnapshot().encodeToBase64(ImageFormat.PNG, 80)}` as ImageDataUrl
+}
+
 /**
  * Returns base64 data url
  */
@@ -111,20 +141,24 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
       return undefined
     }
 
+    const header = await getAssetHeader(asset)
+    if (header?.startsWith('<?xml') || header?.startsWith('<svg')) {
+      return await resizeSvgWithAspectRatio(asset)
+    }
+
     const image = await Image.loadAsync(asset.localUri)
 
     // Calculate new dimensions maintaining aspect ratio
-    const targetSize = 120
     let width: number
     let height: number
     if (image.width >= image.height) {
       // If width is the larger dimension
-      width = targetSize
-      height = Math.round((image.height / image.width) * targetSize)
+      width = dcApiIconTargetSize
+      height = Math.round((image.height / image.width) * dcApiIconTargetSize)
     } else {
       // If height is the larger dimension
-      height = targetSize
-      width = Math.round((image.width / image.height) * targetSize)
+      height = dcApiIconTargetSize
+      width = Math.round((image.width / image.height) * dcApiIconTargetSize)
     }
 
     // Use the new API to resize the image
