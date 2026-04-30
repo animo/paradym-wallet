@@ -556,7 +556,7 @@ export function FunkeCredentialNotificationFlow({
   const footer = activeNestedAttribute ? (
     <WalletFlowActionButton onPress={onNestedAttributeBack}>{t(commonMessages.backButton)}</WalletFlowActionButton>
   ) : errorReason ? undefined : isCompleted ? (
-    <WalletFlowActionButton onPress={onExit}>{endButtonLabel}</WalletFlowActionButton>
+    <WalletFlowActionButton onPress={() => onExit()}>{endButtonLabel}</WalletFlowActionButton>
   ) : hasRetrievedCredential ? (
     <WalletFlowActionButton
       isLoading={isCompletingCredentialRetrieval}
