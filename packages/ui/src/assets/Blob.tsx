@@ -1,7 +1,11 @@
 import { View } from 'react-native'
 import Svg, { Defs, G, LinearGradient, Path, Stop, type SvgProps } from 'react-native-svg'
+import { useTheme } from 'tamagui'
 
 export function Blob({ color = 'black', ...props }: SvgProps) {
+  const theme = useTheme()
+  const p100 = theme['primary-100'].val as string
+  const p200 = theme['primary-200'].val as string
   return (
     <View style={{ width: '100%', aspectRatio: 393 / 471 }}>
       <Svg width="100%" height="100%" viewBox="0 0 393 471" fill="none" {...props}>
@@ -9,7 +13,7 @@ export function Blob({ color = 'black', ...props }: SvgProps) {
         <G style={{ mixBlendMode: 'multiply', opacity: 0.65 }}>
           <Path
             d="M339.083 66.6639C331.109 153.347 240.586 158.69 196.079 212.134C162.606 252.33 161.812 300.955 135.753 342.996C75.479 440.234 -68.764 372.214 -105.311 285.451C-123.221 242.915 -116.624 198.794 -122.417 154.556C-130.644 91.7355 -184.073 -33.0719 -109.846 -71.7469C-57.4715 -99.0268 -8.93476 -35.334 34.1246 -15.6674C107.821 17.9942 196.501 -35.4184 272.601 -12.7329C306.399 -2.65453 342.605 28.2988 339.066 66.644L339.083 66.6639Z"
-            fill="#DADEFF"
+            fill={p200}
           />
         </G>
         <Path
@@ -26,8 +30,8 @@ export function Blob({ color = 'black', ...props }: SvgProps) {
             y2="470.077"
             gradientUnits="userSpaceOnUse"
           >
-            <Stop stopColor="#EEF0FE" />
-            <Stop offset="1" stopColor="#DADEFF" />
+            <Stop stopColor={p100} />
+            <Stop offset="1" stopColor={p200} />
           </LinearGradient>
         </Defs>
       </Svg>
