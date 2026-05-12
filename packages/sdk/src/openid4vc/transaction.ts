@@ -1,9 +1,35 @@
+import type { FormattedSubmissionEntrySatisfied } from '../format/submission'
+import { getPaymentsMetadata } from '../metadata/credentials'
 import type { CredentialsForProofRequest } from './func/resolveCredentialRequest'
 
-export type FormattedTransactionData = ReturnType<typeof getFormattedTransactionData>
 export type QtspInfo = CredentialsForProofRequest['verifier']
 
-export const getFormattedTransactionData = (credentialsForRequest?: CredentialsForProofRequest) => {
+export type FormattedTransactionDataPaymentSingle = {
+  type: 'urn:eudi:sca:eu.europa.ec:payment:single:1'
+  amount: string
+  dateTime: string
+  payee: {
+    name: string
+    logo: string
+    id: string
+    website: string
+  }
+  cardForTransactionId?: string
+}
+
+export type FormattedTransactionDataQesAuthorization = {
+  type: 'qes_authorization'
+  documentName: string
+  qtsp: QtspInfo
+  cardForTransactionId?: string
+}
+
+export type FormattedTransactionData = FormattedTransactionDataPaymentSingle | FormattedTransactionDataQesAuthorization
+
+export const getFormattedTransactionData = (
+  credentialsForRequest?: CredentialsForProofRequest,
+  _locale?: string
+): FormattedTransactionData | undefined => {
   if (!credentialsForRequest) return undefined
 
   const transactionData = credentialsForRequest.transactionData
@@ -15,19 +41,65 @@ export const getFormattedTransactionData = (credentialsForRequest?: CredentialsF
 
   const transactionDataEntry = transactionData[0]
 
-  // Only allow qes_authorization is supported at this time
-  if (transactionDataEntry.entry.transactionData.type !== 'qes_authorization')
-    throw new Error('Only document signing is supported at this time.')
-
   // TODO: this needs to be updated when we support credential selection
-  const cardForSigningId = transactionDataEntry.matchedCredentialIds.find((id) =>
+  const cardForTransactionId = transactionDataEntry.matchedCredentialIds.find((id) =>
     credentialsForRequest.formattedSubmission.entries.find((a) => a.inputDescriptorId === id)
   )
+
+  if (transactionDataEntry.entry.transactionData.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1') {
+    const credential = credentialsForRequest.formattedSubmission.entries.find(
+      (entry) => entry.inputDescriptorId === cardForTransactionId && entry.isSatisfied
+    ) as FormattedSubmissionEntrySatisfied | undefined
+    if (!credential) {
+      throw new Error(`Transaction data requested a payment, but no required SCA was found`)
+    }
+
+    const paymentMetadata = getPaymentsMetadata(credential.credentials[0].credential.record)
+    if (!paymentMetadata) {
+      throw new Error(`Could not find the payment metadata for ${credential.inputDescriptorId}`)
+    }
+
+    // TODO: `payee` does not seem to be in the object, needs to be added in the library
+    // const matchedData = matchTransactionDataToTransactionDataType(
+    //   [transactionDataEntry.entry.encoded],
+    //   paymentMetadata,
+    //   locale
+    // )
+
+    // const matchedDataForSinglePayment = matchedData['urn:eudi:sca:eu.europa.ec:payment:single:1']
+
+    // const amount = matchedDataForSinglePayment.amount
+    // const dateTime = matchedDataForSinglePayment.date_time
+
+    const payload = transactionDataEntry.entry.transactionData.payload as Omit<
+      FormattedTransactionDataPaymentSingle,
+      'type' | 'cardForTransactionId'
+    > & { date_time: string }
+
+    return {
+      type: transactionDataEntry.entry.transactionData.type,
+      amount: payload.amount as string,
+      dateTime: payload.date_time as string,
+      payee: payload.payee as {
+        name: string
+        logo: string
+        id: string
+        website: string
+      },
+      cardForTransactionId,
+    }
+  }
+
+  // Only allow qes_authorization is supported at this time
+  if (transactionDataEntry.entry.transactionData.type !== 'qes_authorization')
+    throw new Error(
+      'Only qes authorization and `urn:eudi:sca:eu.europa.ec:payment:single:1` are supported transactions'
+    )
 
   return {
     type: transactionDataEntry.entry.transactionData.type,
     documentName: (transactionDataEntry.entry.transactionData.documentDigests as Array<{ label: string }>)[0].label,
     qtsp: credentialsForRequest.verifier, // Just use RP info for now
-    cardForSigningId,
+    cardForTransactionId,
   }
 }

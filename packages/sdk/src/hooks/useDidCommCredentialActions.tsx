@@ -92,7 +92,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
         const w3cRecord = await paradym.agent.w3cCredentials.getById(w3cCredentialRecordId)
 
         // TODO: we must somehow link the w3c credential record to a DIDComm connection
-        // first in Paradym Wallet, but would alos be nice to do this within Credo
+        // first in Paradym Wallet, but would also be nice to do this within Credo
         setOpenId4VcCredentialMetadata(
           w3cRecord,
           openIdCredentialMetadataFromDidCommCredentialExchangeMetadata(

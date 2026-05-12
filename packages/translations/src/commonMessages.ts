@@ -280,6 +280,21 @@ export const commonMessages = {
     message: 'Signing failed',
     comment: 'Shown when the signing process failed',
   }),
+  paid: defineMessage({
+    id: 'common.paid',
+    message: 'Payment is made',
+    comment: 'Shown when a payment is made',
+  }),
+  paymentStopped: defineMessage({
+    id: 'common.paymentStopped',
+    message: 'Payment stopped',
+    comment: 'Shown when a payment is stopped',
+  }),
+  paymentFailed: defineMessage({
+    id: 'common.paymentFailed',
+    message: 'Payment failed',
+    comment: 'Shown when a payment is failed',
+  }),
   informationShared: defineMessage({
     id: 'common.informationShared',
     message: 'Information shared',

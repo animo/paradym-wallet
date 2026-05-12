@@ -17,6 +17,7 @@ import {
   useActivities,
   useCredentials,
 } from '@paradym/wallet-sdk'
+import type { PaymentActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
@@ -62,7 +63,7 @@ export function FunkeActivityDetailScreen() {
               <Paragraph textAlign="center">{formatRelativeDate(new Date(activity.date), undefined, true)}</Paragraph>
             </Stack>
             <Stack h={1} my="$2" bg="$grey-100" />
-            {activity.type === 'shared' || activity.type === 'signed' ? (
+            {activity.type === 'shared' || activity.type === 'signed' || activity.type === 'payment' ? (
               <SharedActivityDetailSection activity={activity} />
             ) : (
               <ReceivedActivityDetailSection activity={activity} />
@@ -98,6 +99,16 @@ const activityMessages = {
     id: 'activity.documentNotSigned',
     message: 'The document was not signed.',
     comment: 'Shown after a failed digital signature',
+  }),
+  paymentMade: defineMessage({
+    id: 'activity.paymentMade',
+    message: 'The payment was made.',
+    comment: 'Shown after a successful payment',
+  }),
+  paymentNotMade: defineMessage({
+    id: 'activity.paymentNotMade',
+    message: 'The payment was not made.',
+    comment: 'Shown after a failed payment',
   }),
   sharedAttributes: defineMessage({
     id: 'activity.sharedAttributesHeading',
@@ -209,7 +220,11 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
   )
 }
 
-export function SharedActivityDetailSection({ activity }: { activity: PresentationActivity | SignedActivity }) {
+export function SharedActivityDetailSection({
+  activity,
+}: {
+  activity: PresentationActivity | SignedActivity | PaymentActivity
+}) {
   const { credentials } = useCredentials()
 
   const amountShared = activity.request.credentials?.length ?? 0
@@ -241,7 +256,7 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
         logo={activity.entity.logo}
         overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
       />
-      {activity && activity.type === 'signed' && (
+      {activity && activity.type === 'signed' ? (
         <YStack gap="$4">
           <YStack gap="$2">
             <Heading heading="sub2">
@@ -275,6 +290,34 @@ export function SharedActivityDetailSection({ activity }: { activity: Presentati
             <MiniDocument logoUrl={activity.transaction?.qtsp.logo?.url} />
           </XStack>
         </YStack>
+      ) : (
+        activity.type === 'payment' && (
+          <YStack gap="$4">
+            <YStack gap="$2">
+              <Heading heading="sub2">
+                <Trans
+                  id="activity.paymentHeading"
+                  comment="Section heading shown when a payment was paid or attempted to be paid"
+                >
+                  Payment
+                </Trans>
+              </Heading>
+              <Paragraph>
+                {activity.status === 'success' ? t(activityMessages.paymentMade) : t(activityMessages.paymentNotMade)}
+              </Paragraph>
+            </YStack>
+            <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
+              <YStack f={1} gap="$2" ai="center">
+                <Heading textTransform="none" color="$grey-800">
+                  {activity.transaction.amount}
+                </Heading>
+                <Paragraph variant="sub" size="$2">
+                  <Trans>To {activity.transaction.payee.name}</Trans>
+                </Paragraph>
+              </YStack>
+            </XStack>
+          </YStack>
+        )
       )}
       <Stack gap="$3">
         <Stack gap="$2">

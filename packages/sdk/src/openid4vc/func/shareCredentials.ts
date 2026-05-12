@@ -6,6 +6,7 @@ import {
   type JsonObject,
   type MdocNameSpaces,
 } from '@credo-ts/core'
+import { storeSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activityStore'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
@@ -76,7 +77,7 @@ export const shareCredentials = async ({
       )
     : undefined
 
-  const cardForSigningId = getFormattedTransactionData(resolvedRequest)?.cardForSigningId
+  const transactionData = getFormattedTransactionData(resolvedRequest)
 
   try {
     const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
@@ -92,8 +93,8 @@ export const shareCredentials = async ({
           }
         : undefined,
       transactionData:
-        resolvedRequest.transactionData && acceptTransactionData && cardForSigningId
-          ? [{ credentialId: cardForSigningId }]
+        resolvedRequest.transactionData && acceptTransactionData && transactionData?.cardForTransactionId
+          ? [{ credentialId: transactionData.cardForTransactionId }]
           : undefined,
       origin: resolvedRequest.origin,
     })
@@ -114,6 +115,8 @@ export const shareCredentials = async ({
         `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
       )
     }
+
+    await storeSharedActivityForCredentialsForRequest(paradym, resolvedRequest, 'success', transactionData)
 
     return result
   } catch (error) {

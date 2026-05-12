@@ -2,12 +2,13 @@ import { useDevelopmentMode, useOverAskingAi } from '@easypid/hooks'
 import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app'
-import { commonMessages } from '@package/translations'
+import { commonMessages, useLocale } from '@package/translations'
 import { useToastController } from '@package/ui'
 import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk'
 import {
   type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
+  getFormattedTransactionData,
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
   useParadym,
@@ -23,6 +24,7 @@ type Query = { uri: string }
 
 export function FunkeOpenIdPresentationNotificationScreen() {
   const { t } = useLingui()
+  const locale = useLocale()
   const { paradym } = useParadym('unlocked')
 
   const toast = useToastController()
@@ -32,7 +34,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const [errorReason, setErrorReason] = useState<string>()
 
   const [resolvedRequest, setResolvedRequest] = useState<CredentialsForProofRequest>()
-  const [formattedTransactionData, _setFormattedTransactionData] = useState<FormattedTransactionData>()
+  const [formattedTransactionData, setFormattedTransactionData] = useState<FormattedTransactionData>()
   const [isSharing, setIsSharing] = useState(false)
   const shouldUsePin = useShouldUsePinForSubmission(resolvedRequest?.formattedSubmission)
 
@@ -78,6 +80,11 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         })
       })
   }, [resolvedRequest, params.uri, paradym.openid4vc, isDevelopmentModeEnabled, handleError, t])
+
+  useEffect(() => {
+    if (!resolvedRequest) return
+    setFormattedTransactionData(getFormattedTransactionData(resolvedRequest, locale))
+  }, [resolvedRequest])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
@@ -152,7 +159,9 @@ export function FunkeOpenIdPresentationNotificationScreen() {
         await paradym.openid4vc.shareCredentials({
           resolvedRequest,
           selectedCredentials: {},
-          acceptTransactionData: formattedTransactionData?.type === 'qes_authorization',
+          acceptTransactionData:
+            formattedTransactionData?.type === 'qes_authorization' ||
+            formattedTransactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1',
         })
 
         onPinComplete?.()

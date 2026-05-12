@@ -18,6 +18,27 @@ export const walletClient = {
 
 export const trustedX509Entities = [
   {
+    entityId: 'playground.demo.animo.id',
+    name: 'Animo Playground',
+    certificate: `-----BEGIN CERTIFICATE-----
+MIIB+DCCAZ2gAwIBAgIQVTTRVdG3pG1R8/MgRD4WRTAKBggqhkjOPQQDAjAdMQ4w
+DAYDVQQDEwVBbmltbzELMAkGA1UEBhMCTkwwHhcNMjUwNTA3MTEzOTQzWhcNMjkw
+NTA3MTEzOTQzWjAdMQ4wDAYDVQQDEwVBbmltbzELMAkGA1UEBhMCTkwwWTATBgcq
+hkjOPQIBBggqhkjOPQMBBwNCAATcD1XzKepFxWMAOqV+ln1fybBt7DRO5CV0f9A6
+mRp2xWn9lR8juDM4hIVHgX6HmVQTPlk8mZfg4jAuv3frEuDCo4G+MIG7MB0GA1Ud
+DgQWBBSDpTA/oENmN71O9OdtjLOvoFlahDAOBgNVHQ8BAf8EBAMCAQYwNQYDVR0S
+BC4wLIYqaHR0cHM6Ly85YTQ1LTg1LTE0Ni0xOTQtMTI2Lm5ncm9rLWZyZWUuYXBw
+MBIGA1UdEwEB/wQIMAYBAf8CAQAwPwYDVR0fBDgwNjA0oDKgMIYuaHR0cHM6Ly85
+YTQ1LTg1LTE0Ni0xOTQtMTI2Lm5ncm9rLWZyZWUuYXBwL2NybDAKBggqhkjOPQQD
+AgNJADBGAiEA+Ym6aPawIJ1EFecEyTabYbfPf3MP+UnSH7rukJbTkOICIQCqw0kP
+u69LBwTvg0ENKBOlvPiJ5Id0eNsBVm5+T6aE0g==
+-----END CERTIFICATE-----`,
+    url: 'https://playground.demo.animo.id',
+    logoUri: 'https://playground.animo.id/assets/verifiers/animo/verifier.jpg',
+    demo: true,
+  },
+
+  {
     entityId: 'demo.pid-issuer.bundesdruckerei.de',
     name: 'Bundesdruckerei',
     certificate: `-----BEGIN CERTIFICATE-----

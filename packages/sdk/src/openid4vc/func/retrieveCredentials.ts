@@ -52,6 +52,9 @@ export const retrieveCredentials = async (
 
   return {
     deferredCredentials,
-    credentials: credentialResponses.credentials.map((c) => getCredentialForDisplay(c.credential)),
+    credentials: credentialResponses.credentials.map((c) => ({
+      ...getCredentialForDisplay(c.credential),
+      issuerMetadata: options.resolvedCredentialOffer.metadata,
+    })),
   }
 }

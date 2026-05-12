@@ -9,6 +9,7 @@ import {
   W3cV2CredentialRecord,
   type W3cV2JsonCredential,
 } from '@credo-ts/core'
+import type { OpenId4VciMetadata } from '@credo-ts/openid4vc'
 import { ParadymWalletUnsupportedCredentialRecordTypeError } from '../error'
 import { type FormattedAttribute, formatAttributesWithRecordMetadata } from '../format/attributes'
 import {
@@ -96,6 +97,7 @@ export interface CredentialForDisplay {
    * Can be used to directly access data from the credential.
    */
   rawAttributes: Record<string, unknown>
+  issuerMetadata?: OpenId4VciMetadata
   metadata: CredentialMetadata
   claimFormat:
     | ClaimFormat.SdJwtDc
