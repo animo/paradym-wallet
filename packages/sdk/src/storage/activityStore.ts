@@ -6,12 +6,16 @@ import type { CredentialDisplay, CredentialForDisplayId, DisplayImage } from '..
 import { getDisclosedAttributeLabelsForDisplay } from '../format/attributes'
 import type { FormattedSubmission } from '../format/submission'
 import type { CredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
-import type { FormattedTransactionData } from '../openid4vc/transaction'
+import type {
+  FormattedTransactionData,
+  FormattedTransactionDataPaymentSingle,
+  FormattedTransactionDataQesAuthorization,
+} from '../openid4vc/transaction'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { useWalletJsonRecord } from '../providers/WalletJsonStoreProvider'
 import { getWalletJsonStore } from './walletJsonStore'
 
-export type ActivityType = 'shared' | 'received' | 'signed'
+export type ActivityType = 'shared' | 'received' | 'signed' | 'payment'
 export type ActivityStatus = 'success' | 'failed' | 'stopped' | 'pending'
 export type SharingFailureReason = 'missing_credentials' | 'unknown'
 
@@ -74,10 +78,16 @@ export interface IssuanceActivity extends BaseActivity {
 export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
   type: 'signed'
   status: Exclude<ActivityStatus, 'pending'>
-  transaction: FormattedTransactionData
+  transaction: FormattedTransactionDataQesAuthorization
 }
 
-export type Activity = PresentationActivity | IssuanceActivity | SignedActivity
+export interface PaymentActivity extends Omit<PresentationActivity, 'type'> {
+  type: 'payment'
+  status: Exclude<ActivityStatus, 'pending'>
+  transaction: FormattedTransactionDataPaymentSingle
+}
+
+export type Activity = PresentationActivity | IssuanceActivity | SignedActivity | PaymentActivity
 
 export type ActivityRecord = {
   activities: Activity[]
@@ -161,15 +171,35 @@ export const storeReceivedActivity = async (
 
 export const storeSharedOrSignedActivity = async (
   paradym: ParadymWalletSdk,
-  input: Omit<PresentationActivity, 'type' | 'date' | 'id'> | Omit<SignedActivity, 'type' | 'date' | 'id'>
+  input:
+    | Omit<PresentationActivity, 'type' | 'date' | 'id'>
+    | Omit<SignedActivity, 'type' | 'date' | 'id'>
+    | Omit<PaymentActivity, 'type' | 'date' | 'id'>
 ) => {
   if ('transaction' in input && input.transaction) {
-    await activityStorage.addActivity(paradym.agent, {
-      ...input,
-      id: utils.uuid(),
-      date: new Date().toISOString(),
-      type: 'signed',
-    })
+    const transaction =
+      input.transaction.type === 'qes_authorization'
+        ? (input.transaction as FormattedTransactionDataQesAuthorization)
+        : (input.transaction as FormattedTransactionDataPaymentSingle)
+    if (transaction.type === 'qes_authorization') {
+      await activityStorage.addActivity(paradym.agent, {
+        ...input,
+        transaction,
+        id: utils.uuid(),
+        date: new Date().toISOString(),
+        type: 'signed',
+      })
+    } else {
+      console.log('activity')
+      console.log(JSON.stringify(input))
+      await activityStorage.addActivity(paradym.agent, {
+        ...input,
+        transaction,
+        id: utils.uuid(),
+        date: new Date().toISOString(),
+        type: 'payment',
+      })
+    }
   } else {
     await activityStorage.addActivity(paradym.agent, {
       ...input,

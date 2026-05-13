@@ -5,6 +5,7 @@ import type {
   OpenId4VciCredentialConfigurationSupportedWithFormats,
   OpenId4VciCredentialIssuerMetadataDisplay,
 } from '@credo-ts/openid4vc'
+import type { CredentialMetadata } from '@owf/eudi-sca'
 import type { CredentialRecord } from '../storage/credentials'
 
 export interface DidCommCredentialExchangeDisplayMetadata {
@@ -80,7 +81,10 @@ export interface CredentialCategoryMetadata {
   // locally or remotely (so we can show PIN)
 }
 
+export type PaymentsCredentialMetadata = CredentialMetadata
+
 const openId4VcCredentialMetadataKey = '_paradym/openId4VcCredentialMetadata'
+const paymentsMetadataKey = '_paradym/paymentsMetadata'
 const batchCredentialMetadataKey = '_paradym/batchCredentialMetadata'
 const credentialCategoryMetadataKey = '_paradym/credentialCategoryMetadata'
 const refreshCredentialMetadataKey = '_paradym/refreshCredentialMetadata'
@@ -128,6 +132,14 @@ export function getRefreshCredentialMetadata(credentialRecord: CredentialRecord)
 
 export function setRefreshCredentialMetadata(credentialRecord: CredentialRecord, metadata: RefreshCredentialMetadata) {
   credentialRecord.metadata.set(refreshCredentialMetadataKey, metadata)
+}
+
+export function getPaymentsMetadata(credentialRecord: CredentialRecord): PaymentsCredentialMetadata | null {
+  return credentialRecord.metadata.get(paymentsMetadataKey)
+}
+
+export function setPaymentsMetadata(credentialRecord: CredentialRecord, metadata: PaymentsCredentialMetadata) {
+  credentialRecord.metadata.set(paymentsMetadataKey, metadata)
 }
 
 export function getOpenId4VcCredentialMetadata(credentialRecord: CredentialRecord): OpenId4VcCredentialMetadata | null {

@@ -38,15 +38,13 @@
 		"@openid4vc/oauth2": "catalog:",
 		"@openid4vc/openid4vp": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
+		"@owf/eudi-sca": "0.2.0-alpha-20260506130404",
 		"@tanstack/react-query": "catalog:",
 		"credo-ts-didweb-anoncreds": "catalog:",
 		"react-native-keychain": "catalog:",
 		"react-native-mmkv": "catalog:"
 	},
 	"peerDependencies": {
-		"react": ">= 18",
-		"react-native": ">= 0.76",
-		"react-native-fs": "*",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
@@ -56,6 +54,9 @@
 		"expo-image": "*",
 		"expo-image-manipulator": "*",
 		"expo-secure-store": "*",
+		"react": ">= 18",
+		"react-native": ">= 0.76",
+		"react-native-fs": "*",
 		"react-native-get-random-values": ">=1 <=2",
 		"react-native-keychain": "catalog:"
 	},

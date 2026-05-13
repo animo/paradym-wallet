@@ -71,6 +71,23 @@ export const activityInteractions: ActivityInteractions = {
       text: commonMessages.signingFailed,
     },
   },
+  payment: {
+    success: {
+      icon: HeroIcons.CreditCard,
+      color: '#008FFF',
+      text: commonMessages.paid,
+    },
+    stopped: {
+      icon: HeroIcons.HandRaisedFilled,
+      color: '$grey-500',
+      text: commonMessages.paymentStopped,
+    },
+    failed: {
+      icon: CustomIcons.Exclamation,
+      color: '$danger-500',
+      text: commonMessages.paymentFailed,
+    },
+  },
   shared: {
     success: {
       icon: HeroIcons.Interaction,
@@ -103,6 +120,7 @@ interface ActivityRowItemProps {
 }
 
 export function ActivityRowItem({ activity }: ActivityRowItemProps) {
+  console.log(activity)
   const { t } = useLingui()
   const { id, entity } = activity
   const { logo, backgroundColor } = entity

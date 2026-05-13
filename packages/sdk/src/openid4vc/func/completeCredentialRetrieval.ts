@@ -57,7 +57,7 @@ export const completeCredentialRetrieval = async (options: CompleteCredentialRet
   await storeReceivedActivity(options.paradym, {
     // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
     // the credential. Signed issuer metadata is the solution.
-    entityId: options.resolvedCredentialOffer?.metadata.credentialIssuer.credential_issuer,
+    entityId: issuerMetadata?.credential_issuer,
     host: credentialDisplay.issuer.domain,
     name: credentialDisplay.issuer.name,
     logo: credentialDisplay.issuer.logo,

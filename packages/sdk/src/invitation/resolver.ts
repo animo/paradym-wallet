@@ -41,11 +41,13 @@ import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
   setOpenId4VcCredentialMetadata,
+  setPaymentsMetadata,
 } from '../metadata/credentials'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import { type CredentialsForProofRequest, resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import { resolveCredentialMetadataUri } from '../utils/resolveCredentialMetadataUri'
 
 export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
   FlowType extends 'issue'
@@ -300,33 +302,45 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
     }),
   })
 
-  const creds = credentials.map(({ record, ...credentialResponse }) => {
-    const configuration = resolvedCredentialOffer.offeredCredentialConfigurations[
-      credentialResponse.credentialConfigurationId
-    ] as OpenId4VciCredentialConfigurationSupportedWithFormats
+  const creds = await Promise.all(
+    credentials.map(async ({ record, ...credentialResponse }) => {
+      const configuration = resolvedCredentialOffer.offeredCredentialConfigurations[
+        credentialResponse.credentialConfigurationId
+      ] as OpenId4VciCredentialConfigurationSupportedWithFormats
 
-    // OpenID4VC metadata
-    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(configuration, {
-      id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
-      display: resolvedCredentialOffer.metadata.credentialIssuer.display,
-    })
-    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-    // Batch metadata
-    if (credentials.length > 1) {
-      setBatchCredentialMetadata(record, {
-        additionalCredentials: credentials.slice(1).map((c) => c.record.encoded) as
-          | Array<string>
-          | Array<Record<string, unknown>>,
+      // OpenID4VC metadata
+      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(configuration, {
+        id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+        display: resolvedCredentialOffer.metadata.credentialIssuer.display,
       })
-    }
 
-    return {
-      ...credentialResponse,
-      configuration,
-      credential: record,
-    }
-  })
+      if ('credential_metadata_uri' in configuration) {
+        paradym.logger.info(`Received a credential with potential SCA payments capabilities`)
+        const credentialMetadata = await resolveCredentialMetadataUri(
+          paradym,
+          configuration.credential_metadata_uri as string
+        )
+        setPaymentsMetadata(record, credentialMetadata)
+      }
+
+      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
+
+      // Batch metadata
+      if (credentials.length > 1) {
+        setBatchCredentialMetadata(record, {
+          additionalCredentials: credentials.slice(1).map((c) => c.record.encoded) as
+            | Array<string>
+            | Array<Record<string, unknown>>,
+        })
+      }
+
+      return {
+        ...credentialResponse,
+        configuration,
+        credential: record,
+      }
+    })
+  )
 
   return {
     credentials: creds,
