@@ -120,7 +120,6 @@ interface ActivityRowItemProps {
 }
 
 export function ActivityRowItem({ activity }: ActivityRowItemProps) {
-  console.log(activity)
   const { t } = useLingui()
   const { id, entity } = activity
   const { logo, backgroundColor } = entity
