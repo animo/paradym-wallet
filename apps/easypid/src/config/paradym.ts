@@ -11,6 +11,18 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   },
   openId4VcConfiguration: {
     trustedCertificates: trustedX509Certificates as [string, ...string[]],
+    getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {
+      if (verification.type === 'credential') {
+        return [certificateChain[certificateChain.length - 1].toString('pem')]
+      }
+
+      // Allow any actor for auth requests for now
+      if (verification.type === 'oauth2SecuredAuthorizationRequest') {
+        return [certificateChain[certificateChain.length - 1].toString('pem')]
+      }
+
+      return undefined
+    },
   },
   trustMechanisms: [
     { trustMechanism: 'eudi_rp_authentication', trustList: eudiTrustList, trustedX509Entities },

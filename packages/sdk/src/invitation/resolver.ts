@@ -248,11 +248,6 @@ export async function acquirePreAuthorizedAccessToken({
   })
 }
 
-/**
- *
- * @todo how do we want to deal with the `pid` credential here?
- *
- */
 export const receiveCredentialFromOpenId4VciOffer = async ({
   paradym,
   resolvedCredentialOffer,

@@ -190,8 +190,6 @@ export const storeSharedOrSignedActivity = async (
         type: 'signed',
       })
     } else {
-      console.log('activity')
-      console.log(JSON.stringify(input))
       await activityStorage.addActivity(paradym.agent, {
         ...input,
         transaction,
