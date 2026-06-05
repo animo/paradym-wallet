@@ -83,7 +83,16 @@ export function FunkeOpenIdPresentationNotificationScreen() {
 
   useEffect(() => {
     if (!resolvedRequest) return
-    setFormattedTransactionData(getFormattedTransactionData(resolvedRequest, locale))
+    try {
+      setFormattedTransactionData(getFormattedTransactionData(resolvedRequest, locale))
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
+      handleError({
+        reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
+        description: errorMessage,
+      })
+    }
   }, [resolvedRequest])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
