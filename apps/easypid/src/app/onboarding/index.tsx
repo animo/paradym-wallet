@@ -21,6 +21,7 @@ export default function OnboardingScreens() {
   const reset = useLocalSearchParams<{ reset?: 'true' }>().reset === 'true'
   const [hasResetWallet, setHasResetWallet] = useState(false)
   const { t } = useLingui()
+
   useEffect(() => {
     if (headerRef.current) {
       const handle = findNodeHandle(headerRef.current)
@@ -39,11 +40,7 @@ export default function OnboardingScreens() {
 
     setHasResetWallet(true)
     router.setParams({ reset: 'false' })
-
-    if (paradym.state === 'unlocked') {
-      paradym.reset()
-      resetAppState()
-    }
+    resetAppState()
   }, [reset, hasResetWallet, paradym])
 
   const resetAlertTitle = t({
