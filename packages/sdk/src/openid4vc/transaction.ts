@@ -51,7 +51,7 @@ export const getFormattedTransactionData = (
       (entry) => entry.inputDescriptorId === cardForTransactionId && entry.isSatisfied
     ) as FormattedSubmissionEntrySatisfied | undefined
     if (!credential) {
-      throw new Error(`Transaction data requested a payment, but no required SCA was found`)
+      throw new Error(`Transaction data requested a payment, but no required SCA credential was found in the wallet`)
     }
 
     const paymentMetadata = getPaymentsMetadata(credential.credentials[0].credential.record)
