@@ -137,7 +137,7 @@ export function OnboardingContextProvider({
   }
 
   const onEnableBiometrics = async () => {
-    if (paradym.state !== 'acquired-wallet-key' && paradym.state !== 'unlocked') {
+    if (paradym.state !== 'acquired-wallet-key') {
       await reset({
         resetToStep: 'pin',
       })
@@ -145,10 +145,8 @@ export function OnboardingContextProvider({
     }
 
     try {
-      if (paradym.state === 'acquired-wallet-key') {
-        const sdk = await paradym.unlock({ enableBiometrics: true })
-        await setupWalletServiceProvider(sdk, true)
-      }
+      const sdk = await paradym.unlock({ enableBiometrics: true })
+      await setupWalletServiceProvider(sdk, true)
 
       goToNextStep()
     } catch (error) {
