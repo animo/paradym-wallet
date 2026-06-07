@@ -1,7 +1,7 @@
 import type { X509Certificate } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
-import { type GetTrustedEntitiesForDidOptions, getTrustedEntitiesForDid } from './handlers/did'
+import { type GetTrustedEntitiesForDidOptions, getTrustedEntitiesForDid, type TrustedDidEntity } from './handlers/did'
 import {
   type GetTrustedEntitiesForEudiRpAuthenticationOptions,
   getTrustedEntitiesForEudiRpAuthentication,
@@ -36,6 +36,7 @@ export type X509TrustMechanismConfiguration = {
 
 export type DidTrustMechanismConfiguration = {
   trustMechanism: 'did'
+  trustedDidEntities: TrustedDidEntity[]
 }
 
 export type TrustMechanismConfiguration =
@@ -107,7 +108,10 @@ export const getTrustedEntities = async (
       })
       break
     case 'did':
-      trustedEntities = await getTrustedEntitiesForDid(options)
+      trustedEntities = await getTrustedEntitiesForDid({
+        ...options,
+        trustMechanismConfiguration: trustMechanismConfiguration as DidTrustMechanismConfiguration,
+      })
       break
     default:
       throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
