@@ -95,6 +95,7 @@ export { activityStorage, type ActivityStatus, storeSharedActivityForCredentials
 export { storeCredential, updateCredential } from './storage/credentials'
 export { type DeferredCredentialBefore } from './storage/deferredCredentialStore'
 export { getHostNameFromUrl} from './utils/url'
+export { reset } from './utils/reset'
 export { getFormattedTransactionData } from './openid4vc/transaction'
 export {deferredCredentialStorage, getDeferredCredentialNextCheckAt, useDeferredCredentials, deleteDeferredCredential } from './storage/deferredCredentialStore'
 export { fetchAndProcessDeferredCredentials } from './openid4vc/deferredCredentialRecord'

@@ -331,7 +331,10 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       state,
       unlockMethod,
       reinitialize,
-      reset,
+      reset: async () => {
+        reinitialize()
+        reset(paradym)
+      },
       unlock: async (_options) => {
         try {
           const walletKeyVersion = secureWalletKey.getWalletKeyVersion()

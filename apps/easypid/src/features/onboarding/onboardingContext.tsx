@@ -36,6 +36,10 @@ export function OnboardingContextProvider({
 }>) {
   const paradym = useParadym()
 
+  useEffect(() => {
+    if (paradym.state === 'locked') paradym.reinitialize()
+  }, [paradym])
+
   const { successHaptic, lightHaptic } = useHaptics()
   const toast = useToastController()
   const [currentStepName, setCurrentStepName] = useState<OnboardingStep['step']>(initialStep ?? 'welcome')
@@ -112,14 +116,7 @@ export function OnboardingContextProvider({
       throw new Error('Pin entries do not match')
     }
 
-    // When the onboarding is cancelled between the pin slide and the biometrics slide, a state occurs where the wallet is `locked`, but biometrics is not setup.
     if (paradym.state !== 'not-configured') {
-      if (paradym.state === 'unlocked' || paradym.state === 'locked') {
-        await paradym.reset()
-      }
-      if (paradym.state !== 'initializing') {
-        paradym.reinitialize()
-      }
       resetAppState()
       await reset({ resetToStep: 'welcome' })
       return
