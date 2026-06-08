@@ -3,6 +3,7 @@ import mdlCodeA1 from '../../assets/mdl/code_a1.png'
 import mdlCodeA2 from '../../assets/mdl/code_a2.png'
 import mdlCodeAM from '../../assets/mdl/code_am.png'
 import mdlCodeB from '../../assets/mdl/code_b.png'
+import mdlCodeB1 from '../../assets/mdl/code_b1.png'
 import mdlCodeBE from '../../assets/mdl/code_be.png'
 import mdlCodeC from '../../assets/mdl/code_c.png'
 import mdlCodeC1 from '../../assets/mdl/code_c1.png'
@@ -45,6 +46,7 @@ const drivingCodes = [
   { code: 'A2', icon: mdlCodeA2 },
   { code: 'A', icon: mdlCodeA },
   { code: 'B', icon: mdlCodeB },
+  { code: 'B1', icon: mdlCodeB1 },
   { code: 'C1', icon: mdlCodeC1 },
   { code: 'C', icon: mdlCodeC },
   { code: 'D1', icon: mdlCodeD1 },

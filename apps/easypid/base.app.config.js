@@ -49,6 +49,7 @@ const baseAssets = [
   './assets/mdl/code_d.png',
   './assets/mdl/code_d1.png',
   './assets/mdl/code_b.png',
+  './assets/mdl/code_b1.png',
   './assets/mdl/code_c.png',
   './assets/mdl/code_c1.png',
   './assets/mdl/code_a.png',
