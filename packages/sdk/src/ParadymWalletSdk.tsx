@@ -440,10 +440,10 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       },
       reinitialize,
       lock: async () => {
-        await paradym.shutdown()
-        setParadym(undefined)
         setState('locked')
+        setParadym(undefined)
         setUnlockMethod(undefined)
+        await paradym.shutdown()
       },
     }
   }
